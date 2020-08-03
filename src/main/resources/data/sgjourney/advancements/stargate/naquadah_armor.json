@@ -1,0 +1,60 @@
+{
+  "parent": "sgjourney:stargate/naquadah",
+  "display": {
+    "icon": {
+      "item": "sgjourney:naquadah_chestplate"
+    },
+    "title": {
+      "translate": "advancements.stargate.naquadah_armor.title"
+    },
+    "description": {
+      "translate": "advancements.staragte.naquadah_armor.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "naquadah_helmet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "sgjourney:naquadah_helmet"
+          }
+        ]
+      }
+    },
+    "naquadah_chestplate": {
+      "trigger": "sgjourney:naquadah_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "sgjourney:naquadah_chestplate"
+          }
+        ]
+      }
+    },
+    "naquadah_leggings": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "sgjourney:naquadah_leggings"
+          }
+        ]
+      }
+    },
+    "naquadah_boots": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "sgjourney:naquadah_boots"
+          }
+        ]
+      }
+    }
+  }
+}

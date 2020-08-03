@@ -1,0 +1,7 @@
+{
+	"type": "minecraft:blasting",
+	"ingredient": { "item": "sgjourney:naquadah" },
+	"result": { "item": "sgjourney:naquadah_ingot" },
+	"experience": 0.1,
+	"cookingtime": 300
+}

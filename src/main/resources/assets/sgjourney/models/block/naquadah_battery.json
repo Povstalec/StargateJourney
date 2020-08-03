@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "sgjourney:block/naquadah_battery_side",
+        "down": "sgjourney:block/naquadah_battery_out",
+        "up": "sgjourney:block/naquadah_battery_in",
+        "north": "sgjourney:block/naquadah_battery_side",
+        "east": "sgjourney:block/naquadah_battery_side",
+        "south": "sgjourney:block/naquadah_battery_side",
+        "west": "sgjourney:block/naquadah_battery_side"
+    }
+}

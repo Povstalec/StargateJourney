@@ -1,0 +1,40 @@
+{
+	"block.sgjourney.naquadah_ore": "Naquadah Ore",
+	"block.sgjourney.naquadah_block": "Block of Naquadah",
+	"block.sgjourney.movie_stargate": "Stargate",
+	"block.sgjourney.naquadah_battery": "Naquadah Battery",
+	"block.sgjourney.sandstone_hieroglyphs": "Sandstone With Hieroglyphs",
+	
+	"block.sgjourney.milky_way_dhd": "DHD",
+	"item.sgjourney.movie_stargate": "Stargate",
+	"item.sgjourney.naquadah": "Naquadah",
+	"item.sgjourney.weapons_grade_naquadah": "Weapons Grade Naquadah",
+	"item.sgjourney.naquadah_ingot": "Naquadah Ingot",
+	
+	"item.sgjourney.naquadah_sword": "Naquadah Sword",
+	"item.sgjourney.naquadah_pickaxe": "Naquadah Pickaxe",
+	"item.sgjourney.naquadah_axe": "Naquadah Axe",
+	"item.sgjourney.naquadah_shovel": "Naquadah Shovel",
+	"item.sgjourney.naquadah_hoe": "Naquadah Hoe",
+	
+	"item.sgjourney.jaffa_staff_weapon": "Staff Weapon",
+	
+	"item.sgjourney.naquadah_helmet": "Naquadah Helmet",
+	"item.sgjourney.naquadah_chestplate": "Naquadah Chestplate",
+	"item.sgjourney.naquadah_leggings": "Naquadah Leggings",
+	"item.sgjourney.naquadah_boots": "Naquadah Boots",
+	"item.sgjourney.jaffa_helmet": "Jaffa Helmet",
+	"item.sgjourney.jaffa_chestplate": "Jaffa Chestplate",
+	"item.sgjourney.jaffa_leggings": "Jaffa Leggings",
+	"item.sgjourney.jaffa_boots": "Jaffa Boots",
+	
+	"itemGroup.stargate": "Stargate",
+	
+	"biome.sgjourney.abydos_desert": "Abydos Desert",
+	"biome.sgjourney.abydos_desert_hills": "Abydos Desert Hills",
+	
+	"advancements.stargate.root.title": "Further than ever before",
+	"advancements.stargate.root.description": "Step through a Stargate",
+	"advancements.stargate.naquadah.title": "Unlike any found on earth...",
+	"advancements.stargate.naquadah.description":"Acquire naquadah"
+}

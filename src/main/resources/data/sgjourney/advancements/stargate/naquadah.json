@@ -1,0 +1,38 @@
+{
+	"parent": "sgjourney:stargate/root",
+	"display": 
+	{
+    "icon": 
+		{
+      	"item": "sgjourney:naquadah"
+    	},
+    "title": 
+		{
+      "translate": "advancements.stargate.naquadah.title"
+    	},
+    "description": 
+		{
+      "translate": "advancements.stargate.naquadah.description"
+    	},
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+	},
+  "criteria": 
+	{
+    "naquadah": 
+		{
+		"trigger": "minecraft:inventory_changed",
+		"conditions": 
+			{
+			"items": 
+				[
+					{
+            "item": "sgjourney:naquadah"
+					}
+				]
+			}
+		}
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern":
+	[
+		"IGI",
+		"RBR",
+		"IGI"
+	],
+	
+	"key": 
+	{
+		"B": { "item": "sgjourney:naquadah_block" },
+		"G": { "item": "sgjourney:gold_wire" },
+		"I": { "item": "minecraft:iron_ingot" },
+		"R": { "item": "minecraft:redstone" }
+		
+	},
+	
+	"result": { "item": "techpoint:naquadah_battery" }
+}

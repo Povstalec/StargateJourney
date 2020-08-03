@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern":
+	[
+		"III",
+		" S ",
+		" S "
+	],
+	
+	"key": 
+	{
+		"I": { "item": "sgjourney:naquadah_ingot" },
+		"S": { "item": "minecraft:stick" }
+		
+	},
+	
+	"result": { "item": "sgjourney:naquadah_pickaxe" }
+}

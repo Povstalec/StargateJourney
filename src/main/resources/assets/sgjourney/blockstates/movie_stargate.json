@@ -1,0 +1,12 @@
+{
+  "defaults": {
+  },
+    "variants": {
+        "facing=north": { "model": "sgjourney:block/movie_stargate" },
+        "facing=south": { "model": "sgjourney:block/movie_stargate", "y": 180 },
+        "facing=west": { "model": "sgjourney:block/movie_stargate", "y": 270 },
+        "facing=east": { "model": "sgjourney:block/movie_stargate", "y": 90 },
+        "facing=up": { "model": "sgjourney:block/movie_stargate", "x": 270 },
+        "facing=down": { "model": "sgjourney:block/movie_stargate", "x": 90 }
+    }
+}

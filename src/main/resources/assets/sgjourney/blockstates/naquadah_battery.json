@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=north": { "model": "sgjourney:block/naquadah_battery", "x": -90 },
+        "facing=south": { "model": "sgjourney:block/naquadah_battery", "x": 90 },
+        "facing=west": { "model": "sgjourney:block/naquadah_battery", "x": 90, "y": 90 },
+        "facing=east": { "model": "sgjourney:block/naquadah_battery", "x": -90, "y": 90 },
+        "facing=up": { "model": "sgjourney:block/naquadah_battery", "x": 180 },
+        "facing=down": { "model": "sgjourney:block/naquadah_battery" }
+    }
+}

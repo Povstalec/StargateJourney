@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern": [
+    "SSS",
+    "CCC",
+    "SSS"
+  ],
+  "key": {
+    "S": {"item": "minecraft:sandstone_slab"},
+	"C": {"item": "minecraft:chiseled_sandstone"}
+  },
+  "result": {
+    "item": "sgjourney:sandstone_hieroglyphs", "count": 6
+  }
+}

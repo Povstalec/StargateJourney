@@ -1,0 +1,10 @@
+{
+  "defaults": {
+  },
+    "variants": {
+        "facing=north": { "model": "sgjourney:block/movie_stargate_hitbox" },
+        "facing=south": { "model": "sgjourney:block/movie_stargate_hitbox" },
+        "facing=west": { "model": "sgjourney:block/movie_stargate_hitbox" },
+        "facing=east": { "model": "sgjourney:block/movie_stargate_hitbox" }
+    }
+}

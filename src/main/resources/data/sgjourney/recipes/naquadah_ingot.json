@@ -1,0 +1,7 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": { "item": "sgjourney:naquadah" },
+	"result": { "item": "sgjourney:naquadah_ingot"},
+	"experience": 0.1,
+	"cookingtime": 600
+}

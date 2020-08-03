@@ -1,0 +1,40 @@
+{
+	"block.sgjourney.naquadah_ore": "Naquadahov\u00e1 ruda",
+	"block.sgjourney.naquadah_block": "Blok naquadahu",
+	"block.sgjourney.movie_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.naquadah_battery": "Naquadahov\u00e1 baterie",
+	"block.sgjourney.sandstone_hieroglyphs": "P\u00edskovec s hieroglyfy",
+	
+	"block.sgjourney.milky_way_dhd": "Ovl\u00e1dac\u00ed panel",
+	"item.sgjourney.movie_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"item.sgjourney.naquadah": "Naquadah",
+	"item.sgjourney.weapons_grade_naquadah": "Naquadah vojensk\u00e9 \u00farovn\u011b",
+	"item.sgjourney.naquadah_ingot": "Naquadahov\u00fd ingot",
+	
+	"item.sgjourney.naquadah_sword": "Naquadahov\u00fd me\u010d",
+	"item.sgjourney.naquadah_pickaxe": "Naquadahov\u00fd krump\u00e1\u010d",
+	"item.sgjourney.naquadah_axe": "Naquadahov\u00e1 sekera",
+	"item.sgjourney.naquadah_shovel": "Naquadahov\u00e1 lopata",
+	"item.sgjourney.naquadah_hoe": "Naquadahov\u00e1 motyka",
+	
+	"item.sgjourney.jaffa_staff_weapon": "Ty\u010dov\u00e1 zbra\u010d",
+	
+	"item.sgjourney.naquadah_helmet": "Naquadahov\u00e1 helma",
+	"item.sgjourney.naquadah_chestplate": "Naquadahov\u00e9 brn\u011bn\u00ed",
+	"item.sgjourney.naquadah_leggings": "Naquadahov\u00e9 kalhoty",
+	"item.sgjourney.naquadah_boots": "Naquadahov\u00e9 boty",
+	"item.sgjourney.jaffa_helmet": "Jaffsk\u00e1 helma",
+	"item.sgjourney.jaffa_chestplate": "Jaffsk\u00e9 brn\u011bn\u00ed",
+	"item.sgjourney.jaffa_leggings": "Jaffsk\u00e9 kalhoty",
+	"item.sgjourney.jaffa_boots": "Jaffsk\u00e9 boty",
+	
+	"itemGroup.stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	
+	"biome.sgjourney.abydos_desert": "Abydosk\u00e1 pou\u0161\u0165",
+	"biome.sgjourney.abydos_desert_hills": "Hornat\u00e1 Abydosk\u00e1 pou\u0161\u0165",
+	
+	"advancements.stargate.root.title": "D\u00e1le ne\u017e kdy d\u0159\u00edve",
+	"advancements.stargate.root.description": "Projdi hv\u011bzdnou br\u00e1nou",
+	"advancements.stargate.naquadah.title": "Miner\u00e1l jako \u017e\u00e1dn\u00fd jin\u00fd na zemi...",
+	"advancements.stargate.naquadah.description":"Z\u00edskej naquadah"
+}

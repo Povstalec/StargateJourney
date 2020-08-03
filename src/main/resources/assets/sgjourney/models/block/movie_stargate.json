@@ -1,0 +1,13 @@
+{
+
+	"parent": "builtin/generated",
+	"loader": "forge:obj",
+	"model": "sgjourney:models/block/movie_stargate.obj",
+	"textures":
+	{
+		"particle": "sgjourney:item/movie_stargate"
+	},
+	"flip-v": true,
+	"ambientocclusion": false
+
+}
