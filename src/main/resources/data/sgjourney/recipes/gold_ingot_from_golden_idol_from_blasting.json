@@ -1,0 +1,7 @@
+{
+	"type": "minecraft:blasting",
+	"ingredient": { "item": "sgjourney:gold_idol" },
+	"result": { "item": "minecraft:gold_ingot" },
+	"experience": 0.1,
+	"cookingtime": 300
+}

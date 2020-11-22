@@ -2,11 +2,15 @@
 	"block.sgjourney.naquadah_ore": "Naquadahov\u00e1 ruda",
 	"block.sgjourney.naquadah_block": "Blok naquadahu",
 	"block.sgjourney.movie_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
-	"block.sgjourney.naquadah_battery": "Naquadahov\u00e1 baterie",
 	"block.sgjourney.sandstone_hieroglyphs": "P\u00edskovec s hieroglyfy",
+	"block.sgjourney.fire_pit": "Ohni\u0161t\u011b",
+	"block.sgjourney.archeology_table": "Arheologick\u00fd st\u016fl",
+	"block.sgjourney.golden_idol": "Zlat\u00e1 So\u0161ka",
 	
 	"block.sgjourney.milky_way_dhd": "Ovl\u00e1dac\u00ed panel",
-	"item.sgjourney.movie_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.movie_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.milky_way_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	
 	"item.sgjourney.naquadah": "Naquadah",
 	"item.sgjourney.weapons_grade_naquadah": "Naquadah vojensk\u00e9 \u00farovn\u011b",
 	"item.sgjourney.naquadah_ingot": "Naquadahov\u00fd ingot",
@@ -17,7 +21,7 @@
 	"item.sgjourney.naquadah_shovel": "Naquadahov\u00e1 lopata",
 	"item.sgjourney.naquadah_hoe": "Naquadahov\u00e1 motyka",
 	
-	"item.sgjourney.jaffa_staff_weapon": "Ty\u010dov\u00e1 zbra\u010d",
+	"item.sgjourney.jaffa_staff_weapon": "Ty\u010dov\u00e1 zbra\u0148",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadahov\u00e1 helma",
 	"item.sgjourney.naquadah_chestplate": "Naquadahov\u00e9 brn\u011bn\u00ed",
@@ -27,6 +31,7 @@
 	"item.sgjourney.jaffa_chestplate": "Jaffsk\u00e9 brn\u011bn\u00ed",
 	"item.sgjourney.jaffa_leggings": "Jaffsk\u00e9 kalhoty",
 	"item.sgjourney.jaffa_boots": "Jaffsk\u00e9 boty",
+	"item.sgjourney.jackal_helmet": "\u0160akal\u00ed helma",
 	
 	"itemGroup.stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
 	

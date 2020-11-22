@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "sgjourney:block/archeology_table",
+        "down": "sgjourney:block/archeology_table_side",
+        "up": "sgjourney:block/archeology_table_top",
+        "north": "sgjourney:block/archeology_table_front",
+        "east": "sgjourney:block/archeology_table_side",
+        "south": "sgjourney:block/archeology_table_side",
+        "west": "sgjourney:block/archeology_table_side"
+    }
+}

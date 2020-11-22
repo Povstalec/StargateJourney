@@ -1,14 +1,14 @@
 # Made in Blockbench 3.5.4
 newmtl 0
-map_Kd sgjourney:block/stargate_movie_outer_ring 
+map_Kd sgjourney:block/stargate_milky_way_outer_ring 
 newmtl 1
 map_Kd sgjourney:block/stargate_movie_chevron 
 newmtl 2
-map_Kd sgjourney:block/stargate_movie_inner_ring 
+map_Kd sgjourney:block/stargate_milky_way_inner_ring 
 newmtl 4
-map_Kd sgjourney:block/stargate_movie_back_ring 
+map_Kd sgjourney:block/stargate_milky_way_back_ring 
 newmtl 5
-map_Kd sgjourney:block/milky_way_symbols/tauri 
+map_Kd sgjourney:block/milky_way_points_of_origin/tauri 
 newmtl 7
 map_Kd sgjourney:block/milky_way_symbols/crater 
 newmtl 8

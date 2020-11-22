@@ -1,0 +1,13 @@
+{
+
+	"parent": "builtin/generated",
+	"loader": "forge:obj",
+	"model": "sgjourney:models/block/milky_way_stargate.obj",
+	"textures":
+	{
+		"particle": "sgjourney:item/milky_way_stargate"
+	},
+	"flip-v": true,
+	"ambientocclusion": false
+
+}

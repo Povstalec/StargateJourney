@@ -21,7 +21,8 @@ public class AbydosDimension extends Dimension
 	}
 
 	@Override
-	public ChunkGenerator<?> createChunkGenerator() {
+	public ChunkGenerator<?> createChunkGenerator() 
+	{
 		return new CustomChunkGenerator(world, new CustomBiomeProvider(), new CustomGenSettings());
 	}
 

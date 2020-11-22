@@ -4,7 +4,8 @@ import init.StargateItems;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
-public class StargateItemGroup extends ItemGroup{
+public class StargateItemGroup extends ItemGroup
+{
 
 	public StargateItemGroup() 
 	{
@@ -16,6 +17,5 @@ public class StargateItemGroup extends ItemGroup{
 	{
 		return new ItemStack(StargateItems.movie_stargate);
 	}
-
 	
 }

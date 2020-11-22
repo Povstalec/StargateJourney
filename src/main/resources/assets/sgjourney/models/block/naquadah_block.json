@@ -1,6 +1,12 @@
 {
-    "parent": "block/cube_all",
+    "parent": "block/cube",
     "textures": {
-        "all": "sgjourney:block/naquadah_block"
+        "particle": "sgjourney:block/naquadah_block",
+        "down": "sgjourney:block/naquadah_block_top",
+        "up": "sgjourney:block/naquadah_block_top",
+        "north": "sgjourney:block/naquadah_block",
+        "east": "sgjourney:block/naquadah_block",
+        "south": "sgjourney:block/naquadah_block",
+        "west": "sgjourney:block/naquadah_block"
     }
 }
