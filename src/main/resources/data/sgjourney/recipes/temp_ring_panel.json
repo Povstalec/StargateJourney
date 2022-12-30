@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern": [
+    "IBI",
+    "IRI",
+    "IBI"
+  ],
+  "key": {
+	"I": {"item": "minecraft:gold_ingot"},
+	"R": {"item": "minecraft:redstone"},
+	"B": {"item": "minecraft:stone_button"}
+  },
+  "result": {
+    "item": "sgjourney:ring_panel"
+  }
+}

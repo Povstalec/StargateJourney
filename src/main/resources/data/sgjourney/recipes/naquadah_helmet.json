@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern":
+	[
+		"III",
+		"I I"
+	],
+	
+	"key": 
+	{
+		"I": { "item": "sgjourney:naquadah_alloy" }
+		
+	},
+	
+	"result": { "item": "sgjourney:naquadah_helmet" }
+}

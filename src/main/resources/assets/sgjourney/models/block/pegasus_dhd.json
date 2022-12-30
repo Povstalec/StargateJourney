@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "sgjourney:block/dhd_side",
+        "down": "sgjourney:block/dhd_bottom",
+        "up": "sgjourney:block/pegasus_dhd_top",
+        "north": "sgjourney:block/dhd_side",
+        "east": "sgjourney:block/dhd_side",
+        "south": "sgjourney:block/dhd_side",
+        "west": "sgjourney:block/dhd_side"
+    }
+}

@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": 
+	[
+		{"item": "sgjourney:sandstone_hieroglyphs"},
+    	{"item": "minecraft:redstone"}
+	],
+	"result": { "item": "sgjourney:sandstone_switch", "count": 1 }
+}

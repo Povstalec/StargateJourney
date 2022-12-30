@@ -1,0 +1,11 @@
+{
+  "type": "sgjourney:abydos",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "sgjourney:abydos",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "sgjourney:abydos_desert"
+    }
+  }
+}

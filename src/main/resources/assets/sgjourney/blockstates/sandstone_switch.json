@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "powered=false": { "model": "sgjourney:block/sandstone_hieroglyphs" },
+        "powered=true": { "model": "sgjourney:block/sandstone_hieroglyphs_powered" }
+    }
+}

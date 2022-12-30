@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:smithing",
+	"addition":
+	{
+		"item": "minecraft:iron_ingot"
+	},
+	"base":
+	{
+		"item": "sgjourney:raw_naquadah"
+	},
+	"result":
+	{
+		"item": "sgjourney:naquadah_alloy"
+	}
+}

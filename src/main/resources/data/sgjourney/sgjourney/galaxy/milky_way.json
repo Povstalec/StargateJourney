@@ -1,0 +1,11 @@
+{
+	"name": "Milky Way",
+	"type": "sgjourney:medium_galaxy",
+	"symbols": "sgjourney:milky_way",
+	"symbol": 11,
+	"planets":
+	[
+		"sgjourney:terra",
+		"sgjourney:abydos"
+	]
+}

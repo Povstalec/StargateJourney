@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "values": [
+    "sgjourney:milky_way_stargate",
+    "sgjourney:milky_way_ring",
+    "sgjourney:milky_way_dhd",
+    "sgjourney:transport_rings",
+    "sgjourney:ring_panel",
+    "sgjourney:naquadah_ore",
+    "sgjourney:nether_naquadah_ore",
+    "sgjourney:deepslate_naquadah_ore",
+    "sgjourney:raw_naquadah_block",
+    "sgjourney:naquadah_block",
+    "sgjourney:naquadah_stairs",
+    "sgjourney:naquadah_slab",
+    "sgjourney:sandstone_with_lapis",
+    "sgjourney:sandstone_hieroglyphs",
+    "sgjourney:sandstone_switch",
+    "sgjourney:sandstone_cartouche",
+    "sgjourney:stone_cartouche",
+    "sgjourney:golden_idol"
+  ]
+}

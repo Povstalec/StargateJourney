@@ -1,0 +1,79 @@
+{
+"milky_way_chevron_encode":
+	{
+		"subtitle": "sounds.sgjourney.milky_way_chevron_encode",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_encode"
+		]
+	},
+	"milky_way_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.milky_way_chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_engage"
+		]
+	},
+	"milky_way_dial_fail":
+	{
+		"subtitle": "sounds.sgjourney.milky_way_dial_fail",
+		"sounds":
+		[
+			"sgjourney:milky_way_dial_fail"
+		]
+	},
+	
+	"pegasus_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.pegasus_chevron_engage",
+		"sounds":
+		[
+			"sgjourney:pegasus_chevron_engage"
+		]
+	},
+	"pegasus_dial_fail":
+	{
+		"subtitle": "sounds.sgjourney.pegasus_dial_fail",
+		"sounds":
+		[
+			"sgjourney:pegasus_dial_fail"
+		]
+	},
+	
+	"wormhole_close":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_close",
+		"sounds":
+		[
+			"sgjourney:wormhole_close"
+		]
+	},
+	
+	"wormhole_enter":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_enter",
+		"sounds":
+		[
+			"sgjourney:wormhole_enter"
+		]
+	},
+	
+	"milky_way_dhd_enter":
+	{
+		"subtitle": "sounds.sgjourney.milky_way_dhd_enter",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_enter"
+		]
+	},
+	
+	"matok_fire":
+	{
+		"subtitle": "sounds.sgjourney.matok_fire",
+		"sounds":
+		[
+			"sgjourney:matok_fire"
+		]
+	}
+}

@@ -1,0 +1,84 @@
+{
+	"block.sgjourney.naquadah_ore": "Naquadahov\u00e1 ruda",
+	"block.sgjourney.nether_naquadah_ore": "Netherov\u00e1 naquadahov\u00e1 ruda",
+	"block.sgjourney.deepslate_naquadah_ore": "Hlubinn\u00e1 Naquadahov\u00e1 ruda",
+	"block.sgjourney.raw_naquadah_block": "Blok vyt\u011b\u017een\u00e9ho naquadahu",
+	"block.sgjourney.naquadah_block": "Blok naquadahu",
+	"block.sgjourney.naquadah_stairs": "Naquadahov\u00e9 schody",
+	"block.sgjourney.naquadah_slab": "Naquadahov\u00fd p\u016flblok",
+	"block.sgjourney.fire_pit": "Ohni\u0161t\u011b",
+	"block.sgjourney.archeology_table": "Arheologick\u00fd st\u016fl",
+	"block.sgjourney.golden_idol": "Zlat\u00e1 so\u0161ka",
+
+	"block.sgjourney.sandstone_with_lapis": "P\u00edskovec s lapisem",
+	"block.sgjourney.sandstone_hieroglyphs": "P\u00edskovec s hieroglyfy",
+	"block.sgjourney.sandstone_switch": "Tajn\u00fd p\u00edskovcov\u00fd sp\u00edna\u010d",
+	"block.sgjourney.sandstone_symbol": "P\u00edskovcov\u00fd symbol",
+	"block.sgjourney.stone_symbol": "Kamenn\u00fd symbol",
+	"block.sgjourney.sandstone_cartouche": "P\u00edskovcov\u00e1 kartu\u0161e",
+	"block.sgjourney.stone_cartouche": "Kamenn\u00e1 kartu\u0161e",
+	
+	"block.sgjourney.milky_way_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.pegasus_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.milky_way_dhd": "Ovl\u00e1dac\u00ed panel",
+	"block.sgjourney.pegasus_dhd": "Ovl\u00e1dac\u00ed panel",
+	
+	"block.sgjourney.transport_rings": "Transportn\u00ed kruhy",
+	"block.sgjourney.ring_panel": "Ovl\u00e1d\u00e1n\u00ed kruh\u016f",
+	
+	"item.sgjourney.raw_naquadah": "Vyt\u011b\u017een\u00fd naquadah",
+	"item.sgjourney.naquadah_alloy": "Naquadahov\u00e1 slitina",
+	"item.sgjourney.naquadah": "Naquadah vojensk\u00e9 \u00farovn\u011b",
+
+	"item.sgjourney.transportation_crystal": "Transporta\u010dn\u00ed krystal",
+	"item.sgjourney.energy_crystal": "Energetick\u00fd krystal",
+	"item.sgjourney.communication_crystal": "Komunika\u010dn\u00ed krystal",
+	"item.sgjourney.memory_crystal": "Pam\u011b\u0165ov\u00fd krystal",
+	
+	"item.sgjourney.naquadah_sword": "Naquadahov\u00fd me\u010d",
+	"item.sgjourney.naquadah_pickaxe": "Naquadahov\u00fd krump\u00e1\u010d",
+	"item.sgjourney.naquadah_axe": "Naquadahov\u00e1 sekera",
+	"item.sgjourney.naquadah_shovel": "Naquadahov\u00e1 lopata",
+	"item.sgjourney.naquadah_hoe": "Naquadahov\u00e1 motyka",
+
+	"item.sgjourney.kara_kesh": "Ozbrojen\u00e1 ruka",
+	"item.sgjourney.ring_remote": "Ovl\u00e1d\u00e1n\u00ed kruh\u016f",
+	
+	"item.sgjourney.matok": "Ty\u010dov\u00e1 zbra\u0148",
+	
+	"item.sgjourney.pda": "PDA",
+	
+	"item.sgjourney.naquadah_helmet": "Naquadahov\u00e1 helma",
+	"item.sgjourney.naquadah_chestplate": "Naquadahov\u00e9 brn\u011bn\u00ed",
+	"item.sgjourney.naquadah_leggings": "Naquadahov\u00e9 kalhoty",
+	"item.sgjourney.naquadah_boots": "Naquadahov\u00e9 boty",
+	"item.sgjourney.jaffa_helmet": "Jaffsk\u00e1 helma",
+	"item.sgjourney.jaffa_chestplate": "Jaffsk\u00e9 brn\u011bn\u00ed",
+	"item.sgjourney.jaffa_leggings": "Jaffsk\u00e9 kalhoty",
+	"item.sgjourney.jaffa_boots": "Jaffsk\u00e9 boty",
+	"item.sgjourney.jackal_helmet": "\u0160akal\u00ed helma",
+	"item.sgjourney.horus_helmet": "Horova helma",
+	
+	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
+	
+	"filled_map.sgjourney.archeologist": "Archeologova mapa",
+	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu boh\u016f",
+	
+	"itemGroup.stargate_blocks": "Hv\u011bzdn\u00e1 br\u00e1na - Bloky",
+	"itemGroup.stargate_items": "Hv\u011bzdn\u00e1 br\u00e1na - P\u0159edm\u011bty",
+	"itemGroup.stargate_decorations": "Hv\u011bzdn\u00e1 br\u00e1na - Dekorace",
+
+	"screen.sgjourney.archeology_table": "Arheologick\u00fd st\u016fl",
+	"screen.sgjourney.transport_rings": "Transportn\u00ed kruhy",
+	
+	"biome.sgjourney.abydos_desert": "Abydosk\u00e1 pou\u0161\u0165",
+	"biome.sgjourney.abydos_desert_hills": "Hornat\u00e1 Abydosk\u00e1 pou\u0161\u0165",
+	"biome.sgjourney.lantean_ocean": "Atlan\u0165anský oce\u00e1n",
+	
+	"advancements.stargate.root.title": "D\u00e1le ne\u017e kdy d\u0159\u00edve",
+	"advancements.stargate.root.description": "Projdi hv\u011bzdnou br\u00e1nou",
+	"advancements.stargate.naquadah.title": "Miner\u00e1l jako \u017e\u00e1dn\u00fd jin\u00fd na zemi...",
+	"advancements.stargate.naquadah.description":"Z\u00edskej naquadah",
+	
+	"tooltips.sgjourney.pda_info": "PDA"
+}

@@ -1,0 +1,10 @@
+{
+  "defaults": {
+  },
+    "variants": {
+        "facing=north": { "model": "sgjourney:block/archeology_table", "y": 180  },
+        "facing=south": { "model": "sgjourney:block/archeology_table"},
+        "facing=west": { "model": "sgjourney:block/archeology_table", "y": 90 },
+        "facing=east": { "model": "sgjourney:block/archeology_table", "y": 270 }
+    }
+}

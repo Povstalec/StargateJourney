@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern": [
+    "N",
+    "B",
+    "N"
+  ],
+  "key": {
+	"B": {"item": "minecraft:blaze_rod"},
+	"N": {"item": "sgjourney:naquadah"}
+  },
+  "result": {
+    "item": "sgjourney:matok"
+  }
+}

@@ -1,0 +1,15 @@
+{
+	"providers":
+	[
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE001\uE002\uE003\uE004\uE005\uE006\uE007\uE008\uE009\uE010\uE011\uE012\uE013\uE014\uE015\uE016\uE017\uE018\uE019\uE020\uE021\uE022\uE023\uE024\uE025\uE026\uE027\uE028\uE029\uE030\uE031\uE032\uE033\uE034\uE035\u0000\u0000\u0000"
+			]
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "minecraft:block/sandstone",
+        "down": "minecraft:block/sandstone_top",
+        "up": "minecraft:block/sandstone_top",
+        "north": "sgjourney:block/sandstone_with_lapis",
+        "east": "sgjourney:block/sandstone_with_lapis",
+        "south": "sgjourney:block/sandstone_with_lapis",
+        "west": "sgjourney:block/sandstone_with_lapis"
+    }
+}

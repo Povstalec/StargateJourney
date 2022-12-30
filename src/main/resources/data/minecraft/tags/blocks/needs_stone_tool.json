@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "sgjourney:sandstone_with_lapis",
+    "sgjourney:sandstone_hieroglyphs",
+    "sgjourney:sandstone_switch",
+    "sgjourney:sandstone_symbol_terra",
+    "sgjourney:sandstone_symbol_tauri",
+    "sgjourney:sandstone_symbol_abydos",
+    "sgjourney:sandstone_cartouche",
+    "sgjourney:stone_cartouche"
+  ]
+}

@@ -1,0 +1,5 @@
+{
+	"name": "Gamekeeper",
+	"texture": "sgjourney:gamekeeper.png",
+	"generates_randomly": true
+}

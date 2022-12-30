@@ -1,0 +1,84 @@
+{
+	"block.sgjourney.naquadah_ore": "Naquadah Ore",
+	"block.sgjourney.nether_naquadah_ore": "Nether Naquadah Ore",
+	"block.sgjourney.deepslate_naquadah_ore": "Deepslate Naquadah Ore",
+	"block.sgjourney.raw_naquadah_block": "Raw Naquadah Block",
+	"block.sgjourney.naquadah_block": "Block of Naquadah",
+	"block.sgjourney.naquadah_stairs": "Naquadah Stairs",
+	"block.sgjourney.naquadah_slab": "Naquadah_slab",
+	"block.sgjourney.fire_pit": "Fire Pit",
+	"block.sgjourney.archeology_table": "Archeology Table",
+	"block.sgjourney.golden_idol": "Golden Idol",
+
+	"block.sgjourney.sandstone_with_lapis": "Sandstone With Lapis",
+	"block.sgjourney.sandstone_hieroglyphs": "Sandstone With Hieroglyphs",
+	"block.sgjourney.sandstone_switch": "Sandstone Switch",
+	"block.sgjourney.sandstone_symbol": "Sandstone Symbol",
+	"block.sgjourney.stone_symbol": "Stone Symbol",
+	"block.sgjourney.sandstone_cartouche": "Sandstone Cartouche",
+	"block.sgjourney.stone_cartouche": "Stone Cartouche",
+	
+	"block.sgjourney.milky_way_stargate": "Stargate",
+	"block.sgjourney.pegasus_stargate": "Stargate",
+	"block.sgjourney.milky_way_dhd": "DHD",
+	"block.sgjourney.pegasus_dhd": "DHD",
+
+	"block.sgjourney.transport_rings": "Transport Rings",
+	"block.sgjourney.ring_panel": "Ring Panel",
+	
+	"item.sgjourney.raw_naquadah": "Raw Naquadah",
+	"item.sgjourney.naquadah_alloy": "Naquadah Alloy",
+	"item.sgjourney.naquadah": "Weapons Grade Naquadah",
+
+	"item.sgjourney.transportation_crystal": "Transportation Crystal",
+	"item.sgjourney.energy_crystal": "Energy Crystal",
+	"item.sgjourney.communication_crystal": "Communication Crystal",
+	"item.sgjourney.memory_crystal": "Memory Crystal",
+	
+	"item.sgjourney.naquadah_sword": "Naquadah Sword",
+	"item.sgjourney.naquadah_pickaxe": "Naquadah Pickaxe",
+	"item.sgjourney.naquadah_axe": "Naquadah Axe",
+	"item.sgjourney.naquadah_shovel": "Naquadah Shovel",
+	"item.sgjourney.naquadah_hoe": "Naquadah Hoe",
+
+	"item.sgjourney.kara_kesh": "Hand Device",
+	"item.sgjourney.ring_remote": "Ring Remote",
+	
+	"item.sgjourney.matok": "Staff Weapon",
+	
+	"item.sgjourney.pda": "PDA",
+	
+	"item.sgjourney.naquadah_helmet": "Naquadah Helmet",
+	"item.sgjourney.naquadah_chestplate": "Naquadah Chestplate",
+	"item.sgjourney.naquadah_leggings": "Naquadah Leggings",
+	"item.sgjourney.naquadah_boots": "Naquadah Boots",
+	"item.sgjourney.jaffa_helmet": "Jaffa Helmet",
+	"item.sgjourney.jaffa_chestplate": "Jaffa Chestplate",
+	"item.sgjourney.jaffa_leggings": "Jaffa Leggings",
+	"item.sgjourney.jaffa_boots": "Jaffa Boots",
+	"item.sgjourney.jackal_helmet": "Jackal Helmet",
+	"item.sgjourney.horus_helmet": "Horus Helmet",
+	
+	"entity.minecraft.villager.sgjourney.archeologist": "Archeologist Map",
+	
+	"filled_map.sgjourney.archeologist": "Archeologist Map",
+	"filled_map.sgjourney.astria_porta": "Map to the Ring of Gods",
+	
+	"itemGroup.stargate_blocks": "Stargate Blocks",
+	"itemGroup.stargate_items": "Stargate Items",
+	"itemGroup.stargate_decorations": "Stargate Decorations",
+
+	"screen.sgjourney.archeology_table": "Archeology Table",
+	"screen.sgjourney.transport_rings": "Transport Rings",
+	
+	"biome.sgjourney.abydos_desert": "Abydos Desert",
+	"biome.sgjourney.abydos_desert_hills": "Abydos Desert Hills",
+	"biome.sgjourney.lantean_ocean": "Lantean Ocean",
+	
+	"advancements.stargate.root.title": "Further than ever before",
+	"advancements.stargate.root.description": "Step through a Stargate",
+	"advancements.stargate.naquadah.title": "Unlike any found on earth...",
+	"advancements.stargate.naquadah.description":"Acquire naquadah",
+	
+	"tooltips.sgjourney.pda_info": "Right-click: Get information about the block"
+}

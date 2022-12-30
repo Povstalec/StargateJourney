@@ -1,0 +1,10 @@
+{
+	"name": "Pegasus",
+	"type": "sgjourney:dwarf_galaxy",
+	"symbols": "sgjourney:pegasus",
+	"symbol": 18,
+	"planets":
+	[
+		"sgjourney:lantea"
+	]
+}

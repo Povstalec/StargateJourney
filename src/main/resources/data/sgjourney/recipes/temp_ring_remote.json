@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern": [
+    "BM ",
+    "INI",
+    " I "
+  ],
+  "key": {
+	"I": {"item": "minecraft:gold_ingot"},
+	"M": {"item": "sgjourney:memory_crystal"},
+	"B": {"item": "minecraft:blaze_rod"},
+	"N": {"item": "sgjourney:naquadah"}
+  },
+  "result": {
+    "item": "sgjourney:ring_remote"
+  }
+}

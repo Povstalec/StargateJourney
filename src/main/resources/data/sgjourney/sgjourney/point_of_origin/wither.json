@@ -1,0 +1,5 @@
+{
+	"name": "Wither",
+	"texture": "sgjourney:wither.png",
+	"generates_randomly": true
+}

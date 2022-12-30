@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "sgjourney:stargate_temple/abydos_pyramid",
+      "weight": 1
+    }
+  ],
+  "placement": {
+     "salt": 1543892866,
+
+    "spacing": 1,
+
+    "separation": 0,
+
+    "type": "minecraft:random_spread"
+  }
+}

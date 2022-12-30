@@ -1,0 +1,5 @@
+{
+	"name": "Creeper",
+	"texture": "sgjourney:creeper.png",
+	"generates_randomly": true
+}

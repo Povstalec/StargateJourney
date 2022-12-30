@@ -1,0 +1,5 @@
+{
+	"name": "Ender Eye",
+	"texture": "sgjourney:ender_eye.png",
+	"generates_randomly": true
+}

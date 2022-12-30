@@ -1,0 +1,10 @@
+{
+  "values": [
+    "sgjourney:stargate_pedestal/stargate_pedestal",
+    "sgjourney:stargate_pedestal/stargate_pedestal_badlands",
+    "sgjourney:stargate_pedestal/stargate_pedestal_desert",
+    "sgjourney:stargate_pedestal/stargate_pedestal_jungle",
+    "sgjourney:stargate_pedestal/stargate_pedestal_mushroom",
+    "sgjourney:stargate_pedestal/stargate_pedestal_snow"
+  ]
+}

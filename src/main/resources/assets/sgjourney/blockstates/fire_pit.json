@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "lit=true": { "model": "sgjourney:block/fire_pit" },
+        "lit=false": { "model": "sgjourney:block/fire_pit_extinguished" }
+    }
+}

@@ -1,0 +1,9 @@
+{
+	"variants": 
+	{
+	"facing=north": { "model": "sgjourney:block/pegasus_stargate" },
+	"facing=south": { "model": "sgjourney:block/pegasus_stargate", "y": 180 },
+	"facing=west": { "model": "sgjourney:block/pegasus_stargate", "y": 270 },
+	"facing=east": { "model": "sgjourney:block/pegasus_stargate", "y": 90 }
+	}
+}

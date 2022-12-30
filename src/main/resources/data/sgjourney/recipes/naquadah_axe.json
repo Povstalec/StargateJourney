@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern":
+	[
+		"II",
+		"IS",
+		" S"
+	],
+	
+	"key": 
+	{
+		"I": { "item": "sgjourney:naquadah_alloy" },
+		"S": { "item": "minecraft:stick" }
+		
+	},
+	
+	"result": { "item": "sgjourney:naquadah_axe" }
+}

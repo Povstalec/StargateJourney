@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[44,)"
+license="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License"
+[[mods]]
+modId="sgjourney"
+version="0.5.0"
+displayName="Stargate Journey"
+logoFile="sgjourney_large.png"
+credits="Otwnt - Stargate Pedestal Structures, \nCarter Addon Pack - Sounds, \ndiesieben07 - Code for GUI shift-clicking, \nTelepathicGrunt - Code for Structure spawning"
+authors="Woldericz_Junior"
+#displayTest="MATCH_VERSION"
+
+description='''
+Stargate in Minecraft! And much more.
+'''
+[[dependencies.sgjourney]]
+    modId="forge"
+    mandatory=true
+    versionRange="[44,)"
+    ordering="NONE"
+    side="BOTH"
+# Here's another dependency
+[[dependencies.sgjourney]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19.3,1.20)"
+    ordering="NONE"
+    side="BOTH"
