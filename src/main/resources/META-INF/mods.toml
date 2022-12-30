@@ -6,7 +6,7 @@ modId="sgjourney"
 version="0.5.0"
 displayName="Stargate Journey"
 logoFile="sgjourney_large.png"
-credits="Otwnt - Stargate Pedestal Structures, \nCarter Addon Pack - Sounds, \ndiesieben07 - Code for GUI shift-clicking, \nTelepathicGrunt - Code for Structure spawning"
+credits="Otwnt - Stargate Pedestal Structure Builds, \nCarter Addon Pack - Sounds, \ndiesieben07 - Code for GUI shift-clicking, \nTelepathicGrunt - Code for Structure spawning"
 authors="Woldericz_Junior"
 #displayTest="MATCH_VERSION"
 

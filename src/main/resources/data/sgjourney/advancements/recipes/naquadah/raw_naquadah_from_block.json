@@ -1,0 +1,44 @@
+{
+	"parent": "minecraft:recipes/root",
+	"criteria":
+	{
+		"has_raw_naquadah_block":
+		{
+			"conditions":
+			{
+				"items":
+				[
+					{
+						"items":
+						[
+							"sgjourney:raw_naquadah_block"
+						]
+					}
+				]
+			},
+			"trigger": "minecraft:inventory_changed"
+		},
+		"has_the_recipe":
+		{
+			"conditions":
+			{
+				"recipe": "sgjourney:raw_naquadah_from_raw_naquadah_block"
+			},
+			"trigger": "minecraft:recipe_unlocked"
+		}
+	},
+	"requirements":
+	[
+		[
+			"has_raw_naquadah_block",
+			"has_the_recipe"
+		]
+	],
+	"rewards":
+	{
+		"recipes":
+		[
+			"sgjourney:raw_naquadah_from_raw_naquadah_block"
+		]
+	}
+}

@@ -1,0 +1,44 @@
+{
+	"parent": "minecraft:recipes/root",
+	"criteria":
+	{
+		"has_sandstone_hieroglyphs":
+		{
+			"conditions":
+			{
+				"items":
+				[
+					{
+						"items":
+						[
+							"sgjourney:sandstone_hieroglyphs"
+						]
+					}
+				]
+			},
+			"trigger": "minecraft:inventory_changed"
+		},
+		"has_the_recipe":
+		{
+			"conditions":
+			{
+				"recipe": "sgjourney:sandstone_switch"
+			},
+			"trigger": "minecraft:recipe_unlocked"
+		}
+	},
+	"requirements":
+	[
+		[
+			"has_sandstone_hieroglyphs",
+			"has_the_recipe"
+		]
+	],
+	"rewards":
+	{
+		"recipes":
+		[
+			"sgjourney:sandstone_switch"
+		]
+	}
+}
