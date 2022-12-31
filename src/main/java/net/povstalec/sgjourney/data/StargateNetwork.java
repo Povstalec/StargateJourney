@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.config.ServerAddressConfig;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Galaxy;
-import net.povstalec.sgjourney.stargate.StarSystem;
+import net.povstalec.sgjourney.stargate.SolarSystem;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.stargate.Symbols;
 
@@ -267,10 +267,10 @@ public class StargateNetwork extends SavedData
 		return stargateNetwork.copy().getCompound("Dimensions");
 	}
 	
-	public StarSystem getPlanet(Level level, String dimension)
+	public SolarSystem getPlanet(Level level, String dimension)
 	{
 		String[] split = dataPackDimensions().getCompound(dimension).getString("Planet").split(":");
-		return StarSystem.getPlanet(level, split[0], split[1]);
+		return SolarSystem.getPlanet(level, split[0], split[1]);
 	}
 	
 	public Galaxy getGalaxy(Level level, String dimension)
@@ -286,7 +286,7 @@ public class StargateNetwork extends SavedData
 	{
 		final RegistryAccess registries = level.getServer().registryAccess();
         final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
-        final Registry<StarSystem> planetRegistry = registries.registryOrThrow(StarSystem.REGISTRY_KEY);
+        final Registry<SolarSystem> planetRegistry = registries.registryOrThrow(SolarSystem.REGISTRY_KEY);
         Set<Entry<ResourceKey<Galaxy>, Galaxy>> set = galaxyRegistry.entrySet();
         
         set.forEach((galaxy) -> 
@@ -299,7 +299,7 @@ public class StargateNetwork extends SavedData
         StargateJourney.LOGGER.info("Datapack dimensions loaded");
 	}
 	
-	private void registerDimension(ResourceKey<Galaxy> galaxy, ResourceKey<StarSystem> planet, ResourceKey<Level> dimension)
+	private void registerDimension(ResourceKey<Galaxy> galaxy, ResourceKey<SolarSystem> planet, ResourceKey<Level> dimension)
 	{
 		CompoundTag dimensions = dataPackDimensions();
 		CompoundTag dimensionTag = new CompoundTag();

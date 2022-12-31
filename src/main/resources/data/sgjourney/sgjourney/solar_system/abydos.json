@@ -1,0 +1,9 @@
+{
+	"name": "Abydos",
+	"address": [26, 6, 14, 31, 11, 29],
+	"point_of_origin": "sgjourney:abydos",
+	"dimensions":
+	[
+		"sgjourney:abydos"
+	]
+}

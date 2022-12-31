@@ -3,7 +3,7 @@
 	"type": "sgjourney:medium_galaxy",
 	"symbols": "sgjourney:milky_way",
 	"symbol": 11,
-	"star_systems":
+	"solar_systems":
 	[
 		"sgjourney:terra",
 		"sgjourney:abydos"

@@ -21,16 +21,16 @@ public class Galaxy
     		GalaxyType.RESOURCE_KEY_CODEC.fieldOf("type").forGetter(Galaxy::getType),
 			Symbols.RESOURCE_KEY_CODEC.fieldOf("symbols").forGetter(Galaxy::getSymbols),
 			Codec.INT.fieldOf("symbol").forGetter(Galaxy::getSymbol),
-			StarSystem.RESOURCE_KEY_CODEC.listOf().fieldOf("star_systems").forGetter(Galaxy::getPlanets)
+			SolarSystem.RESOURCE_KEY_CODEC.listOf().fieldOf("solar_systems").forGetter(Galaxy::getPlanets)
 			).apply(instance, Galaxy::new));
 
 	private final String name;
 	private final ResourceKey<GalaxyType> type;
 	private final ResourceKey<Symbols> symbols;
 	private final int symbol;
-	private final List<ResourceKey<StarSystem>> planets;
+	private final List<ResourceKey<SolarSystem>> planets;
 	
-	public Galaxy(String name, ResourceKey<GalaxyType> type, ResourceKey<Symbols> symbols, int symbol, List<ResourceKey<StarSystem>> planets)
+	public Galaxy(String name, ResourceKey<GalaxyType> type, ResourceKey<Symbols> symbols, int symbol, List<ResourceKey<SolarSystem>> planets)
 	{
 		this.name = name;
 		this.type = type;
@@ -59,7 +59,7 @@ public class Galaxy
 		return symbol;
 	}
 	
-	public List<ResourceKey<StarSystem>> getPlanets()
+	public List<ResourceKey<SolarSystem>> getPlanets()
 	{
 		return planets;
 	}

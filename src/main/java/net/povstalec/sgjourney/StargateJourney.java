@@ -38,7 +38,7 @@ import net.povstalec.sgjourney.init.SoundInit;
 import net.povstalec.sgjourney.init.StructureInit;
 import net.povstalec.sgjourney.init.VillagerInit;
 import net.povstalec.sgjourney.stargate.Galaxy;
-import net.povstalec.sgjourney.stargate.StarSystem;
+import net.povstalec.sgjourney.stargate.SolarSystem;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.stargate.Symbols;
 import net.povstalec.sgjourney.world.biomemod.BiomeModifiers;
@@ -72,7 +72,7 @@ public class StargateJourney
         {
             event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
             event.dataPackRegistry(PointOfOrigin.REGISTRY_KEY, PointOfOrigin.CODEC, PointOfOrigin.CODEC);
-            event.dataPackRegistry(StarSystem.REGISTRY_KEY, StarSystem.CODEC, StarSystem.CODEC);
+            event.dataPackRegistry(SolarSystem.REGISTRY_KEY, SolarSystem.CODEC, SolarSystem.CODEC);
             event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
         });
         
