@@ -17,6 +17,6 @@ public class ServerAddressConfig
 		
 		generate_random_addresses = server
 				.comment("Stargate Journey will generate random addresses for each world.")
-				.define("server.generate_random_addresses", false);
+				.define("server.generate_random_addresses", true);
 	}
 }

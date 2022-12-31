@@ -99,13 +99,13 @@ public class CommandInit
 		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
 		Level level = context.getSource().getPlayer().level;
 		
-		int[] address = StargateNetwork.get(level).getPlanets().getCompound(dimension.replace(":", "-")).getIntArray("Address");
+		int[] address = StargateNetwork.get(level).getPlanets().getCompound(dimension).getIntArray("Address");
 		String addressString = Addressing.addressIntArrayToString(address);
 		
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("The address of " + dimension + " is:"));
 		context.getSource().getPlayer().sendSystemMessage(Component.literal(addressString).withStyle(ChatFormatting.AQUA));
 
-		int galaxy = StargateNetwork.get(level).getPlanets().getCompound(dimension.replace(":", "-")).getInt("Galaxy");
+		int galaxy = StargateNetwork.get(level).getPlanets().getCompound(dimension).getInt("Galaxy");
 		String extragalactic = Addressing.addressIntArrayToString(Addressing.convertTo8chevronAddress(galaxy, address));
 		
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("with an extragalactic address:"));

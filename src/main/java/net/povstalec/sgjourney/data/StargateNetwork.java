@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.config.ServerAddressConfig;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Galaxy;
 import net.povstalec.sgjourney.stargate.StarSystem;
@@ -174,9 +175,9 @@ public class StargateNetwork extends SavedData
 			String dimensionString = dimension.location().toString();
 			if(!getPlanets().contains(dimensionString))
 			{
-				if(dataPackDimensions().contains(dimensionString))
+				if(ServerAddressConfig.use_datapack_addresses.get() && dataPackDimensions().contains(dimensionString))
 					addPlanet(level, dimensionString);
-				else
+				else if(ServerAddressConfig.generate_random_addresses.get())
 					generatePlanet(level, dimensionString);
 			}
 		});
