@@ -18,7 +18,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Galaxy;
-import net.povstalec.sgjourney.stargate.Planet;
+import net.povstalec.sgjourney.stargate.StarSystem;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.stargate.Symbols;
 
@@ -266,10 +266,10 @@ public class StargateNetwork extends SavedData
 		return stargateNetwork.copy().getCompound("Dimensions");
 	}
 	
-	public Planet getPlanet(Level level, String dimension)
+	public StarSystem getPlanet(Level level, String dimension)
 	{
 		String[] split = dataPackDimensions().getCompound(dimension).getString("Planet").split(":");
-		return Planet.getPlanet(level, split[0], split[1]);
+		return StarSystem.getPlanet(level, split[0], split[1]);
 	}
 	
 	public Galaxy getGalaxy(Level level, String dimension)
@@ -285,7 +285,7 @@ public class StargateNetwork extends SavedData
 	{
 		final RegistryAccess registries = level.getServer().registryAccess();
         final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
-        final Registry<Planet> planetRegistry = registries.registryOrThrow(Planet.REGISTRY_KEY);
+        final Registry<StarSystem> planetRegistry = registries.registryOrThrow(StarSystem.REGISTRY_KEY);
         Set<Entry<ResourceKey<Galaxy>, Galaxy>> set = galaxyRegistry.entrySet();
         
         set.forEach((galaxy) -> 
@@ -298,7 +298,7 @@ public class StargateNetwork extends SavedData
         StargateJourney.LOGGER.info("Datapack dimensions loaded");
 	}
 	
-	private void registerDimension(ResourceKey<Galaxy> galaxy, ResourceKey<Planet> planet, ResourceKey<Level> dimension)
+	private void registerDimension(ResourceKey<Galaxy> galaxy, ResourceKey<StarSystem> planet, ResourceKey<Level> dimension)
 	{
 		CompoundTag dimensions = dataPackDimensions();
 		CompoundTag dimensionTag = new CompoundTag();

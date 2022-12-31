@@ -24,7 +24,7 @@ import net.povstalec.sgjourney.data.RingsNetwork;
 import net.povstalec.sgjourney.data.StargateNetwork;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Galaxy;
-import net.povstalec.sgjourney.stargate.Planet;
+import net.povstalec.sgjourney.stargate.StarSystem;
 
 public class CommandInit
 {
@@ -79,7 +79,7 @@ public class CommandInit
 		
 		final RegistryAccess registries = level.getServer().registryAccess();
         final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
-        final Registry<Planet> planetRegistry = registries.registryOrThrow(Planet.REGISTRY_KEY);
+        final Registry<StarSystem> planetRegistry = registries.registryOrThrow(StarSystem.REGISTRY_KEY);
         Set<Entry<ResourceKey<Galaxy>, Galaxy>> set = galaxyRegistry.entrySet();
         
         set.forEach((galaxy) -> 

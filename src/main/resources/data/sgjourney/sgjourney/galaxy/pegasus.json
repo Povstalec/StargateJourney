@@ -3,7 +3,7 @@
 	"type": "sgjourney:dwarf_galaxy",
 	"symbols": "sgjourney:pegasus",
 	"symbol": 18,
-	"planets":
+	"star_systems":
 	[
 		"sgjourney:lantea"
 	]
