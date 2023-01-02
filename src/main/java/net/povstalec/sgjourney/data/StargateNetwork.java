@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -82,7 +83,7 @@ public class StargateNetwork extends SavedData
 	public void addToNetwork(String stargateAddress, CompoundTag stargate)
 	{
 		String dimension = stargate.getString("Dimension");
-		String addressString = getLocalAddress(dimension);
+		String planetAddress = getLocalAddress(dimension);
 		String galaxyNumber = "Galaxy" + getPlanets().getCompound(dimension).getInt("Galaxy");
 		if(!getPlanets().contains(dimension))
 		{
@@ -92,8 +93,11 @@ public class StargateNetwork extends SavedData
 		
 		CompoundTag stargates = getStargates();
 		CompoundTag galaxy = stargates.getCompound(galaxyNumber);
-		CompoundTag localAddress = galaxy.getCompound(addressString);
+		CompoundTag localAddress = galaxy.getCompound(planetAddress);
 		CompoundTag localStargate = new CompoundTag();
+		
+		if(!localAddress.contains("PrimaryStargate"))
+			localAddress = setPrimaryStargate(galaxyNumber, planetAddress, stargateAddress);
 		
 		//Saves info about the Stargate
 		localStargate.putIntArray("Coordinates", stargate.getIntArray("Coordinates"));
@@ -103,7 +107,7 @@ public class StargateNetwork extends SavedData
 		localAddress.put(stargateAddress, localStargate);
 		
 		//Saves planet to galaxy
-		galaxy.put(addressString, localAddress);
+		galaxy.put(planetAddress, localAddress);
 		
 		
 		//Saves galaxy to Stargates
@@ -114,15 +118,64 @@ public class StargateNetwork extends SavedData
 		setDirty();
 		
 		StargateJourney.LOGGER.info("Added Stargate " + stargateAddress + " to Stargate Network");
+			
+	}
+	
+	public CompoundTag setPrimaryStargate(String galaxyNumber, String planetAddress, String stargateAddress)
+	{
+		CompoundTag stargates = getStargates();
+		CompoundTag galaxy = stargates.getCompound(galaxyNumber);
+		CompoundTag localAddress = galaxy.getCompound(planetAddress);
+		
+		localAddress.putString("PrimaryStargate", stargateAddress);
+
+		galaxy.put(planetAddress, localAddress);
+
+		stargates.put(galaxyNumber, galaxy);
+
+		stargateNetwork.put("Stargates", stargates);
+		setDirty();
+		System.out.println(localAddress);
+		
+		StargateJourney.LOGGER.info("Registered " + stargateAddress + " as the Primary Stargate for " + planetAddress);
+		
+		return localAddress;
+	}
+	
+	public String getPrimaryStargate(String galaxyNumber, String planetAddress)
+	{
+		CompoundTag stargates = getStargates();
+		CompoundTag galaxy = stargates.getCompound(galaxyNumber);
+		CompoundTag localAddress = galaxy.getCompound(planetAddress);
+		System.out.println(localAddress);
+		return localAddress.getString("PrimaryStargate");
+	}
+	
+	public void removePrimaryStargate(String galaxyNumber, String planetAddress)
+	{
+		CompoundTag stargates = getStargates();
+		CompoundTag galaxy = stargates.getCompound(galaxyNumber);
+		CompoundTag localAddress = galaxy.getCompound(planetAddress);
+		
+		localAddress.remove("PrimaryStargate");
+		
+		galaxy.put(planetAddress, localAddress);
+		
+		stargates.put(galaxyNumber, galaxy);
+
+		stargateNetwork.put("Stargates", stargates);
+		setDirty();
+		
+		StargateJourney.LOGGER.info("Removed Primary Stargate for " + planetAddress);
 	}
 	
 	public CompoundTag getStargatesInDimension(Level level, String dimension)
 	{
 		String address = getLocalAddress(dimension);
-		String galaxy = "Galaxy" + getPlanets().getCompound(dimension).getInt("Galaxy");
-		if(!getStargates().getCompound(galaxy).contains(address))
+		String galaxyNumber = "Galaxy" + getPlanets().getCompound(dimension).getInt("Galaxy");
+		if(!getStargates().getCompound(galaxyNumber).contains(address))
 			return new CompoundTag(); //Returns an empty CompoundTag
-		return getStargates().getCompound(galaxy).getCompound(address);
+		return getStargates().getCompound(galaxyNumber).getCompound(address);
 	}
 	
 	public String getLocalAddress(String dimension)
@@ -132,16 +185,32 @@ public class StargateNetwork extends SavedData
 	
 	public void removeFromNetwork(Level level, String address)
 	{
-		String galaxy = "Galaxy" + getPlanets().getCompound(level.dimension().location().toString()).getInt("Galaxy");
+		String galaxyNumber = "Galaxy" + getPlanets().getCompound(level.dimension().location().toString()).getInt("Galaxy");
 		String localAddress = getLocalAddress(level.dimension().location().toString());
-		if(!getStargates().getCompound(galaxy).getCompound(localAddress).contains(address))
+		CompoundTag planet = getStargates().getCompound(galaxyNumber).getCompound(localAddress);
+		
+		if(!planet.contains(address))
 		{
 			StargateJourney.LOGGER.info("Address " + address + " is not registered in the Stargate Network");
 			return;
 		}
-		stargateNetwork.getCompound("Stargates").getCompound(galaxy).getCompound(localAddress).remove(address);
+		
+		if(getPrimaryStargate(galaxyNumber, localAddress).equals(address))
+		{
+			planet.remove("PrimaryStargate");
+			
+			Set<String> stargateKeys = planet.getAllKeys();
+			List<String> stargateList = new ArrayList<>(stargateKeys);
+			if(stargateList.size() > 1)
+			{
+				String newPrimary = stargateList.get(1);
+				setPrimaryStargate(galaxyNumber, localAddress, newPrimary);
+				StargateJourney.LOGGER.info("Added Primary Stargate " + newPrimary);
+			}
+		}
+		stargateNetwork.getCompound("Stargates").getCompound(galaxyNumber).getCompound(localAddress).remove(address);
 		setDirty();
-
+		
 		StargateJourney.LOGGER.info("Removed " + address + " from Stargate Network");
 	}
 	

@@ -9,6 +9,7 @@ import java.util.Map;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -60,9 +61,12 @@ public class Symbols
 		if(i >= textures.size() || i < 0)
 			return new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
 		
-		ResourceLocation texture = textures.get(i);
+		ResourceLocation path = textures.get(i);
+		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
 		
-		return new ResourceLocation(texture.getNamespace(), "textures/symbols/" + texture.getPath());
+		if(Minecraft.getInstance().getResourceManager().getResource(texture).isPresent())
+			return texture;
+		return new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
 	}
 
 	public static String unicode(int symbolNumber)

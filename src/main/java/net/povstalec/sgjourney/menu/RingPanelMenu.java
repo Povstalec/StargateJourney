@@ -85,7 +85,6 @@ public class RingPanelMenu extends AbstractContainerMenu
     
     public void activateRings(int number)
     {
-    	System.out.println("Activating rings");
     	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundRingPanelUpdatePacket(this.blockEntity.getBlockPos(), number));
     }
     

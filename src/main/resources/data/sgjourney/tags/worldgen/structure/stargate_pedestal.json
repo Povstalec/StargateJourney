@@ -5,6 +5,8 @@
     "sgjourney:stargate_pedestal/stargate_pedestal_desert",
     "sgjourney:stargate_pedestal/stargate_pedestal_jungle",
     "sgjourney:stargate_pedestal/stargate_pedestal_mushroom",
-    "sgjourney:stargate_pedestal/stargate_pedestal_snow"
+    "sgjourney:stargate_pedestal/stargate_pedestal_snow",
+
+    "sgjourney:stargate_pedestal/stargate_pedestal_chulak"
   ]
 }

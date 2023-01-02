@@ -98,10 +98,22 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
     	
     	String pointOfOrigin = "";
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
-			pointOfOrigin = pointOfOriginRegistry.get(new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"))).getName();
+		{
+			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
+			if(pointOfOriginRegistry.containsKey(location))
+				pointOfOrigin = pointOfOriginRegistry.get(location).getName();
+			else
+				pointOfOrigin = "Error";
+		}
 		String symbols = "";
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
-			symbols = symbolsRegistry.get(new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"))).getName();
+		{
+			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
+			if(symbolsRegistry.containsKey(location))
+				symbols = symbolsRegistry.get(location).getName();
+			else
+				symbols = "Error";
+		}
 		
         tooltipComponents.add(Component.literal("PoO: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
         tooltipComponents.add(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));

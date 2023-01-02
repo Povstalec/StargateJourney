@@ -88,7 +88,7 @@ public class Dialing
 			planet = getPlanet(level, galaxy, address);
 		}
 		
-		String stargateID = getFirstStargate(planet);
+		String stargateID = StargateNetwork.get(level).getPrimaryStargate(galaxy, address);
 		
 		CompoundTag stargate = planet.getCompound(stargateID);
 		
@@ -195,9 +195,9 @@ public class Dialing
 		return ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("minecraft", "dimension")), new ResourceLocation(split[0], split[1]));
 	}
 	
-	private static String getFirstStargate(CompoundTag stargates)
+	private static String getFirstStargate(CompoundTag planet)
 	{
-		Set<String> stargateKeys = stargates.getAllKeys();
+		Set<String> stargateKeys = planet.getAllKeys();
 		List<String> stargateList = new ArrayList<>(stargateKeys);
 		return stargateList.get(0);
 	}

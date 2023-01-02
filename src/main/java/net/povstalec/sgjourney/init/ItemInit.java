@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.items.CommunicationCrystalItem;
-import net.povstalec.sgjourney.items.HorusHelmetItem;
+import net.povstalec.sgjourney.items.HorusArmorItem;
 import net.povstalec.sgjourney.items.JackalArmorItem;
 import net.povstalec.sgjourney.items.KaraKeshItem;
 import net.povstalec.sgjourney.items.MaTok;
@@ -66,8 +66,8 @@ public class ItemInit
 		
 		public static final RegistryObject<JackalArmorItem> JACKAL_HELMET = ITEMS.register("jackal_helmet", 
 				() -> new JackalArmorItem(ArmorMaterialInit.jackal, EquipmentSlot.HEAD, new Item.Properties()));
-		public static final RegistryObject<HorusHelmetItem> HORUS_HELMET = ITEMS.register("horus_helmet", 
-				() -> new HorusHelmetItem(ArmorMaterialInit.horus, EquipmentSlot.HEAD, new Item.Properties()));
+		public static final RegistryObject<HorusArmorItem> HORUS_HELMET = ITEMS.register("horus_helmet", 
+				() -> new HorusArmorItem(ArmorMaterialInit.horus, EquipmentSlot.HEAD, new Item.Properties()));
 	
 	//Tools
 		public static final RegistryObject<SGJourneySwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword", 

@@ -9,6 +9,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.AbstractStargateEntity;
 import net.povstalec.sgjourney.init.LayerInit;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
@@ -84,7 +85,9 @@ public abstract class AbstractStargateRenderer
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
-		return registry.get(new ResourceLocation(pointOfOrigin));
+		if(registry.containsKey(new ResourceLocation(pointOfOrigin)))
+			return registry.get(new ResourceLocation(pointOfOrigin));
+		return registry.get(new ResourceLocation(StargateJourney.MODID, "error"));
 	}
 	
 	protected Symbols getSymbols(AbstractStargateEntity stargate)
@@ -96,6 +99,8 @@ public abstract class AbstractStargateRenderer
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
-		return registry.get(new ResourceLocation(symbols));
+		if(registry.containsKey(new ResourceLocation(symbols)))
+			return registry.get(new ResourceLocation(symbols));
+		return registry.get(new ResourceLocation(StargateJourney.MODID, "error"));
 	}
 }

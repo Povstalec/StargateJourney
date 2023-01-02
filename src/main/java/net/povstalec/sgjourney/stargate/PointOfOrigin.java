@@ -10,6 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Random;
 import java.util.Set;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -52,9 +53,12 @@ public class PointOfOrigin
 	
 	public ResourceLocation texture()
 	{
-		ResourceLocation texture = getTexture();
+		ResourceLocation path = getTexture();
+		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/points_of_origin/" + path.getPath());
 		
-		return new ResourceLocation(texture.getNamespace(), "textures/symbols/points_of_origin/" + texture.getPath());
+		if(Minecraft.getInstance().getResourceManager().getResource(texture).isPresent())
+			return texture;
+		return new ResourceLocation(StargateJourney.MODID, "textures/symbols/points_of_origin/error.png");
 	}
 	
 	public boolean generatesRandomly()
