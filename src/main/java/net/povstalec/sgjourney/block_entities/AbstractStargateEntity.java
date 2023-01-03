@@ -26,6 +26,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.config.ServerStargateConfig;
 import net.povstalec.sgjourney.data.StargateNetwork;
 import net.povstalec.sgjourney.init.SoundInit;
 import net.povstalec.sgjourney.stargate.Dialing;
@@ -39,7 +40,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public int chevronsActive = 0;
 	
 	private int gateOpenTime = 0;
-	private static final int maxGateOpenTime = 45600;
+	private static final int maxGateOpenTime = ServerStargateConfig.max_wormhole_open_time.get() * 20;
 	
 	public String pointOfOrigin = "sgjourney:error";
 	public String symbols = "sgjourney:error";

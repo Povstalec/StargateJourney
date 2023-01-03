@@ -84,9 +84,9 @@ public class CommandInit
         
         set.forEach((galaxy) -> 
         {
-        	context.getSource().getPlayer().sendSystemMessage(Component.literal(galaxy.getValue().getName()));
+        	context.getSource().getPlayer().sendSystemMessage(Component.literal(galaxy.getValue().getName()).withStyle(ChatFormatting.LIGHT_PURPLE));
         	galaxy.getValue().getPlanets().forEach((planet) -> 
-        		context.getSource().getPlayer().sendSystemMessage(Component.literal("-" + planetRegistry.get(planet).getName()))
+        		context.getSource().getPlayer().sendSystemMessage(Component.literal("-" + planetRegistry.get(planet).getName()).withStyle(ChatFormatting.AQUA))
         	);
         }
         );
