@@ -12,6 +12,6 @@ public class ServerStargateConfig
 		
 		max_wormhole_open_time = server
 				.comment("The amount of time the Stargate will be open for in seconds <Min: 10, Max: 2280>")
-				.defineInRange("server.max_wormhole_open_time", 2280, 10, 2280);
+				.defineInRange("server.max_wormhole_open_time", 60, 10, 2280);
 	}
 }

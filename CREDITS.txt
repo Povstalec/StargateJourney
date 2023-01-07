@@ -1,6 +1,6 @@
 Stargate Journey: Credits/Thank You
 
-Otwnt - Stargate Pedestal Structure Builds
+Otwnt - Stargate Pedestals, Jaffa House
 Carter Addon Pack - Sounds
 diesieben07 - Code for GUI shift-clicking
 TelepathicGrunt - Code for Structure spawning

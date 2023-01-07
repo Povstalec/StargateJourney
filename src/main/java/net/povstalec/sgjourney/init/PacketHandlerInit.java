@@ -5,13 +5,14 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.network.ClientboundStargateUpdatePacket;
+import net.povstalec.sgjourney.network.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.network.ClientboundSymbolUpdatePacket;
 import net.povstalec.sgjourney.network.ServerboundDHDUpdatePacket;
 import net.povstalec.sgjourney.network.ServerboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.network.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.network.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.network.ClientboundRingsUpdatePacket;
+import net.povstalec.sgjourney.network.ClientboundStargateUpdatePacket;
 
 public final class PacketHandlerInit
 {
@@ -50,6 +51,12 @@ public final class PacketHandlerInit
         .encoder(ClientboundStargateUpdatePacket::encode)
         .decoder(ClientboundStargateUpdatePacket::new)
         .consumerMainThread(ClientboundStargateUpdatePacket::handle)
+        .add();
+
+        INSTANCE.messageBuilder(ClientboundMilkyWayStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+        .encoder(ClientboundMilkyWayStargateUpdatePacket::encode)
+        .decoder(ClientboundMilkyWayStargateUpdatePacket::new)
+        .consumerMainThread(ClientboundMilkyWayStargateUpdatePacket::handle)
         .add();
 
         INSTANCE.messageBuilder(ClientboundPegasusStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)

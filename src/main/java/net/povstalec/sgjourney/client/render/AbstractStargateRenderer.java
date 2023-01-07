@@ -24,11 +24,11 @@ public abstract class AbstractStargateRenderer
 	protected final ModelPart dividers_39;
 	protected final ModelPart dividers_36;
 	protected final ModelPart ring;
-	protected final ModelPart chevrons;
+	protected ModelPart chevrons;
 	
 	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		ModelPart chevron_part = context.bakeLayer(LayerInit.CHEVRON_LAYER);
+		ModelPart chevron_part = context.bakeLayer(LayerInit.MILKY_WAY_CHEVRON_LAYER);
 		ModelPart ring_part = context.bakeLayer(LayerInit.RING_LAYER);
 		ModelPart divider_part_39 = context.bakeLayer(LayerInit.DIVIDER_LAYER_39);
 		ModelPart symbol_part_39 = context.bakeLayer(LayerInit.SYMBOL_LAYER_39);
@@ -76,31 +76,27 @@ public abstract class AbstractStargateRenderer
 			return dividers_39;
 	}
 	
-	protected PointOfOrigin getPointOfOrigin(AbstractStargateEntity stargate)
+	protected ResourceLocation getSymbol(AbstractStargateEntity stargate, int symbol)
 	{
-		String pointOfOrigin = stargate.pointOfOrigin;
-		
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
+		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
+		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
-		if(registry.containsKey(new ResourceLocation(pointOfOrigin)))
-			return registry.get(new ResourceLocation(pointOfOrigin));
-		return registry.get(new ResourceLocation(StargateJourney.MODID, "error"));
-	}
-	
-	protected Symbols getSymbols(AbstractStargateEntity stargate)
-	{
-		String symbols = stargate.symbols;
-		
-		Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		
-		if(registry.containsKey(new ResourceLocation(symbols)))
-			return registry.get(new ResourceLocation(symbols));
-		return registry.get(new ResourceLocation(StargateJourney.MODID, "error"));
+		if(symbol > 0)
+		{
+			String symbols = stargate.symbols;
+			if(symbolRegistry.containsKey(new ResourceLocation(symbols)))
+				return symbolRegistry.get(new ResourceLocation(symbols)).texture(symbol - 1);
+			return symbolRegistry.get(new ResourceLocation(StargateJourney.MODID, "error")).texture(symbol - 1);
+		}
+		else
+		{
+			String pointOfOrigin = stargate.pointOfOrigin;
+			if(pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin)))
+				return pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).texture();
+			return pointOfOriginRegistry.get(new ResourceLocation(StargateJourney.MODID, "error")).texture();
+		}
 	}
 }

@@ -1,7 +1,12 @@
 package net.povstalec.sgjourney.block_entities;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
@@ -27,9 +32,24 @@ public class PegasusStargateEntity extends AbstractStargateEntity
         if(level.isClientSide)
         	return;
         setPointOfOrigin(this.getLevel());
+        setSymbols(this.getLevel());
         
         super.onLoad();
     }
+	
+	@Override
+    public void load(CompoundTag nbt)
+	{
+        super.load(nbt);
+        addressBuffer = nbt.getIntArray("AddressBuffer");
+    }
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag nbt)
+	{
+		nbt.putIntArray("AddressBuffer", addressBuffer);
+		super.saveAdditional(nbt);
+	}
 	
 	public SoundEvent chevronEngageSound()
 	{
@@ -47,12 +67,23 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(symbolInAddress(symbol))
 			return;
 		
+		if(isBusy() && symbol == 0)
+			disconnectGate();
+		
 		addressBuffer = growIntArray(addressBuffer, symbol);
 	}
 	
-	public int getLitSymbol(int symbolsActive)
+	@Override
+	protected void engageChevron(int symbol)
 	{
-		switch(symbolsActive)
+		symbolBuffer++;
+		passedOver = false;
+		super.engageChevron(symbol);
+	}
+	
+	public int getChevronPosition(int chevron)
+	{
+		switch(chevron)
 		{
 		case 1:
 			return 4;
@@ -74,52 +105,52 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			return 0;
 		}
 	}
-
-	//TODO Yeah, I completely broke this... Well, I was gonna leave it for later anyway
-	/*@Override
+	
+	@Override
 	public void tick(Level level, BlockPos pos, BlockState state)
 	{
-		//System.out.println(currentSymbol);
-		if(addressBuffer.length > symbolBuffer)
+		if(!isBusy() && addressBuffer.length > symbolBuffer)
 		{
 			int symbol = addressBuffer[symbolBuffer];
-			
-			if(currentSymbol == getLitSymbol(addressBuffer.length))
+			if(symbol == 0)
 			{
-				System.out.println("Lit");
+				if(currentSymbol == getChevronPosition(9))
+				{
+					lockChevron();
+				}
+				else
+					symbolWork();
+			}
+			else if(currentSymbol == getChevronPosition(symbolBuffer + 1))
+			{
 				if(symbolBuffer % 2 != 0 && !passedOver)
 				{
-					System.out.println("A");
 					passedOver = true;
+					symbolWork();
 				}
 				else
-				{
-					System.out.println("B");
-					passedOver = false;
-					symbolBuffer++;
-					if(symbol == 0)
-						lockChevron();
-					else
-						engageChevron(symbol);
-				}
+					engageChevron(symbol);
 			}
 			else
-			{
-				if(symbolBuffer % 2 == 0)
-					currentSymbol--;
-				else
-					currentSymbol++;
-
-				if(currentSymbol > 35)
-					currentSymbol = 0;
-				else if(currentSymbol < 0)
-					currentSymbol = 35;
-			}
+				symbolWork();
 		}
 		
 		super.tick(level, pos, state);
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(pos, chevronsActive, isBusy(), tick, pointOfOrigin, currentSymbol, inputAddress, symbolBuffer, addressBuffer));
-	}*/
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(pos, inputAddress, symbolBuffer, addressBuffer));
+	}
+	
+	private void symbolWork()
+	{
+		if(symbolBuffer % 2 == 0)
+			currentSymbol--;
+		else
+			currentSymbol++;
+
+		if(currentSymbol > 35)
+			currentSymbol = 0;
+		else if(currentSymbol < 0)
+			currentSymbol = 35;
+	}
 	
 	@Override
 	public void resetGate()

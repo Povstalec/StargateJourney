@@ -1,7 +1,7 @@
 {
 	"name": "Lantea",
 	"address": [28, 34, 30, 3, 26, 18],
-	"point_of_origin": "sgjourney:lantea",
+	"point_of_origin": "sgjourney:subido",
 	"dimensions":
 	[
 		"sgjourney:lantea"

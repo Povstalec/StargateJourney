@@ -9,15 +9,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.DHDBigButton;
 import net.povstalec.sgjourney.client.DHDButton;
 import net.povstalec.sgjourney.menu.AbstractDHDMenu;
 
-public class DHDScreen extends AbstractContainerScreen<AbstractDHDMenu>
+public abstract class DHDScreen extends AbstractContainerScreen<AbstractDHDMenu>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_gui.png");
-
-    public DHDScreen(AbstractDHDMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
+	
+	public DHDScreen(AbstractDHDMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
         this.imageHeight = 230;
     }
@@ -28,7 +27,6 @@ public class DHDScreen extends AbstractContainerScreen<AbstractDHDMenu>
     	int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 		super.init();
-		this.addRenderableWidget(new DHDBigButton(x + 72, y + 48, (n) -> {menu.engageChevron(0);}));
 		
 		this.addRenderableWidget(new DHDButton(x + 44, y + 6, menu, 1));
 		this.addRenderableWidget(new DHDButton(x + 64, y + 6, menu, 2));

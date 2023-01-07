@@ -24,11 +24,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.world.ForgeChunkManager;
+import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.config.ServerStargateConfig;
 import net.povstalec.sgjourney.data.StargateNetwork;
+import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
+import net.povstalec.sgjourney.network.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.stargate.Dialing;
 
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
@@ -136,6 +139,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(level.isClientSide)
 			return;
 		player.sendSystemMessage(Component.literal("Point of Origin: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
+		player.sendSystemMessage(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));
 		super.getStatus(player);
 	}
 	
@@ -467,6 +471,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			}
 		}
 		tick++;
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(pos, chevronsActive, isBusy(), tick, pointOfOrigin, symbols, currentSymbol));
     }
 	
 	@Override

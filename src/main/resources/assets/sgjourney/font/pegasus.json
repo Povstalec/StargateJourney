@@ -3,12 +3,362 @@
 	[
 		{
 			"type": "bitmap",
-			"file": "sgjourney:symbols/pegasus.png",
+			"file": "sgjourney:symbols/pegasus/bydo.png",
 			"ascent": 7,
 			"height": 8,
 			"chars": 
 			[
-				"\uE001\uE002\uE003\uE004\uE005\uE006\uE007\uE008\uE009\uE010\uE011\uE012\uE013\uE014\uE015\uE016\uE017\uE018\uE019\uE020\uE021\uE022\uE023\uE024\uE025\uE026\uE027\uE028\uE029\uE030\uE031\uE032\uE033\uE034\uE035\u0000\u0000\u0000"
+				"\uE001"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/robandus.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE002"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/sibbron.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE003"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/once_el.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE004"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/laylox.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE005"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/earth.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE006"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/tahnan.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE007"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/setas.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE008"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/amiwill.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE009"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/acjesis.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE010"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/ca_po.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE011"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/arami.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE012"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/aaxel.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE013"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/illume.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE014"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/ramnon.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE015"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/avoniv.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE016"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/lenchan.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE017"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/alura.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE018"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/ecrumig.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE019"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/robandus.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE020"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/zamilloz.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE021"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/danami.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE022"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/salma.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE023"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/hacemill.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE024"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/hamlinto.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE025"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/olavii.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE026"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/poco_re.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE027"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/abrin.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE028"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/roehi.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE029"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/unknown_1.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE030"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/gilltin.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE031"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/unknown_2.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE032"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/elenami.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE033"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/unknown_3.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE034"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/aldeni.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE035"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/zeo.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE036"
 			]
 		}
 	]

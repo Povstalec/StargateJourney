@@ -20,7 +20,8 @@ public class LayerInit
 	public static final ModelLayerLocation TRANSPORT_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "transport_ring"), "main");
 	
 	// Stargate
-	public static final ModelLayerLocation CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "chevron_layer"), "main");
+	public static final ModelLayerLocation MILKY_WAY_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "milky_way_chevron_layer"), "main");
+	public static final ModelLayerLocation PEGASUS_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "pegasus_chevron_layer"), "main");
 	public static final ModelLayerLocation RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "ring_layer"), "main");
 	public static final ModelLayerLocation DIVIDER_LAYER_39 = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "divider_layer_39"), "main");
 	public static final ModelLayerLocation DIVIDER_LAYER_36 = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "divider_layer_36"), "main");
@@ -39,7 +40,8 @@ public class LayerInit
 		
 		event.registerLayerDefinition(TRANSPORT_RING_LAYER, () -> TransportRingsModel.createRingLayer());
 
-		event.registerLayerDefinition(CHEVRON_LAYER, () -> StargateModel.createChevronLayer());
+		event.registerLayerDefinition(MILKY_WAY_CHEVRON_LAYER, () -> StargateModel.createMilkyWayChevronLayer());
+		event.registerLayerDefinition(PEGASUS_CHEVRON_LAYER, () -> StargateModel.createPegasusChevronLayer());
 		event.registerLayerDefinition(RING_LAYER, () -> StargateModel.createRingLayer());
 		event.registerLayerDefinition(DIVIDER_LAYER_39, () -> StargateModel.createDividerLayer(39));
 		event.registerLayerDefinition(DIVIDER_LAYER_36, () -> StargateModel.createDividerLayer(36));

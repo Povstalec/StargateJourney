@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.blocks.entities.address.SandstoneSymbolBlockEntity;
+import net.povstalec.sgjourney.block_entities.address.SandstoneSymbolBlockEntity;
 import net.povstalec.sgjourney.init.BlockInit;
 
 public class SandstoneSymbolBlock extends SymbolBlock

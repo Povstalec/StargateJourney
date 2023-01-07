@@ -13,7 +13,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
-import net.povstalec.sgjourney.network.ClientboundStargateUpdatePacket;
+import net.povstalec.sgjourney.network.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.stargate.StargatePart;
 
 public class MilkyWayStargateEntity extends AbstractStargateEntity
@@ -119,7 +119,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			degrees = (short) (degrees + 180);
 		}
 		super.tick(level, pos, state);
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(pos, degrees, chevronsActive, isChevronRaised, isBusy(), tick, pointOfOrigin, symbols, currentSymbol));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundMilkyWayStargateUpdatePacket(pos, degrees, isChevronRaised));
 	}
 	
 }

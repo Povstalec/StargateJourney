@@ -14,11 +14,13 @@ public class PegasusDHDMenu extends AbstractDHDMenu
 	public PegasusDHDMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
 	{
 		super(MenuInit.PEGASUS_DHD.get(), containerId, inv, extraData);
+        this.symbolsType = "sgjourney:pegasus";
 	}
 
     public PegasusDHDMenu(int containerId, Inventory inv, BlockEntity entity)
     {
         super(MenuInit.PEGASUS_DHD.get(), containerId, inv, entity);
+        this.symbolsType = "sgjourney:pegasus";
     }
 
 	@Override

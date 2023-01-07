@@ -26,6 +26,15 @@ import net.povstalec.sgjourney.misc.TreasureMapForEmeraldsTrade;
 public class EventInit
 {
 	@SubscribeEvent
+	public static void onServerStarting(ServerStartingEvent event)
+	{
+		Level level = event.getServer().overworld();
+		
+		StargateNetwork.get(level).loadDimensions(level);
+		StargateNetwork.get(level).registerPlanets(level);
+	}
+	
+	@SubscribeEvent
 	public static void onRegisterModTabs(final CreativeModeTabEvent.Register event)
 	{
 		event.registerCreativeModeTab(new ResourceLocation(StargateJourney.MODID, "stargate_items"), (builder) ->
@@ -72,8 +81,8 @@ public class EventInit
 			{
 				items.accept(BlockInit.MILKY_WAY_STARGATE.get());
 				items.accept(BlockInit.MILKY_WAY_DHD.get());
-				//items.accept(ItemInit.PEGASUS_STARGATE.get());
-				//items.accept(ItemInit.PEGASUS_DHD.get());
+				items.accept(BlockInit.PEGASUS_STARGATE.get());
+				items.accept(BlockInit.PEGASUS_DHD.get());
 
 				items.accept(BlockInit.TRANSPORT_RINGS.get());
 				items.accept(BlockInit.RING_PANEL.get());
@@ -110,17 +119,9 @@ public class EventInit
 		if(event.getTab() == CreativeModeTabs.OP_BLOCKS)
 		{
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
+			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
 		}
-	}
-	
-	@SubscribeEvent
-	public static void onServerStarting(ServerStartingEvent event)
-	{
-		Level level = event.getServer().overworld();
-		
-		StargateNetwork.get(level).registerDimensions(level);
-		StargateNetwork.get(level).registerPlanets(level);
 	}
 	
 	@SubscribeEvent

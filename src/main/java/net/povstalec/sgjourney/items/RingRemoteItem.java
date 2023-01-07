@@ -5,19 +5,28 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
+import net.povstalec.sgjourney.client.screens.RingPanelScreen;
+import net.povstalec.sgjourney.client.screens.RingRemoteScreen;
 import net.povstalec.sgjourney.data.BlockEntityList;
+import net.povstalec.sgjourney.menu.MilkyWayDHDMenu;
 
 public class RingRemoteItem extends Item
 {
@@ -36,7 +45,7 @@ public class RingRemoteItem extends Item
 	{
 		if(!level.isClientSide)
 		{
-			BlockPos pos = this.getNearestRings(BlockEntityList.get(level).getBlockEntities("TransportRingsList"), player.blockPosition(), 16);
+			/*BlockPos pos = this.getNearestRings(BlockEntityList.get(level).getBlockEntities("TransportRingsList"), player.blockPosition(), 16);
 			if(pos != null)
 			{
 				BlockEntity localRings = level.getBlockEntity(pos);
@@ -45,7 +54,7 @@ public class RingRemoteItem extends Item
 	    		  {
 	    			  if(rings.canTransport() && player.getItemInHand(usedHand).hasTag())
 		    		  {
-	    				  int[] coords = player.getItemInHand(usedHand).getTag().getIntArray("coordinates");
+	    				  int[] coords = player.getItemInHand(usedHand).getTag().getIntArray("Coordinates");
 	    				  
 	    				  BlockPos targetPos = new BlockPos(coords[0], coords[1], coords[2]);
 			    		  
@@ -65,8 +74,11 @@ public class RingRemoteItem extends Item
 			else
 			{
 				System.out.println("Pos is null");
-			}
+			}*/
 		}
+		else
+			Minecraft.getInstance().setScreen(new RingRemoteScreen(Component.translatable("screen.sgjourney.ring_remote")));
+			
         return super.use(level, player, usedHand);
     }
 	

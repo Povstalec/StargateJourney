@@ -17,7 +17,8 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENCODE = registerSoundEvent("milky_way_chevron_encode", 64.0F);
 	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENGAGE = registerSoundEvent("milky_way_chevron_engage", 64.0F);
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DIAL_FAIL = registerSoundEvent("milky_way_dial_fail", 64.0F);
-	
+
+	public static final RegistryObject<SoundEvent> PEGASUS_RING_SPIN = registerSoundEvent("pegasus_ring_spin", 64.0F);
 	public static final RegistryObject<SoundEvent> PEGASUS_CHEVRON_ENGAGE = registerSoundEvent("pegasus_chevron_engage", 64.0F);
 	public static final RegistryObject<SoundEvent> PEGASUS_DIAL_FAIL = registerSoundEvent("pegasus_dial_fail", 64.0F);
 

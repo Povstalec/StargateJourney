@@ -10,14 +10,17 @@ import net.povstalec.sgjourney.init.MenuInit;
 
 public class MilkyWayDHDMenu extends AbstractDHDMenu
 {
+	
 	public MilkyWayDHDMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
 	{
 		super(MenuInit.MILKY_WAY_DHD.get(), containerId, inv, extraData);
+        this.symbolsType = "sgjourney:milky_way";
 	}
 
     public MilkyWayDHDMenu(int containerId, Inventory inv, BlockEntity entity)
     {
         super(MenuInit.MILKY_WAY_DHD.get(), containerId, inv, entity);
+        this.symbolsType = "sgjourney:milky_way";
     }
 
 	@Override

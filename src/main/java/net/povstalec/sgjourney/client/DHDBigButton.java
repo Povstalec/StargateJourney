@@ -12,16 +12,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.povstalec.sgjourney.StargateJourney;
 
 @OnlyIn(Dist.CLIENT)
 public class DHDBigButton extends Button
 {
-	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_widgets.png");
+	public ResourceLocation WIDGETS_LOCATION;
 	
-    public DHDBigButton(int x, int y, OnPress press)
+    public DHDBigButton(int x, int y, OnPress press, ResourceLocation widgets)
 	{
 		super(x, y, 32, 32, Component.empty(), press, Button.DEFAULT_NARRATION);
+		WIDGETS_LOCATION = widgets;
 	}
     
     @Override

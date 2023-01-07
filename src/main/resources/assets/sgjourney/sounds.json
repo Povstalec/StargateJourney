@@ -24,6 +24,15 @@
 		]
 	},
 	
+	
+	"pegasus_ring_spin":
+	{
+		"subtitle": "sounds.sgjourney.pegasus_ring_spin",
+		"sounds":
+		[
+			"sgjourney:pegasus_ring_spin"
+		]
+	},
 	"pegasus_chevron_engage":
 	{
 		"subtitle": "sounds.sgjourney.pegasus_chevron_engage",

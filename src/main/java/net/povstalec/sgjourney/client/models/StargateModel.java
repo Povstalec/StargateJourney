@@ -9,18 +9,8 @@ import net.povstalec.sgjourney.config.ClientStargateConfig;
 
 public class StargateModel
 {
-	public static LayerDefinition createChevronLayer()
+	private static MeshDefinition createChevronLayer(MeshDefinition meshdefinition, PartDefinition partdefinition)
 	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition partdefinition = meshdefinition.getRoot();
-		
-		//Top Chevron
-		if(ClientStargateConfig.use_movie_stargate_model.get())
-			createPrimaryOuterChevron(partdefinition.addOrReplaceChild("chevron9_front", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)));
-		else
-			createOuterChevron(partdefinition.addOrReplaceChild("chevron9_front", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)));
-		createChevronLight(partdefinition.addOrReplaceChild("chevron9_light", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)));
-		
 		for(int i = 1; i <= 3; i++)
 		{
 			createOuterChevron(partdefinition.addOrReplaceChild("chevron" + i + "_front", CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i))));
@@ -41,6 +31,37 @@ public class StargateModel
 		{
 			createBackChevron(partdefinition.addOrReplaceChild("chevron" + i + "_back", CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i))));
 		}
+		
+		return meshdefinition;
+	}
+	
+	public static LayerDefinition createMilkyWayChevronLayer()
+	{
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition partdefinition = meshdefinition.getRoot();
+
+		//Top Chevron
+		if(ClientStargateConfig.use_movie_stargate_model.get())
+			createPrimaryOuterChevron(partdefinition.addOrReplaceChild("chevron9_front", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)));
+		else
+			createOuterChevron(partdefinition.addOrReplaceChild("chevron9_front", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)));
+		createChevronLight(partdefinition.addOrReplaceChild("chevron9_light", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)));
+		
+		meshdefinition = createChevronLayer(meshdefinition, partdefinition);
+		
+		return LayerDefinition.create(meshdefinition, 64, 64);
+	}
+	
+	public static LayerDefinition createPegasusChevronLayer()
+	{
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition partdefinition = meshdefinition.getRoot();
+
+		//Top Chevron
+		createOuterChevron(partdefinition.addOrReplaceChild("chevron9_front", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)));
+		createChevronLight(partdefinition.addOrReplaceChild("chevron9_light", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F)));
+		
+		meshdefinition = createChevronLayer(meshdefinition, partdefinition);
 		
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}

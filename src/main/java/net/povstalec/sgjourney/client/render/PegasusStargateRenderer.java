@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -15,22 +16,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.PegasusStargateEntity;
 import net.povstalec.sgjourney.blocks.stargate.MilkyWayStargateBlock;
+import net.povstalec.sgjourney.init.LayerInit;
 
 @OnlyIn(Dist.CLIENT)
 public class PegasusStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<PegasusStargateEntity>
 {
-	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_outer_ring.png");
+	private static final ResourceLocation OUTER_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_outer_ring.png");
 	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_chevron.png");
 	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_chevron_lit.png");
-	private static final ResourceLocation SYMBOLS_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_ring.png");
-	private static final ResourceLocation EMPTY = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/empty_slot.png");
-	//private static final ResourceLocation SYMBOL = new ResourceLocation(StargateJourney.MODID, "textures/symbols/pegasus.png");
+	private static final ResourceLocation INNER_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_inner_ring.png");
 	
 	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/block/event_horizon.png");
 	
 	public PegasusStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
+		ModelPart chevron_part = context.bakeLayer(LayerInit.PEGASUS_CHEVRON_LAYER);
+		this.chevrons = chevron_part;
 	}
 	
 	private void renderChevron(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
@@ -96,54 +98,26 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
 			this.event_horizon.render(stack, event_horizon_texture, 255, combinedOverlay);
 	    }
 	    
-	    /*VertexConsumer empty = source.getBuffer(RenderType.entitySolid(EMPTY));
-	    //this.point_of_origin.render(stack, empty, combinedLight, combinedOverlay);
-		
-		VertexConsumer ring_texture = source.getBuffer(RenderType.entitySolid(SYMBOLS_TEXTURE));
-	    this.symbols_36.render(stack, ring_texture, combinedLight, combinedOverlay);
-	    
-	    VertexConsumer symbol = source.getBuffer(RenderType.entityNoOutline(SYMBOL));
-	    
-	    for(int i = 0; i < stargate.inputAddress.length; i++)
-	    {
-	    	this.symbols_36.getChild("symbol" + stargate.inputAddress[i]).render(stack, symbol, 255, combinedOverlay, 42.0F/255.0F, 201.0F/255.0F, 207.0F/255.0F, 1.0F);
-	    }
-		
-	    if(stargate.currentSymbol == 0 && stargate.symbolBuffer > 0)
-	    {
-	    	if(!stargate.pointOfOrigin.equals("placeholder"))
-		    {
-				ResourceLocation PoO_TEXTURE = new ResourceLocation(stargate.pointOfOrigin);
-				VertexConsumer poo_texture = source.getBuffer(RenderType.entityNoOutline(PoO_TEXTURE));
-			    //this.point_of_origin.render(stack, poo_texture, 255, combinedOverlay, 42.0F/255.0F, 201.0F/255.0F, 207.0F/255.0F, 1.0F);
-		    }
-	    }
-	    else
-	    {
-	    	if(stargate.currentSymbol != 0)
-	    		this.symbols_36.getChild("symbol" + stargate.currentSymbol).render(stack, symbol, 255, combinedOverlay, 42.0F/255.0F, 201.0F/255.0F, 207.0F/255.0F, 1.0F);
-	    }*/
-	    
-	    
-
-		VertexConsumer ring_texture = source.getBuffer(RenderType.entitySolid(EMPTY));
+		VertexConsumer ring_texture = source.getBuffer(RenderType.entitySolid(INNER_RING_TEXTURE));
 	    for(int i = 0; i < 36; i++)
 	    {
 	    	symbols_36.getChild("symbol" + i).render(stack, ring_texture, combinedLight, combinedOverlay);
 	    }
 	    
-	    if(stargate.addressBuffer.length > 0)
-	    	this.symbols_36.getChild("symbol" + stargate.currentSymbol).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbols(stargate).texture(stargate.addressBuffer[stargate.addressBuffer.length - 1]))), 255, combinedOverlay, 42.0F/255.0F, 201.0F/255.0F, 207.0F/255.0F, 1.0F);
+	    // Renders spinning Symbol
+	    if(stargate.symbolBuffer < stargate.addressBuffer.length)
+	    	this.symbols_36.getChild("symbol" + stargate.currentSymbol).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbol(stargate, stargate.addressBuffer[stargate.symbolBuffer]))), 255, combinedOverlay, 0.0F/255.0F, 255.0F/255.0F, 255.0F/255.0F, 1.0F);
+	    
+	    // Renders locked Symbols
 	    for(int i = 0; i < stargate.inputAddress.length; i++)
 	    {
-	    	this.symbols_36.getChild("symbol" + stargate.getLitSymbol(i + 1)).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbols(stargate).texture(stargate.inputAddress[i]))), 255, combinedOverlay, 42.0F/255.0F, 201.0F/255.0F, 207.0F/255.0F, 1.0F);
+	    	this.symbols_36.getChild("symbol" + stargate.getChevronPosition(i + 1)).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbol(stargate, stargate.inputAddress[i]))), 255, combinedOverlay, 0.0F/255.0F, 255.0F/255.0F, 255.0F/255.0F, 1.0F);
 	    }
+	    // Renders the Point of Origin
+	    if(stargate.isBusy())
+	    	this.symbols_36.getChild("symbol" + 0).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbol(stargate, 0))), 255, combinedOverlay, 0.0F/255.0F, 255.0F/255.0F, 255.0F/255.0F, 1.0F);
 	    
-	    
-	    
-	    
-		
-	    VertexConsumer ring = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
+	    VertexConsumer ring = source.getBuffer(RenderType.entitySolid(OUTER_RING_TEXTURE));
 	    this.ring.render(stack, ring, combinedLight, combinedOverlay);
 		
 	    this.dividers_36.render(stack, ring, combinedLight, combinedOverlay);

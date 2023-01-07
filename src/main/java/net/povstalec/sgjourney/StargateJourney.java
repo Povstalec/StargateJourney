@@ -22,6 +22,8 @@ import net.povstalec.sgjourney.client.render.SandstoneSymbolRenderer;
 import net.povstalec.sgjourney.client.render.StoneSymbolRenderer;
 import net.povstalec.sgjourney.client.render.TransportRingsRenderer;
 import net.povstalec.sgjourney.client.screens.DHDScreen;
+import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
+import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
@@ -102,8 +104,8 @@ public class StargateJourney
         public static void onClientSetup(FMLClientSetupEvent event)
         {
         	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
-        	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), DHDScreen::new);
-        	MenuScreens.register(MenuInit.PEGASUS_DHD.get(), DHDScreen::new);
+        	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);
+        	MenuScreens.register(MenuInit.PEGASUS_DHD.get(), PegasusDHDScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	

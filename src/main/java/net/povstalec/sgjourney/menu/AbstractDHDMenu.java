@@ -19,13 +19,15 @@ public abstract class AbstractDHDMenu extends AbstractContainerMenu
 {
     protected final AbstractDHDEntity blockEntity;
     protected final Level level;
-    public final String symbolsType = "sgjourney:milky_way";
+    public String symbolsType = "sgjourney:milky_way";
     
-    public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, FriendlyByteBuf extraData) {
+    public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, FriendlyByteBuf extraData)
+    {
         this(menu, containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
     }
 
-    public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, BlockEntity entity) {
+    public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, BlockEntity entity)
+    {
         super(menu, containerId);
         checkContainerSize(inv, 6);
         blockEntity = ((AbstractDHDEntity) entity);
@@ -34,7 +36,8 @@ public abstract class AbstractDHDMenu extends AbstractContainerMenu
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
         
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
+        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler ->
+        {
             this.addSlot(new SlotItemHandler(handler, 0, -60, 11));
             this.addSlot(new SlotItemHandler(handler, 1, -40, 11));
             this.addSlot(new SlotItemHandler(handler, 2, -60, 35));

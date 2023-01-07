@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.povstalec.sgjourney.blocks.entities.address.CartoucheEntity;
+import net.povstalec.sgjourney.block_entities.address.CartoucheEntity;
 import net.povstalec.sgjourney.data.StargateNetwork;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock

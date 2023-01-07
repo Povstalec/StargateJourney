@@ -121,6 +121,9 @@ public class CommandInit
 		
 		CompoundTag stargates = StargateNetwork.get(level).getStargatesInDimension(level, dimension);
 		
+		if(stargates.contains("PrimaryStargate"))
+			stargates.remove("PrimaryStargate");
+		
 		if(stargates.isEmpty())
 		{
 			context.getSource().getPlayer().sendSystemMessage(Component.literal("Dimension has no registered Stargates"));

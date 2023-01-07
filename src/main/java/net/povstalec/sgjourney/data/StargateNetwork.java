@@ -45,7 +45,7 @@ public class StargateNetwork extends SavedData
 		stargateNetwork.remove("Dimensions");
 		stargateNetwork.remove("Planets");
 		
-		registerDimensions(level);
+		loadDimensions(level);
 		registerPlanets(level);
 		
 		reloadNetwork(level);
@@ -291,7 +291,7 @@ public class StargateNetwork extends SavedData
 		}
         int[] address = Addressing.randomAddress(6, dimensionValue);
 		planet.putIntArray("Address", address);
-		planet.putString("PointOfOrigin", PointOfOrigin.getRandomPointOfOrigin(level).location().toString());
+		planet.putString("PointOfOrigin", PointOfOrigin.getRandomPointOfOrigin(level, dimensionValue).location().toString());
 		
 		planet.putInt("Galaxy", 11);
 		planet.putString("GalaxySymbols", "sgjourney:milky_way");
@@ -351,7 +351,7 @@ public class StargateNetwork extends SavedData
 	/**
 	 * Registers all of the immediately important information about each dimension mentioned in the datapack. Those mostly serve as a shortcut.
 	 */
-	public void registerDimensions(Level level)
+	public void loadDimensions(Level level)
 	{
 		final RegistryAccess registries = level.getServer().registryAccess();
         final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
@@ -362,13 +362,13 @@ public class StargateNetwork extends SavedData
         {
         	galaxy.getValue().getPlanets().forEach((planet) ->
         	{
-        		planetRegistry.get(planet).getDimensions().forEach((dimension) -> registerDimension(galaxy.getKey(), planet, dimension));
+        		planetRegistry.get(planet).getDimensions().forEach((dimension) -> loadDimension(galaxy.getKey(), planet, dimension));
         	});
         });
         StargateJourney.LOGGER.info("Datapack dimensions loaded");
 	}
 	
-	private void registerDimension(ResourceKey<Galaxy> galaxy, ResourceKey<SolarSystem> planet, ResourceKey<Level> dimension)
+	private void loadDimension(ResourceKey<Galaxy> galaxy, ResourceKey<SolarSystem> planet, ResourceKey<Level> dimension)
 	{
 		CompoundTag dimensions = dataPackDimensions();
 		CompoundTag dimensionTag = new CompoundTag();

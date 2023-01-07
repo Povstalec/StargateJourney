@@ -66,9 +66,9 @@ public class PointOfOrigin
 		return generatesRandomly;
 	}
 	
-	public static ResourceKey<PointOfOrigin> getRandomPointOfOrigin(Level level)
+	public static ResourceKey<PointOfOrigin> getRandomPointOfOrigin(Level level, int seed)
 	{
-		Random random = new Random();
+		Random random = new Random(seed);
 		RegistryAccess registries = level.getServer().registryAccess();
 		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		Set<Entry<ResourceKey<PointOfOrigin>, PointOfOrigin>> set = registry.entrySet();

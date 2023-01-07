@@ -20,10 +20,10 @@ import net.povstalec.sgjourney.config.ClientStargateConfig;
 @OnlyIn(Dist.CLIENT)
 public class MilkyWayStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<MilkyWayStargateEntity>
 {
-	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_outer_ring.png");
-	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way_chevron.png");
-	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way_chevron_lit.png");
-	private static final ResourceLocation PLACEHOLDER = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/placeholder.png");
+	private static final ResourceLocation OUTER_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_outer_ring.png");
+	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_chevron.png");
+	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_chevron_lit.png");
+	private static final ResourceLocation INNER_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_inner_ring.png");
 	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/block/event_horizon.png");
 	
 	public MilkyWayStargateRenderer(BlockEntityRendererProvider.Context context)
@@ -154,7 +154,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 			renderChevronLight(stargate, stack, source, combinedLight, combinedOverlay, i);
 		}
 		
-		VertexConsumer chevron_texture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
+		VertexConsumer chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargate(CHEVRON_TEXTURE));
 		for(int i = 1; i <= 9; i++)
 		{
 			chevronFront(i).render(stack, chevron_texture, combinedLight, combinedOverlay);
@@ -169,25 +169,27 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 			this.event_horizon.render(stack, event_horizon_texture, 255, combinedOverlay);
 	    }
 
-		VertexConsumer ring_texture = source.getBuffer(RenderType.entitySolid(PLACEHOLDER));
+		VertexConsumer ring_texture = source.getBuffer(SGJourneyRenderTypes.stargate(INNER_RING_TEXTURE));
 	    
+		// Renders the spinny ring
 	    for(int i = 0; i < stargate.symbolCount; i++)
 	    {
 	    	symbols(stargate).getChild("symbol" + i).render(stack, ring_texture, combinedLight, combinedOverlay);
 	    }
 		
-	    symbols(stargate).getChild("symbol0").render(stack, source.getBuffer(RenderType.entityNoOutline(getPointOfOrigin(stargate).texture())), combinedLight, combinedOverlay, 48.0F/255.0F, 49.0F/255.0F, 63.0F/255.0F, 1.0F);
-	    for(int i = 1; i < stargate.symbolCount; i++)
+	    // Renders Symbols
+	    for(int i = 0; i < stargate.symbolCount; i++)
 	    {
-	    	symbols(stargate).getChild("symbol" + i).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbols(stargate).texture(i - 1))), combinedLight, combinedOverlay, 48.0F/255.0F, 49.0F/255.0F, 63.0F/255.0F, 1.0F);
+	    	symbols(stargate).getChild("symbol" + i).render(stack, source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbol(stargate, i))), combinedLight, combinedOverlay, 48.0F/255.0F, 49.0F/255.0F, 63.0F/255.0F, 1.0F);
 	    }
 	    
+	    // Rotates the spinny ring
 	    for(int i = 0; i < stargate.symbolCount; i++)
 	    {
 	    	symbols(stargate).getChild("symbol" + i).zRot = (float) Math.toRadians(180 - stargate.angle() * i + stargate.degrees * 2);
 	    }
 		
-	    VertexConsumer ring = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
+	    VertexConsumer ring = source.getBuffer(RenderType.entitySolid(OUTER_RING_TEXTURE));
 	    this.ring.render(stack, ring, combinedLight, combinedOverlay);
 	    this.dividers(stargate).render(stack, ring, combinedLight, combinedOverlay);
 	    this.dividers(stargate).zRot = (float) Math.toRadians(stargate.degrees * 2);

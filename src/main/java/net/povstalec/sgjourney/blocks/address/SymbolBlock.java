@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.blocks.entities.address.SymbolBlockEntity;
+import net.povstalec.sgjourney.block_entities.address.SymbolBlockEntity;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
 
 public abstract class SymbolBlock extends BaseEntityBlock

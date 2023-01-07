@@ -2,7 +2,7 @@
   "type": "sgjourney:chulak",
   "generator": {
     "type": "minecraft:noise",
-    "settings": "minecraft:overworld",
+    "settings": "sgjourney:milky_way_planet",
     "biome_source": {
       "type": "minecraft:multi_noise",
       "biomes": [

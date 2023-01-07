@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import net.povstalec.sgjourney.StargateJourney;
+
 public class Addressing
 {
 	public static int[] randomAddress(int size, long seed)
@@ -80,11 +82,9 @@ public class Addressing
 				convertedAddress[i] = convertedAddress[i] + 38;
 			else if(convertedAddress[i] > 38)
 				convertedAddress[i] = convertedAddress[i] - 38;
-			
-			if(convertedAddress[i] + 1 == address[0])
-				convertedAddress[i] = address[0];
 		}
-		
+
+		StargateJourney.LOGGER.info("Converted Address to: " + addressIntArrayToString(convertedAddress));
 		return convertedAddress;
 	}
 	
@@ -101,9 +101,6 @@ public class Addressing
 		
 		for(int i = 1; i < 7; i++)
 		{
-			if(convertedAddress[i] - 1 == symbol)
-				convertedAddress[i] = symbol;
-			
 			convertedAddress[i] = address[i - 1] - convertor[i - 1];
 			
 			if(convertedAddress[i] < 1)
@@ -111,7 +108,8 @@ public class Addressing
 			else if(convertedAddress[i] > 38)
 				convertedAddress[i] = convertedAddress[i] - 38;
 		}
-		
+
+		StargateJourney.LOGGER.info("Converted Address to: " + addressIntArrayToString(convertedAddress));
 		return convertedAddress;
 	}
 	
