@@ -267,7 +267,7 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 		{
 			if (!level.isClientSide)
 			{
-				ItemStack itemstack = new ItemStack(BlockInit.MILKY_WAY_STARGATE.get());
+				ItemStack itemstack = new ItemStack(getStargate());
 				
 				blockentity.saveToItem(itemstack);
 				/*if (stargate.hasCustomName())

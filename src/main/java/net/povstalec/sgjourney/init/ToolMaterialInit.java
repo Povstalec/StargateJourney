@@ -6,13 +6,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 public enum ToolMaterialInit implements Tier
 {
-	naquadah(2.0f, 7.0f, 2031, 3, 12, ItemInit.NAQUADAH_ALLOY.get());
+	naquadah(4, 3200, 9.0f, 4.0f, 12, ItemInit.NAQUADAH.get());
 	
 	private float attackDamage, efficency;
 	private int durability, harvestLevel, enchantability;
 	private Item repairMaterial;
 	
-	private ToolMaterialInit(float attackDamage, float efficency, int durability, int harvestLevel, int enchantability, Item repairMaterial) 
+	private ToolMaterialInit(int harvestLevel, int durability, float efficency, float attackDamage, int enchantability, Item repairMaterial) 
 	{
 		this.attackDamage = attackDamage;
 		this.efficency = efficency;
@@ -23,32 +23,38 @@ public enum ToolMaterialInit implements Tier
 	}
 
 	@Override
-	public int getUses() {
+	public int getUses()
+	{
 		return this.durability;
 	}
 
 	@Override
-	public float getSpeed() {
+	public float getSpeed()
+	{
 		return this.efficency;
 	}
 
 	@Override
-	public float getAttackDamageBonus() {
+	public float getAttackDamageBonus()
+	{
 		return this.attackDamage;
 	}
 
 	@Override
-	public int getLevel() {
+	public int getLevel()
+	{
 		return this.harvestLevel;
 	}
 
 	@Override
-	public int getEnchantmentValue() {
+	public int getEnchantmentValue()
+	{
 		return this.enchantability;
 	}
 
 	@Override
-	public Ingredient getRepairIngredient() {
+	public Ingredient getRepairIngredient()
+	{
 		return Ingredient.of(repairMaterial);
 	}
 }

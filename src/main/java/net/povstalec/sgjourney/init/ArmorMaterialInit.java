@@ -9,10 +9,10 @@ import net.minecraft.world.item.ArmorMaterial;
 
 public enum ArmorMaterialInit implements ArmorMaterial
 {
-	naquadah("naquadah", 37, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0f, 0.0f),
-	jaffa("jaffa", 37, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0f, 0.0f),
-	jackal("jackal", 37, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0f, 0.0f),
-	horus("horus", 37, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0f, 0.0f);
+	naquadah("naquadah", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 3.0F, 0.2F),
+	jaffa("jaffa", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0F, 0.0F),
+	jackal("jackal", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0F, 0.0F),
+	horus("horus", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0F, 0.0F);
 	
 	private static final int[] max_damage_array = new int[]{13, 15, 16, 11};
 	private String name;

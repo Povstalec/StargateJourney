@@ -5,8 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
@@ -42,12 +40,14 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
         super.load(nbt);
         addressBuffer = nbt.getIntArray("AddressBuffer");
+        symbolBuffer = nbt.getInt("SymbolBuffer");
     }
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
 		nbt.putIntArray("AddressBuffer", addressBuffer);
+		nbt.putInt("SymbolBuffer", symbolBuffer);
 		super.saveAdditional(nbt);
 	}
 	

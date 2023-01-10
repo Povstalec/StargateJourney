@@ -69,6 +69,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
         inputAddress = nbt.getIntArray("InputAddress");
         chevronsActive = nbt.getInt("ChevronsActive");
         isPrimary = nbt.getBoolean("IsPrimary");
+        gateOpenTime = nbt.getInt("OpenTime");
     }
 	
 	@Override
@@ -78,6 +79,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		nbt.putIntArray("InputAddress", inputAddress);
 		nbt.putInt("ChevronsActive", chevronsActive);
 		nbt.putBoolean("IsPrimary", isPrimary);
+		nbt.putInt("OpenTime", gateOpenTime);
 		super.saveAdditional(nbt);
 	}
 	

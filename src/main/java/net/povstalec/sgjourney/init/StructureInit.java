@@ -11,6 +11,8 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.structures.StargateTemple;
 import net.povstalec.sgjourney.structures.BuriedStargate;
+import net.povstalec.sgjourney.structures.City;
+import net.povstalec.sgjourney.structures.CommonStargate;
 import net.povstalec.sgjourney.structures.GoauldTemple;
 import net.povstalec.sgjourney.structures.JaffaHouse;
 import net.povstalec.sgjourney.structures.StargateOutpost;
@@ -19,6 +21,9 @@ import net.povstalec.sgjourney.structures.StargatePedestal;
 public class StructureInit
 {
 	public static final DeferredRegister<StructureType<?>> DEFERRED_REGISTRY_STRUCTURE = DeferredRegister.create(Registries.STRUCTURE_TYPE, StargateJourney.MODID);
+
+	public static final RegistryObject<StructureType<?>> COMMON_STARGATE =
+            DEFERRED_REGISTRY_STRUCTURE.register("common_stargate", () -> typeConvert(CommonStargate.CODEC));
 	
 	public static final RegistryObject<StructureType<?>> STARGATE_OUTPOST =
             DEFERRED_REGISTRY_STRUCTURE.register("stargate_outpost", () -> typeConvert(StargateOutpost.CODEC));
@@ -34,6 +39,9 @@ public class StructureInit
 	
 	public static final RegistryObject<StructureType<?>> GOAULD_TEMPLE =
             DEFERRED_REGISTRY_STRUCTURE.register("goauld_temple", () -> typeConvert(GoauldTemple.CODEC));
+	
+	public static final RegistryObject<StructureType<?>> CITY =
+            DEFERRED_REGISTRY_STRUCTURE.register("city", () -> typeConvert(City.CODEC));
 	
 	public static final RegistryObject<StructureType<?>> JAFFA_HOUSE =
             DEFERRED_REGISTRY_STRUCTURE.register("jaffa_house", () -> typeConvert(JaffaHouse.CODEC));

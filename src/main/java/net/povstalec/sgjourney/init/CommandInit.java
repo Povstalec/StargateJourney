@@ -45,6 +45,11 @@ public class CommandInit
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("stargateNetwork")
+						.then(Commands.literal("version")
+								.executes(CommandInit::getVersion))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("stargateNetwork")
 						.then(Commands.literal("regenerate")
 								.executes(CommandInit::regenerateNetwork))));
 		
@@ -52,6 +57,8 @@ public class CommandInit
 				.then(Commands.literal("stargateNetwork")
 						.then(Commands.literal("reload")
 								.executes(CommandInit::reloadNetwork))));
+		
+		
 		
 		// Rings Network Commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
@@ -143,11 +150,21 @@ public class CommandInit
 		return Command.SINGLE_SUCCESS;
 	}
 	
+	private static int getVersion(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getPlayer().level;
+		
+		int version = StargateNetwork.get(level).getVersion();
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Stargate Network Version: " + version).withStyle(ChatFormatting.GREEN));
+		return Command.SINGLE_SUCCESS;
+	}
+	
 	private static int regenerateNetwork(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		Level level = context.getSource().getPlayer().level;
 		
-		StargateNetwork.get(level).regenerateNetwork(level);
+		StargateNetwork.get(level).regenerateNetwork(level, true);
 		
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Regenerated Stargate Network").withStyle(ChatFormatting.DARK_RED));
 		return Command.SINGLE_SUCCESS;

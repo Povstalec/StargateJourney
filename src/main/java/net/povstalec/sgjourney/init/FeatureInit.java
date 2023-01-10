@@ -8,6 +8,4 @@ import net.povstalec.sgjourney.StargateJourney;
 public class FeatureInit
 {
 	public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, StargateJourney.MODID);
-	
-	
 }

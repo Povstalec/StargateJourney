@@ -1,15 +1,20 @@
 {
-  "type": "minecraft:crafting_shaped",
-
-  "pattern": [
-    "III",
-    "III",
-    "III"
-  ],
-  "key": {
-    "I": {"item": "sgjourney:naquadah_alloy"}
-  },
-  "result": {
-    "item": "sgjourney:naquadah_block"
-  }
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern":
+	[
+		"II",
+		"II"
+	],
+	"key":
+	{
+		"I":
+		{
+			"item": "sgjourney:naquadah_alloy"
+		}
+	},
+	"result":
+	{
+		"item": "sgjourney:naquadah_block"
+	}
 }

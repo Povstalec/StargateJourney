@@ -41,21 +41,22 @@ public class Dialing
 	{
 		if(!StargateNetwork.get(level).getPlanets().getCompound(level.dimension().location().toString()).contains("Galaxy"))
 		{
-			StargateJourney.LOGGER.info("Invalid Address");
+			StargateJourney.LOGGER.info("Planet is outside the Stargate Network");
 			return null;
 		}
 		
-		String galaxy = "Galaxy" + StargateNetwork.get(level).getPlanets().getCompound(level.dimension().location().toString()).getInt("Galaxy");
+		int galaxyNumber = StargateNetwork.get(level).getPlanets().getCompound(level.dimension().location().toString()).getInt("Galaxy");
+		String galaxy = "Galaxy" + galaxyNumber;
 		
 		String addressString = Addressing.addressIntArrayToString(address);
 		
-		if(!StargateNetwork.get(level).getAddresses().contains(addressString))
+		if(StargateNetwork.get(level).getDimensionFromAddress(galaxyNumber, addressString) == null)
 		{
 			StargateJourney.LOGGER.info("Invalid Address");
 			return null;
 		}
 		
-		Level targetLevel = level.getServer().getLevel(StargateNetwork.get(level).stringToDimension(StargateNetwork.get(level).getAddresses().getString(addressString)));
+		Level targetLevel = level.getServer().getLevel(StargateNetwork.get(level).getDimensionFromAddress(galaxyNumber, addressString));
 		
 		return getPrimaryStargate(targetLevel, galaxy, addressString);
 	}
@@ -66,13 +67,13 @@ public class Dialing
 		
 		String addressString = Addressing.addressIntArrayToString(Addressing.convertTo7chevronAddress(address));
 		
-		if(!StargateNetwork.get(level).getAddresses().contains(addressString))
+		if(StargateNetwork.get(level).getDimensionFromAddress(address[0], addressString) == null)
 		{
 			StargateJourney.LOGGER.info("Invalid Address");
 			return null;
 		}
 		
-		Level targetLevel = level.getServer().getLevel(StargateNetwork.get(level).stringToDimension(StargateNetwork.get(level).getAddresses().getString(addressString)));
+		Level targetLevel = level.getServer().getLevel(StargateNetwork.get(level).getDimensionFromAddress(address[0], addressString));
 		
 		return getPrimaryStargate(targetLevel, galaxy, addressString);
 	}
@@ -130,9 +131,9 @@ public class Dialing
 		int chunkX = chunk.getPos().x;
 		int chunkZ = chunk.getPos().z;
 		Map<BlockPos, BlockEntity> blockentityMap = chunk.getBlockEntities();
-		for(int i = chunkX - 1; i <= chunkX + 1; i++)
+		for(int i = chunkX - 2; i <= chunkX + 2; i++)
 		{
-			for(int j = chunkZ - 1; j <= chunkZ + 1; j++)
+			for(int j = chunkZ - 2; j <= chunkZ + 2; j++)
 			{
 				blockentityMap.putAll(level.getChunk(i, j).getBlockEntities());
 			}

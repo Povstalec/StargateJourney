@@ -1,0 +1,19 @@
+{
+	"name": "sgjourney:abydos_city_right_pool",
+	
+	"fallback": "minecraft:empty",
+	
+	"elements":
+	[
+		{
+			"weight": 1,
+			"element":
+			{
+				"location": "sgjourney:city/abydos_city/abydos_city_right",
+				"processors": "minecraft:empty",
+				"projection": "terrain_matching",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}

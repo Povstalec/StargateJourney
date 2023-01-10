@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.config.ServerAddressConfig;
+import net.povstalec.sgjourney.config.ServerStargateNetworkConfig;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Galaxy;
 import net.povstalec.sgjourney.stargate.SolarSystem;
@@ -32,18 +32,58 @@ import net.povstalec.sgjourney.stargate.Symbols;
 public class StargateNetwork extends SavedData
 {
 	private CompoundTag stargateNetwork = new CompoundTag();
+	private int version = 1;
 	
 //================================================================================================
 	
-	//TODO Reloading the Network
+	/**
+	 * Returns the version of Stargate Network
+	 * @return
+	 */
+	public int getVersion()
+	{
+		CompoundTag network = stargateNetwork.copy();
+		
+		if(network.contains("Version"))
+			return network.getInt("Version");
+		
+		return 0;
+	}
+	
+	/**
+	 * Updates the Stargate Network to the current version
+	 */
+	public void updateVersion()
+	{
+		stargateNetwork.putInt("Version", version);
+	}
+	
+	public void updateNetwork(Level level)
+	{
+		// Don't do anything if the Stargate Network is up to date
+		if(getVersion() == version)
+		{
+			StargateJourney.LOGGER.info("Stargate Network is up to date (Version: " + version + ")");
+			return;
+		}
+		
+		StargateJourney.LOGGER.info("Detected an older Stargate Network version (Version: " + getVersion() + ") - updating to version " + version);
+		
+		regenerateNetwork(level, false);
+		updateVersion();
+	}
+	
 	/**
 	 * Regenerates the Stargate Network, including the Addresses.
 	 * @param level
 	 */
-	public void regenerateNetwork(Level level)
+	public void regenerateNetwork(Level level, boolean forceRegen)
 	{
-		stargateNetwork.remove("Dimensions");
-		stargateNetwork.remove("Planets");
+		if(ServerStargateNetworkConfig.auto_regenerate_network.get() || forceRegen)
+		{
+			stargateNetwork.remove("Dimensions");
+			stargateNetwork.remove("Planets");
+		}
 		
 		loadDimensions(level);
 		registerPlanets(level);
@@ -51,7 +91,6 @@ public class StargateNetwork extends SavedData
 		reloadNetwork(level);
 	}
 	
-	//TODO Reloading the Network
 	/**
 	 * Reloads all Stargates in the Stargate Network. Keeps random Addresses.
 	 * @param level
@@ -244,9 +283,9 @@ public class StargateNetwork extends SavedData
 			String dimensionString = dimension.location().toString();
 			if(!getPlanets().contains(dimensionString))
 			{
-				if(ServerAddressConfig.use_datapack_addresses.get() && dataPackDimensions().contains(dimensionString))
+				if(ServerStargateNetworkConfig.use_datapack_addresses.get() && dataPackDimensions().contains(dimensionString))
 					addPlanet(level, dimensionString);
-				else if(ServerAddressConfig.generate_random_addresses.get())
+				else if(ServerStargateNetworkConfig.generate_random_addresses.get())
 					generatePlanet(level, dimensionString);
 			}
 		});
@@ -257,18 +296,19 @@ public class StargateNetwork extends SavedData
 		CompoundTag planets = getPlanets();
 		CompoundTag planet = new CompoundTag();
 		
+		int galaxy = getGalaxy(level, dimension).getSymbol();
         int[] address = getPlanet(level, dimension).getAddressArray();
         
 		planet.putIntArray("Address", address);
 		planet.putString("PointOfOrigin", getPlanet(level, dimension).getPointOfOrigin().location().toString());
 		
-		planet.putInt("Galaxy", getGalaxy(level, dimension).getSymbol());
+		planet.putInt("Galaxy", galaxy);
 		planet.putString("GalaxySymbols", getGalaxy(level, dimension).getSymbols().location().toString());
 		
 		planets.put(dimension, planet);
 		stargateNetwork.put("Planets", planets);
 		
-		addAddress(address, dimension);
+		addAddress(galaxy, address, dimension);
 		setDirty();
 
 		StargateJourney.LOGGER.info("Registered " + dimension + 
@@ -293,13 +333,13 @@ public class StargateNetwork extends SavedData
 		planet.putIntArray("Address", address);
 		planet.putString("PointOfOrigin", PointOfOrigin.getRandomPointOfOrigin(level, dimensionValue).location().toString());
 		
-		planet.putInt("Galaxy", 11);
+		planet.putInt("Galaxy", 1);
 		planet.putString("GalaxySymbols", "sgjourney:milky_way");
 		
 		planets.put(dimension, planet);
 		stargateNetwork.put("Planets", planets);
 		
-		addAddress(address, dimension);
+		addAddress(1, address, dimension);
 		setDirty();
 		
 		StargateJourney.LOGGER.info("Registered " + dimension + 
@@ -310,18 +350,31 @@ public class StargateNetwork extends SavedData
 				"]");
 	}
 	
-	public CompoundTag getAddresses()
+	private CompoundTag getAddresses()
 	{
 		return stargateNetwork.getCompound("Addresses").copy();
 	}
 	
-	private void addAddress(int[] address, String dimension)
+	public ResourceKey<Level> getDimensionFromAddress(int galaxyNumber, String addressString)
+	{
+		if(!getAddresses().getCompound("Galaxy" + galaxyNumber).contains(addressString))
+			return null;
+		
+		String dimension = getAddresses().getCompound("Galaxy" + galaxyNumber).getString(addressString);
+		return stringToDimension(dimension);
+	}
+	
+	private void addAddress(int galaxyNumber, int[] address, String dimension)
 	{
 		CompoundTag addresses = getAddresses();
+		CompoundTag galaxy = addresses.getCompound("Galaxy" + galaxyNumber);
+		
 		String addressString = Addressing.addressIntArrayToString(address);
 		
-		if(!addresses.contains(addressString))
-			addresses.putString(addressString, dimension);
+		if(!galaxy.contains(addressString))
+			galaxy.putString(addressString, dimension);
+		
+		addresses.put("Galaxy" + galaxyNumber, galaxy);
 		
 		stargateNetwork.put("Addresses", addresses);
 		setDirty();

@@ -21,7 +21,6 @@ import net.povstalec.sgjourney.client.render.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.SandstoneSymbolRenderer;
 import net.povstalec.sgjourney.client.render.StoneSymbolRenderer;
 import net.povstalec.sgjourney.client.render.TransportRingsRenderer;
-import net.povstalec.sgjourney.client.screens.DHDScreen;
 import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;

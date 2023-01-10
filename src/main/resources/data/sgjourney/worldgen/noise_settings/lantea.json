@@ -42,9 +42,9 @@
       },
       "argument2": {
         "type": "minecraft:noise",
-        "noise": "minecraft:gravel",
-        "xz_scale": 4,
-        "y_scale": 1
+        "noise": "minecraft:surface",
+        "xz_scale": 0.8,
+        "y_scale": 0
       }
     },
     "vein_toggle": 0,
@@ -103,7 +103,7 @@
           "offset": 0,
           "surface_type": "floor",
           "add_surface_depth": false,
-          "secondary_depth_range": 5
+          "secondary_depth_range": 3
         },
         "then_run": {
           "type": "minecraft:block",
@@ -119,7 +119,7 @@
           "offset": 0,
           "surface_type": "floor",
           "add_surface_depth": false,
-          "secondary_depth_range": 30
+          "secondary_depth_range": 8
         },
         "then_run": {
           "type": "minecraft:block",

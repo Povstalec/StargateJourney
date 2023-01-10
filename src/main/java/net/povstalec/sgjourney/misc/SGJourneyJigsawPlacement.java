@@ -66,7 +66,7 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 	      LevelHeightAccessor levelheightaccessor = p_227239_.heightAccessor();
 	      WorldgenRandom worldgenrandom = p_227239_.random();
 	      Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registries.TEMPLATE_POOL);
-	      Rotation rotation = Rotation.NONE;
+	      Rotation rotation = Rotation.COUNTERCLOCKWISE_90;
 	      StructureTemplatePool structuretemplatepool = p_227240_.value();
 	      StructurePoolElement structurepoolelement = structuretemplatepool.getRandomTemplate(worldgenrandom);
 	      if (structurepoolelement == EmptyPoolElement.INSTANCE) {

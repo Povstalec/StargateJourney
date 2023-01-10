@@ -30,8 +30,7 @@ public class EventInit
 	{
 		Level level = event.getServer().overworld();
 		
-		StargateNetwork.get(level).loadDimensions(level);
-		StargateNetwork.get(level).registerPlanets(level);
+		StargateNetwork.get(level).updateNetwork(level);
 	}
 	
 	@SubscribeEvent

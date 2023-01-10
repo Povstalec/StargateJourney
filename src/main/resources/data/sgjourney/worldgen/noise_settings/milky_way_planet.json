@@ -35,15 +35,15 @@
       "type": "minecraft:add",
       "argument1": {
         "type": "minecraft:y_clamped_gradient",
-        "from_y": 40,
+        "from_y": 48,
         "to_y": 80,
         "from_value": 1,
         "to_value": -1
       },
       "argument2": {
         "type": "minecraft:noise",
-        "noise": "minecraft:gravel",
-        "xz_scale": 1,
+        "noise": "minecraft:surface",
+        "xz_scale": 0.9,
         "y_scale": 0
       }
     },
@@ -99,16 +99,28 @@
       {
         "type": "minecraft:condition",
         "if_true": {
-          "type": "minecraft:stone_depth",
+          "type": "minecraft:water",
           "offset": 0,
-          "surface_type": "floor",
-          "add_surface_depth": false,
-          "secondary_depth_range": 0
+          "surface_depth_multiplier": 0,
+          "add_stone_depth": false
         },
         "then_run": {
-          "type": "minecraft:block",
-          "result_state": {
-            "Name": "minecraft:grass_block"
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:stone_depth",
+            "offset": 0,
+            "surface_type": "floor",
+            "add_surface_depth": false,
+            "secondary_depth_range": 0
+          },
+          "then_run": {
+            "type": "minecraft:block",
+            "result_state": {
+              "Name": "minecraft:grass_block",
+              "Properties": {
+                "snowy": "false"
+              }
+            }
           }
         }
       },

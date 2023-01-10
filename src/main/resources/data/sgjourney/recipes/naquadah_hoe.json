@@ -1,19 +1,15 @@
 {
-	"type": "minecraft:crafting_shaped",
-	
-	"pattern":
-	[
-		"II",
-		" S",
-		" S"
-	],
-	
-	"key": 
+	"type": "minecraft:smithing",
+	"addition":
 	{
-		"I": { "item": "sgjourney:naquadah_alloy" },
-		"S": { "item": "minecraft:stick" }
-		
+		"item": "sgjourney:naquadah"
 	},
-	
-	"result": { "item": "sgjourney:naquadah_hoe" }
+	"base":
+	{
+		"item": "minecraft:netherite_hoe"
+	},
+	"result":
+	{
+		"item": "sgjourney:naquadah_hoe"
+	}
 }

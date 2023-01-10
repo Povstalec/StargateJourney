@@ -293,7 +293,7 @@
 		},
 		{
 			"type": "bitmap",
-			"file": "sgjourney:symbols/pegasus/unknown_1.png",
+			"file": "sgjourney:symbols/pegasus/sandovi.png",
 			"ascent": 7,
 			"height": 8,
 			"chars": 
@@ -313,7 +313,7 @@
 		},
 		{
 			"type": "bitmap",
-			"file": "sgjourney:symbols/pegasus/unknown_2.png",
+			"file": "sgjourney:symbols/pegasus/dawnre.png",
 			"ascent": 7,
 			"height": 8,
 			"chars": 
@@ -333,7 +333,7 @@
 		},
 		{
 			"type": "bitmap",
-			"file": "sgjourney:symbols/pegasus/unknown_3.png",
+			"file": "sgjourney:symbols/pegasus/recktic.png",
 			"ascent": 7,
 			"height": 8,
 			"chars": 
@@ -359,6 +359,26 @@
 			"chars": 
 			[
 				"\uE036"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/unknown_1.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE037"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "sgjourney:symbols/pegasus/unknown_2.png",
+			"ascent": 7,
+			"height": 8,
+			"chars": 
+			[
+				"\uE038"
 			]
 		}
 	]

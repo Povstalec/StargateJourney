@@ -1,17 +1,15 @@
 {
-	"type": "minecraft:crafting_shaped",
-	
-	"pattern":
-	[
-		"III",
-		"I I"
-	],
-	
-	"key": 
+	"type": "minecraft:smithing",
+	"addition":
 	{
-		"I": { "item": "sgjourney:naquadah_alloy" }
-		
+		"item": "sgjourney:naquadah"
 	},
-	
-	"result": { "item": "sgjourney:naquadah_helmet" }
+	"base":
+	{
+		"item": "minecraft:netherite_helmet"
+	},
+	"result":
+	{
+		"item": "sgjourney:naquadah_helmet"
+	}
 }

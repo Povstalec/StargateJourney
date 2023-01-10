@@ -21,7 +21,7 @@ public class StargateJourneyConfig
 	static
 	{
 		ServerStargateConfig.init(server_builder);
-		ServerAddressConfig.init(server_builder);
+		ServerStargateNetworkConfig.init(server_builder);
 		
 		ClientStargateConfig.init(client_builder);
 		
