@@ -20,6 +20,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.blocks.ArcheologyTableBlock;
+import net.povstalec.sgjourney.blocks.ClassicDHDBlock;
 import net.povstalec.sgjourney.blocks.ExplosiveBlock;
 import net.povstalec.sgjourney.blocks.AbstractDHDBlock;
 import net.povstalec.sgjourney.blocks.FirePitBlock;
@@ -64,6 +65,9 @@ public class BlockInit
 	public static final RegistryObject<AbstractDHDBlock> PEGASUS_DHD = registerBlock("pegasus_dhd", 
 			() -> new PegasusDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC, 1);
+	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerBlock("classic_dhd", 
+			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL).noOcclusion()), 1);
 	
 	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerEntityBlock("transport_rings", 
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)

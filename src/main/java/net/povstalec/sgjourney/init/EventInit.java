@@ -82,6 +82,7 @@ public class EventInit
 				items.accept(BlockInit.MILKY_WAY_DHD.get());
 				items.accept(BlockInit.PEGASUS_STARGATE.get());
 				items.accept(BlockInit.PEGASUS_DHD.get());
+				items.accept(BlockInit.CLASSIC_DHD.get());
 
 				items.accept(BlockInit.TRANSPORT_RINGS.get());
 				items.accept(BlockInit.RING_PANEL.get());

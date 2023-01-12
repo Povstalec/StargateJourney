@@ -1,0 +1,36 @@
+{
+  "type": "sgjourney:milky_way_planet",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "sgjourney:milky_way_planet",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "sgjourney:milky_way_plains",
+          "parameters": {
+            "temperature": 0.1,
+            "humidity": 0,
+            "continentalness": 0,
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "sgjourney:milky_way_forest",
+          "parameters": {
+            "temperature": 0,
+            "humidity": 0,
+            "continentalness": 0,
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": 0,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,5 +1,9 @@
 {
-    "variants": {
-        "": { "model": "sgjourney:block/pegasus_dhd" }
-    }
+	"variants": 
+	{
+		"facing=north": { "model": "sgjourney:block/pegasus_dhd"},
+		"facing=south": { "model": "sgjourney:block/pegasus_dhd", "y": 180 },
+		"facing=west": { "model": "sgjourney:block/pegasus_dhd", "y": 270 },
+		"facing=east": { "model": "sgjourney:block/pegasus_dhd", "y": 90 }
+	}
 }

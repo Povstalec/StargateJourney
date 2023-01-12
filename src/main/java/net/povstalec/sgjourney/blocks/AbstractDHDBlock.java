@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.blocks;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -16,6 +17,11 @@ public abstract class AbstractDHDBlock extends Block implements EntityBlock
 	public AbstractDHDBlock(Properties properties) 
 	{
 		super(properties);
+	}
+	 
+	public BlockState rotate(BlockState state, Rotation rotation)
+	{
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
 	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context)

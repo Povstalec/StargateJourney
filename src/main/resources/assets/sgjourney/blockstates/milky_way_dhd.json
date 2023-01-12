@@ -1,5 +1,10 @@
 {
-    "variants": {
-        "": { "model": "sgjourney:block/milky_way_dhd" }
-    }
+	"variants": 
+	{
+		"facing=north": { "model": "sgjourney:block/milky_way_dhd"},
+		"facing=south": { "model": "sgjourney:block/milky_way_dhd", "y": 180 },
+		"facing=west": { "model": "sgjourney:block/milky_way_dhd", "y": 270 },
+		"facing=east": { "model": "sgjourney:block/milky_way_dhd", "y": 90 }
+	}
 }
+
