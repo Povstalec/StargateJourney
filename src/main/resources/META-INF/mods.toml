@@ -3,7 +3,7 @@ loaderVersion="[44,)"
 license="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License"
 [[mods]]
 modId="sgjourney"
-version="0.5.2"
+version="0.5.3"
 displayName="Stargate Journey"
 logoFile="sgjourney_large.png"
 credits="Otwnt - Structures, \n Kranyolsu - Stargate Pedestals \nCarter Addon Pack - Sounds, \ndiesieben07 - Code for GUI shift-clicking, \nTelepathicGrunt - Code for Structure spawning"
