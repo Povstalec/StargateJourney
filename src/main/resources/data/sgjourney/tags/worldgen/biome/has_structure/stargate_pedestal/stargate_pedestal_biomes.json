@@ -12,7 +12,10 @@
     		"#minecraft:is_ocean",
     		"#minecraft:is_river",
     		"#minecraft:is_savanna",
-
+		
+		"minecraft:taiga",
+		"minecraft:old_growth_pine_taiga",
+		"minecraft:old_growth_spruce_taiga",
     		"minecraft:stony_shore",
     		"minecraft:swamp",
     		"minecraft:mangrove_swamp",

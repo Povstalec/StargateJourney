@@ -9,7 +9,7 @@
 
   "biomes": "#sgjourney:has_structure/stargate_pedestal/stargate_pedestal_deep_dark_biomes",
 
-  "step": "surface_structures",
+  "step": "strongholds",
 
   "start_height": {
     "absolute": 1

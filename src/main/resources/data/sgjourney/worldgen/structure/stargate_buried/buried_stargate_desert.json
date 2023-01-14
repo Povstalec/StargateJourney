@@ -9,7 +9,7 @@
 
   "biomes": "#sgjourney:has_structure/buried_stargate/buried_stargate_desert_biomes",
 
-  "step": "surface_structures",
+  "step": "strongholds",
 
   "start_height": {
     "absolute": -9
