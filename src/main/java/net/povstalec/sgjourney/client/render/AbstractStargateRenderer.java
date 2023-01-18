@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.AbstractStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.init.LayerInit;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.stargate.Symbols;

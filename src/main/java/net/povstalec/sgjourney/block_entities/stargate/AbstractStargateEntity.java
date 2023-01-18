@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.block_entities;
+package net.povstalec.sgjourney.block_entities.stargate;
 
 import java.util.List;
 import java.util.Random;
@@ -26,6 +26,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.config.ServerStargateConfig;
 import net.povstalec.sgjourney.data.StargateNetwork;
@@ -440,40 +441,43 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return vec3;
 	}*/
 	
-	public void tick(Level level, BlockPos pos, BlockState state)
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)
     {
-		if(isBusy() && isPrimary())
+		if(stargate.isBusy() && stargate.isPrimary())
 		{
-			if(!(getTarget() instanceof AbstractStargateEntity))
-				disconnectGate();
+			if(!(stargate.getTarget() instanceof AbstractStargateEntity))
+				stargate.disconnectGate();
 
 			double x = 0;
 			
 			double z = 0;
 			
-			if(getDirection().getAxis() == Direction.Axis.X)
+			if(stargate.getDirection().getAxis() == Direction.Axis.X)
 				z = 2.5;
 			else
 				x = 2.5;
 			
-			AABB localBox = new AABB((this.worldPosition.getX() + 0.5 + x), (this.worldPosition.getY() + 1), (this.worldPosition.getZ() + 0.5 + z), 
-									(this.worldPosition.getX() + 0.5 - x), (this.worldPosition.getY() + 5), (this.worldPosition.getZ() + 0.5 - z));
+			AABB localBox = new AABB((stargate.worldPosition.getX() + 0.5 + x), (stargate.worldPosition.getY() + 1), (stargate.worldPosition.getZ() + 0.5 + z), 
+									(stargate.worldPosition.getX() + 0.5 - x), (stargate.worldPosition.getY() + 5), (stargate.worldPosition.getZ() + 0.5 - z));
 			
-			List<Entity> localEntities = this.level.getEntitiesOfClass(Entity.class, localBox);
+			List<Entity> localEntities = stargate.level.getEntitiesOfClass(Entity.class, localBox);
 			if(!localEntities.isEmpty())
 	    	{
-	    		localEntities.stream().forEach(this::wormhole);
+	    		localEntities.stream().forEach(stargate::wormhole);
 	    	}
 			
-			gateOpenTime++;
+			stargate.gateOpenTime++;
 			
-			if(gateOpenTime >= maxGateOpenTime)
+			if(stargate.gateOpenTime >= maxGateOpenTime)
 			{
-				disconnectGate();
+				stargate.disconnectGate();
 			}
 		}
-		tick++;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(pos, chevronsActive, isBusy(), tick, pointOfOrigin, symbols, currentSymbol));
+		stargate.tick++;
+		
+		if(level.isClientSide())
+			return;
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundStargateUpdatePacket(stargate.worldPosition, stargate.chevronsActive, stargate.isBusy(), stargate.tick, stargate.pointOfOrigin, stargate.symbols, stargate.currentSymbol));
     }
 	
 	@Override

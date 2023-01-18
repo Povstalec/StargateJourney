@@ -18,8 +18,11 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.block_entities.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.stargate.Symbols;
@@ -49,6 +52,13 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
 	{
 		return BlockInit.MILKY_WAY_STARGATE.get();
 	}
+	
+	@Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
+	{
+		return createTickerHelper(type, BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateEntity::tick);
+    }
 	
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)

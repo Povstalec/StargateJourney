@@ -24,6 +24,16 @@
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"
 			}
+		},
+		{
+			"weight": 1,
+			"element":
+			{
+				"location": "sgjourney:stargate_pedestal/desert/stargate_pedestal_desert_3",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
 		}
 	]
 }

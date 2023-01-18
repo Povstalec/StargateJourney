@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.block_entities;
+package net.povstalec.sgjourney.block_entities.stargate;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -106,37 +106,39 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		}
 	}
 	
-	@Override
-	public void tick(Level level, BlockPos pos, BlockState state)
+	public static void tick(Level level, BlockPos pos, BlockState state, PegasusStargateEntity stargate)
 	{
-		if(!isBusy() && addressBuffer.length > symbolBuffer)
+		if(!stargate.isBusy() && stargate.addressBuffer.length > stargate.symbolBuffer)
 		{
-			int symbol = addressBuffer[symbolBuffer];
+			int symbol = stargate.addressBuffer[stargate.symbolBuffer];
 			if(symbol == 0)
 			{
-				if(currentSymbol == getChevronPosition(9))
+				if(stargate.currentSymbol == stargate.getChevronPosition(9))
 				{
-					lockChevron();
+					stargate.lockChevron();
 				}
 				else
-					symbolWork();
+					stargate.symbolWork();
 			}
-			else if(currentSymbol == getChevronPosition(symbolBuffer + 1))
+			else if(stargate.currentSymbol == stargate.getChevronPosition(stargate.symbolBuffer + 1))
 			{
-				if(symbolBuffer % 2 != 0 && !passedOver)
+				if(stargate.symbolBuffer % 2 != 0 && !stargate.passedOver)
 				{
-					passedOver = true;
-					symbolWork();
+					stargate.passedOver = true;
+					stargate.symbolWork();
 				}
 				else
-					engageChevron(symbol);
+					stargate.engageChevron(symbol);
 			}
 			else
-				symbolWork();
+				stargate.symbolWork();
 		}
 		
-		super.tick(level, pos, state);
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(pos, inputAddress, symbolBuffer, addressBuffer));
+		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		
+		if(level.isClientSide())
+			return;
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundPegasusStargateUpdatePacket(stargate.worldPosition, stargate.inputAddress, stargate.symbolBuffer, stargate.addressBuffer));
 	}
 	
 	private void symbolWork()

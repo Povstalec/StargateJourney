@@ -12,9 +12,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.block_entities.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.block_entities.PegasusStargateEntity;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
+import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
 
 public class SGJourneyBlockItem extends BlockItem
 {

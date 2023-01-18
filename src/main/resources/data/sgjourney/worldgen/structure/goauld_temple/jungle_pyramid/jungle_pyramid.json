@@ -1,13 +1,13 @@
 {
   "type": "sgjourney:goauld_temple",
 
-  "start_pool": "sgjourney:goauld_temple/desert_pyramid/abandoned/desert_pyramid_abandoned",
+  "start_pool": "sgjourney:goauld_temple/jungle_pyramid/jungle_pyramid",
 
-  "size": 4,
+  "size": 1,
 
   "max_distance_from_center": 80,
 
-  "biomes": "#sgjourney:has_structure/goauld_temple/desert_pyramid_abandoned_biomes",
+  "biomes": "#sgjourney:has_structure/goauld_temple/jungle_pyramid_biomes",
 
   "step": "surface_structures",
 

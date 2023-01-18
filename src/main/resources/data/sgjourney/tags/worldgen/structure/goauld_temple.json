@@ -1,6 +1,8 @@
 {
   "values": [
     "sgjourney:goauld_temple/desert_pyramid/desert_pyramid",
-    "sgjourney:goauld_temple/desert_pyramid/abandoned/desert_pyramid_abandoned"
+    "sgjourney:goauld_temple/desert_pyramid/abandoned/desert_pyramid_abandoned",
+    "sgjourney:goauld_temple/jungle_pyramid/jungle_pyramid",
+    "sgjourney:goauld_temple/badlands_ziggurat/badlands_ziggurat"
   ]
 }

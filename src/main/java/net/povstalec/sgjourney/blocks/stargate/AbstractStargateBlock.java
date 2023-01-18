@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -31,7 +29,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.povstalec.sgjourney.block_entities.AbstractStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.stargate.StargatePart;
 
@@ -276,22 +274,6 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
       		}
             super.onRemove(oldState, level, pos, newState, isMoving);
         }
-    }
-	
-	@Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
-	{
-        if (!level.isClientSide())
-        {
-            return (localLevel, pos, blockState, entity) -> {
-                if (entity instanceof AbstractStargateEntity stargate) 
-                {
-                	stargate.tick(localLevel, pos, blockState);
-                }
-            };
-        }
-        return null;
     }
     
     public abstract Block getStargate();

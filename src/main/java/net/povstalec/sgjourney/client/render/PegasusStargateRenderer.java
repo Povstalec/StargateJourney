@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.PegasusStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.blocks.stargate.MilkyWayStargateBlock;
 import net.povstalec.sgjourney.init.LayerInit;
 

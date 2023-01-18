@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.blocks.stargate.MilkyWayStargateBlock;
 import net.povstalec.sgjourney.config.ClientStargateConfig;
 
@@ -129,18 +129,44 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 		}
 	}
 	
+	private void renderRing(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
+			int combinedLight, int combinedOverlay)
+	{
+		VertexConsumer ring_texture = source.getBuffer(SGJourneyRenderTypes.stargate(INNER_RING_TEXTURE));
+	    
+	    // Rotates the spinny ring
+	    for(int i = 0; i < stargate.symbolCount; i++)
+	    {
+	        stack.pushPose();
+	    	symbols(stargate).getChild("symbol" + i).zRot = (float) Math.toRadians(180 - stargate.angle() * i + stargate.getDegrees() * 2);
+		    stack.popPose();
+	    }
+		
+		for(int i = 0; i < stargate.symbolCount; i++)
+	    {
+	    	symbols(stargate).getChild("symbol" + i).render(stack, ring_texture, combinedLight, combinedOverlay);
+	    }
+		
+	    // Renders Symbols
+	    for(int i = 0; i < stargate.symbolCount; i++)
+	    {
+	    	symbols(stargate).getChild("symbol" + i).render(stack, source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbol(stargate, i))), combinedLight, combinedOverlay, 48.0F/255.0F, 49.0F/255.0F, 63.0F/255.0F, 1.0F);
+	    }
+	}
+	
 	@Override
 	public void render(MilkyWayStargateEntity stargate, float partialTick, PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		BlockState blockstate = stargate.getBlockState();
 		float facing = blockstate.getValue(MilkyWayStargateBlock.FACING).toYRot();
+        stack.pushPose();
 		stack.translate(0.5D, 3.5D, 0.5D);
         stack.mulPose(Axis.YP.rotationDegrees(-facing));
 		
 		if(ClientStargateConfig.use_movie_stargate_model.get())
 		{
-	        if(stargate.isChevronRaised && stargate.currentSymbol != 0)
+			if(stargate.isChevronRaised && stargate.currentSymbol != 0)
 	        	engageChevron(stargate, stargate.chevronsActive + 1);
 	        else
 	        	disengageChevrons();
@@ -168,31 +194,14 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 		    VertexConsumer event_horizon_texture = source.getBuffer(SGJourneyRenderTypes.eventHorizon(EVENT_HORIZON_TEXTURE, 0.0F, tickCount * 0.03125F));
 			this.event_horizon.render(stack, event_horizon_texture, 255, combinedOverlay);
 	    }
-
-		VertexConsumer ring_texture = source.getBuffer(SGJourneyRenderTypes.stargate(INNER_RING_TEXTURE));
 	    
-		// Renders the spinny ring
-	    for(int i = 0; i < stargate.symbolCount; i++)
-	    {
-	    	symbols(stargate).getChild("symbol" + i).render(stack, ring_texture, combinedLight, combinedOverlay);
-	    }
-		
-	    // Renders Symbols
-	    for(int i = 0; i < stargate.symbolCount; i++)
-	    {
-	    	symbols(stargate).getChild("symbol" + i).render(stack, source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbol(stargate, i))), combinedLight, combinedOverlay, 48.0F/255.0F, 49.0F/255.0F, 63.0F/255.0F, 1.0F);
-	    }
-	    
-	    // Rotates the spinny ring
-	    for(int i = 0; i < stargate.symbolCount; i++)
-	    {
-	    	symbols(stargate).getChild("symbol" + i).zRot = (float) Math.toRadians(180 - stargate.angle() * i + stargate.degrees * 2);
-	    }
+	    renderRing(stargate, stack, source, combinedLight, combinedOverlay);
 		
 	    VertexConsumer ring = source.getBuffer(RenderType.entitySolid(OUTER_RING_TEXTURE));
 	    this.ring.render(stack, ring, combinedLight, combinedOverlay);
+	    this.dividers(stargate).zRot = (float) Math.toRadians(stargate.getDegrees() * 2);
 	    this.dividers(stargate).render(stack, ring, combinedLight, combinedOverlay);
-	    this.dividers(stargate).zRot = (float) Math.toRadians(stargate.degrees * 2);
+	    stack.popPose();
 	}
 	
 	@Override

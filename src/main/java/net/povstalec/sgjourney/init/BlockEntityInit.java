@@ -8,15 +8,15 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.ClassicDHDEntity;
 import net.povstalec.sgjourney.block_entities.MilkyWayDHDEntity;
-import net.povstalec.sgjourney.block_entities.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.block_entities.PegasusDHDEntity;
-import net.povstalec.sgjourney.block_entities.PegasusStargateEntity;
 import net.povstalec.sgjourney.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.block_entities.address.SandstoneCartoucheEntity;
 import net.povstalec.sgjourney.block_entities.address.SandstoneSymbolBlockEntity;
 import net.povstalec.sgjourney.block_entities.address.StoneCartoucheEntity;
 import net.povstalec.sgjourney.block_entities.address.StoneSymbolBlockEntity;
+import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
 public class BlockEntityInit 
 {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, StargateJourney.MODID);

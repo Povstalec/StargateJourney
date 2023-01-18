@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.block_entities;
+package net.povstalec.sgjourney.block_entities.stargate;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ import net.povstalec.sgjourney.stargate.StargatePart;
 
 public class MilkyWayStargateEntity extends AbstractStargateEntity
 {
-    public short degrees = 0;
+    private short degrees = 0;
     public boolean isChevronRaised;
 	
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state) 
@@ -78,6 +78,16 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return (double) 360/symbolCount;
 	}
 	
+	public short getDegrees()
+	{
+		return degrees;
+	}
+	
+	public void setDegrees(short degrees)
+	{
+		this.degrees = degrees;
+	}
+	
 	public void raiseChevron()
 	{
 		if(!isChevronRaised && !symbolInAddress(currentSymbol))
@@ -98,28 +108,30 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		}
 	}
 	
-	@Override
-	public void tick(Level level, BlockPos pos, BlockState state)
+	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
 	{
-		if(!isBusy() && !isChevronRaised && isPowered && signalStrength <= 7)
+		if(!stargate.isBusy() && !stargate.isChevronRaised && stargate.isPowered && stargate.signalStrength <= 7)
 		{
-			degrees--;
+			stargate.degrees--;
 		}
-		else if(!isBusy() && !isChevronRaised && isPowered && signalStrength >= 8 && signalStrength <= 14)
+		else if(!stargate.isBusy() && !stargate.isChevronRaised && stargate.isPowered && stargate.signalStrength >= 8 && stargate.signalStrength <= 14)
 		{
-			degrees++;
+			stargate.degrees++;
 		}
 		
-		if(degrees >= 180)
+		if(stargate.degrees >= 180)
 		{
-			degrees = (short) (degrees - 180);
+			stargate.degrees = (short) (stargate.degrees - 180);
 		}
-		else if(degrees < 0)
+		else if(stargate.degrees < 0)
 		{
-			degrees = (short) (degrees + 180);
+			stargate.degrees = (short) (stargate.degrees + 180);
 		}
-		super.tick(level, pos, state);
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundMilkyWayStargateUpdatePacket(pos, degrees, isChevronRaised));
+		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		
+		if(level.isClientSide())
+			return;
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundMilkyWayStargateUpdatePacket(stargate.worldPosition, stargate.getDegrees(), stargate.isChevronRaised));
 	}
 	
 }

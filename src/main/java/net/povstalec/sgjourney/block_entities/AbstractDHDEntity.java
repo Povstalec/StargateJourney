@@ -18,6 +18,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.init.SoundInit;
 
 public abstract class AbstractDHDEntity extends BlockEntity

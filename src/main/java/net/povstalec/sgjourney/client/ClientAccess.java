@@ -3,12 +3,12 @@ package net.povstalec.sgjourney.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.povstalec.sgjourney.block_entities.AbstractStargateEntity;
-import net.povstalec.sgjourney.block_entities.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.block_entities.PegasusStargateEntity;
 import net.povstalec.sgjourney.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.block_entities.address.SymbolBlockEntity;
+import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
 
 @SuppressWarnings("resource")
 public class ClientAccess
@@ -50,7 +50,7 @@ public class ClientAccess
     
     public static void updateStargate(BlockPos pos, int chevronsActive, boolean isBusy, int tick, String pointOfOrigin, String symbols, int currentSymbol)
     {
-        final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
         
         if (blockEntity instanceof final AbstractStargateEntity stargate)
         {
@@ -64,18 +64,18 @@ public class ClientAccess
     
     public static void updateMilkyWayStargate(BlockPos pos, short degrees,boolean isChevronRaised)
     {
-        final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
         
         if (blockEntity instanceof final MilkyWayStargateEntity stargate)
         {
-        	stargate.degrees = degrees;
+        	stargate.setDegrees(degrees);
         	stargate.isChevronRaised = isChevronRaised;
         }
     }
     
     public static void updatePegasusStargate(BlockPos pos, int[] address, int symbolBuffer, int[] addressBuffer)
     {
-        final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
         
         if (blockEntity instanceof final PegasusStargateEntity stargate)
         {

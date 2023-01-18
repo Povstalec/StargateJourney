@@ -1,0 +1,18 @@
+{
+  "name": "sgjourney:jungle_pyramid",
+
+  "fallback": "minecraft:empty",
+
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+
+        "location": "sgjourney:goauld_temple/jungle_pyramid/jungle_pyramid",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

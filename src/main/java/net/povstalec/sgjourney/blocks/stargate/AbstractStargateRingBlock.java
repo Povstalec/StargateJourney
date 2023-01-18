@@ -26,7 +26,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.povstalec.sgjourney.block_entities.AbstractStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.stargate.StargatePart;
 

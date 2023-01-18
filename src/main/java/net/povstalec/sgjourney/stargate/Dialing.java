@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.AbstractStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.data.BlockEntityList;
 import net.povstalec.sgjourney.data.StargateNetwork;
 import net.povstalec.sgjourney.init.StructureTagInit;

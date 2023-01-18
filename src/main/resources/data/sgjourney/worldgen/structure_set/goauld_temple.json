@@ -10,6 +10,14 @@
 		{
 			"structure": "sgjourney:goauld_temple/desert_pyramid/abandoned/desert_pyramid_abandoned",
 			"weight": 1
+		},
+		{
+			"structure": "sgjourney:goauld_temple/jungle_pyramid/jungle_pyramid",
+			"weight": 1
+		},
+		{
+			"structure": "sgjourney:goauld_temple/badlands_ziggurat/badlands_ziggurat",
+			"weight": 1
 		}
 	],
 	"placement":
