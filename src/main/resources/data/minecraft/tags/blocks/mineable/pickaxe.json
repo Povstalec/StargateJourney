@@ -2,6 +2,9 @@
 	"replace": false,
 	"values":
 	[
+		"sgjourney:universe_stargate",
+		"sgjourney:universe_ring",
+		
 		"sgjourney:milky_way_stargate",
 		"sgjourney:milky_way_ring",
 		"sgjourney:milky_way_dhd",
@@ -33,6 +36,14 @@
 		"sgjourney:sandstone_symbol",
 		"sgjourney:stone_symbol",
 		
-		"sgjourney:golden_idol"
+		"sgjourney:golden_idol",
+		
+		"sgjourney:naquadah_generator_mark_i",
+		"sgjourney:naquadah_generator_mark_ii",
+		
+		"sgjourney:basic_interface",
+		"sgjourney:crystal_interface",
+		
+		"sgjourney:zpm_hub"
 	]
 }

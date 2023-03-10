@@ -1,5 +1,5 @@
 {
 	"name": "Kaliem",
-	"texture": "sgjourney:kaliem.png",
+	"texture": "sgjourney:points_of_origin/kaliem.png",
 	"generates_randomly": true
 }

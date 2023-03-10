@@ -1,10 +1,16 @@
 {
 	"name": "Pegasus",
 	"type": "sgjourney:dwarf_galaxy",
-	"symbols": "sgjourney:pegasus",
-	"symbol": 18,
+	"default_symbols": "sgjourney:pegasus",
 	"solar_systems":
 	[
-		"sgjourney:lantea"
+		{
+			"solar_system": "sgjourney:lantea",
+			"address": [29, 5, 17, 34, 6, 12]
+		},
+		{
+			"solar_system": "sgjourney:end",
+			"address": [1, 2, 3, 4, 5, 6]
+		}
 	]
 }

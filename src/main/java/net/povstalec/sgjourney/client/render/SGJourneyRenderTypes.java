@@ -56,4 +56,18 @@ public class SGJourneyRenderTypes extends RenderType
 				.setWriteMaskState(COLOR_WRITE)
 				.createCompositeState(false));
 	}
+	
+	public static RenderType stargateChevron(ResourceLocation resourceLocation)
+	{
+		return create("stargate_chveron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ENTITY_NO_OUTLINE_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setCullState(NO_CULL)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(OVERLAY)
+				.setWriteMaskState(COLOR_WRITE)
+				.createCompositeState(false));
+	}
 }

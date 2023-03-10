@@ -1,5 +1,5 @@
 {
 	"name": "Wither",
-	"texture": "sgjourney:wither.png",
+	"texture": "sgjourney:points_of_origin/wither.png",
 	"generates_randomly": true
 }

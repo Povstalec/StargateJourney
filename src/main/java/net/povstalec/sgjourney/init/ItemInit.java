@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.init;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -17,6 +18,8 @@ import net.povstalec.sgjourney.items.MaTok;
 import net.povstalec.sgjourney.items.MemoryCrystalItem;
 import net.povstalec.sgjourney.items.PDAItem;
 import net.povstalec.sgjourney.items.RingRemoteItem;
+import net.povstalec.sgjourney.items.SyringeItem;
+import net.povstalec.sgjourney.items.ZeroPointModule;
 import net.povstalec.sgjourney.items.tools.SGJourneyAxeItem;
 import net.povstalec.sgjourney.items.tools.SGJourneyHoeItem;
 import net.povstalec.sgjourney.items.tools.SGJourneyPickaxeItem;
@@ -33,7 +36,13 @@ public class ItemInit
 			() -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> NAQUADAH_ALLOY = ITEMS.register("naquadah_alloy", 
 			() -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> PURE_NAQUADAH = ITEMS.register("pure_naquadah", 
+			() -> new Item(new Item.Properties().stacksTo(16)));
 	public static final RegistryObject<Item> NAQUADAH = ITEMS.register("naquadah", 
+			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
+	public static final RegistryObject<Item> NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
+			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).craftRemainder(Items.BUCKET)));
+	public static final RegistryObject<Item> NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 	
 	public static final RegistryObject<MemoryCrystalItem> MEMORY_CRYSTAL = ITEMS.register("memory_crystal", 
@@ -92,6 +101,12 @@ public class ItemInit
 		
 		public static final RegistryObject<Item> PDA = ITEMS.register("pda", 
 				() -> new PDAItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.RARE)));
+		
+		public static final RegistryObject<Item> ZPM = ITEMS.register("zero_point_module", 
+				() -> new ZeroPointModule(new ZeroPointModule.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+		
+		public static final RegistryObject<Item> SYRINGE = ITEMS.register("syringe", 
+				() -> new SyringeItem(new SyringeItem.Properties().stacksTo(1)));
 		
 	
 	public static void register(IEventBus eventBus)

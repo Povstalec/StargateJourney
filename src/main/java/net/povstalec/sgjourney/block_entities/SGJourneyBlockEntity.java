@@ -9,18 +9,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.data.BlockEntityList;
 
-public abstract class SGJourneyBlockEntity extends BlockEntity
+public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 {
-	protected String id;
+	protected static final String EMPTY = StargateJourney.EMPTY;
+	
+	private String id = EMPTY;
 	protected Type type;
 	protected boolean addToNetwork = true;
-	protected CompoundTag blockEntity;
 	
 	public SGJourneyBlockEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Type type) 
 	{
@@ -33,7 +33,7 @@ public abstract class SGJourneyBlockEntity extends BlockEntity
 		STARGATE("Stargates"),
 		TRANSPORT_RINGS("TransportRings");
 		
-		String id;
+		public String id;
 		
 		Type(String id)
 		{
@@ -46,7 +46,7 @@ public abstract class SGJourneyBlockEntity extends BlockEntity
 	{
         super.onLoad();
         
-        if(level.isClientSide)
+        if(level.isClientSide())
 	        return;
         
         if(!addToNetwork)
@@ -58,29 +58,39 @@ public abstract class SGJourneyBlockEntity extends BlockEntity
     {
     	super.load(tag);
     	
-    	if(tag.contains("ID"))
-    		id = tag.getString("ID");
-    	if(tag.contains("AddToNetwork"))
-    		addToNetwork = tag.getBoolean("AddToNetwork");
+    	id = tag.getString("ID");
+    	addToNetwork = tag.getBoolean("AddToNetwork");
 	}
 	
 	@Override
     protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		if(id != null)
-			tag.putString("ID", id);
-		
-		tag.putBoolean("AddToNetwork", addToNetwork);
-		
 		super.saveAdditional(tag);
+		
+		tag.putString("ID", id);
+		tag.putBoolean("AddToNetwork", addToNetwork);
 	}
 	
-	public void addToBlockEntityList()
+	//============================================================================================
+	//*******************************************Energy*******************************************
+	//============================================================================================
+	
+	protected boolean outputsEnergy()
 	{
+		return false;
+	}
+	
+	//============================================================================================
+	//*****************************************Other Stuff****************************************
+	//============================================================================================
+	
+	public CompoundTag addToBlockEntityList()
+	{
+		CompoundTag blockEntity;
 		if(BlockEntityList.get(level).getBlockEntities(type.id).contains(id))
 		{
 			StargateJourney.LOGGER.info("Block Entity List already contains " + id);
-			addNewToBlockEntityList();
+			blockEntity = addNewToBlockEntityList();
 		}
         else
         {
@@ -89,15 +99,20 @@ public abstract class SGJourneyBlockEntity extends BlockEntity
         }
 		
 		addToNetwork = true;
+		this.setChanged();
+		return blockEntity;
 	}
 	
-	public void addNewToBlockEntityList()
+	public CompoundTag addNewToBlockEntityList()
 	{
     	setID(generateID());
-    	blockEntity = BlockEntityList.get(level).addBlockEntity(level, worldPosition, type.id, id);
+		CompoundTag blockEntity = BlockEntityList.get(level).addBlockEntity(level, worldPosition, type.id, id);
 		StargateJourney.LOGGER.info("Block Entity " + id + " added.");
 		
 		addToNetwork = true;
+		this.setChanged();
+		
+		return blockEntity;
 	}
 	
 	public void removeFromBlockEntityList()
@@ -122,8 +137,11 @@ public abstract class SGJourneyBlockEntity extends BlockEntity
 		return id;
 	}
 	
+	@Override
 	public void getStatus(Player player)
 	{
+		super.getStatus(player);
+		
 		if(level.isClientSide)
 			return;
 		

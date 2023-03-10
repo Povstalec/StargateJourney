@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"I",
+		"B"
+	],
+	
+	"key": 
+	{
+		"I": { "item": "minecraft:iron_nugget" },
+		"B": [{ "item": "minecraft:glass_bottle" }]
+		
+	},
+	
+	"result": { "item": "sgjourney:syringe", "count": 1 }
+}

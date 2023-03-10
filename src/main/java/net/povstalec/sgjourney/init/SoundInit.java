@@ -14,6 +14,9 @@ public class SoundInit
 	
 	public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, StargateJourney.MODID);
 
+	public static final RegistryObject<SoundEvent> UNIVERSE_CHEVRON_ENGAGE = registerSoundEvent("universe_chevron_engage", 64.0F);
+	public static final RegistryObject<SoundEvent> UNIVERSE_DIAL_FAIL = registerSoundEvent("universe_dial_fail", 64.0F);
+	
 	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENCODE = registerSoundEvent("milky_way_chevron_encode", 64.0F);
 	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENGAGE = registerSoundEvent("milky_way_chevron_engage", 64.0F);
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DIAL_FAIL = registerSoundEvent("milky_way_dial_fail", 64.0F);

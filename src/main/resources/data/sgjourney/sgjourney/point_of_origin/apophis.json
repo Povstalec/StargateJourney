@@ -1,5 +1,5 @@
 {
 	"name": "Apophis",
-	"texture": "sgjourney:apophis.png",
+	"texture": "sgjourney:points_of_origin/apophis.png",
 	"generates_randomly": false
 }

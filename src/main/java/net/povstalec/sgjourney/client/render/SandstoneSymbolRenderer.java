@@ -9,11 +9,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.address.SandstoneSymbolBlockEntity;
+import net.povstalec.sgjourney.block_entities.symbols.SandstoneSymbolBlockEntity;
 
 public class SandstoneSymbolRenderer extends SymbolBlockRenderer implements BlockEntityRenderer<SandstoneSymbolBlockEntity>
 {
-	private static final ResourceLocation ERROR = new ResourceLocation(StargateJourney.MODID, "textures/symbols/points_of_origin/error.png");
+	private static final ResourceLocation ERROR = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
 	
 	public SandstoneSymbolRenderer(Context context)
 	{

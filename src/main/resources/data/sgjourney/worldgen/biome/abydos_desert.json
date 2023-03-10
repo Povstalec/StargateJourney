@@ -18,14 +18,14 @@
   "spawn_costs": {},
   "carvers": {
     "air": [
-      
+      "minecraft:cave",
+      "minecraft:cave_extra_underground"
     ]
   },
   "features": [
     [],
     [
-      "minecraft:lake_lava_underground",
-      "minecraft:lake_lava_surface"
+      "minecraft:lake_lava_underground"
     ],
     [
       "minecraft:amethyst_geode"

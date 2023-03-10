@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "sgjourney:block/zpm_hub" }
+    }
+}

@@ -40,6 +40,7 @@ public class SecretSwitchBlock extends Block
 		state.add(POWERED);
 	}
 	
+	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState state2, boolean p_54651_)
 	{
 	      if (!p_54651_ && !state.is(state2.getBlock()))
@@ -52,12 +53,14 @@ public class SecretSwitchBlock extends Block
 	         super.onRemove(state, level, pos, state2, p_54651_);
 	      }
 	   }
-
+	
+		@Override
 	   public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction direction)
 	   {
 	      return state.getValue(POWERED) ? 15 : 0;
 	   }
-
+		
+		@Override
 	   public boolean isSignalSource(BlockState state)
 	   {
 	      return true;

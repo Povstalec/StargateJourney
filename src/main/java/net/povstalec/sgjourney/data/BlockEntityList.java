@@ -17,6 +17,14 @@ import net.povstalec.sgjourney.StargateJourney;
  */
 public class BlockEntityList extends SavedData
 {
+	private static final String FILE_NAME = "sgjourney-block_enties";
+	
+	public static final String STARGATES = "Stargates";
+	public static final String TRANSPORT_RINGS = "TransportRings";
+
+	private static final String DIMENSION = "Dimension";
+	private static final String COORDINATES = "Coordinates";
+	
 	private CompoundTag blockEntityList = new CompoundTag();
 	
 	public CompoundTag addBlockEntity(Level level, BlockPos pos, String listName, String id)
@@ -25,8 +33,8 @@ public class BlockEntityList extends SavedData
 		CompoundTag localList = blockEntityList.getCompound(listName);
 		CompoundTag blockEntity = new CompoundTag();
 		
-		blockEntity.putString("Dimension", dimension);
-		blockEntity.putIntArray("Coordinates", new int[] {pos.getX(), pos.getY(), pos.getZ()});
+		blockEntity.putString(DIMENSION, dimension);
+		blockEntity.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
 		localList.put(id, blockEntity);
 		blockEntityList.put(listName, localList);
 		
@@ -73,18 +81,22 @@ public class BlockEntityList extends SavedData
 		
 		return tag;
 	}
+	
+	@Nonnull
+	public static BlockEntityList get(Level level)
+	{
+		if(level.isClientSide)
+			throw new RuntimeException("Don't access this client-side!");
+		
+		return BlockEntityList.get(level.getServer());
+	}
 
     @Nonnull
-	public static BlockEntityList get(Level level)
+	public static BlockEntityList get(MinecraftServer server)
     {
-    	MinecraftServer server = level.getServer();
-    	
-        if (level.isClientSide)
-            throw new RuntimeException("Don't access this client-side!");
+    	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        DimensionDataStorage storage = server.overworld().getDataStorage();
-        
-        return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, "sgjourney-block_enties");
+        return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, FILE_NAME);
     }
     
 //================================================================================================

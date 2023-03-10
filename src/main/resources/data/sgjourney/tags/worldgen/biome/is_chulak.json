@@ -1,6 +1,7 @@
 {
-  "values": [
-    "sgjourney:chulak_forest",
-    "sgjourney:chulak_plains"
-  ]
+	"values":
+	[
+		"sgjourney:chulak_forest",
+		"sgjourney:chulak_plains"
+	]
 }

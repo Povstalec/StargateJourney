@@ -1,0 +1,34 @@
+{
+	"replace": false,
+	"values":
+	[
+		"#minecraft:logs_that_burn",
+		"#minecraft:planks",
+		"#minecraft:wooden_slabs",
+		"#minecraft:wooden_stairs",
+		"#minecraft:wooden_trapdoors",
+		"#minecraft:wooden_doors",
+		"#minecraft:wooden_fences",
+		"#minecraft:wool",
+		"#minecraft:wool_carpets",
+		"#minecraft:leaves",
+		
+		"minecraft:coal_block",
+		"minecraft:composter",
+		"minecraft:beehive",
+		"minecraft:bee_nest",
+		"minecraft:target",
+		"minecraft:tnt",
+		"minecraft:bookshelf",
+		"minecraft:lectern",
+		"minecraft:dried_kelp_block",
+		"minecraft:azalea",
+		"minecraft:flowering_azalea",
+		"minecraft:hay_block",
+		"minecraft:scaffolding",
+		"minecraft:dead_bush",
+		"minecraft:mangrove_roots",
+		"minecraft:netherrack",
+		"minecraft:magma_block"
+	]
+}

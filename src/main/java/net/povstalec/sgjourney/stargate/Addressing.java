@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import net.povstalec.sgjourney.StargateJourney;
-
 public class Addressing
 {
-	public static int[] randomAddress(int size, long seed)
+	public static int[] randomAddress(int size, int limit, long seed)
+	{
+		return randomAddress(0, size, limit, seed);
+	}
+	
+	public static int[] randomAddress(int prefix, int size, int limit, long seed)
 	{
 		Random random = new Random(seed);
 		int[] address = new int[size];
@@ -20,7 +23,10 @@ public class Addressing
 		{
 			for(int i = 0; i < size; i++)
 			{
-				address[i] = random.nextInt(1, 39);
+				if(i == 0 && prefix > 0 && prefix < limit)
+					address[i] = prefix;
+				else
+					address[i] = random.nextInt(1, limit);
 			}
 			if(differentNumbers(address))
 				isValid = true;
@@ -29,7 +35,7 @@ public class Addressing
 		return address;
 	}
 	
-	//TODO use this
+	//TODO use this somewhere
 	public static int[] randomAddress(int size)
 	{
 		Random random = new Random();
@@ -63,57 +69,7 @@ public class Addressing
 		return newarray;
 	}
 	
-	public static int[] convertTo7chevronAddress(int[] address)
-	{
-		// 18
-		int[] convertor = {	address[0] - 10, // 8
-							address[0] + 15, // 33
-							address[0] - 3, // 15
-							-address[0] + 7, // -11
-							address[0] + 1, // 19
-							-address[0] + 17}; // -1
-		int[] convertedAddress = new int[6];
-		
-		for(int i = 0; i < 6; i++)
-		{
-			convertedAddress[i] = address[i + 1] + convertor[i];
-			
-			if(convertedAddress[i] < 1)
-				convertedAddress[i] = convertedAddress[i] + 38;
-			else if(convertedAddress[i] > 38)
-				convertedAddress[i] = convertedAddress[i] - 38;
-		}
-
-		StargateJourney.LOGGER.info("Converted Address to: " + addressIntArrayToString(convertedAddress));
-		return convertedAddress;
-	}
-	
-	public static int[] convertTo8chevronAddress(int symbol, int[] address)
-	{
-		int[] convertor = {	symbol - 10,
-							symbol + 15,
-							symbol - 3,
-							-symbol + 7,
-							symbol + 1,
-							-symbol + 17};
-		int[] convertedAddress = new int[7];
-		convertedAddress[0] = symbol;
-		
-		for(int i = 1; i < 7; i++)
-		{
-			convertedAddress[i] = address[i - 1] - convertor[i - 1];
-			
-			if(convertedAddress[i] < 1)
-				convertedAddress[i] = convertedAddress[i] + 38;
-			else if(convertedAddress[i] > 38)
-				convertedAddress[i] = convertedAddress[i] - 38;
-		}
-
-		StargateJourney.LOGGER.info("Converted Address to: " + addressIntArrayToString(convertedAddress));
-		return convertedAddress;
-	}
-	
-	private static int[] addressStringToIntArray(String addressString)
+	public static int[] addressStringToIntArray(String addressString)
 	{
 		String[] stringArray = addressString.split("-");
 		int[] intArray = new int[0];
@@ -148,5 +104,16 @@ public class Addressing
 		List<Integer> arrayList = Arrays.stream(address).boxed().toList();
 		Set<Integer> arraySet = new HashSet<Integer>(arrayList);
 		return (arraySet.size() == address.length);
+	}
+	
+	public static boolean addressContainsSymbol(int[] address, int symbol)
+	{
+		for(int i = 0; i < address.length; i++)
+		{
+			if(address[i] == symbol)
+				return true;
+		}
+		
+		return false;
 	}
 }

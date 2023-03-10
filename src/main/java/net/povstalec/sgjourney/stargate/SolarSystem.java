@@ -19,20 +19,23 @@ public class SolarSystem
 	
     public static final Codec<SolarSystem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(SolarSystem::getName),
-			Codec.INT.listOf().fieldOf("address").forGetter(SolarSystem::getAddress),
+			Symbols.RESOURCE_KEY_CODEC.fieldOf("symbols").forGetter(SolarSystem::getSymbols),
+			Codec.INT.listOf().fieldOf("extragalactic_address").forGetter(SolarSystem::getExtragalacticAddress),
 			PointOfOrigin.RESOURCE_KEY_CODEC.fieldOf("point_of_origin").forGetter(SolarSystem::getPointOfOrigin),
 			Level.RESOURCE_KEY_CODEC.listOf().fieldOf("dimensions").forGetter(SolarSystem::getDimensions)
 			).apply(instance, SolarSystem::new));
 
 	private final String name;
-	private final List<Integer> address;
+	private final ResourceKey<Symbols> symbols;
+	private final List<Integer> extragalactic_address;
 	private final ResourceKey<PointOfOrigin> point_of_origin;
 	private final List<ResourceKey<Level>> dimensions;
 	
-	public SolarSystem(String name, List<Integer> address, ResourceKey<PointOfOrigin> point_of_origin, List<ResourceKey<Level>> dimensions)
+	public SolarSystem(String name, ResourceKey<Symbols> symbols, List<Integer> extragalactic_address, ResourceKey<PointOfOrigin> point_of_origin, List<ResourceKey<Level>> dimensions)
 	{
 		this.name = name;
-		this.address = address;
+		this.symbols = symbols;
+		this.extragalactic_address = extragalactic_address;
 		this.point_of_origin = point_of_origin;
 		this.dimensions = dimensions;
 	}
@@ -42,14 +45,19 @@ public class SolarSystem
 		return name;
 	}
 	
-	public List<Integer> getAddress()
+	public ResourceKey<Symbols> getSymbols()
 	{
-		return address;
+		return symbols;
+	}
+	
+	public List<Integer> getExtragalacticAddress()
+	{
+		return extragalactic_address;
 	}
 	
 	public int[] getAddressArray()
 	{
-		return address.stream().mapToInt((integer) -> integer).toArray();
+		return extragalactic_address.stream().mapToInt((integer) -> integer).toArray();
 	}
 	
 	public ResourceKey<PointOfOrigin> getPointOfOrigin()
@@ -62,16 +70,16 @@ public class SolarSystem
 		return dimensions;
 	}
 	
-	public static SolarSystem getPlanet(Level level, String part1, String part2)
+	public static SolarSystem getSolarSystem(Level level, String part1, String part2)
 	{
-        return getPlanet(level, new ResourceLocation(part1, part2));
+        return getSolarSystem(level, new ResourceLocation(part1, part2));
 	}
 	
-	public static SolarSystem getPlanet(Level level, ResourceLocation planet)
+	public static SolarSystem getSolarSystem(Level level, ResourceLocation solarSystem)
 	{
 		RegistryAccess registries = level.getServer().registryAccess();
         Registry<SolarSystem> registry = registries.registryOrThrow(SolarSystem.REGISTRY_KEY);
         
-        return registry.get(planet);
+        return registry.get(solarSystem);
 	}
 }

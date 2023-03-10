@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
-import net.povstalec.sgjourney.init.LayerInit;
+import net.povstalec.sgjourney.client.Layers;
 
 @OnlyIn(Dist.CLIENT)
 public class TransportRingsRenderer implements BlockEntityRenderer<TransportRingsEntity>
@@ -27,7 +27,7 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 	
 	public TransportRingsRenderer(BlockEntityRendererProvider.Context p_173554_)
 	{
-		ModelPart modelpart = p_173554_.bakeLayer(LayerInit.TRANSPORT_RING_LAYER);
+		ModelPart modelpart = p_173554_.bakeLayer(Layers.TRANSPORT_RING_LAYER);
 		this.first_ring = modelpart.getChild("first_ring");
 		this.second_ring = modelpart.getChild("second_ring");
 		this.third_ring = modelpart.getChild("third_ring");
@@ -35,26 +35,26 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 		this.fifth_ring = modelpart.getChild("fifth_ring");
 	}
 	
-	private float getHeight(int ringNumber, int emptySpace, int transportHeight, int ticks, int progress, float partialTicks)
+	private float getHeight(TransportRingsEntity rings, int ringNumber, float partialTick)
 	{
 		float ringHeight = 0;
 		
 		int startTicks = 6 * (ringNumber - 1);
-		int movingHeight = progress - 6 * (ringNumber - 1);
-		int staticHeight = transportHeight - 2 * (ringNumber - 1);
+		float movingHeight = rings.getProgress(partialTick) - 6 * (ringNumber - 1);
+		int staticHeight = rings.getTransportHeight() - 2 * (ringNumber - 1);
 		
-		int stopHeight = transportHeight + 17 - 4 * (5 - ringNumber);
+		int stopHeight = rings.getTransportHeight() + 17 - 4 * (5 - ringNumber);
 		
-		if(ticks == progress && progress > startTicks && progress < stopHeight)
-			ringHeight = (movingHeight/* + partialTicks*/) * 4;
-		else if(progress >= stopHeight)
+		if(rings.ticks == rings.progress && rings.progress > startTicks && rings.progress < stopHeight)
+			ringHeight = movingHeight * 4;
+		else if(rings.progress >= stopHeight)
 			ringHeight = staticHeight * 4;
-		else if(ticks != progress && progress > startTicks && progress < stopHeight)
-			ringHeight = (movingHeight/* - partialTicks*/) * 4;
+		else if(rings.ticks != rings.progress && rings.progress > startTicks && rings.progress < stopHeight)
+			ringHeight = movingHeight * 4;
 		
-		if(emptySpace > 0)
+		if(rings.emptySpace > 0)
 				return ringHeight;
-		else if(emptySpace < 0)
+		else if(rings.emptySpace < 0)
 			return -ringHeight;
 		
 		return 0;
@@ -69,25 +69,25 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 		
 		if(rings.progress > 0)
 		{
-			this.first_ring.y = getHeight(1, rings.emptySpace, rings.transportHeight, rings.ticks, rings.progress, partialTick);
+			this.first_ring.y = getHeight(rings, 1, partialTick);
 			this.first_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
 		}
 		if(rings.progress > 6)
 		{
-			this.second_ring.y = getHeight(2, rings.emptySpace, rings.transportHeight, rings.ticks, rings.progress, partialTick);
+			this.second_ring.y = getHeight(rings, 2, partialTick);
 		    this.second_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
 		}
 		if(rings.progress > 12)
 		{
-			this.third_ring.y = getHeight(3, rings.emptySpace, rings.transportHeight, rings.ticks, rings.progress, partialTick);
+			this.third_ring.y = getHeight(rings, 3, partialTick);
 		    this.third_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
 		}
 		if(rings.progress > 18)
 		{
-			this.fourth_ring.y = getHeight(4, rings.emptySpace, rings.transportHeight, rings.ticks, rings.progress, partialTick);
+			this.fourth_ring.y = getHeight(rings, 4, partialTick);
 		    this.fourth_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
 		}
-		this.fifth_ring.y = getHeight(5, rings.emptySpace, rings.transportHeight, rings.ticks, rings.progress, partialTick);
+		this.fifth_ring.y = getHeight(rings, 5, partialTick);
 	    if(rings.progress <= 24)
 	    	this.fifth_ring.render(stack, vertexconsumer, combinedLight, combinedOverlay);
 	    else

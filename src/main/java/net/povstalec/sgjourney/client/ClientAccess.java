@@ -5,10 +5,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
-import net.povstalec.sgjourney.block_entities.address.SymbolBlockEntity;
+import net.povstalec.sgjourney.block_entities.energy_gen.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.block_entities.symbols.SymbolBlockEntity;
 
 @SuppressWarnings("resource")
 public class ClientAccess
@@ -23,15 +25,13 @@ public class ClientAccess
         }
     }
     
-    public static void updateRings(BlockPos pos, int ticks, int emptySpace, int progress, int transportHeight, int transportLight)
+    public static void updateRings(BlockPos pos, int emptySpace, int transportHeight, int transportLight)
     {
         final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
         
         if (blockEntity instanceof final TransportRingsEntity rings)
         {
         	rings.emptySpace = emptySpace;
-        	rings.ticks = ticks;
-        	rings.progress = progress;
         	rings.transportHeight = transportHeight;
         	rings.transportLight = transportLight;
         }
@@ -48,40 +48,65 @@ public class ClientAccess
         }
     }
     
-    public static void updateStargate(BlockPos pos, int chevronsActive, boolean isBusy, int tick, String pointOfOrigin, String symbols, int currentSymbol)
+    public static void updateStargate(BlockPos pos, int[] address, boolean dialingOut, int tick, String pointOfOrigin, String symbols)
     {
     	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
         
         if (blockEntity instanceof final AbstractStargateEntity stargate)
         {
-        	stargate.chevronsActive = chevronsActive;
-        	stargate.tick = tick;
-        	stargate.currentSymbol = currentSymbol;
-        	stargate.pointOfOrigin = pointOfOrigin;
-        	stargate.symbols = symbols;
+        	stargate.setAddress(address);
+        	stargate.setDialingOut(dialingOut);
+        	stargate.setTickCount(tick);
+        	stargate.setPointOfOrigin(pointOfOrigin);
+        	stargate.setSymbols(symbols);
         }
     }
     
-    public static void updateMilkyWayStargate(BlockPos pos, short degrees,boolean isChevronRaised)
+    public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int animationTicks, int rotation, int oldRotation)
+    {
+    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+        
+        if (blockEntity instanceof final UniverseStargateEntity stargate)
+        {
+        	stargate.symbolBuffer = symbolBuffer;
+        	stargate.addressBuffer = addressBuffer;
+        	stargate.animationTicks = animationTicks;
+        	stargate.rotation = rotation;
+        	stargate.oldRotation = oldRotation;
+        }
+    }
+    
+    public static void updateMilkyWayStargate(BlockPos pos, int rotation, boolean isChevronRaised)
     {
     	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
         
         if (blockEntity instanceof final MilkyWayStargateEntity stargate)
         {
-        	stargate.setDegrees(degrees);
+        	stargate.setRotation(rotation);
         	stargate.isChevronRaised = isChevronRaised;
         }
     }
     
-    public static void updatePegasusStargate(BlockPos pos, int[] address, int symbolBuffer, int[] addressBuffer)
+    public static void updatePegasusStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int currentSymbol)
     {
     	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
         
         if (blockEntity instanceof final PegasusStargateEntity stargate)
         {
-        	stargate.updateAddressAndChevrons(address, address.length);
         	stargate.symbolBuffer = symbolBuffer;
         	stargate.addressBuffer = addressBuffer;
+        	stargate.currentSymbol = currentSymbol;
+        }
+    }
+    
+    public static void updateNaquadahGenerator(BlockPos pos, int reactionProgress, long energy)
+    {
+    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+        
+        if (blockEntity instanceof final NaquadahGeneratorEntity generator)
+        {
+        	generator.setReactionProgress(reactionProgress);
+        	generator.setEnergy(energy);
         }
     }
 }

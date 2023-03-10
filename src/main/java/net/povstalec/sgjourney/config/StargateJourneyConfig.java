@@ -20,8 +20,12 @@ public class StargateJourneyConfig
 	
 	static
 	{
+		ServerEnergyConfig.init(server_builder);
 		ServerStargateConfig.init(server_builder);
+		ServerNaquadahGeneratorConfig.init(server_builder);
 		ServerStargateNetworkConfig.init(server_builder);
+		ServerTechConfig.init(server_builder);
+		ServerGeneticConfig.init(server_builder);
 		
 		ClientStargateConfig.init(client_builder);
 		

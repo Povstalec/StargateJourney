@@ -6,6 +6,8 @@ import net.minecraft.util.StringRepresentable;
 
 public enum StargatePart implements StringRepresentable
 {
+	CENTER("center"),
+	
 	LEFT("left"),
 	
 	LEFT2("left2"),

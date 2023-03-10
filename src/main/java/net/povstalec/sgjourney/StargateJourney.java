@@ -15,16 +15,21 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DataPackRegistryEvent;
+import net.povstalec.sgjourney.client.Layers;
+import net.povstalec.sgjourney.client.render.ClassicStargateRenderer;
 import net.povstalec.sgjourney.client.render.MilkyWayStargateRenderer;
 import net.povstalec.sgjourney.client.render.PegasusStargateRenderer;
 import net.povstalec.sgjourney.client.render.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.SandstoneSymbolRenderer;
 import net.povstalec.sgjourney.client.render.StoneSymbolRenderer;
 import net.povstalec.sgjourney.client.render.TransportRingsRenderer;
+import net.povstalec.sgjourney.client.render.UniverseStargateRenderer;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
+import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
+import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
@@ -32,7 +37,6 @@ import net.povstalec.sgjourney.init.EntityInit;
 import net.povstalec.sgjourney.init.EventInit;
 import net.povstalec.sgjourney.init.GalaxyInit;
 import net.povstalec.sgjourney.init.ItemInit;
-import net.povstalec.sgjourney.init.LayerInit;
 import net.povstalec.sgjourney.init.MenuInit;
 import net.povstalec.sgjourney.init.MiscInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
@@ -52,6 +56,8 @@ import org.slf4j.Logger;
 public class StargateJourney
 {
     public static final String MODID = "sgjourney";
+    public static final String EMPTY = MODID + ":empty";
+    
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public StargateJourney()
@@ -79,7 +85,7 @@ public class StargateJourney
         });
         
         eventBus.addListener(this::commonSetup);
-        eventBus.addListener(LayerInit::initLayers);
+        eventBus.addListener(Layers::registerLayers);
         eventBus.addListener(EventInit::onRegisterModTabs);
         eventBus.addListener(EventInit::addCreative);
         
@@ -92,20 +98,29 @@ public class StargateJourney
     
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-    	event.enqueueWork(() -> {VillagerInit.registerPOIs();});
-    	event.enqueueWork(PacketHandlerInit::init);
+    	event.enqueueWork(() -> 
+    	{
+    		PacketHandlerInit.register();
+    		VillagerInit.registerPOIs();
+    	});
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
     {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
         	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
+        	
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);
         	MenuScreens.register(MenuInit.PEGASUS_DHD.get(), PegasusDHDScreen::new);
+        	MenuScreens.register(MenuInit.CLASSIC_DHD.get(), ClassicDHDScreen::new);
+
+        	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
+
+        	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	
@@ -113,8 +128,12 @@ public class StargateJourney
         	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), StoneSymbolRenderer::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
+
+        	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
+        	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
         }
     }
+    
 }

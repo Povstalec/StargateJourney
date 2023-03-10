@@ -1,8 +1,6 @@
 package net.povstalec.sgjourney.init;
 
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -13,29 +11,33 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.data.RingsNetwork;
 import net.povstalec.sgjourney.data.StargateNetwork;
-import net.povstalec.sgjourney.stargate.Addressing;
-import net.povstalec.sgjourney.stargate.Galaxy;
-import net.povstalec.sgjourney.stargate.SolarSystem;
+import net.povstalec.sgjourney.data.Universe;
+import net.povstalec.sgjourney.data.RingsNetwork;
 
 public class CommandInit
 {
+	private static final String EMPTY = StargateJourney.EMPTY;
+	
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
 	{
-		// Stargate Network Commands
+		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("stargateNetwork")
-						.then(Commands.literal("getAddress")
+						.then(Commands.literal("address")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
 										.executes(CommandInit::getAddress)))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("stargateNetwork")
+						.then(Commands.literal("extragalacticAddress")
+								.then(Commands.argument("dimension", DimensionArgument.dimension())
+										.executes(CommandInit::getExtragalacticAddress)))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("stargateNetwork")
@@ -50,13 +52,8 @@ public class CommandInit
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("stargateNetwork")
-						.then(Commands.literal("regenerate")
-								.executes(CommandInit::regenerateNetwork))));
-		
-		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
-						.then(Commands.literal("reload")
-								.executes(CommandInit::reloadNetwork))));
+						.then(Commands.literal("forceStellarUpdate")
+								.executes(CommandInit::forceStellarUpdate))));
 		
 		
 		
@@ -67,56 +64,54 @@ public class CommandInit
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
 										.executes(CommandInit::getTransportRings)))));
 		
-		dispatcher.register(Commands.literal(StargateJourney.MODID).then(Commands.literal("galaxies").executes(CommandInit::getGalaxies)));
-		
-		/*
-		 * sgjourney
-		 * 				stargateNetwork
-		 * 									getAddress
-		 * 									getAllStargates
-		 * 									regenerate
-		 * 				ringsNetwork
-		 * 									getAllRings
-		 */
-	}
-	
-	private static int getGalaxies(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{
-		Level level = context.getSource().getPlayer().level;
-		
-		final RegistryAccess registries = level.getServer().registryAccess();
-        final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
-        final Registry<SolarSystem> planetRegistry = registries.registryOrThrow(SolarSystem.REGISTRY_KEY);
-        Set<Entry<ResourceKey<Galaxy>, Galaxy>> set = galaxyRegistry.entrySet();
-        
-        set.forEach((galaxy) -> 
-        {
-        	context.getSource().getPlayer().sendSystemMessage(Component.literal(galaxy.getValue().getName()).withStyle(ChatFormatting.LIGHT_PURPLE));
-        	galaxy.getValue().getPlanets().forEach((planet) -> 
-        		context.getSource().getPlayer().sendSystemMessage(Component.literal("-" + planetRegistry.get(planet).getName()).withStyle(ChatFormatting.AQUA))
-        	);
-        }
-        );
-		
-		return Command.SINGLE_SUCCESS;
+		//Dev commands
+		dispatcher.register(Commands.literal(StargateJourney.MODID).then(Commands.literal("info").executes(CommandInit::printStargateNetworkInfo)));
 	}
 	
 	private static int getAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getPlayer().getLevel();
 		
-		int[] address = StargateNetwork.get(level).getPlanets().getCompound(dimension).getIntArray("Address");
-		String addressString = Addressing.addressIntArrayToString(address);
+		String currentDimension = level.dimension().location().toString();
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("The address of " + dimension + " is:"));
-		context.getSource().getPlayer().sendSystemMessage(Component.literal(addressString).withStyle(ChatFormatting.AQUA));
-
-		int galaxy = StargateNetwork.get(level).getPlanets().getCompound(dimension).getInt("Galaxy");
-		String extragalactic = Addressing.addressIntArrayToString(Addressing.convertTo8chevronAddress(galaxy, address));
+		// List of Galaxies the dialing Dimension is located in
+		ListTag galaxies = Universe.get(level).getGalaxiesFromDimension(currentDimension);
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("with an extragalactic address:"));
-		context.getSource().getPlayer().sendSystemMessage(Component.literal(extragalactic).withStyle(ChatFormatting.AQUA));
+		if(galaxies.isEmpty())
+		{
+			context.getSource().getPlayer().sendSystemMessage(Component.literal("You are not located in any Galaxy").withStyle(ChatFormatting.DARK_RED));
+		}
+		else
+		{
+			// Makes a chat message for each galaxy the Dimension is located in
+			for(int i = 0; i < galaxies.size(); i++)
+			{
+				String galaxy = galaxies.getCompound(i).getAllKeys().iterator().next();
+				String address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy, dimension);
+				if(address.equals(EMPTY))
+					context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension + " is not located in " + galaxy).withStyle(ChatFormatting.RED));
+				else
+				{
+					context.getSource().getPlayer().sendSystemMessage(Component.literal("The address of " + dimension + " in " + galaxy + " is:"));
+					context.getSource().getPlayer().sendSystemMessage(Component.literal(address).withStyle(ChatFormatting.GOLD));
+				}
+			}
+			
+		}
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int getExtragalacticAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
+		Level level = context.getSource().getPlayer().getLevel();
+		
+		String address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("The extragalactic address of " + dimension + " is:"));
+		context.getSource().getPlayer().sendSystemMessage(Component.literal(address).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -124,35 +119,35 @@ public class CommandInit
 	private static int getStargates(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getPlayer().getLevel();
+		String solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
 		
-		CompoundTag stargates = StargateNetwork.get(level).getStargatesInDimension(level, dimension);
-		
-		if(stargates.contains("PrimaryStargate"))
-			stargates.remove("PrimaryStargate");
-		
-		if(stargates.isEmpty())
+		if(!solarSystem.isEmpty())
 		{
-			context.getSource().getPlayer().sendSystemMessage(Component.literal("Dimension has no registered Stargates"));
-			return Command.SINGLE_SUCCESS;
+			context.getSource().getPlayer().sendSystemMessage(Component.literal("Stargates in " + dimension));
+			CompoundTag stargates = StargateNetwork.get(level).getSolarSystem(solarSystem);
+			stargates.getAllKeys().forEach(stargateID ->
+			{
+				CompoundTag stargate = stargates.getCompound(stargateID);
+				String stargateDimension = stargate.getString("Dimension");
+				
+				if(stargateDimension.equals(dimension))
+				{
+					int[] coordinates = stargate.getIntArray("Coordinates");
+					context.getSource().getPlayer().sendSystemMessage(Component.literal(
+							stargateID + " at X: " + coordinates[0] + " Y: " + coordinates[1] + " Z: " + coordinates[2]).withStyle(ChatFormatting.AQUA));
+				}
+			});
 		}
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("Stargates in " + dimension));
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
-		
-		stargates.getAllKeys().forEach((stargate) ->
-		{
-			int[] coords = stargates.getCompound(stargate).getIntArray("Coordinates");
-			
-			context.getSource().getPlayer().sendSystemMessage(Component.literal(" X: " + coords[0] + " Y: " + coords[1] + " Z: " + coords[2] + " | ").withStyle(ChatFormatting.AQUA).append(stargate));
-		});
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+		else
+			context.getSource().getPlayer().sendSystemMessage(Component.literal("No Stargates could be located in " + dimension).withStyle(ChatFormatting.RED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
 	
 	private static int getVersion(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getPlayer().getLevel();
 		
 		int version = StargateNetwork.get(level).getVersion();
 		
@@ -160,30 +155,22 @@ public class CommandInit
 		return Command.SINGLE_SUCCESS;
 	}
 	
-	private static int regenerateNetwork(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	private static int forceStellarUpdate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getPlayer().getLevel();
 		
-		StargateNetwork.get(level).regenerateNetwork(level, true);
+		StargateNetwork.get(level).stellarUpdate(level.getServer());
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("Regenerated Stargate Network").withStyle(ChatFormatting.DARK_RED));
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Stellar Update Applied").withStyle(ChatFormatting.RED));
 		return Command.SINGLE_SUCCESS;
 	}
 	
-	private static int reloadNetwork(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{
-		Level level = context.getSource().getPlayer().level;
-		
-		StargateNetwork.get(level).reloadNetwork(level);
-		
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("Reloaded Stargate Network").withStyle(ChatFormatting.RED));
-		return Command.SINGLE_SUCCESS;
-	}
+	
 	
 	private static int getTransportRings(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getPlayer().getLevel();
 
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Transport Rings"));
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
@@ -197,6 +184,23 @@ public class CommandInit
 			context.getSource().getPlayer().sendSystemMessage(Component.literal("X: " + coords[0] + " Y: " + coords[1] + " Z: " + coords[2]).withStyle(ChatFormatting.AQUA));
 		}
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	//Only used for console checks
+	private static int printStargateNetworkInfo(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getPlayer().getLevel();
+
+		System.out.println("Dimensions:\n" + Universe.get(level).getDimensions());
+		System.out.println("Solar Systems:\n" + Universe.get(level).getSolarSystems());
+		System.out.println("Galaxies:\n" + Universe.get(level).getGalaxies());
+		System.out.println("Extragalactic Addresses:\n" + Universe.get(level).getExtragalacticAddressInfo());
+		System.out.println("=============================");
+		System.out.println("Stargates:\n" + StargateNetwork.get(level).getStargates());
+		System.out.println("Stargates in Solar Systems:\n" + StargateNetwork.get(level).getSolarSystems());
+		System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
 		
 		return Command.SINGLE_SUCCESS;
 	}

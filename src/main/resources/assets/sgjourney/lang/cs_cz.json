@@ -18,8 +18,12 @@
 	"block.sgjourney.sandstone_cartouche": "P\u00edskovcov\u00e1 kartu\u0161e",
 	"block.sgjourney.stone_cartouche": "Kamenn\u00e1 kartu\u0161e",
 	
+	"block.sgjourney.universe_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.universe_ring": "Hv\u011bzdn\u00e1 br\u00e1na",
 	"block.sgjourney.milky_way_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.milky_way_ring": "Hv\u011bzdn\u00e1 br\u00e1na",
 	"block.sgjourney.pegasus_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.pegasus_ring": "Hv\u011bzdn\u00e1 br\u00e1na",
 	"block.sgjourney.milky_way_dhd": "Ovl\u00e1dac\u00ed panel",
 	"block.sgjourney.pegasus_dhd": "Ovl\u00e1dac\u00ed panel",
 	"block.sgjourney.classic_dhd": "Ovl\u00e1dac\u00ed panel",
@@ -27,9 +31,22 @@
 	"block.sgjourney.transport_rings": "Transportn\u00ed kruhy",
 	"block.sgjourney.ring_panel": "Ovl\u00e1d\u00e1n\u00ed kruh\u016f",
 	
+	"block.sgjourney.naquadah_generator_mark_i": "Naquadahov\u00fd Gener\u00e1tor Mark I",
+	"block.sgjourney.naquadah_generator_mark_ii": "Naquadahov\u00fd Gener\u00e1tor Mark II",
+	
+	"block.sgjourney.basic_interface": "Z\u00e1kladn\u00ed rozhran\u00ed",
+	"block.sgjourney.crystal_interface": "Krystalov\u00e9 rozhran\u00ed",
+	"block.sgjourney.advanced_crystal_interface": " Pokročil\u00e9 krystalov\u00e9 rozhran\u00ed",
+	
+	"block.sgjourney.zpm_plug": "ZPM Plug",
+	"block.sgjourney.zpm_hub": "ZPM Hub",
+	
 	"item.sgjourney.raw_naquadah": "Vyt\u011b\u017een\u00fd naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadahov\u00e1 slitina",
+	"item.sgjourney.pure_naquadah": "\u010cist\u00fd naquadah",
 	"item.sgjourney.naquadah": "Naquadah vojensk\u00e9 \u00farovn\u011b",
+	"item.sgjourney.liquid_naquadah_bucket": "Kbel\u00edk tekut\u00e9ho naquadahu",
+	"item.sgjourney.liquid_naquadah_bottle": "Lahvi\u010dka tekut\u00e9ho naquadahu",
 
 	"item.sgjourney.transportation_crystal": "Transporta\u010dn\u00ed krystal",
 	"item.sgjourney.energy_crystal": "Energetick\u00fd krystal",
@@ -48,6 +65,9 @@
 	"item.sgjourney.matok": "Ty\u010dov\u00e1 zbra\u0148",
 	
 	"item.sgjourney.pda": "PDA",
+	"item.sgjourney.zero_point_module": "Modul nulov\u00e9ho bodu",
+	
+	"item.sgjourney.syringe": "Injekce",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadahov\u00e1 helma",
 	"item.sgjourney.naquadah_chestplate": "Naquadahov\u00e9 brn\u011bn\u00ed",
@@ -67,13 +87,13 @@
 	
 	"itemGroup.stargate_blocks": "Hv\u011bzdn\u00e1 br\u00e1na - Bloky",
 	"itemGroup.stargate_items": "Hv\u011bzdn\u00e1 br\u00e1na - P\u0159edm\u011bty",
-	"itemGroup.stargate_decorations": "Hv\u011bzdn\u00e1 br\u00e1na - Dekorace",
 
 	"screen.sgjourney.archeology_table": "Arheologick\u00fd st\u016fl",
 	"screen.sgjourney.transport_rings": "Transportn\u00ed kruhy",
+	"screen.sgjourney.naquadah_generator": "Naquadahov\u00fd Gener\u00e1tor",
+	"screen.sgjourney.zpm_hub": "ZPM Hub",
 	
 	"biome.sgjourney.abydos_desert": "Abydosk\u00e1 pou\u0161\u0165",
-	"biome.sgjourney.abydos_desert_hills": "Hornat\u00e1 Abydosk\u00e1 pou\u0161\u0165",
 	"biome.sgjourney.abydos_spires": "Abydosk\u00e9 v\u011b\u017ee",
 	"biome.sgjourney.lantean_ocean": "Atlan\u0165anský oce\u00e1n",
 	
@@ -82,5 +102,17 @@
 	"advancements.stargate.naquadah.title": "Miner\u00e1l jako \u017e\u00e1dn\u00fd jin\u00fd na zemi...",
 	"advancements.stargate.naquadah.description":"Z\u00edskej naquadah",
 	
-	"tooltips.sgjourney.pda_info": "PDA"
+	"tooltip.sgjourney.kara_kesh_terror": "M\u00f3d: Teror",
+	"tooltip.sgjourney.kara_kesh_knockback": "M\u00f3d: Odhozen\u00ed",
+	"tooltip.sgjourney.pda_info": "Prav\u00e9 kliknut\u00ed: Vr\u00e1t\u00ed informace o c\u00edli",
+	"tooltip.sgjourney.syringe_contents": "Obsah:",
+	"tooltip.sgjourney.syringe_empty": "Pr\u00e1zdn\u00e9",
+	"tooltip.sgjourney.syringe_blood": "Krev",
+	"tooltip.sgjourney.syringe_prototype_ata_gene": "Prototyp antick\u00e9 genov\u00e9 terapie",
+	"tooltip.sgjourney.syringe_ata_gene": "Antick\u00e1 genov\u00e1 terapie",
+	
+	"message.sgjourney.syringe_got_ancient_gene": "Nyn\u00ed m\u00e1\u0161 antick\u00fd gen",
+	"message.sgjourney.syringe_has_ancient_gene": "U\u017e m\u00e1\u0161 antick\u00fd gen",
+	"message.sgjourney.pda_has_ancient_gene": "M\u00e1 antick\u00fd gen",
+	"message.sgjourney.pda_has_naquadah_in_bloodstream": "M\u00e1 v krvi naquadah"
 }

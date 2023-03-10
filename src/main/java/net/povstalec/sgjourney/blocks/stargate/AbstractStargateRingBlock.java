@@ -27,7 +27,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.stargate.StargatePart;
 
 public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock
@@ -267,20 +266,16 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 		{
 			if (!level.isClientSide)
 			{
+				stargate.disconnectStargate();
 				ItemStack itemstack = new ItemStack(getStargate());
 				
 				blockentity.saveToItem(itemstack);
-				/*if (stargate.hasCustomName())
-				{
-					itemstack.setHoverName(stargate.getCustomName());
-				}*/
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
 				level.addFreshEntity(itementity);
 			}
 		}
-
 		super.playerWillDestroy(level, pos, state, player);
-		}
+	}
 }

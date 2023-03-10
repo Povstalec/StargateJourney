@@ -1,5 +1,5 @@
 {
 	"name": "Giza",
-	"texture": "sgjourney:giza.png",
+	"texture": "sgjourney:points_of_origin/giza.png",
 	"generates_randomly": true
 }

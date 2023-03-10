@@ -25,6 +25,7 @@ import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.stargate.StargatePart;
 import net.povstalec.sgjourney.stargate.Symbols;
 
 public class MilkyWayStargateBlock extends AbstractStargateBlock
@@ -73,27 +74,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
 		if(blockentity instanceof MilkyWayStargateEntity stargate)
 		{
 			if(hasSignal)
-			{
-				stargate.isPowered = true;
-				
-				stargate.signalStrength = level.getBestNeighborSignal(pos);
-				
-				if(stargate.signalStrength == 15)
-				{
-					if(!stargate.isBusy())
-						stargate.raiseChevron();
-					else
-						stargate.resetGate();
-  				}
-			}
+				stargate.updateSignal(StargatePart.CENTER, level.getBestNeighborSignal(pos));
 			else
-			{
-				if(stargate.isPowered)
-				{
-					stargate.lowerChevron();
-					stargate.isPowered = false;
-				}
-			}//TODO fix ring getting stuck
+				stargate.updateSignal(StargatePart.CENTER, 0);
 		}
 	}
 	
@@ -110,7 +93,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
 		{
 			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
-			if(pointOfOriginRegistry.containsKey(location))
+			if(location.toString().equals("sgjourney:empty"))
+				pointOfOrigin = "Empty";
+			else if(pointOfOriginRegistry.containsKey(location))
 				pointOfOrigin = pointOfOriginRegistry.get(location).getName();
 			else
 				pointOfOrigin = "Error";
@@ -119,7 +104,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
 		{
 			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
-			if(symbolsRegistry.containsKey(location))
+			if(location.toString().equals("sgjourney:empty"))
+				symbols = "Empty";
+			else if(symbolsRegistry.containsKey(location))
 				symbols = symbolsRegistry.get(location).getName();
 			else
 				symbols = "Error";

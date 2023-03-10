@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.block_entities.stargate;
 
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -11,17 +12,22 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
-import net.povstalec.sgjourney.network.ClientboundPegasusStargateUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundPegasusStargateUpdatePacket;
+import net.povstalec.sgjourney.sounds.PegasusStargateRingSound;
+import net.povstalec.sgjourney.stargate.Addressing;
+import net.povstalec.sgjourney.stargate.Stargate;
 
 public class PegasusStargateEntity extends AbstractStargateEntity
 {
+	public int currentSymbol = 0;
 	public int[] addressBuffer = new int[0];
 	public int symbolBuffer = 0;
 	private boolean passedOver = false;
+	public int animationTick = 0;
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), pos, state);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), pos, state, Stargate.Gen.GEN_3);
 	}
 	
 	@Override
@@ -39,16 +45,20 @@ public class PegasusStargateEntity extends AbstractStargateEntity
     public void load(CompoundTag nbt)
 	{
         super.load(nbt);
+        
         addressBuffer = nbt.getIntArray("AddressBuffer");
         symbolBuffer = nbt.getInt("SymbolBuffer");
+        currentSymbol = nbt.getInt("CurrentSymbol");
     }
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
+		super.saveAdditional(nbt);
+		
 		nbt.putIntArray("AddressBuffer", addressBuffer);
 		nbt.putInt("SymbolBuffer", symbolBuffer);
-		super.saveAdditional(nbt);
+		nbt.putInt("CurrentSymbol", currentSymbol);
 	}
 	
 	public SoundEvent chevronEngageSound()
@@ -62,23 +72,28 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void encodeChevron(int symbol)
+	public void inputSymbol(int symbol)
 	{
-		if(symbolInAddress(symbol))
+		
+		if(isConnected() && symbol == 0)
+		{
+			disconnectStargate();
+			return;
+		}
+		
+		if(Addressing.addressContainsSymbol(addressBuffer, symbol))
 			return;
 		
-		if(isBusy() && symbol == 0)
-			disconnectGate();
-		
-		addressBuffer = growIntArray(addressBuffer, symbol);
+		addressBuffer = Addressing.growIntArray(addressBuffer, symbol);
 	}
 	
 	@Override
-	protected void engageChevron(int symbol)
+	protected void encodeChevron(int symbol)
 	{
 		symbolBuffer++;
 		passedOver = false;
-		super.engageChevron(symbol);
+		animationTick = 0;
+		super.encodeChevron(symbol);
 	}
 	
 	public int getChevronPosition(int chevron)
@@ -106,43 +121,52 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		}
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, PegasusStargateEntity stargate)
+	private void animateSpin()
 	{
-		if(!stargate.isBusy() && stargate.addressBuffer.length > stargate.symbolBuffer)
+		if(!isConnected() && addressBuffer.length > symbolBuffer)
 		{
-			int symbol = stargate.addressBuffer[stargate.symbolBuffer];
+			int symbol = addressBuffer[symbolBuffer];
 			if(symbol == 0)
 			{
-				if(stargate.currentSymbol == stargate.getChevronPosition(9))
-				{
-					stargate.lockChevron();
-				}
+				if(currentSymbol == getChevronPosition(9))
+					lockPrimaryChevron();
 				else
-					stargate.symbolWork();
+					symbolWork();
 			}
-			else if(stargate.currentSymbol == stargate.getChevronPosition(stargate.symbolBuffer + 1))
+			else if(currentSymbol == getChevronPosition(symbolBuffer + 1))
 			{
-				if(stargate.symbolBuffer % 2 != 0 && !stargate.passedOver)
+				if(symbolBuffer % 2 != 0 && !passedOver)
 				{
-					stargate.passedOver = true;
-					stargate.symbolWork();
+					passedOver = true;
+					symbolWork();
 				}
 				else
-					stargate.engageChevron(symbol);
+					encodeChevron(symbol);
 			}
 			else
-				stargate.symbolWork();
+				symbolWork();
 		}
 		
-		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
-		
+		/*if(animationTick == 1)
+			Minecraft.getInstance().getSoundManager().play(new PegasusStargateRingSound(this, symbolBuffer));*/
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, PegasusStargateEntity stargate)
+	{
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundPegasusStargateUpdatePacket(stargate.worldPosition, stargate.inputAddress, stargate.symbolBuffer, stargate.addressBuffer));
+		
+		stargate.animateSpin();
+		
+		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundPegasusStargateUpdatePacket(stargate.worldPosition, stargate.symbolBuffer, stargate.addressBuffer, stargate.currentSymbol));
 	}
 	
 	private void symbolWork()
 	{
+		/*if(!canSpin())
+			return;*/
+		
 		if(symbolBuffer % 2 == 0)
 			currentSymbol--;
 		else
@@ -152,14 +176,16 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			currentSymbol = 0;
 		else if(currentSymbol < 0)
 			currentSymbol = 35;
+
+		animationTick++;
 	}
 	
 	@Override
-	public void resetGate()
+	public void resetStargate(boolean causedByFailure)
 	{
 		currentSymbol = 0;
 		symbolBuffer = 0;
 		addressBuffer = new int[0];
-		super.resetGate();
+		super.resetStargate(causedByFailure);
 	}
 }

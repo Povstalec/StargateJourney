@@ -1,13 +1,18 @@
 package net.povstalec.sgjourney.blocks.stargate;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -219,7 +224,10 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 	{
         if(oldState.getBlock() != newState.getBlock())
         {
-            
+    		BlockEntity blockentity = level.getBlockEntity(pos);
+    		if(blockentity instanceof AbstractStargateEntity stargate)
+    			stargate.disconnectStargate();
+    		
             if(oldState.getValue(FACING).getAxis() == Direction.Axis.X)
       		{
             	level.setBlock(pos.south(), Blocks.AIR.defaultBlockState(), 35);
@@ -286,6 +294,8 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 		{
 			if (!level.isClientSide)
 			{
+				stargate.disconnectStargate();
+				
 				ItemStack itemstack = new ItemStack(getStargate());
 				
 				blockentity.saveToItem(itemstack);
@@ -298,5 +308,17 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 
 		super.playerWillDestroy(level, pos, state, player);
 	}
+	
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    {
+    	int energy = 0;
+    	
+		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
+			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
+		
+        tooltipComponents.add(Component.literal("Energy: " + energy + " FE").withStyle(ChatFormatting.DARK_RED));
+        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+    }
 	
 }

@@ -12,9 +12,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
 
 public class SGJourneyBlockItem extends BlockItem
 {
@@ -34,65 +34,70 @@ public class SGJourneyBlockItem extends BlockItem
 		MinecraftServer minecraftserver = level.getServer();
 		if(minecraftserver == null)
 			return false;
+		
+		CompoundTag compoundtag = getBlockEntityData(stack);
+		if(compoundtag != null)
+		{
+			BlockEntity blockentity = level.getBlockEntity(pos);
+            if(blockentity != null)
+            {
+            	if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
+            		return false;
+            	
+            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata();
+            	CompoundTag compoundtag2 = compoundtag1.copy();
+            	
+            	compoundtag1.merge(compoundtag);
+            	
+            	if(!compoundtag1.equals(compoundtag2))
+            	{
+            		blockentity.load(compoundtag1);
+            		blockentity.setChanged();
+            		
+            		return setupBlockEntity(blockentity, compoundtag);
+            	}
+            }
+		}
 		else
 		{
-			CompoundTag compoundtag = getBlockEntityData(stack);
-			if(compoundtag != null)
-			{
-				BlockEntity blockentity = level.getBlockEntity(pos);
-	            if(blockentity != null)
-	            {
-	            	if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
-	            		return false;
-	            	
-	            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata();
-	            	CompoundTag compoundtag2 = compoundtag1.copy();
-	            	compoundtag1.merge(compoundtag);
-	            	if(!compoundtag1.equals(compoundtag2))
-	            	{
-	            		blockentity.load(compoundtag1);
-	            		blockentity.setChanged();
-            			SGJourneyBlockEntity baseBlockEntity = (SGJourneyBlockEntity)blockentity;
-            			if(compoundtag.contains("AddToNetwork") && !compoundtag.getBoolean("AddToNetwork"))
-            				return true;
-            			else
-            			{
-            				if(compoundtag.contains("ID"))
-	            				baseBlockEntity.addToBlockEntityList();
-            				else
-            					baseBlockEntity.addNewToBlockEntityList();
-            				
-            				if(baseBlockEntity instanceof MilkyWayStargateEntity milkyWayStargate)
-        					{
-            					if(!compoundtag.contains("PointOfOrigin"))
-            						milkyWayStargate.setPointOfOrigin(level);
-        						if(!compoundtag.contains("Symbols"))
-        							milkyWayStargate.setSymbols(level);
-        					}
-        					else if(baseBlockEntity instanceof PegasusStargateEntity pegasusStargate)
-        					{
-        						//TODO Get this back here: pegasusStargate.setSymbols(StargateNetwork.get(level).getGalaxy(level).getSymbols().getSymbols());
-        						pegasusStargate.setPointOfOrigin(level);
-        					}
-            			}
-	            		return true;
-	            	}
-	            }
-			}
+			BlockEntity baseEntity = level.getBlockEntity(pos);
+			
+			if(baseEntity instanceof SGJourneyBlockEntity blockEntity)
+				blockEntity.addNewToBlockEntityList();
+		}
+		
+		return false;
+	}
+	
+	private static boolean setupBlockEntity(BlockEntity baseEntity, CompoundTag info)
+	{
+		if(baseEntity instanceof SGJourneyBlockEntity blockEntity)
+		{
+			boolean addToNetwork = true;
+			
+			if(info.contains("AddToNetwork"))
+				addToNetwork = info.getBoolean("AddToNetwork");
+			
+			// Registers it as one of the Block Entities in the list
+			if(info.contains("ID") && !info.getString("ID").equals(StargateJourney.EMPTY))
+				blockEntity.addToBlockEntityList();
 			else
+				blockEntity.addNewToBlockEntityList();
+			
+			// Sets up symbols on the Milky Way Stargate
+			if(blockEntity instanceof MilkyWayStargateEntity milkyWayStargate)
 			{
-    			SGJourneyBlockEntity baseBlockEntity = (SGJourneyBlockEntity)level.getBlockEntity(pos);
-				baseBlockEntity.addNewToBlockEntityList();
-				
-				if(baseBlockEntity instanceof MilkyWayStargateEntity milkyWayStargate)
+				if(!addToNetwork)
 				{
-					milkyWayStargate.setPointOfOrigin(level);
-					milkyWayStargate.setSymbols(level);
+					if(!info.contains("PointOfOrigin"))
+						milkyWayStargate.setPointOfOrigin("sgjourney:empty");
+					if(!info.contains("Symbols"))
+						milkyWayStargate.setSymbols("sgjourney:empty");
 				}
 			}
-			
-			return false;
 		}
+		
+		return false;
 	}
 	
 }

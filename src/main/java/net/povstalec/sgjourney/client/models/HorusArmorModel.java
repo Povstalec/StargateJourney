@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.povstalec.sgjourney.init.LayerInit;
+import net.povstalec.sgjourney.client.Layers;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class HorusArmorModel extends HumanoidModel<LivingEntity>
@@ -90,7 +90,7 @@ public class HorusArmorModel extends HumanoidModel<LivingEntity>
     public static void bakeModelLayers(EntityRenderersEvent.AddLayers event) 
     {
         EntityModelSet entityModelSet = event.getEntityModels();
-        INSTANCE = new HorusArmorModel(entityModelSet.bakeLayer(LayerInit.HORUS_HEAD));
+        INSTANCE = new HorusArmorModel(entityModelSet.bakeLayer(Layers.HORUS_HEAD));
     }
 
 }

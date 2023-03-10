@@ -1,12 +1,24 @@
 {
 	"name": "Milky Way",
 	"type": "sgjourney:medium_galaxy",
-	"symbols": "sgjourney:milky_way",
-	"symbol": 11,
+	"default_symbols": "sgjourney:milky_way",
 	"solar_systems":
 	[
-		"sgjourney:terra",
-		"sgjourney:abydos",
-		"sgjourney:chulak"
+		{
+			"solar_system": "sgjourney:terra",
+			"address": [27, 25, 4, 35, 10, 28]
+		},
+		{
+			"solar_system": "sgjourney:abydos",
+			"address": [26, 6, 14, 31, 11, 29]
+		},
+		{
+			"solar_system": "sgjourney:chulak",
+			"address": [8, 1, 22, 14, 36, 19]
+		},
+		{
+			"solar_system": "sgjourney:end",
+			"address": [1, 2, 3, 4, 5, 6]
+		}
 	]
 }

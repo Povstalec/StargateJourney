@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.stargate;
 
 import java.util.List;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -16,27 +17,27 @@ public class Galaxy
 {
 	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "galaxy"));
     
+	private static final Codec<Pair<ResourceKey<SolarSystem>, List<Integer>>> SYSTEM_WITH_ADDRESS = Codec.pair(SolarSystem.RESOURCE_KEY_CODEC.fieldOf("solar_system").codec(), Codec.INT.listOf().fieldOf("address").codec());
+	
     public static final Codec<Galaxy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(Galaxy::getName),
     		GalaxyType.RESOURCE_KEY_CODEC.fieldOf("type").forGetter(Galaxy::getType),
-			Symbols.RESOURCE_KEY_CODEC.fieldOf("symbols").forGetter(Galaxy::getSymbols),
-			Codec.INT.fieldOf("symbol").forGetter(Galaxy::getSymbol),
-			SolarSystem.RESOURCE_KEY_CODEC.listOf().fieldOf("solar_systems").forGetter(Galaxy::getPlanets)
+			Symbols.RESOURCE_KEY_CODEC.fieldOf("default_symbols").forGetter(Galaxy::getDefaultSymbols),
+			SYSTEM_WITH_ADDRESS.listOf().fieldOf("solar_systems").forGetter(Galaxy::getSystems)
 			).apply(instance, Galaxy::new));
 
 	private final String name;
 	private final ResourceKey<GalaxyType> type;
-	private final ResourceKey<Symbols> symbols;
-	private final int symbol;
-	private final List<ResourceKey<SolarSystem>> planets;
+	private final ResourceKey<Symbols> defaultSymbols;
 	
-	public Galaxy(String name, ResourceKey<GalaxyType> type, ResourceKey<Symbols> symbols, int symbol, List<ResourceKey<SolarSystem>> planets)
+	private final List<Pair<ResourceKey<SolarSystem>, List<Integer>>> systems;
+	
+	public Galaxy(String name, ResourceKey<GalaxyType> type, ResourceKey<Symbols> defaultSymbols, List<Pair<ResourceKey<SolarSystem>, List<Integer>>> systems)
 	{
 		this.name = name;
 		this.type = type;
-		this.symbols = symbols;
-		this.symbol = symbol;
-		this.planets = planets;
+		this.defaultSymbols = defaultSymbols;
+		this.systems = systems;
 	}
 	
 	public String getName()
@@ -49,19 +50,14 @@ public class Galaxy
 		return type;
 	}
 	
-	public ResourceKey<Symbols> getSymbols()
+	public ResourceKey<Symbols> getDefaultSymbols()
 	{
-		return symbols;
+		return defaultSymbols;
 	}
 	
-	public int getSymbol()
+	public List<Pair<ResourceKey<SolarSystem>, List<Integer>>> getSystems()
 	{
-		return symbol;
-	}
-	
-	public List<ResourceKey<SolarSystem>> getPlanets()
-	{
-		return planets;
+		return systems;
 	}
 	
 	public static Galaxy getGalaxy(Level level, String part1, String part2)

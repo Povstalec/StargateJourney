@@ -5,7 +5,9 @@ import java.util.List;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,7 +22,7 @@ import net.povstalec.sgjourney.data.RingsNetwork;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
-import net.povstalec.sgjourney.network.ClientboundRingsUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundRingsUpdatePacket;
 
 public class TransportRingsEntity extends SGJourneyBlockEntity
 {
@@ -35,6 +37,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
     
     public int emptySpace;
     public int ticks;
+    public int progressOld = 0;
     public int progress = 0;
     public int transportHeight = 0;
     
@@ -56,24 +59,26 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
     }
 	
 	@Override
-	public void addNewToBlockEntityList()
+	public CompoundTag addNewToBlockEntityList()
 	{
-		super.addNewToBlockEntityList();
-		RingsNetwork.get(level).addToNetwork(id, BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(id));
+		CompoundTag blockEntity = super.addNewToBlockEntityList();
+		RingsNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
+		return blockEntity;
 	}
 	
 	@Override
-	public void addToBlockEntityList()
+	public CompoundTag addToBlockEntityList()
 	{
-		super.addToBlockEntityList();
-		RingsNetwork.get(level).addToNetwork(id, BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(id));
+		CompoundTag blockEntity = super.addToBlockEntityList();
+		RingsNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
+		return blockEntity;
 	}
 
 	@Override
 	public void removeFromBlockEntityList()
 	{
 		super.removeFromBlockEntityList();
-		RingsNetwork.get(level).removeFromNetwork(level, id);
+		RingsNetwork.get(level).removeFromNetwork(level, getID());
 	}
 	
 	public boolean canTransport()
@@ -123,13 +128,16 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 			
 			transportLight = LevelRenderer.getLightColor(level, this.transportPos);
 			
-			ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, getBlockPos(), level.getChunk(getBlockPos()).getPos().x, level.getChunk(getBlockPos()).getPos().z, true, true);
+			loadChunk(true);
 		}
 		else
 			target = null;
+		
+		//TODO sync difference with client
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight, this.transportLight));
 	}
 	
-	private int getTransportHeight()
+	public int getTransportHeight()
 	{
 		if(getEmptySpace() > 0) 
 			transportHeight = Math.abs(getEmptySpace() * 4) + 8;
@@ -148,40 +156,64 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 		isSender = false;
 		setActivated(false);
 		ticks = 0;
+		progressOld = 0;
 		progress = 0;
 		
-		ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, false, true);
+		loadChunk(false);
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, TransportRingsEntity rings)
+	private void loadChunk(boolean load)
 	{
 		if(level.isClientSide())
 			return;
 		
+		ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, TransportRingsEntity rings)
+	{
 		if(rings.isActivated())
-		{
 			rings.ticks++;
-		}
 		
-		if(rings.ticks > 0 && rings.ticks <= rings.transportHeight + 17)
-			rings.progress = rings.ticks;
-		else if(rings.ticks >= rings.transportHeight + 42 && rings.progress > 0)
-		{
-			rings.progress--;
-		}
-		
-		if(rings.ticks == (rings.transportHeight + 22) && rings.isSender && level.getBlockEntity(rings.targetPos) instanceof TransportRingsEntity)
-			rings.startTransporting();
+		rings.doProgress();
 		
 		if(rings.ticks > 0 && rings.progress <= 0)
 			rings.deactivate();
+		
+		if(level.isClientSide())
+			return;
+		
+		if(rings.ticks == (rings.transportHeight + 22) && rings.isSender && level.getBlockEntity(rings.targetPos) instanceof TransportRingsEntity)
+			rings.startTransporting();
 		      
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(rings.worldPosition)), new ClientboundRingsUpdatePacket(pos, rings.ticks, rings.emptySpace, rings.progress, rings.transportHeight, rings.transportLight));
+		//PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(rings.worldPosition)), new ClientboundRingsUpdatePacket(pos, rings.emptySpace, rings.transportHeight, rings.transportLight));
+	}
+	
+	private void doProgress()
+	{
+		this.progressOld = this.progress;
+		
+		if(this.ticks > 0 && this.ticks <= this.transportHeight + 17)
+			this.progress = this.ticks;
+		
+		else if(this.ticks >= this.transportHeight + 42 && this.progress > 0)
+			this.progress--;
+	}
+	
+	public void setProgress(int progress)
+	{
+		this.progressOld = this.progress; //TODO This may not work
+		this.progress = progress;
+	}
+	
+	public float getProgress(float partialTick)
+	{
+		return Mth.lerp(partialTick, this.progressOld, this.progress);
 	}
 	
 	public void getStatus()
 	{
-	    System.out.println("ID: " + id);
+	    System.out.println("ID: " + getID());
 	    if(this.getBlockPos() != null)
 	    	System.out.println("Pos: " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ());
 	    if(targetPos != null)
@@ -307,6 +339,24 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 				}
 			}
 		}
+		return 0;
+	}
+
+	@Override
+	public long capacity()
+	{
+		return 0;
+	}
+
+	@Override
+	public long maxReceive()
+	{
+		return 0;
+	}
+
+	@Override
+	public long maxExtract()
+	{
 		return 0;
 	}
 	

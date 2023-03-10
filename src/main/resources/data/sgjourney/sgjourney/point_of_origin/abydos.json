@@ -1,5 +1,5 @@
 {
 	"name": "Abydos",
-	"texture": "sgjourney:abydos.png",
+	"texture": "sgjourney:points_of_origin/abydos.png",
 	"generates_randomly": false
 }

@@ -1,10 +1,30 @@
 {
-"milky_way_chevron_encode":
+	"universe_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.universe_chevron_engage",
+		"sounds":
+		[
+			"sgjourney:universe_chevron_engage_1",
+			"sgjourney:universe_chevron_engage_2",
+			"sgjourney:universe_chevron_engage_3"
+		]
+	},
+	"universe_dial_fail":
+	{
+		"subtitle": "sounds.sgjourney.universe_dial_fail",
+		"sounds":
+		[
+			"sgjourney:universe_dial_fail_1",
+			"sgjourney:universe_dial_fail_2",
+			"sgjourney:universe_dial_fail_3"
+		]
+	},
+	"milky_way_chevron_encode":
 	{
 		"subtitle": "sounds.sgjourney.milky_way_chevron_encode",
 		"sounds":
 		[
-			"sgjourney:milky_way_chevron_encode"
+			"sgjourney:milky_way_chevron_encode_1"
 		]
 	},
 	"milky_way_chevron_engage":
@@ -12,7 +32,7 @@
 		"subtitle": "sounds.sgjourney.milky_way_chevron_engage",
 		"sounds":
 		[
-			"sgjourney:milky_way_chevron_engage"
+			"sgjourney:milky_way_chevron_engage_1"
 		]
 	},
 	"milky_way_dial_fail":

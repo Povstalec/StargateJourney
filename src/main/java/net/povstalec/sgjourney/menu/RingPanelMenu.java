@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.init.MenuInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
-import net.povstalec.sgjourney.network.ServerboundRingPanelUpdatePacket;
+import net.povstalec.sgjourney.packets.ServerboundRingPanelUpdatePacket;
 
 public class RingPanelMenu extends AbstractContainerMenu
 {

@@ -15,11 +15,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 
 public class PointOfOrigin
 {
+	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	
 	public static final ResourceLocation POINT_OF_ORIGIN_LOCATION = new ResourceLocation(StargateJourney.MODID, "point_of_origin");
 	public static final ResourceKey<Registry<PointOfOrigin>> REGISTRY_KEY = ResourceKey.createRegistryKey(POINT_OF_ORIGIN_LOCATION);
 	public static final Codec<ResourceKey<PointOfOrigin>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
@@ -54,11 +57,11 @@ public class PointOfOrigin
 	public ResourceLocation texture()
 	{
 		ResourceLocation path = getTexture();
-		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/points_of_origin/" + path.getPath());
+		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
 		
 		if(Minecraft.getInstance().getResourceManager().getResource(texture).isPresent())
 			return texture;
-		return new ResourceLocation(StargateJourney.MODID, "textures/symbols/points_of_origin/error.png");
+		return ERROR_LOCATION;
 	}
 	
 	public boolean generatesRandomly()
@@ -66,10 +69,10 @@ public class PointOfOrigin
 		return generatesRandomly;
 	}
 	
-	public static ResourceKey<PointOfOrigin> getRandomPointOfOrigin(Level level, int seed)
+	public static ResourceKey<PointOfOrigin> getRandomPointOfOrigin(MinecraftServer server, int seed)
 	{
 		Random random = new Random(seed);
-		RegistryAccess registries = level.getServer().registryAccess();
+		RegistryAccess registries = server.registryAccess();
 		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		Set<Entry<ResourceKey<PointOfOrigin>, PointOfOrigin>> set = registry.entrySet();
 		

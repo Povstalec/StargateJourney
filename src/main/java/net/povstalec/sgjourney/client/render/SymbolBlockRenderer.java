@@ -14,8 +14,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.povstalec.sgjourney.block_entities.address.SymbolBlockEntity;
-import net.povstalec.sgjourney.init.LayerInit;
+import net.povstalec.sgjourney.block_entities.symbols.SymbolBlockEntity;
+import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
 
 @OnlyIn(Dist.CLIENT)
@@ -25,7 +25,7 @@ public abstract class SymbolBlockRenderer
 	
 	public SymbolBlockRenderer(BlockEntityRendererProvider.Context context)
 	{
-		ModelPart symbol_part = context.bakeLayer(LayerInit.SYMBOL_BLOCK_LAYER);
+		ModelPart symbol_part = context.bakeLayer(Layers.SYMBOL_BLOCK_LAYER);
 		this.symbol_part = symbol_part;
 	}
 	

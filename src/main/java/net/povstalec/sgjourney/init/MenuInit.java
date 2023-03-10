@@ -9,9 +9,12 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.menu.ClassicDHDMenu;
 import net.povstalec.sgjourney.menu.MilkyWayDHDMenu;
+import net.povstalec.sgjourney.menu.NaquadahGeneratorMenu;
 import net.povstalec.sgjourney.menu.PegasusDHDMenu;
 import net.povstalec.sgjourney.menu.RingPanelMenu;
+import net.povstalec.sgjourney.menu.ZPMHubMenu;
 
 public class MenuInit 
 {
@@ -25,6 +28,15 @@ public class MenuInit
 	
 	public static final RegistryObject<MenuType<PegasusDHDMenu>> PEGASUS_DHD =
             registerMenuType(PegasusDHDMenu::new, "pegasus_dhd");
+	
+	public static final RegistryObject<MenuType<ClassicDHDMenu>> CLASSIC_DHD =
+            registerMenuType(ClassicDHDMenu::new, "classic_dhd");
+	
+	public static final RegistryObject<MenuType<NaquadahGeneratorMenu>> NAQUADAH_GENERATOR =
+            registerMenuType(NaquadahGeneratorMenu::new, "naquadah_generator");
+	
+	public static final RegistryObject<MenuType<ZPMHubMenu>> ZPM_HUB =
+            registerMenuType(ZPMHubMenu::new, "zpm_hub");
 
 
 

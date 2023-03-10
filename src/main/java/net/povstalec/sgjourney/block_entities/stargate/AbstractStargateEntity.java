@@ -8,548 +8,653 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
+import net.povstalec.sgjourney.config.ServerEnergyConfig;
 import net.povstalec.sgjourney.config.ServerStargateConfig;
+import net.povstalec.sgjourney.data.BlockEntityList;
 import net.povstalec.sgjourney.data.StargateNetwork;
+import net.povstalec.sgjourney.data.Universe;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
-import net.povstalec.sgjourney.network.ClientboundStargateUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundStargateUpdatePacket;
+import net.povstalec.sgjourney.packets.ServerboundStargateDialingPacket;
+import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Dialing;
+import net.povstalec.sgjourney.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.stargate.Symbols;
+import net.povstalec.sgjourney.stargate.Wormhole;
 
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
-	private Random random = new Random();
-
-	public int tick = 0;
-	public int currentSymbol = 0;
-	public int chevronsActive = 0;
-	
-	private int gateOpenTime = 0;
+	// Basic Info
+	private static final boolean REQUIRE_ENERGY = !ServerEnergyConfig.disable_energy_use.get();
+	private static final long CONNECTION_ENERGY_COST = ServerStargateConfig.connection_energy_cost.get();
+	private static final long INTERSTELLAR_CONNECTION_ENERGY_COST = ServerStargateConfig.interstellar_connection_energy_cost.get();
+	private static final long INTERGALACTIC_CONNECTION_ENERGY_COST = ServerStargateConfig.intergalactic_connection_energy_cost.get();
 	private static final int maxGateOpenTime = ServerStargateConfig.max_wormhole_open_time.get() * 20;
+	private static final boolean END_CONNECTION_FROM_BOTH_ENDS = ServerStargateConfig.end_connection_from_both_ends.get();
+	private static Stargate.Gen generation;
 	
-	public String pointOfOrigin = "sgjourney:error";
-	public String symbols = "sgjourney:error";
-	public int symbolCount = 39;
+	// Used during gameplay
+	private int tick = 0;
+	private boolean isPrimaryChevronEngaged = false;
+	private boolean dialingOut = false;
+	private boolean hasDHD = false;
+	private int openTime = 0;
+	private int timesOpened = 0;
+	protected String pointOfOrigin = EMPTY;
+	protected String symbols = EMPTY;
 	
-	public int[] inputAddress = new int[0];
-	private CompoundTag targetStargate = new CompoundTag();
+	// Dialing and memory
+	private int[] address = new int[0];
+	private String connectionID = EMPTY;
 	
-	public int signalStrength;
-	public boolean isPowered;
-	private boolean isPrimary = false;
-	
-	public AbstractStargateEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
+	//private Stargate.FilterType filter = Stargate.FilterType.NONE;
+	//private ListTag whitelist;
+	//private ListTag blacklist;
+
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen generation)
 	{
-		super(type, pos, state, SGJourneyBlockEntity.Type.STARGATE);
+		super(blockEntity, pos, state, SGJourneyBlockEntity.Type.STARGATE);
+		this.generation = generation;
 	}
 	
 	@Override
-    public void load(CompoundTag nbt)
+	public void load(CompoundTag nbt)
 	{
-        super.load(nbt);
-        targetStargate = nbt.getCompound("TargetStargate");
-        inputAddress = nbt.getIntArray("InputAddress");
-        chevronsActive = nbt.getInt("ChevronsActive");
-        isPrimary = nbt.getBoolean("IsPrimary");
-        gateOpenTime = nbt.getInt("OpenTime");
-    }
+		super.load(nbt);
+		isPrimaryChevronEngaged = nbt.getBoolean("IsPrimaryChevronEngaged");
+		dialingOut = nbt.getBoolean("DialingOut");
+		openTime = nbt.getInt("OpenTime");
+		timesOpened = nbt.getInt("TimesOpened");
+		address = nbt.getIntArray("Address");
+		
+		connectionID = nbt.getString("ConnectionID");
+	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
-		nbt.put("TargetStargate", targetStargate);
-		nbt.putIntArray("InputAddress", inputAddress);
-		nbt.putInt("ChevronsActive", chevronsActive);
-		nbt.putBoolean("IsPrimary", isPrimary);
-		nbt.putInt("OpenTime", gateOpenTime);
+		nbt.putBoolean("IsPrimaryChevronEngaged", isPrimaryChevronEngaged);
+		nbt.putBoolean("DialingOut", dialingOut);
+		nbt.putInt("OpenTime", openTime);
+		nbt.putInt("TimesOpened", timesOpened);
+		nbt.putIntArray("Address", address);
+		
+		nbt.putString("ConnectionID", connectionID);
 		super.saveAdditional(nbt);
 	}
 	
 	@Override
-	protected String generateID()
+	public CompoundTag addToBlockEntityList()
 	{
-		int symbol[] = new int[0];
-		
-		while(symbol.length < 8)
-		{
-			int glyph = randomSymbol();
-			boolean isValid = true;
-			
-			for(int i = 0; i < symbol.length; i++)
-			{
-				if(glyph == symbol[i])
-				{
-					isValid = false;
-				}
-			}
-			if(isValid)
-			{
-				symbol = growIntArray(symbol, glyph);
-			}
-		}
-		String address = "-" + symbol[0] + "-" + symbol[1] + "-" + symbol[2] + "-" + symbol[3] + "-" + symbol[4] + "-" + symbol[5] + "-" + symbol[6] + "-" + symbol[7] + "-";
-		
-		StargateJourney.LOGGER.info("Generated address: " + address);
-		
-		return address;
+		CompoundTag blockEntity = super.addToBlockEntityList();
+    	StargateNetwork.get(level).addStargate(level.getServer(), getID(), blockEntity);
+		return blockEntity;
 	}
 	
 	@Override
-	public void addToBlockEntityList()
+	public CompoundTag addNewToBlockEntityList()
 	{
-		super.addToBlockEntityList();
-    	StargateNetwork.get(level).addToNetwork(id, blockEntity);
-		
-	}
-	
-	@Override
-	public void addNewToBlockEntityList()
-	{
-		super.addNewToBlockEntityList();
-    	StargateNetwork.get(level).addToNetwork(id, blockEntity);
-		
+		CompoundTag blockEntity = super.addNewToBlockEntityList();
+    	StargateNetwork.get(level).addStargate(level.getServer(), getID(), blockEntity);
+		return blockEntity;
 	}
 
 	@Override
 	public void removeFromBlockEntityList()
 	{
 		super.removeFromBlockEntityList();
-		StargateNetwork.get(level).removeFromNetwork(level, id);
+		StargateNetwork.get(level).removeStargate(level, getID());
 	}
 	
 	@Override
-	public void getStatus(Player player)
+	protected String generateID()
 	{
-		if(level.isClientSide)
-			return;
-		player.sendSystemMessage(Component.literal("Point of Origin: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
-		player.sendSystemMessage(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));
-		super.getStatus(player);
+		Random random = new Random();
+		String address = EMPTY;
+		while(true)
+		{
+			address = Addressing.addressIntArrayToString(Addressing.randomAddress(8, 36, random.nextLong()));
+			
+			if(!BlockEntityList.get(level).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).contains(address))
+				break;
+		}
+		return address;
+	}
+
+	
+	@Override
+	public AABB getRenderBoundingBox()
+    {
+        return new AABB((this.worldPosition.getX() - 3), (this.worldPosition.getY()), (this.worldPosition.getZ() - 3), (this.worldPosition.getX() + 4), (this.worldPosition.getY() + 9), (this.worldPosition.getZ() + 4));
+    }
+	
+	//============================================================================================
+	//******************************************Dialing*******************************************
+	//============================================================================================
+	
+	public void inputSymbol(int symbol)
+	{
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundStargateDialingPacket(this.getBlockPos(), symbol));
 	}
 	
-	public boolean canConnect()
+	public void engageSymbol(int symbol)
 	{
-		if(isBusy())
+		if(level.isClientSide())
+			return;
+		
+		if(Addressing.addressContainsSymbol(getAddress(), symbol))
+			return;
+		
+		if(symbol == 0)
+			lockPrimaryChevron();
+		else
+			encodeChevron(symbol);
+	}
+	
+	protected void encodeChevron(int symbol)
+	{	
+		if(getAddress().length >= 8)
+			resetStargate(true);
+		else
 		{
-			StargateJourney.LOGGER.info("Stargate is busy.");
+			growAddress(symbol);
+			engageChevron();
+		}
+		this.setChanged();
+	}
+	
+	protected void lockPrimaryChevron()
+	{
+		if(level.isClientSide())
+			return;
+		
+		if(getAddress().length == 0)
+			resetStargate(false);
+		else if(getAddress().length < 6)
+			resetStargate(true);
+		else if(!isConnected())
+		{
+			if(canDial())
+			{
+				setPrimaryChevronEndaged(true);
+				engageChevron();
+				engageStargate(getAddress());
+			}
+			else
+				resetStargate(true);
+		}
+		else
+		{
+			if(!END_CONNECTION_FROM_BOTH_ENDS && !this.isDialingOut())
+				StargateJourney.LOGGER.info("Cannot disconnect Stargate from this side!");
+			else
+			{
+				StargateJourney.LOGGER.info("Stargate disconnected due to locking primary chevron");
+				disconnectStargate();
+			}
+		}
+		
+	}
+	
+	private void engageChevron()
+	{
+		level.playSound((Player)null, worldPosition, chevronEngageSound(), SoundSource.BLOCKS, 0.25F, 1F);
+	}
+	
+	public void engageStargate(int[] address)
+	{
+		AbstractStargateEntity targetStargate = Dialing.dialStargate(this.level, address);
+		
+		if(targetStargate != null)
+		{
+			if(!targetStargate.canConnect())
+			{
+				resetStargate(true);
+				return;
+			}
+			
+			dialStargate(targetStargate);
+		}
+		else
+			resetStargate(true);
+	}
+	
+	private void dialStargate(AbstractStargateEntity targetStargate)
+	{
+		this.connectionID = StargateNetwork.get(level).startConnection(this, targetStargate);
+		
+		if(REQUIRE_ENERGY)
+			this.extractEnergy(100, false);
+	}
+	
+	public void connectStargate(String connectionID, boolean dialingOut, int[] address)
+	{
+		this.connectionID = connectionID;
+		this.setConnected(true);
+		this.setAddress(address);
+		this.setDialingOut(dialingOut);
+		this.timesOpened++;
+		this.setChanged();
+	}
+	
+	public void resetStargate(boolean causedByFailure)
+	{
+		if(isConnected())
+		{
+			level.playSound((Player)null, worldPosition, SoundInit.WORMHOLE_CLOSE.get(), SoundSource.BLOCKS, 0.25F, 1F);
+			setConnected(false);
+		}
+		
+		resetAddress();
+		this.openTime = 0;
+		this.isPrimaryChevronEngaged = false;
+		this.dialingOut = false;
+		this.connectionID = EMPTY;
+		
+		if(causedByFailure)
+			level.playSound((Player)null, worldPosition, failSound(), SoundSource.BLOCKS, 0.25F, 1F);
+		
+		setChanged();
+		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ());
+	}
+	
+	public void disconnectStargate()
+	{
+		StargateNetwork.get(level).terminateConnection(level.getServer(), connectionID);
+		resetStargate(false);
+	}
+	
+	protected boolean canConnect()
+	{
+		if(isConnected())
+		{
+			StargateJourney.LOGGER.info("Stargate is already connected");
 			return false;
 		}
 		if(isObstructed())
 		{
-			StargateJourney.LOGGER.info("Stargate is obstructed.");
+			StargateJourney.LOGGER.info("Stargate is obstructed");
 			return false;
 		}
 		
 		return true;
 	}
 	
-	/**
-	 * Returns true if the Stargate is connected to another Stargate, false if it isn't
-	 */
-	public boolean isBusy()
+	protected boolean canDial()
 	{
-		BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = this.level.getBlockState(gatePos);
-		if(gateState.getBlock() instanceof AbstractStargateBlock)
+		if(isConnected())
 		{
-			return this.level.getBlockState(gatePos).getValue(AbstractStargateBlock.CONNECTED);
+			StargateJourney.LOGGER.info("Stargate is already connected");
+			return false;
 		}
-		return false;
-	}
-	
-	public  boolean isObstructed()
-	{
-		return false;
-	}
-	
-	public boolean hasEnergy()
-	{
+		if(isObstructed())
+		{
+			StargateJourney.LOGGER.info("Stargate is obstructed");
+			return false;
+		}
+		if(REQUIRE_ENERGY && !hasEnergy())
+		{
+			StargateJourney.LOGGER.info("Stargate does not have enough power to estabilish a stable connection");
+			return false;
+		}
+		
 		return true;
 	}
 	
-	public abstract SoundEvent chevronEngageSound();
-
-	public abstract SoundEvent failSound();
-	
-	/**
-	 * Sets the connection state of the Stargate
-	 */
-	public void setConnected(boolean isConnected)
+	protected void growAddress(int symbol)
 	{
-		BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = this.level.getBlockState(gatePos);
-		if(gateState.getBlock() instanceof AbstractStargateBlock)
-		{
-			level.setBlock(gatePos, gateState.setValue(AbstractStargateBlock.CONNECTED, isConnected), 2);
-		}
-		
+		this.address = Addressing.growIntArray(this.address, symbol);
 	}
 	
-	/**
-	 * Gets the direction of the Stargate
-	 */
-	public Direction getDirection()
+	protected void resetAddress()
 	{
-		BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = this.level.getBlockState(gatePos);
-		if(gateState.getBlock() instanceof AbstractStargateBlock)
-		{
-			return this.level.getBlockState(gatePos).getValue(AbstractStargateBlock.FACING);
-		}
-		return null;
+		this.address = new int[0];
 	}
+	
+	//============================================================================================
+	//******************************************Symbols*******************************************
+	//============================================================================================
 	
 	/**
 	 * Sets the Stargate's point of origin based on the dimension
 	 */
 	public void setPointOfOrigin(Level level)
 	{
-		pointOfOrigin = StargateNetwork.get(level).getPointOfOrigin(level.dimension().location().toString());
+		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension().location().toString());
+		this.setChanged();
+	}
+	
+	protected boolean isPointOfOriginValid(Level level)
+	{
+		RegistryAccess registries = level.getServer().registryAccess();
+		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
+		
+		return pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin));
 	}
 	
 	public void setSymbols(Level level)
 	{
-		symbols = StargateNetwork.get(level).getSymbols(level.dimension().location().toString());
-		//TODO symbolCount
+		symbols = Universe.get(level).getSymbols(level.dimension().location().toString());
+		this.setChanged();
 	}
 	
-	/**
-	 * Sets the number of active chevrons to be the same as the length of the dialed address
-	 */
-	public void updateAddressAndChevrons(int[] inputAddress, int chenvronsActive)
+	protected boolean areSymbolsValid(Level level)
 	{
-		this.inputAddress = inputAddress;
-		this.chevronsActive = chenvronsActive;
+		RegistryAccess registries = level.getServer().registryAccess();
+		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
+		
+		return symbolRegistry.containsKey(new ResourceLocation(symbols));
 	}
 	
-	private void setPrimary(boolean isPrimary)
+	//============================================================================================
+	//************************************Getters and setters*************************************
+	//============================================================================================
+
+	public int getMaxGateOpenTime()
 	{
-		this.isPrimary = isPrimary;
+		return maxGateOpenTime;
 	}
 	
-	protected boolean isPrimary()
+	public Stargate.Gen getGeneration()
 	{
-		return isPrimary;
+		return generation;
 	}
 	
-	protected boolean symbolInAddress(int symbol)
+	public void setTickCount(int tick)
 	{
-		for(int i = 0; i < inputAddress.length; i++)
-		{
-			if(symbol == inputAddress[i])
-				return true;
-		}
+		this.tick = tick;
+	}
+	
+	public int getTickCount()
+	{
+		return this.tick;
+	}
+	
+	public void setDialingOut(boolean dialingOut)
+	{
+		this.dialingOut = dialingOut;
+	}
+	
+	public boolean isDialingOut()
+	{
+		return this.dialingOut;
+	}
+	
+	public boolean hasDHD()
+	{
+		//TODO Fill this
 		return false;
 	}
 	
-	public void encodeChevron(int symbol)
+	public int getOpenTime()
 	{
-		if(symbolInAddress(symbol))
-			return;
-		
-		if(symbol == 0)
-			lockChevron();
-		else
-			engageChevron(symbol);
-			
+		return this.openTime;
 	}
 	
-	protected void engageChevron(int symbol)
+	public int getTimesOpened()
 	{
-		if(inputAddress.length >= 8)
-		{
-			resetGate();
-			level.playSound((Player)null, worldPosition, failSound(), SoundSource.BLOCKS, 0.5F, 1F);
-			return;
-		}
-		
-		inputAddress = growIntArray(inputAddress, symbol);
-		level.playSound((Player)null, worldPosition, chevronEngageSound(), SoundSource.BLOCKS, 0.5F, 1F);
-		updateAddressAndChevrons(inputAddress, inputAddress.length);
+		return this.timesOpened;
 	}
 	
-	protected void lockChevron()
+	public void setPointOfOrigin(String pointOfOrigin)
 	{
-		if(inputAddress.length < 6)
-		{
-			resetGate();
-			level.playSound((Player)null, worldPosition, failSound(), SoundSource.BLOCKS, 0.5F, 1F);
-			return;
-		}
-		
-		if(!isBusy())
-		{
-			tryConnect();
-			level.playSound((Player)null, worldPosition, chevronEngageSound(), SoundSource.BLOCKS, 0.5F, 1F);
-		}
-		else
-			disconnectGate();
+		this.pointOfOrigin = pointOfOrigin;
 	}
 	
-	/**
-	 * Connects the Stargate to another Stargate depending on the address.
-	 */
-	public void tryConnect()
+	public String getPointOfOrigin()
 	{
-		AbstractStargateEntity target = Dialing.dialStargate(level, inputAddress);
-		
-		if(target != null)
-		{
-			if(!target.canConnect())
-			{
-				level.playSound((Player)null, worldPosition, failSound(), SoundSource.BLOCKS, 0.25F, 1F);
-				resetGate();
-				return;
-			}
-			
-			ResourceKey<Level> dimension = target.getLevel().dimension();
-			this.setTargetStargate(target);
-			connectGate(dimension);
-		}
-		else
-		{
-			StargateJourney.LOGGER.info("Could not reach target Stargate");
-			level.playSound((Player)null, worldPosition, failSound(), SoundSource.BLOCKS, 0.25F, 1F);
-			resetGate();
-		}
+		return this.pointOfOrigin;
 	}
 	
-	/**
-	 * Connects the Stargate to another Stargate.
-	 */
-	private void connectGate(ResourceKey<Level> dimension)
+	public void setSymbols(String symbols)
 	{
-		setConnected(true);
-		setPrimary(true);
-		
-		ServerLevel targetLevel = level.getServer().getLevel(dimension);
-		ServerLevel localLevel = level.getServer().getLevel(level.dimension());
-		ForgeChunkManager.forceChunk(localLevel, StargateJourney.MODID, worldPosition, level.getChunk(this.worldPosition).getPos().x, level.getChunk(this.worldPosition).getPos().z, true, true);
-		ForgeChunkManager.forceChunk(targetLevel, StargateJourney.MODID, getTarget().worldPosition, level.getChunk(getTarget().worldPosition).getPos().x, level.getChunk(getTarget().worldPosition).getPos().z, true, true);
-		
-		AbstractStargateEntity target = getTarget();
-		target.setPrimary(false);
-		target.updateAddressAndChevrons(addressStringToArray(getID()), this.chevronsActive);
-		target.setConnected(true);
-		target.setTargetStargate(this);
+		this.symbols = symbols;
 	}
 	
-	private void setTargetStargate(AbstractStargateEntity stargate)
+	public String getSymbols()
 	{
-		targetStargate.putString("Address", stargate.getID());
-		targetStargate.putString("Dimension", stargate.level.dimension().location().toString());
-		targetStargate.putIntArray("Coordinates", new int[] {stargate.getBlockPos().getX(), stargate.getBlockPos().getY(), stargate.getBlockPos().getZ()});
+		return this.symbols;
 	}
 	
-	/**
-	 * Disconnects the Stargate from the Stargate it's connected to.
-	 */
-	public void disconnectGate()
+	public void setAddress(int[] address)
 	{
-		if(getTarget() != null)
-		{
-			getTarget().resetGate();
-		}
-		resetGate();
+		this.address = address;
 	}
 	
-	public void resetGate()
+	public int[] getAddress()
 	{
-		setPrimary(false);
-		updateAddressAndChevrons(new int[0], 0);
-		if(isBusy())
-		{
-			setConnected(false);
-			level.playSound((Player)null, worldPosition, SoundInit.WORMHOLE_CLOSE.get(), SoundSource.BLOCKS, 0.25F, 1F);
-		}
-		gateOpenTime = 0;
-		
-		ServerLevel localLevel = level.getServer().getLevel(level.dimension());
-		ForgeChunkManager.forceChunk(localLevel, StargateJourney.MODID, this.worldPosition, level.getChunk(this.worldPosition).getPos().x, level.getChunk(this.worldPosition).getPos().z, false, true);
+		return this.address;
 	}
 	
-	public void wormhole(Entity traveler)
+	public int getChevronsEngaged()
 	{
-		Level level = traveler.getLevel();
-		if(level.isClientSide())
-			return;
-		
-		int[] targetCoords = targetStargate.getIntArray("Coordinates");
-		ServerLevel serverlevel = level.getServer().getLevel(getTargetDimension());
-        
-        if (serverlevel == null)
-        {
-        	System.out.println("Dimension is null");
-            return;
-        }
-    	
-    	if(traveler instanceof ServerPlayer player)
-        	player.teleportTo(serverlevel, targetCoords[0] + 0.5, targetCoords[1] + 2, targetCoords[2] + 0.5, preserveYRot(player.getYRot()), player.getXRot());
-    	/*else TODO Fix this for Entities
-    	{
-    		if((ServerLevel)level != serverlevel)
-    		{
-            	System.out.println("(ServerLevel)level != serverlevel");
-        		traveler.changeDimension(serverlevel, new WormholeTeleporter((ServerLevel) traveler.getLevel()));
-    		}
-    		traveler.moveTo(targetCoords[0] + 0.5, targetCoords[1] + 2, targetCoords[2] + 0.5, preserveYRot(traveler.getYRot()), traveler.getXRot());
-    	}*/
-    	level.playSound((Player)null, traveler.blockPosition(), SoundInit.WORMHOLE_ENTER.get(), SoundSource.BLOCKS, 0.25F, 1F);
-    	System.out.println("Wormholing to " + traveler.getX() + " " + traveler.getY() + " " + traveler.getZ());
+		return getAddress().length;
 	}
 	
-	private float preserveYRot(float yRot)
+	public void setPrimaryChevronEndaged(boolean engaged)
 	{
-		float stargate1Direction = Mth.wrapDegrees(this.getDirection().toYRot());
-    	float stargate2Direction = Mth.wrapDegrees(getTarget().getDirection().toYRot());
-    	
-    	float relativeRot = yRot - stargate1Direction;
-    	
-    	yRot = relativeRot + stargate2Direction + 180;
-    	
-    	return yRot;
+		this.isPrimaryChevronEngaged = engaged;
 	}
 	
-	/*private Vec3 preserveMomentum(Entity traveler)
+	public boolean isPrimaryChevronEngaged()
 	{
-		Vec3 vec3 = traveler.getDeltaMovement();
-		double xSpeed = vec3.x;
-		double ySpeed = vec3.y;
-		double zSpeed = vec3.z;
-		
-		
-		
-		return vec3;
-	}*/
+		return this.isPrimaryChevronEngaged;
+	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)
-    {
-		if(stargate.isBusy() && stargate.isPrimary())
-		{
-			if(!(stargate.getTarget() instanceof AbstractStargateEntity))
-				stargate.disconnectGate();
+	public Direction getDirection()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof AbstractStargateBlock)
+			return this.level.getBlockState(gatePos).getValue(AbstractStargateBlock.FACING);
 
+		StargateJourney.LOGGER.info("Couldn't find Stargate Direction");
+		return null;
+	}
+	
+	public void setConnected(boolean isConnected)
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof AbstractStargateBlock)
+			level.setBlock(gatePos, gateState.setValue(AbstractStargateBlock.CONNECTED, isConnected), 2);
+		else
+			StargateJourney.LOGGER.info("Couldn't set Stargate to connected state");
+		setChanged();
+		
+	}
+	
+	public boolean isConnected()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof AbstractStargateBlock)
+			return this.level.getBlockState(gatePos).getValue(AbstractStargateBlock.CONNECTED);
+		
+		return false;
+	}
+	
+	public boolean isObstructed()
+	{
+		Direction direction = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
+		BlockPos centerPos = this.worldPosition.above(3);
+		int obstructingBlocks = 0;
+		
+		for(int width = -2; width <= 2; width++)
+		{
+			for(int height = -2; height <= 2; height++)
+			{
+				BlockPos pos = centerPos.relative(direction, width).relative(Direction.UP, height);
+				BlockState state = level.getBlockState(pos);
+				
+				if((!state.getMaterial().isReplaceable() && !(state.getBlock() instanceof AbstractStargateRingBlock)) || state.getMaterial() == Material.LAVA)
+					obstructingBlocks++;
+			}
+		}
+		System.out.println("Stargate is obstructed by " + obstructingBlocks + " blocks");
+		return obstructingBlocks > 12;
+	}
+	
+	public boolean hasEnergy()
+	{
+		switch(getAddress().length)
+		{
+		case 6:
+			if(this.getEnergyStored() >= INTERSTELLAR_CONNECTION_ENERGY_COST)
+				return true;
+			break;
+		case 7:
+			if(this.getEnergyStored() >= INTERGALACTIC_CONNECTION_ENERGY_COST)
+				return true;
+			break;
+		case 8:
+			//TODO Change this
+			if(this.getEnergyStored() >= INTERSTELLAR_CONNECTION_ENERGY_COST)
+				return true;
+			break;
+		}
+		
+		return false;
+	}
+	
+	public abstract SoundEvent chevronEngageSound();
+
+	public abstract SoundEvent failSound();
+	
+	@Override
+	public void getStatus(Player player)
+	{
+		if(level.isClientSide)
+			return;
+		
+		super.getStatus(player);
+		player.sendSystemMessage(Component.literal("Point of Origin: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
+		player.sendSystemMessage(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));
+		player.sendSystemMessage(Component.literal("Open Time: " + openTime + "/" + maxGateOpenTime).withStyle(ChatFormatting.DARK_AQUA));
+		player.sendSystemMessage(Component.literal("Times Opened: " + timesOpened).withStyle(ChatFormatting.BLUE));
+	}
+	
+	@Override
+	public boolean isCorrectSide(Direction side)
+	{
+		return false;
+	}
+
+	@Override
+	public long capacity()
+	{
+		return 1000000000000L;
+	}
+
+	@Override
+	public long maxReceive()
+	{
+		return 1000000000L;
+	}
+
+	@Override
+	public long maxExtract()
+	{
+		return 1000000000L;
+	}
+	
+	//============================================================================================
+	//******************************************Ticking*******************************************
+	//============================================================================================
+	
+	public void wormhole()
+	{
+		/*if(!level.isClientSide() && !(getTargetStargate() instanceof AbstractStargateEntity))
+		{
+			StargateJourney.LOGGER.info("Stargate is not present");
+			disconnectStargate();
+		}*/
+		
+		if(isDialingOut())
+		{
 			double x = 0;
-			
 			double z = 0;
 			
-			if(stargate.getDirection().getAxis() == Direction.Axis.X)
+			if(getDirection().getAxis() == Direction.Axis.X)
 				z = 2.5;
 			else
 				x = 2.5;
 			
-			AABB localBox = new AABB((stargate.worldPosition.getX() + 0.5 + x), (stargate.worldPosition.getY() + 1), (stargate.worldPosition.getZ() + 0.5 + z), 
-									(stargate.worldPosition.getX() + 0.5 - x), (stargate.worldPosition.getY() + 5), (stargate.worldPosition.getZ() + 0.5 - z));
-			
-			List<Entity> localEntities = stargate.level.getEntitiesOfClass(Entity.class, localBox);
+			AABB localBox = new AABB((worldPosition.getX() + 0.5 + x), (worldPosition.getY() + 1), (worldPosition.getZ() + 0.5 + z), 
+									(worldPosition.getX() + 0.5 - x), (worldPosition.getY() + 5), (worldPosition.getZ() + 0.5 - z));
+
+			List<Entity> localEntities = level.getEntitiesOfClass(Entity.class, localBox);
 			if(!localEntities.isEmpty())
-	    	{
-	    		localEntities.stream().forEach(stargate::wormhole);
-	    	}
-			
-			stargate.gateOpenTime++;
-			
-			if(stargate.gateOpenTime >= maxGateOpenTime)
-			{
-				stargate.disconnectGate();
-			}
+	    		localEntities.stream().forEach((traveler) -> Wormhole.doWormhole(this.connectionID, traveler));
 		}
+		
+		if(level.isClientSide())
+			return;
+		
+		this.openTime++;
+
+		this.setChanged();
+		
+		/*if(REQUIRE_ENERGY)
+			depleteEnergy(this, getTargetStargate());*/
+		
+		if(openTime >= maxGateOpenTime)
+		{
+			StargateJourney.LOGGER.info("Stargate exceeded max connection time");
+			disconnectStargate();
+		}
+	}
+	
+	public static void depleteEnergy(AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	{
+		if(dialingStargate.tick % 20 == 0)
+		{
+			if(dialingStargate.getEnergyStored() == 0 &&
+					dialedStargate.getEnergyStored() == 0)
+			{
+				StargateJourney.LOGGER.info("Stargates ran out of power");
+				dialingStargate.disconnectStargate();
+			}
+			
+			if(dialedStargate.getEnergyStored() > dialingStargate.getEnergyStored())
+				dialedStargate.extractEnergy(CONNECTION_ENERGY_COST, false);
+			else
+				dialingStargate.extractEnergy(CONNECTION_ENERGY_COST, false);
+		}
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)
+    {
 		stargate.tick++;
 		
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundStargateUpdatePacket(stargate.worldPosition, stargate.chevronsActive, stargate.isBusy(), stargate.tick, stargate.pointOfOrigin, stargate.symbols, stargate.currentSymbol));
+		
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundStargateUpdatePacket(stargate.worldPosition, stargate.address, stargate.dialingOut, stargate.tick, stargate.pointOfOrigin, stargate.symbols));
     }
-	
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        AABB bb = new AABB((this.worldPosition.getX() - 3), (this.worldPosition.getY()), (this.worldPosition.getZ() - 3), (this.worldPosition.getX() + 4), (this.worldPosition.getY() + 9), (this.worldPosition.getZ() + 4));
-        
-        
-        return bb;
-    }
-	
-	/**
-     * Used for growing the array.
-     *
-     * @param array The original array.
-     * @param x Number added to the array.
-     */
-	protected int[] growIntArray(int array[], int x)
-	{
-		int[] newarray = new int[array.length + 1];
-		
-		for (int i = 0; i < array.length; i++)
-		{
-			newarray[i] = array[i];
-		}
-		
-		newarray[array.length] = x;
-		
-		return newarray;
-	}
-    
-	/**
-	 * Used for generating a random symbol for the 9 Chevron address.
-	 */
-	public int randomSymbol()
-	{
-		int glyph = random.nextInt(1, 36);
-		
-		return glyph;
-	}
-	
-	private ResourceKey<Level> getTargetDimension()
-	{
-		if(!targetStargate.contains("Dimension"))
-			return null;
-		
-		String dimension = targetStargate.getString("Dimension");
-		return ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("minecraft", "dimension")), new ResourceLocation(dimension.split(":")[0], dimension.split(":")[1]));
-	}
-	
-	private AbstractStargateEntity getTarget()
-	{
-		if(!targetStargate.contains("Coordinates"))
-			return null;
-		int[] coords = targetStargate.getIntArray("Coordinates");
-		
-		if(level.getServer().getLevel(getTargetDimension()).getBlockEntity(new BlockPos(coords[0], coords[1], coords[2])) instanceof AbstractStargateEntity stargate)
-			return stargate;
-		return null;
-	}
-	
-	private int[] addressStringToArray(String addressString)
-	{
-		String[] stringArray = addressString.split("-");
-		int[] intArray = new int[0];
-		
-		for(int i = 1; i < stringArray.length; i++)
-		{
-			int number = Character.getNumericValue(stringArray[i].charAt(0));
-			intArray = growIntArray(intArray, number);
-		}
-		
-		return intArray;
-	}
 }

@@ -1,20 +1,29 @@
 {
-  "replace": false,
-  "values": [
-    "sgjourney:milky_way_stargate",
-    "sgjourney:milky_way_ring",
-    "sgjourney:milky_way_dhd",
-    
-    "sgjourney:transport_rings",
-    "sgjourney:ring_panel",
-    
-    "sgjourney:naquadah_ore",
-    "sgjourney:nether_naquadah_ore",
-    "sgjourney:deepslate_naquadah_ore",
-    
-    "sgjourney:raw_naquadah_block",
-    "sgjourney:naquadah_block",
-    "sgjourney:naquadah_stairs",
-    "sgjourney:naquadah_slab"
+	"replace": false,
+	"values":
+	[
+		"sgjourney:milky_way_stargate",
+		"sgjourney:milky_way_ring",
+		"sgjourney:milky_way_dhd",
+		
+		"sgjourney:transport_rings",
+		"sgjourney:ring_panel",
+		
+		"sgjourney:naquadah_ore",
+		"sgjourney:nether_naquadah_ore",
+		"sgjourney:deepslate_naquadah_ore",
+		
+		"sgjourney:raw_naquadah_block",
+		"sgjourney:naquadah_block",
+		"sgjourney:naquadah_stairs",
+		"sgjourney:naquadah_slab",
+		
+		"sgjourney:naquadah_generator_mark_i",
+		"sgjourney:naquadah_generator_mark_ii",
+		
+		"sgjourney:basic_interface",
+		"sgjourney:crystal_interface",
+		
+		"sgjourney:zpm_hub"
   ]
 }

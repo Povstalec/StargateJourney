@@ -28,7 +28,7 @@ import net.povstalec.sgjourney.data.RingsNetwork;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
-import net.povstalec.sgjourney.network.ClientboundRingPanelUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundRingPanelUpdatePacket;
 
 public class RingPanelEntity extends BlockEntity
 {
@@ -46,11 +46,19 @@ public class RingPanelEntity extends BlockEntity
 	{
 		super(BlockEntityInit.RING_PANEL.get(), pos, state);
 	}
-		
+
+	
+	@Override
+	public void load(CompoundTag nbt)
+	{
+		super.load(nbt);
+		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+	}
+	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
-		nbt.put("inventory", itemHandler.serializeNBT());
+		nbt.put("Inventory", itemHandler.serializeNBT());
 		super.saveAdditional(nbt);
 	}
 		

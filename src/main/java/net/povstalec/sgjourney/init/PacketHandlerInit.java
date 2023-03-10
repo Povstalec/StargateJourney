@@ -5,14 +5,17 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.network.ClientboundMilkyWayStargateUpdatePacket;
-import net.povstalec.sgjourney.network.ClientboundSymbolUpdatePacket;
-import net.povstalec.sgjourney.network.ServerboundDHDUpdatePacket;
-import net.povstalec.sgjourney.network.ServerboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.network.ClientboundPegasusStargateUpdatePacket;
-import net.povstalec.sgjourney.network.ClientboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.network.ClientboundRingsUpdatePacket;
-import net.povstalec.sgjourney.network.ClientboundStargateUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundMilkyWayStargateUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundNaquadahGeneratorUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundPegasusStargateUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundRingPanelUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundRingsUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundStargateUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundSymbolUpdatePacket;
+import net.povstalec.sgjourney.packets.ClientboundUniverseStargateUpdatePacket;
+import net.povstalec.sgjourney.packets.ServerboundDHDUpdatePacket;
+import net.povstalec.sgjourney.packets.ServerboundRingPanelUpdatePacket;
+import net.povstalec.sgjourney.packets.ServerboundStargateDialingPacket;
 
 public final class PacketHandlerInit
 {
@@ -26,7 +29,7 @@ public final class PacketHandlerInit
     	
     }
 
-    public static void init()
+    public static void register()
     {
         int index = 0;
         INSTANCE.messageBuilder(ClientboundSymbolUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
@@ -53,6 +56,12 @@ public final class PacketHandlerInit
         .consumerMainThread(ClientboundStargateUpdatePacket::handle)
         .add();
 
+        INSTANCE.messageBuilder(ClientboundUniverseStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+        .encoder(ClientboundUniverseStargateUpdatePacket::encode)
+        .decoder(ClientboundUniverseStargateUpdatePacket::new)
+        .consumerMainThread(ClientboundUniverseStargateUpdatePacket::handle)
+        .add();
+
         INSTANCE.messageBuilder(ClientboundMilkyWayStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
         .encoder(ClientboundMilkyWayStargateUpdatePacket::encode)
         .decoder(ClientboundMilkyWayStargateUpdatePacket::new)
@@ -63,6 +72,12 @@ public final class PacketHandlerInit
         .encoder(ClientboundPegasusStargateUpdatePacket::encode)
         .decoder(ClientboundPegasusStargateUpdatePacket::new)
         .consumerMainThread(ClientboundPegasusStargateUpdatePacket::handle)
+        .add();
+
+        INSTANCE.messageBuilder(ClientboundNaquadahGeneratorUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+        .encoder(ClientboundNaquadahGeneratorUpdatePacket::encode)
+        .decoder(ClientboundNaquadahGeneratorUpdatePacket::new)
+        .consumerMainThread(ClientboundNaquadahGeneratorUpdatePacket::handle)
         .add();
         
         INSTANCE.messageBuilder(ServerboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
@@ -75,6 +90,12 @@ public final class PacketHandlerInit
         .encoder(ServerboundRingPanelUpdatePacket::encode)
         .decoder(ServerboundRingPanelUpdatePacket::new)
         .consumerMainThread(ServerboundRingPanelUpdatePacket::handle)
+        .add();
+        
+        INSTANCE.messageBuilder(ServerboundStargateDialingPacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+        .encoder(ServerboundStargateDialingPacket::encode)
+        .decoder(ServerboundStargateDialingPacket::new)
+        .consumerMainThread(ServerboundStargateDialingPacket::handle)
         .add();
     }
 }

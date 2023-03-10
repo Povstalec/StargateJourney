@@ -1,0 +1,13 @@
+{
+	"parent": "minecraft:block/cube",
+	"textures":
+	{
+		"particle": "minecraft:block/orange_terracotta",
+		"up": "sgjourney:block/zpm_hub_top",
+		"down": "sgjourney:block/zpm_hub_bottom",
+		"east": "sgjourney:block/zpm_hub_side",
+		"north": "sgjourney:block/zpm_hub_side",
+		"south": "sgjourney:block/zpm_hub_side",
+		"west": "sgjourney:block/zpm_hub_side"
+	}
+}

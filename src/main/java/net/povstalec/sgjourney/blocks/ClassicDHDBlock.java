@@ -2,19 +2,23 @@ package net.povstalec.sgjourney.blocks;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.AbstractDHDEntity;
 import net.povstalec.sgjourney.block_entities.ClassicDHDEntity;
-import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
+import net.povstalec.sgjourney.menu.ClassicDHDMenu;
 
 public class ClassicDHDBlock extends AbstractDHDBlock
 {
@@ -36,15 +40,35 @@ public class ClassicDHDBlock extends AbstractDHDBlock
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-		BlockEntity blockEntity = level.getBlockEntity(pos);
-		
-    	if (blockEntity instanceof AbstractDHDEntity dhd) 
-    	{
-    		dhd.getNearestStargate(16);
-    		
-    		if(level.isClientSide())
-    			Minecraft.getInstance().setScreen(new ClassicDHDScreen(dhd, Component.translatable("screen.sgjourney.dhd")));
-    	}
+        if (!level.isClientSide) 
+        {
+    		BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+        	if (blockEntity instanceof AbstractDHDEntity dhd) 
+        	{
+        		dhd.getNearestStargate(16);
+        		
+        		MenuProvider containerProvider = new MenuProvider() 
+        		{
+        			@Override
+        			public Component getDisplayName() 
+        			{
+        				return Component.translatable("screen.sgjourney.dhd");
+        			}
+        			
+        			@Override
+        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
+        			{
+        				return new ClassicDHDMenu(windowId, playerInventory, blockEntity);
+        			}
+        		};
+        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        	}
+        	else
+        	{
+        		throw new IllegalStateException("Our named container provider is missing!");
+        	}
+        }
         return InteractionResult.SUCCESS;
     }
 }

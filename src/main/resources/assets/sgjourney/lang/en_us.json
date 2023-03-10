@@ -5,7 +5,7 @@
 	"block.sgjourney.raw_naquadah_block": "Raw Naquadah Block",
 	"block.sgjourney.naquadah_block": "Block of Naquadah",
 	"block.sgjourney.naquadah_stairs": "Naquadah Stairs",
-	"block.sgjourney.naquadah_slab": "Naquadah_slab",
+	"block.sgjourney.naquadah_slab": "Naquadah Slab",
 	"block.sgjourney.fire_pit": "Fire Pit",
 	"block.sgjourney.archeology_table": "Archeology Table",
 	"block.sgjourney.golden_idol": "Golden Idol",
@@ -18,8 +18,12 @@
 	"block.sgjourney.sandstone_cartouche": "Sandstone Cartouche",
 	"block.sgjourney.stone_cartouche": "Stone Cartouche",
 	
+	"block.sgjourney.universe_stargate": "Stargate",
+	"block.sgjourney.universe_ring": "Stargate",
 	"block.sgjourney.milky_way_stargate": "Stargate",
+	"block.sgjourney.milky_way_ring": "Stargate",
 	"block.sgjourney.pegasus_stargate": "Stargate",
+	"block.sgjourney.pegasus_ring": "Stargate",
 	"block.sgjourney.milky_way_dhd": "DHD",
 	"block.sgjourney.pegasus_dhd": "DHD",
 	"block.sgjourney.classic_dhd": "DHD",
@@ -27,9 +31,22 @@
 	"block.sgjourney.transport_rings": "Transport Rings",
 	"block.sgjourney.ring_panel": "Ring Panel",
 	
+	"block.sgjourney.naquadah_generator_mark_i": "Naquadah Generator Mark I",
+	"block.sgjourney.naquadah_generator_mark_ii": "Naquadah Generator Mark II",
+	
+	"block.sgjourney.basic_interface": "Basic Interface",
+	"block.sgjourney.crystal_interface": "Crystal Interface",
+	"block.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
+	
+	"block.sgjourney.zpm_plug": "ZPM Plug",
+	"block.sgjourney.zpm_hub": "ZPM Hub",
+	
 	"item.sgjourney.raw_naquadah": "Raw Naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadah Alloy",
+	"item.sgjourney.pure_naquadah": "Pure Naquadah",
 	"item.sgjourney.naquadah": "Weapons Grade Naquadah",
+	"item.sgjourney.liquid_naquadah_bucket": "Liquid Naquadah Bucket",
+	"item.sgjourney.liquid_naquadah_bottle": "Liquid Naquadah Bottle",
 
 	"item.sgjourney.transportation_crystal": "Transportation Crystal",
 	"item.sgjourney.energy_crystal": "Energy Crystal",
@@ -48,6 +65,9 @@
 	"item.sgjourney.matok": "Staff Weapon",
 	
 	"item.sgjourney.pda": "PDA",
+	"item.sgjourney.zero_point_module": "Zero Point Module",
+	
+	"item.sgjourney.syringe": "Syringe",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadah Helmet",
 	"item.sgjourney.naquadah_chestplate": "Naquadah Chestplate",
@@ -67,10 +87,11 @@
 	
 	"itemGroup.stargate_blocks": "Stargate Blocks",
 	"itemGroup.stargate_items": "Stargate Items",
-	"itemGroup.stargate_decorations": "Stargate Decorations",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.transport_rings": "Transport Rings",
+	"screen.sgjourney.naquadah_generator": "Naquadah Generator",
+	"screen.sgjourney.zpm_hub": "ZPM Hub",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
 	"biome.sgjourney.abydos_spires": "Abydos Spires",
@@ -81,5 +102,17 @@
 	"advancements.stargate.naquadah.title": "Unlike any found on earth...",
 	"advancements.stargate.naquadah.description":"Acquire naquadah",
 	
-	"tooltips.sgjourney.pda_info": "Right-click: Get information about the block"
+	"tooltip.sgjourney.kara_kesh_terror": "Mode: Terror",
+	"tooltip.sgjourney.kara_kesh_knockback": "Mode: Knockback",
+	"tooltip.sgjourney.pda_info": "Right-click: Get information about the target",
+	"tooltip.sgjourney.syringe_contents": "Contents:",
+	"tooltip.sgjourney.syringe_empty": "Empty",
+	"tooltip.sgjourney.syringe_blood": "Blood",
+	"tooltip.sgjourney.syringe_prototype_ata_gene": "Prototype Ancient Gene Therapy",
+	"tooltip.sgjourney.syringe_ata_gene": "Ancient Gene Therapy",
+	
+	"message.sgjourney.syringe_got_ancient_gene": "You now have the Ancient Gene",
+	"message.sgjourney.syringe_has_ancient_gene": "You already have the Ancient Gene",
+	"message.sgjourney.pda_has_ancient_gene": "Has Ancient Gene",
+	"message.sgjourney.pda_has_naquadah_in_bloodstream": "Has Naquadah in bloodstream"
 }

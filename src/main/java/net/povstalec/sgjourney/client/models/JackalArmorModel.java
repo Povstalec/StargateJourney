@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.povstalec.sgjourney.init.LayerInit;
+import net.povstalec.sgjourney.client.Layers;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class JackalArmorModel extends HumanoidModel<LivingEntity>
@@ -86,7 +86,7 @@ public class JackalArmorModel extends HumanoidModel<LivingEntity>
     public static void bakeModelLayers(EntityRenderersEvent.AddLayers event) 
     {
         EntityModelSet entityModelSet = event.getEntityModels();
-        INSTANCE = new JackalArmorModel(entityModelSet.bakeLayer(LayerInit.JACKAL_HEAD));
+        INSTANCE = new JackalArmorModel(entityModelSet.bakeLayer(Layers.JACKAL_HEAD));
     }
 
 }

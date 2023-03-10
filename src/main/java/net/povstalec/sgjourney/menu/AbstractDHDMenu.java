@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.block_entities.AbstractDHDEntity;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
-import net.povstalec.sgjourney.network.ServerboundDHDUpdatePacket;
+import net.povstalec.sgjourney.packets.ServerboundDHDUpdatePacket;
 
 public abstract class AbstractDHDMenu extends AbstractContainerMenu
 {

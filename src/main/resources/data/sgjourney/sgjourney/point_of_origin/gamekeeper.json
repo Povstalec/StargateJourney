@@ -1,5 +1,5 @@
 {
 	"name": "Gamekeeper",
-	"texture": "sgjourney:gamekeeper.png",
+	"texture": "sgjourney:points_of_origin/gamekeeper.png",
 	"generates_randomly": true
 }

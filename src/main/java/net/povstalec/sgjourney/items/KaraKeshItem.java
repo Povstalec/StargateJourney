@@ -22,9 +22,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.config.ServerTechConfig;
+import net.povstalec.sgjourney.misc.GoauldTech;
 
-public class KaraKeshItem extends Item
+public class KaraKeshItem extends Item implements GoauldTech
 {
+	private static final boolean requirementsDisabled = ServerTechConfig.disable_kara_kesh_requirements.get();
 	private boolean terrorModeOn = false;
 	private CompoundTag itemTag = new CompoundTag();
 	private Random random = new Random();
@@ -37,22 +40,24 @@ public class KaraKeshItem extends Item
 	@Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand)
 	{
-		if(!level.isClientSide && player.isShiftKeyDown())
+		if(level.isClientSide())
+			return super.use(level, player, usedHand);
+		
+		if(canUseGoauldTech(requirementsDisabled, player) && player.isShiftKeyDown())
 		{
 			if(!player.getItemInHand(usedHand).getOrCreateTag().getBoolean("TerrorModeOn"))
 			{
 				terrorModeOn = true;
-				player.displayClientMessage(Component.translatable("sgjourney.kara_kesh_terror").withStyle(ChatFormatting.RED), true);
+				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh_terror").withStyle(ChatFormatting.RED), true);
 			}
 			else
 			{
 				terrorModeOn = false;
-				player.displayClientMessage(Component.translatable("sgjourney.kara_kesh_knockback").withStyle(ChatFormatting.RED), true);
+				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh_knockback").withStyle(ChatFormatting.GOLD), true);
 			}
 			
 			itemTag.putBoolean("TerrorModeOn", terrorModeOn);
 			player.getItemInHand(usedHand).setTag(itemTag);
-			
 		}
         return super.use(level, player, usedHand);
     }
@@ -76,8 +81,6 @@ public class KaraKeshItem extends Item
 			target.playSound(SoundEvents.BLAZE_SHOOT, 0.5F, random.nextFloat() * 0.4F + 0.8F);
 			return InteractionResult.PASS;
 		}
-		
-		
 		return InteractionResult.FAIL;
 	}
 	
@@ -93,13 +96,9 @@ public class KaraKeshItem extends Item
         if(stack.hasTag())
         {
             if(stack.getTag().getBoolean("TerrorModeOn"))
-			{
-				tooltipComponents.add(Component.translatable("tooltips.sgjourney.kara_kesh_terror").withStyle(ChatFormatting.RED));
-			}
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh_terror").withStyle(ChatFormatting.RED));
 			else
-			{
-				tooltipComponents.add(Component.translatable("tooltips.sgjourney.kara_kesh_knockback").withStyle(ChatFormatting.YELLOW));
-			}
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh_knockback").withStyle(ChatFormatting.GOLD));
         }
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);

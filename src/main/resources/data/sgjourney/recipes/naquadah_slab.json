@@ -1,13 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
-
-  "pattern": [
-    "III"
-  ],
-  "key": {
-    "I": {"item": "sgjourney:naquadah_alloy"}
-  },
-  "result": {
-    "item": "sgjourney:naquadah_slab"
-  }
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"III"
+	],
+	"key":
+	{
+		"I": {"item": "sgjourney:naquadah_alloy"}
+	},
+	"result":
+	{
+		"item": "sgjourney:naquadah_slab"
+	}
 }

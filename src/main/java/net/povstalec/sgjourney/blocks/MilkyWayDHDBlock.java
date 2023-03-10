@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.blocks;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,11 +19,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.AbstractDHDEntity;
 import net.povstalec.sgjourney.block_entities.MilkyWayDHDEntity;
+import net.povstalec.sgjourney.capabilities.BloodstreamNaquadahProvider;
 import net.povstalec.sgjourney.menu.MilkyWayDHDMenu;
 
 public class MilkyWayDHDBlock extends AbstractDHDBlock
 {
-
 	public MilkyWayDHDBlock(Properties properties)
 	{
 		super(properties);

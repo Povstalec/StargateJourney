@@ -148,7 +148,7 @@ public abstract class AbstractDHDEntity extends BlockEntity
 		{
 			if(symbol == 0)
 				level.playSound((Player)null, this.getBlockPos(), SoundInit.MILKY_WAY_DHD_ENTER.get(), SoundSource.BLOCKS, 0.25F, 1F);
-			target.encodeChevron(symbol);
+			target.inputSymbol(symbol);
 		}
 		else
 			System.out.println("Stargate not found");

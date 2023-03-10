@@ -19,6 +19,8 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class Symbols
 {
+	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	
 	public static final ResourceLocation SYMBOLS_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbols");
 	public static final ResourceKey<Registry<Symbols>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOLS_LOCATION);
 	public static final Codec<ResourceKey<Symbols>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
@@ -59,14 +61,14 @@ public class Symbols
 	public ResourceLocation texture(int i)
 	{
 		if(i >= textures.size() || i < 0)
-			return new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+			return ERROR_LOCATION;
 		
 		ResourceLocation path = textures.get(i);
 		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
 		
 		if(Minecraft.getInstance().getResourceManager().getResource(texture).isPresent())
 			return texture;
-		return new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+		return ERROR_LOCATION;
 	}
 
 	public static String unicode(int symbolNumber)
@@ -89,6 +91,25 @@ public class Symbols
 		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
 		return registry.get(new ResourceLocation(split[0], split[1]));
+	}
+	
+	public static String addressUnicode(String address)
+	{
+		String unicode = "";
+		
+		String[] symbols = address.split("-");
+		
+		for(int i = 0; i < symbols.length; i++)
+		{
+			if(!symbols[i].equals(""))
+			{
+				int symbolNumber = Integer.parseInt(symbols[i]);
+			
+				unicode = unicode + Symbols.unicode(symbolNumber);
+			}
+		}
+		
+		return unicode;
 	}
 	
 }

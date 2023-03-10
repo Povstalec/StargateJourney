@@ -4,8 +4,8 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-version = '0.5.0'
-group = 'net.povstalec.sgjourney' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = '0.6.0'
+group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'sgjourney'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -33,6 +33,11 @@ minecraft {
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
+    	all {
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+        }
+    
         client {
             workingDirectory project.file('run')
 
@@ -123,13 +128,40 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    maven {
+    url "https://squiddev.cc/maven/"
+    content {
+      includeGroup("cc.tweaked")
+      includeModule("org.squiddev", "Cobalt")
+      includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
+    }
+    maven {
+        name = "Progwml6 maven jei"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        name "tterrag maven"
+        url "https://maven.tterrag.com/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+  }
 }
 
 dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19.3-44.0.41'
+    minecraft 'net.minecraftforge:forge:1.19.3-44.1.0'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
@@ -140,6 +172,31 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    
+    
+
+    // For more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    
+    // compile against the JEI API but do not include it at runtime
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+    // at runtime, use the full JEI jar for Forge
+    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
+    
+	//compileOnly("cc.tweaked:cc-tweaked-${mc_version}-common-api")
+	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
+    runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}"))
+    
+    runtimeOnly fg.deobf("curse.maven:mcjtylib-233105:4389808")
+    runtimeOnly fg.deobf("curse.maven:rftools-base-326041:4389811")
+    runtimeOnly fg.deobf("curse.maven:rftools-power-290209:4367297")
+    
+    runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
+    runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
+    runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
+    runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

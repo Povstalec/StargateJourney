@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
-import net.povstalec.sgjourney.client.screens.RingRemoteScreen;
 import net.povstalec.sgjourney.data.BlockEntityList;
 import net.povstalec.sgjourney.menu.MilkyWayDHDMenu;
 
@@ -45,7 +44,7 @@ public class RingRemoteItem extends Item
 	{
 		if(!level.isClientSide)
 		{
-			/*BlockPos pos = this.getNearestRings(BlockEntityList.get(level).getBlockEntities("TransportRingsList"), player.blockPosition(), 16);
+			BlockPos pos = this.getNearestRings(BlockEntityList.get(level).getBlockEntities("TransportRingsList"), player.blockPosition(), 16);
 			if(pos != null)
 			{
 				BlockEntity localRings = level.getBlockEntity(pos);
@@ -74,10 +73,8 @@ public class RingRemoteItem extends Item
 			else
 			{
 				System.out.println("Pos is null");
-			}*/
+			}
 		}
-		else
-			Minecraft.getInstance().setScreen(new RingRemoteScreen(Component.translatable("screen.sgjourney.ring_remote")));
 			
         return super.use(level, player, usedHand);
     }

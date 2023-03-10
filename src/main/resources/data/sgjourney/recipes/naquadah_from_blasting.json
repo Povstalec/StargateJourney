@@ -1,6 +1,6 @@
 {
 	"type": "minecraft:blasting",
-	"ingredient": { "item": "sgjourney:raw_naquadah_block" },
+	"ingredient": { "item": "sgjourney:pure_naquadah" },
 	"result": { "item": "sgjourney:naquadah" },
 	"experience": 1.0,
 	"cookingtime": 600
