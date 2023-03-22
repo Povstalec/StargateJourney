@@ -185,8 +185,8 @@ dependencies {
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
     
-	//compileOnly("cc.tweaked:cc-tweaked-${mc_version}-common-api")
-	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
+    compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
+    compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
     runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}"))
     
     runtimeOnly fg.deobf("curse.maven:mcjtylib-233105:4389808")
