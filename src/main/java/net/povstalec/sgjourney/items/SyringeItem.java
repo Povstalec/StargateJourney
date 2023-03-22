@@ -61,7 +61,10 @@ public class SyringeItem extends Item
 		if(!level.isClientSide())
 		{
 			if(player.isShiftKeyDown())
-				return this.tryToApplyEffects(player, player.getItemInHand(hand)) ? InteractionResultHolder.pass(player.getItemInHand(hand)) : InteractionResultHolder.fail(player.getItemInHand(hand));
+			{
+				if(this.tryToApplyEffects(player, player.getItemInHand(hand)))
+					player.getItemInHand(hand).getTag().putString("Contents", Contents.EMPTY.name());
+			}
 		}
 		
 		return InteractionResultHolder.fail(player.getItemInHand(hand));

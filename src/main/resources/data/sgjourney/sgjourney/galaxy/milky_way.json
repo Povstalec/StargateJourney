@@ -17,6 +17,10 @@
 			"address": [8, 1, 22, 14, 36, 19]
 		},
 		{
+			"solar_system": "sgjourney:nether",
+			"address": [8, 7, 6, 5, 4, 3]
+		},
+		{
 			"solar_system": "sgjourney:end",
 			"address": [1, 2, 3, 4, 5, 6]
 		}

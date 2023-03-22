@@ -126,7 +126,8 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 			
 			target = (TransportRingsEntity) level.getBlockEntity(targetPos);
 			
-			transportLight = LevelRenderer.getLightColor(level, this.transportPos);
+			if(level.isClientSide())
+				transportLight = LevelRenderer.getLightColor(level, this.transportPos);
 			
 			loadChunk(true);
 		}

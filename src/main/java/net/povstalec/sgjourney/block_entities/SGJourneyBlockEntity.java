@@ -12,10 +12,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.data.BlockEntityList;
 
 public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 {
+	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
+	
+	protected static final String ID = "ID";
+	protected static final String ADD_TO_NETWORK = "AddToNetwork";
 	protected static final String EMPTY = StargateJourney.EMPTY;
 	
 	private String id = EMPTY;
@@ -58,8 +63,8 @@ public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
     {
     	super.load(tag);
     	
-    	id = tag.getString("ID");
-    	addToNetwork = tag.getBoolean("AddToNetwork");
+    	id = tag.getString(ID);
+    	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
 	}
 	
 	@Override
@@ -67,8 +72,8 @@ public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 	{
 		super.saveAdditional(tag);
 		
-		tag.putString("ID", id);
-		tag.putBoolean("AddToNetwork", addToNetwork);
+		tag.putString(ID, id);
+		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 	}
 	
 	//============================================================================================

@@ -35,22 +35,23 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta) {
+    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta)
+    {
+		int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        
         renderBackground(pPoseStack);
         super.render(pPoseStack, mouseX, mouseY, delta);
         renderTooltip(pPoseStack, mouseX, mouseY);
+        
+        this.energyTooltip(pPoseStack, x + 8, y + 62, mouseX, mouseY);
     }
     
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) 
 	{
-		int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
-        
 		this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
 	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
-	    
-	    this.energyTooltip(matrixStack, x + 8, y + 62, mouseX, mouseY);
     }
     
     protected void renderProgress(PoseStack matrixStack, int x, int y)
@@ -71,9 +72,9 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     
     protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
     {
-    	if(mouseX >= x && mouseX <= x + 160 && mouseY >= y && mouseY <= y + 6)
+    	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
 	    {
-	    	renderTooltip(matrixStack, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX - 120, mouseY);
+	    	renderTooltip(matrixStack, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
 	    }
     }
 }

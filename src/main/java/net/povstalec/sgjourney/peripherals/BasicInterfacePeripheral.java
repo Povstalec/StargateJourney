@@ -1,19 +1,48 @@
 package net.povstalec.sgjourney.peripherals;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import dan200.computercraft.api.lua.IArguments;
+import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
+import dan200.computercraft.api.lua.MethodResult;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.core.asm.PeripheralMethod;
 import net.povstalec.sgjourney.block_entities.BasicInterfaceEntity;
+import net.povstalec.sgjourney.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 
 public class BasicInterfacePeripheral implements IPeripheral
 {
 	protected BasicInterfaceEntity basicInterface;
+	List<String> methodNames = new LinkedList<>();
+	List<PeripheralMethod> methods = new LinkedList<>();
 	
 	public BasicInterfacePeripheral(BasicInterfaceEntity basicInterface)
 	{
 		this.basicInterface = basicInterface;
+	}
+
+	public void addMethod(String methodName, PeripheralMethod method)
+	{
+		System.out.println("Add " + methodName);
+		methodNames.add(methodName);
+		methods.add(method);
+	}
+
+	public void removeMethod(String methodName)
+	{
+		if(methodNames.contains(methodName))
+		{
+			System.out.println("Remove " + methodName);
+			int methodIndex = methodNames.indexOf(methodName);
+			methodNames.remove(methodName);
+			methods.remove(methodIndex);
+		}
 	}
 	
 	@Override
@@ -42,100 +71,8 @@ public class BasicInterfacePeripheral implements IPeripheral
 	//============================================================================================
 	
 	@LuaFunction
-	public final boolean isConnectedToStargate()
+	public final long getEnergy() throws LuaException
 	{
-		return basicInterface.isConnectedToStargate();
-	}
-	
-	@LuaFunction
-	public final long getStargateEnergy() throws LuaException
-	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		return basicInterface.getStargate().getEnergyStored();
-	}
-	
-	@LuaFunction
-	public final void raiseChevron() throws LuaException
-	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		if(!basicInterface.raiseChevron())
-			throw new LuaException("Stargate cannot raise chevron");
-	}
-	
-	@LuaFunction
-	public final void lowerChevron() throws LuaException
-	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		if(!basicInterface.lowerChevron())
-			throw new LuaException("Stargate cannot lower chevron");
-			
-	}
-	
-	@LuaFunction
-	public final void rotateClockwise(int symbol) throws LuaException
-	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		AbstractStargateEntity stargate = basicInterface.getStargate();
-		
-		if(stargate instanceof MilkyWayStargateEntity)
-			basicInterface.rotateStargate(true, symbol);
-		else
-			throw new LuaException("Stargate cannot rotate");
-	}
-	
-	@LuaFunction
-	public final void rotateAntiClockwise(int symbol) throws LuaException
-	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		AbstractStargateEntity stargate = basicInterface.getStargate();
-		
-		if(stargate instanceof MilkyWayStargateEntity)
-			basicInterface.rotateStargate(false, symbol);
-		else
-			throw new LuaException("Stargate cannot rotate");
-	}
-	
-	@LuaFunction
-	public final int getChevronsEngaged() throws LuaException
-	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		return basicInterface.getChevronsEngaged();
-	}
-	
-	@LuaFunction
-	public final int getOpenTime() throws LuaException
-	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		return basicInterface.getOpenTime();
-	}
-	
-	@LuaFunction
-	public final boolean isCurrentSymbol(int symbol) throws LuaException
-	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		AbstractStargateEntity stargate = basicInterface.getStargate();
-		
-		if(stargate instanceof MilkyWayStargateEntity)
-			basicInterface.isCurrentSymbol(symbol);
-		else
-			throw new LuaException("Stargate cannot rotate");
-		
-		return false;
+		return basicInterface.getEnergyStored();
 	}
 }

@@ -64,15 +64,15 @@ public class Wormhole implements ITeleporter
 		Level level = traveler.getLevel();
 		playWormholeSound(level, traveler);
     	
-    	if(traveler instanceof LocalPlayer player)
+    	/*if(traveler instanceof LocalPlayer player) // DON'T USE THIS, IT WILL CRASH THE SERVER YOU IDIOT
     	{
         	Vec3 momentum = traveler.getDeltaMovement();
         	player.connection.send(new ServerboundMovePlayerPacket.PosRot(momentum.x, momentum.y, momentum.z, player.getYRot(), player.getXRot(), player.isOnGround()));
-    	}
-    	if(traveler instanceof ServerPlayer player)
+    	}*/
+    	/*if(traveler instanceof ServerPlayer player)
     	{
         	Vec3 momentum = traveler.getDeltaMovement();
-    	}
+    	}*/
     	
 		if(!level.isClientSide())
 		{

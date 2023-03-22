@@ -13,18 +13,23 @@ import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.WormholeModel;
+import net.povstalec.sgjourney.config.ClientStargateConfig;
 import net.povstalec.sgjourney.client.models.PegasusStargateModel;
 
 @OnlyIn(Dist.CLIENT)
 public class PegasusStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<PegasusStargateEntity>
 {
+	protected static final int r = ClientStargateConfig.pegasus_r.get();
+	protected static final int g = ClientStargateConfig.pegasus_g.get();
+	protected static final int b = ClientStargateConfig.pegasus_b.get();
+	
 	protected final WormholeModel wormholeModel;
 	protected final PegasusStargateModel stargateModel;
 	
 	public PegasusStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER));
+		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER), r, g, b);
 		this.stargateModel = new PegasusStargateModel(
 				context.bakeLayer(Layers.PEGASUS_RING_LAYER), 
 				context.bakeLayer(Layers.PEGASUS_SYMBOL_RING_LAYER), 

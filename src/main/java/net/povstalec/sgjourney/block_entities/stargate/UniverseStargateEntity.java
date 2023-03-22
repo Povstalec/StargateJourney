@@ -96,7 +96,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void inputSymbol(int symbol)
+	public void engageSymbol(int symbol)
 	{
 		if(level.isClientSide())
 			return;
@@ -107,8 +107,13 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		if(symbol > 35)
 			return;
 		
-		if(isConnected() && symbol == 0)
-			disconnectStargate();
+		if(symbol == 0)
+		{
+			if(isConnected())
+				disconnectStargate();
+			else if(!isConnected() && addressBuffer.length == 0)
+				return;
+		}
 		
 		addressBuffer = Addressing.growIntArray(addressBuffer, symbol);
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
@@ -141,11 +146,15 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		if(!stargate.isConnected() && stargate.addressBuffer.length > stargate.symbolBuffer)
 		{
 			if(stargate.animationTicks <= 0)
-				stargate.rotateStargate();
+				stargate.rotateToSymbol(stargate.addressBuffer[stargate.symbolBuffer]);
 			else if(stargate.animationTicks >= WAIT_TICKS)
 				stargate.animationTicks = 0;
 			else if(stargate.animationTicks > 0)
 				stargate.animationTicks++;
+		}
+		else if(!stargate.isConnected() && stargate.addressBuffer.length == 0)
+		{
+			stargate.rotateToDefault();
 		}
 		else if(!level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), 
@@ -161,6 +170,16 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		else
 			rotation += 2;
 		
+		if(rotation >= 360)
+		{
+			rotation -= 360;
+			oldRotation -= 360;
+		}
+		else if(rotation < 0)
+		{
+			rotation += 360;
+			oldRotation += 360;
+		}
 		setChanged();
 	}
 	
@@ -174,9 +193,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		double position = (double) rotation;
 		double lowerBound = (double) (desiredPosition - 1);
 		double upperBound = (double) (desiredPosition + 1);
-
-		//System.out.println(whole + " + " + leftover);
-		//System.out.println(lowerBound + " < " + rotation + " < " + upperBound);
 		
 		if(position > lowerBound && position < upperBound)
 			return true;
@@ -189,11 +205,9 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		return Mth.lerp(partialTick, this.oldRotation, this.rotation);
 	}
 	
-	private void rotateStargate()
+	private void rotateToSymbol(int desiredSymbol)
 	{
 		oldRotation = rotation;
-		
-		int desiredSymbol = this.addressBuffer[symbolBuffer];
 		
 		if(isCurrentSymbol(desiredSymbol))
 		{
@@ -210,25 +224,23 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		}
 		else
 			rotate(getBestRotationDirection(desiredSymbol));
+	}
+	
+	private void rotateToDefault()
+	{
+		oldRotation = rotation;
 		
-		if(rotation >= 360)
+		if(rotation == 0)
 		{
-			rotation -= 360;
-			oldRotation -= 360;
+			if(!level.isClientSide())
+				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
 		}
-		else if(rotation < 0)
-		{
-			rotation += 360;
-			oldRotation += 360;
-		}
-		//String lev = level.isClientSide() ? "Client " : "Server ";
-		//System.out.println(lev + " Symbols Match: " + isCurrentSymbol(desiredSymbol));
-		//System.out.println((desiredSymbol + 0.1) + " > " + (rotation / angle()) + " < " + (desiredSymbol - 0.1));
+		else
+			rotate(getBestRotationDirection(0.0D, (double) rotation));
 	}
 	
 	private boolean getBestRotationDirection(int desiredSymbol)
 	{
-		
 		int whole = desiredSymbol / 4;
 		int leftover = desiredSymbol % 4;
 		
@@ -236,16 +248,22 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		
 		double position = (double) rotation;
 		
-		double difference = desiredPosition - position;
+		return getBestRotationDirection(desiredPosition, position);
+	}
+	
+	private static boolean getBestRotationDirection(double desiredRotation, double rotation)
+	{
+		
+		double difference = desiredRotation - rotation;
 		
 		if(difference >= 180.0D)
-			position =+ 360.0D;
+			rotation =+ 360.0D;
 		else if(difference <= -180.0D)
-			position =- 360.0D;
+			rotation =- 360.0D;
 		
-		double lowerBound = (double) (desiredPosition - 1);
+		double lowerBound = (double) (desiredRotation - 1);
 		
-		if(position > lowerBound)
+		if(rotation > lowerBound)
 			return true;
 		else
 			return false;

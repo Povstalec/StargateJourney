@@ -72,7 +72,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void inputSymbol(int symbol)
+	public void engageSymbol(int symbol)
 	{
 		
 		if(isConnected() && symbol == 0)

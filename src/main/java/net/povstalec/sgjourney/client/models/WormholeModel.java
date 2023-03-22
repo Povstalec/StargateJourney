@@ -16,22 +16,26 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 
 public class WormholeModel
 {
-	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/block/event_horizon.png");
+	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png");
 	
 	private ModelPart eventHorizon;
+	private int r, g, b;
 	
 	private float scale = 0.03125F;
 	
-	public WormholeModel(ModelPart eventHorizon)
+	public WormholeModel(ModelPart eventHorizon, int r, int g, int b)
 	{
 		this.eventHorizon = eventHorizon;
+		this.r = r;
+		this.g = g;
+		this.b = b;
 	}
 	
 	public void renderEventHorizon(PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay, int tickCount)
 	{
 		VertexConsumer event_horizon_texture = source.getBuffer(SGJourneyRenderTypes.eventHorizon(EVENT_HORIZON_TEXTURE, 0.0F, (float)tickCount * this.scale));
-		this.eventHorizon.render(stack, event_horizon_texture, 255, combinedOverlay);
+		this.eventHorizon.render(stack, event_horizon_texture, 255, combinedOverlay, r/255.0F, g/255.0F, b/255.0F, 1.0F);
 	}
 	
 	public static LayerDefinition createEventHorizonLayer()

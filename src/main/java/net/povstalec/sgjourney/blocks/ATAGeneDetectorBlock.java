@@ -53,15 +53,15 @@ public class ATAGeneDetectorBlock extends Block implements AncientTech
 			
 			switch(getGeneType(player))
 			{
-			case NONE:
-				measured = 0;
-				break;
 			case ARTIFICIAL:
 				measured = 1;
+				break;
 			case INHERITED:
 				measured = 2;
+				break;
 			case ANCIENT:
 				measured = 3;
+				break;
 			default:
 				measured = 0;
 			}
@@ -127,7 +127,6 @@ public class ATAGeneDetectorBlock extends Block implements AncientTech
 	
 	private int detectATAGene(BlockState state, Level level, BlockPos pos, double detectionDistance)
 	{
-		System.out.println("Detection Distance: " + detectionDistance);
 		AABB localBox = new AABB((pos.getX() - detectionDistance), (pos.getY() - detectionDistance), (pos.getZ() - detectionDistance), 
 							(pos.getX() + 1 + detectionDistance), (pos.getY() + 1 + detectionDistance), (pos.getZ() + 1 + detectionDistance));
 		

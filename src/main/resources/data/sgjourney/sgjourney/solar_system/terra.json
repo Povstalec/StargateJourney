@@ -5,7 +5,6 @@
 	"point_of_origin": "sgjourney:terra",
 	"dimensions":
 	[
-		"minecraft:overworld",
-		"minecraft:the_nether"
+		"minecraft:overworld"
 	]
 }

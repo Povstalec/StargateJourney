@@ -14,17 +14,22 @@ import net.povstalec.sgjourney.blocks.stargate.ClassicStargateBlock;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.ClassicStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
+import net.povstalec.sgjourney.config.ClientStargateConfig;
 
 @OnlyIn(Dist.CLIENT)
 public class ClassicStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<ClassicStargateEntity>
 {
+	protected static final int r = ClientStargateConfig.classic_r.get();
+	protected static final int g = ClientStargateConfig.classic_g.get();
+	protected static final int b = ClientStargateConfig.classic_b.get();
+	
 	protected final WormholeModel wormholeModel;
 	protected final ClassicStargateModel stargateModel;
 	
 	public ClassicStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER));
+		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER), r, g, b);
 		this.stargateModel = new ClassicStargateModel(
 				context.bakeLayer(Layers.CLASSIC_OUTER_RING_LAYER), 
 				context.bakeLayer(Layers.CLASSIC_INNER_RING_LAYER), 

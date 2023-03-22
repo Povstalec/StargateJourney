@@ -18,9 +18,14 @@ public class StargateJourneyConfig
 	private static final ForgeConfigSpec.Builder client_builder = new ForgeConfigSpec.Builder();
 	public static final ForgeConfigSpec client_config;
 	
+	public static ForgeConfigSpec.BooleanValue disable_energy_use;
+	
 	static
 	{
-		ServerEnergyConfig.init(server_builder);
+		generalConfig(server_builder);
+		
+		ServerZPMConfig.init(server_builder);
+		ServerInterfaceConfig.init(server_builder);
 		ServerStargateConfig.init(server_builder);
 		ServerNaquadahGeneratorConfig.init(server_builder);
 		ServerStargateNetworkConfig.init(server_builder);
@@ -41,5 +46,15 @@ public class StargateJourneyConfig
 		file.load();
 		StargateJourney.LOGGER.info("Loaded Config: " + path);
 		config.setConfig(file);
+	}
+	
+	private static void generalConfig(ForgeConfigSpec.Builder server)
+	{
+		server.comment("Stargate Journey General Config");
+		
+		// General Energy
+		disable_energy_use = server
+				.comment("Disable energy requirements for blocks added by Stargate Journey")
+				.define("server.disable_energy_requirements", true);
 	}
 }

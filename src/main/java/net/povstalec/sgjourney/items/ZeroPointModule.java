@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.config.ServerEnergyConfig;
+import net.povstalec.sgjourney.config.ServerZPMConfig;
 
 public class ZeroPointModule extends Item
 {
@@ -27,9 +27,12 @@ public class ZeroPointModule extends Item
 	 * 
 	 * One level of Entropy corresponds to 0.1%
 	 */
+
+	private static final String ENTROPY = "Entropy";
+	private static final String ENERGY = "Energy";
 	
 	public static final int maxEntropy = 1000;
-	public static final long maxEnergy = ServerEnergyConfig.zpm_energy_per_level_of_entropy.get();
+	public static final long maxEnergy = ServerZPMConfig.zpm_energy_per_level_of_entropy.get();
 	
 	public ZeroPointModule(Properties properties)
 	{
@@ -40,21 +43,20 @@ public class ZeroPointModule extends Item
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		int entropy = 0;
-		long extractedEnergy = 0L;
+		long remainingEnergy = maxEnergy;
 		
 		CompoundTag tag = stack.getOrCreateTag();
 		
-		if(tag.contains("Entropy"))
-			entropy = tag.getInt("Entropy");
+		if(tag.contains(ENTROPY))
+			entropy = tag.getInt(ENTROPY);
 		
-		if(tag.contains("ExtractedEnergy"))
-			extractedEnergy = tag.getLong("ExtractedEnergy");
+		if(tag.contains(ENERGY))
+			remainingEnergy = tag.getLong(ENERGY);
 		
 		float currentEntropy = (float) entropy * 100 / maxEntropy;
-		long remainingEnergy = maxEnergy - extractedEnergy;
 		
     	tooltipComponents.add(Component.literal("Entropy: " + currentEntropy + "%").withStyle(ChatFormatting.GOLD));
-    	tooltipComponents.add(Component.literal("Remaining Energy: " + remainingEnergy + " FE").withStyle(ChatFormatting.DARK_RED));
+    	tooltipComponents.add(Component.literal("Energy In Level: " + remainingEnergy + " FE").withStyle(ChatFormatting.DARK_RED));
     	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
@@ -66,20 +68,20 @@ public class ZeroPointModule extends Item
 		
 		CompoundTag tag = stack.getOrCreateTag();
 		
-		if(!tag.contains("ExtractedEnergy"))
-			tag.putLong("ExtractedEnergy", 0);
+		if(!tag.contains(ENERGY))
+			tag.putLong(ENERGY, maxEnergy);
 		
-		long extractedEnergy = tag.getLong("ExtractedEnergy");
+		long remainingEnergy = tag.getLong(ENERGY);
 		
-		extractedEnergy += energy;
+		remainingEnergy -= energy;
 		
-		if(extractedEnergy > maxEnergy)
+		if(remainingEnergy <= 0)
 		{
-			extractedEnergy -= maxEnergy;
+			remainingEnergy += maxEnergy;
 			increaseEntropy(stack);
 		}
 
-		tag.putLong("ExtractedEnergy", extractedEnergy);
+		tag.putLong(ENERGY, remainingEnergy);
 		stack.setTag(tag);
 		return energy;
 	}
@@ -88,9 +90,9 @@ public class ZeroPointModule extends Item
 	{
 		CompoundTag tag = stack.getOrCreateTag();
 		
-		int entropy = tag.getInt("Entropy");
+		int entropy = tag.getInt(ENTROPY);
 		entropy++;
-		tag.putInt("Entropy", entropy);
+		tag.putInt(ENTROPY, entropy);
 		stack.setTag(tag);
 	}
 	
@@ -106,11 +108,11 @@ public class ZeroPointModule extends Item
 	{
 		CompoundTag tag = stack.getOrCreateTag();
 		
-		if(tag.contains("Entropy"))
-			return tag.getInt("Entropy") < 1000;
+		if(tag.contains(ENTROPY))
+			return tag.getInt(ENTROPY) < 1000;
 		else
 		{
-			tag.putInt("Entropy", 0);
+			tag.putInt(ENTROPY, 0);
 			stack.setTag(tag);
 			return true;
 		}
@@ -123,11 +125,11 @@ public class ZeroPointModule extends Item
 		
 		CompoundTag tag = stack.getOrCreateTag();
 		
-		if(tag.contains("Entropy"))
-			return tag.getInt("Entropy") >= 999;
+		if(tag.contains(ENTROPY))
+			return tag.getInt(ENTROPY) >= 999;
 		else
 		{
-			tag.putInt("Entropy", 0);
+			tag.putInt(ENTROPY, 0);
 			stack.setTag(tag);
 			return false;
 		}
@@ -138,13 +140,11 @@ public class ZeroPointModule extends Item
 		if(!isZPM(stack) || !hasEnergy(stack))
 			return 0;
 		
-		long extractedEnergy = 0L;
+		long remainingEnergy = 0L;
 		CompoundTag tag = stack.getOrCreateTag();
 		
-		if(tag.contains("ExtractedEnergy"))
-			extractedEnergy = tag.getLong("ExtractedEnergy");
-		
-		long remainingEnergy = maxEnergy - extractedEnergy;
+		if(tag.contains(ENERGY))
+			remainingEnergy = tag.getLong(ENERGY);
 		
 		return remainingEnergy;
 	}

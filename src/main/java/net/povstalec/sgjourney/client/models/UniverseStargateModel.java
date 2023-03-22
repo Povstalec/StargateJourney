@@ -20,7 +20,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 {
 	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_outer_ring.png");
 	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_inner_ring.png");
-	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_chevron.png");
+	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_chevron.png");
 	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_chevron_lit.png");
 	
 	private final ModelPart ring;
@@ -44,8 +44,6 @@ public class UniverseStargateModel extends AbstractStargateModel
 		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
 		
 		this.ring.render(stack, ringTexture, combinedLight, combinedOverlay);
-		
-		this.chevrons.render(stack, ringTexture, combinedLight, combinedOverlay);
 
 		this.renderSymbolRing(stargate, stack, source, combinedLight, combinedOverlay, combinedOverlay);
 
@@ -105,8 +103,11 @@ public class UniverseStargateModel extends AbstractStargateModel
 		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
 		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
-		VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
-		this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
+		if(stargate.isConnected() || stargate.addressBuffer.length > 0)
+		{
+			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
+			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
+		}
 	}
 	
 	//============================================================================================
@@ -237,10 +238,20 @@ public class UniverseStargateModel extends AbstractStargateModel
 		double angle = (double) 360 / 54;
 		for(int i = 0; i < 54; i++)
 		{
-			dividers.addOrReplaceChild("divider_" + i, CubeListBuilder.create()
-					.texOffs(34, 34)
-					.addBox(-0.5F, -53.0F, -3.0F, 1.0F, 9.0F, 6.0F), 
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i)));
+			if(i % 6 == 0)
+			{
+				dividers.addOrReplaceChild("divider_" + i, CubeListBuilder.create()
+						.texOffs(28, 35)
+						.addBox(-2.0F, -52.0F, -3.5F, 4.0F, 8.0F, 7.0F), 
+						PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i)));
+			}
+			else
+			{
+				dividers.addOrReplaceChild("divider_" + i, CubeListBuilder.create()
+						.texOffs(50, 35)
+						.addBox(-0.5F, -53.0F, -3.0F, 1.0F, 9.0F, 6.0F), 
+						PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i)));
+			}
 		}
 	}
 	
@@ -262,54 +273,156 @@ public class UniverseStargateModel extends AbstractStargateModel
 		//	_
 		//	V
 		//	
-		PartDefinition chevronLight = chevron.addOrReplaceChild("chevron_light", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 4.5F));
-		createChevronLight(chevronLight);
-		PartDefinition chevronBackLight = chevron.addOrReplaceChild("chevron_light_back", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -5.5F));
-		createChevronLight(chevronBackLight);
+		PartDefinition chevronLightFront = chevron.addOrReplaceChild("chevron_light_front", CubeListBuilder.create(), PartPose.offset(0.0F, 54.5F, 4.5F));
+		createChevronLight(chevronLightFront);
+		PartDefinition chevronLightBack = chevron.addOrReplaceChild("chevron_light_back", CubeListBuilder.create(), PartPose.offset(0.0F, 54.5F, -5.5F));
+		createChevronLight(chevronLightBack);
 		
 		// -_   _-
 		//	 - -
 		//	
-		/*PartDefinition outerChevron = chevron.addOrReplaceChild("outer_chevron", CubeListBuilder.create(), PartPose.ZERO);
-		createOuterChevron(outerChevron);
-		
-		PartDefinition backChevron = chevron.addOrReplaceChild("back_chevron", CubeListBuilder.create(), PartPose.ZERO);
-		createBackChevron(backChevron);*/
+		PartDefinition outerChevronFront = chevron.addOrReplaceChild("outer_chevron_front", CubeListBuilder.create(), PartPose.offset(0.0F, 50.0F, 3.5F));
+		createOuterChevron(outerChevronFront);
+		PartDefinition outerChevronFrontLights = chevron.addOrReplaceChild("outer_chevron_front_lights", CubeListBuilder.create(), PartPose.offset(0.0F, 50.0F, 4.0F));
+		createOuterChevronLights(outerChevronFrontLights);
+		PartDefinition outerChevronBack = chevron.addOrReplaceChild("outer_chevron_back", CubeListBuilder.create(), PartPose.offset(0.0F, 50.0F, -4.5F));
+		createOuterChevron(outerChevronBack);
+		PartDefinition outerChevronBackLights = chevron.addOrReplaceChild("outer_chevron_back_lights", CubeListBuilder.create(), PartPose.offset(0.0F, 50.0F, -5.0F));
+		createOuterChevronLights(outerChevronBackLights);
 	}
 	
 	public static void createChevronLight(PartDefinition chevronLight)
 	{
 		chevronLight.addOrReplaceChild("chevron_top", CubeListBuilder.create()
-				.texOffs(22, 0)
-				.addBox(-3.0F, 54.0F, 0.0F, 6.0F, 1.0F, 1.0F), 
+				.texOffs(0, 0)
+				.addBox(-3.0F, 0.0F, 0.0F, 6.0F, 1.0F, 1.0F), 
 				PartPose.offset(0.0F, 0.0F, 0.0F));
 		chevronLight.addOrReplaceChild("chevron_upper", CubeListBuilder.create()
-				.texOffs(22, 5)
-				.addBox(-2.5F, 53.0F, 0.0F, 5.0F, 1.0F, 1.0F), 
+				.texOffs(0, 2)
+				.addBox(-2.5F, -1.0F, 0.0F, 5.0F, 1.0F, 1.0F), 
 				PartPose.offset(0.0F, 0.0F, 0.0F));
 		chevronLight.addOrReplaceChild("chevron_center", CubeListBuilder.create()
-				.texOffs(22, 5)
-				.addBox(-1.5F, 52.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
+				.texOffs(0, 4)
+				.addBox(-1.5F, -2.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
 				PartPose.offset(0.0F, 0.0F, 0.0F));
 		chevronLight.addOrReplaceChild("chevron_bottom", CubeListBuilder.create()
-				.texOffs(22, 5)
-				.addBox(-1.0F, 50.0F, 0.0F, 2.0F, 2.0F, 1.0F), 
+				.texOffs(0, 6)
+				.addBox(-1.0F, -4.0F, 0.0F, 2.0F, 2.0F, 1.0F), 
 				PartPose.offset(0.0F, 0.0F, 0.0F));
 		chevronLight.addOrReplaceChild("chevron_right", CubeListBuilder.create()
-				.texOffs(22, 15)
+				.texOffs(0, 9)
 				.addBox(0.0F, -3.0F, 0.0F, 1.0F, 3.0F, 1.0F),
-				PartPose.offsetAndRotation(3.0F, 55.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-40)));
+				PartPose.offsetAndRotation(3.0F, 1.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-40)));
 		chevronLight.addOrReplaceChild("chevron_left", CubeListBuilder.create()
-				.texOffs(22, 15)
+				.texOffs(0, 9)
 				.addBox(-1.0F, -3.0F, 0.0F, 1.0F, 3.0F, 1.0F),
-				PartPose.offsetAndRotation(-3.0F, 55.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(40)));
+				PartPose.offsetAndRotation(-3.0F, 1.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(40)));
 		chevronLight.addOrReplaceChild("chevron_lower_right", CubeListBuilder.create()
-				.texOffs(22, 15)
+				.texOffs(0, 9)
 				.addBox(-1.0F, 0.0F, 0.0F, 1.0F, 3.0F, 1.0F),
-				PartPose.offsetAndRotation(1.0F, 50.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-25)));
+				PartPose.offsetAndRotation(1.0F, -4.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-25)));
 		chevronLight.addOrReplaceChild("chevron_lower_left", CubeListBuilder.create()
-				.texOffs(22, 15)
+				.texOffs(0, 9)
 				.addBox(0.0F, 0.0F, 0.0F, 1.0F, 3.0F, 1.0F),
-				PartPose.offsetAndRotation(-1.0F, 50.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(25)));
+				PartPose.offsetAndRotation(-1.0F, -4.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(25)));
+	}
+	
+	public static void createOuterChevron(PartDefinition outerChevron)
+	{
+		outerChevron.addOrReplaceChild("outer_chevron_center", CubeListBuilder.create()
+				.texOffs(14, 0)
+				.addBox(-5.0F, 0.0F, 0.0F, 10.0F, 6.0F, 1.0F), 
+				PartPose.offset(0.0F, 0.0F, 0.0F));
+		outerChevron.addOrReplaceChild("outer_chevron_bottom_A", CubeListBuilder.create()
+				.texOffs(20, 7)
+				.addBox(-2.0F, -1.0F, 0.0F, 4.0F, 1.0F, 1.0F), 
+				PartPose.offset(0.0F, 0.0F, 0.0F));
+		outerChevron.addOrReplaceChild("outer_chevron_bottom_B", CubeListBuilder.create()
+				.texOffs(14, 7)
+				.addBox(-1.0F, -7.0F, 0.0F, 2.0F, 6.0F, 1.0F), 
+				PartPose.offset(0.0F, 0.0F, 0.0F));
+		outerChevron.addOrReplaceChild("outer_chevron_bottom_C", CubeListBuilder.create()
+				.texOffs(20, 7)
+				.addBox(-2.0F, -7.0F, 0.0F, 4.0F, 1.0F, 1.0F), 
+				PartPose.offset(0.0F, 0.0F, 0.0F));
+		
+		outerChevron.addOrReplaceChild("outer_chevron_left_top_A", CubeListBuilder.create()
+				.texOffs(14, 14)
+				.addBox(-10.0F, -1.0F, 0.0F, 10.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		outerChevron.addOrReplaceChild("outer_chevron_left_top_B", CubeListBuilder.create()
+				.texOffs(14, 16)
+				.addBox(-8.0F, -2.0F, 0.0F, 8.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		outerChevron.addOrReplaceChild("outer_chevron_left_top_C", CubeListBuilder.create()
+				.texOffs(14, 18)
+				.addBox(-7.0F, -3.0F, 0.0F, 7.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		outerChevron.addOrReplaceChild("outer_chevron_left_A", CubeListBuilder.create()
+				.texOffs(14, 20)
+				.addBox(-4.0F, -4.0F, 0.0F, 4.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		outerChevron.addOrReplaceChild("outer_chevron_left_B", CubeListBuilder.create()
+				.texOffs(14, 22)
+				.addBox(-3.0F, -5.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		outerChevron.addOrReplaceChild("outer_chevron_left_C", CubeListBuilder.create()
+				.texOffs(14, 24)
+				.addBox(-2.0F, -6.0F, 0.0F, 2.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		
+		outerChevron.addOrReplaceChild("outer_chevron_right_top_A", CubeListBuilder.create()
+				.texOffs(14, 14)
+				.addBox(0.0F, -1.0F, 0.0F, 10.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+		outerChevron.addOrReplaceChild("outer_chevron_right_top_B", CubeListBuilder.create()
+				.texOffs(14, 16)
+				.addBox(0.0F, -2.0F, 0.0F, 8.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+		outerChevron.addOrReplaceChild("outer_chevron_right_top_C", CubeListBuilder.create()
+				.texOffs(14, 18)
+				.addBox(0.0F, -3.0F, 0.0F, 7.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+		outerChevron.addOrReplaceChild("outer_chevron_right_A", CubeListBuilder.create()
+				.texOffs(14, 20)
+				.addBox(0.0F, -4.0F, 0.0F, 4.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+		outerChevron.addOrReplaceChild("outer_chevron_right_B", CubeListBuilder.create()
+				.texOffs(14, 22)
+				.addBox(0.0F, -5.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+		outerChevron.addOrReplaceChild("outer_chevron_right_C", CubeListBuilder.create()
+				.texOffs(14, 24)
+				.addBox(0.0F, -6.0F, 0.0F, 2.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+	}
+	
+	public static void createOuterChevronLights(PartDefinition outerChevronLights)
+	{
+		outerChevronLights.addOrReplaceChild("outer_chevron_left_lower_light", CubeListBuilder.create()
+				.texOffs(0, 17)
+				.addBox(0.0F, -5.5F, 0.0F, 2.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		outerChevronLights.addOrReplaceChild("outer_chevron_left_center_light", CubeListBuilder.create()
+				.texOffs(0, 15)
+				.addBox(-2.0F, -4.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		outerChevronLights.addOrReplaceChild("outer_chevron_left_upper_light", CubeListBuilder.create()
+				.texOffs(0, 13)
+				.addBox(-4.0F, -2.5F, 0.0F, 4.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
+		
+		outerChevronLights.addOrReplaceChild("outer_chevron_right_lower_light", CubeListBuilder.create()
+				.texOffs(0, 17)
+				.addBox(-2.0F, -5.5F, 0.0F, 2.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+		outerChevronLights.addOrReplaceChild("outer_chevron_right_center_light", CubeListBuilder.create()
+				.texOffs(0, 15)
+				.addBox(-1.0F, -4.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+		outerChevronLights.addOrReplaceChild("outer_chevron_right_upper_light", CubeListBuilder.create()
+				.texOffs(0, 13)
+				.addBox(0.0F, -2.5F, 0.0F, 4.0F, 1.0F, 1.0F), 
+				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
 	}
 }

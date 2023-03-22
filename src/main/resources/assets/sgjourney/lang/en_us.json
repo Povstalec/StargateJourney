@@ -18,15 +18,15 @@
 	"block.sgjourney.sandstone_cartouche": "Sandstone Cartouche",
 	"block.sgjourney.stone_cartouche": "Stone Cartouche",
 	
-	"block.sgjourney.universe_stargate": "Stargate",
-	"block.sgjourney.universe_ring": "Stargate",
-	"block.sgjourney.milky_way_stargate": "Stargate",
-	"block.sgjourney.milky_way_ring": "Stargate",
-	"block.sgjourney.pegasus_stargate": "Stargate",
-	"block.sgjourney.pegasus_ring": "Stargate",
-	"block.sgjourney.milky_way_dhd": "DHD",
-	"block.sgjourney.pegasus_dhd": "DHD",
-	"block.sgjourney.classic_dhd": "DHD",
+	"block.sgjourney.universe_stargate": "Universe Stargate",
+	"block.sgjourney.universe_ring": "Universe Stargate",
+	"block.sgjourney.milky_way_stargate": "Milky Way Stargate",
+	"block.sgjourney.milky_way_ring": "Milky Way Stargate",
+	"block.sgjourney.pegasus_stargate": "Pegasus Stargate",
+	"block.sgjourney.pegasus_ring": "Pegasus Stargate",
+	"block.sgjourney.milky_way_dhd": "Milky Way DHD",
+	"block.sgjourney.pegasus_dhd": "Pegasus DHD",
+	"block.sgjourney.classic_dhd": "Classic DHD",
 
 	"block.sgjourney.transport_rings": "Transport Rings",
 	"block.sgjourney.ring_panel": "Ring Panel",
@@ -37,6 +37,8 @@
 	"block.sgjourney.basic_interface": "Basic Interface",
 	"block.sgjourney.crystal_interface": "Crystal Interface",
 	"block.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
+	
+	"block.sgjourney.ancient_gene_detector": "Ancient Gene Detector",
 	
 	"block.sgjourney.zpm_plug": "ZPM Plug",
 	"block.sgjourney.zpm_hub": "ZPM Hub",

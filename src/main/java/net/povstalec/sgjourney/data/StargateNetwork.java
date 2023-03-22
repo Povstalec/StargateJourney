@@ -1,11 +1,13 @@
 package net.povstalec.sgjourney.data;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -16,17 +18,36 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.config.ServerStargateConfig;
+import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.stargate.Dialing;
 
 public class StargateNetwork extends SavedData
 {
+	private static final long systemWideConnectionCost = ServerStargateConfig.system_wide_connection_energy_cost.get();
+	private static final long interstellarConnectionCost = ServerStargateConfig.interstellar_connection_energy_cost.get();
+	private static final long intergalacticConnectionCost = ServerStargateConfig.intergalactic_connection_energy_cost.get();
+
+	private static final long systemWideConnectionDraw = ServerStargateConfig.system_wide_connection_energy_draw.get();
+	private static final long interstellarConnectionDraw = ServerStargateConfig.interstellar_connection_energy_draw.get();
+	private static final long intergalacticConnectionDraw = ServerStargateConfig.intergalactic_connection_energy_draw.get();
+	
+	private static final int maxOpenTime = ServerStargateConfig.max_wormhole_open_time.get() * 20;
+	private static final boolean energyBypassEnabled = ServerStargateConfig.enable_energy_bypass.get();
+	private static final int energyBypassMultiplier = ServerStargateConfig.energy_bypass_multiplier.get();
+
+	private static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
+	
 	private static final String FILE_NAME = "sgjourney-stargate_network";
 	private static final String VERSION = "Version";
 
-	private static final String STARGATES = "Stargates";
 	private static final String DIMENSION = "Dimension";
 	private static final String COORDINATES = "Coordinates";
+	private static final String TIMES_OPENED = "TimesOpened";
+	private static final String GENERATION = "Generation";
+	private static final String HAS_DHD = "HasDHD";
 
+	private static final String STARGATES = "Stargates";
 	private static final String SOLAR_SYSTEMS = "SolarSystems";
 
 	private static final String CONNECTIONS = "Connections";
@@ -34,6 +55,10 @@ public class StargateNetwork extends SavedData
 	private static final String DIALED_STARGATE = "DialedStargate";
 	
 	private static final String INVALID_SELF = StargateJourney.MODID + ":invalid_self";
+	private static final String CONNECTION_TIME = "ConnectionTime";
+	private static final String ENERGY_DRAW = "EnergyDraw";
+	
+	private static final String EMPTY = StargateJourney.EMPTY;
 	
 	private CompoundTag stargateNetwork = new CompoundTag();
 	private int version = 2;
@@ -55,7 +80,6 @@ public class StargateNetwork extends SavedData
 	private void updateVersion()
 	{
 		stargateNetwork.putInt(VERSION, version);
-		this.setDirty();
 	}
 	
 	public void updateNetwork(MinecraftServer server)
@@ -69,7 +93,6 @@ public class StargateNetwork extends SavedData
 		StargateJourney.LOGGER.info("Detected an incompatible Stargate Network version (Version: " + getVersion() + ") - updating to version " + version);
 		
 		stellarUpdate(server);
-		this.setDirty();
 	}
 	
 	public void eraseNetwork()
@@ -111,7 +134,7 @@ public class StargateNetwork extends SavedData
 				stargate.resetStargate(false);
 				
 				if(!getStargates().contains(stargateID))
-					addStargate(server, stargateID, BlockEntityList.get(server).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).getCompound(stargateID));
+					addStargate(server, stargateID, BlockEntityList.get(server).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).getCompound(stargateID), stargate.getGeneration().getGen());
 			}
 			else
 			{
@@ -119,10 +142,9 @@ public class StargateNetwork extends SavedData
 				BlockEntityList.get(server).removeBlockEntity(SGJourneyBlockEntity.Type.STARGATE.id, stargateID);
 			}
 		});
-		this.setDirty();
 	}
 	
-	public void addStargate(MinecraftServer server, String stargateID, CompoundTag stargateInfo)
+	public void addStargate(MinecraftServer server, String stargateID, CompoundTag stargateInfo, int generation)
 	{
 		String dimension = stargateInfo.getString(DIMENSION);
 		String stargateDimension = stargateInfo.getString(DIMENSION);
@@ -132,6 +154,7 @@ public class StargateNetwork extends SavedData
 
 		stargate.putString(DIMENSION, stargateDimension);
 		stargate.putIntArray(COORDINATES, stargateCoordinates);
+		stargate.putInt(GENERATION, generation);
 		
 		//Adds the Stargate reference to a Solar System (Will only work if the Dimension is inside a Solar System)
 		if(Universe.get(server).getDimensions().contains(dimension))
@@ -165,6 +188,26 @@ public class StargateNetwork extends SavedData
 		StargateJourney.LOGGER.info("Removed Stargate " + stargateID);
 	}
 	
+	public void updateStargate(Level level, String stargateID, int timesOpened, boolean hasDHD)
+	{
+		CompoundTag solarSystems = getSolarSystems();
+		String systemID = Universe.get(level).getSolarSystemFromDimension(level.dimension().location().toString());
+		CompoundTag solarSystem = getSolarSystem(systemID);
+		
+		if(systemID.equals(EMPTY) || !solarSystem.contains(stargateID))
+			return;
+		
+		CompoundTag stargate = solarSystem.getCompound(stargateID);
+		
+		stargate.putInt(TIMES_OPENED, timesOpened);
+		stargate.putBoolean(HAS_DHD, hasDHD);
+		
+		solarSystem.put(stargateID, stargate);
+		solarSystems.put(systemID, solarSystem);
+		this.stargateNetwork.put(SOLAR_SYSTEMS, solarSystems);
+		this.setDirty();
+	}
+	
 	public CompoundTag getSolarSystems()
 	{
 		return this.stargateNetwork.copy().getCompound(SOLAR_SYSTEMS);
@@ -180,6 +223,63 @@ public class StargateNetwork extends SavedData
 		return this.stargateNetwork.copy().getCompound(STARGATES);
 	}
 	
+	/*
+	 * Stargate Preferences:
+	 * 1. Has DHD
+	 * 2. Stargate Generation
+	 * 3. The amount of times the Stargate was used
+	 */
+	public String getPreferredStargate(CompoundTag solarSystem)
+	{
+		if(solarSystem.isEmpty())
+			return EMPTY;
+		
+		Iterator<String> iterator = solarSystem.getAllKeys().iterator();
+		
+		boolean bestDHD = false;
+		int bestGen = 0;
+		int bestTimesOpened = 0;
+		String preferredStargate = EMPTY;
+		
+		while(iterator.hasNext())
+		{
+			String stargateID = iterator.next();
+			boolean hasDHD = solarSystem.getCompound(stargateID).getBoolean(HAS_DHD);
+			int generation = solarSystem.getCompound(stargateID).getInt(GENERATION);
+			int timesOpened = solarSystem.getCompound(stargateID).getInt(TIMES_OPENED);
+			
+			if(Boolean.compare(hasDHD, bestDHD) > 0)
+			{
+				preferredStargate = stargateID;
+				bestDHD = hasDHD;
+				bestGen = generation;
+				bestTimesOpened = timesOpened;
+			}
+			else if(Boolean.compare(hasDHD, bestDHD) == 0)
+			{
+				if(generation > bestGen)
+				{
+					preferredStargate = stargateID;
+					bestDHD = hasDHD;
+					bestGen = generation;
+					bestTimesOpened = timesOpened;
+				}
+				else if(generation == bestGen)
+				{
+					if(timesOpened >= bestTimesOpened)
+					{
+						preferredStargate = stargateID;
+						bestDHD = hasDHD;
+						bestGen = generation;
+						bestTimesOpened = timesOpened;
+					}
+				}
+			}
+		}
+		
+		return preferredStargate;
+	}
+	
 	//============================================================================================
 	//****************************************Connections*****************************************
 	//============================================================================================
@@ -188,12 +288,22 @@ public class StargateNetwork extends SavedData
 	{
 		if(!getConnections().isEmpty())
 			getConnections().getAllKeys().forEach(uuid -> handleConnection(server, uuid));
+		this.setDirty();
 	}
 	
 	private void handleConnection(MinecraftServer server, String uuid)
 	{
-		AbstractStargateEntity dialingStargate = loadStargate(server, getConnections().getCompound(uuid).getCompound(DIALING_STARGATE));
-		AbstractStargateEntity dialedStargate = loadStargate(server, getConnections().getCompound(uuid).getCompound(DIALED_STARGATE));
+		increaseOpenTime(uuid);
+		
+		if(getOpenTime(uuid) >= maxOpenTime && !energyBypassEnabled)
+		{
+			StargateJourney.LOGGER.info("Exceeded max connection time");
+			terminateConnection(server, uuid);
+			return;
+		}
+		
+		AbstractStargateEntity dialingStargate = getDialingStargate(server, uuid);
+		AbstractStargateEntity dialedStargate = getDialedStargate(server, uuid);
 		
 		if(dialingStargate == null || dialedStargate == null)
 		{
@@ -201,11 +311,55 @@ public class StargateNetwork extends SavedData
 			return;
 		}
 		
+		if(requireEnergy)
+		{
+			long energyDraw = drawEnergy(uuid, getOpenTime(uuid) >= maxOpenTime);
+			
+			if(dialingStargate.getEnergyStored() < energyDraw && dialedStargate.getEnergyStored() < energyDraw)
+			{
+				StargateJourney.LOGGER.info("Stargates ran out of power");
+				terminateConnection(server, uuid);
+			}
+			
+			if(dialedStargate.getEnergyStored() > dialingStargate.getEnergyStored())
+				dialedStargate.depleteEnergy(energyDraw, false);
+			else
+				dialingStargate.depleteEnergy(energyDraw, false);
+		}
+		
 		dialingStargate.wormhole();
 		dialedStargate.wormhole();
+	}
+	
+	private long drawEnergy(String uuid, boolean exceededConnectionTime)
+	{
+		CompoundTag connection = getConnection(uuid);
 		
-		//TODO Add this back in:
-		//AbstractStargateEntity.depleteEnergy(dialingStargate, dialedStargate);
+		long energyDraw = connection.getLong(ENERGY_DRAW);
+		
+		energyDraw = exceededConnectionTime ? energyDraw * energyBypassMultiplier : energyDraw;
+		
+		return energyDraw;
+	}
+	
+	public int getOpenTime(String uuid)
+	{
+		if(!getConnections().contains(uuid))
+			return 0;
+		
+		return getConnection(uuid).getInt(CONNECTION_TIME);
+	}
+	
+	private void increaseOpenTime(String uuid)
+	{
+		CompoundTag connections = getConnections();
+		CompoundTag connection = getConnection(uuid);
+		int openTime = getOpenTime(uuid);
+		openTime++;
+		
+		connection.putInt(CONNECTION_TIME, openTime);
+		connections.put(uuid, connection);
+		this.stargateNetwork.put(CONNECTIONS, connections);
 	}
 	
 	public CompoundTag getConnections()
@@ -233,14 +387,50 @@ public class StargateNetwork extends SavedData
 		return loadStargate(server, getConnection(uuid).getCompound(DIALING_STARGATE));
 	}
 	
-	public String startConnection(AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	public void requestConnection(Level level, AbstractStargateEntity dialingStargate, int[] address)
 	{
+		AbstractStargateEntity targetStargate = Dialing.dialStargate(level, address);
+		
+		if(requireEnergy && !dialingStargate.hasEnergy(targetStargate))
+		{
+			StargateJourney.LOGGER.info("Stargate does not have enough power to estabilish a stable connection");
+			dialingStargate.resetStargate(true);
+			return;
+		}
+		
+		if(targetStargate != null)
+		{
+			if(targetStargate.isConnected())
+			{
+				StargateJourney.LOGGER.info("Stargate is already connected");
+				dialingStargate.resetStargate(true);
+				return;
+			}
+			
+			createConnection(level.getServer(), dialingStargate, targetStargate);
+		}
+		else
+			dialingStargate.resetStargate(true);
+	}
+	
+	public static boolean hasEnergy(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity targetStargate)
+	{
+		return dialingStargate.getEnergyStored() >= getConnectionCost(server, dialingStargate, targetStargate, false);
+	}
+	
+	public String createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	{
+		if(requireEnergy)
+			dialingStargate.depleteEnergy(getConnectionCost(server, dialingStargate, dialedStargate, false), false);
+		
 		if(dialingStargate.equals(dialedStargate))
 		{
 			StargateJourney.LOGGER.info("Stargate cannot create connection with itself");
-			dialingStargate.resetStargate(isDirty());
+			dialingStargate.resetStargate(true);
 			return INVALID_SELF;
 		}
+		
+		long energyDraw = getConnectionCost(server, dialingStargate, dialedStargate, true);
 
 		String uuid = UUID.randomUUID().toString();
 		CompoundTag connections = getConnections();
@@ -250,6 +440,8 @@ public class StargateNetwork extends SavedData
 		
 		connection.put(DIALING_STARGATE, dialingStargateInfo);
 		connection.put(DIALED_STARGATE, dialedStargateInfo);
+		connection.putInt(CONNECTION_TIME, 0);
+		connection.putLong(ENERGY_DRAW, energyDraw);
 		connections.put(uuid, connection);
 		
 		this.stargateNetwork.put(CONNECTIONS, connections);
@@ -266,7 +458,6 @@ public class StargateNetwork extends SavedData
 	{
 		CompoundTag stargateInfo = new CompoundTag();
 		
-		//stargateInfo.putString(ADDRESS, stargate.getID());
 		stargateInfo.putString(DIMENSION, stargate.getLevel().dimension().location().toString());
 		stargateInfo.putIntArray(COORDINATES, new int[] {stargate.getBlockPos().getX(), stargate.getBlockPos().getY(), stargate.getBlockPos().getZ()});
 		
@@ -294,8 +485,8 @@ public class StargateNetwork extends SavedData
 			return;
 		}
 		
-		AbstractStargateEntity dialingStargate = loadStargate(server, getConnections().getCompound(uuid).getCompound(DIALING_STARGATE));
-		AbstractStargateEntity dialedStargate = loadStargate(server, getConnections().getCompound(uuid).getCompound(DIALED_STARGATE));
+		AbstractStargateEntity dialingStargate = getDialingStargate(server, uuid);
+		AbstractStargateEntity dialedStargate = getDialedStargate(server, uuid);
 		
 		if(dialingStargate != null)
 			dialingStargate.resetStargate(false);
@@ -332,6 +523,47 @@ public class StargateNetwork extends SavedData
 	public ResourceKey<Level> localAddressToDimension(String address)
 	{
 		return stringToDimension(getStargates().getString(address));
+	}
+	
+	public static long getConnectionCost(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean draw)
+	{
+		String dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension().location().toString());
+		String dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
+		
+		if(dialingSystem.equals(dialedSystem))
+		{
+			if(draw)
+				return systemWideConnectionDraw;
+			else
+				return systemWideConnectionCost;
+		}
+		
+		ListTag dialingGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialingSystem);
+		ListTag dialedGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialedSystem);
+		
+		if(!dialingGalaxyCandidates.isEmpty())
+		{
+			for(int i = 0; i < dialingGalaxyCandidates.size(); i++)
+			{
+				for(int j = 0; j< dialedGalaxyCandidates.size(); j++)
+				{
+					String dialingEntry = dialingGalaxyCandidates.getCompound(i).getAllKeys().iterator().next();
+					String dialedEntry = dialedGalaxyCandidates.getCompound(j).getAllKeys().iterator().next();
+					if(dialingEntry.equals(dialedEntry))
+					{
+						if(draw)
+							return interstellarConnectionDraw;
+						else
+							return interstellarConnectionCost;
+					}
+				}
+			}
+		}
+		
+		if(draw)
+			return intergalacticConnectionDraw;
+		else
+			return intergalacticConnectionCost;
 	}
 	
 	//============================================================================================

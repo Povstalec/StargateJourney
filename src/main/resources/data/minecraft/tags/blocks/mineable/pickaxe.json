@@ -44,6 +44,8 @@
 		"sgjourney:basic_interface",
 		"sgjourney:crystal_interface",
 		
+		"sgjourney:ancient_gene_detector",
+		
 		"sgjourney:zpm_hub"
 	]
 }

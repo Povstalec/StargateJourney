@@ -139,8 +139,8 @@ public class EventInit
 				items.accept(ItemInit.NAQUADAH_ALLOY.get());
 				items.accept(ItemInit.PURE_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH.get());
-				items.accept(ItemInit.NAQUADAH_BUCKET.get());
-				items.accept(ItemInit.NAQUADAH_BOTTLE.get());
+				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
+				items.accept(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
 				
 				items.accept(ItemInit.PDA.get());
 				
@@ -183,7 +183,7 @@ public class EventInit
 				items.accept(BlockInit.MILKY_WAY_DHD.get());
 				items.accept(BlockInit.PEGASUS_STARGATE.get());
 				items.accept(BlockInit.PEGASUS_DHD.get());
-				items.accept(BlockInit.CLASSIC_STARGATE.get());
+				//items.accept(BlockInit.CLASSIC_STARGATE.get());
 				items.accept(BlockInit.CLASSIC_DHD.get());
 
 				items.accept(BlockInit.TRANSPORT_RINGS.get());
@@ -216,7 +216,7 @@ public class EventInit
 				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 				
 				items.accept(BlockInit.BASIC_INTERFACE.get());
-				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
+				//items.accept(BlockInit.CRYSTAL_INTERFACE.get());
 
 				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				

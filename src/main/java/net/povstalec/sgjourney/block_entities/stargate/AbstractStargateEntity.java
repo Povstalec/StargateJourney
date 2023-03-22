@@ -28,7 +28,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
-import net.povstalec.sgjourney.config.ServerEnergyConfig;
 import net.povstalec.sgjourney.config.ServerStargateConfig;
 import net.povstalec.sgjourney.data.BlockEntityList;
 import net.povstalec.sgjourney.data.StargateNetwork;
@@ -47,10 +46,6 @@ import net.povstalec.sgjourney.stargate.Wormhole;
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
 	// Basic Info
-	private static final boolean REQUIRE_ENERGY = !ServerEnergyConfig.disable_energy_use.get();
-	private static final long CONNECTION_ENERGY_COST = ServerStargateConfig.connection_energy_cost.get();
-	private static final long INTERSTELLAR_CONNECTION_ENERGY_COST = ServerStargateConfig.interstellar_connection_energy_cost.get();
-	private static final long INTERGALACTIC_CONNECTION_ENERGY_COST = ServerStargateConfig.intergalactic_connection_energy_cost.get();
 	private static final int maxGateOpenTime = ServerStargateConfig.max_wormhole_open_time.get() * 20;
 	private static final boolean END_CONNECTION_FROM_BOTH_ENDS = ServerStargateConfig.end_connection_from_both_ends.get();
 	private static Stargate.Gen generation;
@@ -60,7 +55,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	private boolean isPrimaryChevronEngaged = false;
 	private boolean dialingOut = false;
 	private boolean hasDHD = false;
-	private int openTime = 0;
+	//private int openTime = 0;
 	private int timesOpened = 0;
 	protected String pointOfOrigin = EMPTY;
 	protected String symbols = EMPTY;
@@ -73,10 +68,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//private ListTag whitelist;
 	//private ListTag blacklist;
 
-	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen generation)
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen)
 	{
 		super(blockEntity, pos, state, SGJourneyBlockEntity.Type.STARGATE);
-		this.generation = generation;
+		generation = gen;
 	}
 	
 	@Override
@@ -85,7 +80,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		super.load(nbt);
 		isPrimaryChevronEngaged = nbt.getBoolean("IsPrimaryChevronEngaged");
 		dialingOut = nbt.getBoolean("DialingOut");
-		openTime = nbt.getInt("OpenTime");
 		timesOpened = nbt.getInt("TimesOpened");
 		address = nbt.getIntArray("Address");
 		
@@ -97,7 +91,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	{
 		nbt.putBoolean("IsPrimaryChevronEngaged", isPrimaryChevronEngaged);
 		nbt.putBoolean("DialingOut", dialingOut);
-		nbt.putInt("OpenTime", openTime);
 		nbt.putInt("TimesOpened", timesOpened);
 		nbt.putIntArray("Address", address);
 		
@@ -109,7 +102,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public CompoundTag addToBlockEntityList()
 	{
 		CompoundTag blockEntity = super.addToBlockEntityList();
-    	StargateNetwork.get(level).addStargate(level.getServer(), getID(), blockEntity);
+    	StargateNetwork.get(level).addStargate(level.getServer(), getID(), blockEntity, this.getGeneration().getGen());
 		return blockEntity;
 	}
 	
@@ -117,7 +110,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public CompoundTag addNewToBlockEntityList()
 	{
 		CompoundTag blockEntity = super.addNewToBlockEntityList();
-    	StargateNetwork.get(level).addStargate(level.getServer(), getID(), blockEntity);
+    	StargateNetwork.get(level).addStargate(level.getServer(), getID(), blockEntity, this.getGeneration().getGen());
 		return blockEntity;
 	}
 
@@ -153,11 +146,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//============================================================================================
 	//******************************************Dialing*******************************************
 	//============================================================================================
-	
-	public void inputSymbol(int symbol)
-	{
-		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundStargateDialingPacket(this.getBlockPos(), symbol));
-	}
 	
 	public void engageSymbol(int symbol)
 	{
@@ -226,11 +214,19 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void engageStargate(int[] address)
 	{
 		AbstractStargateEntity targetStargate = Dialing.dialStargate(this.level, address);
+
+		if(requireEnergy && !hasEnergy(targetStargate))
+		{
+			StargateJourney.LOGGER.info("Stargate does not have enough power to estabilish a stable connection");
+			resetStargate(true);
+			return;
+		}
 		
 		if(targetStargate != null)
 		{
-			if(!targetStargate.canConnect())
+			if(targetStargate.isConnected())
 			{
+				StargateJourney.LOGGER.info("Stargate is already connected");
 				resetStargate(true);
 				return;
 			}
@@ -243,10 +239,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	private void dialStargate(AbstractStargateEntity targetStargate)
 	{
-		this.connectionID = StargateNetwork.get(level).startConnection(this, targetStargate);
-		
-		if(REQUIRE_ENERGY)
-			this.extractEnergy(100, false);
+		this.connectionID = StargateNetwork.get(level).createConnection(this.level.getServer(), this, targetStargate);
 	}
 	
 	public void connectStargate(String connectionID, boolean dialingOut, int[] address)
@@ -257,6 +250,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.setDialingOut(dialingOut);
 		this.timesOpened++;
 		this.setChanged();
+		
+		this.updateStargate(this.level, this.getID(), this.timesOpened, this.hasDHD);
 	}
 	
 	public void resetStargate(boolean causedByFailure)
@@ -268,7 +263,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		}
 		
 		resetAddress();
-		this.openTime = 0;
 		this.isPrimaryChevronEngaged = false;
 		this.dialingOut = false;
 		this.connectionID = EMPTY;
@@ -286,18 +280,19 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		resetStargate(false);
 	}
 	
-	protected boolean canConnect()
+	public void updateStargate(Level level, String stargateID, int timesOpened, boolean hasDHD)
 	{
-		if(isConnected())
-		{
-			StargateJourney.LOGGER.info("Stargate is already connected");
-			return false;
-		}
+		StargateNetwork.get(level).updateStargate(level, stargateID, timesOpened, hasDHD);
+	}
+	
+	public boolean canConnect()
+	{
 		if(isObstructed())
 		{
 			StargateJourney.LOGGER.info("Stargate is obstructed");
 			return false;
 		}
+		//TODO Add Filter
 		
 		return true;
 	}
@@ -312,11 +307,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(isObstructed())
 		{
 			StargateJourney.LOGGER.info("Stargate is obstructed");
-			return false;
-		}
-		if(REQUIRE_ENERGY && !hasEnergy())
-		{
-			StargateJourney.LOGGER.info("Stargate does not have enough power to estabilish a stable connection");
 			return false;
 		}
 		
@@ -392,6 +382,12 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.tick;
 	}
 	
+	public int increaseTickCount()
+	{
+		this.tick++;
+		return this.tick;
+	}
+	
 	public void setDialingOut(boolean dialingOut)
 	{
 		this.dialingOut = dialingOut;
@@ -402,15 +398,24 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.dialingOut;
 	}
 	
+	public void setDHD(boolean hasDHD)
+	{
+		if(this.hasDHD != hasDHD)
+			updateStargate(this.level, this.getID(), this.timesOpened, hasDHD);
+		
+		this.hasDHD = hasDHD;
+	}
+	
 	public boolean hasDHD()
 	{
-		//TODO Fill this
-		return false;
+		return this.hasDHD;
 	}
 	
 	public int getOpenTime()
 	{
-		return this.openTime;
+		if(this.level.isClientSide())
+			return 0;
+		return StargateNetwork.get(this.level).getOpenTime(this.connectionID);
 	}
 	
 	public int getTimesOpened()
@@ -516,30 +521,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 					obstructingBlocks++;
 			}
 		}
-		System.out.println("Stargate is obstructed by " + obstructingBlocks + " blocks");
+		StargateJourney.LOGGER.info("Stargate is obstructed by " + obstructingBlocks + " blocks");
 		return obstructingBlocks > 12;
 	}
 	
-	public boolean hasEnergy()
+	public boolean hasEnergy(AbstractStargateEntity targetStargate)
 	{
-		switch(getAddress().length)
-		{
-		case 6:
-			if(this.getEnergyStored() >= INTERSTELLAR_CONNECTION_ENERGY_COST)
-				return true;
-			break;
-		case 7:
-			if(this.getEnergyStored() >= INTERGALACTIC_CONNECTION_ENERGY_COST)
-				return true;
-			break;
-		case 8:
-			//TODO Change this
-			if(this.getEnergyStored() >= INTERSTELLAR_CONNECTION_ENERGY_COST)
-				return true;
-			break;
-		}
-		
-		return false;
+		return this.getEnergyStored() >= StargateNetwork.getConnectionCost(this.level.getServer(), this, targetStargate, false);
 	}
 	
 	public abstract SoundEvent chevronEngageSound();
@@ -555,8 +543,9 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		super.getStatus(player);
 		player.sendSystemMessage(Component.literal("Point of Origin: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));
-		player.sendSystemMessage(Component.literal("Open Time: " + openTime + "/" + maxGateOpenTime).withStyle(ChatFormatting.DARK_AQUA));
+		player.sendSystemMessage(Component.literal("Open Time: " + getOpenTime() + "/" + maxGateOpenTime).withStyle(ChatFormatting.DARK_AQUA));
 		player.sendSystemMessage(Component.literal("Times Opened: " + timesOpened).withStyle(ChatFormatting.BLUE));
+		player.sendSystemMessage(Component.literal("Connected to DHD: " + hasDHD).withStyle(ChatFormatting.GOLD));
 	}
 	
 	@Override
@@ -615,37 +604,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		if(level.isClientSide())
 			return;
-		
-		this.openTime++;
 
 		this.setChanged();
-		
-		/*if(REQUIRE_ENERGY)
-			depleteEnergy(this, getTargetStargate());*/
-		
-		if(openTime >= maxGateOpenTime)
-		{
-			StargateJourney.LOGGER.info("Stargate exceeded max connection time");
-			disconnectStargate();
-		}
-	}
-	
-	public static void depleteEnergy(AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
-	{
-		if(dialingStargate.tick % 20 == 0)
-		{
-			if(dialingStargate.getEnergyStored() == 0 &&
-					dialedStargate.getEnergyStored() == 0)
-			{
-				StargateJourney.LOGGER.info("Stargates ran out of power");
-				dialingStargate.disconnectStargate();
-			}
-			
-			if(dialedStargate.getEnergyStored() > dialingStargate.getEnergyStored())
-				dialedStargate.extractEnergy(CONNECTION_ENERGY_COST, false);
-			else
-				dialingStargate.extractEnergy(CONNECTION_ENERGY_COST, false);
-		}
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)

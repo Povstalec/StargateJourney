@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.block_entities;
 
-import javax.annotation.Nullable;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -68,9 +66,9 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	//============================================================================================
 	
 	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ENERGY && isCorrectSide(side.getOpposite()))
+		if(capability == ForgeCapabilities.ENERGY && isCorrectSide(side))
 			return lazyEnergyHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -101,7 +99,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	protected abstract long maxExtract();
 	
-	private final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(capacity(), maxReceive(), maxExtract())
+	private final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
 	{
 		@Override
 		public boolean canExtract()
@@ -125,6 +123,17 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	protected void changeEnergy(long difference, boolean simulate)
 	{
 		this.setChanged();
+	}
+	
+	public long depleteEnergy(long amount, boolean simulate)
+	{
+		long storedEnergy = this.getEnergyStored();
+		long energyDepleted = Math.min(storedEnergy, maxExtract());
+		
+		if(!simulate)
+			this.setEnergy(storedEnergy - energyDepleted);
+		
+		return energyDepleted;
 	}
 	
 	public long getEnergyStored()
@@ -185,7 +194,10 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	protected void outputEnergy(Direction outputDirection)
 	{
-		if(ENERGY_STORAGE.getEnergyStored() >= ENERGY_STORAGE.maxExtract() && ENERGY_STORAGE.canExtract())
+		if(outputDirection == null)
+			return;
+		
+		if(ENERGY_STORAGE.canExtract())
 		{
 			BlockEntity blockentity = level.getBlockEntity(worldPosition.relative(outputDirection));
 			

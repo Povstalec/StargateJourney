@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,10 +28,10 @@ import net.povstalec.sgjourney.stargate.StargatePart;
 public class MilkyWayStargateEntity extends AbstractStargateEntity
 {
 	private int rotation = 0;
-	private int oldRotation = 0;
+	public int oldRotation = 0;
 	public boolean isChevronRaised;
 	private Map<StargatePart, Integer> signalMap = Maps.newHashMap();
-	private int signalStrength = 0;
+	public int signalStrength = 0;
 	
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state) 
 	{
@@ -65,11 +66,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		pointOfOrigin = nbt.getString("PointOfOrigin");
 		symbols = nbt.getString("Symbols");
 		rotation = nbt.getInt("Rotation");
-		System.out.println(nbt.getString("PointOfOrigin"));
-		System.out.println(nbt.getString("Symbols"));
-		System.out.println(nbt.getInt("Rotation"));
-		System.out.println(nbt.getString("ID"));
-		System.out.println("Loaded Stargate");
+		oldRotation = rotation;
 	}
 	
 	protected void saveAdditional(@NotNull CompoundTag nbt)
@@ -79,11 +76,6 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		nbt.putString("PointOfOrigin", pointOfOrigin);
 		nbt.putString("Symbols", symbols);
 		nbt.putInt("Rotation", rotation);
-		System.out.println(pointOfOrigin);
-		System.out.println(symbols);
-		System.out.println(rotation);
-		System.out.println(getID());
-		System.out.println("Saved Stargate");
 	}
 	
 	public SoundEvent chevronEngageSound()
@@ -114,6 +106,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		{
 			lowerChevron();
 		}
+		
+		if(!level.isClientSide())
+			this.synchronizeWithClient(level);
 	}
 	
 	private void setBestRedstoneSignal()
@@ -148,6 +143,11 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return rotation;
 	}
 	
+	public float getRotation(float partialTick)
+	{
+		return Mth.lerp(partialTick, this.oldRotation, this.rotation);
+	}
+	
 	public void setRotation(int rotation)
 	{
 		this.rotation = rotation;
@@ -173,10 +173,14 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		if(isChevronRaised)
 		{
-			inputSymbol(getCurrentSymbol());
+			engageSymbol(getCurrentSymbol());
 			isChevronRaised = false;
 			return true;
 		}
+		
+		if(!level.isClientSide())
+			this.synchronizeWithClient(this.level);
+		
 		return false;
 	}
 	
@@ -199,10 +203,6 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		stargate.rotate();
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
-		
-		if(level.isClientSide())
-			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundMilkyWayStargateUpdatePacket(stargate.worldPosition, stargate.getRotation(), stargate.isChevronRaised));
 	}
 	
 	private void rotate()
@@ -216,14 +216,20 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 				else
 					rotate(true);
 			}
+			else
+			{
+				this.oldRotation = this.rotation;
+				if(!level.isClientSide())
+					this.synchronizeWithClient(this.level);
+			}
 				
 		}
-		
-		if(rotation >= 360)
-			rotation = (short) (rotation - 360);
-		else if(rotation < 0)
-			rotation = (short) (rotation + 360);
-		
+		else
+		{
+			this.oldRotation = this.rotation;
+			if(!level.isClientSide())
+				this.synchronizeWithClient(this.level);
+		}
 		setChanged();
 	}
 	
@@ -235,6 +241,17 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			rotation -= 2;
 		else
 			rotation += 2;
+		
+		if(rotation >= 360)
+		{
+			rotation -= 360;
+			oldRotation -= 360;
+		}
+		else if(rotation < 0)
+		{
+			rotation += 360;
+			oldRotation += 360;
+		}
 		setChanged();
 	}
 	
@@ -248,6 +265,11 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			return true;
 		
 		return false;
+	}
+	
+	private void synchronizeWithClient(Level level)
+	{
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundMilkyWayStargateUpdatePacket(this.worldPosition, this.rotation, this.oldRotation, this.isChevronRaised, this.signalStrength));
 	}
 	
 }

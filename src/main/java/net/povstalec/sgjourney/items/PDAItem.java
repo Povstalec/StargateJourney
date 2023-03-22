@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -20,15 +19,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
 import net.povstalec.sgjourney.block_entities.EnergyBlockEntity;
-import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
-import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.misc.AncientTech;
 import net.povstalec.sgjourney.misc.GoauldTech;
-import net.povstalec.sgjourney.stargate.StargatePart;
 
 public class PDAItem extends Item implements AncientTech, GoauldTech
 {
@@ -49,7 +43,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 			player.sendSystemMessage(Component.translatable(block.getDescriptionId()).withStyle(ChatFormatting.GRAY));
 		
 		if(level.getBlockState(blockpos).getBlock() instanceof AbstractStargateRingBlock)
-			blockpos = StargatePart.getMainBlockPos(blockpos, level.getBlockState(blockpos).getValue(AbstractStargateRingBlock.FACING), level.getBlockState(blockpos).getValue(AbstractStargateRingBlock.PART));
+			blockpos = level.getBlockState(blockpos).getValue(AbstractStargateRingBlock.PART).getMainBlockPos(blockpos, level.getBlockState(blockpos).getValue(AbstractStargateRingBlock.FACING));
 		
 		if(level.getBlockEntity(blockpos) instanceof EnergyBlockEntity blockEntity)
 			blockEntity.getStatus(player);
@@ -94,37 +88,4 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		if(canUseAncientTech(target))
 			user.sendSystemMessage(Component.translatable("message.sgjourney.pda_has_ancient_gene").withStyle(ChatFormatting.AQUA));
 	}
-	
-	// Blah blah blah, whatever
-	/*public Block getLookedAtBlock()
-	{
-		Minecraft minecraft = Minecraft.getInstance();
-		
-	    HitResult result = minecraft.hitResult;
-
-	    double x = result.getLocation().x;
-	    double y = result.getLocation().y;
-	    double z = result.getLocation().z;
-
-	    double xAngle = minecraft.player.getLookAngle().x;
-	    double yAngle = minecraft.player.getLookAngle().y;
-	    double zAngle = minecraft.player.getLookAngle().z;
-
-	    if (x % 1 == 0 && xAngle < 0)
-	    	x -= 0.01;
-	    if (y % 1 == 0 && yAngle < 0)
-	    	y -= 0.01;
-	    if (z % 1 == 0 && zAngle < 0)
-	    	z -= 0.01;
-
-	    BlockPos pos = new BlockPos(x, y, z);
-	    BlockState state = minecraft.level.getBlockState(pos);
-
-	    return state.getBlock();
-	}
-	
-	public Block playerLookingAt(Player player)
-	{
-		HitResult result = player.pick(MAX_BAR_WIDTH, EAT_DURATION, canRepair);
-	}*/
 }

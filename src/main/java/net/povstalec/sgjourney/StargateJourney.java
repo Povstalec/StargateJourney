@@ -3,6 +3,8 @@ package net.povstalec.sgjourney;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,6 +37,8 @@ import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.init.EntityInit;
 import net.povstalec.sgjourney.init.EventInit;
+import net.povstalec.sgjourney.init.FluidInit;
+import net.povstalec.sgjourney.init.FluidTypeInit;
 import net.povstalec.sgjourney.init.GalaxyInit;
 import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.init.MenuInit;
@@ -66,6 +70,8 @@ public class StargateJourney
     	
     	ItemInit.register(eventBus);
         BlockInit.register(eventBus);
+        FluidInit.register(eventBus);
+        FluidTypeInit.register(eventBus);
         BlockEntityInit.register(eventBus);
         MenuInit.register(eventBus);
         VillagerInit.register(eventBus);
@@ -112,6 +118,9 @@ public class StargateJourney
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
+            ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
+            ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
+            
         	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
         	
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);

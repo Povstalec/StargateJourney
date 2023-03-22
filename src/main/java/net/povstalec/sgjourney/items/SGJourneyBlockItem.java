@@ -14,10 +14,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
+import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.data.StargateNetwork;
 
 public class SGJourneyBlockItem extends BlockItem
 {
+	private static final String ID = "ID";
+	private static final String ADD_TO_NETWORK = "AddToNetwork";
+	private static final String POINT_OF_ORIGIN = "PointOfOrigin";
+	private static final String SYMBOLS = "Symbols";
+	private static final String TIMES_OPENED = "TimesOpened";
+	private static final String EMPTY = StargateJourney.EMPTY;
+	
 	public SGJourneyBlockItem(Block block, Properties properties)
 	{
 		super(block, properties);
@@ -54,7 +63,7 @@ public class SGJourneyBlockItem extends BlockItem
             		blockentity.load(compoundtag1);
             		blockentity.setChanged();
             		
-            		return setupBlockEntity(blockentity, compoundtag);
+            		return setupBlockEntity(level, blockentity, compoundtag);
             	}
             }
 		}
@@ -69,30 +78,33 @@ public class SGJourneyBlockItem extends BlockItem
 		return false;
 	}
 	
-	private static boolean setupBlockEntity(BlockEntity baseEntity, CompoundTag info)
+	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
 		if(baseEntity instanceof SGJourneyBlockEntity blockEntity)
 		{
 			boolean addToNetwork = true;
 			
-			if(info.contains("AddToNetwork"))
-				addToNetwork = info.getBoolean("AddToNetwork");
+			if(info.contains(ADD_TO_NETWORK))
+				addToNetwork = info.getBoolean(ADD_TO_NETWORK);
 			
 			// Registers it as one of the Block Entities in the list
-			if(info.contains("ID") && !info.getString("ID").equals(StargateJourney.EMPTY))
+			if(info.contains(ID) && !info.getString(ID).equals(StargateJourney.EMPTY))
 				blockEntity.addToBlockEntityList();
 			else
 				blockEntity.addNewToBlockEntityList();
+			
+			if(blockEntity instanceof AbstractStargateEntity stargate)
+				StargateNetwork.get(level).updateStargate(level, info.getString(ID), info.getInt(TIMES_OPENED), false);//TODO Add stuff for having a DHD
 			
 			// Sets up symbols on the Milky Way Stargate
 			if(blockEntity instanceof MilkyWayStargateEntity milkyWayStargate)
 			{
 				if(!addToNetwork)
 				{
-					if(!info.contains("PointOfOrigin"))
-						milkyWayStargate.setPointOfOrigin("sgjourney:empty");
-					if(!info.contains("Symbols"))
-						milkyWayStargate.setSymbols("sgjourney:empty");
+					if(!info.contains(POINT_OF_ORIGIN))
+						milkyWayStargate.setPointOfOrigin(EMPTY);
+					if(!info.contains(SYMBOLS))
+						milkyWayStargate.setSymbols(EMPTY);
 				}
 			}
 		}

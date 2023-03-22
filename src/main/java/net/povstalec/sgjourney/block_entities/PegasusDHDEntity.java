@@ -6,7 +6,6 @@ import net.povstalec.sgjourney.init.BlockEntityInit;
 
 public class PegasusDHDEntity extends AbstractDHDEntity
 {
-
 	public PegasusDHDEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.PEGASUS_DHD.get(), pos, state);

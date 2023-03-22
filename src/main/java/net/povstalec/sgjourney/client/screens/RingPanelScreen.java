@@ -53,31 +53,33 @@ public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta) {
+    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta)
+    {
+		int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        
         renderBackground(pPoseStack);
         super.render(pPoseStack, mouseX, mouseY, delta);
         renderTooltip(pPoseStack, mouseX, mouseY);
+        
+	    renderButtonTooltip(pPoseStack, 1, x + 51, y + 48, mouseX, mouseY);
+	    renderButtonTooltip(pPoseStack, 2, x + 93, y + 48, mouseX, mouseY);
+	    renderButtonTooltip(pPoseStack, 3, x + 51, y + 66, mouseX, mouseY);
+	    renderButtonTooltip(pPoseStack, 4, x + 93, y + 66, mouseX, mouseY);
+	    renderButtonTooltip(pPoseStack, 5, x + 51, y + 84, mouseX, mouseY);
+	    renderButtonTooltip(pPoseStack, 6, x + 93, y + 84, mouseX, mouseY);
     }
     
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) 
 	{
-		int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
-        
 	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, 128.0F, 4210752);
-	    renderButtonTooltip(matrixStack, 1, x + 51, y + 48, mouseX, mouseY);
-	    renderButtonTooltip(matrixStack, 2, x + 93, y + 48, mouseX, mouseY);
-	    renderButtonTooltip(matrixStack, 3, x + 51, y + 66, mouseX, mouseY);
-	    renderButtonTooltip(matrixStack, 4, x + 93, y + 66, mouseX, mouseY);
-	    renderButtonTooltip(matrixStack, 5, x + 51, y + 84, mouseX, mouseY);
-	    renderButtonTooltip(matrixStack, 6, x + 93, y + 84, mouseX, mouseY);
 	    
     }
     
     private void renderButtonTooltip(PoseStack matrixStack, int ringNumber, int xStart, int yStart, int mouseX, int mouseY)
     {
-    	if(mouseX >= xStart && mouseX <= xStart + 32 && mouseY >= yStart && mouseY <= yStart + 16)
+    	if(this.isHovering(xStart, yStart, 32, 16, (double) mouseX, (double) mouseY))
 	    	renderTooltip(matrixStack, Component.literal(menu.getRingsPos(ringNumber)), mouseX - ((width - imageWidth) / 2), mouseY - ((height - imageHeight) / 2));
     }
     

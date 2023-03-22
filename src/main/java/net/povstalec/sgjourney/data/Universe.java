@@ -19,7 +19,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.config.ServerStargateNetworkConfig;
 import net.povstalec.sgjourney.init.GalaxyInit;
@@ -178,7 +177,6 @@ public class Universe extends SavedData
 	{
 		saveSolarSystemInfo(systemID, extragalacticAddress, pointOfOrigin, symbols, generated);
 		saveDimensionInfo(systemID, dimensions);
-		this.setDirty();
 		StargateJourney.LOGGER.info("Saved Solar System: " + systemID + " PoO: " + pointOfOrigin + " Symbols: " + symbols);
 	}
 	
@@ -315,7 +313,6 @@ public class Universe extends SavedData
 		galaxy.putString(address, systemID);
 		galaxies.put(galaxyID, galaxy);
 		this.universe.put(GALAXIES, galaxies);
-		this.setDirty();
 		StargateJourney.LOGGER.info("Registered Solar System " + systemID + " under Galaxy " + galaxyID);
 	}
 	
@@ -356,7 +353,7 @@ public class Universe extends SavedData
 		return getSolarSystem(systemID).getList(SOLAR_SYSTEM_DIMENSIONS, Tag.TAG_STRING);
 	}
 	
-	private ListTag getGalaxiesFromSolarSystem(String systemID)
+	public ListTag getGalaxiesFromSolarSystem(String systemID)
 	{
 		if(getSolarSystem(systemID).isEmpty() || !getSolarSystem(systemID).contains(SOLAR_SYSTEM_GALAXIES))
 			return new ListTag();

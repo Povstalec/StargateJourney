@@ -240,12 +240,24 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 		return super.updateShape(oldState, direction, newState, levelAccessor, oldPos, newPos);
 	}
 	
+	private boolean isWaterLogged(BlockState state, Level level, BlockPos pos)
+	{
+		FluidState fluidState = level.getFluidState(pos);
+		
+		if(fluidState.getType() == Fluids.WATER)
+			return true;
+		
+		return state.getBlock() instanceof AbstractStargateBlock ? state.getValue(AbstractStargateBlock.WATERLOGGED) : false;
+	}
+	
 	@Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		if (oldState.getBlock() != newState.getBlock())
 		{
-			level.setBlock(StargatePart.getMainBlockPos(pos, oldState.getValue(FACING), oldState.getValue(PART)), Blocks.AIR.defaultBlockState(), 35);
+			BlockPos centerPos = oldState.getValue(PART).getMainBlockPos(pos, oldState.getValue(FACING));
+			BlockState centerState = level.getBlockState(centerPos);
+			level.setBlock(centerPos, isWaterLogged(centerState, level, centerPos) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 35);
 			
 	        super.onRemove(oldState, level, pos, newState, isMoving);
 		}
@@ -261,7 +273,7 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
-		BlockEntity blockentity = level.getBlockEntity(StargatePart.getMainBlockPos(pos, state.getValue(FACING), state.getValue(PART)));
+		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getMainBlockPos(pos, state.getValue(FACING)));
 		if (blockentity instanceof AbstractStargateEntity stargate)
 		{
 			if (!level.isClientSide)

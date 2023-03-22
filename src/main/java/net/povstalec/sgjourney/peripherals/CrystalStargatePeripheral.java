@@ -1,24 +1,26 @@
 package net.povstalec.sgjourney.peripherals;
 
+import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.povstalec.sgjourney.block_entities.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 
-public class CrystalInterfacePeripheral extends BasicInterfacePeripheral
+public class CrystalStargatePeripheral extends BasicStargatePeripheral
 {
 	protected CrystalInterfaceEntity crystalInterface;
 	
-	public CrystalInterfacePeripheral(CrystalInterfaceEntity crystalInterface)
+	public CrystalStargatePeripheral(CrystalInterfaceEntity crystalInterface, AbstractStargateEntity stargate)
 	{
-		super(crystalInterface);
+		super(crystalInterface, stargate);
 		this.crystalInterface = crystalInterface;
 	}
 	
 	@Override
 	public String getType()
 	{
-		return "advanced_interface";
+		return "crystal_interface";
 	}
 
 	@Override
@@ -27,7 +29,7 @@ public class CrystalInterfacePeripheral extends BasicInterfacePeripheral
 		if(this == other)
 			return true;
 		
-		if(other instanceof CrystalInterfacePeripheral peripheral)
+		if(other instanceof CrystalStargatePeripheral peripheral)
 		{
 			if(peripheral.crystalInterface == this.crystalInterface)
 				return true;
@@ -41,11 +43,13 @@ public class CrystalInterfacePeripheral extends BasicInterfacePeripheral
 	//============================================================================================
 	
 	@LuaFunction
-	public void inputSymbol(int symbol) throws LuaException
+	public void inputSymbol(ILuaContext context, int symbol) throws LuaException
 	{
-		if(!isConnectedToStargate())
-			throw new LuaException("Interface is not connected to a Stargate");
-		
-		crystalInterface.inputSymbol(symbol);
+		//This needs to be executed on the main thread, otherwise you won't be able to dial
+		context.executeMainThreadTask(() ->
+		{
+			stargate.engageSymbol(symbol);
+			return null;
+		});
 	}
 }

@@ -95,7 +95,7 @@ public class NaquadahGeneratorBlock extends BaseEntityBlock
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if (blockentity instanceof NaquadahGeneratorEntity)
 		{
-			if (!level.isClientSide)
+			if (!level.isClientSide && !player.isCreative())
 			{
 				ItemStack itemstack = this.tier == Tier.MARK_I ? 
 						new ItemStack(BlockInit.NAQUADAH_GENERATOR_MARK_I.get()) : 

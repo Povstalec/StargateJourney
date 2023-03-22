@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"III",
+		"RCC",
+		"III"
+	],
+	
+	"key": 
+	{
+		"I": { "item": "minecraft:iron_ingot" },
+		"C": { "item": "minecraft:copper_ingot" },
+		"R": { "item": "minecraft:redstone" }
+		
+	},
+	
+	"result": { "item": "sgjourney:basic_interface" }
+}

@@ -1,5 +1,9 @@
 {
-    "variants": {
-        "": { "model": "sgjourney:block/ancient_gene_detector" }
-    }
+	"variants":
+	{
+		"measured_gene=0": { "model": "sgjourney:block/gene_detector" },
+		"measured_gene=1": { "model": "sgjourney:block/gene_detector_detected_artificial" },
+		"measured_gene=2": { "model": "sgjourney:block/gene_detector_detected_inherited" },
+		"measured_gene=3": { "model": "sgjourney:block/gene_detector_detected_ancient" }
+	}
 }

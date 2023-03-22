@@ -36,7 +36,9 @@
 	
 	"block.sgjourney.basic_interface": "Z\u00e1kladn\u00ed rozhran\u00ed",
 	"block.sgjourney.crystal_interface": "Krystalov\u00e9 rozhran\u00ed",
-	"block.sgjourney.advanced_crystal_interface": " Pokročil\u00e9 krystalov\u00e9 rozhran\u00ed",
+	"block.sgjourney.advanced_crystal_interface": "Pokročil\u00e9 krystalov\u00e9 rozhran\u00ed",
+	
+	"block.sgjourney.ancient_gene_detector": "Detektor antick\u00e9ho genu",
 	
 	"block.sgjourney.zpm_plug": "ZPM Plug",
 	"block.sgjourney.zpm_hub": "ZPM Hub",

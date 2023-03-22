@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.shared.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -13,24 +12,29 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
+import net.povstalec.sgjourney.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.peripherals.BasicInterfacePeripheral;
-import net.povstalec.sgjourney.stargate.StargatePart;
+import net.povstalec.sgjourney.peripherals.BasicStargatePeripheral;
+import net.povstalec.sgjourney.peripherals.MilkyWayStargatePeripheral;
+import net.povstalec.sgjourney.peripherals.PeripheralHolder;
 
 public class BasicInterfaceEntity extends EnergyBlockEntity
 {
-	public LazyOptional<IPeripheral> peripheral = LazyOptional.of(() -> new BasicInterfacePeripheral(this));
-	
-	protected AbstractStargateEntity stargate = null;
-
 	private int desiredSymbol = 0;
 	private boolean rotate = false;
 	private boolean rotateClockwise = true;
+	
+	protected EnergyBlockEntity energyBlockEntity = null;
+	//PeripheralHolder peripheralHolder = new PeripheralHolder();
+	private BasicInterfacePeripheral basicInterfacePeripheral = createPeripheral(this, energyBlockEntity);
+	private LazyOptional<IPeripheral> peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
 	
 	public BasicInterfaceEntity(BlockPos pos, BlockState state)
 	{
@@ -42,6 +46,24 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		super(type, pos, state);
 	}
 	
+	public BasicInterfacePeripheral createPeripheral(BasicInterfaceEntity basicInterface, EnergyBlockEntity energyBlockEntity)
+	{
+		if(energyBlockEntity instanceof AbstractStargateEntity stargate)
+		{
+			if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
+			{
+				System.out.println("Milky Way Stargate");
+				return new MilkyWayStargatePeripheral(basicInterface, milkyWayStargate);
+			}
+
+			System.out.println("Stargate");
+			return new BasicStargatePeripheral(basicInterface, stargate);
+		}
+
+		System.out.println("Interface");
+		return new BasicInterfacePeripheral(basicInterface);
+	}
+	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
@@ -49,10 +71,20 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap == Capabilities.CAPABILITY_PERIPHERAL)
+		if(ModList.get().isLoaded("computercraft") && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
+		{
+			System.out.println("=====Fetching=====");
+			basicInterfacePeripheral = createPeripheral(this, energyBlockEntity);
+			peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
 			return peripheral.cast();
-		
+		}
 		return super.getCapability(cap, side);
+	}
+	
+	public void updateInterface(EnergyBlockEntity energyBlockEntity)
+	{
+		//peripheralHolder.resetPeripheral();
+		peripheral.invalidate();
 	}
 	
 	public Direction getDirection()
@@ -74,7 +106,7 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	@Override
 	public boolean isCorrectSide(Direction side)
 	{
-		if(side == getDirection())
+		if(side == getDirection().getOpposite())
 			return false;
 		return true;
 	}
@@ -112,66 +144,24 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	@Override
 	protected void outputEnergy(Direction outputDirection)
 	{
-		long simulatedOutputAmount = this.extractEnergy(this.maxExtract(), true);
-		long simulatedReceiveAmount = stargate.receiveEnergy(simulatedOutputAmount, true);
+		long storedEnergy = this.getEnergyStored();
 		
-		this.extractEnergy(simulatedReceiveAmount, false);
-		stargate.receiveEnergy(simulatedReceiveAmount, false);
+		long energyExtracted = Math.min(storedEnergy, maxExtract());
+		long simulatedReceiveAmount = energyBlockEntity.receiveEnergy(energyExtracted, true);
+
+		this.setEnergy(storedEnergy - energyExtracted);
+		energyBlockEntity.receiveEnergy(simulatedReceiveAmount, false);
 	}
 	
 	//============================================================================================
 	//*****************************************CC: Tweaked****************************************
 	//============================================================================================
 	
-	public boolean isConnectedToStargate()
-	{
-		if(stargate != null)
-			return true;
-		
-		return false;
-	}
-	
-	public AbstractStargateEntity getStargate()
-	{
-		return stargate;
-	}
-	
 	public void rotateStargate(boolean clockwise, int symbol)
 	{
 		this.desiredSymbol = symbol;
 		this.rotateClockwise = clockwise;
 		this.rotate = true;
-	}
-	
-	public boolean raiseChevron()
-	{
-		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-			return milkyWayStargate.raiseChevron();
-		return false;
-	}
-	
-	public boolean lowerChevron()
-	{
-		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-			return milkyWayStargate.lowerChevron();
-		return false;
-	}
-	
-	public int getChevronsEngaged()
-	{
-		return stargate.getChevronsEngaged();
-	}
-	
-	public int getOpenTime()
-	{
-		return stargate.getOpenTime();
-	}
-	
-	public boolean isCurrentSymbol(int symbol)
-	{
-		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-			return milkyWayStargate.isCurrentSymbol(symbol);
-		return false;
 	}
 	
 	//============================================================================================
@@ -187,29 +177,32 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		BlockPos realPos = pos.relative(basicInterface.getDirection());
 		
 		if(level.getBlockState(realPos).getBlock() instanceof AbstractStargateRingBlock)
-			realPos = StargatePart.getMainBlockPos(realPos, level.getBlockState(realPos).getValue(AbstractStargateRingBlock.FACING), level.getBlockState(realPos).getValue(AbstractStargateRingBlock.PART));
+			realPos = level.getBlockState(realPos).getValue(AbstractStargateRingBlock.PART).getMainBlockPos(realPos, level.getBlockState(realPos).getValue(AbstractStargateRingBlock.FACING));
 		
-		if(level.getBlockEntity(realPos) instanceof AbstractStargateEntity stargate)
-			basicInterface.stargate = stargate;
+		if(level.getBlockEntity(realPos) instanceof EnergyBlockEntity energyBlockEntity)
+			basicInterface.energyBlockEntity = energyBlockEntity;
 		else
-			basicInterface.stargate = null;
+			basicInterface.energyBlockEntity = null;
 		
-		if(basicInterface.stargate != null)
+		if(basicInterface.energyBlockEntity != null)
 		{
-			basicInterface.rotateStargate();
+			
 			basicInterface.outputEnergy(direction);
+			
+			if(basicInterface.energyBlockEntity instanceof MilkyWayStargateEntity stargate)
+				basicInterface.rotateStargate(stargate);
 		}
 			
 	}
 	
-	private void rotateStargate()
+	private void rotateStargate(MilkyWayStargateEntity stargate)
 	{
-		if(this.rotate && isConnectedToStargate() && this.stargate instanceof MilkyWayStargateEntity milkyWayStargate)
+		if(this.rotate)
 		{
-			if(milkyWayStargate.isCurrentSymbol(this.desiredSymbol))
+			if(stargate.isCurrentSymbol(this.desiredSymbol))
 				this.rotate = false;
 			else
-				milkyWayStargate.rotate(rotateClockwise);
+				stargate.rotate(rotateClockwise);
 		}
 	}
 }

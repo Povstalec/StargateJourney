@@ -13,11 +13,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.AbstractDHDEntity;
 import net.povstalec.sgjourney.block_entities.ClassicDHDEntity;
+import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.menu.ClassicDHDMenu;
 
 public class ClassicDHDBlock extends AbstractDHDBlock
@@ -46,8 +49,6 @@ public class ClassicDHDBlock extends AbstractDHDBlock
 			
         	if (blockEntity instanceof AbstractDHDEntity dhd) 
         	{
-        		dhd.getNearestStargate(16);
-        		
         		MenuProvider containerProvider = new MenuProvider() 
         		{
         			@Override
@@ -70,5 +71,14 @@ public class ClassicDHDBlock extends AbstractDHDBlock
         	}
         }
         return InteractionResult.SUCCESS;
+    }
+	
+
+	
+	@Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
+	{
+		return createTickerHelper(type, BlockEntityInit.CLASSIC_DHD.get(), AbstractDHDEntity::tick);
     }
 }

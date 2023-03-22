@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.init;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
@@ -37,12 +38,12 @@ public class ItemInit
 	public static final RegistryObject<Item> NAQUADAH_ALLOY = ITEMS.register("naquadah_alloy", 
 			() -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> PURE_NAQUADAH = ITEMS.register("pure_naquadah", 
-			() -> new Item(new Item.Properties().stacksTo(16)));
+			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 	public static final RegistryObject<Item> NAQUADAH = ITEMS.register("naquadah", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
-	public static final RegistryObject<Item> NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
-			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).craftRemainder(Items.BUCKET)));
-	public static final RegistryObject<Item> NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
+	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
+			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).craftRemainder(Items.BUCKET)));
+	public static final RegistryObject<Item> LIQUID_NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 	
 	public static final RegistryObject<MemoryCrystalItem> MEMORY_CRYSTAL = ITEMS.register("memory_crystal", 

@@ -22,12 +22,16 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.config.ServerZPMConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.items.ZeroPointModule;
 
 public class ZPMHubEntity extends EnergyBlockEntity
 {
+	private static final long maxTransfer = ServerZPMConfig.zpm_hub_max_transfer.get();
+	private static final long maxEnergyDisplayed = ServerZPMConfig.zpm_energy_per_level_of_entropy.get();
+	
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
 	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
@@ -147,19 +151,19 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	@Override
 	public long capacity()
 	{
-		return 1000000000000000000L;
+		return maxEnergyDisplayed;
 	}
 
 	@Override
 	public long maxReceive()
 	{
-		return 1000000000000000L;
+		return 0;
 	}
 
 	@Override
 	public long maxExtract()
 	{
-		return 1000000000000000L;
+		return maxTransfer;
 	}
 	
 	@Override
@@ -175,14 +179,18 @@ public class ZPMHubEntity extends EnergyBlockEntity
 				return;
 			else if(blockentity instanceof EnergyBlockEntity energyBE)
 			{
-				if(energyBE.canReceive())
-					energyBE.receiveEnergy(ZeroPointModule.extractEnergy(stack, energyBE.getMaxExtract()), false);
+				long simulatedReceiveAmount = energyBE.receiveEnergy(this.maxExtract(), true);
+				
+				long extractedAmount = this.extractEnergy(simulatedReceiveAmount, true);
+				
+				this.extractEnergy(extractedAmount, false);
+				energyBE.receiveEnergy(extractedAmount, false);
 			}
 			else
 			{
 				blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) ->
 				{
-					int simulatedReceiveAmount = energyStorage.receiveEnergy(Integer.MAX_VALUE, true);
+					int simulatedReceiveAmount = energyStorage.receiveEnergy(SGJourneyEnergy.getRegularEnergy(this.getMaxExtract()), true);
 					
 					int extractedAmount = SGJourneyEnergy.getRegularEnergy(ZeroPointModule.extractEnergy(stack, simulatedReceiveAmount));
 					energyStorage.receiveEnergy(extractedAmount, false);

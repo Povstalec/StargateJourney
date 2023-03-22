@@ -105,69 +105,14 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 		if(blockpos.getY() > level.getMaxBuildHeight() - 6)
 			return null;
 		
-		if (context.getHorizontalDirection().getOpposite().getAxis() == Direction.Axis.X)
+		for(StargatePart part : StargatePart.values())
 		{
-			if (blockpos.getY() < level.getMaxBuildHeight() - 6 && 
-					level.getBlockState(blockpos.south()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(2)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(2).above()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(3).above()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(3).above(2)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(3).above(3)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(3).above(4)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(3).above(5)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(2).above(5)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south(2).above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.south().above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north().above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(2).above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(2).above(5)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(3).above(5)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(3).above(4)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(3).above(3)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(3).above(2)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(3).above()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(2).above()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north(2)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.north()).canBeReplaced(context))
-			{
-				return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-			}
-				
-		}
-		else
-		{
-			if (blockpos.getY() < level.getMaxBuildHeight() - 6 && 
-					level.getBlockState(blockpos.east()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(2)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(2).above()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(3).above()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(3).above(2)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(3).above(3)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(3).above(4)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(3).above(5)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(2).above(5)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east(2).above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.east().above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west().above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(2).above(6)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(2).above(5)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(3).above(5)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(3).above(4)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(3).above(3)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(3).above(2)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(3).above()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(2).above()).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west(2)).canBeReplaced(context) &&
-					level.getBlockState(blockpos.west()).canBeReplaced(context))
-			{
-				return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
-			}
+			if(!part.equals(StargatePart.CENTER) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite())).canBeReplaced(context))
+				return null;
 		}
 			
-		return null;
+		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite())
+				.setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
 	 }
 	 
 	@Nullable
@@ -176,47 +121,21 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 	
 	public abstract BlockState ringState();
 	
-	private void setBlock(Level level, BlockPos pos, BlockState state, StargatePart part)
-	{
-		level.setBlock(StargatePart.getRingPos(pos, state.getValue(FACING), part), ringState().setValue(AbstractStargateRingBlock.PART, part).setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING)).setValue(WATERLOGGED, Boolean.valueOf(level.getFluidState(StargatePart.getRingPos(pos, state.getValue(FACING), part)).getType() == Fluids.WATER)), 3);
-	}
-	
 	@Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
 	{
 		super.setPlacedBy(level, pos, state, placer, stack);
 		
-		setBlock(level, pos, state, StargatePart.LEFT);
-		
-		setBlock(level, pos, state, StargatePart.LEFT2);
-		setBlock(level, pos, state, StargatePart.LEFT2_ABOVE);
-		setBlock(level, pos, state, StargatePart.LEFT3_ABOVE);
-
-		setBlock(level, pos, state, StargatePart.LEFT3_ABOVE2);
-		setBlock(level, pos, state, StargatePart.LEFT3_ABOVE3);
-		setBlock(level, pos, state, StargatePart.LEFT3_ABOVE4);
-
-		setBlock(level, pos, state, StargatePart.LEFT3_ABOVE5);
-		setBlock(level, pos, state, StargatePart.LEFT2_ABOVE5);
-		setBlock(level, pos, state, StargatePart.LEFT2_ABOVE6);
-
-		setBlock(level, pos, state, StargatePart.LEFT_ABOVE6);
-		setBlock(level, pos, state, StargatePart.ABOVE6);
-		setBlock(level, pos, state, StargatePart.RIGHT_ABOVE6);
-
-		setBlock(level, pos, state, StargatePart.RIGHT2_ABOVE6);
-		setBlock(level, pos, state, StargatePart.RIGHT2_ABOVE5);
-		setBlock(level, pos, state, StargatePart.RIGHT3_ABOVE5);
-
-		setBlock(level, pos, state, StargatePart.RIGHT3_ABOVE4);
-		setBlock(level, pos, state, StargatePart.RIGHT3_ABOVE3);
-		setBlock(level, pos, state, StargatePart.RIGHT3_ABOVE2);
-
-		setBlock(level, pos, state, StargatePart.RIGHT3_ABOVE);
-		setBlock(level, pos, state, StargatePart.RIGHT2_ABOVE);
-		setBlock(level, pos, state, StargatePart.RIGHT2);
-		
-		setBlock(level, pos, state, StargatePart.RIGHT);
+		for(StargatePart part : StargatePart.values())
+		{
+			if(!part.equals(StargatePart.CENTER))
+			{
+				level.setBlock(part.getRingPos(pos, state.getValue(FACING)), 
+						ringState().setValue(AbstractStargateRingBlock.PART, part).setValue(AbstractStargateRingBlock.FACING, 
+						level.getBlockState(pos).getValue(FACING)).setValue(WATERLOGGED, 
+						Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING))).getType() == Fluids.WATER)), 3);
+			}
+		}
 	}
 	
 	@Override
@@ -228,58 +147,17 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
     		if(blockentity instanceof AbstractStargateEntity stargate)
     			stargate.disconnectStargate();
     		
-            if(oldState.getValue(FACING).getAxis() == Direction.Axis.X)
-      		{
-            	level.setBlock(pos.south(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(2), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(2).above(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(3).above(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(3).above(2), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(3).above(3), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(3).above(4), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(3).above(5), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(2).above(5), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(2).above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.south(1).above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(1).above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(2).above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(2).above(5), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(3).above(5), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(3).above(4), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(3).above(3), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(3).above(2), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(3).above(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(2).above(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(2), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.north(), Blocks.AIR.defaultBlockState(), 35);
-      		}
-      		else
-      		{
-      			level.setBlock(pos.east(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(2), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(2).above(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(3).above(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(3).above(2), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(3).above(3), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(3).above(4), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(3).above(5), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(2).above(5), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(2).above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.east(1).above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(1).above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(2).above(6), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(2).above(5), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(3).above(5), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(3).above(4), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(3).above(3), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(3).above(2), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(3).above(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(2).above(), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(2), Blocks.AIR.defaultBlockState(), 35);
-            	level.setBlock(pos.west(), Blocks.AIR.defaultBlockState(), 35);
-      		}
+    		for(StargatePart part : StargatePart.values())
+    		{
+    			if(!part.equals(StargatePart.CENTER))
+    			{
+    				BlockPos ringPos = part.getRingPos(pos, oldState.getValue(FACING));
+        			BlockState state = level.getBlockState(ringPos);
+        			boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
+    				
+    				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
+    			}
+    		}
             super.onRemove(oldState, level, pos, newState, isMoving);
         }
     }
