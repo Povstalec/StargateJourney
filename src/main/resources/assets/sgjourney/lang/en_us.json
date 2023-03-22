@@ -79,7 +79,11 @@
 	"item.sgjourney.jaffa_chestplate": "Jaffa Chestplate",
 	"item.sgjourney.jaffa_leggings": "Jaffa Leggings",
 	"item.sgjourney.jaffa_boots": "Jaffa Boots",
+	
 	"item.sgjourney.jackal_helmet": "Jackal Helmet",
+	"item.sgjourney.falcon_helmet": "Falcon Helmet",
+	
+	"item.sgjourney.anubis_helmet": "Anubis Helmet",
 	"item.sgjourney.horus_helmet": "Horus Helmet",
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeologist Map",

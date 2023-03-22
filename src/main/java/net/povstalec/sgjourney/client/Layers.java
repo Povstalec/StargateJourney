@@ -6,7 +6,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.ClassicStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
-import net.povstalec.sgjourney.client.models.HorusArmorModel;
+import net.povstalec.sgjourney.client.models.FalconArmorModel;
 import net.povstalec.sgjourney.client.models.JackalArmorModel;
 import net.povstalec.sgjourney.client.models.MilkyWayStargateModel;
 import net.povstalec.sgjourney.client.models.PegasusStargateModel;
@@ -47,7 +47,7 @@ public class Layers
 	public static final ModelLayerLocation KAWOOSH_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "kawoosh_layer"), "main");
 	
 	// Armor
-	public static final ModelLayerLocation HORUS_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "horus_head"), "main");
+	public static final ModelLayerLocation FALCON_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "falcon_head"), "main");
 	public static final ModelLayerLocation JACKAL_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "jackal_head"), "main");
 	
 	public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
@@ -83,7 +83,7 @@ public class Layers
 		//event.registerLayerDefinition(VORTEX_LAYER, () -> WormholeModel.createVortexLayer());
 		
 		// Armor
-		event.registerLayerDefinition(HORUS_HEAD, HorusArmorModel::createBodyLayer);
+		event.registerLayerDefinition(FALCON_HEAD, FalconArmorModel::createBodyLayer);
 		event.registerLayerDefinition(JACKAL_HEAD, JackalArmorModel::createBodyLayer);
 	}
 

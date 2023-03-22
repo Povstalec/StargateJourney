@@ -11,7 +11,8 @@
 					{
 						"items":
 						[
-							"minecraft:coal"
+							"minecraft:coal",
+							"minecraft:charcoal"
 						]
 					}
 				]

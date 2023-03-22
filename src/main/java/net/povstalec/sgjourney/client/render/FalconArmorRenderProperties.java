@@ -7,13 +7,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.povstalec.sgjourney.client.models.HorusArmorModel;
+import net.povstalec.sgjourney.client.models.FalconArmorModel;
 
-public class HorusArmorRenderProperties implements IClientItemExtensions
+public class FalconArmorRenderProperties implements IClientItemExtensions
 {
-	public static final HorusArmorRenderProperties INSTANCE = new HorusArmorRenderProperties();
+	public static final FalconArmorRenderProperties INSTANCE = new FalconArmorRenderProperties();
 
-    private HorusArmorRenderProperties() 
+    private FalconArmorRenderProperties() 
     {
     	
     }
@@ -21,6 +21,6 @@ public class HorusArmorRenderProperties implements IClientItemExtensions
     @Override
     public @Nullable HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> defaultModel)
     {
-        return HorusArmorModel.INSTANCE;
+        return FalconArmorModel.INSTANCE;
     }
 }

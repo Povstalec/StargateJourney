@@ -47,6 +47,12 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral
 	}*/
 	
 	@LuaFunction
+	public final boolean isStargateConnected()
+	{
+		return stargate.isConnected();
+	}
+	
+	@LuaFunction
 	public final long getStargateEnergy()
 	{
 		return stargate.getEnergyStored();

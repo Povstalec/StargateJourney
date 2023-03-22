@@ -79,7 +79,11 @@
 	"item.sgjourney.jaffa_chestplate": "Jaffsk\u00e9 brn\u011bn\u00ed",
 	"item.sgjourney.jaffa_leggings": "Jaffsk\u00e9 kalhoty",
 	"item.sgjourney.jaffa_boots": "Jaffsk\u00e9 boty",
+	
 	"item.sgjourney.jackal_helmet": "\u0160akal\u00ed helma",
+	"item.sgjourney.falcon_helmet": "Sokol\u00ed helma",
+	
+	"item.sgjourney.anubis_helmet": "Anubisova helma",
 	"item.sgjourney.horus_helmet": "Horova helma",
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",

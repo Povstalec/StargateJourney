@@ -11,13 +11,13 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.render.HorusArmorRenderProperties;
+import net.povstalec.sgjourney.client.render.FalconArmorRenderProperties;
 
-public class HorusArmorItem extends ArmorItem
+public class FalconArmorItem extends ArmorItem
 {
 	public final EquipmentSlot type;
 	
-	 public HorusArmorItem(ArmorMaterial mat, EquipmentSlot type, Properties props) {
+	 public FalconArmorItem(ArmorMaterial mat, EquipmentSlot type, Properties props) {
 	        super(mat, type, props);
 	        this.type = type;
 	    }
@@ -25,13 +25,13 @@ public class HorusArmorItem extends ArmorItem
 	 @Override
 	 public void initializeClient(Consumer<IClientItemExtensions> consumer) 
 	 {
-		 consumer.accept(HorusArmorRenderProperties.INSTANCE);
+		 consumer.accept(FalconArmorRenderProperties.INSTANCE);
 	 }
 	 
 	 @Nullable
 	 @Override
 	 public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
 		
-		 return StargateJourney.MODID + ":textures/models/armor/horus_helmet.png";
+		 return StargateJourney.MODID + ":textures/models/armor/falcon_helmet.png";
 	 }
 }

@@ -48,8 +48,6 @@ public class MilkyWayStargatePeripheral extends BasicStargatePeripheral
 			setStargateRotation(true, symbol);
 			return null;
 		});
-		
-		setStargateRotation(true, symbol);
 	}
 	
 	@LuaFunction
@@ -57,11 +55,9 @@ public class MilkyWayStargatePeripheral extends BasicStargatePeripheral
 	{
 		context.executeMainThreadTask(() ->
 		{
-			setStargateRotation(true, symbol);
+			setStargateRotation(false, symbol);
 			return null;
 		});
-		
-		setStargateRotation(false, symbol);
 	}
 	
 	@LuaFunction

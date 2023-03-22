@@ -27,10 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.BasicInterfaceEntity;
-import net.povstalec.sgjourney.block_entities.EnergyBlockEntity;
-import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
 
@@ -104,24 +101,14 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
-		BlockEntity blockEntity = level.getBlockEntity(pos);
+		Direction direction = state.getValue(FACING);
+		BlockPos targetPos = pos.relative(direction);
 		
-		if(blockEntity instanceof BasicInterfaceEntity basicInterface)
-		{
-			BlockPos targetPos = pos.relative(basicInterface.getDirection());
-			EnergyBlockEntity targetEntity = null;
-			
-			if(level.getBlockState(targetPos).getBlock() instanceof AbstractStargateRingBlock)
-				targetPos = level.getBlockState(targetPos).getValue(AbstractStargateRingBlock.PART).getMainBlockPos(targetPos, level.getBlockState(targetPos).getValue(AbstractStargateRingBlock.FACING));
-			
-			if(level.getBlockEntity(targetPos) instanceof EnergyBlockEntity energyBlockEntity)
-				targetEntity = energyBlockEntity;
-
-			basicInterface.updateInterface(targetEntity);
-		}
+		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof BasicInterfaceEntity basicInterface && basicInterface.updateInterface())
+			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 	}
 	
 	@Nullable

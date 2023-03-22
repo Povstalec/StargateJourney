@@ -2,6 +2,6 @@
     "parent": "item/generated",
     "textures": 
 	{
-        "layer0": "sgjourney:item/horus_helmet"
+        "layer0": "sgjourney:item/falcon_helmet"
     }
 }
