@@ -35,16 +35,9 @@ public class BasicInterfacePeripheral implements IPeripheral
 	@Override
 	public boolean equals(IPeripheral other)
 	{
-		if(this == other)
-			return true;
-		
-		if(other instanceof BasicInterfacePeripheral peripheral)
-		{
-			if(peripheral.basicInterface == this.basicInterface)
-				return true;
-		}
-		
-		return false;
+		if(this == other) return true;
+
+		return getClass() == other.getClass() && basicInterface == ((BasicInterfacePeripheral) other).basicInterface;
 	}
 	
 	//============================================================================================
