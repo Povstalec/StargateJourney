@@ -33,8 +33,8 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	
 	protected EnergyBlockEntity energyBlockEntity = null;
 	//PeripheralHolder peripheralHolder = new PeripheralHolder();
-	private BasicInterfacePeripheral basicInterfacePeripheral = createPeripheral(this, energyBlockEntity);
-	private LazyOptional<IPeripheral> peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
+	private BasicInterfacePeripheral basicInterfacePeripheral;
+	private LazyOptional<IPeripheral> peripheral;
 	
 	public BasicInterfaceEntity(BlockPos pos, BlockState state)
 	{
@@ -46,7 +46,7 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		super(type, pos, state);
 	}
 	
-	public BasicInterfacePeripheral createPeripheral(BasicInterfaceEntity basicInterface, EnergyBlockEntity energyBlockEntity)
+	public static BasicInterfacePeripheral createPeripheral(BasicInterfaceEntity basicInterface, EnergyBlockEntity energyBlockEntity)
 	{
 		if(energyBlockEntity instanceof AbstractStargateEntity stargate)
 		{
@@ -74,26 +74,39 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		if(ModList.get().isLoaded("computercraft") && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
 		{
 			System.out.println("=====Fetching=====");
-			basicInterfacePeripheral = createPeripheral(this, energyBlockEntity);
-			peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
+			if (peripheral == null) {
+				basicInterfacePeripheral = createPeripheral(this, findEnergyBlockEntity());
+				peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
+			}
 			return peripheral.cast();
 		}
 		return super.getCapability(cap, side);
 	}
 	
-	public void updateInterface(EnergyBlockEntity energyBlockEntity)
+	public boolean updateInterface()
 	{
-		//peripheralHolder.resetPeripheral();
-		peripheral.invalidate();
+		BasicInterfacePeripheral newPeripheral = createPeripheral(this, findEnergyBlockEntity());
+		if (basicInterfacePeripheral != null && basicInterfacePeripheral.equals(newPeripheral))
+		{
+			// Peripheral is same as before, no changes needed.
+			return false;
+		}
+
+		// Peripheral has changed, invalidate the capability and trigger a block update.
+		basicInterfacePeripheral = newPeripheral;
+		if (peripheral != null) {
+			peripheral.invalidate();
+			peripheral = LazyOptional.of(() -> newPeripheral);
+		}
+		return true;
 	}
 	
 	public Direction getDirection()
 	{
-		BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = this.level.getBlockState(gatePos);
-		
+		BlockState gateState = getBlockState();
+
 		if(gateState.getBlock() instanceof BasicInterfaceBlock)
-			return this.level.getBlockState(gatePos).getValue(BasicInterfaceBlock.FACING);
+			return gateState.getValue(BasicInterfaceBlock.FACING);
 
 		StargateJourney.LOGGER.info("Couldn't find Direction");
 		return null;
@@ -152,6 +165,18 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		this.setEnergy(storedEnergy - energyExtracted);
 		energyBlockEntity.receiveEnergy(simulatedReceiveAmount, false);
 	}
+
+	private @Nullable EnergyBlockEntity findEnergyBlockEntity() {
+		Direction direction = getDirection();
+		if(direction == null) return null;
+
+		BlockPos realPos = getBlockPos().relative(direction);
+
+		if(level.getBlockState(realPos).getBlock() instanceof AbstractStargateRingBlock)
+			realPos = level.getBlockState(realPos).getValue(AbstractStargateRingBlock.PART).getMainBlockPos(realPos, level.getBlockState(realPos).getValue(AbstractStargateRingBlock.FACING));
+
+		return level.getBlockEntity(realPos) instanceof EnergyBlockEntity energyBlockEntity ? energyBlockEntity : null;
+	}
 	
 	//============================================================================================
 	//*****************************************CC: Tweaked****************************************
@@ -170,24 +195,11 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, BasicInterfaceEntity basicInterface)
 	{
-		Direction direction = basicInterface.getDirection();
-		if(direction == null)
-			return;
-		
-		BlockPos realPos = pos.relative(basicInterface.getDirection());
-		
-		if(level.getBlockState(realPos).getBlock() instanceof AbstractStargateRingBlock)
-			realPos = level.getBlockState(realPos).getValue(AbstractStargateRingBlock.PART).getMainBlockPos(realPos, level.getBlockState(realPos).getValue(AbstractStargateRingBlock.FACING));
-		
-		if(level.getBlockEntity(realPos) instanceof EnergyBlockEntity energyBlockEntity)
-			basicInterface.energyBlockEntity = energyBlockEntity;
-		else
-			basicInterface.energyBlockEntity = null;
-		
+		basicInterface.energyBlockEntity = basicInterface.findEnergyBlockEntity();
 		if(basicInterface.energyBlockEntity != null)
 		{
-			
-			basicInterface.outputEnergy(direction);
+
+			basicInterface.outputEnergy(basicInterface.getDirection());
 			
 			if(basicInterface.energyBlockEntity instanceof MilkyWayStargateEntity stargate)
 				basicInterface.rotateStargate(stargate);

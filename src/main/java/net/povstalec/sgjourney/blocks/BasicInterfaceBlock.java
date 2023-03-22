@@ -106,21 +106,12 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 	{
 		if(level.isClientSide)
 			return;
-		
-		BlockEntity blockEntity = level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof BasicInterfaceEntity basicInterface)
-		{
-			BlockPos targetPos = pos.relative(basicInterface.getDirection());
-			EnergyBlockEntity targetEntity = null;
-			
-			if(level.getBlockState(targetPos).getBlock() instanceof AbstractStargateRingBlock)
-				targetPos = level.getBlockState(targetPos).getValue(AbstractStargateRingBlock.PART).getMainBlockPos(targetPos, level.getBlockState(targetPos).getValue(AbstractStargateRingBlock.FACING));
-			
-			if(level.getBlockEntity(targetPos) instanceof EnergyBlockEntity energyBlockEntity)
-				targetEntity = energyBlockEntity;
 
-			basicInterface.updateInterface(targetEntity);
+		Direction direction = state.getValue(FACING);
+		BlockPos targetPos = pos.relative(direction);
+		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof BasicInterfaceEntity basicInterface && basicInterface.updateInterface())
+		{
+			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 		}
 	}
 	
