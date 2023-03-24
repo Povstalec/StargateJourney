@@ -19,10 +19,12 @@ public class StargateJourneyConfig
 	public static final ForgeConfigSpec client_config;
 	
 	public static ForgeConfigSpec.BooleanValue disable_energy_use;
+	public static ForgeConfigSpec.BooleanValue disable_smooth_animations;
 	
 	static
 	{
-		generalConfig(server_builder);
+		generalServerConfig(server_builder);
+		generalClientConfig(client_builder);
 		
 		ServerZPMConfig.init(server_builder);
 		ServerInterfaceConfig.init(server_builder);
@@ -48,7 +50,7 @@ public class StargateJourneyConfig
 		config.setConfig(file);
 	}
 	
-	private static void generalConfig(ForgeConfigSpec.Builder server)
+	private static void generalServerConfig(ForgeConfigSpec.Builder server)
 	{
 		server.comment("Stargate Journey General Config");
 		
@@ -56,5 +58,14 @@ public class StargateJourneyConfig
 		disable_energy_use = server
 				.comment("Disable energy requirements for blocks added by Stargate Journey")
 				.define("server.disable_energy_requirements", true);
+	}
+	
+	private static void generalClientConfig(ForgeConfigSpec.Builder client)
+	{
+		client.comment("Stargate Journey Client Config");
+		
+		disable_smooth_animations = client
+				.comment("Disables smooth animations of Stargate Journey Block Entities")
+				.define("client.disable_smooth_animations", false);
 	}
 }

@@ -17,6 +17,7 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.blocks.TransportRingsBlock;
+import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.data.BlockEntityList;
 import net.povstalec.sgjourney.data.RingsNetwork;
 import net.povstalec.sgjourney.init.BlockEntityInit;
@@ -209,7 +210,8 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 	
 	public float getProgress(float partialTick)
 	{
-		return Mth.lerp(partialTick, this.progressOld, this.progress);
+		return StargateJourneyConfig.disable_smooth_animations.get() ?
+				(float) this.progress : Mth.lerp(partialTick, this.progressOld, this.progress);
 	}
 	
 	public void getStatus()

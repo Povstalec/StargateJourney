@@ -19,10 +19,11 @@ import net.povstalec.sgjourney.config.ClientStargateConfig;
 
 public class MilkyWayStargateModel extends AbstractStargateModel
 {
+	private static final String CHEVRON = ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? "milky_way_chevron" : "milky_way_chevron_front";
 	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_outer_ring.png");
 	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_inner_ring.png");
-	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_chevron.png");
-	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_chevron_lit.png");
+	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/" + CHEVRON + ".png");
+	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/" + CHEVRON + "_lit.png");
 	
 	private final ModelPart ring;
 	private final ModelPart symbolRing;
@@ -30,7 +31,7 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 	private final ModelPart chevrons;
 	
 	private static final int symbolCount = 39;
-	private static final double angle = (double) 360/symbolCount;
+	private static final double angle = (double) 360 / symbolCount;
 	private float rotation = 0.0F;
 	
 	public MilkyWayStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)

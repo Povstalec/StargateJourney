@@ -15,7 +15,6 @@ import net.povstalec.sgjourney.packets.ClientboundSymbolUpdatePacket;
 import net.povstalec.sgjourney.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.packets.ServerboundDHDUpdatePacket;
 import net.povstalec.sgjourney.packets.ServerboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.packets.ServerboundStargateDialingPacket;
 
 public final class PacketHandlerInit
 {
@@ -90,12 +89,6 @@ public final class PacketHandlerInit
         .encoder(ServerboundRingPanelUpdatePacket::encode)
         .decoder(ServerboundRingPanelUpdatePacket::new)
         .consumerMainThread(ServerboundRingPanelUpdatePacket::handle)
-        .add();
-        
-        INSTANCE.messageBuilder(ServerboundStargateDialingPacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-        .encoder(ServerboundStargateDialingPacket::encode)
-        .decoder(ServerboundStargateDialingPacket::new)
-        .consumerMainThread(ServerboundStargateDialingPacket::handle)
         .add();
     }
 }

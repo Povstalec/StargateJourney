@@ -15,14 +15,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.config.ClientStargateConfig;
 
 public class PegasusStargateModel extends AbstractStargateModel
 {
-
+	private static final String CHEVRON = ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? "pegasus_chevron" : "pegasus_chevron_front";
 	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_outer_ring.png");
 	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_inner_ring.png");
-	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_chevron.png");
-	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_chevron_lit.png");
+	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/" + CHEVRON + ".png");
+	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/" + CHEVRON + "_lit.png");
 	
 	private final ModelPart ring;
 	private final ModelPart symbolRing;
@@ -92,9 +93,11 @@ public class PegasusStargateModel extends AbstractStargateModel
 		
 		renderSpinningSymbol(stargate, stack, source, combinedLight, combinedOverlay);
 		
-		renderLockedSymbols(stargate, stack, source, combinedLight, combinedOverlay);
+		if(stargate.addressBuffer.length == 0)
+			renderIdleSymbols(stargate, stack, source, combinedLight, combinedOverlay);
+		else
+			renderLockedSymbols(stargate, stack, source, combinedLight, combinedOverlay);
 		
-		renderIdleSymbols(stargate, stack, source, combinedLight, combinedOverlay);
 	}
 	
 	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
@@ -125,22 +128,19 @@ public class PegasusStargateModel extends AbstractStargateModel
 	protected void renderIdleSymbols(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		if(stargate.addressBuffer.length == 0)
+		float r = 0.0F;
+		float g = 100.0F;
+		float b = 200.0F;
+		
+		if(stargate.isConnected())
 		{
-			float r = 0.0F;
-			float g = 100.0F;
-			float b = 200.0F;
-			
-			if(stargate.isConnected())
-			{
-				g = 200.0F;
-				b = 255.0F;
-			}
-			
-			for(int i = 0; i < symbolCount; i++)
-			{
-				this.getSymbol(i).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, i))), 255, combinedOverlay, r/255.0F, g/255.0F, b/255.0F, 1.0F);
-			}
+			g = 200.0F;
+			b = 255.0F;
+		}
+		
+		for(int i = 0; i < symbolCount; i++)
+		{
+			this.getSymbol(i).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, i))), 255, combinedOverlay, r/255.0F, g/255.0F, b/255.0F, 1.0F);
 		}
 	}
 	

@@ -76,7 +76,7 @@ public class ClientAccess
         }
     }
     
-    public static void updateMilkyWayStargate(BlockPos pos, int rotation, int oldRotation, boolean isChevronRaised, int signalStrength)
+    public static void updateMilkyWayStargate(BlockPos pos, int rotation, int oldRotation, boolean isChevronRaised, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredSymbol)
     {
     	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
         
@@ -86,6 +86,9 @@ public class ClientAccess
         	stargate.oldRotation = oldRotation;
         	stargate.isChevronRaised = isChevronRaised;
         	stargate.signalStrength = signalStrength;
+        	stargate.computerRotation = computerRotation;
+        	stargate.rotateClockwise = rotateClockwise;
+        	stargate.desiredSymbol = desiredSymbol;
         }
     }
     

@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
@@ -40,7 +41,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	@Override
 	public void onLoad()
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
 		setPointOfOrigin(POINT_OF_ORIGIN);
@@ -127,20 +128,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		super.encodeChevron(symbol);
 	}
 	
-	public int getCurrentSymbol()
-	{
-		int currentSymbol;
-		double position = rotation / angle();
-		currentSymbol = (int) position;
-		if(position >= currentSymbol + 0.5)
-			currentSymbol++;
-		
-		if(currentSymbol > 38)
-			currentSymbol = currentSymbol - 39;
-		
-		return currentSymbol;
-	}
-	
 	public static void tick(Level level, BlockPos pos, BlockState state, UniverseStargateEntity stargate)
 	{
 		if(!stargate.isConnected() && stargate.addressBuffer.length > stargate.symbolBuffer)
@@ -202,7 +189,8 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	
 	public float getRotation(float partialTick)
 	{
-		return Mth.lerp(partialTick, this.oldRotation, this.rotation);
+		return StargateJourneyConfig.disable_smooth_animations.get() ?
+				(float) getRotation() : Mth.lerp(partialTick, this.oldRotation, this.rotation);
 	}
 	
 	private void rotateToSymbol(int desiredSymbol)

@@ -39,7 +39,7 @@ public class ServerStargateConfig
 		// Energy Related
 		enable_energy_bypass = server
 				.comment("The maximum connection time can be extended by increasing the energy input")
-				.define("server.enable_energy_bypass", true);
+				.define("server.enable_energy_bypass", false);
 		
 		can_draw_power_from_both_ends = server
 				.comment("If true the wormhole will draw power from both connected Stargates")

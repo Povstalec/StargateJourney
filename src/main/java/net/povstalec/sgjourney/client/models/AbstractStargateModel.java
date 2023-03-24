@@ -113,15 +113,15 @@ public abstract class AbstractStargateModel
 	public static void createBackChevron(PartDefinition backChevron)
 	{
 		backChevron.addOrReplaceChild("chevron_b", CubeListBuilder.create()
-				.texOffs(0, 29)
+				.texOffs(0, 40)
 				.addBox(-2.0F, 46.0F, 0.0F, 4.0F, 2.0F, 1.0F), 
 				PartPose.offset(0.0F, 0.0F, -4.5F));
 		backChevron.addOrReplaceChild("chevron_right_b", CubeListBuilder.create()
-				.texOffs(10, 29)
+				.texOffs(10, 40)
 				.addBox(-2.0F, 0.0F, 0.0F, 2.0F, 10.0F, 1.0F), 
 				PartPose.offsetAndRotation(2.0F, 46.0F, -4.5F, 0.0F, 0.0F, (float) Math.toRadians(-22.5)));
 		backChevron.addOrReplaceChild("chevron_left_b", CubeListBuilder.create()
-				.texOffs(10, 29)
+				.texOffs(10, 40)
 				.addBox(0.0F, 0.0F, 0.0F, 2.0F, 10.0F, 1.0F), 
 				PartPose.offsetAndRotation(-2.0F, 46.0F, -4.5F, 0.0F, 0.0F, (float) Math.toRadians(22.5)));
 		

@@ -1,41 +1,21 @@
-package net.povstalec.sgjourney.peripherals;
+package net.povstalec.sgjourney.cctweaked.peripherals;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.povstalec.sgjourney.block_entities.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 
-public class CrystalStargatePeripheral extends BasicStargatePeripheral
+public class CrystalStargatePeripheral extends CrystalInterfacePeripheral
 {
 	protected CrystalInterfaceEntity crystalInterface;
+	protected AbstractStargateEntity stargate;
 	
 	public CrystalStargatePeripheral(CrystalInterfaceEntity crystalInterface, AbstractStargateEntity stargate)
 	{
-		super(crystalInterface, stargate);
+		super(crystalInterface);
 		this.crystalInterface = crystalInterface;
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "crystal_interface";
-	}
-
-	@Override
-	public boolean equals(IPeripheral other)
-	{
-		if(this == other)
-			return true;
-		
-		if(other instanceof CrystalStargatePeripheral peripheral)
-		{
-			if(peripheral.crystalInterface == this.crystalInterface)
-				return true;
-		}
-		
-		return false;
+		this.stargate = stargate;
 	}
 	
 	//============================================================================================

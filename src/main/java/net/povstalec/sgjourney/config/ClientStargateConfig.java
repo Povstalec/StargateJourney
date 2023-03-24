@@ -5,6 +5,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class ClientStargateConfig
 {
 	public static ForgeConfigSpec.BooleanValue use_movie_stargate_model;
+	public static ForgeConfigSpec.BooleanValue milky_way_stargate_back_lights_up;
+	public static ForgeConfigSpec.BooleanValue pegasus_stargate_back_lights_up;
 
 	public static ForgeConfigSpec.IntValue universe_r;
 	public static ForgeConfigSpec.IntValue universe_g;
@@ -29,6 +31,14 @@ public class ClientStargateConfig
 		use_movie_stargate_model = client
 				.comment("Decide if Milky Way Stargate should use the Movie Stargate model")
 				.define("client.use_movie_stargate_model", false);
+		
+		milky_way_stargate_back_lights_up = client
+				.comment("Decide if Chevrons on the back of Milky Way Stargate should light up")
+				.define("client.milky_way_stargate_back_lights_up", false);
+		
+		pegasus_stargate_back_lights_up = client
+				.comment("Decide if Chevrons on the back of Pegasus Stargate should light up")
+				.define("client.pegasus_stargate_back_lights_up", true);
 		
 		
 		

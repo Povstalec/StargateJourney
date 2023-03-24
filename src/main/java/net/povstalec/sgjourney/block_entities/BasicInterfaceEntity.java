@@ -17,8 +17,8 @@ import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.capabilities.CCTweakedCapabilities;
+import net.povstalec.sgjourney.cctweaked.peripherals.BasicPeripheralHolder;
 import net.povstalec.sgjourney.init.BlockEntityInit;
-import net.povstalec.sgjourney.peripherals.PeripheralHolder;
 
 public class BasicInterfaceEntity extends EnergyBlockEntity
 {
@@ -27,15 +27,14 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	private boolean rotateClockwise = true;
 	
 	public EnergyBlockEntity energyBlockEntity = null;
-	PeripheralHolder peripheralHolder;
+	BasicPeripheralHolder peripheralHolder;
 	
 	public BasicInterfaceEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.BASIC_INTERFACE.get(), pos, state);
 		
 		if(ModList.get().isLoaded("computercraft"))
-			peripheralHolder = new PeripheralHolder(this);
-			
+			peripheralHolder = new BasicPeripheralHolder(this);
 	}
 	
 	protected BasicInterfaceEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
@@ -58,7 +57,10 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	
 	public boolean updateInterface()
 	{
-		return peripheralHolder.resetInterface();
+		if(peripheralHolder != null)
+			peripheralHolder.resetInterface();
+		
+		return false;
 	}
 	
 	public Direction getDirection()

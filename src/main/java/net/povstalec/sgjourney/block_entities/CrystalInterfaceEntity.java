@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
-import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.capabilities.CCTweakedCapabilities;
+import net.povstalec.sgjourney.cctweaked.peripherals.CrystalInterfacePeripheral;
+import net.povstalec.sgjourney.data.Universe;
 import net.povstalec.sgjourney.init.BlockEntityInit;
-import net.povstalec.sgjourney.peripherals.CrystalStargatePeripheral;
 
 public class CrystalInterfaceEntity extends BasicInterfaceEntity
 {
@@ -32,10 +32,7 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 	{
 		if(ModList.get().isLoaded("computercraft") && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
 		{
-			if(energyBlockEntity instanceof AbstractStargateEntity stargate)
-				return LazyOptional.of(() -> new CrystalStargatePeripheral(this, stargate)).cast();
-			
-			//TODO
+			return LazyOptional.of(() -> new CrystalInterfacePeripheral(this)).cast();
 		}
 		return super.getCapability(cap, side);
 	}
@@ -66,10 +63,13 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 	//*****************************************CC: Tweaked****************************************
 	//============================================================================================
 	
-	/*public void inputSymbol(int symbol)
+	public String getLocalAddress()
 	{
-		stargate.engageSymbol(symbol);
-	}*/
+		String dimension = this.level.dimension().location().toString();
+		String galaxy = Universe.get(this.level).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys().iterator().next();
+		//TODO What if the Dimension is not located inside a Galaxy
+		return Universe.get(this.level).getAddressInGalaxyFromDimension(galaxy, dimension);
+	}
 	
 	//============================================================================================
 	//******************************************Ticking*******************************************

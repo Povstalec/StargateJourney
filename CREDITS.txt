@@ -5,5 +5,7 @@ Kranyolsu - Stargate Pedestals
 Carter Addon Pack - Sounds
 diesieben07 - Code for GUI shift-clicking
 TelepathicGrunt - Code for Structure spawning
+AlexandriaOL - Fixed a typo in advancements
+SquidDev - Fixed Basic Interface not working dynamically
 
 I guess I could thank the Stargate franchize for... existing... as inspiration. Yeah, let's go with that.

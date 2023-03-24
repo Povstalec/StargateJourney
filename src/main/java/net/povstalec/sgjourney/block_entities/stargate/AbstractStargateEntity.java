@@ -35,7 +35,6 @@ import net.povstalec.sgjourney.data.Universe;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
 import net.povstalec.sgjourney.packets.ClientboundStargateUpdatePacket;
-import net.povstalec.sgjourney.packets.ServerboundStargateDialingPacket;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Dialing;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
@@ -251,7 +250,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.timesOpened++;
 		this.setChanged();
 		
-		this.updateStargate(this.level, this.getID(), this.timesOpened, this.hasDHD);
+		this.updateStargate();
 	}
 	
 	public void resetStargate(boolean causedByFailure)
@@ -280,9 +279,14 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		resetStargate(false);
 	}
 	
-	public void updateStargate(Level level, String stargateID, int timesOpened, boolean hasDHD)
+	public void updateStargate()
 	{
-		StargateNetwork.get(level).updateStargate(level, stargateID, timesOpened, hasDHD);
+		updateStargate(this.level, this.getID(), this.timesOpened, this.hasDHD);
+	}
+	
+	private void updateStargate(Level level, String id, int timesOpened, boolean hasDHD)
+	{
+		StargateNetwork.get(level).updateStargate(level, id, timesOpened, hasDHD);
 	}
 	
 	public boolean canConnect()

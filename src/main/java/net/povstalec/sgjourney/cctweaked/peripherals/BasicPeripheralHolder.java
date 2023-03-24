@@ -1,19 +1,18 @@
-package net.povstalec.sgjourney.peripherals;
+package net.povstalec.sgjourney.cctweaked.peripherals;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.common.util.LazyOptional;
 import net.povstalec.sgjourney.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 
-public class PeripheralHolder
+public class BasicPeripheralHolder
 {
 	BasicInterfaceEntity basicInterface;
 	private BasicInterfacePeripheral basicInterfacePeripheral;
 	private LazyOptional<IPeripheral> peripheral;
 	
-	public PeripheralHolder(BasicInterfaceEntity basicInterface)
+	public BasicPeripheralHolder(BasicInterfaceEntity basicInterface)
 	{
 		this.basicInterface = basicInterface;
 	}
@@ -21,12 +20,7 @@ public class PeripheralHolder
 	public static BasicInterfacePeripheral createPeripheral(BasicInterfaceEntity basicInterface, EnergyBlockEntity energyBlockEntity)
 	{
 		if(energyBlockEntity instanceof AbstractStargateEntity stargate)
-		{
-			if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-				return new MilkyWayStargatePeripheral(basicInterface, milkyWayStargate);
-
 			return new BasicStargatePeripheral(basicInterface, stargate);
-		}
 
 		return new BasicInterfacePeripheral(basicInterface);
 	}

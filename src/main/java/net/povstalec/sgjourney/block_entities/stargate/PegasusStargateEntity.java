@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.block_entities.stargate;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -13,7 +12,6 @@ import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
 import net.povstalec.sgjourney.packets.ClientboundPegasusStargateUpdatePacket;
-import net.povstalec.sgjourney.sounds.PegasusStargateRingSound;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Stargate;
 
@@ -33,7 +31,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	@Override
     public void onLoad()
 	{
-        if(level.isClientSide)
+        if(level.isClientSide())
         	return;
         setPointOfOrigin(this.getLevel());
         setSymbols(this.getLevel());

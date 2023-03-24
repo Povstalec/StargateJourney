@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.peripherals;
+package net.povstalec.sgjourney.cctweaked.peripherals;
 
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;

@@ -216,7 +216,7 @@ public class EventInit
 				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 				
 				items.accept(BlockInit.BASIC_INTERFACE.get());
-				//items.accept(BlockInit.CRYSTAL_INTERFACE.get());
+				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
 
 				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				
@@ -230,6 +230,7 @@ public class EventInit
 	{
 		if(event.getTab() == CreativeModeTabs.OP_BLOCKS)
 		{
+			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
