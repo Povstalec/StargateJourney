@@ -180,10 +180,10 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
     // compile against the JEI API but do not include it at runtime
-    //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
-    //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
-    //runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
     
 	compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
 	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
@@ -193,10 +193,10 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:rftools-base-326041:4389811")
     //runtimeOnly fg.deobf("curse.maven:rftools-power-290209:4367297")
     
-    //runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
-    //runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
-    //runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
-    //runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
+    runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
+    runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
+    runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
+    runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

@@ -76,7 +76,7 @@ public class Universe extends SavedData
 	public void generateUniverseInfo(MinecraftServer server)
 	{
 		if(ServerStargateNetworkConfig.use_datapack_addresses.get())
-			registerSolarSystemsFromDatapacks(server);
+			registerSolarSystemsFromDataPacks(server);
 		if(ServerStargateNetworkConfig.generate_random_addresses.get())
 			generateAndRegisterSolarSystems(server);
 		addSolarSystemsToGalaxies(server);
@@ -94,7 +94,7 @@ public class Universe extends SavedData
 	//*********************************Registering Solar Systems**********************************
 	//============================================================================================
 	
-	private void registerSolarSystemsFromDatapacks(MinecraftServer server)
+	private void registerSolarSystemsFromDataPacks(MinecraftServer server)
 	{
 		final RegistryAccess registries = server.registryAccess();
 		final Registry<SolarSystem> solarSystemRegistry = registries.registryOrThrow(SolarSystem.REGISTRY_KEY);
@@ -140,7 +140,7 @@ public class Universe extends SavedData
 		final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
 		
 		Galaxy defaultGalaxy = galaxyRegistry.get(MILKY_WAY);
-		String defaultSymbols = defaultGalaxy.getDefaultSymbols().toString();
+		String defaultSymbols = defaultGalaxy.getDefaultSymbols().location().toString();
 		
 		//Creates a number from the dimension name that works as a seed
 		int dimensionValue = 0;

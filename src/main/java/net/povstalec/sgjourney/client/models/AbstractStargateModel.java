@@ -30,7 +30,8 @@ public abstract class AbstractStargateModel
 		if(symbol > 0)
 		{
 			String symbols = stargate.getSymbols();
-			if(symbolRegistry.containsKey(new ResourceLocation(symbols)))
+			
+			if(isLocationValid(symbols) && symbolRegistry.containsKey(new ResourceLocation(symbols)))
 				return symbolRegistry.get(new ResourceLocation(symbols)).texture(symbol - 1);
 			
 			else if(symbols.equals(EMPTY))
@@ -41,7 +42,8 @@ public abstract class AbstractStargateModel
 		else
 		{
 			String pointOfOrigin = stargate.getPointOfOrigin();
-			if(pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin)))
+			
+			if(isLocationValid(pointOfOrigin) && pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin)))
 				return pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).texture();
 			
 			else if(pointOfOrigin.equals(EMPTY))
@@ -49,6 +51,19 @@ public abstract class AbstractStargateModel
 			
 			return ERROR_LOCATION;
 		}
+	}
+	
+	private boolean isLocationValid(String location)
+	{
+		String[] split = location.split(":");
+		
+		if(split.length > 2)
+			return false;
+		
+		if(!ResourceLocation.isValidNamespace(split[0]))
+			return false;
+		
+		return ResourceLocation.isValidPath(split[1]);
 	}
 	
 	public AbstractStargateModel()

@@ -2,7 +2,7 @@
 	"parent": "minecraft:recipes/root",
 	"criteria":
 	{
-		"has_raw_naquadah_block":
+		"has_pure_naquadah":
 		{
 			"conditions":
 			{
@@ -11,7 +11,7 @@
 					{
 						"items":
 						[
-							"sgjourney:raw_naquadah_block"
+							"sgjourney:pure_naquadah"
 						]
 					}
 				]
@@ -30,7 +30,7 @@
 	"requirements":
 	[
 		[
-			"has_raw_naquadah_block",
+			"has_pure_naquadah",
 			"has_the_recipe"
 		]
 	],

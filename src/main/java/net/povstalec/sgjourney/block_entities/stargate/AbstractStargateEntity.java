@@ -345,6 +345,9 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		RegistryAccess registries = level.getServer().registryAccess();
 		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
+		if(!isLocationValid(pointOfOrigin))
+			return false;
+		
 		return pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin));
 	}
 	
@@ -359,7 +362,23 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		RegistryAccess registries = level.getServer().registryAccess();
 		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
+		if(!isLocationValid(symbols))
+			return false;
+		
 		return symbolRegistry.containsKey(new ResourceLocation(symbols));
+	}
+	
+	private boolean isLocationValid(String location)
+	{
+		String[] split = location.split(":");
+		
+		if(split.length > 2)
+			return false;
+		
+		if(!ResourceLocation.isValidNamespace(split[0]))
+			return false;
+		
+		return ResourceLocation.isValidPath(split[1]);
 	}
 	
 	//============================================================================================
