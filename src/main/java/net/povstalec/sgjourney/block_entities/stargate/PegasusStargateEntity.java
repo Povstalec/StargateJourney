@@ -11,6 +11,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
+import net.povstalec.sgjourney.misc.ArrayHelper;
 import net.povstalec.sgjourney.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Stargate;
@@ -82,7 +83,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(Addressing.addressContainsSymbol(addressBuffer, symbol))
 			return;
 		
-		addressBuffer = Addressing.growIntArray(addressBuffer, symbol);
+		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
 	}
 	
 	@Override

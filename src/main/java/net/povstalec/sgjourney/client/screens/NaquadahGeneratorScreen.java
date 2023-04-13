@@ -37,14 +37,11 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     @Override
     public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta)
     {
-		int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
-        
         renderBackground(pPoseStack);
         super.render(pPoseStack, mouseX, mouseY, delta);
         renderTooltip(pPoseStack, mouseX, mouseY);
         
-        this.energyTooltip(pPoseStack, x + 8, y + 62, mouseX, mouseY);
+        this.energyTooltip(pPoseStack, 8, 62, mouseX, mouseY);
     }
     
     @Override
@@ -73,8 +70,6 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
     {
     	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
-	    {
 	    	renderTooltip(matrixStack, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
-	    }
     }
 }

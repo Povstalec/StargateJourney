@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.config.ServerStargateNetworkConfig;
+import net.povstalec.sgjourney.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.init.GalaxyInit;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Galaxy;
@@ -75,9 +75,9 @@ public class Universe extends SavedData
 	
 	public void generateUniverseInfo(MinecraftServer server)
 	{
-		if(ServerStargateNetworkConfig.use_datapack_addresses.get())
+		if(CommonStargateNetworkConfig.use_datapack_addresses.get())
 			registerSolarSystemsFromDataPacks(server);
-		if(ServerStargateNetworkConfig.generate_random_addresses.get())
+		if(CommonStargateNetworkConfig.generate_random_addresses.get())
 			generateAndRegisterSolarSystems(server);
 		addSolarSystemsToGalaxies(server);
 		addGeneratedSolarSystemsToGalaxies(server);
@@ -142,31 +142,31 @@ public class Universe extends SavedData
 		Galaxy defaultGalaxy = galaxyRegistry.get(MILKY_WAY);
 		String defaultSymbols = defaultGalaxy.getDefaultSymbols().location().toString();
 		
-		//Creates a number from the dimension name that works as a seed
-		int dimensionValue = 0;
+		// Creates a number from the dimension name that works as a seed for the Solar System
+		long seed = CommonStargateNetworkConfig.random_addresses_from_seed.get() ? server.getWorldData().worldGenOptions().seed() : 0;
 		for(int i = 0; i < name.length(); i++)
 		{
-			dimensionValue = dimensionValue + Character.valueOf(name.charAt(i));
+			seed = seed + Character.valueOf(name.charAt(i));
 		}
 
-		Random random = new Random(dimensionValue);
+		Random random = new Random(seed);
 		
 		int prefixValue = random.nextInt(1, 100);
 		String prefix = prefixValue < 10 ? "P0" + prefixValue : "P" + prefixValue;
-		String systemID = prefix + "-" + dimensionValue;
+		String systemID = prefix + "-" + seed;
 		
 		String extragalacticAddress = "";
 		
 		for(int i = 0; true; i++)
 		{
-			dimensionValue += i;
-			extragalacticAddress = Addressing.addressIntArrayToString(Addressing.randomAddress(1, 7, 39, dimensionValue));// Added prefix 1 to indicate they're in Milky Way
+			seed += i;
+			extragalacticAddress = Addressing.addressIntArrayToString(Addressing.randomAddress(1, 7, 39, seed));// Added prefix 1 to indicate they're in Milky Way
 			
 			if(!getExtragalacticAddressInfo().contains(extragalacticAddress))
 				break;
 		}
 		
-		String pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(server, dimensionValue).location().toString();
+		String pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(server, seed).location().toString();
 		
 		List<ResourceKey<Level>> dimensions = List.of(dimension);
 		

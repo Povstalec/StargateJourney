@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.blocks.BasicInterfaceBlock;
@@ -19,6 +20,8 @@ import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.cctweaked.peripherals.BasicPeripheralHolder;
 import net.povstalec.sgjourney.init.BlockEntityInit;
+import net.povstalec.sgjourney.init.PacketHandlerInit;
+import net.povstalec.sgjourney.packets.ClientboundBasicInterfaceUpdatePacket;
 
 public class BasicInterfaceEntity extends EnergyBlockEntity
 {
@@ -83,9 +86,10 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 			return null;
 
 		BlockPos realPos = getBlockPos().relative(direction);
+		BlockState state = level.getBlockState(realPos);
 
 		if(level.getBlockState(realPos).getBlock() instanceof AbstractStargateRingBlock)
-			realPos = level.getBlockState(realPos).getValue(AbstractStargateRingBlock.PART).getMainBlockPos(realPos, level.getBlockState(realPos).getValue(AbstractStargateRingBlock.FACING));
+			realPos = state.getValue(AbstractStargateRingBlock.PART).getMainBlockPos(realPos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
 
 		return level.getBlockEntity(realPos) instanceof EnergyBlockEntity energyBlockEntity ? energyBlockEntity : null;
 	}
@@ -165,12 +169,16 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		
 		if(basicInterface.energyBlockEntity != null)
 		{
-			
 			basicInterface.outputEnergy(basicInterface.getDirection());
 			
 			if(basicInterface.energyBlockEntity instanceof MilkyWayStargateEntity stargate)
 				basicInterface.rotateStargate(stargate);
 		}
+		
+		if(level.isClientSide())
+			return;
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(basicInterface.worldPosition)), 
+				new ClientboundBasicInterfaceUpdatePacket(basicInterface.worldPosition, basicInterface.getEnergyStored()));
 			
 	}
 	

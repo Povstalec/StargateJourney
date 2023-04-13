@@ -7,13 +7,16 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.config.ClientStargateConfig;
+import net.povstalec.sgjourney.misc.Orientation;
 import net.povstalec.sgjourney.client.models.PegasusStargateModel;
 
 @OnlyIn(Dist.CLIENT)
@@ -43,9 +46,17 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
 	{
 		BlockState blockstate = stargate.getBlockState();
 		float facing = blockstate.getValue(PegasusStargateBlock.FACING).toYRot();
+		Vec3 center = stargate.getRelativeCenter();
+		Orientation orientation = blockstate.getValue(AbstractStargateBlock.ORIENTATION);
+		
         stack.pushPose();
-		stack.translate(0.5D, 3.5D, 0.5D);
+		stack.translate(center.x(), center.y(), center.z());
         stack.mulPose(Axis.YP.rotationDegrees(-facing));
+        
+        if(orientation == Orientation.UPWARD)
+            stack.mulPose(Axis.XP.rotationDegrees(-90));
+        else if(orientation == Orientation.DOWNWARD)
+            stack.mulPose(Axis.XP.rotationDegrees(90));
         
         this.stargateModel.setCurrentSymbol(stargate.currentSymbol);
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);

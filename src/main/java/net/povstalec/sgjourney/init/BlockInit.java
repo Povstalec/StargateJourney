@@ -22,20 +22,20 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.blocks.ArcheologyTableBlock;
 import net.povstalec.sgjourney.blocks.BasicInterfaceBlock;
-import net.povstalec.sgjourney.blocks.ClassicDHDBlock;
 import net.povstalec.sgjourney.blocks.ExplosiveBlock;
 import net.povstalec.sgjourney.blocks.ATAGeneDetectorBlock;
-import net.povstalec.sgjourney.blocks.AbstractDHDBlock;
 import net.povstalec.sgjourney.blocks.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.blocks.FirePitBlock;
 import net.povstalec.sgjourney.blocks.GoldenIdolBlock;
-import net.povstalec.sgjourney.blocks.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.blocks.NaquadahGeneratorBlock;
-import net.povstalec.sgjourney.blocks.PegasusDHDBlock;
 import net.povstalec.sgjourney.blocks.RingPanelBlock;
 import net.povstalec.sgjourney.blocks.SecretSwitchBlock;
 import net.povstalec.sgjourney.blocks.TransportRingsBlock;
 import net.povstalec.sgjourney.blocks.ZPMHubBlock;
+import net.povstalec.sgjourney.blocks.dhd.AbstractDHDBlock;
+import net.povstalec.sgjourney.blocks.dhd.ClassicDHDBlock;
+import net.povstalec.sgjourney.blocks.dhd.MilkyWayDHDBlock;
+import net.povstalec.sgjourney.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.blocks.stargate.ClassicStargateBlock;
 import net.povstalec.sgjourney.blocks.stargate.ClassicStargateRingBlock;
 import net.povstalec.sgjourney.blocks.stargate.MilkyWayStargateBlock;
@@ -48,6 +48,7 @@ import net.povstalec.sgjourney.blocks.symbols.SandstoneCartoucheBlock;
 import net.povstalec.sgjourney.blocks.symbols.SandstoneSymbolBlock;
 import net.povstalec.sgjourney.blocks.symbols.StoneCartoucheBlock;
 import net.povstalec.sgjourney.blocks.symbols.StoneSymbolBlock;
+import net.povstalec.sgjourney.items.DHDItem;
 import net.povstalec.sgjourney.items.SGJourneyBlockItem;
 
 //A class for initializing blocks
@@ -82,16 +83,16 @@ public class BlockInit
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	
-	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerBlock("milky_way_dhd", 
+	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd", 
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
-					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC, 1);
-	public static final RegistryObject<AbstractDHDBlock> PEGASUS_DHD = registerBlock("pegasus_dhd", 
+					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
+	public static final RegistryObject<AbstractDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd", 
 			() -> new PegasusDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
-					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC, 1);
+					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	
-	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerBlock("classic_dhd", 
+	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd", 
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL).noOcclusion()), 1);
+					.sound(SoundType.METAL).noOcclusion()), Rarity.COMMON);
 	
 	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerEntityBlock("transport_rings", 
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
@@ -201,6 +202,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>RegistryObject<T> registerDHDBlock(String name, Supplier<T> block, Rarity rarity)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+
+		registerDHDItem(name, toReturn, rarity, 1);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<T> registerEntityBlock(String name, Supplier<T> block)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -233,6 +243,11 @@ public class BlockInit
 	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, int stacksTo)
 	{
 		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+	}
+	
+	private static <T extends Block>RegistryObject<Item> registerDHDItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
+	{
+		return ItemInit.ITEMS.register(name, () -> new DHDItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo)));
 	}
 	
 	public static void register(IEventBus eventBus)

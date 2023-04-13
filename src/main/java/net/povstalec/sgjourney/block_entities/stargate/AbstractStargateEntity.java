@@ -19,21 +19,26 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
+import net.povstalec.sgjourney.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
-import net.povstalec.sgjourney.config.ServerStargateConfig;
+import net.povstalec.sgjourney.config.CommonStargateConfig;
 import net.povstalec.sgjourney.data.BlockEntityList;
 import net.povstalec.sgjourney.data.StargateNetwork;
 import net.povstalec.sgjourney.data.Universe;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
+import net.povstalec.sgjourney.misc.ArrayHelper;
+import net.povstalec.sgjourney.misc.Orientation;
 import net.povstalec.sgjourney.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Dialing;
@@ -45,16 +50,14 @@ import net.povstalec.sgjourney.stargate.Wormhole;
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
 	// Basic Info
-	private static final int maxGateOpenTime = ServerStargateConfig.max_wormhole_open_time.get() * 20;
-	private static final boolean END_CONNECTION_FROM_BOTH_ENDS = ServerStargateConfig.end_connection_from_both_ends.get();
+	private static final int MAX_WORMHOLE_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
+	private static final boolean END_CONNECTION_FROM_BOTH_ENDS = CommonStargateConfig.end_connection_from_both_ends.get();
 	private static Stargate.Gen generation;
 	
 	// Used during gameplay
 	private int tick = 0;
 	private boolean isPrimaryChevronEngaged = false;
 	private boolean dialingOut = false;
-	private boolean hasDHD = false;
-	//private int openTime = 0;
 	private int timesOpened = 0;
 	protected String pointOfOrigin = EMPTY;
 	protected String symbols = EMPTY;
@@ -62,6 +65,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	// Dialing and memory
 	private int[] address = new int[0];
 	private String connectionID = EMPTY;
+	private Wormhole wormhole = new Wormhole();
+
+	private boolean hasDHD = false;
+	private boolean advancedProtocolsEnabled = false;
+	private int timeSinceLastTraveler = 0;
 	
 	//private Stargate.FilterType filter = Stargate.FilterType.NONE;
 	//private ListTag whitelist;
@@ -83,6 +91,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		address = nbt.getIntArray("Address");
 		
 		connectionID = nbt.getString("ConnectionID");
+		advancedProtocolsEnabled = nbt.getBoolean("AdvancedProtocolsEnabled");
 	}
 	
 	@Override
@@ -94,6 +103,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		nbt.putIntArray("Address", address);
 		
 		nbt.putString("ConnectionID", connectionID);
+		nbt.putBoolean("AdvancedProtocolsEnabled", advancedProtocolsEnabled);
 		super.saveAdditional(nbt);
 	}
 	
@@ -139,7 +149,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	@Override
 	public AABB getRenderBoundingBox()
     {
-        return new AABB((this.worldPosition.getX() - 3), (this.worldPosition.getY()), (this.worldPosition.getZ() - 3), (this.worldPosition.getX() + 4), (this.worldPosition.getY() + 9), (this.worldPosition.getZ() + 4));
+        return new AABB(getCenterPos().getX() - 3, getCenterPos().getY() - 3, getCenterPos().getZ() - 3, getCenterPos().getX() + 4, getCenterPos().getY() + 4, getCenterPos().getZ() + 4);
     }
 	
 	//============================================================================================
@@ -265,6 +275,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.isPrimaryChevronEngaged = false;
 		this.dialingOut = false;
 		this.connectionID = EMPTY;
+		this.timeSinceLastTraveler = 0;
 		
 		if(causedByFailure)
 			level.playSound((Player)null, worldPosition, failSound(), SoundSource.BLOCKS, 0.25F, 1F);
@@ -319,7 +330,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	protected void growAddress(int symbol)
 	{
-		this.address = Addressing.growIntArray(this.address, symbol);
+		this.address = ArrayHelper.growIntArray(this.address, symbol);
 	}
 	
 	protected void resetAddress()
@@ -387,7 +398,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 
 	public int getMaxGateOpenTime()
 	{
-		return maxGateOpenTime;
+		return MAX_WORMHOLE_OPEN_TIME;
 	}
 	
 	public Stargate.Gen getGeneration()
@@ -421,11 +432,12 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.dialingOut;
 	}
 	
-	public void setDHD(boolean hasDHD)
+	public void setDHD(boolean hasDHD, boolean enableAdvancedProtocols)
 	{
 		if(this.hasDHD != hasDHD)
 			updateStargate(this.level, this.getID(), this.timesOpened, hasDHD);
 		
+		this.advancedProtocolsEnabled = hasDHD ? enableAdvancedProtocols : false;
 		this.hasDHD = hasDHD;
 	}
 	
@@ -439,6 +451,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(this.level.isClientSide())
 			return 0;
 		return StargateNetwork.get(this.level).getOpenTime(this.connectionID);
+	}
+	
+	public int getTimeSinceLastTraveler()
+	{
+		return this.timeSinceLastTraveler;
 	}
 	
 	public int getTimesOpened()
@@ -491,13 +508,50 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.isPrimaryChevronEngaged;
 	}
 	
+	public BlockPos getCenterPos()
+	{
+    	BlockPos mainBlockPos = this.getBlockPos();
+    	Direction centerDirection = Orientation.getCenterDirection(getDirection(), getOrientation());
+    	
+    	return mainBlockPos.relative(centerDirection, 3);
+	}
+    
+    public Vec3 getRelativeCenter()
+    {
+    	BlockPos mainBlockPos = this.getBlockPos();
+    	BlockPos centerPos = getCenterPos();
+    	
+    	double y = 0.5;
+    	Orientation orientation = getOrientation();
+    	
+    	if(orientation != null && orientation != Orientation.REGULAR)
+    		y = 0.28125;
+    	
+    	return new Vec3(
+    			centerPos.getX() - mainBlockPos.getX() + 0.5, 
+    			centerPos.getY() - mainBlockPos.getY() + y, 
+    			centerPos.getZ() - mainBlockPos.getZ() + 0.5);
+    }
+	
+	public Orientation getOrientation()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof AbstractStargateBlock)
+			return gateState.getValue(AbstractStargateBlock.ORIENTATION);
+
+		StargateJourney.LOGGER.info("Couldn't find Stargate Orientation");
+		return null;
+	}
+	
 	public Direction getDirection()
 	{
 		BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = this.level.getBlockState(gatePos);
 		
 		if(gateState.getBlock() instanceof AbstractStargateBlock)
-			return this.level.getBlockState(gatePos).getValue(AbstractStargateBlock.FACING);
+			return gateState.getValue(AbstractStargateBlock.FACING);
 
 		StargateJourney.LOGGER.info("Couldn't find Stargate Direction");
 		return null;
@@ -530,14 +584,14 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public boolean isObstructed()
 	{
 		Direction direction = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
-		BlockPos centerPos = this.worldPosition.above(3);
+		BlockPos centerPos = getCenterPos();
 		int obstructingBlocks = 0;
 		
 		for(int width = -2; width <= 2; width++)
 		{
 			for(int height = -2; height <= 2; height++)
 			{
-				BlockPos pos = centerPos.relative(direction, width).relative(Direction.UP, height);
+				BlockPos pos = centerPos.relative(direction, width).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), height);
 				BlockState state = level.getBlockState(pos);
 				
 				if((!state.getMaterial().isReplaceable() && !(state.getBlock() instanceof AbstractStargateRingBlock)) || state.getMaterial() == Material.LAVA)
@@ -566,9 +620,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		super.getStatus(player);
 		player.sendSystemMessage(Component.literal("Point of Origin: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));
-		player.sendSystemMessage(Component.literal("Open Time: " + getOpenTime() + "/" + maxGateOpenTime).withStyle(ChatFormatting.DARK_AQUA));
+		player.sendSystemMessage(Component.literal("Open Time: " + getOpenTime() + "/" + getMaxGateOpenTime()).withStyle(ChatFormatting.DARK_AQUA));
 		player.sendSystemMessage(Component.literal("Times Opened: " + timesOpened).withStyle(ChatFormatting.BLUE));
 		player.sendSystemMessage(Component.literal("Connected to DHD: " + hasDHD).withStyle(ChatFormatting.GOLD));
+		player.sendSystemMessage(Component.literal("Advanced Protocols Enabled: " + advancedProtocolsEnabled).withStyle(ChatFormatting.RED));
+		player.sendSystemMessage(Component.literal("Time Since Last Traveler: " + timeSinceLastTraveler).withStyle(ChatFormatting.DARK_PURPLE));
 	}
 	
 	@Override
@@ -599,31 +655,19 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//******************************************Ticking*******************************************
 	//============================================================================================
 	
-	public void wormhole()
+	public void wormhole(AbstractStargateEntity targetStargate, boolean canWormhole)
 	{
-		/*if(!level.isClientSide() && !(getTargetStargate() instanceof AbstractStargateEntity))
-		{
-			StargateJourney.LOGGER.info("Stargate is not present");
-			disconnectStargate();
-		}*/
+		this.timeSinceLastTraveler++;
 		
-		if(isDialingOut())
+		if(isConnected())
 		{
-			double x = 0;
-			double z = 0;
-			
-			if(getDirection().getAxis() == Direction.Axis.X)
-				z = 2.5;
-			else
-				x = 2.5;
-			
-			AABB localBox = new AABB((worldPosition.getX() + 0.5 + x), (worldPosition.getY() + 1), (worldPosition.getZ() + 0.5 + z), 
-									(worldPosition.getX() + 0.5 - x), (worldPosition.getY() + 5), (worldPosition.getZ() + 0.5 - z));
-
-			List<Entity> localEntities = level.getEntitiesOfClass(Entity.class, localBox);
-			if(!localEntities.isEmpty())
-	    		localEntities.stream().forEach((traveler) -> Wormhole.doWormhole(this.connectionID, traveler));
+			if(wormhole.findCandidates(level, getCenterPos(), getDirection()))
+	    		this.timeSinceLastTraveler = 0;
+			wormhole.wormholeEntities(this, targetStargate, canWormhole);
 		}
+		
+		if(isDialingOut() && this.advancedProtocolsEnabled && this.timeSinceLastTraveler >= 200)
+			disconnectStargate();
 		
 		if(level.isClientSide())
 			return;
@@ -633,7 +677,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)
     {
-		stargate.tick++;
+		stargate.increaseTickCount();
 		
 		if(level.isClientSide())
 			return;

@@ -28,6 +28,9 @@
 	"block.sgjourney.pegasus_dhd": "Ovl\u00e1dac\u00ed panel",
 	"block.sgjourney.classic_dhd": "Ovl\u00e1dac\u00ed panel",
 	
+	"block.sgjourney.stargate.not_enough_space": "Hv\u011bzdn\u00e1 br\u00e1na nem\u00e1 dost m\u00edsta",
+	"block.sgjourney.stargate.one_way_wormhole": "Nen\u00ed mo\u017en\u00e9 proj\u00edt \u010derv\u00ed d\u00edrou t\u00edmto sm\u011brem",
+	
 	"block.sgjourney.transport_rings": "Transportn\u00ed kruhy",
 	"block.sgjourney.ring_panel": "Ovl\u00e1d\u00e1n\u00ed kruh\u016f",
 	
@@ -36,7 +39,7 @@
 	
 	"block.sgjourney.basic_interface": "Z\u00e1kladn\u00ed rozhran\u00ed",
 	"block.sgjourney.crystal_interface": "Krystalov\u00e9 rozhran\u00ed",
-	"block.sgjourney.advanced_crystal_interface": "Pokročil\u00e9 krystalov\u00e9 rozhran\u00ed",
+	"block.sgjourney.advanced_crystal_interface": "Pokro\u010dil\u00e9 krystalov\u00e9 rozhran\u00ed",
 	
 	"block.sgjourney.ancient_gene_detector": "Detektor antick\u00e9ho genu",
 	
@@ -50,6 +53,8 @@
 	"item.sgjourney.liquid_naquadah_bucket": "Kbel\u00edk tekut\u00e9ho naquadahu",
 	"item.sgjourney.liquid_naquadah_bottle": "Lahvi\u010dka tekut\u00e9ho naquadahu",
 
+	"item.sgjourney.control_crystal": "Ovl\u00e1dac\u00ed krystal",
+	"item.sgjourney.large_control_crystal": "Velk\u00fd ovl\u00e1dac\u00ed krystal",
 	"item.sgjourney.transportation_crystal": "Transporta\u010dn\u00ed krystal",
 	"item.sgjourney.energy_crystal": "Energetick\u00fd krystal",
 	"item.sgjourney.communication_crystal": "Komunika\u010dn\u00ed krystal",
@@ -95,8 +100,11 @@
 	"itemGroup.stargate_items": "Hv\u011bzdn\u00e1 br\u00e1na - P\u0159edm\u011bty",
 
 	"screen.sgjourney.archeology_table": "Arheologick\u00fd st\u016fl",
+	"screen.sgjourney.basic_interface": "Z\u00e1kladn\u00ed rozhran\u00ed",
+	"screen.sgjourney.crystal_interface": "Krystalov\u00e9 rozhran\u00ed",
 	"screen.sgjourney.transport_rings": "Transportn\u00ed kruhy",
 	"screen.sgjourney.naquadah_generator": "Naquadahov\u00fd Gener\u00e1tor",
+	"screen.sgjourney.dhd": "DHD",
 	"screen.sgjourney.zpm_hub": "ZPM Hub",
 	
 	"biome.sgjourney.abydos_desert": "Abydosk\u00e1 pou\u0161\u0165",

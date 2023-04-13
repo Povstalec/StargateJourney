@@ -18,23 +18,23 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.config.ServerStargateConfig;
+import net.povstalec.sgjourney.config.CommonStargateConfig;
 import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.stargate.Dialing;
 
 public class StargateNetwork extends SavedData
 {
-	private static final long systemWideConnectionCost = ServerStargateConfig.system_wide_connection_energy_cost.get();
-	private static final long interstellarConnectionCost = ServerStargateConfig.interstellar_connection_energy_cost.get();
-	private static final long intergalacticConnectionCost = ServerStargateConfig.intergalactic_connection_energy_cost.get();
+	private static final long systemWideConnectionCost = CommonStargateConfig.system_wide_connection_energy_cost.get();
+	private static final long interstellarConnectionCost = CommonStargateConfig.interstellar_connection_energy_cost.get();
+	private static final long intergalacticConnectionCost = CommonStargateConfig.intergalactic_connection_energy_cost.get();
 
-	private static final long systemWideConnectionDraw = ServerStargateConfig.system_wide_connection_energy_draw.get();
-	private static final long interstellarConnectionDraw = ServerStargateConfig.interstellar_connection_energy_draw.get();
-	private static final long intergalacticConnectionDraw = ServerStargateConfig.intergalactic_connection_energy_draw.get();
+	private static final long systemWideConnectionDraw = CommonStargateConfig.system_wide_connection_energy_draw.get();
+	private static final long interstellarConnectionDraw = CommonStargateConfig.interstellar_connection_energy_draw.get();
+	private static final long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
 	
-	private static final int maxOpenTime = ServerStargateConfig.max_wormhole_open_time.get() * 20;
-	private static final boolean energyBypassEnabled = ServerStargateConfig.enable_energy_bypass.get();
-	private static final int energyBypassMultiplier = ServerStargateConfig.energy_bypass_multiplier.get();
+	private static final int maxOpenTime = CommonStargateConfig.max_wormhole_open_time.get() * 20;
+	private static final boolean energyBypassEnabled = CommonStargateConfig.enable_energy_bypass.get();
+	private static final int energyBypassMultiplier = CommonStargateConfig.energy_bypass_multiplier.get();
 
 	private static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -253,7 +253,7 @@ public class StargateNetwork extends SavedData
 			boolean hasDHD = solarSystem.getCompound(stargateID).getBoolean(HAS_DHD);
 			int generation = solarSystem.getCompound(stargateID).getInt(GENERATION);
 			int timesOpened = solarSystem.getCompound(stargateID).getInt(TIMES_OPENED);
-			System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
+			//System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
 			
 			if(Boolean.compare(hasDHD, bestDHD) > 0)
 			{
@@ -284,7 +284,7 @@ public class StargateNetwork extends SavedData
 			}
 		}
 
-		System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
+		//System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
 		return preferredStargate;
 	}
 	
@@ -335,8 +335,8 @@ public class StargateNetwork extends SavedData
 				dialingStargate.depleteEnergy(energyDraw, false);
 		}
 		
-		dialingStargate.wormhole();
-		dialedStargate.wormhole();
+		dialingStargate.wormhole(dialedStargate, true);
+		dialedStargate.wormhole(dialingStargate, CommonStargateConfig.two_way_wormholes.get());
 	}
 	
 	private long drawEnergy(String uuid, boolean exceededConnectionTime)

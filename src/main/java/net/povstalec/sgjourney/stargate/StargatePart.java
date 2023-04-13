@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.stargate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.misc.Orientation;
 
 public enum StargatePart implements StringRepresentable
 {
@@ -63,18 +65,27 @@ public enum StargatePart implements StringRepresentable
 		return this.name;
 	}
 	
-	public BlockPos getMainBlockPos(BlockPos pos, Direction direction)
+	public BlockPos getMainBlockPos(BlockPos pos, Direction direction, Orientation orientation)
 	{
 		Direction newDirection = direction.getCounterClockWise();
+		Direction centerDirection = Orientation.getCenterDirection(direction, orientation);
 		
-		return pos.relative(newDirection, this.width).below(this.height);
+		return pos.relative(newDirection, this.width).relative(centerDirection, -this.height);
 	}
 	
-	public BlockPos getRingPos(BlockPos pos, Direction direction)
+	public BlockPos getRingPos(BlockPos pos, Direction direction, Orientation orientation)
 	{
 		Direction newDirection = direction.getClockWise();
+		Direction centerDirection = Orientation.getCenterDirection(direction, orientation);
 		
-		return pos.relative(newDirection, this.width).above(this.height);
+		return pos.relative(newDirection, this.width).relative(centerDirection, this.height);
+	}
+	
+	public Vec3 getRelativeRingPos(BlockPos pos, Direction direction, Orientation orientation)
+	{
+		BlockPos ringPos = getRingPos(pos, direction, orientation);
+		
+		return new Vec3(ringPos.getX() - pos.getX(), ringPos.getY() - pos.getY(), ringPos.getZ() - pos.getZ());
 	}
 
 }

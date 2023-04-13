@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.config.ServerZPMConfig;
+import net.povstalec.sgjourney.config.CommonZPMConfig;
 
 public class ZeroPointModule extends Item
 {
@@ -32,7 +32,6 @@ public class ZeroPointModule extends Item
 	private static final String ENERGY = "Energy";
 	
 	public static final int maxEntropy = 1000;
-	public static final long maxEnergy = ServerZPMConfig.zpm_energy_per_level_of_entropy.get();
 	
 	public ZeroPointModule(Properties properties)
 	{
@@ -43,7 +42,7 @@ public class ZeroPointModule extends Item
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		int entropy = 0;
-		long remainingEnergy = maxEnergy;
+		long remainingEnergy = getMaxEnergy();
 		
 		CompoundTag tag = stack.getOrCreateTag();
 		
@@ -69,7 +68,7 @@ public class ZeroPointModule extends Item
 		CompoundTag tag = stack.getOrCreateTag();
 		
 		if(!tag.contains(ENERGY))
-			tag.putLong(ENERGY, maxEnergy);
+			tag.putLong(ENERGY, getMaxEnergy());
 		
 		long remainingEnergy = tag.getLong(ENERGY);
 		
@@ -77,7 +76,7 @@ public class ZeroPointModule extends Item
 		
 		if(remainingEnergy <= 0)
 		{
-			remainingEnergy += maxEnergy;
+			remainingEnergy += getMaxEnergy();
 			increaseEntropy(stack);
 		}
 
@@ -116,6 +115,11 @@ public class ZeroPointModule extends Item
 			stack.setTag(tag);
 			return true;
 		}
+	}
+	
+	public static long getMaxEnergy()
+	{
+		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	}
 	
 	public static boolean isNearingEntropy(ItemStack stack)

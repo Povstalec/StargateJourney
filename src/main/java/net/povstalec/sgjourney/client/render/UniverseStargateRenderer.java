@@ -7,14 +7,17 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.UniverseStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.config.ClientStargateConfig;
+import net.povstalec.sgjourney.misc.Orientation;
 
 @OnlyIn(Dist.CLIENT)
 public class UniverseStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<UniverseStargateEntity>
@@ -44,17 +47,21 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
 	{
 		BlockState blockstate = stargate.getBlockState();
 		float facing = blockstate.getValue(UniverseStargateBlock.FACING).toYRot();
+		Vec3 center = stargate.getRelativeCenter();
+		Orientation orientation = blockstate.getValue(AbstractStargateBlock.ORIENTATION);
+		
         stack.pushPose();
-		stack.translate(0.5D, 3.5D, 0.5D);
+		stack.translate(center.x(), center.y(), center.z());
         stack.mulPose(Axis.YP.rotationDegrees(-facing));
         
-        stack.mulPose(Axis.ZP.rotationDegrees(stargate.getRotation(partialTick)));
+        if(orientation == Orientation.UPWARD)
+            stack.mulPose(Axis.XP.rotationDegrees(-90));
+        else if(orientation == Orientation.DOWNWARD)
+            stack.mulPose(Axis.XP.rotationDegrees(90));
+        
+        this.stargateModel.setRotation(stargate.getRotation(partialTick));
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
-        stack.popPose();
         
-        stack.pushPose();
-        stack.translate(0.5D, 3.5D, 0.5D);
-        stack.mulPose(Axis.YP.rotationDegrees(-facing));
         if(stargate.isConnected())
         	this.wormholeModel.renderEventHorizon(stack, source, combinedLight, combinedOverlay, stargate.getTickCount());
 	    stack.popPose();

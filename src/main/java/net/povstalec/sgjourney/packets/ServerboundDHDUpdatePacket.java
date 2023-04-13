@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
-import net.povstalec.sgjourney.block_entities.AbstractDHDEntity;
+import net.povstalec.sgjourney.block_entities.dhd.AbstractDHDEntity;
 
 public class ServerboundDHDUpdatePacket
 {

@@ -19,6 +19,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.misc.AncientTech;
@@ -37,13 +38,14 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		Level level = context.getLevel();
 		Player player = context.getPlayer();
 		BlockPos blockpos = context.getClickedPos();
-		Block block = level.getBlockState(blockpos).getBlock();
+		BlockState state = level.getBlockState(blockpos);
+		Block block = state.getBlock();
 		
 		if(!level.isClientSide())
 			player.sendSystemMessage(Component.translatable(block.getDescriptionId()).withStyle(ChatFormatting.GRAY));
 		
-		if(level.getBlockState(blockpos).getBlock() instanceof AbstractStargateRingBlock)
-			blockpos = level.getBlockState(blockpos).getValue(AbstractStargateRingBlock.PART).getMainBlockPos(blockpos, level.getBlockState(blockpos).getValue(AbstractStargateRingBlock.FACING));
+		if(block instanceof AbstractStargateRingBlock)
+			blockpos = state.getValue(AbstractStargateRingBlock.PART).getMainBlockPos(blockpos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
 		
 		if(level.getBlockEntity(blockpos) instanceof EnergyBlockEntity blockEntity)
 			blockEntity.getStatus(player);

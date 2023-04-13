@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.povstalec.sgjourney.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.block_entities.energy_gen.NaquadahGeneratorEntity;
@@ -22,6 +23,16 @@ public class ClientAccess
         if (blockEntity instanceof final SymbolBlockEntity symbolEntity)
         {
         	symbolEntity.symbol = symbol;
+        }
+    }
+    
+    public static void updateBasicInterface(BlockPos pos, long energy)
+    {
+    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+        
+        if (blockEntity instanceof final BasicInterfaceEntity basicInterface)
+        {
+        	basicInterface.setEnergy(energy);
         }
     }
     

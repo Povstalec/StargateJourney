@@ -29,6 +29,8 @@ public class UniverseStargateModel extends AbstractStargateModel
 	private final ModelPart chevrons;
 	
 	private static final int symbolCount = 36;
+	private static final double angle = (float) 360 / 54;
+	private float rotation = 0.0F;
 	
 	public UniverseStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
 	{
@@ -55,12 +57,25 @@ public class UniverseStargateModel extends AbstractStargateModel
 	{
 		VertexConsumer symbolRingTexture = source.getBuffer(RenderType.entitySolid(SYMBOL_RING_TEXTURE));
 		
+		this.ring.setRotation(0.0F, 0.0F, (float) Math.toRadians(this.rotation));
+		for(int i = 0; i < 9; i++)
+		{
+			this.getUnderChevronLeft(i).setRotation(0.0F, 0.0F, (float) Math.toRadians(180 - (angle / 2) - (40 * i) + this.rotation));
+			this.getUnderChevronRight(i).setRotation(0.0F, 0.0F, (float) Math.toRadians(180 + (angle / 2) - (40 * i) + this.rotation));
+		}
 		for(int i = 0; i < 9; i++)
 		{
 			this.getUnderChevronLeft(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
 			this.getUnderChevronRight(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
 		}
-		
+
+		for(int i = 0; i < 9; i++)
+		{
+			for(int j = 0; j < 4; j++)
+			{
+				this.getSymbol(i * 4 + j).setRotation(0.0F, 0.0F, (float) Math.toRadians(180 - 3 * (angle / 2) - i * 40 - (angle * j) + this.rotation));
+			}
+		}
 		for(int i = 0; i < symbolCount; i++)
 		{
 			this.getSymbol(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
@@ -80,6 +95,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 	    	this.getSymbol(0).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, 0))), 255, combinedOverlay);
 
 		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
+		this.dividers.setRotation(0.0F, 0.0F, (float) Math.toRadians(this.rotation));
 		this.dividers.render(stack, ringTexture, combinedLight, combinedOverlay);
 	}
 	
@@ -101,6 +117,8 @@ public class UniverseStargateModel extends AbstractStargateModel
 			int combinedLight, int combinedOverlay, int chevronNumber)
 	{
 		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
+
+		this.getChevron(chevronNumber).setRotation(0.0F, 0.0F, (float) Math.toRadians(-40 * chevronNumber + this.rotation));
 		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
 		if(stargate.isConnected() || stargate.addressBuffer.length > 0)
@@ -108,6 +126,11 @@ public class UniverseStargateModel extends AbstractStargateModel
 			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
 			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
 		}
+	}
+	
+	public void setRotation(float rotation)
+	{
+		this.rotation = rotation;
 	}
 	
 	//============================================================================================
@@ -144,8 +167,6 @@ public class UniverseStargateModel extends AbstractStargateModel
 	
 	public static void createBackRing(PartDefinition backRing)
 	{
-		double angle = (float) 360 / 54;
-		
 		for(int i = 0; i < 54; i++)
 		{
 			backRing.addOrReplaceChild("back_ring_" + i, CubeListBuilder.create()
@@ -178,8 +199,6 @@ public class UniverseStargateModel extends AbstractStargateModel
 	
 	public static void createSymbolRing(PartDefinition symbolRing)
 	{
-		double angle = (float) 360 / 54;
-		
 		for(int i = 0; i < 9; i++)
 		{
 			symbolRing.addOrReplaceChild("under_chevron_left_" + i, CubeListBuilder.create()
@@ -235,7 +254,6 @@ public class UniverseStargateModel extends AbstractStargateModel
 	
 	public static void createDividers(PartDefinition dividers)
 	{
-		double angle = (double) 360 / 54;
 		for(int i = 0; i < 54; i++)
 		{
 			if(i % 6 == 0)

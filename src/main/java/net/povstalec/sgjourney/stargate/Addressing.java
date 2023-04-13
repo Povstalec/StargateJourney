@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import net.povstalec.sgjourney.misc.ArrayHelper;
+
 public class Addressing
 {
 	public static int[] randomAddress(int size, int limit, long seed)
@@ -55,20 +57,6 @@ public class Addressing
 		return address;
 	}
 	
-	public static int[] growIntArray(int[] array, int x)
-	{
-		int[] newarray = new int[array.length + 1];
-		
-		for (int i = 0; i < array.length; i++)
-		{
-			newarray[i] = array[i];
-		}
-		
-		newarray[array.length] = x;
-		
-		return newarray;
-	}
-	
 	public static int[] addressStringToIntArray(String addressString)
 	{
 		String[] stringArray = addressString.split("-");
@@ -77,7 +65,7 @@ public class Addressing
 		for(int i = 1; i < stringArray.length; i++)
 		{
 			int number = Character.getNumericValue(stringArray[i].charAt(0));
-			intArray = growIntArray(intArray, number);
+			intArray = ArrayHelper.growIntArray(intArray, number);
 		}
 		
 		return intArray;

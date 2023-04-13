@@ -12,32 +12,40 @@ import net.povstalec.sgjourney.StargateJourney;
 @Mod.EventBusSubscriber
 public class StargateJourneyConfig
 {
-	private static final ForgeConfigSpec.Builder server_builder = new ForgeConfigSpec.Builder();
-	public static final ForgeConfigSpec server_config;
+	private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
+	public static final ForgeConfigSpec COMMON_CONFIG;
 	
-	private static final ForgeConfigSpec.Builder client_builder = new ForgeConfigSpec.Builder();
-	public static final ForgeConfigSpec client_config;
+	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+	public static final ForgeConfigSpec CLIENT_CONFIG;
 	
 	public static ForgeConfigSpec.BooleanValue disable_energy_use;
 	public static ForgeConfigSpec.BooleanValue disable_smooth_animations;
 	
 	static
 	{
-		generalServerConfig(server_builder);
-		generalClientConfig(client_builder);
+		COMMON_BUILDER.push("Stargate Journey Common Config");
 		
-		ServerZPMConfig.init(server_builder);
-		ServerInterfaceConfig.init(server_builder);
-		ServerStargateConfig.init(server_builder);
-		ServerNaquadahGeneratorConfig.init(server_builder);
-		ServerStargateNetworkConfig.init(server_builder);
-		ServerTechConfig.init(server_builder);
-		ServerGeneticConfig.init(server_builder);
+		generalServerConfig(COMMON_BUILDER);
+		CommonZPMConfig.init(COMMON_BUILDER);
+		CommonInterfaceConfig.init(COMMON_BUILDER);
+		CommonStargateConfig.init(COMMON_BUILDER);
+		CommonNaquadahGeneratorConfig.init(COMMON_BUILDER);
+		CommonStargateNetworkConfig.init(COMMON_BUILDER);
+		CommonTechConfig.init(COMMON_BUILDER);
+		CommonGeneticConfig.init(COMMON_BUILDER);
 		
-		ClientStargateConfig.init(client_builder);
+		COMMON_BUILDER.pop();
+		COMMON_CONFIG = COMMON_BUILDER.build();
 		
-		server_config = server_builder.build();
-		client_config = client_builder.build();
+		
+
+		CLIENT_BUILDER.push("Stargate Journey Client Config");
+		
+		generalClientConfig(CLIENT_BUILDER);
+		ClientStargateConfig.init(CLIENT_BUILDER);
+
+		CLIENT_BUILDER.pop();
+		CLIENT_CONFIG = CLIENT_BUILDER.build();
 	}
 	
 	public static void loadConfig(ForgeConfigSpec config, String path)

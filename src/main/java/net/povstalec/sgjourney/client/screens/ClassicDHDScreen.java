@@ -7,7 +7,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.DHDBigButton;
 import net.povstalec.sgjourney.menu.AbstractDHDMenu;
 
-public class ClassicDHDScreen extends DHDScreen
+public class ClassicDHDScreen extends AbstractDHDScreen
 {
 	public ClassicDHDScreen(AbstractDHDMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{

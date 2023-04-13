@@ -8,8 +8,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -27,9 +33,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
+import net.povstalec.sgjourney.menu.BasicInterfaceMenu;
 
 public class BasicInterfaceBlock extends BaseEntityBlock
 {
@@ -66,6 +75,39 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 	{
 		return new BasicInterfaceEntity(pos, state);
 	}
+	
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	{
+        if (!level.isClientSide) 
+        {
+    		BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+        	if (blockEntity instanceof BasicInterfaceEntity) 
+        	{
+        		MenuProvider containerProvider = new MenuProvider() 
+        		{
+        			@Override
+        			public Component getDisplayName() 
+        			{
+        				return Component.translatable("screen.sgjourney.basic_interface");
+        			}
+        			
+        			@Override
+        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
+        			{
+        				return new BasicInterfaceMenu(windowId, playerInventory, blockEntity);
+        			}
+        		};
+        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        	}
+        	else
+        	{
+        		throw new IllegalStateException("Our named container provider is missing!");
+        	}
+        }
+        return InteractionResult.SUCCESS;
+    }
 	
 	public RenderShape getRenderShape(BlockState state)
 	{

@@ -27,21 +27,34 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.misc.Orientation;
 import net.povstalec.sgjourney.stargate.StargatePart;
 
 public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	public static final EnumProperty<StargatePart> PART = EnumProperty.create("stargate_part", StargatePart.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	
-	protected static final VoxelShape FULL = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+	//TODO
+	//public static final BooleanProperty FULL = BooleanProperty.create("full");
 	
-	protected static final VoxelShape UPWARD = Block.box(0.0D, 1.0D, 0.0D, 16.0D, 8.0D, 16.0D);
-	protected static final VoxelShape UPWARD_BOTTOM_LEFT = Block.box(0.0D, 1.0D, 0.0D, 8.0D, 8.0D, 8.0D);
-	protected static final VoxelShape UPWARD_BOTTOM_RIGHT = Block.box(8.0D, 1.0D, 0.0D, 16.0D, 8.0D, 8.0D);
-	protected static final VoxelShape UPWARD_TOP_LEFT = Block.box(0.0D, 1.0D, 8.0D, 8.0D, 8.0D, 16.0D);
-	protected static final VoxelShape UPWARD_TOP_RIGHT = Block.box(8.0D, 1.0D, 8.0D, 18.0D, 8.0D, 18.0D);
+	protected static final VoxelShape FULL_BLOCK = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+	
+	protected static final VoxelShape HORIZONTAL = Block.box(0.0D, 1.0D, 0.0D, 16.0D, 8.0D, 16.0D);
+	protected static final VoxelShape HORIZONTAL_BOTTOM_LEFT = Block.box(0.0D, 1.0D, 0.0D, 8.0D, 8.0D, 8.0D);
+	protected static final VoxelShape HORIZONTAL_BOTTOM_RIGHT = Block.box(8.0D, 1.0D, 0.0D, 16.0D, 8.0D, 8.0D);
+	protected static final VoxelShape HORIZONTAL_TOP_LEFT = Block.box(0.0D, 1.0D, 8.0D, 8.0D, 8.0D, 16.0D);
+	protected static final VoxelShape HORIZONTAL_TOP_RIGHT = Block.box(8.0D, 1.0D, 8.0D, 16.0D, 8.0D, 16.0D);
+	
+	protected static final VoxelShape HORIZONTAL_STAIR_BOTTOM_LEFT = Shapes.or(HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_TOP_RIGHT);
+	protected static final VoxelShape HORIZONTAL_STAIR_BOTTOM_RIGHT = Shapes.or(HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_TOP_LEFT, HORIZONTAL_TOP_RIGHT);
+	protected static final VoxelShape HORIZONTAL_STAIR_TOP_LEFT = Shapes.or(HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT);
+	protected static final VoxelShape HORIZONTAL_STAIR_TOP_RIGHT = Shapes.or(HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_LEFT);
+	
+	protected static final VoxelShape[] HORIZONTAL_SHAPES = new VoxelShape[] {HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT};
+	protected static final VoxelShape[] HORIZONTAL_STAIR_SHAPES = new VoxelShape[] {HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT};
 	
 	protected static final VoxelShape X = Block.box(0.0D, 0.0D, 4.5D, 16.0D, 16.0D, 11.5D);
 	protected static final VoxelShape X_TOP_LEFT = Block.box(0.0D, 8.0D, 4.5D, 8.0D, 16.0D, 11.5D);
@@ -49,10 +62,10 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 	protected static final VoxelShape X_BOTTOM_LEFT = Block.box(0.0D, 0.0D, 4.5D, 8.0D, 8.0D, 11.5D);
 	protected static final VoxelShape X_BOTTOM_RIGHT = Block.box(8.0D, 0.0D, 4.5D, 16.0D, 8.0D, 11.5D);
 	
-	protected static final VoxelShape X_STAIRS_TOP_RIGHT =  Shapes.or(X_BOTTOM_LEFT, X_BOTTOM_RIGHT, X_TOP_RIGHT);
-	protected static final VoxelShape X_STAIRS_TOP_LEFT =  Shapes.or(X_BOTTOM_LEFT, X_BOTTOM_RIGHT, X_TOP_LEFT);
-	protected static final VoxelShape X_STAIRS_BOTTOM_RIGHT =  Shapes.or(X_TOP_LEFT, X_TOP_RIGHT, X_BOTTOM_RIGHT);
-	protected static final VoxelShape X_STAIRS_BOTTOM_LEFT =  Shapes.or(X_TOP_LEFT, X_TOP_RIGHT, X_BOTTOM_LEFT);
+	protected static final VoxelShape X_STAIR_TOP_LEFT =  Shapes.or(X_BOTTOM_LEFT, X_BOTTOM_RIGHT, X_TOP_RIGHT);
+	protected static final VoxelShape X_STAIR_TOP_RIGHT =  Shapes.or(X_BOTTOM_LEFT, X_BOTTOM_RIGHT, X_TOP_LEFT);
+	protected static final VoxelShape X_STAIR_BOTTOM_LEFT =  Shapes.or(X_TOP_LEFT, X_TOP_RIGHT, X_BOTTOM_RIGHT);
+	protected static final VoxelShape X_STAIR_BOTTOM_RIGHT =  Shapes.or(X_TOP_LEFT, X_TOP_RIGHT, X_BOTTOM_LEFT);
 	
 	protected static final VoxelShape Z = Block.box(4.5D, 0.0D, 0.0D, 11.5D, 16.0D, 16.0D);
 	protected static final VoxelShape Z_TOP_LEFT = Block.box(4.5D, 8.0D, 0.0D, 11.5D, 16.0D, 8.0D);
@@ -60,20 +73,32 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 	protected static final VoxelShape Z_BOTTOM_LEFT = Block.box(4.5D, 0.0D, 0.0D, 11.5D, 8.0D, 8.0D);
 	protected static final VoxelShape Z_BOTTOM_RIGHT = Block.box(4.5D, 0.0D, 8.0D, 11.5D, 8.0D, 16.0D);
 	
-	protected static final VoxelShape Z_STAIRS_TOP_RIGHT =  Shapes.or(Z_BOTTOM_LEFT, Z_BOTTOM_RIGHT, Z_TOP_RIGHT);
-	protected static final VoxelShape Z_STAIRS_TOP_LEFT =  Shapes.or(Z_BOTTOM_LEFT, Z_BOTTOM_RIGHT, Z_TOP_LEFT);
-	protected static final VoxelShape Z_STAIRS_BOTTOM_RIGHT =  Shapes.or(Z_TOP_LEFT, Z_TOP_RIGHT, Z_BOTTOM_RIGHT);
-	protected static final VoxelShape Z_STAIRS_BOTTOM_LEFT =  Shapes.or(Z_TOP_LEFT, Z_TOP_RIGHT, Z_BOTTOM_LEFT);
+	protected static final VoxelShape Z_STAIR_TOP_LEFT =  Shapes.or(Z_BOTTOM_LEFT, Z_BOTTOM_RIGHT, Z_TOP_RIGHT);
+	protected static final VoxelShape Z_STAIR_TOP_RIGHT =  Shapes.or(Z_BOTTOM_LEFT, Z_BOTTOM_RIGHT, Z_TOP_LEFT);
+	protected static final VoxelShape Z_STAIR_BOTTOM_LEFT =  Shapes.or(Z_TOP_LEFT, Z_TOP_RIGHT, Z_BOTTOM_RIGHT);
+	protected static final VoxelShape Z_STAIR_BOTTOM_RIGHT =  Shapes.or(Z_TOP_LEFT, Z_TOP_RIGHT, Z_BOTTOM_LEFT);
 
+	protected static final VoxelShape[][] DEFAULT = new VoxelShape[][] {{HORIZONTAL}, {X, Z}, {HORIZONTAL}};
+	
+	protected static final VoxelShape[][] TOP_LEFT = new VoxelShape[][] {{HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT}, {X_TOP_LEFT, Z_TOP_LEFT, X_TOP_RIGHT, Z_TOP_RIGHT}, {HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT}};
+	protected static final VoxelShape[][] BOTTOM_LEFT = new VoxelShape[][] {{HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT}, {X_BOTTOM_LEFT, Z_BOTTOM_LEFT, X_BOTTOM_RIGHT, Z_BOTTOM_RIGHT}, {HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT}};
+	protected static final VoxelShape[][] BOTTOM_RIGHT = new VoxelShape[][] {{HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT}, {X_BOTTOM_RIGHT, Z_BOTTOM_RIGHT, X_BOTTOM_LEFT, Z_BOTTOM_LEFT}, {HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT}};
+	protected static final VoxelShape[][] TOP_RIGHT = new VoxelShape[][] {{HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT}, {X_TOP_RIGHT, Z_TOP_RIGHT, X_TOP_LEFT, Z_TOP_LEFT}, {HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT}};
+	
+	protected static final VoxelShape[][] STAIR_TOP_LEFT = new VoxelShape[][] {{HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT}, {X_STAIR_TOP_LEFT, Z_STAIR_TOP_LEFT, X_STAIR_TOP_RIGHT, Z_STAIR_TOP_RIGHT}, {HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT}};
+	protected static final VoxelShape[][] STAIR_BOTTOM_LEFT = new VoxelShape[][] {{HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT}, {X_STAIR_BOTTOM_LEFT, Z_STAIR_BOTTOM_LEFT, X_STAIR_BOTTOM_RIGHT, Z_STAIR_BOTTOM_RIGHT}, {HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT}};
+	protected static final VoxelShape[][] STAIR_BOTTOM_RIGHT = new VoxelShape[][] {{HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT}, {X_STAIR_BOTTOM_RIGHT, Z_STAIR_BOTTOM_RIGHT, X_STAIR_BOTTOM_LEFT, Z_STAIR_BOTTOM_LEFT}, {HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT}};
+	protected static final VoxelShape[][] STAIR_TOP_RIGHT = new VoxelShape[][] {{HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT}, {X_STAIR_TOP_RIGHT, Z_STAIR_TOP_RIGHT, X_STAIR_TOP_LEFT, Z_STAIR_TOP_LEFT}, {HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT}};
+	
 	public AbstractStargateRingBlock(Properties properties)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.ABOVE6));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.ABOVE6)/*.setValue(FULL, Boolean.valueOf(false))*/);
 	}
 	
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(FACING).add(PART).add(WATERLOGGED);
+		state.add(FACING).add(ORIENTATION).add(PART).add(WATERLOGGED)/*.add(FULL)*/;
 	}
 	
 	public BlockState rotate(BlockState state, Rotation rotation)
@@ -86,147 +111,53 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 	
+	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
+	{
+		int horizontal = direction.get2DDataValue();
+		int vertical = orientation.get2DDataValue();
+		
+		return shapes[vertical][horizontal % shapes[vertical].length];
+	}
+	
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
-		if(state.getValue(FACING) == Direction.NORTH)
+		/*if(state.getValue(FULL))
+			return FULL_BLOCK;*/
+		
+		Direction direction = state.getValue(FACING);
+		Orientation orientation = state.getValue(ORIENTATION);
+		
+		switch(state.getValue(PART))
 		{
-			switch(state.getValue(PART))
-			{
-			case LEFT2:
-				return X_TOP_LEFT;
-			case LEFT2_ABOVE:
-				return X_STAIRS_TOP_RIGHT;
-			case LEFT3_ABOVE:
-				return X_TOP_LEFT;
-				
-			case LEFT3_ABOVE5:
-				return X_BOTTOM_LEFT;
-			case LEFT2_ABOVE5:
-				return X_STAIRS_BOTTOM_RIGHT;
-			case LEFT2_ABOVE6:
-				return X_BOTTOM_LEFT;
-				
-			case RIGHT2_ABOVE6:
-				return X_BOTTOM_RIGHT;
-			case RIGHT2_ABOVE5:
-				return X_STAIRS_BOTTOM_LEFT;
-			case RIGHT3_ABOVE5:
-				return X_BOTTOM_RIGHT;
-				
-			case RIGHT3_ABOVE:
-				return X_TOP_RIGHT;
-			case RIGHT2_ABOVE:
-				return X_STAIRS_TOP_LEFT;
-			case RIGHT2:
-				return X_TOP_RIGHT;
-			default:
-				return X;
-			}
-		}
-		else if(state.getValue(FACING) == Direction.EAST)
-		{
-			switch(state.getValue(PART))
-			{
-			case LEFT2:
-				return Z_TOP_LEFT;
-			case LEFT2_ABOVE:
-				return Z_STAIRS_TOP_RIGHT;
-			case LEFT3_ABOVE:
-				return Z_TOP_LEFT;
-				
-			case LEFT3_ABOVE5:
-				return Z_BOTTOM_LEFT;
-			case LEFT2_ABOVE5:
-				return Z_STAIRS_BOTTOM_RIGHT;
-			case LEFT2_ABOVE6:
-				return Z_BOTTOM_LEFT;
-				
-			case RIGHT2_ABOVE6:
-				return Z_BOTTOM_RIGHT;
-			case RIGHT2_ABOVE5:
-				return Z_STAIRS_BOTTOM_LEFT;
-			case RIGHT3_ABOVE5:
-				return Z_BOTTOM_RIGHT;
-				
-			case RIGHT3_ABOVE:
-				return Z_TOP_RIGHT;
-			case RIGHT2_ABOVE:
-				return Z_STAIRS_TOP_LEFT;
-			case RIGHT2:
-				return Z_TOP_RIGHT;
-			default:
-				return Z;
-			}
-		}
-		else if(state.getValue(FACING) == Direction.WEST)
-		{
-			switch(state.getValue(PART))
-			{
-			case RIGHT2:
-				return Z_TOP_LEFT;
-			case RIGHT2_ABOVE:
-				return Z_STAIRS_TOP_RIGHT;
-			case RIGHT3_ABOVE:
-				return Z_TOP_LEFT;
-				
-			case RIGHT3_ABOVE5:
-				return Z_BOTTOM_LEFT;
-			case RIGHT2_ABOVE5:
-				return Z_STAIRS_BOTTOM_RIGHT;
-			case RIGHT2_ABOVE6:
-				return Z_BOTTOM_LEFT;
-				
-			case LEFT2_ABOVE6:
-				return Z_BOTTOM_RIGHT;
-			case LEFT2_ABOVE5:
-				return Z_STAIRS_BOTTOM_LEFT;
-			case LEFT3_ABOVE5:
-				return Z_BOTTOM_RIGHT;
-				
-			case LEFT3_ABOVE:
-				return Z_TOP_RIGHT;
-			case LEFT2_ABOVE:
-				return Z_STAIRS_TOP_LEFT;
-			case LEFT2:
-				return Z_TOP_RIGHT;
-			default:
-				return Z;
-			}
-		}
-		else
-		{
-			switch(state.getValue(PART))
-			{
-			case RIGHT2:
-				return X_TOP_LEFT;
-			case RIGHT2_ABOVE:
-				return X_STAIRS_TOP_RIGHT;
-			case RIGHT3_ABOVE:
-				return X_TOP_LEFT;
-				
-			case RIGHT3_ABOVE5:
-				return X_BOTTOM_LEFT;
-			case RIGHT2_ABOVE5:
-				return X_STAIRS_BOTTOM_RIGHT;
-			case RIGHT2_ABOVE6:
-				return X_BOTTOM_LEFT;
-				
-			case LEFT2_ABOVE6:
-				return X_BOTTOM_RIGHT;
-			case LEFT2_ABOVE5:
-				return X_STAIRS_BOTTOM_LEFT;
-			case LEFT3_ABOVE5:
-				return X_BOTTOM_RIGHT;
-				
-			case LEFT3_ABOVE:
-				return X_TOP_RIGHT;
-			case LEFT2_ABOVE:
-				return X_STAIRS_TOP_LEFT;
-			case LEFT2:
-				return X_TOP_RIGHT;
-			default:
-				return X;
-			}
+		case LEFT2:
+			return getShapeFromArray(TOP_RIGHT, direction, orientation);
+		case LEFT2_ABOVE:
+			return getShapeFromArray(STAIR_TOP_RIGHT, direction, orientation);
+		case LEFT3_ABOVE:
+			return getShapeFromArray(TOP_RIGHT, direction, orientation);
+			
+		case LEFT3_ABOVE5:
+			return getShapeFromArray(BOTTOM_RIGHT, direction, orientation);
+		case LEFT2_ABOVE5:
+			return getShapeFromArray(STAIR_BOTTOM_RIGHT, direction, orientation);
+		case LEFT2_ABOVE6:
+			return getShapeFromArray(BOTTOM_RIGHT, direction, orientation);
+			
+		case RIGHT2_ABOVE6:
+			return getShapeFromArray(BOTTOM_LEFT, direction, orientation);
+		case RIGHT2_ABOVE5:
+			return getShapeFromArray(STAIR_BOTTOM_LEFT, direction, orientation);
+		case RIGHT3_ABOVE5:
+			return getShapeFromArray(BOTTOM_LEFT, direction, orientation);
+			
+		case RIGHT3_ABOVE:
+			return getShapeFromArray(TOP_LEFT, direction, orientation);
+		case RIGHT2_ABOVE:
+			return getShapeFromArray(STAIR_TOP_LEFT, direction, orientation);
+		case RIGHT2:
+			return getShapeFromArray(TOP_LEFT, direction, orientation);
+		default:
+			return getShapeFromArray(DEFAULT, direction, orientation);
 		}
 	}
 	
@@ -255,7 +186,7 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 	{
 		if (oldState.getBlock() != newState.getBlock())
 		{
-			BlockPos centerPos = oldState.getValue(PART).getMainBlockPos(pos, oldState.getValue(FACING));
+			BlockPos centerPos = oldState.getValue(PART).getMainBlockPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
 			BlockState centerState = level.getBlockState(centerPos);
 			level.setBlock(centerPos, isWaterLogged(centerState, level, centerPos) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 35);
 			
@@ -273,21 +204,60 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
-		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getMainBlockPos(pos, state.getValue(FACING)));
+		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getMainBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
 		if (blockentity instanceof AbstractStargateEntity stargate)
 		{
 			if (!level.isClientSide)
 			{
 				stargate.disconnectStargate();
-				ItemStack itemstack = new ItemStack(getStargate());
 				
-				blockentity.saveToItem(itemstack);
+				if(!player.isCreative())
+				{
+					ItemStack itemstack = new ItemStack(getStargate());
+					
+					blockentity.saveToItem(itemstack);
 
-				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
-				itementity.setDefaultPickUpDelay();
-				level.addFreshEntity(itementity);
+					ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
+					itementity.setDefaultPickUpDelay();
+					level.addFreshEntity(itementity);
+				}
 			}
 		}
 		super.playerWillDestroy(level, pos, state, player);
 	}
+	
+	/*@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	{
+		BlockPos mainBlockPos = state.getValue(PART).getMainBlockPos(pos, state.getValue(FACING));
+    	
+		BlockEntity blockEntity = level.getBlockEntity(mainBlockPos);
+		
+    	if(blockEntity instanceof AbstractStargateEntity stargate) 
+    	{
+    		
+    	}
+        
+        if(!player.isShiftKeyDown() && !player.getItemInHand(hand).isEmpty() && !state.getValue(FULL))
+		{
+    		if(level.isClientSide)
+    			return InteractionResult.SUCCESS;
+    		
+			//ItemStack stack = player.getItemInHand(hand);
+			//player.sendSystemMessage(stack.getDisplayName());
+        	level.setBlock(pos, state.setValue(FULL, true), 2);
+			
+			return InteractionResult.CONSUME;
+		}
+		else if(!player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && state.getValue(FULL))
+		{
+			if(level.isClientSide)
+    			return InteractionResult.SUCCESS;
+			
+        	level.setBlock(pos, state.setValue(FULL, false), 2);
+			return InteractionResult.CONSUME;
+		}
+    	
+        return InteractionResult.FAIL;
+    }*/
 }

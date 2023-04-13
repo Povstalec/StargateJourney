@@ -69,7 +69,7 @@ public class PointOfOrigin
 		return generatesRandomly;
 	}
 	
-	public static ResourceKey<PointOfOrigin> getRandomPointOfOrigin(MinecraftServer server, int seed)
+	public static ResourceKey<PointOfOrigin> getRandomPointOfOrigin(MinecraftServer server, long seed)
 	{
 		Random random = new Random(seed);
 		RegistryAccess registries = server.registryAccess();

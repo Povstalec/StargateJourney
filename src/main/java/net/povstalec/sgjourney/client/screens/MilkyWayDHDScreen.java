@@ -7,7 +7,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.DHDBigButton;
 import net.povstalec.sgjourney.menu.AbstractDHDMenu;
 
-public class MilkyWayDHDScreen extends DHDScreen
+public class MilkyWayDHDScreen extends AbstractDHDScreen
 {
 	public MilkyWayDHDScreen(AbstractDHDMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{

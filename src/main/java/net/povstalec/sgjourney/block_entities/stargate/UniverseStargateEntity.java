@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
+import net.povstalec.sgjourney.misc.ArrayHelper;
 import net.povstalec.sgjourney.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.stargate.Addressing;
 import net.povstalec.sgjourney.stargate.Stargate;
@@ -116,7 +117,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 				return;
 		}
 		
-		addressBuffer = Addressing.growIntArray(addressBuffer, symbol);
+		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
 	}
 	

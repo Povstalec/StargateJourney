@@ -134,6 +134,11 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 		return this.chevrons.getChild("chevron_" + chevron);
 	}
 	
+	protected ModelPart getMovieChevron()
+	{
+		return this.chevrons.getChild("movie_chevron");
+	}
+	
 	protected ModelPart getChevronLight(int chevron)
 	{
 		return this.getChevron(chevron).getChild("chevron_light");
@@ -191,12 +196,12 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 			int combinedLight, int combinedOverlay)
 	{
 		VertexConsumer chevron_texture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
-		this.getChevron(0).render(stack, chevron_texture, combinedLight, combinedOverlay);
+		this.getMovieChevron().render(stack, chevron_texture, combinedLight, combinedOverlay);
 		
 		if(!stargate.isChevronRaised && stargate.isConnected())
 		{
 			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
-			this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
+			this.getMovieChevron().render(stack, engaged_chevron_texture, 255, combinedOverlay);
 		}
 	}
 	
@@ -264,12 +269,9 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition chevrons = meshdefinition.getRoot();
 		
-		if(ClientStargateConfig.use_movie_stargate_model.get())
-			createMovieChevron(chevrons.addOrReplaceChild("chevron_0", CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, 0.0F)));
-		else
-			createChevron(chevrons.addOrReplaceChild("chevron_0", CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, 0.0F)));
+		createMovieChevron(chevrons.addOrReplaceChild("movie_chevron", CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, 0.0F)));
 		
-		for(int i = 1; i <= 3; i++)
+		for(int i = 0; i <= 3; i++)
 		{
 			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i))));
 		}

@@ -22,15 +22,15 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.config.ServerZPMConfig;
+import net.povstalec.sgjourney.config.CommonZPMConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.items.ZeroPointModule;
 
 public class ZPMHubEntity extends EnergyBlockEntity
 {
-	private static final long maxTransfer = ServerZPMConfig.zpm_hub_max_transfer.get();
-	private static final long maxEnergyDisplayed = ServerZPMConfig.zpm_energy_per_level_of_entropy.get();
+	private static final long maxTransfer = CommonZPMConfig.zpm_hub_max_transfer.get();
+	private static final long maxEnergyDisplayed = CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
@@ -223,7 +223,7 @@ public class ZPMHubEntity extends EnergyBlockEntity
 		hub.outputEnergy(Direction.DOWN);
 
 		ItemStack stack = hub.itemHandler.getStackInSlot(0);
-		long energy = ZeroPointModule.isNearingEntropy(stack) ? ZeroPointModule.getEnergyInLevel(stack) : ZeroPointModule.maxEnergy;
+		long energy = ZeroPointModule.isNearingEntropy(stack) ? ZeroPointModule.getEnergyInLevel(stack) : ZeroPointModule.getMaxEnergy();
 		hub.setEnergy(energy);
 		
 		//PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(hub.worldPosition)), new ClientboundNaquadahGeneratorUpdatePacket(hub.worldPosition, hub.getReactionProgress(), hub.getEnergy()));

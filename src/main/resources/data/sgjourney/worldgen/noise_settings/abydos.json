@@ -24,11 +24,19 @@
     "fluid_level_floodedness": 0,
     "fluid_level_spread": 0,
     "lava": 0,
-    "temperature": 0,
+    "temperature": {
+      "type": "minecraft:shifted_noise",
+      "noise": "minecraft:temperature",
+      "xz_scale": 0.25,
+      "y_scale": 0,
+      "shift_x": "minecraft:shift_x",
+      "shift_y": 0,
+      "shift_z": "minecraft:shift_z"
+    },
     "vegetation": 0,
     "continents": 0,
-    "erosion": 0,
-    "depth": 0,
+    "erosion": "minecraft:overworld/erosion",
+    "depth": "minecraft:overworld/depth",
     "ridges": 0,
     "initial_density_without_jaggedness": {
       "type": "minecraft:constant",
@@ -39,14 +47,14 @@
       "argument1": {
         "type": "minecraft:y_clamped_gradient",
         "from_y": 48,
-        "to_y": 80,
-        "from_value": 1,
-        "to_value": -1
+        "to_y": 128,
+        "from_value": 2,
+        "to_value": -4
       },
       "argument2": {
         "type": "minecraft:noise",
         "noise": "minecraft:surface",
-        "xz_scale": 0.2,
+        "xz_scale": 0.5,
         "y_scale": 0
       }
     },

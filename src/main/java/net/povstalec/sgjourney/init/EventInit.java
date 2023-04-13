@@ -28,6 +28,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.blocks.SGJourneyBaseEntityBlock;
+import net.povstalec.sgjourney.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.capabilities.AncientGene;
 import net.povstalec.sgjourney.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.capabilities.BloodstreamNaquadah;
@@ -169,6 +170,14 @@ public class EventInit
 				items.accept(ItemInit.ZPM.get());
 
 				items.accept(ItemInit.SYRINGE.get());
+				items.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
+				items.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
+
+				items.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
+				items.accept(ItemInit.MEMORY_CRYSTAL.get());
+				items.accept(ItemInit.TRANSPORTATION_CRYSTAL.get());
+				items.accept(ItemInit.ENERGY_CRYSTAL.get());
+				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 			});
 		});
 		
@@ -180,7 +189,8 @@ public class EventInit
 			{
 				items.accept(BlockInit.UNIVERSE_STARGATE.get());
 				items.accept(BlockInit.MILKY_WAY_STARGATE.get());
-				items.accept(BlockInit.MILKY_WAY_DHD.get());
+				//items.accept(BlockInit.MILKY_WAY_DHD.get());
+				items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup(new ItemStack(BlockInit.MILKY_WAY_DHD.get())));
 				items.accept(BlockInit.PEGASUS_STARGATE.get());
 				items.accept(BlockInit.PEGASUS_DHD.get());
 				//items.accept(BlockInit.CLASSIC_STARGATE.get());
@@ -234,13 +244,6 @@ public class EventInit
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
-		}
-		
-		if(event.getTab() == ITEM_TAB)
-		{
-			//event.accept(SyringeItem.addContents(SyringeItem.Contents.BLOOD));
-			event.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
-			event.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
 		}
 	}
 	

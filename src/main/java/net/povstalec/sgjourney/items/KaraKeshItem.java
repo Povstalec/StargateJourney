@@ -22,12 +22,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.config.ServerTechConfig;
+import net.povstalec.sgjourney.config.CommonTechConfig;
 import net.povstalec.sgjourney.misc.GoauldTech;
 
 public class KaraKeshItem extends Item implements GoauldTech
 {
-	private static final boolean requirementsDisabled = ServerTechConfig.disable_kara_kesh_requirements.get();
 	private boolean terrorModeOn = false;
 	private CompoundTag itemTag = new CompoundTag();
 	private Random random = new Random();
@@ -43,7 +42,7 @@ public class KaraKeshItem extends Item implements GoauldTech
 		if(level.isClientSide())
 			return super.use(level, player, usedHand);
 		
-		if(canUseGoauldTech(requirementsDisabled, player) && player.isShiftKeyDown())
+		if(canUseGoauldTech(CommonTechConfig.disable_kara_kesh_requirements.get(), player) && player.isShiftKeyDown())
 		{
 			if(!player.getItemInHand(usedHand).getOrCreateTag().getBoolean("TerrorModeOn"))
 			{

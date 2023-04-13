@@ -11,16 +11,19 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.items.CommunicationCrystalItem;
 import net.povstalec.sgjourney.items.FalconArmorItem;
 import net.povstalec.sgjourney.items.JackalArmorItem;
 import net.povstalec.sgjourney.items.KaraKeshItem;
 import net.povstalec.sgjourney.items.MaTok;
-import net.povstalec.sgjourney.items.MemoryCrystalItem;
 import net.povstalec.sgjourney.items.PDAItem;
 import net.povstalec.sgjourney.items.RingRemoteItem;
 import net.povstalec.sgjourney.items.SyringeItem;
 import net.povstalec.sgjourney.items.ZeroPointModule;
+import net.povstalec.sgjourney.items.crystals.CommunicationCrystalItem;
+import net.povstalec.sgjourney.items.crystals.ControlCrystalItem;
+import net.povstalec.sgjourney.items.crystals.EnergyCrystalItem;
+import net.povstalec.sgjourney.items.crystals.MemoryCrystalItem;
+import net.povstalec.sgjourney.items.crystals.TransportationCrystalItem;
 import net.povstalec.sgjourney.items.tools.SGJourneyAxeItem;
 import net.povstalec.sgjourney.items.tools.SGJourneyHoeItem;
 import net.povstalec.sgjourney.items.tools.SGJourneyPickaxeItem;
@@ -45,13 +48,15 @@ public class ItemInit
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).craftRemainder(Items.BUCKET)));
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
-	
+
+	public static final RegistryObject<ControlCrystalItem> LARGE_CONTROL_CRYSTAL = ITEMS.register("large_control_crystal", 
+			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<MemoryCrystalItem> MEMORY_CRYSTAL = ITEMS.register("memory_crystal", 
 			() -> new MemoryCrystalItem(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<Item> TRANSPORTATION_CRYSTAL = ITEMS.register("transportation_crystal", 
-			() -> new Item(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<Item> ENERGY_CRYSTAL = ITEMS.register("energy_crystal", 
-			() -> new Item(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<TransportationCrystalItem> TRANSPORTATION_CRYSTAL = ITEMS.register("transportation_crystal", 
+			() -> new TransportationCrystalItem(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<EnergyCrystalItem> ENERGY_CRYSTAL = ITEMS.register("energy_crystal", 
+			() -> new EnergyCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<CommunicationCrystalItem> COMMUNICATION_CRYSTAL = ITEMS.register("communication_crystal", 
 			() -> new CommunicationCrystalItem(new Item.Properties().stacksTo(1)));
 	

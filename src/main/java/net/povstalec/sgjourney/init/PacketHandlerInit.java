@@ -5,6 +5,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.packets.ClientboundBasicInterfaceUpdatePacket;
 import net.povstalec.sgjourney.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.packets.ClientboundNaquadahGeneratorUpdatePacket;
 import net.povstalec.sgjourney.packets.ClientboundPegasusStargateUpdatePacket;
@@ -31,10 +32,16 @@ public final class PacketHandlerInit
     public static void register()
     {
         int index = 0;
-        INSTANCE.messageBuilder(ClientboundSymbolUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-        .encoder(ClientboundSymbolUpdatePacket::encode)
-        .decoder(ClientboundSymbolUpdatePacket::new)
-        .consumerMainThread(ClientboundSymbolUpdatePacket::handle)
+        INSTANCE.messageBuilder(ClientboundBasicInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+        .encoder(ClientboundBasicInterfaceUpdatePacket::encode)
+        .decoder(ClientboundBasicInterfaceUpdatePacket::new)
+        .consumerMainThread(ClientboundBasicInterfaceUpdatePacket::handle)
+        .add();
+        
+        INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+        .encoder(ClientboundRingsUpdatePacket::encode)
+        .decoder(ClientboundRingsUpdatePacket::new)
+        .consumerMainThread(ClientboundRingsUpdatePacket::handle)
         .add();
         
         INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)

@@ -30,7 +30,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.energy_gen.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.block_entities.energy_gen.NaquadahGeneratorMarkIEntity;
 import net.povstalec.sgjourney.block_entities.energy_gen.NaquadahGeneratorMarkIIEntity;
-import net.povstalec.sgjourney.config.ServerNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.menu.NaquadahGeneratorMenu;
@@ -131,12 +131,12 @@ public class NaquadahGeneratorBlock extends BaseEntityBlock
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	int capacity = tier == Tier.MARK_I ? 
-    			ServerNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get() : 
-    			ServerNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
+    			CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get() : 
+    			CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
     	
     	int energyPerTick = tier == Tier.MARK_I ? 
-    			ServerNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get() : 
-    			ServerNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
+    			CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get() : 
+    			CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
     	
     	int energy = 0;
     	

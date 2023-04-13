@@ -4,7 +4,7 @@ import java.util.Random;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
-import net.povstalec.sgjourney.config.ServerGeneticConfig;
+import net.povstalec.sgjourney.config.CommonGeneticConfig;
 
 public class AncientGene
 {
@@ -95,7 +95,7 @@ public class AncientGene
 				Random random = new Random();
 				int chance = random.nextInt(1, 101);
 				
-				if(chance <= ServerGeneticConfig.player_ata_gene_inheritance_chance.get())
+				if(chance <= CommonGeneticConfig.player_ata_gene_inheritance_chance.get())
 					cap.inheritGene();
 				
 				cap.markJoined();
@@ -127,7 +127,7 @@ public class AncientGene
 	
 	public void loadData(CompoundTag tag)
 	{
-		this.firstJoin = tag.getBoolean("FirstJoin");;
+		this.firstJoin = tag.getBoolean("FirstJoin");
 		this.gene = ATAGene.valueOf(tag.getString("AncientGene"));
 	}
 }

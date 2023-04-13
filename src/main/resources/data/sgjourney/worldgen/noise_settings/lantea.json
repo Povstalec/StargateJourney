@@ -37,13 +37,13 @@
         "type": "minecraft:y_clamped_gradient",
         "from_y": 40,
         "to_y": 80,
-        "from_value": 1,
-        "to_value": -1
+        "from_value": 2,
+        "to_value": -2
       },
       "argument2": {
         "type": "minecraft:noise",
         "noise": "minecraft:surface",
-        "xz_scale": 0.8,
+        "xz_scale": 1.2,
         "y_scale": 0
       }
     },

@@ -9,7 +9,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.menu.BasicInterfaceMenu;
 import net.povstalec.sgjourney.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.menu.CrystalInterfaceMenu;
+import net.povstalec.sgjourney.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.menu.NaquadahGeneratorMenu;
 import net.povstalec.sgjourney.menu.PegasusDHDMenu;
@@ -19,9 +22,18 @@ import net.povstalec.sgjourney.menu.ZPMHubMenu;
 public class MenuInit 
 {
 	public static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, StargateJourney.MODID);
+
+	public static final RegistryObject<MenuType<BasicInterfaceMenu>> BASIC_INTERFACE =
+            registerMenuType(BasicInterfaceMenu::new, "basic_interface");
+
+	public static final RegistryObject<MenuType<CrystalInterfaceMenu>> CRYSTAL_INTERFACE =
+            registerMenuType(CrystalInterfaceMenu::new, "crystal_interface");
 	
 	public static final RegistryObject<MenuType<RingPanelMenu>> RING_PANEL =
             registerMenuType(RingPanelMenu::new, "ring_panel");
+	
+	public static final RegistryObject<MenuType<DHDCrystalMenu>> DHD_CRYSTAL =
+            registerMenuType(DHDCrystalMenu::new, "dhd_crystal");
 	
 	public static final RegistryObject<MenuType<MilkyWayDHDMenu>> MILKY_WAY_DHD =
             registerMenuType(MilkyWayDHDMenu::new, "milky_way_dhd");

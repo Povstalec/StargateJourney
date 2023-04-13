@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.capabilities.AncientGeneProvider;
-import net.povstalec.sgjourney.config.ServerGeneticConfig;
+import net.povstalec.sgjourney.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.init.ItemInit;
 
 import org.jetbrains.annotations.Nullable;
@@ -101,9 +101,9 @@ public class SyringeItem extends Item
     		case BLOOD:
     			return false;
     		case PROTOTYPE_ATA:
-    			return applyAncientGene(target, ServerGeneticConfig.prototype_ata_gene_therapy_success_rate.get());
+    			return applyAncientGene(target, CommonGeneticConfig.prototype_ata_gene_therapy_success_rate.get());
     		case ATA:
-    			return applyAncientGene(target, ServerGeneticConfig.ata_gene_therapy_success_rate.get());
+    			return applyAncientGene(target, CommonGeneticConfig.ata_gene_therapy_success_rate.get());
     		}
     	}
     	

@@ -3,6 +3,15 @@ package net.povstalec.sgjourney.blocks;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -11,9 +20,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
+import net.povstalec.sgjourney.menu.CrystalInterfaceMenu;
 
 public class CrystalInterfaceBlock extends BasicInterfaceBlock
 {
@@ -30,9 +42,55 @@ public class CrystalInterfaceBlock extends BasicInterfaceBlock
 		return new CrystalInterfaceEntity(pos, state);
 	}
 	
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	{
+        if (!level.isClientSide) 
+        {
+    		BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+        	if (blockEntity instanceof CrystalInterfaceEntity) 
+        	{
+        		MenuProvider containerProvider = new MenuProvider() 
+        		{
+        			@Override
+        			public Component getDisplayName() 
+        			{
+        				return Component.translatable("screen.sgjourney.crystal_interface");
+        			}
+        			
+        			@Override
+        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
+        			{
+        				return new CrystalInterfaceMenu(windowId, playerInventory, blockEntity);
+        			}
+        		};
+        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        	}
+        	else
+        	{
+        		throw new IllegalStateException("Our named container provider is missing!");
+        	}
+        }
+        return InteractionResult.SUCCESS;
+    }
+	
 	public Block getDroppedBlock()
 	{
 		return BlockInit.CRYSTAL_INTERFACE.get();
+	}
+	
+	@Override
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
+	{
+		if(level.isClientSide())
+			return;
+		
+		Direction direction = state.getValue(FACING);
+		BlockPos targetPos = pos.relative(direction);
+		
+		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof CrystalInterfaceEntity crystalInterface && crystalInterface.updateInterface())
+			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 	}
 	
 	@Nullable

@@ -46,7 +46,6 @@ public class RingPanelEntity extends BlockEntity
 	{
 		super(BlockEntityInit.RING_PANEL.get(), pos, state);
 	}
-
 	
 	@Override
 	public void load(CompoundTag nbt)
@@ -70,7 +69,7 @@ public class RingPanelEntity extends BlockEntity
 			inventory.setItem(i, itemHandler.getStackInSlot(i));
 		}
 		
-			Containers.dropContents(this.level, this.worldPosition, inventory);
+		Containers.dropContents(this.level, this.worldPosition, inventory);
 	}
 		
 	@Override
@@ -138,9 +137,7 @@ public class RingPanelEntity extends BlockEntity
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side)
 	{
 		if(capability == ForgeCapabilities.ITEM_HANDLER)
-		{
 			return handler.cast();
-		}
 		
 		return super.getCapability(capability, side);
 	}

@@ -1,0 +1,11 @@
+{
+	"name": "Glacio",
+	"symbols": "sgjourney:milky_way",
+	"extragalactic_address": [1, 36, 28, 4, 6, 26, 22],
+	"point_of_origin": "sgjourney:gamekeeper",
+	"dimensions":
+	[
+		"ad_astra:glacio",
+		"ad_astra:glacio_orbit"
+	]
+}

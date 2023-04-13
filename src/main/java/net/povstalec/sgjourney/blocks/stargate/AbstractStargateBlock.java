@@ -25,7 +25,6 @@ import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -36,28 +35,31 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.blocks.SGJourneyBaseEntityBlock;
+import net.povstalec.sgjourney.misc.Orientation;
 import net.povstalec.sgjourney.stargate.StargatePart;
 
 public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock implements SimpleWaterloggedBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-	public static final EnumProperty<AttachFace> FACE = BlockStateProperties.ATTACH_FACE;
+	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
 	
+	protected static final VoxelShape FULL_BLOCK = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+	
 	protected static final VoxelShape X = Block.box(0.0D, 0.0D, 4.5D, 16.0D, 16.0D, 11.5D);
 	protected static final VoxelShape Z = Block.box(4.5D, 0.0D, 0.0D, 11.5D, 16.0D, 16.0D);
-	protected static final VoxelShape UPWARD = Block.box(0.0D, 1.0D, 0.0D, 16.0D, 8.0D, 16.0D);
+	protected static final VoxelShape HORIZONTAL = Block.box(0.0D, 1.0D, 0.0D, 16.0D, 8.0D, 16.0D);
 	
 	public AbstractStargateBlock(Properties properties)
 	{
 		super(properties, "Stargates");
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(CONNECTED, Boolean.valueOf(false)).setValue(WATERLOGGED, Boolean.valueOf(false)));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(WATERLOGGED, Boolean.valueOf(false)));
 	}
 	 
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(FACING).add(CONNECTED).add(WATERLOGGED);
+		state.add(FACING).add(ORIENTATION).add(CONNECTED).add(WATERLOGGED);
 	}
 	 
 	public BlockState rotate(BlockState state, Rotation rotation)
@@ -82,6 +84,8 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 	
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
+		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
+			return HORIZONTAL;
 		return state.getValue(FACING).getAxis() == Direction.Axis.X ? Z : X;
 	}
 	
@@ -95,25 +99,31 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 		return super.updateShape(oldState, direction, newState, levelAccessor, oldPos, newPos);
 	}
 	
-	 public BlockState getStateForPlacement(BlockPlaceContext context)
-	 {
-
-		 FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-		 BlockPos blockpos = context.getClickedPos();
-		 Level level = context.getLevel();
+	public BlockState getStateForPlacement(BlockPlaceContext context)
+	{
+		FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+		BlockPos blockpos = context.getClickedPos();
+		Level level = context.getLevel();
+		Player player = context.getPlayer();
+		Orientation orientation = Orientation.getOrientationFromXRot(player);
 		
 		if(blockpos.getY() > level.getMaxBuildHeight() - 6)
 			return null;
 		
 		for(StargatePart part : StargatePart.values())
 		{
-			if(!part.equals(StargatePart.CENTER) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite())).canBeReplaced(context))
+			if(!part.equals(StargatePart.CENTER) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
+			{
+				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
 				return null;
+			}
 		}
-			
-		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite())
-				.setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
-	 }
+		
+		return this.defaultBlockState()
+				.setValue(FACING, context.getHorizontalDirection().getOpposite())
+				.setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER))
+				.setValue(ORIENTATION, orientation);
+	}
 	 
 	@Nullable
 	@Override
@@ -130,10 +140,12 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 		{
 			if(!part.equals(StargatePart.CENTER))
 			{
-				level.setBlock(part.getRingPos(pos, state.getValue(FACING)), 
-						ringState().setValue(AbstractStargateRingBlock.PART, part).setValue(AbstractStargateRingBlock.FACING, 
-						level.getBlockState(pos).getValue(FACING)).setValue(WATERLOGGED, 
-						Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING))).getType() == Fluids.WATER)), 3);
+				level.setBlock(part.getRingPos(pos,  state.getValue(FACING),  state.getValue(ORIENTATION)), 
+						ringState()
+						.setValue(AbstractStargateRingBlock.PART, part)
+						.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
+						.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
+						.setValue(WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
 			}
 		}
 	}
@@ -151,7 +163,7 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
     		{
     			if(!part.equals(StargatePart.CENTER))
     			{
-    				BlockPos ringPos = part.getRingPos(pos, oldState.getValue(FACING));
+    				BlockPos ringPos = part.getRingPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
         			BlockState state = level.getBlockState(ringPos);
         			boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
     				
@@ -168,19 +180,22 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if (blockentity instanceof AbstractStargateEntity stargate)
+		if(blockentity instanceof AbstractStargateEntity stargate)
 		{
-			if (!level.isClientSide)
+			if(!level.isClientSide)
 			{
 				stargate.disconnectStargate();
 				
-				ItemStack itemstack = new ItemStack(getStargate());
-				
-				blockentity.saveToItem(itemstack);
+				if(!player.isCreative())
+				{
+					ItemStack itemstack = new ItemStack(getStargate());
+					
+					blockentity.saveToItem(itemstack);
 
-				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
-				itementity.setDefaultPickUpDelay();
-				level.addFreshEntity(itementity);
+					ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
+					itementity.setDefaultPickUpDelay();
+					level.addFreshEntity(itementity);
+				}
 			}
 		}
 

@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.config.ServerStargateConfig;
+import net.povstalec.sgjourney.config.CommonStargateConfig;
 import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
@@ -138,7 +138,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public void updateSignal(StargatePart part, int signal)
 	{
-		if(!ServerStargateConfig.enable_redstone_dialing.get())
+		if(!CommonStargateConfig.enable_redstone_dialing.get())
 			return;
 		
 		if(this.signalMap.containsKey(part))

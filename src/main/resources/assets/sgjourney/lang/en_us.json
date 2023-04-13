@@ -27,6 +27,9 @@
 	"block.sgjourney.milky_way_dhd": "Milky Way DHD",
 	"block.sgjourney.pegasus_dhd": "Pegasus DHD",
 	"block.sgjourney.classic_dhd": "Classic DHD",
+	
+	"block.sgjourney.stargate.not_enough_space": "Stargate does not have enough space",
+	"block.sgjourney.stargate.one_way_wormhole": "Can't travel through wormhole in this direction",
 
 	"block.sgjourney.transport_rings": "Transport Rings",
 	"block.sgjourney.ring_panel": "Ring Panel",
@@ -50,6 +53,8 @@
 	"item.sgjourney.liquid_naquadah_bucket": "Liquid Naquadah Bucket",
 	"item.sgjourney.liquid_naquadah_bottle": "Liquid Naquadah Bottle",
 
+	"item.sgjourney.control_crystal": "Control Crystal",
+	"item.sgjourney.large_control_crystal": "Large Control Crystal",
 	"item.sgjourney.transportation_crystal": "Transportation Crystal",
 	"item.sgjourney.energy_crystal": "Energy Crystal",
 	"item.sgjourney.communication_crystal": "Communication Crystal",
@@ -95,8 +100,11 @@
 	"itemGroup.stargate_items": "Stargate Items",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
+	"screen.sgjourney.basic_interface": "Basic Interface",
+	"screen.sgjourney.crystal_interface": "Crystal Interface",
 	"screen.sgjourney.transport_rings": "Transport Rings",
 	"screen.sgjourney.naquadah_generator": "Naquadah Generator",
+	"screen.sgjourney.dhd": "Dial Home Device",
 	"screen.sgjourney.zpm_hub": "ZPM Hub",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
@@ -120,5 +128,17 @@
 	"message.sgjourney.syringe_got_ancient_gene": "You now have the Ancient Gene",
 	"message.sgjourney.syringe_has_ancient_gene": "You already have the Ancient Gene",
 	"message.sgjourney.pda_has_ancient_gene": "Has Ancient Gene",
-	"message.sgjourney.pda_has_naquadah_in_bloodstream": "Has Naquadah in bloodstream"
+	"message.sgjourney.pda_has_naquadah_in_bloodstream": "Has Naquadah in bloodstream",
+	
+	"gui.sgjourney.config": "Stargate Journey Config",
+	"gui.sgjourney.client": "Client",
+	"gui.sgjourney.common": "Common",
+	"gui.sgjourney.true": "True",
+	"gui.sgjourney.false": "False",
+	"gui.sgjourney.config_client": "Stargate Journey Config - Client",
+	"gui.sgjourney.config_common": "Stargate Journey Config - Common",
+	"gui.sgjourney.config_stargate": "Stargate",
+	
+	"gui.sgjourney.disable_smooth_animations": "Disable Smooth Animations",
+	"gui.sgjourney.use_movie_stargate_model": "Use Movie Stargate Model"
 }

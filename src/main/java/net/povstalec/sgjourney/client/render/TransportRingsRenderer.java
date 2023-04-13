@@ -14,25 +14,27 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.client.Layers;
+import net.povstalec.sgjourney.client.models.TransportRingsModel;
 
-@OnlyIn(Dist.CLIENT)
 public class TransportRingsRenderer implements BlockEntityRenderer<TransportRingsEntity>
 {
-	private static final ResourceLocation TRANSPORT_RINGS_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/block/transport_rings.png");
+	/*private static final ResourceLocation TRANSPORT_RINGS_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/block/transport_rings.png");
 	private final ModelPart first_ring;
 	private final ModelPart second_ring;
 	private final ModelPart third_ring;
 	private final ModelPart fourth_ring;
-	private final ModelPart fifth_ring;
+	private final ModelPart fifth_ring;*/
+	protected final TransportRingsModel transportRings;
 	
-	public TransportRingsRenderer(BlockEntityRendererProvider.Context p_173554_)
+	public TransportRingsRenderer(BlockEntityRendererProvider.Context context)
 	{
-		ModelPart modelpart = p_173554_.bakeLayer(Layers.TRANSPORT_RING_LAYER);
+		/*ModelPart modelpart = context.bakeLayer(Layers.TRANSPORT_RING_LAYER);
 		this.first_ring = modelpart.getChild("first_ring");
 		this.second_ring = modelpart.getChild("second_ring");
 		this.third_ring = modelpart.getChild("third_ring");
 		this.fourth_ring = modelpart.getChild("fourth_ring");
-		this.fifth_ring = modelpart.getChild("fifth_ring");
+		this.fifth_ring = modelpart.getChild("fifth_ring");*/
+		transportRings = new TransportRingsModel(context.bakeLayer(Layers.TRANSPORT_RING_LAYER));
 	}
 	
 	private float getHeight(TransportRingsEntity rings, int ringNumber, float partialTick)
@@ -64,33 +66,11 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 	public void render(TransportRingsEntity rings, float partialTick, PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer vertexconsumer = source.getBuffer(RenderType.entitySolid(TRANSPORT_RINGS_TEXTURE));
-		// It takes the rings 29 ticks to get into position if there is empty space right above them
-		
-		if(rings.progress > 0)
-		{
-			this.first_ring.y = getHeight(rings, 1, partialTick);
-			this.first_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
-		}
-		if(rings.progress > 6)
-		{
-			this.second_ring.y = getHeight(rings, 2, partialTick);
-		    this.second_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
-		}
-		if(rings.progress > 12)
-		{
-			this.third_ring.y = getHeight(rings, 3, partialTick);
-		    this.third_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
-		}
-		if(rings.progress > 18)
-		{
-			this.fourth_ring.y = getHeight(rings, 4, partialTick);
-		    this.fourth_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
-		}
-		this.fifth_ring.y = getHeight(rings, 5, partialTick);
-	    if(rings.progress <= 24)
-	    	this.fifth_ring.render(stack, vertexconsumer, combinedLight, combinedOverlay);
-	    else
-	    	this.fifth_ring.render(stack, vertexconsumer, rings.transportLight, combinedOverlay);
+		this.transportRings.setRingHeight(1, getHeight(rings, 1, partialTick));
+		this.transportRings.setRingHeight(2, getHeight(rings, 2, partialTick));
+		this.transportRings.setRingHeight(3, getHeight(rings, 3, partialTick));
+		this.transportRings.setRingHeight(4, getHeight(rings, 4, partialTick));
+		this.transportRings.setRingHeight(5, getHeight(rings, 5, partialTick));
+		this.transportRings.renderTransportRings(rings, partialTick, stack, source, combinedLight, combinedOverlay);
 	}
 }

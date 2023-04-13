@@ -1,16 +1,14 @@
 package net.povstalec.sgjourney.stargate;
 
-import com.google.common.base.Function;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -18,68 +16,129 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.data.StargateNetwork;
+import net.povstalec.sgjourney.config.CommonStargateConfig;
 import net.povstalec.sgjourney.init.SoundInit;
+import net.povstalec.sgjourney.misc.MatrixHelper;
+import net.povstalec.sgjourney.misc.Orientation;
 
 public class Wormhole implements ITeleporter
 {
-	private AbstractStargateEntity dialingStargate;
-	private AbstractStargateEntity dialedStargate;
-	private long connectionCost;
 	
-	public Wormhole(AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, long connectionCost)
+	Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
+	List<Entity> localEntities = new ArrayList<Entity>();
+	
+	public Wormhole()
     {
-        this.dialingStargate = dialingStargate;
-        this.dialedStargate = dialedStargate;
-        this.connectionCost = connectionCost;
     }
+	
+	public boolean hasCandidates()
+	{
+		return localEntities.isEmpty();
+	}
+	
+	public boolean findCandidates(Level level, BlockPos centerPos, Direction direction)
+	{
+		AABB localBox = new AABB(
+			(centerPos.getX() - 2), (centerPos.getY() - 2), (centerPos.getZ() - 2), 
+			(centerPos.getX() + 3), (centerPos.getY() + 3), (centerPos.getZ() + 3));
+		
+		localEntities = level.getEntitiesOfClass(Entity.class, localBox);
+		
+		return !localEntities.isEmpty();
+	}
+	
+	public void wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, boolean canWormhole)
+	{
+		Direction direction = initialStargate.getDirection();
+		Direction orientationDirection = Orientation.getEffectiveDirection(direction, initialStargate.getOrientation());
+		Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
+		localEntities.stream().forEach((traveler) ->
+		{
+			if(this.entityLocations.containsKey(traveler.getId()))
+			{
+				double previousX = this.entityLocations.get(traveler.getId()).x();
+				double previousY = this.entityLocations.get(traveler.getId()).y();
+				double previousZ = this.entityLocations.get(traveler.getId()).z();
+				
+				Vec3 momentum = new Vec3(traveler.getX() - previousX, traveler.getY() - previousY, traveler.getZ() - previousZ);
+
+				int unitDistance;
+				double previousTravelerPos;
+				double travelerPos;
+				double axisMomentum;
+				
+				if(orientationDirection.getAxis() == Direction.Axis.X)
+				{
+					unitDistance = initialStargate.getCenterPos().getX() - initialStargate.getCenterPos().relative(orientationDirection).getX();
+					previousTravelerPos = initialStargate.getCenterPos().getX() + 0.5 - previousX;
+					travelerPos = initialStargate.getCenterPos().getX() + 0.5 - traveler.getX();
+					axisMomentum = momentum.x();
+					//momentum = new Vec3(reverseIfNeeded(unitDistance > 0, axisMomentum), momentum.y(), momentum.z());
+				}
+				else if(orientationDirection.getAxis() == Direction.Axis.Z)
+				{
+					unitDistance = initialStargate.getCenterPos().getZ() - initialStargate.getCenterPos().relative(orientationDirection).getZ();
+					previousTravelerPos = initialStargate.getCenterPos().getZ() + 0.5 - previousZ;
+					travelerPos = initialStargate.getCenterPos().getZ() + 0.5 - traveler.getZ();
+					axisMomentum = momentum.z();
+					//momentum = new Vec3(momentum.x(), momentum.y(), reverseIfNeeded(unitDistance > 0, axisMomentum));
+				}
+				else
+				{
+					unitDistance = initialStargate.getCenterPos().getY() - initialStargate.getCenterPos().relative(orientationDirection).getY();
+					previousTravelerPos = initialStargate.getCenterPos().getY() + 0.28125 - previousY;
+					travelerPos = initialStargate.getCenterPos().getY() + 0.28125 - traveler.getY();
+					axisMomentum = momentum.y();
+					//momentum = new Vec3(momentum.x(), reverseIfNeeded(unitDistance > 0, axisMomentum), momentum.z());
+				}
+				
+				if(shouldWormhole(unitDistance, previousTravelerPos, travelerPos, axisMomentum))
+				{
+					doWormhole(initialStargate, targetStargate, traveler, momentum, canWormhole);
+				}
+				else
+					entityLocations.put(traveler.getId(), new Vec3(traveler.getX(), traveler.getY(), traveler.getZ()));
+				
+			}
+			else
+				entityLocations.put(traveler.getId(), new Vec3(traveler.getX(), traveler.getY(), traveler.getZ()));
+		});
+		
+		this.entityLocations = entityLocations;
+	}
+	
+	public boolean shouldWormhole(int unitDistance, double previousTravelerPos, double travelerPos, double axisMomentum)
+	{
+		previousTravelerPos = reverseIfNeeded(unitDistance > 0, previousTravelerPos);
+		travelerPos = reverseIfNeeded(unitDistance > 0, travelerPos);
+		axisMomentum = reverseIfNeeded(unitDistance > 0, axisMomentum);
+		
+		if(previousTravelerPos < 0 && travelerPos >= 0 && axisMomentum < 0)
+			return true;
+		
+		return false;
+	}
+	
+	public double reverseIfNeeded(boolean shouldReverse, double number)
+	{
+		return shouldReverse ? -number : number;
+	}
     
-    @Override
-    public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld)
-    {
-        return false;
-    }
-    
-    public long getConnectionCost()
-    {
-    	return this.connectionCost;
-    }
-    
-    public AbstractStargateEntity getDialingStargate()
-    {
-    	return this.dialingStargate;
-    }
-    
-    public AbstractStargateEntity getDialedStargate()
-    {
-    	return this.dialedStargate;
-    }
-    
-    public static void doWormhole(String uuid, Entity traveler)
+    public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, boolean canWormhole)
     {
 		Level level = traveler.getLevel();
 		playWormholeSound(level, traveler);
-    	
-    	/*if(traveler instanceof LocalPlayer player) // DON'T USE THIS, IT WILL CRASH THE SERVER YOU IDIOT
-    	{
-        	Vec3 momentum = traveler.getDeltaMovement();
-        	player.connection.send(new ServerboundMovePlayerPacket.PosRot(momentum.x, momentum.y, momentum.z, player.getYRot(), player.getXRot(), player.isOnGround()));
-    	}*/
-    	/*if(traveler instanceof ServerPlayer player)
-    	{
-        	Vec3 momentum = traveler.getDeltaMovement();
-    	}*/
-    	
-		if(!level.isClientSide())
+		
+		if(level.isClientSide())
+			return;
+		
+		if(canWormhole)
 		{
-			AbstractStargateEntity dialingStargate = StargateNetwork.get(level).getDialingStargate(level.getServer(), uuid);
-			
-			int[] targetCoords = StargateNetwork.get(level).getConnection(uuid).getCompound("DialedStargate").getIntArray("Coordinates");
-			ServerLevel destinationlevel = level.getServer().getLevel(StargateNetwork.get(level).getDialedDimension(uuid));
+			ServerLevel destinationlevel = (ServerLevel) targetStargate.getLevel();
 	        
 	        if (destinationlevel == null)
 	        {
@@ -87,65 +146,45 @@ public class Wormhole implements ITeleporter
 	            return;
 	        }
 	        
-	        AbstractStargateEntity dialedStargate = StargateNetwork.get(level).getDialedStargate(level.getServer(), uuid);
-	        
-	        if(dialedStargate != null)
+	        if(targetStargate != null)
 	        {
-		        Direction initialDirection = dialingStargate.getDirection();
-	        	Direction destinationDirection = dialedStargate.getDirection();
-		        if(traveler instanceof ServerPlayer player)
+		        Direction initialDirection = initialStargate.getDirection();
+		        Orientation initialOrientation = initialStargate.getOrientation();
+	        	Direction destinationDirection = targetStargate.getDirection();
+		        Orientation destinationOrientation = targetStargate.getOrientation();
+	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + 0.5), traveler.getY() - initialStargate.getCenterPos().getY(), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
+	    		
+	    		if(traveler instanceof ServerPlayer player)
 		    	{
-		        	//Vec3 playerMomentum = new Vec3(player.getX() - player.xOld, player.getY() - player.yOld, player.getZ() - player.zOld);
-		        	player.teleportTo(destinationlevel, targetCoords[0] + 0.5, targetCoords[1] + 2, targetCoords[2] + 0.5, preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
-		        	//player.setDeltaMovement(preserveMomentum(initialDirection, destinationDirection, playerMomentum));
+		        	player.teleportTo(destinationlevel, targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + 0.5 + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
+		        	player.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
+		    		playWormholeSound(level, player);
 		    	}
 		    	else
 		    	{
-		        	Vec3 momentum = traveler.getDeltaMovement();
+		    		Entity newTraveler = traveler;
 		    		if((ServerLevel) level != destinationlevel)
-		    		{
-		    			Entity newTraveler = traveler.changeDimension(destinationlevel, new Wormhole(dialingStargate, dialedStargate, 10));
-		    			newTraveler.moveTo(targetCoords[0] + 0.5, targetCoords[1] + 2, targetCoords[2] + 0.5, preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
-		    			newTraveler.setDeltaMovement(preserveMomentum(initialDirection, destinationDirection, momentum));
-		    		}
-		    		else
-		    		{
-		    			traveler.moveTo(targetCoords[0] + 0.5, targetCoords[1] + 2, targetCoords[2] + 0.5, preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
-		    			traveler.setDeltaMovement(preserveMomentum(initialDirection, destinationDirection, momentum));
-		    		}
+		    			newTraveler = traveler.changeDimension(destinationlevel, this);
+		    		
+		    		newTraveler.moveTo(targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + 0.5 + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
+		    		newTraveler.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
+		    		playWormholeSound(level, newTraveler);
 		    	}
 	        }
 		}
+		else if(CommonStargateConfig.reverse_wormhole_kills.get())
+		{
+			if(traveler instanceof Player player && player.isCreative())
+				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.one_way_wormhole"), true);
+			else
+				traveler.kill();
+		}
     }
     
-    private static Vec3 preserveMomentum(Direction initialDirection, Direction destinationDirection, Vec3 initialMomentum)
+    private static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
     {
-    	double x = initialMomentum.x();
-    	double y = initialMomentum.y();
-    	double z = initialMomentum.z();
-    	
-    	double newx = x;
-    	double newz = z;
-    	
-    	if(initialDirection == destinationDirection.getClockWise())
-    	{
-    		newx = -z;
-    		newz = x;
-    	}
-    	else if(initialDirection == destinationDirection.getClockWise().getClockWise())
-    	{
-    		newx = -x;
-    		newz = -z;
-    	}
-    	else if(initialDirection == destinationDirection.getCounterClockWise())
-    	{
-    		newx = z;
-    		newz = -x;
-    	}
-    	
-    	Vec3 destinationMomentum = new Vec3(newx, y, newz);
-    	return destinationMomentum;
+    	return MatrixHelper.rotateVector(initial, initialDirection, initialOrientation, destinationDirection, destinationOrientation);
     }
 	
 	private static float preserveYRot(Direction initialDirection, Direction destinationDirection, float yRot)
