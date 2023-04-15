@@ -155,7 +155,7 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
 		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
-		if(stargate.getChevronsEngaged() >= chevronNumber)
+		if(stargate.chevronsRendered() >= chevronNumber)
 		{
 			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
 			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
@@ -165,14 +165,14 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 	protected void doMovieChevron(MilkyWayStargateEntity stargate)
 	{
 		boolean raiseChevron = stargate.isChevronRaised && stargate.getCurrentSymbol() != 0;
-		int chevron = stargate.getChevronsEngaged() + 1;
+		int chevron = stargate.chevronsRendered() + 1;
 		
 		if(chevron < 9 && raiseChevron)
 		{
 			this.getChevronLight(chevron).y = 2;
 			this.getOuterChevron(chevron).y = -2;
 		}
-		else if((stargate.getCurrentSymbol() == 0 || stargate.getChevronsEngaged() >= 8) && stargate.isChevronRaised || stargate.isConnected())
+		else if((stargate.getCurrentSymbol() == 0 || stargate.chevronsRendered() >= 8) && stargate.isChevronRaised || stargate.isConnected())
 		{
 			//TODO Change this to not use for
 			for(int i = 1; i < chevron; i++)

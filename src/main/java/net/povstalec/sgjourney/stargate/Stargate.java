@@ -121,6 +121,7 @@ public class Stargate
 
 		// Wormhole
 		TRANSPORT_SUCCESSFUL(FeedbackType.INFO, createInfo("wormhole.transport_successful")),//TODO
+		ENTITY_DESTROYED(FeedbackType.INFO, createInfo("wormhole.entity_destroyed")),
 		
 		// End Connection
 		CONNECTION_ENDED_BY_DISCONNECT(FeedbackType.INFO, createInfo("connection_ended.disconnect")),

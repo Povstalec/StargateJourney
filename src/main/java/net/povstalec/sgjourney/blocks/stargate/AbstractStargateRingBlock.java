@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
@@ -37,6 +38,8 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	public static final EnumProperty<StargatePart> PART = EnumProperty.create("stargate_part", StargatePart.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
+	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
 	
 	//TODO
 	//public static final BooleanProperty FULL = BooleanProperty.create("full");
@@ -94,12 +97,12 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 	public AbstractStargateRingBlock(Properties properties)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.ABOVE6)/*.setValue(FULL, Boolean.valueOf(false))*/);
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.ABOVE6)/*.setValue(FULL, Boolean.valueOf(false))*/);
 	}
 	
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(FACING).add(ORIENTATION).add(PART).add(WATERLOGGED)/*.add(FULL)*/;
+		state.add(FACING).add(ORIENTATION).add(PART).add(CONNECTED).add(CHEVRONS_ACTIVE).add(WATERLOGGED)/*.add(FULL)*/;
 	}
 	
 	public BlockState rotate(BlockState state, Rotation rotation)

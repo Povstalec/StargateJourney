@@ -266,23 +266,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	private void updateStargate(Level level, String id, int timesOpened, boolean hasDHD)
 	{
 		StargateNetwork.get(level).updateStargate(level, id, timesOpened, hasDHD);
-	}
-	
-	public boolean canConnect()
-	{
-		if(isObstructed())
-		{
-			StargateJourney.LOGGER.info("Stargate is obstructed");
-			return false;
-		}
-		//TODO Add Filter
-		
-		return true;
+		setStargateState(this.isConnected(), this.getChevronsEngaged());
 	}
 	
 	protected void growAddress(int symbol)
 	{
 		this.address = ArrayHelper.growIntArray(this.address, symbol);
+		setStargateState(this.isConnected(), this.getChevronsEngaged());
 	}
 	
 	protected void resetAddress()
@@ -447,6 +437,12 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public int getChevronsEngaged()
 	{
+		int chevronsEngaged = getAddress().length;
+		return this.isConnected() ? chevronsEngaged + 1 : chevronsEngaged;
+	}
+	
+	public int chevronsRendered()
+	{
 		return getAddress().length;
 	}
 	
@@ -511,13 +507,18 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public void setConnected(boolean isConnected)
 	{
+		setStargateState(isConnected, this.getChevronsEngaged());
+	}
+	
+	public void setStargateState(boolean isConnected, int chevronsEngaged)
+	{
 		BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = this.level.getBlockState(gatePos);
 		
-		if(gateState.getBlock() instanceof AbstractStargateBlock)
-			level.setBlock(gatePos, gateState.setValue(AbstractStargateBlock.CONNECTED, isConnected), 2);
+		if(gateState.getBlock() instanceof AbstractStargateBlock stargate)
+			stargate.updateStargate(level, gatePos, gateState, isConnected, chevronsEngaged);
 		else
-			StargateJourney.LOGGER.info("Couldn't set Stargate to connected state");
+			StargateJourney.LOGGER.info("Couldn't find Stargate");
 		setChanged();
 		
 	}

@@ -37,14 +37,6 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 			peripheralHolder = new CrystalPeripheralHolder(this);
 	}
 	
-	/*@Override
-	public void onLoad()
-	{
-		if(ModList.get().isLoaded("computercraft") && peripheralHolder != null)
-			peripheralHolder.resetInterface();
-		super.onLoad();
-	}*/
-	
 	@Override
 	public void load(CompoundTag nbt)
 	{

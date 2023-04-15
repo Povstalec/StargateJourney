@@ -49,6 +49,8 @@ public class ItemInit
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 
+	public static final RegistryObject<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal", 
+			() -> new ControlCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<ControlCrystalItem> LARGE_CONTROL_CRYSTAL = ITEMS.register("large_control_crystal", 
 			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<MemoryCrystalItem> MEMORY_CRYSTAL = ITEMS.register("memory_crystal", 
@@ -59,6 +61,17 @@ public class ItemInit
 			() -> new EnergyCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<CommunicationCrystalItem> COMMUNICATION_CRYSTAL = ITEMS.register("communication_crystal", 
 			() -> new CommunicationCrystalItem(new Item.Properties().stacksTo(1)));
+
+	public static final RegistryObject<ControlCrystalItem> ADVANCED_CONTROL_CRYSTAL = ITEMS.register("advanced_control_crystal", 
+			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<MemoryCrystalItem> ADVANCED_MEMORY_CRYSTAL = ITEMS.register("advanced_memory_crystal", 
+			() -> new MemoryCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<TransportationCrystalItem> ADVANCED_TRANSPORTATION_CRYSTAL = ITEMS.register("advanced_transportation_crystal", 
+			() -> new TransportationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<EnergyCrystalItem> ADVANCED_ENERGY_CRYSTAL = ITEMS.register("advanced_energy_crystal", 
+			() -> new EnergyCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<CommunicationCrystalItem> ADVANCED_COMMUNICATION_CRYSTAL = ITEMS.register("advanced_communication_crystal", 
+			() -> new CommunicationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	
 	//Armor
 		public static final RegistryObject<ArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet", 
