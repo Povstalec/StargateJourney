@@ -28,6 +28,8 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
 	CrystalPeripheralHolder peripheralHolder;
+
+	private int inputSignal = 0;
 	
 	public CrystalInterfaceEntity(BlockPos pos, BlockState state)
 	{
@@ -83,7 +85,15 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 		
 		return true;
 	}
-	
+
+	public void setInputSignal(int inputSignal) {
+		this.inputSignal = inputSignal;
+	}
+
+	public int getInputSignal() {
+		return inputSignal;
+	}
+
 	//============================================================================================
 	//******************************************Storage*******************************************
 	//============================================================================================
