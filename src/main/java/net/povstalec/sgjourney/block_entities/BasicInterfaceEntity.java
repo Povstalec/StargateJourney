@@ -45,6 +45,14 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		super(type, pos, state);
 	}
 	
+	/*@Override
+	public void onLoad()
+	{
+		if(ModList.get().isLoaded("computercraft") && peripheralHolder != null)
+			peripheralHolder.resetInterface();
+		super.onLoad();
+	}*/
+	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
@@ -61,9 +69,9 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	public boolean updateInterface()
 	{
 		if(peripheralHolder != null)
-			peripheralHolder.resetInterface();
+			return peripheralHolder.resetInterface();
 		
-		return false;
+		return true;
 	}
 	
 	public Direction getDirection()

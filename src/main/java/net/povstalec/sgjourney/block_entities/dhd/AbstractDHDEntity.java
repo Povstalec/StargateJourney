@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -31,6 +33,7 @@ import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.init.SoundInit;
 import net.povstalec.sgjourney.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.misc.ArrayHelper;
+import net.povstalec.sgjourney.stargate.Stargate;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity
 {
@@ -288,7 +291,15 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		{
 			if(symbol == 0)
 				level.playSound((Player)null, this.getBlockPos(), SoundInit.MILKY_WAY_DHD_ENTER.get(), SoundSource.BLOCKS, 0.25F, 1F);
-			stargate.engageSymbol(symbol);
+			Stargate.Feedback feedback = stargate.engageSymbol(symbol);
+			
+			if(feedback.isError())
+			{
+				Component message = feedback.getFeedbackMessage();
+				AABB localBox = new AABB((getBlockPos().getX() - 4), (getBlockPos().getY() - 4), (getBlockPos().getZ() - 4), 
+						(getBlockPos().getX() + 5), (getBlockPos().getY() + 5), (getBlockPos().getZ() + 5));
+				level.getEntitiesOfClass(Player.class, localBox).stream().forEach((player) -> player.displayClientMessage(message, true));
+			}
 		}
 		else
 			System.out.println("Stargate not found");

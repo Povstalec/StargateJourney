@@ -33,10 +33,12 @@ import net.povstalec.sgjourney.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
+import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.misc.InventoryHelper;
+import net.povstalec.sgjourney.misc.InventoryUtil;
 
 public class MilkyWayDHDBlock extends AbstractDHDBlock
 {
@@ -105,8 +107,9 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock
 		return createTickerHelper(type, BlockEntityInit.MILKY_WAY_DHD.get(), AbstractDHDEntity::tick);
     }
 	
-	public static ItemStack milkyWayCrystalSetup(ItemStack stack)
+	public static ItemStack milkyWayCrystalSetup()
 	{
+		ItemStack stack = new ItemStack(BlockInit.MILKY_WAY_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
         CompoundTag inventory = new CompoundTag();
         
@@ -126,15 +129,15 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock
 	{
 		ListTag nbtTagList = new ListTag();
 		
-		nbtTagList.add(InventoryHelper.addItem(0, "sgjourney:large_control_crystal", 1, null));
-		nbtTagList.add(InventoryHelper.addItem(1, "sgjourney:energy_crystal", 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
-		nbtTagList.add(InventoryHelper.addItem(2, "sgjourney:communication_crystal", 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(3, "sgjourney:energy_crystal", 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
-		nbtTagList.add(InventoryHelper.addItem(4, "sgjourney:communication_crystal", 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(5, "sgjourney:energy_crystal", 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
-		nbtTagList.add(InventoryHelper.addItem(6, "sgjourney:memory_crystal", 1, null));
-		nbtTagList.add(InventoryHelper.addItem(7, "sgjourney:energy_crystal", 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_TRANSFER, 0, EnergyCrystalItem.MAX_TRANSFER)));
-		nbtTagList.add(InventoryHelper.addItem(8, "sgjourney:communication_crystal", 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(4, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(5, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(6, InventoryUtil.itemName(ItemInit.MEMORY_CRYSTAL.get()), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_TRANSFER, 0, EnergyCrystalItem.MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(8, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
 		
 		return nbtTagList;
 	}
@@ -151,7 +154,7 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock
 			{
 				CompoundTag list1 = tagList.getCompound(0);
 				
-				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals("sgjourney:large_control_crystal") && list1.contains("Count", Tag.TAG_BYTE) && list1.getByte("Count") > 0)
+				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals(InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get())) && list1.contains("Count", Tag.TAG_BYTE) && list1.getByte("Count") > 0)
 			        tooltipComponents.add(Component.literal("Has Control Crystal").withStyle(ChatFormatting.DARK_RED));
 			}
 		}

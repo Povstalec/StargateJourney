@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.misc;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class InventoryUtil
 {
@@ -32,5 +33,10 @@ public class InventoryUtil
         }
 
         return -1;
+    }
+    
+    public static String itemName(Item item)
+    {
+    	return ForgeRegistries.ITEMS.getKey(item).toString();
     }
 }

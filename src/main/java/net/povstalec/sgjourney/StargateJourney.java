@@ -59,6 +59,7 @@ import net.povstalec.sgjourney.init.MiscInit;
 import net.povstalec.sgjourney.init.PacketHandlerInit;
 import net.povstalec.sgjourney.init.SoundInit;
 import net.povstalec.sgjourney.init.StructureInit;
+import net.povstalec.sgjourney.init.TabInit;
 import net.povstalec.sgjourney.init.VillagerInit;
 import net.povstalec.sgjourney.stargate.Galaxy;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
@@ -104,8 +105,8 @@ public class StargateJourney
         
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(Layers::registerLayers);
-        eventBus.addListener(EventInit::onRegisterModTabs);
-        eventBus.addListener(EventInit::addCreative);
+        eventBus.addListener(TabInit::onRegisterModTabs);
+        eventBus.addListener(TabInit::addCreative);
         
 		//StargateJourneyConfig.loadConfig(StargateJourneyConfig.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("sgjourney-client.toml").toString());
 		//StargateJourneyConfig.loadConfig(StargateJourneyConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("sgjourney-server.toml").toString());

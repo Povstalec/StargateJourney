@@ -27,7 +27,6 @@ public class BasicPeripheralHolder
 	
 	public boolean resetInterface()
 	{
-		peripheral.invalidate();
 		BasicInterfacePeripheral newPeripheral = createPeripheral(basicInterface, basicInterface.findEnergyBlockEntity());
 		if (basicInterfacePeripheral != null && basicInterfacePeripheral.equals(newPeripheral))
 		{

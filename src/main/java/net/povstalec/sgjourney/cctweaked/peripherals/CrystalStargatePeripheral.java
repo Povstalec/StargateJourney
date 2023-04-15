@@ -21,6 +21,7 @@ import net.povstalec.sgjourney.cctweaked.methods.MilkyWayStargateMethods.LowerCh
 import net.povstalec.sgjourney.cctweaked.methods.MilkyWayStargateMethods.RaiseChevron;
 import net.povstalec.sgjourney.cctweaked.methods.MilkyWayStargateMethods.RotateAntiClockwise;
 import net.povstalec.sgjourney.cctweaked.methods.MilkyWayStargateMethods.RotateClockwise;
+import net.povstalec.sgjourney.stargate.Stargate;
 
 public class CrystalStargatePeripheral extends CrystalInterfacePeripheral implements IDynamicPeripheral
 {
@@ -95,7 +96,7 @@ public class CrystalStargatePeripheral extends CrystalInterfacePeripheral implem
 	{
 		context.executeMainThreadTask(() ->
 		{
-			stargate.disconnectStargate();
+			stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 			return null;
 		});
 	}

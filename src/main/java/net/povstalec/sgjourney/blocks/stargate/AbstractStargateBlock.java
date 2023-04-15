@@ -36,6 +36,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.misc.Orientation;
+import net.povstalec.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.stargate.StargatePart;
 
 public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock implements SimpleWaterloggedBlock
@@ -157,7 +158,7 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
         {
     		BlockEntity blockentity = level.getBlockEntity(pos);
     		if(blockentity instanceof AbstractStargateEntity stargate)
-    			stargate.disconnectStargate();
+    			stargate.disconnectStargate(Stargate.Feedback.STARGATE_DESTROYED);
     		
     		for(StargatePart part : StargatePart.values())
     		{
@@ -184,7 +185,7 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 		{
 			if(!level.isClientSide)
 			{
-				stargate.disconnectStargate();
+				stargate.disconnectStargate(Stargate.Feedback.STARGATE_DESTROYED);
 				
 				if(!player.isCreative())
 				{

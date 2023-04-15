@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -77,7 +78,6 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getX() + 0.5 - previousX;
 					travelerPos = initialStargate.getCenterPos().getX() + 0.5 - traveler.getX();
 					axisMomentum = momentum.x();
-					//momentum = new Vec3(reverseIfNeeded(unitDistance > 0, axisMomentum), momentum.y(), momentum.z());
 				}
 				else if(orientationDirection.getAxis() == Direction.Axis.Z)
 				{
@@ -85,7 +85,6 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getZ() + 0.5 - previousZ;
 					travelerPos = initialStargate.getCenterPos().getZ() + 0.5 - traveler.getZ();
 					axisMomentum = momentum.z();
-					//momentum = new Vec3(momentum.x(), momentum.y(), reverseIfNeeded(unitDistance > 0, axisMomentum));
 				}
 				else
 				{
@@ -93,7 +92,6 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getY() + 0.28125 - previousY;
 					travelerPos = initialStargate.getCenterPos().getY() + 0.28125 - traveler.getY();
 					axisMomentum = momentum.y();
-					//momentum = new Vec3(momentum.x(), reverseIfNeeded(unitDistance > 0, axisMomentum), momentum.z());
 				}
 				
 				if(shouldWormhole(unitDistance, previousTravelerPos, travelerPos, axisMomentum))
@@ -152,11 +150,14 @@ public class Wormhole implements ITeleporter
 		        Orientation initialOrientation = initialStargate.getOrientation();
 	        	Direction destinationDirection = targetStargate.getDirection();
 		        Orientation destinationOrientation = targetStargate.getOrientation();
-	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + 0.5), traveler.getY() - initialStargate.getCenterPos().getY(), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
+		        double initialYAddition = initialOrientation == Orientation.REGULAR ? 0.5 :  0.28125;
+		        double destinationYAddition = destinationOrientation == Orientation.REGULAR ? 0.5 :  0.28125;
+		        
+	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + initialYAddition), traveler.getY() - (initialStargate.getCenterPos().getY() + 0.5), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
 	    		
 	    		if(traveler instanceof ServerPlayer player)
 		    	{
-		        	player.teleportTo(destinationlevel, targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + 0.5 + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
+		        	player.teleportTo(destinationlevel, targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
 		        	player.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
@@ -167,7 +168,7 @@ public class Wormhole implements ITeleporter
 		    		if((ServerLevel) level != destinationlevel)
 		    			newTraveler = traveler.changeDimension(destinationlevel, this);
 		    		
-		    		newTraveler.moveTo(targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + 0.5 + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
+		    		newTraveler.moveTo(targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
 		    		newTraveler.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		    		playWormholeSound(level, newTraveler);
 		    	}
@@ -176,7 +177,7 @@ public class Wormhole implements ITeleporter
 		else if(CommonStargateConfig.reverse_wormhole_kills.get())
 		{
 			if(traveler instanceof Player player && player.isCreative())
-				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.one_way_wormhole"), true);
+				player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 			else
 				traveler.kill();
 		}

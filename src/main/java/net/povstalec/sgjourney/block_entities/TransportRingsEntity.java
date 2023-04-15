@@ -45,8 +45,6 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
     public int transportLight;
     
     private TransportRingsEntity target;
-    
-    //TODO fix the bug where the entity doesn't load when player is teleported alongside it
 	
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{

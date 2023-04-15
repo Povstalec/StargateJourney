@@ -18,7 +18,6 @@ public class MatrixHelper
     	int destinationVertical = destinationOrientation.get2DDataValue();
     	int regular = Orientation.REGULAR.get2DDataValue();
     	
-
     	// Rotate to default position
     	if(initialVertical > regular)
     		regular += 4;

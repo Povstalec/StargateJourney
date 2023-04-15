@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.block_entities.stargate;
 
-import java.util.List;
 import java.util.Random;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,10 +15,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -28,7 +25,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.block_entities.SGJourneyBlockEntity;
-import net.povstalec.sgjourney.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.config.CommonStargateConfig;
@@ -50,8 +46,6 @@ import net.povstalec.sgjourney.stargate.Wormhole;
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
 	// Basic Info
-	private static final int MAX_WORMHOLE_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
-	private static final boolean END_CONNECTION_FROM_BOTH_ENDS = CommonStargateConfig.end_connection_from_both_ends.get();
 	private static Stargate.Gen generation;
 	
 	// Used during gameplay
@@ -156,61 +150,55 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//******************************************Dialing*******************************************
 	//============================================================================================
 	
-	public void engageSymbol(int symbol)
+	public Stargate.Feedback engageSymbol(int symbol)
 	{
 		if(level.isClientSide())
-			return;
+			return Stargate.Feedback.NONE;
 		
 		if(Addressing.addressContainsSymbol(getAddress(), symbol))
-			return;
+			return Stargate.Feedback.SYMBOL_ENCODED;
 		
 		if(symbol == 0)
-			lockPrimaryChevron();
+			return lockPrimaryChevron();
 		else
-			encodeChevron(symbol);
+			return encodeChevron(symbol);
 	}
 	
-	protected void encodeChevron(int symbol)
+	protected Stargate.Feedback encodeChevron(int symbol)
 	{	
 		if(getAddress().length >= 8)
-			resetStargate(true);
-		else
-		{
-			growAddress(symbol);
-			engageChevron();
-		}
+			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
+		growAddress(symbol);
+		engageChevron();
 		this.setChanged();
+		
+		return Stargate.Feedback.SYMBOL_ENCODED;
 	}
 	
-	protected void lockPrimaryChevron()
+	protected Stargate.Feedback lockPrimaryChevron()
 	{
 		if(level.isClientSide())
-			return;
+			return Stargate.Feedback.NONE;
 		
-		if(getAddress().length == 0)
-			resetStargate(false);
-		else if(getAddress().length < 6)
-			resetStargate(true);
+		if(getAddress().length < 6)
+			return resetStargate(Stargate.Feedback.INCOPLETE_ADDRESS);
 		else if(!isConnected())
 		{
-			if(canDial())
+			if(!isObstructed())
 			{
 				setPrimaryChevronEndaged(true);
 				engageChevron();
-				engageStargate(getAddress());
+				return engageStargate();
 			}
 			else
-				resetStargate(true);
+				return resetStargate(Stargate.Feedback.SELF_OBSTRUCTED);
 		}
 		else
 		{
-			if(!END_CONNECTION_FROM_BOTH_ENDS && !this.isDialingOut())
-				StargateJourney.LOGGER.info("Cannot disconnect Stargate from this side!");
+			if(!CommonStargateConfig.end_connection_from_both_ends.get() && !this.isDialingOut())
+				return Stargate.Feedback.WRONG_DISCONNECT_SIDE;
 			else
-			{
-				StargateJourney.LOGGER.info("Stargate disconnected due to locking primary chevron");
-				disconnectStargate();
-			}
+				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 		}
 		
 	}
@@ -220,35 +208,14 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		level.playSound((Player)null, worldPosition, chevronEngageSound(), SoundSource.BLOCKS, 0.25F, 1F);
 	}
 	
-	public void engageStargate(int[] address)
+	public Stargate.Feedback engageStargate()
 	{
-		AbstractStargateEntity targetStargate = Dialing.dialStargate(this.level, address);
-
-		if(requireEnergy && !hasEnergy(targetStargate))
-		{
-			StargateJourney.LOGGER.info("Stargate does not have enough power to estabilish a stable connection");
-			resetStargate(true);
-			return;
-		}
-		
-		if(targetStargate != null)
-		{
-			if(targetStargate.isConnected())
-			{
-				StargateJourney.LOGGER.info("Stargate is already connected");
-				resetStargate(true);
-				return;
-			}
-			
-			dialStargate(targetStargate);
-		}
-		else
-			resetStargate(true);
+		return Dialing.dialStargate(this.level, this);
 	}
 	
-	private void dialStargate(AbstractStargateEntity targetStargate)
+	public Stargate.Feedback dialStargate(AbstractStargateEntity targetStargate)
 	{
-		this.connectionID = StargateNetwork.get(level).createConnection(this.level.getServer(), this, targetStargate);
+		return StargateNetwork.get(level).createConnection(this.level.getServer(), this, targetStargate);
 	}
 	
 	public void connectStargate(String connectionID, boolean dialingOut, int[] address)
@@ -263,7 +230,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.updateStargate();
 	}
 	
-	public void resetStargate(boolean causedByFailure)
+	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
 	{
 		if(isConnected())
 		{
@@ -277,17 +244,18 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.connectionID = EMPTY;
 		this.timeSinceLastTraveler = 0;
 		
-		if(causedByFailure)
+		if(feedback.playFailSound())
 			level.playSound((Player)null, worldPosition, failSound(), SoundSource.BLOCKS, 0.25F, 1F);
 		
 		setChanged();
 		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ());
+		return feedback;
 	}
 	
-	public void disconnectStargate()
+	public Stargate.Feedback disconnectStargate(Stargate.Feedback feedback)
 	{
-		StargateNetwork.get(level).terminateConnection(level.getServer(), connectionID);
-		resetStargate(false);
+		StargateNetwork.get(level).terminateConnection(level.getServer(), connectionID, feedback);
+		return resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);//TODO Change this
 	}
 	
 	public void updateStargate()
@@ -308,22 +276,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			return false;
 		}
 		//TODO Add Filter
-		
-		return true;
-	}
-	
-	protected boolean canDial()
-	{
-		if(isConnected())
-		{
-			StargateJourney.LOGGER.info("Stargate is already connected");
-			return false;
-		}
-		if(isObstructed())
-		{
-			StargateJourney.LOGGER.info("Stargate is obstructed");
-			return false;
-		}
 		
 		return true;
 	}
@@ -398,7 +350,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 
 	public int getMaxGateOpenTime()
 	{
-		return MAX_WORMHOLE_OPEN_TIME;
+		return CommonStargateConfig.max_wormhole_open_time.get() * 20;
 	}
 	
 	public Stargate.Gen getGeneration()
@@ -604,7 +556,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public boolean hasEnergy(AbstractStargateEntity targetStargate)
 	{
-		return this.getEnergyStored() >= StargateNetwork.getConnectionCost(this.level.getServer(), this, targetStargate, false);
+		return this.getEnergyStored() >= StargateNetwork.getConnectionType(this.level.getServer(), this, targetStargate).getEstabilishingPowerCost();
 	}
 	
 	public abstract SoundEvent chevronEngageSound();
@@ -667,7 +619,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		}
 		
 		if(isDialingOut() && this.advancedProtocolsEnabled && this.timeSinceLastTraveler >= 200)
-			disconnectStargate();
+			disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 		
 		if(level.isClientSide())
 			return;

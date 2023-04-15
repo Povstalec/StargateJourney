@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.cctweaked.methods.InterfaceMethod;
 import net.povstalec.sgjourney.cctweaked.methods.MilkyWayStargateMethods.*;
 import net.povstalec.sgjourney.cctweaked.methods.UniverseStargateMethods.*;
+import net.povstalec.sgjourney.stargate.Stargate;
 
 public class BasicStargatePeripheral extends BasicInterfacePeripheral implements IDynamicPeripheral
 {
@@ -81,7 +82,7 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 	{
 		context.executeMainThreadTask(() ->
 		{
-			stargate.disconnectStargate();
+			stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 			return null;
 		});
 	}

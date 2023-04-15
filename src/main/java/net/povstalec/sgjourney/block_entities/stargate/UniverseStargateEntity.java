@@ -98,35 +98,36 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void engageSymbol(int symbol)
+	public Stargate.Feedback engageSymbol(int symbol)
 	{
 		if(level.isClientSide())
-			return;
+			return Stargate.Feedback.NONE;
 		
 		if(Addressing.addressContainsSymbol(getAddress(), symbol))
-			return;
+			return Stargate.Feedback.SYMBOL_ENCODED;
 		
 		if(symbol > 35)
-			return;
+			return Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS;
 		
 		if(symbol == 0)
 		{
 			if(isConnected())
-				disconnectStargate();
+				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 			else if(!isConnected() && addressBuffer.length == 0)
-				return;
+				return Stargate.Feedback.INCOPLETE_ADDRESS;
 		}
 		
 		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
+		return Stargate.Feedback.SYMBOL_ENCODED;
 	}
 	
 	@Override
-	protected void encodeChevron(int symbol)
+	protected Stargate.Feedback encodeChevron(int symbol)
 	{
 		symbolBuffer++;
 		animationTicks++;
-		super.encodeChevron(symbol);
+		return super.encodeChevron(symbol);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, UniverseStargateEntity stargate)
@@ -259,11 +260,11 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void resetStargate(boolean causedByFailure)
+	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
 	{
 		symbolBuffer = 0;
 		addressBuffer = new int[0];
-		super.resetStargate(causedByFailure);
+		return super.resetStargate(feedback);
 	}
 	
 }

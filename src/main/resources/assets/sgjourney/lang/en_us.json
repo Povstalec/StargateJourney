@@ -29,7 +29,6 @@
 	"block.sgjourney.classic_dhd": "Classic DHD",
 	
 	"block.sgjourney.stargate.not_enough_space": "Stargate does not have enough space",
-	"block.sgjourney.stargate.one_way_wormhole": "Can't travel through wormhole in this direction",
 
 	"block.sgjourney.transport_rings": "Transport Rings",
 	"block.sgjourney.ring_panel": "Ring Panel",
@@ -129,6 +128,33 @@
 	"message.sgjourney.syringe_has_ancient_gene": "You already have the Ancient Gene",
 	"message.sgjourney.pda_has_ancient_gene": "Has Ancient Gene",
 	"message.sgjourney.pda_has_naquadah_in_bloodstream": "Has Naquadah in bloodstream",
+	
+	"message.sgjourney.stargate.error.one_way_wormhole": "Can't travel through wormhole in this direction",
+	
+	"message.sgjourney.stargate.error.symbol_in_addres": "Symbol is already encoded",
+	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol is out of bounds",
+	
+	"message.sgjourney.stargate.error.incomplete_address": "Address is incomplete",
+	"message.sgjourney.stargate.error.invalid_address": "Address is invalid",
+	"message.sgjourney.stargate.error.not_enough_power": "Not enough power",
+	"message.sgjourney.stargate.error.self_obstructed": "Stargate is obstructed",
+	"message.sgjourney.stargate.error.target_obstructed": "Target Stargate is obstructed",
+	"message.sgjourney.stargate.error.self_dial": "Stargate cannot dial itself",
+	"message.sgjourney.stargate.error.same_system_dial": "Cannot dial the same Solar System",
+	"message.sgjourney.stargate.error.already_connected": "Target Stargate is already connected",
+	"message.sgjourney.stargate.error.no_galaxy": "Stargate is not located inside a galaxy",
+	"message.sgjourney.stargate.error.no_dimensions": "Dialed Solar System has no dimension",
+	"message.sgjourney.stargate.error.no_stargates": "Dialed Solar System has no Stargates",
+	
+	"message.sgjourney.stargate.error.exceeded_connection_time": "Stargate has exceeded its max connection time",
+	"message.sgjourney.stargate.error.ran_out_of_power": "Ran out of power",
+	"message.sgjourney.stargate.error.connection_rerouted": "Connection rerouted",
+	"message.sgjourney.stargate.error.wrong_disconnect_side": "Stargate cannot be disconnected from this side",
+	
+	"message.sgjourney.stargate.error.target_stargate_does_not_exist": "Target Stargate does not exist",
+	
+	"message.sgjourney.stargate.chevron_already_raised": "Chevron is already raised",
+	"message.sgjourney.stargate.chevron_already_lowered": "Chevron is already lowered",
 	
 	"gui.sgjourney.config": "Stargate Journey Config",
 	"gui.sgjourney.client": "Client",

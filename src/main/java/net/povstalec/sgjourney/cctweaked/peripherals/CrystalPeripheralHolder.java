@@ -27,7 +27,6 @@ public class CrystalPeripheralHolder
 	
 	public boolean resetInterface()
 	{
-		peripheral.invalidate();
 		CrystalInterfacePeripheral newPeripheral = createPeripheral(crystalInterface, crystalInterface.findEnergyBlockEntity());
 		if (crystalInterfacePeripheral != null && crystalInterfacePeripheral.equals(newPeripheral))
 		{

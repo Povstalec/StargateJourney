@@ -5,6 +5,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.stargate.Stargate;
 
 public class MilkyWayStargateMethods
 {
@@ -141,9 +142,7 @@ public class MilkyWayStargateMethods
 		{
 			context.executeMainThreadTask(() ->
 			{
-				if(!stargate.raiseChevron())
-					throw new LuaException("Stargate cannot raise chevron");
-				return null;
+				return new Object[] {stargate.raiseChevron().getCode()};
 			});
 			
 			return MethodResult.of();
@@ -161,11 +160,15 @@ public class MilkyWayStargateMethods
 		@Override
 		public MethodResult use(ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
+			/*context.executeMainThreadTask(() ->
 			{
 				if(!stargate.lowerChevron())
 					throw new LuaException("Stargate cannot lower chevron");
 				return null;
+			});*/
+			context.executeMainThreadTask(() ->
+			{
+				return new Object[] {stargate.lowerChevron().getCode()};
 			});
 			
 			return MethodResult.of();

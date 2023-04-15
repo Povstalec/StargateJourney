@@ -71,28 +71,25 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void engageSymbol(int symbol)
+	public Stargate.Feedback engageSymbol(int symbol)
 	{
-		
 		if(isConnected() && symbol == 0)
-		{
-			disconnectStargate();
-			return;
-		}
+			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 		
 		if(Addressing.addressContainsSymbol(addressBuffer, symbol))
-			return;
+			return Stargate.Feedback.SYMBOL_ENCODED;
 		
 		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
+		return Stargate.Feedback.SYMBOL_ENCODED;
 	}
 	
 	@Override
-	protected void encodeChevron(int symbol)
+	protected Stargate.Feedback encodeChevron(int symbol)
 	{
 		symbolBuffer++;
 		passedOver = false;
 		animationTick = 0;
-		super.encodeChevron(symbol);
+		return super.encodeChevron(symbol);
 	}
 	
 	public int getChevronPosition(int chevron)
@@ -180,11 +177,11 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void resetStargate(boolean causedByFailure)
+	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
 	{
 		currentSymbol = 0;
 		symbolBuffer = 0;
 		addressBuffer = new int[0];
-		super.resetStargate(causedByFailure);
+		return super.resetStargate(feedback);
 	}
 }

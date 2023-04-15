@@ -114,7 +114,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 				if(!isConnected())
 					raiseChevron();
 				else
-					disconnectStargate();
+					disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN);
 			}
 		}
 		else
@@ -169,30 +169,30 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return this.rotation != this.oldRotation;
 	}
 	
-	public boolean raiseChevron()
+	public Stargate.Feedback raiseChevron()
 	{
 		if(!this.isChevronRaised && !Addressing.addressContainsSymbol(getAddress(), getCurrentSymbol()))
 		{
 			this.level.playSound((Player)null, this.worldPosition, SoundInit.MILKY_WAY_CHEVRON_ENCODE.get(), SoundSource.BLOCKS, 0.25F, 1F);
 			this.isChevronRaised = true;
-			return true;
+			return Stargate.Feedback.CHEVRON_RAISED;
 		}
-		return false;
+		return Stargate.Feedback.CHEVRON_ALREADY_RAISED;
 	}
 	
-	public boolean lowerChevron()
+	public Stargate.Feedback lowerChevron()
 	{
 		if(this.isChevronRaised)
 		{
 			engageSymbol(getCurrentSymbol());
 			this.isChevronRaised = false;
-			return true;
+			return Stargate.Feedback.CHEVRON_LOWERED;
 		}
 		
 		if(!this.level.isClientSide())
 			synchronizeWithClient(this.level);
 		
-		return false;
+		return Stargate.Feedback.CHEVRON_ALREADY_LOWERED;
 	}
 	
 	public int getCurrentSymbol()

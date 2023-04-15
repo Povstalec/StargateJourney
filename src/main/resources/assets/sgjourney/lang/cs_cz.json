@@ -18,18 +18,17 @@
 	"block.sgjourney.sandstone_cartouche": "P\u00edskovcov\u00e1 kartu\u0161e",
 	"block.sgjourney.stone_cartouche": "Kamenn\u00e1 kartu\u0161e",
 	
-	"block.sgjourney.universe_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
-	"block.sgjourney.universe_ring": "Hv\u011bzdn\u00e1 br\u00e1na",
-	"block.sgjourney.milky_way_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
-	"block.sgjourney.milky_way_ring": "Hv\u011bzdn\u00e1 br\u00e1na",
-	"block.sgjourney.pegasus_stargate": "Hv\u011bzdn\u00e1 br\u00e1na",
-	"block.sgjourney.pegasus_ring": "Hv\u011bzdn\u00e1 br\u00e1na",
-	"block.sgjourney.milky_way_dhd": "Ovl\u00e1dac\u00ed panel",
-	"block.sgjourney.pegasus_dhd": "Ovl\u00e1dac\u00ed panel",
-	"block.sgjourney.classic_dhd": "Ovl\u00e1dac\u00ed panel",
+	"block.sgjourney.universe_stargate": "Hv\u011bzdn\u00e1 br\u00e1na 1. generace",
+	"block.sgjourney.universe_ring": "Hv\u011bzdn\u00e1 br\u00e1na 1. generace",
+	"block.sgjourney.milky_way_stargate": "Hv\u011bzdn\u00e1 br\u00e1na 2. generace",
+	"block.sgjourney.milky_way_ring": "Hv\u011bzdn\u00e1 br\u00e1na 2. generace",
+	"block.sgjourney.pegasus_stargate": "Hv\u011bzdn\u00e1 br\u00e1na 3. generace",
+	"block.sgjourney.pegasus_ring": "Hv\u011bzdn\u00e1 br\u00e1na 3. generace",
+	"block.sgjourney.milky_way_dhd": "Ovl\u00e1dac\u00ed panel 2. generace",
+	"block.sgjourney.pegasus_dhd": "Ovl\u00e1dac\u00ed panel 3. generace",
+	"block.sgjourney.classic_dhd": "Klasick\u00fd ovl\u00e1dac\u00ed panel",
 	
 	"block.sgjourney.stargate.not_enough_space": "Hv\u011bzdn\u00e1 br\u00e1na nem\u00e1 dost m\u00edsta",
-	"block.sgjourney.stargate.one_way_wormhole": "Nen\u00ed mo\u017en\u00e9 proj\u00edt \u010derv\u00ed d\u00edrou t\u00edmto sm\u011brem",
 	
 	"block.sgjourney.transport_rings": "Transportn\u00ed kruhy",
 	"block.sgjourney.ring_panel": "Ovl\u00e1d\u00e1n\u00ed kruh\u016f",
@@ -128,5 +127,8 @@
 	"message.sgjourney.syringe_got_ancient_gene": "Nyn\u00ed m\u00e1\u0161 antick\u00fd gen",
 	"message.sgjourney.syringe_has_ancient_gene": "U\u017e m\u00e1\u0161 antick\u00fd gen",
 	"message.sgjourney.pda_has_ancient_gene": "M\u00e1 antick\u00fd gen",
-	"message.sgjourney.pda_has_naquadah_in_bloodstream": "M\u00e1 v krvi naquadah"
+	"message.sgjourney.pda_has_naquadah_in_bloodstream": "M\u00e1 v krvi naquadah",
+	
+	"message.sgjourney.stargate.one_way_wormhole": "Nen\u00ed mo\u017en\u00e9 proj\u00edt \u010derv\u00ed d\u00edrou t\u00edmto sm\u011brem",
+	"message.sgjourney.stargate.symbol_encoded": "Symbol byl ji\u017e zad\u00e1n"
 }
