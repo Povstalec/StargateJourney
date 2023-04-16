@@ -40,10 +40,7 @@ public class EnergyCrystalItem extends Item
 	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
-		if(getCrystalMode(stack) == CrystalMode.ENERGY_TRANSFER)
-			return false;
-		
-		return getEnergy(stack) < MAX_ENERGY;
+		return getCrystalMode(stack) == CrystalMode.ENERGY_STORAGE;
 	}
 
 	@Override

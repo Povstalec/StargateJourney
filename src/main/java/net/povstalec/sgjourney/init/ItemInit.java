@@ -14,9 +14,10 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.items.FalconArmorItem;
 import net.povstalec.sgjourney.items.JackalArmorItem;
 import net.povstalec.sgjourney.items.KaraKeshItem;
-import net.povstalec.sgjourney.items.MaTok;
+import net.povstalec.sgjourney.items.NaquadahBottleItem;
 import net.povstalec.sgjourney.items.PDAItem;
 import net.povstalec.sgjourney.items.RingRemoteItem;
+import net.povstalec.sgjourney.items.StaffWeaponItem;
 import net.povstalec.sgjourney.items.SyringeItem;
 import net.povstalec.sgjourney.items.ZeroPointModule;
 import net.povstalec.sgjourney.items.crystals.CommunicationCrystalItem;
@@ -46,8 +47,8 @@ public class ItemInit
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).craftRemainder(Items.BUCKET)));
-	public static final RegistryObject<Item> LIQUID_NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
-			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
+	public static final RegistryObject<NaquadahBottleItem> LIQUID_NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
+			() -> new NaquadahBottleItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 
 	public static final RegistryObject<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal", 
 			() -> new ControlCrystalItem(new Item.Properties().stacksTo(1)));
@@ -116,7 +117,7 @@ public class ItemInit
 				() -> new KaraKeshItem(new KaraKeshItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 		
 		public static final RegistryObject<Item> MATOK = ITEMS.register("matok", 
-				() -> new MaTok(new MaTok.Properties().stacksTo(1)));
+				() -> new StaffWeaponItem(new StaffWeaponItem.Properties().stacksTo(1)));
 		
 		public static final RegistryObject<Item> PDA = ITEMS.register("pda", 
 				() -> new PDAItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.RARE)));
