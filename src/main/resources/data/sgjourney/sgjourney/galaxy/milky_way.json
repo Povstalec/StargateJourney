@@ -1,5 +1,5 @@
 {
-	"name": "Milky Way",
+	"name": "galaxy.sgjourney.milky_way",
 	"type": "sgjourney:medium_galaxy",
 	"default_symbols": "sgjourney:milky_way",
 	"solar_systems":

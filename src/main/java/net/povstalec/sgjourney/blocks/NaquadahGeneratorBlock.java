@@ -44,6 +44,52 @@ public class NaquadahGeneratorBlock extends BaseEntityBlock
 		super(properties);
 		this.tier = tier;
 	}
+	
+	public enum Tier
+	{
+		MARK_I(/*CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get(),
+				CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_reaction_time.get(),
+				CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get(),
+				CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_max_transfer.get()*/),
+		
+		MARK_II(/*CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get(),
+				CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_reaction_time.get(),
+				CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get(),
+				CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_max_transfer.get()*/);
+		
+		/*private long capacity;
+		private long reactionTime;
+		private long energyPerTick;
+		private long maxTransfer;*/
+		
+		Tier(/*long capacity, long reactionTime, long energyPerTick, long maxTransfer*/)
+		{
+			/*this.capacity = capacity;
+			this.reactionTime = reactionTime;
+			this.energyPerTick = energyPerTick;
+			this.maxTransfer = maxTransfer;*/
+		}
+		
+		/*public long getCapacity()
+		{
+			return this.capacity;
+		}
+		
+		public long getReactionTime()
+		{
+			return this.reactionTime;
+		}
+		
+		public long getEnergyPerTick()
+		{
+			return this.energyPerTick;
+		}
+		
+		public long getMaxTransfer()
+		{
+			return this.maxTransfer;
+		}*/
+	}
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
@@ -121,22 +167,12 @@ public class NaquadahGeneratorBlock extends BaseEntityBlock
 				createTickerHelper(type, BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), NaquadahGeneratorEntity::tick);
     }
 	
-	public enum Tier
-	{
-		MARK_I,
-		MARK_II
-	}
-	
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	int capacity = tier == Tier.MARK_I ? 
-    			CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get() : 
-    			CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
+    	/*long capacity = tier.getCapacity();
     	
-    	int energyPerTick = tier == Tier.MARK_I ? 
-    			CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get() : 
-    			CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
+    	long energyPerTick = tier.getEnergyPerTick();
     	
     	int energy = 0;
     	
@@ -144,7 +180,7 @@ public class NaquadahGeneratorBlock extends BaseEntityBlock
 			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
 		
         tooltipComponents.add(Component.literal("Energy: " + energy + "/" + capacity +" FE").withStyle(ChatFormatting.DARK_RED));
-        tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));
+        tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));*/
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 }

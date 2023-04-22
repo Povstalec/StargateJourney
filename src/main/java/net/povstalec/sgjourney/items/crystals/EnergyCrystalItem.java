@@ -111,19 +111,23 @@ public class EnergyCrystalItem extends Item
 	{
 		return new ItemEnergyProvider(stack)
 				{
-
 					@Override
-					public int capacity()
+					public long capacity()
 					{
 						return MAX_ENERGY;
 					}
 
 					@Override
-					public int maxTransfer()
+					public long maxReceive()
 					{
 						return REGULAR_TRANSFER;
 					}
-			
+
+					@Override
+					public long maxExtract()
+					{
+						return REGULAR_TRANSFER;
+					}
 				};
 	}
 

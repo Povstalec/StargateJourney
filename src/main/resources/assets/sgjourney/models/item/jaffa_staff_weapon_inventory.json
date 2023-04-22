@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "sgjourney:item/jaffa_staff_weapon_inventory"
+    }
+}

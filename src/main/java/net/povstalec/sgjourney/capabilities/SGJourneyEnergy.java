@@ -31,14 +31,12 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     {
         if(!canReceive())
             return 0;
-
         long energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
         if(!simulate)
         	energy += energyReceived;
         
         if(energyReceived != 0)
 			onEnergyChanged(energyReceived, simulate);
-        
         return energyReceived;
     }
 	
@@ -121,7 +119,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     @Override
     public Tag serializeNBT()
     {
-        return LongTag.valueOf(this.getTrueEnergyStored());
+        return LongTag.valueOf(this.energy);
     }
 
     @Override
@@ -130,7 +128,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     	if(!(nbt instanceof LongTag longTag))
     		throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
     	
-    	this.energy = longTag.getAsLong();
+    	this.setEnergy(longTag.getAsLong());
     }
     
     public static int getRegularEnergy(long energy)

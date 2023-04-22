@@ -46,15 +46,13 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
-		RingPanelEntity panel = new RingPanelEntity(pos, state);
-		
-		return panel;
+		return new RingPanelEntity(pos, state);
 	}
 	
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if (!level.isClientSide) 
+        if (!level.isClientSide()) 
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
@@ -109,8 +107,6 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	{
 		switch(state.getValue(FACING))
 		{
-		case NORTH:
-			return NORTH;
 		case EAST:
 			return EAST;
 		case SOUTH:

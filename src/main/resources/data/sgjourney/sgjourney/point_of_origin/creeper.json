@@ -1,5 +1,5 @@
 {
-	"name": "Creeper",
-	"texture": "sgjourney:points_of_origin/creeper.png",
+	"name": "point_of_origin.sgjourney.creeper",
+	"texture": "sgjourney:milky_way/points_of_origin/creeper.png",
 	"generates_randomly": true
 }

@@ -10,7 +10,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.blocks.dhd.MilkyWayDHDBlock;
+import net.povstalec.sgjourney.items.NaquadahBottleItem;
 import net.povstalec.sgjourney.items.SyringeItem;
+import net.povstalec.sgjourney.items.crystals.MemoryCrystalItem;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
 public class TabInit
@@ -29,7 +31,8 @@ public class TabInit
 				items.accept(ItemInit.PURE_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH.get());
 				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
-				items.accept(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
+				//items.accept(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
+				items.accept(NaquadahBottleItem.liquidNaquadahSetup());
 				
 				items.accept(ItemInit.PDA.get());
 				
@@ -45,6 +48,7 @@ public class TabInit
 				items.accept(ItemInit.NAQUADAH_BOOTS.get());
 				
 				items.accept(ItemInit.KARA_KESH.get());
+				items.accept(ItemInit.RING_REMOTE.get());
 				
 				items.accept(ItemInit.MATOK.get());
 				
@@ -62,8 +66,11 @@ public class TabInit
 				items.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
 
 				items.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
+				items.accept(ItemInit.CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.MEMORY_CRYSTAL.get());
-				items.accept(ItemInit.TRANSPORTATION_CRYSTAL.get());
+				items.accept(MemoryCrystalItem.atlantisAddress());
+				items.accept(MemoryCrystalItem.abydosAddress());
+				items.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ENERGY_CRYSTAL.get());
 				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 			});
@@ -119,6 +126,8 @@ public class TabInit
 				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				
 				items.accept(BlockInit.ZPM_HUB.get());
+
+				items.accept(BlockInit.CRYSTALLIZER.get());
 			});
 		});
 	}

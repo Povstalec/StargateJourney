@@ -1,5 +1,5 @@
 {
-	"name": "Hammer",
-	"texture": "sgjourney:points_of_origin/hammer.png",
+	"name": "point_of_origin.sgjourney.hammer",
+	"texture": "sgjourney:milky_way/points_of_origin/hammer.png",
 	"generates_randomly": true
 }

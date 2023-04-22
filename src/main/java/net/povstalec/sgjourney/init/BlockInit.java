@@ -25,6 +25,7 @@ import net.povstalec.sgjourney.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.blocks.ExplosiveBlock;
 import net.povstalec.sgjourney.blocks.ATAGeneDetectorBlock;
 import net.povstalec.sgjourney.blocks.CrystalInterfaceBlock;
+import net.povstalec.sgjourney.blocks.CrystallizerBlock;
 import net.povstalec.sgjourney.blocks.FirePitBlock;
 import net.povstalec.sgjourney.blocks.GoldenIdolBlock;
 import net.povstalec.sgjourney.blocks.NaquadahGeneratorBlock;
@@ -166,6 +167,9 @@ public class BlockInit
 	public static final RegistryObject<ZPMHubBlock> ZPM_HUB = registerBlock("zpm_hub", 
 			() -> new ZPMHubBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	// ZPM Plug
+	
+	public static final RegistryObject<CrystallizerBlock> CRYSTALLIZER = registerBlock("crystallizer", 
+			() -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)

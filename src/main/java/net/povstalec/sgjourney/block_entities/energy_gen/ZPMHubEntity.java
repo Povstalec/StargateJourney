@@ -22,6 +22,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.config.CommonZPMConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.ItemInit;
@@ -171,7 +172,41 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	{
 		ItemStack stack = itemHandler.getStackInSlot(0);
 		
-		if(ZeroPointModule.hasEnergy(stack))
+		if(stack.is(ItemInit.ZPM.get()))
+		{
+			stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
+			{
+				if(energy instanceof ZeroPointEnergy zpmEnergy)
+				{
+					BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(outputDirection));
+					
+					if(blockEntity == null)
+						return;
+					
+					blockEntity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(blockEntityEnergy ->
+					{
+						if(blockEntityEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
+						{
+							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.maxExtract(), true);
+							long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
+							
+							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
+							sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
+						}
+						else
+						{
+							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.getRegularEnergy(this.maxExtract()), true);
+							int simulatedReceiveAmount = blockEntityEnergy.receiveEnergy(simulatedOutputAmount, true);
+							
+							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
+							blockEntityEnergy.receiveEnergy(simulatedReceiveAmount, false);
+						}
+					});
+				}
+			});
+		}
+		
+		/*if(ZeroPointModule.hasEnergy(stack))
 		{
 			BlockEntity blockentity = level.getBlockEntity(worldPosition.relative(outputDirection));
 			
@@ -196,11 +231,11 @@ public class ZPMHubEntity extends EnergyBlockEntity
 					energyStorage.receiveEnergy(extractedAmount, false);
 				});
 			}
-		}
+		}*/
 	}
 	
 	//This should make sure the energy taken by cables is properly subtracted from the ZPM
-	@Override
+	/*@Override
 	protected void changeEnergy(long difference, boolean simulate)
 	{
 		ItemStack stack = itemHandler.getStackInSlot(0);
@@ -209,7 +244,7 @@ public class ZPMHubEntity extends EnergyBlockEntity
 			ZeroPointModule.extractEnergy(stack, difference);
 		
 		super.changeEnergy(difference, simulate);
-	}
+	}*/
 	
 	//============================================================================================
 	//******************************************Ticking*******************************************
@@ -223,8 +258,8 @@ public class ZPMHubEntity extends EnergyBlockEntity
 		hub.outputEnergy(Direction.DOWN);
 
 		ItemStack stack = hub.itemHandler.getStackInSlot(0);
-		long energy = ZeroPointModule.isNearingEntropy(stack) ? ZeroPointModule.getEnergyInLevel(stack) : ZeroPointModule.getMaxEnergy();
-		hub.setEnergy(energy);
+		//long energy = ZeroPointModule.isNearingEntropy(stack) ? ZeroPointModule.getEnergyInLevel(stack) : ZeroPointModule.getMaxEnergy();
+		//hub.setEnergy(energy);
 		
 		//PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(hub.worldPosition)), new ClientboundNaquadahGeneratorUpdatePacket(hub.worldPosition, hub.getReactionProgress(), hub.getEnergy()));
 	}

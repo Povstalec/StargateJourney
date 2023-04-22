@@ -1,5 +1,5 @@
 {
-	"name": "Terra",
-	"texture": "sgjourney:points_of_origin/terra.png",
+	"name": "point_of_origin.sgjourney.terra",
+	"texture": "sgjourney:milky_way/points_of_origin/terra.png",
 	"generates_randomly": false
 }

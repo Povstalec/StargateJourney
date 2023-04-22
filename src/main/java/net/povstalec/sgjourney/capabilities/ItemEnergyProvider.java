@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -24,37 +25,72 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 		this.stack = stack;
 	}
 	
-	private final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxTransfer(), this.maxTransfer())
+	private final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
 	{
+	    public long receiveLongEnergy(long maxReceive, boolean simulate)
+	    {
+	    	loadEnergy();
+	        return super.receiveLongEnergy(maxReceive, simulate);
+	    }
+	    
+	    public long extractLongEnergy(long maxExtract, boolean simulate)
+	    {
+	    	loadEnergy();
+	        return super.receiveLongEnergy(maxExtract, simulate);
+	    }
+		
+		public long getTrueEnergyStored()
+		{
+			loadEnergy();
+			return this.energy;
+		}
+	    
 		@Override
 		public boolean canExtract()
 		{
-			return true;
+			return canExtractEnergy();
 		}
 		
 		@Override
 		public boolean canReceive()
 		{
-			return true;
+			return canReceiveEnergy();
 		}
 
 		@Override
 		public void onEnergyChanged(long difference, boolean simulate)
 		{
-			if(!simulate)
-			{
-				CompoundTag tag = stack.getOrCreateTag();
-				tag.putInt(ENERGY, this.getEnergyStored());
-				stack.setTag(tag);
-			}
+			energyChanged(difference, simulate);
 		}
 	};
 	
 	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
 	
-	public abstract int capacity();
+	public abstract long capacity();
 	
-	public abstract int maxTransfer();
+	public abstract long maxReceive();
+	
+	public abstract long maxExtract();
+	
+	public boolean canReceiveEnergy()
+	{
+		return true;
+	}
+	
+	public boolean canExtractEnergy()
+	{
+		return true;
+	}
+	
+	public void energyChanged(long difference, boolean simulate)
+	{
+		saveEnergy();
+	}
+	
+	public long getEnergy()
+	{
+		return ENERGY_STORAGE.getTrueEnergyStored();
+	}
 	
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
@@ -62,5 +98,19 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 		if(cap == ForgeCapabilities.ENERGY)
 			return lazyEnergyHandler.cast();
 		return LazyOptional.empty();
+	}
+	
+	public void loadEnergy()
+	{
+		CompoundTag tag = stack.getOrCreateTag();
+		if(tag.contains(ENERGY, Tag.TAG_LONG))
+			ENERGY_STORAGE.deserializeNBT(tag.get(ENERGY));
+	}
+	
+	public void saveEnergy()
+	{
+		CompoundTag tag = stack.getOrCreateTag();
+		tag.put(ENERGY, ENERGY_STORAGE.serializeNBT());
+		stack.setTag(tag);
 	}
 }

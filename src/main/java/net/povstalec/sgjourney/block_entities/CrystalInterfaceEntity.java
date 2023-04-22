@@ -121,7 +121,7 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 	{
 		if(stack.getItem() == ItemInit.MEMORY_CRYSTAL.get())
 			return true;
-		else if(stack.getItem() == ItemInit.TRANSPORTATION_CRYSTAL.get())
+		else if(stack.getItem() == ItemInit.MATERIALIZATION_CRYSTAL.get())
 			return true;
 		else if(stack.getItem() == ItemInit.ENERGY_CRYSTAL.get())
 			return true;
