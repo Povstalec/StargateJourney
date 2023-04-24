@@ -278,6 +278,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected void resetAddress()
 	{
 		this.address = new int[0];
+		setStargateState(false, 0);
 	}
 	
 	//============================================================================================

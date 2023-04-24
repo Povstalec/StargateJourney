@@ -236,5 +236,13 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
         tooltipComponents.add(Component.literal("Energy: " + energy + " FE").withStyle(ChatFormatting.DARK_RED));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
-	
+
+	public boolean hasAnalogOutputSignal(BlockState state) {
+		return true;
+	}
+
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+		return state.getValue(CONNECTED) ? 15 : state.getValue(CHEVRONS_ACTIVE);
+	}
+
 }
