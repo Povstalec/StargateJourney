@@ -76,7 +76,7 @@ public class StargatePedestal extends Structure
             return Optional.empty();
         }
         int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
-
+        
         // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
         ChunkPos chunkPos = context.chunkPos();
         BlockPos blockPos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());

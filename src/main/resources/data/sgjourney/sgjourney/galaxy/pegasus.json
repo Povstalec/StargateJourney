@@ -1,5 +1,5 @@
 {
-	"name": "Pegasus",
+	"name": "galaxy.sgjourney.pegasus",
 	"type": "sgjourney:dwarf_galaxy",
 	"default_symbols": "sgjourney:pegasus",
 	"solar_systems":

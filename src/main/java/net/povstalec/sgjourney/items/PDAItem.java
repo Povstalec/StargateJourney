@@ -77,7 +77,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.pda_info").withStyle(ChatFormatting.GRAY));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.pda.info").withStyle(ChatFormatting.GRAY));
 	}
 	
 	private void scanEntity(Player user, Entity target)
@@ -85,9 +85,9 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		user.sendSystemMessage(target.getName().copy().withStyle(ChatFormatting.YELLOW));
 		
 		if(canUseGoauldTech(target))
-			user.sendSystemMessage(Component.translatable("message.sgjourney.pda_has_naquadah_in_bloodstream").withStyle(ChatFormatting.DARK_GREEN));
+			user.sendSystemMessage(Component.translatable("message.sgjourney.pda.has_naquadah_in_bloodstream").withStyle(ChatFormatting.DARK_GREEN));
 		
 		if(canUseAncientTech(target))
-			user.sendSystemMessage(Component.translatable("message.sgjourney.pda_has_ancient_gene").withStyle(ChatFormatting.AQUA));
+			user.sendSystemMessage(Component.translatable("message.sgjourney.pda.has_ancient_gene").withStyle(ChatFormatting.AQUA));
 	}
 }

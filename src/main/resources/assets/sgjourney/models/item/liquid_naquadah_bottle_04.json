@@ -2,6 +2,6 @@
     "parent": "item/generated",
     "textures": 
 	{
-        "layer0": "sgjourney:item/transportation_crystal"
+        "layer0": "sgjourney:item/liquid_naquadah_bottle_04"
     }
 }

@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.items.crystals;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -15,10 +16,12 @@ import java.util.List;
 public class CommunicationCrystalItem extends Item
 {
 	private static final String FREQUENCY = "Frequency";
+	private final int distance;
 	
-	public CommunicationCrystalItem(Properties properties)
+	public CommunicationCrystalItem(Properties properties, int distance)
 	{
 		super(properties);
+		this.distance = distance;
 	}
 	
 	public int getFrequency(ItemStack stack)
@@ -42,15 +45,21 @@ public class CommunicationCrystalItem extends Item
 		
 		return tag;
 	}
+	
+	public int getMaxDistance()
+	{
+		return this.distance;
+	}
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
+    	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").withStyle(ChatFormatting.GRAY);
         int frequency = getFrequency(stack);
         if(frequency == 0)
-            tooltipComponents.add(Component.literal("Frequency: None").withStyle(ChatFormatting.WHITE));
+            tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));
         else
-        	tooltipComponents.add(Component.literal("Frequency: " + frequency).withStyle(ChatFormatting.WHITE));
+        	tooltipComponents.add(description.append(Component.literal("" + frequency).withStyle(ChatFormatting.GRAY)));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }

@@ -1,5 +1,5 @@
 {
-	"name": "Subido",
-	"texture": "sgjourney:points_of_origin/subido.png",
+	"name": "point_of_origin.sgjourney.subido",
+	"texture": "sgjourney:pegasus/points_of_origin/subido.png",
 	"generates_randomly": false
 }

@@ -114,7 +114,7 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock
         CompoundTag inventory = new CompoundTag();
         
         blockEntityTag.putString("id", "sgjourney:milky_way_dhd");
-        blockEntityTag.putLong("energy", 0);
+        blockEntityTag.putLong("Energy", 0);
         
         inventory.putInt("Size", 9);
         inventory.put("Items", setupMilkyWayInventory());
@@ -130,13 +130,13 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock
 		ListTag nbtTagList = new ListTag();
 		
 		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer())));
 		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer())));
 		nbtTagList.add(InventoryHelper.addItem(4, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(5, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, EnergyCrystalItem.MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(5, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer())));
 		nbtTagList.add(InventoryHelper.addItem(6, InventoryUtil.itemName(ItemInit.MEMORY_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_TRANSFER, 0, EnergyCrystalItem.MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_TRANSFER, 0, ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer())));
 		nbtTagList.add(InventoryHelper.addItem(8, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
 		
 		return nbtTagList;

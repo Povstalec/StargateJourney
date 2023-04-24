@@ -12,11 +12,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class TransportationCrystalItem extends Item
+public class MaterializationCrystalItem extends Item
 {
 	private static final String CRYSTAL_MODE = "CrystalMode";
 	
-	public TransportationCrystalItem(Properties properties)
+	public MaterializationCrystalItem(Properties properties)
 	{
 		super(properties);
 	}

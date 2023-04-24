@@ -14,10 +14,10 @@ public enum ToolMaterialInit implements Tier
 	
 	private ToolMaterialInit(int harvestLevel, int durability, float efficency, float attackDamage, int enchantability, Item repairMaterial) 
 	{
-		this.attackDamage = attackDamage;
-		this.efficency = efficency;
-		this.durability = durability;
 		this.harvestLevel = harvestLevel;
+		this.durability = durability;
+		this.efficency = efficency;
+		this.attackDamage = attackDamage;
 		this.enchantability = enchantability;
 		this.repairMaterial = repairMaterial;
 	}

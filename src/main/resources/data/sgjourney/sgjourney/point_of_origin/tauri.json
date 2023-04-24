@@ -1,5 +1,5 @@
 {
-	"name": "Tau'ri",
-	"texture": "sgjourney:points_of_origin/tauri.png",
+	"name": "point_of_origin.sgjourney.tauri",
+	"texture": "sgjourney:milky_way/points_of_origin/tauri.png",
 	"generates_randomly": false
 }

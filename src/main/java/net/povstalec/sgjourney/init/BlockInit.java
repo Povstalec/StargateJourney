@@ -20,14 +20,16 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.blocks.ATAGeneDetectorBlock;
 import net.povstalec.sgjourney.blocks.ArcheologyTableBlock;
 import net.povstalec.sgjourney.blocks.BasicInterfaceBlock;
-import net.povstalec.sgjourney.blocks.ExplosiveBlock;
-import net.povstalec.sgjourney.blocks.ATAGeneDetectorBlock;
 import net.povstalec.sgjourney.blocks.CrystalInterfaceBlock;
+import net.povstalec.sgjourney.blocks.CrystallizerBlock;
+import net.povstalec.sgjourney.blocks.ExplosiveBlock;
 import net.povstalec.sgjourney.blocks.FirePitBlock;
 import net.povstalec.sgjourney.blocks.GoldenIdolBlock;
-import net.povstalec.sgjourney.blocks.NaquadahGeneratorBlock;
+import net.povstalec.sgjourney.blocks.NaquadahGeneratorMarkIBlock;
+import net.povstalec.sgjourney.blocks.NaquadahGeneratorMarkIIBlock;
 import net.povstalec.sgjourney.blocks.RingPanelBlock;
 import net.povstalec.sgjourney.blocks.SecretSwitchBlock;
 import net.povstalec.sgjourney.blocks.TransportRingsBlock;
@@ -150,10 +152,10 @@ public class BlockInit
 	public static final RegistryObject<SandstoneSymbolBlock> SANDSTONE_SYMBOL = registerBlock("sandstone_symbol", 
 			() -> new SandstoneSymbolBlock(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops().noOcclusion()));
 	
-	public static final RegistryObject<NaquadahGeneratorBlock> NAQUADAH_GENERATOR_MARK_I = registerBlock("naquadah_generator_mark_i", 
-			() -> new NaquadahGeneratorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F), NaquadahGeneratorBlock.Tier.MARK_I), 1);
-	public static final RegistryObject<NaquadahGeneratorBlock> NAQUADAH_GENERATOR_MARK_II = registerBlock("naquadah_generator_mark_ii", 
-			() -> new NaquadahGeneratorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F), NaquadahGeneratorBlock.Tier.MARK_II), 1);
+	public static final RegistryObject<NaquadahGeneratorMarkIBlock> NAQUADAH_GENERATOR_MARK_I = registerBlock("naquadah_generator_mark_i", 
+			() -> new NaquadahGeneratorMarkIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+	public static final RegistryObject<NaquadahGeneratorMarkIIBlock> NAQUADAH_GENERATOR_MARK_II = registerBlock("naquadah_generator_mark_ii", 
+			() -> new NaquadahGeneratorMarkIIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	
 	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerBlock("basic_interface", 
 			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
@@ -166,6 +168,9 @@ public class BlockInit
 	public static final RegistryObject<ZPMHubBlock> ZPM_HUB = registerBlock("zpm_hub", 
 			() -> new ZPMHubBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	// ZPM Plug
+	
+	public static final RegistryObject<CrystallizerBlock> CRYSTALLIZER = registerBlock("crystallizer", 
+			() -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)

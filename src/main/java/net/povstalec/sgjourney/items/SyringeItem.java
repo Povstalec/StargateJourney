@@ -30,10 +30,10 @@ public class SyringeItem extends Item
 	
 	public enum Contents
 	{
-		EMPTY("tooltip.sgjourney.syringe_empty", ChatFormatting.GRAY),
-		BLOOD("tooltip.sgjourney.syringe_blood", ChatFormatting.DARK_RED),
-		PROTOTYPE_ATA("tooltip.sgjourney.syringe_prototype_ata_gene", ChatFormatting.AQUA),
-		ATA("tooltip.sgjourney.syringe_ata_gene", ChatFormatting.AQUA);
+		EMPTY("tooltip.sgjourney.syringe.empty", ChatFormatting.GRAY),
+		BLOOD("tooltip.sgjourney.syringe.blood", ChatFormatting.DARK_RED),
+		PROTOTYPE_ATA("tooltip.sgjourney.syringe.prototype_ata_gene", ChatFormatting.AQUA),
+		ATA("tooltip.sgjourney.syringe.ata_gene", ChatFormatting.AQUA);
 		
 		private String text;
 		private ChatFormatting formatting;
@@ -73,7 +73,7 @@ public class SyringeItem extends Item
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe_contents").withStyle(ChatFormatting.GRAY));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe.contents").withStyle(ChatFormatting.GRAY));
     	
         if(stack.hasTag() && stack.getTag().contains("Contents"))
         {
@@ -83,7 +83,7 @@ public class SyringeItem extends Item
             tooltipComponents.add(Component.translatable(text).withStyle(contents.getFormatting()));
         }
         else
-            tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe_empty").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe.empty").withStyle(ChatFormatting.GRAY));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
@@ -127,13 +127,13 @@ public class SyringeItem extends Item
 					cap.implantGene();
 					
 					if(target instanceof Player player)
-						player.sendSystemMessage(Component.translatable("message.sgjourney.syringe_got_ancient_gene").withStyle(ChatFormatting.AQUA));
+						player.sendSystemMessage(Component.translatable("message.sgjourney.syringe.got_ancient_gene").withStyle(ChatFormatting.AQUA));
 				}
 			}
 			else
 			{
 				if(target instanceof Player player)
-					player.sendSystemMessage(Component.translatable("message.sgjourney.syringe_has_ancient_gene").withStyle(ChatFormatting.AQUA));
+					player.sendSystemMessage(Component.translatable("message.sgjourney.syringe.has_ancient_gene").withStyle(ChatFormatting.AQUA));
 			}
 		});
 		

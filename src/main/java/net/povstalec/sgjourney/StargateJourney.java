@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,7 +50,6 @@ import net.povstalec.sgjourney.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.init.EntityInit;
-import net.povstalec.sgjourney.init.EventInit;
 import net.povstalec.sgjourney.init.FeatureInit;
 import net.povstalec.sgjourney.init.FluidInit;
 import net.povstalec.sgjourney.init.FluidTypeInit;
@@ -61,6 +62,9 @@ import net.povstalec.sgjourney.init.SoundInit;
 import net.povstalec.sgjourney.init.StructureInit;
 import net.povstalec.sgjourney.init.TabInit;
 import net.povstalec.sgjourney.init.VillagerInit;
+import net.povstalec.sgjourney.items.properties.LiquidNaquadahPropertyFunction;
+import net.povstalec.sgjourney.items.properties.WeaponStatePropertyFunction;
+import net.povstalec.sgjourney.stargate.AddressTable;
 import net.povstalec.sgjourney.stargate.Galaxy;
 import net.povstalec.sgjourney.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.stargate.SolarSystem;
@@ -101,15 +105,13 @@ public class StargateJourney
             event.dataPackRegistry(PointOfOrigin.REGISTRY_KEY, PointOfOrigin.CODEC, PointOfOrigin.CODEC);
             event.dataPackRegistry(SolarSystem.REGISTRY_KEY, SolarSystem.CODEC, SolarSystem.CODEC);
             event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
+            event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
         });
         
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(Layers::registerLayers);
         eventBus.addListener(TabInit::onRegisterModTabs);
         eventBus.addListener(TabInit::addCreative);
-        
-		//StargateJourneyConfig.loadConfig(StargateJourneyConfig.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("sgjourney-client.toml").toString());
-		//StargateJourneyConfig.loadConfig(StargateJourneyConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("sgjourney-server.toml").toString());
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
@@ -144,6 +146,9 @@ public class StargateJourney
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
+        	ItemProperties.register(ItemInit.LIQUID_NAQUADAH_BOTTLE.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new LiquidNaquadahPropertyFunction());
+        	ItemProperties.register(ItemInit.MATOK.get(), new ResourceLocation(StargateJourney.MODID, "open"), new WeaponStatePropertyFunction());
+        	
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
 

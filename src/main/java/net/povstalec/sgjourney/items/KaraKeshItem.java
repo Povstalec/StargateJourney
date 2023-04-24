@@ -47,12 +47,12 @@ public class KaraKeshItem extends Item implements GoauldTech
 			if(!player.getItemInHand(usedHand).getOrCreateTag().getBoolean("TerrorModeOn"))
 			{
 				terrorModeOn = true;
-				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh_terror").withStyle(ChatFormatting.RED), true);
+				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED), true);
 			}
 			else
 			{
 				terrorModeOn = false;
-				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh_knockback").withStyle(ChatFormatting.GOLD), true);
+				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD), true);
 			}
 			
 			itemTag.putBoolean("TerrorModeOn", terrorModeOn);
@@ -95,9 +95,9 @@ public class KaraKeshItem extends Item implements GoauldTech
         if(stack.hasTag())
         {
             if(stack.getTag().getBoolean("TerrorModeOn"))
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh_terror").withStyle(ChatFormatting.RED));
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED));
 			else
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh_knockback").withStyle(ChatFormatting.GOLD));
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD));
         }
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);

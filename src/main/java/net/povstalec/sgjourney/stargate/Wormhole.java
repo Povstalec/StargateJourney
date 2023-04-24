@@ -28,7 +28,7 @@ import net.povstalec.sgjourney.misc.Orientation;
 
 public class Wormhole implements ITeleporter
 {
-	
+	public static final double HORIZONTAL_CENTER_HEIGHT = 0.28125;
 	Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 	List<Entity> localEntities = new ArrayList<Entity>();
 	
@@ -89,8 +89,8 @@ public class Wormhole implements ITeleporter
 				else
 				{
 					unitDistance = initialStargate.getCenterPos().getY() - initialStargate.getCenterPos().relative(orientationDirection).getY();
-					previousTravelerPos = initialStargate.getCenterPos().getY() + 0.28125 - previousY;
-					travelerPos = initialStargate.getCenterPos().getY() + 0.28125 - traveler.getY();
+					previousTravelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_HEIGHT - previousY;
+					travelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_HEIGHT - traveler.getY();
 					axisMomentum = momentum.y();
 				}
 				
@@ -150,8 +150,8 @@ public class Wormhole implements ITeleporter
 		        Orientation initialOrientation = initialStargate.getOrientation();
 	        	Direction destinationDirection = targetStargate.getDirection();
 		        Orientation destinationOrientation = targetStargate.getOrientation();
-		        double initialYAddition = initialOrientation == Orientation.REGULAR ? 0.5 :  0.28125;
-		        double destinationYAddition = destinationOrientation == Orientation.REGULAR ? 0.5 :  0.28125;
+		        double initialYAddition = initialOrientation == Orientation.REGULAR ? 0.5 :  HORIZONTAL_CENTER_HEIGHT;
+		        double destinationYAddition = destinationOrientation == Orientation.REGULAR ? 0.5 :  HORIZONTAL_CENTER_HEIGHT;
 		        
 	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + initialYAddition), traveler.getY() - (initialStargate.getCenterPos().getY() + 0.5), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
 	    		

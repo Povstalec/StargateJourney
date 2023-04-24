@@ -6,12 +6,18 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.povstalec.sgjourney.capabilities.ZPMEnergyProvider;
 import net.povstalec.sgjourney.config.CommonZPMConfig;
+import net.povstalec.sgjourney.init.ItemInit;
 
 public class ZeroPointModule extends Item
 {
@@ -26,10 +32,12 @@ public class ZeroPointModule extends Item
 	 * ZPM can't be recharged, so the energy can only ever go down
 	 * 
 	 * One level of Entropy corresponds to 0.1%
+	 * 
+	 * When Entropy reaches its max state, the ZPM is considered depleted
 	 */
 
-	private static final String ENTROPY = "Entropy";
 	private static final String ENERGY = "Energy";
+	private static final String ENTROPY = "Entropy";
 	
 	public static final int maxEntropy = 1000;
 	
@@ -57,18 +65,51 @@ public class ZeroPointModule extends Item
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
 	{
-		int entropy = 0;
-		long remainingEnergy = getMaxEnergy();
+		return new ZPMEnergyProvider(stack)
+				{
+					
+				};
+	}
+	
+	private static int getEntropy(ItemStack stack)
+	{
+		if(!stack.is(ItemInit.ZPM.get()))
+			return 0;
 		
 		CompoundTag tag = stack.getOrCreateTag();
 		
-		if(tag.contains(ENTROPY))
-			entropy = tag.getInt(ENTROPY);
+		if(tag.contains(ENTROPY, Tag.TAG_INT))
+		{
+			if(tag.get(ENTROPY) instanceof IntTag intTag)
+				return intTag.getAsInt();
+		}
 		
-		if(tag.contains(ENERGY))
-			remainingEnergy = tag.getLong(ENERGY);
+		return 0;
+	}
+	
+	public static long getEnergy(ItemStack stack)
+	{
+		if(!stack.is(ItemInit.ZPM.get()))
+			return 0;
+		
+		CompoundTag tag = stack.getOrCreateTag();
+		
+		if(tag.contains(ENERGY, Tag.TAG_LONG))
+		{
+			if(tag.get(ENERGY) instanceof LongTag longTag)
+				return longTag.getAsLong();
+		}
+		
+		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		int entropy = getEntropy(stack);
+		long remainingEnergy = getEnergy(stack);
 		
 		float currentEntropy = (float) entropy * 100 / maxEntropy;
 		
@@ -76,111 +117,5 @@ public class ZeroPointModule extends Item
     	tooltipComponents.add(Component.literal("Energy In Level: " + remainingEnergy + " FE").withStyle(ChatFormatting.DARK_RED));
     	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-	}
-	
-	public static long extractEnergy(ItemStack stack, long energy)
-	{
-		if(!isZPM(stack) || !hasEnergy(stack))
-			return 0;
-		
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(!tag.contains(ENERGY))
-			tag.putLong(ENERGY, getMaxEnergy());
-		
-		long remainingEnergy = tag.getLong(ENERGY);
-		
-		remainingEnergy -= energy;
-		
-		if(remainingEnergy <= 0)
-		{
-			remainingEnergy += getMaxEnergy();
-			increaseEntropy(stack);
-		}
-
-		tag.putLong(ENERGY, remainingEnergy);
-		stack.setTag(tag);
-		return energy;
-	}
-	
-	private static int getEntropy(ItemStack stack)
-	{
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(!tag.contains(ENTROPY))
-		{
-			tag.putInt(ENTROPY, 0);
-			stack.setTag(tag);
-		}
-		
-		return tag.getInt(ENTROPY);
-	}
-	
-	private static void increaseEntropy(ItemStack stack)
-	{
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		int entropy = tag.getInt(ENTROPY);
-		entropy++;
-		tag.putInt(ENTROPY, entropy);
-		stack.setTag(tag);
-	}
-	
-	public static boolean isZPM(ItemStack stack)
-	{
-		if(stack.getItem() instanceof ZeroPointModule)
-			return true;
-		else
-			return false;
-	}
-	
-	public static boolean hasEnergy(ItemStack stack)
-	{
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(tag.contains(ENTROPY))
-			return tag.getInt(ENTROPY) < 1000;
-		else
-		{
-			tag.putInt(ENTROPY, 0);
-			stack.setTag(tag);
-			return true;
-		}
-	}
-	
-	public static long getMaxEnergy()
-	{
-		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
-	}
-	
-	public static boolean isNearingEntropy(ItemStack stack)
-	{
-		if(!isZPM(stack) || !hasEnergy(stack))
-			return true;
-		
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(tag.contains(ENTROPY))
-			return tag.getInt(ENTROPY) >= 999;
-		else
-		{
-			tag.putInt(ENTROPY, 0);
-			stack.setTag(tag);
-			return false;
-		}
-	}
-	
-	public static long getEnergyInLevel(ItemStack stack)
-	{
-		if(!isZPM(stack) || !hasEnergy(stack))
-			return 0;
-		
-		long remainingEnergy = 0L;
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(tag.contains(ENERGY))
-			remainingEnergy = tag.getLong(ENERGY);
-		
-		return remainingEnergy;
 	}
 }

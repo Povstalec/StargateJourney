@@ -1,5 +1,5 @@
 {
-	"name": "Eye of Ra",
-	"texture": "sgjourney:points_of_origin/eye_of_ra.png",
+	"name": "point_of_origin.sgjourney.eye_of_ra",
+	"texture": "sgjourney:milky_way/points_of_origin/eye_of_ra.png",
 	"generates_randomly": false
 }

@@ -22,13 +22,16 @@ public class EnergyCrystalItem extends Item
 	public static final String ENERGY = "Energy";
 	public static final String TRANSFER_LIMIT = "TransferLimit";
 	
-	public static final int MAX_ENERGY = 50000;
-	public static final int REGULAR_TRANSFER = 1000;
-	public static final int MAX_TRANSFER = 5000;
+	public final int maxEnergy;
+	public final int maxTransfer;
+	public final int maxRegularTransfer;
 	
-	public EnergyCrystalItem(Properties properties)
+	public EnergyCrystalItem(Properties properties, int maxEnergy, int maxTransfer, int maxRegularTransfer)
 	{
 		super(properties);
+		this.maxEnergy = maxEnergy;
+		this.maxTransfer = maxTransfer;
+		this.maxRegularTransfer = maxRegularTransfer;
 	}
 	
 	public enum CrystalMode
@@ -46,13 +49,13 @@ public class EnergyCrystalItem extends Item
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getEnergy(stack) / MAX_ENERGY);
+		return Math.round(13.0F * (float) getEnergy(stack) / maxEnergy);
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getEnergy(stack) / MAX_ENERGY);
+		float f = Math.max(0.0F, (float) getEnergy(stack) / maxEnergy);
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
@@ -95,15 +98,30 @@ public class EnergyCrystalItem extends Item
 	
 	public static int getMaxTransfer(ItemStack stack)
 	{
-		int maxTransfer;
-		CompoundTag tag = stack.getOrCreateTag();
+		if(stack.getItem() instanceof EnergyCrystalItem crystal)
+		{
+			int maxTransfer;
+			CompoundTag tag = stack.getOrCreateTag();
+			
+			if(!tag.contains(TRANSFER_LIMIT))
+				tag.putInt(TRANSFER_LIMIT, crystal.maxTransfer);
+			
+			maxTransfer = tag.getInt(TRANSFER_LIMIT);
+			
+			return maxTransfer;
+		}
 		
-		if(!tag.contains(TRANSFER_LIMIT))
-			tag.putInt(TRANSFER_LIMIT, MAX_ENERGY);
-		
-		maxTransfer = tag.getInt(TRANSFER_LIMIT);
-		
-		return maxTransfer;
+		return 0;
+	}
+	
+	public int getMaxTransfer()
+	{
+		return this.maxTransfer;
+	}
+	
+	public int getMaxStorage()
+	{
+		return this.maxEnergy;
 	}
 	
 	@Override
@@ -111,19 +129,23 @@ public class EnergyCrystalItem extends Item
 	{
 		return new ItemEnergyProvider(stack)
 				{
-
 					@Override
-					public int capacity()
+					public long capacity()
 					{
-						return MAX_ENERGY;
+						return maxEnergy;
 					}
 
 					@Override
-					public int maxTransfer()
+					public long maxReceive()
 					{
-						return REGULAR_TRANSFER;
+						return maxRegularTransfer;
 					}
-			
+
+					@Override
+					public long maxExtract()
+					{
+						return maxRegularTransfer;
+					}
 				};
 	}
 
@@ -136,7 +158,7 @@ public class EnergyCrystalItem extends Item
         {
         case ENERGY_STORAGE:
         	int energy = getEnergy(stack);
-        	tooltipComponents.add(Component.literal("Energy: " + energy +  "/" + MAX_ENERGY + "FE").withStyle(ChatFormatting.DARK_RED));
+        	tooltipComponents.add(Component.literal("Energy: " + energy +  "/" + maxEnergy + "FE").withStyle(ChatFormatting.DARK_RED));
         	break;
         case ENERGY_TRANSFER:
         	int maxEnergyTransfer = getMaxTransfer(stack);

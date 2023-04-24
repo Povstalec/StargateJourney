@@ -1,9 +1,15 @@
 package net.povstalec.sgjourney.items;
 
+import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -12,6 +18,8 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -24,7 +32,8 @@ import net.povstalec.sgjourney.init.SoundInit;
 
 public class StaffWeaponItem extends Item
 {
-
+	public static final String IS_OPEN = "IsOpen";
+	
 	public StaffWeaponItem(Properties properties)
 	{
 		super(properties);
@@ -64,7 +73,7 @@ public class StaffWeaponItem extends Item
 					@Override
 					public boolean isValid(int slot, ItemStack stack)
 					{
-						return stack.is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
+						return stack.is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get()) || stack.is(Items.GLASS_BOTTLE);
 					}
 				};
 	}
@@ -92,18 +101,27 @@ public class StaffWeaponItem extends Item
 				});
 				
 			}
+			else if(mainHandStack.is(ItemInit.MATOK.get()))
+				setOpen(mainHandStack, !isOpen(mainHandStack));
 		}
 		else if(!player.isShiftKeyDown() && canShoot(player, player.getItemInHand(hand)))
 		{
-			level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
-			if(!level.isClientSide())
+			ItemStack stack = player.getItemInHand(hand);
+			
+			if(isOpen(stack))
 			{
-				PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level);
-				plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
-				level.addFreshEntity(plasmaProjectile);
+				level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+				if(!level.isClientSide())
+				{
+					if(!player.isCreative())
+						depleteLiquidNaquadah(player.getItemInHand(hand));
+					PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level);
+					plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
+					level.addFreshEntity(plasmaProjectile);
+				}
+				player.awardStat(Stats.ITEM_USED.get(this));
+				player.getCooldowns().addCooldown(this, 25);
 			}
-			player.awardStat(Stats.ITEM_USED.get(this));
-			player.getCooldowns().addCooldown(this, 25);
 		}
 		
 		
@@ -120,12 +138,32 @@ public class StaffWeaponItem extends Item
 	{
 		Optional<Integer> optional = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
 		{
-			if(!itemHandler.getStackInSlot(0).is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get()))
-				return 0;
+			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
+			if(inventoryStack.is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get()))
+				return NaquadahBottleItem.getLiquidNaquadahAmount(inventoryStack);
 			else
-				return 250;
+				return 0;
 		});
 		return optional.isPresent() ? optional.get() : 0;
+	}
+	
+	public void depleteLiquidNaquadah(ItemStack stack)
+	{
+		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler -> 
+		{
+			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
+			if(inventoryStack.is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get()))
+			{
+				if(NaquadahBottleItem.getLiquidNaquadahAmount(inventoryStack) > 0)
+					NaquadahBottleItem.drainLiquidNaquadah(inventoryStack);
+				else
+				{
+					itemHandler.extractItem(0, 1, false);
+					itemHandler.insertItem(0, new ItemStack(Items.GLASS_BOTTLE), false);
+				}
+					
+			}
+		});
 	}
 	
 	public boolean hasLiquidNaquadah(ItemStack stack)
@@ -136,5 +174,49 @@ public class StaffWeaponItem extends Item
 	public boolean canShoot(Player player, ItemStack stack)
 	{
 		return player.isCreative() ? true : hasLiquidNaquadah(stack);
+	}
+	
+	public static boolean isOpen(ItemStack stack)
+	{
+		if(stack.is(ItemInit.MATOK.get()))
+		{
+			CompoundTag tag = stack.getOrCreateTag();
+			
+			if(!tag.contains(IS_OPEN))
+			{
+				tag.putBoolean(IS_OPEN, false);
+				stack.setTag(tag);
+			}
+			
+			return tag.getBoolean(IS_OPEN);
+		}
+		
+		return false;
+	}
+	
+	public static void setOpen(ItemStack stack, boolean isOpen)
+	{
+		if(stack.is(ItemInit.MATOK.get()))
+		{
+			CompoundTag tag = stack.getOrCreateTag();
+			tag.putBoolean(IS_OPEN, isOpen);
+			stack.setTag(tag);
+		}
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		int fluidAmount = getLiquidNaquadahAmount(stack);
+		MutableComponent isOpen = isOpen(stack) ? 
+				Component.translatable("tooltip.sgjourney.matok.open").withStyle(ChatFormatting.YELLOW) :
+					Component.translatable("tooltip.sgjourney.matok.closed").withStyle(ChatFormatting.YELLOW);
+		tooltipComponents.add(isOpen);
+		
+		MutableComponent liquidNaquadah = Component.translatable("fluid_type.sgjourney.liquid_naquadah").withStyle(ChatFormatting.GREEN);
+		liquidNaquadah.append(Component.literal(" " + fluidAmount + "mB").withStyle(ChatFormatting.GREEN));
+    	tooltipComponents.add(liquidNaquadah);
+    	
+    	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 }

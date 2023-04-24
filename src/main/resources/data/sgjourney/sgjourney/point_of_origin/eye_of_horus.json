@@ -1,5 +1,5 @@
 {
-	"name": "Eye of Horus",
-	"texture": "sgjourney:points_of_origin/eye_of_horus.png",
+	"name": "point_of_origin.sgjourney.eye_of_horus",
+	"texture": "sgjourney:milky_way/points_of_origin/eye_of_horus.png",
 	"generates_randomly": false
 }

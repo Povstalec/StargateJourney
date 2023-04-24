@@ -110,7 +110,7 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 		Player player = context.getPlayer();
 		Orientation orientation = Orientation.getOrientationFromXRot(player);
 		
-		if(blockpos.getY() > level.getMaxBuildHeight() - 6)
+		if(orientation == Orientation.REGULAR && blockpos.getY() > level.getMaxBuildHeight() - 6)
 			return null;
 		
 		for(StargatePart part : StargatePart.values())

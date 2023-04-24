@@ -33,11 +33,13 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.block_entities.symbols.CartoucheEntity;
+import net.povstalec.sgjourney.misc.Orientation;
 import net.povstalec.sgjourney.stargate.Symbols;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
 {
 	public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	
 	public CartoucheBlock(Properties properties)
 	{
@@ -47,18 +49,19 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	
 	public BlockState rotate(BlockState state, Rotation rotation)
 	{
-	      return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	      return state.setValue(FACING, rotation.rotate(state.getValue(FACING))).setValue(ORIENTATION, Orientation.REGULAR);
 	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context) 
 	{
 		BlockPos blockpos = context.getClickedPos();
-		 Level level = context.getLevel();
+		Level level = context.getLevel();
+		Orientation orientation = Orientation.getOrientationFromXRot(context.getPlayer());
 		
-		if(blockpos.getY() > level.getMaxBuildHeight() - 1)
+		if(orientation == Orientation.REGULAR && blockpos.getY() > level.getMaxBuildHeight() - 1)
 			return null;
 		
-		if(!level.getBlockState(blockpos.above()).canBeReplaced(context))
+		if(!level.getBlockState(blockpos.relative(Orientation.getCenterDirection(Direction.UP, orientation))).canBeReplaced(context))
 			return null;
 		
 		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(HALF, DoubleBlockHalf.LOWER);
@@ -66,13 +69,13 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
-    	builder.add(FACING).add(HALF);
+    	builder.add(FACING).add(HALF).add(ORIENTATION);
 	}
     
     public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, LevelAccessor levelAccessor, BlockPos pos1, BlockPos pos2)
     {
     	DoubleBlockHalf doubleblockhalf = state1.getValue(HALF);
-    	if (direction.getAxis() != Direction.Axis.Y || doubleblockhalf == DoubleBlockHalf.LOWER != (direction == Direction.UP) || state2.is(this) && state2.getValue(HALF) != doubleblockhalf)
+    	if(direction.getAxis() != Direction.Axis.Y || doubleblockhalf == DoubleBlockHalf.LOWER != (direction == Direction.UP) || state2.is(this) && state2.getValue(HALF) != doubleblockhalf)
     	{
     		return doubleblockhalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state1.canSurvive(levelAccessor, pos1) ? 
     				Blocks.AIR.defaultBlockState() : super.updateShape(state1, direction, state2, levelAccessor, pos1, pos2);
@@ -85,7 +88,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if (!level.isClientSide) 
+        if (!level.isClientSide()) 
         {
         	if(level.getBlockState(pos).getValue(HALF) == DoubleBlockHalf.UPPER)
         		pos = pos.below();
@@ -94,7 +97,6 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			
         	if (blockEntity instanceof CartoucheEntity cartouche) 
         	{
-        		
         		MutableComponent symbols = Component.literal(Symbols.addressUnicode(cartouche.getAddress()));
         		Style style = symbols.getStyle().withFont(new ResourceLocation("sgjourney", "milky_way"));
         		symbols = symbols.withStyle(style);

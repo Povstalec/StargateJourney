@@ -1,7 +1,16 @@
 {
-    "parent": "item/generated",
-    "textures": 
+	"parent": "item/generated",
+	"textures": 
 	{
-        "layer0": "sgjourney:item/liquid_naquadah_bottle_00"
-    }
+		"layer0": "sgjourney:item/liquid_naquadah_bottle_00"
+	},
+	"overrides":
+	[
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.0 }, "model": "sgjourney:item/liquid_naquadah_bottle_05" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.25 }, "model": "sgjourney:item/liquid_naquadah_bottle_04" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.4 }, "model": "sgjourney:item/liquid_naquadah_bottle_03" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.55 }, "model": "sgjourney:item/liquid_naquadah_bottle_02" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.7 }, "model": "sgjourney:item/liquid_naquadah_bottle_01" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.8 }, "model": "sgjourney:item/liquid_naquadah_bottle" }
+	]
 }
