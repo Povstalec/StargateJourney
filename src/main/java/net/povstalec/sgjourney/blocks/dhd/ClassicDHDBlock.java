@@ -63,26 +63,21 @@ public class ClassicDHDBlock extends AbstractDHDBlock
 			
         	if(blockEntity instanceof AbstractDHDEntity dhd) 
         	{
-        		if(player.isShiftKeyDown())
-        			this.openCrystalMenu(player, blockEntity);
-        		else
+        		MenuProvider containerProvider = new MenuProvider() 
         		{
-        			MenuProvider containerProvider = new MenuProvider() 
-            		{
-            			@Override
-            			public Component getDisplayName() 
-            			{
-            				return Component.translatable("screen.sgjourney.dhd");
-            			}
-            			
-            			@Override
-            			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-            			{
-            				return new ClassicDHDMenu(windowId, playerInventory, blockEntity);
-            			}
-            		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-        		}
+        			@Override
+        			public Component getDisplayName() 
+        			{
+        				return Component.translatable("screen.sgjourney.dhd");
+        			}
+        			
+        			@Override
+        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
+        			{
+        				return new ClassicDHDMenu(windowId, playerInventory, blockEntity);
+        			}
+        		};
+        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{

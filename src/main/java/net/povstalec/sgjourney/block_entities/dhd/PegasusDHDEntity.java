@@ -2,10 +2,19 @@ package net.povstalec.sgjourney.block_entities.dhd;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.items.crystals.EnergyCrystalItem;
@@ -13,15 +22,87 @@ import net.povstalec.sgjourney.misc.ArrayHelper;
 
 public class PegasusDHDEntity extends AbstractDHDEntity
 {
+	protected int[] memoryCrystals = new int[0];
+	protected int[] controlCrystals = new int[0];
+	protected int[] energyCrystals = new int[0];
+	protected int[] communicationCrystals = new int[0];
+	
+	protected final ItemStackHandler itemHandler = createHandler();
+	protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+	
 	public PegasusDHDEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.PEGASUS_DHD.get(), pos, state);
 	}
 	
 	@Override
-	protected boolean isSlotValid(int slot, @Nonnull ItemStack stack)
+	public void load(CompoundTag nbt)
 	{
-		return isValidCrystal(stack);
+		super.load(nbt);
+		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+	}
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag nbt)
+	{
+		nbt.put("Inventory", itemHandler.serializeNBT());
+		super.saveAdditional(nbt);
+	}
+	
+	@Override
+	public void onLoad()
+	{
+		this.recalculateCrystals();
+	}
+	
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
+	{
+		if(capability == ForgeCapabilities.ITEM_HANDLER)
+		{
+			return handler.cast();
+		}
+		
+		return super.getCapability(capability, side);
+	}
+	
+	private ItemStackHandler createHandler()
+	{
+		return new ItemStackHandler(9)
+			{
+				@Override
+				protected void onContentsChanged(int slot)
+				{
+					setChanged();
+					recalculateCrystals();
+				}
+				
+				@Override
+				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+				{
+					return isValidCrystal(stack);
+				}
+				
+				// Limits the number of items per slot
+				public int getSlotLimit(int slot)
+				{
+					return 1;
+				}
+				
+				@Nonnull
+				@Override
+				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+				{
+					if(!isItemValid(slot, stack))
+					{
+						return stack;
+					}
+					
+					return super.insertItem(slot, stack, simulate);
+					
+				}
+			};
 	}
 	
 	protected boolean isValidCrystal(ItemStack stack)
@@ -38,7 +119,6 @@ public class PegasusDHDEntity extends AbstractDHDEntity
 		return false;
 	}
 	
-	@Override
 	public void recalculateCrystals()
 	{
 		this.enableAdvancedProtocols = false;
@@ -93,7 +173,7 @@ public class PegasusDHDEntity extends AbstractDHDEntity
 	@Override
 	public int getMaxDistance()
 	{
-		return this.communicationCrystals.length * ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get().getMaxDistance();
+		return this.communicationCrystals.length * ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get().getMaxDistance() + 16;
 	}
 
 }
