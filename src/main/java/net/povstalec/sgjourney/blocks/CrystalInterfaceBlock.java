@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.block_entities.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.init.BlockEntityInit;
 import net.povstalec.sgjourney.init.BlockInit;
 import net.povstalec.sgjourney.menu.CrystalInterfaceMenu;
@@ -30,7 +31,7 @@ import net.povstalec.sgjourney.menu.CrystalInterfaceMenu;
 public class CrystalInterfaceBlock extends BasicInterfaceBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
-	
+
 	public CrystalInterfaceBlock(Properties properties)
 	{
 		super(properties);
@@ -85,12 +86,15 @@ public class CrystalInterfaceBlock extends BasicInterfaceBlock
 	{
 		if(level.isClientSide())
 			return;
-		
+
 		Direction direction = state.getValue(FACING);
 		BlockPos targetPos = pos.relative(direction);
-		
-		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof CrystalInterfaceEntity crystalInterface && crystalInterface.updateInterface())
-			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
+
+		if (level.getBlockEntity(pos) instanceof CrystalInterfaceEntity crystalInterface) {
+			crystalInterface.setInputSignal(level.getBestNeighborSignal(pos));
+			if(targetPos.equals(pos2) && crystalInterface.updateInterface())
+				level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
+		}
 	}
 	
 	@Nullable
@@ -104,4 +108,37 @@ public class CrystalInterfaceBlock extends BasicInterfaceBlock
 	{
 		return 50000000;
 	}
+
+	public boolean hasAnalogOutputSignal(BlockState state) {
+		return true;
+	}
+
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+		BlockEntity entity = level.getBlockEntity(pos);
+
+		if (entity instanceof CrystalInterfaceEntity crystalInterface) {
+			BlockEntity energyBlockEntity = crystalInterface.findEnergyBlockEntity();
+			if (energyBlockEntity instanceof MilkyWayStargateEntity stargate) {
+				int offset = 0;
+				if (crystalInterface.getInputSignal() >= 7)
+					offset = 26;
+				else if (crystalInterface.getInputSignal() > 0) {
+					offset = 13;
+				}
+				int output = stargate.getCurrentSymbol() - offset;
+
+//				System.out.println("Offset: " + offset + " Current symbol: " + stargate.getCurrentSymbol() + " Output: " + output);
+
+				if (output <= 0)
+					return 0;
+				else if (output >= 15)
+					return 15;
+				else
+					return output;
+			}
+		}
+
+		return 0;
+	}
+
 }
