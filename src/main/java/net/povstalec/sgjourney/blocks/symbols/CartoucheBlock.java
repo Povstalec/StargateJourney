@@ -97,9 +97,10 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			
         	if (blockEntity instanceof CartoucheEntity cartouche) 
         	{
-        		MutableComponent symbols = Component.literal(Symbols.addressUnicode(cartouche.getAddress()));
+        		MutableComponent symbols = Component.literal(cartouche.getAddress());
+        		/*MutableComponent symbols = Component.literal(Symbols.addressUnicode(cartouche.getAddress()));
         		Style style = symbols.getStyle().withFont(new ResourceLocation("sgjourney", "milky_way"));
-        		symbols = symbols.withStyle(style);
+        		symbols = symbols.withStyle(style);*/
         		
         		MutableComponent text = Component.literal("Address: ").withStyle(ChatFormatting.YELLOW).append(symbols.withStyle(ChatFormatting.AQUA));
         		
