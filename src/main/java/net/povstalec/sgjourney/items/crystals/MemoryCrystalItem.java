@@ -10,8 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.init.BlockInit;
-import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.stargate.Addressing;
 
 import org.jetbrains.annotations.Nullable;
@@ -42,14 +40,7 @@ public class MemoryCrystalItem extends Item
 		ADDRESS
 	}
 	
-	public static CompoundTag tagSetup() //TODO
-	{
-		CompoundTag tag = new CompoundTag();
-		
-		return tag;
-	}
-	
-	public static ItemStack atlantisAddress()
+	/*public static ItemStack atlantisAddress()
 	{
 		ItemStack stack = new ItemStack(ItemInit.MEMORY_CRYSTAL.get());
 
@@ -65,7 +56,7 @@ public class MemoryCrystalItem extends Item
 		saveAddress(stack, new int[] {26, 6, 14, 31, 11, 29});
 		
 		return stack;
-	}
+	}*/
 	
 	public static ListTag getMemoryList(ItemStack stack)
 	{

@@ -21,7 +21,19 @@
         {
           "biome": "sgjourney:abydos_spires",
           "parameters": {
-            "temperature": 0.5,
+            "temperature": 0,
+            "humidity": 0,
+            "continentalness": 0,
+            "erosion": 0.8,
+            "weirdness": 0,
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "sgjourney:abydos_oasis",
+          "parameters": {
+            "temperature": 1.5,
             "humidity": 0,
             "continentalness": 0,
             "erosion": 0,

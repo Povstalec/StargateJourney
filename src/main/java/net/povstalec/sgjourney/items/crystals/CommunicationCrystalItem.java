@@ -16,10 +16,12 @@ import java.util.List;
 public class CommunicationCrystalItem extends Item
 {
 	private static final String FREQUENCY = "Frequency";
+	private final int distance;
 	
-	public CommunicationCrystalItem(Properties properties)
+	public CommunicationCrystalItem(Properties properties, int distance)
 	{
 		super(properties);
+		this.distance = distance;
 	}
 	
 	public int getFrequency(ItemStack stack)
@@ -42,6 +44,11 @@ public class CommunicationCrystalItem extends Item
 		tag.putInt(FREQUENCY, frequency);
 		
 		return tag;
+	}
+	
+	public int getMaxDistance()
+	{
+		return this.distance;
 	}
 
     @Override

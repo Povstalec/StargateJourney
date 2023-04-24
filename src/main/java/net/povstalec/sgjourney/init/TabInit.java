@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.blocks.dhd.MilkyWayDHDBlock;
+import net.povstalec.sgjourney.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.items.NaquadahBottleItem;
 import net.povstalec.sgjourney.items.SyringeItem;
 import net.povstalec.sgjourney.items.crystals.MemoryCrystalItem;
@@ -67,12 +68,17 @@ public class TabInit
 
 				items.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.CONTROL_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.MEMORY_CRYSTAL.get());
-				items.accept(MemoryCrystalItem.atlantisAddress());
-				items.accept(MemoryCrystalItem.abydosAddress());
+				items.accept(ItemInit.ADVANCED_MEMORY_CRYSTAL.get());
+				//items.accept(MemoryCrystalItem.atlantisAddress());
+				//items.accept(MemoryCrystalItem.abydosAddress());
 				items.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ENERGY_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
 				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
 			});
 		});
 		
@@ -87,7 +93,7 @@ public class TabInit
 				//items.accept(BlockInit.MILKY_WAY_DHD.get());
 				items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
 				items.accept(BlockInit.PEGASUS_STARGATE.get());
-				items.accept(BlockInit.PEGASUS_DHD.get());
+				items.accept(PegasusDHDBlock.pegasusCrystalSetup());
 				//items.accept(BlockInit.CLASSIC_STARGATE.get());
 				items.accept(BlockInit.CLASSIC_DHD.get());
 
@@ -127,7 +133,7 @@ public class TabInit
 				
 				items.accept(BlockInit.ZPM_HUB.get());
 
-				items.accept(BlockInit.CRYSTALLIZER.get());
+				//items.accept(BlockInit.CRYSTALLIZER.get());
 			});
 		});
 	}

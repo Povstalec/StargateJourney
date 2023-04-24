@@ -19,41 +19,24 @@ public class TransportRingsModel
 {
 	private static final ResourceLocation TRANSPORT_RINGS_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/block/transport_rings.png");
 	
-	private final ModelPart firstRing;
-	private final ModelPart secondRing;
-	private final ModelPart thirdRing;
-	private final ModelPart fourthRing;
-	private final ModelPart fifthRing;
+	private final ModelPart transportRings;
 	
-	public TransportRingsModel(ModelPart ring)
+	public TransportRingsModel(ModelPart transportRings)
 	{
-		this.firstRing = ring;
-		this.secondRing = ring;
-		this.thirdRing = ring;
-		this.fourthRing = ring;
-		this.fifthRing = ring;
+		this.transportRings = transportRings;
 	}
 	
 	public void setRingHeight(int ring, float height)
 	{
-		switch(ring)
-		{
-		case 1:
-			firstRing.setPos(0.0F, height, 0.0F);
-			break;
-		case 2:
-			secondRing.setPos(0.0F, height, 0.0F);
-			break;
-		case 3:
-			thirdRing.setPos(0.0F, height, 0.0F);
-			break;
-		case 4:
-			fourthRing.setPos(0.0F, height, 0.0F);
-			break;
-		case 5:
-			fifthRing.setPos(0.0F, height, 0.0F);
-			break;
-		}
+		if(ring < 1 && ring > 5)
+			return;
+		
+		getRing(ring).setPos(0.0F, height, 0.0F);
+	}
+	
+	public ModelPart getRing(int ring)
+	{
+		return this.transportRings.getChild("transport_ring_" + ring);
 	}
 	
 	public void renderTransportRings(TransportRingsEntity transportRings, float partialTick, PoseStack stack, MultiBufferSource source, 
@@ -61,11 +44,7 @@ public class TransportRingsModel
 	{
 		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(TRANSPORT_RINGS_TEXTURE));
 		
-		this.firstRing.render(stack, ringTexture, combinedLight, combinedOverlay);
-		this.secondRing.render(stack, ringTexture, combinedLight, combinedOverlay);
-		this.thirdRing.render(stack, ringTexture, combinedLight, combinedOverlay);
-		this.fourthRing.render(stack, ringTexture, combinedLight, combinedOverlay);
-		this.fifthRing.render(stack, ringTexture, combinedLight, combinedOverlay);
+		this.transportRings.render(stack, ringTexture, combinedLight, combinedOverlay);
 	}
 	
 	//============================================================================================
@@ -77,17 +56,17 @@ public class TransportRingsModel
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition ring = partdefinition.addOrReplaceChild("ring", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
-        /*PartDefinition second_ring = partdefinition.addOrReplaceChild("second_ring", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
-        PartDefinition third_ring = partdefinition.addOrReplaceChild("third_ring", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
-        PartDefinition fourth_ring = partdefinition.addOrReplaceChild("fourth_ring", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
-        PartDefinition fifth_ring = partdefinition.addOrReplaceChild("fifth_ring", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));*/
+        PartDefinition first_ring = partdefinition.addOrReplaceChild("transport_ring_1", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
+        PartDefinition second_ring = partdefinition.addOrReplaceChild("transport_ring_2", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
+        PartDefinition third_ring = partdefinition.addOrReplaceChild("transport_ring_3", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
+        PartDefinition fourth_ring = partdefinition.addOrReplaceChild("transport_ring_4", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
+        PartDefinition fifth_ring = partdefinition.addOrReplaceChild("transport_ring_5", CubeListBuilder.create(), PartPose.offset(8.0F, 0.0F, 8.0F));
 		
-        createRing(ring);
-        /*createRing(second_ring);
+        createRing(first_ring);
+        createRing(second_ring);
         createRing(third_ring);
         createRing(fourth_ring);
-        createRing(fifth_ring);*/
+        createRing(fifth_ring);
 		
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}

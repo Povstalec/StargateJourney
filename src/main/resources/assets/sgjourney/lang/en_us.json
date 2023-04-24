@@ -60,6 +60,12 @@
 	"item.sgjourney.energy_crystal": "Energy Crystal",
 	"item.sgjourney.communication_crystal": "Communication Crystal",
 	"item.sgjourney.memory_crystal": "Memory Crystal",
+
+	"item.sgjourney.advanced_control_crystal": "Advanced Control Crystal",
+	"item.sgjourney.advanced_materialization_crystal": "Advanced Materialization Crystal",
+	"item.sgjourney.advanced_energy_crystal": "Advanced Energy Crystal",
+	"item.sgjourney.advanced_communication_crystal": "Advanced Communication Crystal",
+	"item.sgjourney.advanced_memory_crystal": "Advanced Memory Crystal",
 	
 	"item.sgjourney.naquadah_sword": "Naquadah Sword",
 	"item.sgjourney.naquadah_pickaxe": "Naquadah Pickaxe",
@@ -159,19 +165,19 @@
 	"tooltip.sgjourney.communication_crystal.frequency": "Frequency: ",
 	"tooltip.sgjourney.energy_crystal.energy": "Energy: ",
 	
-	"tooltip.sgjourney.kara_kesh_terror": "Mode: Terror",
-	"tooltip.sgjourney.kara_kesh_knockback": "Mode: Knockback",
+	"tooltip.sgjourney.kara_kesh.terror": "Mode: Terror",
+	"tooltip.sgjourney.kara_kesh.knockback": "Mode: Knockback",
 	"tooltip.sgjourney.pda_info": "Right-click: Get information about the target",
-	"tooltip.sgjourney.syringe_contents": "Contents:",
-	"tooltip.sgjourney.syringe_empty": "Empty",
-	"tooltip.sgjourney.syringe_blood": "Blood",
-	"tooltip.sgjourney.syringe_prototype_ata_gene": "Prototype Ancient Gene Therapy",
-	"tooltip.sgjourney.syringe_ata_gene": "Ancient Gene Therapy",
+	"tooltip.sgjourney.syringe.contents": "Contents:",
+	"tooltip.sgjourney.syringe.empty": "Empty",
+	"tooltip.sgjourney.syringe.blood": "Blood",
+	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototype Ancient Gene Therapy",
+	"tooltip.sgjourney.syringe.ata_gene": "Ancient Gene Therapy",
 	
-	"message.sgjourney.syringe_got_ancient_gene": "You now have the Ancient Gene",
-	"message.sgjourney.syringe_has_ancient_gene": "You already have the Ancient Gene",
-	"message.sgjourney.pda_has_ancient_gene": "Has Ancient Gene",
-	"message.sgjourney.pda_has_naquadah_in_bloodstream": "Has Naquadah in bloodstream",
+	"message.sgjourney.syringe.got_ancient_gene": "You now have the Ancient Gene",
+	"message.sgjourney.syringe.has_ancient_gene": "You already have the Ancient Gene",
+	"message.sgjourney.pda.has_ancient_gene": "Has Ancient Gene",
+	"message.sgjourney.pda.has_naquadah_in_bloodstream": "Has Naquadah in bloodstream",
 	
 	"message.sgjourney.stargate.error.one_way_wormhole": "Can't travel through wormhole in this direction",
 	

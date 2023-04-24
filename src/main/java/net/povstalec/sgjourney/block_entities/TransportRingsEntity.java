@@ -36,7 +36,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 
     public boolean isSender;
     
-    public int emptySpace;
+    public int emptySpace = 0;
     public int ticks;
     public int progressOld = 0;
     public int progress = 0;
@@ -110,7 +110,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 			
 			emptySpace = getEmptySpace();
 			
-			transportPos = new BlockPos(getBlockPos().getX(), (getBlockPos().getY() + getEmptySpace()), getBlockPos().getZ());
+			transportPos = new BlockPos(getBlockPos().getX(), (getBlockPos().getY() + emptySpace), getBlockPos().getZ());
 			
 			int difference = Math.abs(this.getTransportHeight() - target.getTransportHeight());
 			

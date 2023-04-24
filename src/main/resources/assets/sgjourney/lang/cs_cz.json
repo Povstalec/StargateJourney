@@ -60,6 +60,12 @@
 	"item.sgjourney.energy_crystal": "Energetick\u00fd krystal",
 	"item.sgjourney.communication_crystal": "Komunika\u010dn\u00ed krystal",
 	"item.sgjourney.memory_crystal": "Pam\u011b\u0165ov\u00fd krystal",
+
+	"item.sgjourney.advanced_control_crystal": "Pokro\u010dil\u00fd ovl\u00e1dac\u00ed krystal",
+	"item.sgjourney.advanced_materialization_crystal": "Pokro\u010dil\u00fd materializa\u010dn\u00ed krystal",
+	"item.sgjourney.advanced_energy_crystal": "Pokro\u010dil\u00fd energetick\u00fd krystal",
+	"item.sgjourney.advanced_communication_crystal": "Pokro\u010dil\u00fd komunika\u010dn\u00ed krystal",
+	"item.sgjourney.advanced_memory_crystal": "Pokro\u010dil\u00fd pam\u011b\u0165ov\u00fd krystal",
 	
 	"item.sgjourney.naquadah_sword": "Naquadahov\u00fd me\u010d",
 	"item.sgjourney.naquadah_pickaxe": "Naquadahov\u00fd krump\u00e1\u010d",

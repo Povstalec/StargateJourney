@@ -10,9 +10,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -43,6 +40,13 @@ public class NaquadahBottleItem extends Item
 		    		{
 		    			return stack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get();
 		    		}
+
+		            @Override
+		            protected void setContainerToEmpty()
+		            {
+		                super.setContainerToEmpty();
+		                container = emptyContainer;
+		            }
 				};
 	}
 	
@@ -58,14 +62,6 @@ public class NaquadahBottleItem extends Item
 		return stack;
 	}
 	
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
-	{
-		if(!level.isClientSide())
-			NaquadahBottleItem.drainLiquidNaquadah(player.getItemInHand(hand));
-		
-		return super.use(level, player, hand);
-	}
-	
 	public static int getLiquidNaquadahAmount(ItemStack stack)
 	{
 		Optional<Integer> liquidAmount = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(fluidHandler -> fluidHandler.getFluidInTank(0).getAmount());
@@ -75,7 +71,10 @@ public class NaquadahBottleItem extends Item
 	
 	public static void drainLiquidNaquadah(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler -> fluidHandler.drain(1, FluidAction.EXECUTE));
+		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler -> 
+		{
+			fluidHandler.drain(1, FluidAction.EXECUTE);
+		});
 	}
 	
 	public static int getLiquidNaquadahMaxAmount()

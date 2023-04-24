@@ -1,8 +1,0 @@
-{
-	"include_generated_addresses": true,
-	"dimensions":
-	[
-		"minecraft:overworld",
-		"sgjourney:chulak"
-	]
-}

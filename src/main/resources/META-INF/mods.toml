@@ -20,14 +20,12 @@ Stargate in Minecraft! And much more.
     versionRange="[44,)"
     ordering="NONE"
     side="BOTH"
-# Here's another dependency
 [[dependencies.sgjourney]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.19.3,1.20)"
     ordering="NONE"
     side="BOTH"
-# And another one!
 [[dependencies.sgjourney]]
     modId="computercraft"
     mandatory=false

@@ -19,6 +19,8 @@ public class BasicInterfaceScreen extends AbstractContainerScreen<BasicInterface
     public BasicInterfaceScreen(BasicInterfaceMenu pMenu, Inventory pPlayerInventory, Component pTitle)
     {
         super(pMenu, pPlayerInventory, pTitle);
+        this.imageWidth = 76;
+        this.imageHeight = 40;
     }
 
     @Override
@@ -30,9 +32,9 @@ public class BasicInterfaceScreen extends AbstractContainerScreen<BasicInterface
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight + 1);
+        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
         
-        this.renderEnergy(pPoseStack, x + 8, y + 62);
+        this.renderEnergy(pPoseStack, x + 12, y + 12);
     }
 
     @Override
@@ -42,26 +44,26 @@ public class BasicInterfaceScreen extends AbstractContainerScreen<BasicInterface
         super.render(pPoseStack, mouseX, mouseY, delta);
         renderTooltip(pPoseStack, mouseX, mouseY);
         
-        this.energyTooltip(pPoseStack, 8, 62, mouseX, mouseY);
+        this.energyTooltip(pPoseStack, 12, 12, mouseX, mouseY);
     }
     
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) 
 	{
-		this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
+		//this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+	    //this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
     
     protected void renderEnergy(PoseStack matrixStack, int x, int y)
     {
     	float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();
-    	int actual = Math.round(160 * percentage);
-    	this.blit(matrixStack, x, y, 0, 168, actual, 6);
+    	int actual = Math.round(52 * percentage);
+    	this.blit(matrixStack, x, y, 0, 40, actual, 16);
     }
     
     protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
     {
-    	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
+    	if(this.isHovering(x, y, 52, 16, (double) mouseX, (double) mouseY))
 	    {
 	    	renderTooltip(matrixStack, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
 	    }
