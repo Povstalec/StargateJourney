@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.items.crystals;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,6 +35,25 @@ public class EnergyCrystalItem extends Item
 	{
 		ENERGY_STORAGE,
 		ENERGY_TRANSFER;
+	}
+	
+	@Override
+	public boolean isBarVisible(ItemStack stack)
+	{
+		return getCrystalMode(stack) == CrystalMode.ENERGY_STORAGE;
+	}
+
+	@Override
+	public int getBarWidth(ItemStack stack)
+	{
+		return Math.round(13.0F * (float) getEnergy(stack) / MAX_ENERGY);
+	}
+
+	@Override
+	public int getBarColor(ItemStack stack)
+	{
+		float f = Math.max(0.0F, (float) getEnergy(stack) / MAX_ENERGY);
+		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
 	public static CompoundTag tagSetup(CrystalMode crystalMode, int energy, int maxTransfer)

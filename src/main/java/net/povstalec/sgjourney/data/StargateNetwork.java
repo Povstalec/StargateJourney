@@ -47,7 +47,6 @@ public class StargateNetwork extends SavedData
 	private static final String DIALING_STARGATE = "DialingStargate";
 	private static final String DIALED_STARGATE = "DialedStargate";
 	
-	private static final String INVALID_SELF = StargateJourney.MODID + ":invalid_self";
 	private static final String CONNECTION_TIME = "ConnectionTime";
 	private static final String ENERGY_DRAW = "EnergyDraw";
 	

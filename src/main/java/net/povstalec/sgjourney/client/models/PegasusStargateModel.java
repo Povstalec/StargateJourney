@@ -176,7 +176,7 @@ public class PegasusStargateModel extends AbstractStargateModel
 		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
 		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
-		if(stargate.getChevronsEngaged() >= chevronNumber)
+		if(stargate.chevronsRendered() >= chevronNumber)
 		{
 			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
 			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);

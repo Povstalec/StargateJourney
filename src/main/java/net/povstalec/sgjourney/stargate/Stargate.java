@@ -96,7 +96,7 @@ public class Stargate
 	public enum Feedback
 	{
 		NONE(FeedbackType.INFO, Component.empty()),
-		UNKNOWN_ERROR(FeedbackType.ERROR, createError("unknown_error", true)),
+		UNKNOWN_ERROR(FeedbackType.ERROR, createError("unknown", true)),
 		
 		// Chevron/Symbol
 		SYMBOL_ENCODED(FeedbackType.INFO, createInfo("symbol_encoded")),
@@ -120,7 +120,8 @@ public class Stargate
 		NO_STARGATES(FeedbackType.ERROR, createError("no_stargates", false)),
 
 		// Wormhole
-		TRANSPORT_SUCCESSFUL(FeedbackType.INFO, createInfo("wormhole.transport_successful")),//TODO
+		//TRANSPORT_SUCCESSFUL(FeedbackType.INFO, createInfo("wormhole.transport_successful")),//TODO
+		//ENTITY_DESTROYED(FeedbackType.INFO, createInfo("wormhole.entity_destroyed")),
 		
 		// End Connection
 		CONNECTION_ENDED_BY_DISCONNECT(FeedbackType.INFO, createInfo("connection_ended.disconnect")),

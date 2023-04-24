@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -41,7 +42,11 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 		public void onEnergyChanged(long difference, boolean simulate)
 		{
 			if(!simulate)
-				stack.getOrCreateTag().putInt(ENERGY, this.getEnergyStored());
+			{
+				CompoundTag tag = stack.getOrCreateTag();
+				tag.putInt(ENERGY, this.getEnergyStored());
+				stack.setTag(tag);
+			}
 		}
 	};
 	

@@ -131,9 +131,15 @@
 	
 	"message.sgjourney.stargate.error.one_way_wormhole": "Can't travel through wormhole in this direction",
 	
+	"message.sgjourney.stargate.error.unknown": "Unknown Error",
+	
+	"message.sgjourney.stargate.info.symbol_encoded": "Symbol Encoded",
 	"message.sgjourney.stargate.error.symbol_in_addres": "Symbol is already encoded",
 	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol is out of bounds",
 	
+	"message.sgjourney.stargate.info.connection_estabilished.system_wide": "System-wide connection estabilished",
+	"message.sgjourney.stargate.info.connection_estabilished.interstellar": "Interstellar connection estabilished",
+	"message.sgjourney.stargate.info.connection_estabilished.intergalactic": "Intergalactic connection estabilished",
 	"message.sgjourney.stargate.error.incomplete_address": "Address is incomplete",
 	"message.sgjourney.stargate.error.invalid_address": "Address is invalid",
 	"message.sgjourney.stargate.error.not_enough_power": "Not enough power",
@@ -142,10 +148,14 @@
 	"message.sgjourney.stargate.error.self_dial": "Stargate cannot dial itself",
 	"message.sgjourney.stargate.error.same_system_dial": "Cannot dial the same Solar System",
 	"message.sgjourney.stargate.error.already_connected": "Target Stargate is already connected",
-	"message.sgjourney.stargate.error.no_galaxy": "Stargate is not located inside a galaxy",
-	"message.sgjourney.stargate.error.no_dimensions": "Dialed Solar System has no dimension",
+	"message.sgjourney.stargate.error.no_galaxy": "Stargate is not located inside any Galaxy",
+	"message.sgjourney.stargate.error.no_dimensions": "Dialed Solar System has no Dimensions",
 	"message.sgjourney.stargate.error.no_stargates": "Dialed Solar System has no Stargates",
 	
+	"message.sgjourney.stargate.info.connection_ended.disconnect": "Stargate disconnected",
+	"message.sgjourney.stargate.info.connection_ended.point_of_origin": "Stargate disconnected by locking point of origin",
+	"message.sgjourney.stargate.info.connection_ended.stargate_network": "Stargate disconnected by Stargate Network",
+	"message.sgjourney.stargate.info.connection_ended.autoclose": "Stargate disconnected automatically",
 	"message.sgjourney.stargate.error.exceeded_connection_time": "Stargate has exceeded its max connection time",
 	"message.sgjourney.stargate.error.ran_out_of_power": "Ran out of power",
 	"message.sgjourney.stargate.error.connection_rerouted": "Connection rerouted",
@@ -153,8 +163,10 @@
 	
 	"message.sgjourney.stargate.error.target_stargate_does_not_exist": "Target Stargate does not exist",
 	
-	"message.sgjourney.stargate.chevron_already_raised": "Chevron is already raised",
-	"message.sgjourney.stargate.chevron_already_lowered": "Chevron is already lowered",
+	"message.sgjourney.stargate.info.chevron_raised": "Chevron raised",
+	"message.sgjourney.stargate.info.chevron_lowered": "Chevron lowered",
+	"message.sgjourney.stargate.error.chevron_already_raised": "Chevron is already raised",
+	"message.sgjourney.stargate.error.chevron_already_lowered": "Chevron is already lowered",
 	
 	"gui.sgjourney.config": "Stargate Journey Config",
 	"gui.sgjourney.client": "Client",

@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -45,6 +46,7 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
+	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
 	
 	protected static final VoxelShape FULL_BLOCK = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 	
@@ -55,12 +57,12 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 	public AbstractStargateBlock(Properties properties)
 	{
 		super(properties, "Stargates");
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(WATERLOGGED, Boolean.valueOf(false)));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)));
 	}
 	 
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(FACING).add(ORIENTATION).add(CONNECTED).add(WATERLOGGED);
+		state.add(FACING).add(ORIENTATION).add(CONNECTED).add(CHEVRONS_ACTIVE).add(WATERLOGGED);
 	}
 	 
 	public BlockState rotate(BlockState state, Rotation rotation)
@@ -141,7 +143,7 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 		{
 			if(!part.equals(StargatePart.CENTER))
 			{
-				level.setBlock(part.getRingPos(pos,  state.getValue(FACING),  state.getValue(ORIENTATION)), 
+				level.setBlock(part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION)), 
 						ringState()
 						.setValue(AbstractStargateRingBlock.PART, part)
 						.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
@@ -201,6 +203,26 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 		}
 
 		super.playerWillDestroy(level, pos, state, player);
+	}
+	
+	public void updateStargate(Level level, BlockPos pos, BlockState state, boolean isConnected, int chevronsActive)
+	{
+		level.setBlock(pos, state.setValue(AbstractStargateBlock.CONNECTED, isConnected).setValue(AbstractStargateBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
+		
+		for(StargatePart part : StargatePart.values())
+		{
+			if(!part.equals(StargatePart.CENTER))
+			{
+				level.setBlock(part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION)), 
+						ringState()
+						.setValue(AbstractStargateRingBlock.PART, part)
+						.setValue(AbstractStargateRingBlock.CONNECTED, level.getBlockState(pos).getValue(CONNECTED))
+						.setValue(AbstractStargateRingBlock.CHEVRONS_ACTIVE, level.getBlockState(pos).getValue(CHEVRONS_ACTIVE))
+						.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
+						.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
+						.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
+			}
+		}
 	}
 	
     @Override

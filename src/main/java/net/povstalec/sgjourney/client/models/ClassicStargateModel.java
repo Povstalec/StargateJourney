@@ -43,7 +43,7 @@ public class ClassicStargateModel
 		this.innerRing.setRotation(0.0F, 0.0F, this.rotation);
 		this.innerRing.render(stack, stargateTexture, combinedLight, combinedOverlay);
 		
-		this.renderChevrons(stack, source, combinedLight, combinedOverlay, stargate.getChevronsEngaged());
+		this.renderChevrons(stack, source, combinedLight, combinedOverlay, stargate.chevronsRendered());
 	}
 	
 	public void setRotation(float rotation)

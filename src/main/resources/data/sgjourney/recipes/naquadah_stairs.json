@@ -3,9 +3,8 @@
 	"category": "building",
 	"pattern":
 	[
-		"I  ",
-		"II ",
-		"III"
+		"I ",
+		"II"
 	],
 	"key":
 	{

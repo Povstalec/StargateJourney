@@ -94,15 +94,22 @@ public class Dialing
 		{
 			ListTag dimensionList = Universe.get(server).getDimensionsFromSolarSystem(systemID);
 			
-			if(dimensionList.isEmpty())
-				return stargate.resetStargate(Stargate.Feedback.NO_DIMENSIONS);
-			
 			// Cycles through the list of Dimensions in the Solar System
+			int dimensions = 0;
 			for(int i = 0; i < dimensionList.size(); i++)
 			{
-				Level targetLevel = server.getLevel(stringToDimension(dimensionList.getString(i)));
-				findStargates(targetLevel);
+				ResourceKey<Level> levelKey = stringToDimension(dimensionList.getString(i));
+				
+				if(level.getServer().levelKeys().contains(levelKey))
+				{
+					Level targetLevel = server.getLevel(levelKey);
+					findStargates(targetLevel);
+					dimensions++;
+				}
 			}
+			
+			if(dimensions == 0)
+				return stargate.resetStargate(Stargate.Feedback.NO_DIMENSIONS);
 			
 			solarSystem = StargateNetwork.get(server).getSolarSystem(systemID);
 			if(solarSystem.isEmpty())

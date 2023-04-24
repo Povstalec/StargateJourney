@@ -1,8 +1,12 @@
 package net.povstalec.sgjourney.items;
 
+import java.util.Optional;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -10,8 +14,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.povstalec.sgjourney.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.init.EntityInit;
+import net.povstalec.sgjourney.init.ItemInit;
 import net.povstalec.sgjourney.init.SoundInit;
 
 public class StaffWeaponItem extends Item
@@ -22,26 +30,111 @@ public class StaffWeaponItem extends Item
 		super(properties);
 	}
 	
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+	@Override
+	public boolean isBarVisible(ItemStack stack)
 	{
+		return true;
+	}
+
+	@Override
+	public int getBarWidth(ItemStack stack)
+	{
+		return Math.round(13.0F * (float) getLiquidNaquadahAmount(stack) / 250);
+	}
+
+	@Override
+	public int getBarColor(ItemStack stack)
+	{
+		float f = Math.max(0.0F, (float) getLiquidNaquadahAmount(stack) / 250);
 		
-		ItemStack itemstack = player.getItemInHand(hand);
-		level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1F);
-	      if (!level.isClientSide)
-	      {
-	    	  PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level);
-	    	  plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
-              level.addFreshEntity(plasmaProjectile);
-          }
-
-	      player.awardStat(Stats.ITEM_USED.get(this));
-	      player.getCooldowns().addCooldown(this, 25);
-
-	      return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
+	@Override
+    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
+	{
+		return new ItemInventoryProvider(stack)
+				{
+					@Override
+					public int getNumberOfSlots()
+					{
+						return 1;
+					}
+
+					@Override
+					public boolean isValid(int slot, ItemStack stack)
+					{
+						return stack.is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
+					}
+				};
+	}
+	
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+	{
+		ItemStack itemstack = player.getItemInHand(hand);
+		
+		if(player.isShiftKeyDown() && !level.isClientSide())
+		{
+			ItemStack mainHandStack = player.getItemInHand(InteractionHand.MAIN_HAND);
+			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
+			
+			if(offHandStack.is(ItemInit.MATOK.get()))
+			{
+				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+				{
+					ItemStack returnStack;
+					if(!mainHandStack.isEmpty())
+						returnStack = itemHandler.insertItem(0, mainHandStack, false);
+					else
+						returnStack = itemHandler.extractItem(0, 1, false);
+					
+					player.setItemInHand(InteractionHand.MAIN_HAND, returnStack);
+				});
+				
+			}
+		}
+		else if(!player.isShiftKeyDown() && canShoot(player, player.getItemInHand(hand)))
+		{
+			level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+			if(!level.isClientSide())
+			{
+				PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level);
+				plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
+				level.addFreshEntity(plasmaProjectile);
+			}
+			player.awardStat(Stats.ITEM_USED.get(this));
+			player.getCooldowns().addCooldown(this, 25);
+		}
+		
+		
+		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+	}
+	
+	@Override
 	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player)
 	{
 		return !player.isCreative();
+	}
+	
+	public int getLiquidNaquadahAmount(ItemStack stack)
+	{
+		Optional<Integer> optional = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
+		{
+			if(!itemHandler.getStackInSlot(0).is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get()))
+				return 0;
+			else
+				return 250;
+		});
+		return optional.isPresent() ? optional.get() : 0;
+	}
+	
+	public boolean hasLiquidNaquadah(ItemStack stack)
+	{
+		return getLiquidNaquadahAmount(stack) > 0;
+	}
+	
+	public boolean canShoot(Player player, ItemStack stack)
+	{
+		return player.isCreative() ? true : hasLiquidNaquadah(stack);
 	}
 }

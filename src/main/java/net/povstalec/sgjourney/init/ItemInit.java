@@ -14,9 +14,10 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.items.FalconArmorItem;
 import net.povstalec.sgjourney.items.JackalArmorItem;
 import net.povstalec.sgjourney.items.KaraKeshItem;
-import net.povstalec.sgjourney.items.MaTok;
+import net.povstalec.sgjourney.items.NaquadahBottleItem;
 import net.povstalec.sgjourney.items.PDAItem;
 import net.povstalec.sgjourney.items.RingRemoteItem;
+import net.povstalec.sgjourney.items.StaffWeaponItem;
 import net.povstalec.sgjourney.items.SyringeItem;
 import net.povstalec.sgjourney.items.ZeroPointModule;
 import net.povstalec.sgjourney.items.crystals.CommunicationCrystalItem;
@@ -46,9 +47,11 @@ public class ItemInit
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).craftRemainder(Items.BUCKET)));
-	public static final RegistryObject<Item> LIQUID_NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
-			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
+	public static final RegistryObject<NaquadahBottleItem> LIQUID_NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
+			() -> new NaquadahBottleItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 
+	public static final RegistryObject<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal", 
+			() -> new ControlCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<ControlCrystalItem> LARGE_CONTROL_CRYSTAL = ITEMS.register("large_control_crystal", 
 			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<MemoryCrystalItem> MEMORY_CRYSTAL = ITEMS.register("memory_crystal", 
@@ -59,6 +62,17 @@ public class ItemInit
 			() -> new EnergyCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<CommunicationCrystalItem> COMMUNICATION_CRYSTAL = ITEMS.register("communication_crystal", 
 			() -> new CommunicationCrystalItem(new Item.Properties().stacksTo(1)));
+
+	public static final RegistryObject<ControlCrystalItem> ADVANCED_CONTROL_CRYSTAL = ITEMS.register("advanced_control_crystal", 
+			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<MemoryCrystalItem> ADVANCED_MEMORY_CRYSTAL = ITEMS.register("advanced_memory_crystal", 
+			() -> new MemoryCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<TransportationCrystalItem> ADVANCED_TRANSPORTATION_CRYSTAL = ITEMS.register("advanced_transportation_crystal", 
+			() -> new TransportationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<EnergyCrystalItem> ADVANCED_ENERGY_CRYSTAL = ITEMS.register("advanced_energy_crystal", 
+			() -> new EnergyCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<CommunicationCrystalItem> ADVANCED_COMMUNICATION_CRYSTAL = ITEMS.register("advanced_communication_crystal", 
+			() -> new CommunicationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	
 	//Armor
 		public static final RegistryObject<ArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet", 
@@ -103,7 +117,7 @@ public class ItemInit
 				() -> new KaraKeshItem(new KaraKeshItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 		
 		public static final RegistryObject<Item> MATOK = ITEMS.register("matok", 
-				() -> new MaTok(new MaTok.Properties().stacksTo(1)));
+				() -> new StaffWeaponItem(new StaffWeaponItem.Properties().stacksTo(1)));
 		
 		public static final RegistryObject<Item> PDA = ITEMS.register("pda", 
 				() -> new PDAItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.RARE)));

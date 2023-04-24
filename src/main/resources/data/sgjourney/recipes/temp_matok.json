@@ -2,12 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "pattern": [
-    "B",
+    "N",
     "A",
     "N"
   ],
   "key": {
-	"B": {"item": "sgjourney:liquid_naquadah_bottle"},
 	"A": {"item": "sgjourney:naquadah_alloy"},
 	"N": {"item": "sgjourney:naquadah"}
   },

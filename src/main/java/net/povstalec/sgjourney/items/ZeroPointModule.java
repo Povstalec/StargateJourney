@@ -37,6 +37,24 @@ public class ZeroPointModule extends Item
 	{
 		super(properties);
 	}
+
+	@Override
+	public boolean isBarVisible(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public int getBarWidth(ItemStack stack)
+	{
+		return Math.round(13.0F * (maxEntropy - (float) getEntropy(stack)) / maxEntropy);
+	}
+
+	@Override
+	public int getBarColor(ItemStack stack)
+	{
+		return 16743680;
+	}
 	
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
@@ -83,6 +101,19 @@ public class ZeroPointModule extends Item
 		tag.putLong(ENERGY, remainingEnergy);
 		stack.setTag(tag);
 		return energy;
+	}
+	
+	private static int getEntropy(ItemStack stack)
+	{
+		CompoundTag tag = stack.getOrCreateTag();
+		
+		if(!tag.contains(ENTROPY))
+		{
+			tag.putInt(ENTROPY, 0);
+			stack.setTag(tag);
+		}
+		
+		return tag.getInt(ENTROPY);
 	}
 	
 	private static void increaseEntropy(ItemStack stack)
