@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 
 public class UniverseStargateModel extends AbstractStargateModel
 {

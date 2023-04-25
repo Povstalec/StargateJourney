@@ -16,7 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.DragonFireball;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.entities.PlasmaProjectile;
+import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 
 public class PlasmaProjectileRenderer extends EntityRenderer<PlasmaProjectile>
 {

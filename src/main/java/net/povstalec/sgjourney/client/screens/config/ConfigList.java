@@ -9,7 +9,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
-import net.povstalec.sgjourney.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 {

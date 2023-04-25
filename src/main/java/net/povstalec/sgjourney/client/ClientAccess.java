@@ -3,15 +3,15 @@ package net.povstalec.sgjourney.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.povstalec.sgjourney.block_entities.BasicInterfaceEntity;
-import net.povstalec.sgjourney.block_entities.RingPanelEntity;
-import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
-import net.povstalec.sgjourney.block_entities.energy_gen.NaquadahGeneratorEntity;
-import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.block_entities.symbols.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.energy_gen.NaquadahGeneratorEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.symbols.SymbolBlockEntity;
 
 @SuppressWarnings("resource")
 public class ClientAccess

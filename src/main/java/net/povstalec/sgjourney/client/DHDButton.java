@@ -15,8 +15,8 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.menu.AbstractDHDMenu;
-import net.povstalec.sgjourney.stargate.Symbols;
+import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 
 @OnlyIn(Dist.CLIENT)
 public class DHDButton extends Button

@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.menu.NaquadahGeneratorMenu;
+import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
 
 public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGeneratorMenu>
 {

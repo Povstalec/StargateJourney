@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.menu.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 
 public class DHDCrystalScreen extends AbstractContainerScreen<DHDCrystalMenu>
 {

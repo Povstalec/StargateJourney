@@ -9,9 +9,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.stargate.Symbols;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class AbstractStargateModel
 {

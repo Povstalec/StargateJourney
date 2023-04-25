@@ -46,32 +46,31 @@ import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
-import net.povstalec.sgjourney.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.init.BlockEntityInit;
-import net.povstalec.sgjourney.init.BlockInit;
-import net.povstalec.sgjourney.init.EntityInit;
-import net.povstalec.sgjourney.init.FeatureInit;
-import net.povstalec.sgjourney.init.FluidInit;
-import net.povstalec.sgjourney.init.FluidTypeInit;
-import net.povstalec.sgjourney.init.GalaxyInit;
-import net.povstalec.sgjourney.init.ItemInit;
-import net.povstalec.sgjourney.init.MenuInit;
-import net.povstalec.sgjourney.init.MiscInit;
-import net.povstalec.sgjourney.init.PacketHandlerInit;
-import net.povstalec.sgjourney.init.SoundInit;
-import net.povstalec.sgjourney.init.StructureInit;
-import net.povstalec.sgjourney.init.TabInit;
-import net.povstalec.sgjourney.init.VillagerInit;
-import net.povstalec.sgjourney.items.properties.LiquidNaquadahPropertyFunction;
-import net.povstalec.sgjourney.items.properties.WeaponStatePropertyFunction;
-import net.povstalec.sgjourney.stargate.AddressTable;
-import net.povstalec.sgjourney.stargate.Galaxy;
-import net.povstalec.sgjourney.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.stargate.SolarSystem;
-import net.povstalec.sgjourney.stargate.Symbols;
-import net.povstalec.sgjourney.world.biomemod.BiomeModifiers;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.init.EntityInit;
+import net.povstalec.sgjourney.common.init.FeatureInit;
+import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.init.FluidTypeInit;
+import net.povstalec.sgjourney.common.init.GalaxyInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.init.MiscInit;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.StructureInit;
+import net.povstalec.sgjourney.common.init.TabInit;
+import net.povstalec.sgjourney.common.init.VillagerInit;
+import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
+import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
+import net.povstalec.sgjourney.common.stargate.AddressTable;
+import net.povstalec.sgjourney.common.stargate.Galaxy;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.SolarSystem;
+import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(StargateJourney.MODID)
 public class StargateJourney
 {
@@ -139,7 +138,6 @@ public class StargateJourney
     	});
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
     {

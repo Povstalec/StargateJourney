@@ -10,13 +10,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.blocks.stargate.AbstractStargateBlock;
-import net.povstalec.sgjourney.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.WormholeModel;
-import net.povstalec.sgjourney.config.ClientStargateConfig;
-import net.povstalec.sgjourney.misc.Orientation;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.client.models.PegasusStargateModel;
 
 @OnlyIn(Dist.CLIENT)

@@ -8,8 +8,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.povstalec.sgjourney.config.ClientStargateConfig;
-import net.povstalec.sgjourney.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 
 public class ConfigScreenClientStargate extends Screen
 {
