@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.RingPanelButton;
-import net.povstalec.sgjourney.menu.RingPanelMenu;
+import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 
 public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
 {

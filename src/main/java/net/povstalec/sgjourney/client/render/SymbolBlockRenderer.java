@@ -14,9 +14,9 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.povstalec.sgjourney.block_entities.symbols.SymbolBlockEntity;
 import net.povstalec.sgjourney.client.Layers;
-import net.povstalec.sgjourney.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.block_entities.symbols.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class SymbolBlockRenderer

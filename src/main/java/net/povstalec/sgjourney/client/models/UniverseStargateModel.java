@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 
 public class UniverseStargateModel extends AbstractStargateModel
 {
@@ -43,13 +43,20 @@ public class UniverseStargateModel extends AbstractStargateModel
 	public void renderStargate(UniverseStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
+		this.renderRing(stargate, stack, source, combinedLight, combinedOverlay);
 		
-		this.ring.render(stack, ringTexture, combinedLight, combinedOverlay);
-
 		this.renderSymbolRing(stargate, stack, source, combinedLight, combinedOverlay, combinedOverlay);
 
 		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay, combinedOverlay);
+	}
+	
+	protected void renderRing(UniverseStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
+			int combinedLight, int combinedOverlay)
+	{
+		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
+		
+		this.ring.setRotation(0.0F, 0.0F, (float) Math.toRadians(this.rotation));
+		this.ring.render(stack, ringTexture, combinedLight, combinedOverlay);
 	}
 	
 	protected void renderSymbolRing(UniverseStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
@@ -57,7 +64,6 @@ public class UniverseStargateModel extends AbstractStargateModel
 	{
 		VertexConsumer symbolRingTexture = source.getBuffer(RenderType.entitySolid(SYMBOL_RING_TEXTURE));
 		
-		this.ring.setRotation(0.0F, 0.0F, (float) Math.toRadians(this.rotation));
 		for(int i = 0; i < 9; i++)
 		{
 			this.getUnderChevronLeft(i).setRotation(0.0F, 0.0F, (float) Math.toRadians(180 - (angle / 2) - (40 * i) + this.rotation));

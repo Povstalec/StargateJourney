@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.povstalec.sgjourney.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.stargate.StargatePart;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateRenderer
 {

@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.DHDBigButton;
-import net.povstalec.sgjourney.menu.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
 public class MilkyWayDHDScreen extends AbstractDHDScreen
 {

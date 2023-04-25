@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 
 public class TransportRingsModel
 {

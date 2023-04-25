@@ -13,9 +13,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
-import net.povstalec.sgjourney.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public class PegasusStargateModel extends AbstractStargateModel
 {

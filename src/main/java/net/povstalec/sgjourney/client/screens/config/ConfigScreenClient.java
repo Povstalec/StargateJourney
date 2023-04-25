@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.povstalec.sgjourney.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 
 public class ConfigScreenClient extends Screen
 {
