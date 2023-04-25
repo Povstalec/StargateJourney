@@ -109,8 +109,6 @@ public class StargateJourney
         
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(Layers::registerLayers);
-        eventBus.addListener(TabInit::onRegisterModTabs);
-        eventBus.addListener(TabInit::addCreative);
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");

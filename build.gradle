@@ -22,22 +22,17 @@ minecraft {
     // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
     //
     // Parchment is an unofficial project maintained by ParchmentMC, separate from MinecraftForge
-    // Additional setup is needed to use their mappings: https://parchmentmc.org/docs/getting-started
+    // Additional setup is needed to use their mappings: https://github.com/ParchmentMC/Parchment/wiki/Getting-Started
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'official', version: '1.19.3'
+    mappings channel: 'official', version: '1.19.2'
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
-    	all {
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-        }
-    
         client {
             workingDirectory project.file('run')
 
@@ -57,7 +52,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                mod_id {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -73,7 +68,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                mod_id {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -92,7 +87,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                mod_id {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -106,10 +101,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                mod_id {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -128,42 +123,17 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
-    maven {
-    url "https://squiddev.cc/maven/"
-    content {
-      includeGroup("cc.tweaked")
-      includeModule("org.squiddev", "Cobalt")
-      includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
-    }
-    maven {
-        name = "Progwml6 maven jei"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        name "tterrag maven"
-        url "https://maven.tterrag.com/"
-    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.dev"
-    }
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-  }
 }
 
 dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19.3-44.1.0'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
+    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
+    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
     // Examples using mod jars from ./libs
@@ -172,43 +142,18 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    
-    
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    
-    // compile against the JEI API but do not include it at runtime
-    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
-    // at runtime, use the full JEI jar for Forge
-    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
-    
-	compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
-	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
-    runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}"))
-    
-    //runtimeOnly fg.deobf("curse.maven:mcjtylib-233105:4389808")
-    //runtimeOnly fg.deobf("curse.maven:rftools-base-326041:4389811")
-    //runtimeOnly fg.deobf("curse.maven:rftools-power-290209:4367297")
-    
-    //runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
-    //runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
-    //runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
-   //runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "${mod_id}",
-                "Specification-Vendor"    : "${mod_authors}",
+                "Specification-Title"     : "examplemod",
+                "Specification-Vendor"    : "examplemodsareus",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "${mod_authors}",
+                "Implementation-Vendor"   : "examplemodsareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
