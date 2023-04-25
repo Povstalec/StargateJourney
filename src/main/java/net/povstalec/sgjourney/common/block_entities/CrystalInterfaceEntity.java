@@ -79,7 +79,10 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 	}
 
 	public void setInputSignal(int inputSignal) {
+		boolean changed = this.inputSignal != inputSignal;
 		this.inputSignal = inputSignal;
+		if (changed)
+			setChanged();
 	}
 
 	public int getInputSignal() {
