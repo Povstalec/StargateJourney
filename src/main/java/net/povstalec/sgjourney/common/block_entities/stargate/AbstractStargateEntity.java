@@ -609,7 +609,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//******************************************Ticking*******************************************
 	//============================================================================================
 	
-	public void wormhole(AbstractStargateEntity targetStargate, boolean canWormhole)
+	public void wormhole(AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole)
 	{
 		this.timeSinceLastTraveler++;
 		
@@ -617,7 +617,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		{
 			if(wormhole.findCandidates(level, getCenterPos(), getDirection()))
 	    		this.timeSinceLastTraveler = 0;
-			wormhole.wormholeEntities(this, targetStargate, canWormhole);
+			wormhole.wormholeEntities(this, targetStargate, twoWayWormhole);
 		}
 		
 		if(isDialingOut() && this.advancedProtocolsEnabled && this.timeSinceLastTraveler >= 200)

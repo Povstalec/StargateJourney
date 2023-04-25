@@ -326,7 +326,7 @@ public class StargateNetwork extends SavedData
 				dialingStargate.depleteEnergy(energyDraw, false);
 		}
 		
-		dialingStargate.wormhole(dialedStargate, true);
+		dialingStargate.wormhole(dialedStargate, Stargate.WormholeTravel.ENABLED);
 		dialedStargate.wormhole(dialingStargate, CommonStargateConfig.two_way_wormholes.get());
 	}
 	

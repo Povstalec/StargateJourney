@@ -64,6 +64,13 @@ public class Stargate
 		}
 	}
 	
+	public static enum WormholeTravel
+	{
+		ENABLED,
+		CREATIVE_ONLY,
+		DISABLED;
+	}
+	
 	public enum FilterType
 	{
 		NONE,

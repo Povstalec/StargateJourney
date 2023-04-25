@@ -25,6 +25,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.MatrixHelper;
 import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class Wormhole implements ITeleporter
 {
@@ -52,7 +53,7 @@ public class Wormhole implements ITeleporter
 		return !localEntities.isEmpty();
 	}
 	
-	public void wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, boolean canWormhole)
+	public void wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole)
 	{
 		Direction direction = initialStargate.getDirection();
 		Direction orientationDirection = Orientation.getEffectiveDirection(direction, initialStargate.getOrientation());
@@ -96,7 +97,7 @@ public class Wormhole implements ITeleporter
 				
 				if(shouldWormhole(unitDistance, previousTravelerPos, travelerPos, axisMomentum))
 				{
-					doWormhole(initialStargate, targetStargate, traveler, momentum, canWormhole);
+					doWormhole(initialStargate, targetStargate, traveler, momentum, twoWayWormhole);
 				}
 				else
 					entityLocations.put(traveler.getId(), new Vec3(traveler.getX(), traveler.getY(), traveler.getZ()));
@@ -126,7 +127,7 @@ public class Wormhole implements ITeleporter
 		return shouldReverse ? -number : number;
 	}
     
-    public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, boolean canWormhole)
+    public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, Stargate.WormholeTravel twoWayWormhole)
     {
 		Level level = traveler.getLevel();
 		playWormholeSound(level, traveler);
@@ -134,7 +135,7 @@ public class Wormhole implements ITeleporter
 		if(level.isClientSide())
 			return;
 		
-		if(canWormhole)
+		if(twoWayWormhole == WormholeTravel.ENABLED || (traveler instanceof Player player && player.isCreative() && twoWayWormhole == WormholeTravel.CREATIVE_ONLY))
 		{
 			ServerLevel destinationlevel = (ServerLevel) targetStargate.getLevel();
 	        
