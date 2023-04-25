@@ -86,6 +86,12 @@ public final class PacketHandlerInit
         .consumerMainThread(ClientboundNaquadahGeneratorUpdatePacket::handle)
         .add();
         
+        INSTANCE.messageBuilder(ClientboundSymbolUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+        .encoder(ClientboundSymbolUpdatePacket::encode)
+        .decoder(ClientboundSymbolUpdatePacket::new)
+        .consumerMainThread(ClientboundSymbolUpdatePacket::handle)
+        .add();
+        
         INSTANCE.messageBuilder(ServerboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
         .encoder(ServerboundDHDUpdatePacket::encode)
         .decoder(ServerboundDHDUpdatePacket::new)
