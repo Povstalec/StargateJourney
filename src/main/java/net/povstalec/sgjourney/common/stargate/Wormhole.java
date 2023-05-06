@@ -32,9 +32,11 @@ public class Wormhole implements ITeleporter
 	public static final double HORIZONTAL_CENTER_HEIGHT = 0.28125;
 	Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 	List<Entity> localEntities = new ArrayList<Entity>();
+	protected boolean used = false;
 	
 	public Wormhole()
     {
+		
     }
 	
 	public boolean hasCandidates()
@@ -53,8 +55,9 @@ public class Wormhole implements ITeleporter
 		return !localEntities.isEmpty();
 	}
 	
-	public void wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole)
+	public boolean wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole)
 	{
+		this.used = false;
 		Direction direction = initialStargate.getDirection();
 		Direction orientationDirection = Orientation.getEffectiveDirection(direction, initialStargate.getOrientation());
 		Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
@@ -108,6 +111,8 @@ public class Wormhole implements ITeleporter
 		});
 		
 		this.entityLocations = entityLocations;
+		
+		return this.used;
 	}
 	
 	public boolean shouldWormhole(int unitDistance, double previousTravelerPos, double travelerPos, double axisMomentum)
@@ -173,6 +178,7 @@ public class Wormhole implements ITeleporter
 		    		newTraveler.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		    		playWormholeSound(level, newTraveler);
 		    	}
+	    		this.used = true;
 	        }
 		}
 		else if(CommonStargateConfig.reverse_wormhole_kills.get())

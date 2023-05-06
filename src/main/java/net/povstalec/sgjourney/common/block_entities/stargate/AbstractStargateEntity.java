@@ -49,7 +49,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	private static Stargate.Gen generation;
 	
 	// Used during gameplay
-	private int tick = 0;
+	private int animationTick = 0;
 	private boolean isPrimaryChevronEngaged = false;
 	private boolean dialingOut = false;
 	private int timesOpened = 0;
@@ -63,7 +63,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 
 	private boolean hasDHD = false;
 	private boolean advancedProtocolsEnabled = false;
-	private int timeSinceLastTraveler = 0;
 	
 	//private Stargate.FilterType filter = Stargate.FilterType.NONE;
 	//private ListTag whitelist;
@@ -242,7 +241,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.isPrimaryChevronEngaged = false;
 		this.dialingOut = false;
 		this.connectionID = EMPTY;
-		this.timeSinceLastTraveler = 0;
 		
 		if(feedback.playFailSound())
 			level.playSound((Player)null, worldPosition, failSound(), SoundSource.BLOCKS, 0.25F, 1F);
@@ -351,18 +349,18 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public void setTickCount(int tick)
 	{
-		this.tick = tick;
+		this.animationTick = tick;
 	}
 	
 	public int getTickCount()
 	{
-		return this.tick;
+		return this.animationTick;
 	}
 	
 	public int increaseTickCount()
 	{
-		this.tick++;
-		return this.tick;
+		this.animationTick++;
+		return this.animationTick;
 	}
 	
 	public void setDialingOut(boolean dialingOut)
@@ -384,6 +382,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.hasDHD = hasDHD;
 	}
 	
+	public boolean advancedProtocolsEnabled()
+	{
+		return this.advancedProtocolsEnabled;
+	}
+	
 	public boolean hasDHD()
 	{
 		return this.hasDHD;
@@ -398,7 +401,9 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public int getTimeSinceLastTraveler()
 	{
-		return this.timeSinceLastTraveler;
+		if(this.level.isClientSide())
+			return 0;
+		return StargateNetwork.get(this.level).getTimeSinceLastTraveler(this.connectionID);
 	}
 	
 	public int getTimesOpened()
@@ -561,6 +566,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.getEnergyStored() >= StargateNetwork.getConnectionType(this.level.getServer(), this, targetStargate).getEstabilishingPowerCost();
 	}
 	
+	public Wormhole getWormhole()
+	{
+		return this.wormhole;
+	}
+	
 	public abstract SoundEvent chevronEngageSound();
 
 	public abstract SoundEvent failSound();
@@ -578,7 +588,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		player.sendSystemMessage(Component.literal("Times Opened: " + timesOpened).withStyle(ChatFormatting.BLUE));
 		player.sendSystemMessage(Component.literal("Connected to DHD: " + hasDHD).withStyle(ChatFormatting.GOLD));
 		player.sendSystemMessage(Component.literal("Advanced Protocols Enabled: " + advancedProtocolsEnabled).withStyle(ChatFormatting.RED));
-		player.sendSystemMessage(Component.literal("Time Since Last Traveler: " + timeSinceLastTraveler).withStyle(ChatFormatting.DARK_PURPLE));
+		player.sendSystemMessage(Component.literal("Time Since Last Traveler: " + getTimeSinceLastTraveler()).withStyle(ChatFormatting.DARK_PURPLE));
 	}
 	
 	@Override
@@ -609,26 +619,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//******************************************Ticking*******************************************
 	//============================================================================================
 	
-	public void wormhole(AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole)
-	{
-		this.timeSinceLastTraveler++;
-		
-		if(isConnected())
-		{
-			if(wormhole.findCandidates(level, getCenterPos(), getDirection()))
-	    		this.timeSinceLastTraveler = 0;
-			wormhole.wormholeEntities(this, targetStargate, twoWayWormhole);
-		}
-		
-		if(isDialingOut() && this.advancedProtocolsEnabled && this.timeSinceLastTraveler >= 200)
-			disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
-		
-		if(level.isClientSide())
-			return;
-
-		this.setChanged();
-	}
-	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)
     {
 		stargate.increaseTickCount();
@@ -636,6 +626,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundStargateUpdatePacket(stargate.worldPosition, stargate.address, stargate.dialingOut, stargate.tick, stargate.pointOfOrigin, stargate.symbols));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundStargateUpdatePacket(stargate.worldPosition, stargate.address, stargate.dialingOut, stargate.animationTick, stargate.pointOfOrigin, stargate.symbols));
     }
 }

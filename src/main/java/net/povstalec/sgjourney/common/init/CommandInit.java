@@ -200,7 +200,7 @@ public class CommandInit
 		System.out.println("=============================");
 		System.out.println("Stargates:\n" + StargateNetwork.get(level).getStargates());
 		System.out.println("Stargates in Solar Systems:\n" + StargateNetwork.get(level).getSolarSystems());
-		System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
+		//System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
 
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info on console"));
 		

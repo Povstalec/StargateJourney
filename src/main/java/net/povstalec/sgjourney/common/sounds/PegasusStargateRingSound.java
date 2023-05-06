@@ -29,7 +29,7 @@ public class PegasusStargateRingSound extends AbstractTickableSoundInstance
 		else
 			this.volume = VOLUME_MIN;
 		
-		if(stargate.animationTick == 0)
+		if(stargate.waitTick == 0)
 			this.stop();
 	}
 	

@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Dialing
 {
@@ -98,7 +99,7 @@ public class Dialing
 			int dimensions = 0;
 			for(int i = 0; i < dimensionList.size(); i++)
 			{
-				ResourceKey<Level> levelKey = stringToDimension(dimensionList.getString(i));
+				ResourceKey<Level> levelKey = Conversion.stringToDimension(dimensionList.getString(i));
 				
 				if(level.getServer().levelKeys().contains(levelKey))
 				{
@@ -167,9 +168,9 @@ public class Dialing
 		if(!stargateList.contains(id))
 			return stargate.resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		
-		BlockPos pos = intArrayToBlockPos(stargateList.getCompound(id).getIntArray("Coordinates"));
+		BlockPos pos = Conversion.intArrayToBlockPos(stargateList.getCompound(id).getIntArray("Coordinates"));
 		
-		if(server.getLevel(stringToDimension(stargateList.getCompound(id).getString("Dimension"))).getBlockEntity(pos) instanceof AbstractStargateEntity targetStargate)
+		if(server.getLevel(Conversion.stringToDimension(stargateList.getCompound(id).getString("Dimension"))).getBlockEntity(pos) instanceof AbstractStargateEntity targetStargate)
 		{
 			if(targetStargate.isObstructed())
 				return stargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
@@ -184,17 +185,6 @@ public class Dialing
 		return getStargateFromID(level.getServer(), stargate, id);
 	}
 	
-	public static ResourceKey<Level> stringToDimension(String dimensionString)
-	{
-		String[] split = dimensionString.split(":");
-		return ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("minecraft", "dimension")), new ResourceLocation(split[0], split[1]));
-	}
-	
-	public static BlockPos intArrayToBlockPos(int[] coordinates)
-	{
-		return new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
-	}
-	
 	private static Stargate.Feedback getPreferredStargate(MinecraftServer server, AbstractStargateEntity stargate, CompoundTag solarSystem)
 	{
 		while(!solarSystem.isEmpty())
@@ -206,8 +196,8 @@ public class Dialing
 				CompoundTag stargateInfo = solarSystem.getCompound(preferredStargate);
 				
 				int[] coordinates = stargateInfo.getIntArray("Coordinates");
-				BlockPos pos = intArrayToBlockPos(coordinates);
-				ResourceKey<Level> dimension = stringToDimension(stargateInfo.getString("Dimension"));
+				BlockPos pos = Conversion.intArrayToBlockPos(coordinates);
+				ResourceKey<Level> dimension = Conversion.stringToDimension(stargateInfo.getString("Dimension"));
 				ServerLevel targetLevel = server.getLevel(dimension);
 				
 				if(targetLevel.getBlockEntity(pos) instanceof AbstractStargateEntity targetStargate)

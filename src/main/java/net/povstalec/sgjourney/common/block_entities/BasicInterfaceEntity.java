@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -46,6 +47,18 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		super(type, pos, state);
 	}
 	
+	@Override
+	public void onLoad()
+	{
+		Level level = this.getLevel();
+		BlockPos pos = this.getBlockPos();
+		BlockState state = this.getLevel().getBlockState(pos);
+		if(level.getBlockState(pos).getBlock() instanceof BasicInterfaceBlock ccInterface)
+			ccInterface.updateInterface(state, level, pos);
+		
+		super.onLoad();
+	}
+	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
@@ -59,10 +72,13 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		return super.getCapability(cap, side);
 	}
 	
-	public boolean updateInterface()
+	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{
 		if(peripheralHolder != null)
 			return peripheralHolder.resetInterface();
+		
+		if(level.getBlockState(pos).getBlock() instanceof BasicInterfaceBlock ccInterface)
+			ccInterface.updateInterface(state, level, pos);
 		
 		return true;
 	}

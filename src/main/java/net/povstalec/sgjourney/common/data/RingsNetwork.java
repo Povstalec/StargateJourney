@@ -16,6 +16,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.stargate.Dialing;
 
 /**
@@ -202,7 +203,7 @@ public class RingsNetwork extends SavedData
 	
 	public ResourceKey<Level> getDimension(String uuid, String rings)
 	{
-		return Dialing.stringToDimension(getConnection(uuid).getCompound(rings).getString(DIMENSION));
+		return Conversion.stringToDimension(getConnection(uuid).getCompound(rings).getString(DIMENSION));
 	}
 	
 	public TransportRingsEntity getRings(MinecraftServer server, String uuid, String rings)
@@ -255,8 +256,8 @@ public class RingsNetwork extends SavedData
 	
 	private TransportRingsEntity loadRings(MinecraftServer server, CompoundTag ringsInfo)
 	{
-		ResourceKey<Level> dimension = Dialing.stringToDimension(ringsInfo.getString(DIMENSION));
-		BlockPos pos = Dialing.intArrayToBlockPos(ringsInfo.getIntArray(COORDINATES));
+		ResourceKey<Level> dimension = Conversion.stringToDimension(ringsInfo.getString(DIMENSION));
+		BlockPos pos = Conversion.intArrayToBlockPos(ringsInfo.getIntArray(COORDINATES));
 		
 		BlockEntity blockEntity = server.getLevel(dimension).getBlockEntity(pos);
 		

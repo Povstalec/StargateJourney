@@ -8,7 +8,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -32,6 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
@@ -44,16 +47,17 @@ import net.povstalec.sgjourney.common.menu.BasicInterfaceMenu;
 public class BasicInterfaceBlock extends BaseEntityBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
+	public static final BooleanProperty UPDATE = BooleanProperty.create("update");
 	
 	public BasicInterfaceBlock(Properties properties)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(UPDATE, false));
 	}
 	 
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(FACING);
+		state.add(FACING).add(UPDATE);
 	}
 	 
 	public BlockState rotate(BlockState state, Rotation rotation)
@@ -142,6 +146,18 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 	}
 	
 	@Override
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
+	{
+		level.setBlock(pos, state.setValue(UPDATE, false), 3);
+	}
+	
+	public void updateInterface(BlockState state, Level level, BlockPos pos)
+	{
+		level.setBlock(pos, state.setValue(BasicInterfaceBlock.UPDATE, true), 3);
+		level.scheduleTick(pos, this, 2);
+	}
+	
+	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
 	{
 		if(level.isClientSide())
@@ -150,7 +166,7 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 		Direction direction = state.getValue(FACING);
 		BlockPos targetPos = pos.relative(direction);
 		
-		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof BasicInterfaceEntity basicInterface && basicInterface.updateInterface())
+		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof BasicInterfaceEntity basicInterface && basicInterface.updateInterface(level, targetPos, block, state))
 			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 	}
 	

@@ -47,7 +47,7 @@ public class EventInit
 		if(event.phase.equals(TickEvent.Phase.START))
 		{
 			MinecraftServer server = event.getServer();
-			StargateNetwork.get(server).handleConnections(server);
+			StargateNetwork.get(server).handleConnections();
 		}
 	}
 	

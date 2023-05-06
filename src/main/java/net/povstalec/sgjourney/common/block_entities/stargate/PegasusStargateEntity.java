@@ -22,7 +22,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public int[] addressBuffer = new int[0];
 	public int symbolBuffer = 0;
 	private boolean passedOver = false;
-	public int animationTick = 0;
+	public int waitTick = 0;
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
@@ -88,7 +88,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		symbolBuffer++;
 		passedOver = false;
-		animationTick = 0;
+		waitTick = 0;
 		return super.encodeChevron(symbol);
 	}
 	
@@ -173,7 +173,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		else if(currentSymbol < 0)
 			currentSymbol = 35;
 
-		animationTick++;
+		waitTick++;
 	}
 	
 	@Override
