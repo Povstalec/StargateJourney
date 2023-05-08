@@ -36,6 +36,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.SGJourneyBaseEntityBlock;
+import net.povstalec.sgjourney.common.misc.VoxelDimensionProvider;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
@@ -47,13 +48,8 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
 	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
-	
-	protected static final VoxelShape FULL_BLOCK = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-	
-	protected static final VoxelShape X = Block.box(0.0D, 0.0D, 4.5D, 16.0D, 16.0D, 11.5D);
-	protected static final VoxelShape Z = Block.box(4.5D, 0.0D, 0.0D, 11.5D, 16.0D, 16.0D);
-	protected static final VoxelShape HORIZONTAL = Block.box(0.0D, 1.0D, 0.0D, 16.0D, 8.0D, 16.0D);
-	
+	private static final VoxelDimensionProvider VOXEL_COORDS = new VoxelDimensionProvider();
+
 	public AbstractStargateBlock(Properties properties)
 	{
 		super(properties, "Stargates");
@@ -88,8 +84,8 @@ public abstract class AbstractStargateBlock extends SGJourneyBaseEntityBlock imp
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return HORIZONTAL;
-		return state.getValue(FACING).getAxis() == Direction.Axis.X ? Z : X;
+			return VOXEL_COORDS.HORIZONTAL;
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? VOXEL_COORDS.Z : VOXEL_COORDS.X;
 	}
 	
 	public BlockState updateShape(BlockState oldState, Direction direction, BlockState newState, LevelAccessor levelAccessor, BlockPos oldPos, BlockPos newPos)
