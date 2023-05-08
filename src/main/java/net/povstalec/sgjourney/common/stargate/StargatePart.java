@@ -8,7 +8,7 @@ import net.povstalec.sgjourney.common.misc.Orientation;
 
 public enum StargatePart implements StringRepresentable
 {
-	CENTER("center", 0, 0),
+	BASE("base", 0, 0),
 	
 	LEFT("left", 1, 0),
 	
@@ -65,7 +65,7 @@ public enum StargatePart implements StringRepresentable
 		return this.name;
 	}
 	
-	public BlockPos getMainBlockPos(BlockPos pos, Direction direction, Orientation orientation)
+	public BlockPos getBaseBlockPos(BlockPos pos, Direction direction, Orientation orientation)
 	{
 		Direction newDirection = direction.getCounterClockWise();
 		Direction centerDirection = Orientation.getCenterDirection(direction, orientation);

@@ -107,7 +107,7 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 
 		if(level.getBlockState(realPos).getBlock() instanceof AbstractStargateRingBlock)
 			realPos = state.getValue(AbstractStargateRingBlock.PART)
-					.getMainBlockPos(realPos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
+					.getBaseBlockPos(realPos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
 
 		return level.getBlockEntity(realPos) instanceof EnergyBlockEntity energyBlockEntity ? energyBlockEntity : null;
 	}

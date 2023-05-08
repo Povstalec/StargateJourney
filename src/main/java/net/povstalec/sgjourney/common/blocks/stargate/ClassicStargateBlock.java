@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEnt
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
-public class ClassicStargateBlock extends AbstractStargateBlock
+public class ClassicStargateBlock extends AbstractStargateBaseBlock
 {
 	public ClassicStargateBlock(Properties properties)
 	{

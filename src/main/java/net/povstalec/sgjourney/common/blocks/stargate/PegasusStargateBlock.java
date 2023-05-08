@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEnt
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
-public class PegasusStargateBlock extends AbstractStargateBlock
+public class PegasusStargateBlock extends AbstractStargateBaseBlock
 {
 	public PegasusStargateBlock(Properties properties)
 	{

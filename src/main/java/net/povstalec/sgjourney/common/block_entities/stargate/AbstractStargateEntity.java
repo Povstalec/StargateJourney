@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
@@ -492,8 +492,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = this.level.getBlockState(gatePos);
 		
-		if(gateState.getBlock() instanceof AbstractStargateBlock)
-			return gateState.getValue(AbstractStargateBlock.ORIENTATION);
+		if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
+			return gateState.getValue(AbstractStargateBaseBlock.ORIENTATION);
 
 		StargateJourney.LOGGER.info("Couldn't find Stargate Orientation");
 		return null;
@@ -504,8 +504,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = this.level.getBlockState(gatePos);
 		
-		if(gateState.getBlock() instanceof AbstractStargateBlock)
-			return gateState.getValue(AbstractStargateBlock.FACING);
+		if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
+			return gateState.getValue(AbstractStargateBaseBlock.FACING);
 
 		StargateJourney.LOGGER.info("Couldn't find Stargate Direction");
 		return null;
@@ -521,7 +521,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = this.level.getBlockState(gatePos);
 		
-		if(gateState.getBlock() instanceof AbstractStargateBlock stargate)
+		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
 			stargate.updateStargate(level, gatePos, gateState, isConnected, chevronsEngaged);
 		else
 			StargateJourney.LOGGER.info("Couldn't find Stargate");
@@ -534,8 +534,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = this.level.getBlockState(gatePos);
 		
-		if(gateState.getBlock() instanceof AbstractStargateBlock)
-			return this.level.getBlockState(gatePos).getValue(AbstractStargateBlock.CONNECTED);
+		if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
+			return this.level.getBlockState(gatePos).getValue(AbstractStargateBaseBlock.CONNECTED);
 		
 		return false;
 	}

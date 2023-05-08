@@ -28,7 +28,7 @@ public class MilkyWayStargateRingBlock extends AbstractStargateRingBlock
 		
 		boolean hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
 		
-		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getMainBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
+		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
 		
 		if(blockentity instanceof MilkyWayStargateEntity stargate)
 		{

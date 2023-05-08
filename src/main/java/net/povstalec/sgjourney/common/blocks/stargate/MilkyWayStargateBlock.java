@@ -28,7 +28,7 @@ import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public class MilkyWayStargateBlock extends AbstractStargateBlock
+public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 {
 	public MilkyWayStargateBlock(Properties properties)
 	{
@@ -74,9 +74,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
 		if(blockentity instanceof MilkyWayStargateEntity stargate)
 		{
 			if(hasSignal)
-				stargate.updateSignal(StargatePart.CENTER, level.getBestNeighborSignal(pos));
+				stargate.updateSignal(StargatePart.BASE, level.getBestNeighborSignal(pos));
 			else
-				stargate.updateSignal(StargatePart.CENTER, 0);
+				stargate.updateSignal(StargatePart.BASE, 0);
 		}
 	}
 	

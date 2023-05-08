@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.UniverseStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.Orientation;
@@ -48,7 +48,7 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
 		BlockState blockstate = stargate.getBlockState();
 		float facing = blockstate.getValue(UniverseStargateBlock.FACING).toYRot();
 		Vec3 center = stargate.getRelativeCenter();
-		Orientation orientation = blockstate.getValue(AbstractStargateBlock.ORIENTATION);
+		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
 		
         stack.pushPose();
 		stack.translate(center.x(), center.y(), center.z());
