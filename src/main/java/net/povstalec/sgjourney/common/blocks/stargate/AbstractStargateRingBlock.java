@@ -25,9 +25,9 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.misc.VoxelDimensionProvider;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
@@ -43,57 +43,8 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 	
 	//TODO
 	//public static final BooleanProperty FULL = BooleanProperty.create("full");
-	
-	protected static final VoxelShape FULL_BLOCK = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-	
-	protected static final VoxelShape HORIZONTAL = Block.box(0.0D, 1.0D, 0.0D, 16.0D, 8.0D, 16.0D);
-	protected static final VoxelShape HORIZONTAL_BOTTOM_LEFT = Block.box(0.0D, 1.0D, 0.0D, 8.0D, 8.0D, 8.0D);
-	protected static final VoxelShape HORIZONTAL_BOTTOM_RIGHT = Block.box(8.0D, 1.0D, 0.0D, 16.0D, 8.0D, 8.0D);
-	protected static final VoxelShape HORIZONTAL_TOP_LEFT = Block.box(0.0D, 1.0D, 8.0D, 8.0D, 8.0D, 16.0D);
-	protected static final VoxelShape HORIZONTAL_TOP_RIGHT = Block.box(8.0D, 1.0D, 8.0D, 16.0D, 8.0D, 16.0D);
-	
-	protected static final VoxelShape HORIZONTAL_STAIR_BOTTOM_LEFT = Shapes.or(HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_TOP_RIGHT);
-	protected static final VoxelShape HORIZONTAL_STAIR_BOTTOM_RIGHT = Shapes.or(HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_TOP_LEFT, HORIZONTAL_TOP_RIGHT);
-	protected static final VoxelShape HORIZONTAL_STAIR_TOP_LEFT = Shapes.or(HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT);
-	protected static final VoxelShape HORIZONTAL_STAIR_TOP_RIGHT = Shapes.or(HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_LEFT);
-	
-	protected static final VoxelShape[] HORIZONTAL_SHAPES = new VoxelShape[] {HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT};
-	protected static final VoxelShape[] HORIZONTAL_STAIR_SHAPES = new VoxelShape[] {HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT};
-	
-	protected static final VoxelShape X = Block.box(0.0D, 0.0D, 4.5D, 16.0D, 16.0D, 11.5D);
-	protected static final VoxelShape X_TOP_LEFT = Block.box(0.0D, 8.0D, 4.5D, 8.0D, 16.0D, 11.5D);
-	protected static final VoxelShape X_TOP_RIGHT = Block.box(8.0D, 8.0D, 4.5D, 16.0D, 16.0D, 11.5D);
-	protected static final VoxelShape X_BOTTOM_LEFT = Block.box(0.0D, 0.0D, 4.5D, 8.0D, 8.0D, 11.5D);
-	protected static final VoxelShape X_BOTTOM_RIGHT = Block.box(8.0D, 0.0D, 4.5D, 16.0D, 8.0D, 11.5D);
-	
-	protected static final VoxelShape X_STAIR_TOP_LEFT =  Shapes.or(X_BOTTOM_LEFT, X_BOTTOM_RIGHT, X_TOP_RIGHT);
-	protected static final VoxelShape X_STAIR_TOP_RIGHT =  Shapes.or(X_BOTTOM_LEFT, X_BOTTOM_RIGHT, X_TOP_LEFT);
-	protected static final VoxelShape X_STAIR_BOTTOM_LEFT =  Shapes.or(X_TOP_LEFT, X_TOP_RIGHT, X_BOTTOM_RIGHT);
-	protected static final VoxelShape X_STAIR_BOTTOM_RIGHT =  Shapes.or(X_TOP_LEFT, X_TOP_RIGHT, X_BOTTOM_LEFT);
-	
-	protected static final VoxelShape Z = Block.box(4.5D, 0.0D, 0.0D, 11.5D, 16.0D, 16.0D);
-	protected static final VoxelShape Z_TOP_LEFT = Block.box(4.5D, 8.0D, 0.0D, 11.5D, 16.0D, 8.0D);
-	protected static final VoxelShape Z_TOP_RIGHT = Block.box(4.5D, 8.0D, 8.0D, 11.5D, 16.0D, 16.0D);
-	protected static final VoxelShape Z_BOTTOM_LEFT = Block.box(4.5D, 0.0D, 0.0D, 11.5D, 8.0D, 8.0D);
-	protected static final VoxelShape Z_BOTTOM_RIGHT = Block.box(4.5D, 0.0D, 8.0D, 11.5D, 8.0D, 16.0D);
-	
-	protected static final VoxelShape Z_STAIR_TOP_LEFT =  Shapes.or(Z_BOTTOM_LEFT, Z_BOTTOM_RIGHT, Z_TOP_RIGHT);
-	protected static final VoxelShape Z_STAIR_TOP_RIGHT =  Shapes.or(Z_BOTTOM_LEFT, Z_BOTTOM_RIGHT, Z_TOP_LEFT);
-	protected static final VoxelShape Z_STAIR_BOTTOM_LEFT =  Shapes.or(Z_TOP_LEFT, Z_TOP_RIGHT, Z_BOTTOM_RIGHT);
-	protected static final VoxelShape Z_STAIR_BOTTOM_RIGHT =  Shapes.or(Z_TOP_LEFT, Z_TOP_RIGHT, Z_BOTTOM_LEFT);
+	private static final VoxelDimensionProvider VOXEL_COORDS = new VoxelDimensionProvider();
 
-	protected static final VoxelShape[][] DEFAULT = new VoxelShape[][] {{HORIZONTAL}, {X, Z}, {HORIZONTAL}};
-	
-	protected static final VoxelShape[][] TOP_LEFT = new VoxelShape[][] {{HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT}, {X_TOP_LEFT, Z_TOP_LEFT, X_TOP_RIGHT, Z_TOP_RIGHT}, {HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT}};
-	protected static final VoxelShape[][] BOTTOM_LEFT = new VoxelShape[][] {{HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT}, {X_BOTTOM_LEFT, Z_BOTTOM_LEFT, X_BOTTOM_RIGHT, Z_BOTTOM_RIGHT}, {HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT}};
-	protected static final VoxelShape[][] BOTTOM_RIGHT = new VoxelShape[][] {{HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT}, {X_BOTTOM_RIGHT, Z_BOTTOM_RIGHT, X_BOTTOM_LEFT, Z_BOTTOM_LEFT}, {HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT}};
-	protected static final VoxelShape[][] TOP_RIGHT = new VoxelShape[][] {{HORIZONTAL_BOTTOM_RIGHT, HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT}, {X_TOP_RIGHT, Z_TOP_RIGHT, X_TOP_LEFT, Z_TOP_LEFT}, {HORIZONTAL_TOP_RIGHT, HORIZONTAL_TOP_LEFT, HORIZONTAL_BOTTOM_LEFT, HORIZONTAL_BOTTOM_RIGHT}};
-	
-	protected static final VoxelShape[][] STAIR_TOP_LEFT = new VoxelShape[][] {{HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT}, {X_STAIR_TOP_LEFT, Z_STAIR_TOP_LEFT, X_STAIR_TOP_RIGHT, Z_STAIR_TOP_RIGHT}, {HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT}};
-	protected static final VoxelShape[][] STAIR_BOTTOM_LEFT = new VoxelShape[][] {{HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT}, {X_STAIR_BOTTOM_LEFT, Z_STAIR_BOTTOM_LEFT, X_STAIR_BOTTOM_RIGHT, Z_STAIR_BOTTOM_RIGHT}, {HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT}};
-	protected static final VoxelShape[][] STAIR_BOTTOM_RIGHT = new VoxelShape[][] {{HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT}, {X_STAIR_BOTTOM_RIGHT, Z_STAIR_BOTTOM_RIGHT, X_STAIR_BOTTOM_LEFT, Z_STAIR_BOTTOM_LEFT}, {HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT}};
-	protected static final VoxelShape[][] STAIR_TOP_RIGHT = new VoxelShape[][] {{HORIZONTAL_STAIR_BOTTOM_RIGHT, HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT}, {X_STAIR_TOP_RIGHT, Z_STAIR_TOP_RIGHT, X_STAIR_TOP_LEFT, Z_STAIR_TOP_LEFT}, {HORIZONTAL_STAIR_TOP_RIGHT, HORIZONTAL_STAIR_TOP_LEFT, HORIZONTAL_STAIR_BOTTOM_LEFT, HORIZONTAL_STAIR_BOTTOM_RIGHT}};
-	
 	public AbstractStargateRingBlock(Properties properties)
 	{
 		super(properties);
@@ -130,39 +81,18 @@ public abstract class AbstractStargateRingBlock extends HorizontalDirectionalBlo
 		
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
-		
-		switch(state.getValue(PART))
-		{
-		case LEFT2:
-			return getShapeFromArray(TOP_RIGHT, direction, orientation);
-		case LEFT2_ABOVE:
-			return getShapeFromArray(STAIR_TOP_RIGHT, direction, orientation);
-		case LEFT3_ABOVE:
-			return getShapeFromArray(TOP_RIGHT, direction, orientation);
-			
-		case LEFT3_ABOVE5:
-			return getShapeFromArray(BOTTOM_RIGHT, direction, orientation);
-		case LEFT2_ABOVE5:
-			return getShapeFromArray(STAIR_BOTTOM_RIGHT, direction, orientation);
-		case LEFT2_ABOVE6:
-			return getShapeFromArray(BOTTOM_RIGHT, direction, orientation);
-			
-		case RIGHT2_ABOVE6:
-			return getShapeFromArray(BOTTOM_LEFT, direction, orientation);
-		case RIGHT2_ABOVE5:
-			return getShapeFromArray(STAIR_BOTTOM_LEFT, direction, orientation);
-		case RIGHT3_ABOVE5:
-			return getShapeFromArray(BOTTOM_LEFT, direction, orientation);
-			
-		case RIGHT3_ABOVE:
-			return getShapeFromArray(TOP_LEFT, direction, orientation);
-		case RIGHT2_ABOVE:
-			return getShapeFromArray(STAIR_TOP_LEFT, direction, orientation);
-		case RIGHT2:
-			return getShapeFromArray(TOP_LEFT, direction, orientation);
-		default:
-			return getShapeFromArray(DEFAULT, direction, orientation);
-		}
+
+		return switch (state.getValue(PART)) {
+			case LEFT2, LEFT3_ABOVE -> getShapeFromArray(VOXEL_COORDS.TOP_RIGHT, direction, orientation);
+			case LEFT2_ABOVE -> getShapeFromArray(VOXEL_COORDS.STAIR_TOP_RIGHT, direction, orientation);
+			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> getShapeFromArray(VOXEL_COORDS.BOTTOM_RIGHT, direction, orientation);
+			case LEFT2_ABOVE5 -> getShapeFromArray(VOXEL_COORDS.STAIR_BOTTOM_RIGHT, direction, orientation);
+			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> getShapeFromArray(VOXEL_COORDS.BOTTOM_LEFT, direction, orientation);
+			case RIGHT2_ABOVE5 -> getShapeFromArray(VOXEL_COORDS.STAIR_BOTTOM_LEFT, direction, orientation);
+			case RIGHT3_ABOVE, RIGHT2 -> getShapeFromArray(VOXEL_COORDS.TOP_LEFT, direction, orientation);
+			case RIGHT2_ABOVE -> getShapeFromArray(VOXEL_COORDS.STAIR_TOP_LEFT, direction, orientation);
+			default -> getShapeFromArray(VOXEL_COORDS.DEFAULT, direction, orientation);
+		};
 	}
 	
 	public BlockState updateShape(BlockState oldState, Direction direction, BlockState newState, LevelAccessor levelAccessor, BlockPos oldPos, BlockPos newPos)
