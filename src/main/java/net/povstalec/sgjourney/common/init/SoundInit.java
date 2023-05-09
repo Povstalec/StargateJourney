@@ -14,19 +14,19 @@ public class SoundInit
 	
 	public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, StargateJourney.MODID);
 
-	public static final RegistryObject<SoundEvent> UNIVERSE_CHEVRON_ENGAGE = registerSoundEvent("universe_chevron_engage", 64.0F);
-	public static final RegistryObject<SoundEvent> UNIVERSE_DIAL_FAIL = registerSoundEvent("universe_dial_fail", 64.0F);
+	public static final RegistryObject<SoundEvent> UNIVERSE_CHEVRON_ENGAGE = registerSoundEvent("universe_chevron_engage");
+	public static final RegistryObject<SoundEvent> UNIVERSE_DIAL_FAIL = registerSoundEvent("universe_dial_fail");
 	
-	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENCODE = registerSoundEvent("milky_way_chevron_encode", 64.0F);
-	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENGAGE = registerSoundEvent("milky_way_chevron_engage", 64.0F);
-	public static final RegistryObject<SoundEvent> MILKY_WAY_DIAL_FAIL = registerSoundEvent("milky_way_dial_fail", 64.0F);
+	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENCODE = registerSoundEvent("milky_way_chevron_encode");
+	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENGAGE = registerSoundEvent("milky_way_chevron_engage");
+	public static final RegistryObject<SoundEvent> MILKY_WAY_DIAL_FAIL = registerSoundEvent("milky_way_dial_fail");
 
-	public static final RegistryObject<SoundEvent> PEGASUS_RING_SPIN = registerSoundEvent("pegasus_ring_spin", 64.0F);
-	public static final RegistryObject<SoundEvent> PEGASUS_CHEVRON_ENGAGE = registerSoundEvent("pegasus_chevron_engage", 64.0F);
-	public static final RegistryObject<SoundEvent> PEGASUS_DIAL_FAIL = registerSoundEvent("pegasus_dial_fail", 64.0F);
+	public static final RegistryObject<SoundEvent> PEGASUS_RING_SPIN = registerSoundEvent("pegasus_ring_spin");
+	public static final RegistryObject<SoundEvent> PEGASUS_CHEVRON_ENGAGE = registerSoundEvent("pegasus_chevron_engage");
+	public static final RegistryObject<SoundEvent> PEGASUS_DIAL_FAIL = registerSoundEvent("pegasus_dial_fail");
 
-	public static final RegistryObject<SoundEvent> WORMHOLE_CLOSE = registerSoundEvent("wormhole_close", 64.0F);
-	public static final RegistryObject<SoundEvent> WORMHOLE_ENTER = registerSoundEvent("wormhole_enter", 64.0F);
+	public static final RegistryObject<SoundEvent> WORMHOLE_CLOSE = registerSoundEvent("wormhole_close");
+	public static final RegistryObject<SoundEvent> WORMHOLE_ENTER = registerSoundEvent("wormhole_enter");
 
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_ENTER = registerSoundEvent("milky_way_dhd_enter");
 	
@@ -36,12 +36,7 @@ public class SoundInit
 	
 	private static RegistryObject<SoundEvent> registerSoundEvent(String sound)
 	{
-		return SOUNDS.register(sound, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(StargateJourney.MODID, sound)));
-	}
-	
-	private static RegistryObject<SoundEvent> registerSoundEvent(String sound, float range)
-	{
-		return SOUNDS.register(sound, () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(StargateJourney.MODID, sound), range));
+		return SOUNDS.register(sound, () -> new SoundEvent(new ResourceLocation(StargateJourney.MODID, sound)));
 	}
 	
 	public static void register(IEventBus eventBus)

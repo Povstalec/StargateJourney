@@ -53,7 +53,6 @@ import net.povstalec.sgjourney.common.blocks.symbols.StoneSymbolBlock;
 import net.povstalec.sgjourney.common.items.DHDItem;
 import net.povstalec.sgjourney.common.items.SGJourneyBlockItem;
 
-//A class for initializing blocks
 public class BlockInit
 {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, StargateJourney.MODID);
@@ -227,32 +226,32 @@ public class BlockInit
 	
 	private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block)
 	{
-		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo)));
+		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo)));
+		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerDHDItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new DHDItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo)));
+		return ItemInit.ITEMS.register(name, () -> new DHDItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
 	public static void register(IEventBus eventBus)

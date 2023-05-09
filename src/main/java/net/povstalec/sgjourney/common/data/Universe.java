@@ -143,7 +143,7 @@ public class Universe extends SavedData
 		String defaultSymbols = defaultGalaxy.getDefaultSymbols().location().toString();
 		
 		// Creates a number from the dimension name that works as a seed for the Solar System
-		long seed = CommonStargateNetworkConfig.random_addresses_from_seed.get() ? server.getWorldData().worldGenOptions().seed() : 0;
+		long seed = CommonStargateNetworkConfig.random_addresses_from_seed.get() ? server.getWorldData().worldGenSettings().seed() : 0;
 		for(int i = 0; i < name.length(); i++)
 		{
 			seed = seed + Character.valueOf(name.charAt(i));

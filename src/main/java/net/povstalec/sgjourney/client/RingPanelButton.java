@@ -21,7 +21,7 @@ public class RingPanelButton extends Button
 	
     public RingPanelButton(int x, int y, Component component, OnPress press)
 	{
-		super(x, y, 32, 16, component, press, Button.DEFAULT_NARRATION);
+		super(x, y, 32, 16, component, press, Button.NO_TOOLTIP);
 	}
     
     @Override
@@ -35,11 +35,11 @@ public class RingPanelButton extends Button
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(p_93676_, this.getX(), this.getY(), 0, i * 16, this.width, this.height);
-        this.blit(p_93676_, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        this.blit(p_93676_, this.x, this.y, 0, i * 16, this.width, this.height);
+        this.blit(p_93676_, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         this.renderBg(p_93676_, minecraft, p_93677_, p_93678_);
         int j = getFGColor();
-        drawCenteredString(p_93676_, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        drawCenteredString(p_93676_, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
      }
 	
 }

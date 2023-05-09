@@ -1,14 +1,10 @@
 package net.povstalec.sgjourney;
 
-import java.util.function.BiFunction;
-
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -16,7 +12,6 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,7 +21,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DataPackRegistryEvent;
+import net.minecraftforge.registries.NewRegistryEvent;
+import net.minecraftforge.registries.RegistryBuilder;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.render.ClassicStargateRenderer;
 import net.povstalec.sgjourney.client.render.MilkyWayStargateRenderer;
@@ -45,7 +41,6 @@ import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
-import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -58,9 +53,9 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.init.MiscInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.PlacedFeatureInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StructureInit;
-import net.povstalec.sgjourney.common.init.TabInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
@@ -91,6 +86,7 @@ public class StargateJourney
         MenuInit.register(eventBus);
         VillagerInit.register(eventBus);
         FeatureInit.register(eventBus);
+        PlacedFeatureInit.register(eventBus);
         StructureInit.register(eventBus);
         BiomeModifiers.register(eventBus);
         EntityInit.register(eventBus);
@@ -98,13 +94,34 @@ public class StargateJourney
         
         GalaxyInit.register(eventBus);
         
-        eventBus.addListener((DataPackRegistryEvent.NewRegistry event) -> 
+        eventBus.addListener((NewRegistryEvent event) -> 
         {
-            event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
-            event.dataPackRegistry(PointOfOrigin.REGISTRY_KEY, PointOfOrigin.CODEC, PointOfOrigin.CODEC);
-            event.dataPackRegistry(SolarSystem.REGISTRY_KEY, SolarSystem.CODEC, SolarSystem.CODEC);
-            event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
-            event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
+        	
+        	RegistryBuilder<Symbols> symbolBuilder = new RegistryBuilder<>();
+        	symbolBuilder.setName(new ResourceLocation(MODID, "symbols"));
+        	event.create(symbolBuilder);
+
+        	RegistryBuilder<PointOfOrigin> pointOfOriginBuilder = new RegistryBuilder<>();
+        	pointOfOriginBuilder.setName(new ResourceLocation(MODID, "point_of_origin"));
+        	event.create(pointOfOriginBuilder);
+
+        	RegistryBuilder<SolarSystem> solarSystemBuilder = new RegistryBuilder<>();
+        	solarSystemBuilder.setName(new ResourceLocation(MODID, "solar_system"));
+        	event.create(solarSystemBuilder);
+
+        	RegistryBuilder<Galaxy> galaxyBuilder = new RegistryBuilder<>();
+        	galaxyBuilder.setName(new ResourceLocation(MODID, "galaxy"));
+        	event.create(galaxyBuilder);
+
+        	RegistryBuilder<AddressTable> addressTableBuilder = new RegistryBuilder<>();
+        	addressTableBuilder.setName(new ResourceLocation(MODID, "address_table"));
+        	event.create(addressTableBuilder);
+
+        	symbolBuilder.dataPackRegistry(Symbols.CODEC, Symbols.CODEC);
+        	pointOfOriginBuilder.dataPackRegistry(PointOfOrigin.CODEC, PointOfOrigin.CODEC);
+        	solarSystemBuilder.dataPackRegistry(SolarSystem.CODEC, SolarSystem.CODEC);
+        	galaxyBuilder.dataPackRegistry(Galaxy.CODEC, Galaxy.CODEC);
+        	addressTableBuilder.dataPackRegistry(AddressTable.CODEC, AddressTable.CODEC);
         });
         
         eventBus.addListener(this::commonSetup);
@@ -113,7 +130,7 @@ public class StargateJourney
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
 		
-		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, 
+		/*ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, 
 				() -> new ConfigScreenHandler.ConfigScreenFactory(new BiFunction<Minecraft, Screen, Screen>()
 				{
 					@Override
@@ -121,7 +138,7 @@ public class StargateJourney
 					{
 						return new ConfigScreen(screen);
 					}
-				}));
+				}));*/
         
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(MiscInit::registerCommands);

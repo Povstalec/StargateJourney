@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.common.init;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,7 +20,7 @@ import net.povstalec.sgjourney.common.structures.StargateTemple;
 
 public class StructureInit
 {
-	public static final DeferredRegister<StructureType<?>> DEFERRED_REGISTRY_STRUCTURE = DeferredRegister.create(Registries.STRUCTURE_TYPE, StargateJourney.MODID);
+	public static final DeferredRegister<StructureType<?>> DEFERRED_REGISTRY_STRUCTURE = DeferredRegister.create(Registry.STRUCTURE_TYPE_REGISTRY, StargateJourney.MODID);
 
 	public static final RegistryObject<StructureType<?>> COMMON_STARGATE =
             DEFERRED_REGISTRY_STRUCTURE.register("common_stargate", () -> typeConvert(CommonStargate.CODEC));

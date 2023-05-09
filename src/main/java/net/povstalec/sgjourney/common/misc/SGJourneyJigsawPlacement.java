@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.misc;
 
 import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -17,7 +18,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.Pools;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -65,7 +65,7 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 	      StructureTemplateManager structuretemplatemanager = p_227239_.structureTemplateManager();
 	      LevelHeightAccessor levelheightaccessor = p_227239_.heightAccessor();
 	      WorldgenRandom worldgenrandom = p_227239_.random();
-	      Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registries.TEMPLATE_POOL);
+	      Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY);
 	      Rotation rotation = Rotation.COUNTERCLOCKWISE_90;
 	      StructureTemplatePool structuretemplatepool = p_227240_.value();
 	      StructurePoolElement structurepoolelement = structuretemplatepool.getRandomTemplate(worldgenrandom);
@@ -206,152 +206,142 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 	          BoundingBox boundingbox = p_227265_.getBoundingBox();
 	          int i = boundingbox.minY();
 
-	          label129:
+	          label139:
 	          for(StructureTemplate.StructureBlockInfo structuretemplate$structureblockinfo : structurepoolelement.getShuffledJigsawBlocks(this.structureTemplateManager, blockpos, rotation, this.random)) {
 	             Direction direction = JigsawBlock.getFrontFacing(structuretemplate$structureblockinfo.state);
 	             BlockPos blockpos1 = structuretemplate$structureblockinfo.pos;
 	             BlockPos blockpos2 = blockpos1.relative(direction);
 	             int j = blockpos1.getY() - i;
 	             int k = -1;
-	             ResourceKey<StructureTemplatePool> resourcekey = readPoolName(structuretemplate$structureblockinfo);
-	             Optional<? extends Holder<StructureTemplatePool>> optional = this.pools.getHolder(resourcekey);
-	             if (optional.isEmpty()) {
-	            	 StargateJourney.LOGGER.warn("Empty or non-existent pool: {}", (Object)resourcekey.location());
-	             } else {
-	                Holder<StructureTemplatePool> holder = optional.get();
-	                if (holder.value().size() == 0 && !holder.is(Pools.EMPTY)) {
-	                   StargateJourney.LOGGER.warn("Empty or non-existent pool: {}", (Object)resourcekey.location());
-	                } else {
-	                   Holder<StructureTemplatePool> holder1 = holder.value().getFallback();
-	                   if (holder1.value().size() == 0 && !holder1.is(Pools.EMPTY)) {
-	                	   StargateJourney.LOGGER.warn("Empty or non-existent fallback pool: {}", holder1.unwrapKey().map((p_255599_) -> {
-	                         return p_255599_.location().toString();
-	                      }).orElse("<unregistered>"));
+	             ResourceLocation resourcelocation = new ResourceLocation(structuretemplate$structureblockinfo.nbt.getString("pool"));
+	             Optional<StructureTemplatePool> optional = this.pools.getOptional(resourcelocation);
+	             if (optional.isPresent() && (optional.get().size() != 0 || Objects.equals(resourcelocation, Pools.EMPTY.location()))) {
+	                ResourceLocation resourcelocation1 = optional.get().getFallback();
+	                Optional<StructureTemplatePool> optional1 = this.pools.getOptional(resourcelocation1);
+	                if (optional1.isPresent() && (optional1.get().size() != 0 || Objects.equals(resourcelocation1, Pools.EMPTY.location()))) {
+	                   boolean flag1 = boundingbox.isInside(blockpos2);
+	                   MutableObject<VoxelShape> mutableobject1;
+	                   if (flag1) {
+	                      mutableobject1 = mutableobject;
+	                      if (mutableobject.getValue() == null) {
+	                         mutableobject.setValue(Shapes.create(AABB.of(boundingbox)));
+	                      }
 	                   } else {
-	                      boolean flag1 = boundingbox.isInside(blockpos2);
-	                      MutableObject<VoxelShape> mutableobject1;
-	                      if (flag1) {
-	                         mutableobject1 = mutableobject;
-	                         if (mutableobject.getValue() == null) {
-	                            mutableobject.setValue(Shapes.create(AABB.of(boundingbox)));
-	                         }
-	                      } else {
-	                         mutableobject1 = p_227266_;
+	                      mutableobject1 = p_227266_;
+	                   }
+
+	                   List<StructurePoolElement> list = Lists.newArrayList();
+	                   if (p_227267_ != this.maxDepth) {
+	                      list.addAll(optional.get().getShuffledTemplates(this.random));
+	                   }
+
+	                   list.addAll(optional1.get().getShuffledTemplates(this.random));
+
+	                   for(StructurePoolElement structurepoolelement1 : list) {
+	                      if (structurepoolelement1 == EmptyPoolElement.INSTANCE) {
+	                         break;
 	                      }
 
-	                      List<StructurePoolElement> list = Lists.newArrayList();
-	                      if (p_227267_ != this.maxDepth) {
-	                         list.addAll(holder.value().getShuffledTemplates(this.random));
-	                      }
-
-	                      list.addAll(holder1.value().getShuffledTemplates(this.random));
-
-	                      for(StructurePoolElement structurepoolelement1 : list) {
-	                         if (structurepoolelement1 == EmptyPoolElement.INSTANCE) {
-	                            break;
+	                      for(Rotation rotation1 : Rotation.getShuffled(this.random)) {
+	                         List<StructureTemplate.StructureBlockInfo> list1 = structurepoolelement1.getShuffledJigsawBlocks(this.structureTemplateManager, BlockPos.ZERO, rotation1, this.random);
+	                         BoundingBox boundingbox1 = structurepoolelement1.getBoundingBox(this.structureTemplateManager, BlockPos.ZERO, rotation1);
+	                         int l;
+	                         if (p_227268_ && boundingbox1.getYSpan() <= 16) {
+	                            l = list1.stream().mapToInt((p_210332_) -> {
+	                               if (!boundingbox1.isInside(p_210332_.pos.relative(JigsawBlock.getFrontFacing(p_210332_.state)))) {
+	                                  return 0;
+	                               } else {
+	                                  ResourceLocation resourcelocation2 = new ResourceLocation(p_210332_.nbt.getString("pool"));
+	                                  Optional<StructureTemplatePool> optional2 = this.pools.getOptional(resourcelocation2);
+	                                  Optional<StructureTemplatePool> optional3 = optional2.flatMap((p_210344_) -> {
+	                                     return this.pools.getOptional(p_210344_.getFallback());
+	                                  });
+	                                  int j3 = optional2.map((p_210342_) -> {
+	                                     return p_210342_.getMaxSize(this.structureTemplateManager);
+	                                  }).orElse(0);
+	                                  int k3 = optional3.map((p_210340_) -> {
+	                                     return p_210340_.getMaxSize(this.structureTemplateManager);
+	                                  }).orElse(0);
+	                                  return Math.max(j3, k3);
+	                               }
+	                            }).max().orElse(0);
+	                         } else {
+	                            l = 0;
 	                         }
 
-	                         for(Rotation rotation1 : Rotation.getShuffled(this.random)) {
-	                            List<StructureTemplate.StructureBlockInfo> list1 = structurepoolelement1.getShuffledJigsawBlocks(this.structureTemplateManager, BlockPos.ZERO, rotation1, this.random);
-	                            BoundingBox boundingbox1 = structurepoolelement1.getBoundingBox(this.structureTemplateManager, BlockPos.ZERO, rotation1);
-	                            int l;
-	                            if (p_227268_ && boundingbox1.getYSpan() <= 16) {
-	                               l = list1.stream().mapToInt((p_255598_) -> {
-	                                  if (!boundingbox1.isInside(p_255598_.pos.relative(JigsawBlock.getFrontFacing(p_255598_.state)))) {
-	                                     return 0;
-	                                  } else {
-	                                     ResourceKey<StructureTemplatePool> resourcekey1 = readPoolName(p_255598_);
-	                                     Optional<? extends Holder<StructureTemplatePool>> optional1 = this.pools.getHolder(resourcekey1);
-	                                     Optional<Holder<StructureTemplatePool>> optional2 = optional1.map((p_255600_) -> {
-	                                        return p_255600_.value().getFallback();
-	                                     });
-	                                     int j3 = optional1.map((p_255596_) -> {
-	                                        return p_255596_.value().getMaxSize(this.structureTemplateManager);
-	                                     }).orElse(0);
-	                                     int k3 = optional2.map((p_255601_) -> {
-	                                        return p_255601_.value().getMaxSize(this.structureTemplateManager);
-	                                     }).orElse(0);
-	                                     return Math.max(j3, k3);
+	                         for(StructureTemplate.StructureBlockInfo structuretemplate$structureblockinfo1 : list1) {
+	                            if (JigsawBlock.canAttach(structuretemplate$structureblockinfo, structuretemplate$structureblockinfo1)) {
+	                               BlockPos blockpos3 = structuretemplate$structureblockinfo1.pos;
+	                               BlockPos blockpos4 = blockpos2.subtract(blockpos3);
+	                               BoundingBox boundingbox2 = structurepoolelement1.getBoundingBox(this.structureTemplateManager, blockpos4, rotation1);
+	                               int i1 = boundingbox2.minY();
+	                               StructureTemplatePool.Projection structuretemplatepool$projection1 = structurepoolelement1.getProjection();
+	                               boolean flag2 = structuretemplatepool$projection1 == StructureTemplatePool.Projection.RIGID;
+	                               int j1 = blockpos3.getY();
+	                               int k1 = j - j1 + JigsawBlock.getFrontFacing(structuretemplate$structureblockinfo.state).getStepY();
+	                               int l1;
+	                               if (flag && flag2) {
+	                                  l1 = i + k1;
+	                               } else {
+	                                  if (k == -1) {
+	                                     k = this.chunkGenerator.getFirstFreeHeight(blockpos1.getX(), blockpos1.getZ(), Heightmap.Types.WORLD_SURFACE_WG, p_227269_, p_227270_);
 	                                  }
-	                               }).max().orElse(0);
-	                            } else {
-	                               l = 0;
-	                            }
 
-	                            for(StructureTemplate.StructureBlockInfo structuretemplate$structureblockinfo1 : list1) {
-	                               if (JigsawBlock.canAttach(structuretemplate$structureblockinfo, structuretemplate$structureblockinfo1)) {
-	                                  BlockPos blockpos3 = structuretemplate$structureblockinfo1.pos;
-	                                  BlockPos blockpos4 = blockpos2.subtract(blockpos3);
-	                                  BoundingBox boundingbox2 = structurepoolelement1.getBoundingBox(this.structureTemplateManager, blockpos4, rotation1);
-	                                  int i1 = boundingbox2.minY();
-	                                  StructureTemplatePool.Projection structuretemplatepool$projection1 = structurepoolelement1.getProjection();
-	                                  boolean flag2 = structuretemplatepool$projection1 == StructureTemplatePool.Projection.RIGID;
-	                                  int j1 = blockpos3.getY();
-	                                  int k1 = j - j1 + JigsawBlock.getFrontFacing(structuretemplate$structureblockinfo.state).getStepY();
-	                                  int l1;
-	                                  if (flag && flag2) {
-	                                     l1 = i + k1;
+	                                  l1 = k - j1;
+	                               }
+
+	                               int i2 = l1 - i1;
+	                               BoundingBox boundingbox3 = boundingbox2.moved(0, i2, 0);
+	                               BlockPos blockpos5 = blockpos4.offset(0, i2, 0);
+	                               if (l > 0) {
+	                                  int j2 = Math.max(l + 1, boundingbox3.maxY() - boundingbox3.minY());
+	                                  boundingbox3.encapsulate(new BlockPos(boundingbox3.minX(), boundingbox3.minY() + j2, boundingbox3.minZ()));
+	                               }
+
+	                               if (!Shapes.joinIsNotEmpty(mutableobject1.getValue(), Shapes.create(AABB.of(boundingbox3).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
+	                                  mutableobject1.setValue(Shapes.joinUnoptimized(mutableobject1.getValue(), Shapes.create(AABB.of(boundingbox3)), BooleanOp.ONLY_FIRST));
+	                                  int i3 = p_227265_.getGroundLevelDelta();
+	                                  int k2;
+	                                  if (flag2) {
+	                                     k2 = i3 - k1;
+	                                  } else {
+	                                     k2 = structurepoolelement1.getGroundLevelDelta();
+	                                  }
+
+	                                  PoolElementStructurePiece poolelementstructurepiece = new PoolElementStructurePiece(this.structureTemplateManager, structurepoolelement1, blockpos5, k2, rotation1, boundingbox3);
+	                                  int l2;
+	                                  if (flag) {
+	                                     l2 = i + j;
+	                                  } else if (flag2) {
+	                                     l2 = l1 + j1;
 	                                  } else {
 	                                     if (k == -1) {
 	                                        k = this.chunkGenerator.getFirstFreeHeight(blockpos1.getX(), blockpos1.getZ(), Heightmap.Types.WORLD_SURFACE_WG, p_227269_, p_227270_);
 	                                     }
 
-	                                     l1 = k - j1;
+	                                     l2 = k + k1 / 2;
 	                                  }
 
-	                                  int i2 = l1 - i1;
-	                                  BoundingBox boundingbox3 = boundingbox2.moved(0, i2, 0);
-	                                  BlockPos blockpos5 = blockpos4.offset(0, i2, 0);
-	                                  if (l > 0) {
-	                                     int j2 = Math.max(l + 1, boundingbox3.maxY() - boundingbox3.minY());
-	                                     boundingbox3.encapsulate(new BlockPos(boundingbox3.minX(), boundingbox3.minY() + j2, boundingbox3.minZ()));
+	                                  p_227265_.addJunction(new JigsawJunction(blockpos2.getX(), l2 - j + i3, blockpos2.getZ(), k1, structuretemplatepool$projection1));
+	                                  poolelementstructurepiece.addJunction(new JigsawJunction(blockpos1.getX(), l2 - j1 + k2, blockpos1.getZ(), -k1, structuretemplatepool$projection));
+	                                  this.pieces.add(poolelementstructurepiece);
+	                                  if (p_227267_ + 1 <= this.maxDepth) {
+	                                     this.placing.addLast(new SGJourneyJigsawPlacement.PieceState(poolelementstructurepiece, mutableobject1, p_227267_ + 1));
 	                                  }
-
-	                                  if (!Shapes.joinIsNotEmpty(mutableobject1.getValue(), Shapes.create(AABB.of(boundingbox3).deflate(0.25D)), BooleanOp.ONLY_SECOND)) {
-	                                     mutableobject1.setValue(Shapes.joinUnoptimized(mutableobject1.getValue(), Shapes.create(AABB.of(boundingbox3)), BooleanOp.ONLY_FIRST));
-	                                     int i3 = p_227265_.getGroundLevelDelta();
-	                                     int k2;
-	                                     if (flag2) {
-	                                        k2 = i3 - k1;
-	                                     } else {
-	                                        k2 = structurepoolelement1.getGroundLevelDelta();
-	                                     }
-
-	                                     PoolElementStructurePiece poolelementstructurepiece = new PoolElementStructurePiece(this.structureTemplateManager, structurepoolelement1, blockpos5, k2, rotation1, boundingbox3);
-	                                     int l2;
-	                                     if (flag) {
-	                                        l2 = i + j;
-	                                     } else if (flag2) {
-	                                        l2 = l1 + j1;
-	                                     } else {
-	                                        if (k == -1) {
-	                                           k = this.chunkGenerator.getFirstFreeHeight(blockpos1.getX(), blockpos1.getZ(), Heightmap.Types.WORLD_SURFACE_WG, p_227269_, p_227270_);
-	                                        }
-
-	                                        l2 = k + k1 / 2;
-	                                     }
-
-	                                     p_227265_.addJunction(new JigsawJunction(blockpos2.getX(), l2 - j + i3, blockpos2.getZ(), k1, structuretemplatepool$projection1));
-	                                     poolelementstructurepiece.addJunction(new JigsawJunction(blockpos1.getX(), l2 - j1 + k2, blockpos1.getZ(), -k1, structuretemplatepool$projection));
-	                                     this.pieces.add(poolelementstructurepiece);
-	                                     if (p_227267_ + 1 <= this.maxDepth) {
-	                                        this.placing.addLast(new SGJourneyJigsawPlacement.PieceState(poolelementstructurepiece, mutableobject1, p_227267_ + 1));
-	                                     }
-	                                     continue label129;
-	                                  }
+	                                  continue label139;
 	                               }
 	                            }
 	                         }
 	                      }
 	                   }
+	                } else {
+	                   StargateJourney.LOGGER.warn("Empty or non-existent fallback pool: {}", (Object)resourcelocation1);
 	                }
+	             } else {
+	            	 StargateJourney.LOGGER.warn("Empty or non-existent pool: {}", (Object)resourcelocation);
 	             }
 	          }
 
-	       }
-
-	       private static ResourceKey<StructureTemplatePool> readPoolName(StructureTemplate.StructureBlockInfo p_256491_) {
-	          return ResourceKey.create(Registries.TEMPLATE_POOL, new ResourceLocation(p_256491_.nbt.getString("pool")));
 	       }
 	    }
 

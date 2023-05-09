@@ -98,6 +98,7 @@ public class Dialing
 			int dimensions = 0;
 			for(int i = 0; i < dimensionList.size(); i++)
 			{
+				System.out.println(dimensionList.getString(i));
 				ResourceKey<Level> levelKey = stringToDimension(dimensionList.getString(i));
 				
 				if(level.getServer().levelKeys().contains(levelKey))

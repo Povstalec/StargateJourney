@@ -33,6 +33,11 @@ minecraft {
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
+    	all {
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+        }
+        
         client {
             workingDirectory project.file('run')
 
@@ -52,7 +57,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                examplemod {
+                mod_id {
                     source sourceSets.main
                 }
             }
@@ -68,7 +73,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                examplemod {
+                mod_id {
                     source sourceSets.main
                 }
             }
@@ -87,7 +92,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                examplemod {
+                mod_id {
                     source sourceSets.main
                 }
             }
@@ -101,10 +106,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                mod_id {
                     source sourceSets.main
                 }
             }
@@ -123,6 +128,12 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    maven {
+    url 'https://squiddev.cc/maven/'
+    content {
+      includeGroup 'org.squiddev'
+    }
+  }
 }
 
 dependencies {
@@ -142,18 +153,21 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    
+	compileOnly fg.deobf("org.squiddev:cc-tweaked-${mc_version}:${cct_version}:api")
+  	runtimeOnly fg.deobf("org.squiddev:cc-tweaked-${mc_version}:${cct_version}")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "examplemod",
-                "Specification-Vendor"    : "examplemodsareus",
+                "Specification-Title"     : "${mod_id}",
+                "Specification-Vendor"    : "${mod_authors}",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "examplemodsareus",
+                "Implementation-Vendor"   : "${mod_authors}",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

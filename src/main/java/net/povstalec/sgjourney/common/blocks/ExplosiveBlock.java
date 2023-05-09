@@ -27,7 +27,7 @@ public class ExplosiveBlock extends Block
 	public void wasExploded(Level level, BlockPos pos, Explosion explosion)
 	{
 		if(!level.isClientSide)
-			level.explode(null, (double) pos.getX(), (double) pos.getY(), (double) pos.getZ(), radius, Level.ExplosionInteraction.BLOCK);
+			level.explode(null, (double) pos.getX(), (double) pos.getY(), (double) pos.getZ(), radius, Explosion.BlockInteraction.BREAK);
 	}
 	
 }

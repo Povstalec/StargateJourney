@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -52,12 +52,12 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
 		
         stack.pushPose();
 		stack.translate(center.x(), center.y(), center.z());
-        stack.mulPose(Axis.YP.rotationDegrees(-facing));
+        stack.mulPose(Vector3f.YP.rotationDegrees(-facing));
         
         if(orientation == Orientation.UPWARD)
-            stack.mulPose(Axis.XP.rotationDegrees(-90));
+            stack.mulPose(Vector3f.XP.rotationDegrees(-90));
         else if(orientation == Orientation.DOWNWARD)
-            stack.mulPose(Axis.XP.rotationDegrees(90));
+            stack.mulPose(Vector3f.XP.rotationDegrees(90));
         
         this.stargateModel.setRotation(stargate.getRotation(partialTick));
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);

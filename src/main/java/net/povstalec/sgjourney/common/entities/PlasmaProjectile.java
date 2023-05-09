@@ -7,6 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.BlockHitResult;
@@ -39,7 +40,7 @@ public class PlasmaProjectile extends ThrowableProjectile
 	      if (!this.level.isClientSide)
 	      {
 	         boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-	         this.level.explode((Entity)null, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
+	         this.level.explode((Entity)null, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
 	         this.discard();
 	      }
 
@@ -52,7 +53,7 @@ public class PlasmaProjectile extends ThrowableProjectile
 		{
 			Entity entity = p_37216_.getEntity();
 			Entity entity1 = this.getOwner();
-			entity.hurt(DamageSource.explosion((Player)entity1, entity), 14.0F);
+			entity.hurt(DamageSource.explosion((Player)entity1), 14.0F);
 			if (entity1 instanceof LivingEntity)
 			{
 				this.doEnchantDamageEffects((LivingEntity)entity1, entity);

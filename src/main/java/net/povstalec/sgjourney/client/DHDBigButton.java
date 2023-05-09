@@ -20,7 +20,7 @@ public class DHDBigButton extends Button
 	
     public DHDBigButton(int x, int y, OnPress press, ResourceLocation widgets)
 	{
-		super(x, y, 32, 32, Component.empty(), press, Button.DEFAULT_NARRATION);
+		super(x, y, 32, 32, Component.empty(), press, Button.NO_TOOLTIP);
 		WIDGETS_LOCATION = widgets;
 	}
     
@@ -35,11 +35,11 @@ public class DHDBigButton extends Button
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(p_93676_, this.getX(), this.getY(), 16, i * 32, this.width, this.height);
-        this.blit(p_93676_, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        this.blit(p_93676_, this.x, this.y, 16, i * 32, this.width, this.height);
+        this.blit(p_93676_, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         this.renderBg(p_93676_, minecraft, p_93677_, p_93678_);
         int j = getFGColor();
-        drawCenteredString(p_93676_, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        drawCenteredString(p_93676_, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
      }
 	
 }

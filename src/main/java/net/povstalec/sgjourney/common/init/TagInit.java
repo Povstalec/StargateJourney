@@ -1,10 +1,9 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.povstalec.sgjourney.StargateJourney;
@@ -42,7 +41,7 @@ public class TagInit
 		
 		private static TagKey<Structure> tag(String name)
 		{
-			return TagKey.create(Registries.STRUCTURE, new ResourceLocation(StargateJourney.MODID, name));
+			return TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(StargateJourney.MODID, name));
 		}
 	}
 }

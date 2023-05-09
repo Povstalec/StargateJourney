@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.common.world.features.configuration;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -20,7 +20,7 @@ public class SpireConfiguration implements FeatureConfiguration
 			{
 				return config.fillingPlacements;
 			}),
-			TagKey.hashedCodec(Registries.BLOCK).fieldOf("can_protrude_through").forGetter((config) ->
+			TagKey.hashedCodec(Registry.BLOCK_REGISTRY).fieldOf("can_protrude_through").forGetter((config) ->
 			{
 				return config.canProtrudeThrough;
 			})
