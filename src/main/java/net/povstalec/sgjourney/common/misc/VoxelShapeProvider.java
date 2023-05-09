@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class VoxelDimensionProvider {
+public class VoxelShapeProvider {
 
     private static final double MIN = 0.0D;
     private static final double MAX = 16.0D;
@@ -29,7 +29,7 @@ public class VoxelDimensionProvider {
     public final VoxelShape[][] STAIR_BOTTOM_RIGHT;
     public final VoxelShape[][] STAIR_TOP_RIGHT;
 
-    public VoxelDimensionProvider() {
+    public VoxelShapeProvider() {
         double width = 7.0D;
 
         double horizontalTop = HORIZONTAL_OFFSET + width;

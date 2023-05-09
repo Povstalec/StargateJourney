@@ -11,7 +11,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 {
@@ -35,15 +34,15 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		Orientation orientation = state.getValue(ORIENTATION);
 
 		return switch (state.getValue(PART)) {
-			case LEFT2, LEFT3_ABOVE -> getShapeFromArray(VOXEL_COORDS.TOP_RIGHT, direction, orientation);
-			case LEFT2_ABOVE -> getShapeFromArray(VOXEL_COORDS.STAIR_TOP_RIGHT, direction, orientation);
-			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> getShapeFromArray(VOXEL_COORDS.BOTTOM_RIGHT, direction, orientation);
-			case LEFT2_ABOVE5 -> getShapeFromArray(VOXEL_COORDS.STAIR_BOTTOM_RIGHT, direction, orientation);
-			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> getShapeFromArray(VOXEL_COORDS.BOTTOM_LEFT, direction, orientation);
-			case RIGHT2_ABOVE5 -> getShapeFromArray(VOXEL_COORDS.STAIR_BOTTOM_LEFT, direction, orientation);
-			case RIGHT3_ABOVE, RIGHT2 -> getShapeFromArray(VOXEL_COORDS.TOP_LEFT, direction, orientation);
-			case RIGHT2_ABOVE -> getShapeFromArray(VOXEL_COORDS.STAIR_TOP_LEFT, direction, orientation);
-			default -> getShapeFromArray(VOXEL_COORDS.DEFAULT, direction, orientation);
+			case LEFT2, LEFT3_ABOVE -> getShapeFromArray(SHAPE_PROVIDER.TOP_RIGHT, direction, orientation);
+			case LEFT2_ABOVE -> getShapeFromArray(SHAPE_PROVIDER.STAIR_TOP_RIGHT, direction, orientation);
+			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> getShapeFromArray(SHAPE_PROVIDER.BOTTOM_RIGHT, direction, orientation);
+			case LEFT2_ABOVE5 -> getShapeFromArray(SHAPE_PROVIDER.STAIR_BOTTOM_RIGHT, direction, orientation);
+			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> getShapeFromArray(SHAPE_PROVIDER.BOTTOM_LEFT, direction, orientation);
+			case RIGHT2_ABOVE5 -> getShapeFromArray(SHAPE_PROVIDER.STAIR_BOTTOM_LEFT, direction, orientation);
+			case RIGHT3_ABOVE, RIGHT2 -> getShapeFromArray(SHAPE_PROVIDER.TOP_LEFT, direction, orientation);
+			case RIGHT2_ABOVE -> getShapeFromArray(SHAPE_PROVIDER.STAIR_TOP_LEFT, direction, orientation);
+			default -> getShapeFromArray(SHAPE_PROVIDER.DEFAULT, direction, orientation);
 		};
 	}
 	
