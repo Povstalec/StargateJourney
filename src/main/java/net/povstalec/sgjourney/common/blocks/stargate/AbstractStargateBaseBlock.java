@@ -42,8 +42,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return VOXEL_COORDS.HORIZONTAL;
-		return state.getValue(FACING).getAxis() == Direction.Axis.X ? VOXEL_COORDS.Z : VOXEL_COORDS.X;
+			return SHAPE_PROVIDER.HORIZONTAL;
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? SHAPE_PROVIDER.Z : SHAPE_PROVIDER.X;
 	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context)
