@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.misc.VoxelDimensionProvider;
@@ -39,13 +41,13 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
 	protected static final VoxelDimensionProvider VOXEL_COORDS = new VoxelDimensionProvider();
 	//TODO public static final BooleanProperty FULL = BooleanProperty.create("full");
-	
+
 	public AbstractStargateBlock(Properties properties)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
 	}
-	
+
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
@@ -71,9 +73,16 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) 
+	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos)
 	{
 		return true;
+	}
+	
+	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
+	{
+		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
+			return VOXEL_COORDS.HORIZONTAL;
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? VOXEL_COORDS.Z : VOXEL_COORDS.X;
 	}
 
 	@Override
@@ -84,7 +93,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 
 		return super.updateShape(oldState, direction, newState, levelAccessor, oldPos, newPos);
 	}
-	
+
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
@@ -94,7 +103,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			if(!level.isClientSide() && !player.isCreative())
 			{
 				ItemStack itemstack = new ItemStack(getStargate());
-				
+
 				blockentity.saveToItem(itemstack);
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
@@ -117,6 +126,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	{
 		return RenderShape.MODEL;
 	}
-	
+
     public abstract Block getStargate();
 }

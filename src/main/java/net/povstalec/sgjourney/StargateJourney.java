@@ -2,6 +2,7 @@ package net.povstalec.sgjourney;
 
 import java.util.function.BiFunction;
 
+import net.povstalec.sgjourney.client.render.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -28,14 +29,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.povstalec.sgjourney.client.Layers;
-import net.povstalec.sgjourney.client.render.ClassicStargateRenderer;
-import net.povstalec.sgjourney.client.render.MilkyWayStargateRenderer;
-import net.povstalec.sgjourney.client.render.PegasusStargateRenderer;
-import net.povstalec.sgjourney.client.render.PlasmaProjectileRenderer;
-import net.povstalec.sgjourney.client.render.SandstoneSymbolRenderer;
-import net.povstalec.sgjourney.client.render.StoneSymbolRenderer;
-import net.povstalec.sgjourney.client.render.TransportRingsRenderer;
-import net.povstalec.sgjourney.client.render.UniverseStargateRenderer;
 import net.povstalec.sgjourney.client.screens.BasicInterfaceScreen;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystalInterfaceScreen;
@@ -173,8 +166,9 @@ public class StargateJourney
 
         	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
+            BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
+            BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
         }
     }
     

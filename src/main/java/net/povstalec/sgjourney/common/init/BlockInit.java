@@ -38,14 +38,7 @@ import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.*;
 import net.povstalec.sgjourney.common.blocks.symbols.SandstoneCartoucheBlock;
 import net.povstalec.sgjourney.common.blocks.symbols.SandstoneSymbolBlock;
 import net.povstalec.sgjourney.common.blocks.symbols.StoneCartoucheBlock;
@@ -84,7 +77,12 @@ public class BlockInit
 	public static final RegistryObject<ClassicStargateRingBlock> CLASSIC_RING = BLOCKS.register("classic_ring", 
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
-	
+	public static final RegistryObject<TollanStargateBlock> TOLLAN_STARGATE = registerEntityBlock("tollan_stargate",
+			() -> new TollanStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
+					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
+	public static final RegistryObject<TollanStargateRingBlock> TOLLAN_RING = BLOCKS.register("tollan_ring",
+			() -> new TollanStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
+					.sound(SoundType.METAL).noOcclusion()));
 	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd", 
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);

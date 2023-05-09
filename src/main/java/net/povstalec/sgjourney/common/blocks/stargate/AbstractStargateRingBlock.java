@@ -6,6 +6,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -15,11 +16,21 @@ import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 {
+	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
+	public static final EnumProperty<StargatePart> PART = EnumProperty.create("stargate_part", StargatePart.class);
+	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
+	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
+	
+	//TODO
+	//public static final BooleanProperty FULL = BooleanProperty.create("full");
+
 	public AbstractStargateRingBlock(Properties properties)
 	{
 		super(properties);
 	}
-	
+
 	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
 	{
 		int horizontal = direction.get2DDataValue();
@@ -46,7 +57,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 			default -> getShapeFromArray(VOXEL_COORDS.DEFAULT, direction, orientation);
 		};
 	}
-	
+
 	private boolean isWaterLogged(BlockState state, Level level, BlockPos pos)
 	{
 		FluidState fluidState = level.getFluidState(pos);
@@ -69,7 +80,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	        super.onRemove(oldState, level, pos, newState, isMoving);
 		}
     }
-	
+
 	/*@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{

@@ -7,6 +7,7 @@ public class ClientStargateConfig
 	public static ForgeConfigSpec.BooleanValue use_movie_stargate_model;
 	public static ForgeConfigSpec.BooleanValue milky_way_stargate_back_lights_up;
 	public static ForgeConfigSpec.BooleanValue pegasus_stargate_back_lights_up;
+	public static ForgeConfigSpec.BooleanValue tollan_stargate_back_lights_up;
 
 	public static ForgeConfigSpec.IntValue universe_r;
 	public static ForgeConfigSpec.IntValue universe_g;
@@ -23,6 +24,10 @@ public class ClientStargateConfig
 	public static ForgeConfigSpec.IntValue classic_r;
 	public static ForgeConfigSpec.IntValue classic_g;
 	public static ForgeConfigSpec.IntValue classic_b;
+
+	public static ForgeConfigSpec.IntValue tollan_r;
+	public static ForgeConfigSpec.IntValue tollan_g;
+	public static ForgeConfigSpec.IntValue tollan_b;
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
@@ -39,8 +44,11 @@ public class ClientStargateConfig
 		pegasus_stargate_back_lights_up = client
 				.comment("Decide if Chevrons on the back of Pegasus Stargate should light up")
 				.define("client.pegasus_stargate_back_lights_up", true);
-		
-		
+
+		tollan_stargate_back_lights_up = client
+				.comment("Decide if Chevrons on the back of Tollan Stargate should light up")
+				.define("client.tollan_stargate_back_lights_up", true);
+
 		
 		universe_r = client
 				.comment("The amount of Red in Universe Stargate's Event Horizon")
@@ -95,5 +103,18 @@ public class ClientStargateConfig
 		classic_b = client
 				.comment("The amount of Blue in Classic Stargate's Event Horizon")
 				.defineInRange("client.classic_b", 255, 0, 255);
+
+
+		tollan_r = client
+				.comment("The amount of Red in Tollan Stargate's Event Horizon")
+				.defineInRange("client.tollan_r", 55, 0, 255);
+
+		tollan_g = client
+				.comment("The amount of Green in Tollan Stargate's Event Horizon")
+				.defineInRange("client.tollan_g", 55, 0, 255);
+
+		tollan_b = client
+				.comment("The amount of Blue in Tollan Stargate's Event Horizon")
+				.defineInRange("client.tollan_b", 255, 0, 255);
 	}
 }

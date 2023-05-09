@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"facing=north": { "model": "sgjourney:block/tollan_stargate" },
+		"facing=south": { "model": "sgjourney:block/tollan_stargate", "y": 180 },
+		"facing=west": { "model": "sgjourney:block/tollan_stargate", "y": 270 },
+		"facing=east": { "model": "sgjourney:block/tollan_stargate", "y": 90 }
+	}
+}

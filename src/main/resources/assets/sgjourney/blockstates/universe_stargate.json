@@ -1,9 +1,8 @@
 {
-	"variants": 
-	{
-	"facing=north": { "model": "sgjourney:block/universe_stargate" },
-	"facing=south": { "model": "sgjourney:block/universe_stargate", "y": 180 },
-	"facing=west": { "model": "sgjourney:block/universe_stargate", "y": 270 },
-	"facing=east": { "model": "sgjourney:block/universe_stargate", "y": 90 }
+	"variants": {
+		"facing=north": { "model": "sgjourney:block/universe_stargate" },
+		"facing=south": { "model": "sgjourney:block/universe_stargate", "y": 180 },
+		"facing=west": { "model": "sgjourney:block/universe_stargate", "y": 270 },
+		"facing=east": { "model": "sgjourney:block/universe_stargate", "y": 90 }
 	}
 }
