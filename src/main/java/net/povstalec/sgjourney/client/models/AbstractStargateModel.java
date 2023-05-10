@@ -58,7 +58,7 @@ public abstract class AbstractStargateModel
 	protected static final float OUTER_CHEVRON_SIDE_Y = 10.0F;
 	protected static final float OUTER_CHEVRON_SIDE_Z = 1.0F;
 
-	protected static final float OUTER_CHEVRON_Y_OFFSET = CHEVRON_LIGHT_CENTER_Y + 2.0F + OUTER_CHEVRON_CENTER_Y; // The + 2.0F is because there's a 2 pixel gap between the Chevron Light and Outer Chevron
+	protected static final float OUTER_CHEVRON_Y_OFFSET = CHEVRON_LIGHT_CENTER_Y + 2.0F + OUTER_CHEVRON_CENTER_Y; // The + 2.0F is there because there's a 2 pixel gap between the Chevron Light and Outer Chevron
 	
 	protected static final float OUTER_RING_X = 10.0F;
 	protected static final float OUTER_RING_Y = 7.0F;
@@ -79,7 +79,7 @@ public abstract class AbstractStargateModel
 	protected static final float SYMBOL_RING_X = 8.0F;
 	protected static final float SYMBOL_RING_Y = 8.0F;
 	protected static final float SYMBOL_RING_Z = 2.0F;
-	protected static final float SYMBOL_RING_Y_OFFSET = SYMBOL_RING_Y - 2.0F;
+	protected static final float SYMBOL_RING_Y_OFFSET = SYMBOL_RING_Y - 2.0F; // The - 2.0F is there because the Symbol Ring is slightly bigger than the open space created by the rest of the ring, to prevent players from being able to see through when it's rotating
 	protected static final float SYMBOL_RING_Z_OFFSET = 0.5F;
 	protected static final float DIVIDER_X = 1.0F;
 	
