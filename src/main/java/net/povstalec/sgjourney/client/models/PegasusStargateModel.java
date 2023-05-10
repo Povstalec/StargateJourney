@@ -64,15 +64,15 @@ public class PegasusStargateModel extends AbstractStargateModel
 		if(isBottomCovered)
 			start = 1;
 		
-		for(int i = start; i < 36; i++)
+		for(int i = start; i < BOXES_PER_RING; i++)
 		{
 			outerRing.getChild("outer_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
 		}
-		for(int i = 0; i < 36; i++)
+		for(int i = 0; i < BOXES_PER_RING; i++)
 		{
 			backRing.getChild("back_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
 		}
-		for(int i = start; i < 36; i++)
+		for(int i = start; i < BOXES_PER_RING; i++)
 		{
 			innerRing.getChild("inner_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
 		}
