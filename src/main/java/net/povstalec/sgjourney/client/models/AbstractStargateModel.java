@@ -79,6 +79,7 @@ public abstract class AbstractStargateModel
 	protected static final float SYMBOL_RING_X = 8.0F;
 	protected static final float SYMBOL_RING_Y = 8.0F;
 	protected static final float SYMBOL_RING_Z = 2.0F;
+	protected static final float SYMBOL_RING_Y_OFFSET = SYMBOL_RING_Y - 2.0F;
 	protected static final float SYMBOL_RING_Z_OFFSET = 0.5F;
 	protected static final float DIVIDER_X = 1.0F;
 	
@@ -294,7 +295,7 @@ public abstract class AbstractStargateModel
 		{
 			symbolRing.addOrReplaceChild("symbol_" + i, CubeListBuilder.create()
 					.texOffs(-4, 6)
-					.addBox(-SYMBOL_RING_X / 2, -DEFAULT_DISTANCE_FROM_CENTER + 6, SYMBOL_RING_Z_OFFSET, SYMBOL_RING_X, SYMBOL_RING_Y, SYMBOL_RING_Z), 
+					.addBox(-SYMBOL_RING_X / 2, -DEFAULT_DISTANCE_FROM_CENTER + SYMBOL_RING_Y_OFFSET, SYMBOL_RING_Z_OFFSET, SYMBOL_RING_X, SYMBOL_RING_Y, SYMBOL_RING_Z), 
 					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i)));
 		}
 	}
@@ -306,7 +307,7 @@ public abstract class AbstractStargateModel
 		{
 			dividers.addOrReplaceChild("divider_" + i, CubeListBuilder.create()
 					.texOffs(34, 34)
-					.addBox(-DIVIDER_X / 2, -DEFAULT_DISTANCE_FROM_CENTER + 6, SYMBOL_RING_Z_OFFSET, DIVIDER_X, SYMBOL_RING_Y, SYMBOL_RING_Z + 0.5F), 
+					.addBox(-DIVIDER_X / 2, -DEFAULT_DISTANCE_FROM_CENTER + SYMBOL_RING_Y_OFFSET, SYMBOL_RING_Z_OFFSET, DIVIDER_X, SYMBOL_RING_Y, SYMBOL_RING_Z + 0.5F), 
 					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - (angle / 2 + angle * i))));
 		}
 	}
