@@ -12,6 +12,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 {
