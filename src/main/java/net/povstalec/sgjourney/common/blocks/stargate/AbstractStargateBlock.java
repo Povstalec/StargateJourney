@@ -28,7 +28,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.misc.VoxelDimensionProvider;
+import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
@@ -39,7 +39,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
 	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
-	protected static final VoxelDimensionProvider VOXEL_COORDS = new VoxelDimensionProvider();
+	protected static final VoxelShapeProvider SHAPE_PROVIDER = new VoxelShapeProvider();
 	//TODO public static final BooleanProperty FULL = BooleanProperty.create("full");
 
 	public AbstractStargateBlock(Properties properties)
