@@ -30,6 +30,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
+import net.povstalec.sgjourney.common.stargate.StargateType;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
 {
@@ -46,6 +47,19 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
+	}
+
+	public StargateType getStargateType()
+	{
+		return StargateType.DEFAULT;
+	}
+
+	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
+	{
+		int horizontal = direction.get2DDataValue();
+		int vertical = orientation.get2DDataValue();
+
+		return shapes[vertical][horizontal % shapes[vertical].length];
 	}
 
 	@Override
@@ -82,7 +96,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
 			return SHAPE_PROVIDER.HORIZONTAL;
-		return state.getValue(FACING).getAxis() == Direction.Axis.X ? SHAPE_PROVIDER.Z : SHAPE_PROVIDER.X;
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? SHAPE_PROVIDER.Z_FULL : SHAPE_PROVIDER.X_FULL;
 	}
 
 	@Override

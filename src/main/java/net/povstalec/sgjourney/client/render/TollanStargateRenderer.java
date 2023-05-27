@@ -5,6 +5,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,7 +44,7 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		BlockState blockstate = stargate.getBlockState();
-		float facing = blockstate.getValue(TollanStargateBlock.FACING).toYRot();
+		Direction facing = blockstate.getValue(TollanStargateBlock.FACING);
 		Vec3 center = stargate.getRelativeCenter();
 		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
 		
@@ -51,9 +52,18 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 
 		if(orientation == Orientation.REGULAR)
 			stack.translate(center.x(), center.y() - 0.5D, center.z());
-		else
-			stack.translate(center.x(), center.y(), center.z());
-        stack.mulPose(Axis.YP.rotationDegrees(-facing));
+		else {
+			double shiftBase = orientation == Orientation.UPWARD ? 0.5D : -0.5D;
+			double shiftY = 0.125D;
+			switch (facing) {
+				case NORTH -> stack.translate(center.x(), center.y() - shiftY, center.z() - shiftBase);
+				case SOUTH -> stack.translate(center.x(), center.y() - shiftY, center.z() + shiftBase);
+				case EAST -> stack.translate(center.x() + shiftBase, center.y() - shiftY, center.z());
+				case WEST -> stack.translate(center.x() - shiftBase, center.y() - shiftY, center.z());
+//				default -> stack.translate(center.x(), center.y(), center.z());
+			}
+		}
+        stack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
         
         if(orientation == Orientation.UPWARD)
             stack.mulPose(Axis.XP.rotationDegrees(-90));

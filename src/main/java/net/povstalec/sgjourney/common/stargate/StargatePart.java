@@ -6,6 +6,9 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Orientation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum StargatePart implements StringRepresentable
 {
 	BASE("base", 0, 0),
@@ -27,7 +30,6 @@ public enum StargatePart implements StringRepresentable
 	LEFT_ABOVE6("left_above6", 1, 6),
 	ABOVE6("above6", 0, 6),
 	RIGHT_ABOVE6("right_above6", -1, 6),
-	
 	RIGHT2_ABOVE6("right2_above6", -2, 6),
 	RIGHT2_ABOVE5("right2_above5", -2, 5),
 	RIGHT3_ABOVE5("right3_above5", -3, 5),
@@ -40,7 +42,15 @@ public enum StargatePart implements StringRepresentable
 	RIGHT2_ABOVE("right2_above", -2, 1),
 	RIGHT2("right2", -2, 0),
 	
-	RIGHT("right", -1, 0);
+	RIGHT("right", -1, 0),
+
+
+	/** SPECIFIC FOR VERTICALLY PLACED TOLLAN GATE **/
+	LEFT2_ABOVE4("left2_above4", 2, 4),
+	LEFT_ABOVE5("left_above5", 1, 5),
+	ABOVE5("above5", 0, 5),
+	RIGHT_ABOVE5("right_above5", -1, 5),
+	RIGHT2_ABOVE4("right2_above4", -2, 4);
 	
 	private final String name;
 	private final int width;
@@ -51,6 +61,48 @@ public enum StargatePart implements StringRepresentable
 		this.name = name;
 		this.width = width;
 		this.height = height;
+	}
+	
+	public static ArrayList<StargatePart> getParts(StargateType type, Orientation orientation)
+	{
+		ArrayList<StargatePart> parts = new ArrayList<>();
+		
+		parts.add(BASE);
+		parts.add(LEFT);
+		parts.add(LEFT2);
+		parts.add(LEFT2_ABOVE);
+		parts.add(LEFT3_ABOVE2);
+		parts.add(LEFT3_ABOVE3);
+		if (type == StargateType.TOLLAN) {
+			parts.add(LEFT2_ABOVE4);
+			parts.add(LEFT2_ABOVE5);
+			parts.add(LEFT_ABOVE5);
+			parts.add(ABOVE5);
+			parts.add(RIGHT_ABOVE5);
+			parts.add(RIGHT2_ABOVE5);
+			parts.add(RIGHT2_ABOVE4);
+		} else {
+			parts.add(LEFT3_ABOVE);
+			parts.add(LEFT3_ABOVE4);
+			parts.add(LEFT3_ABOVE5);
+			parts.add(LEFT2_ABOVE5);
+			parts.add(LEFT2_ABOVE6);
+			parts.add(LEFT_ABOVE6);
+			parts.add(ABOVE6);
+			parts.add(RIGHT_ABOVE6);
+			parts.add(RIGHT2_ABOVE6);
+			parts.add(RIGHT2_ABOVE5);
+			parts.add(RIGHT3_ABOVE5);
+			parts.add(RIGHT3_ABOVE4);
+			parts.add(RIGHT3_ABOVE);
+		}
+		parts.add(RIGHT3_ABOVE3);
+		parts.add(RIGHT3_ABOVE2);
+		parts.add(RIGHT2_ABOVE);
+		parts.add(RIGHT2);
+		parts.add(RIGHT);
+
+		return parts;
 	}
 
 	@Override

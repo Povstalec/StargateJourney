@@ -64,18 +64,20 @@ public class TollanStargateEntity extends AbstractStargateEntity
 		return SoundInit.TOLLAN_DIAL_FAIL.get();
 	}
 	
-	@Override
-	public Stargate.Feedback engageSymbol(int symbol)
-	{
-		if(isConnected() && symbol == 0)
-			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
-		
-		if(Addressing.addressContainsSymbol(addressBuffer, symbol))
-			return Stargate.Feedback.SYMBOL_ENCODED;
-		
-		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
-		return Stargate.Feedback.SYMBOL_ENCODED;
-	}
+//	@Override
+//	public Stargate.Feedback engageSymbol(int symbol)
+//	{
+//		System.out.println("engageSymbol: " + symbol);
+//		if(isConnected() && symbol == 0)
+//			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+//
+//		if(Addressing.addressContainsSymbol(addressBuffer, symbol))
+//			return Stargate.Feedback.SYMBOL_ENCODED;
+//
+//		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
+//		System.out.println("addressBuffer length: " + addressBuffer.length);
+//		return Stargate.Feedback.SYMBOL_ENCODED;
+//	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, TollanStargateEntity stargate)
 	{

@@ -25,58 +25,53 @@ public class TollanStargateModel extends AbstractStargateModel
 	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/" + CHEVRON + "_lit.png");
 
 	protected static final float DEFAULT_ANGLE = 10.0F;
-	protected static final float DEFAULT_DISTANCE_FROM_CENTER = 56.0F;
+	protected static final float DEFAULT_DISTANCE_FROM_CENTER = 3.0F * 16.0F; // 3 blocks away from the center of the Stargate
+	public static final float DEFAULT_Z = 3.0F;
 	protected static final int BOXES_PER_RING = 36;
 
-	protected static final float CHEVRON_LIGHT_ANGLE = 15.0F;
-	protected static final float CHEVRON_LIGHT_Z = 4.0F;
-	protected static final float CHEVRON_LIGHT_Z_OFFSET = 0.5F;
-	protected static final float CHEVRON_BACK_LIGHT_Z = CHEVRON_LIGHT_Z + 1;
+	protected static final float OUTER_CHEVRON_ANGLE = -2.5F;
+	protected static final float OUTER_CHEVRON_BOTTOM_X = 4.5F;
+	protected static final float OUTER_CHEVRON_CENTER_X = 3.0F;
+	protected static final float OUTER_CHEVRON_CENTER_Y = 1.0F;
+	protected static final float OUTER_CHEVRON_CENTER_Z = 4.75F;
 
-	protected static final float CHEVRON_LIGHT_TOP_X = 6.0F;
-	protected static final float CHEVRON_LIGHT_TOP_Y = 1.0F;
+	protected static final float OUTER_CHEVRON_SIDE_X = 1.0F;
+	protected static final float OUTER_CHEVRON_SIDE_Y = 9.0F;
+	protected static final float OUTER_CHEVRON_SIDE_Z = OUTER_CHEVRON_CENTER_Z; //
 
-	protected static final float CHEVRON_LIGHT_CENTER_X = 3.0F;
-	protected static final float CHEVRON_LIGHT_CENTER_Y = 6.0F;
+	public static final float OUTER_CHEVRON_X_OFFSET = 1.25F;
+	protected static final float OUTER_CHEVRON_Y_OFFSET = 0.375F;
+	protected static final float OUTER_CHEVRON_Y_OFFSET_ANGLED = 8.0F + OUTER_CHEVRON_CENTER_Y; // The + 2.0F is there because there's a 2 pixel gap between the Chevron Light and Outer Chevron
+	protected static final float OUTER_CHEVRON_Z_OFFSET = -OUTER_CHEVRON_SIDE_Z / 2;
 
-	protected static final float CHEVRON_LIGHT_SIDE_X = 2.0F;
-	protected static final float CHEVRON_LIGHT_SIDE_Y = 6.1847F;
+	protected static final float CHEVRON_LIGHT_Z = (OUTER_CHEVRON_SIDE_Z / 2) - (1.0F / 16);
+	protected static final float CHEVRON_LIGHT_Y_OFFSET = 3.125F;
+	protected static final float CHEVRON_LIGHT_Z_OFFSET = 0.0F;
 
-	protected static final float OUTER_CHEVRON_ANGLE = 22.5F;
-	protected static final float OUTER_CHEVRON_Z_OFFSET = 3.5F;
+	protected static final float CHEVRON_LIGHT_CENTER_X = 3.375F;
+	protected static final float CHEVRON_LIGHT_CENTER_Y = 3.375F; //
 
-	protected static final float OUTER_CHEVRON_CENTER_X = 4.0F;
-	protected static final float OUTER_CHEVRON_CENTER_Y = 2.0F;
-	protected static final float OUTER_CHEVRON_CENTER_Z = 1.0F;
-
-	protected static final float OUTER_CHEVRON_SIDE_X = 2.0F;
-	protected static final float OUTER_CHEVRON_SIDE_Y = 10.0F;
-	protected static final float OUTER_CHEVRON_SIDE_Z = 1.0F;
-
-	protected static final float OUTER_CHEVRON_Y_OFFSET = CHEVRON_LIGHT_CENTER_Y + 2.0F + OUTER_CHEVRON_CENTER_Y; // The + 2.0F is there because there's a 2 pixel gap between the Chevron Light and Outer Chevron
-
-	protected static final float OUTER_RING_X = 10.0F;
-	protected static final float OUTER_RING_Y = 7.0F;
-	protected static final float OUTER_RING_Z = 7.0F;
+	protected static final float OUTER_RING_X = 8.5F - (1.0F / 16);
+	protected static final float OUTER_RING_Y = 3.5F;
+	protected static final float OUTER_RING_Z = DEFAULT_Z;
 	protected static final float OUTER_RING_X_CENTER = OUTER_RING_X / 2;
 	protected static final float OUTER_RING_Z_CENTER = OUTER_RING_Z / 2;
 
-	protected static final float BACK_RING_X = 9.0F;
-	protected static final float BACK_RING_Y = 6.0F;
-	protected static final float BACK_RING_Z = 4.0F;
-	protected static final float BACK_RING_Z_OFFSET = 3.5F;
+	protected static final float BACK_RING_X = 7.875F;
+	protected static final float BACK_RING_Y = 3.0F;
+	protected static final float BACK_RING_Z = 2.0F;
+	protected static final float BACK_RING_Z_OFFSET = DEFAULT_Z / 2;
 	protected static final float BACK_RING_X_CENTER = BACK_RING_X / 2;
 
-	protected static final float INNER_RING_X = 8.0F;
+	protected static final float INNER_RING_X = 7.25F;
 	protected static final float INNER_RING_Y = 3.0F;
-	protected static final float INNER_RING_Z = 7.0F;
+	protected static final float INNER_RING_Z = DEFAULT_Z;
 
-	protected static final float SYMBOL_RING_X = 8.0F;
-	protected static final float SYMBOL_RING_Y = 8.0F;
-	protected static final float SYMBOL_RING_Z = 2.0F;
-	protected static final float SYMBOL_RING_Y_OFFSET = SYMBOL_RING_Y - 2.0F; // The - 2.0F is there because the Symbol Ring is slightly bigger than the open space created by the rest of the ring, to prevent players from being able to see through when it's rotating
-	protected static final float SYMBOL_RING_Z_OFFSET = 0.5F;
-	protected static final float DIVIDER_X = 1.0F;
+	protected static final float SYMBOL_RING_X = 7.25F;
+	protected static final float SYMBOL_RING_Y = 4.0F;
+	protected static final float SYMBOL_RING_Z = 0.0F;
+	protected static final float SYMBOL_RING_Y_OFFSET = SYMBOL_RING_Y - 2.0F;
+	protected static final float SYMBOL_RING_Z_OFFSET = 0.625F;
 
 	private final ModelPart ring;
 	private final ModelPart symbolRing;
@@ -130,8 +125,6 @@ public class TollanStargateModel extends AbstractStargateModel
 	
 	protected void renderSymbolRing(TollanStargateEntity stargate, PoseStack stack, MultiBufferSource source,
 			int combinedLight, int combinedOverlay) {
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
-
 		VertexConsumer symbolRingTexture = source.getBuffer(RenderType.entitySolid(SYMBOL_RING_TEXTURE));
 
 		for(int i = 0; i < symbolCount; i++)
@@ -198,19 +191,19 @@ public class TollanStargateModel extends AbstractStargateModel
 		{
 			outerRing.addOrReplaceChild("outer_ring_" + 4 * i, CubeListBuilder.create()
 							.texOffs(0, 0)
-							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z / 2, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
+							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z_CENTER, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
 					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * 4 * i)));
 			outerRing.addOrReplaceChild("outer_ring_" + (4 * i + 1), CubeListBuilder.create()
 							.texOffs(0, 42)
-							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z / 2, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
+							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z_CENTER, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
 					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 1))));
 			outerRing.addOrReplaceChild("outer_ring_" + (4 * i + 2), CubeListBuilder.create()
 							.texOffs(0, 28)
-							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z / 2, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
+							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z_CENTER, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
 					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 2))));
 			outerRing.addOrReplaceChild("outer_ring_" + (4 * i + 3), CubeListBuilder.create()
 							.texOffs(0, 14)
-							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z / 2, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
+							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z_CENTER, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
 					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 3))));
 		}
 	}
@@ -243,7 +236,7 @@ public class TollanStargateModel extends AbstractStargateModel
 		for(int i = 0; i < BOXES_PER_RING; i++)
 		{
 			innerRing.addOrReplaceChild("inner_ring_" + i, CubeListBuilder.create()
-							.texOffs(34, 24)
+							.texOffs(34, 26)
 							.addBox(-INNER_RING_X / 2, -DEFAULT_DISTANCE_FROM_CENTER + OUTER_RING_Y + BACK_RING_Y, -INNER_RING_Z / 2, INNER_RING_X, INNER_RING_Y, INNER_RING_Z),
 					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * i)));
 		}
@@ -278,7 +271,14 @@ public class TollanStargateModel extends AbstractStargateModel
 		{
 			symbolRing.addOrReplaceChild("symbol_" + i, CubeListBuilder.create()
 							.texOffs(-4, 6)
-							.addBox(-SYMBOL_RING_X / 2, -DEFAULT_DISTANCE_FROM_CENTER + SYMBOL_RING_Y_OFFSET, SYMBOL_RING_Z_OFFSET, SYMBOL_RING_X, SYMBOL_RING_Y, SYMBOL_RING_Z),
+							.addBox(
+									-SYMBOL_RING_X / 2,
+									-DEFAULT_DISTANCE_FROM_CENTER + SYMBOL_RING_Y_OFFSET,
+									SYMBOL_RING_Z_OFFSET,
+									SYMBOL_RING_X,
+									SYMBOL_RING_Y,
+									SYMBOL_RING_Z
+							),
 					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i)));
 		}
 	}
@@ -337,57 +337,154 @@ public class TollanStargateModel extends AbstractStargateModel
 	{
 		chevronLight.addOrReplaceChild("chevron_center", CubeListBuilder.create()
 						.texOffs(22, 5)
-						.addBox(-CHEVRON_LIGHT_CENTER_X / 2, 0.0F, CHEVRON_LIGHT_Z_OFFSET, CHEVRON_LIGHT_CENTER_X, CHEVRON_LIGHT_CENTER_Y, CHEVRON_LIGHT_Z),
-				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER - CHEVRON_LIGHT_CENTER_Y, 0.0F));
+						.addBox(
+								-CHEVRON_LIGHT_CENTER_X / 2,
+								-CHEVRON_LIGHT_Y_OFFSET,
+								CHEVRON_LIGHT_Z_OFFSET,
+								CHEVRON_LIGHT_CENTER_X,
+								CHEVRON_LIGHT_CENTER_Y,
+								CHEVRON_LIGHT_Z
+						),
+				PartPose.offset(
+						0.0F,
+						DEFAULT_DISTANCE_FROM_CENTER,
+						0.0F
+				)
+		);
 	}
 
 	public static void createOuterChevron(PartDefinition outerChevron)
 	{
 		outerChevron.addOrReplaceChild("chevron_f", CubeListBuilder.create()
 						.texOffs(0, 29)
-						.addBox(-OUTER_CHEVRON_CENTER_X / 2, 0.0F, OUTER_CHEVRON_Z_OFFSET, OUTER_CHEVRON_CENTER_X, OUTER_CHEVRON_CENTER_Y, OUTER_CHEVRON_CENTER_Z),
-				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET, 0.0F));
+						.addBox(
+								-OUTER_CHEVRON_BOTTOM_X / 2,
+								OUTER_CHEVRON_Y_OFFSET - 1.0F,
+								OUTER_CHEVRON_Z_OFFSET,
+								OUTER_CHEVRON_BOTTOM_X,
+								OUTER_CHEVRON_CENTER_Y,
+								OUTER_CHEVRON_SIDE_Z
+						),
+				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED, 0.0F));
+		outerChevron.addOrReplaceChild("chevron_b", CubeListBuilder.create()
+						.texOffs(0, 29)
+						.addBox(
+								-OUTER_CHEVRON_CENTER_X / 2,
+								OUTER_CHEVRON_Y_OFFSET + 4.5F,
+								OUTER_CHEVRON_Z_OFFSET,
+								OUTER_CHEVRON_CENTER_X,
+								OUTER_CHEVRON_CENTER_Y,
+								OUTER_CHEVRON_SIDE_Z
+						),
+				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED, 0.0F));
 		outerChevron.addOrReplaceChild("chevron_right_f", CubeListBuilder.create()
 						.texOffs(10, 29)
-						.addBox(-OUTER_CHEVRON_SIDE_X, 0.0F, OUTER_CHEVRON_Z_OFFSET, OUTER_CHEVRON_SIDE_X, OUTER_CHEVRON_SIDE_Y, OUTER_CHEVRON_SIDE_Z),
-				PartPose.offsetAndRotation(OUTER_CHEVRON_SIDE_X, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-OUTER_CHEVRON_ANGLE)));
+						.addBox(
+								-(OUTER_CHEVRON_X_OFFSET + OUTER_CHEVRON_SIDE_X),
+								OUTER_CHEVRON_Y_OFFSET,
+								OUTER_CHEVRON_Z_OFFSET,
+								OUTER_CHEVRON_SIDE_X,
+								OUTER_CHEVRON_SIDE_Y,
+								OUTER_CHEVRON_SIDE_Z
+						),
+				PartPose.offsetAndRotation(
+						0.0F,
+						DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED,
+						0.0F,
+						0.0F,
+						0.0F,
+						(float) Math.toRadians(-OUTER_CHEVRON_ANGLE)
+				)
+		);
 		outerChevron.addOrReplaceChild("chevron_left_f", CubeListBuilder.create()
 						.texOffs(10, 29)
-						.addBox(0.0F, 0.0F, OUTER_CHEVRON_Z_OFFSET, OUTER_CHEVRON_SIDE_X, OUTER_CHEVRON_SIDE_Y, OUTER_CHEVRON_SIDE_Z),
-				PartPose.offsetAndRotation(-OUTER_CHEVRON_SIDE_X, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(OUTER_CHEVRON_ANGLE)));
+						.addBox(
+								OUTER_CHEVRON_X_OFFSET,
+								OUTER_CHEVRON_Y_OFFSET,
+								OUTER_CHEVRON_Z_OFFSET,
+								OUTER_CHEVRON_SIDE_X,
+								OUTER_CHEVRON_SIDE_Y,
+								OUTER_CHEVRON_SIDE_Z
+						),
+				PartPose.offsetAndRotation(
+						0.0F,
+						DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED,
+						0.0F,
+						0.0F,
+						0.0F,
+						(float) Math.toRadians(OUTER_CHEVRON_ANGLE)
+				)
+		);
 	}
 
 	public static void createBackChevron(PartDefinition backChevron)
 	{
-		backChevron.addOrReplaceChild("chevron_b", CubeListBuilder.create()
-						.texOffs(0, 40)
-						.addBox(-OUTER_CHEVRON_CENTER_X / 2, 0.0F, -OUTER_CHEVRON_Z_OFFSET - OUTER_CHEVRON_CENTER_Z, OUTER_CHEVRON_CENTER_X, OUTER_CHEVRON_CENTER_Y, OUTER_CHEVRON_CENTER_Z),
-				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET, 0.0F));
-		backChevron.addOrReplaceChild("chevron_right_b", CubeListBuilder.create()
-						.texOffs(10, 40)
-						.addBox(-OUTER_CHEVRON_SIDE_X, 0.0F, -OUTER_CHEVRON_Z_OFFSET - OUTER_CHEVRON_CENTER_Z, OUTER_CHEVRON_SIDE_X, OUTER_CHEVRON_SIDE_Y, OUTER_CHEVRON_SIDE_Z),
-				PartPose.offsetAndRotation(OUTER_CHEVRON_SIDE_X, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-OUTER_CHEVRON_ANGLE)));
-		backChevron.addOrReplaceChild("chevron_left_b", CubeListBuilder.create()
-						.texOffs(10, 40)
-						.addBox(0.0F, 0.0F, -OUTER_CHEVRON_Z_OFFSET - 1, OUTER_CHEVRON_SIDE_X, OUTER_CHEVRON_SIDE_Y, OUTER_CHEVRON_SIDE_Z),
-				PartPose.offsetAndRotation(-OUTER_CHEVRON_SIDE_X, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(OUTER_CHEVRON_ANGLE)));
+//		backChevron.addOrReplaceChild("chevron_b", CubeListBuilder.create()
+//						.texOffs(0, 40)
+//						.addBox(
+//								-OUTER_CHEVRON_CENTER_X / 2,
+//								OUTER_CHEVRON_Y_OFFSET - 0.125F,
+//								-OUTER_CHEVRON_Z_OFFSET - OUTER_CHEVRON_CENTER_Z,
+//								OUTER_CHEVRON_CENTER_X,
+//								OUTER_CHEVRON_CENTER_Y,
+//								OUTER_CHEVRON_CENTER_Z
+//						),
+//				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED, 0.0F));
+//		backChevron.addOrReplaceChild("chevron_right_b", CubeListBuilder.create()
+//						.texOffs(10, 40)
+//						.addBox(
+//								-(OUTER_CHEVRON_X_OFFSET + OUTER_CHEVRON_SIDE_X),
+//								OUTER_CHEVRON_Y_OFFSET,
+//								-OUTER_CHEVRON_Z_OFFSET - OUTER_CHEVRON_CENTER_Z,
+//								OUTER_CHEVRON_SIDE_X,
+//								OUTER_CHEVRON_SIDE_Y,
+//								OUTER_CHEVRON_SIDE_Z
+//						),
+//				PartPose.offsetAndRotation(
+//						0.0F,
+//						DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED,
+//						0.0F,
+//						0.0F,
+//						0.0F,
+//						(float) Math.toRadians(-OUTER_CHEVRON_ANGLE)
+//				)
+//		);
+//		backChevron.addOrReplaceChild("chevron_left_b", CubeListBuilder.create()
+//						.texOffs(10, 40)
+//						.addBox(
+//								OUTER_CHEVRON_X_OFFSET,
+//								OUTER_CHEVRON_Y_OFFSET,
+//								-OUTER_CHEVRON_Z_OFFSET - 1,
+//								OUTER_CHEVRON_SIDE_X,
+//								OUTER_CHEVRON_SIDE_Y,
+//								OUTER_CHEVRON_SIDE_Z
+//						),
+//				PartPose.offsetAndRotation(
+//						0.0F,
+//						DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED,
+//						0.0F,
+//						0.0F,
+//						0.0F,
+//						(float) Math.toRadians(OUTER_CHEVRON_ANGLE)
+//				)
+//		);
 
-		backChevron.addOrReplaceChild("chevron_b_top", CubeListBuilder.create()
-						.texOffs(0, 0)
-						.addBox(-CHEVRON_LIGHT_TOP_X / 2, 0.0F, CHEVRON_LIGHT_Z_OFFSET, CHEVRON_LIGHT_TOP_X, CHEVRON_LIGHT_TOP_Y, CHEVRON_BACK_LIGHT_Z),
-				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER, -CHEVRON_BACK_LIGHT_Z));
 		backChevron.addOrReplaceChild("chevron_b_center", CubeListBuilder.create()
 						.texOffs(0, 6)
-						.addBox(-CHEVRON_LIGHT_CENTER_X / 2, 0.0F, CHEVRON_LIGHT_Z_OFFSET, CHEVRON_LIGHT_CENTER_X, CHEVRON_LIGHT_CENTER_Y, CHEVRON_BACK_LIGHT_Z),
-				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER - CHEVRON_LIGHT_CENTER_Y, -CHEVRON_BACK_LIGHT_Z));
-		backChevron.addOrReplaceChild("chevron_b_right", CubeListBuilder.create()
-						.texOffs(0, 17)
-						.addBox(-CHEVRON_LIGHT_SIDE_X, -CHEVRON_LIGHT_SIDE_Y, -CHEVRON_BACK_LIGHT_Z + CHEVRON_LIGHT_Z_OFFSET, CHEVRON_LIGHT_SIDE_X, CHEVRON_LIGHT_SIDE_Y, CHEVRON_BACK_LIGHT_Z),
-				PartPose.offsetAndRotation(CHEVRON_LIGHT_TOP_X / 2, DEFAULT_DISTANCE_FROM_CENTER, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-CHEVRON_LIGHT_ANGLE)));
-		backChevron.addOrReplaceChild("chevron_b_left", CubeListBuilder.create()
-						.texOffs(0, 17)
-						.addBox(0.0F, -CHEVRON_LIGHT_SIDE_Y, -CHEVRON_BACK_LIGHT_Z + CHEVRON_LIGHT_Z_OFFSET, CHEVRON_LIGHT_SIDE_X, CHEVRON_LIGHT_SIDE_Y, CHEVRON_BACK_LIGHT_Z),
-				PartPose.offsetAndRotation(-CHEVRON_LIGHT_TOP_X / 2, DEFAULT_DISTANCE_FROM_CENTER, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(CHEVRON_LIGHT_ANGLE)));
+						.addBox(
+								-CHEVRON_LIGHT_CENTER_X / 2,
+								-CHEVRON_LIGHT_Y_OFFSET,
+								CHEVRON_LIGHT_Z_OFFSET,
+								CHEVRON_LIGHT_CENTER_X,
+								CHEVRON_LIGHT_CENTER_Y,
+								CHEVRON_LIGHT_Z
+						),
+				PartPose.offset(
+						0.0F,
+						DEFAULT_DISTANCE_FROM_CENTER,
+						-CHEVRON_LIGHT_Z
+				)
+		);
 	}
 
 }

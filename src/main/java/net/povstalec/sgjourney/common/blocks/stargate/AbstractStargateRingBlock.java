@@ -31,14 +31,6 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		super(properties);
 	}
 
-	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
-	{
-		int horizontal = direction.get2DDataValue();
-		int vertical = orientation.get2DDataValue();
-		
-		return shapes[vertical][horizontal % shapes[vertical].length];
-	}
-
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
@@ -46,15 +38,15 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		Orientation orientation = state.getValue(ORIENTATION);
 
 		return switch (state.getValue(PART)) {
-			case LEFT2, LEFT3_ABOVE -> getShapeFromArray(SHAPE_PROVIDER.TOP_RIGHT, direction, orientation);
+			case LEFT2, LEFT3_ABOVE -> getShapeFromArray(SHAPE_PROVIDER.CORNER_TOP_RIGHT, direction, orientation);
 			case LEFT2_ABOVE -> getShapeFromArray(SHAPE_PROVIDER.STAIR_TOP_RIGHT, direction, orientation);
-			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> getShapeFromArray(SHAPE_PROVIDER.BOTTOM_RIGHT, direction, orientation);
+			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> getShapeFromArray(SHAPE_PROVIDER.CORNER_BOTTOM_RIGHT, direction, orientation);
 			case LEFT2_ABOVE5 -> getShapeFromArray(SHAPE_PROVIDER.STAIR_BOTTOM_RIGHT, direction, orientation);
-			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> getShapeFromArray(SHAPE_PROVIDER.BOTTOM_LEFT, direction, orientation);
+			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> getShapeFromArray(SHAPE_PROVIDER.CORNER_BOTTOM_LEFT, direction, orientation);
 			case RIGHT2_ABOVE5 -> getShapeFromArray(SHAPE_PROVIDER.STAIR_BOTTOM_LEFT, direction, orientation);
-			case RIGHT3_ABOVE, RIGHT2 -> getShapeFromArray(SHAPE_PROVIDER.TOP_LEFT, direction, orientation);
+			case RIGHT3_ABOVE, RIGHT2 -> getShapeFromArray(SHAPE_PROVIDER.CORNER_TOP_LEFT, direction, orientation);
 			case RIGHT2_ABOVE -> getShapeFromArray(SHAPE_PROVIDER.STAIR_TOP_LEFT, direction, orientation);
-			default -> getShapeFromArray(SHAPE_PROVIDER.DEFAULT, direction, orientation);
+			default -> getShapeFromArray(SHAPE_PROVIDER.FULL, direction, orientation);
 		};
 	}
 
