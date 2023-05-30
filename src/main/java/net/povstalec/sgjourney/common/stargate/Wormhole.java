@@ -21,6 +21,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.MatrixHelper;
@@ -29,7 +30,10 @@ import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class Wormhole implements ITeleporter
 {
-	public static final double HORIZONTAL_CENTER_HEIGHT = 0.28125;
+	public static final double VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
+	public static final double VERTICAL_CENTER_TOLLAN_HEIGHT = 0.0F;
+	public static final double HORIZONTAL_CENTER_STANDARD_HEIGHT = (9.0F / 32);
+	public static final double HORIZONTAL_CENTER_TOLLAN_HEIGHT = (7.0F / 32);
 	Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 	List<Entity> localEntities = new ArrayList<Entity>();
 	protected boolean used = false;
@@ -93,8 +97,8 @@ public class Wormhole implements ITeleporter
 				else
 				{
 					unitDistance = initialStargate.getCenterPos().getY() - initialStargate.getCenterPos().relative(orientationDirection).getY();
-					previousTravelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_HEIGHT - previousY;
-					travelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_HEIGHT - traveler.getY();
+					previousTravelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_STANDARD_HEIGHT - previousY;
+					travelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_STANDARD_HEIGHT - traveler.getY();
 					axisMomentum = momentum.y();
 				}
 				
@@ -156,8 +160,8 @@ public class Wormhole implements ITeleporter
 		        Orientation initialOrientation = initialStargate.getOrientation();
 	        	Direction destinationDirection = targetStargate.getDirection();
 		        Orientation destinationOrientation = targetStargate.getOrientation();
-		        double initialYAddition = initialOrientation == Orientation.REGULAR ? 0.5 :  HORIZONTAL_CENTER_HEIGHT;
-		        double destinationYAddition = destinationOrientation == Orientation.REGULAR ? 0.5 :  HORIZONTAL_CENTER_HEIGHT;
+		        double initialYAddition = getGateAddition(initialStargate);
+		        double destinationYAddition = getGateAddition(targetStargate);
 		        
 	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + initialYAddition), traveler.getY() - (initialStargate.getCenterPos().getY() + 0.5), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
 	    		
@@ -189,8 +193,14 @@ public class Wormhole implements ITeleporter
 				traveler.kill();
 		}
     }
-    
-    private static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
+
+	private static double getGateAddition(AbstractStargateEntity initialStargate) {
+		return initialStargate.getOrientation() == Orientation.REGULAR
+				? (initialStargate instanceof TollanStargateEntity ? VERTICAL_CENTER_TOLLAN_HEIGHT : VERTICAL_CENTER_STANDARD_HEIGHT)
+				: (initialStargate instanceof TollanStargateEntity ? HORIZONTAL_CENTER_TOLLAN_HEIGHT : HORIZONTAL_CENTER_STANDARD_HEIGHT);
+	}
+
+	private static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
     {
     	return MatrixHelper.rotateVector(initial, initialDirection, initialOrientation, destinationDirection, destinationOrientation);
     }

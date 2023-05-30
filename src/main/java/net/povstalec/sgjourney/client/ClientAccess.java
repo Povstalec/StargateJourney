@@ -7,10 +7,7 @@ import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.energy_gen.NaquadahGeneratorEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.symbols.SymbolBlockEntity;
 
 @SuppressWarnings("resource")
@@ -114,7 +111,18 @@ public class ClientAccess
         	stargate.currentSymbol = currentSymbol;
         }
     }
-    
+
+    public static void updateTollanStargate(BlockPos pos, int[] addressBuffer, int currentSymbol)
+    {
+    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+
+        if (blockEntity instanceof final TollanStargateEntity stargate)
+        {
+        	stargate.addressBuffer = addressBuffer;
+        	stargate.currentSymbol = currentSymbol;
+        }
+    }
+
     public static void updateNaquadahGenerator(BlockPos pos, int reactionProgress, long energy)
     {
     	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);

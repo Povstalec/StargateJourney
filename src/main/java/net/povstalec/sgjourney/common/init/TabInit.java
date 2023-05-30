@@ -96,6 +96,7 @@ public class TabInit
 				items.accept(PegasusDHDBlock.pegasusCrystalSetup());
 				//items.accept(BlockInit.CLASSIC_STARGATE.get());
 				items.accept(BlockInit.CLASSIC_DHD.get());
+				items.accept(BlockInit.TOLLAN_STARGATE.get());
 
 				items.accept(BlockInit.TRANSPORT_RINGS.get());
 				items.accept(BlockInit.RING_PANEL.get());

@@ -9,7 +9,6 @@ public class UniverseStargateRingBlock extends AbstractStargateRingBlock
 	{
 		super(properties);
 	}
-
 	public Block getStargate()
 	{
 		return BlockInit.UNIVERSE_STARGATE.get();

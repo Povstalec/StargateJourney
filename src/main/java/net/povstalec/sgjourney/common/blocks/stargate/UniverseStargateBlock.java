@@ -19,14 +19,14 @@ public class UniverseStargateBlock extends AbstractStargateBaseBlock
 	{
 		super(properties);
 	}
-	
+
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
 		UniverseStargateEntity stargate = new UniverseStargateEntity(pos, state);
 		
-		 return stargate;
+		return stargate;
 	}
 	
 	public BlockState ringState()

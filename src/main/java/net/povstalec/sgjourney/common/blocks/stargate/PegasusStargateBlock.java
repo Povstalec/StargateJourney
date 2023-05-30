@@ -26,7 +26,7 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 	{
 		PegasusStargateEntity stargate = new PegasusStargateEntity(pos, state);
 		
-		 return stargate;
+		return stargate;
 	}
 	
 	public BlockState ringState()

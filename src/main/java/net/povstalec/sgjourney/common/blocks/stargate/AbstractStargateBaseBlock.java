@@ -24,8 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -36,14 +34,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public AbstractStargateBaseBlock(Properties properties)
 	{
 		super(properties);
-	}
-
-	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
-	{
-		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return SHAPE_PROVIDER.HORIZONTAL;
-		return state.getValue(FACING).getAxis() == Direction.Axis.X ? SHAPE_PROVIDER.Z : SHAPE_PROVIDER.X;
 	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context)
@@ -57,7 +47,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		if(orientation == Orientation.REGULAR && blockpos.getY() > level.getMaxBuildHeight() - 6)
 			return null;
 		
-		for(StargatePart part : StargatePart.values())
+		for(StargatePart part : StargatePart.getParts(getStargateType(), orientation))
 		{
 			if(!part.equals(StargatePart.BASE) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
 			{
@@ -83,7 +73,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		super.setPlacedBy(level, pos, state, placer, stack);
 		
-		for(StargatePart part : StargatePart.values())
+		for(StargatePart part : StargatePart.getParts(getStargateType(), level.getBlockState(pos).getValue(ORIENTATION)))
 		{
 			if(!part.equals(StargatePart.BASE))
 			{
@@ -109,7 +99,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     			stargate.removeFromBlockEntityList();
     		}
     		
-    		for(StargatePart part : StargatePart.values())
+    		for(StargatePart part : StargatePart.getParts(getStargateType(), oldState.getValue(ORIENTATION)))
     		{
     			if(!part.equals(StargatePart.BASE))
     			{
@@ -128,7 +118,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTED, isConnected).setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
 		
-		for(StargatePart part : StargatePart.values())
+		for(StargatePart part : StargatePart.getParts(getStargateType(), level.getBlockState(pos).getValue(ORIENTATION)))
 		{
 			if(!part.equals(StargatePart.BASE))
 			{

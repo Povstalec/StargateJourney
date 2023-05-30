@@ -25,6 +25,9 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> PEGASUS_CHEVRON_ENGAGE = registerSoundEvent("pegasus_chevron_engage", 64.0F);
 	public static final RegistryObject<SoundEvent> PEGASUS_DIAL_FAIL = registerSoundEvent("pegasus_dial_fail", 64.0F);
 
+	public static final RegistryObject<SoundEvent> TOLLAN_CHEVRON_ENGAGE = registerSoundEvent("tollan_chevron_engage", 64.0F);
+	public static final RegistryObject<SoundEvent> TOLLAN_DIAL_FAIL = registerSoundEvent("tollan_dial_fail", 64.0F);
+
 	public static final RegistryObject<SoundEvent> WORMHOLE_CLOSE = registerSoundEvent("wormhole_close", 64.0F);
 	public static final RegistryObject<SoundEvent> WORMHOLE_ENTER = registerSoundEvent("wormhole_enter", 64.0F);
 
