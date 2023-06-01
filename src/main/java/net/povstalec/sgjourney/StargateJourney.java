@@ -35,6 +35,7 @@ import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRender
 import net.povstalec.sgjourney.client.render.block_entity.PegasusStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.SandstoneSymbolRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.StoneSymbolRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
 import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
@@ -186,6 +187,7 @@ public class StargateJourney
         	BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
+        	BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
         }
         
         @SubscribeEvent

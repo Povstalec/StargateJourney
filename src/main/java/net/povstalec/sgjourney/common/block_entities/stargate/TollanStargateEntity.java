@@ -22,7 +22,7 @@ public class TollanStargateEntity extends AbstractStargateEntity
 
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), pos, state, Stargate.Gen.GEN_2);
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2);
 	}
 	
 	@Override
@@ -94,5 +94,19 @@ public class TollanStargateEntity extends AbstractStargateEntity
 		currentSymbol = 0;
 		addressBuffer = new int[0];
 		return super.resetStargate(feedback);
+	}
+
+	@Override
+	public void playRotationSound()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopRotationSound()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

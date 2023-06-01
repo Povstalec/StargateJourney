@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.render;
+package net.povstalec.sgjourney.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -22,9 +22,9 @@ import net.povstalec.sgjourney.common.misc.Orientation;
 @OnlyIn(Dist.CLIENT)
 public class TollanStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<TollanStargateEntity>
 {
-	protected static final int r = ClientStargateConfig.tollan_r.get();
-	protected static final int g = ClientStargateConfig.tollan_g.get();
-	protected static final int b = ClientStargateConfig.tollan_b.get();
+	protected static final int r = ClientStargateConfig.tollan_rgba.getRed();
+	protected static final int g = ClientStargateConfig.tollan_rgba.getGreen();
+	protected static final int b = ClientStargateConfig.tollan_rgba.getBlue();
 
 	protected final WormholeModel wormholeModel;
 	protected final TollanStargateModel stargateModel;

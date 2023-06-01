@@ -8,11 +8,13 @@ public class ClientStargateConfig
 	public static SGJourneyConfigValue.BooleanValue use_movie_stargate_model;
 	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
 	public static SGJourneyConfigValue.BooleanValue pegasus_stargate_back_lights_up;
+	public static SGJourneyConfigValue.BooleanValue tollan_stargate_back_lights_up;
 
 	public static SGJourneyConfigValue.RGBAValue universe_rgba;
 	public static SGJourneyConfigValue.RGBAValue milky_way_rgba;
 	public static SGJourneyConfigValue.RGBAValue pegasus_rgba;
 	public static SGJourneyConfigValue.RGBAValue classic_rgba;
+	public static SGJourneyConfigValue.RGBAValue tollan_rgba;
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
@@ -34,6 +36,10 @@ public class ClientStargateConfig
 				true, 
 				"Decide if Chevrons on the back of Pegasus Stargate should light up");
 		
+		tollan_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.tollan_stargate_back_lights_up", 
+				true, 
+				"Decide if Chevrons on the back of Tollan Stargate should light up");
+		
 		universe_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.universe_stargate", 
 				255, 255, 255, 255, 
 				"The RGBA values in Universe Stargate's Event Horizon");
@@ -49,5 +55,9 @@ public class ClientStargateConfig
 		classic_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.classic_stargate", 
 				55, 55, 255, 255, 
 				"The RGBA values in Classic Stargate's Event Horizon");
+
+		tollan_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.tollan_stargate", 
+				55, 55, 255, 255, 
+				"The RGBA values in Tollan Stargate's Event Horizon");
 	}
 }

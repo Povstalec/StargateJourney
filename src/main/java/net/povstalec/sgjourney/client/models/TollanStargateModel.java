@@ -81,6 +81,7 @@ public class TollanStargateModel extends AbstractStargateModel
 
 	public TollanStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart chevrons)
 	{
+		super("tollan");
 		this.ring = ring;
 		this.symbolRing = symbolRing;
 		this.chevrons = chevrons;

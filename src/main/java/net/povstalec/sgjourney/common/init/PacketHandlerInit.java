@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundTollanStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
@@ -81,6 +82,12 @@ public final class PacketHandlerInit
 		.encoder(ClientboundPegasusStargateUpdatePacket::encode)
 		.decoder(ClientboundPegasusStargateUpdatePacket::new)
 		.consumerMainThread(ClientboundPegasusStargateUpdatePacket::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ClientboundTollanStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundTollanStargateUpdatePacket::encode)
+		.decoder(ClientboundTollanStargateUpdatePacket::new)
+		.consumerMainThread(ClientboundTollanStargateUpdatePacket::handle)
 		.add();
 		
 		INSTANCE.messageBuilder(ClientboundNaquadahGeneratorUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)

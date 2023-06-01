@@ -115,7 +115,7 @@ public class ClientAccess
 
     public static void updateTollanStargate(BlockPos pos, int[] addressBuffer, int currentSymbol)
     {
-    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
 
         if (blockEntity instanceof final TollanStargateEntity stargate)
         {
