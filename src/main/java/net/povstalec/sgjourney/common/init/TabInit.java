@@ -100,8 +100,9 @@ public class TabInit
 				//items.accept(BlockInit.MILKY_WAY_DHD.get());
 				items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
 				items.accept(BlockInit.PEGASUS_STARGATE.get());
+				//items.accept(BlockInit.PEGASUS_DHD.get());
 				items.accept(PegasusDHDBlock.pegasusCrystalSetup());
-				//items.accept(BlockInit.CLASSIC_STARGATE.get());
+				items.accept(BlockInit.CLASSIC_STARGATE.get());
 				items.accept(BlockInit.CLASSIC_DHD.get());
 				items.accept(BlockInit.TOLLAN_STARGATE.get());
 
