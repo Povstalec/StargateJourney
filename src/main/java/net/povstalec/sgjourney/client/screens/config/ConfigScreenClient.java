@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.screens.config;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
@@ -32,12 +33,9 @@ public class ConfigScreenClient extends Screen
 		this.addRenderableWidget(Button.builder(Component.translatable("gui.sgjourney.config_stargate"), 
 				(button) -> this.minecraft.setScreen(new ConfigScreenClientStargate(this))).bounds(this.width / 2 - 100, l, 200, 20).build());
 		
-		this.addRenderableWidget(CycleButton.booleanBuilder(Component.translatable("gui.sgjourney.true"),
-				Component.translatable("gui.sgjourney.false")).withInitialValue(StargateJourneyConfig.disable_smooth_animations.get()).create(this.width / 2 - 100, l + 24, 200, 20, Component.translatable("gui.sgjourney.disable_smooth_animations"), (cycleButton, isTrue)->
-				{
-					StargateJourneyConfig.disable_smooth_animations.set(isTrue);
-					StargateJourneyConfig.disable_smooth_animations.save();
-				}));
+		this.addRenderableWidget(CycleButton.booleanBuilder(Component.translatable("gui.sgjourney.true").withStyle(ChatFormatting.GREEN),
+				Component.translatable("gui.sgjourney.false").withStyle(ChatFormatting.RED)).withInitialValue(StargateJourneyConfig.disable_smooth_animations.get()).create(this.width / 2 - 100, l + 24, 200, 20, Component.translatable("gui.sgjourney.disable_smooth_animations"), 
+						(cycleButton, isTrue)->StargateJourneyConfig.disable_smooth_animations.set(isTrue)));
 
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_BACK, 
 				(button) -> this.minecraft.setScreen(this.parentScreen))

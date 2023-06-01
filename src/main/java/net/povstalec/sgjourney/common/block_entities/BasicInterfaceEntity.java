@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
-import net.povstalec.sgjourney.common.cctweaked.peripherals.BasicPeripheralHolder;
+import net.povstalec.sgjourney.common.cctweaked.peripherals.BasicPeripheralWrapper;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundBasicInterfaceUpdatePacket;
@@ -32,14 +32,14 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	private boolean rotateClockwise = true;
 	
 	public EnergyBlockEntity energyBlockEntity = null;
-	BasicPeripheralHolder peripheralHolder;
+	BasicPeripheralWrapper peripheralHolder;
 	
 	public BasicInterfaceEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.BASIC_INTERFACE.get(), pos, state);
 		
 		if(ModList.get().isLoaded("computercraft"))
-			peripheralHolder = new BasicPeripheralHolder(this);
+			peripheralHolder = new BasicPeripheralWrapper(this);
 	}
 	
 	protected BasicInterfaceEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)

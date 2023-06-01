@@ -39,7 +39,6 @@ import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public class ClassicDHDBlock extends AbstractDHDBlock
 {
-
 	public ClassicDHDBlock(Properties properties)
 	{
 		super(properties);
@@ -49,15 +48,13 @@ public class ClassicDHDBlock extends AbstractDHDBlock
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
-		ClassicDHDEntity dhd = new ClassicDHDEntity(pos, state);
-		
-		return dhd;
+		return new ClassicDHDEntity(pos, state);
 	}
 	
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if(!level.isClientSide) 
+        if(!level.isClientSide()) 
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			

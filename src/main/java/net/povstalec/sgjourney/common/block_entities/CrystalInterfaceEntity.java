@@ -21,7 +21,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
-import net.povstalec.sgjourney.common.cctweaked.peripherals.CrystalPeripheralHolder;
+import net.povstalec.sgjourney.common.cctweaked.peripherals.CrystalPeripheralWrapper;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -30,7 +30,7 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 {
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-	CrystalPeripheralHolder peripheralHolder;
+	CrystalPeripheralWrapper peripheralHolder;
 
 	private int inputSignal = 0;
 	
@@ -39,7 +39,7 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 		super(BlockEntityInit.CRYSTAL_INTERFACE.get(), pos, state);
 		
 		if(ModList.get().isLoaded("computercraft"))
-			peripheralHolder = new CrystalPeripheralHolder(this);
+			peripheralHolder = new CrystalPeripheralWrapper(this);
 	}
 	
 	@Override

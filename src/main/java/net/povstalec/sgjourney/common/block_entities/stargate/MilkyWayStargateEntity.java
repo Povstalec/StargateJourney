@@ -17,12 +17,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.StargateSoundWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.stargate.Addressing;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
@@ -39,10 +41,13 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public boolean computerRotation = false;
 	public int desiredSymbol = 0;
 	public boolean rotateClockwise = true;
+	
+	protected StargateSoundWrapper.MilkyWayRingBuildup buildupSound = new StargateSoundWrapper.MilkyWayRingBuildup(this);
+	protected StargateSoundWrapper.MilkyWayRingRotation spinSound = new StargateSoundWrapper.MilkyWayRingRotation(this);
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), pos, state, Stargate.Gen.GEN_2);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2);
 	}
 
 	@Override
@@ -179,22 +184,22 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			this.isChevronRaised = true;
 			return Stargate.Feedback.CHEVRON_RAISED;
 		}
-		return Stargate.Feedback.CHEVRON_ALREADY_RAISED;
+		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_RAISED);
 	}
 	
 	public Stargate.Feedback lowerChevron()
 	{
 		if(this.isChevronRaised)
 		{
-			engageSymbol(getCurrentSymbol());
+			;
 			this.isChevronRaised = false;
-			return Stargate.Feedback.CHEVRON_LOWERED;
+			return setRecentFeedback(engageSymbol(getCurrentSymbol()));
 		}
 		
 		if(!this.level.isClientSide())
 			synchronizeWithClient(this.level);
 		
-		return Stargate.Feedback.CHEVRON_ALREADY_LOWERED;
+		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_LOWERED);
 	}
 	
 	public int getCurrentSymbol()
@@ -214,6 +219,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
 	{
 		stargate.rotate();
+		if(stargate.isRotating() && !level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 	}
@@ -269,8 +276,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
 		double position = this.rotation / angle;
-		double lowerBound = (double) (desiredSymbol - 0.1);
-		double upperBound = (double) (desiredSymbol + 0.1);
+		double lowerBound = (double) (desiredSymbol - 0.12);
+		double upperBound = (double) (desiredSymbol + 0.12);
 		
 		if(position > lowerBound && position < upperBound)
 			return true;
@@ -297,6 +304,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		this.computerRotation = true;
 		this.desiredSymbol = desiredSymbol;
 		this.rotateClockwise = rotateClockwise;
+		if(!this.level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.MilkyWayBuildup(worldPosition, false));
 		
 		synchronizeWithClient(this.level);
 	}
@@ -307,4 +316,24 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		
 		synchronizeWithClient(this.level);
 	}
+	
+	public void playBuildupSound()
+	{
+		if(this.buildupSound.isPlaying())
+			this.buildupSound.stopSound();
+		this.buildupSound.playSound();
+	}
+
+	@Override
+	public void playRotationSound()
+	{
+		if(!this.spinSound.isPlaying())
+		{
+			this.spinSound.stopSound();
+			this.spinSound.playSound();
+		}
+	}
+
+	@Override
+	public void stopRotationSound(){}
 }

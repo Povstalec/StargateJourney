@@ -3,8 +3,6 @@ package net.povstalec.sgjourney.common.data;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -20,7 +18,6 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.stargate.Connection;
@@ -45,6 +42,8 @@ public class StargateNetwork extends SavedData
 	private static final String CONNECTIONS = "Connections";
 	
 	private static final String EMPTY = StargateJourney.EMPTY;
+	
+	private static final int updateVersion = 4;
 	
 	private MinecraftServer server;
 	private Map<String, Connection> connections = new HashMap<String, Connection>();
@@ -408,6 +407,16 @@ public class StargateNetwork extends SavedData
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
+	protected CompoundTag serialize() //TODO Use this
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		tag.putInt(VERSION, this.version);
+		tag.put(CONNECTIONS, serializeConnections());
+		
+		return tag;
+	}
+	
 	protected CompoundTag serializeConnections()
 	{
 		CompoundTag tag = new CompoundTag();
@@ -418,6 +427,12 @@ public class StargateNetwork extends SavedData
 		});
 		
 		return tag;
+	}
+	
+	protected void deserialize(CompoundTag tag) //TODO Use this
+	{
+		this.version = tag.getInt(VERSION);
+		deserializeConnections(tag);
 	}
 	
 	protected void deserializeConnections(CompoundTag tag)
@@ -431,15 +446,19 @@ public class StargateNetwork extends SavedData
 	//============================================================================================
 	//**************************************Stargate Network**************************************
 	//============================================================================================
-	
-	public static StargateNetwork create()
+	public StargateNetwork(MinecraftServer server)
 	{
-		return new StargateNetwork();
+		this.server = server;
+	}
+	
+	public static StargateNetwork create(MinecraftServer server)
+	{
+		return new StargateNetwork(server);
 	}
 	
 	public static StargateNetwork load(MinecraftServer server, CompoundTag tag)
 	{
-		StargateNetwork data = create();
+		StargateNetwork data = create(server);
 		
 		data.server = server;
 		data.stargateNetwork = tag.copy();
@@ -460,7 +479,7 @@ public class StargateNetwork extends SavedData
     @Nonnull
 	public static StargateNetwork get(Level level)
     {
-        if (level.isClientSide())
+        if(level.isClientSide())
             throw new RuntimeException("Don't access this client-side!");
     	
     	return StargateNetwork.get(level.getServer());
@@ -471,6 +490,6 @@ public class StargateNetwork extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(), FILE_NAME);
+        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
     }
 }

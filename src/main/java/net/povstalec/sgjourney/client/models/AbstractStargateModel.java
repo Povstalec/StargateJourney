@@ -19,6 +19,8 @@ public abstract class AbstractStargateModel
 	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
 	public static final String EMPTY = StargateJourney.EMPTY;
 	
+	protected String stargateName;
+	
 	/*
 	 * X = Width
 	 * Y = Height
@@ -83,6 +85,11 @@ public abstract class AbstractStargateModel
 	protected static final float SYMBOL_RING_Z_OFFSET = 0.5F;
 	protected static final float DIVIDER_X = 1.0F;
 	
+	public AbstractStargateModel(String stargateName)
+	{
+		this.stargateName = stargateName;
+	}
+	
 	protected ResourceLocation getSymbolTexture(AbstractStargateEntity stargate, int symbol)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
@@ -117,6 +124,14 @@ public abstract class AbstractStargateModel
 		}
 	}
 	
+	protected ResourceLocation getChevronTexture(boolean lightsUp, boolean engaged)
+	{
+		String chevron = lightsUp ? this.stargateName + "_chevron" : stargateName + "_chevron_front";
+		String path = "textures/entity/stargate/" + stargateName + "/";
+		String suffix = engaged ? "_lit.png" : ".png";
+		return new ResourceLocation(StargateJourney.MODID, path + chevron + suffix);
+	}
+	
 	private boolean isLocationValid(String location)
 	{
 		String[] split = location.split(":");
@@ -129,8 +144,6 @@ public abstract class AbstractStargateModel
 		
 		return ResourceLocation.isValidPath(split[1]);
 	}
-	
-	public AbstractStargateModel(){}
 	
 	public static void createChevron(PartDefinition chevron)
 	{

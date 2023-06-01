@@ -55,6 +55,10 @@
 	"item.sgjourney.naquadah": "Naquadah vojensk\u00e9 \u00farovn\u011b",
 	"item.sgjourney.liquid_naquadah_bucket": "Kbel\u00edk tekut\u00e9ho naquadahu",
 	"item.sgjourney.liquid_naquadah_bottle": "Lahvi\u010dka tekut\u00e9ho naquadahu",
+	
+	"item.sgjourney.naquadah_rod": "Naquadahov\u00e1 ty\u010d",
+	"item.sgjourney.reaction_chamber": "Reak\u010dn\u00ed komora",
+	"item.sgjourney.plasma_converter": "Plasmov\u00fd p\u0159evad\u011b\u010d",
 
 	"item.sgjourney.control_crystal": "Ovl\u00e1dac\u00ed krystal",
 	"item.sgjourney.large_control_crystal": "Velk\u00fd ovl\u00e1dac\u00ed krystal",
@@ -82,6 +86,7 @@
 	
 	"item.sgjourney.pda": "PDA",
 	"item.sgjourney.zero_point_module": "Modul nulov\u00e9ho bodu",
+	"item.sgjourney.personal_shield_emitter": "Gener\u00e1tor osobn\u00edho \u0161t\u00edtu",
 	
 	"item.sgjourney.syringe": "Injekce",
 	
@@ -138,11 +143,18 @@
 	"solar_system.sgjourney.end": "End",
 	"solar_system.sgjourney.chulak": "Chulak",
 	"solar_system.sgjourney.lantea": "Lantea",
-	"solar_system.ad_astra.lantea": "Glacio",
+	"solar_system.sgjourney.proxima_centauri": "Proxima Centauri",
 	
-	"symbols.sgjourney.milky_way": "Symboly Ml\u00e9\u010dn\u00e9 dr\u00e1hy",
-	"symbols.sgjourney.pegasus": "Symboly Pegasu",
-	"symbols.sgjourney.universal": "Univerz\u00e1ln\u00ed symboly",
+	"symbol_set.sgjourney.milky_way": "Symboly Ml\u00e9\u010dn\u00e9 dr\u00e1hy",
+	"symbol_set.sgjourney.pegasus": "Symboly Pegasu",
+	"symbol_set.sgjourney.universal": "Univerz\u00e1ln\u00ed symboly",
+	
+	"symbols.sgjourney.terra": "Terra",
+	"symbols.sgjourney.abydos": "Abydos",
+	"symbols.sgjourney.chulak": "Chulak",
+	"symbols.sgjourney.lantea": "Lantea",
+	"symbols.sgjourney.nether": "Nether",
+	"symbols.sgjourney.end": "End",
 	
 	"point_of_origin.sgjourney.terra": "Terra",
 	"point_of_origin.sgjourney.tauri": "Tau'ri",
@@ -150,6 +162,7 @@
 	"point_of_origin.sgjourney.abydos": "Abydos",
 	"point_of_origin.sgjourney.kaliem": "Kaliem",
 	"point_of_origin.sgjourney.subido": "Subido",
+	"point_of_origin.sgjourney.centauri": "Centauri",
 	"point_of_origin.sgjourney.destiny": "Destiny",
 	"point_of_origin.sgjourney.universal": "Univerz\u00e1ln\u00ed",
 	"point_of_origin.sgjourney.eye_of_ra": "Oko Ra",

@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
-import net.povstalec.sgjourney.common.data.RingsNetwork;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -61,7 +61,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 	public CompoundTag addNewToBlockEntityList()
 	{
 		CompoundTag blockEntity = super.addNewToBlockEntityList();
-		RingsNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
+		TransporterNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
 		return blockEntity;
 	}
 	
@@ -69,7 +69,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 	public CompoundTag addToBlockEntityList()
 	{
 		CompoundTag blockEntity = super.addToBlockEntityList();
-		RingsNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
+		TransporterNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
 		return blockEntity;
 	}
 
@@ -77,7 +77,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 	public void removeFromBlockEntityList()
 	{
 		super.removeFromBlockEntityList();
-		RingsNetwork.get(level).removeFromNetwork(level, getID());
+		TransporterNetwork.get(level).removeFromNetwork(level, getID());
 	}
 	
 	public boolean canTransport()

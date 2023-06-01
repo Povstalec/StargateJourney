@@ -54,6 +54,12 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 	//============================================================================================
 	
 	@LuaFunction
+	public final int getRecentFeedback()
+	{
+		return stargate.getRecentFeedback().getCode();
+	}
+	
+	@LuaFunction
 	public final boolean isStargateConnected()
 	{
 		return stargate.isConnected();

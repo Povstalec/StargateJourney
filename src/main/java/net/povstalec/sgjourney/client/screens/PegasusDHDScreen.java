@@ -20,7 +20,7 @@ public class PegasusDHDScreen extends AbstractDHDScreen
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 		super.init();
-		this.addRenderableWidget(new DHDBigButton(x + 72, y + 48, (n) -> {menu.engageChevron(0);}, new ResourceLocation(StargateJourney.MODID, "textures/gui/pegasus_dhd_widgets.png")));
+		this.addRenderableWidget(new DHDBigButton(x + 72, y + 48, (n) -> {menu.engageChevron(0); this.onClose();}, new ResourceLocation(StargateJourney.MODID, "textures/gui/pegasus_dhd_widgets.png")));
 	}
 	
 }

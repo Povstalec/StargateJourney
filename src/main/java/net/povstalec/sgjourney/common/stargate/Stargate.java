@@ -84,11 +84,6 @@ public class Stargate
 		ERROR,
 		MAJOR_ERROR;
 		
-		FeedbackType()
-		{
-			
-		}
-		
 		public boolean isError()
 		{
 			return this == ERROR || this == MAJOR_ERROR;
@@ -102,69 +97,70 @@ public class Stargate
 	
 	public enum Feedback
 	{
-		NONE(FeedbackType.INFO, Component.empty()),
-		UNKNOWN_ERROR(FeedbackType.ERROR, createError("unknown", true)),
+		NONE(0, FeedbackType.INFO, Component.empty()),
+		UNKNOWN_ERROR(-1, FeedbackType.ERROR, createError("unknown", true)),
 		
 		// Chevron/Symbol
-		SYMBOL_ENCODED(FeedbackType.INFO, createInfo("symbol_encoded")),
-		SYMBOL_IN_ADDRESS(FeedbackType.ERROR, createError("symbol_in_addres", false)),
-		SYMBOL_OUT_OF_BOUNDS(FeedbackType.ERROR, createError("symbol_out_of_bounds", false)),
+		SYMBOL_ENCODED(1, FeedbackType.INFO, createInfo("symbol_encoded")),
+		SYMBOL_IN_ADDRESS(-2, FeedbackType.ERROR, createError("symbol_in_addres", false)),
+		SYMBOL_OUT_OF_BOUNDS(-3, FeedbackType.ERROR, createError("symbol_out_of_bounds", false)),
 		
 		// Estabilishing Connection
-		CONNECTION_ESTABILISHED_SYSTEM_WIDE(FeedbackType.INFO, createInfo("connection_estabilished.system_wide")),
-		CONNECTION_ESTABILISHED_INTERSTELLAR(FeedbackType.INFO, createInfo("connection_estabilished.interstellar")),
-		CONNECTION_ESTABILISHED_INTERGALACTIC(FeedbackType.INFO, createInfo("connection_estabilished.intergalactic")),
-		INCOPLETE_ADDRESS(FeedbackType.ERROR, createError("incomplete_address", false)),
-		INVALID_ADDRESS(FeedbackType.ERROR, createError("invalid_address", false)),
-		NOT_ENOUGH_POWER(FeedbackType.MAJOR_ERROR, createError("not_enough_power", true)),
-		SELF_OBSTRUCTED(FeedbackType.MAJOR_ERROR, createError("self_obstructed", true)),
-		TARGET_OBSTRUCTED(FeedbackType.ERROR, createError("target_obstructed", false)),
-		SELF_DIAL(FeedbackType.MAJOR_ERROR, createError("self_dial", true)),
-		SAME_SYSTEM_DIAL(FeedbackType.MAJOR_ERROR, createError("same_system_dial", true)),
-		ALREADY_CONNECTED(FeedbackType.ERROR, createError("already_connected", false)),
-		NO_GALAXY(FeedbackType.ERROR, createError("no_galaxy", false)),
-		NO_DIMENSIONS(FeedbackType.ERROR, createError("no_dimensions", false)),
-		NO_STARGATES(FeedbackType.ERROR, createError("no_stargates", false)),
+		CONNECTION_ESTABILISHED_SYSTEM_WIDE(2, FeedbackType.INFO, createInfo("connection_estabilished.system_wide")),
+		CONNECTION_ESTABILISHED_INTERSTELLAR(3, FeedbackType.INFO, createInfo("connection_estabilished.interstellar")),
+		CONNECTION_ESTABILISHED_INTERGALACTIC(4, FeedbackType.INFO, createInfo("connection_estabilished.intergalactic")),
+		INCOPLETE_ADDRESS(-4, FeedbackType.ERROR, createError("incomplete_address", false)),
+		INVALID_ADDRESS(-5, FeedbackType.ERROR, createError("invalid_address", false)),
+		NOT_ENOUGH_POWER(-6, FeedbackType.MAJOR_ERROR, createError("not_enough_power", true)),
+		SELF_OBSTRUCTED(-7, FeedbackType.MAJOR_ERROR, createError("self_obstructed", true)),
+		TARGET_OBSTRUCTED(-8, FeedbackType.ERROR, createError("target_obstructed", false)),
+		SELF_DIAL(-9, FeedbackType.MAJOR_ERROR, createError("self_dial", true)),
+		SAME_SYSTEM_DIAL(-10, FeedbackType.MAJOR_ERROR, createError("same_system_dial", true)),
+		ALREADY_CONNECTED(-11, FeedbackType.ERROR, createError("already_connected", false)),
+		NO_GALAXY(-12, FeedbackType.ERROR, createError("no_galaxy", false)),
+		NO_DIMENSIONS(-13, FeedbackType.ERROR, createError("no_dimensions", false)),
+		NO_STARGATES(-14, FeedbackType.ERROR, createError("no_stargates", false)),
 
-		// Wormhole
-		//TRANSPORT_SUCCESSFUL(FeedbackType.INFO, createInfo("wormhole.transport_successful")),//TODO
-		//ENTITY_DESTROYED(FeedbackType.INFO, createInfo("wormhole.entity_destroyed")),
+		// Wormhole TODO
+		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),
+		//ENTITY_DESTROYED(6, FeedbackType.INFO, createInfo("wormhole.entity_destroyed")),
 		
 		// End Connection
-		CONNECTION_ENDED_BY_DISCONNECT(FeedbackType.INFO, createInfo("connection_ended.disconnect")),
-		CONNECTION_ENDED_BY_POINT_OF_ORIGIN(FeedbackType.INFO, createInfo("connection_ended.point_of_origin")),
-		CONNECTION_ENDED_BY_NETWORK(FeedbackType.INFO, createInfo("connection_ended.stargate_network")),
-		CONNECTION_ENDED_BY_AUTOCLOSE(FeedbackType.INFO, createInfo("connection_ended.autoclose")),
-		EXCEEDED_CONNECTION_TIME(FeedbackType.ERROR, createError("exceeded_connection_time", false)),
-		RAN_OUT_OF_POWER(FeedbackType.ERROR, createError("ran_out_of_power", false)),
-		CONNECTION_REROUTED(FeedbackType.ERROR, createError("connection_rerouted", false)),
-		WRONG_DISCONNECT_SIDE(FeedbackType.ERROR, createError("wrong_disconnect_side", false)),
+		CONNECTION_ENDED_BY_DISCONNECT(7, FeedbackType.INFO, createInfo("connection_ended.disconnect")),
+		CONNECTION_ENDED_BY_POINT_OF_ORIGIN(8, FeedbackType.INFO, createInfo("connection_ended.point_of_origin")),
+		CONNECTION_ENDED_BY_NETWORK(9, FeedbackType.INFO, createInfo("connection_ended.stargate_network")),
+		CONNECTION_ENDED_BY_AUTOCLOSE(10, FeedbackType.INFO, createInfo("connection_ended.autoclose")),
+		EXCEEDED_CONNECTION_TIME(-15, FeedbackType.ERROR, createError("exceeded_connection_time", false)),
+		RAN_OUT_OF_POWER(-16, FeedbackType.ERROR, createError("ran_out_of_power", false)),
+		CONNECTION_REROUTED(-17, FeedbackType.ERROR, createError("connection_rerouted", false)),
+		WRONG_DISCONNECT_SIDE(-18, FeedbackType.ERROR, createError("wrong_disconnect_side", false)),
 
-		STARGATE_DESTROYED(FeedbackType.ERROR, createError("stargate_destroyed", false)),
-		TARGET_STARGATE_DOES_NOT_EXIST(FeedbackType.ERROR, createError("target_stargate_does_not_exist", false)),
+		STARGATE_DESTROYED(-19, FeedbackType.ERROR, createError("stargate_destroyed", false)),
+		TARGET_STARGATE_DOES_NOT_EXIST(-20, FeedbackType.ERROR, createError("target_stargate_does_not_exist", false)),
 		
 		// Universe
 		
 		// Milky Way
-		CHEVRON_RAISED(FeedbackType.INFO, createInfo("chevron_raised")),
-		CHEVRON_LOWERED(FeedbackType.INFO, createInfo("chevron_lowered")),
-		CHEVRON_ALREADY_RAISED(FeedbackType.ERROR, createError("chevron_already_raised", false)),
-		CHEVRON_ALREADY_LOWERED(FeedbackType.ERROR, createError("chevron_already_lowered", false));
+		CHEVRON_RAISED(11, FeedbackType.INFO, createInfo("chevron_raised")),
+		CHEVRON_ALREADY_RAISED(-21, FeedbackType.ERROR, createError("chevron_already_raised", false)),
+		CHEVRON_ALREADY_LOWERED(-22, FeedbackType.ERROR, createError("chevron_already_lowered", false));
 		
 		// Pegasus
 		
+		private int code;
 		private final FeedbackType type;
 		private final Component feedbackMessage;
 		
-		private Feedback(FeedbackType type, Component feedbackMessage)
+		private Feedback(int code, FeedbackType type, Component feedbackMessage)
 		{
+			this.code = code;
 			this.type = type;
 			this.feedbackMessage = feedbackMessage;
 		}
 		
 		public int getCode()
 		{
-			return this.ordinal();
+			return this.code;
 		}
 		
 		public Component getFeedbackMessage()

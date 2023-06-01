@@ -23,6 +23,10 @@
 		{
 			"solar_system": "sgjourney:end",
 			"address": [13, 24, 2, 19, 3, 30]
+		},
+		{
+			"solar_system": "sgjourney:proxima_centauri",
+			"address": [26, 20, 4, 36, 9, 27]
 		}
 	]
 }

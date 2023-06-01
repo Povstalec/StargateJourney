@@ -25,8 +25,8 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public int animationTicks = 0;
 	
 	protected static final String UNIVERSAL = StargateJourney.MODID + ":universal";
-	private static final String POINT_OF_ORIGIN = UNIVERSAL;
-	private static final String SYMBOLS = UNIVERSAL;
+	protected static final String POINT_OF_ORIGIN = UNIVERSAL;
+	protected static final String SYMBOLS = UNIVERSAL;
 
 	public int oldRotation = 0;
 	public int rotation = 0;
@@ -34,9 +34,11 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public int[] addressBuffer = new int[0];
 	public int symbolBuffer = 0;
 	
+	//private UniverseStargateRingSound spinSound;
+	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.UNIVERSE_STARGATE.get(), pos, state, Stargate.Gen.GEN_1);
+		super(BlockEntityInit.UNIVERSE_STARGATE.get(), pos, state, Stargate.Gen.GEN_1, 1);
 	}
 	
 	@Override
@@ -117,9 +119,25 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 				return Stargate.Feedback.INCOPLETE_ADDRESS;
 		}
 		
+		if(addressBuffer.length == getAddress().length)
+		{
+			/*if(spinSound != null)
+				spinSound.stopSound();
+			spinSound = new UniverseStargateRingSound();
+			Minecraft.getInstance().getSoundManager().play(spinSound);*/
+		}
+		
 		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
 		return Stargate.Feedback.SYMBOL_ENCODED;
+	}
+	
+	@Override
+	protected Stargate.Feedback lockPrimaryChevron()
+	{
+		/*if(spinSound != null)
+			spinSound.stopSound();*/
+		return super.lockPrimaryChevron();
 	}
 	
 	@Override
@@ -127,7 +145,19 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
 		symbolBuffer++;
 		animationTicks++;
-		return super.encodeChevron(symbol);
+		
+		/*if(spinSound != null)
+			spinSound.stopSound();*/
+		
+		Stargate.Feedback feedback = super.encodeChevron(symbol);
+		
+		if(addressBuffer.length > getAddress().length)
+		{
+			/*spinSound = new UniverseStargateRingSound();
+			Minecraft.getInstance().getSoundManager().play(spinSound);*/
+		}
+		
+		return feedback;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, UniverseStargateEntity stargate)
@@ -145,9 +175,8 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		{
 			stargate.rotateToDefault();
 		}
-		else if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), 
-					new ClientboundUniverseStargateUpdatePacket(stargate.worldPosition, stargate.symbolBuffer, stargate.addressBuffer, stargate.animationTicks, stargate.rotation, stargate.oldRotation));
+		else
+			stargate.synchronizeWithClient(level);
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 	}
@@ -201,16 +230,14 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		
 		if(isCurrentSymbol(desiredSymbol))
 		{
-			if(!level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
+			synchronizeWithClient(this.level);
 			
 			if(isCurrentSymbol(0))
 				this.lockPrimaryChevron();
 			else
 				this.encodeChevron(desiredSymbol);
 			
-			if(!level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
+			synchronizeWithClient(this.level);
 		}
 		else
 			rotate(getBestRotationDirection(desiredSymbol));
@@ -221,10 +248,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		oldRotation = rotation;
 		
 		if(rotation == 0)
-		{
-			if(!level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
-		}
+			synchronizeWithClient(this.level);
 		else
 			rotate(getBestRotationDirection(0.0D, (double) rotation));
 	}
@@ -265,6 +289,27 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		symbolBuffer = 0;
 		addressBuffer = new int[0];
 		return super.resetStargate(feedback);
+	}
+	
+	private void synchronizeWithClient(Level level)
+	{
+		if(level.isClientSide())
+			return;
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
+	}
+
+	@Override
+	public void playRotationSound()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopRotationSound()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

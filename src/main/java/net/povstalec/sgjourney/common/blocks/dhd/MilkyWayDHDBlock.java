@@ -20,13 +20,20 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
@@ -40,26 +47,46 @@ import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
-public class MilkyWayDHDBlock extends AbstractDHDBlock
+public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterloggedBlock
 {
+	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+	
 	public MilkyWayDHDBlock(Properties properties)
 	{
 		super(properties);
+		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
+	}
+	
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
+	{
+		state.add(FACING).add(WATERLOGGED);
 	}
 	
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
-		MilkyWayDHDEntity dhd = new MilkyWayDHDEntity(pos, state);
-		
-		return dhd;
+		return new MilkyWayDHDEntity(pos, state);
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext context)
+	{
+		FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+		return super.getStateForPlacement(context).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
+	}
+
+	@Override
+	public FluidState getFluidState(BlockState state)
+	{
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 	
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if(!level.isClientSide) 
+        if(!level.isClientSide()) 
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			

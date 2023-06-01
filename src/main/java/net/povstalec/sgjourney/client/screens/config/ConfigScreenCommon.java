@@ -33,7 +33,6 @@ public class ConfigScreenCommon extends Screen
 				Component.translatable("gui.sgjourney.false")).withInitialValue(StargateJourneyConfig.disable_energy_use.get()).create(this.width / 2 - 100, l + 24, 200, 20, Component.translatable("gui.sgjourney.disable_energy_use"), (cycleButton, isTrue)->
 				{
 					StargateJourneyConfig.disable_energy_use.set(isTrue);
-					StargateJourneyConfig.disable_energy_use.save();
 				}));
 
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_BACK, 

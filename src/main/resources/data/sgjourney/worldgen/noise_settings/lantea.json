@@ -1,5 +1,5 @@
 {
-  "sea_level": 128,
+  "sea_level": 256,
   "disable_mob_generation": false,
   "aquifers_enabled": false,
   "ore_veins_enabled": false,
@@ -14,8 +14,8 @@
     }
   },
   "noise": {
-    "min_y": 0,
-    "height": 256,
+    "min_y": -64,
+    "height": 512,
     "size_horizontal": 2,
     "size_vertical": 2
   },
@@ -35,8 +35,8 @@
       "type": "minecraft:add",
       "argument1": {
         "type": "minecraft:y_clamped_gradient",
-        "from_y": 40,
-        "to_y": 80,
+        "from_y": -24,
+        "to_y": 32,
         "from_value": 2,
         "to_value": -2
       },

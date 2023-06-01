@@ -3,7 +3,9 @@ package net.povstalec.sgjourney.common.init;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -11,6 +13,21 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class TagInit
 {
+	public class Items
+	{
+		public static final TagKey<Item> REACTION_HEATER = tag("reaction_heater");
+		
+		private static TagKey<Item> tag(String name)
+		{
+            return ItemTags.create(new ResourceLocation(StargateJourney.MODID, name));
+        }
+
+        private static TagKey<Item> forgeTag(String name)
+        {
+            return ItemTags.create(new ResourceLocation("forge", name));
+        }
+	}
+	
 	public class Blocks
 	{
 		public static final TagKey<Block> PLASMA_FLAMMABLE = tag("plasma_flammable");

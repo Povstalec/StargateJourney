@@ -1,5 +1,5 @@
 {
 	"name": "point_of_origin.sgjourney.wither",
-	"texture": "sgjourney:milky_way/points_of_origin/wither.png",
+	"texture": "sgjourney:milky_way/minecraft/points_of_origin/wither.png",
 	"generates_randomly": true
 }

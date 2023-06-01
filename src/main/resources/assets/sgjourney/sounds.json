@@ -1,4 +1,15 @@
 {
+	"universe_ring_spin":
+	{
+		"subtitle": "sounds.sgjourney.universe_ring_spin",
+		"sounds":
+		[
+			{
+				"name": "sgjourney:universe_ring_spin",
+				"stream": false
+			}
+		]
+	},
 	"universe_chevron_engage":
 	{
 		"subtitle": "sounds.sgjourney.universe_chevron_engage",
@@ -17,6 +28,23 @@
 			"sgjourney:universe_dial_fail_1",
 			"sgjourney:universe_dial_fail_2",
 			"sgjourney:universe_dial_fail_3"
+		]
+	},
+	
+	"milky_way_ring_spin_start":
+	{
+		"subtitle": "sounds.sgjourney.milky_way_ring_spin_start",
+		"sounds":
+		[
+			"sgjourney:milky_way_ring_spin_start"
+		]
+	},
+	"milky_way_ring_spin":
+	{
+		"subtitle": "sounds.sgjourney.milky_way_ring_spin",
+		"sounds":
+		[
+			"sgjourney:milky_way_ring_spin"
 		]
 	},
 	"milky_way_chevron_encode":
@@ -85,6 +113,15 @@
 		"sounds":
 		[
 			"sgjourney:wormhole_enter"
+		]
+	},
+	
+	"wormhole_idle":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_idle",
+		"sounds":
+		[
+			"sgjourney:wormhole_idle"
 		]
 	},
 	

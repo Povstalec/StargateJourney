@@ -10,12 +10,13 @@ import net.povstalec.sgjourney.common.block_entities.energy_gen.NaquadahGenerato
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.symbols.SymbolBlockEntity;
 
-@SuppressWarnings("resource")
 public class ClientAccess
 {
+	protected static Minecraft minecraft = Minecraft.getInstance();
+	
     public static void updateSymbol(BlockPos pos, String symbol)
     {
-        final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+        final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final SymbolBlockEntity symbolEntity)
         {
@@ -25,7 +26,7 @@ public class ClientAccess
     
     public static void updateBasicInterface(BlockPos pos, long energy)
     {
-    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final BasicInterfaceEntity basicInterface)
         {
@@ -35,7 +36,7 @@ public class ClientAccess
     
     public static void updateRings(BlockPos pos, int emptySpace, int transportHeight, int transportLight)
     {
-        final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+        final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final TransportRingsEntity rings)
         {
@@ -47,7 +48,7 @@ public class ClientAccess
     
     public static void updateRingPanel(BlockPos pos, int ringsFound, BlockPos[] ringsPos)
     {
-        final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+        final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final RingPanelEntity panel)
         {
@@ -58,7 +59,7 @@ public class ClientAccess
     
     public static void updateStargate(BlockPos pos, int[] address, boolean dialingOut, int tick, String pointOfOrigin, String symbols)
     {
-    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final AbstractStargateEntity stargate)
         {
@@ -72,7 +73,7 @@ public class ClientAccess
     
     public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int animationTicks, int rotation, int oldRotation)
     {
-    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final UniverseStargateEntity stargate)
         {
@@ -86,7 +87,7 @@ public class ClientAccess
     
     public static void updateMilkyWayStargate(BlockPos pos, int rotation, int oldRotation, boolean isChevronRaised, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredSymbol)
     {
-    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final MilkyWayStargateEntity stargate)
         {
@@ -102,7 +103,7 @@ public class ClientAccess
     
     public static void updatePegasusStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int currentSymbol)
     {
-    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final PegasusStargateEntity stargate)
         {
@@ -125,7 +126,7 @@ public class ClientAccess
 
     public static void updateNaquadahGenerator(BlockPos pos, int reactionProgress, long energy)
     {
-    	final BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final NaquadahGeneratorEntity generator)
         {

@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
@@ -64,7 +65,7 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
 		boolean hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
@@ -107,13 +108,13 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 			if(location.toString().equals("sgjourney:empty"))
 				symbols = "Empty";
 			else if(symbolsRegistry.containsKey(location))
-				symbols = symbolsRegistry.get(location).getName();
+				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
 			else
 				symbols = "Error";
 		}
 		
-        tooltipComponents.add(Component.literal("PoO: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
-        tooltipComponents.add(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));
+        tooltipComponents.add(Component.literal("PoO: ").append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+        tooltipComponents.add(Component.literal("Symbols: ").append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 }

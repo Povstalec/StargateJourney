@@ -1,6 +1,6 @@
 {
 	"name": "solar_system.sgjourney.nether",
-	"symbols": "sgjourney:milky_way",
+	"symbols": "sgjourney:nether",
 	"extragalactic_address": [1, 35, 6, 31, 15, 28, 32],
 	"point_of_origin": "sgjourney:wither",
 	"dimensions":

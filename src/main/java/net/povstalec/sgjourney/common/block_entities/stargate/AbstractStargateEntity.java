@@ -24,6 +24,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.StargateSoundWrapper;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
@@ -35,6 +36,7 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Addressing;
 import net.povstalec.sgjourney.common.stargate.Dialing;
@@ -47,8 +49,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
 	// Basic Info
 	private static Stargate.Gen generation;
+	private int network;
 	
 	// Used during gameplay
+	private Stargate.Feedback recentFeedback = Stargate.Feedback.NONE;
 	private int animationTick = 0;
 	private boolean isPrimaryChevronEngaged = false;
 	private boolean dialingOut = false;
@@ -64,14 +68,17 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	private boolean hasDHD = false;
 	private boolean advancedProtocolsEnabled = false;
 	
+	protected StargateSoundWrapper.WormholeIdle wormholeIdleSound = new StargateSoundWrapper.WormholeIdle(this);
+	
 	//private Stargate.FilterType filter = Stargate.FilterType.NONE;
 	//private ListTag whitelist;
 	//private ListTag blacklist;
 
-	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen)
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
 	{
 		super(blockEntity, pos, state, SGJourneyBlockEntity.Type.STARGATE);
 		generation = gen;
+		this.network = defaultNetwork;
 	}
 	
 	@Override
@@ -82,6 +89,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		dialingOut = nbt.getBoolean("DialingOut");
 		timesOpened = nbt.getInt("TimesOpened");
 		address = nbt.getIntArray("Address");
+		address = nbt.getIntArray("Address");
+		network = nbt.getInt("Network");
 		
 		connectionID = nbt.getString("ConnectionID");
 		advancedProtocolsEnabled = nbt.getBoolean("AdvancedProtocolsEnabled");
@@ -94,6 +103,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		nbt.putBoolean("DialingOut", dialingOut);
 		nbt.putInt("TimesOpened", timesOpened);
 		nbt.putIntArray("Address", address);
+		nbt.putInt("Network", network);
 		
 		nbt.putString("ConnectionID", connectionID);
 		nbt.putBoolean("AdvancedProtocolsEnabled", advancedProtocolsEnabled);
@@ -155,12 +165,12 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			return Stargate.Feedback.NONE;
 		
 		if(Addressing.addressContainsSymbol(getAddress(), symbol))
-			return Stargate.Feedback.SYMBOL_ENCODED;
+			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		
 		if(symbol == 0)
-			return lockPrimaryChevron();
+			return setRecentFeedback(lockPrimaryChevron());
 		else
-			return encodeChevron(symbol);
+			return setRecentFeedback(encodeChevron(symbol));
 	}
 	
 	protected Stargate.Feedback encodeChevron(int symbol)
@@ -187,7 +197,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			{
 				setPrimaryChevronEndaged(true);
 				engageChevron();
-				return engageStargate();
+				return setRecentFeedback(engageStargate());
 			}
 			else
 				return resetStargate(Stargate.Feedback.SELF_OBSTRUCTED);
@@ -202,9 +212,18 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 	}
 	
-	private void engageChevron()
+	protected void engageChevron()
 	{
 		level.playSound((Player)null, worldPosition, chevronEngageSound(), SoundSource.BLOCKS, 0.25F, 1F);
+	}
+	
+	public abstract void playRotationSound();
+	
+	public abstract void stopRotationSound();
+	
+	public void playWormholeIdleSound()
+	{
+		wormholeIdleSound.playSound();
 	}
 	
 	public Stargate.Feedback engageStargate()
@@ -247,7 +266,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		setChanged();
 		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ());
-		return feedback;
+		return setRecentFeedback(feedback);
 	}
 	
 	public Stargate.Feedback disconnectStargate(Stargate.Feedback feedback)
@@ -282,6 +301,17 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//============================================================================================
 	//******************************************Symbols*******************************************
 	//============================================================================================
+	
+	public Stargate.Feedback setRecentFeedback(Stargate.Feedback feedback)
+	{
+		this.recentFeedback = feedback;
+		return getRecentFeedback();
+	}
+	
+	public Stargate.Feedback getRecentFeedback()
+	{
+		return this.recentFeedback;
+	}
 	
 	/**
 	 * Sets the Stargate's point of origin based on the dimension
@@ -627,5 +657,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			return;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundStargateUpdatePacket(stargate.worldPosition, stargate.address, stargate.dialingOut, stargate.animationTick, stargate.pointOfOrigin, stargate.symbols));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientBoundSoundPackets.IdleWormhole(stargate.worldPosition, false));
     }
 }

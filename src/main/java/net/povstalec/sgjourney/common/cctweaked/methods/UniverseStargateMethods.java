@@ -24,13 +24,12 @@ public class UniverseStargateMethods
 			if(desiredSymbol < 0 || desiredSymbol > 35)
 				throw new LuaException("Symbol out of bounds <0, 35>");
 			
-			context.executeMainThreadTask(() ->
+			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				stargate.engageSymbol(desiredSymbol);
-				return null;
+				return new Object[] {stargate.engageSymbol(desiredSymbol)};
 			});
 			
-			return MethodResult.of();
+			return result;
 		}
 	}
 }

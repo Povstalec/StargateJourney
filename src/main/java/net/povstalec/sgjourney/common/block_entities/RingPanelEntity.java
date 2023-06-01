@@ -24,7 +24,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
-import net.povstalec.sgjourney.common.data.RingsNetwork;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -146,7 +146,7 @@ public class RingPanelEntity extends BlockEntity
 	{
 		String connected = connectToRings();
 		
-		CompoundTag tag = RingsNetwork.get(level).get6ClosestRingsFromTag(level.dimension().location().toString(), pos, maxDistance, connected);
+		CompoundTag tag = TransporterNetwork.get(level).get6ClosestRingsFromTag(level.dimension().location().toString(), pos, maxDistance, connected);
 		List<String> tagList = tag.getAllKeys().stream().collect(Collectors.toList());
 		
 		ringsFound = tag.size();
@@ -168,7 +168,7 @@ public class RingPanelEntity extends BlockEntity
 	
 	public String connectToRings()
 	{
-		CompoundTag rings = RingsNetwork.get(level).getClosestRingsFromTag(this.level.dimension().location().toString(), this.getBlockPos(), new CompoundTag(), 32000);
+		CompoundTag rings = TransporterNetwork.get(level).getClosestRingsFromTag(this.level.dimension().location().toString(), this.getBlockPos(), new CompoundTag(), 32000);
 		
 		if(rings.isEmpty())
 			return null;

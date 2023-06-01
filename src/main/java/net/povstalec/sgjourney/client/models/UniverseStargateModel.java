@@ -34,6 +34,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 	
 	public UniverseStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
 	{
+		super("universe");
 		this.ring = ring;
 		this.symbolRing = symbolRing;
 		this.dividers = dividers;

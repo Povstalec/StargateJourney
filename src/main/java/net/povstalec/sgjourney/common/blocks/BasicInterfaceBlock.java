@@ -195,12 +195,14 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 	{
 		switch(state.getValue(MODE))
 		{
+		case RING_ROTATION:
+			return getRotationOutput(blockEntity);
 		case CHEVRONS_ACTIVE:
 			return getChevronOutput(blockEntity);
 		case WORMHOLE_ACTIVE:
 			return getConnectionOutput(blockEntity);
 		default:
-			return getRotationOutput(blockEntity);
+			return 0;
 		}
 	}
 	

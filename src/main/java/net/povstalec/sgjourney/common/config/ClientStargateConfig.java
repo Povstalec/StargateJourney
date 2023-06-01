@@ -4,117 +4,50 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ClientStargateConfig
 {
-	public static ForgeConfigSpec.BooleanValue use_movie_stargate_model;
-	public static ForgeConfigSpec.BooleanValue milky_way_stargate_back_lights_up;
-	public static ForgeConfigSpec.BooleanValue pegasus_stargate_back_lights_up;
-	public static ForgeConfigSpec.BooleanValue tollan_stargate_back_lights_up;
+	public static SGJourneyConfigValue.BooleanValue unique_symbols;
+	public static SGJourneyConfigValue.BooleanValue use_movie_stargate_model;
+	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
+	public static SGJourneyConfigValue.BooleanValue pegasus_stargate_back_lights_up;
 
-	public static ForgeConfigSpec.IntValue universe_r;
-	public static ForgeConfigSpec.IntValue universe_g;
-	public static ForgeConfigSpec.IntValue universe_b;
-
-	public static ForgeConfigSpec.IntValue milky_way_r;
-	public static ForgeConfigSpec.IntValue milky_way_g;
-	public static ForgeConfigSpec.IntValue milky_way_b;
-
-	public static ForgeConfigSpec.IntValue pegasus_r;
-	public static ForgeConfigSpec.IntValue pegasus_g;
-	public static ForgeConfigSpec.IntValue pegasus_b;
-
-	public static ForgeConfigSpec.IntValue classic_r;
-	public static ForgeConfigSpec.IntValue classic_g;
-	public static ForgeConfigSpec.IntValue classic_b;
-
-	public static ForgeConfigSpec.IntValue tollan_r;
-	public static ForgeConfigSpec.IntValue tollan_g;
-	public static ForgeConfigSpec.IntValue tollan_b;
+	public static SGJourneyConfigValue.RGBAValue universe_rgba;
+	public static SGJourneyConfigValue.RGBAValue milky_way_rgba;
+	public static SGJourneyConfigValue.RGBAValue pegasus_rgba;
+	public static SGJourneyConfigValue.RGBAValue classic_rgba;
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
 		client.comment("Stargate Journey Client Stargate Config");
 		
-		use_movie_stargate_model = client
-				.comment("Decide if Milky Way Stargate should use the Movie Stargate model")
-				.define("client.use_movie_stargate_model", false);
+		unique_symbols = new SGJourneyConfigValue.BooleanValue(client, "client.unique_symbols", 
+				false, 
+				"If true Solar Systems will use unique Symbols");
 		
-		milky_way_stargate_back_lights_up = client
-				.comment("Decide if Chevrons on the back of Milky Way Stargate should light up")
-				.define("client.milky_way_stargate_back_lights_up", false);
+		use_movie_stargate_model = new SGJourneyConfigValue.BooleanValue(client, "client.use_movie_stargate_model", 
+				false, 
+				"Decide if Milky Way Stargate should use the Movie Stargate model");
 		
-		pegasus_stargate_back_lights_up = client
-				.comment("Decide if Chevrons on the back of Pegasus Stargate should light up")
-				.define("client.pegasus_stargate_back_lights_up", true);
+		milky_way_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.milky_way_stargate_back_lights_up", 
+				false, 
+				"Decide if Chevrons on the back of Milky Way Stargate should light up");
+		
+		pegasus_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.pegasus_stargate_back_lights_up", 
+				true, 
+				"Decide if Chevrons on the back of Pegasus Stargate should light up");
+		
+		universe_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.universe_stargate", 
+				255, 255, 255, 255, 
+				"The RGBA values in Universe Stargate's Event Horizon");
 
-		tollan_stargate_back_lights_up = client
-				.comment("Decide if Chevrons on the back of Tollan Stargate should light up")
-				.define("client.tollan_stargate_back_lights_up", true);
+		milky_way_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.milky_way_stargate", 
+				55, 55, 255, 255, 
+				"The RGBA values in Milky Way Stargate's Event Horizon");
 
-		
-		universe_r = client
-				.comment("The amount of Red in Universe Stargate's Event Horizon")
-				.defineInRange("client.universe_r", 225, 0, 255);
-		
-		universe_g = client
-				.comment("The amount of Green in Universe Stargate's Event Horizon")
-				.defineInRange("client.universe_g", 225, 0, 255);
-		
-		universe_b = client
-				.comment("The amount of Blue in Universe Stargate's Event Horizon")
-				.defineInRange("client.universe_b", 255, 0, 255);
-		
-		
-		
-		milky_way_r = client
-				.comment("The amount of Red in Milky Way Stargate's Event Horizon")
-				.defineInRange("client.milky_way_r", 55, 0, 255);
-		
-		milky_way_g = client
-				.comment("The amount of Green in Milky Way Stargate's Event Horizon")
-				.defineInRange("client.milky_way_g", 55, 0, 255);
-		
-		milky_way_b = client
-				.comment("The amount of Blue in Milky Way Stargate's Event Horizon")
-				.defineInRange("client.milky_way_b", 255, 0, 255);
-		
-		
-		
-		pegasus_r = client
-				.comment("The amount of Red in Pegasus Stargate's Event Horizon")
-				.defineInRange("client.pegasus_r", 55, 0, 255);
-		
-		pegasus_g = client
-				.comment("The amount of Green in Pegasus Stargate's Event Horizon")
-				.defineInRange("client.pegasus_g", 55, 0, 255);
-		
-		pegasus_b = client
-				.comment("The amount of Blue in Pegasus Stargate's Event Horizon")
-				.defineInRange("client.pegasus_b", 255, 0, 255);
-		
-		
-		
-		classic_r = client
-				.comment("The amount of Red in Classic Stargate's Event Horizon")
-				.defineInRange("client.classic_r", 55, 0, 255);
-		
-		classic_g = client
-				.comment("The amount of Green in Classic Stargate's Event Horizon")
-				.defineInRange("client.classic_g", 55, 0, 255);
-		
-		classic_b = client
-				.comment("The amount of Blue in Classic Stargate's Event Horizon")
-				.defineInRange("client.classic_b", 255, 0, 255);
+		pegasus_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.pegasus_stargate", 
+				55, 55, 255, 255, 
+				"The RGBA values in Pegasus Stargate's Event Horizon");
 
-
-		tollan_r = client
-				.comment("The amount of Red in Tollan Stargate's Event Horizon")
-				.defineInRange("client.tollan_r", 55, 0, 255);
-
-		tollan_g = client
-				.comment("The amount of Green in Tollan Stargate's Event Horizon")
-				.defineInRange("client.tollan_g", 55, 0, 255);
-
-		tollan_b = client
-				.comment("The amount of Blue in Tollan Stargate's Event Horizon")
-				.defineInRange("client.tollan_b", 255, 0, 255);
+		classic_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.classic_stargate", 
+				55, 55, 255, 255, 
+				"The RGBA values in Classic Stargate's Event Horizon");
 	}
 }

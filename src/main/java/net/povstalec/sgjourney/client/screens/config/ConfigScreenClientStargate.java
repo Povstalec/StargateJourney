@@ -3,13 +3,11 @@ package net.povstalec.sgjourney.client.screens.config;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.povstalec.sgjourney.client.screens.config.ConfigList.BooleanConfigEntry;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 
 public class ConfigScreenClientStargate extends Screen
 {
@@ -39,19 +37,12 @@ public class ConfigScreenClientStargate extends Screen
 		
 		this.configList = new ConfigList(minecraft, this.width, this.height, 
 				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
-		this.configList.add();
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.unique_symbols"), this.width, ClientStargateConfig.unique_symbols));
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.use_movie_stargate_model"), this.width, ClientStargateConfig.use_movie_stargate_model));
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.milky_way_stargate_back_lights_up"), this.width, ClientStargateConfig.milky_way_stargate_back_lights_up));
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.pegasus_stargate_back_lights_up"), this.width, ClientStargateConfig.pegasus_stargate_back_lights_up));
 		
 		this.addWidget(this.configList);
-
-		/*int l = this.height / 4 + 48;
-		this.addRenderableWidget(CycleButton.booleanBuilder(Component.translatable("gui.sgjourney.true"),
-				Component.translatable("gui.sgjourney.false")).withInitialValue(ClientStargateConfig.use_movie_stargate_model.get()).create(this.width / 2 - 100, l, 200, 20, 
-				Component.translatable("gui.sgjourney.use_movie_stargate_model"), 
-				(cycleButton, isTrue)->
-				{
-					ClientStargateConfig.use_movie_stargate_model.set(isTrue);
-					ClientStargateConfig.use_movie_stargate_model.save();
-				}));*/
 
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_BACK, 
 				(button) -> this.minecraft.setScreen(this.parentScreen))

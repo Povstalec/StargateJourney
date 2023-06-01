@@ -2,7 +2,6 @@ package net.povstalec.sgjourney;
 
 import java.util.function.BiFunction;
 
-import net.povstalec.sgjourney.client.render.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -18,9 +17,11 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -29,6 +30,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.povstalec.sgjourney.client.Layers;
+import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.PegasusStargateRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.SandstoneSymbolRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.StoneSymbolRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
+import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
+import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
+import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
+import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
 import net.povstalec.sgjourney.client.screens.BasicInterfaceScreen;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystalInterfaceScreen;
@@ -61,6 +73,7 @@ import net.povstalec.sgjourney.common.stargate.AddressTable;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.SolarSystem;
+import net.povstalec.sgjourney.common.stargate.SymbolSet;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 
@@ -69,6 +82,8 @@ public class StargateJourney
 {
     public static final String MODID = "sgjourney";
     public static final String EMPTY = MODID + ":empty";
+    
+    public static final String STELLAR_VIEW_MODID = "stellarview";
     
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -93,6 +108,7 @@ public class StargateJourney
         
         eventBus.addListener((DataPackRegistryEvent.NewRegistry event) -> 
         {
+            event.dataPackRegistry(SymbolSet.REGISTRY_KEY, SymbolSet.CODEC, SymbolSet.CODEC);
             event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
             event.dataPackRegistry(PointOfOrigin.REGISTRY_KEY, PointOfOrigin.CODEC, PointOfOrigin.CODEC);
             event.dataPackRegistry(SolarSystem.REGISTRY_KEY, SolarSystem.CODEC, SolarSystem.CODEC);
@@ -159,6 +175,8 @@ public class StargateJourney
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	
+        	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+        	
         	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_SYMBOL.get(), SandstoneSymbolRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), StoneSymbolRenderer::new);
         	
@@ -166,9 +184,21 @@ public class StargateJourney
 
         	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
-            BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
+        	BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
-            BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
+        }
+        
+        @SubscribeEvent
+        public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
+        {
+        	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
+        		StellarViewRendering.registerStellarViewEffects(event);
+        	else
+        	{
+        		event.register(SGJourneyDimensionSpecialEffects.ABYDOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Abydos());
+            	event.register(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, new SGJourneyDimensionSpecialEffects.Chulak());
+            	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());
+        	}
         }
     }
     

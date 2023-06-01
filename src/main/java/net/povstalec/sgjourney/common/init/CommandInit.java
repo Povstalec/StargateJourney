@@ -16,7 +16,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.data.RingsNetwork;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 
@@ -175,7 +175,7 @@ public class CommandInit
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Transport Rings"));
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
 		
-		CompoundTag ringsNetwork = RingsNetwork.get(level).getRings(dimension);
+		CompoundTag ringsNetwork = TransporterNetwork.get(level).getRings(dimension);
 		System.out.println(ringsNetwork);
 		List<String> ringsNList = ringsNetwork.getAllKeys().stream().toList();
 		for(int i = 0; i < ringsNList.size(); i++)

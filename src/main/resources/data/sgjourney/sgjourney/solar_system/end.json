@@ -1,6 +1,6 @@
 {
 	"name": "solar_system.sgjourney.end",
-	"symbols": "sgjourney:pegasus",
+	"symbols": "sgjourney:end",
 	"extragalactic_address": [18, 24, 8, 16, 7, 35, 30],
 	"point_of_origin": "sgjourney:ender_eye",
 	"dimensions":

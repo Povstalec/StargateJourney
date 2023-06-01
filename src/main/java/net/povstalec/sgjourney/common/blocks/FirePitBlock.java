@@ -40,7 +40,7 @@ public class FirePitBlock extends Block
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
-		if(!level.isClientSide)
+		if(!level.isClientSide())
 		{
 			if(state.getValue(LIT) == true && player.getItemInHand(hand).isEmpty())
 			{
@@ -88,8 +88,7 @@ public class FirePitBlock extends Block
 	{
 		return canSupportCenter(reader, pos.below(), Direction.UP);
 	}
-
-	@OnlyIn(Dist.CLIENT)
+	
 	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
 	      double d0 = (double)pos.getX() + 0.5D;
 	      double d1 = (double)pos.getY() + 0.3D;

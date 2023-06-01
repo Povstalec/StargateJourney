@@ -28,7 +28,7 @@ minecraft {
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'official', version: '1.19.3'
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -128,6 +128,7 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    maven { url 'https://jitpack.io' }
     maven {
     url "https://squiddev.cc/maven/"
     content {
@@ -173,6 +174,9 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
+    compileOnly(fg.deobf('com.github.Povstalec:StellarView:fcfdd1ce8a'))
+    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:fcfdd1ce8a'))
+    
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
@@ -187,10 +191,10 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:rftools-base-326041:4389811")
     //runtimeOnly fg.deobf("curse.maven:rftools-power-290209:4367297")
     
-    //runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
-    //runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
-    //runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
-   //runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
+    runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
+    runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
+    runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
+	runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
