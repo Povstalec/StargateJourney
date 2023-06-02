@@ -32,7 +32,7 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER), r, g, b);
+		this.wormholeModel = new WormholeModel(r, g, b);
 		this.stargateModel = new TollanStargateModel(
 				context.bakeLayer(Layers.TOLLAN_RING_LAYER),
 				context.bakeLayer(Layers.TOLLAN_SYMBOL_RING_LAYER),

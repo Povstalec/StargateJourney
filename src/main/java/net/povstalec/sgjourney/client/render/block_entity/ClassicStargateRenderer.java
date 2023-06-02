@@ -29,7 +29,7 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer implements
 	public ClassicStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER), r, g, b);
+		this.wormholeModel = new WormholeModel(r, g, b);
 		this.stargateModel = new ClassicStargateModel(
 				context.bakeLayer(Layers.CLASSIC_OUTER_RING_LAYER), 
 				context.bakeLayer(Layers.CLASSIC_INNER_RING_LAYER), 

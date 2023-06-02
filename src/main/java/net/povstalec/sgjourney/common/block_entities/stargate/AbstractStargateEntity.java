@@ -48,25 +48,25 @@ import net.povstalec.sgjourney.common.stargate.Wormhole;
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
 	// Basic Info
-	private static Stargate.Gen generation;
-	private int network;
+	protected static Stargate.Gen generation;
+	protected int network;
 	
 	// Used during gameplay
-	private Stargate.Feedback recentFeedback = Stargate.Feedback.NONE;
-	private int animationTick = 0;
-	private boolean isPrimaryChevronEngaged = false;
-	private boolean dialingOut = false;
-	private int timesOpened = 0;
+	protected Stargate.Feedback recentFeedback = Stargate.Feedback.NONE;
+	protected int animationTick = 0;
+	protected boolean isPrimaryChevronEngaged = false;
+	protected boolean dialingOut = false;
+	protected int timesOpened = 0;
 	protected String pointOfOrigin = EMPTY;
 	protected String symbols = EMPTY;
 	
 	// Dialing and memory
-	private int[] address = new int[0];
-	private String connectionID = EMPTY;
-	private Wormhole wormhole = new Wormhole();
+	protected int[] address = new int[0];
+	protected String connectionID = EMPTY;
+	protected Wormhole wormhole = new Wormhole();
 
-	private boolean hasDHD = false;
-	private boolean advancedProtocolsEnabled = false;
+	protected boolean hasDHD = false;
+	protected boolean advancedProtocolsEnabled = false;
 	
 	protected StargateSoundWrapper.WormholeIdle wormholeIdleSound = new StargateSoundWrapper.WormholeIdle(this);
 	

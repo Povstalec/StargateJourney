@@ -41,8 +41,8 @@ public class Layers
 	public static final ModelLayerLocation TOLLAN_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "tollan_chevron_layer"), "main");
 
 	// Wormhole
-	public static final ModelLayerLocation EVENT_HORIZON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "event_horizon_layer"), "main");
-	public static final ModelLayerLocation KAWOOSH_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "kawoosh_layer"), "main");
+	//public static final ModelLayerLocation EVENT_HORIZON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "event_horizon_layer"), "main");
+	//public static final ModelLayerLocation KAWOOSH_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "kawoosh_layer"), "main");
 	
 	// Armor
 	public static final ModelLayerLocation FALCON_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "falcon_head"), "main");
@@ -80,7 +80,7 @@ public class Layers
 		event.registerLayerDefinition(TOLLAN_SYMBOL_RING_LAYER, () -> TollanStargateModel.createSymbolRingLayer());
 		event.registerLayerDefinition(TOLLAN_CHEVRON_LAYER, () -> TollanStargateModel.createChevronLayer());
 		// Wormhole
-		event.registerLayerDefinition(EVENT_HORIZON_LAYER, () -> WormholeModel.createEventHorizonLayer());
+		//event.registerLayerDefinition(EVENT_HORIZON_LAYER, () -> WormholeModel.createEventHorizonLayer());
 		//event.registerLayerDefinition(KAWOOSH_LAYER, () -> WormholeModel.createKawooshLayer());
 		//event.registerLayerDefinition(VORTEX_LAYER, () -> WormholeModel.createVortexLayer());
 		

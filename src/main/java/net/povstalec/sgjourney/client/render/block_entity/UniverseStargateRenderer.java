@@ -29,7 +29,7 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
 	public UniverseStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER), r, g, b);
+		this.wormholeModel = new WormholeModel(r, g, b);
 
 		this.stargateModel = new UniverseStargateModel(
 				context.bakeLayer(Layers.UNIVERSE_RING_LAYER), 

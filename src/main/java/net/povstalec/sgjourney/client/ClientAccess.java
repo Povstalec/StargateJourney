@@ -113,17 +113,6 @@ public class ClientAccess
         }
     }
 
-    public static void updateTollanStargate(BlockPos pos, int[] addressBuffer, int currentSymbol)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-
-        if (blockEntity instanceof final TollanStargateEntity stargate)
-        {
-        	stargate.addressBuffer = addressBuffer;
-        	stargate.currentSymbol = currentSymbol;
-        }
-    }
-
     public static void updateNaquadahGenerator(BlockPos pos, int reactionProgress, long energy)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);

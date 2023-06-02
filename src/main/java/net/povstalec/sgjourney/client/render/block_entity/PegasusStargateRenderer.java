@@ -29,7 +29,7 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
 	public PegasusStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER), r, g, b);
+		this.wormholeModel = new WormholeModel(r, g, b);
 		this.stargateModel = new PegasusStargateModel(
 				context.bakeLayer(Layers.PEGASUS_RING_LAYER), 
 				context.bakeLayer(Layers.PEGASUS_SYMBOL_RING_LAYER), 

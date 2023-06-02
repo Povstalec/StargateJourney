@@ -29,7 +29,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 	public MilkyWayStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(context.bakeLayer(Layers.EVENT_HORIZON_LAYER), r, g, b);
+		this.wormholeModel = new WormholeModel(r, g, b);
 		this.stargateModel = new MilkyWayStargateModel(
 				context.bakeLayer(Layers.MILKY_WAY_RING_LAYER), 
 				context.bakeLayer(Layers.MILKY_WAY_SYMBOL_RING_LAYER), 

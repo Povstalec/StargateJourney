@@ -14,7 +14,6 @@ import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundTollanStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
@@ -36,6 +35,7 @@ public final class PacketHandlerInit
 		//****************************************Client-bound****************************************
 		//============================================================================================
 		
+		// Alien Tech
 		INSTANCE.messageBuilder(ClientboundBasicInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundBasicInterfaceUpdatePacket::encode)
 		.decoder(ClientboundBasicInterfaceUpdatePacket::new)
@@ -60,6 +60,7 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundRingPanelUpdatePacket::handle)
 		.add();
 		
+		// Stargates
 		INSTANCE.messageBuilder(ClientboundStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundStargateUpdatePacket::encode)
 		.decoder(ClientboundStargateUpdatePacket::new)
@@ -84,12 +85,7 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundPegasusStargateUpdatePacket::handle)
 		.add();
 		
-		INSTANCE.messageBuilder(ClientboundTollanStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundTollanStargateUpdatePacket::encode)
-		.decoder(ClientboundTollanStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundTollanStargateUpdatePacket::handle)
-		.add();
-		
+		// Misc
 		INSTANCE.messageBuilder(ClientboundNaquadahGeneratorUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundNaquadahGeneratorUpdatePacket::encode)
 		.decoder(ClientboundNaquadahGeneratorUpdatePacket::new)
@@ -125,7 +121,7 @@ public final class PacketHandlerInit
 		.add();
 		
 		//============================================================================================
-		//****************************************Client-bound****************************************
+		//****************************************Server-bound****************************************
 		//============================================================================================
 		
 		INSTANCE.messageBuilder(ServerboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)

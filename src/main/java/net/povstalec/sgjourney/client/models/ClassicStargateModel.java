@@ -15,13 +15,12 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.render.SGJourneyVertexRenderer;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 
-public class ClassicStargateModel
+public class ClassicStargateModel implements SGJourneyVertexRenderer
 {
 	private static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/classic/classic_stargate.png");
 	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/classic/classic_chevron.png");
@@ -52,24 +51,6 @@ public class ClassicStargateModel
 		this.innerRing.render(stack, stargateTexture, combinedLight, combinedOverlay);
 		
 		this.renderChevrons(stack, source, combinedLight, combinedOverlay, stargate.chevronsRendered());
-		
-		this.renderTriangle(source.getBuffer(RenderType.entitySolid(STARGATE_TEXTURE)), stack.last().pose(), stack.last().normal());
-	}
-	
-	protected void renderTriangle(VertexConsumer vertexConsumer, Matrix4f matrix4, Matrix3f matrix3)
-	{
-		float x = 0;
-		float y = 0;
-		float z = 0;
-		
-		vertexConsumer.vertex(matrix4, x, y+4, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 1.0F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();
-		vertexConsumer.vertex(matrix4, x+4, y, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 1.0F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();
-		vertexConsumer.vertex(matrix4, x+4, y+4, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 1.0F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();
-		vertexConsumer.vertex(matrix4, x, y+8, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.0F, 1.0F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();
 	}
 	
 	public void setRotation(float rotation)

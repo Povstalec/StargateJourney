@@ -5,13 +5,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.packets.ClientboundTollanStargateUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Addressing;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
@@ -85,7 +80,6 @@ public class TollanStargateEntity extends AbstractStargateEntity
 			return;
 
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientboundTollanStargateUpdatePacket(stargate.worldPosition, stargate.addressBuffer, stargate.currentSymbol));
 	}
 
 	@Override
