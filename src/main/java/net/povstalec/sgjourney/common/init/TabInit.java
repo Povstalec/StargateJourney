@@ -120,6 +120,9 @@ public class TabInit
 				items.accept(BlockInit.NAQUADAH_BLOCK.get());
 				items.accept(BlockInit.NAQUADAH_STAIRS.get());
 				items.accept(BlockInit.NAQUADAH_SLAB.get());
+				items.accept(BlockInit.CUT_NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.CUT_NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.CUT_NAQUADAH_SLAB.get());
 				
 				items.accept(BlockInit.SANDSTONE_HIEROGLYPHS.get());
 				items.accept(BlockInit.SANDSTONE_SWITCH.get());

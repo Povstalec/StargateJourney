@@ -115,10 +115,17 @@ public class BlockInit
 			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
 	
 	public static final RegistryObject<Block> NAQUADAH_BLOCK = registerBlock("naquadah_block", 
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> NAQUADAH_STAIRS = registerBlock("naquadah_stairs", 
 			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> NAQUADAH_SLAB = registerBlock("naquadah_slab", 
+			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> CUT_NAQUADAH_BLOCK = registerBlock("cut_naquadah_block", 
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> CUT_NAQUADAH_STAIRS = registerBlock("cut_naquadah_stairs", 
+			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> CUT_NAQUADAH_SLAB = registerBlock("cut_naquadah_slab", 
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<GoldenIdolBlock> GOLDEN_IDOL = registerBlock("golden_idol", 

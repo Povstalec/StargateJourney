@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.StargateSoundWrapper;
+import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -42,8 +42,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public int desiredSymbol = 0;
 	public boolean rotateClockwise = true;
 	
-	protected StargateSoundWrapper.MilkyWayRingBuildup buildupSound = new StargateSoundWrapper.MilkyWayRingBuildup(this);
-	protected StargateSoundWrapper.MilkyWayRingRotation spinSound = new StargateSoundWrapper.MilkyWayRingRotation(this);
+	public SoundWrapper buildupSound = null;
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{

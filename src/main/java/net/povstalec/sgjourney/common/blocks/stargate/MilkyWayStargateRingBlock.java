@@ -12,7 +12,7 @@ public class MilkyWayStargateRingBlock extends AbstractStargateRingBlock
 {
 	public MilkyWayStargateRingBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 7.0);
 	}
 
 	public Block getStargate()

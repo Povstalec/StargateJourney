@@ -17,7 +17,7 @@ public class UniverseStargateBlock extends AbstractStargateBaseBlock
 {
 	public UniverseStargateBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 7.0);
 	}
 
 	@Nullable

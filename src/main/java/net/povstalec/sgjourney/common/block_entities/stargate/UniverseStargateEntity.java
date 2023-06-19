@@ -34,8 +34,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public int[] addressBuffer = new int[0];
 	public int symbolBuffer = 0;
 	
-	//private UniverseStargateRingSound spinSound;
-	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.UNIVERSE_STARGATE.get(), pos, state, Stargate.Gen.GEN_1, 1);

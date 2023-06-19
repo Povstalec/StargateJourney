@@ -26,9 +26,9 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	//TODO
 	//public static final BooleanProperty FULL = BooleanProperty.create("full");
 
-	public AbstractStargateRingBlock(Properties properties)
+	public AbstractStargateRingBlock(Properties properties, double width)
 	{
-		super(properties);
+		super(properties, width);
 	}
 
 	@Override

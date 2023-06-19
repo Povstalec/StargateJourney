@@ -10,19 +10,19 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SGJourneyRenderTypes extends RenderType
 {
-	public SGJourneyRenderTypes(String p_173178_, VertexFormat p_173179_, Mode p_173180_, int p_173181_,
-			boolean p_173182_, boolean p_173183_, Runnable p_173184_, Runnable p_173185_)
+	public SGJourneyRenderTypes(String name, VertexFormat format, Mode mode, int bufferSize,
+			boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState)
 	{
-		super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
+		super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
 	}
 
-	public static RenderType eventHorizonFront(ResourceLocation resourceLocation, float p_110438_, float p_110439_)
+	public static RenderType eventHorizonFront(ResourceLocation resourceLocation, float xOffset, float zOffset)
 	{
 		return create("event_horizon_front", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(p_110438_, p_110439_))
+				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
 				.setTransparencyState(NO_TRANSPARENCY)
 				.setCullState(CULL)
 				.setLightmapState(LIGHTMAP)
@@ -30,15 +30,29 @@ public class SGJourneyRenderTypes extends RenderType
 				.createCompositeState(false));
 	}
 
-	public static RenderType eventHorizonBack(ResourceLocation resourceLocation, float p_110438_, float p_110439_)
+	public static RenderType eventHorizonBack(ResourceLocation resourceLocation, float xOffset, float zOffset)
 	{
 		return create("event_horizon_back", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(p_110438_, p_110439_))
+				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(NO_OVERLAY)
+				.createCompositeState(false));
+	}
+
+	public static RenderType vortex(ResourceLocation resourceLocation, float xOffset, float zOffset)
+	{
+		return create("vortex", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
+				.setTransparencyState(NO_TRANSPARENCY)
+				.setCullState(NO_CULL)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(false));

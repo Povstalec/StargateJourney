@@ -17,7 +17,7 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 {
 	public PegasusStargateBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 7.0);
 	}
 	
 	@Nullable

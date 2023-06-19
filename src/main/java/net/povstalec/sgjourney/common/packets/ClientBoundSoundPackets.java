@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import net.povstalec.sgjourney.client.SoundAccess;
+import net.povstalec.sgjourney.client.sound.SoundAccess;
 
 public abstract class ClientBoundSoundPackets
 {

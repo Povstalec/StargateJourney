@@ -202,7 +202,7 @@ public class CommandInit
 		System.out.println("Stargates in Solar Systems:\n" + StargateNetwork.get(level).getSolarSystems());
 		//System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
 
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info on console"));
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info onto the console"));
 		
 		return Command.SINGLE_SUCCESS;
 	}

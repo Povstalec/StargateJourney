@@ -1,19 +1,18 @@
-package net.povstalec.sgjourney.client;
+package net.povstalec.sgjourney.client.sound;
 
 import net.minecraft.client.Minecraft;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.sounds.MilkyWayStargateRingBuildupSound;
-import net.povstalec.sgjourney.client.sounds.MilkyWayStargateRingSound;
-import net.povstalec.sgjourney.client.sounds.PegasusStargateRingSound;
-import net.povstalec.sgjourney.client.sounds.StargateSound;
-import net.povstalec.sgjourney.client.sounds.UniverseStargateRingSound;
-import net.povstalec.sgjourney.client.sounds.WormholeIdleSound;
+import net.povstalec.sgjourney.client.sound.sounds.MilkyWayStargateRingBuildupSound;
+import net.povstalec.sgjourney.client.sound.sounds.MilkyWayStargateRingSound;
+import net.povstalec.sgjourney.client.sound.sounds.PegasusStargateRingSound;
+import net.povstalec.sgjourney.client.sound.sounds.StargateSound;
+import net.povstalec.sgjourney.client.sound.sounds.UniverseStargateRingSound;
+import net.povstalec.sgjourney.client.sound.sounds.WormholeIdleSound;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 
-public abstract class StargateSoundWrapper
+public abstract class StargateSoundWrapper extends SoundWrapper
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
 
@@ -27,20 +26,23 @@ public abstract class StargateSoundWrapper
 		this.sound = sound;
 	}
 	
+	@Override
 	public boolean isPlaying()
 	{
 		return this.playingSound;
 	}
-	
+
+	@Override
 	public void playSound()
 	{
 		if(!this.playingSound)
 		{
-			minecraft.getSoundManager().play(sound);
+			minecraft.getSoundManager().queueTickingSound(sound);
 			this.playingSound = true;
 		}
 	}
-	
+
+	@Override
 	public void stopSound()
 	{
 		if(this.playingSound)

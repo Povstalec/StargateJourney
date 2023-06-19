@@ -33,7 +33,7 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 {
 	public MilkyWayStargateBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 7.0);
 	}
 	
 	@Nullable

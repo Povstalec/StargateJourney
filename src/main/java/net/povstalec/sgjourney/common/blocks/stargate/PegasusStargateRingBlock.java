@@ -7,7 +7,7 @@ public class PegasusStargateRingBlock extends AbstractStargateRingBlock
 {
 	public PegasusStargateRingBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 7.0);
 	}
 
 	public Block getStargate()

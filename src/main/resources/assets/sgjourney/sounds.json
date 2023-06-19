@@ -98,6 +98,25 @@
 		]
 	},
 	
+	"tollan_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.tollan_chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_press_1",
+			"sgjourney:milky_way_dhd_press_2",
+			"sgjourney:milky_way_dhd_press_3"
+		]
+	},
+	"tollan_dial_fail":
+	{
+		"subtitle": "sounds.sgjourney.tollan_dial_fail",
+		"sounds":
+		[
+			"sgjourney:milky_way_dial_fail"
+		]
+	},
+	
 	"wormhole_close":
 	{
 		"subtitle": "sounds.sgjourney.wormhole_close",
@@ -131,6 +150,16 @@
 		"sounds":
 		[
 			"sgjourney:milky_way_dhd_enter"
+		]
+	},
+	"milky_way_dhd_press":
+	{
+		"subtitle": "sounds.sgjourney.milky_way_dhd_press",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_press_1",
+			"sgjourney:milky_way_dhd_press_2",
+			"sgjourney:milky_way_dhd_press_3"
 		]
 	},
 	

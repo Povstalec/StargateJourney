@@ -7,7 +7,6 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Orientation;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public enum StargatePart implements StringRepresentable
 {
@@ -71,8 +70,10 @@ public enum StargatePart implements StringRepresentable
 		parts.add(LEFT);
 		parts.add(LEFT2);
 		parts.add(LEFT2_ABOVE);
+		parts.add(LEFT3_ABOVE);
 		parts.add(LEFT3_ABOVE2);
 		parts.add(LEFT3_ABOVE3);
+		parts.add(LEFT3_ABOVE4);
 		if (type == StargateType.TOLLAN) {
 			parts.add(LEFT2_ABOVE4);
 			parts.add(LEFT2_ABOVE5);
@@ -82,8 +83,6 @@ public enum StargatePart implements StringRepresentable
 			parts.add(RIGHT2_ABOVE5);
 			parts.add(RIGHT2_ABOVE4);
 		} else {
-			parts.add(LEFT3_ABOVE);
-			parts.add(LEFT3_ABOVE4);
 			parts.add(LEFT3_ABOVE5);
 			parts.add(LEFT2_ABOVE5);
 			parts.add(LEFT2_ABOVE6);
@@ -93,11 +92,11 @@ public enum StargatePart implements StringRepresentable
 			parts.add(RIGHT2_ABOVE6);
 			parts.add(RIGHT2_ABOVE5);
 			parts.add(RIGHT3_ABOVE5);
-			parts.add(RIGHT3_ABOVE4);
-			parts.add(RIGHT3_ABOVE);
 		}
+		parts.add(RIGHT3_ABOVE4);
 		parts.add(RIGHT3_ABOVE3);
 		parts.add(RIGHT3_ABOVE2);
+		parts.add(RIGHT3_ABOVE);
 		parts.add(RIGHT2_ABOVE);
 		parts.add(RIGHT2);
 		parts.add(RIGHT);

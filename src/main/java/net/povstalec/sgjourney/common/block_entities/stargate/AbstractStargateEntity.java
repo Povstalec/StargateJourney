@@ -24,7 +24,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.StargateSoundWrapper;
+import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
@@ -68,7 +68,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected boolean hasDHD = false;
 	protected boolean advancedProtocolsEnabled = false;
 	
-	protected StargateSoundWrapper.WormholeIdle wormholeIdleSound = new StargateSoundWrapper.WormholeIdle(this);
+	public SoundWrapper wormholeIdleSound = null;
+	public SoundWrapper spinSound = null;
 	
 	//private Stargate.FilterType filter = Stargate.FilterType.NONE;
 	//private ListTag whitelist;

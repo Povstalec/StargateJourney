@@ -40,13 +40,15 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
 	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
-	protected static final VoxelShapeProvider SHAPE_PROVIDER = new VoxelShapeProvider();
 	//TODO public static final BooleanProperty FULL = BooleanProperty.create("full");
 
-	public AbstractStargateBlock(Properties properties)
+	protected VoxelShapeProvider SHAPE_PROVIDER;
+
+	public AbstractStargateBlock(Properties properties, double width)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
+		SHAPE_PROVIDER = new VoxelShapeProvider(width);
 	}
 
 	public StargateType getStargateType()

@@ -15,17 +15,15 @@ import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEnti
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.StargateType;
 
 import javax.annotation.Nullable;
 
 public class TollanStargateBlock extends AbstractStargateBaseBlock
 {
-	protected static final VoxelShapeProvider SHAPE_PROVIDER = new VoxelShapeProvider(3.0D);
 	public TollanStargateBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 3.0);
 	}
 
 	public StargateType getStargateType()

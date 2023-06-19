@@ -1,9 +1,5 @@
 package net.povstalec.sgjourney.client.models;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -17,10 +13,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.render.SGJourneyVertexRenderer;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 
-public class ClassicStargateModel implements SGJourneyVertexRenderer
+public class ClassicStargateModel
 {
 	private static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/classic/classic_stargate.png");
 	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/classic/classic_chevron.png");

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.sounds;
+package net.povstalec.sgjourney.client.sound.sounds;
 
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.sounds.SoundEvent;
@@ -14,6 +14,10 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 	{
 		super(soundEvent, soundSource, randomSource);
 		this.stargate = stargate;
+		this.x = stargate.getBlockPos().getX();
+		this.y = stargate.getBlockPos().getY();
+		this.z = stargate.getBlockPos().getZ();
+		this.relative = true;
 	}
 	
 	@Override

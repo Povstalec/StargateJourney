@@ -1,26 +1,26 @@
-package net.povstalec.sgjourney.client.sounds;
+package net.povstalec.sgjourney.client.sound.sounds;
 
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.init.SoundInit;
 
-public class MilkyWayStargateRingSound extends StargateSound
+public class WormholeIdleSound extends StargateSound
 {
 	private static final float VOLUME_MIN = 0.0F;
-	private static final float VOLUME_MAX = 0.5F;
+	private static final float VOLUME_MAX = 1.0F;
 	
-	public MilkyWayStargateRingSound(MilkyWayStargateEntity stargate)
+	public WormholeIdleSound(AbstractStargateEntity stargate)
 	{
-		super(stargate, SoundInit.MILKY_WAY_RING_SPIN.get(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
-        this.looping = true;
-        this.volume = VOLUME_MIN;
+		super(stargate, SoundInit.WORMHOLE_IDLE.get(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
+		this.volume = VOLUME_MIN;
+		this.looping = true;
 	}
 
 	@Override
 	public void tick()
 	{
-		if(((MilkyWayStargateEntity) stargate).isRotating())
+		if(stargate.isConnected())
 			fadeIn();
 		else
 			fadeOut();
@@ -45,5 +45,4 @@ public class MilkyWayStargateRingSound extends StargateSound
 		if(this.volume > VOLUME_MIN)
 			this.volume -= 0.05F;
 	}
-	
 }

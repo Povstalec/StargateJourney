@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,9 +30,9 @@ import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
-	public AbstractStargateBaseBlock(Properties properties)
+	public AbstractStargateBaseBlock(Properties properties, double width)
 	{
-		super(properties);
+		super(properties, width);
 	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context)

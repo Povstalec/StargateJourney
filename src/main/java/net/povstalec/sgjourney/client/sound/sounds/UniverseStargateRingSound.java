@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.sounds;
+package net.povstalec.sgjourney.client.sound.sounds;
 
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;

@@ -45,7 +45,7 @@ public class SandstoneCartoucheBlock extends CartoucheBlock
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if (blockentity instanceof CartoucheEntity)
 		{
-			if (!level.isClientSide)
+			if(!level.isClientSide())
 			{
 				ItemStack itemstack = new ItemStack(BlockInit.SANDSTONE_CARTOUCHE.get());
 				

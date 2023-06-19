@@ -1,37 +1,37 @@
 {
   "variants": {
     "facing=east,half=bottom,shape=inner_left": {
-      "model": "sgjourney:block/naquadah_stairs_inner",
+      "model": "sgjourney:block/cut_naquadah_stairs_inner",
       "uvlock": true,
       "y": 270
     },
     "facing=east,half=bottom,shape=inner_right": {
-      "model": "sgjourney:block/naquadah_stairs_inner"
+      "model": "sgjourney:block/cut_naquadah_stairs_inner"
     },
     "facing=east,half=bottom,shape=outer_left": {
-      "model": "sgjourney:block/naquadah_stairs_outer",
+      "model": "sgjourney:block/cut_naquadah_stairs_outer",
       "uvlock": true,
       "y": 270
     },
     "facing=east,half=bottom,shape=outer_right": {
-      "model": "sgjourney:block/naquadah_stairs_outer"
+      "model": "sgjourney:block/cut_naquadah_stairs_outer"
     },
     "facing=east,half=bottom,shape=straight": {
-      "model": "sgjourney:block/naquadah_stairs"
+      "model": "sgjourney:block/cut_naquadah_stairs"
     },
     "facing=east,half=top,shape=inner_left": {
-      "model": "sgjourney:block/naquadah_stairs_inner",
+      "model": "sgjourney:block/cut_naquadah_stairs_inner",
       "uvlock": true,
       "x": 180
     },
     "facing=east,half=top,shape=inner_right": {
-      "model": "sgjourney:block/naquadah_stairs_inner",
+      "model": "sgjourney:block/cut_naquadah_stairs_inner",
       "uvlock": true,
       "x": 180,
       "y": 90
     },
     "facing=east,half=top,shape=outer_left": {
-      "model": "sgjourney:block/naquadah_stairs_outer",
+      "model": "sgjourney:block/cut_naquadah_stairs_outer",
       "uvlock": true,
       "x": 180
     },

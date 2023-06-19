@@ -18,7 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
-import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.misc.AncientTech;
 
@@ -108,7 +107,7 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	int energy = getEnergy(stack);
-    	tooltipComponents.add(Component.literal("Energy: " + energy +  "/" + MAX_ENERGY + "FE").withStyle(ChatFormatting.DARK_RED));
+    	tooltipComponents.add(Component.literal("Energy: " + energy +  "/" + MAX_ENERGY + " FE").withStyle(ChatFormatting.DARK_RED));
         
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
