@@ -42,15 +42,14 @@ public class SoundInit
 
 	public static final RegistryObject<SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
 	
+	
+	
 	private static RegistryObject<SoundEvent> registerSoundEvent(String sound)
 	{
 		return SOUNDS.register(sound, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(StargateJourney.MODID, sound)));
 	}
 	
-	private static RegistryObject<SoundEvent> registerSoundEvent(String sound, float range)
-	{
-		return SOUNDS.register(sound, () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(StargateJourney.MODID, sound), range));
-	}
+	
 	
 	public static void register(IEventBus eventBus)
 	{

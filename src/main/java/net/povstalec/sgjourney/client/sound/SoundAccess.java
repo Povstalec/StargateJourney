@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.sound;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.povstalec.sgjourney.client.sound.sounds.GenericStargateSound;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
@@ -19,6 +20,32 @@ public class SoundAccess
     			stargate.wormholeIdleSound = new StargateSoundWrapper.WormholeIdle(stargate);
     		
     		stargate.playWormholeIdleSound();
+    	}
+    }
+	
+    public static void playChevronSound(BlockPos pos, boolean raise)
+    {
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	{
+    		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate && raise)
+    		{
+    			GenericStargateSound sound = new GenericStargateSound(stargate, milkyWayStargate.chevronEncodeSound(), 0.25F);
+        		minecraft.getSoundManager().play(sound);
+    		}
+    		else
+    		{
+    			GenericStargateSound sound = new GenericStargateSound(stargate, stargate.chevronEngageSound(), 0.25F);
+        		minecraft.getSoundManager().play(sound);
+    		}
+    	}
+    }
+	
+    public static void playFailSound(BlockPos pos)
+    {
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	{
+    		GenericStargateSound sound = new GenericStargateSound(stargate, stargate.failSound(), 0.25F);
+    		minecraft.getSoundManager().play(sound);
     	}
     }
 	

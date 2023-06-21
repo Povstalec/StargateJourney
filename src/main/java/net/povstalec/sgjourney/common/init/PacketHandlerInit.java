@@ -5,11 +5,11 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundBasicInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
@@ -106,6 +106,18 @@ public final class PacketHandlerInit
 		.encoder(ClientBoundSoundPackets.IdleWormhole::encode)
 		.decoder(ClientBoundSoundPackets.IdleWormhole::new)
 		.consumerMainThread(ClientBoundSoundPackets.IdleWormhole::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.Chevron.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.Chevron::encode)
+		.decoder(ClientBoundSoundPackets.Chevron::new)
+		.consumerMainThread(ClientBoundSoundPackets.Chevron::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.Fail.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.Fail::encode)
+		.decoder(ClientBoundSoundPackets.Fail::new)
+		.consumerMainThread(ClientBoundSoundPackets.Fail::handle)
 		.add();
 		
 		INSTANCE.messageBuilder(ClientBoundSoundPackets.StargateRotation.class, index++, NetworkDirection.PLAY_TO_CLIENT)

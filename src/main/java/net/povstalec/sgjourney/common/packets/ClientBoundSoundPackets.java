@@ -10,12 +10,12 @@ import net.povstalec.sgjourney.client.sound.SoundAccess;
 public abstract class ClientBoundSoundPackets
 {
     public final BlockPos pos;
-    public final boolean stop;
+    public final boolean bool;
 
     public ClientBoundSoundPackets(BlockPos pos, boolean stop)
     {
         this.pos = pos;
-        this.stop = stop;
+        this.bool = stop;
     }
 
     public ClientBoundSoundPackets(FriendlyByteBuf buffer)
@@ -26,17 +26,18 @@ public abstract class ClientBoundSoundPackets
     public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
-        buffer.writeBoolean(this.stop);
+        buffer.writeBoolean(this.bool);
     }
 
     public abstract boolean handle(Supplier<NetworkEvent.Context> ctx);
     
     
+    
     public static class IdleWormhole extends ClientBoundSoundPackets
     {
-    	public IdleWormhole(BlockPos pos, boolean stop)
+    	public IdleWormhole(BlockPos pos)
     	{
-    		super(pos, stop);
+    		super(pos, false);
     	}
     	public IdleWormhole(FriendlyByteBuf buffer)
     	{
@@ -46,8 +47,53 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() -> {
+            ctx.get().enqueueWork(() ->
+            {
             	SoundAccess.playWormholeIdleSound(pos);
+            });
+            return true;
+        }
+    }
+
+    public static class Chevron extends ClientBoundSoundPackets
+    {
+    	public Chevron(BlockPos pos, boolean raise)
+    	{
+    		super(pos, raise);
+    	}
+    	public Chevron(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    	}
+    	
+    	@Override
+    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playChevronSound(pos, bool);
+            });
+            return true;
+        }
+    }
+
+    public static class Fail extends ClientBoundSoundPackets
+    {
+    	public Fail(BlockPos pos)
+    	{
+    		super(pos, false);
+    	}
+    	public Fail(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    	}
+    	
+    	@Override
+    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playFailSound(pos);
             });
             return true;
         }
@@ -67,8 +113,9 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() -> {
-            	SoundAccess.playRotationSound(pos, stop);
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playRotationSound(pos, bool);
             });
             return true;
         }
@@ -76,9 +123,9 @@ public abstract class ClientBoundSoundPackets
     
     public static class MilkyWayBuildup extends ClientBoundSoundPackets
     {
-    	public MilkyWayBuildup(BlockPos pos, boolean stop)
+    	public MilkyWayBuildup(BlockPos pos)
     	{
-    		super(pos, stop);
+    		super(pos, false);
     	}
     	public MilkyWayBuildup(FriendlyByteBuf buffer)
     	{
@@ -88,7 +135,8 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() -> {
+            ctx.get().enqueueWork(() ->
+            {
             	SoundAccess.playMilkyWayBuildupSound(pos);
             });
             return true;
