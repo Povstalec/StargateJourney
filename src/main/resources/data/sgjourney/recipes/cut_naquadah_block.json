@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"BB",
+		"BB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:naquadah_block"
+		}
+	},
+	"result":
+	{
+		"count": 4,
+		"item": "sgjourney:cut_naquadah_block"
+	}
+}
