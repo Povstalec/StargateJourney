@@ -46,7 +46,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		if(orientation == Orientation.REGULAR && blockpos.getY() > level.getMaxBuildHeight() - 6)
 			return null;
 		
-		for(StargatePart part : StargatePart.getParts(getStargateType(), orientation))
+		for(StargatePart part : getStargateType().getParts())
 		{
 			if(!part.equals(StargatePart.BASE) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
 			{
@@ -72,7 +72,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		super.setPlacedBy(level, pos, state, placer, stack);
 		
-		for(StargatePart part : StargatePart.getParts(getStargateType(), level.getBlockState(pos).getValue(ORIENTATION)))
+		for(StargatePart part : getStargateType().getParts())
 		{
 			if(!part.equals(StargatePart.BASE))
 			{
@@ -98,7 +98,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     			stargate.removeFromBlockEntityList();
     		}
     		
-    		for(StargatePart part : StargatePart.getParts(getStargateType(), oldState.getValue(ORIENTATION)))
+    		for(StargatePart part : getStargateType().getParts())
     		{
     			if(!part.equals(StargatePart.BASE))
     			{
@@ -117,7 +117,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTED, isConnected).setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
 		
-		for(StargatePart part : StargatePart.getParts(getStargateType(), level.getBlockState(pos).getValue(ORIENTATION)))
+		for(StargatePart part : getStargateType().getParts())
 		{
 			if(!part.equals(StargatePart.BASE))
 			{

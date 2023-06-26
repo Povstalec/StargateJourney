@@ -1,5 +1,9 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,10 +15,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.stargate.Addressing;
-
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class MemoryCrystalItem extends Item
 {

@@ -15,9 +15,7 @@
 		"subtitle": "sounds.sgjourney.universe_chevron_engage",
 		"sounds":
 		[
-			"sgjourney:universe_chevron_engage_1",
-			"sgjourney:universe_chevron_engage_2",
-			"sgjourney:universe_chevron_engage_3"
+			"sgjourney:universe_chevron_engage"
 		]
 	},
 	"universe_dial_fail":
@@ -52,7 +50,7 @@
 		"subtitle": "sounds.sgjourney.milky_way_chevron_encode",
 		"sounds":
 		[
-			"sgjourney:milky_way_chevron_encode_1"
+			"sgjourney:milky_way_chevron_encode"
 		]
 	},
 	"milky_way_chevron_engage":
@@ -60,7 +58,7 @@
 		"subtitle": "sounds.sgjourney.milky_way_chevron_engage",
 		"sounds":
 		[
-			"sgjourney:milky_way_chevron_engage_1"
+			"sgjourney:milky_way_chevron_engage"
 		]
 	},
 	"milky_way_dial_fail":

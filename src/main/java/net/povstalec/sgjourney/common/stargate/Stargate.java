@@ -1,15 +1,19 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.ArrayList;
+
 import net.minecraft.ChatFormatting;
-import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 
 public class Stargate
 {
-
+	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
+	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0.0F;
+	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = 9.0F / 32;
+	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = 7.0F / 32;
+	
 	private static long systemWideConnectionCost = CommonStargateConfig.system_wide_connection_energy_cost.get();
 	private static long interstellarConnectionCost = CommonStargateConfig.interstellar_connection_energy_cost.get();
 	private static long intergalacticConnectionCost = CommonStargateConfig.intergalactic_connection_energy_cost.get();
@@ -17,6 +21,39 @@ public class Stargate
 	private static long systemWideConnectionDraw = CommonStargateConfig.system_wide_connection_energy_draw.get();
 	private static long interstellarConnectionDraw = CommonStargateConfig.interstellar_connection_energy_draw.get();
 	private static long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
+	
+	public enum Type
+	{
+		UNIVERSE(StargatePart.DEFAULT_PARTS, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
+		MILKY_WAY(StargatePart.DEFAULT_PARTS, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
+		PEGASUS(StargatePart.DEFAULT_PARTS, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
+		TOLLAN(StargatePart.TOLLAN_PARTS, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT),
+		CLASSIC(StargatePart.DEFAULT_PARTS, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
+		
+		private ArrayList<StargatePart> parts;
+		private float verticalCenterHeight;
+		private float horizontalCenterHeight;
+		
+		private Type(ArrayList<StargatePart> parts, float verticalCenterHeight, float horizontalCenterHeight)
+		{
+			this.parts = parts;
+		}
+		
+		public ArrayList<StargatePart> getParts()
+		{
+			return this.parts;
+		}
+		
+		public float getVerticalCenterHeight()
+		{
+			return this.verticalCenterHeight;
+		}
+		
+		public float getHorizontalCenterHeight()
+		{
+			return this.horizontalCenterHeight;
+		}
+	}
 	
 	public enum Gen
 	{

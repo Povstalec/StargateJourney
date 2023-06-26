@@ -67,6 +67,21 @@ public abstract class StargateSoundWrapper extends SoundWrapper
 		{
 			super(stargate, new UniverseStargateRingSound(stargate));
 		}
+		
+		@Override
+		public void playSound()
+		{
+			this.sound = new UniverseStargateRingSound((UniverseStargateEntity) stargate);
+			minecraft.getSoundManager().play(sound);
+			this.playingSound = true;
+		}
+
+		@Override
+		public void stopSound()
+		{
+			this.sound.stopSound();
+			this.playingSound = false;
+		}
 	}
 	
 	public static class MilkyWayRingBuildup extends StargateSoundWrapper

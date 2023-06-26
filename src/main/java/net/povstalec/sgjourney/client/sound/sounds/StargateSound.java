@@ -46,8 +46,12 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 	{
 		if(!(stargate instanceof AbstractStargateEntity))
 			this.stop();
-		
-		
+	}
+	
+	@Override
+	public boolean canStartSilent()
+	{
+		return true;
 	}
 	
 	public void stopSound()

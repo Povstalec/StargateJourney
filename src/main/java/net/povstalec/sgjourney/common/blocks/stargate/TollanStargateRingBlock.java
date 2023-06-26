@@ -10,7 +10,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
-import net.povstalec.sgjourney.common.stargate.StargateType;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class TollanStargateRingBlock extends AbstractStargateRingBlock
 {
@@ -20,9 +20,9 @@ public class TollanStargateRingBlock extends AbstractStargateRingBlock
 		super(properties, 3.0);
 	}
 
-	public StargateType getStargateType()
+	public Stargate.Type getStargateType()
 	{
-		return StargateType.TOLLAN;
+		return Stargate.Type.TOLLAN;
 	}
 
 

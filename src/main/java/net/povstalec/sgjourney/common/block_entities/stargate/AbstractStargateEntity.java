@@ -10,7 +10,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -645,6 +644,25 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public long maxExtract()
 	{
 		return 1000000000L;
+	}
+	
+	public Stargate.Type getGateType()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
+			return stargate.getStargateType();
+
+		StargateJourney.LOGGER.info("Couldn't find Stargate Typw");
+		return null;
+	}
+	
+	public double getGateAddition()
+	{
+		return this.getOrientation() == Orientation.REGULAR
+				? getGateType().getVerticalCenterHeight()
+				: getGateType().getHorizontalCenterHeight();
 	}
 	
 	//============================================================================================

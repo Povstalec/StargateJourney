@@ -4,7 +4,14 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.models.*;
+import net.povstalec.sgjourney.client.models.ClassicStargateModel;
+import net.povstalec.sgjourney.client.models.FalconArmorModel;
+import net.povstalec.sgjourney.client.models.JackalArmorModel;
+import net.povstalec.sgjourney.client.models.MilkyWayStargateModel;
+import net.povstalec.sgjourney.client.models.PegasusStargateModel;
+import net.povstalec.sgjourney.client.models.TollanStargateModel;
+import net.povstalec.sgjourney.client.models.TransportRingsModel;
+import net.povstalec.sgjourney.client.models.UniverseStargateModel;
 import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
 
 public class Layers

@@ -14,7 +14,6 @@ import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.items.NaquadahBottleItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
 public class TabInit

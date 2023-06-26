@@ -32,6 +32,11 @@ public class SoundAccess
     			GenericStargateSound sound = new GenericStargateSound(stargate, milkyWayStargate.chevronEncodeSound(), 0.25F);
         		minecraft.getSoundManager().play(sound);
     		}
+    		else if(stargate instanceof UniverseStargateEntity universeStargate)
+    		{
+    			GenericStargateSound sound = new GenericStargateSound(stargate, universeStargate.chevronEngageSound(), 0.5F);
+        		minecraft.getSoundManager().play(sound);
+    		}
     		else
     		{
     			GenericStargateSound sound = new GenericStargateSound(stargate, stargate.chevronEngageSound(), 0.25F);

@@ -3,12 +3,11 @@ package net.povstalec.sgjourney.common.stargate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import java.util.Random;
-import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;

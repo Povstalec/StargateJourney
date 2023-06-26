@@ -1,12 +1,12 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.ArrayList;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Orientation;
-
-import java.util.ArrayList;
 
 public enum StargatePart implements StringRepresentable
 {
@@ -51,6 +51,9 @@ public enum StargatePart implements StringRepresentable
 	RIGHT_ABOVE5("right_above5", -1, 5),
 	RIGHT2_ABOVE4("right2_above4", -2, 4);
 	
+	public static final ArrayList<StargatePart> DEFAULT_PARTS = getParts(StargateType.DEFAULT);
+	public static final ArrayList<StargatePart> TOLLAN_PARTS = getParts(StargateType.TOLLAN);
+	
 	private final String name;
 	private final int width;
 	private final int height;
@@ -62,7 +65,13 @@ public enum StargatePart implements StringRepresentable
 		this.height = height;
 	}
 	
-	public static ArrayList<StargatePart> getParts(StargateType type, Orientation orientation)
+	private enum StargateType
+	{
+		DEFAULT,
+		TOLLAN
+	}
+	
+	private static ArrayList<StargatePart> getParts(StargateType type)
 	{
 		ArrayList<StargatePart> parts = new ArrayList<>();
 		
@@ -74,7 +83,8 @@ public enum StargatePart implements StringRepresentable
 		parts.add(LEFT3_ABOVE2);
 		parts.add(LEFT3_ABOVE3);
 		parts.add(LEFT3_ABOVE4);
-		if (type == StargateType.TOLLAN) {
+		if(type == StargateType.TOLLAN)
+		{
 			parts.add(LEFT2_ABOVE4);
 			parts.add(LEFT2_ABOVE5);
 			parts.add(LEFT_ABOVE5);
@@ -82,7 +92,9 @@ public enum StargatePart implements StringRepresentable
 			parts.add(RIGHT_ABOVE5);
 			parts.add(RIGHT2_ABOVE5);
 			parts.add(RIGHT2_ABOVE4);
-		} else {
+		}
+		else
+		{
 			parts.add(LEFT3_ABOVE5);
 			parts.add(LEFT2_ABOVE5);
 			parts.add(LEFT2_ABOVE6);
@@ -100,6 +112,9 @@ public enum StargatePart implements StringRepresentable
 		parts.add(RIGHT2_ABOVE);
 		parts.add(RIGHT2);
 		parts.add(RIGHT);
+		
+
+		System.out.println(parts.toString());
 
 		return parts;
 	}

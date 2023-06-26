@@ -5,7 +5,7 @@ import net.povstalec.sgjourney.common.init.SoundInit;
 
 public class UniverseStargateRingSound extends StargateSound
 {
-	private static final float VOLUME_MAX = 1.0F;
+	private static final float VOLUME_MAX = 0.5F;
 	public UniverseStargateRingSound(UniverseStargateEntity stargate)
 	{
 		super(stargate, SoundInit.UNIVERSE_RING_SPIN.get());

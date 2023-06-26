@@ -1,11 +1,11 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.povstalec.sgjourney.StargateJourney;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.povstalec.sgjourney.StargateJourney;
 
 public enum ArmorMaterialInit implements ArmorMaterial
 {

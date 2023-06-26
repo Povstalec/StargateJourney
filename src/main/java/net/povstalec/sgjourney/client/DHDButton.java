@@ -9,12 +9,10 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
-import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class DHDButton extends Button
 {

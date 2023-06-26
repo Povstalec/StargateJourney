@@ -1,5 +1,10 @@
 package net.povstalec.sgjourney.common.items;
 
+import java.util.List;
+import java.util.Random;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -14,11 +19,6 @@ import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
-
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Random;
 
 public class SyringeItem extends Item
 {

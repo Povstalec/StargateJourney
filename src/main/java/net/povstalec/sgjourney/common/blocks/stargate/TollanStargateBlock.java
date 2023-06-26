@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -15,9 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEnti
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.stargate.StargateType;
-
-import javax.annotation.Nullable;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class TollanStargateBlock extends AbstractStargateBaseBlock
 {
@@ -26,9 +26,9 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 		super(properties, 3.0);
 	}
 
-	public StargateType getStargateType()
+	public Stargate.Type getStargateType()
 	{
-		return StargateType.TOLLAN;
+		return Stargate.Type.TOLLAN;
 	}
 	
 	@Nullable

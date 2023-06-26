@@ -8,7 +8,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
@@ -133,7 +135,11 @@ public class Connection
 	
 	protected void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel wormholeTravel)
 	{
-		if(wormhole.findCandidates(initialStargate.getLevel(), initialStargate.getCenterPos(), initialStargate.getDirection()) && this.used)
+		BlockPos pos = initialStargate.getCenterPos();
+		double yCenter = initialStargate instanceof TollanStargateEntity ? 0.0 : 0.5;
+		Vec3 stargatePos = new Vec3(pos.getX() + 0.5, pos.getY() + yCenter, pos.getZ() + 0.5);
+		
+		if(wormhole.findCandidates(initialStargate.getLevel(), stargatePos, initialStargate.getDirection()) && this.used)
 			this.timeSinceLastTraveler = 0;
 		if(wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
 			this.used = true;

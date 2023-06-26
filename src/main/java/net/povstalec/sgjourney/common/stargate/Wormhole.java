@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -21,7 +20,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.MatrixHelper;
@@ -30,10 +28,6 @@ import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class Wormhole implements ITeleporter
 {
-	public static final double VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
-	public static final double VERTICAL_CENTER_TOLLAN_HEIGHT = 0.0F;
-	public static final double HORIZONTAL_CENTER_STANDARD_HEIGHT = (9.0F / 32);
-	public static final double HORIZONTAL_CENTER_TOLLAN_HEIGHT = (7.0F / 32);
 	Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 	List<Entity> localEntities = new ArrayList<Entity>();
 	protected boolean used = false;
@@ -48,11 +42,11 @@ public class Wormhole implements ITeleporter
 		return localEntities.isEmpty();
 	}
 	
-	public boolean findCandidates(Level level, BlockPos centerPos, Direction direction)
+	public boolean findCandidates(Level level, Vec3 centerPos, Direction direction)
 	{
 		AABB localBox = new AABB(
-			(centerPos.getX() - 2), (centerPos.getY() - 2), (centerPos.getZ() - 2), 
-			(centerPos.getX() + 3), (centerPos.getY() + 3), (centerPos.getZ() + 3));
+			centerPos.x - 2.5, centerPos.y - 2.5, centerPos.z - 2.5, 
+			centerPos.x + 2.5, centerPos.y + 2.5, centerPos.z + 2.5);
 		
 		localEntities = level.getEntitiesOfClass(Entity.class, localBox);
 		
@@ -97,8 +91,8 @@ public class Wormhole implements ITeleporter
 				else
 				{
 					unitDistance = initialStargate.getCenterPos().getY() - initialStargate.getCenterPos().relative(orientationDirection).getY();
-					previousTravelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_STANDARD_HEIGHT - previousY;
-					travelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_STANDARD_HEIGHT - traveler.getY();
+					previousTravelerPos = initialStargate.getCenterPos().getY() + initialStargate.getGateAddition() - previousY;
+					travelerPos = initialStargate.getCenterPos().getY() + initialStargate.getGateAddition() - traveler.getY();
 					axisMomentum = momentum.y();
 				}
 				
@@ -160,8 +154,8 @@ public class Wormhole implements ITeleporter
 		        Orientation initialOrientation = initialStargate.getOrientation();
 	        	Direction destinationDirection = targetStargate.getDirection();
 		        Orientation destinationOrientation = targetStargate.getOrientation();
-		        double initialYAddition = getGateAddition(initialStargate);
-		        double destinationYAddition = getGateAddition(targetStargate);
+		        double initialYAddition = initialStargate.getGateAddition();
+		        double destinationYAddition = targetStargate.getGateAddition();
 		        
 	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + initialYAddition), traveler.getY() - (initialStargate.getCenterPos().getY() + 0.5), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
 	    		
@@ -193,12 +187,6 @@ public class Wormhole implements ITeleporter
 				traveler.kill();
 		}
     }
-
-	private static double getGateAddition(AbstractStargateEntity initialStargate) {
-		return initialStargate.getOrientation() == Orientation.REGULAR
-				? (initialStargate instanceof TollanStargateEntity ? VERTICAL_CENTER_TOLLAN_HEIGHT : VERTICAL_CENTER_STANDARD_HEIGHT)
-				: (initialStargate instanceof TollanStargateEntity ? HORIZONTAL_CENTER_TOLLAN_HEIGHT : HORIZONTAL_CENTER_STANDARD_HEIGHT);
-	}
 
 	private static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
     {

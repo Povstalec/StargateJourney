@@ -18,7 +18,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.common.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.cctweaked.peripherals.CrystalPeripheralWrapper;

@@ -2,11 +2,9 @@ package net.povstalec.sgjourney.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.TransportRingsModel;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;

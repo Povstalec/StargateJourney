@@ -29,8 +29,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
-import net.povstalec.sgjourney.common.stargate.StargateType;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
 {
@@ -51,10 +51,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		SHAPE_PROVIDER = new VoxelShapeProvider(width);
 	}
 
-	public StargateType getStargateType()
-	{
-		return StargateType.DEFAULT;
-	}
+	public abstract Stargate.Type getStargateType();
 
 	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
 	{
