@@ -158,11 +158,11 @@ public class EnergyCrystalItem extends Item
         {
         case ENERGY_STORAGE:
         	int energy = getEnergy(stack);
-        	tooltipComponents.add(Component.literal("Energy: " + energy +  "/" + maxEnergy + " FE").withStyle(ChatFormatting.DARK_RED));
+        	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(energy +  "/" + maxEnergy + " FE")).withStyle(ChatFormatting.DARK_RED));
         	break;
         case ENERGY_TRANSFER:
         	int maxEnergyTransfer = getMaxTransfer(stack);
-        	tooltipComponents.add(Component.literal("Max Energy Transfer: " + maxEnergyTransfer + " FE").withStyle(ChatFormatting.RED));
+        	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(maxEnergyTransfer + " FE")).withStyle(ChatFormatting.RED));
         	break;
         	
         }

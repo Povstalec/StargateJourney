@@ -142,7 +142,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
 			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
 		
-        tooltipComponents.add(Component.literal("Energy: " + energy + " FE").withStyle(ChatFormatting.DARK_RED));
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(energy + " FE")).withStyle(ChatFormatting.DARK_RED));
         
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("ID"))
 			id = stack.getTag().getCompound("BlockEntityTag").getString("ID");

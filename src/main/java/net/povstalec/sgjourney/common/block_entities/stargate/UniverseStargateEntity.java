@@ -125,14 +125,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 				return Stargate.Feedback.INCOPLETE_ADDRESS;
 		}
 		
-		if(addressBuffer.length == getAddress().length)
-		{
-			/*if(spinSound != null)
-				spinSound.stopSound();
-			spinSound = new UniverseStargateRingSound();
-			Minecraft.getInstance().getSoundManager().play(spinSound);*/
-		}
-		
 		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
 		return Stargate.Feedback.SYMBOL_ENCODED;
@@ -141,8 +133,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	@Override
 	protected Stargate.Feedback lockPrimaryChevron()
 	{
-		/*if(spinSound != null)
-			spinSound.stopSound();*/
 		return super.lockPrimaryChevron();
 	}
 	
@@ -152,17 +142,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		symbolBuffer++;
 		animationTicks++;
 		
-		/*if(spinSound != null)
-			spinSound.stopSound();*/
-		
 		Stargate.Feedback feedback = super.encodeChevron(symbol);
-		
-		if(addressBuffer.length > getAddress().length)
-		{
-			/*spinSound = new UniverseStargateRingSound();
-			Minecraft.getInstance().getSoundManager().play(spinSound);*/
-		}
-		
 		return feedback;
 	}
 	
@@ -331,18 +311,15 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	@Override
 	public void playRotationSound()
 	{
-		System.out.println("Try to Play " + this.spinSound.isPlaying());
 		if(!this.spinSound.isPlaying())
 		{
 			this.spinSound.playSound();
-			System.out.println("Play");
 		}
 	}
 
 	@Override
 	public void stopRotationSound()
 	{
-		System.out.println("Stop");
 		this.spinSound.stopSound();
 	}
 	

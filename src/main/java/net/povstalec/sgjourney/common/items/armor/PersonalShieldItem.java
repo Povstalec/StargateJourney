@@ -108,7 +108,7 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	int energy = getEnergy(stack);
-    	tooltipComponents.add(Component.literal("Energy: " + energy +  "/" + MAX_ENERGY + " FE").withStyle(ChatFormatting.DARK_RED));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(energy +  "/" + MAX_ENERGY + " FE")).withStyle(ChatFormatting.DARK_RED));
         
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
