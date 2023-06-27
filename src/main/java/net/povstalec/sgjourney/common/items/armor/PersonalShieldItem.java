@@ -9,7 +9,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -28,7 +27,7 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	
 	protected static final int MAX_ENERGY = 100000;
 	
-	public PersonalShieldItem(ArmorMaterial material, EquipmentSlot slot, Properties properties)
+	public PersonalShieldItem(ArmorMaterial material, ArmorItem.Type slot, Properties properties)
 	{
 		super(material, slot, properties);
 	}

@@ -4,7 +4,7 @@ license="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 issueTrackerURL="https://github.com/Povstalec/StargateJourney/issues"
 [[mods]]
 modId="sgjourney"
-version="0.6.4"
+version="0.6.5"
 displayName="Stargate Journey"
 logoFile="sgjourney_large.png"
 credits="TakeruDavis - A really good contributor, \nOtwnt - Structures, \n Kranyolsu - Stargate Pedestals \nCarter Addon Pack - Sounds, \ndiesieben07 - Code for GUI shift-clicking, \nTelepathicGrunt - Code for Structure spawning"
@@ -17,24 +17,31 @@ Stargate in Minecraft! And much more.
 [[dependencies.sgjourney]]
     modId="forge"
     mandatory=true
-    versionRange="[44,)"
+    versionRange="[45,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.sgjourney]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.3,1.20)"
+    versionRange="[1.19.4,1.20)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.sgjourney]]
     modId="computercraft"
     mandatory=false
-    versionRange="[1.103.1,)"
+    versionRange="[1.104.0,)"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.sgjourney]]
+    modId="computercraft"
+    mandatory=false
+    versionRange="[1.104.0,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.sgjourney]]
     modId="stellarview"
     mandatory=false
-    versionRange="[0.1.0,)"
+    versionRange="[0.1.2,)"
     ordering="AFTER"
     side="CLIENT"
+

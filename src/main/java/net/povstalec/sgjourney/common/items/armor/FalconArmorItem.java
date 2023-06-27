@@ -15,9 +15,9 @@ import net.povstalec.sgjourney.client.render.FalconArmorRenderProperties;
 
 public class FalconArmorItem extends ArmorItem
 {
-	public final EquipmentSlot type;
+	public final ArmorItem.Type type;
 	
-	 public FalconArmorItem(ArmorMaterial mat, EquipmentSlot type, Properties props) {
+	 public FalconArmorItem(ArmorMaterial mat, ArmorItem.Type type, Properties props) {
 	        super(mat, type, props);
 	        this.type = type;
 	    }

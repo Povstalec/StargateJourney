@@ -21,8 +21,23 @@ public class DHDBigButton extends Button
 		WIDGETS_LOCATION = widgets;
 	}
     
+    protected int getYImage(boolean p_93668_)
+    {
+    	int i = 1;
+    	if (!this.active)
+    	{
+    		i = 0;
+    	}
+    	else if(p_93668_)
+    	{
+    		i = 2;
+    	}
+    	
+    	return i;
+	}
+    
     @Override
-    public void renderButton(PoseStack p_93676_, int p_93677_, int p_93678_, float p_93679_) {
+    public void render(PoseStack p_93676_, int p_93677_, int p_93678_, float p_93679_) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -32,9 +47,9 @@ public class DHDBigButton extends Button
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(p_93676_, this.getX(), this.getY(), 16, i * 32, this.width, this.height);
-        this.blit(p_93676_, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
-        this.renderBg(p_93676_, minecraft, p_93677_, p_93678_);
+        blit(p_93676_, this.getX(), this.getY(), 16, i * 32, this.width, this.height);
+        blit(p_93676_, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        //this.renderBg(p_93676_, minecraft, p_93677_, p_93678_);
         int j = getFGColor();
         drawCenteredString(p_93676_, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
      }

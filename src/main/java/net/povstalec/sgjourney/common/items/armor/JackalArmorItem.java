@@ -15,9 +15,9 @@ import net.povstalec.sgjourney.client.render.JackalArmorRenderProperties;
 
 public class JackalArmorItem extends ArmorItem
 {
-	public final EquipmentSlot type;
+	public final ArmorItem.Type type;
 	
-	 public JackalArmorItem(ArmorMaterial mat, EquipmentSlot type, Properties props) {
+	 public JackalArmorItem(ArmorMaterial mat, ArmorItem.Type type, Properties props) {
 	        super(mat, type, props);
 	        this.type = type;
 	    }

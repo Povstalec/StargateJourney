@@ -370,7 +370,6 @@ public abstract class SGJourneySkyRenderer
 		if(sunriseColor != null)
 		{
 			RenderSystem.setShader(GameRenderer::getPositionColorShader);
-			RenderSystem.disableTexture();
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			stack.pushPose();
 			stack.mulPose(Axis.XP.rotationDegrees(90.0F));

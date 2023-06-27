@@ -1,7 +1,146 @@
 1.19.x Changelog
+45.1
+====
+ - 45.1.2 Add proper duplicate mod error message that includes the mod id(s) and mod files. (#9474)
+ - 45.1.1 Make 1.20.x the main TC branch.
+ - 45.1.0 1.19.4 Recommended Build
+
+45.0
+====
+ - 45.0.66 Add method to GatherDataEvent to obtain collection of all input paths. (#9499)
+ - 45.0.65 Log error when Sheets is class-loaded before registration is completed (#9475)
+ - 45.0.64 [1.19.x] Re-implement RenderTooltipEvent.Color (#9497)
+           * Reimplement RenderTooltipEvent.Color
+           * Formatting, comments, EXC
+           * Deprecate instead of replacing
+ - 45.0.63 Add API for registering custom world preset editors (#9436)
+ - 45.0.62 Remove unneeded extra reload of datapacks on world creation screen (#9454)
+ - 45.0.61 Bump ASM to 9.5
+ - 45.0.60 Fix crash when running server from root directory
+           Fixes #9498
+ - 45.0.59 Fix root transform matrix format, allow using all four root transform formats (#9496)
+ - 45.0.58 Add missing AT lines to allow registering custom game rule boolean/integer types (#9489)
+ - 45.0.57 [1.19.x] Fix SaplingGrowTreeEvent#setFeature being ignored in FungusBlock (#9485)
+           Co-authored-by: Brennan Ward <3682588+Shadows-of-Fire@users.noreply.github.com>
+ - 45.0.56 Restore AccessibilityOnboardingScreen
+           Fixes #9488
+ - 45.0.55 Update documentation on FinalizeSpawn (#9467)
+ - 45.0.54 Fix fluids without sound event causing exception in tryFillContainer and tryEmptyContainer (#9445)
+ - 45.0.53 Make FakePlayerFactory respect the given ServerLevel (#9479)
+ - 45.0.52 Collect and log exceptions occurring in DeferredWorkQueue tasks (#9449)
+ - 45.0.51 Fix `NamespacedWrapper#wrapAsHolder` (#9450)
+ - 45.0.50 Fixes ChatScreen calling .setScreen (#9443)
+           Fix test compile failures also.
+ - 45.0.49 Determine the Forge version the PR was built against when running PR compat checks (#9374)
+ - 45.0.48 Add buildscript test to error on deprecated members that should of been removed. (#9460)
+ - 45.0.47 Remove erroneous brace patch in Inventory (#9462)
+           Fixes #9459
+ - 45.0.46 [1.19.4] Move root transform builder to ModelBuilder to allow use in ItemModelBuilder (#9456)
+ - 45.0.45 Fix forge grindstone hooks allowing stacks of non-stackable items (#9457)
+ - 45.0.44 [1.19.4] Fix FMLOnly (#9415)
+ - 45.0.43 Fix ItemLayerModel erroneously adding particle texture to layer texture list (#9441)
+ - 45.0.42 Temporary fix for Canceling ProjectileImpactEvents of Piercing ammo.
+           Event needs to be re-worked to have finer control. #9370
+ - 45.0.41 Fix dummy air blocks not being marked as air (#9440)
+ - 45.0.40 Add support for splitting the login packet (#9367)
+           It contains full copies of data registries and can easily surpass vanilla's limits
+ - 45.0.39 Remove Attack Range and Reach Distance and add Block Reach and Entity Reach (#9361)
+ - 45.0.38 Add default bucket sounds for milk (#9432)
+ - 45.0.37 Deprecate Item.onUsingTick, as vanilla provides the same function in Item.onUseTick now. Closes #9342
+ - 45.0.36 Fix ScreenEvent.Init.[Pre/Post] not working correctly (#9431)
+ - 45.0.35 Allow FenceGateBlock to be used without a WoodType. Closes #9392
+ - 45.0.34 Deprecate duplicate tool tags that vanilla added in 1.19.4
+           We will maintain a seperate 'tools' tag until Mojang adds all relevent tool tags.
+           Closes #9393
+ - 45.0.33 Fix BlockEvent.Break not using ItemStack enchantment hooks.
+ - 45.0.32 Move Block.onCatchFire to above block removal to allow usage of BlockEntity data. Closes #9400
+ - 45.0.31 Fix FinalizeSpawn not blocking spawns during worldgen (#9420)
+ - 45.0.30 Fixed issue with MutableHashedLinkedMap when removing multiple sequential entries in the middle of the map.
+           Added Unit tests for MutableHashLinkedMap
+           Added support for removing using the iterator
+           Added concurrent modification detection to the iterator
+           Added default constructor with basic hashing strategy.
+           Closes #9426
+ - 45.0.29 Loosen access for BucketItem's canBlockContainFluid (#9421)
+ - 45.0.28 Update and Regenerate Datapacks (#9419)
+           Add generation for pack.mcmeta
+ - 45.0.27 Restore ability to change message in ClientChatEvent (#9377)
+ - 45.0.26 Remove duplicate line in FoodData patch (#9424)
+           The line was accidentally duplicated in the 1.19.4 update and patching
+           process.
+           Fixes #9422
+ - 45.0.25 Rename RegisterParticleProviderEvent's register methods to describe what kind of particle providers they register (deprecating old methods to avoid breaking) and minor docs tweaks (#9388)
+ - 45.0.24 Update pack versions (#9414)
+ - 45.0.23 [1.19.4] Revamp and fix spawn events (#9133)
+ - 45.0.22 [1.19.4] Replace blitOffset parameter with PoseStack in IItemDecorator (#9409)
+           * Replace blitOffset with PoseStack in IItemDecorator
+           * Circumvent breaking changes
+           * Fix blitOffset type
+ - 45.0.21 Fix JSON model root transforms (#9410)
+ - 45.0.20 Fix tossed items not being able to be picked up by other players. Closes #9412 (#9404)
+ - 45.0.19 Fix infinite BE render bounds failing frustum intersection test. Closes #9321 (#9407)
+ - 45.0.18 Make ForgeSlider use the new vanilla texture (#9406)
+ - 45.0.17 Add BlockSetType#register to accesstransformer.cfg (#9386)
+ - 45.0.16 Add option to completely hide a crash-callable depending on a runtime value (#9372)
+ - 45.0.15 Add isNewChunk to ChunkEvent.Load (#9369)
+ - 45.0.14 Remove DistExecutor calls in PistonEventTest (#9348)
+ - 45.0.13 Fix hardcoded precipitation in ClimateSettingsBuilder (#9402)
+           This effectively caused all biomes to have precipitation, such as
+           minecraft:desert.
+           Fixes #9397
+ - 45.0.12 Fix incorrect variable used for swimming check (#9403)
+           Because of the incorrect variable, the check to stop sprinting (and stop
+           swimming) never fired correctly.
+           1.19.3's `flag5` variable was renamed to `flag7` in 1.19.4; however,
+           this was not caught during patching because of the fuzzy patcher.
+           Fixes #9399
+ - 45.0.11 Fix incorrect boolean used for glint effect (#9401)
+           The `flag1` variable is ultimately controlled by whether the armor slot
+           being rendered is for the leggings, which explains this bug where the
+           leggings always had the enchantment glint but not any other armor piece.
+           Fixes #9394
+ - 45.0.10 Fixed ModMismatchDisconnectedScreen displaying missing mods wrongly (#9398)
+ - 45.0.9  Fix misaligned text render type patch (#9391)
+ - 45.0.8  Remove thread filter from processing clientside custom payloads. Closes @9390
+ - 45.0.7  Fix LivingEntity patch which caused crash while entities got hurt. Closes #9389
+ - 45.0.6  Fix wrong parameters in `Screen#renderTooltipInternal` patch (#9387)
+ - 45.0.5  Fix misaligned patch in LevelRenderer. Closes #9385
+ - 45.0.4  Remove our fix for MC-121048 as it has been fixed by Vanilla (#9381)
+ - 45.0.3  Fix advancements not loading, bug seems to be fixed by vanilla now. Closes #9384
+ - 45.0.2  Fixed patch verifier for cases where patches lowered access levels. Closes #9383
+ - 45.0.1  Fix crouching while sprinting stopping the player when step height is modified. Closes #9376
+ - 45.0.0  Forge 1.19.4
+           Properly move `ServerStatusPing` to codec
+           Reimplement custom display contexts
+           Co-authored-by: Matyrobbrt <matyrobbrt@gmail.com>
+           Co-authored-by: coehlrich <coehlrich@users.noreply.github.com>
+
 44.1
 ====
- - 44.1.0 Mark 1.19.3 Recommended Build
+ - 44.1.23 Fix experimental world warning screen appearing everytime (#9375)
+ - 44.1.22 Fix continuing to use items after dropping or when a shield breaks (MC-231097, MC-168573) (#9344)
+ - 44.1.21 Add onStopUsing hook to IForgeItem (#9343)
+ - 44.1.20 Document RegisterParticleProvidersEvent's APIs (#9346)
+ - 44.1.19 Fix incorrect ListTag.getLongArray result (MC-260378) (#9351)
+ - 44.1.18 Fix missing patch that left TagBuilder#replace unused (#9354)
+ - 44.1.17 Add 2 new RenderLevelStageEvent.Stage for After Entities and After Block Entities (#9259)
+ - 44.1.16 Cleanup StemBlock Patch (#9337)
+ - 44.1.15 Cleanup ItemProperties patch (#9332)
+ - 44.1.14 Make IForgeIntrinsicHolderTagAppender methods properly chainable (#9331)
+ - 44.1.13 Fix in custom fluids not respecting max height correctly. (#9319)
+ - 44.1.12 Fix inconsistent vaporization in BucketItem & FluidType (#9269)
+ - 44.1.11 Fix reloading event firing during server shutdown and add explicit unloading event instead (#9016)
+ - 44.1.10 Homogenize and/or holdersets when serializing to prevent serializing to NBT from crashing (#9048) Fixes #9043
+ - 44.1.9  [1.19.x] Fix `ForgeSlider` not respecting custom height (#9237)
+ - 44.1.8  Fix stepsound for blocks in the inside_step_sound_blocks tag. (#9318)
+ - 44.1.7  Fix missing hanging sign material for modded wood type (#9303)
+ - 44.1.6  Fire TickEvent.LevelTickEvent on ClientLevel tick (#9299)
+ - 44.1.5  Add ClientChatReceivedEvent for system messages (#9284)
+ - 44.1.4  PR Action update (#9274)
+ - 44.1.3  fix HangingSignEditScreen crash when using custom wood types using modid (#9294)
+ - 44.1.2  Bump SecureJarHandler version, to help identify invalid mods.
+ - 44.1.1  [1.19.3] Hotfix missing null check in createUnbakedItemElements (#9285)
+ - 44.1.0  Mark 1.19.3 Recommended Build
 
 44.0
 ====

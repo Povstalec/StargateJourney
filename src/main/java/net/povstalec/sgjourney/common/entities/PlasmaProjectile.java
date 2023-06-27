@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.entities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,7 +51,7 @@ public class PlasmaProjectile extends ThrowableProjectile
 		{
 			Entity entity = p_37216_.getEntity();
 			Entity entity1 = this.getOwner();
-			entity.hurt(DamageSource.explosion((Player)entity1, entity), 14.0F);
+			entity.hurt(level.damageSources().explosion((Player)entity1, entity), 14.0F);
 			if (entity1 instanceof LivingEntity)
 			{
 				this.doEnchantDamageEffects((LivingEntity)entity1, entity);

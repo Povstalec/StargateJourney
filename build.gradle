@@ -26,7 +26,7 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'official', version: '1.19.3'
+    mappings channel: 'official', version: '1.19.4'
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
@@ -57,7 +57,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                mod_id {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -162,7 +162,7 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19.3-44.1.0'
+    minecraft 'net.minecraftforge:forge:1.19.4-45.1.2'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
@@ -174,14 +174,14 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
-    compileOnly(fg.deobf('com.github.Povstalec:StellarView:fcfdd1ce8a'))
-    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:fcfdd1ce8a'))
+    compileOnly(fg.deobf('com.github.Povstalec:StellarView:4b760b8eaf'))
+    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:4b760b8eaf'))
     
     // compile against the JEI API but do not include it at runtime
-    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+    //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
+    //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
-    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
+    //runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
     
 	compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
 	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
@@ -191,10 +191,10 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:rftools-base-326041:4389811")
     //runtimeOnly fg.deobf("curse.maven:rftools-power-290209:4367297")
     
-    runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
-    runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
-    runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
-	runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
+    //runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
+    //runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
+    //runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
+	//runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

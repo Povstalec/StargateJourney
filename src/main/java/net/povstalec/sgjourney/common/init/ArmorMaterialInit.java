@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.init;
 
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -53,15 +53,15 @@ public enum ArmorMaterialInit implements ArmorMaterial
 	}
 
 	@Override
-	public int getDurabilityForSlot(EquipmentSlot slot) 
+	public int getDurabilityForType(Type type)
 	{
-		return max_damage_array[slot.getIndex()] * this.durability;
+		return max_damage_array[type.getSlot().getIndex()] * this.durability;
 	}
 
 	@Override
-	public int getDefenseForSlot(EquipmentSlot slot) 
+	public int getDefenseForType(Type type)
 	{
-		return this.damageReductionAmounts[slot.getIndex()];
+		return this.damageReductionAmounts[type.getSlot().getIndex()];
 	}
 
 	@Override
