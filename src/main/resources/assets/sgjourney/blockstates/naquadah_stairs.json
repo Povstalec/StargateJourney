@@ -108,7 +108,7 @@
       "y": 90
     },
     "facing=south,half=bottom,shape=outer_left": {
-      "model": "sgjourney:block/naquadah_stairs_outer"
+      "model": "sgjourney:block/cut_naquadah_stairs_outer"
     },
     "facing=south,half=bottom,shape=outer_right": {
       "model": "sgjourney:block/naquadah_stairs_outer",

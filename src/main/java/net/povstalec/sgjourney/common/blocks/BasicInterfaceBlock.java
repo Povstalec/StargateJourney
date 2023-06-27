@@ -8,7 +8,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -32,28 +34,35 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.BasicInterfaceMenu;
+import net.povstalec.sgjourney.common.misc.InterfaceMode;
 
 public class BasicInterfaceBlock extends BaseEntityBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
+	public static final BooleanProperty UPDATE = BooleanProperty.create("update");
+	public static final EnumProperty<InterfaceMode> MODE = EnumProperty.create("mode", InterfaceMode.class);
 	
 	public BasicInterfaceBlock(Properties properties)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(UPDATE, false).setValue(MODE, InterfaceMode.OFF));
 	}
 	 
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(FACING);
+		state.add(FACING).add(UPDATE).add(MODE);
 	}
 	 
 	public BlockState rotate(BlockState state, Rotation rotation)
@@ -80,27 +89,31 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if (!level.isClientSide) 
+        if(!level.isClientSide()) 
         {
-    		BlockEntity blockEntity = level.getBlockEntity(pos);
-			
-        	if (blockEntity instanceof BasicInterfaceEntity) 
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			if(blockEntity instanceof BasicInterfaceEntity basicInterface) 
         	{
-        		MenuProvider containerProvider = new MenuProvider() 
+        		if(!player.isShiftKeyDown())
         		{
-        			@Override
-        			public Component getDisplayName() 
-        			{
-        				return Component.translatable("screen.sgjourney.basic_interface");
-        			}
-        			
-        			@Override
-        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-        			{
-        				return new BasicInterfaceMenu(windowId, playerInventory, blockEntity);
-        			}
-        		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        			MenuProvider containerProvider = new MenuProvider() 
+            		{
+            			@Override
+            			public Component getDisplayName() 
+            			{
+            				return Component.translatable("screen.sgjourney.basic_interface");
+            			}
+            			
+            			@Override
+            			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
+            			{
+            				return new BasicInterfaceMenu(windowId, playerInventory, blockEntity);
+            			}
+            		};
+            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        		}
+        		else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
+        			level.setBlock(pos, state.cycle(MODE), 3);
         	}
         	else
         	{
@@ -126,7 +139,7 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof BasicInterfaceEntity)
 		{
-			if (!level.isClientSide && !player.isCreative())
+			if(!level.isClientSide() && !player.isCreative())
 			{
 				ItemStack itemstack = new ItemStack(getDroppedBlock());
 				
@@ -142,6 +155,18 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 	}
 	
 	@Override
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
+	{
+		level.setBlock(pos, state.setValue(UPDATE, false), 3);
+	}
+	
+	public void updateInterface(BlockState state, Level level, BlockPos pos)
+	{
+		level.setBlock(pos, state.setValue(BasicInterfaceBlock.UPDATE, true), 3);
+		level.scheduleTick(pos, this, 2);
+	}
+	
+	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
 	{
 		if(level.isClientSide())
@@ -150,7 +175,7 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 		Direction direction = state.getValue(FACING);
 		BlockPos targetPos = pos.relative(direction);
 		
-		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof BasicInterfaceEntity basicInterface && basicInterface.updateInterface())
+		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof BasicInterfaceEntity basicInterface && basicInterface.updateInterface(level, targetPos, block, state))
 			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 	}
 	
@@ -165,20 +190,56 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 	{
 		return 5000000;
 	}
-
-	public boolean hasAnalogOutputSignal(BlockState state) {
+	
+	public int comparatorOutput(BlockState state, EnergyBlockEntity blockEntity)
+	{
+		switch(state.getValue(MODE))
+		{
+		case RING_ROTATION:
+			return getRotationOutput(blockEntity);
+		case CHEVRONS_ACTIVE:
+			return getChevronOutput(blockEntity);
+		case WORMHOLE_ACTIVE:
+			return getConnectionOutput(blockEntity);
+		default:
+			return 0;
+		}
+	}
+	
+	private int getRotationOutput(EnergyBlockEntity blockEntity)
+	{
+		if(blockEntity instanceof MilkyWayStargateEntity stargate)
+			return stargate.getCurrentSymbol() / 3;
+		return 0;
+	}
+	
+	private int getChevronOutput(EnergyBlockEntity blockEntity)
+	{
+		if(blockEntity instanceof AbstractStargateEntity stargate)
+			return stargate.getChevronsEngaged();
+		return 0;
+	}
+	
+	private int getConnectionOutput(EnergyBlockEntity blockEntity)
+	{
+		if(blockEntity instanceof AbstractStargateEntity stargate)
+			return stargate.isConnected() ? 15 : 0;
+		return 0;
+	}
+	
+	@Override
+	public boolean hasAnalogOutputSignal(BlockState state)
+	{
 		return true;
 	}
 
-	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+	@Override
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)
+	{
 		BlockEntity entity = level.getBlockEntity(pos);
 
-		if (entity instanceof BasicInterfaceEntity basicInterface) {
-			BlockEntity energyBlockEntity = basicInterface.findEnergyBlockEntity();
-			if (energyBlockEntity instanceof MilkyWayStargateEntity stargate) {
-				return stargate.getCurrentSymbol() / 3;
-			}
-		}
+		if(entity instanceof BasicInterfaceEntity basicInterface)
+			return comparatorOutput(state, basicInterface.energyBlockEntity);
 
 		return 0;
 	}

@@ -36,7 +36,7 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 	    public long extractLongEnergy(long maxExtract, boolean simulate)
 	    {
 	    	loadEnergy();
-	        return super.receiveLongEnergy(maxExtract, simulate);
+	        return super.extractLongEnergy(maxExtract, simulate);
 	    }
 		
 		public long getTrueEnergyStored()

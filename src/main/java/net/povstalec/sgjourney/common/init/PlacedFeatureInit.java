@@ -25,9 +25,9 @@ public class PlacedFeatureInit
 	public static final ResourceKey<PlacedFeature> STONE_NAQUADAH_SPIRE_PLACED_KEY = createKey("stone_naquadah_spire");
 	public static final ResourceKey<PlacedFeature> BLACKSTONE_NAQUADAH_SPIRE_PLACED_KEY = createKey("blackstone_naquadah_spire");
     public static final RegistryObject<PlacedFeature> STONE_NAQUADAH_SPIRE_PLACED = PLACED_FEATURES.register("stone_naquadah_spire",
-    		() -> new PlacedFeature(FeatureInit.STONE_NAQUADAH_SPIRE.getHolder().get(), oreSpirePlacement(PlacementUtils.countExtra(0, 0.01F, 1))))));
-    	    public static final RegistryObject<PlacedFeature> BLACKSTONE_NAQUADAH_SPIRE_PLACED = PLACED_FEATURES.register("blackstone_naquadah_spire",
-    	    		() -> new PlacedFeature(FeatureInit.BLACKSTONE_NAQUADAH_SPIRE.getHolder().get(), oreSpirePlacement(PlacementUtils.countExtra(0, 0.01F, 1))))));
+    		() -> new PlacedFeature(FeatureInit.STONE_NAQUADAH_SPIRE.getHolder().get(), oreSpirePlacement(PlacementUtils.countExtra(0, 0.01F, 1))));
+    public static final RegistryObject<PlacedFeature> BLACKSTONE_NAQUADAH_SPIRE_PLACED = PLACED_FEATURES.register("blackstone_naquadah_spire",
+    	    () -> new PlacedFeature(FeatureInit.BLACKSTONE_NAQUADAH_SPIRE.getHolder().get(), oreSpirePlacement(PlacementUtils.countExtra(0, 0.01F, 1))));
 
     private static ResourceKey<PlacedFeature> createKey(String name)
     {

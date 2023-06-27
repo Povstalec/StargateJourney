@@ -45,7 +45,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 			player.sendSystemMessage(Component.translatable(block.getDescriptionId()).withStyle(ChatFormatting.GRAY));
 		
 		if(block instanceof AbstractStargateRingBlock)
-			blockpos = state.getValue(AbstractStargateRingBlock.PART).getMainBlockPos(blockpos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
+			blockpos = state.getValue(AbstractStargateRingBlock.PART).getBaseBlockPos(blockpos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
 		
 		if(level.getBlockEntity(blockpos) instanceof EnergyBlockEntity blockEntity)
 			blockEntity.getStatus(player);

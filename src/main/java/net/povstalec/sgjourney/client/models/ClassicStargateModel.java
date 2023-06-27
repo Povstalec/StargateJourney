@@ -32,6 +32,8 @@ public class ClassicStargateModel
 		this.outerRing = outerRing;
 		this.innerRing = innerRing;
 		this.chevrons = chevrons;
+		
+		//ModelPart.Vertex vertex = new ModelPart.Vertex(new Vector3f(0, 0, 0), 0.0F, 0.0F);
 	}
 	
 	public void renderStargate(ClassicStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 

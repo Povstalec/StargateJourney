@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "sgjourney:block/naquadah_block_top",
-    "side": "sgjourney:block/naquadah_block"
-  }
+	"parent": "minecraft:block/cube_all",
+	"textures":
+	{
+		"all": "sgjourney:block/naquadah_block"
+	}
 }

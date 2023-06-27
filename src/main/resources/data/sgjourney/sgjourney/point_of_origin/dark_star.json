@@ -1,0 +1,5 @@
+{
+	"name": "point_of_origin.sgjourney.dark_star",
+	"texture": "sgjourney:milky_way/points_of_origin/dark_star.png",
+	"generates_randomly": false
+}

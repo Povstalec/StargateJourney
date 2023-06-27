@@ -64,7 +64,7 @@ public class TransportRingsBlock extends SGJourneyBaseEntityBlock
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if (blockentity instanceof SGJourneyBlockEntity baseBlockEntity)
 		{
-			if (!level.isClientSide)
+			if (!level.isClientSide() && !player.isCreative())
 			{
 				ItemStack itemstack = new ItemStack(BlockInit.TRANSPORT_RINGS.get());
 				

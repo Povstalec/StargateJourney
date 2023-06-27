@@ -44,6 +44,8 @@ import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateRingBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.symbols.SandstoneCartoucheBlock;
@@ -53,6 +55,7 @@ import net.povstalec.sgjourney.common.blocks.symbols.StoneSymbolBlock;
 import net.povstalec.sgjourney.common.items.DHDItem;
 import net.povstalec.sgjourney.common.items.SGJourneyBlockItem;
 
+//A class for initializing blocks
 public class BlockInit
 {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, StargateJourney.MODID);
@@ -83,7 +86,12 @@ public class BlockInit
 	public static final RegistryObject<ClassicStargateRingBlock> CLASSIC_RING = BLOCKS.register("classic_ring", 
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
-	
+	public static final RegistryObject<TollanStargateBlock> TOLLAN_STARGATE = registerEntityBlock("tollan_stargate",
+			() -> new TollanStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
+					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
+	public static final RegistryObject<TollanStargateRingBlock> TOLLAN_RING = BLOCKS.register("tollan_ring",
+			() -> new TollanStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
+					.sound(SoundType.METAL).noOcclusion()));
 	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd", 
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
@@ -112,14 +120,21 @@ public class BlockInit
 	public static final RegistryObject<ExplosiveBlock> RAW_NAQUADAH_BLOCK = registerBlock("raw_naquadah_block", 
 			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 10.0F));
 	
-	public static final RegistryObject<LiquidBlock> LIQUID_NAQUADAH_BLOCK = registerBlock("liquid_naquadah", 
+	public static final RegistryObject<LiquidBlock> LIQUID_NAQUADAH_BLOCK = BLOCKS.register("liquid_naquadah", 
 			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
 	
 	public static final RegistryObject<Block> NAQUADAH_BLOCK = registerBlock("naquadah_block", 
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> NAQUADAH_STAIRS = registerBlock("naquadah_stairs", 
 			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> NAQUADAH_SLAB = registerBlock("naquadah_slab", 
+			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> CUT_NAQUADAH_BLOCK = registerBlock("cut_naquadah_block", 
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> CUT_NAQUADAH_STAIRS = registerBlock("cut_naquadah_stairs", 
+			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> CUT_NAQUADAH_SLAB = registerBlock("cut_naquadah_slab", 
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<GoldenIdolBlock> GOLDEN_IDOL = registerBlock("golden_idol", 
@@ -168,8 +183,8 @@ public class BlockInit
 			() -> new ZPMHubBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	// ZPM Plug
 	
-	public static final RegistryObject<CrystallizerBlock> CRYSTALLIZER = registerBlock("crystallizer", 
-			() -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+	public static final RegistryObject<CrystallizerBlock> CRYSTALLIZER = BLOCKS.register("crystallizer", 
+			() -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)));
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)
@@ -241,7 +256,7 @@ public class BlockInit
 	
 	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
+		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant().tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, int stacksTo)

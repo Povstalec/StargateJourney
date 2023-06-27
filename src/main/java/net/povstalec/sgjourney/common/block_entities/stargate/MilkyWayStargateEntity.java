@@ -10,18 +10,18 @@ import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Addressing;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -30,22 +30,23 @@ import net.povstalec.sgjourney.common.stargate.StargatePart;
 public class MilkyWayStargateEntity extends AbstractStargateEntity
 {
 	private static final double angle = (double) 360 / 39;
-	
+
 	private int rotation = 0;
 	public int oldRotation = 0;
 	public boolean isChevronRaised = false;
 	private Map<StargatePart, Integer> signalMap = Maps.newHashMap();
 	public int signalStrength = 0;
-	
 	public boolean computerRotation = false;
 	public int desiredSymbol = 0;
 	public boolean rotateClockwise = true;
 	
-	public MilkyWayStargateEntity(BlockPos pos, BlockState state) 
+	public SoundWrapper buildupSound = null;
+
+	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), pos, state, Stargate.Gen.GEN_2);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2);
 	}
-	
+
 	@Override
     public void onLoad()
 	{
@@ -55,58 +56,61 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
         	Random random = new Random();
         	setRotation(2 * random.nextInt(0, 181));
         }
-		
+
         super.onLoad();
-        
+
         if(this.level.isClientSide())
         	return;
-        
+
         if(!isPointOfOriginValid(this.level))
         {
         	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
         	setPointOfOrigin(this.getLevel());
         }
-        
+
         if(!areSymbolsValid(this.level))
         {
         	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
         	setSymbols(this.getLevel());
         }
     }
-	
+
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		
+
 		this.pointOfOrigin = nbt.getString("PointOfOrigin");
 		this.symbols = nbt.getString("Symbols");
 		this.rotation = nbt.getInt("Rotation");
 		this.oldRotation = this.rotation;
 	}
-	
+
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
 		super.saveAdditional(nbt);
-		
+
 		nbt.putString("PointOfOrigin", pointOfOrigin);
 		nbt.putString("Symbols", symbols);
 		nbt.putInt("Rotation", rotation);
 	}
-	
+
 	public SoundEvent chevronEngageSound()
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
+	}
+
+	public SoundEvent chevronEncodeSound()
+	{
+		return SoundInit.MILKY_WAY_CHEVRON_ENCODE.get();
 	}
 	
 	public SoundEvent failSound()
 	{
 		return SoundInit.MILKY_WAY_DIAL_FAIL.get();
 	}
-	
+
 	private void manualDialing()
 	{
-		setBestRedstoneSignal();
-		
 		if(this.signalStrength > 0)
 		{
 			if(this.signalStrength == 15)
@@ -121,19 +125,22 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		{
 			lowerChevron();
 		}
-		
+
 		if(!this.level.isClientSide())
 			synchronizeWithClient(this.level);
 	}
 	
-	private void setBestRedstoneSignal()
+	private boolean hadBestRedstoneSignalChanged()
 	{
+		int previousSignalStrength = signalStrength;
 		this.signalStrength = 0;
 		this.signalMap.forEach((stargatePart, signal) -> 
 		{
 			if(signal > this.signalStrength)
 				this.signalStrength = signal;
 		});
+
+		return previousSignalStrength != signalStrength;
 	}
 	
 	public void updateSignal(StargatePart part, int signal)
@@ -144,8 +151,10 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		if(this.signalMap.containsKey(part))
 			this.signalMap.remove(part);
 		this.signalMap.put(part, signal);
-		
-		manualDialing();
+
+		if (hadBestRedstoneSignalChanged()) {
+			manualDialing();
+		}
 	}
 	
 	public int getRotation()
@@ -173,26 +182,27 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		if(!this.isChevronRaised && !Addressing.addressContainsSymbol(getAddress(), getCurrentSymbol()))
 		{
-			this.level.playSound((Player)null, this.worldPosition, SoundInit.MILKY_WAY_CHEVRON_ENCODE.get(), SoundSource.BLOCKS, 0.25F, 1F);
+			if(!level.isClientSide())
+				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, true));
 			this.isChevronRaised = true;
 			return Stargate.Feedback.CHEVRON_RAISED;
 		}
-		return Stargate.Feedback.CHEVRON_ALREADY_RAISED;
+		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_RAISED);
 	}
 	
 	public Stargate.Feedback lowerChevron()
 	{
 		if(this.isChevronRaised)
 		{
-			engageSymbol(getCurrentSymbol());
+			;
 			this.isChevronRaised = false;
-			return Stargate.Feedback.CHEVRON_LOWERED;
+			return setRecentFeedback(engageSymbol(getCurrentSymbol()));
 		}
 		
-		if(!this.level.isClientSide())
-			synchronizeWithClient(this.level);
+		if(!level.isClientSide())
+			synchronizeWithClient(level);
 		
-		return Stargate.Feedback.CHEVRON_ALREADY_LOWERED;
+		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_LOWERED);
 	}
 	
 	public int getCurrentSymbol()
@@ -212,6 +222,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
 	{
 		stargate.rotate();
+		if(stargate.isRotating() && !level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 	}
@@ -267,8 +279,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
 		double position = this.rotation / angle;
-		double lowerBound = (double) (desiredSymbol - 0.1);
-		double upperBound = (double) (desiredSymbol + 0.1);
+		double lowerBound = (double) (desiredSymbol - 0.12);
+		double upperBound = (double) (desiredSymbol + 0.12);
 		
 		if(position > lowerBound && position < upperBound)
 			return true;
@@ -295,6 +307,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		this.computerRotation = true;
 		this.desiredSymbol = desiredSymbol;
 		this.rotateClockwise = rotateClockwise;
+		if(!this.level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.MilkyWayBuildup(worldPosition));
 		
 		synchronizeWithClient(this.level);
 	}
@@ -305,4 +319,24 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		
 		synchronizeWithClient(this.level);
 	}
+	
+	public void playBuildupSound()
+	{
+		if(this.buildupSound.isPlaying())
+			this.buildupSound.stopSound();
+		this.buildupSound.playSound();
+	}
+
+	@Override
+	public void playRotationSound()
+	{
+		if(!this.spinSound.isPlaying())
+		{
+			this.spinSound.stopSound();
+			this.spinSound.playSound();
+		}
+	}
+
+	@Override
+	public void stopRotationSound(){}
 }

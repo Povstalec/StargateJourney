@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidType;
-import net.povstalec.sgjourney.StargateJourney;
 
 public class NaquadahFluidType extends FluidType
 {

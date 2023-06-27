@@ -6,6 +6,9 @@
 	"block.sgjourney.naquadah_block": "Block of Naquadah",
 	"block.sgjourney.naquadah_stairs": "Naquadah Stairs",
 	"block.sgjourney.naquadah_slab": "Naquadah Slab",
+	"block.sgjourney.cut_naquadah_block": "Cut Block of Naquadah",
+	"block.sgjourney.cut_naquadah_stairs": "Cut Naquadah Stairs",
+	"block.sgjourney.cut_naquadah_slab": "Cut Naquadah Slab",
 	"block.sgjourney.fire_pit": "Fire Pit",
 	"block.sgjourney.archeology_table": "Archeology Table",
 	"block.sgjourney.golden_idol": "Golden Idol",
@@ -24,6 +27,10 @@
 	"block.sgjourney.milky_way_ring": "Milky Way Stargate",
 	"block.sgjourney.pegasus_stargate": "Pegasus Stargate",
 	"block.sgjourney.pegasus_ring": "Pegasus Stargate",
+	"block.sgjourney.tollan_stargate": "Tollan Stargate",
+	"block.sgjourney.tollan_ring": "Tollan Stargate",
+	"block.sgjourney.classic_stargate": "Classic Stargate",
+	"block.sgjourney.classic_ring": "Classic Stargate",
 	"block.sgjourney.milky_way_dhd": "Milky Way DHD",
 	"block.sgjourney.pegasus_dhd": "Pegasus DHD",
 	"block.sgjourney.classic_dhd": "Classic DHD",
@@ -53,6 +60,10 @@
 	"item.sgjourney.naquadah": "Weapons Grade Naquadah",
 	"item.sgjourney.liquid_naquadah_bucket": "Liquid Naquadah Bucket",
 	"item.sgjourney.liquid_naquadah_bottle": "Liquid Naquadah Bottle",
+	
+	"item.sgjourney.naquadah_rod": "Naquadah Rod",
+	"item.sgjourney.reaction_chamber": "Reaction Chamber",
+	"item.sgjourney.plasma_converter": "Plasma Converter",
 
 	"item.sgjourney.control_crystal": "Control Crystal",
 	"item.sgjourney.large_control_crystal": "Large Control Crystal",
@@ -80,6 +91,7 @@
 	
 	"item.sgjourney.pda": "PDA",
 	"item.sgjourney.zero_point_module": "Zero Point Module",
+	"item.sgjourney.personal_shield_emitter": "Personal Shield Emitter",
 	
 	"item.sgjourney.syringe": "Syringe",
 	
@@ -136,11 +148,19 @@
 	"solar_system.sgjourney.end": "End",
 	"solar_system.sgjourney.chulak": "Chulak",
 	"solar_system.sgjourney.lantea": "Lantea",
-	"solar_system.ad_astra.lantea": "Glacio",
+	"solar_system.sgjourney.proxima_centauri": "Proxima Centauri",
 	
-	"symbols.sgjourney.milky_way": "Milky Way",
-	"symbols.sgjourney.pegasus": "Pegasus",
-	"symbols.sgjourney.universal": "Universal",
+	"symbol_set.sgjourney.milky_way": "Milky Way",
+	"symbol_set.sgjourney.kaliem": "Kaliem",
+	"symbol_set.sgjourney.pegasus": "Pegasus",
+	"symbol_set.sgjourney.universal": "Universal",
+	
+	"symbols.sgjourney.terra": "Terra",
+	"symbols.sgjourney.abydos": "Abydos",
+	"symbols.sgjourney.chulak": "Chulak",
+	"symbols.sgjourney.lantea": "Lantea",
+	"symbols.sgjourney.nether": "Nether",
+	"symbols.sgjourney.end": "End",
 	
 	"point_of_origin.sgjourney.terra": "Terra",
 	"point_of_origin.sgjourney.tauri": "Tau'ri",
@@ -148,6 +168,7 @@
 	"point_of_origin.sgjourney.abydos": "Abydos",
 	"point_of_origin.sgjourney.kaliem": "Kaliem",
 	"point_of_origin.sgjourney.subido": "Subido",
+	"point_of_origin.sgjourney.centauri": "Centauri",
 	"point_of_origin.sgjourney.destiny": "Destiny",
 	"point_of_origin.sgjourney.universal": "Universal",
 	"point_of_origin.sgjourney.eye_of_ra": "Eye of Ra",
@@ -165,9 +186,13 @@
 	"tooltip.sgjourney.communication_crystal.frequency": "Frequency: ",
 	"tooltip.sgjourney.energy_crystal.energy": "Energy: ",
 	
+	"tooltip.sgjourney.energy": "Energy: ",
+	"tooltip.sgjourney.energy_transfer": "Max Energy Transfer: ",
+	"tooltip.sgjourney.matok.open": "Open",
+	"tooltip.sgjourney.matok.closed": "Closed",
 	"tooltip.sgjourney.kara_kesh.terror": "Mode: Terror",
 	"tooltip.sgjourney.kara_kesh.knockback": "Mode: Knockback",
-	"tooltip.sgjourney.pda_info": "Right-click: Get information about the target",
+	"tooltip.sgjourney.pda.info": "Right-click: Get information about the target",
 	"tooltip.sgjourney.syringe.contents": "Contents:",
 	"tooltip.sgjourney.syringe.empty": "Empty",
 	"tooltip.sgjourney.syringe.blood": "Blood",
@@ -228,5 +253,8 @@
 	"gui.sgjourney.config_stargate": "Stargate",
 	
 	"gui.sgjourney.disable_smooth_animations": "Disable Smooth Animations",
-	"gui.sgjourney.use_movie_stargate_model": "Use Movie Stargate Model"
+	"gui.sgjourney.unique_symbols": "Unique Symbols",
+	"gui.sgjourney.use_movie_stargate_model": "Use Movie Stargate Model",
+	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",
+	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back"
 }

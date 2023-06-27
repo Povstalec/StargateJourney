@@ -12,6 +12,7 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
+import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Addressing;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -22,11 +23,10 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public int[] addressBuffer = new int[0];
 	public int symbolBuffer = 0;
 	private boolean passedOver = false;
-	public int animationTick = 0;
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), pos, state, Stargate.Gen.GEN_3);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), pos, state, Stargate.Gen.GEN_3, 3);
 	}
 	
 	@Override
@@ -79,8 +79,22 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(Addressing.addressContainsSymbol(addressBuffer, symbol))
 			return Stargate.Feedback.SYMBOL_ENCODED;
 		
+		if(addressBuffer.length == getAddress().length)
+		{
+			if(!this.level.isClientSide())
+				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
+		}
+		
 		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
 		return Stargate.Feedback.SYMBOL_ENCODED;
+	}
+	
+	@Override
+	protected Stargate.Feedback lockPrimaryChevron()
+	{
+		if(!this.level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
+		return super.lockPrimaryChevron();
 	}
 	
 	@Override
@@ -88,33 +102,25 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		symbolBuffer++;
 		passedOver = false;
-		animationTick = 0;
-		return super.encodeChevron(symbol);
+		
+		if(!this.level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
+		Stargate.Feedback feedback = super.encodeChevron(symbol);
+		
+		if(addressBuffer.length > getAddress().length)
+		{
+			if(!this.level.isClientSide())
+				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
+		}
+		
+		return feedback;
 	}
 	
 	public int getChevronPosition(int chevron)
 	{
-		switch(chevron)
-		{
-		case 1:
-			return 4;
-		case 2:
-			return 8;
-		case 3:
-			return 12;
-		case 4:
-			return 24;
-		case 5:
-			return 28;
-		case 6:
-			return 32;
-		case 7:
-			return 16;
-		case 8:
-			return 20;
-		default:
+		if(chevron < 1 || chevron > 8)
 			return 0;
-		}
+		return new int[] {4, 8, 12, 24, 28, 32, 16, 20}[chevron - 1];
 	}
 	
 	private void animateSpin()
@@ -142,9 +148,6 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			else
 				symbolWork();
 		}
-		
-		/*if(animationTick == 1)
-			Minecraft.getInstance().getSoundManager().play(new PegasusStargateRingSound(this, symbolBuffer));*/
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, PegasusStargateEntity stargate)
@@ -160,9 +163,6 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	
 	private void symbolWork()
 	{
-		/*if(!canSpin())
-			return;*/
-		
 		if(symbolBuffer % 2 == 0)
 			currentSymbol--;
 		else
@@ -172,8 +172,6 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			currentSymbol = 0;
 		else if(currentSymbol < 0)
 			currentSymbol = 35;
-
-		animationTick++;
 	}
 	
 	@Override
@@ -183,5 +181,18 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		symbolBuffer = 0;
 		addressBuffer = new int[0];
 		return super.resetStargate(feedback);
+	}
+
+	@Override
+	public void playRotationSound()
+	{
+		this.stopRotationSound();
+		this.spinSound.playSound();
+	}
+
+	@Override
+	public void stopRotationSound()
+	{
+		this.spinSound.stopSound();
 	}
 }

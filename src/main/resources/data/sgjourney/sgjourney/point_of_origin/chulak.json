@@ -1,0 +1,5 @@
+{
+	"name": "point_of_origin.sgjourney.chulak",
+	"texture": "sgjourney:milky_way/points_of_origin/chulak.png",
+	"generates_randomly": false
+}

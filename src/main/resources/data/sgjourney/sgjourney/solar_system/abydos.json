@@ -1,6 +1,6 @@
 {
 	"name": "solar_system.sgjourney.abydos",
-	"symbols": "sgjourney:milky_way",
+	"symbols": "sgjourney:abydos",
 	"extragalactic_address": [1, 26, 6, 14, 31, 11, 29],
 	"point_of_origin": "sgjourney:abydos",
 	"dimensions":

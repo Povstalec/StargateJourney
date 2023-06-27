@@ -16,8 +16,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.data.RingsNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 
 public class CommandInit
@@ -175,7 +175,7 @@ public class CommandInit
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Transport Rings"));
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
 		
-		CompoundTag ringsNetwork = RingsNetwork.get(level).getRings(dimension);
+		CompoundTag ringsNetwork = TransporterNetwork.get(level).getRings(dimension);
 		System.out.println(ringsNetwork);
 		List<String> ringsNList = ringsNetwork.getAllKeys().stream().toList();
 		for(int i = 0; i < ringsNList.size(); i++)
@@ -200,9 +200,9 @@ public class CommandInit
 		System.out.println("=============================");
 		System.out.println("Stargates:\n" + StargateNetwork.get(level).getStargates());
 		System.out.println("Stargates in Solar Systems:\n" + StargateNetwork.get(level).getSolarSystems());
-		System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
+		//System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
 
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info on console"));
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info onto the console"));
 		
 		return Command.SINGLE_SUCCESS;
 	}

@@ -5,14 +5,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.ClassicStargateModel;
-import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.client.models.FalconArmorModel;
 import net.povstalec.sgjourney.client.models.JackalArmorModel;
 import net.povstalec.sgjourney.client.models.MilkyWayStargateModel;
 import net.povstalec.sgjourney.client.models.PegasusStargateModel;
+import net.povstalec.sgjourney.client.models.TollanStargateModel;
 import net.povstalec.sgjourney.client.models.TransportRingsModel;
 import net.povstalec.sgjourney.client.models.UniverseStargateModel;
-import net.povstalec.sgjourney.client.render.SymbolBlockRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
 
 public class Layers
 {
@@ -42,9 +42,14 @@ public class Layers
 	public static final ModelLayerLocation CLASSIC_OUTER_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "classic_outer_ring_layer"), "main");
 	public static final ModelLayerLocation CLASSIC_INNER_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "classic_inner_ring_layer"), "main");
 	public static final ModelLayerLocation CLASSIC_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "classic_chevron_layer"), "main");
+	// Tollan Stargate
+	public static final ModelLayerLocation TOLLAN_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "tollan_ring_layer"), "main");
+	public static final ModelLayerLocation TOLLAN_SYMBOL_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "tollan_symbol_ring_layer"), "main");
+	public static final ModelLayerLocation TOLLAN_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "tollan_chevron_layer"), "main");
+
 	// Wormhole
-	public static final ModelLayerLocation EVENT_HORIZON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "event_horizon_layer"), "main");
-	public static final ModelLayerLocation KAWOOSH_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "kawoosh_layer"), "main");
+	//public static final ModelLayerLocation EVENT_HORIZON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "event_horizon_layer"), "main");
+	//public static final ModelLayerLocation KAWOOSH_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "kawoosh_layer"), "main");
 	
 	// Armor
 	public static final ModelLayerLocation FALCON_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "falcon_head"), "main");
@@ -77,8 +82,12 @@ public class Layers
 		event.registerLayerDefinition(CLASSIC_OUTER_RING_LAYER, () -> ClassicStargateModel.createOuterRingLayer());
 		event.registerLayerDefinition(CLASSIC_INNER_RING_LAYER, () -> ClassicStargateModel.createInnerRingLayer());
 		event.registerLayerDefinition(CLASSIC_CHEVRON_LAYER, () -> ClassicStargateModel.createChevronLayer());
+		// Tollan Stargate
+		event.registerLayerDefinition(TOLLAN_RING_LAYER, () -> TollanStargateModel.createRingLayer());
+		event.registerLayerDefinition(TOLLAN_SYMBOL_RING_LAYER, () -> TollanStargateModel.createSymbolRingLayer());
+		event.registerLayerDefinition(TOLLAN_CHEVRON_LAYER, () -> TollanStargateModel.createChevronLayer());
 		// Wormhole
-		event.registerLayerDefinition(EVENT_HORIZON_LAYER, () -> WormholeModel.createEventHorizonLayer());
+		//event.registerLayerDefinition(EVENT_HORIZON_LAYER, () -> WormholeModel.createEventHorizonLayer());
 		//event.registerLayerDefinition(KAWOOSH_LAYER, () -> WormholeModel.createKawooshLayer());
 		//event.registerLayerDefinition(VORTEX_LAYER, () -> WormholeModel.createVortexLayer());
 		

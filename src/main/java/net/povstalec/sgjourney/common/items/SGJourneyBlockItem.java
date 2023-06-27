@@ -87,14 +87,17 @@ public class SGJourneyBlockItem extends BlockItem
 			if(info.contains(ADD_TO_NETWORK))
 				addToNetwork = info.getBoolean(ADD_TO_NETWORK);
 			
-			// Registers it as one of the Block Entities in the list
-			if(info.contains(ID) && !info.getString(ID).equals(StargateJourney.EMPTY))
-				blockEntity.addToBlockEntityList();
-			else
-				blockEntity.addNewToBlockEntityList();
-			
-			if(blockEntity instanceof AbstractStargateEntity stargate)
-				StargateNetwork.get(level).updateStargate(level, info.getString(ID), info.getInt(TIMES_OPENED), false);//TODO Add stuff for having a DHD
+			if(addToNetwork)
+			{
+				// Registers it as one of the Block Entities in the list
+				if(info.contains(ID) && !info.getString(ID).equals(StargateJourney.EMPTY))
+					blockEntity.addToBlockEntityList();
+				else
+					blockEntity.addNewToBlockEntityList();
+				
+				if(blockEntity instanceof AbstractStargateEntity stargate)
+					StargateNetwork.get(level).updateStargate(level, info.getString(ID), info.getInt(TIMES_OPENED), false);//TODO Add stuff for having a DHD
+			}
 			
 			// Sets up symbols on the Milky Way Stargate
 			if(blockEntity instanceof MilkyWayStargateEntity milkyWayStargate)

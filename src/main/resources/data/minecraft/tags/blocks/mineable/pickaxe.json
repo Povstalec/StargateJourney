@@ -26,6 +26,9 @@
 		"sgjourney:naquadah_block",
 		"sgjourney:naquadah_stairs",
 		"sgjourney:naquadah_slab",
+		"sgjourney:cut_naquadah_block",
+		"sgjourney:cut_naquadah_stairs",
+		"sgjourney:cut_naquadah_slab",
 		
 		"sgjourney:sandstone_with_lapis",
 		"sgjourney:sandstone_hieroglyphs",

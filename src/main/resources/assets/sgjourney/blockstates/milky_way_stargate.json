@@ -1,6 +1,5 @@
 {
-	"variants": 
-	{
+	"variants": {
 		"facing=north": { "model": "sgjourney:block/milky_way_stargate" },
 		"facing=south": { "model": "sgjourney:block/milky_way_stargate", "y": 180 },
 		"facing=west": { "model": "sgjourney:block/milky_way_stargate", "y": 270 },

@@ -19,11 +19,11 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public class PegasusStargateModel extends AbstractStargateModel
 {
-	private static final String CHEVRON = ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? "pegasus_chevron" : "pegasus_chevron_front";
+	//private static final String CHEVRON = ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? "pegasus_chevron" : "pegasus_chevron_front";
 	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_outer_ring.png");
 	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_inner_ring.png");
-	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/" + CHEVRON + ".png");
-	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/" + CHEVRON + "_lit.png");
+	//private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/" + CHEVRON + ".png");
+	//private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/" + CHEVRON + "_lit.png");
 	
 	private final ModelPart ring;
 	private final ModelPart symbolRing;
@@ -35,6 +35,7 @@ public class PegasusStargateModel extends AbstractStargateModel
 	
 	public PegasusStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
 	{
+		super("pegasus");
 		this.ring = ring;
 		this.symbolRing = symbolRing;
 		this.dividers = dividers;
@@ -64,15 +65,15 @@ public class PegasusStargateModel extends AbstractStargateModel
 		if(isBottomCovered)
 			start = 1;
 		
-		for(int i = start; i < 36; i++)
+		for(int i = start; i < BOXES_PER_RING; i++)
 		{
 			outerRing.getChild("outer_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
 		}
-		for(int i = 0; i < 36; i++)
+		for(int i = 0; i < BOXES_PER_RING; i++)
 		{
 			backRing.getChild("back_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
 		}
-		for(int i = start; i < 36; i++)
+		for(int i = start; i < BOXES_PER_RING; i++)
 		{
 			innerRing.getChild("inner_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
 		}
@@ -173,12 +174,12 @@ public class PegasusStargateModel extends AbstractStargateModel
 	protected void renderChevron(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay, int chevronNumber)
 	{
-		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
+		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), false)));
 		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
 		if(stargate.chevronsRendered() >= chevronNumber)
 		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
+			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), true)));
 			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
 		}
 	}
@@ -186,12 +187,12 @@ public class PegasusStargateModel extends AbstractStargateModel
 	protected void renderPegasusPrimaryChevron(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer chevron_texture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
+		VertexConsumer chevron_texture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), false)));
 	    this.getChevron(0).render(stack, chevron_texture, combinedLight, combinedOverlay);
 		
 		if(stargate.isConnected())
 		{
-			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
+			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), true)));
 		    this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
 		}
 	}

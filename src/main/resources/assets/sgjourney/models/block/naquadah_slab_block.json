@@ -1,0 +1,8 @@
+{
+	"parent": "minecraft:block/cube_column",
+	"textures":
+	{
+		"end": "sgjourney:block/naquadah_block",
+		"side": "sgjourney:block/naquadah_slab_side"
+	}
+}

@@ -17,6 +17,9 @@
 		"sgjourney:naquadah_block",
 		"sgjourney:naquadah_stairs",
 		"sgjourney:naquadah_slab",
+		"sgjourney:cut_naquadah_block",
+		"sgjourney:cut_naquadah_stairs",
+		"sgjourney:cut_naquadah_slab",
 		
 		"sgjourney:naquadah_generator_mark_i",
 		"sgjourney:naquadah_generator_mark_ii",

@@ -34,6 +34,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 	
 	public UniverseStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
 	{
+		super("universe");
 		this.ring = ring;
 		this.symbolRing = symbolRing;
 		this.dividers = dividers;
@@ -162,7 +163,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 	
 	public static void createOuterRing(PartDefinition outerRing)
 	{
-		for(int i = 0; i < 36; i++)
+		for(int i = 0; i < BOXES_PER_RING; i++)
 		{
 			outerRing.addOrReplaceChild("outer_ring_" + i, CubeListBuilder.create()
 					.texOffs(0, 0)
@@ -184,7 +185,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 	
 	public static void createInnerRing(PartDefinition innerRing)
 	{
-		for(int i = 0; i < 36; i++)
+		for(int i = 0; i < BOXES_PER_RING; i++)
 		{
 			innerRing.addOrReplaceChild("inner_ring_" + i, CubeListBuilder.create()
 					.texOffs(34, 24)

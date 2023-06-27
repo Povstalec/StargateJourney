@@ -86,13 +86,17 @@ public class CrystalInterfaceBlock extends BasicInterfaceBlock
 	{
 		if(level.isClientSide())
 			return;
+		
+		level.setBlock(pos, state.setValue(UPDATE, true), 3);
+		level.scheduleTick(pos, this, 2);
 
 		Direction direction = state.getValue(FACING);
 		BlockPos targetPos = pos.relative(direction);
 
-		if (level.getBlockEntity(pos) instanceof CrystalInterfaceEntity crystalInterface) {
+		if (level.getBlockEntity(pos) instanceof CrystalInterfaceEntity crystalInterface)
+		{
 			crystalInterface.setInputSignal(level.getBestNeighborSignal(pos));
-			if(targetPos.equals(pos2) && crystalInterface.updateInterface())
+			if(targetPos.equals(pos2) && crystalInterface.updateInterface(level, targetPos, block, state))
 				level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 		}
 	}

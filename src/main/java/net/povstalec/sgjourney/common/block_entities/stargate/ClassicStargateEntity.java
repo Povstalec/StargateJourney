@@ -25,7 +25,7 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.GEN_1);
+		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0);
 	}
 	
 	public void load(CompoundTag nbt)
@@ -96,6 +96,20 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	public float getRotation(float partialTick)
 	{
 		return Mth.lerp(partialTick, this.rotationOld, this.rotation);
+	}
+
+	@Override
+	public void playRotationSound()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopRotationSound()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

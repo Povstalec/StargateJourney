@@ -12,12 +12,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
-public class UniverseStargateBlock extends AbstractStargateBlock
+public class UniverseStargateBlock extends AbstractStargateBaseBlock
 {
 	public UniverseStargateBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 7.0);
+	}
+
+	public Stargate.Type getStargateType()
+	{
+		return Stargate.Type.UNIVERSE;
 	}
 	
 	@Nullable
@@ -26,7 +32,7 @@ public class UniverseStargateBlock extends AbstractStargateBlock
 	{
 		UniverseStargateEntity stargate = new UniverseStargateEntity(pos, state);
 		
-		 return stargate;
+		return stargate;
 	}
 	
 	public BlockState ringState()

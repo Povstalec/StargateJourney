@@ -4,7 +4,7 @@
       "model": "sgjourney:block/naquadah_slab"
     },
     "type=double": {
-      "model": "sgjourney:block/naquadah_block"
+      "model": "sgjourney:block/naquadah_slab_block"
     },
     "type=top": {
       "model": "sgjourney:block/naquadah_slab_top"

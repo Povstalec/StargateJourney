@@ -7,12 +7,18 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class MilkyWayStargateRingBlock extends AbstractStargateRingBlock
 {
 	public MilkyWayStargateRingBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 7.0);
+	}
+
+	public Stargate.Type getStargateType()
+	{
+		return Stargate.Type.MILKY_WAY;
 	}
 
 	public Block getStargate()
@@ -28,7 +34,7 @@ public class MilkyWayStargateRingBlock extends AbstractStargateRingBlock
 		
 		boolean hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
 		
-		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getMainBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
+		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
 		
 		if(blockentity instanceof MilkyWayStargateEntity stargate)
 		{

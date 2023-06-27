@@ -11,15 +11,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
-@OnlyIn(Dist.CLIENT)
 public class DHDButton extends Button
 {
-	
 	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/milky_way_dhd_widgets.png");
 	
     public DHDButton(int x, int y, AbstractDHDMenu menu, int i)
@@ -38,7 +34,7 @@ public class DHDButton extends Button
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(p_93676_, this.x, this.x, 0, i * 16, this.width, this.height);
+        this.blit(p_93676_, this.x, this.y, 0, i * 16, this.width, this.height);
         this.blit(p_93676_, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         this.renderBg(p_93676_, minecraft, p_93677_, p_93678_);
         int j = getFGColor();

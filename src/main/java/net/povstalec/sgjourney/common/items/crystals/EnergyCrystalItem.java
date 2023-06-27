@@ -1,5 +1,9 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -10,10 +14,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
-
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class EnergyCrystalItem extends Item
 {
@@ -158,11 +158,11 @@ public class EnergyCrystalItem extends Item
         {
         case ENERGY_STORAGE:
         	int energy = getEnergy(stack);
-        	tooltipComponents.add(Component.literal("Energy: " + energy +  "/" + maxEnergy + "FE").withStyle(ChatFormatting.DARK_RED));
+        	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(energy +  "/" + maxEnergy + " FE")).withStyle(ChatFormatting.DARK_RED));
         	break;
         case ENERGY_TRANSFER:
         	int maxEnergyTransfer = getMaxTransfer(stack);
-        	tooltipComponents.add(Component.literal("Max Energy Transfer: " + maxEnergyTransfer + " FE").withStyle(ChatFormatting.RED));
+        	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(maxEnergyTransfer + " FE")).withStyle(ChatFormatting.RED));
         	break;
         	
         }

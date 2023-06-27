@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -25,15 +24,17 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.MatrixHelper;
 import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class Wormhole implements ITeleporter
 {
-	public static final double HORIZONTAL_CENTER_HEIGHT = 0.28125;
 	Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 	List<Entity> localEntities = new ArrayList<Entity>();
+	protected boolean used = false;
 	
 	public Wormhole()
     {
+		
     }
 	
 	public boolean hasCandidates()
@@ -41,19 +42,20 @@ public class Wormhole implements ITeleporter
 		return localEntities.isEmpty();
 	}
 	
-	public boolean findCandidates(Level level, BlockPos centerPos, Direction direction)
+	public boolean findCandidates(Level level, Vec3 centerPos, Direction direction)
 	{
 		AABB localBox = new AABB(
-			(centerPos.getX() - 2), (centerPos.getY() - 2), (centerPos.getZ() - 2), 
-			(centerPos.getX() + 3), (centerPos.getY() + 3), (centerPos.getZ() + 3));
+			centerPos.x - 2.5, centerPos.y - 2.5, centerPos.z - 2.5, 
+			centerPos.x + 2.5, centerPos.y + 2.5, centerPos.z + 2.5);
 		
 		localEntities = level.getEntitiesOfClass(Entity.class, localBox);
 		
 		return !localEntities.isEmpty();
 	}
 	
-	public void wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, boolean canWormhole)
+	public boolean wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole)
 	{
+		this.used = false;
 		Direction direction = initialStargate.getDirection();
 		Direction orientationDirection = Orientation.getEffectiveDirection(direction, initialStargate.getOrientation());
 		Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
@@ -89,14 +91,14 @@ public class Wormhole implements ITeleporter
 				else
 				{
 					unitDistance = initialStargate.getCenterPos().getY() - initialStargate.getCenterPos().relative(orientationDirection).getY();
-					previousTravelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_HEIGHT - previousY;
-					travelerPos = initialStargate.getCenterPos().getY() + HORIZONTAL_CENTER_HEIGHT - traveler.getY();
+					previousTravelerPos = initialStargate.getCenterPos().getY() + initialStargate.getGateAddition() - previousY;
+					travelerPos = initialStargate.getCenterPos().getY() + initialStargate.getGateAddition() - traveler.getY();
 					axisMomentum = momentum.y();
 				}
 				
 				if(shouldWormhole(unitDistance, previousTravelerPos, travelerPos, axisMomentum))
 				{
-					doWormhole(initialStargate, targetStargate, traveler, momentum, canWormhole);
+					doWormhole(initialStargate, targetStargate, traveler, momentum, twoWayWormhole);
 				}
 				else
 					entityLocations.put(traveler.getId(), new Vec3(traveler.getX(), traveler.getY(), traveler.getZ()));
@@ -107,6 +109,8 @@ public class Wormhole implements ITeleporter
 		});
 		
 		this.entityLocations = entityLocations;
+		
+		return this.used;
 	}
 	
 	public boolean shouldWormhole(int unitDistance, double previousTravelerPos, double travelerPos, double axisMomentum)
@@ -126,7 +130,7 @@ public class Wormhole implements ITeleporter
 		return shouldReverse ? -number : number;
 	}
     
-    public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, boolean canWormhole)
+    public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, Stargate.WormholeTravel twoWayWormhole)
     {
 		Level level = traveler.getLevel();
 		playWormholeSound(level, traveler);
@@ -134,7 +138,7 @@ public class Wormhole implements ITeleporter
 		if(level.isClientSide())
 			return;
 		
-		if(canWormhole)
+		if(twoWayWormhole == WormholeTravel.ENABLED || (traveler instanceof Player player && player.isCreative() && twoWayWormhole == WormholeTravel.CREATIVE_ONLY))
 		{
 			ServerLevel destinationlevel = (ServerLevel) targetStargate.getLevel();
 	        
@@ -150,8 +154,8 @@ public class Wormhole implements ITeleporter
 		        Orientation initialOrientation = initialStargate.getOrientation();
 	        	Direction destinationDirection = targetStargate.getDirection();
 		        Orientation destinationOrientation = targetStargate.getOrientation();
-		        double initialYAddition = initialOrientation == Orientation.REGULAR ? 0.5 :  HORIZONTAL_CENTER_HEIGHT;
-		        double destinationYAddition = destinationOrientation == Orientation.REGULAR ? 0.5 :  HORIZONTAL_CENTER_HEIGHT;
+		        double initialYAddition = initialStargate.getGateAddition();
+		        double destinationYAddition = targetStargate.getGateAddition();
 		        
 	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + initialYAddition), traveler.getY() - (initialStargate.getCenterPos().getY() + 0.5), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
 	    		
@@ -172,6 +176,7 @@ public class Wormhole implements ITeleporter
 		    		newTraveler.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		    		playWormholeSound(level, newTraveler);
 		    	}
+	    		this.used = true;
 	        }
 		}
 		else if(CommonStargateConfig.reverse_wormhole_kills.get())
@@ -182,8 +187,8 @@ public class Wormhole implements ITeleporter
 				traveler.kill();
 		}
     }
-    
-    private static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
+
+	private static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
     {
     	return MatrixHelper.rotateVector(initial, initialDirection, initialOrientation, destinationDirection, destinationOrientation);
     }

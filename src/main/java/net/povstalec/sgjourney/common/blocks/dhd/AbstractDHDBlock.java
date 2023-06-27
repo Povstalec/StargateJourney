@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -32,26 +33,31 @@ public abstract class AbstractDHDBlock extends BaseEntityBlock
 	public AbstractDHDBlock(Properties properties) 
 	{
 		super(properties);
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 	
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
+	{
+		state.add(FACING);
+	}
+
+	@Override
 	public RenderShape getRenderShape(BlockState state)
 	{
 		return RenderShape.MODEL;
 	}
-	 
+
+	@Override
 	public BlockState rotate(BlockState state, Rotation rotation)
 	{
 		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
 	}
-	
+
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
 	      return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-	}
-	 
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
-	{
-		state.add(FACING);
 	}
 	
 	@Override

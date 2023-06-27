@@ -1,8 +1,9 @@
 {
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "sgjourney:block/naquadah_block_top",
-    "side": "sgjourney:block/naquadah_block",
-    "top": "sgjourney:block/naquadah_block_top"
-  }
+	"parent": "minecraft:block/outer_stairs",
+	"textures":
+	{
+		"bottom": "sgjourney:block/naquadah_stairs",
+		"side": "sgjourney:block/naquadah_stairs",
+		"top": "sgjourney:block/naquadah_stairs"
+	}
 }

@@ -1,12 +1,13 @@
 package net.povstalec.sgjourney.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class CommonStargateConfig
 {
 	public static ForgeConfigSpec.IntValue max_wormhole_open_time;
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
-	public static ForgeConfigSpec.BooleanValue two_way_wormholes;
+	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	
@@ -36,7 +37,7 @@ public class CommonStargateConfig
 		
 		two_way_wormholes = server
 				.comment("If true, wormholes can be traveled through both ways")
-				.define("server.two_way_wormholes", false);
+				.defineEnum("server.two_way_wormholes", WormholeTravel.CREATIVE_ONLY);
 		
 		reverse_wormhole_kills = server
 				.comment("If true, going through the wrong side of the wormhole will result in death")

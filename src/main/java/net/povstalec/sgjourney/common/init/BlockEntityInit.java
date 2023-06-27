@@ -20,6 +20,7 @@ import net.povstalec.sgjourney.common.block_entities.energy_gen.ZPMHubEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.symbols.SandstoneCartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.symbols.SandstoneSymbolBlockEntity;
@@ -44,6 +45,8 @@ public class BlockEntityInit
 
 	public static final RegistryObject<BlockEntityType<ClassicStargateEntity>> CLASSIC_STARGATE = BLOCK_ENTITIES.register("classic_stargate",
             () -> BlockEntityType.Builder.of(ClassicStargateEntity::new, BlockInit.CLASSIC_STARGATE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<TollanStargateEntity>> TOLLAN_STARGATE = BLOCK_ENTITIES.register("tollan_stargate",
+			() -> BlockEntityType.Builder.of(TollanStargateEntity::new, BlockInit.TOLLAN_STARGATE.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ClassicDHDEntity>> CLASSIC_DHD = BLOCK_ENTITIES.register("classic_dhd",
             () -> BlockEntityType.Builder.of(ClassicDHDEntity::new, BlockInit.CLASSIC_DHD.get()).build(null));
 	

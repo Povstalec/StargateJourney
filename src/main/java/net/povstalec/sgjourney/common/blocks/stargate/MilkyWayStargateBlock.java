@@ -22,17 +22,24 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public class MilkyWayStargateBlock extends AbstractStargateBlock
+public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 {
 	public MilkyWayStargateBlock(Properties properties)
 	{
-		super(properties);
+		super(properties, 7.0);
+	}
+
+	public Stargate.Type getStargateType()
+	{
+		return Stargate.Type.MILKY_WAY;
 	}
 	
 	@Nullable
@@ -64,7 +71,7 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
 		boolean hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
@@ -74,9 +81,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
 		if(blockentity instanceof MilkyWayStargateEntity stargate)
 		{
 			if(hasSignal)
-				stargate.updateSignal(StargatePart.CENTER, level.getBestNeighborSignal(pos));
+				stargate.updateSignal(StargatePart.BASE, level.getBestNeighborSignal(pos));
 			else
-				stargate.updateSignal(StargatePart.CENTER, 0);
+				stargate.updateSignal(StargatePart.BASE, 0);
 		}
 	}
 	
@@ -107,13 +114,13 @@ public class MilkyWayStargateBlock extends AbstractStargateBlock
 			if(location.toString().equals("sgjourney:empty"))
 				symbols = "Empty";
 			else if(symbolsRegistry.containsKey(location))
-				symbols = symbolsRegistry.get(location).getName();
+				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
 			else
 				symbols = "Error";
 		}
 		
-        tooltipComponents.add(Component.literal("PoO: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
-        tooltipComponents.add(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));
+        tooltipComponents.add(Component.literal("PoO: ").append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+        tooltipComponents.add(Component.literal("Symbols: ").append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 }

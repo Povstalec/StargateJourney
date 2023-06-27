@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -17,8 +18,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.blocks.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
-import net.povstalec.sgjourney.common.cctweaked.peripherals.CrystalPeripheralHolder;
+import net.povstalec.sgjourney.common.cctweaked.peripherals.CrystalPeripheralWrapper;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -27,7 +29,7 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 {
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-	CrystalPeripheralHolder peripheralHolder;
+	CrystalPeripheralWrapper peripheralHolder;
 
 	private int inputSignal = 0;
 	
@@ -36,7 +38,7 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 		super(BlockEntityInit.CRYSTAL_INTERFACE.get(), pos, state);
 		
 		if(ModList.get().isLoaded("computercraft"))
-			peripheralHolder = new CrystalPeripheralHolder(this);
+			peripheralHolder = new CrystalPeripheralWrapper(this);
 	}
 	
 	@Override
@@ -70,16 +72,22 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 	}
 	
 	@Override
-	public boolean updateInterface()
+	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{
 		if(peripheralHolder != null)
 			return peripheralHolder.resetInterface();
+		
+		if(level.getBlockState(pos).getBlock() instanceof CrystalInterfaceBlock ccInterface)
+			ccInterface.updateInterface(state, level, pos);
 		
 		return true;
 	}
 
 	public void setInputSignal(int inputSignal) {
+		boolean changed = this.inputSignal != inputSignal;
 		this.inputSignal = inputSignal;
+		if (changed)
+			setChanged();
 	}
 
 	public int getInputSignal() {

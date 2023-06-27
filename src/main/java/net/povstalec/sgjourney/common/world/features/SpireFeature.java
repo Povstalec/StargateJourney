@@ -3,11 +3,9 @@ package net.povstalec.sgjourney.common.world.features;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.povstalec.sgjourney.common.world.features.configuration.SpireConfiguration;
@@ -77,9 +75,9 @@ public class SpireFeature extends Feature<SpireConfiguration>
 							int chance = randomsource.nextIntBetweenInclusive(1, 100);
 							// Sometimes the block placed should be the ore
 							if(chance > 5)
-								this.setBlock(worldgenlevel, blockpos.offset(x, y + totalHeight, z), config.fillingProvider.getState(randomsource, blockpos));
+								setOre(worldgenlevel, blockpos, x, y, z, totalHeight, config, randomsource);
 							else
-								this.setBlock(worldgenlevel, blockpos.offset(x, y + totalHeight, z), config.fillingPlacements.getState(randomsource, blockpos));
+								setFilling(worldgenlevel, blockpos, x, y, z, spireLevel, totalHeight, config, randomsource);
 						}
 					}
 				}
@@ -87,6 +85,26 @@ public class SpireFeature extends Feature<SpireConfiguration>
 			totalHeight += ySize;
 		}
 		return true;
+	}
+	
+	private void setOre(WorldGenLevel worldgenlevel, BlockPos blockpos, int x, int y, int z, int totalHeight, SpireConfiguration config, RandomSource randomsource)
+	{
+		this.setBlock(worldgenlevel, blockpos.offset(x, y + totalHeight, z), config.fillingProvider.getState(randomsource, blockpos));
+	}
+	
+	private void setFilling(WorldGenLevel worldgenlevel, BlockPos blockpos, int x, int y, int z, int spireLevel, int totalHeight, SpireConfiguration config, RandomSource randomsource)
+	{
+		int chance = randomsource.nextIntBetweenInclusive(1, 100);
+		if(chance - spireLevel < 7)
+		{
+			this.setBlock(worldgenlevel, blockpos.offset(x, y + totalHeight, z), Blocks.SANDSTONE.defaultBlockState());
+		}
+		else if(chance - spireLevel >= 7 && chance - spireLevel < 10)
+		{
+			this.setBlock(worldgenlevel, blockpos.offset(x, y + totalHeight, z), Blocks.GRANITE.defaultBlockState());
+		}
+		else
+			this.setBlock(worldgenlevel, blockpos.offset(x, y + totalHeight, z), config.fillingPlacements.getState(randomsource, blockpos));
 	}
 	
 	private int adjustRadius(int radius, int ySize, int y)
