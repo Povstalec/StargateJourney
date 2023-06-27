@@ -1,5 +1,5 @@
 {
 	"name": "point_of_origin.sgjourney.ender_eye",
-	"texture": "sgjourney:milky_way/minecraft/points_of_origin/ender_eye.png",
+	"texture": "sgjourney:milky_way/minecraft/ender_eye.png",
 	"generates_randomly": true
 }

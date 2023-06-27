@@ -65,7 +65,7 @@ public class KaraKeshItem extends Item implements GoauldTech
 	{
 		if(!player.getCooldowns().isOnCooldown(this) && !player.isShiftKeyDown())
 		{
-			if(!stack.getTag().getBoolean("TerrorModeOn"))
+			if(!stack.getOrCreateTag().getBoolean("TerrorModeOn"))
 			{
 				target.knockback(2.0F, player.getX() - target.getX(), player.getZ() - target.getZ());
 				player.getCooldowns().addCooldown(this, 50);

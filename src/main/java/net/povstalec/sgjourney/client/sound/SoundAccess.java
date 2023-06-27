@@ -29,17 +29,12 @@ public class SoundAccess
     	{
     		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate && raise)
     		{
-    			GenericStargateSound sound = new GenericStargateSound(stargate, milkyWayStargate.chevronEncodeSound(), 0.25F);
-        		minecraft.getSoundManager().play(sound);
-    		}
-    		else if(stargate instanceof UniverseStargateEntity universeStargate)
-    		{
-    			GenericStargateSound sound = new GenericStargateSound(stargate, universeStargate.chevronEngageSound(), 0.5F);
+    			GenericStargateSound sound = new GenericStargateSound(stargate, milkyWayStargate.chevronEncodeSound(), 0.5F);
         		minecraft.getSoundManager().play(sound);
     		}
     		else
     		{
-    			GenericStargateSound sound = new GenericStargateSound(stargate, stargate.chevronEngageSound(), 0.25F);
+    			GenericStargateSound sound = new GenericStargateSound(stargate, stargate.chevronEngageSound(), 0.5F);
         		minecraft.getSoundManager().play(sound);
     		}
     	}
@@ -49,7 +44,7 @@ public class SoundAccess
     {
     	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
     	{
-    		GenericStargateSound sound = new GenericStargateSound(stargate, stargate.failSound(), 0.25F);
+    		GenericStargateSound sound = new GenericStargateSound(stargate, stargate.failSound(), 0.5F);
     		minecraft.getSoundManager().play(sound);
     	}
     }
