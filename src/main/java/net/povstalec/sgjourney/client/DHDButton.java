@@ -24,14 +24,31 @@ public class DHDButton extends Button
 		super(x, y, 16, 16, symbol(menu.symbolsType, i), (n) -> {menu.engageChevron(i);}, Button.DEFAULT_NARRATION);
 	}
     
+    protected int getYImage(boolean p_93668_)
+    {
+    	int i = 1;
+    	if (!this.active)
+    	{
+    		i = 0;
+    	}
+    	else if(p_93668_)
+    	{
+    		i = 2;
+    	}
+    	
+    	return i;
+	}
+    
     @Override
-    public void render(PoseStack p_93676_, int p_93677_, int p_93678_, float p_93679_) {
-        Minecraft minecraft = Minecraft.getInstance();
+    public void render(PoseStack p_93676_, int x, int y, float p_93679_)
+    {
+    	this.isHovered = x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
+    	Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-        int i = 0/*this.getYImage(this.isHoveredOrFocused())*/;
+        int i = this.getYImage(this.isHovered);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();

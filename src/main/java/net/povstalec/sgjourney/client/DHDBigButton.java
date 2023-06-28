@@ -37,13 +37,15 @@ public class DHDBigButton extends Button
 	}
     
     @Override
-    public void render(PoseStack p_93676_, int p_93677_, int p_93678_, float p_93679_) {
+    public void render(PoseStack p_93676_, int x, int y, float p_93679_)
+    {
+    	this.isHovered = x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-        int i = this.getYImage(this.isHoveredOrFocused());
+        int i = this.getYImage(this.isHovered);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
