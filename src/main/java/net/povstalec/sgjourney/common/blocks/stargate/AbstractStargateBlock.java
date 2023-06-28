@@ -110,7 +110,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
-		BlockEntity blockentity = level.getBlockEntity(pos);
+		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
 		if(blockentity instanceof AbstractStargateEntity stargate)
 		{
 			if(!level.isClientSide() && !player.isCreative())
