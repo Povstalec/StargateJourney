@@ -16,7 +16,7 @@ public class ClassicStargateRingBlock extends AbstractStargateRingBlock
 		return Stargate.Type.CLASSIC;
 	}
 
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.CLASSIC_STARGATE.get();
 	}

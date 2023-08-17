@@ -7,9 +7,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.CrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
@@ -22,10 +24,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.symbols.SandstoneCartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.symbols.SandstoneSymbolBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.symbols.StoneCartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.symbols.StoneSymbolBlockEntity;
 public class BlockEntityInit 
 {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, StargateJourney.MODID);
@@ -56,15 +54,15 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<RingPanelEntity>> RING_PANEL = BLOCK_ENTITIES.register("ring_panel",
             () -> BlockEntityType.Builder.of(RingPanelEntity::new, BlockInit.RING_PANEL.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<SandstoneCartoucheEntity>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
-            () -> BlockEntityType.Builder.of(SandstoneCartoucheEntity::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<StoneCartoucheEntity>> STONE_CARTOUCHE = BLOCK_ENTITIES.register("stone_cartouche",
-            () -> BlockEntityType.Builder.of(StoneCartoucheEntity::new, BlockInit.STONE_CARTOUCHE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CartoucheEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
+            () -> BlockEntityType.Builder.of(CartoucheEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CartoucheEntity.Stone>> STONE_CARTOUCHE = BLOCK_ENTITIES.register("stone_cartouche",
+            () -> BlockEntityType.Builder.of(CartoucheEntity.Stone::new, BlockInit.STONE_CARTOUCHE.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<StoneSymbolBlockEntity>> STONE_SYMBOL = BLOCK_ENTITIES.register("stone_symbol",
-            () -> BlockEntityType.Builder.of(StoneSymbolBlockEntity::new, BlockInit.STONE_SYMBOL.get()).build(null));
-	public static final RegistryObject<BlockEntityType<SandstoneSymbolBlockEntity>> SANDSTONE_SYMBOL = BLOCK_ENTITIES.register("sandstone_symbol",
-            () -> BlockEntityType.Builder.of(SandstoneSymbolBlockEntity::new, BlockInit.SANDSTONE_SYMBOL.get()).build(null));
+	public static final RegistryObject<BlockEntityType<SymbolBlockEntity.Stone>> STONE_SYMBOL = BLOCK_ENTITIES.register("stone_symbol",
+            () -> BlockEntityType.Builder.of(SymbolBlockEntity.Stone::new, BlockInit.STONE_SYMBOL.get()).build(null));
+	public static final RegistryObject<BlockEntityType<SymbolBlockEntity.Sandstone>> SANDSTONE_SYMBOL = BLOCK_ENTITIES.register("sandstone_symbol",
+            () -> BlockEntityType.Builder.of(SymbolBlockEntity.Sandstone::new, BlockInit.SANDSTONE_SYMBOL.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<NaquadahGeneratorMarkIEntity>> NAQUADAH_GENERATOR_MARK_I = BLOCK_ENTITIES.register("naquadah_generator_mark_i",
             () -> BlockEntityType.Builder.of(NaquadahGeneratorMarkIEntity::new, BlockInit.NAQUADAH_GENERATOR_MARK_I.get()).build(null));

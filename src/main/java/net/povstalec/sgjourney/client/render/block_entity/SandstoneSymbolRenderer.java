@@ -9,9 +9,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.symbols.SandstoneSymbolBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 
-public class SandstoneSymbolRenderer extends SymbolBlockRenderer implements BlockEntityRenderer<SandstoneSymbolBlockEntity>
+public class SandstoneSymbolRenderer extends SymbolBlockRenderer implements BlockEntityRenderer<SymbolBlockEntity.Sandstone>
 {
 	private static final ResourceLocation ERROR = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
 	
@@ -21,7 +21,7 @@ public class SandstoneSymbolRenderer extends SymbolBlockRenderer implements Bloc
 	}
 
 	@Override
-	public void render(SandstoneSymbolBlockEntity symbol, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	public void render(SymbolBlockEntity.Sandstone symbol, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		stack.translate(0.5D, 0.5D, 0.5D);
 		

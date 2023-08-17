@@ -3,13 +3,16 @@ package net.povstalec.sgjourney.common.structures;
 import java.util.Optional;
 import java.util.Random;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
@@ -58,8 +61,12 @@ public class StargateTemple extends Structure
     
     private static boolean extraSpawningChecks(Structure.GenerationContext context)
     {
+    	//RandomSource randomsource = RandomSource.create();
+    	
         // Grabs the chunk position we are at
         ChunkPos chunkpos = context.chunkPos();
+        //Pair<BlockPos, Holder<Biome>> pair = context.biomeSource().findBiomeHorizontal(0, 0, 0, 0, null, randomsource, null);
+        
         Random random = new Random(context.seed() + 1);
         
         if(chunkpos.x == random.nextInt(-64, 65) && chunkpos.z == random.nextInt(-64, 65))

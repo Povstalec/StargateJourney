@@ -26,7 +26,7 @@ public class TollanStargateRingBlock extends AbstractStargateRingBlock
 	}
 
 
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.TOLLAN_STARGATE.get();
 	}
