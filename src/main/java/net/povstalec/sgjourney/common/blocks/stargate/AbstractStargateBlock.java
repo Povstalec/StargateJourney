@@ -115,7 +115,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
-				ItemStack itemstack = new ItemStack(getStargate());
+				ItemStack itemstack = new ItemStack(getItem());
 
 				blockentity.saveToItem(itemstack);
 
@@ -140,5 +140,5 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return RenderShape.MODEL;
 	}
 
-    public abstract Block getStargate();
+    public abstract Block getItem();
 }

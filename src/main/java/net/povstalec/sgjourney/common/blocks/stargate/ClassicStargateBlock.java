@@ -40,7 +40,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 		return BlockInit.CLASSIC_RING.get().defaultBlockState();
 	}
 
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.CLASSIC_STARGATE.get();
 	}

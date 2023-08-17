@@ -16,7 +16,7 @@ public class PegasusStargateRingBlock extends AbstractStargateRingBlock
 		return Stargate.Type.PEGASUS;
 	}
 
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.PEGASUS_STARGATE.get();
 	}
