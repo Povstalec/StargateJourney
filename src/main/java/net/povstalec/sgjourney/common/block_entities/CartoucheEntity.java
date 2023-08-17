@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities.symbols;
+package net.povstalec.sgjourney.common.block_entities;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public abstract class CartoucheEntity extends BlockEntity
 {
@@ -62,6 +63,24 @@ public abstract class CartoucheEntity extends BlockEntity
 		String galaxy = Universe.get(level).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys().iterator().next();
 		
 		return Universe.get(level).getAddressInGalaxyFromDimension(galaxy, dimension);
+	}
+	
+	public static class Stone extends CartoucheEntity
+	{
+		public Stone(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.STONE_CARTOUCHE.get(), pos, state);
+		}
+		
+	}
+	
+	public static class Sandstone extends CartoucheEntity
+	{
+		public Sandstone(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), pos, state);
+		}
+		
 	}
 
 }

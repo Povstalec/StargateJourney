@@ -23,6 +23,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.ATAGeneDetectorBlock;
 import net.povstalec.sgjourney.common.blocks.ArcheologyTableBlock;
 import net.povstalec.sgjourney.common.blocks.BasicInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.blocks.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.CrystallizerBlock;
 import net.povstalec.sgjourney.common.blocks.ExplosiveBlock;
@@ -32,6 +33,7 @@ import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorMarkIBlock;
 import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorMarkIIBlock;
 import net.povstalec.sgjourney.common.blocks.RingPanelBlock;
 import net.povstalec.sgjourney.common.blocks.SecretSwitchBlock;
+import net.povstalec.sgjourney.common.blocks.SymbolBlock;
 import net.povstalec.sgjourney.common.blocks.TransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.ZPMHubBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
@@ -48,10 +50,6 @@ import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.symbols.SandstoneCartoucheBlock;
-import net.povstalec.sgjourney.common.blocks.symbols.SandstoneSymbolBlock;
-import net.povstalec.sgjourney.common.blocks.symbols.StoneCartoucheBlock;
-import net.povstalec.sgjourney.common.blocks.symbols.StoneSymbolBlock;
 import net.povstalec.sgjourney.common.items.DHDItem;
 import net.povstalec.sgjourney.common.items.SGJourneyBlockItem;
 
@@ -156,15 +154,15 @@ public class BlockInit
 	public static final RegistryObject<SecretSwitchBlock> SANDSTONE_SWITCH = registerBlock("sandstone_switch", 
 			() -> new SecretSwitchBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 
-	public static final RegistryObject<SandstoneCartoucheBlock> SANDSTONE_CARTOUCHE = registerBlock("sandstone_cartouche", 
-			() -> new SandstoneCartoucheBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()), 1);
-	public static final RegistryObject<StoneCartoucheBlock> STONE_CARTOUCHE = registerBlock("stone_cartouche", 
-			() -> new StoneCartoucheBlock(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()), 1);
+	public static final RegistryObject<CartoucheBlock> SANDSTONE_CARTOUCHE = registerBlock("sandstone_cartouche", 
+			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()), 1);
+	public static final RegistryObject<CartoucheBlock> STONE_CARTOUCHE = registerBlock("stone_cartouche", 
+			() -> new CartoucheBlock.Stone(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()), 1);
 	
-	public static final RegistryObject<StoneSymbolBlock> STONE_SYMBOL = registerBlock("stone_symbol", 
-			() -> new StoneSymbolBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops().noOcclusion()));
-	public static final RegistryObject<SandstoneSymbolBlock> SANDSTONE_SYMBOL = registerBlock("sandstone_symbol", 
-			() -> new SandstoneSymbolBlock(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops().noOcclusion()));
+	public static final RegistryObject<SymbolBlock> STONE_SYMBOL = registerBlock("stone_symbol", 
+			() -> new SymbolBlock.Stone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops().noOcclusion()));
+	public static final RegistryObject<SymbolBlock> SANDSTONE_SYMBOL = registerBlock("sandstone_symbol", 
+			() -> new SymbolBlock.Sandstone(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops().noOcclusion()));
 	
 	public static final RegistryObject<NaquadahGeneratorMarkIBlock> NAQUADAH_GENERATOR_MARK_I = registerBlock("naquadah_generator_mark_i", 
 			() -> new NaquadahGeneratorMarkIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);

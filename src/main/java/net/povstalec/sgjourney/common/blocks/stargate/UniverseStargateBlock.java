@@ -40,7 +40,7 @@ public class UniverseStargateBlock extends AbstractStargateBaseBlock
 		return BlockInit.UNIVERSE_RING.get().defaultBlockState();
 	}
 
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.UNIVERSE_STARGATE.get();
 	}

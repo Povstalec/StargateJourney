@@ -45,7 +45,7 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 		return BlockInit.TOLLAN_RING.get().defaultBlockState();
 	}
 
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.TOLLAN_STARGATE.get();
 	}
