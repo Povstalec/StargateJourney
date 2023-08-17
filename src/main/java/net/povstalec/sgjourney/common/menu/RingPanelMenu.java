@@ -24,14 +24,14 @@ public class RingPanelMenu extends AbstractContainerMenu
     private final Level level;
     
     public RingPanelMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public RingPanelMenu(int containerId, Inventory inv, BlockEntity entity) {
         super(MenuInit.RING_PANEL.get(), containerId);
         checkContainerSize(inv, 6);
         blockEntity = ((RingPanelEntity) entity);
-        this.level = inv.player.level;
+        this.level = inv.player.level();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);

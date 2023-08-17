@@ -35,10 +35,10 @@ public class PlasmaProjectile extends ThrowableProjectile
 	protected void onHit(HitResult p_37218_)
 	{
 	      super.onHit(p_37218_);
-	      if (!this.level.isClientSide)
+	      if (!this.level().isClientSide())
 	      {
-	         boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-	         this.level.explode((Entity)null, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
+	         boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
+	         this.level().explode((Entity)null, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
 	         this.discard();
 	      }
 
@@ -47,11 +47,11 @@ public class PlasmaProjectile extends ThrowableProjectile
 	protected void onHitEntity(EntityHitResult p_37216_)
 	{
 		super.onHitEntity(p_37216_);
-		if (!this.level.isClientSide)
+		if (!this.level().isClientSide())
 		{
 			Entity entity = p_37216_.getEntity();
 			Entity entity1 = this.getOwner();
-			entity.hurt(level.damageSources().explosion((Player)entity1, entity), 14.0F);
+			entity.hurt(level().damageSources().explosion((Player)entity1, entity), 14.0F);
 			if (entity1 instanceof LivingEntity)
 			{
 				this.doEnchantDamageEffects((LivingEntity)entity1, entity);
@@ -64,15 +64,15 @@ public class PlasmaProjectile extends ThrowableProjectile
 	{
 		super.onHitBlock(result);
 		
-		if(!this.level.isClientSide)
+		if(!this.level().isClientSide())
 		{
 			Entity entity = this.getOwner();
-			if(!(entity instanceof Mob) || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, entity))
+			if(!(entity instanceof Mob) || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), entity))
 			{
 				BlockPos blockpos = result.getBlockPos().relative(result.getDirection());
 				
 				// Note: I don't like how this looks, but I don't have time to think of anything better, so who cares
-				if (this.level.isEmptyBlock(blockpos))
+				if (this.level().isEmptyBlock(blockpos))
 				{
 					if(trySetFireToBlock(blockpos, blockpos.north()))
 						return;
@@ -92,9 +92,9 @@ public class PlasmaProjectile extends ThrowableProjectile
 	
 	private boolean trySetFireToBlock(BlockPos blockpos, BlockPos nearbyPos)
 	{
-		if(this.level.getBlockState(nearbyPos).is(TagInit.Blocks.PLASMA_FLAMMABLE))
+		if(this.level().getBlockState(nearbyPos).is(TagInit.Blocks.PLASMA_FLAMMABLE))
 		{
-			this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
+			this.level().setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level(), blockpos));
 			return true;
 		}
 		return false;

@@ -33,7 +33,7 @@ public class ServerboundRingPanelUpdatePacket
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
     {
     	ctx.get().enqueueWork(() -> {
-    		final BlockEntity blockEntity = ctx.get().getSender().level.getBlockEntity(blockPos);
+    		final BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(blockPos);
     		if(blockEntity instanceof RingPanelEntity ringPanel)
     		{
     			ringPanel.activateRings(number);

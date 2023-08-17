@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[44,)"
+loaderVersion="[47,)"
 license="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License"
 issueTrackerURL="https://github.com/Povstalec/StargateJourney/issues"
 [[mods]]
@@ -17,20 +17,14 @@ Stargate in Minecraft! And much more.
 [[dependencies.sgjourney]]
     modId="forge"
     mandatory=true
-    versionRange="[45,)"
+    versionRange="[47,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.sgjourney]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,1.20)"
+    versionRange="[1.20.1,1.21)"
     ordering="NONE"
-    side="BOTH"
-[[dependencies.sgjourney]]
-    modId="computercraft"
-    mandatory=false
-    versionRange="[1.104.0,)"
-    ordering="AFTER"
     side="BOTH"
 [[dependencies.sgjourney]]
     modId="computercraft"
@@ -41,7 +35,7 @@ Stargate in Minecraft! And much more.
 [[dependencies.sgjourney]]
     modId="stellarview"
     mandatory=false
-    versionRange="[0.1.2,)"
+    versionRange="[0.1.5,)"
     ordering="AFTER"
     side="CLIENT"
 

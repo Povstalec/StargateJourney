@@ -20,7 +20,7 @@ public abstract class AbstractDHDMenu extends AbstractContainerMenu
     
     public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, FriendlyByteBuf extraData)
     {
-        this(menu, containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(menu, containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, BlockEntity entity)
@@ -28,7 +28,7 @@ public abstract class AbstractDHDMenu extends AbstractContainerMenu
         super(menu, containerId);
         checkContainerSize(inv, 6);
         blockEntity = ((AbstractDHDEntity) entity);
-        this.level = inv.player.level;
+        this.level = inv.player.level();
     }
     
     public void engageChevron(int symbol)

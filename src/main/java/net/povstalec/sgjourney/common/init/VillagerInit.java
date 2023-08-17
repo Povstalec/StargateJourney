@@ -30,7 +30,7 @@ public class VillagerInit
 			() -> new VillagerProfession("archeologist", x -> x.get() == ARCHEOLOGIST_POI.get(), x -> x.get() == ARCHEOLOGIST_POI.get(), 
 			ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER));
 	
-	public static void registerPOIs()
+	/*public static void registerPOIs()
 	{
 		try
 		{
@@ -40,7 +40,7 @@ public class VillagerInit
 		{
 			exception.printStackTrace();
 		}
-	}
+	}*/
 	
 	public static void register(IEventBus eventBus)
 	{

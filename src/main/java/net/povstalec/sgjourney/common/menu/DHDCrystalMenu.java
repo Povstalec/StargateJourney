@@ -22,7 +22,7 @@ public class DHDCrystalMenu extends AbstractContainerMenu
     
     public DHDCrystalMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
     {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public DHDCrystalMenu(int containerId, Inventory inv, BlockEntity entity)
@@ -30,7 +30,7 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         super(MenuInit.DHD_CRYSTAL.get(), containerId);
         checkContainerSize(inv, 9);
         blockEntity = ((AbstractDHDEntity) entity);
-        this.level = inv.player.level;
+        this.level = inv.player.level();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);

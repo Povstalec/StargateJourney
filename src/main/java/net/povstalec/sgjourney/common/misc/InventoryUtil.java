@@ -12,7 +12,7 @@ public class InventoryUtil
         for(int i = 0; i < player.getInventory().getContainerSize(); i++)
         {
             ItemStack currentStack = player.getInventory().getItem(i);
-            if (!currentStack.isEmpty() && currentStack.sameItem(new ItemStack(item)))
+            if (!currentStack.isEmpty() && currentStack.is(item))
             {
                 return true;
             }
@@ -26,7 +26,7 @@ public class InventoryUtil
         for(int i = 0; i < player.getInventory().getContainerSize(); i++)
         {
             ItemStack currentStack = player.getInventory().getItem(i);
-            if (!currentStack.isEmpty() && currentStack.sameItem(new ItemStack(item)))
+            if (!currentStack.isEmpty() && currentStack.is(item))
             {
                 return i;
             }

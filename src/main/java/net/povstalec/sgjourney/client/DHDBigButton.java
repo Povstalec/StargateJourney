@@ -1,10 +1,10 @@
 package net.povstalec.sgjourney.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ public class DHDBigButton extends Button
 	}
     
     @Override
-    public void render(PoseStack p_93676_, int x, int y, float p_93679_)
+    public void render(GuiGraphics graphics, int x, int y, float partialTick)
     {
     	this.isHovered = x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
         Minecraft minecraft = Minecraft.getInstance();
@@ -49,11 +49,11 @@ public class DHDBigButton extends Button
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        blit(p_93676_, this.getX(), this.getY(), 16, i * 32, this.width, this.height);
-        blit(p_93676_, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        graphics.blit(WIDGETS_LOCATION, this.getX(), this.getY(), 16, i * 32, this.width, this.height);
+        graphics.blit(WIDGETS_LOCATION, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         //this.renderBg(p_93676_, minecraft, p_93677_, p_93678_);
         int j = getFGColor();
-        drawCenteredString(p_93676_, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        graphics.drawString(font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
      }
 	
 }

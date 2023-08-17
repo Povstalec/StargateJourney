@@ -71,7 +71,7 @@ public class CommandInit
 	private static int getAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getPlayer().level();
 		
 		String currentDimension = level.dimension().location().toString();
 		
@@ -106,7 +106,7 @@ public class CommandInit
 	private static int getExtragalacticAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getPlayer().level();
 		
 		String address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
 		
@@ -119,7 +119,7 @@ public class CommandInit
 	private static int getStargates(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getPlayer().level();
 		String solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
 		
 		if(!solarSystem.isEmpty())
@@ -147,7 +147,7 @@ public class CommandInit
 	
 	private static int getVersion(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getPlayer().level();
 		
 		int version = StargateNetwork.get(level).getVersion();
 		
@@ -157,7 +157,7 @@ public class CommandInit
 	
 	private static int forceStellarUpdate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getPlayer().level();
 		
 		StargateNetwork.get(level).stellarUpdate(level.getServer());
 		
@@ -170,7 +170,7 @@ public class CommandInit
 	private static int getTransportRings(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getPlayer().level();
 
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Transport Rings"));
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
@@ -191,7 +191,7 @@ public class CommandInit
 	//Only used for console checks
 	private static int printStargateNetworkInfo(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getPlayer().level();
 
 		System.out.println("Dimensions:\n" + Universe.get(level).getDimensions());
 		System.out.println("Solar Systems:\n" + Universe.get(level).getSolarSystems());

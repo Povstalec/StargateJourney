@@ -22,7 +22,7 @@ public class CrystalInterfaceMenu extends AbstractContainerMenu
     
     public CrystalInterfaceMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
     {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public CrystalInterfaceMenu(int containerId, Inventory inv, BlockEntity entity)
@@ -30,7 +30,7 @@ public class CrystalInterfaceMenu extends AbstractContainerMenu
         super(MenuInit.CRYSTAL_INTERFACE.get(), containerId);
         checkContainerSize(inv, 8);
         blockEntity = ((CrystalInterfaceEntity) entity);
-        this.level = inv.player.level;
+        this.level = inv.player.level();
         
         addPlayerInventory(inv);
         addPlayerHotbar(inv);

@@ -35,12 +35,12 @@ public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing {
     }
 
     @Nullable
-    public MerchantOffer getOffer(Entity p_219708_, RandomSource p_219709_) {
-       if (!(p_219708_.level instanceof ServerLevel)) {
+    public MerchantOffer getOffer(Entity entity, RandomSource p_219709_) {
+       if (!(entity.level() instanceof ServerLevel)) {
           return null;
        } else {
-          ServerLevel serverlevel = (ServerLevel)p_219708_.level;
-          BlockPos blockpos = serverlevel.findNearestMapStructure(this.destination, p_219708_.blockPosition(), 100, true);
+          ServerLevel serverlevel = (ServerLevel)entity.level();
+          BlockPos blockpos = serverlevel.findNearestMapStructure(this.destination, entity.blockPosition(), 100, true);
           if (blockpos != null) {
              ItemStack itemstack = MapItem.create(serverlevel, blockpos.getX(), blockpos.getZ(), (byte)2, true, true);
              MapItem.renderBiomePreviewMap(serverlevel, itemstack);

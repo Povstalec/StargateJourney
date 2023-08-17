@@ -18,13 +18,13 @@ public class BasicInterfaceMenu extends AbstractContainerMenu
     private final Level level;
     
     public BasicInterfaceMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public BasicInterfaceMenu(int containerId, Inventory inv, BlockEntity entity) {
         super(MenuInit.BASIC_INTERFACE.get(), containerId);
         blockEntity = ((BasicInterfaceEntity) entity);
-        this.level = inv.player.level;
+        this.level = inv.player.level();
     }
     
     public long getEnergy()

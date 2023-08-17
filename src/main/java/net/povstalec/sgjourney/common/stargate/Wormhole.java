@@ -132,7 +132,7 @@ public class Wormhole implements ITeleporter
     
     public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, Stargate.WormholeTravel twoWayWormhole)
     {
-		Level level = traveler.getLevel();
+		Level level = traveler.level();
 		playWormholeSound(level, traveler);
 		
 		if(level.isClientSide())

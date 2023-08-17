@@ -21,14 +21,14 @@ public class ZPMHubMenu extends AbstractContainerMenu
     private final Level level;
     
     public ZPMHubMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public ZPMHubMenu(int containerId, Inventory inv, BlockEntity entity) {
         super(MenuInit.ZPM_HUB.get(), containerId);
         checkContainerSize(inv, 1);
         blockEntity = ((ZPMHubEntity) entity);
-        this.level = inv.player.level;
+        this.level = inv.player.level();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);

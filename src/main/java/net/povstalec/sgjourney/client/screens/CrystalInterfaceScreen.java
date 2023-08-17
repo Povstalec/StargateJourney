@@ -1,9 +1,9 @@
 package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -21,47 +21,40 @@ public class CrystalInterfaceScreen extends AbstractContainerScreen<CrystalInter
     }
 
     @Override
-    protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY) {
+    protected void renderBg(GuiGraphics graphics, float pPartialTick, int pMouseX, int pMouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight + 1);
+        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight + 1);
         
-        this.renderEnergy(pPoseStack, x + 8, y + 62);
+        this.renderEnergy(graphics, x + 8, y + 62);
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-        renderBackground(pPoseStack);
-        super.render(pPoseStack, mouseX, mouseY, delta);
-        renderTooltip(pPoseStack, mouseX, mouseY);
+        renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, delta);
+        renderTooltip(graphics, mouseX, mouseY);
         
-        this.energyTooltip(pPoseStack, 8, 62, mouseX, mouseY);
+        this.energyTooltip(graphics, 8, 62, mouseX, mouseY);
     }
     
-    @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) 
-	{
-		this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
-    }
-    
-    protected void renderEnergy(PoseStack matrixStack, int x, int y)
+    protected void renderEnergy(GuiGraphics graphics, int x, int y)
     {
     	float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();
     	int actual = Math.round(160 * percentage);
-    	this.blit(matrixStack, x, y, 0, 168, actual, 6);
+    	graphics.blit(TEXTURE, x, y, 0, 168, actual, 6);
     }
     
-    protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
+    protected void energyTooltip(GuiGraphics graphics, int x, int y, int mouseX, int mouseY)
     {
     	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
 	    {
-	    	renderTooltip(matrixStack, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+    		graphics.renderTooltip(this.font, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
 	    }
     }
 }
