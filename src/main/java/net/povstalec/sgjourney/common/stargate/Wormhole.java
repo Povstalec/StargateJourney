@@ -157,7 +157,7 @@ public class Wormhole implements ITeleporter
 		        double initialYAddition = initialStargate.getGateAddition();
 		        double destinationYAddition = targetStargate.getGateAddition();
 		        
-	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + initialYAddition), traveler.getY() - (initialStargate.getCenterPos().getY() + 0.5), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
+	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + 0.5), traveler.getY() - (initialStargate.getCenterPos().getY() + initialYAddition), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
 	    		
 	    		if(traveler instanceof ServerPlayer player)
 		    	{

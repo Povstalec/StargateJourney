@@ -37,6 +37,8 @@ public class Stargate
 		private Type(ArrayList<StargatePart> parts, float verticalCenterHeight, float horizontalCenterHeight)
 		{
 			this.parts = parts;
+			this.verticalCenterHeight = verticalCenterHeight;
+			this.horizontalCenterHeight = horizontalCenterHeight;
 		}
 		
 		public ArrayList<StargatePart> getParts()
@@ -153,10 +155,10 @@ public class Stargate
 		TARGET_OBSTRUCTED(-8, FeedbackType.ERROR, createError("target_obstructed", false)),
 		SELF_DIAL(-9, FeedbackType.MAJOR_ERROR, createError("self_dial", true)),
 		SAME_SYSTEM_DIAL(-10, FeedbackType.MAJOR_ERROR, createError("same_system_dial", true)),
-		ALREADY_CONNECTED(-11, FeedbackType.ERROR, createError("already_connected", false)),
-		NO_GALAXY(-12, FeedbackType.ERROR, createError("no_galaxy", false)),
-		NO_DIMENSIONS(-13, FeedbackType.ERROR, createError("no_dimensions", false)),
-		NO_STARGATES(-14, FeedbackType.ERROR, createError("no_stargates", false)),
+		ALREADY_CONNECTED(-11, FeedbackType.MAJOR_ERROR, createError("already_connected", true)),
+		NO_GALAXY(-12, FeedbackType.MAJOR_ERROR, createError("no_galaxy", true)),
+		NO_DIMENSIONS(-13, FeedbackType.MAJOR_ERROR, createError("no_dimensions", true)),
+		NO_STARGATES(-14, FeedbackType.MAJOR_ERROR, createError("no_stargates", true)),
 
 		// Wormhole TODO
 		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),
