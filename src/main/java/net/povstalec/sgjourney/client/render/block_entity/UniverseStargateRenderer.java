@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -11,6 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.UniverseStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
@@ -19,17 +20,13 @@ import net.povstalec.sgjourney.common.misc.Orientation;
 
 public class UniverseStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<UniverseStargateEntity>
 {
-	protected static final int r = ClientStargateConfig.universe_rgba.getRed();
-	protected static final int g = ClientStargateConfig.universe_rgba.getGreen();
-	protected static final int b = ClientStargateConfig.universe_rgba.getBlue();
-	
 	protected final WormholeModel wormholeModel;
 	protected final UniverseStargateModel stargateModel;
 	
 	public UniverseStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(r, g, b);
+		this.wormholeModel = new WormholeModel(ClientStargateConfig.universe_rgba, 0.25F);
 
 		this.stargateModel = new UniverseStargateModel(
 				context.bakeLayer(Layers.UNIVERSE_RING_LAYER), 
@@ -49,18 +46,18 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
 		
         stack.pushPose();
 		stack.translate(center.x(), center.y(), center.z());
-        stack.mulPose(Vector3f.YP.rotationDegrees(-facing));
+        stack.mulPose(Axis.YP.rotationDegrees(-facing));
         
         if(orientation == Orientation.UPWARD)
-            stack.mulPose(Vector3f.XP.rotationDegrees(-90));
+            stack.mulPose(Axis.XP.rotationDegrees(-90));
         else if(orientation == Orientation.DOWNWARD)
-            stack.mulPose(Vector3f.XP.rotationDegrees(90));
+            stack.mulPose(Axis.XP.rotationDegrees(90));
         
         this.stargateModel.setRotation(stargate.getRotation(partialTick));
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
         
         if(stargate.isConnected())
-        	this.wormholeModel.renderEventHorizon(stack, source, combinedLight, combinedOverlay, stargate.getTickCount());
+        	this.wormholeModel.renderEventHorizon((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
 	    stack.popPose();
 	    
 	}

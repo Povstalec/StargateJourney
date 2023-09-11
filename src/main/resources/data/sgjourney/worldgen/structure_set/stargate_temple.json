@@ -3,6 +3,10 @@
     {
       "structure": "sgjourney:stargate_temple/abydos_pyramid",
       "weight": 1
+    },
+    {
+      "structure": "sgjourney:stargate_temple/great_pyramid",
+      "weight": 1
     }
   ],
   "placement": {

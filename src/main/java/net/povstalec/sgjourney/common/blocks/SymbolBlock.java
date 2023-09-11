@@ -93,10 +93,17 @@ public abstract class SymbolBlock extends BaseEntityBlock
     	{
         	String pointOfOrigin = tag.getCompound("BlockEntityTag").getString("Symbol");
         	
-        	if(pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)) != null)
-        		symbol = pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).getName();
+        	ResourceLocation location = ResourceLocation.tryParse(pointOfOrigin);
+        	
+        	if(location == null)
+        		symbol = "Invalid Path";
         	else
-        		symbol = "Error";
+        	{
+        		if(pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)) != null)
+            		symbol = pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).getName();
+            	else
+            		symbol = "Error";
+        	}
     	}
     	
 		tooltipComponents.add(Component.literal("Symbol: " + symbol).withStyle(ChatFormatting.YELLOW));

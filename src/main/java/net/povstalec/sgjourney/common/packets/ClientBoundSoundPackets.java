@@ -33,6 +33,28 @@ public abstract class ClientBoundSoundPackets
     
     
     
+    public static class OpenWormhole extends ClientBoundSoundPackets
+    {
+    	public OpenWormhole(BlockPos pos)
+    	{
+    		super(pos, false);
+    	}
+    	public OpenWormhole(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    	}
+    	
+    	@Override
+    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playWormholeOpenSound(pos);
+            });
+            return true;
+        }
+    }
+    
     public static class IdleWormhole extends ClientBoundSoundPackets
     {
     	public IdleWormhole(BlockPos pos)

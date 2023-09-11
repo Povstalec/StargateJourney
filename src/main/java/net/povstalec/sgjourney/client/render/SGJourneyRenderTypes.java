@@ -39,9 +39,30 @@ public class SGJourneyRenderTypes extends RenderType
 				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
+<<<<<<< HEAD
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(false));
+=======
+				.setWriteMaskState(COLOR_WRITE)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(NO_OVERLAY)
+				.createCompositeState(true));
+	}
+
+	public static RenderType shield(ResourceLocation resourceLocation)
+	{
+		return create("shield", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setCullState(CULL)
+				.setWriteMaskState(COLOR_WRITE)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(NO_OVERLAY)
+				.createCompositeState(true));
+>>>>>>> stargatejourney-1.19.3
 	}
 
 	public static RenderType vortex(ResourceLocation resourceLocation, float xOffset, float zOffset)

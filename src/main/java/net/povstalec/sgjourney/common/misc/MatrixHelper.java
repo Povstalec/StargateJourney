@@ -8,7 +8,6 @@ public class MatrixHelper
 {
 	public static Vec3 rotateVector(Vec3 initialVector, Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation)
 	{
-		//System.out.println("Before " + initialVector.toString());
 		Vec3 vector = initialVector;
     	int initialHorizontal = initialDirection.get2DDataValue();
     	int destinationHorizontal = destinationDirection.get2DDataValue();
@@ -31,10 +30,13 @@ public class MatrixHelper
 			vector = zRotateClockwise(vector, xzRotation1, negativeAxis1);
     	
 		// Rotate horizontally
-    	if(destinationHorizontal - 2 < initialHorizontal)
+    	if(destinationHorizontal - initialHorizontal - 2 < 0)
     		destinationHorizontal += 4;
-
+    	
 		int yRotation = destinationHorizontal - initialHorizontal - 2;
+    	if(yRotation < 0)
+    		yRotation += 4;
+		
 		vector = yRotateClockwise(vector, yRotation);
 		
 		

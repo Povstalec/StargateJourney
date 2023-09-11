@@ -14,8 +14,15 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.cctweaked.methods.InterfaceMethod;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.*;
-import net.povstalec.sgjourney.common.cctweaked.methods.UniverseStargateMethods.*;
+import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.EndRotation;
+import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.GetCurrentSymbol;
+import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.GetRotation;
+import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.IsCurrentSymbol;
+import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.LowerChevron;
+import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.RaiseChevron;
+import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.RotateAntiClockwise;
+import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.RotateClockwise;
+import net.povstalec.sgjourney.common.cctweaked.methods.UniverseStargateMethods.EngageSymbol;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class BasicStargatePeripheral extends BasicInterfacePeripheral implements IDynamicPeripheral
@@ -52,6 +59,12 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 	//============================================================================================
 	//*****************************************CC: Tweaked****************************************
 	//============================================================================================
+	
+	@LuaFunction
+	public final int getRecentFeedback()
+	{
+		return stargate.getRecentFeedback().getCode();
+	}
 	
 	@LuaFunction
 	public final boolean isStargateConnected()

@@ -1,9 +1,9 @@
 package net.povstalec.sgjourney.common.data;
 
-import java.util.Set;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -22,7 +22,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.init.GalaxyInit;
-import net.povstalec.sgjourney.common.stargate.Addressing;
+import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.GalaxyType;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
@@ -124,7 +124,7 @@ public class Universe extends SavedData
 	
 	private void addSolarSystemFromDataPack(MinecraftServer server, SolarSystem system, String systemID)
 	{
-		String extragalacticAddress = Addressing.addressIntArrayToString(system.getAddressArray());
+		String extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
 		String pointOfOrigin = system.getPointOfOrigin().location().toString();
 		String symbols = system.getSymbols().location().toString();
 		List<ResourceKey<Level>> dimensions = system.getDimensions();
@@ -160,7 +160,7 @@ public class Universe extends SavedData
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			extragalacticAddress = Addressing.addressIntArrayToString(Addressing.randomAddress(1, 7, 39, seed));// Added prefix 1 to indicate they're in Milky Way
+			extragalacticAddress = Address.addressIntArrayToString(Address.randomAddress(1, 7, 39, seed));// Added prefix 1 to indicate they're in Milky Way
 			
 			if(!getExtragalacticAddressInfo().contains(extragalacticAddress))
 				break;
@@ -250,7 +250,7 @@ public class Universe extends SavedData
         		String systemID = system.getFirst().location().toString();
         		int[] address = system.getSecond().stream().mapToInt((integer) -> integer).toArray();
         		
-        		registerGalaxyReferences(galaxyID, systemID, Addressing.addressIntArrayToString(address));
+        		registerGalaxyReferences(galaxyID, systemID, Address.addressIntArrayToString(address));
         	});
         });
 	}
@@ -282,7 +282,7 @@ public class Universe extends SavedData
 				for(int i = 0; true; i++)
 				{
 					systemValue += i;
-					address = Addressing.addressIntArrayToString(Addressing.randomAddress(6, size, systemValue));
+					address = Address.addressIntArrayToString(Address.randomAddress(6, size, systemValue));
 					
 					if(!getGalaxy(galaxyID).contains(address))
 						break;
