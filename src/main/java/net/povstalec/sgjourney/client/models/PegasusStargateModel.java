@@ -95,7 +95,7 @@ public class PegasusStargateModel extends AbstractStargateModel
 		
 		renderSpinningSymbol(stargate, stack, source, combinedLight, combinedOverlay);
 		
-		if(stargate.isDialingOut() || (stargate.addressBuffer.length > 0 && stargate.isDialingOut()))
+		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.length > 0 && !stargate.isConnected()))
 			renderLockedSymbols(stargate, stack, source, combinedLight, combinedOverlay);
 		else
 			renderIdleSymbols(stargate, stack, source, combinedLight, combinedOverlay);
@@ -105,9 +105,7 @@ public class PegasusStargateModel extends AbstractStargateModel
 	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		/*if(stargate.isConnected())
-	    	this.getSymbol(0).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, 0))), 255, combinedOverlay, 0.0F/255.0F, 200.0F/255.0F, 255.0F/255.0F, 1.0F);
-		else */if(stargate.symbolBuffer < stargate.addressBuffer.length)
+		if(stargate.symbolBuffer < stargate.addressBuffer.length)
 	    {
 	    	for(int i = 0; i < stargate.getAddress().length; i++)
 	    	{
