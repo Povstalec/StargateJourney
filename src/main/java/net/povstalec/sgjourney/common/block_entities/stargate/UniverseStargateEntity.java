@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Addressing;
+import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class UniverseStargateEntity extends AbstractStargateEntity
@@ -40,6 +40,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.UNIVERSE_STARGATE.get(), pos, state, Stargate.Gen.GEN_1, 1);
+		this.setOpenSoundLead(28);
 	}
 	
 	@Override
@@ -80,6 +81,11 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		return SoundInit.UNIVERSE_CHEVRON_ENGAGE.get();
 	}
 	
+	public SoundEvent wormholeOpenSound()
+	{
+		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
+	}
+	
 	public SoundEvent failSound()
 	{
 		return SoundInit.UNIVERSE_DIAL_FAIL.get();
@@ -111,7 +117,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		if(level.isClientSide())
 			return Stargate.Feedback.NONE;
 		
-		if(Addressing.addressContainsSymbol(getAddress(), symbol))
+		if(Address.addressContainsSymbol(getAddress(), symbol))
 			return Stargate.Feedback.SYMBOL_ENCODED;
 		
 		if(symbol > 35)
@@ -137,7 +143,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	protected Stargate.Feedback encodeChevron(int symbol)
+	public Stargate.Feedback encodeChevron(int symbol)
 	{
 		symbolBuffer++;
 		animationTicks++;
@@ -290,7 +296,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		}
 		
 		resetAddress();
-		this.isPrimaryChevronEngaged = false;
 		this.dialingOut = false;
 		this.connectionID = EMPTY;
 		

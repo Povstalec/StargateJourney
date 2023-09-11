@@ -56,6 +56,7 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 	
 	public void stopSound()
 	{
+		System.out.println("StoppingSound " + this.toString());
 		this.stop();
 	}
 	
@@ -64,12 +65,17 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 		return new Vec3(x, y, z);
 	}
 	
+	public double getDistanceFromSource()
+	{
+		LocalPlayer player = minecraft.player;
+		Vec3 playerPos = player.position();
+		return getPosition().distanceTo(playerPos);
+	}
+	
 	public float getVolume()
 	{
 		float localVolume = 0.0F;
-		LocalPlayer player = minecraft.player;
-		Vec3 playerPos = player.position();
-		double distanceFromSource = getPosition().distanceTo(playerPos);
+		double distanceFromSource = getDistanceFromSource();
 		
 		if(distanceFromSource <= this.fullDistance)
 			localVolume = getMaxVolume();

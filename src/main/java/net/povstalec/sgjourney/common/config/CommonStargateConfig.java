@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class CommonStargateConfig
@@ -8,6 +9,7 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.IntValue max_wormhole_open_time;
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
+	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> chevron_lock_speed;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	
@@ -36,8 +38,12 @@ public class CommonStargateConfig
 				.define("server.end_connection_from_both_ends", true);
 		
 		two_way_wormholes = server
-				.comment("If true, wormholes can be traveled through both ways")
+				.comment("ENABLED - Two way travel possible; CREATIVE_ONLY - Two way travel limited to Players in Creative Mode; DISABLED - Two way travel impossible")
 				.defineEnum("server.two_way_wormholes", WormholeTravel.CREATIVE_ONLY);
+		
+		chevron_lock_speed = server
+				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
+				.defineEnum("server.chevron_lock_speed", ChevronLockSpeed.MEDIUM);
 		
 		reverse_wormhole_kills = server
 				.comment("If true, going through the wrong side of the wormhole will result in death")

@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.TollanStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
@@ -23,17 +24,13 @@ import net.povstalec.sgjourney.common.misc.Orientation;
 @OnlyIn(Dist.CLIENT)
 public class TollanStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<TollanStargateEntity>
 {
-	protected static final int r = ClientStargateConfig.tollan_rgba.getRed();
-	protected static final int g = ClientStargateConfig.tollan_rgba.getGreen();
-	protected static final int b = ClientStargateConfig.tollan_rgba.getBlue();
-
 	protected final WormholeModel wormholeModel;
 	protected final TollanStargateModel stargateModel;
 
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(r, g, b);
+		this.wormholeModel = new WormholeModel(ClientStargateConfig.tollan_rgba, 0.125F);
 		this.stargateModel = new TollanStargateModel(
 				context.bakeLayer(Layers.TOLLAN_RING_LAYER),
 				context.bakeLayer(Layers.TOLLAN_SYMBOL_RING_LAYER),
@@ -50,20 +47,22 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
 		
         stack.pushPose();
-
-		if(orientation == Orientation.REGULAR)
-			stack.translate(center.x(), center.y() - 0.5D, center.z());
-		else {
-			double shiftBase = orientation == Orientation.UPWARD ? 0.5D : -0.5D;
-			double shiftY = 0.125D;
-			switch (facing) {
-				case NORTH -> stack.translate(center.x(), center.y() - shiftY, center.z() - shiftBase);
-				case SOUTH -> stack.translate(center.x(), center.y() - shiftY, center.z() + shiftBase);
-				case EAST -> stack.translate(center.x() + shiftBase, center.y() - shiftY, center.z());
-				case WEST -> stack.translate(center.x() - shiftBase, center.y() - shiftY, center.z());
-//				default -> stack.translate(center.x(), center.y(), center.z());
-			}
+        
+        double shiftBase = orientation.getIndex() *  0.5;
+        double shiftY = center.y();
+		double shiftX = center.x();
+		double shiftZ = center.z();
+        
+		if(orientation != Orientation.REGULAR)
+		{
+			if(facing.getAxis() == Direction.Axis.X)
+				shiftX += facing.getAxisDirection().getStep() * shiftBase;
+			else
+				shiftZ += facing.getAxisDirection().getStep() * shiftBase;
+			
 		}
+        stack.translate(shiftX, shiftY, shiftZ);
+        
         stack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
         
         if(orientation == Orientation.UPWARD)
@@ -74,7 +73,7 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
 		
         if(stargate.isConnected())
-	    	this.wormholeModel.renderEventHorizon(stack, source, combinedLight, combinedOverlay, stargate.getTickCount());
+	    	this.wormholeModel.renderEventHorizon((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
 		
 	    stack.popPose();
 	}

@@ -16,14 +16,13 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.Connection;
 
 public class MilkyWayStargateModel extends AbstractStargateModel
 {
 	//private static final String CHEVRON = ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? "milky_way_chevron" : "milky_way_chevron_front";
 	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_outer_ring.png");
 	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_inner_ring.png");
-	//private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/" + CHEVRON + ".png");
-	//private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/" + CHEVRON + "_lit.png");
 	
 	private final ModelPart ring;
 	private final ModelPart symbolRing;
@@ -153,80 +152,100 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 	protected void renderChevron(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay, int chevronNumber)
 	{
-		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), false)));
-		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
+		// Make sure this is at the top, otherwise the lit up chevrons are rendered under the not lit chevrons
+		int chevron = stargate.getEngagedChevrons()[chevronNumber];
+		
+		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? CHEVRON_TEXTURE : CHEVRON_FRONT_TEXTURE));
+		this.getChevron(chevron).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
 		if(stargate.chevronsRendered() >= chevronNumber)
 		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), true)));
-			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
+			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? ENGAGED_CHEVRON_TEXTURE : ENGAGED_CHEVRON_FRONT_TEXTURE));
+			this.getChevron(chevron).render(stack, engagedChevronTexture, 255, combinedOverlay);
 		}
+	}
+	
+	protected void controlChevrons(MilkyWayStargateEntity stargate, int chevronsRaised, boolean onlyOuter)
+	{
+		for(int i = 1; i <= chevronsRaised; i++)
+		{
+			int chevron = stargate.getEngagedChevrons()[i];
+			
+			if(!onlyOuter)
+				this.getChevronLight(chevron).y = 2;
+			else
+				this.getChevronLight(chevron).y = 0;
+			this.getOuterChevron(chevron).y = -2;
+		}
+		
+		for(int i = chevronsRaised + 1; i < 9; i++)
+		{
+			int chevron = stargate.getEngagedChevrons()[i];
+			
+			this.getChevronLight(chevron).y = 0;
+			this.getOuterChevron(chevron).y = 0;
+		}
+	}
+	
+	protected void controlChevron(MilkyWayStargateEntity stargate, int chevronRaised)
+	{
+		for(int i = 0; i < 9; i++)
+		{
+			int chevron = stargate.getEngagedChevrons()[i];
+			
+			this.getChevronLight(chevron).y = 0;
+			this.getOuterChevron(chevron).y = 0;
+		}
+		
+		int chevron = stargate.getEngagedChevrons()[chevronRaised];
+		
+		this.getChevronLight(chevron).y = 2;
+		this.getOuterChevron(chevron).y = -2;
 	}
 	
 	protected void doMovieChevron(MilkyWayStargateEntity stargate)
 	{
-		boolean raiseChevron = stargate.isChevronRaised && stargate.getCurrentSymbol() != 0;
-		int chevron = stargate.chevronsRendered() + 1;
+		//boolean raiseChevron = stargate.isChevronRaised && stargate.getCurrentSymbol() != 0;
+		int chevronsRendered = stargate.chevronsRendered();
 		
-		if(chevron < 9 && raiseChevron)
+		if(stargate.isConnected())
 		{
-			this.getChevronLight(chevron).y = 2;
-			this.getOuterChevron(chevron).y = -2;
-		}
-		else if((stargate.getCurrentSymbol() == 0 || stargate.chevronsRendered() >= 8))
-		{
-			if(stargate.isChevronRaised)
-			{
-				for(int i = 1; i < chevron; i++)
-				{
-					this.getChevronLight(i).y = 2;
-					this.getOuterChevron(i).y = -2;
-				}
-			}
-			else if(!stargate.isChevronRaised && stargate.isConnected())
-			{
-				for(int i = 1; i < chevron; i++)
-				{
-					this.getOuterChevron(i).y = -2;
-				}
-				for(int i = chevron; i < 9; i++)
-				{
-					this.getOuterChevron(i).y = 0;
-				}
-				for(int i = 1; i < 9; i++)
-				{
-					this.getChevronLight(i).y = 0;
-				}
-			}
-			else
-			{
-				for(int i = 1; i < 9; i++)
-				{
-					this.getChevronLight(i).y = 0;
-					this.getOuterChevron(i).y = 0;
-				}
-			}
+			System.out.println(chevronsRendered);
+			controlChevrons(stargate, chevronsRendered, true);
 		}
 		else
 		{
-			for(int i = 1; i < 9; i++)
+			if(stargate.isChevronRaised)
 			{
-				this.getChevronLight(i).y = 0;
-				this.getOuterChevron(i).y = 0;
+				if(stargate.getCurrentSymbol() == 0)
+					controlChevrons(stargate, chevronsRendered, false);
+				else
+				{
+					int chevronNumber = chevronsRendered + 1;
+					
+					if(chevronNumber < 9)
+						controlChevron(stargate, chevronNumber);
+					else
+						controlChevrons(stargate, chevronsRendered, false);
+				}
 			}
+			else
+				controlChevrons(stargate, 0, false);
 		}
 	}
 	
 	protected void renderMoviePrimaryChevron(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer chevron_texture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), false)));
-		this.getMovieChevron().render(stack, chevron_texture, combinedLight, combinedOverlay);
+		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), false)));
+		this.getMovieChevron().render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
 		if(!stargate.isChevronRaised && stargate.isConnected())
 		{
-			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), true)));
-			this.getMovieChevron().render(stack, engaged_chevron_texture, 255, combinedOverlay);
+			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), true)));
+			
+			if(stargate.isDialingOut() || stargate.getKawooshTickCount() > 0)
+				this.getMovieChevron().render(stack, engagedChevronTexture, 255, combinedOverlay);
 		}
 	}
 	
@@ -251,7 +270,9 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 		if(stargate.isConnected() || stargate.isChevronRaised)
 		{
 			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), true)));
-			this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
+
+			if(stargate.isDialingOut() || stargate.getKawooshTickCount() > 0)
+				this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
 		}
 	}
 	
@@ -296,17 +317,9 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 		
 		createMovieChevron(chevrons.addOrReplaceChild("movie_chevron", CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, 0.0F)));
 		
-		for(int i = 0; i <= 3; i++)
+		for(int i = 0; i < 9; i++)
 		{
 			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i))));
-		}
-		for(int i = 4; i <= 6; i++)
-		{
-			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i-80 ))));
-		}
-		for(int i = 7; i <= 8; i++)
-		{
-			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i + 120))));
 		}
 		
 		return LayerDefinition.create(meshdefinition, 64, 64);

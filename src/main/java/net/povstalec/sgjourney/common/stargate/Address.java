@@ -6,10 +6,99 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
-public class Addressing
+public class Address
 {
+	/*protected int[] addressArray = new int[] {-1, -1, -1, -1, -1, -1, -1, -1};
+	protected int length = 0;
+	protected boolean hasPointOfOrigin = false;
+	
+	public Address() {}
+	
+	public Address addSymbol(int symbol)
+	{
+		if(this.hasPointOfOrigin)
+		{
+			StargateJourney.LOGGER.info("Address is finalized and can't accept more symbols");
+			return this;
+		}
+		
+		if(symbol < 0)
+			return this;
+		
+		if(length >= 9)
+			return this;
+		
+		this.addressArray[length] = symbol;
+		length++;
+		
+		return this;
+	}
+	
+	public int[] getFullAddressArray()
+	{
+		return this.addressArray;
+	}
+	
+	public int[] getAddressArray()
+	{
+		int[] address = new int[length];
+		
+		for(int i = 0; i < length; i++)
+		{
+			address[i] = this.addressArray[i];
+		}
+		
+		return address;
+	}
+	
+	public String getAddressString()
+	{
+		return addressIntArrayToString(getAddressArray());
+	}
+	
+	public int getAddressLength()
+	{
+		return this.length;
+	}
+	
+	public boolean isComplete()
+	{
+		return this.length > 6;
+	}*/
+	
+	//============================================================================================
+	//*******************************************Static*******************************************
+	//============================================================================================
+	
+	public enum AddressType
+	{
+		ADDRESS_7_CHEVRON(6, new int[] {1, 2, 3, 4, 5, 6, 0}),
+		ADDRESS_8_CHEVRON(7, new int[] {1, 2, 3, 7, 4, 5, 6, 0}),
+		ADDRESS_9_CHEVRON(8, new int[] {1, 2, 3, 7, 8, 4, 5, 6, 0});
+		
+		private int numberOfSymbols;
+		private int[] dialedOrder;
+		
+		AddressType(int numberOfSymbols, int[] dialedOrder)
+		{
+			this.numberOfSymbols = numberOfSymbols;
+			this.dialedOrder = dialedOrder;
+		}
+		
+		public int getNumberOfSymbols()
+		{
+			return this.numberOfSymbols;
+		}
+		
+		public int[] getDialedOrder()
+		{
+			return this.dialedOrder;
+		}
+	}
+	
 	public static int[] randomAddress(int size, int limit, long seed)
 	{
 		return randomAddress(0, size, limit, seed);
@@ -64,7 +153,12 @@ public class Addressing
 		
 		for(int i = 1; i < stringArray.length; i++)
 		{
+
 			int number = Character.getNumericValue(stringArray[i].charAt(0));
+			int length = stringArray[i].length();
+			if(length > 1)
+				number = number * 10 + Character.getNumericValue(stringArray[i].charAt(1));
+			
 			intArray = ArrayHelper.growIntArray(intArray, number);
 		}
 		

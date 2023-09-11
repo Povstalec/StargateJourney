@@ -142,6 +142,24 @@
 		]
 	},
 	
+	"milky_way_wormhole_open":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_open",
+		"sounds":
+		[
+			"sgjourney:milky_way_wormhole_open"
+		]
+	},
+	
+	"pegasus_wormhole_open":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_open",
+		"sounds":
+		[
+			"sgjourney:pegasus_wormhole_open"
+		]
+	},
+	
 	"milky_way_dhd_enter":
 	{
 		"subtitle": "sounds.sgjourney.milky_way_dhd_enter",

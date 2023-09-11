@@ -23,6 +23,9 @@ public class WormholeIdleSound extends StargateSound
 		else
 			fadeOut();
 		
+		if(getDistanceFromSource() > this.fullDistance)
+			this.stopSound();
+		
 		super.tick();
 	}
 	
@@ -40,7 +43,10 @@ public class WormholeIdleSound extends StargateSound
 	
 	private void fadeOut()
 	{
-		if(this.volume > VOLUME_MIN)
+		if(this.volume >= VOLUME_MIN)
 			this.volume -= 0.05F;
+		
+		if(this.volume < VOLUME_MIN)
+			this.stopSound();
 	}
 }
