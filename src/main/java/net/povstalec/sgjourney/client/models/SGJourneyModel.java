@@ -2,10 +2,9 @@ package net.povstalec.sgjourney.client.models;
 
 import java.util.Random;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
