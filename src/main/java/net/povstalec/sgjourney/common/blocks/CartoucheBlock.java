@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks.symbols;
+package net.povstalec.sgjourney.common.blocks;
 
 import java.util.List;
 
@@ -11,11 +11,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -30,7 +33,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.povstalec.sgjourney.common.block_entities.symbols.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -43,32 +47,40 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER));
 	}
-	
+
+    @Override
 	public BlockState rotate(BlockState state, Rotation rotation)
 	{
 	      return state.setValue(FACING, rotation.rotate(state.getValue(FACING))).setValue(ORIENTATION, Orientation.REGULAR);
 	}
-	
+
+    @Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) 
 	{
 		BlockPos blockpos = context.getClickedPos();
 		Level level = context.getLevel();
+		Player player = context.getPlayer();
 		Orientation orientation = Orientation.getOrientationFromXRot(context.getPlayer());
 		
 		if(orientation == Orientation.REGULAR && blockpos.getY() > level.getMaxBuildHeight() - 1)
+		{
+			player.displayClientMessage(Component.translatable("block.sgjourney.cartouche.not_enough_space"), true);
 			return null;
+		}
 		
 		if(!level.getBlockState(blockpos.relative(Orientation.getCenterDirection(Direction.UP, orientation))).canBeReplaced(context))
 			return null;
 		
 		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(HALF, DoubleBlockHalf.LOWER);
 	}
-    
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
     	builder.add(FACING).add(HALF).add(ORIENTATION);
 	}
-    
+
+    @Override
     public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, LevelAccessor levelAccessor, BlockPos pos1, BlockPos pos2)
     {
     	DoubleBlockHalf doubleblockhalf = state1.getValue(HALF);
@@ -78,11 +90,10 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     				Blocks.AIR.defaultBlockState() : super.updateShape(state1, direction, state2, levelAccessor, pos1, pos2);
     	}
     	else
-    	{
     		return Blocks.AIR.defaultBlockState();
-        }
 	}
-    
+
+    @Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
         if (!level.isClientSide()) 
@@ -106,7 +117,33 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
         }
         return InteractionResult.SUCCESS;
     }
+	
+	public abstract ItemLike getItem();
     
+    @Override
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	{
+    	if(level.getBlockState(pos).getValue(HALF) == DoubleBlockHalf.UPPER)
+    		pos = pos.below();
+		BlockEntity blockentity = level.getBlockEntity(pos);
+		if (blockentity instanceof CartoucheEntity)
+		{
+			if(!level.isClientSide() && !player.isCreative())
+			{
+				ItemStack itemstack = new ItemStack(getItem());
+				
+				blockentity.saveToItem(itemstack);
+
+				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
+				itementity.setDefaultPickUpDelay();
+				level.addFreshEntity(itementity);
+			}
+		}
+
+		super.playerWillDestroy(level, pos, state, player);
+	}
+
+    @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	String dimension = "";
@@ -117,5 +154,61 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	
 		tooltipComponents.add(Component.literal("Dimension: " + dimension).withStyle(ChatFormatting.YELLOW));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+    }
+    
+    public static class Stone extends CartoucheBlock
+    {
+		public Stone(Properties properties)
+		{
+			super(properties);
+		}
+
+		@Override
+		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+		{
+			return new CartoucheEntity.Stone(pos, state);
+		}
+
+	    @Override
+	    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack)
+	    {
+	    	BlockPos blockpos = pos.above();
+	    	level.setBlock(blockpos, BlockInit.STONE_CARTOUCHE.get().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(HALF, DoubleBlockHalf.UPPER), 3);
+		}
+
+		@Override
+		public ItemLike getItem()
+		{
+			return BlockInit.STONE_CARTOUCHE.get();
+		}
+    	
+    }
+    
+    public static class Sandstone extends CartoucheBlock
+    {
+		public Sandstone(Properties properties)
+		{
+			super(properties);
+		}
+
+		@Override
+		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+		{
+			return new CartoucheEntity.Sandstone(pos, state);
+		}
+
+	    @Override
+	    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack)
+	    {
+	    	BlockPos blockpos = pos.above();
+	    	level.setBlock(blockpos, BlockInit.SANDSTONE_CARTOUCHE.get().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(HALF, DoubleBlockHalf.UPPER), 3);
+		}
+
+		@Override
+		public ItemLike getItem()
+		{
+			return BlockInit.SANDSTONE_CARTOUCHE.get();
+		}
+    	
     }
 }

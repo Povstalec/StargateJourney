@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.Connection;
 
 public class PegasusStargateModel extends AbstractStargateModel
 {
@@ -94,19 +95,19 @@ public class PegasusStargateModel extends AbstractStargateModel
 		
 		renderSpinningSymbol(stargate, stack, source, combinedLight, combinedOverlay);
 		
-		if(stargate.addressBuffer.length == 0)
-			renderIdleSymbols(stargate, stack, source, combinedLight, combinedOverlay);
-		else
+		if(stargate.isDialingOut() || (stargate.addressBuffer.length > 0 && stargate.isDialingOut()))
 			renderLockedSymbols(stargate, stack, source, combinedLight, combinedOverlay);
+		else
+			renderIdleSymbols(stargate, stack, source, combinedLight, combinedOverlay);
 		
 	}
 	
 	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		if(stargate.isConnected())
+		/*if(stargate.isConnected())
 	    	this.getSymbol(0).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, 0))), 255, combinedOverlay, 0.0F/255.0F, 200.0F/255.0F, 255.0F/255.0F, 1.0F);
-		else if(stargate.symbolBuffer < stargate.addressBuffer.length)
+		else */if(stargate.symbolBuffer < stargate.addressBuffer.length)
 	    {
 	    	for(int i = 0; i < stargate.getAddress().length; i++)
 	    	{
@@ -133,15 +134,19 @@ public class PegasusStargateModel extends AbstractStargateModel
 		float g = 100.0F;
 		float b = 200.0F;
 		
+		int symbolNumber = symbolCount;
+		
 		if(stargate.isConnected())
 		{
 			g = 200.0F;
 			b = 255.0F;
+			symbolNumber = stargate.currentSymbol < symbolCount ? stargate.currentSymbol : symbolNumber;
 		}
 		
-		for(int i = 0; i < symbolCount; i++)
+		for(int i = 0; i < symbolNumber + 1; i++)
 		{
-			this.getSymbol(i).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, i))), 255, combinedOverlay, r/255.0F, g/255.0F, b/255.0F, 1.0F);
+			int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % symbolCount;
+			this.getSymbol(renderedSymbol).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, renderedSymbol))), 255, combinedOverlay, r/255.0F, g/255.0F, b/255.0F, 1.0F);
 		}
 	}
 	
@@ -174,26 +179,31 @@ public class PegasusStargateModel extends AbstractStargateModel
 	protected void renderChevron(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay, int chevronNumber)
 	{
-		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), false)));
-		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
+		// Make sure this is at the top, otherwise the lit up chevrons are rendered under the not lit chevrons
+		int chevron = stargate.getEngagedChevrons()[chevronNumber];
+		
+		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? CHEVRON_TEXTURE : CHEVRON_FRONT_TEXTURE));
+		this.getChevron(chevron).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
 		if(stargate.chevronsRendered() >= chevronNumber)
 		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), true)));
-			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
+			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? ENGAGED_CHEVRON_TEXTURE : ENGAGED_CHEVRON_FRONT_TEXTURE));
+			this.getChevron(chevron).render(stack, engagedChevronTexture, 255, combinedOverlay);
 		}
 	}
 	
 	protected void renderPegasusPrimaryChevron(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer chevron_texture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), false)));
-	    this.getChevron(0).render(stack, chevron_texture, combinedLight, combinedOverlay);
+		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), false)));
+	    this.getChevron(0).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
 		if(stargate.isConnected())
 		{
-			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), true)));
-		    this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
+			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), true)));
+		    
+			if(stargate.isDialingOut() || stargate.getKawooshTickCount() > 0)
+				this.getChevron(0).render(stack, engagedChevronTexture, 255, combinedOverlay);
 		}
 	}
 	
@@ -236,17 +246,9 @@ public class PegasusStargateModel extends AbstractStargateModel
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition chevrons = meshdefinition.getRoot();
 		
-		for(int i = 0; i <= 3; i++)
+		for(int i = 0; i < 9; i++)
 		{
 			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i))));
-		}
-		for(int i = 4; i <= 6; i++)
-		{
-			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i - 80 ))));
-		}
-		for(int i = 7; i <= 8; i++)
-		{
-			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i + 120))));
 		}
 		
 		return LayerDefinition.create(meshdefinition, 64, 64);

@@ -10,7 +10,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.MilkyWayStargateModel;
+import net.povstalec.sgjourney.client.models.ShieldModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateBlock;
@@ -19,17 +21,15 @@ import net.povstalec.sgjourney.common.misc.Orientation;
 
 public class MilkyWayStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<MilkyWayStargateEntity>
 {
-	protected static final int r = ClientStargateConfig.milky_way_rgba.getRed();
-	protected static final int g = ClientStargateConfig.milky_way_rgba.getGreen();
-	protected static final int b = ClientStargateConfig.milky_way_rgba.getBlue();
-	
+	protected final ShieldModel shieldModel;
 	protected final WormholeModel wormholeModel;
 	protected final MilkyWayStargateModel stargateModel;
 	
 	public MilkyWayStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(r, g, b);
+		this.shieldModel = new ShieldModel();
+		this.wormholeModel = new WormholeModel(ClientStargateConfig.milky_way_rgba, 0.25F);
 		this.stargateModel = new MilkyWayStargateModel(
 				context.bakeLayer(Layers.MILKY_WAY_RING_LAYER), 
 				context.bakeLayer(Layers.MILKY_WAY_SYMBOL_RING_LAYER), 
@@ -59,7 +59,9 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
         
         if(stargate.isConnected())
-	    	this.wormholeModel.renderEventHorizon(stack, source, combinedLight, combinedOverlay, stargate.getTickCount());
+	    	this.wormholeModel.renderEventHorizon((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
+        
+        //this.shieldModel.renderShield((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
 	    
 	    stack.popPose();
 	}

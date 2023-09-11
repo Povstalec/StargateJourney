@@ -227,7 +227,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	public void getStatus(Player player)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		player.sendSystemMessage(Component.literal("Energy: " + this.getEnergyStored() + " FE").withStyle(ChatFormatting.DARK_RED));
 	}

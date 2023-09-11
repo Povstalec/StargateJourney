@@ -13,7 +13,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.Layers;
-import net.povstalec.sgjourney.common.block_entities.symbols.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 
 public abstract class SymbolBlockRenderer

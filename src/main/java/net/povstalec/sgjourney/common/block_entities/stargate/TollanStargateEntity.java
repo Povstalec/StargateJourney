@@ -55,6 +55,11 @@ public class TollanStargateEntity extends AbstractStargateEntity
 		return SoundInit.TOLLAN_CHEVRON_ENGAGE.get();
 	}
 	
+	public SoundEvent wormholeOpenSound()
+	{
+		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
+	}
+	
 	public SoundEvent failSound()
 	{
 		return SoundInit.TOLLAN_DIAL_FAIL.get();

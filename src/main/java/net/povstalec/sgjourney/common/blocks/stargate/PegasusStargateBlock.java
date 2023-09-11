@@ -40,7 +40,7 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 		return BlockInit.PEGASUS_RING.get().defaultBlockState();
 	}
 
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.PEGASUS_STARGATE.get();
 	}

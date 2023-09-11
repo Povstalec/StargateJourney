@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.data;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 
@@ -90,14 +91,28 @@ public class StargateNetwork extends SavedData
 	
 	public void stellarUpdate(MinecraftServer server)
 	{
-		//getConnections().getAllKeys().forEach(connection -> terminateConnection(server, connection, Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK));
-		this.connections.forEach((connectionID, connection) -> connection.terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK));
+		Iterator<Entry<String, Connection>> iterator = this.connections.entrySet().iterator();
+		
+		while(iterator.hasNext())
+		{
+			Entry<String, Connection> nextConnection = iterator.next();
+			Connection connection = nextConnection.getValue();
+			connection.terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
+		}
+		StargateJourney.LOGGER.info("Connections terminated");
+		
 		Universe.get(server).eraseUniverseInfo();
+		StargateJourney.LOGGER.info("Universe erased");
 		Universe.get(server).generateUniverseInfo(server);
+		StargateJourney.LOGGER.info("Universe regenerated");
 		eraseNetwork();
+		StargateJourney.LOGGER.info("Network erased");
 		resetStargates(server);
+		StargateJourney.LOGGER.info("Stargates reset");
 		updateVersion();
+		StargateJourney.LOGGER.info("Version updated");
 		this.setDirty();
+		StargateJourney.LOGGER.info("Changes applied");
 	}
 	
 	//============================================================================================

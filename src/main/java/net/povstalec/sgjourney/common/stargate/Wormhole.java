@@ -74,6 +74,9 @@ public class Wormhole implements ITeleporter
 				double travelerPos;
 				double axisMomentum;
 				
+				if(orientationDirection == null)
+					return;
+				
 				if(orientationDirection.getAxis() == Direction.Axis.X)
 				{
 					unitDistance = initialStargate.getCenterPos().getX() - initialStargate.getCenterPos().relative(orientationDirection).getX();
@@ -97,9 +100,7 @@ public class Wormhole implements ITeleporter
 				}
 				
 				if(shouldWormhole(unitDistance, previousTravelerPos, travelerPos, axisMomentum))
-				{
 					doWormhole(initialStargate, targetStargate, traveler, momentum, twoWayWormhole);
-				}
 				else
 					entityLocations.put(traveler.getId(), new Vec3(traveler.getX(), traveler.getY(), traveler.getZ()));
 				

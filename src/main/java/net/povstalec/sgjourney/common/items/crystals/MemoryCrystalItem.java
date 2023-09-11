@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.stargate.Addressing;
+import net.povstalec.sgjourney.common.stargate.Address;
 
 public class MemoryCrystalItem extends Item
 {
@@ -181,13 +181,13 @@ public class MemoryCrystalItem extends Item
         	switch(address.length)
         	{
         	case 6:
-        		tooltipComponents.add(Component.literal(Addressing.addressIntArrayToString(address)).withStyle(ChatFormatting.GOLD));
+        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.GOLD));
         		break;
         	case 7:
-        		tooltipComponents.add(Component.literal(Addressing.addressIntArrayToString(address)).withStyle(ChatFormatting.LIGHT_PURPLE));
+        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.LIGHT_PURPLE));
         		break;
         	case 8:
-        		tooltipComponents.add(Component.literal(Addressing.addressIntArrayToString(address)).withStyle(ChatFormatting.AQUA));
+        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.AQUA));
         		break;
         	default:
         		break;

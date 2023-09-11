@@ -11,6 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.ClassicStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
@@ -19,17 +20,13 @@ import net.povstalec.sgjourney.common.misc.Orientation;
 
 public class ClassicStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<ClassicStargateEntity>
 {
-	protected static final int r = ClientStargateConfig.classic_rgba.getRed();
-	protected static final int g = ClientStargateConfig.classic_rgba.getGreen();
-	protected static final int b = ClientStargateConfig.classic_rgba.getBlue();
-	
 	protected final WormholeModel wormholeModel;
 	protected final ClassicStargateModel stargateModel;
 	
 	public ClassicStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
 		super(context);
-		this.wormholeModel = new WormholeModel(r, g, b);
+		this.wormholeModel = new WormholeModel(ClientStargateConfig.classic_rgba, 0.25F);
 		this.stargateModel = new ClassicStargateModel(
 				context.bakeLayer(Layers.CLASSIC_OUTER_RING_LAYER), 
 				context.bakeLayer(Layers.CLASSIC_INNER_RING_LAYER), 
@@ -58,7 +55,7 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer implements
 		this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
 		
 		if(stargate.isConnected())
-	    	this.wormholeModel.renderEventHorizon(stack, source, combinedLight, combinedOverlay, stargate.getTickCount());
+	    	this.wormholeModel.renderEventHorizon((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
 	    
 	    stack.popPose();
 	    

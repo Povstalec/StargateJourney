@@ -23,7 +23,7 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Addressing;
+import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 
@@ -104,6 +104,11 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return SoundInit.MILKY_WAY_CHEVRON_ENCODE.get();
 	}
 	
+	public SoundEvent wormholeOpenSound()
+	{
+		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
+	}
+	
 	public SoundEvent failSound()
 	{
 		return SoundInit.MILKY_WAY_DIAL_FAIL.get();
@@ -180,7 +185,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public Stargate.Feedback raiseChevron()
 	{
-		if(!this.isChevronRaised && !Addressing.addressContainsSymbol(getAddress(), getCurrentSymbol()))
+		if(!this.isChevronRaised && !Address.addressContainsSymbol(getAddress(), getCurrentSymbol()))
 		{
 			if(!level.isClientSide())
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, true));

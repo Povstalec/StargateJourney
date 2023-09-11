@@ -52,6 +52,7 @@ public abstract class StargateSoundWrapper extends SoundWrapper
 		}
 	}
 	
+	
 
 	public static class WormholeIdle extends StargateSoundWrapper
 	{

@@ -21,7 +21,7 @@ public class MilkyWayStargateRingBlock extends AbstractStargateRingBlock
 		return Stargate.Type.MILKY_WAY;
 	}
 
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.MILKY_WAY_STARGATE.get();
 	}

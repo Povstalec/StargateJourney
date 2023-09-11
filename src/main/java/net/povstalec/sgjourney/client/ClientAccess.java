@@ -5,13 +5,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.energy_gen.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.symbols.SymbolBlockEntity;
 
 public class ClientAccess
 {
@@ -60,14 +60,16 @@ public class ClientAccess
         }
     }
     
-    public static void updateStargate(BlockPos pos, int[] address, boolean dialingOut, int tick, String pointOfOrigin, String symbols)
+    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, boolean dialingOut, int kawooshTick, int tick, String pointOfOrigin, String symbols)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final AbstractStargateEntity stargate)
         {
         	stargate.setAddress(address);
+        	stargate.setEngagedChevrons(engagedChevrons);
         	stargate.setDialingOut(dialingOut);
+        	stargate.setKawooshTickCount(kawooshTick);
         	stargate.setTickCount(tick);
         	stargate.setPointOfOrigin(pointOfOrigin);
         	stargate.setSymbols(symbols);

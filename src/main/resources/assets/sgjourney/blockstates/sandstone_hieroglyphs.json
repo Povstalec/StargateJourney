@@ -1,5 +1,20 @@
 {
-    "variants": {
-        "": { "model": "sgjourney:block/sandstone_hieroglyphs" }
-    }
+	"variants":
+	{
+		"axis=x":
+		{
+			"model": "sgjourney:block/sandstone_hieroglyphs",
+			"x": 90,
+			"y": 90
+		},
+		"axis=y":
+		{
+			"model": "sgjourney:block/sandstone_hieroglyphs"
+		},
+		"axis=z":
+		{
+			"model": "sgjourney:block/sandstone_hieroglyphs",
+			"x": 90
+		}
+	}
 }

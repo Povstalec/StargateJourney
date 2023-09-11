@@ -16,7 +16,7 @@ public class UniverseStargateRingBlock extends AbstractStargateRingBlock
 		return Stargate.Type.UNIVERSE;
 	}
 	
-	public Block getStargate()
+	public Block getItem()
 	{
 		return BlockInit.UNIVERSE_STARGATE.get();
 	}
