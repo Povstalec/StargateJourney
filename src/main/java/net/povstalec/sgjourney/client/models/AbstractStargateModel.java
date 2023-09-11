@@ -18,8 +18,9 @@ public abstract class AbstractStargateModel
 	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
 	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
 	public static final String EMPTY = StargateJourney.EMPTY;
-	
-	protected String stargateName;
+
+	private static final int[] dialed9ChevronConfiguration = new int[] {0, 1, 2, 3, 7, 8, 4, 5, 6};
+	private static final int[] dialed8ChevronConfiguration = new int[] {0, 1, 2, 3, 7, 4, 5, 6};
 	
 	/*
 	 * X = Width
@@ -85,9 +86,20 @@ public abstract class AbstractStargateModel
 	protected static final float SYMBOL_RING_Z_OFFSET = 0.5F;
 	protected static final float DIVIDER_X = 1.0F;
 	
+	protected ResourceLocation CHEVRON_TEXTURE;
+	protected ResourceLocation ENGAGED_CHEVRON_TEXTURE;
+	protected ResourceLocation CHEVRON_FRONT_TEXTURE;
+	protected ResourceLocation ENGAGED_CHEVRON_FRONT_TEXTURE;
+	
+	protected String stargateName;
+	
 	public AbstractStargateModel(String stargateName)
 	{
 		this.stargateName = stargateName;
+		CHEVRON_TEXTURE = getChevronTexture(true, false);
+		ENGAGED_CHEVRON_TEXTURE = getChevronTexture(true, true);
+		CHEVRON_FRONT_TEXTURE = getChevronTexture(false, false);
+		ENGAGED_CHEVRON_FRONT_TEXTURE = getChevronTexture(false, true);
 	}
 	
 	protected ResourceLocation getSymbolTexture(AbstractStargateEntity stargate, int symbol)
@@ -122,6 +134,35 @@ public abstract class AbstractStargateModel
 			
 			return ERROR_LOCATION;
 		}
+	}
+	
+	public static int getChevronConfiguration(boolean defaultOrder, int addresslength, int chevron)
+	{
+		int[] configuration;
+		
+		if(defaultOrder)
+			return chevron;
+		else
+		{
+			switch(addresslength)
+			{
+			case 7:
+				configuration = dialed8ChevronConfiguration;
+				break;
+			case 8:
+				configuration = dialed9ChevronConfiguration;
+				break;
+			default:
+				return chevron;
+			}
+		}
+		
+		if(chevron >= configuration.length)
+			return 0;
+		
+		int returned = configuration[chevron];
+		System.out.println(returned);
+		return returned;
 	}
 	
 	protected ResourceLocation getChevronTexture(boolean lightsUp, boolean engaged)

@@ -9,10 +9,21 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 
 public class Stargate
 {
+	// Thickness (Includes Chevrons)
+	public static final float STANDARD_THICKNESS = 9.0F;
+	public static final float TOLLAN_THICKNESS = 5.0F;
+	// Vertical Height
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0.0F;
-	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = 9.0F / 32;
-	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = 7.0F / 32;
+	// Horizontal Height
+	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
+	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
+	
+	public static final int[] DIALING_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 6, 7, 8, 4, 5};
+	
+	public static final int[] DIALED_7_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 6, 7, 8, 4, 5};
+	public static final int[] DIALED_8_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 4, 6, 7, 8, 5};
+	public static final int[] DIALED_9_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8};
 	
 	private static long systemWideConnectionCost = CommonStargateConfig.system_wide_connection_energy_cost.get();
 	private static long interstellarConnectionCost = CommonStargateConfig.interstellar_connection_energy_cost.get();
@@ -24,19 +35,21 @@ public class Stargate
 	
 	public enum Type
 	{
-		UNIVERSE(StargatePart.DEFAULT_PARTS, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
-		MILKY_WAY(StargatePart.DEFAULT_PARTS, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
-		PEGASUS(StargatePart.DEFAULT_PARTS, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
-		TOLLAN(StargatePart.TOLLAN_PARTS, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT),
-		CLASSIC(StargatePart.DEFAULT_PARTS, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
+		UNIVERSE(StargatePart.DEFAULT_PARTS, ChevronLockSpeed.SLOW, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
+		MILKY_WAY(StargatePart.DEFAULT_PARTS, ChevronLockSpeed.SLOW, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
+		PEGASUS(StargatePart.DEFAULT_PARTS, ChevronLockSpeed.MEDIUM, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
+		TOLLAN(StargatePart.TOLLAN_PARTS, ChevronLockSpeed.MEDIUM, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT),
+		CLASSIC(StargatePart.DEFAULT_PARTS, ChevronLockSpeed.SLOW, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 		
 		private ArrayList<StargatePart> parts;
+		private ChevronLockSpeed chevronLockSpeed;
 		private float verticalCenterHeight;
 		private float horizontalCenterHeight;
 		
-		private Type(ArrayList<StargatePart> parts, float verticalCenterHeight, float horizontalCenterHeight)
+		private Type(ArrayList<StargatePart> parts, ChevronLockSpeed chevronLockSpeed, float verticalCenterHeight, float horizontalCenterHeight)
 		{
 			this.parts = parts;
+			this.chevronLockSpeed = chevronLockSpeed;
 			this.verticalCenterHeight = verticalCenterHeight;
 			this.horizontalCenterHeight = horizontalCenterHeight;
 		}
@@ -54,6 +67,11 @@ public class Stargate
 		public float getHorizontalCenterHeight()
 		{
 			return this.horizontalCenterHeight;
+		}
+		
+		public ChevronLockSpeed getChevronLockSpeed()
+		{
+			return this.chevronLockSpeed;
 		}
 	}
 	
@@ -100,6 +118,35 @@ public class Stargate
 		public long getPowerDraw()
 		{
 			return this.powerDraw;
+		}
+	}
+	
+	public static enum ChevronLockSpeed
+	{
+		SLOW(3),
+		MEDIUM(2),
+		FAST(1);
+		
+		private int multiplier;
+		
+		ChevronLockSpeed(int multiplier)
+		{
+			this.multiplier = multiplier;
+		}
+		
+		public int getMultiplier()
+		{
+			return this.multiplier;
+		}
+		
+		public int getChevronWaitTicks()
+		{
+			return this.multiplier * 4;
+		}
+		
+		public int getKawooshStartTicks()
+		{
+			return getChevronWaitTicks() * 9;
 		}
 	}
 	
@@ -176,13 +223,14 @@ public class Stargate
 
 		STARGATE_DESTROYED(-19, FeedbackType.ERROR, createError("stargate_destroyed", false)),
 		TARGET_STARGATE_DOES_NOT_EXIST(-20, FeedbackType.ERROR, createError("target_stargate_does_not_exist", false)),
+		INTERRUPTED_BY_INCOMING_CONNECTION(-21, FeedbackType.ERROR, createError("interrupted_by_incoming_connection", false)),
 		
 		// Universe
 		
 		// Milky Way
 		CHEVRON_RAISED(11, FeedbackType.INFO, createInfo("chevron_raised")),
-		CHEVRON_ALREADY_RAISED(-21, FeedbackType.ERROR, createError("chevron_already_raised", false)),
-		CHEVRON_ALREADY_LOWERED(-22, FeedbackType.ERROR, createError("chevron_already_lowered", false));
+		CHEVRON_ALREADY_RAISED(-22, FeedbackType.ERROR, createError("chevron_already_raised", false)),
+		CHEVRON_ALREADY_LOWERED(-23, FeedbackType.ERROR, createError("chevron_already_lowered", false));
 		
 		// Pegasus
 		

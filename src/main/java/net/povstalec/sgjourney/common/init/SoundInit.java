@@ -31,6 +31,8 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> TOLLAN_CHEVRON_ENGAGE = registerSoundEvent("tollan_chevron_engage");
 	public static final RegistryObject<SoundEvent> TOLLAN_DIAL_FAIL = registerSoundEvent("tollan_dial_fail");
 
+	public static final RegistryObject<SoundEvent> MILKY_WAY_WORMHOLE_OPEN = registerSoundEvent("milky_way_wormhole_open");
+	public static final RegistryObject<SoundEvent> PEGASUS_WORMHOLE_OPEN = registerSoundEvent("pegasus_wormhole_open");
 	public static final RegistryObject<SoundEvent> WORMHOLE_CLOSE = registerSoundEvent("wormhole_close");
 	public static final RegistryObject<SoundEvent> WORMHOLE_ENTER = registerSoundEvent("wormhole_enter");
 	public static final RegistryObject<SoundEvent> WORMHOLE_IDLE = registerSoundEvent("wormhole_idle");

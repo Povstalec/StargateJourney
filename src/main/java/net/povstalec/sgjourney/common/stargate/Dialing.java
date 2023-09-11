@@ -42,7 +42,7 @@ public class Dialing
 	
 	private static Stargate.Feedback get7ChevronStargate(Level level, AbstractStargateEntity stargate, int[] address)
 	{
-		String addressString = Addressing.addressIntArrayToString(address);
+		String addressString = Address.addressIntArrayToString(address);
 		
 		// List of Galaxies the dialing Dimension is located in
 		ListTag galaxies = Universe.get(level).getGalaxiesFromDimension(level.dimension().location().toString());
@@ -70,7 +70,7 @@ public class Dialing
 	
 	private static Stargate.Feedback get8ChevronStargate(Level level, AbstractStargateEntity stargate, int[] address)
 	{
-		String addressString = Addressing.addressIntArrayToString(address);
+		String addressString = Address.addressIntArrayToString(address);
 		String solarSystem = Universe.get(level).getSolarSystemFromExtragalacticAddress(addressString);
 		
 		if(solarSystem.equals(EMPTY))
@@ -180,7 +180,7 @@ public class Dialing
 	
 	public static Stargate.Feedback get9ChevronStargate(Level level, AbstractStargateEntity stargate, int[] address)
 	{
-		String id = Addressing.addressIntArrayToString(address);
+		String id = Address.addressIntArrayToString(address);
 		return getStargateFromID(level.getServer(), stargate, id);
 	}
 	

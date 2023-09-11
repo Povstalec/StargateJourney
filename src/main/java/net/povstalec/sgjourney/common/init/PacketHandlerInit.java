@@ -102,6 +102,12 @@ public final class PacketHandlerInit
 		//*******************************************Sounds*******************************************
 		//============================================================================================
 		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.OpenWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.OpenWormhole::encode)
+		.decoder(ClientBoundSoundPackets.OpenWormhole::new)
+		.consumerMainThread(ClientBoundSoundPackets.OpenWormhole::handle)
+		.add();
+		
 		INSTANCE.messageBuilder(ClientBoundSoundPackets.IdleWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientBoundSoundPackets.IdleWormhole::encode)
 		.decoder(ClientBoundSoundPackets.IdleWormhole::new)

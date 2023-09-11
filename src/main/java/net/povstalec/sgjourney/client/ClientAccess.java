@@ -60,14 +60,16 @@ public class ClientAccess
         }
     }
     
-    public static void updateStargate(BlockPos pos, int[] address, boolean dialingOut, int tick, String pointOfOrigin, String symbols)
+    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, boolean dialingOut, int kawooshTick, int tick, String pointOfOrigin, String symbols)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if (blockEntity instanceof final AbstractStargateEntity stargate)
         {
         	stargate.setAddress(address);
+        	stargate.setEngagedChevrons(engagedChevrons);
         	stargate.setDialingOut(dialingOut);
+        	stargate.setKawooshTickCount(kawooshTick);
         	stargate.setTickCount(tick);
         	stargate.setPointOfOrigin(pointOfOrigin);
         	stargate.setSymbols(symbols);
