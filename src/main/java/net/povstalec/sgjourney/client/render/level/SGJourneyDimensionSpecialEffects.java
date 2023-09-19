@@ -93,7 +93,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	{
 		public Lantea()
 		{
-			super(290.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			super(386.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
 		}
 		
 		@Override

@@ -252,7 +252,7 @@ public class BasicInterfaceBlock extends BaseEntityBlock
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
 			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
 		
-        tooltipComponents.add(Component.literal("Energy: " + energy + "/" + getCapacity() +" FE").withStyle(ChatFormatting.DARK_RED));
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + getCapacity() +" FE")).withStyle(ChatFormatting.DARK_RED));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 }

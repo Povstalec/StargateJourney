@@ -170,10 +170,10 @@ public class Connection
 					else if(this.openTime / chevronWaitTicks == 5 && addressLenght < 8)
 						return;
 					else
-						this.dialedStargate.encodeChevron(dialingAddress[dialedAddressLength]);
+						this.dialedStargate.encodeChevron(dialingAddress[dialedAddressLength], true);
 				}
 				else
-					this.dialedStargate.engageChevron();
+					this.dialedStargate.chevronSound(true);
 			}
 			
 			return;
@@ -195,8 +195,8 @@ public class Connection
 		if(this.openTime < maxKawooshTicks)
 			return;
 		
-		this.dialingStargate.doWormholeSound();
-		this.dialedStargate.doWormholeSound();
+		this.dialingStargate.idleWormholeSound();
+		this.dialedStargate.idleWormholeSound();
 		
 		if(this.connectionTime >= maxOpenTime && !energyBypassEnabled)
 		{
@@ -234,7 +234,7 @@ public class Connection
 	protected void playStargateOpenSound(AbstractStargateEntity stargate, int kawooshStartTicks, int ticks)
 	{
 		if(ticks == kawooshStartTicks - stargate.getOpenSoundLead())
-			stargate.openWormhole();
+			stargate.openWormholeSound();
 	}
 	
 	protected void increaseTicks(int maxKawooshTicks, int maxOpenTicks)

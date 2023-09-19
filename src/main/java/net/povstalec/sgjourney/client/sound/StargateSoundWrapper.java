@@ -31,6 +31,12 @@ public abstract class StargateSoundWrapper extends SoundWrapper
 	{
 		return this.playingSound;
 	}
+	
+	@Override
+	public boolean hasSound()
+	{
+		return this.sound != null && !this.sound.isStopped();
+	}
 
 	@Override
 	public void playSound()

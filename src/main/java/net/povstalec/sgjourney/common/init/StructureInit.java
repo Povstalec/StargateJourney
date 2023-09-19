@@ -10,6 +10,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.structures.BuriedStargate;
+import net.povstalec.sgjourney.common.structures.Cartouche;
 import net.povstalec.sgjourney.common.structures.City;
 import net.povstalec.sgjourney.common.structures.CommonStargate;
 import net.povstalec.sgjourney.common.structures.GoauldTemple;
@@ -42,6 +43,9 @@ public class StructureInit
 	
 	public static final RegistryObject<StructureType<?>> CITY =
             DEFERRED_REGISTRY_STRUCTURE.register("city", () -> typeConvert(City.CODEC));
+	
+	public static final RegistryObject<StructureType<?>> CARTOUCHE =
+            DEFERRED_REGISTRY_STRUCTURE.register("cartouche", () -> typeConvert(Cartouche.CODEC));
 	
 	public static final RegistryObject<StructureType<?>> JAFFA_HOUSE =
             DEFERRED_REGISTRY_STRUCTURE.register("jaffa_house", () -> typeConvert(JaffaHouse.CODEC));

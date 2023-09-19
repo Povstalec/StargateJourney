@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
@@ -25,7 +23,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 public class UniverseStargateEntity extends AbstractStargateEntity
 {
 	public static final int WAIT_TICKS = 20;
-	public int animationTicks = 0;
+	public int animationTicks = 1;
 	
 	protected static final String UNIVERSAL = StargateJourney.MODID + ":universal";
 	protected static final String POINT_OF_ORIGIN = UNIVERSAL;
@@ -40,7 +38,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.UNIVERSE_STARGATE.get(), pos, state, Stargate.Gen.GEN_1, 1);
-		this.setOpenSoundLead(28);
+		this.setOpenSoundLead(8);
 	}
 	
 	@Override
@@ -76,17 +74,17 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		nbt.putInt("SymbolBuffer", symbolBuffer);
 	}
 	
-	public SoundEvent chevronEngageSound()
+	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.UNIVERSE_CHEVRON_ENGAGE.get();
 	}
 	
-	public SoundEvent wormholeOpenSound()
+	public SoundEvent getWormholeOpenSound()
 	{
-		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
+		return SoundInit.UNIVERSE_WORMHOLE_OPEN.get();
 	}
 	
-	public SoundEvent failSound()
+	public SoundEvent getFailSound()
 	{
 		return SoundInit.UNIVERSE_DIAL_FAIL.get();
 	}
@@ -131,6 +129,9 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 				return Stargate.Feedback.INCOPLETE_ADDRESS;
 		}
 		
+		if(addressBuffer.length == 0 && address.length == 0)
+			startSound();
+		
 		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
 		return Stargate.Feedback.SYMBOL_ENCODED;
@@ -143,13 +144,24 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback encodeChevron(int symbol)
+	public Stargate.Feedback encodeChevron(int symbol, boolean incoming)
 	{
 		symbolBuffer++;
 		animationTicks++;
 		
-		Stargate.Feedback feedback = super.encodeChevron(symbol);
+		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming);
 		return feedback;
+	}
+	
+	public void startSound()
+	{
+		if(!level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.UniverseStart(this.worldPosition));
+	}
+	
+	public SoundEvent getStartSound()
+	{
+		return SoundInit.UNIVERSE_DIAL_START.get();
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, UniverseStargateEntity stargate)
@@ -164,9 +176,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 				stargate.animationTicks++;
 		}
 		else if(!stargate.isConnected() && stargate.addressBuffer.length == 0)
-		{
 			stargate.rotateToDefault();
-		}
 		else
 			stargate.synchronizeWithClient(level);
 		
@@ -235,7 +245,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			if(isCurrentSymbol(0))
 				this.lockPrimaryChevron();
 			else
-				this.encodeChevron(desiredSymbol);
+				this.encodeChevron(desiredSymbol, false);
 			
 			synchronizeWithClient(this.level);
 		}
@@ -286,12 +296,13 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	@Override
 	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
 	{
+		animationTicks = 1;
 		symbolBuffer = 0;
 		addressBuffer = new int[0];
 		
 		if(isConnected())
 		{
-			level.playSound((Player)null, worldPosition, SoundInit.WORMHOLE_CLOSE.get(), SoundSource.BLOCKS, 0.25F, 1F);
+			closeWormholeSound();
 			setConnected(false);
 		}
 		

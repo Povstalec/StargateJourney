@@ -6,27 +6,27 @@
 	[
 		{
 			"solar_system": "sgjourney:terra",
-			"address": [27, 25, 4, 35, 10, 28]
+			"address": {"address": [27, 25, 4, 35, 10, 28], "randomizable": true}
 		},
 		{
 			"solar_system": "sgjourney:abydos",
-			"address": [26, 6, 14, 31, 11, 29]
+			"address": {"address": [26, 6, 14, 31, 11, 29], "randomizable": true}
 		},
 		{
 			"solar_system": "sgjourney:chulak",
-			"address": [8, 1, 22, 14, 36, 19]
+			"address": {"address": [8, 1, 22, 14, 36, 19], "randomizable": true}
 		},
 		{
 			"solar_system": "sgjourney:nether",
-			"address": [27, 23, 4, 34, 12, 28]
+			"address": {"address": [27, 23, 4, 34, 12, 28], "randomizable": true}
 		},
 		{
 			"solar_system": "sgjourney:end",
-			"address": [13, 24, 2, 19, 3, 30]
+			"address": {"address": [13, 24, 2, 19, 3, 30], "randomizable": true}
 		},
 		{
 			"solar_system": "sgjourney:proxima_centauri",
-			"address": [26, 20, 4, 36, 9, 27]
+			"address": {"address": [26, 20, 4, 36, 9, 27], "randomizable": true}
 		}
 	]
 }

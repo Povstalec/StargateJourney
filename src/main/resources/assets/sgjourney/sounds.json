@@ -1,4 +1,12 @@
 {
+	"universe_dial_start":
+	{
+		"subtitle": "sounds.sgjourney.universe_dial_start",
+		"sounds":
+		[
+			"sgjourney:universe_dial_start"
+		]
+	},
 	"universe_ring_spin":
 	{
 		"subtitle": "sounds.sgjourney.universe_ring_spin",
@@ -87,6 +95,14 @@
 			"sgjourney:pegasus_chevron_engage"
 		]
 	},
+	"pegasus_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.pegasus_chevron_engage",
+		"sounds":
+		[
+			"sgjourney:pegasus_chevron_incoming"
+		]
+	},
 	"pegasus_dial_fail":
 	{
 		"subtitle": "sounds.sgjourney.pegasus_dial_fail",
@@ -139,6 +155,15 @@
 		"sounds":
 		[
 			"sgjourney:wormhole_idle"
+		]
+	},
+	
+	"universe_wormhole_open":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_open",
+		"sounds":
+		[
+			"sgjourney:universe_wormhole_open"
 		]
 	},
 	

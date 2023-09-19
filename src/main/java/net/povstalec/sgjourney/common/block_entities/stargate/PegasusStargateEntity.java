@@ -61,17 +61,22 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		nbt.putInt("CurrentSymbol", currentSymbol);
 	}
 	
-	public SoundEvent chevronEngageSound()
+	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.PEGASUS_CHEVRON_ENGAGE.get();
 	}
 	
-	public SoundEvent wormholeOpenSound()
+	public SoundEvent chevronIncomingSound()
+	{
+		return SoundInit.PEGASUS_CHEVRON_INCOMING.get();
+	}
+	
+	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.PEGASUS_WORMHOLE_OPEN.get();
 	}
 	
-	public SoundEvent failSound()
+	public SoundEvent getFailSound()
 	{
 		return SoundInit.PEGASUS_DIAL_FAIL.get();
 	}
@@ -104,14 +109,14 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback encodeChevron(int symbol)
+	public Stargate.Feedback encodeChevron(int symbol, boolean incoming)
 	{
 		symbolBuffer++;
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
-		Stargate.Feedback feedback = super.encodeChevron(symbol);
+		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming);
 		
 		if(addressBuffer.length > getAddress().length)
 		{
@@ -120,6 +125,15 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		}
 		
 		return feedback;
+	}
+	
+	@Override
+	public void chevronSound(boolean incoming)
+	{
+		if(!level.isClientSide())
+		{
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, incoming));
+		}
 	}
 	
 	public int getChevronPosition(int chevron)
@@ -149,7 +163,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 					symbolWork();
 				}
 				else
-					encodeChevron(symbol);
+					encodeChevron(symbol, false);
 			}
 			else
 				symbolWork();

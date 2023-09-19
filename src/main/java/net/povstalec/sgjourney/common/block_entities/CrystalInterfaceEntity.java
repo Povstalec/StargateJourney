@@ -21,6 +21,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.blocks.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.cctweaked.peripherals.CrystalPeripheralWrapper;
+import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -156,19 +157,19 @@ public class CrystalInterfaceEntity extends BasicInterfaceEntity
 	@Override
 	public long capacity()
 	{
-		return 50000000;
+		return CommonInterfaceConfig.advanced_crystal_interface_capacity.get();
 	}
 
 	@Override
 	public long maxReceive()
 	{
-		return 1000000;
+		return CommonInterfaceConfig.advanced_crystal_interface_max_transfer.get();
 	}
 
 	@Override
 	public long maxExtract()
 	{
-		return 1000000;
+		return CommonInterfaceConfig.advanced_crystal_interface_max_transfer.get();
 	}
 	
 	//============================================================================================

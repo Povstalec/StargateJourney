@@ -121,6 +121,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
+				itementity.setUnlimitedLifetime();
 				level.addFreshEntity(itementity);
 			}
 		}
