@@ -8,8 +8,6 @@ public class CommonTechConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
-		server.comment("Stargate Journey Tech Config");
-		
 		disable_kara_kesh_requirements = server
 				.comment("If true Kara Kesh won't require its user to have Naquadah in their bloodstream")
 				.define("server.disable_kara_kesh_requirements", true);

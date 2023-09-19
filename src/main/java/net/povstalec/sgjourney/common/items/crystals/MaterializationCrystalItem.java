@@ -53,17 +53,18 @@ public class MaterializationCrystalItem extends Item
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
         CrystalMode mode = getCrystalMode(stack);
-        
+        String text = "";
         switch(mode)
         {
         case INCREASE_RANGE:
-        	tooltipComponents.add(Component.literal("Mode: Increased Range").withStyle(ChatFormatting.DARK_AQUA));
+        	text = "tooltip.sgjourney.materialization_crystal.increased_range";
         	break;
         case ENABLE_INTERDIMENSIONAL_TRANSPORT:
-        	tooltipComponents.add(Component.literal("Mode: Enable Interdimensional Transport").withStyle(ChatFormatting.DARK_AQUA));
+        	text = "tooltip.sgjourney.materialization_crystal.interdimensional";
         	break;
-        	
         }
+        
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.mode").append(Component.literal(": ")).append(Component.translatable(text)).withStyle(ChatFormatting.DARK_AQUA));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }

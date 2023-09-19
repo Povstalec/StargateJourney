@@ -50,17 +50,17 @@ public class TollanStargateEntity extends AbstractStargateEntity
 		nbt.putInt("CurrentSymbol", currentSymbol);
 	}
 	
-	public SoundEvent chevronEngageSound()
+	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.TOLLAN_CHEVRON_ENGAGE.get();
 	}
 	
-	public SoundEvent wormholeOpenSound()
+	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
 	}
 	
-	public SoundEvent failSound()
+	public SoundEvent getFailSound()
 	{
 		return SoundInit.TOLLAN_DIAL_FAIL.get();
 	}

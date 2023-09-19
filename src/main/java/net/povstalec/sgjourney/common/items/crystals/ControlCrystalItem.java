@@ -1,14 +1,6 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 public class ControlCrystalItem extends Item
 {
@@ -38,11 +30,11 @@ public class ControlCrystalItem extends Item
 		}
 	}
 
-    @Override
+    /*@Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.control_crystal"));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-    }
+    }*/
 }

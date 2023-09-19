@@ -87,6 +87,27 @@ public enum Orientation implements StringRepresentable
 		return facingDirection;
 	}
 	
+	public static Direction getMultiDirection(Direction facingDirection, Direction direction, Orientation orientation)
+	{
+		if(orientation == REGULAR)
+			return direction;
+		
+		else if(direction != null)
+		{
+			switch(direction)
+			{
+			case UP:
+				return orientation == UPWARD ? facingDirection.getOpposite() : facingDirection;
+			case DOWN:
+				return orientation == UPWARD ? facingDirection : facingDirection.getOpposite();
+			default:
+				return getEffectiveDirection(facingDirection, orientation);
+			}
+		}
+		
+		return facingDirection;
+	}
+	
 	public static Vec3 getEffectiveVector(Direction facingDirection, Orientation orientation)
 	{
 		if(orientation != null)

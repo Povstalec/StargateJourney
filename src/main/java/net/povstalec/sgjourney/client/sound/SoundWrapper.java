@@ -9,6 +9,11 @@ public class SoundWrapper
 		return false;
 	}
 	
+	public boolean hasSound()
+	{
+		return false;
+	}
+	
 	public void playSound(){}
 	
 	public void stopSound(){}

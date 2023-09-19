@@ -148,6 +148,9 @@ public class Address
 	
 	public static int[] addressStringToIntArray(String addressString)
 	{
+		if(addressString == null)
+			return new int[0];
+		
 		String[] stringArray = addressString.split("-");
 		int[] intArray = new int[0];
 		

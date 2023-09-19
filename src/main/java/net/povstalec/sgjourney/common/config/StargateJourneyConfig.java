@@ -26,13 +26,34 @@ public class StargateJourneyConfig
 		COMMON_BUILDER.push("Stargate Journey Common Config");
 		
 		generalServerConfig(COMMON_BUILDER);
+		
+		COMMON_BUILDER.push("ZPM Config");
 		CommonZPMConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
+		COMMON_BUILDER.push("Interface Config");
 		CommonInterfaceConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
+		COMMON_BUILDER.push("Stargate Config");
 		CommonStargateConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
+		COMMON_BUILDER.push("Naquadah Generator Config");
 		CommonNaquadahGeneratorConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
+		COMMON_BUILDER.push("Stargate Network Config");
 		CommonStargateNetworkConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
+		COMMON_BUILDER.push("Tech Config");
 		CommonTechConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
+		COMMON_BUILDER.push("Genetic Config");
 		CommonGeneticConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
 		
 		COMMON_BUILDER.pop();
 		COMMON_CONFIG = COMMON_BUILDER.build();
@@ -42,8 +63,11 @@ public class StargateJourneyConfig
 		CLIENT_BUILDER.push("Stargate Journey Client Config");
 		
 		generalClientConfig(CLIENT_BUILDER);
+		
+		CLIENT_BUILDER.push("Stargate Config");
 		ClientStargateConfig.init(CLIENT_BUILDER);
-
+		CLIENT_BUILDER.pop();
+		
 		CLIENT_BUILDER.pop();
 		CLIENT_CONFIG = CLIENT_BUILDER.build();
 	}

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.items;
+package net.povstalec.sgjourney.common.items.blocks;
 
 import javax.annotation.Nullable;
 

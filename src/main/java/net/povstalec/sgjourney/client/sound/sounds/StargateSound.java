@@ -56,7 +56,6 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 	
 	public void stopSound()
 	{
-		System.out.println("StoppingSound " + this.toString());
 		this.stop();
 	}
 	

@@ -16,11 +16,9 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.stargate.Connection;
 
 public class MilkyWayStargateModel extends AbstractStargateModel
 {
-	//private static final String CHEVRON = ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? "milky_way_chevron" : "milky_way_chevron_front";
 	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_outer_ring.png");
 	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_inner_ring.png");
 	
@@ -209,10 +207,7 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 		int chevronsRendered = stargate.chevronsRendered();
 		
 		if(stargate.isConnected())
-		{
-			System.out.println(chevronsRendered);
 			controlChevrons(stargate, chevronsRendered, true);
-		}
 		else
 		{
 			if(stargate.isChevronRaised)
@@ -267,12 +262,10 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 		VertexConsumer chevron_texture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), false)));
 		this.getChevron(0).render(stack, chevron_texture, combinedLight, combinedOverlay);
 		
-		if(stargate.isConnected() || stargate.isChevronRaised)
+		if((stargate.isConnected() && stargate.isDialingOut()) || stargate.isChevronRaised || stargate.getKawooshTickCount() > 0)
 		{
 			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), true)));
-
-			if(stargate.isDialingOut() || stargate.getKawooshTickCount() > 0)
-				this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
+			this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
 		}
 	}
 	

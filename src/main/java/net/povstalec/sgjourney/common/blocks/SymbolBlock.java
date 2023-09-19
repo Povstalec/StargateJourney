@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -17,25 +18,52 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 
-public abstract class SymbolBlock extends BaseEntityBlock
+public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock
 {
-
+	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
+	
 	protected SymbolBlock(Properties properties)
 	{
 		super(properties);
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR));
+	}
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    {
+    	builder.add(FACING).add(ORIENTATION);
+	}
+
+    @Override
+	public BlockState rotate(BlockState state, Rotation rotation)
+	{
+	      return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	}
+
+    @Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) 
+	{
+		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(ORIENTATION, Orientation.getOrientationFromXRot(context.getPlayer()));
 	}
 	
 	public RenderShape getRenderShape(BlockState state)
@@ -65,7 +93,7 @@ public abstract class SymbolBlock extends BaseEntityBlock
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if(!level.isClientSide() && !player.isCreative())
+		if(!level.isClientSide() && !player.isCreative() && player.hasCorrectToolForDrops(state))
 		{
 			ItemStack itemstack = new ItemStack(getItem());
 			
@@ -106,7 +134,7 @@ public abstract class SymbolBlock extends BaseEntityBlock
         	}
     	}
     	
-		tooltipComponents.add(Component.literal("Symbol: " + symbol).withStyle(ChatFormatting.YELLOW));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbol").append(Component.literal(": ").append(Component.translatable(symbol))).withStyle(ChatFormatting.DARK_PURPLE));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
     

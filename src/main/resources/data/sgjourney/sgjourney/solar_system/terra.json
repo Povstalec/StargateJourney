@@ -1,7 +1,8 @@
 {
 	"name": "solar_system.sgjourney.terra",
 	"symbols": "sgjourney:terra",
-	"extragalactic_address": [1, 35, 4, 31, 15, 30, 32],
+	"symbol_prefix": 1,
+	"extragalactic_address": {"address": [1, 35, 4, 31, 15, 30, 32], "randomizable": true},
 	"point_of_origin": "sgjourney:terra",
 	"dimensions":
 	[

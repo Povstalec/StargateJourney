@@ -113,8 +113,8 @@ public class ZeroPointModule extends Item
 		
 		float currentEntropy = (float) entropy * 100 / maxEntropy;
 		
-    	tooltipComponents.add(Component.literal("Entropy: " + currentEntropy + "%").withStyle(ChatFormatting.GOLD));
-    	tooltipComponents.add(Component.literal("Energy In Level: " + remainingEnergy + " FE").withStyle(ChatFormatting.DARK_RED));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.entropy").append(Component.literal(": " + currentEntropy + "%")).withStyle(ChatFormatting.GOLD));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.energy_in_level").append(Component.literal(": " + remainingEnergy + " FE")).withStyle(ChatFormatting.DARK_RED));
     	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}

@@ -12,7 +12,6 @@ import net.povstalec.sgjourney.client.models.PegasusStargateModel;
 import net.povstalec.sgjourney.client.models.TollanStargateModel;
 import net.povstalec.sgjourney.client.models.TransportRingsModel;
 import net.povstalec.sgjourney.client.models.UniverseStargateModel;
-import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
 
 public class Layers
 {
@@ -57,9 +56,6 @@ public class Layers
 	
 	public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
 	{
-		// Symbol Block
-		event.registerLayerDefinition(SYMBOL_BLOCK_LAYER, () -> SymbolBlockRenderer.createBlockLayer());
-		
 		// Transport Rings
 		event.registerLayerDefinition(TRANSPORT_RING_LAYER, () -> TransportRingsModel.createRingLayer());
 		

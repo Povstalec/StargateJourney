@@ -17,7 +17,8 @@ public class Galaxy
 {
 	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "galaxy"));
     
-	private static final Codec<Pair<ResourceKey<SolarSystem>, List<Integer>>> SYSTEM_WITH_ADDRESS = Codec.pair(SolarSystem.RESOURCE_KEY_CODEC.fieldOf("solar_system").codec(), Codec.INT.listOf().fieldOf("address").codec());
+	private static final Codec<Pair<List<Integer>, Boolean>> ADDRESS = Codec.pair(Codec.INT.listOf().fieldOf("address").codec(), Codec.BOOL.fieldOf("randomizable").codec());
+	private static final Codec<Pair<ResourceKey<SolarSystem>, Pair<List<Integer>, Boolean>>> SYSTEM_WITH_ADDRESS = Codec.pair(SolarSystem.RESOURCE_KEY_CODEC.fieldOf("solar_system").codec(), ADDRESS.fieldOf("address").codec());
 	
     public static final Codec<Galaxy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(Galaxy::getName),
@@ -29,10 +30,9 @@ public class Galaxy
 	private final String name;
 	private final ResourceKey<GalaxyType> type;
 	private final ResourceKey<Symbols> defaultSymbols;
+	private final List<Pair<ResourceKey<SolarSystem>, Pair<List<Integer>, Boolean>>> systems;
 	
-	private final List<Pair<ResourceKey<SolarSystem>, List<Integer>>> systems;
-	
-	public Galaxy(String name, ResourceKey<GalaxyType> type, ResourceKey<Symbols> defaultSymbols, List<Pair<ResourceKey<SolarSystem>, List<Integer>>> systems)
+	public Galaxy(String name, ResourceKey<GalaxyType> type, ResourceKey<Symbols> defaultSymbols, List<Pair<ResourceKey<SolarSystem>, Pair<List<Integer>, Boolean>>> systems)
 	{
 		this.name = name;
 		this.type = type;
@@ -55,7 +55,7 @@ public class Galaxy
 		return defaultSymbols;
 	}
 	
-	public List<Pair<ResourceKey<SolarSystem>, List<Integer>>> getSystems()
+	public List<Pair<ResourceKey<SolarSystem>, Pair<List<Integer>, Boolean>>> getSystems()
 	{
 		return systems;
 	}

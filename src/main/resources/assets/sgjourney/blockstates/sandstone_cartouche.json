@@ -2,14 +2,34 @@
   "defaults": {
   },
     "variants": {
-        "facing=north,half=lower": { "model": "sgjourney:block/sandstone_cartouche_bottom" },
-        "facing=south,half=lower": { "model": "sgjourney:block/sandstone_cartouche_bottom", "y": 180 },
-        "facing=west,half=lower": { "model": "sgjourney:block/sandstone_cartouche_bottom", "y": 270 },
-        "facing=east,half=lower": { "model": "sgjourney:block/sandstone_cartouche_bottom", "y": 90 },
+        "facing=north,half=lower,orientation=regular": { "model": "sgjourney:block/sandstone_cartouche_bottom" },
+        "facing=south,half=lower,orientation=regular": { "model": "sgjourney:block/sandstone_cartouche_bottom", "y": 180 },
+        "facing=west,half=lower,orientation=regular": { "model": "sgjourney:block/sandstone_cartouche_bottom", "y": 270 },
+        "facing=east,half=lower,orientation=regular": { "model": "sgjourney:block/sandstone_cartouche_bottom", "y": 90 },
+
+        "facing=north,half=lower,orientation=upward": { "model": "sgjourney:block/sandstone_cartouche_bottom", "x": -90 },
+        "facing=south,half=lower,orientation=upward": { "model": "sgjourney:block/sandstone_cartouche_bottom", "x": -90, "y": 180 },
+        "facing=west,half=lower,orientation=upward": { "model": "sgjourney:block/sandstone_cartouche_bottom", "x": -90, "y": 270 },
+        "facing=east,half=lower,orientation=upward": { "model": "sgjourney:block/sandstone_cartouche_bottom", "x": -90, "y": 90 },
+
+        "facing=north,half=lower,orientation=downward": { "model": "sgjourney:block/sandstone_cartouche_bottom", "x": 90 },
+        "facing=south,half=lower,orientation=downward": { "model": "sgjourney:block/sandstone_cartouche_bottom", "x": 90, "y": 180 },
+        "facing=west,half=lower,orientation=downward": { "model": "sgjourney:block/sandstone_cartouche_bottom", "x": 90, "y": 270 },
+        "facing=east,half=lower,orientation=downward": { "model": "sgjourney:block/sandstone_cartouche_bottom", "x": 90, "y": 90 },
 		
-		"facing=north,half=upper": { "model": "sgjourney:block/sandstone_cartouche_top" },
-        "facing=south,half=upper": { "model": "sgjourney:block/sandstone_cartouche_top", "y": 180 },
-        "facing=west,half=upper": { "model": "sgjourney:block/sandstone_cartouche_top", "y": 270 },
-        "facing=east,half=upper": { "model": "sgjourney:block/sandstone_cartouche_top", "y": 90 }
+	"facing=north,half=upper,orientation=regular": { "model": "sgjourney:block/sandstone_cartouche_top" },
+        "facing=south,half=upper,orientation=regular": { "model": "sgjourney:block/sandstone_cartouche_top", "y": 180 },
+        "facing=west,half=upper,orientation=regular": { "model": "sgjourney:block/sandstone_cartouche_top", "y": 270 },
+        "facing=east,half=upper,orientation=regular": { "model": "sgjourney:block/sandstone_cartouche_top", "y": 90 },
+		
+	"facing=north,half=upper,orientation=upward": { "model": "sgjourney:block/sandstone_cartouche_top", "x": -90 },
+        "facing=south,half=upper,orientation=upward": { "model": "sgjourney:block/sandstone_cartouche_top", "x": -90, "y": 180 },
+        "facing=west,half=upper,orientation=upward": { "model": "sgjourney:block/sandstone_cartouche_top", "x": -90, "y": 270 },
+        "facing=east,half=upper,orientation=upward": { "model": "sgjourney:block/sandstone_cartouche_top", "x": -90, "y": 90 },
+		
+	"facing=north,half=upper,orientation=downward": { "model": "sgjourney:block/sandstone_cartouche_top", "x": 90 },
+        "facing=south,half=upper,orientation=downward": { "model": "sgjourney:block/sandstone_cartouche_top", "x": 90, "y": 180 },
+        "facing=west,half=upper,orientation=downward": { "model": "sgjourney:block/sandstone_cartouche_top", "x": 90, "y": 270 },
+        "facing=east,half=upper,orientation=downward": { "model": "sgjourney:block/sandstone_cartouche_top", "x": 90, "y": 90 }
     }
 }

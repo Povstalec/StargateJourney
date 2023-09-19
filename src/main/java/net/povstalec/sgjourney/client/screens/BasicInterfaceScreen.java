@@ -65,7 +65,7 @@ public class BasicInterfaceScreen extends AbstractContainerScreen<BasicInterface
     {
     	if(this.isHovering(x, y, 52, 16, (double) mouseX, (double) mouseY))
 	    {
-	    	renderTooltip(matrixStack, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+	    	renderTooltip(matrixStack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE")).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
 	    }
     }
 }

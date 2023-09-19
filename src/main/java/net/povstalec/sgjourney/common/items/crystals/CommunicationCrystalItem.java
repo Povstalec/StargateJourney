@@ -54,7 +54,7 @@ public class CommunicationCrystalItem extends Item
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").withStyle(ChatFormatting.GRAY);
+    	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(Component.literal(": ")).withStyle(ChatFormatting.GRAY);
         int frequency = getFrequency(stack);
         if(frequency == 0)
             tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));

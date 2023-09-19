@@ -16,8 +16,6 @@ public class CommonNaquadahGeneratorConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
-		server.comment("Stargate Journey Energy Config");
-		
 		naquadah_generator_mark_i_reaction_time = server
 				.comment("The amount of time in ticks for which the Mark I Naquadah Generator will generate energy from one piece of Weapons Grade Naquadah")
 				.defineInRange("server.naquadah_generator_mark_i_reaction_time", 100, 1, 2147483647);

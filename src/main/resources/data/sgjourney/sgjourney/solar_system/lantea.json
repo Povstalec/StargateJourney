@@ -1,7 +1,8 @@
 {
 	"name": "solar_system.sgjourney.lantea",
 	"symbols": "sgjourney:lantea",
-	"extragalactic_address": [18, 20, 1, 15, 14, 7, 19],
+	"symbol_prefix": 18,
+	"extragalactic_address": {"address": [18, 20, 1, 15, 14, 7, 19], "randomizable": true},
 	"point_of_origin": "sgjourney:subido",
 	"dimensions":
 	[

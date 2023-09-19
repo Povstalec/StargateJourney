@@ -21,8 +21,6 @@ public class ClientStargateConfig
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
-		client.comment("Stargate Journey Client Stargate Config");
-		
 		unique_symbols = new SGJourneyConfigValue.BooleanValue(client, "client.unique_symbols", 
 				false, 
 				"If true Solar Systems will use unique Symbols");

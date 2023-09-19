@@ -1,7 +1,8 @@
 {
 	"name": "solar_system.sgjourney.abydos",
 	"symbols": "sgjourney:abydos",
-	"extragalactic_address": [1, 26, 6, 14, 31, 11, 29],
+	"symbol_prefix": 1,
+	"extragalactic_address": {"address": [1, 26, 6, 14, 31, 11, 29], "randomizable": true},
 	"point_of_origin": "sgjourney:abydos",
 	"dimensions":
 	[

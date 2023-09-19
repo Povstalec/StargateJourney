@@ -28,6 +28,9 @@ public class MilkyWayStargateRingBuildupSound extends StargateSound
 		else
 			fadeOut();
 		
+		if(getDistanceFromSource() > this.maxDistance)
+			this.stopSound();
+		
 		super.tick();
 	}
 	

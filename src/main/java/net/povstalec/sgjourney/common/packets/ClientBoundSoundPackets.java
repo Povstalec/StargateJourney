@@ -76,6 +76,28 @@ public abstract class ClientBoundSoundPackets
             return true;
         }
     }
+    
+    public static class CloseWormhole extends ClientBoundSoundPackets
+    {
+    	public CloseWormhole(BlockPos pos)
+    	{
+    		super(pos, false);
+    	}
+    	public CloseWormhole(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    	}
+    	
+    	@Override
+    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playWormholeCloseSound(pos);
+            });
+            return true;
+        }
+    }
 
     public static class Chevron extends ClientBoundSoundPackets
     {
@@ -138,6 +160,28 @@ public abstract class ClientBoundSoundPackets
             ctx.get().enqueueWork(() ->
             {
             	SoundAccess.playRotationSound(pos, bool);
+            });
+            return true;
+        }
+    }
+    
+    public static class UniverseStart extends ClientBoundSoundPackets
+    {
+    	public UniverseStart(BlockPos pos)
+    	{
+    		super(pos, false);
+    	}
+    	public UniverseStart(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    	}
+    	
+    	@Override
+    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playUniverseStartSound(pos);
             });
             return true;
         }
