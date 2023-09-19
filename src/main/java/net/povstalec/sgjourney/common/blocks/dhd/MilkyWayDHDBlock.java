@@ -179,7 +179,7 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
 				CompoundTag list1 = tagList.getCompound(0);
 				
 				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals(InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get())) && list1.contains("Count", Tag.TAG_BYTE) && list1.getByte("Count") > 0)
-			        tooltipComponents.add(Component.literal("Has Control Crystal").withStyle(ChatFormatting.DARK_RED));
+			        tooltipComponents.add(Component.translatable("tooltip.sgjourney.has_control_crystal").withStyle(ChatFormatting.DARK_RED));
 			}
 		}
 		

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
@@ -24,6 +25,17 @@ public class ClientAccess
         if (blockEntity instanceof final SymbolBlockEntity symbolEntity)
         {
         	symbolEntity.symbol = symbol;
+        }
+    }
+    
+    public static void updateCartouche(BlockPos pos, String symbols, int[] address)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if (blockEntity instanceof final CartoucheEntity cartouche)
+        {
+    		cartouche.setSymbols(symbols);
+    		cartouche.setAddress(address);
         }
     }
     

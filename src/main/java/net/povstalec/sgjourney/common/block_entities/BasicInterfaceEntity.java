@@ -20,6 +20,7 @@ import net.povstalec.sgjourney.common.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.cctweaked.peripherals.BasicPeripheralWrapper;
+import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundBasicInterfaceUpdatePacket;
@@ -139,19 +140,19 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	@Override
 	public long capacity()
 	{
-		return 5000000;
+		return CommonInterfaceConfig.basic_interface_capacity.get();
 	}
 
 	@Override
 	public long maxReceive()
 	{
-		return 100000;
+		return CommonInterfaceConfig.basic_interface_max_transfer.get();
 	}
 
 	@Override
 	public long maxExtract()
 	{
-		return 100000;
+		return CommonInterfaceConfig.basic_interface_max_transfer.get();
 	}
 	
 	@Override

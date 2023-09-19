@@ -179,7 +179,7 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 				CompoundTag list1 = tagList.getCompound(0);
 				
 				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals(InventoryUtil.itemName(ItemInit.ADVANCED_CONTROL_CRYSTAL.get())) && list1.contains("Count", Tag.TAG_BYTE) && list1.getByte("Count") > 0)
-			        tooltipComponents.add(Component.literal("Has Control Crystal").withStyle(ChatFormatting.AQUA));
+			        tooltipComponents.add(Component.translatable("tooltip.sgjourney.has_control_crystal").withStyle(ChatFormatting.AQUA));
 			}
 		}
 		

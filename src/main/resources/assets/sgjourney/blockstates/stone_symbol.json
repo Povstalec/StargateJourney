@@ -1,5 +1,11 @@
 {
-    "variants": {
-        "": { "model": "minecraft:block/stone" }
-    }
+	"variants":
+	{
+        	"orientation=upward": { "model": "sgjourney:block/stone_symbol" },
+        	"orientation=downward": { "model": "sgjourney:block/stone_symbol", "x": 180 },
+        	"orientation=regular,facing=north": { "model": "sgjourney:block/stone_symbol", "x": 90 },
+        	"orientation=regular,facing=south": { "model": "sgjourney:block/stone_symbol", "x": 90, "y": 180 },
+        	"orientation=regular,facing=west": { "model": "sgjourney:block/stone_symbol", "x": 90, "y": 270 },
+        	"orientation=regular,facing=east": { "model": "sgjourney:block/stone_symbol", "x": 90, "y": 90 }
+	}
 }

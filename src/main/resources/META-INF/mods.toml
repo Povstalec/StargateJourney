@@ -7,8 +7,8 @@ modId="sgjourney"
 version="0.6.6"
 displayName="Stargate Journey"
 logoFile="sgjourney_large.png"
-credits="TakeruDavis - A really good contributor, \nOtwnt - Structures, \n Kranyolsu - Stargate Pedestals \nCarter Addon Pack - Sounds, \ndiesieben07 - Code for GUI shift-clicking, \nTelepathicGrunt - Code for Structure spawning"
-authors="Woldericz_Junior, TakeruDavis"
+credits="TakeruDavis, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt, SquidDev"
+authors="Woldericz_Junior"
 displayTest="MATCH_VERSION"
 
 description='''

@@ -13,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -170,17 +169,17 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(symbol == 0)
 			return setRecentFeedback(lockPrimaryChevron());
 		else
-			return setRecentFeedback(encodeChevron(symbol));
+			return setRecentFeedback(encodeChevron(symbol, false));
 	}
 	
-	public Stargate.Feedback encodeChevron(int symbol)
+	public Stargate.Feedback encodeChevron(int symbol, boolean incoming)
 	{
 		if(Address.addressContainsSymbol(getAddress(), symbol))
 			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		if(getAddress().length >= 8)
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
-		engageChevron();
+		chevronSound(incoming);
 		this.setChanged();
 		
 		return Stargate.Feedback.SYMBOL_ENCODED;
@@ -197,7 +196,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		{
 			if(!isObstructed())
 			{
-				engageChevron();
+				chevronSound(false);
 				return setRecentFeedback(engageStargate());
 			}
 			else
@@ -213,13 +212,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 	}
 	
-	public void engageChevron()
+	public void chevronSound(boolean incoming)
 	{
 		if(!level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, false));
 	}
 	
-	public void openWormhole()
+	public void openWormholeSound()
 	{
 		if(level.isClientSide())
 			return;
@@ -227,12 +226,18 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.OpenWormhole(this.worldPosition));
 	}
 	
-	public void doWormholeSound()
+	public void idleWormholeSound()
 	{
 		if(level.isClientSide())
 			return;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.IdleWormhole(this.worldPosition));
+	}
+	
+	public void closeWormholeSound()
+	{
+		if(!level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.CloseWormhole(this.worldPosition));
 	}
 	
 	public abstract void playRotationSound();
@@ -325,7 +330,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	{
 		if(isConnected())
 		{
-			level.playSound((Player)null, worldPosition, SoundInit.WORMHOLE_CLOSE.get(), SoundSource.BLOCKS, 0.25F, 1F);
+			closeWormholeSound();
 			setConnected(false);
 		}
 
@@ -339,7 +344,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
 		
 		setChanged();
-		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ());
+		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString());
 		return setRecentFeedback(feedback);
 	}
 	
@@ -745,11 +750,16 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.openSoundLead;
 	}
 	
-	public abstract SoundEvent chevronEngageSound();
+	public abstract SoundEvent getChevronEngageSound();
 	
-	public abstract SoundEvent wormholeOpenSound();
+	public abstract SoundEvent getWormholeOpenSound();
+	
+	public SoundEvent getWormholeCloseSound()
+	{
+		return SoundInit.WORMHOLE_CLOSE.get();
+	}
 
-	public abstract SoundEvent failSound();
+	public abstract SoundEvent getFailSound();
 	
 	@Override
 	public void getStatus(Player player)
@@ -758,15 +768,15 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			return;
 		
 		super.getStatus(player);
-		//TODO Make translatable
-		player.sendSystemMessage(Component.literal("Point of Origin: " + pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE));
-		player.sendSystemMessage(Component.literal("Symbols: " + symbols).withStyle(ChatFormatting.LIGHT_PURPLE));
-		player.sendSystemMessage(Component.literal("Open Time: " + getOpenTime() + "/" + getMaxGateOpenTime()).withStyle(ChatFormatting.DARK_AQUA));
-		player.sendSystemMessage(Component.literal("Times Opened: " + timesOpened).withStyle(ChatFormatting.BLUE));
-		player.sendSystemMessage(Component.literal("Connected to DHD: " + hasDHD).withStyle(ChatFormatting.GOLD));
-		player.sendSystemMessage(Component.literal("Advanced Protocols Enabled: " + advancedProtocolsEnabled).withStyle(ChatFormatting.RED));
-		player.sendSystemMessage(Component.literal("Time Since Last Traveler: " + getTimeSinceLastTraveler()).withStyle(ChatFormatting.DARK_PURPLE));
-		player.sendSystemMessage(Component.literal("Address: " + Address.addressIntArrayToString(getAddress())).withStyle(ChatFormatting.GREEN));
+		
+		player.sendSystemMessage(Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": " + pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.times_opened").append(Component.literal(": " + timesOpened)).withStyle(ChatFormatting.BLUE));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.has_dhd").append(Component.literal(": " + hasDHD)).withStyle(ChatFormatting.GOLD));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.advanced_protocols_enabled").append(Component.literal(": " + advancedProtocolsEnabled)).withStyle(ChatFormatting.RED));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": " + Address.addressIntArrayToString(getAddress()))).withStyle(ChatFormatting.GREEN));
 	}
 	
 	@Override

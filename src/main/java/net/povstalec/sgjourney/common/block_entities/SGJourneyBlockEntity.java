@@ -151,7 +151,7 @@ public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 			return;
 		
 		player.sendSystemMessage(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
-		player.sendSystemMessage(Component.literal("AddToNetwork: " + addToNetwork).withStyle(ChatFormatting.YELLOW));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));
 	}
 
 }

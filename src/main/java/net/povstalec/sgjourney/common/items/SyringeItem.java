@@ -73,7 +73,7 @@ public class SyringeItem extends Item
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe.contents").withStyle(ChatFormatting.GRAY));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe.contents").append(Component.literal(": ")).withStyle(ChatFormatting.GRAY));
     	
         if(stack.hasTag() && stack.getTag().contains("Contents"))
         {

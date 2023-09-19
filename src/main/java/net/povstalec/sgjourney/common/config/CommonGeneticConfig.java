@@ -12,8 +12,6 @@ public class CommonGeneticConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
-		server.comment("Stargate Journey Genetic Config");
-		
 		player_ata_gene_inheritance_chance = new SGJourneyConfigValue.IntValue(server, "server.player_ata_gene_inheritance_chance", 
 				30, 0, 100, 
 				"Percentage of Players who will inherit the Ancient Gene");

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.sound.sounds;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.stargate.Connection;
 
 public class WormholeIdleSound extends StargateSound
 {
@@ -18,12 +19,12 @@ public class WormholeIdleSound extends StargateSound
 	@Override
 	public void tick()
 	{
-		if(stargate.isConnected())
+		if(stargate.isConnected() && stargate.getKawooshTickCount() >= Connection.KAWOOSH_TICKS)
 			fadeIn();
 		else
 			fadeOut();
 		
-		if(getDistanceFromSource() > this.fullDistance)
+		if(getDistanceFromSource() > this.maxDistance)
 			this.stopSound();
 		
 		super.tick();
@@ -46,7 +47,7 @@ public class WormholeIdleSound extends StargateSound
 		if(this.volume >= VOLUME_MIN)
 			this.volume -= 0.05F;
 		
-		if(this.volume < VOLUME_MIN)
-			this.stopSound();
+		/*if(this.volume < VOLUME_MIN)
+			this.stopSound();*/
 	}
 }

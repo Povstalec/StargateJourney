@@ -3,13 +3,14 @@
 	"category": "misc",
 	"pattern":
 	[
-		"III",
+		"GII",
 		"RCC",
-		"III"
+		"GII"
 	],
 	
 	"key": 
 	{
+		"G": { "item": "minecraft:gold_ingot" },
 		"I": { "item": "minecraft:iron_ingot" },
 		"C": { "item": "minecraft:copper_ingot" },
 		"R": { "item": "minecraft:redstone" }

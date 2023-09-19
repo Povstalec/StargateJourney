@@ -12,7 +12,7 @@
   "step": "strongholds",
 
   "start_height": {
-    "absolute": -9
+    "absolute": -5
   },
 
   "project_start_to_heightmap": "OCEAN_FLOOR_WG",
