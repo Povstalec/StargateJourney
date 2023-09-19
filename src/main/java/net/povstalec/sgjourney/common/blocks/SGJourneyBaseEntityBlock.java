@@ -58,7 +58,7 @@ public abstract class SGJourneyBaseEntityBlock extends BaseEntityBlock
         tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
 
         if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("AddToNetwork") && !stack.getTag().getCompound("BlockEntityTag").getBoolean("AddToNetwork"))
-            tooltipComponents.add(Component.literal("Won't be added to network").withStyle(ChatFormatting.YELLOW));
+            tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
 
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }

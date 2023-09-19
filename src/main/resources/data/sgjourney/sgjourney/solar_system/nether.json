@@ -1,7 +1,8 @@
 {
 	"name": "solar_system.sgjourney.nether",
 	"symbols": "sgjourney:nether",
-	"extragalactic_address": [1, 35, 6, 31, 15, 28, 32],
+	"symbol_prefix": 1,
+	"extragalactic_address": {"address": [1, 35, 6, 31, 15, 28, 32], "randomizable": true},
 	"point_of_origin": "sgjourney:wither",
 	"dimensions":
 	[

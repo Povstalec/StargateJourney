@@ -146,17 +146,17 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
 			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
 		
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(energy + " FE")).withStyle(ChatFormatting.DARK_RED));
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + " FE")).withStyle(ChatFormatting.DARK_RED));
         
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("ID"))
 			id = stack.getTag().getCompound("BlockEntityTag").getString("ID");
 		else
 			id = "";
 		
-        tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
 
         if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("AddToNetwork") && !stack.getTag().getCompound("BlockEntityTag").getBoolean("AddToNetwork"))
-            tooltipComponents.add(Component.literal("Won't be added to network").withStyle(ChatFormatting.YELLOW));
+            tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 	

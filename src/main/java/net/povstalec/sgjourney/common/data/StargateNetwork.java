@@ -44,12 +44,12 @@ public class StargateNetwork extends SavedData
 	
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
-	private static final int updateVersion = 4;
+	private static final int updateVersion = 5;
 	
 	private MinecraftServer server;
 	private Map<String, Connection> connections = new HashMap<String, Connection>();
 	private CompoundTag stargateNetwork = new CompoundTag();
-	private int version = 4;
+	private int version = updateVersion;
 	
 	//============================================================================================
 	//******************************************Versions******************************************
@@ -256,7 +256,7 @@ public class StargateNetwork extends SavedData
 			boolean hasDHD = solarSystem.getCompound(stargateID).getBoolean(HAS_DHD);
 			int generation = solarSystem.getCompound(stargateID).getInt(GENERATION);
 			int timesOpened = solarSystem.getCompound(stargateID).getInt(TIMES_OPENED);
-			//System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
+			System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
 			
 			if(Boolean.compare(hasDHD, bestDHD) > 0)
 			{
@@ -287,7 +287,7 @@ public class StargateNetwork extends SavedData
 			}
 		}
 
-		//System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
+		System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
 		return preferredStargate;
 	}
 	

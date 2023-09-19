@@ -31,7 +31,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	{
 		super.onLoad();
 		
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
 		if(symbol.equals(EMPTY))
@@ -66,6 +66,8 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	
 	public void tick(Level level, BlockPos pos, BlockState state)
 	{
+		if(level.isClientSide())
+			return;
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundSymbolUpdatePacket(worldPosition, symbol));
 	}
 	

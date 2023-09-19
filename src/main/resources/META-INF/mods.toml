@@ -7,7 +7,7 @@ modId="sgjourney"
 version="0.6.6"
 displayName="Stargate Journey"
 logoFile="sgjourney_large.png"
-credits="TakeruDavis, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt"
+credits="TakeruDavis, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt, SquidDev"
 authors="Woldericz_Junior"
 displayTest="MATCH_VERSION"
 

@@ -31,29 +31,34 @@ public class CommandInit
 				.then(Commands.literal("stargateNetwork")
 						.then(Commands.literal("address")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getAddress)))));
+										.executes(CommandInit::getAddress))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("stargateNetwork")
 						.then(Commands.literal("extragalacticAddress")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getExtragalacticAddress)))));
+										.executes(CommandInit::getExtragalacticAddress))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("stargateNetwork")
 						.then(Commands.literal("getAllStargates")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getStargates)))));
+										.executes(CommandInit::getStargates))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("stargateNetwork")
 						.then(Commands.literal("version")
-								.executes(CommandInit::getVersion))));
+								.executes(CommandInit::getVersion)))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("stargateNetwork")
 						.then(Commands.literal("forceStellarUpdate")
-								.executes(CommandInit::forceStellarUpdate))));
+								.executes(CommandInit::forceStellarUpdate)))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		
 		
@@ -62,10 +67,13 @@ public class CommandInit
 				.then(Commands.literal("ringsNetwork")
 						.then(Commands.literal("getAllRings")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getTransportRings)))));
+										.executes(CommandInit::getTransportRings))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		//Dev commands
-		dispatcher.register(Commands.literal(StargateJourney.MODID).then(Commands.literal("info").executes(CommandInit::printStargateNetworkInfo)));
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("info").executes(CommandInit::printStargateNetworkInfo))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 	}
 	
 	private static int getAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException

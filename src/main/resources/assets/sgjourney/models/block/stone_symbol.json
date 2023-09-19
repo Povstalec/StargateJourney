@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/cube_bottom_top",
+	"textures":
+	{
+		"bottom": "minecraft:block/stone",
+		"side": "minecraft:block/stone",
+		"top": "sgjourney:block/stone_symbol"
+	}
+}

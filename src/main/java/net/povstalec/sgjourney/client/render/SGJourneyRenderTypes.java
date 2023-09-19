@@ -16,6 +16,19 @@ public class SGJourneyRenderTypes extends RenderType
 		super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
 	}
 
+	public static RenderType symbol(ResourceLocation resourceLocation)
+	{
+		return create("symbol", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ITEM_ENTITY_TRANSLUCENT_CULL_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setOutputState(ITEM_ENTITY_TARGET)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(OVERLAY)
+				.setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true));
+	}
+
 	public static RenderType eventHorizonFront(ResourceLocation resourceLocation, float xOffset, float zOffset)
 	{
 		return create("event_horizon_front", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 

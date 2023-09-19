@@ -76,8 +76,8 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
     	
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
 			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
-		
-        tooltipComponents.add(Component.literal("Energy: " + energy + "/" + capacity +" FE").withStyle(ChatFormatting.DARK_RED));
+
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + capacity +" FE")).withStyle(ChatFormatting.DARK_RED));
         tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }

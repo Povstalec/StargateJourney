@@ -42,17 +42,17 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 		super.saveAdditional(nbt);
 	}
 	
-	public SoundEvent chevronEngageSound()
+	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
 	}
 	
-	public SoundEvent wormholeOpenSound()
+	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
 	}
 	
-	public SoundEvent failSound()
+	public SoundEvent getFailSound()
 	{
 		return SoundInit.MILKY_WAY_DIAL_FAIL.get();
 	}

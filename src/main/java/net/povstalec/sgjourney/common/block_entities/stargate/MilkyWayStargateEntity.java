@@ -94,22 +94,22 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		nbt.putInt("Rotation", rotation);
 	}
 
-	public SoundEvent chevronEngageSound()
+	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
 	}
 
-	public SoundEvent chevronEncodeSound()
+	public SoundEvent getChevronEncodeSound()
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_ENCODE.get();
 	}
 	
-	public SoundEvent wormholeOpenSound()
+	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
 	}
 	
-	public SoundEvent failSound()
+	public SoundEvent getFailSound()
 	{
 		return SoundInit.MILKY_WAY_DIAL_FAIL.get();
 	}

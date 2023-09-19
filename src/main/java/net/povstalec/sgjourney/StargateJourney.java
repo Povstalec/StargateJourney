@@ -30,11 +30,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.povstalec.sgjourney.client.Layers;
+import net.povstalec.sgjourney.client.render.block_entity.CartoucheRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.PegasusStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.SandstoneSymbolRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.StoneSymbolRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
@@ -178,8 +178,11 @@ public class StargateJourney
         	
         	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
         	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_SYMBOL.get(), SandstoneSymbolRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), StoneSymbolRenderer::new);
+        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
+        	BlockEntityRenderers.register(BlockEntityInit.STONE_CARTOUCHE.get(), CartoucheRenderer.Stone::new);
+        	
+        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.Sandstone::new);
+        	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), SymbolBlockRenderer.Stone::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
 

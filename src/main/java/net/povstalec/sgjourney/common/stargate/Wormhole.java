@@ -99,7 +99,7 @@ public class Wormhole implements ITeleporter
 					axisMomentum = momentum.y();
 				}
 				
-				if(shouldWormhole(unitDistance, previousTravelerPos, travelerPos, axisMomentum))
+				if(shouldWormhole(initialStargate, traveler, unitDistance, previousTravelerPos, travelerPos, axisMomentum))
 					doWormhole(initialStargate, targetStargate, traveler, momentum, twoWayWormhole);
 				else
 					entityLocations.put(traveler.getId(), new Vec3(traveler.getX(), traveler.getY(), traveler.getZ()));
@@ -114,8 +114,13 @@ public class Wormhole implements ITeleporter
 		return this.used;
 	}
 	
-	public boolean shouldWormhole(int unitDistance, double previousTravelerPos, double travelerPos, double axisMomentum)
+	public boolean shouldWormhole(AbstractStargateEntity initialStargate, Entity traveler, int unitDistance, double previousTravelerPos, double travelerPos, double axisMomentum)
 	{
+		Vec3 centerVector = initialStargate.getCenter();
+		Vec3 travelerVector = traveler.getBoundingBox().getCenter();
+		if(centerVector.distanceTo(travelerVector) > 2.5)
+			return false;
+		
 		previousTravelerPos = reverseIfNeeded(unitDistance > 0, previousTravelerPos);
 		travelerPos = reverseIfNeeded(unitDistance > 0, travelerPos);
 		axisMomentum = reverseIfNeeded(unitDistance > 0, axisMomentum);

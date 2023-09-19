@@ -1,7 +1,8 @@
 {
 	"name": "solar_system.sgjourney.proxima_centauri",
 	"symbols": "sgjourney:centauri",
-	"extragalactic_address": [1, 36, 28, 4, 6, 26, 22],
+	"symbol_prefix": 1,
+	"extragalactic_address": {"address": [1, 36, 28, 4, 6, 26, 22], "randomizable": true},
 	"point_of_origin": "sgjourney:centauri",
 	"dimensions":
 	[

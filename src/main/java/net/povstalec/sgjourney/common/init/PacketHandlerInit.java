@@ -7,6 +7,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundBasicInterfaceUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
@@ -98,6 +99,12 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundSymbolUpdatePacket::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ClientboundCartoucheUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundCartoucheUpdatePacket::encode)
+		.decoder(ClientboundCartoucheUpdatePacket::new)
+		.consumerMainThread(ClientboundCartoucheUpdatePacket::handle)
+		.add();
+		
 		//============================================================================================
 		//*******************************************Sounds*******************************************
 		//============================================================================================
@@ -112,6 +119,12 @@ public final class PacketHandlerInit
 		.encoder(ClientBoundSoundPackets.IdleWormhole::encode)
 		.decoder(ClientBoundSoundPackets.IdleWormhole::new)
 		.consumerMainThread(ClientBoundSoundPackets.IdleWormhole::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.CloseWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.CloseWormhole::encode)
+		.decoder(ClientBoundSoundPackets.CloseWormhole::new)
+		.consumerMainThread(ClientBoundSoundPackets.CloseWormhole::handle)
 		.add();
 		
 		INSTANCE.messageBuilder(ClientBoundSoundPackets.Chevron.class, index++, NetworkDirection.PLAY_TO_CLIENT)
@@ -130,6 +143,12 @@ public final class PacketHandlerInit
 		.encoder(ClientBoundSoundPackets.StargateRotation::encode)
 		.decoder(ClientBoundSoundPackets.StargateRotation::new)
 		.consumerMainThread(ClientBoundSoundPackets.StargateRotation::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.UniverseStart.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.UniverseStart::encode)
+		.decoder(ClientBoundSoundPackets.UniverseStart::new)
+		.consumerMainThread(ClientBoundSoundPackets.UniverseStart::handle)
 		.add();
 		
 		INSTANCE.messageBuilder(ClientBoundSoundPackets.MilkyWayBuildup.class, index++, NetworkDirection.PLAY_TO_CLIENT)

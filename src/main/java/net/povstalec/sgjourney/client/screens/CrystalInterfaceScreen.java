@@ -54,7 +54,7 @@ public class CrystalInterfaceScreen extends AbstractContainerScreen<CrystalInter
     {
     	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
 	    {
-    		graphics.renderTooltip(this.font, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+    		graphics.renderTooltip(this.font, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE")).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
 	    }
     }
 }

@@ -174,7 +174,7 @@ public class RingRemoteItem extends Item
         	
         	if(memoryCrystal.getItem() instanceof MemoryCrystalItem)
         	{
-                tooltipComponents.add(Component.translatable("item.sgjourney.memory_crystal").withStyle(ChatFormatting.DARK_BLUE));
+                tooltipComponents.add(Component.translatable("item.sgjourney.memory_crystal").withStyle(ChatFormatting.BLUE));
 
             	int[] firstCoords = findFirstCoords(memoryCrystal);
             	

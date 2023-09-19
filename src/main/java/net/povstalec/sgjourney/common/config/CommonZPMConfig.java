@@ -9,9 +9,6 @@ public class CommonZPMConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
-		server.comment("Stargate Journey ZPM Config");
-		
-		// ZPM Energy
 		zpm_energy_per_level_of_entropy = server
 				.comment("The energy that can be extracted from a single level of entropy")
 				.defineInRange("server.zpm_energy_per_level_of_entropy", 100000000000L, 1L, 9223372036854775807L);

@@ -9,9 +9,14 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.IntValue max_wormhole_open_time;
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
-	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> chevron_lock_speed;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
+	
+	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> universe_chevron_lock_speed;
+	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> milky_way_chevron_lock_speed;
+	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> pegasus_chevron_lock_speed;
+	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> classic_chevron_lock_speed;
+	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> tollan_chevron_lock_speed;
 	
 	// Energy Related
 	public static ForgeConfigSpec.BooleanValue enable_energy_bypass;
@@ -27,8 +32,6 @@ public class CommonStargateConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
-		server.comment("Stargate Journey Address Config");
-		
 		max_wormhole_open_time = server
 				.comment("The maximum amount of time the Stargate will be open for in seconds")
 				.defineInRange("server.max_wormhole_open_time", 228, 10, 2280);
@@ -41,10 +44,6 @@ public class CommonStargateConfig
 				.comment("ENABLED - Two way travel possible; CREATIVE_ONLY - Two way travel limited to Players in Creative Mode; DISABLED - Two way travel impossible")
 				.defineEnum("server.two_way_wormholes", WormholeTravel.CREATIVE_ONLY);
 		
-		chevron_lock_speed = server
-				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
-				.defineEnum("server.chevron_lock_speed", ChevronLockSpeed.MEDIUM);
-		
 		reverse_wormhole_kills = server
 				.comment("If true, going through the wrong side of the wormhole will result in death")
 				.define("server.reverse_wormhole_kills", true);
@@ -52,6 +51,28 @@ public class CommonStargateConfig
 		enable_redstone_dialing = server
 				.comment("Enables the use of redstone for manual Stargate dialing")
 				.define("server.enable_redstone_dialing", true);
+		
+		
+		
+		universe_chevron_lock_speed = server
+				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
+				.defineEnum("server.universe_chevron_lock_speed", ChevronLockSpeed.SLOW);
+		
+		milky_way_chevron_lock_speed = server
+				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
+				.defineEnum("server.milky_way_chevron_lock_speed", ChevronLockSpeed.SLOW);
+		
+		pegasus_chevron_lock_speed = server
+				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
+				.defineEnum("server.pegasus_chevron_lock_speed", ChevronLockSpeed.MEDIUM);
+		
+		classic_chevron_lock_speed = server
+				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
+				.defineEnum("server.classic_chevron_lock_speed", ChevronLockSpeed.SLOW);
+		
+		tollan_chevron_lock_speed = server
+				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
+				.defineEnum("server.tollan_chevron_lock_speed", ChevronLockSpeed.MEDIUM);
 		
 		// Energy Related
 		enable_energy_bypass = server
@@ -61,6 +82,8 @@ public class CommonStargateConfig
 		can_draw_power_from_both_ends = server
 				.comment("If true, the wormhole will draw power from both connected Stargates")
 				.define("server.can_draw_power_from_both_ends", false);
+		
+		
 		
 		system_wide_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for system-wide connections")
