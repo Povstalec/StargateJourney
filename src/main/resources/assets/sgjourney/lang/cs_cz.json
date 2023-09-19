@@ -144,7 +144,6 @@
 	"galaxy.sgjourney.andromeda": "Andromeda",
 	
 	"solar_system.sgjourney.milky_way": "Terra",
-	"symbols.sgjourney.tauri": "Tau'ri",
 	"solar_system.sgjourney.abydos": "Abydos",
 	"solar_system.sgjourney.nether": "Nether",
 	"solar_system.sgjourney.end": "End",
@@ -153,10 +152,16 @@
 	"solar_system.sgjourney.proxima_centauri": "Proxima Centauri",
 	
 	"symbol_set.sgjourney.milky_way": "Symboly Ml\u00e9\u010dn\u00e9 dr\u00e1hy",
+	"symbol_set.sgjourney.kaliem": "Symboly Kaliemu",
 	"symbol_set.sgjourney.pegasus": "Symboly Pegasu",
 	"symbol_set.sgjourney.universal": "Univerz\u00e1ln\u00ed symboly",
 	
+	
+	"symbols.sgjourney.universal": "Univerz\u00e1ln\u00ed symboly",
+	"symbols.sgjourney.milky_way": "Symboly Ml\u00e9\u010dn\u00e9 dr\u00e1hy",
+	"symbols.sgjourney.pegasus": "Symboly Pegasu",
 	"symbols.sgjourney.terra": "Terra",
+	"symbols.sgjourney.tauri": "Tau'ri",
 	"symbols.sgjourney.abydos": "Abydos",
 	"symbols.sgjourney.chulak": "Chulak",
 	"symbols.sgjourney.lantea": "Lantea",

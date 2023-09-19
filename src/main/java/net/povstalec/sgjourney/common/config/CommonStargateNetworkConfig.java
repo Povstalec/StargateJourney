@@ -11,12 +11,12 @@ public class CommonStargateNetworkConfig
 	public static void init(ForgeConfigSpec.Builder server)
 	{
 		use_datapack_addresses = new SGJourneyConfigValue.BooleanValue(server, "server.use_datapack_addresses", 
-				true, 
+				false, 
 				"Stargate Network will use addresses from datapacks");
 		
 		generate_random_addresses = new SGJourneyConfigValue.BooleanValue(server, "server.generate_random_addresses", 
 				true, 
-				"Stargate Network will generate random addresses for each world.");
+				"Stargate Network will generate random addresses for each world not registered through datapacks");
 		
 		random_addresses_from_seed = new SGJourneyConfigValue.BooleanValue(server, "server.random_addresses_from_seed", 
 				true, 

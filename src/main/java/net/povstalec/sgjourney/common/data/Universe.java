@@ -75,8 +75,7 @@ public class Universe extends SavedData
 	
 	public void generateUniverseInfo(MinecraftServer server)
 	{
-		if(CommonStargateNetworkConfig.use_datapack_addresses.get())
-			registerSolarSystemsFromDataPacks(server);
+		registerSolarSystemsFromDataPacks(server);
 		if(CommonStargateNetworkConfig.generate_random_addresses.get())
 			generateAndRegisterSolarSystems(server);
 		addSolarSystemsToGalaxies(server);
@@ -125,6 +124,16 @@ public class Universe extends SavedData
 	private void addSolarSystemFromDataPack(MinecraftServer server, SolarSystem system, String systemID)
 	{
 		String extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
+		
+		if(CommonStargateNetworkConfig.use_datapack_addresses.get())
+			extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
+		else
+		{
+			int prefix = system.getSymbolPrefix();
+			long seed = generateRandomAddressSeed(server, systemID);
+			extragalacticAddress = generateExtragalacticAddress(prefix <= 0 ? 1 : prefix, seed);
+		}
+		
 		String pointOfOrigin = system.getPointOfOrigin().location().toString();
 		String symbols = system.getSymbols().location().toString();
 		List<ResourceKey<Level>> dimensions = system.getDimensions();
@@ -134,7 +143,6 @@ public class Universe extends SavedData
 	
 	private void generateNewSolarSystem(MinecraftServer server, ResourceKey<Level> dimension)
 	{
-		String name = dimension.location().toString();
 		
 		final RegistryAccess registries = server.registryAccess();
 		final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
@@ -142,12 +150,8 @@ public class Universe extends SavedData
 		Galaxy defaultGalaxy = galaxyRegistry.get(MILKY_WAY);
 		String defaultSymbols = defaultGalaxy.getDefaultSymbols().location().toString();
 		
-		// Creates a number from the dimension name that works as a seed for the Solar System
-		long seed = CommonStargateNetworkConfig.random_addresses_from_seed.get() ? server.getWorldData().worldGenOptions().seed() : 0;
-		for(int i = 0; i < name.length(); i++)
-		{
-			seed = seed + Character.valueOf(name.charAt(i));
-		}
+		String name = dimension.location().toString();
+		long seed = generateRandomAddressSeed(server, name);
 
 		Random random = new Random(seed);
 		
@@ -155,22 +159,41 @@ public class Universe extends SavedData
 		String prefix = prefixValue < 10 ? "P0" + prefixValue : "P" + prefixValue;
 		String systemID = prefix + "-" + seed;
 		
-		String extragalacticAddress = "";
-		
-		for(int i = 0; true; i++)
-		{
-			seed += i;
-			extragalacticAddress = Address.addressIntArrayToString(Address.randomAddress(1, 7, 39, seed));// Added prefix 1 to indicate they're in Milky Way
-			
-			if(!getExtragalacticAddressInfo().contains(extragalacticAddress))
-				break;
-		}
+		String extragalacticAddress = generateExtragalacticAddress(1, seed);// Prefix 1 to indicate they're in Milky Way
 		
 		String pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(server, seed).location().toString();
 		
 		List<ResourceKey<Level>> dimensions = List.of(dimension);
 		
 		saveSolarSystem(systemID, extragalacticAddress, pointOfOrigin, defaultSymbols, dimensions, true);
+	}
+	
+	protected long generateRandomAddressSeed(MinecraftServer server, String name)
+	{
+		// Creates a number from the dimension name that works as a seed for the Solar System
+		long seed = CommonStargateNetworkConfig.random_addresses_from_seed.get() ? server.getWorldData().worldGenOptions().seed() : 0;
+		for(int i = 0; i < name.length(); i++)
+		{
+			seed = seed + Character.valueOf(name.charAt(i));
+		}
+		
+		return seed;
+	}
+	
+	protected String generateExtragalacticAddress(int prefix, long seed)
+	{
+		String extragalacticAddress = "";
+		
+		for(int i = 0; true; i++)
+		{
+			seed += i;
+			extragalacticAddress = Address.addressIntArrayToString(Address.randomAddress(prefix, 7, 39, seed));
+			
+			if(!getExtragalacticAddressInfo().contains(extragalacticAddress))
+				break;
+		}
+		
+		return extragalacticAddress;
 	}
 	
 	private void saveSolarSystem(String systemID, String extragalacticAddress, String pointOfOrigin, String symbols, List<ResourceKey<Level>> dimensions, boolean generated)
@@ -248,9 +271,21 @@ public class Universe extends SavedData
         	{
         		String galaxyID = galaxy.getKey().location().toString();
         		String systemID = system.getFirst().location().toString();
-        		int[] address = system.getSecond().stream().mapToInt((integer) -> integer).toArray();
+        		String address;
+
+    			if(CommonStargateNetworkConfig.use_datapack_addresses.get())
+    				address = Address.addressIntArrayToString(system.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray());
+    			else
+    			{
+    				ResourceKey<GalaxyType> type = galaxy.getValue().getType();
+    				int size = GalaxyInit.getGalaxyType(type.location()).getSize();
+    				
+    				long systemValue = generateRandomAddressSeed(server, systemID);
+    				
+    				address = generateAddress(galaxyID, size, systemValue);
+    			}
         		
-        		registerGalaxyReferences(galaxyID, systemID, Address.addressIntArrayToString(address));
+        		registerGalaxyReferences(galaxyID, systemID, address);
         	});
         });
 	}
@@ -271,26 +306,29 @@ public class Universe extends SavedData
 			boolean generated = getSolarSystem(systemID).getBoolean(GENERATED);
 			if(generated)
 			{
-				int systemValue = 0;
-				for(int i = 0; i < systemID.length(); i++)
-				{
-					systemValue = systemValue + Character.valueOf(systemID.charAt(i));
-				}
+				long systemValue = generateRandomAddressSeed(server, systemID);
 				
-				String address = "";
-				
-				for(int i = 0; true; i++)
-				{
-					systemValue += i;
-					address = Address.addressIntArrayToString(Address.randomAddress(6, size, systemValue));
-					
-					if(!getGalaxy(galaxyID).contains(address))
-						break;
-				}
+				String address = generateAddress(galaxyID, size, systemValue);
 				
 				registerGalaxyReferences(galaxyID, systemID, address);
 			}
 		});
+	}
+	
+	protected String generateAddress(String galaxyID, int galaxySize, long seed)
+	{
+		String address = "";
+		
+		for(int i = 0; true; i++)
+		{
+			seed += i;
+			address = Address.addressIntArrayToString(Address.randomAddress(6, galaxySize, seed));
+			
+			if(!getGalaxy(galaxyID).contains(address))
+				break;
+		}
+		
+		return address;
 	}
 	
 	private void registerGalaxyReferences(String galaxyID, String systemID, String address)

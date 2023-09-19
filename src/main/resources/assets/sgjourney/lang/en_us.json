@@ -156,6 +156,9 @@
 	"symbol_set.sgjourney.pegasus": "Pegasus",
 	"symbol_set.sgjourney.universal": "Universal",
 	
+	"symbols.sgjourney.universal": "Universal",
+	"symbols.sgjourney.milky_way": "Milky Way",
+	"symbols.sgjourney.pegasus": "Pegasus",
 	"symbols.sgjourney.terra": "Terra",
 	"symbols.sgjourney.tauri": "Tau'ri",
 	"symbols.sgjourney.abydos": "Abydos",

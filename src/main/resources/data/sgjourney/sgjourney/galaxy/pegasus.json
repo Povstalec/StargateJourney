@@ -6,11 +6,11 @@
 	[
 		{
 			"solar_system": "sgjourney:lantea",
-			"address": [29, 5, 17, 34, 6, 12]
+			"address": {"address": [29, 5, 17, 34, 6, 12], "randomizable": true}
 		},
 		{
 			"solar_system": "sgjourney:end",
-			"address": [14, 30, 6, 13, 17, 23]
+			"address": {"address": [14, 30, 6, 13, 17, 23], "randomizable": true}
 		}
 	]
 }
