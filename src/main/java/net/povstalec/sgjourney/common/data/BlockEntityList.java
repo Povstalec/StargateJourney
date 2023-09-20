@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.StargateJourney;
  */
 public class BlockEntityList extends SavedData
 {
-	private static final String FILE_NAME = "sgjourney-block_enties";
+	private static final String FILE_NAME = StargateJourney.MODID + "-block_enties";
 	
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";

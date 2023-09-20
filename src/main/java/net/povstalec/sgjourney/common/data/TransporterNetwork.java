@@ -25,7 +25,7 @@ import net.povstalec.sgjourney.common.misc.Conversion;
  */
 public class TransporterNetwork extends SavedData
 {
-	private static final String FILE_NAME = "sgjourney-rings_network";
+	private static final String FILE_NAME = StargateJourney.MODID + "-rings_network";
 
 	private static final String DIMENSION = "Dimension";
 	private static final String COORDINATES = "Coordinates";
