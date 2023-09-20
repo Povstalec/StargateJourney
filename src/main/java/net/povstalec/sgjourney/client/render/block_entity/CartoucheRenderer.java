@@ -1,11 +1,10 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -90,12 +89,12 @@ public abstract class CartoucheRenderer
 		
 		stack.pushPose();
 		stack.translate(0.5F, 0.5F, 0.5F);
-        stack.mulPose(Axis.YP.rotationDegrees(-facing));
+        stack.mulPose(Vector3f.YP.rotationDegrees(-facing));
         
         if(orientation == Orientation.UPWARD)
-            stack.mulPose(Axis.XP.rotationDegrees(-90));
+            stack.mulPose(Vector3f.XP.rotationDegrees(-90));
         else if(orientation == Orientation.DOWNWARD)
-            stack.mulPose(Axis.XP.rotationDegrees(90));
+            stack.mulPose(Vector3f.XP.rotationDegrees(90));
 
         if(cartouche != null)
         {
