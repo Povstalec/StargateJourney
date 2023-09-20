@@ -76,7 +76,7 @@ public class Universe extends SavedData
 	public void generateUniverseInfo(MinecraftServer server)
 	{
 		registerSolarSystemsFromDataPacks(server);
-		if(CommonStargateNetworkConfig.generate_random_addresses.get())
+		if(CommonStargateNetworkConfig.generate_random_solar_systems.get())
 			generateAndRegisterSolarSystems(server);
 		addSolarSystemsToGalaxies(server);
 		addGeneratedSolarSystemsToGalaxies(server);
@@ -87,6 +87,11 @@ public class Universe extends SavedData
 	{
 		universe = new CompoundTag();
 		this.setDirty();
+	}
+	
+	private boolean shouldUseDatapackAddresses(MinecraftServer server)
+	{
+		return StargateNetwork.get(server).shouldUseDatapackAddresses();
 	}
 	
 	//============================================================================================
@@ -125,7 +130,7 @@ public class Universe extends SavedData
 	{
 		String extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
 		
-		if(CommonStargateNetworkConfig.use_datapack_addresses.get())
+		if(shouldUseDatapackAddresses(server))
 			extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
 		else
 		{
@@ -273,7 +278,7 @@ public class Universe extends SavedData
         		String systemID = system.getFirst().location().toString();
         		String address;
 
-    			if(CommonStargateNetworkConfig.use_datapack_addresses.get())
+    			if(shouldUseDatapackAddresses(server))
     				address = Address.addressIntArrayToString(system.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray());
     			else
     			{
@@ -377,7 +382,7 @@ public class Universe extends SavedData
 		return universe.copy().getCompound(SOLAR_SYSTEMS);
 	}
 	
-	private CompoundTag getSolarSystem(String systemID)
+	public CompoundTag getSolarSystem(String systemID)
 	{
 		if(!getSolarSystems().contains(systemID))
 			return new CompoundTag();
@@ -515,7 +520,7 @@ public class Universe extends SavedData
 	@Nonnull
 	public static Universe get(Level level)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			throw new RuntimeException("Don't access this client-side!");
 		
 		return Universe.get(level.getServer());

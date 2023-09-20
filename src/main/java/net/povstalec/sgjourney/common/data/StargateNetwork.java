@@ -19,6 +19,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.stargate.Connection;
@@ -30,6 +31,7 @@ public class StargateNetwork extends SavedData
 	
 	private static final String FILE_NAME = "sgjourney-stargate_network";
 	private static final String VERSION = "Version";
+	private static final String USE_DATAPACK_ADDRESSES = "UseDatapackAddresses";
 
 	private static final String DIMENSION = "Dimension";
 	private static final String COORDINATES = "Coordinates";
@@ -89,6 +91,39 @@ public class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
+	private void updateSettings()
+	{
+		CompoundTag network = stargateNetwork.copy();
+		
+		if(!network.contains(USE_DATAPACK_ADDRESSES))
+		{
+			if(getVersion() == 0) // V0 indicates a completely new Network
+			{
+				boolean useDatapackAddresses = CommonStargateNetworkConfig.use_datapack_addresses.get();
+				StargateJourney.LOGGER.info("Creating new Settings (" + useDatapackAddresses + ")");
+				stargateNetwork.putBoolean(USE_DATAPACK_ADDRESSES, useDatapackAddresses);
+			}
+			else
+			{
+				boolean useDatapackAddresses = true;
+				StargateJourney.LOGGER.info("Creating old Settings (" + useDatapackAddresses + ")");
+				stargateNetwork.putBoolean(USE_DATAPACK_ADDRESSES, useDatapackAddresses);
+			}
+
+			this.setDirty();
+			StargateJourney.LOGGER.info("Updated settings");
+		}
+	}
+	
+	public boolean shouldUseDatapackAddresses()
+	{
+		CompoundTag network = stargateNetwork.copy();
+		
+		if(network.contains(USE_DATAPACK_ADDRESSES))
+			return network.getBoolean(USE_DATAPACK_ADDRESSES);
+		return CommonStargateNetworkConfig.use_datapack_addresses.get();
+	}
+	
 	public void stellarUpdate(MinecraftServer server)
 	{
 		Iterator<Entry<String, Connection>> iterator = this.connections.entrySet().iterator();
@@ -101,6 +136,10 @@ public class StargateNetwork extends SavedData
 		}
 		StargateJourney.LOGGER.info("Connections terminated");
 		
+		//TODO This will probably be temporary
+		updateSettings();
+
+		System.out.println("=========================SHOULD USE " + shouldUseDatapackAddresses());
 		Universe.get(server).eraseUniverseInfo();
 		StargateJourney.LOGGER.info("Universe erased");
 		Universe.get(server).generateUniverseInfo(server);
