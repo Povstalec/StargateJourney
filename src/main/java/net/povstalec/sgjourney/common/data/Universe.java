@@ -20,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.init.GalaxyInit;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
@@ -52,7 +51,7 @@ public class Universe extends SavedData
 
 	private static final ResourceLocation MILKY_WAY = new ResourceLocation(StargateJourney.MODID, "milky_way");
 	
-	private static final String FILE_NAME = "sgjourney-universe";
+	private static final String FILE_NAME = StargateJourney.MODID + "-universe";
 	
 	private static final String DIMENSIONS = "Dimensions";
 	private static final String SOLAR_SYSTEMS = "SolarSystems";
@@ -76,7 +75,7 @@ public class Universe extends SavedData
 	public void generateUniverseInfo(MinecraftServer server)
 	{
 		registerSolarSystemsFromDataPacks(server);
-		if(CommonStargateNetworkConfig.generate_random_solar_systems.get())
+		if(generateRandomSolarSystems(server))
 			generateAndRegisterSolarSystems(server);
 		addSolarSystemsToGalaxies(server);
 		addGeneratedSolarSystemsToGalaxies(server);
@@ -89,9 +88,19 @@ public class Universe extends SavedData
 		this.setDirty();
 	}
 	
-	private boolean shouldUseDatapackAddresses(MinecraftServer server)
+	private boolean useDatapackAddresses(MinecraftServer server)
 	{
-		return StargateNetwork.get(server).shouldUseDatapackAddresses();
+		return StargateNetworkSettings.get(server).useDatapackAddresses();
+	}
+	
+	private boolean generateRandomSolarSystems(MinecraftServer server)
+	{
+		return StargateNetworkSettings.get(server).generateRandomSolarSystems();
+	}
+	
+	private boolean randomAddressFromSeed(MinecraftServer server)
+	{
+		return StargateNetworkSettings.get(server).randomAddressFromSeed();
 	}
 	
 	//============================================================================================
@@ -130,7 +139,7 @@ public class Universe extends SavedData
 	{
 		String extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
 		
-		if(shouldUseDatapackAddresses(server))
+		if(useDatapackAddresses(server))
 			extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
 		else
 		{
@@ -176,7 +185,7 @@ public class Universe extends SavedData
 	protected long generateRandomAddressSeed(MinecraftServer server, String name)
 	{
 		// Creates a number from the dimension name that works as a seed for the Solar System
-		long seed = CommonStargateNetworkConfig.random_addresses_from_seed.get() ? server.getWorldData().worldGenOptions().seed() : 0;
+		long seed = randomAddressFromSeed(server) ? server.getWorldData().worldGenOptions().seed() : 0;
 		for(int i = 0; i < name.length(); i++)
 		{
 			seed = seed + Character.valueOf(name.charAt(i));
@@ -278,7 +287,7 @@ public class Universe extends SavedData
         		String systemID = system.getFirst().location().toString();
         		String address;
 
-    			if(shouldUseDatapackAddresses(server))
+    			if(useDatapackAddresses(server))
     				address = Address.addressIntArrayToString(system.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray());
     			else
     			{

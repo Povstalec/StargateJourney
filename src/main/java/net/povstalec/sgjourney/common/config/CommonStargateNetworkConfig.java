@@ -11,7 +11,7 @@ public class CommonStargateNetworkConfig
 	public static void init(ForgeConfigSpec.Builder server)
 	{
 		use_datapack_addresses = new SGJourneyConfigValue.BooleanValue(server, "server.use_datapack_addresses", 
-				false, 
+				true, //TODO Change to false
 				"Stargate Network will use addresses from datapacks");
 		
 		generate_random_solar_systems = new SGJourneyConfigValue.BooleanValue(server, "server.generate_random_solar_systems", 
