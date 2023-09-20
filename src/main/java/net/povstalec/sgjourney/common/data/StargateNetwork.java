@@ -29,7 +29,7 @@ public class StargateNetwork extends SavedData
 {
 	private static boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
-	private static final String FILE_NAME = "sgjourney-stargate_network";
+	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network";
 	private static final String VERSION = "Version";
 	private static final String USE_DATAPACK_ADDRESSES = "UseDatapackAddresses";
 
@@ -91,30 +91,6 @@ public class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	private void updateSettings()
-	{
-		CompoundTag network = stargateNetwork.copy();
-		
-		if(!network.contains(USE_DATAPACK_ADDRESSES))
-		{
-			if(getVersion() == 0) // V0 indicates a completely new Network
-			{
-				boolean useDatapackAddresses = CommonStargateNetworkConfig.use_datapack_addresses.get();
-				StargateJourney.LOGGER.info("Creating new Settings (" + useDatapackAddresses + ")");
-				stargateNetwork.putBoolean(USE_DATAPACK_ADDRESSES, useDatapackAddresses);
-			}
-			else
-			{
-				boolean useDatapackAddresses = true;
-				StargateJourney.LOGGER.info("Creating old Settings (" + useDatapackAddresses + ")");
-				stargateNetwork.putBoolean(USE_DATAPACK_ADDRESSES, useDatapackAddresses);
-			}
-
-			this.setDirty();
-			StargateJourney.LOGGER.info("Updated settings");
-		}
-	}
-	
 	public boolean shouldUseDatapackAddresses()
 	{
 		CompoundTag network = stargateNetwork.copy();
@@ -136,10 +112,8 @@ public class StargateNetwork extends SavedData
 		}
 		StargateJourney.LOGGER.info("Connections terminated");
 		
-		//TODO This will probably be temporary
-		updateSettings();
-
-		System.out.println("=========================SHOULD USE " + shouldUseDatapackAddresses());
+		StargateNetworkSettings.get(server).updateSettings();
+		
 		Universe.get(server).eraseUniverseInfo();
 		StargateJourney.LOGGER.info("Universe erased");
 		Universe.get(server).generateUniverseInfo(server);
