@@ -109,9 +109,9 @@ public abstract class CartoucheEntity extends BlockEntity
 			return;
 		
 		AddressTable addressTable = AddressTable.getAddressTable(level, ResourceLocation.tryParse(this.addressTable));
-		ResourceKey<Level> dimension = AddressTable.getRandomDimension(addressTable);
-		if(dimension != null)
-			this.dimension = dimension.location().toString();
+		String dimension = AddressTable.getRandomDimension(level, addressTable);
+		if(dimension != null && !dimension.equals(EMPTY))
+			this.dimension = dimension;
 		this.addressTable = EMPTY;
 	}
 	
