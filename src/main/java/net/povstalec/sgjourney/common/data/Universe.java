@@ -89,6 +89,11 @@ public class Universe extends SavedData
 		this.setDirty();
 	}
 	
+	private boolean shouldUseDatapackAddresses(MinecraftServer server)
+	{
+		return StargateNetwork.get(server).shouldUseDatapackAddresses();
+	}
+	
 	//============================================================================================
 	//*********************************Registering Solar Systems**********************************
 	//============================================================================================
@@ -125,7 +130,7 @@ public class Universe extends SavedData
 	{
 		String extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
 		
-		if(CommonStargateNetworkConfig.use_datapack_addresses.get())
+		if(shouldUseDatapackAddresses(server))
 			extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
 		else
 		{
@@ -273,7 +278,7 @@ public class Universe extends SavedData
         		String systemID = system.getFirst().location().toString();
         		String address;
 
-    			if(CommonStargateNetworkConfig.use_datapack_addresses.get())
+    			if(shouldUseDatapackAddresses(server))
     				address = Address.addressIntArrayToString(system.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray());
     			else
     			{

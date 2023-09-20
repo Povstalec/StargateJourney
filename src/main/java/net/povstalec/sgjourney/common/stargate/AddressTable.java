@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class AddressTable
 {
@@ -95,8 +94,6 @@ public class AddressTable
 		{
 			List<String> generatedDimensions = getRandomGeneratedDimension(level);
 			dimensions.addAll(generatedDimensions);
-			
-			System.out.println("Added all generated Dimension");
 		}
 		
 		List<Pair<ResourceKey<Level>, Integer>> tableDimensions = addressTable.getDimensions();
@@ -122,7 +119,6 @@ public class AddressTable
 			return dimensions.get(randomNumber);
 		}
 		
-		System.out.println("!!! 0 Dimensions !!!");
 		return EMPTY;
 	}
 }
