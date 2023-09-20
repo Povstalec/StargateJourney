@@ -1,23 +1,23 @@
 {
-	"loader": "forge:separate-perspective",
-	"gui_light": "front",
+	"parent": "minecraft:item/handheld",
+	"loader": "forge:separate_transforms",
 	"base":
 	{
-		"parent": "sgjourney:item/jaffa_staff_weapon"
+		"parent": "sgjourney:item/jaffa_staff_weapon_3d"
 	},
 	"perspectives":
 	{
 		"gui":
 		{
-			"parent": "sgjourney:item/jaffa_staff_weapon_inventory"
-		},
-		"fixed":
-		{
-			"parent": "sgjourney:item/jaffa_staff_weapon_inventory"
+			"parent": "sgjourney:item/jaffa_staff_weapon_2d"
 		},
 		"ground":
 		{
-			"parent": "sgjourney:item/jaffa_staff_weapon_inventory"
+			"parent": "sgjourney:item/jaffa_staff_weapon_2d"
+		},
+		"fixed":
+		{
+			"parent": "sgjourney:item/jaffa_staff_weapon_2d"
 		}
 	}
 }

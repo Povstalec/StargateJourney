@@ -116,8 +116,8 @@
 	"filled_map.sgjourney.archeologist": "Archeologist Map",
 	"filled_map.sgjourney.astria_porta": "Map to the Ring of Gods",
 	
-	"itemGroup.stargate_blocks": "Stargate Blocks",
-	"itemGroup.stargate_items": "Stargate Items",
+	"creativemodetab.stargate_blocks": "Stargate Blocks",
+	"creativemodetab.stargate_items": "Stargate Items",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",
