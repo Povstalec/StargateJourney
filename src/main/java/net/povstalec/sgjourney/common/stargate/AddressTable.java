@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -10,13 +11,19 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.data.Universe;
 
 public class AddressTable
 {
+	private static final String GENERATED = "Generated";
+	private static final String EMPTY = StargateJourney.EMPTY;
+	
 	public static final ResourceLocation ADDRESS_TABLES_LOCATION = new ResourceLocation(StargateJourney.MODID, "address_table");
 	public static final ResourceKey<Registry<AddressTable>> REGISTRY_KEY = ResourceKey.createRegistryKey(ADDRESS_TABLES_LOCATION);
 	public static final Codec<ResourceKey<AddressTable>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
@@ -55,36 +62,63 @@ public class AddressTable
         return registry.get(addressTable);
 	}
 	
-	public static ResourceKey<Level> getRandomDimension(AddressTable addressTable)
+	public static List<String> getRandomGeneratedDimension(Level level)
+	{
+		List<String> dimensions = new ArrayList<String>();
+		CompoundTag solarSystems = Universe.get(level).getSolarSystems();
+		solarSystems.getAllKeys().stream().forEach(systemID ->
+		{
+			boolean generated = Universe.get(level).getSolarSystem(systemID).getBoolean(GENERATED);
+			if(generated)
+			{
+				ListTag dimensionList = Universe.get(level).getDimensionsFromSolarSystem(systemID);
+				
+				for(int i = 0; i < dimensionList.size(); i++)
+				{
+					dimensions.add(dimensionList.getString(i));
+				}
+			}
+		});
+		
+		return dimensions;
+	}
+	
+	public static String getRandomDimension(Level level, AddressTable addressTable)
 	{
 		if(addressTable == null)
 			return null;
 		
-		int totalWeight = 0;
+		List<String> dimensions = new ArrayList<String>();
 		
-		List<Pair<ResourceKey<Level>, Integer>> dimensions = addressTable.getDimensions();
-		Iterator<Pair<ResourceKey<Level>, Integer>> iterator = dimensions.iterator();
+		if(addressTable.includeGeneratedAddresses())
+		{
+			List<String> generatedDimensions = getRandomGeneratedDimension(level);
+			dimensions.addAll(generatedDimensions);
+		}
+		
+		List<Pair<ResourceKey<Level>, Integer>> tableDimensions = addressTable.getDimensions();
+		Iterator<Pair<ResourceKey<Level>, Integer>> iterator = tableDimensions.iterator();
 		
 		while(iterator.hasNext())
 		{
 			Pair<ResourceKey<Level>, Integer> dimension = iterator.next();
-			totalWeight += dimension.getSecond();
-		}
-		
-		Random random = new Random();
-		int randomDimensionWeight = random.nextInt(totalWeight);
-		int chosenWeight = 0;
-		Iterator<Pair<ResourceKey<Level>, Integer>> nextIterator = dimensions.iterator();
-		
-		while(nextIterator.hasNext())
-		{
-			Pair<ResourceKey<Level>, Integer> dimension = nextIterator.next();
-			chosenWeight += dimension.getSecond();
+			String dimensionString = dimension.getFirst().location().toString();
+			int repeats = dimension.getSecond();
 			
-			if(randomDimensionWeight < chosenWeight)
-				return dimension.getFirst();
+			for(int i = 0; i < repeats; i++)
+			{
+				dimensions.add(dimensionString);
+			}
 		}
 		
-        return null;
+		if(dimensions.size() > 0)
+		{
+			Random random = new Random();
+			int randomNumber = random.nextInt(dimensions.size());
+			
+			return dimensions.get(randomNumber);
+		}
+		
+		return EMPTY;
 	}
 }
