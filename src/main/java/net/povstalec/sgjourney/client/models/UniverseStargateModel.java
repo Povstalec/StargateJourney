@@ -95,7 +95,9 @@ public class UniverseStargateModel extends AbstractStargateModel
 		
 		for(int i = 0; i < stargate.getAddress().length; i++)
 	    {
-			this.getSymbol(stargate.getAddress()[i]).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, stargate.getAddress()[i]))), 255, combinedOverlay);
+			int symbol = stargate.getAddress()[i];
+			if(symbol < symbolCount)
+				this.getSymbol(symbol).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, symbol))), 255, combinedOverlay);
 	    }
 		
 		if(stargate.isConnected())
