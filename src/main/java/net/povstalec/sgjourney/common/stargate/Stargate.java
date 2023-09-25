@@ -222,7 +222,7 @@ public class Stargate
 		WRONG_DISCONNECT_SIDE(-18, FeedbackType.ERROR, createError("wrong_disconnect_side", false)),
 
 		STARGATE_DESTROYED(-19, FeedbackType.ERROR, createError("stargate_destroyed", false)),
-		TARGET_STARGATE_DOES_NOT_EXIST(-20, FeedbackType.ERROR, createError("target_stargate_does_not_exist", false)),
+		COULD_NOT_REACH_TARGET_STARGATE(-20, FeedbackType.ERROR, createError("could_not_reach_target_stargate", false)),
 		INTERRUPTED_BY_INCOMING_CONNECTION(-21, FeedbackType.ERROR, createError("interrupted_by_incoming_connection", false)),
 		
 		// Universe

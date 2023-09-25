@@ -7,11 +7,11 @@
 		},
 	"title": 
 		{
-		"translate": "advancements.stargate.root.title"
+		"translate": "advancements.sgjourney.root.title"
 		},
 	"description": 
 		{
-		"translate": "advancements.stargate.root.description"
+		"translate": "advancements.sgjourney.root.description"
 		},
 	"frame": "task",
 	"show_toast": false,

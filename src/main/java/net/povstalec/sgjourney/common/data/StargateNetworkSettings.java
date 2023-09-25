@@ -69,6 +69,26 @@ public class StargateNetworkSettings extends SavedData
 		return this.stargateNetworkSettings.copy().getBoolean(RANDOM_ADDRESS_FROM_SEED);
 	}
 	
+	
+	
+	public void setUseDatapackAddresses(boolean useDatapackAddresses)
+	{
+		this.stargateNetworkSettings.putBoolean(USE_DATAPACK_ADDRESSES, useDatapackAddresses);
+		this.setDirty();
+	}
+	
+	public void setGenerateRandomSolarSystems(boolean generateRandomSolarSystems)
+	{
+		this.stargateNetworkSettings.putBoolean(GENERATE_RANDOM_SOLAR_SYSTEMS, generateRandomSolarSystems);
+		this.setDirty();
+	}
+	
+	public void setRandomAddressFromSeed(boolean randomAddressFromSeed)
+	{
+		this.stargateNetworkSettings.putBoolean(RANDOM_ADDRESS_FROM_SEED, randomAddressFromSeed);
+		this.setDirty();
+	}
+	
 	//============================================================================================
 	//**********************************Stargate Network Settings*********************************
 	//============================================================================================
