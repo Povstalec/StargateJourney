@@ -44,8 +44,6 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.AddressTable;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -155,8 +153,12 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     @Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
-    	if(level.getBlockState(pos).getValue(HALF) == DoubleBlockHalf.UPPER)
-    		pos = pos.below();
+    	Direction direction = state.getValue(FACING);
+    	Orientation orientation = state.getValue(ORIENTATION);
+    	DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
+    	
+    	if(doubleblockhalf == DoubleBlockHalf.UPPER)
+    		pos = pos.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation));
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof CartoucheEntity)
 		{

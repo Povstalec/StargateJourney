@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
@@ -20,6 +22,11 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Connection
 {
+	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
+	private static final String EVENT_INCOMING_WORMHOLE = "stargate_incoming_wormhole";
+	private static final String EVENT_OUTGOING_WORMHOLE = "stargate_outgoing_wormhole";
+	private static final String EVENT_DISCONNECTED = "stargate_disconnected";
+	
 	private static final String DIMENSION = "Dimension";
 	private static final String COORDINATES = "Coordinates";
 	
@@ -73,18 +80,15 @@ public class Connection
 		
 		if(dialingStargate != null && dialedStargate != null)
 		{
-			int addressLenght = dialingStargate.getAddress().length;
-			int[] dialingAddress = Address.addressStringToIntArray(dialingStargate.getConnectionAddress(addressLenght));
-
 			dialedStargate.resetStargate(Stargate.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION);
 			
 			dialingStargate.setKawooshTickCount(0);
 			dialingStargate.updateClient();
 			dialedStargate.setKawooshTickCount(0);
 			dialedStargate.updateClient();
-			
-			dialingStargate.connectStargate(uuid, true, dialingStargate.getAddress());
-			dialedStargate.connectStargate(uuid, false, dialingAddress);
+
+			dialingStargate.connectStargate(uuid, true);
+			dialedStargate.connectStargate(uuid, false);
 			
 			return new Connection(uuid, connectionType, dialingStargate, dialedStargate);
 		}
@@ -94,9 +98,15 @@ public class Connection
 	public void terminate(MinecraftServer server, Stargate.Feedback feedback)
 	{
 		if(this.dialingStargate != null)
+		{
+			this.dialingStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode());
 			this.dialingStargate.resetStargate(feedback);
+		}
 		if(this.dialedStargate != null)
+		{
+			this.dialedStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode());
 			this.dialedStargate.resetStargate(feedback);
+		}
 		
 		StargateNetwork.get(server).removeConnection(server, uuid, feedback);
 	}
@@ -105,7 +115,7 @@ public class Connection
 	{
 		if(this.dialedStargate != null)
 			this.dialedStargate.resetStargate(Stargate.Feedback.CONNECTION_REROUTED);
-		newDialedStargate.connectStargate(this.uuid, false, this.dialingStargate.getAddress());
+		newDialedStargate.connectStargate(this.uuid, false);
 	}
 	
 	public boolean isStargateValid(AbstractStargateEntity stargate)
@@ -119,8 +129,14 @@ public class Connection
 		BlockPos stargatePos = stargate.getBlockPos();
 		Level stargateLevel = stargate.getLevel();
 		
-		if(stargateLevel.getBlockEntity(stargatePos) instanceof AbstractStargateEntity)
-			return true;
+		if(stargateLevel.getBlockEntity(stargatePos) instanceof AbstractStargateEntity targetStargate)
+		{
+			if(stargate.isConnected())
+				return true;
+
+			StargateJourney.LOGGER.info("Stargate is not connected");
+			return false;
+		}
 		
 		return false;
 	}
@@ -136,7 +152,7 @@ public class Connection
 		
 		if(!isStargateValid(this.dialingStargate) || !isStargateValid(this.dialedStargate))
 		{
-			terminate(server, Stargate.Feedback.TARGET_STARGATE_DOES_NOT_EXIST);
+			terminate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 			return;
 		}
 		
@@ -173,10 +189,22 @@ public class Connection
 						this.dialedStargate.encodeChevron(dialingAddress[dialedAddressLength], true);
 				}
 				else
+				{
 					this.dialedStargate.chevronSound(true);
+					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().length + 1, 0, true);
+				}
 			}
 			
 			return;
+		}
+		
+		if(this.openTime == kawooshStartTicks)
+		{
+			List<Integer> dialedAddress = Arrays.stream(dialedStargate.getAddress()).boxed().toList();
+			dialedStargate.updateInterfaceBlocks(EVENT_INCOMING_WORMHOLE, dialedAddress);
+			List<Integer> dialingAddress = Arrays.stream(dialingStargate.getAddress()).boxed().toList();
+			dialingStargate.updateInterfaceBlocks(EVENT_OUTGOING_WORMHOLE, dialingAddress);
+			
 		}
 		
 		if(this.openTime < maxOpenTicks)

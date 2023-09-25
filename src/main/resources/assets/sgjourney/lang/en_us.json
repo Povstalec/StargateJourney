@@ -271,7 +271,7 @@
 	"message.sgjourney.stargate.error.connection_rerouted": "Connection rerouted",
 	"message.sgjourney.stargate.error.wrong_disconnect_side": "Stargate cannot be disconnected from this side",
 	
-	"message.sgjourney.stargate.error.target_stargate_does_not_exist": "Target Stargate does not exist",
+	"message.sgjourney.stargate.error.could_not_reach_target_stargate": "Could not reach target Stargate",
 	
 	"message.sgjourney.stargate.info.chevron_raised": "Chevron raised",
 	"message.sgjourney.stargate.info.chevron_lowered": "Chevron lowered",

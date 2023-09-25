@@ -1,5 +1,9 @@
 package net.povstalec.sgjourney.common.cctweaked.peripherals;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.common.util.LazyOptional;
 import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
@@ -11,6 +15,7 @@ public class BasicPeripheralWrapper
 	BasicInterfaceEntity basicInterface;
 	private BasicInterfacePeripheral basicInterfacePeripheral;
 	private LazyOptional<IPeripheral> peripheral;
+    protected final List<IComputerAccess> computerList = new LinkedList<>();
 	
 	public BasicPeripheralWrapper(BasicInterfaceEntity basicInterface)
 	{
@@ -55,5 +60,13 @@ public class BasicPeripheralWrapper
 			peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
 		}
 		return peripheral;
+	}
+	
+	public void queueEvent(String eventName, Object... objects)
+	{
+		if(this.basicInterfacePeripheral instanceof BasicStargatePeripheral stargatePeripheral)
+		{
+			stargatePeripheral.queueEvent(eventName, objects);
+		}
 	}
 }
