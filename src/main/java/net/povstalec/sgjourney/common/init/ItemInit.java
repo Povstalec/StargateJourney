@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.init;
 
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;

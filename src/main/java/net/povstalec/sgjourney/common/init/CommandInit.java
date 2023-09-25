@@ -209,7 +209,7 @@ public class CommandInit
 	
 	private static int getSettings(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level();
+		Level level = context.getSource().getPlayer().level;
 		
 		boolean useDatapackAddresses = StargateNetworkSettings.get(level).useDatapackAddresses();
 		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomSolarSystems();
@@ -223,7 +223,7 @@ public class CommandInit
 	
 	private static int useDatapackAddresses(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level();
+		Level level = context.getSource().getPlayer().level;
 		boolean setting = BoolArgumentType.getBool(context, "useDatapackAddresses");
 		
 		StargateNetworkSettings.get(level).setUseDatapackAddresses(setting);
@@ -234,7 +234,7 @@ public class CommandInit
 	
 	private static int generateRandomSolarSystems(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level();
+		Level level = context.getSource().getPlayer().level;
 		boolean setting = BoolArgumentType.getBool(context, "generateRandomSolarSystems");
 		
 		StargateNetworkSettings.get(level).setGenerateRandomSolarSystems(setting);
@@ -245,7 +245,7 @@ public class CommandInit
 	
 	private static int randomAddressFromSeed(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level();
+		Level level = context.getSource().getPlayer().level;
 		boolean setting = BoolArgumentType.getBool(context, "randomAddressFromSeed");
 		
 		StargateNetworkSettings.get(level).setRandomAddressFromSeed(setting);
