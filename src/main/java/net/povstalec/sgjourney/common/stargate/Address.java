@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
 public class Address

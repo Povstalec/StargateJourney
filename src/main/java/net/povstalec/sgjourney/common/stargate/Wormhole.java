@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -28,8 +29,11 @@ import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class Wormhole implements ITeleporter
 {
-	Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
-	List<Entity> localEntities = new ArrayList<Entity>();
+	private static final String EVENT_DECONSTRUCTING_ENTITY = "stargate_deconstructing_entity";
+	private static final String EVENT_RECONSTRUCTING_ENTITY = "stargate_reconstructing_entity";
+	
+	protected Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
+	protected List<Entity> localEntities = new ArrayList<Entity>();
 	protected boolean used = false;
 	
 	public Wormhole()
@@ -167,20 +171,24 @@ public class Wormhole implements ITeleporter
 	    		
 	    		if(traveler instanceof ServerPlayer player)
 		    	{
+		    		deconstructEvent(initialStargate, player, false);
 		        	player.teleportTo(destinationlevel, targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
 		        	player.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
+		    		reconstructEvent(targetStargate, player);
 		    	}
 		    	else
 		    	{
+		    		deconstructEvent(initialStargate, traveler, false);
 		    		Entity newTraveler = traveler;
 		    		if((ServerLevel) level != destinationlevel)
 		    			newTraveler = traveler.changeDimension(destinationlevel, this);
-		    		
+
 		    		newTraveler.moveTo(targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
 		    		newTraveler.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		    		playWormholeSound(level, newTraveler);
+		    		reconstructEvent(targetStargate, newTraveler);
 		    	}
 	    		this.used = true;
 	        }
@@ -190,8 +198,29 @@ public class Wormhole implements ITeleporter
 			if(traveler instanceof Player player && player.isCreative())
 				player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 			else
+			{
+	    		deconstructEvent(initialStargate, traveler, true);
 				traveler.kill();
+			}
 		}
+    }
+    
+    private void deconstructEvent(AbstractStargateEntity initialStargate, Entity traveler, boolean disintegrated)
+    {
+    	String travelerType = EntityType.getKey(traveler.getType()).toString();
+    	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+    	String uuid = traveler.getUUID().toString();
+    	
+    	initialStargate.updateInterfaceBlocks(EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
+    }
+    
+    private void reconstructEvent(AbstractStargateEntity targetStargate, Entity traveler)
+    {
+    	String travelerType = EntityType.getKey(traveler.getType()).toString();
+    	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+    	String uuid = traveler.getUUID().toString();
+    	
+    	targetStargate.updateInterfaceBlocks(EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
     }
 
 	private static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)

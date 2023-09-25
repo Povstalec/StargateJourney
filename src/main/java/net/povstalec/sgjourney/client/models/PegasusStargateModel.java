@@ -16,7 +16,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.stargate.Connection;
 
 public class PegasusStargateModel extends AbstractStargateModel
 {

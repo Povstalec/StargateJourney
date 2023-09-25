@@ -175,7 +175,7 @@ public class Dialing
 				return stargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
 			return dialStargate(stargate, targetStargate);
 		}
-		return stargate.resetStargate(Stargate.Feedback.TARGET_STARGATE_DOES_NOT_EXIST);
+		return stargate.resetStargate(Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 	}
 	
 	public static Stargate.Feedback get9ChevronStargate(Level level, AbstractStargateEntity stargate, int[] address)

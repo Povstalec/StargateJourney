@@ -33,14 +33,14 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	private boolean rotateClockwise = true;
 	
 	public EnergyBlockEntity energyBlockEntity = null;
-	BasicPeripheralWrapper peripheralHolder;
+	protected BasicPeripheralWrapper peripheralWrapper;
 	
 	public BasicInterfaceEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.BASIC_INTERFACE.get(), pos, state);
 		
 		if(ModList.get().isLoaded("computercraft"))
-			peripheralHolder = new BasicPeripheralWrapper(this);
+			peripheralWrapper = new BasicPeripheralWrapper(this);
 	}
 	
 	protected BasicInterfaceEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
@@ -68,15 +68,15 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
 		if(ModList.get().isLoaded("computercraft") && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
-			return peripheralHolder.newPeripheral().cast();
+			return peripheralWrapper.newPeripheral().cast();
 			
 		return super.getCapability(cap, side);
 	}
 	
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{
-		if(peripheralHolder != null)
-			return peripheralHolder.resetInterface();
+		if(peripheralWrapper != null)
+			return peripheralWrapper.resetInterface();
 		
 		if(level.getBlockState(pos).getBlock() instanceof BasicInterfaceBlock ccInterface)
 			ccInterface.updateInterface(state, level, pos);
@@ -171,11 +171,20 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	//*****************************************CC: Tweaked****************************************
 	//============================================================================================
 	
-	public void rotateStargate(boolean clockwise, int symbol)
+	public BasicPeripheralWrapper getPeripheralWrapper()
 	{
-		this.desiredSymbol = symbol;
-		this.rotateClockwise = clockwise;
-		this.rotate = true;
+		if(!ModList.get().isLoaded("computercraft"))
+			return null;
+		
+		return this.peripheralWrapper;
+	}
+	
+	public void queueEvent(String eventName, Object... objects)
+	{
+		if(!ModList.get().isLoaded("computercraft"))
+			return;
+		
+		this.peripheralWrapper.queueEvent(eventName, objects);
 	}
 	
 	//============================================================================================
@@ -194,7 +203,8 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 			if(basicInterface.energyBlockEntity instanceof MilkyWayStargateEntity stargate)
 				basicInterface.rotateStargate(stargate);
 
-			if (lastSymbol != basicInterface.currentSymbol) {
+			if(lastSymbol != basicInterface.currentSymbol)
+			{
 				if(!level.isClientSide()) {
 //					System.out.println("Block at " + pos + " has detected change from symbol " + lastSymbol + " to " + basicInterface.currentSymbol);
 

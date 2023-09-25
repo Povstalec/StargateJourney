@@ -50,7 +50,7 @@ public class CrystalStargatePeripheral extends CrystalInterfacePeripheral implem
 	{
 		String methodName = getMethodNames()[method];
 		
-		return methods.get(methodName).use(context, this.stargate, arguments);
+		return methods.get(methodName).use(computer, context, this.stargate, arguments);
 	}
 	
 	//============================================================================================
@@ -92,13 +92,15 @@ public class CrystalStargatePeripheral extends CrystalInterfacePeripheral implem
 	}
 	
 	@LuaFunction
-	public final void disconnectStargate(ILuaContext context) throws LuaException
+	public final MethodResult disconnectStargate(ILuaContext context) throws LuaException
 	{
-		context.executeMainThreadTask(() ->
+		MethodResult result = context.executeMainThreadTask(() ->
 		{
-			stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
-			return null;
+			Stargate.Feedback feedback = stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+			return new Object[] {!feedback.isError()};
 		});
+		
+		return result;
 	}
 	
 	@SuppressWarnings("unchecked")

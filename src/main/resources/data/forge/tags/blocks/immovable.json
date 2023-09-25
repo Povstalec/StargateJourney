@@ -1,0 +1,22 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:universe_stargate",
+		"sgjourney:universe_ring",
+
+		"sgjourney:milky_way_stargate",
+		"sgjourney:milky_way_ring",
+
+		"sgjourney:pegasus_stargate",
+		"sgjourney:pegasus_ring",
+
+		"sgjourney:classic_stargate",
+		"sgjourney:classic_ring",
+
+		"sgjourney:tollan_stargate",
+		"sgjourney:tollan_ring",
+
+		"sgjourney:transport_rings"
+	]
+}

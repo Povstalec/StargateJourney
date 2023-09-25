@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.screens.config;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
