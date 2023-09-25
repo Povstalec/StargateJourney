@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
@@ -17,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 
@@ -58,6 +60,36 @@ public class CommandInit
 				.then(Commands.literal("stargateNetwork")
 						.then(Commands.literal("forceStellarUpdate")
 								.executes(CommandInit::forceStellarUpdate)))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("stargateNetwork")
+						.then(Commands.literal("getSettings")
+								.executes(CommandInit::getSettings)))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("stargateNetwork")
+						.then(Commands.literal("setSettings")
+								.then(Commands.literal("useDatapackAddresses")
+										.then(Commands.argument("useDatapackAddresses", BoolArgumentType.bool())
+												.executes(CommandInit::useDatapackAddresses)))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("stargateNetwork")
+						.then(Commands.literal("setSettings")
+								.then(Commands.literal("generateRandomSolarSystems")
+										.then(Commands.argument("generateRandomSolarSystems", BoolArgumentType.bool())
+												.executes(CommandInit::generateRandomSolarSystems)))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("stargateNetwork")
+						.then(Commands.literal("setSettings")
+								.then(Commands.literal("randomAddressFromSeed")
+										.then(Commands.argument("randomAddressFromSeed", BoolArgumentType.bool())
+												.executes(CommandInit::randomAddressFromSeed)))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		
@@ -170,6 +202,55 @@ public class CommandInit
 		StargateNetwork.get(level).stellarUpdate(level.getServer());
 		
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Stellar Update Applied").withStyle(ChatFormatting.RED));
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	
+	
+	private static int getSettings(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getPlayer().level;
+		
+		boolean useDatapackAddresses = StargateNetworkSettings.get(level).useDatapackAddresses();
+		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomSolarSystems();
+		boolean randomAddressFromSeed = StargateNetworkSettings.get(level).randomAddressFromSeed();
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Use Datapack Addresses: " + useDatapackAddresses).withStyle(ChatFormatting.GOLD));
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Generate Random Solar Systems: " + generateRandomSolarSystems).withStyle(ChatFormatting.GOLD));
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Random Addresses From Seed: " + randomAddressFromSeed).withStyle(ChatFormatting.GOLD));
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int useDatapackAddresses(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getPlayer().level;
+		boolean setting = BoolArgumentType.getBool(context, "useDatapackAddresses");
+		
+		StargateNetworkSettings.get(level).setUseDatapackAddresses(setting);
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Stargate Network Settings changed").withStyle(ChatFormatting.YELLOW));
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int generateRandomSolarSystems(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getPlayer().level;
+		boolean setting = BoolArgumentType.getBool(context, "generateRandomSolarSystems");
+		
+		StargateNetworkSettings.get(level).setGenerateRandomSolarSystems(setting);
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Stargate Network Settings changed").withStyle(ChatFormatting.YELLOW));
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int randomAddressFromSeed(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getPlayer().level;
+		boolean setting = BoolArgumentType.getBool(context, "randomAddressFromSeed");
+		
+		StargateNetworkSettings.get(level).setRandomAddressFromSeed(setting);
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("Stargate Network Settings changed").withStyle(ChatFormatting.YELLOW));
 		return Command.SINGLE_SUCCESS;
 	}
 	

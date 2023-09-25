@@ -190,6 +190,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			if(!level.isClientSide())
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, true));
 			this.isChevronRaised = true;
+			
+			if(!level.isClientSide())
+				synchronizeWithClient(level);
 			return Stargate.Feedback.CHEVRON_RAISED;
 		}
 		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_RAISED);
@@ -199,7 +202,6 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		if(this.isChevronRaised)
 		{
-			;
 			this.isChevronRaised = false;
 			return setRecentFeedback(engageSymbol(getCurrentSymbol()));
 		}
@@ -309,6 +311,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public void startRotation(int desiredSymbol, boolean rotateClockwise)
 	{
+		if(this.isChevronRaised)
+			return;
+		
 		this.computerRotation = true;
 		this.desiredSymbol = desiredSymbol;
 		this.rotateClockwise = rotateClockwise;

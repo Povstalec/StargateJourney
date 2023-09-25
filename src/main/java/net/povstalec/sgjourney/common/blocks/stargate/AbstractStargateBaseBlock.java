@@ -94,7 +94,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     		BlockEntity blockentity = level.getBlockEntity(pos);
     		if(blockentity instanceof AbstractStargateEntity stargate)
     		{
-    			stargate.disconnectStargate(Stargate.Feedback.STARGATE_DESTROYED);
+    			stargate.bypassDisconnectStargate(Stargate.Feedback.STARGATE_DESTROYED);
     			stargate.removeFromBlockEntityList();
     		}
     		

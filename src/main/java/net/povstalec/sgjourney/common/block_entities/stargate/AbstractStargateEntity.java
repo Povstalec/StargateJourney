@@ -25,6 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
+import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
@@ -43,11 +44,14 @@ import net.povstalec.sgjourney.common.stargate.Connection;
 import net.povstalec.sgjourney.common.stargate.Dialing;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.Wormhole;
 
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
+	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
+	
 	// Basic Info
 	protected static Stargate.Gen generation;
 	protected int network;
@@ -180,6 +184,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
 		chevronSound(incoming);
+		updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().length, symbol, incoming);
 		this.setChanged();
 		
 		return Stargate.Feedback.SYMBOL_ENCODED;
@@ -197,18 +202,14 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			if(!isObstructed())
 			{
 				chevronSound(false);
+				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().length + 1, 0, false);
 				return setRecentFeedback(engageStargate());
 			}
 			else
 				return resetStargate(Stargate.Feedback.SELF_OBSTRUCTED);
 		}
 		else
-		{
-			if(!CommonStargateConfig.end_connection_from_both_ends.get() && !this.isDialingOut())
-				return Stargate.Feedback.WRONG_DISCONNECT_SIDE;
-			else
-				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
-		}
+			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 		
 	}
 	
@@ -259,7 +260,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return StargateNetwork.get(level).createConnection(this.level.getServer(), this, targetStargate);
 	}
 	
-	public void connectStargate(String connectionID, boolean dialingOut, int[] address)
+	public void connectStargate(String connectionID, boolean dialingOut)
 	{
 		this.connectionID = connectionID;
 		this.setConnected(true);
@@ -350,8 +351,16 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public Stargate.Feedback disconnectStargate(Stargate.Feedback feedback)
 	{
+		if(!CommonStargateConfig.end_connection_from_both_ends.get() && !this.isDialingOut())
+			return Stargate.Feedback.WRONG_DISCONNECT_SIDE;
+		else
+			return bypassDisconnectStargate(feedback);
+	}
+	
+	public Stargate.Feedback bypassDisconnectStargate(Stargate.Feedback feedback)
+	{
 		StargateNetwork.get(level).terminateConnection(level.getServer(), connectionID, feedback);
-		return resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+		return resetStargate(feedback);
 	}
 	
 	public void updateStargate()
@@ -726,9 +735,30 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 					obstructingBlocks++;
 			}
 		}
-		//StargateJourney.LOGGER.info("Stargate is obstructed by " + obstructingBlocks + " blocks");
 		return obstructingBlocks > 12;
 	}
+	
+    public void updateInterfaceBlocks(String eventName, Object... objects)
+    {
+    	BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		{
+			for(StargatePart part : stargateBlock.getStargateType().getParts())
+			{
+				BlockPos pos = part.getRingPos(gatePos, gateState.getValue(AbstractStargateBlock.FACING), gateState.getValue(AbstractStargateBlock.ORIENTATION));
+				
+				for(Direction direction : Direction.values())
+		    	{
+		    		if(level.getBlockEntity(pos.relative(direction)) instanceof BasicInterfaceEntity interfaceEntity)
+		    		{
+		    			interfaceEntity.queueEvent(eventName, objects);
+		    		}
+		    	}
+			}
+		}
+    }
 	
 	public boolean hasEnergy(AbstractStargateEntity targetStargate)
 	{
