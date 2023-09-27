@@ -5,7 +5,6 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -75,9 +74,7 @@ public class Symbols
 			
 			ResourceLocation path = textures.get(i);
 			ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
-			
-			if(Minecraft.getInstance().getResourceManager().getResource(texture).isPresent())
-				return texture;
+			return texture;
 		}
 		else
 		{
@@ -85,8 +82,6 @@ public class Symbols
 			
 			return symbolSet.texture(i);
 		}
-		
-		return ERROR_LOCATION;
 	}
 	
 	public static Symbols getSymbols(Level level, ResourceKey<Symbols> symbols)
