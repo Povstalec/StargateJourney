@@ -53,10 +53,7 @@ public class SymbolSet
 		
 		ResourceLocation path = textures.get(i);
 		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
-		
-		if(Minecraft.getInstance().getResourceManager().getResource(texture).isPresent())
-			return texture;
-		return ERROR_LOCATION;
+		return texture;
 	}
 	
 	public static SymbolSet getClientSymbolSet(ResourceKey<SymbolSet> symbols)
