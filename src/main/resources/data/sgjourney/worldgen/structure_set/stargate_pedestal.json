@@ -27,6 +27,10 @@
     {
       "structure": "sgjourney:stargate_pedestal/stargate_pedestal_chulak",
       "weight": 1
+    },
+    {
+      "structure": "sgjourney:pegasus_stargate",
+      "weight": 1
     }
   ],
   "placement": {

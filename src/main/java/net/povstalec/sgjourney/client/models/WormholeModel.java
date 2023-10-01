@@ -244,7 +244,7 @@ public class WormholeModel
 		float ratio = distanceFromCenter / DEFAULT_DISTANCE;
 		float usedWidth = baseWidth * ratio;
 		
-		float circumcircleRadius = circumcircleRadius(angle, usedWidth);
+		float circumcircleRadius = SGJourneyModel.circumcircleRadius(angle, usedWidth);
 		float defaultOffset = seed == 0 ? 0 : random.nextFloat() - 0.5F;
 		
 		if(distanceFromCenter >= 0)
@@ -334,10 +334,5 @@ public class WormholeModel
 		
 		consumer.vertex(matrix4, x3, y3, z3).color(red, green, blue, alpha).uv(x3 / 2.5F / 2 + 0.5F, y3 / 2.5F / 16 + 0.5F)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();
-	}
-	
-	protected static float circumcircleRadius(float phi, float baseWidth)
-	{
-		return baseWidth / (2 * (float) Math.sin(Math.toRadians(phi / 2)));
 	}
 }

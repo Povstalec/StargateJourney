@@ -111,6 +111,23 @@
 	"item.sgjourney.anubis_helmet": "Anubisova helma",
 	"item.sgjourney.horus_helmet": "Horova helma",
 	
+	"sounds.sgjourney.dial_start" : "vytáčení začalo",
+	"sounds.sgjourney.ring_spin_start" : "otáčení začalo",
+	"sounds.sgjourney.ring_spin" : "brána se otáčí",
+	"sounds.sgjourney.chevron_encode" : "symbol vybrán",
+	"sounds.sgjourney.chevron_engage" : "symbol zadán",
+	"sounds.sgjourney.dial_fail" : "vytáčení selhalo",
+	
+	"sounds.sgjourney.wormhole_open" : "červí díra se zavírá",
+	"sounds.sgjourney.wormhole_close" : "červí díra se orevírá",
+	"sounds.sgjourney.wormhole_enter" : "červí díra použita",
+	"sounds.sgjourney.wormhole_idle" : "červí díra vyčkává",
+	
+	"sounds.sgjourney.milky_way_dhd_enter" : "DHD zadáno",
+	"sounds.sgjourney.milky_way_dhd_press" : "DHD zmáčknuto",
+	
+	"sounds.sgjourney.matok_fire" : "střela z tyčové zbraně",
+	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
 	
 	"filled_map.sgjourney.archeologist": "Archeologova mapa",
