@@ -71,6 +71,24 @@ public class ForgeEvents
 			AncientGene.inheritGene(player);
 	}
 	
+	/*@SubscribeEvent
+	public static void onLivingTick(LivingEvent.LivingTickEvent event)
+	{
+		Entity entity = event.getEntity();
+		Level level = entity.getLevel();
+		long daytime = (level.getDayTime() + 6000) % 24000;
+		double percentage = (double) daytime / 24000;
+		
+		double sin = Math.sin(percentage * Math.PI);
+		//double cos = Math.cos(percentage * Math.PI);
+		Vec3 gravityVector = new Vec3(0, 0.07 * sin, 0);
+		
+		Vec3 movementVector = entity.getDeltaMovement();
+		movementVector = movementVector.add(gravityVector);
+		
+		entity.setDeltaMovement(movementVector);
+	}*/
+	
 	@SubscribeEvent
 	public static void onLivingHurt(LivingAttackEvent event)
 	{

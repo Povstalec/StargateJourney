@@ -17,6 +17,10 @@
 			"address": {"address": [8, 1, 22, 14, 36, 19], "randomizable": true}
 		},
 		{
+			"solar_system": "sgjourney:cavum_tenebrae",
+			"address": {"address": [18, 7, 3, 36, 25, 15], "randomizable": true}
+		},
+		{
 			"solar_system": "sgjourney:nether",
 			"address": {"address": [27, 23, 4, 34, 12, 28], "randomizable": true}
 		},

@@ -14,9 +14,6 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class ClassicStargateEntity extends AbstractStargateEntity
 {
-	public String pointOfOrigin = "sgjourney:tauri";
-	public String symbols = "sgjourney:milky_way";
-
 	private short rotationOld = 0;
 	private short rotation = 0;
 	
@@ -26,6 +23,8 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0);
+		pointOfOrigin = "sgjourney:tauri";
+		symbols = "sgjourney:milky_way";
 	}
 	
 	public void load(CompoundTag nbt)
