@@ -18,7 +18,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 {
 	public ClassicStargateBlock(Properties properties)
 	{
-		super(properties, 7.0);
+		super(properties, 8.0);
 	}
 
 	public Stargate.Type getStargateType()

@@ -38,8 +38,6 @@ public class Layers
 	public static final ModelLayerLocation PEGASUS_DIVIDER_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "pegasus_divider_layer"), "main");
 	public static final ModelLayerLocation PEGASUS_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "pegasus_chevron_layer"), "main");
 	// Classic Stargate
-	public static final ModelLayerLocation CLASSIC_OUTER_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "classic_outer_ring_layer"), "main");
-	public static final ModelLayerLocation CLASSIC_INNER_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "classic_inner_ring_layer"), "main");
 	public static final ModelLayerLocation CLASSIC_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "classic_chevron_layer"), "main");
 	// Tollan Stargate
 	public static final ModelLayerLocation TOLLAN_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "tollan_ring_layer"), "main");
@@ -75,8 +73,6 @@ public class Layers
 		event.registerLayerDefinition(PEGASUS_DIVIDER_LAYER, () -> PegasusStargateModel.createDividerLayer());
 		event.registerLayerDefinition(PEGASUS_CHEVRON_LAYER, () -> PegasusStargateModel.createChevronLayer());
 		// Classic Stargate
-		event.registerLayerDefinition(CLASSIC_OUTER_RING_LAYER, () -> ClassicStargateModel.createOuterRingLayer());
-		event.registerLayerDefinition(CLASSIC_INNER_RING_LAYER, () -> ClassicStargateModel.createInnerRingLayer());
 		event.registerLayerDefinition(CLASSIC_CHEVRON_LAYER, () -> ClassicStargateModel.createChevronLayer());
 		// Tollan Stargate
 		event.registerLayerDefinition(TOLLAN_RING_LAYER, () -> TollanStargateModel.createRingLayer());

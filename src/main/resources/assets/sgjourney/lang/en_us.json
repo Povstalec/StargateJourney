@@ -111,6 +111,23 @@
 	"item.sgjourney.anubis_helmet": "Anubis Helmet",
 	"item.sgjourney.horus_helmet": "Horus Helmet",
 	
+	"sounds.sgjourney.dial_start" : "Stargate starts dialing",
+	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",
+	"sounds.sgjourney.ring_spin" : "Stargate ring spins",
+	"sounds.sgjourney.chevron_encode" : "Chevron encoded",
+	"sounds.sgjourney.chevron_engage" : "Chevron engaged",
+	"sounds.sgjourney.dial_fail" : "Stargate dialing fails",
+	
+	"sounds.sgjourney.wormhole_open" : "Wormhole opens",
+	"sounds.sgjourney.wormhole_close" : "Wormhole closes",
+	"sounds.sgjourney.wormhole_enter" : "Wormhole entered",
+	"sounds.sgjourney.wormhole_idle" : "Wormhole idle",
+	
+	"sounds.sgjourney.milky_way_dhd_enter" : "DHD enter",
+	"sounds.sgjourney.milky_way_dhd_press" : "DHD pressed",
+	
+	"sounds.sgjourney.matok_fire" : "Staff Weapon fires",
+	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeologist Map",
 	
 	"filled_map.sgjourney.archeologist": "Archeologist Map",

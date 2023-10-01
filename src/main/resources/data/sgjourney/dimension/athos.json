@@ -1,0 +1,13 @@
+{
+	"type": "sgjourney:athos",
+	"generator":
+	{
+		"type": "minecraft:noise",
+		"settings": "sgjourney:athos",
+		"biome_source":
+		{
+			"type": "minecraft:fixed",
+			"biome": "sgjourney:athos_forest"
+		}
+	}
+}
