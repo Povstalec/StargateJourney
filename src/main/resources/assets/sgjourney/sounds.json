@@ -1,7 +1,7 @@
 {
 	"universe_dial_start":
 	{
-		"subtitle": "sounds.sgjourney.universe_dial_start",
+		"subtitle": "sounds.sgjourney.dial_start",
 		"sounds":
 		[
 			"sgjourney:universe_dial_start"
@@ -9,7 +9,7 @@
 	},
 	"universe_ring_spin":
 	{
-		"subtitle": "sounds.sgjourney.universe_ring_spin",
+		"subtitle": "sounds.sgjourney.ring_spin",
 		"sounds":
 		[
 			{
@@ -20,7 +20,7 @@
 	},
 	"universe_chevron_engage":
 	{
-		"subtitle": "sounds.sgjourney.universe_chevron_engage",
+		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
 		[
 			"sgjourney:universe_chevron_engage"
@@ -28,7 +28,7 @@
 	},
 	"universe_dial_fail":
 	{
-		"subtitle": "sounds.sgjourney.universe_dial_fail",
+		"subtitle": "sounds.sgjourney.dial_fail",
 		"sounds":
 		[
 			"sgjourney:universe_dial_fail_1",
@@ -39,7 +39,7 @@
 	
 	"milky_way_ring_spin_start":
 	{
-		"subtitle": "sounds.sgjourney.milky_way_ring_spin_start",
+		"subtitle": "sounds.sgjourney.ring_spin_start",
 		"sounds":
 		[
 			"sgjourney:milky_way_ring_spin_start"
@@ -47,7 +47,7 @@
 	},
 	"milky_way_ring_spin":
 	{
-		"subtitle": "sounds.sgjourney.milky_way_ring_spin",
+		"subtitle": "sounds.sgjourney.ring_spin",
 		"sounds":
 		[
 			"sgjourney:milky_way_ring_spin"
@@ -55,7 +55,7 @@
 	},
 	"milky_way_chevron_encode":
 	{
-		"subtitle": "sounds.sgjourney.milky_way_chevron_encode",
+		"subtitle": "sounds.sgjourney.chevron_encode",
 		"sounds":
 		[
 			"sgjourney:milky_way_chevron_encode"
@@ -63,7 +63,7 @@
 	},
 	"milky_way_chevron_engage":
 	{
-		"subtitle": "sounds.sgjourney.milky_way_chevron_engage",
+		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
 		[
 			"sgjourney:milky_way_chevron_engage"
@@ -71,7 +71,7 @@
 	},
 	"milky_way_dial_fail":
 	{
-		"subtitle": "sounds.sgjourney.milky_way_dial_fail",
+		"subtitle": "sounds.sgjourney.dial_fail",
 		"sounds":
 		[
 			"sgjourney:milky_way_dial_fail"
@@ -81,7 +81,7 @@
 	
 	"pegasus_ring_spin":
 	{
-		"subtitle": "sounds.sgjourney.pegasus_ring_spin",
+		"subtitle": "sounds.sgjourney.ring_spin",
 		"sounds":
 		[
 			"sgjourney:pegasus_ring_spin"
@@ -89,7 +89,7 @@
 	},
 	"pegasus_chevron_engage":
 	{
-		"subtitle": "sounds.sgjourney.pegasus_chevron_engage",
+		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
 		[
 			"sgjourney:pegasus_chevron_engage"
@@ -97,7 +97,7 @@
 	},
 	"pegasus_chevron_incoming":
 	{
-		"subtitle": "sounds.sgjourney.pegasus_chevron_engage",
+		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
 		[
 			"sgjourney:pegasus_chevron_incoming"
@@ -105,7 +105,7 @@
 	},
 	"pegasus_dial_fail":
 	{
-		"subtitle": "sounds.sgjourney.pegasus_dial_fail",
+		"subtitle": "sounds.sgjourney.dial_fail",
 		"sounds":
 		[
 			"sgjourney:pegasus_dial_fail"
@@ -114,7 +114,7 @@
 	
 	"tollan_chevron_engage":
 	{
-		"subtitle": "sounds.sgjourney.tollan_chevron_engage",
+		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
 		[
 			"sgjourney:milky_way_dhd_press_1",
@@ -124,7 +124,7 @@
 	},
 	"tollan_dial_fail":
 	{
-		"subtitle": "sounds.sgjourney.tollan_dial_fail",
+		"subtitle": "sounds.sgjourney.dial_fail",
 		"sounds":
 		[
 			"sgjourney:milky_way_dial_fail"

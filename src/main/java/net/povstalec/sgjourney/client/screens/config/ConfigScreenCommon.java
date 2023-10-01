@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.client.screens.config;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;

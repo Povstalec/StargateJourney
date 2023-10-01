@@ -31,7 +31,7 @@ public class ShieldModel
 		
 		for(int j = 0; j < TOTAL_SIDES; j++)
 		{
-			SGJourneyModel.createTriangle(consmer, matrix4, matrix3, 
+			SGJourneyModel.createTriangle(consmer, matrix4, matrix3, combinedLight, 
 					outerCircle[j % outerCircle.length][0], 
 					outerCircle[j % outerCircle.length][1],
 					OFFSET,
@@ -44,7 +44,7 @@ public class ShieldModel
 					outerCircle[(j + 1) % outerCircle.length][1], 
 					OFFSET);
 			
-			SGJourneyModel.createTriangle(consmer, matrix4, matrix3, 
+			SGJourneyModel.createTriangle(consmer, matrix4, matrix3, combinedLight, 
 					outerCircle[(j + 1) % outerCircle.length][0], 
 					outerCircle[(j + 1) % outerCircle.length][1], 
 					OFFSET,

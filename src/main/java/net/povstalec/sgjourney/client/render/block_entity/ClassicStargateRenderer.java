@@ -27,10 +27,7 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer implements
 	{
 		super(context);
 		this.wormholeModel = new WormholeModel(ClientStargateConfig.classic_rgba, 0.25F);
-		this.stargateModel = new ClassicStargateModel(
-				context.bakeLayer(Layers.CLASSIC_OUTER_RING_LAYER), 
-				context.bakeLayer(Layers.CLASSIC_INNER_RING_LAYER), 
-				context.bakeLayer(Layers.CLASSIC_CHEVRON_LAYER));
+		this.stargateModel = new ClassicStargateModel(context.bakeLayer(Layers.CLASSIC_CHEVRON_LAYER));
 	}
 	
 	@Override
