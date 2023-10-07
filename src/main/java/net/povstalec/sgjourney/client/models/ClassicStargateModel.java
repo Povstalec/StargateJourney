@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
@@ -103,7 +104,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 		
 		for(int j = 0; j < DEFAULT_SIDES; j++)
 		{
-			stack.mulPose(Axis.ZP.rotationDegrees(10));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(10));
 			//Front
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					stargateRingOuter[0],
@@ -202,7 +203,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 		for(int j = 0; j < SPINNING_SIDES; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(-ANGLE * j + rotation));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(-ANGLE * j + rotation));
 			matrix4 = stack.last().pose();
 			matrix3 = stack.last().normal();
 			//Front
@@ -275,7 +276,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 		for(int j = 0; j < SPINNING_SIDES; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * -ANGLE + rotation));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(j * -ANGLE + rotation));
 			matrix4 = stack.last().pose();
 			matrix3 = stack.last().normal();
 			VertexConsumer symbolConsumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, j)));
@@ -343,7 +344,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 		float subtracted = isEngaged ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
 		
 		stack.pushPose();
-		stack.mulPose(Axis.ZP.rotationDegrees(-40 * chevron));
+		stack.mulPose(Vector3f.ZP.rotationDegrees(-40 * chevron));
 		stack.translate(0, 3.5F - subtracted, 0);
 
 		
@@ -506,13 +507,14 @@ public class ClassicStargateModel extends AbstractStargateModel
 				OUTER_CHEVRON_Z_OFFSET,
 				16F/64, 20F/64);
 		
-		renderLeftChevronSide(stack, source, consumer, matrix3.rotate(Axis.ZP.rotationDegrees(22.5F)), matrix4, combinedLight, isLocked);
-		renderRightChevronSide(stack, source, consumer, matrix3.rotate(Axis.ZP.rotationDegrees(-22.5F)), matrix4, combinedLight, isLocked);
+		renderLeftChevronSide(stack, source, consumer, matrix3, matrix4, combinedLight, isLocked);
+		renderRightChevronSide(stack, source, consumer, matrix3, matrix4, combinedLight, isLocked);
 	}
 	
 	protected void renderLeftChevronSide(PoseStack stack, MultiBufferSource source, VertexConsumer consumer, Matrix3f matrix3, Matrix4f matrix4, 
 			int combinedLight, boolean isLocked)
 	{
+		matrix3.mul(Vector3f.ZP.rotationDegrees(22.5F));
 		//Front
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 				-OUTER_CHEVRON_BOTTOM_X_OFFSET - OUTER_CHEVRON_SIDE_HEIGHT_X_PROJECTION,
@@ -626,6 +628,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 	protected void renderRightChevronSide(PoseStack stack, MultiBufferSource source, VertexConsumer consumer, Matrix3f matrix3, Matrix4f matrix4, 
 			int combinedLight, boolean isLocked)
 	{
+		matrix3.mul(Vector3f.ZP.rotationDegrees(-22.5F));
 		//Front
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 				OUTER_CHEVRON_BOTTOM_X_OFFSET + OUTER_CHEVRON_SIDE_HEIGHT_X_PROJECTION - OUTER_CHEVRON_SIDE_WIDTH_X_PROJECTION,
