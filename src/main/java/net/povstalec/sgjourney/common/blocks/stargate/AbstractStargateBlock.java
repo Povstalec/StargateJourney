@@ -44,11 +44,11 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 
 	protected VoxelShapeProvider SHAPE_PROVIDER;
 
-	public AbstractStargateBlock(Properties properties, double width)
+	public AbstractStargateBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
-		SHAPE_PROVIDER = new VoxelShapeProvider(width);
+		SHAPE_PROVIDER = new VoxelShapeProvider(width, horizontalOffset);
 	}
 
 	public abstract Stargate.Type getStargateType();
@@ -115,7 +115,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
-				ItemStack itemstack = new ItemStack(getItem());
+				ItemStack itemstack = new ItemStack(asItem());
 
 				blockentity.saveToItem(itemstack);
 
@@ -140,6 +140,4 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	{
 		return RenderShape.MODEL;
 	}
-
-    public abstract Block getItem();
 }

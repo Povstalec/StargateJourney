@@ -17,6 +17,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.init.StructureInit;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
@@ -62,7 +63,16 @@ public class BuriedStargate extends Structure
     	 ChunkPos chunkpos = context.chunkPos();
          Random random = new Random(context.seed());
          
-         if(chunkpos.x == random.nextInt(-64, 65) && chunkpos.z == random.nextInt(-64, 65))
+         int xOffset = CommonStargateNetworkConfig.stargate_generation_center_x_chunk_offset.get();
+         int zOffset = CommonStargateNetworkConfig.stargate_generation_center_z_chunk_offset.get();
+         
+         int xBound = CommonStargateNetworkConfig.buried_stargate_generation_x_bound.get();
+         int zBound = CommonStargateNetworkConfig.buried_stargate_generation_z_bound.get();
+         
+         int chunkX = xBound <= 0 ? xOffset : xOffset + random.nextInt(-xBound, xBound + 1);
+         int chunkZ = zBound <= 0 ? zOffset : zOffset + random.nextInt(-zBound, zBound + 1);
+         
+         if(chunkpos.x == chunkX && chunkpos.z == chunkZ)
          	return true;
          else
          	return false;

@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -23,7 +22,7 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 {
 	public TollanStargateBlock(Properties properties)
 	{
-		super(properties, 3.0);
+		super(properties, 3.0D, 1.0D);
 	}
 
 	public Stargate.Type getStargateType()
@@ -43,11 +42,6 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 	public BlockState ringState()
 	{
 		return BlockInit.TOLLAN_RING.get().defaultBlockState();
-	}
-
-	public Block getItem()
-	{
-		return BlockInit.TOLLAN_STARGATE.get();
 	}
 
 	@Override

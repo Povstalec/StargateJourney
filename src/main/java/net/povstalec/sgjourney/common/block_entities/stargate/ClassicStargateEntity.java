@@ -14,6 +14,9 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class ClassicStargateEntity extends AbstractStargateEntity
 {
+	private static final short ROTATION_TICK_DURATION = 40;
+	private static final short CHEVRON_LOCK_TICK_DURATION = 20;
+	
 	private short rotationOld = 0;
 	private short rotation = 0;
 	
@@ -87,14 +90,19 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, ClassicStargateEntity stargate)
 	{
+		stargate.handleRotation();
 		//stargate.rotate();
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 	}
 	
-	private void rotate()
+	private void handleRotation()
 	{
 		this.rotationOld = this.rotation;
-		this.rotation++;
+	}
+	
+	private void rotate()
+	{
+		this.rotation += 4;
 	}
 	
 	public float getRotation(float partialTick)

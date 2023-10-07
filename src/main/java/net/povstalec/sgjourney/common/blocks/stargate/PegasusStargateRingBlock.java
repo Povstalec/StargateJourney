@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
@@ -8,7 +8,7 @@ public class PegasusStargateRingBlock extends AbstractStargateRingBlock
 {
 	public PegasusStargateRingBlock(Properties properties)
 	{
-		super(properties, 7.0);
+		super(properties, 7.0D, 1.0D);
 	}
 
 	public Stargate.Type getStargateType()
@@ -16,8 +16,9 @@ public class PegasusStargateRingBlock extends AbstractStargateRingBlock
 		return Stargate.Type.PEGASUS;
 	}
 
-	public Block getItem()
+	@Override
+	public Item asItem()
 	{
-		return BlockInit.PEGASUS_STARGATE.get();
+		return BlockInit.PEGASUS_STARGATE.get().asItem();
 	}
 }

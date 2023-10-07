@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -18,7 +17,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 {
 	public ClassicStargateBlock(Properties properties)
 	{
-		super(properties, 8.0);
+		super(properties, 8.0D, 0.0D);
 	}
 
 	public Stargate.Type getStargateType()
@@ -38,11 +37,6 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 	public BlockState ringState()
 	{
 		return BlockInit.CLASSIC_RING.get().defaultBlockState();
-	}
-
-	public Block getItem()
-	{
-		return BlockInit.CLASSIC_STARGATE.get();
 	}
 	
 	@Nullable

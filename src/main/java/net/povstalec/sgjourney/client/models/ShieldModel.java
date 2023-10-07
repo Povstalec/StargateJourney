@@ -18,7 +18,7 @@ public class ShieldModel
 	private static final float OFFSET = 1F / 16 / 2;
 	private static final int TOTAL_SIDES = 36;
 	
-	protected float[][] outerCircle = SGJourneyModel.coordinates(TOTAL_SIDES, 2.0F, 2.5F, 0, 0);
+	protected float[][] outerCircle = SGJourneyModel.coordinates(TOTAL_SIDES, 2.0F, 2.5F, 0);
 	
 	public ShieldModel(){}
 	

@@ -2,22 +2,20 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class TollanStargateRingBlock extends AbstractStargateRingBlock
 {
-	protected static final VoxelShapeProvider SHAPE_PROVIDER = new VoxelShapeProvider(3.0D);
 	public TollanStargateRingBlock(Properties properties)
 	{
-		super(properties, 3.0);
+		super(properties, 3.0D, 1.0D);
 	}
 
 	public Stargate.Type getStargateType()
@@ -25,10 +23,10 @@ public class TollanStargateRingBlock extends AbstractStargateRingBlock
 		return Stargate.Type.TOLLAN;
 	}
 
-
-	public Block getItem()
+	@Override
+	public Item asItem()
 	{
-		return BlockInit.TOLLAN_STARGATE.get();
+		return BlockInit.TOLLAN_STARGATE.get().asItem();
 	}
 
 	@Override

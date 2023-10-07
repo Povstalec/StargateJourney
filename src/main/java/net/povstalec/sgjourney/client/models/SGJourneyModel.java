@@ -38,6 +38,7 @@ public class SGJourneyModel
 	}
 	
 	public static void createQuad(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light, 
+			float normal1, float normal2, float normal3,
 			float red, float green, float blue, float alpha,
 			float x1, float y1, float z1, float u1, float v1, 
 			float x2, float y2, float z2, float u2, float v2,
@@ -46,25 +47,27 @@ public class SGJourneyModel
 	{
 		//TOP LEFT
 		consumer.vertex(matrix4, x1, y1, z1).color(red, green, blue, alpha).uv(u1, v1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
 		//BOTTOM LEFT
 		consumer.vertex(matrix4, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
 		//BOTTOM RIGHT
 		consumer.vertex(matrix4, x3, y3, z3).color(red, green, blue, alpha).uv(u3, v3)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
 		//TOP RIGHT
 		consumer.vertex(matrix4, x4, y4, z4).color(red, green, blue, alpha).uv(u4, v4)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
 	}
 	
 	public static void createQuad(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light, 
+			float normal1, float normal2, float normal3,
 			float x1, float y1, float z1, float u1, float v1, 
 			float x2, float y2, float z2, float u2, float v2,
 			float x3, float y3, float z3, float u3, float v3,
 			float x4, float y4, float z4, float u4, float v4)
 	{
 		createQuad(consumer, matrix4, matrix3, light,
+				normal1, normal2, normal3,
 				1.0F, 1.0F, 1.0F, 1.0F,
 				x1, y1, z1, u1, v1,
 				x2, y2, z2, u2, v2,
@@ -77,10 +80,10 @@ public class SGJourneyModel
 		return baseWidth / (2 * (float) Math.sin(Math.toRadians(phi / 2)));
 	}
 	
-	public static float[][] coordinates(int sides, float distanceFromCenter, float defaultDistance, float xyOffset, float zOffset)
+	public static float[][] coordinates(int sides, float distanceFromCenter, float defaultDistance, float xyOffset)
 	{
 		float angle = (float) 360 / sides;
-		float[][] coordinates = new float[sides][3];
+		float[][] coordinates = new float[sides][2];
 		float baseWidth = 9.8F / 16;
 		float ratio = distanceFromCenter / defaultDistance;
 		float usedWidth = baseWidth * ratio;
@@ -101,7 +104,24 @@ public class SGJourneyModel
 			coordinates[0][1] = 0;
 		}
 		
-		coordinates[0][2] = zOffset;
+		return coordinates;
+	}
+	
+	public static float[] shrinkingCoordinates(int sides, float distanceFromCenter, float defaultDistance)
+	{
+		float angle = 360F / sides;
+		float[] coordinates = new float[4];
+		float sideWidth = 2 * defaultDistance * (float) Math.sin(Math.toRadians(180) / sides);
+		float baseWidth = sideWidth;
+		float ratio = distanceFromCenter / defaultDistance;
+		float usedWidth = baseWidth * ratio;
+		
+		float circumcircleRadius = circumcircleRadius(angle, usedWidth);
+		
+		coordinates[0] = CoordinateHelper.polarToCartesianY(circumcircleRadius, -angle/2);
+		coordinates[1] = CoordinateHelper.polarToCartesianX(circumcircleRadius, -angle/2);
+		coordinates[2] = CoordinateHelper.polarToCartesianY(circumcircleRadius, angle/2);
+		coordinates[3] = CoordinateHelper.polarToCartesianX(circumcircleRadius, angle/2);
 		
 		return coordinates;
 	}

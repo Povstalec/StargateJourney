@@ -65,12 +65,6 @@ public enum StargatePart implements StringRepresentable
 		this.height = height;
 	}
 	
-	private enum StargateType
-	{
-		DEFAULT,
-		TOLLAN
-	}
-	
 	private static ArrayList<StargatePart> getParts(StargateType type)
 	{
 		ArrayList<StargatePart> parts = new ArrayList<>();
