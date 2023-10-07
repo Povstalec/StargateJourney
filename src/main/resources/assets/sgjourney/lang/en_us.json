@@ -31,11 +31,16 @@
 	"block.sgjourney.tollan_ring": "Tollan Stargate",
 	"block.sgjourney.classic_stargate": "Classic Stargate",
 	"block.sgjourney.classic_ring": "Classic Stargate",
+	"block.sgjourney.classic_stargate_base_block": "Classic Stargate Base Block",
+	"block.sgjourney.classic_stargate_chevron_block": "Classic Stargate Chevron Block",
+	"block.sgjourney.classic_stargate_ring_block": "Classic Stargate Ring Block",
+	
 	"block.sgjourney.milky_way_dhd": "Milky Way DHD",
 	"block.sgjourney.pegasus_dhd": "Pegasus DHD",
 	"block.sgjourney.classic_dhd": "Classic DHD",
 	
 	"block.sgjourney.stargate.not_enough_space": "Stargate does not have enough space",
+	"block.sgjourney.stargate.classic.incorrect_setup": "Incorrect setup",
 	"block.sgjourney.cartouche.not_enough_space": "Cartouche does not have enough space",
 
 	"block.sgjourney.transport_rings": "Transport Rings",

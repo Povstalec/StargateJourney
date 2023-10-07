@@ -16,6 +16,7 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 
@@ -59,13 +60,22 @@ public class StargateOutpost extends Structure
     private static boolean extraSpawningChecks(Structure.GenerationContext context)
     {
         // Grabs the chunk position we are at
-        ChunkPos chunkpos = context.chunkPos();
-        Random random = new Random(context.seed() + 8);
-        
-        if(chunkpos.x == random.nextInt(-64, 65) && chunkpos.z == random.nextInt(-64, 65))
-        	return true;
-        else
-        	return false;
+    	 ChunkPos chunkpos = context.chunkPos();
+         Random random = new Random(context.seed() + 8);
+         
+         int xOffset = CommonStargateNetworkConfig.stargate_generation_center_x_chunk_offset.get();
+         int zOffset = CommonStargateNetworkConfig.stargate_generation_center_z_chunk_offset.get();
+         
+         int xBound = CommonStargateNetworkConfig.stargate_generation_x_bound.get();
+         int zBound = CommonStargateNetworkConfig.stargate_generation_z_bound.get();
+         
+         int chunkX = xBound <= 0 ? xOffset : xOffset + random.nextInt(-xBound, xBound + 1);
+         int chunkZ = zBound <= 0 ? zOffset : zOffset + random.nextInt(-zBound, zBound + 1);
+         
+         if(chunkpos.x == chunkX && chunkpos.z == chunkZ)
+         	return true;
+         else
+         	return false;
     }
 
     @Override

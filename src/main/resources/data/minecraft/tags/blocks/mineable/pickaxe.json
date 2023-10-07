@@ -13,7 +13,15 @@
 		"sgjourney:pegasus_ring",
 		"sgjourney:pegasus_dhd",
 		
+		"sgjourney:classic_stargate",
+		"sgjourney:classic_ring",
+		"sgjourney:classic_stargate_base_block",
+		"sgjourney:classic_stargate_chevron_block",
+		"sgjourney:classic_stargate_ring_block",
 		"sgjourney:classic_dhd",
+		
+		"sgjourney:tollan_stargate",
+		"sgjourney:tollan_ring",
 		
 		"sgjourney:transport_rings",
 		"sgjourney:ring_panel",

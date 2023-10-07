@@ -4,7 +4,6 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.models.ClassicStargateModel;
 import net.povstalec.sgjourney.client.models.FalconArmorModel;
 import net.povstalec.sgjourney.client.models.JackalArmorModel;
 import net.povstalec.sgjourney.client.models.MilkyWayStargateModel;
@@ -72,8 +71,6 @@ public class Layers
 		event.registerLayerDefinition(PEGASUS_SYMBOL_RING_LAYER, () -> PegasusStargateModel.createSymbolRingLayer());
 		event.registerLayerDefinition(PEGASUS_DIVIDER_LAYER, () -> PegasusStargateModel.createDividerLayer());
 		event.registerLayerDefinition(PEGASUS_CHEVRON_LAYER, () -> PegasusStargateModel.createChevronLayer());
-		// Classic Stargate
-		event.registerLayerDefinition(CLASSIC_CHEVRON_LAYER, () -> ClassicStargateModel.createChevronLayer());
 		// Tollan Stargate
 		event.registerLayerDefinition(TOLLAN_RING_LAYER, () -> TollanStargateModel.createRingLayer());
 		event.registerLayerDefinition(TOLLAN_SYMBOL_RING_LAYER, () -> TollanStargateModel.createSymbolRingLayer());

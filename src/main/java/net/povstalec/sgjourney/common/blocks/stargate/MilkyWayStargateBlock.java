@@ -34,7 +34,7 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 {
 	public MilkyWayStargateBlock(Properties properties)
 	{
-		super(properties, 7.0);
+		super(properties, 7.0D, 1.0D);
 	}
 
 	public Stargate.Type getStargateType()
@@ -54,11 +54,6 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	public BlockState ringState()
 	{
 		return BlockInit.MILKY_WAY_RING.get().defaultBlockState();
-	}
-
-	public Block getItem()
-	{
-		return BlockInit.MILKY_WAY_STARGATE.get();
 	}
 	
 	@Nullable
