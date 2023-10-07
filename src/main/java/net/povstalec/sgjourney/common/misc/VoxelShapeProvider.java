@@ -9,7 +9,7 @@ public class VoxelShapeProvider {
     private static final double MIN = 0.0D;
     private static final double MAX = 16.0D;
     private static final double MID = MAX / 2;
-    private static final double HORIZONTAL_OFFSET = 1.0D;
+    //private static final double HORIZONTAL_OFFSET = 1.0D;
 
     public final VoxelShape HORIZONTAL;
 
@@ -43,27 +43,24 @@ public class VoxelShapeProvider {
     public final VoxelShape[][] STAIR_BOTTOM_RIGHT;
     public final VoxelShape[][] STAIR_TOP_RIGHT;
 
-    public VoxelShapeProvider() {
-        this(7.0D);
-    }
-
-    public VoxelShapeProvider(double width) {
-        double horizontalMax = HORIZONTAL_OFFSET + width;
+    public VoxelShapeProvider(double width, double horizontalOffset)
+    {
+        double horizontalMax = horizontalOffset + width;
         double verticalStart = MID - (width / 2);
         double verticalEnd = MID + (width / 2);
 
 //        VoxelShape FULL_BLOCK = Block.box(MIN, MIN, MIN, MAX, MAX, MAX);
-        HORIZONTAL = Block.box(MIN, HORIZONTAL_OFFSET, MIN, MAX, horizontalMax, MAX);
+        HORIZONTAL = Block.box(MIN, horizontalOffset, MIN, MAX, horizontalMax, MAX);
 
-        VoxelShape horizontalBottom = Block.box(MIN, HORIZONTAL_OFFSET, MIN, MAX, horizontalMax, MID);
-        VoxelShape horizontalTop = Block.box(MIN, HORIZONTAL_OFFSET, MID, MAX, horizontalMax, MAX);
-        VoxelShape horizontalLeft = Block.box(MIN, HORIZONTAL_OFFSET, MIN, MID, horizontalMax, MAX);
-        VoxelShape horizontalRight = Block.box(MID, HORIZONTAL_OFFSET, MIN, MAX, horizontalMax, MAX);
+        VoxelShape horizontalBottom = Block.box(MIN, horizontalOffset, MIN, MAX, horizontalMax, MID);
+        VoxelShape horizontalTop = Block.box(MIN, horizontalOffset, MID, MAX, horizontalMax, MAX);
+        VoxelShape horizontalLeft = Block.box(MIN, horizontalOffset, MIN, MID, horizontalMax, MAX);
+        VoxelShape horizontalRight = Block.box(MID, horizontalOffset, MIN, MAX, horizontalMax, MAX);
 
-        VoxelShape horizontalBottomLeft = Block.box(MIN, HORIZONTAL_OFFSET, MIN, MID, horizontalMax, MID);
-        VoxelShape horizontalBottomRight = Block.box(MID, HORIZONTAL_OFFSET, MIN, MAX, horizontalMax, MID);
-        VoxelShape horizontalTopLeft = Block.box(MIN, HORIZONTAL_OFFSET, MID, MID, horizontalMax, MAX);
-        VoxelShape horizontalTopRight = Block.box(MID, HORIZONTAL_OFFSET, MID, MAX, horizontalMax, MAX);
+        VoxelShape horizontalBottomLeft = Block.box(MIN, horizontalOffset, MIN, MID, horizontalMax, MID);
+        VoxelShape horizontalBottomRight = Block.box(MID, horizontalOffset, MIN, MAX, horizontalMax, MID);
+        VoxelShape horizontalTopLeft = Block.box(MIN, horizontalOffset, MID, MID, horizontalMax, MAX);
+        VoxelShape horizontalTopRight = Block.box(MID, horizontalOffset, MID, MAX, horizontalMax, MAX);
 
         VoxelShape horizontalStairBottomLeft = Shapes.or(horizontalBottomRight, horizontalTopLeft, horizontalTopRight);
         VoxelShape horizontalStairBottomRight = Shapes.or(horizontalBottomLeft, horizontalTopLeft, horizontalTopRight);

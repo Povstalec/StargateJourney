@@ -31,11 +31,16 @@
 	"block.sgjourney.tollan_ring": "Tollansk\u00e1 hv\u011bzdn\u00e1 br\u00e1na",
 	"block.sgjourney.classic_stargate": "Klasick\u00e1 hv\u011bzdn\u00e1 br\u00e1na",
 	"block.sgjourney.classic_ring": "Klasick\u00e1 hv\u011bzdn\u00e1 br\u00e1na",
+	"block.sgjourney.classic_stargate_base_block": "Klasick\u00fd z\u00e1kladn\u00ed blok br\u00e1ny",
+	"block.sgjourney.classic_stargate_chevron_block": "Klasick\u00fd chevronov\u00fd blok br\u00e1ny",
+	"block.sgjourney.classic_stargate_ring_block": "Klasick\u00fd blok br\u00e1ny",
+	
 	"block.sgjourney.milky_way_dhd": "Ovl\u00e1dac\u00ed panel 2. generace",
 	"block.sgjourney.pegasus_dhd": "Ovl\u00e1dac\u00ed panel 3. generace",
 	"block.sgjourney.classic_dhd": "Klasick\u00fd ovl\u00e1dac\u00ed panel",
 	
 	"block.sgjourney.stargate.not_enough_space": "Hv\u011bzdn\u00e1 br\u00e1na nem\u00e1 dost m\u00edsta",
+	"block.sgjourney.stargate.classic.incorrect_setup": "\u0160patn\u011b sestaveno",
 	"block.sgjourney.cartouche.not_enough_space": "Kartu\u0161e nem\u00e1 dost m\u00edsta",
 	
 	"block.sgjourney.transport_rings": "Transportn\u00ed kruhy",

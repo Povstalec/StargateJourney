@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.TagInit;
@@ -124,9 +125,11 @@ public class Dialing
 	private static void findStargates(Level level)
 	{
 		StargateJourney.LOGGER.info("Attempting to locate the Stargate Structure in " + level.dimension().location().toString());
-
+		
+		int xOffset = CommonStargateNetworkConfig.stargate_generation_center_x_chunk_offset.get();
+        int zOffset = CommonStargateNetworkConfig.stargate_generation_center_z_chunk_offset.get();
 		//Nearest Structure that potentially has a Stargate
-		BlockPos blockpos = ((ServerLevel) level).findNearestMapStructure(TagInit.Structures.HAS_STARGATE, new BlockPos(0, 0, 0), 150, false);
+		BlockPos blockpos = ((ServerLevel) level).findNearestMapStructure(TagInit.Structures.HAS_STARGATE, new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
 		if(blockpos == null)
 		{
 			StargateJourney.LOGGER.info("Stargate Structure not found");

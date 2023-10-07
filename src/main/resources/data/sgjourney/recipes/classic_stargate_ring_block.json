@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"CCC",
+		"NNN",
+		"SSS"
+	],
+	
+	"key": 
+	{
+		"N": { "item": "sgjourney:naquadah_alloy" },
+		"S": { "item": "minecraft:cut_sandstone" },
+		"C": { "item": "minecraft:chiseled_sandstone" }
+		
+	},
+	
+	"result": { "item": "sgjourney:classic_stargate_ring_block" }
+}

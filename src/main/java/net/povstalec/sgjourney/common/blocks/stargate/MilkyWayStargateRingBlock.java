@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -13,7 +14,7 @@ public class MilkyWayStargateRingBlock extends AbstractStargateRingBlock
 {
 	public MilkyWayStargateRingBlock(Properties properties)
 	{
-		super(properties, 7.0);
+		super(properties, 7.0D, 1.0D);
 	}
 
 	public Stargate.Type getStargateType()
@@ -21,9 +22,10 @@ public class MilkyWayStargateRingBlock extends AbstractStargateRingBlock
 		return Stargate.Type.MILKY_WAY;
 	}
 
-	public Block getItem()
+	@Override
+	public Item asItem()
 	{
-		return BlockInit.MILKY_WAY_STARGATE.get();
+		return BlockInit.MILKY_WAY_STARGATE.get().asItem();
 	}
 	
 	@Override
