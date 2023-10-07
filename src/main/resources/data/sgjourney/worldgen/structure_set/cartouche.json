@@ -10,6 +10,14 @@
 		{
 			"structure": "sgjourney:cartouche/abydos_cartouche",
 			"weight": 1
+		},
+		{
+			"structure": "sgjourney:cartouche/stone_cartouche_monument",
+			"weight": 1
+		},
+		{
+			"structure": "sgjourney:cartouche/sandstone_cartouche_monument",
+			"weight": 1
 		}
 	],
 	"placement":

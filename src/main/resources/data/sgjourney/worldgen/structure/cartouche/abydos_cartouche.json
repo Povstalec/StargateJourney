@@ -9,7 +9,7 @@
 	
 	"biomes": "#sgjourney:has_structure/cartouche/abydos_cartouche_biomes",
 	
-	"step": "strongholds",
+	"step": "surface_structures",
 	
 	"start_height":
 	{

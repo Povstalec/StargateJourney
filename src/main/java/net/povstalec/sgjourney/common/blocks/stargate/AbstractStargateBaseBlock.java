@@ -30,9 +30,9 @@ import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
-	public AbstractStargateBaseBlock(Properties properties, double width)
+	public AbstractStargateBaseBlock(Properties properties, double width, double horizontalOffset)
 	{
-		super(properties, width);
+		super(properties, width, horizontalOffset);
 	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context)
