@@ -20,6 +20,8 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	public static final ResourceLocation CHULAK_EFFECTS = new ResourceLocation(StargateJourney.MODID, "chulak");
 	public static final ResourceLocation LANTEA_EFFECTS = new ResourceLocation(StargateJourney.MODID, "lantea");
 	
+	protected SGJourneySkyRenderer skyRenderer;
+	
 	public SGJourneyDimensionSpecialEffects(float cloudLevel, boolean hasGround, SkyType skyType, 
 			boolean forceBrightLightmap, boolean constantAmbientLight)
 	{
@@ -61,12 +63,12 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		public Abydos()
 		{
 			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new AbydosSkyRenderer();
 		}
 		
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
-			AbydosSkyRenderer skyRenderer = new AbydosSkyRenderer();
 			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
 	        return true;
@@ -78,12 +80,12 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		public Chulak()
 		{
 			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new ChulakSkyRenderer();
 		}
 		
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
-			ChulakSkyRenderer skyRenderer = new ChulakSkyRenderer();
 			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
 	        return true;
@@ -95,12 +97,12 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		public Lantea()
 		{
 			super(386.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new LanteaSkyRenderer();
 		}
 		
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
-			LanteaSkyRenderer skyRenderer = new LanteaSkyRenderer();
 			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
 	        return true;
