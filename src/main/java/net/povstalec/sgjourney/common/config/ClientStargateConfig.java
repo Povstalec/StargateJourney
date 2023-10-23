@@ -6,9 +6,10 @@ public class ClientStargateConfig
 {
 	public static SGJourneyConfigValue.BooleanValue unique_symbols;
 	public static SGJourneyConfigValue.BooleanValue enable_vortex;
-	public static SGJourneyConfigValue.BooleanValue flat_event_horizon;
+	public static SGJourneyConfigValue.IntValue event_horizon_distortion;
 	
 	public static SGJourneyConfigValue.BooleanValue use_movie_stargate_model;
+	public static SGJourneyConfigValue.BooleanValue alternate_movie_chevron_locking;
 	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
 	public static SGJourneyConfigValue.BooleanValue pegasus_stargate_back_lights_up;
 	public static SGJourneyConfigValue.BooleanValue tollan_stargate_back_lights_up;
@@ -29,13 +30,17 @@ public class ClientStargateConfig
 				false, 
 				"If true Wormholes will produce Vortex after a Kawoosh");
 		
-		flat_event_horizon = new SGJourneyConfigValue.BooleanValue(client, "client.flat_event_horizon", 
-				false, 
-				"If true the Event Horizon will be completely flat");
+		event_horizon_distortion = new SGJourneyConfigValue.IntValue(client, "client.event_horizon_distortion", 
+				25, 0, 25, 
+				"The amount of distortion the Stargate Event Horizon will experience");
 		
 		use_movie_stargate_model = new SGJourneyConfigValue.BooleanValue(client, "client.use_movie_stargate_model", 
 				false, 
 				"Decide if Milky Way Stargate should use the Movie Stargate model");
+		
+		alternate_movie_chevron_locking = new SGJourneyConfigValue.BooleanValue(client, "client.alternate_movie_chevron_locking", 
+				false, 
+				"Decide if Movie Stargate model should use alternate chevron locking");
 		
 		milky_way_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.milky_way_stargate_back_lights_up", 
 				false, 

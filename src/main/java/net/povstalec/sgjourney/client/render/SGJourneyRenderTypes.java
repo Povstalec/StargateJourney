@@ -103,27 +103,51 @@ public class SGJourneyRenderTypes extends RenderType
 	{
 		return create("stargate_ring", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, 
 				RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_ENTITY_NO_OUTLINE_SHADER)
+				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(0.0F, -0.0625F))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(OVERLAY)
-				.setWriteMaskState(COLOR_WRITE)
-				.createCompositeState(false));
+				.createCompositeState(true));
 	}
 	
-	public static RenderType stargateChevron(ResourceLocation resourceLocation)
+	public static RenderType chevron(ResourceLocation resourceLocation)
 	{
-		return create("stargate_chveron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, 
+		return create("chevron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
 				RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_ENTITY_NO_OUTLINE_SHADER)
+				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
+				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(0.0F, -0.0625F))
+				.setTransparencyState(NO_TRANSPARENCY)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(OVERLAY)
-				.setWriteMaskState(COLOR_WRITE)
-				.createCompositeState(false));
+				.createCompositeState(true));
+	}
+	
+	public static RenderType pegasusChevron(ResourceLocation resourceLocation)
+	{
+		return create("pegasus_chveron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(0.0F, -0.0625F))
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(OVERLAY)
+				.createCompositeState(true));
+	}
+	
+	public static RenderType engagedChevron(ResourceLocation resourceLocation)
+	{
+		return create("engaged_chveron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(0.0F, -0.0625F))
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(OVERLAY)
+				.createCompositeState(true));
 	}
 }

@@ -137,6 +137,9 @@ public class TabInit
 				
 				items.accept(BlockInit.FIRE_PIT.get());
 
+				items.accept(BlockInit.LIQUIDIZER.get());
+				//event.accept(BlockInit.CRYSTALLIZER.get());
+
 				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
 				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 				
@@ -146,8 +149,6 @@ public class TabInit
 				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				
 				items.accept(BlockInit.ZPM_HUB.get());
-
-				//items.accept(BlockInit.CRYSTALLIZER.get());
 			});
 		});
 	}

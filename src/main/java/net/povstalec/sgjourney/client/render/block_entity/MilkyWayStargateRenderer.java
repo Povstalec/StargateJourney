@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.MilkyWayStargateModel;
 import net.povstalec.sgjourney.client.models.ShieldModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
@@ -30,11 +29,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 		super(context);
 		this.shieldModel = new ShieldModel();
 		this.wormholeModel = new WormholeModel(ClientStargateConfig.milky_way_rgba, 0.25F);
-		this.stargateModel = new MilkyWayStargateModel(
-				context.bakeLayer(Layers.MILKY_WAY_RING_LAYER), 
-				context.bakeLayer(Layers.MILKY_WAY_SYMBOL_RING_LAYER), 
-				context.bakeLayer(Layers.MILKY_WAY_DIVIDER_LAYER), 
-				context.bakeLayer(Layers.MILKY_WAY_CHEVRON_LAYER));
+		this.stargateModel = new MilkyWayStargateModel();
 	}
 	
 	@Override
@@ -64,6 +59,8 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
         //this.shieldModel.renderShield((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
 	    
 	    stack.popPose();
+	    
+	    //this.renderCover(stargate, stack, source, combinedLight, combinedOverlay);
 	}
 	
 	@Override

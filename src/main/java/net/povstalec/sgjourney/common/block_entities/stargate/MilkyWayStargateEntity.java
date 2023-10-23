@@ -93,6 +93,11 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		nbt.putString("Symbols", symbols);
 		nbt.putInt("Rotation", rotation);
 	}
+	
+	public boolean isChevronRaised()
+	{
+		return this.isChevronRaised;
+	}
 
 	public SoundEvent getChevronEngageSound()
 	{

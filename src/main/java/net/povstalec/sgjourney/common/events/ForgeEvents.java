@@ -309,7 +309,7 @@ public class ForgeEvents
 			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 		    int villagerLevel = 5;
 
-		    trades.get(villagerLevel).add(new TreasureMapForEmeraldsTrade(8, TagInit.Structures.HAS_STARGATE, "filled_map.sgjourney.astria_porta", MapDecoration.Type.RED_X, 1, 80));
+		    trades.get(villagerLevel).add(new TreasureMapForEmeraldsTrade.StargateMapTrade(8, "filled_map.sgjourney.chappa_ai", 80));
 		}
 	}
 }

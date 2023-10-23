@@ -10,6 +10,7 @@ import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.CrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.LiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
@@ -77,6 +78,8 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<ZPMHubEntity>> ZPM_HUB = BLOCK_ENTITIES.register("zpm_hub",
             () -> BlockEntityType.Builder.of(ZPMHubEntity::new, BlockInit.ZPM_HUB.get()).build(null));
 	
+	public static final RegistryObject<BlockEntityType<LiquidizerEntity>> LIQUIDIZER = BLOCK_ENTITIES.register("liquidizer",
+            () -> BlockEntityType.Builder.of(LiquidizerEntity::new, BlockInit.LIQUIDIZER.get()).build(null));
 	public static final RegistryObject<BlockEntityType<CrystallizerEntity>> CRYSTALLIZER = BLOCK_ENTITIES.register("crystallizer",
             () -> BlockEntityType.Builder.of(CrystallizerEntity::new, BlockInit.CRYSTALLIZER.get()).build(null));
 	

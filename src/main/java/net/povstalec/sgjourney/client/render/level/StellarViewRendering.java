@@ -18,8 +18,17 @@ public class StellarViewRendering
 	.spiralGalaxy4Arms(10842L, 1500, 6, 0, 8, 0.0, 0.2 * Math.PI, 0.6 * Math.PI)
 	.vanillaSun()
 	.celestialObject(new Moon.DefaultMoon());
+	
+	private static final StellarViewSpecialEffects CAVUM_TENEBRAE_EFFECTS = new StellarViewSpecialEffects(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false){}
+	.spiralGalaxy4Arms(10842L, 1500, 6, 0, 8, 0.0, 0.2 * Math.PI, 0.6 * Math.PI)
+	.vanillaSun();
 
 	private static final StellarViewSpecialEffects LANTEA_EFFECTS = new StellarViewSpecialEffects(386.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false){}
+	.spiralGalaxy2Arms(17892L, 2250, 8, 0, 16, 0.35 * Math.PI, 0.35 * Math.PI, 0.15 * Math.PI)
+	.vanillaSun()
+	.celestialObject(new Moon.DefaultMoon());
+
+	private static final StellarViewSpecialEffects ATHOS_EFFECTS = new StellarViewSpecialEffects(386.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false){}
 	.spiralGalaxy2Arms(17892L, 2250, 8, 0, 16, 0.35 * Math.PI, 0.35 * Math.PI, 0.15 * Math.PI)
 	.vanillaSun()
 	.celestialObject(new Moon.DefaultMoon());
@@ -28,6 +37,8 @@ public class StellarViewRendering
 	{
 		event.register(SGJourneyDimensionSpecialEffects.ABYDOS_EFFECTS, StellarViewRendering.ABYDOS_EFFECTS);
     	event.register(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, StellarViewRendering.CHULAK_EFFECTS);
+    	event.register(SGJourneyDimensionSpecialEffects.CAVUM_TENEBRAE_EFFECTS, StellarViewRendering.CAVUM_TENEBRAE_EFFECTS);
     	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, StellarViewRendering.LANTEA_EFFECTS);
+    	event.register(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, StellarViewRendering.ATHOS_EFFECTS);
 	}
 }

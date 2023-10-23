@@ -16,40 +16,85 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
+import net.povstalec.sgjourney.common.init.TagInit;
 
-public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing {
-    private final int emeraldCost;
-    private final TagKey<Structure> destination;
-    private final String displayName;
-    private final MapDecoration.Type destinationType;
-    private final int maxUses;
-    private final int villagerXp;
-
-    public TreasureMapForEmeraldsTrade(int p_207767_, TagKey<Structure> p_207768_, String p_207769_, MapDecoration.Type p_207770_, int p_207771_, int p_207772_) {
-       this.emeraldCost = p_207767_;
-       this.destination = p_207768_;
-       this.displayName = p_207769_;
-       this.destinationType = p_207770_;
-       this.maxUses = p_207771_;
-       this.villagerXp = p_207772_;
-    }
-
-    @Nullable
-    public MerchantOffer getOffer(Entity p_219708_, RandomSource p_219709_) {
-       if (!(p_219708_.level instanceof ServerLevel)) {
-          return null;
-       } else {
-          ServerLevel serverlevel = (ServerLevel)p_219708_.level;
-          BlockPos blockpos = serverlevel.findNearestMapStructure(this.destination, p_219708_.blockPosition(), 100, true);
-          if (blockpos != null) {
-             ItemStack itemstack = MapItem.create(serverlevel, blockpos.getX(), blockpos.getZ(), (byte)2, true, true);
-             MapItem.renderBiomePreviewMap(serverlevel, itemstack);
-             MapItemSavedData.addTargetDecoration(itemstack, blockpos, "+", this.destinationType);
-             itemstack.setHoverName(Component.translatable(this.displayName));
-             return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCost), new ItemStack(Items.COMPASS), itemstack, this.maxUses, this.villagerXp, 0.2F);
-          } else {
-             return null;
-          }
-       }
-    }
+public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
+{
+	protected final int emeraldCost;
+	protected final TagKey<Structure> destination;
+	protected final String displayName;
+	protected final MapDecoration.Type destinationType;
+	protected final int maxUses;
+	protected final int villagerXp;
+	
+	public TreasureMapForEmeraldsTrade(int emeraldCost, TagKey<Structure> destination, String displayName, MapDecoration.Type destinationType, int maxUses, int villagerXp)
+	{
+		this.emeraldCost = emeraldCost;
+		this.destination = destination;
+		this.displayName = displayName;
+		this.destinationType = destinationType;
+		this.maxUses = maxUses;
+		this.villagerXp = villagerXp;
+	}
+	
+	@Nullable
+	public MerchantOffer getOffer(Entity entity, RandomSource source)
+	{
+		if(!(entity.getLevel() instanceof ServerLevel))
+			return null;
+		else
+		{
+			ServerLevel serverlevel = (ServerLevel)entity.getLevel();
+			BlockPos blockpos = serverlevel.findNearestMapStructure(this.destination, entity.blockPosition(), 100, true);
+			
+			if(blockpos != null)
+			{
+				ItemStack itemstack = MapItem.create(serverlevel, blockpos.getX(), blockpos.getZ(), (byte)2, true, true);
+				MapItem.renderBiomePreviewMap(serverlevel, itemstack);
+				MapItemSavedData.addTargetDecoration(itemstack, blockpos, "+", this.destinationType);
+				itemstack.setHoverName(Component.translatable(this.displayName));
+				
+				return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCost), new ItemStack(Items.COMPASS), itemstack, this.maxUses, this.villagerXp, 0.2F);
+			}
+			else
+				return null;
+		}
+	}
+	
+	public static class StargateMapTrade extends TreasureMapForEmeraldsTrade
+	{
+		public StargateMapTrade(int emeraldCost, String displayName, int villagerXp)
+		{
+			super(emeraldCost, TagInit.Structures.STARGATE_MAP, displayName, MapDecoration.Type.RED_X, 1, villagerXp);
+		}
+		
+		@Nullable
+		public MerchantOffer getOffer(Entity entity, RandomSource source)
+		{
+			if(!(entity.getLevel() instanceof ServerLevel))
+				return null;
+			else
+			{
+				ServerLevel serverlevel = (ServerLevel)entity.getLevel();
+				
+				int xOffset = 16 * CommonStargateNetworkConfig.stargate_generation_center_x_chunk_offset.get();
+		        int zOffset = 16 * CommonStargateNetworkConfig.stargate_generation_center_z_chunk_offset.get();
+		        
+				BlockPos blockpos = serverlevel.findNearestMapStructure(this.destination, new BlockPos(xOffset, 0, zOffset), 100, true);
+				
+				if(blockpos != null)
+				{
+					ItemStack itemstack = MapItem.create(serverlevel, blockpos.getX(), blockpos.getZ(), (byte)2, true, true);
+					MapItem.renderBiomePreviewMap(serverlevel, itemstack);
+					MapItemSavedData.addTargetDecoration(itemstack, blockpos, "+", this.destinationType);
+					itemstack.setHoverName(Component.translatable(this.displayName));
+					
+					return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCost), new ItemStack(Items.COMPASS), itemstack, this.maxUses, this.villagerXp, 0.2F);
+				}
+				else
+					return null;
+			}
+		}
+	}
  }

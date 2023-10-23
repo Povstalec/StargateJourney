@@ -120,7 +120,7 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	@Override
 	public boolean isCorrectSide(Direction side)
 	{
-		if(side == getDirection().getOpposite())
+		if(side == getDirection())
 			return false;
 		return true;
 	}

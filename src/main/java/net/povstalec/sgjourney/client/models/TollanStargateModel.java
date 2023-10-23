@@ -164,7 +164,7 @@ public class TollanStargateModel extends AbstractStargateModel
 		
 		if(stargate.chevronsRendered() >= chevronNumber)
 		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
+			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.engagedChevron(ENGAGED_CHEVRON_TEXTURE));
 			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
 		}
 	}
@@ -177,7 +177,7 @@ public class TollanStargateModel extends AbstractStargateModel
 		
 		if(stargate.isConnected())
 		{
-			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
+			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.engagedChevron(ENGAGED_CHEVRON_TEXTURE));
 		    this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
 		}
 	}

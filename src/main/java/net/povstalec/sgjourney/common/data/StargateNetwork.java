@@ -46,6 +46,7 @@ public class StargateNetwork extends SavedData
 	
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
+	//Should increase every time there's a significant change done to the Stargate Network
 	private static final int updateVersion = 5;
 	
 	private MinecraftServer server;

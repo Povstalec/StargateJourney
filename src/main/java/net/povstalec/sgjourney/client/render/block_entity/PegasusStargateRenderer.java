@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.PegasusStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -27,11 +26,7 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
 	{
 		super(context);
 		this.wormholeModel = new WormholeModel(ClientStargateConfig.pegasus_rgba, 0.25F);
-		this.stargateModel = new PegasusStargateModel(
-				context.bakeLayer(Layers.PEGASUS_RING_LAYER), 
-				context.bakeLayer(Layers.PEGASUS_SYMBOL_RING_LAYER), 
-				context.bakeLayer(Layers.PEGASUS_DIVIDER_LAYER), 
-				context.bakeLayer(Layers.PEGASUS_CHEVRON_LAYER));
+		this.stargateModel = new PegasusStargateModel();
 	}
 	
 	@Override

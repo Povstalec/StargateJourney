@@ -31,7 +31,7 @@ public class WormholeModel
 	protected SGJourneyConfigValue.RGBAValue rgbaValue;
 	protected float maxDefaultDistortion;
 	
-	protected float scale = 0.03125F;
+	protected static final float SCALE = 1F / 32;
 	
 	protected float[][] outerCircle = coordinates(DEFAULT_SIDES, 2.5F, 5, 0);
 	protected float[][] circle1 = coordinates(DEFAULT_SIDES, 2.0F, 0, 98);
@@ -48,12 +48,18 @@ public class WormholeModel
 		this.maxDefaultDistortion = maxDefaultDistortion;
 	}
 	
+	protected float getMaxDistortion()
+	{
+		float configDistortion = (float) ClientStargateConfig.event_horizon_distortion.get() / 100;
+		return configDistortion > maxDefaultDistortion ? maxDefaultDistortion : configDistortion;
+	}
+	
 	public void renderEventHorizon(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		this.renderKawoosh(stack, source, (float)stargate.getTickCount() * this.scale, stargate.getKawooshTickCount(), false);
-		this.renderPuddle(stack, source, (float)stargate.getTickCount() * this.scale, stargate.getKawooshTickCount(), false);
+		this.renderKawoosh(stack, source, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount(), false);
+		this.renderPuddle(stack, source, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount(), false);
 		if(ClientStargateConfig.enable_vortex.get())
-			this.renderVortex(stack, source, (float)stargate.getTickCount() * this.scale, stargate.getKawooshTickCount());
+			this.renderVortex(stack, source, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount());
 	}
 	
 	protected void renderPuddle(PoseStack stack, MultiBufferSource source, float yOffset, int kawooshProgress, boolean isShieldOn)
@@ -75,28 +81,28 @@ public class WormholeModel
 				createTriangle(frontConsumer, matrix4, matrix3, 
 						coordinates[i][j % coordinates[i].length][0], 
 						coordinates[i][j % coordinates[i].length][1],
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0));
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0));
 				
 				createTriangle(frontConsumer, matrix4, matrix3, 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1],
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1], 
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0));
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0));
 			}
 			
 			VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonBack(EVENT_HORIZON_TEXTURE, 0.0F, yOffset));
@@ -106,28 +112,28 @@ public class WormholeModel
 				createTriangle(backConsumer, matrix4, matrix3, 
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
 						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, 0));
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0));
 				
 				createTriangle(frontConsumer, matrix4, matrix3, 
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], 
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0));
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0));
 			}
 		}
 	}
@@ -150,28 +156,28 @@ public class WormholeModel
 				createTriangle(kawooshConsumer, matrix4, matrix3, 
 						bubbleX(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress),
 						
 						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
 						
 						bubbleX(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress));
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress));
 				
 				createTriangle(kawooshConsumer, matrix4, matrix3, 
 						bubbleX(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
 
 						bubbleX(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
 
 						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
-						distortionMaker(isShieldOn, maxDefaultDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress));
+						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress));
 			}
 		}
 	}
@@ -195,28 +201,28 @@ public class WormholeModel
 				createTriangle(vortexConsumer, matrix4, matrix3, 
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						vortexMaker(maxDefaultDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						vortexMaker(getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						vortexMaker(maxDefaultDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						vortexMaker(getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
 						
 						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
-						vortexMaker(maxDefaultDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress));
+						vortexMaker(getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress));
 				
 				createTriangle(vortexConsumer, matrix4, matrix3, 
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						vortexMaker(maxDefaultDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						vortexMaker(getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						vortexMaker(maxDefaultDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						vortexMaker(getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
 						
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], 
-						vortexMaker(maxDefaultDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress));
+						vortexMaker(getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress));
 			}
 		}
 	}
@@ -289,7 +295,7 @@ public class WormholeModel
 	protected static float distortionMaker(boolean shielded, float maxDefaultDistortion, float defaultOffset, float distortionOffset, int multiplier, int progress)
 	{
 		defaultOffset *= maxDefaultDistortion;
-		float defaultDistortion = ClientStargateConfig.flat_event_horizon.get() ? 0 : (float) Math.sin(defaultOffset * distortionOffset * 8) * maxDefaultDistortion;
+		float defaultDistortion = (float) Math.sin(defaultOffset * distortionOffset * 8) * maxDefaultDistortion;
 		
 		float gradualKawoosh = (float) Math.pow(Math.sin((double) multiplier / 4), 2);
 		float kawooshDistortion = (float) (1.2 * AbstractStargateEntity.kawooshFunction(progress)) * gradualKawoosh;
@@ -305,7 +311,7 @@ public class WormholeModel
 	protected static float vortexMaker(float maxDefaultDistortion, float defaultOffset, float distortionOffset, int multiplier, int progress)
 	{
 		defaultOffset *= maxDefaultDistortion;
-		float defaultDistortion = ClientStargateConfig.flat_event_horizon.get() ? 0 : (float) Math.sin(defaultOffset * distortionOffset * 8) * maxDefaultDistortion;
+		float defaultDistortion = (float) Math.sin(defaultOffset * distortionOffset * 8) * maxDefaultDistortion;
 		float actualDistortion = defaultDistortion * (1 + (float)( Math.pow(Math.sin((double) multiplier / 5), 4) * AbstractStargateEntity.kawooshFunction(progress)));
 		
 		float gradualKawoosh = (float) Math.pow(Math.sin((double) multiplier / 5), 2);

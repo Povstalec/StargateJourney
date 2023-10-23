@@ -137,6 +137,7 @@
 	
 	"filled_map.sgjourney.archeologist": "Archeologist Map",
 	"filled_map.sgjourney.astria_porta": "Map to the Ring of Gods",
+	"filled_map.sgjourney.chappa_ai": "Map to Chappa'ai",
 	
 	"itemGroup.stargate_blocks": "Stargate Blocks",
 	"itemGroup.stargate_items": "Stargate Items",
@@ -311,9 +312,10 @@
 	
 	"gui.sgjourney.disable_smooth_animations": "Disable Smooth Animations",
 	"gui.sgjourney.enable_vortex": "Enable Vortex",
-	"gui.sgjourney.flat_event_horizon": "Flat Event Horizon",
+	"gui.sgjourney.event_horizon_distortion": "Event Horizon Distortion : 0.",
 	"gui.sgjourney.unique_symbols": "Unique Symbols",
 	"gui.sgjourney.use_movie_stargate_model": "Use Movie Stargate Model",
+	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",
 	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",
 	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back"
 }

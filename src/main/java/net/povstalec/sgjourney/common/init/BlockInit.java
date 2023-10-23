@@ -30,6 +30,7 @@ import net.povstalec.sgjourney.common.blocks.CrystallizerBlock;
 import net.povstalec.sgjourney.common.blocks.ExplosiveBlock;
 import net.povstalec.sgjourney.common.blocks.FirePitBlock;
 import net.povstalec.sgjourney.common.blocks.GoldenIdolBlock;
+import net.povstalec.sgjourney.common.blocks.LiquidizerBlock;
 import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorMarkIBlock;
 import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorMarkIIBlock;
 import net.povstalec.sgjourney.common.blocks.RingPanelBlock;
@@ -193,6 +194,8 @@ public class BlockInit
 			() -> new ZPMHubBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	// ZPM Plug
 	
+	public static final RegistryObject<LiquidizerBlock> LIQUIDIZER = registerBlock("liquidizer", 
+			() -> new LiquidizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	public static final RegistryObject<CrystallizerBlock> CRYSTALLIZER = registerBlock("crystallizer", 
 			() -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	

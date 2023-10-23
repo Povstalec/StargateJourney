@@ -51,8 +51,8 @@ public enum StargatePart implements StringRepresentable
 	RIGHT_ABOVE5("right_above5", -1, 5),
 	RIGHT2_ABOVE4("right2_above4", -2, 4);
 	
-	public static final ArrayList<StargatePart> DEFAULT_PARTS = getParts(StargateType.DEFAULT);
-	public static final ArrayList<StargatePart> TOLLAN_PARTS = getParts(StargateType.TOLLAN);
+	public static final ArrayList<StargatePart> DEFAULT_PARTS = getParts(Stargate.PartType.DEFAULT);
+	public static final ArrayList<StargatePart> TOLLAN_PARTS = getParts(Stargate.PartType.TOLLAN);
 	
 	private final String name;
 	private final int width;
@@ -65,7 +65,7 @@ public enum StargatePart implements StringRepresentable
 		this.height = height;
 	}
 	
-	private static ArrayList<StargatePart> getParts(StargateType type)
+	private static ArrayList<StargatePart> getParts(Stargate.PartType type)
 	{
 		ArrayList<StargatePart> parts = new ArrayList<>();
 		
@@ -77,7 +77,7 @@ public enum StargatePart implements StringRepresentable
 		parts.add(LEFT3_ABOVE2);
 		parts.add(LEFT3_ABOVE3);
 		parts.add(LEFT3_ABOVE4);
-		if(type == StargateType.TOLLAN)
+		if(type == Stargate.PartType.TOLLAN)
 		{
 			parts.add(LEFT2_ABOVE4);
 			parts.add(LEFT2_ABOVE5);
@@ -106,9 +106,6 @@ public enum StargatePart implements StringRepresentable
 		parts.add(RIGHT2_ABOVE);
 		parts.add(RIGHT2);
 		parts.add(RIGHT);
-		
-
-		System.out.println(parts.toString());
 
 		return parts;
 	}

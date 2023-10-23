@@ -29,7 +29,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 	private final ModelPart chevrons;
 	
 	private static final int symbolCount = 36;
-	private static final double angle = (float) 360 / 54;
+	private static final double angle = 360F / 54;
 	private float rotation = 0.0F;
 	
 	public UniverseStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
@@ -132,7 +132,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 		
 		if(stargate.isConnected() || stargate.addressBuffer.length > 0)
 		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ENGAGED_CHEVRON_TEXTURE));
+			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.engagedChevron(ENGAGED_CHEVRON_TEXTURE));
 			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
 		}
 	}

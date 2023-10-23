@@ -35,6 +35,12 @@ public class Stargate
 	private static long interstellarConnectionDraw = CommonStargateConfig.interstellar_connection_energy_draw.get();
 	private static long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
 	
+	public enum PartType
+	{
+		DEFAULT,
+		TOLLAN;
+	}
+	
 	public enum Type
 	{
 		UNIVERSE(StargatePart.DEFAULT_PARTS, CommonStargateConfig.universe_chevron_lock_speed.get(), VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),

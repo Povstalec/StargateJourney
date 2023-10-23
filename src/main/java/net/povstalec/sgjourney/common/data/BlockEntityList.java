@@ -17,7 +17,8 @@ import net.povstalec.sgjourney.StargateJourney;
  */
 public class BlockEntityList extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-block_enties";
+	private static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
+	private static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties";
 	
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";
@@ -185,7 +186,7 @@ public class BlockEntityList extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, FILE_NAME);
+        return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, INCORRECT_FILE_NAME);
     }
     
 //================================================================================================
