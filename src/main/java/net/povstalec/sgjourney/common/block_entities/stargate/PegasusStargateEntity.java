@@ -60,7 +60,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		nbt.putInt("SymbolBuffer", symbolBuffer);
 		nbt.putInt("CurrentSymbol", currentSymbol);
 	}
-	
+
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.PEGASUS_CHEVRON_ENGAGE.get();
@@ -70,10 +71,17 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		return SoundInit.PEGASUS_CHEVRON_INCOMING.get();
 	}
-	
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.PEGASUS_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeCloseSound()
+	{
+		return SoundInit.PEGASUS_WORMHOLE_CLOSE.get();
 	}
 	
 	public SoundEvent getFailSound()

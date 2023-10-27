@@ -12,6 +12,10 @@ import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class AbstractStargateModel
 {
+	protected static final float DEFAULT_DISTANCE = 3.5F;
+	protected static final int DEFAULT_SIDES = 36;
+	protected static final float STARGATE_RING_X_SHRINK = 0.001F;
+	
 	protected static final int MAX_LIGHT = 15728864;
 	
 	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");

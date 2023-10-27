@@ -75,6 +75,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
         }
     }
 
+	@Override
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
@@ -85,6 +86,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		this.oldRotation = this.rotation;
 	}
 
+	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
 		super.saveAdditional(nbt);
@@ -99,21 +101,30 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return this.isChevronRaised;
 	}
 
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
 	}
-
+	
 	public SoundEvent getChevronEncodeSound()
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_ENCODE.get();
 	}
-	
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
 	}
-	
+
+	@Override
+	public SoundEvent getWormholeCloseSound()
+	{
+		return SoundInit.MILKY_WAY_WORMHOLE_CLOSE.get();
+	}
+
+	@Override
 	public SoundEvent getFailSound()
 	{
 		return SoundInit.MILKY_WAY_DIAL_FAIL.get();
@@ -121,7 +132,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 
 	private void manualDialing()
 	{
-		if(this.signalStrength > 0)
+		if(this.signalStrength > 0 && (getCurrentSymbol() != 0 || getAddress().length > 0))
 		{
 			if(this.signalStrength == 15)
 			{
@@ -132,9 +143,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			}
 		}
 		else
-		{
 			lowerChevron();
-		}
 
 		if(!this.level.isClientSide())
 			synchronizeWithClient(this.level);

@@ -193,14 +193,22 @@ public class Wormhole implements ITeleporter
 	    		this.used = true;
 	        }
 		}
-		else if(CommonStargateConfig.reverse_wormhole_kills.get())
+		else
 		{
-			if(traveler instanceof Player player && player.isCreative())
-				player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+			if(CommonStargateConfig.reverse_wormhole_kills.get())
+			{
+				if(traveler instanceof Player player && player.isCreative())
+					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+				else
+				{
+		    		deconstructEvent(initialStargate, traveler, true);
+					traveler.kill();
+				}
+			}
 			else
 			{
-	    		deconstructEvent(initialStargate, traveler, true);
-				traveler.kill();
+				if(traveler instanceof Player player)
+					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 			}
 		}
     }

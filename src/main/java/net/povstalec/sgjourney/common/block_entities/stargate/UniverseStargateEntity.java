@@ -73,17 +73,26 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		nbt.putIntArray("AddressBuffer", addressBuffer);
 		nbt.putInt("SymbolBuffer", symbolBuffer);
 	}
-	
+
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.UNIVERSE_CHEVRON_ENGAGE.get();
 	}
-	
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.UNIVERSE_WORMHOLE_OPEN.get();
 	}
-	
+
+	@Override
+	public SoundEvent getWormholeCloseSound()
+	{
+		return SoundInit.UNIVERSE_WORMHOLE_CLOSE.get();
+	}
+
+	@Override
 	public SoundEvent getFailSound()
 	{
 		return SoundInit.UNIVERSE_DIAL_FAIL.get();
@@ -126,7 +135,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			if(isConnected())
 				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 			else if(!isConnected() && addressBuffer.length == 0)
-				return Stargate.Feedback.INCOPLETE_ADDRESS;
+				return Stargate.Feedback.INCOMPLETE_ADDRESS;
 		}
 		
 		if(addressBuffer.length == 0 && address.length == 0)

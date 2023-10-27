@@ -35,6 +35,7 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
@@ -196,7 +197,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			return Stargate.Feedback.NONE;
 		
 		if(getAddress().length < 6)
-			return resetStargate(Stargate.Feedback.INCOPLETE_ADDRESS);
+		{
+			chevronSound(false);
+			return resetStargate(Stargate.Feedback.INCOMPLETE_ADDRESS);
+		}
 		else if(!isConnected())
 		{
 			if(!isObstructed())
@@ -300,8 +304,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 				{
 					for(int i = 0; i < (int) Math.round(frontMultiplier); i++)
 					{
-						if(!level.getBlockState(pos.relative(direction, i)).is(Blocks.AIR))
-							level.destroyBlock(pos.relative(direction, i), false);
+						BlockPos relativePos = pos.relative(direction, i);
+						if(!level.getBlockState(relativePos).is(Blocks.AIR))
+						{
+							BlockState relativeState = level.getBlockState(relativePos);
+							if(!relativeState.is(TagInit.Blocks.KAWOOSH_IMMUNE))
+								level.destroyBlock(relativePos, false);
+						}
 					}
 				}
 			}
@@ -784,10 +793,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public abstract SoundEvent getWormholeOpenSound();
 	
-	public SoundEvent getWormholeCloseSound()
-	{
-		return SoundInit.WORMHOLE_CLOSE.get();
-	}
+	public abstract SoundEvent getWormholeCloseSound();
 
 	public abstract SoundEvent getFailSound();
 	

@@ -29,6 +29,7 @@ public class TagInit
 	
 	public class Blocks
 	{
+		public static final TagKey<Block> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<Block> PLASMA_FLAMMABLE = tag("plasma_flammable");
 		public static final TagKey<Block> STONE_SPIRE_PROTRUDES_THROUGH = tag("stone_spire_protrudes_through");
 		

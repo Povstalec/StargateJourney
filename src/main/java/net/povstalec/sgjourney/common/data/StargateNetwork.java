@@ -360,11 +360,11 @@ public class StargateNetwork extends SavedData
 			switch(connectionType)
 			{
 			case SYSTEM_WIDE:
-				return Stargate.Feedback.CONNECTION_ESTABILISHED_SYSTEM_WIDE;
+				return Stargate.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
 			case INTERSTELLAR:
-				return Stargate.Feedback.CONNECTION_ESTABILISHED_INTERSTELLAR;
+				return Stargate.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR;
 			default:
-				return Stargate.Feedback.CONNECTION_ESTABILISHED_INTERGALACTIC;
+				return Stargate.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC;
 			}
 		}
 		return Stargate.Feedback.UNKNOWN_ERROR;

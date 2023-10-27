@@ -17,9 +17,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 {
 	private static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/classic/classic_stargate.png");
 	private static final ResourceLocation ENGAGED_STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/classic/classic_stargate_lit.png");
-
-	protected static final float DEFAULT_DISTANCE = 3.5F;
-	protected static final int DEFAULT_SIDES = 36;
+	
 	protected static final int SPINNING_SIDES = 39;
 	private static final float ANGLE = 360F / SPINNING_SIDES;
 	

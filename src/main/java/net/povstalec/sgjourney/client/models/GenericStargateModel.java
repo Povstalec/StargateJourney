@@ -13,14 +13,11 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 
 public class GenericStargateModel extends AbstractStargateModel
 {
-	protected static final float DEFAULT_DISTANCE = 3.5F;
-	protected static final int DEFAULT_SIDES = 36;
-	
 	// Ring
 	protected static final float STARGATE_RING_THICKNESS = 7F;
 	protected static final float STARGATE_RING_OFFSET = STARGATE_RING_THICKNESS / 2 / 16;
 	
-	protected static final float STARGATE_RING_OUTER_HEIGHT = DEFAULT_DISTANCE;
+	protected static final float STARGATE_RING_OUTER_HEIGHT = DEFAULT_DISTANCE - STARGATE_RING_X_SHRINK;
 	protected static final float STARGATE_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_OUTER_HEIGHT, DEFAULT_DISTANCE);
 	protected static final float STARGATE_RING_OUTER_CENTER = STARGATE_RING_OUTER_LENGTH / 2;
 	
@@ -32,7 +29,7 @@ public class GenericStargateModel extends AbstractStargateModel
 	protected static final float STARGATE_RING_START_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_START_HEIGHT, DEFAULT_DISTANCE);
 	protected static final float STARGATE_RING_START_CENTER = STARGATE_RING_START_LENGTH / 2;
 
-	protected static final float STARGATE_RING_INNER_HEIGHT = DEFAULT_DISTANCE - 1;
+	protected static final float STARGATE_RING_INNER_HEIGHT = DEFAULT_DISTANCE - (1 - STARGATE_RING_X_SHRINK);
 	protected static final float STARGATE_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_INNER_HEIGHT, DEFAULT_DISTANCE);
 	protected static final float STARGATE_RING_INNER_CENTER = STARGATE_RING_INNER_LENGTH / 2;
 

@@ -109,18 +109,18 @@ public class Stargate
 		INTERSTELLAR(interstellarConnectionCost, interstellarConnectionDraw),
 		INTERGALACTIC(intergalacticConnectionCost, intergalacticConnectionDraw);
 		
-		private long estabilishingPowerCost;
+		private long establishingPowerCost;
 		private long powerDraw;
 		
 		ConnectionType(long estabilishingPowerCost, long powerDraw)
 		{
-			this.estabilishingPowerCost = estabilishingPowerCost;
+			this.establishingPowerCost = estabilishingPowerCost;
 			this.powerDraw = powerDraw;
 		}
 		
 		public long getEstabilishingPowerCost()
 		{
-			return this.estabilishingPowerCost;
+			return this.establishingPowerCost;
 		}
 		
 		public long getPowerDraw()
@@ -200,10 +200,10 @@ public class Stargate
 		SYMBOL_OUT_OF_BOUNDS(-3, FeedbackType.ERROR, createError("symbol_out_of_bounds", false)),
 		
 		// Estabilishing Connection
-		CONNECTION_ESTABILISHED_SYSTEM_WIDE(2, FeedbackType.INFO, createInfo("connection_estabilished.system_wide")),
-		CONNECTION_ESTABILISHED_INTERSTELLAR(3, FeedbackType.INFO, createInfo("connection_estabilished.interstellar")),
-		CONNECTION_ESTABILISHED_INTERGALACTIC(4, FeedbackType.INFO, createInfo("connection_estabilished.intergalactic")),
-		INCOPLETE_ADDRESS(-4, FeedbackType.ERROR, createError("incomplete_address", false)),
+		CONNECTION_ESTABLISHED_SYSTEM_WIDE(2, FeedbackType.INFO, createInfo("connection_established.system_wide")),
+		CONNECTION_ESTABLISHED_INTERSTELLAR(3, FeedbackType.INFO, createInfo("connection_established.interstellar")),
+		CONNECTION_ESTABLISHED_INTERGALACTIC(4, FeedbackType.INFO, createInfo("connection_established.intergalactic")),
+		INCOMPLETE_ADDRESS(-4, FeedbackType.ERROR, createError("incomplete_address", false)),
 		INVALID_ADDRESS(-5, FeedbackType.ERROR, createError("invalid_address", false)),
 		NOT_ENOUGH_POWER(-6, FeedbackType.MAJOR_ERROR, createError("not_enough_power", true)),
 		SELF_OBSTRUCTED(-7, FeedbackType.MAJOR_ERROR, createError("self_obstructed", true)),

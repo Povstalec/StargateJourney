@@ -9,8 +9,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 
 public class MilkyWayStargateMethods
 {
-	private static final String CHEVRON_ENGAGED = "chevron_engaged";
-	
 	public static class GetCurrentSymbol implements InterfaceMethod<MilkyWayStargateEntity>
 	{
 		@Override
@@ -71,14 +69,13 @@ public class MilkyWayStargateMethods
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			if(stargate.isChevronRaised)
-				throw new LuaException("Can't rotate while chevron is raised");
-			else if(desiredSymbol < -1 || desiredSymbol > 38)
-				throw new LuaException("Symbol out of bounds <-1, 38>");
-			
-			
 			context.executeMainThreadTask(() ->
 			{
+				if(stargate.isChevronRaised())
+					throw new LuaException("Can't rotate while chevron is raised");
+				else if(desiredSymbol < -1 || desiredSymbol > 38)
+					throw new LuaException("Symbol out of bounds <-1, 38>");
+				
 				stargate.startRotation(desiredSymbol, true);
 				return null;
 			});
@@ -100,13 +97,13 @@ public class MilkyWayStargateMethods
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			if(stargate.isChevronRaised)
-				throw new LuaException("Can't rotate while chevron is raised");
-			else if(desiredSymbol < -1 || desiredSymbol > 38)
-				throw new LuaException("Symbol out of bounds <-1, 38>");
-			
 			context.executeMainThreadTask(() ->
 			{
+				if(stargate.isChevronRaised())
+					throw new LuaException("Can't rotate while chevron is raised");
+				else if(desiredSymbol < -1 || desiredSymbol > 38)
+					throw new LuaException("Symbol out of bounds <-1, 38>");
+				
 				stargate.startRotation(desiredSymbol, false);
 				return null;
 			});

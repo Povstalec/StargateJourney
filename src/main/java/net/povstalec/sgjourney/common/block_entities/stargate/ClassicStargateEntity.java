@@ -30,33 +30,44 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 		symbols = "sgjourney:milky_way";
 	}
 	
+	@Override
 	public void load(CompoundTag nbt)
 	{
         super.load(nbt);
         if(nbt.contains("Rotation"))
         	rotation = nbt.getShort("Rotation");
     }
-	
+
+	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
 		nbt.putShort("Rotation", rotation);
 		
 		super.saveAdditional(nbt);
 	}
-	
+
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
-		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
+		return SoundInit.CLASSIC_CHEVRON_ENGAGE.get();
 	}
-	
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
-		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
+		return SoundInit.CLASSIC_WORMHOLE_OPEN.get();
 	}
-	
+
+	@Override
+	public SoundEvent getWormholeCloseSound()
+	{
+		return SoundInit.CLASSIC_WORMHOLE_CLOSE.get();
+	}
+
+	@Override
 	public SoundEvent getFailSound()
 	{
-		return SoundInit.MILKY_WAY_DIAL_FAIL.get();
+		return SoundInit.CLASSIC_DIAL_FAIL.get();
 	}
 	
 	public double angle()
