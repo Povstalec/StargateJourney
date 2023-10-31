@@ -21,20 +21,6 @@ public class Stargate
 	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
 	public static final float HORIZONTAL_CENTER_CLASSIC_HEIGHT = (CLASSIC_THICKNESS / 2) / 16;
 	
-	public static final int[] DIALING_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 6, 7, 8, 4, 5};
-	
-	public static final int[] DIALED_7_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 6, 7, 8, 4, 5};
-	public static final int[] DIALED_8_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 4, 6, 7, 8, 5};
-	public static final int[] DIALED_9_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8};
-	
-	private static long systemWideConnectionCost = CommonStargateConfig.system_wide_connection_energy_cost.get();
-	private static long interstellarConnectionCost = CommonStargateConfig.interstellar_connection_energy_cost.get();
-	private static long intergalacticConnectionCost = CommonStargateConfig.intergalactic_connection_energy_cost.get();
-
-	private static long systemWideConnectionDraw = CommonStargateConfig.system_wide_connection_energy_draw.get();
-	private static long interstellarConnectionDraw = CommonStargateConfig.interstellar_connection_energy_draw.get();
-	private static long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
-	
 	public enum PartType
 	{
 		DEFAULT,
@@ -100,32 +86,6 @@ public class Stargate
 		public int getGen()
 		{
 			return this.gen;
-		}
-	}
-	
-	public enum ConnectionType
-	{
-		SYSTEM_WIDE(systemWideConnectionCost, systemWideConnectionDraw),
-		INTERSTELLAR(interstellarConnectionCost, interstellarConnectionDraw),
-		INTERGALACTIC(intergalacticConnectionCost, intergalacticConnectionDraw);
-		
-		private long establishingPowerCost;
-		private long powerDraw;
-		
-		ConnectionType(long estabilishingPowerCost, long powerDraw)
-		{
-			this.establishingPowerCost = estabilishingPowerCost;
-			this.powerDraw = powerDraw;
-		}
-		
-		public long getEstabilishingPowerCost()
-		{
-			return this.establishingPowerCost;
-		}
-		
-		public long getPowerDraw()
-		{
-			return this.powerDraw;
 		}
 	}
 	

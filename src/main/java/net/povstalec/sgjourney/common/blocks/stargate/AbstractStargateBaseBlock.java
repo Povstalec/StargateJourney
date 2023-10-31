@@ -25,6 +25,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 
@@ -34,7 +35,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		super(properties, width, horizontalOffset);
 	}
-	
+
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
 		FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
@@ -117,22 +119,26 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         }
     }
 	
-	public void updateStargate(Level level, BlockPos pos, BlockState state, boolean isConnected, int chevronsActive)
+	public void updateStargate(Level level, BlockPos pos, BlockState state, ConnectionState connectionState, int chevronsActive)
 	{
-		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTED, isConnected).setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
+		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTION_STATE, connectionState).setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
 		
 		for(StargatePart part : getStargateType().getParts())
 		{
 			if(!part.equals(StargatePart.BASE))
 			{
-				level.setBlock(part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION)), 
-						ringState()
-						.setValue(AbstractStargateRingBlock.PART, part)
-						.setValue(AbstractStargateRingBlock.CONNECTED, level.getBlockState(pos).getValue(CONNECTED))
-						.setValue(AbstractStargateRingBlock.CHEVRONS_ACTIVE, level.getBlockState(pos).getValue(CHEVRONS_ACTIVE))
-						.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
-						.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
-						.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
+				BlockPos ringPos = part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION));
+				if(level.getBlockState(ringPos).getBlock() instanceof AbstractStargateBlock)
+				{
+					level.setBlock(part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION)), 
+							ringState()
+							.setValue(AbstractStargateRingBlock.PART, part)
+							.setValue(AbstractStargateRingBlock.CONNECTION_STATE, level.getBlockState(pos).getValue(CONNECTION_STATE))
+							.setValue(AbstractStargateRingBlock.CHEVRONS_ACTIVE, level.getBlockState(pos).getValue(CHEVRONS_ACTIVE))
+							.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
+							.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
+							.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
+				}
 			}
 		}
 	}
@@ -141,22 +147,38 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	int energy = 0;
-        String id;
+        String id = "";
     	
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
-			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
-		
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + " FE")).withStyle(ChatFormatting.DARK_RED));
+        if(stack.hasTag())
+        {
+            CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
+            
+            if(blockEntityTag.contains("Energy"))
+            	energy = blockEntityTag.getInt("Energy");
+        }
         
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("ID"))
-			id = stack.getTag().getCompound("BlockEntityTag").getString("ID");
-		else
-			id = "";
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + " FE")).withStyle(ChatFormatting.DARK_RED));
 		
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
-
+        
+        if(stack.hasTag())
+        {
+        	CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
+        	
+        	if((blockEntityTag.contains("DisplayID") && blockEntityTag.getBoolean("DisplayID")) || true)//TODO Add config value here
+        	{
+        		if(blockEntityTag.contains("ID"))
+        			id = blockEntityTag.getString("ID");
+            	
+            	tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
+        	}
+        	
+        	if((blockEntityTag.contains("Upgraded") && blockEntityTag.getBoolean("Upgraded")))
+            	tooltipComponents.add(Component.translatable("tooltip.sgjourney.upgraded").withStyle(ChatFormatting.DARK_GREEN));
+        }
+        
         if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("AddToNetwork") && !stack.getTag().getCompound("BlockEntityTag").getBoolean("AddToNetwork"))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
+        
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 	

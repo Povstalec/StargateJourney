@@ -118,7 +118,7 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	//============================================================================================
 	
 	@Override
-	public boolean isCorrectSide(Direction side)
+	public boolean isCorrectEnergySide(Direction side)
 	{
 		if(side == getDirection())
 			return false;

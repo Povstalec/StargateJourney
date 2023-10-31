@@ -228,6 +228,7 @@
 	"tooltip.sgjourney.energy": "Energy",
 	"tooltip.sgjourney.dimension": "Dimension",
 	"tooltip.sgjourney.mode": "Mode",
+	"tooltip.sgjourney.upgraded": "Upgraded",
 	
 	"tooltip.sgjourney.has_control_crystal": "Has Control Crystal",
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",

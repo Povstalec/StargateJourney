@@ -224,11 +224,12 @@
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symboly",
-	"tooltip.sgjourney.point_of_origin": "V\u00fdchoz\u00ed bod",
+	"tooltip.sgjourney.point_of_origin": "Výchozí bod",
 	"tooltip.sgjourney.address": "Adresa",
 	"tooltip.sgjourney.energy": "Energie",
 	"tooltip.sgjourney.dimension": "Dimenze",
-	"tooltip.sgjourney.mode": "M\u00f3d",
+	"tooltip.sgjourney.mode": "Mód",
+	"tooltip.sgjourney.upgraded": "Upgradováno",
 	
 	"tooltip.sgjourney.has_control_crystal": "M\u00e1 ovl\u00e1dac\u00ed krystal",
 	"tooltip.sgjourney.not_added_to_network": "Nebude p\u0159id\u00e1no to s\u00edt\u011b",

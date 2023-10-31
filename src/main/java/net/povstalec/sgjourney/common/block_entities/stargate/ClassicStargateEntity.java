@@ -28,6 +28,8 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0);
 		pointOfOrigin = "sgjourney:tauri";
 		symbols = "sgjourney:milky_way";
+		
+		displayID = true;
 	}
 	
 	@Override

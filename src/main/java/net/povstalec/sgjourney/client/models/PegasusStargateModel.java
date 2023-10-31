@@ -11,23 +11,23 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public class PegasusStargateModel extends GenericStargateModel
+public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEntity>
 {
+	private static final float R = 0;
 	private static final float DEFAULT_G = 100F / 255;
 	private static final float DEFAULT_B = 200F / 255;
 	
 	private static final float ENGAGED_G = 200F / 255;
 	private static final float ENGAGED_B = 255F / 255;
 	
-	private static final int symbolCount = 36;
-	private int currentSymbol = 0;
+	protected int currentSymbol = 0;
 	
 	protected ResourceLocation alternateStargateTexture;
 	protected ResourceLocation alternateEngagedTexture;
 	
 	public PegasusStargateModel()
 	{
-		super("pegasus", 36, 0, DEFAULT_G, DEFAULT_B);
+		super("pegasus", 36, R, DEFAULT_G, DEFAULT_B);
 		
 		this.alternateStargateTexture = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/" + stargateName + "/" + stargateName +"_stargate_alternate.png");
 		this.alternateEngagedTexture = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/" + stargateName + "/" + stargateName +"_stargate_alternate_engaged.png");
@@ -62,53 +62,6 @@ public class PegasusStargateModel extends GenericStargateModel
 		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ?
 				this.alternateEngagedTexture : this.engagedTexture;
 	}
-
-	protected void renderPrimaryChevron(PegasusStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged, boolean isRaised)
-	{
-		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
-		
-		stack.pushPose();
-		stack.translate(0, 3.5F - 2.5F/16, 0);
-		
-		renderChevronLight(stack, consumer, source, light, isRaised);
-		renderOuterChevronFront(stack, consumer, source, light, isRaised);
-		renderOuterChevronBack(stack, consumer, source, light);
-		
-		stack.popPose();
-	}
-	
-	protected boolean isPrimaryChevronEngaged(PegasusStargateEntity stargate)
-	{
-		if(stargate.isConnected())
-			return stargate.isDialingOut() || stargate.getKawooshTickCount() > 0;
-		
-		return false;
-	}
-	
-	protected void renderChevrons(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		// Renders Chevrons
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.pegasusChevron(getStargateTexture()));
-				
-		renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, false, false);
-		for(int chevronNumber = 1; chevronNumber < 9; chevronNumber++)
-		{
-			renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, false, false, false);
-		}
-		
-		// Renders lit up parts of Chevrons
-		consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture()));
-		
-		if(isPrimaryChevronEngaged(stargate))
-			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true, false);
-		for(int chevronNumber = 1; chevronNumber < 9; chevronNumber++)
-		{
-			boolean isChevronEngaged = stargate.chevronsRendered() >= chevronNumber;
-			if(isChevronEngaged)
-				renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, isChevronEngaged, false, false);
-		}
-	}
 	
 	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
@@ -122,7 +75,7 @@ public class PegasusStargateModel extends GenericStargateModel
 	    	}
 
     		int renderedSymbol = stargate.addressBuffer[stargate.symbolBuffer];
-			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, symbolR, ENGAGED_G, ENGAGED_B);
+			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, R, ENGAGED_G, ENGAGED_B);
 	    }
 		
 	}
@@ -137,33 +90,33 @@ public class PegasusStargateModel extends GenericStargateModel
 			
 			// Point of Origin when Stargate is connected
 			if(stargate.isConnected())
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolR, ENGAGED_G, ENGAGED_B);
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, R, ENGAGED_G, ENGAGED_B);
 			
 			// Locked Symbols
 			for(int i = 0; i < stargate.getAddress().length; i++)
 			{
 				int symbolNumber = ((PegasusStargateEntity) stargate).getChevronPosition(i + 1);
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress()[i], 0, symbolR, ENGAGED_G, ENGAGED_B);
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress()[i], 0, R, ENGAGED_G, ENGAGED_B);
 			}
 		}
 		else
 		{
 			float green = DEFAULT_G;
 			float blue = DEFAULT_B;
-			int symbolNumber = symbolCount;
+			int symbolNumber = symbolSides;
 			
 			if(stargate.isConnected())
 			{
 				green = ENGAGED_G;
 				blue = ENGAGED_B;
-				symbolNumber = ((PegasusStargateEntity) stargate).currentSymbol < symbolCount ? ((PegasusStargateEntity) stargate).currentSymbol : symbolNumber;
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolR, ENGAGED_G, ENGAGED_B);
+				symbolNumber = ((PegasusStargateEntity) stargate).currentSymbol < symbolSides ? ((PegasusStargateEntity) stargate).currentSymbol : symbolNumber;
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, R, ENGAGED_G, ENGAGED_B);
 			}
 			
 			// Idle Symbols
 			for(int i = 0; i < symbolNumber; i++)
 			{
-				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % symbolCount;
+				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % symbolSides;
 				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, renderedSymbol, renderedSymbol, 0, symbolR, green, blue);
 			}
 		}

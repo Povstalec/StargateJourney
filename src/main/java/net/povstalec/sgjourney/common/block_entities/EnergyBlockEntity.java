@@ -68,7 +68,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ENERGY && isCorrectSide(side))
+		if(capability == ForgeCapabilities.ENERGY && isCorrectEnergySide(side))
 			return lazyEnergyHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -78,7 +78,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
-	protected boolean isCorrectSide(Direction side)
+	protected boolean isCorrectEnergySide(Direction side)
 	{
 		return true;
 	}

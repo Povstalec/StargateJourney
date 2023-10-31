@@ -45,6 +45,7 @@ import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
 import net.povstalec.sgjourney.client.screens.BasicInterfaceScreen;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystalInterfaceScreen;
+import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
 import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
 import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
@@ -64,6 +65,7 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.init.MiscInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.RecipeTypeInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.init.TabInit;
@@ -104,6 +106,7 @@ public class StargateJourney
         BiomeModifiers.register(eventBus);
         EntityInit.register(eventBus);
         SoundInit.register(eventBus);
+        RecipeTypeInit.register(eventBus);
         
         GalaxyInit.register(eventBus);
         
@@ -173,6 +176,8 @@ public class StargateJourney
         	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
 
         	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
+
+        	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	

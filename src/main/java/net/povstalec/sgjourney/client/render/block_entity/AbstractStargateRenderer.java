@@ -29,7 +29,7 @@ public abstract class AbstractStargateRenderer
 	
 	protected void renderCover(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("minecraft:sand"));
+		Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("minecraft:red_sand"));
 		
 	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.LEFT2, stack, source, combinedOverlay);
 	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.LEFT, stack, source, combinedOverlay);

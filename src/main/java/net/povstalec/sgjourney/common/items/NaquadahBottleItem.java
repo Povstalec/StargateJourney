@@ -40,13 +40,6 @@ public class NaquadahBottleItem extends Item
 		    		{
 		    			return stack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get();
 		    		}
-
-		            @Override
-		            protected void setContainerToEmpty()
-		            {
-		                super.setContainerToEmpty();
-		                container = emptyContainer;
-		            }
 				};
 	}
 	

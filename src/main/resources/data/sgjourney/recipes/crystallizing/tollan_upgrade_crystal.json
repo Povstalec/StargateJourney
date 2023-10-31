@@ -1,0 +1,10 @@
+{
+	"type": "sgjourney:crystallizing",
+	"crystal_base": {"item": "minecraft:diamond", "amount": 1},
+	"primary_ingredient": {"item": "minecraft:iron_ingot", "amount": 12},
+	"secondary_ingredient": {"item": "minecraft:quartz", "amount": 9},
+	"output":
+	{
+		"item": "sgjourney:tollan_upgrade_crystal"
+	}
+}

@@ -46,8 +46,8 @@ public class StargateNetwork extends SavedData
 	
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
-	//Should increase every time there's a significant change done to the Stargate Network
-	private static final int updateVersion = 5;
+	//Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
+	private static final int updateVersion = 6;
 	
 	private MinecraftServer server;
 	private Map<String, Connection> connections = new HashMap<String, Connection>();
@@ -270,7 +270,7 @@ public class StargateNetwork extends SavedData
 			boolean hasDHD = solarSystem.getCompound(stargateID).getBoolean(HAS_DHD);
 			int generation = solarSystem.getCompound(stargateID).getInt(GENERATION);
 			int timesOpened = solarSystem.getCompound(stargateID).getInt(TIMES_OPENED);
-			System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
+			//System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
 			
 			if(Boolean.compare(hasDHD, bestDHD) > 0)
 			{
@@ -334,7 +334,7 @@ public class StargateNetwork extends SavedData
 	
 	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
 	{
-		Stargate.ConnectionType connectionType = getConnectionType(server, dialingStargate, dialedStargate);
+		Connection.ConnectionType connectionType = getConnectionType(server, dialingStargate, dialedStargate);
 		
 		if(dialingStargate.equals(dialedStargate))
 			return dialingStargate.resetStargate(Stargate.Feedback.SELF_DIAL);
@@ -388,7 +388,8 @@ public class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public void rerouteConnection(MinecraftServer server, String uuid, AbstractStargateEntity newDialedStargate)
+	// TODO make this work
+	/*public void rerouteConnection(MinecraftServer server, String uuid, AbstractStargateEntity newDialedStargate)
 	{
 		if(this.connections.containsKey(uuid))
 		{
@@ -398,19 +399,19 @@ public class StargateNetwork extends SavedData
 		else
 			StargateJourney.LOGGER.info("Could not find connection " + uuid);
 		this.setDirty();
-	}
+	}*/
 	
 	//============================================================================================
 	//******************************************Utility*******************************************
 	//============================================================================================
 	
-	public static Stargate.ConnectionType getConnectionType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	public static Connection.ConnectionType getConnectionType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
 	{
 		String dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension().location().toString());
 		String dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
 		
 		if(dialingSystem.equals(dialedSystem))
-			return Stargate.ConnectionType.SYSTEM_WIDE;
+			return Connection.ConnectionType.SYSTEM_WIDE;
 		
 		ListTag dialingGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialingSystem);
 		ListTag dialedGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialedSystem);
@@ -424,12 +425,12 @@ public class StargateNetwork extends SavedData
 					String dialingGalaxy = dialingGalaxyCandidates.getCompound(i).getAllKeys().iterator().next();
 					String dialedGalaxy = dialedGalaxyCandidates.getCompound(j).getAllKeys().iterator().next();
 					if(dialingGalaxy.equals(dialedGalaxy))
-						return Stargate.ConnectionType.INTERSTELLAR;
+						return Connection.ConnectionType.INTERSTELLAR;
 				}
 			}
 		}
 		
-		return Stargate.ConnectionType.INTERGALACTIC;
+		return Connection.ConnectionType.INTERGALACTIC;
 	}
 	
 	//============================================================================================

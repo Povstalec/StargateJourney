@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 
-public class GenericStargateModel extends AbstractStargateModel
+public class GenericStargateModel<StargateEntity extends AbstractStargateEntity> extends AbstractStargateModel
 {
 	// Ring
 	protected static final float STARGATE_RING_THICKNESS = 7F;
@@ -95,6 +95,8 @@ public class GenericStargateModel extends AbstractStargateModel
 	protected float symbolG;
 	protected float symbolB;
 	
+	protected float rotation = 0;
+	
 	public GenericStargateModel(String stargateName, int symbolSides, float symbolR, float symbolG, float symbolB)
 	{
 		super(stargateName);
@@ -111,8 +113,99 @@ public class GenericStargateModel extends AbstractStargateModel
 		this.symbolG = symbolG;
 		this.symbolB = symbolB;
 	}
+	
+	/**
+	 * Renders the Stargate. By default (no methods are overridden), the resulting rendered Stargate will be a generic model (a mix between the Milky Way and Pegasus Stargate)
+	 * @param stargate Stargate Entity being rendered
+	 * @param partialTick Partial Tick
+	 * @param stack Pose Stack
+	 * @param source Multi Buffer Source
+	 * @param combinedLight Combined Light
+	 * @param combinedOverlay Combined Overlay
+	 */
+	public void renderStargate(StargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
+			int combinedLight, int combinedOverlay)
+	{
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture()));
+		this.renderOuterRing(stack, consumer, source, combinedLight);
+		
+		this.renderSymbolRing(stargate, stack, consumer, source, combinedLight, this.rotation);
 
-	protected void renderChevron(AbstractStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged, boolean isRaised, boolean isOpened)
+		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay);
+	}
+	
+	//============================================================================================
+	//******************************************Chevrons******************************************
+	//============================================================================================
+	
+	protected void renderChevrons(StargateEntity stargate, PoseStack stack, MultiBufferSource source, 
+			int combinedLight, int combinedOverlay)
+	{
+		// Renders Chevrons
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture()));
+				
+		renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, false);
+		for(int chevronNumber = 1; chevronNumber < 9; chevronNumber++)
+		{
+			renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, false);
+		}
+		
+		// Renders lit up parts of Chevrons
+		consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture()));
+		
+		if(isPrimaryChevronEngaged(stargate))
+			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);
+		for(int chevronNumber = 1; chevronNumber < 9; chevronNumber++)
+		{
+			boolean isChevronEngaged = stargate.chevronsRendered() >= chevronNumber;
+			if(isChevronEngaged)
+				renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, isChevronEngaged);
+		}
+	}
+	
+	protected boolean isPrimaryChevronRaised(StargateEntity stargate)
+	{
+		return false;
+	}
+	
+	protected boolean isOuterPrimaryChevronLowered(StargateEntity stargate)
+	{
+		return false;
+	}
+	
+	protected boolean isPrimaryChevronEngaged(StargateEntity stargate)
+	{
+		if(stargate.isConnected())
+			return stargate.isDialingOut() || stargate.getKawooshTickCount() > 0;
+		
+		return false;
+	}
+
+	protected void renderPrimaryChevron(StargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged)
+	{
+		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
+		
+		stack.pushPose();
+		stack.translate(0, 3.5F - 2.5F/16, 0);
+		
+		renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate));
+		renderOuterChevronFront(stack, consumer, source, light, isOuterPrimaryChevronLowered(stargate));
+		renderOuterChevronBack(stack, consumer, source, light);
+		
+		stack.popPose();
+	}
+	
+	protected boolean isChevronLightRaised(StargateEntity stargate, int chevronNumber)
+	{
+		return false;
+	}
+	
+	protected boolean isOuterChevronLowered(StargateEntity stargate, int chevronNumber)
+	{
+		return false;
+	}
+
+	protected void renderChevron(StargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
 		int chevron = stargate.getEngagedChevrons()[chevronNumber];
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
@@ -121,8 +214,8 @@ public class GenericStargateModel extends AbstractStargateModel
 		stack.mulPose(Axis.ZP.rotationDegrees(-40 * chevron));
 		stack.translate(0, 3.5F - 2.5F/16, 0);
 		
-		renderChevronLight(stack, consumer, source, light, isRaised);
-		renderOuterChevronFront(stack, consumer, source, light, isOpened);
+		renderChevronLight(stack, consumer, source, light, isChevronLightRaised(stargate, chevronNumber));
+		renderOuterChevronFront(stack, consumer, source, light, isOuterChevronLowered(stargate, chevronNumber));
 		renderOuterChevronBack(stack, consumer, source, light);
 		
 		stack.popPose();
@@ -1116,6 +1209,10 @@ public class GenericStargateModel extends AbstractStargateModel
 			stack.popPose();
 		}
 	}
+	
+	//============================================================================================
+	//********************************************Ring********************************************
+	//============================================================================================
 	
 	protected void renderSymbolRing(AbstractStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{

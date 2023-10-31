@@ -8,6 +8,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundBasicInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
@@ -91,6 +92,12 @@ public final class PacketHandlerInit
 		.encoder(ClientboundNaquadahGeneratorUpdatePacket::encode)
 		.decoder(ClientboundNaquadahGeneratorUpdatePacket::new)
 		.consumerMainThread(ClientboundNaquadahGeneratorUpdatePacket::handle)
+		.add();
+
+		INSTANCE.messageBuilder(ClientboundCrystallizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundCrystallizerUpdatePacket::encode)
+		.decoder(ClientboundCrystallizerUpdatePacket::new)
+		.consumerMainThread(ClientboundCrystallizerUpdatePacket::handle)
 		.add();
 		
 		INSTANCE.messageBuilder(ClientboundSymbolUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)

@@ -119,19 +119,6 @@ public class SGJourneyRenderTypes extends RenderType
 				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(0.0F, -0.0625F))
-				.setTransparencyState(NO_TRANSPARENCY)
-				.setLightmapState(LIGHTMAP)
-				.setOverlayState(OVERLAY)
-				.createCompositeState(true));
-	}
-	
-	public static RenderType pegasusChevron(ResourceLocation resourceLocation)
-	{
-		return create("pegasus_chveron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
-				RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
-				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(0.0F, -0.0625F))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(OVERLAY)

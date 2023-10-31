@@ -3,8 +3,10 @@ package net.povstalec.sgjourney.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.CrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
@@ -13,6 +15,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.init.FluidInit;
 
 public class ClientAccess
 {
@@ -22,7 +25,7 @@ public class ClientAccess
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final SymbolBlockEntity symbolEntity)
+        if(blockEntity instanceof final SymbolBlockEntity symbolEntity)
         {
         	symbolEntity.symbol = symbol;
         }
@@ -32,7 +35,7 @@ public class ClientAccess
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final CartoucheEntity cartouche)
+        if(blockEntity instanceof final CartoucheEntity cartouche)
         {
     		cartouche.setSymbols(symbols);
     		cartouche.setAddress(address);
@@ -43,7 +46,7 @@ public class ClientAccess
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final BasicInterfaceEntity basicInterface)
+        if(blockEntity instanceof final BasicInterfaceEntity basicInterface)
         {
         	basicInterface.setEnergy(energy);
         }
@@ -53,7 +56,7 @@ public class ClientAccess
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final TransportRingsEntity rings)
+        if(blockEntity instanceof final TransportRingsEntity rings)
         {
         	rings.emptySpace = emptySpace;
         	rings.transportHeight = transportHeight;
@@ -65,22 +68,21 @@ public class ClientAccess
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final RingPanelEntity panel)
+        if(blockEntity instanceof final RingPanelEntity panel)
         {
         	panel.ringsFound = ringsFound;
         	panel.ringsPos = ringsPos;
         }
     }
     
-    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, boolean dialingOut, int kawooshTick, int tick, String pointOfOrigin, String symbols)
+    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, String pointOfOrigin, String symbols)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final AbstractStargateEntity stargate)
+        if(blockEntity instanceof final AbstractStargateEntity stargate)
         {
         	stargate.setAddress(address);
         	stargate.setEngagedChevrons(engagedChevrons);
-        	stargate.setDialingOut(dialingOut);
         	stargate.setKawooshTickCount(kawooshTick);
         	stargate.setTickCount(tick);
         	stargate.setPointOfOrigin(pointOfOrigin);
@@ -92,7 +94,7 @@ public class ClientAccess
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final UniverseStargateEntity stargate)
+        if(blockEntity instanceof final UniverseStargateEntity stargate)
         {
         	stargate.symbolBuffer = symbolBuffer;
         	stargate.addressBuffer = addressBuffer;
@@ -106,7 +108,7 @@ public class ClientAccess
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final MilkyWayStargateEntity stargate)
+        if(blockEntity instanceof final MilkyWayStargateEntity stargate)
         {
         	stargate.setRotation(rotation);
         	stargate.oldRotation = oldRotation;
@@ -122,7 +124,7 @@ public class ClientAccess
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final PegasusStargateEntity stargate)
+        if(blockEntity instanceof final PegasusStargateEntity stargate)
         {
         	stargate.symbolBuffer = symbolBuffer;
         	stargate.addressBuffer = addressBuffer;
@@ -134,10 +136,20 @@ public class ClientAccess
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if (blockEntity instanceof final NaquadahGeneratorEntity generator)
+        if(blockEntity instanceof final NaquadahGeneratorEntity generator)
         {
         	generator.setReactionProgress(reactionProgress);
         	generator.setEnergy(energy);
+        }
+    }
+
+    public static void updateCrystallizer(BlockPos pos, int fluidAmount)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if(blockEntity instanceof final CrystallizerEntity crystallizer)
+        {
+        	crystallizer.setFluid(new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), fluidAmount));
         }
     }
 }

@@ -48,8 +48,8 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return getShapeFromArray(SHAPE_PROVIDER.BOTTOM, state.getValue(FACING), state.getValue(ORIENTATION));
-		return state.getValue(FACING).getAxis() == Direction.Axis.X ? SHAPE_PROVIDER.Z_BOTTOM : SHAPE_PROVIDER.X_BOTTOM;
+			return getShapeFromArray(shapeProvider.BOTTOM, state.getValue(FACING), state.getValue(ORIENTATION));
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_BOTTOM : shapeProvider.X_BOTTOM;
 	}
 	
 	@Nullable

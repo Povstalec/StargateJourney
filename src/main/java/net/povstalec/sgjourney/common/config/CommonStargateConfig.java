@@ -12,6 +12,8 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	
+	public static ForgeConfigSpec.BooleanValue enable_classic_stargate_upgrades;
+	
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> universe_chevron_lock_speed;
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> milky_way_chevron_lock_speed;
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> pegasus_chevron_lock_speed;
@@ -51,6 +53,10 @@ public class CommonStargateConfig
 		enable_redstone_dialing = server
 				.comment("Enables the use of redstone for manual Stargate dialing")
 				.define("server.enable_redstone_dialing", true);
+		
+		enable_classic_stargate_upgrades = server
+				.comment("Enables upgrading the Classic Stargate")
+				.define("server.enable_classic_stargate_upgrades", false);
 		
 		
 		

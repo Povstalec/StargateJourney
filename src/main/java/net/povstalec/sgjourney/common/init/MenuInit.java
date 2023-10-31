@@ -12,6 +12,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.menu.BasicInterfaceMenu;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
 import net.povstalec.sgjourney.common.menu.CrystalInterfaceMenu;
+import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
@@ -49,6 +50,9 @@ public class MenuInit
 	
 	public static final RegistryObject<MenuType<ZPMHubMenu>> ZPM_HUB =
             registerMenuType(ZPMHubMenu::new, "zpm_hub");
+	
+	public static final RegistryObject<MenuType<CrystallizerMenu>> CRYSTALLIZER =
+            registerMenuType(CrystallizerMenu::new, "crystallizer");
 
 
 

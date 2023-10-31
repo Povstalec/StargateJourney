@@ -24,6 +24,12 @@ public class Dialing
 {
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
+	public static final int[] DIALED_7_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 6, 7, 8, 4, 5};
+	public static final int[] DIALED_8_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 4, 6, 7, 8, 5};
+	public static final int[] DIALED_9_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8};
+	
+	public static final int[] DIALING_CHEVRON_CONFIGURATION = DIALED_7_CHEVRON_CONFIGURATION;
+	
 	public static Stargate.Feedback dialStargate(Level level, AbstractStargateEntity stargate)
 	{
 		int[] address = stargate.getAddress();

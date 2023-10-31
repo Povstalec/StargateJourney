@@ -44,7 +44,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	//============================================================================================
 	
 	@Override
-	public boolean isCorrectSide(Direction side)
+	public boolean isCorrectEnergySide(Direction side)
 	{
 		return false;
 	}

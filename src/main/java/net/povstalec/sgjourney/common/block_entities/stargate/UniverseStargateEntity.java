@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class UniverseStargateEntity extends AbstractStargateEntity
@@ -312,11 +313,10 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		if(isConnected())
 		{
 			closeWormholeSound();
-			setConnected(false);
+			setConnected(ConnectionState.IDLE);
 		}
 		
 		resetAddress();
-		this.dialingOut = false;
 		this.connectionID = EMPTY;
 		
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));

@@ -29,6 +29,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
+import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 
@@ -38,17 +39,17 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	public static final EnumProperty<StargatePart> PART = EnumProperty.create("stargate_part", StargatePart.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
+	public static final EnumProperty<ConnectionState> CONNECTION_STATE = EnumProperty.create("connection_state", ConnectionState.class);
 	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
 	//TODO public static final BooleanProperty FULL = BooleanProperty.create("full");
 
-	protected VoxelShapeProvider SHAPE_PROVIDER;
+	protected VoxelShapeProvider shapeProvider;
 
 	public AbstractStargateBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
-		SHAPE_PROVIDER = new VoxelShapeProvider(width, horizontalOffset);
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTION_STATE, ConnectionState.IDLE).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
+		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
 	}
 
 	public abstract Stargate.Type getStargateType();
@@ -64,7 +65,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(FACING).add(WATERLOGGED).add(ORIENTATION).add(PART).add(CONNECTED).add(CHEVRONS_ACTIVE);
+		state.add(FACING).add(WATERLOGGED).add(ORIENTATION).add(PART).add(CONNECTION_STATE).add(CHEVRONS_ACTIVE);
 	}
 
 	@Override
@@ -94,8 +95,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return SHAPE_PROVIDER.HORIZONTAL;
-		return state.getValue(FACING).getAxis() == Direction.Axis.X ? SHAPE_PROVIDER.Z_FULL : SHAPE_PROVIDER.X_FULL;
+			return shapeProvider.HORIZONTAL;
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_FULL : shapeProvider.X_FULL;
 	}
 
 	@Override

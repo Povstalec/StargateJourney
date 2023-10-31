@@ -1,0 +1,10 @@
+{
+	"type": "sgjourney:crystallizing",
+	"crystal_base": {"item": "minecraft:diamond", "amount": 1},
+	"primary_ingredient": {"item": "sgjourney:naquadah_alloy", "amount": 16},
+	"secondary_ingredient": {"item": "minecraft:quartz", "amount": 9},
+	"output":
+	{
+		"item": "sgjourney:universe_upgrade_crystal"
+	}
+}

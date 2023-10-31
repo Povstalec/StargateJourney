@@ -10,92 +10,78 @@ import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
 public class Address
 {
-	/*protected int[] addressArray = new int[] {-1, -1, -1, -1, -1, -1, -1, -1};
-	protected int length = 0;
-	protected boolean hasPointOfOrigin = false;
+	/*protected int[] addressArray;
 	
-	public Address() {}
+	public Address(int[] addressArray)
+	{
+		this.addressArray = addressArray;
+	}
+	
+	public Address()
+	{
+		this(new int[0]);
+	}
+	
+	public Address(String addressString)
+	{
+		this.addressArray = addressStringToIntArray(addressString);
+	}
 	
 	public Address addSymbol(int symbol)
 	{
-		if(this.hasPointOfOrigin)
-		{
-			StargateJourney.LOGGER.info("Address is finalized and can't accept more symbols");
-			return this;
-		}
-		
-		if(symbol < 0)
+		if(symbol <= 0)
 			return this;
 		
-		if(length >= 9)
+		if(!canGrow())
 			return this;
 		
-		this.addressArray[length] = symbol;
-		length++;
+		this.addressArray = growIntArray(this.addressArray, symbol);
 		
 		return this;
 	}
 	
-	public int[] getFullAddressArray()
+	public int[] getArray()
 	{
 		return this.addressArray;
 	}
 	
-	public int[] getAddressArray()
-	{
-		int[] address = new int[length];
-		
-		for(int i = 0; i < length; i++)
-		{
-			address[i] = this.addressArray[i];
-		}
-		
-		return address;
-	}
-	
-	public String getAddressString()
-	{
-		return addressIntArrayToString(getAddressArray());
-	}
-	
 	public int getAddressLength()
 	{
-		return this.length;
+		return addressArray.length;
 	}
 	
 	public boolean isComplete()
 	{
-		return this.length > 6;
+		return getAddressLength() >= 6;
+	}
+	
+	public boolean canGrow()
+	{
+		return getAddressLength() <= 8;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return addressIntArrayToString(getArray());
 	}*/
 	
 	//============================================================================================
 	//*******************************************Static*******************************************
 	//============================================================================================
 	
-	public enum AddressType
+	private static int[] growIntArray(int[] array, int x)
 	{
-		ADDRESS_7_CHEVRON(6, new int[] {1, 2, 3, 4, 5, 6, 0}),
-		ADDRESS_8_CHEVRON(7, new int[] {1, 2, 3, 7, 4, 5, 6, 0}),
-		ADDRESS_9_CHEVRON(8, new int[] {1, 2, 3, 7, 8, 4, 5, 6, 0});
+		int[] newarray = new int[array.length + 1];
 		
-		private int numberOfSymbols;
-		private int[] dialedOrder;
-		
-		AddressType(int numberOfSymbols, int[] dialedOrder)
+		for (int i = 0; i < array.length; i++)
 		{
-			this.numberOfSymbols = numberOfSymbols;
-			this.dialedOrder = dialedOrder;
+			newarray[i] = array[i];
 		}
 		
-		public int getNumberOfSymbols()
-		{
-			return this.numberOfSymbols;
-		}
+		newarray[array.length] = x;
 		
-		public int[] getDialedOrder()
-		{
-			return this.dialedOrder;
-		}
+		return newarray;
 	}
 	
 	public static int[] randomAddress(int size, int limit, long seed)
@@ -167,20 +153,15 @@ public class Address
 		return intArray;
 	}
 	
-	public static String addressIntArrayToString(int[] array, int offset)
+	public static String addressIntArrayToString(int[] array)
 	{
 		String address = "-";
 		
-		for(int i = offset; i < array.length; i++)
+		for(int i = 0; i < array.length; i++)
 		{
 			address = address + array[i] + "-";
 		}
 		return address;
-	}
-	
-	public static String addressIntArrayToString(int[] array)
-	{
-		return addressIntArrayToString(array, 0);
 	}
 	
 	private static boolean differentNumbers(int[] address)

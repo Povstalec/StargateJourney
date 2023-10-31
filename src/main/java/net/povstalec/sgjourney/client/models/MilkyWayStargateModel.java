@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public class MilkyWayStargateModel extends GenericStargateModel
+public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity>
 {
 	protected static final float MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT = 4F / 16;
 	protected static final float MOVIE_OUTER_CHEVRON_OUTER_CUTOFF_HEIGHT = 4.4F / 16; // Why this? Don't ask me, it just works for some reason
@@ -22,8 +22,6 @@ public class MilkyWayStargateModel extends GenericStargateModel
 	protected static final float MOVIE_OUTER_OUTER_X_OFFSET = -0.5F / 16;
 	protected static final float MOVIE_OUTER_OUTER_Y_OFFSET = 2F / 16;
 	protected static final float MOVIE_OUTER_OUTER_Y_LENGTH = 4F / 16;
-	
-	private float rotation = 0.0F;
 	
 	protected ResourceLocation alternateStargateTexture;
 	protected ResourceLocation alternateEngagedTexture;
@@ -73,26 +71,29 @@ public class MilkyWayStargateModel extends GenericStargateModel
 		renderRightMovieChevron(stack, consumer, source, combinedLight);
 		renderRightMovieOuterChevron(stack, consumer, source, combinedLight);
 	}
-
-	protected void renderPrimaryChevron(MilkyWayStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged, boolean isRaised)
+	
+	@Override
+	protected void renderPrimaryChevron(MilkyWayStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged)
 	{
+		if(!ClientStargateConfig.use_movie_stargate_model.get())
+		{
+			super.renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, chevronEngaged);
+			return;
+		}
+		
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();
 		stack.translate(0, 3.5F - 2.5F/16, 0);
 		
-		renderChevronLight(stack, consumer, source, light, isRaised);
-		
-		if(!ClientStargateConfig.use_movie_stargate_model.get())
-			renderOuterChevronFront(stack, consumer, source, light, isRaised);
-		else
-			renderMovieChevronFront(stack, consumer, source, light);
-		
+		renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate));
+		renderMovieChevronFront(stack, consumer, source, light);
 		renderOuterChevronBack(stack, consumer, source, light);
 		
 		stack.popPose();
 	}
-	
+
+	@Override
 	protected boolean isPrimaryChevronRaised(MilkyWayStargateEntity stargate)
 	{
 		if(ClientStargateConfig.use_movie_stargate_model.get())
@@ -108,7 +109,14 @@ public class MilkyWayStargateModel extends GenericStargateModel
 		
 		return false;
 	}
-	
+
+	@Override
+	protected boolean isOuterPrimaryChevronLowered(MilkyWayStargateEntity stargate)
+	{
+		return isPrimaryChevronRaised(stargate);
+	}
+
+	@Override
 	protected boolean isPrimaryChevronEngaged(MilkyWayStargateEntity stargate)
 	{
 		boolean useMovieStargateModel = ClientStargateConfig.use_movie_stargate_model.get();
@@ -122,8 +130,12 @@ public class MilkyWayStargateModel extends GenericStargateModel
 		return false;
 	}
 	
-	protected boolean isMovieChevronLightRaised(MilkyWayStargateEntity stargate, int chevronNumber)
+	@Override
+	protected boolean isChevronLightRaised(MilkyWayStargateEntity stargate, int chevronNumber)
 	{
+		if(!ClientStargateConfig.use_movie_stargate_model.get())
+			return false;
+		
 		boolean alternateChevronLocking = ClientStargateConfig.alternate_movie_chevron_locking.get();
 		int chevronsRendered = stargate.chevronsRendered();
 		
@@ -146,9 +158,13 @@ public class MilkyWayStargateModel extends GenericStargateModel
 		
 		return false;
 	}
-	
-	protected boolean isOuterMovieChevronLowered(MilkyWayStargateEntity stargate, int chevronNumber)
+
+	@Override
+	protected boolean isOuterChevronLowered(MilkyWayStargateEntity stargate, int chevronNumber)
 	{
+		if(!ClientStargateConfig.use_movie_stargate_model.get())
+			return false;
+		
 		boolean alternateChevronLocking = ClientStargateConfig.alternate_movie_chevron_locking.get();
 		int chevronsRendered = stargate.chevronsRendered();
 		
@@ -173,36 +189,6 @@ public class MilkyWayStargateModel extends GenericStargateModel
 			return true;
 		
 		return false;
-	}
-	
-	protected void renderChevrons(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		//Renders Chevrons
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture()));
-		
-		renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, false, isPrimaryChevronRaised(stargate));
-		for(int chevronNumber = 1; chevronNumber < 9; chevronNumber++)
-		{
-			boolean isChevronLightRaised = ClientStargateConfig.use_movie_stargate_model.get() ? isMovieChevronLightRaised(stargate, chevronNumber) : false;
-			boolean isOuterChevronOpen = ClientStargateConfig.use_movie_stargate_model.get() ? isOuterMovieChevronLowered(stargate, chevronNumber) : false;
-			
-			renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, false, isChevronLightRaised, isOuterChevronOpen);
-		}
-		
-		//Renders lit up parts of Chevrons
-		consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture()));
-		if(isPrimaryChevronEngaged(stargate))
-			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true, isPrimaryChevronRaised(stargate));
-		for(int chevronNumber = 1; chevronNumber < 9; chevronNumber++)
-		{
-			boolean isChevronEngaged = stargate.chevronsRendered() >= chevronNumber;
-			boolean isChevronLightRaised = ClientStargateConfig.use_movie_stargate_model.get() ? isMovieChevronLightRaised(stargate, chevronNumber) : false;
-			boolean isOuterChevronOpen = ClientStargateConfig.use_movie_stargate_model.get() ? isOuterMovieChevronLowered(stargate, chevronNumber) : false;
-			
-			if(isChevronEngaged)
-				renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, isChevronEngaged, isChevronLightRaised, isOuterChevronOpen);
-		}
 	}
 	
 	protected void renderLeftMovieChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)

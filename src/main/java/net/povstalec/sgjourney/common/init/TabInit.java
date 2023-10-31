@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.NaquadahBottleItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
@@ -85,6 +86,14 @@ public class TabInit
 				items.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
 				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
+				
+				if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
+				{
+					items.accept(ItemInit.UNIVERSE_UPGRADE_CRYSTAL.get());
+					items.accept(ItemInit.MILKY_WAY_UPGRADE_CRYSTAL.get());
+					items.accept(ItemInit.PEGASUS_UPGRADE_CRYSTAL.get());
+					items.accept(ItemInit.TOLLAN_UPGRADE_CRYSTAL.get());
+				}
 			});
 		});
 		
@@ -138,7 +147,7 @@ public class TabInit
 				items.accept(BlockInit.FIRE_PIT.get());
 
 				items.accept(BlockInit.LIQUIDIZER.get());
-				//event.accept(BlockInit.CRYSTALLIZER.get());
+				items.accept(BlockInit.CRYSTALLIZER.get());
 
 				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
 				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());

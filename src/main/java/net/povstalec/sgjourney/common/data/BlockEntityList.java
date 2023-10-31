@@ -175,7 +175,7 @@ public class BlockEntityList extends SavedData
 	@Nonnull
 	public static BlockEntityList get(Level level)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			throw new RuntimeException("Don't access this client-side!");
 		
 		return BlockEntityList.get(level.getServer());
