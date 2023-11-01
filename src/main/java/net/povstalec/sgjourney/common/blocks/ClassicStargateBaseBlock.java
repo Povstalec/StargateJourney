@@ -21,7 +21,6 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
@@ -75,7 +74,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 					.setValue(ClassicStargateBlock.FACING, direction)
 					.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
 			
-			for(StargatePart part : Stargate.Type.CLASSIC.getParts())
+			for(StargatePart part : block.getParts())
 			{
 				if(!part.equals(StargatePart.BASE))
 				{
@@ -112,7 +111,8 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 	
 	private static boolean checkParts(Level level, BlockPos pos, Direction direction, Orientation orientation)
 	{
-		for(StargatePart part : Stargate.Type.CLASSIC.getParts())
+		ClassicStargateBlock block = BlockInit.CLASSIC_STARGATE.get();
+		for(StargatePart part : block.getParts())
 		{
 			if(!part.equals(StargatePart.BASE) && !(level.getBlockState(part.getRingPos(pos, direction, orientation))
 					.is(getClassicStargateBlock(part))))

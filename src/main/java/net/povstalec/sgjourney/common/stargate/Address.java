@@ -10,21 +10,26 @@ import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
 public class Address
 {
-	/*protected int[] addressArray;
+	public static final String ADDRESS_DIVIDER = "-";
+	public static final int MIN_ADDRESS_LENGTH = 6;
+	public static final int MAX_ADDRESS_LENGTH = 9;
+	
+	protected int[] addressArray = new int[0];
+	
+	public Address() {}
 	
 	public Address(int[] addressArray)
 	{
-		this.addressArray = addressArray;
-	}
-	
-	public Address()
-	{
-		this(new int[0]);
+		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+			this.addressArray = addressArray;
 	}
 	
 	public Address(String addressString)
 	{
-		this.addressArray = addressStringToIntArray(addressString);
+		int[] addressArray = addressStringToIntArray(addressString);
+		
+		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+			this.addressArray = addressArray;
 	}
 	
 	public Address addSymbol(int symbol)
@@ -35,7 +40,7 @@ public class Address
 		if(!canGrow())
 			return this;
 		
-		this.addressArray = growIntArray(this.addressArray, symbol);
+		this.addressArray = ArrayHelper.growIntArray(this.addressArray, symbol);
 		
 		return this;
 	}
@@ -52,37 +57,30 @@ public class Address
 	
 	public boolean isComplete()
 	{
-		return getAddressLength() >= 6;
+		return getAddressLength() >= MIN_ADDRESS_LENGTH;
 	}
 	
 	public boolean canGrow()
 	{
-		return getAddressLength() <= 8;
+		return getAddressLength() < MAX_ADDRESS_LENGTH;
 	}
 	
 	@Override
 	public String toString()
 	{
 		return addressIntArrayToString(getArray());
-	}*/
+	}
+	
+	public Address reset()
+	{
+		addressArray = new int[0];
+		
+		return this;
+	}
 	
 	//============================================================================================
 	//*******************************************Static*******************************************
 	//============================================================================================
-	
-	private static int[] growIntArray(int[] array, int x)
-	{
-		int[] newarray = new int[array.length + 1];
-		
-		for (int i = 0; i < array.length; i++)
-		{
-			newarray[i] = array[i];
-		}
-		
-		newarray[array.length] = x;
-		
-		return newarray;
-	}
 	
 	public static int[] randomAddress(int size, int limit, long seed)
 	{
@@ -91,6 +89,8 @@ public class Address
 	
 	public static int[] randomAddress(int prefix, int size, int limit, long seed)
 	{
+		size = size > MAX_ADDRESS_LENGTH ? MAX_ADDRESS_LENGTH : size;
+		
 		Random random = new Random(seed);
 		int[] address = new int[size];
 		boolean isValid = false;
@@ -136,7 +136,7 @@ public class Address
 		if(addressString == null)
 			return new int[0];
 		
-		String[] stringArray = addressString.split("-");
+		String[] stringArray = addressString.split(ADDRESS_DIVIDER);
 		int[] intArray = new int[0];
 		
 		for(int i = 1; i < stringArray.length; i++)
@@ -155,11 +155,11 @@ public class Address
 	
 	public static String addressIntArrayToString(int[] array)
 	{
-		String address = "-";
+		String address = ADDRESS_DIVIDER;
 		
 		for(int i = 0; i < array.length; i++)
 		{
-			address = address + array[i] + "-";
+			address = address + array[i] + ADDRESS_DIVIDER;
 		}
 		return address;
 	}

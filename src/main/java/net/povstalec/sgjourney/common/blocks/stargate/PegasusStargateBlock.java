@@ -11,18 +11,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class PegasusStargateBlock extends AbstractStargateBaseBlock
 {
 	public PegasusStargateBlock(Properties properties)
 	{
 		super(properties, 7.0D, 1.0D);
-	}
-
-	public Stargate.Type getStargateType()
-	{
-		return Stargate.Type.PEGASUS;
 	}
 	
 	@Nullable

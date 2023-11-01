@@ -4,8 +4,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class VoxelShapeProvider {
-
+public class VoxelShapeProvider
+{
     private static final double MIN = 0.0D;
     private static final double MAX = 16.0D;
     private static final double MID = MAX / 2;

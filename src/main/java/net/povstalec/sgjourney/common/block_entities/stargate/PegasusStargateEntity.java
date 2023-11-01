@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
@@ -16,6 +17,7 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class PegasusStargateEntity extends AbstractStargateEntity
 {
@@ -229,5 +231,11 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public void stopRotationSound()
 	{
 		this.spinSound.stopSound();
+	}
+
+	@Override
+	public ChevronLockSpeed getChevronLockSpeed()
+	{
+		return CommonStargateConfig.pegasus_chevron_lock_speed.get();
 	}
 }

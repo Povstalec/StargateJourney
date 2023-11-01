@@ -1,74 +1,11 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.ArrayList;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 
 public class Stargate
 {
-	// Thickness (Includes Chevrons)
-	public static final float STANDARD_THICKNESS = 9.0F;
-	public static final float TOLLAN_THICKNESS = 5.0F;
-	public static final float CLASSIC_THICKNESS = 8.0F;
-	// Vertical Height
-	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
-	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0.0F;
-	// Horizontal Height
-	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
-	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
-	public static final float HORIZONTAL_CENTER_CLASSIC_HEIGHT = (CLASSIC_THICKNESS / 2) / 16;
-	
-	public enum PartType
-	{
-		DEFAULT,
-		TOLLAN;
-	}
-	
-	public enum Type
-	{
-		UNIVERSE(StargatePart.DEFAULT_PARTS, CommonStargateConfig.universe_chevron_lock_speed.get(), VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
-		MILKY_WAY(StargatePart.DEFAULT_PARTS, CommonStargateConfig.milky_way_chevron_lock_speed.get(), VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
-		PEGASUS(StargatePart.DEFAULT_PARTS, CommonStargateConfig.pegasus_chevron_lock_speed.get(), VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT),
-		CLASSIC(StargatePart.DEFAULT_PARTS, CommonStargateConfig.classic_chevron_lock_speed.get(), VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT),
-		TOLLAN(StargatePart.TOLLAN_PARTS, CommonStargateConfig.tollan_chevron_lock_speed.get(), VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
-		
-		private ArrayList<StargatePart> parts;
-		private ChevronLockSpeed chevronLockSpeed;
-		private float verticalCenterHeight;
-		private float horizontalCenterHeight;
-		
-		private Type(ArrayList<StargatePart> parts, ChevronLockSpeed chevronLockSpeed, float verticalCenterHeight, float horizontalCenterHeight)
-		{
-			this.parts = parts;
-			this.chevronLockSpeed = chevronLockSpeed;
-			this.verticalCenterHeight = verticalCenterHeight;
-			this.horizontalCenterHeight = horizontalCenterHeight;
-		}
-		
-		public ArrayList<StargatePart> getParts()
-		{
-			return this.parts;
-		}
-		
-		public float getVerticalCenterHeight()
-		{
-			return this.verticalCenterHeight;
-		}
-		
-		public float getHorizontalCenterHeight()
-		{
-			return this.horizontalCenterHeight;
-		}
-		
-		public ChevronLockSpeed getChevronLockSpeed()
-		{
-			return this.chevronLockSpeed;
-		}
-	}
-	
 	public enum Gen
 	{
 		NONE(0),

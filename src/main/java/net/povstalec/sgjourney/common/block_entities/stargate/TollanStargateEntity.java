@@ -3,15 +3,22 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class TollanStargateEntity extends AbstractStargateEntity
 {
+	public static final float TOLLAN_THICKNESS = 5.0F;
+	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0F;
+	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
+	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2);
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2,
+				VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 	}
 	
 	@Override
@@ -54,4 +61,10 @@ public class TollanStargateEntity extends AbstractStargateEntity
 
 	@Override
 	public void stopRotationSound(){}
+
+	@Override
+	public ChevronLockSpeed getChevronLockSpeed()
+	{
+		return CommonStargateConfig.tollan_chevron_lock_speed.get();
+	}
 }

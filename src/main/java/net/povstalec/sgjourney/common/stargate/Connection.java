@@ -178,7 +178,7 @@ public class Connection
 	
 	public void tick(MinecraftServer server)
 	{
-		Stargate.ChevronLockSpeed chevronLockSpeed = this.dialedStargate.getGateType().getChevronLockSpeed();
+		Stargate.ChevronLockSpeed chevronLockSpeed = this.dialedStargate.getChevronLockSpeed();
 		int waitMultiplier = chevronLockSpeed.getMultiplier();
 		int chevronWaitTicks = chevronLockSpeed.getChevronWaitTicks();
 		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();

@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
@@ -81,21 +80,23 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	}
 	
 	@Override
-	protected void renderSymbols(AbstractStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
+	protected void renderSymbols(PegasusStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		if((stargate.isDialingOut() && stargate.isConnected()) || (((PegasusStargateEntity) stargate).addressBuffer.length > 0 && !stargate.isConnected()))
+		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.length > 0 && !stargate.isConnected()))
 		{
 			// Spinning Symbol
-			renderSpinningSymbol(((PegasusStargateEntity) stargate), stack, consumer, source, combinedLight, rotation);
+			renderSpinningSymbol(stargate, stack, consumer, source, combinedLight, rotation);
 			
 			// Point of Origin when Stargate is connected
 			if(stargate.isConnected())
+			{
 				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, R, ENGAGED_G, ENGAGED_B);
+			}
 			
 			// Locked Symbols
 			for(int i = 0; i < stargate.getAddress().length; i++)
 			{
-				int symbolNumber = ((PegasusStargateEntity) stargate).getChevronPosition(i + 1);
+				int symbolNumber = stargate.getChevronPosition(i + 1);
 				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress()[i], 0, R, ENGAGED_G, ENGAGED_B);
 			}
 		}
@@ -109,8 +110,9 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			{
 				green = ENGAGED_G;
 				blue = ENGAGED_B;
-				symbolNumber = ((PegasusStargateEntity) stargate).currentSymbol < symbolSides ? ((PegasusStargateEntity) stargate).currentSymbol : symbolNumber;
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, R, ENGAGED_G, ENGAGED_B);
+				symbolNumber = stargate.currentSymbol < symbolSides ? stargate.currentSymbol : symbolNumber;
+				if(stargate.getKawooshTickCount() > 0)
+					renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, R, ENGAGED_G, ENGAGED_B);
 			}
 			
 			// Idle Symbols

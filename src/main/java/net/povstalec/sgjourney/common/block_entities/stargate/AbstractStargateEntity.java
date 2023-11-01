@@ -52,10 +52,19 @@ import net.povstalec.sgjourney.common.stargate.Wormhole;
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
 	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
+
+	public static final float STANDARD_THICKNESS = 9.0F;
+	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
+	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
 	// Basic Info
-	protected static Stargate.Gen generation;
+	protected final Stargate.Gen generation;
 	protected int network;
+	
+	// Blockstate values
+	protected BlockPos centerPosition;
+	protected Direction direction;
+	protected Orientation orientation;
 	
 	// Used during gameplay
 	protected Stargate.Feedback recentFeedback = Stargate.Feedback.NONE;
@@ -75,22 +84,35 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected boolean advancedProtocolsEnabled = false;
 
 	protected int openSoundLead = 28;
+	protected float verticalCenterHeight;
+	protected float horizontalCenterHeight;
+	
 	public SoundWrapper wormholeIdleSound = null;
 	public SoundWrapper wormholeOpenSound = null;
 	public SoundWrapper spinSound = null;
 	
-	protected boolean displayID = false; //TODO Set this to false once there's another way to find the Stargate ID
+	protected boolean displayID = false;
 	protected boolean upgraded = false;
 	
 	//private Stargate.FilterType filter = Stargate.FilterType.NONE;
 	//private ListTag whitelist;
 	//private ListTag blacklist;
 
-	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
+			float verticalCenterHeight, float horizontalCenterHeight)
 	{
 		super(blockEntity, pos, state, SGJourneyBlockEntity.Type.STARGATE);
+		
 		generation = gen;
 		this.network = defaultNetwork;
+		
+		this.verticalCenterHeight = verticalCenterHeight;
+		this.horizontalCenterHeight = horizontalCenterHeight;
+	}
+
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
+	{
+		this(blockEntity, pos, state, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
 	@Override
@@ -315,8 +337,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void connectStargate(String connectionID, ConnectionState connectionState)
 	{
 		this.connectionID = connectionID;
-		this.setConnected(connectionState);//TODO Change
-		//this.setDialingOut(dialingOut);
+		this.setConnected(connectionState);
 		this.timesOpened++;
 		this.setChanged();
 		
@@ -668,23 +689,31 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return getAddress().length;
 	}
 	
+	//============================================================================================
+	//**************************************Blockstate stuff**************************************
+	//============================================================================================
+	
 	public BlockPos getCenterPos()
 	{
-    	BlockPos mainBlockPos = this.getBlockPos();
-    	Direction centerDirection = Orientation.getCenterDirection(getDirection(), getOrientation());
+		if(this.centerPosition == null)
+		{
+			BlockPos mainBlockPos = this.getBlockPos();
+    		Direction centerDirection = Orientation.getCenterDirection(getDirection(), getOrientation());
+    		this.centerPosition = mainBlockPos.relative(centerDirection, 3);
+		}
     	
-    	return mainBlockPos.relative(centerDirection, 3);
+    	return this.centerPosition;
 	}
     
     public Vec3 getCenter()
     {
     	BlockPos centerPos = getCenterPos();
     	
-    	double y = this.getGateType().getVerticalCenterHeight();
+    	double y = getVerticalCenterHeight();
     	Orientation orientation = getOrientation();
     	
     	if(orientation != null && orientation != Orientation.REGULAR)
-    		y = this.getGateType().getHorizontalCenterHeight();
+    		y = getHorizontalCenterHeight();
     	
     	return new Vec3(
     			centerPos.getX() + 0.5, 
@@ -697,13 +726,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
     	BlockPos mainBlockPos = this.getBlockPos();
     	BlockPos centerPos = getCenterPos();
     	
-    	Stargate.Type type = this.getGateType();
-    	
-    	double y = type == null ? 0.5 : type.getVerticalCenterHeight();
+    	double y = getVerticalCenterHeight();
     	Orientation orientation = getOrientation();
     	
     	if(orientation != null && orientation != Orientation.REGULAR)
-    		y = type.getHorizontalCenterHeight();
+    		y = getHorizontalCenterHeight();
     	
     	return new Vec3(
     			centerPos.getX() - mainBlockPos.getX() + 0.5, 
@@ -719,24 +746,32 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public Orientation getOrientation()
 	{
-		BlockState gateState = getState();
-		
-		if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
-			return gateState.getValue(AbstractStargateBaseBlock.ORIENTATION);
+		if(this.orientation == null)
+		{
+			BlockState gateState = getState();
+			
+			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
+				this.orientation = gateState.getValue(AbstractStargateBaseBlock.ORIENTATION);
+			else
+				StargateJourney.LOGGER.info("Couldn't find Stargate Orientation");
+		}
 
-		StargateJourney.LOGGER.info("Couldn't find Stargate Orientation");
-		return null;
+		return this.orientation;
 	}
 	
 	public Direction getDirection()
 	{
-		BlockState gateState = getState();
+		if(this.direction == null)
+		{
+			BlockState gateState = getState();
+			
+			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
+				this.direction = gateState.getValue(AbstractStargateBaseBlock.FACING);
+			else
+				StargateJourney.LOGGER.info("Couldn't find Stargate Direction");
+		}
 		
-		if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
-			return gateState.getValue(AbstractStargateBaseBlock.FACING);
-
-		StargateJourney.LOGGER.info("Couldn't find Stargate Direction");
-		return null;
+		return this.direction;
 	}
 	
 	public void setConnected(ConnectionState connectionState)
@@ -747,7 +782,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void setStargateState(ConnectionState connectionState, int chevronsEngaged)
 	{
 		BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = this.level.getBlockState(gatePos);
+		BlockState gateState = getState();
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
 			stargate.updateStargate(level, gatePos, gateState, connectionState, chevronsEngaged);
@@ -800,20 +835,18 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
     public void updateInterfaceBlocks(String eventName, Object... objects)
     {
     	BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = this.level.getBlockState(gatePos);
+		BlockState gateState = getState();
 		
-		if(gateState.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 		{
-			for(StargatePart part : stargateBlock.getStargateType().getParts())
+			for(StargatePart part : stargateBlock.getParts())
 			{
 				BlockPos pos = part.getRingPos(gatePos, gateState.getValue(AbstractStargateBlock.FACING), gateState.getValue(AbstractStargateBlock.ORIENTATION));
 				
 				for(Direction direction : Direction.values())
 		    	{
 		    		if(level.getBlockEntity(pos.relative(direction)) instanceof BasicInterfaceEntity interfaceEntity)
-		    		{
 		    			interfaceEntity.queueEvent(eventName, objects);
-		    		}
 		    	}
 			}
 		}
@@ -838,6 +871,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	{
 		return this.openSoundLead;
 	}
+	
+	public abstract Stargate.ChevronLockSpeed getChevronLockSpeed();
 	
 	public abstract SoundEvent getChevronEngageSound();
 	
@@ -889,23 +924,20 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return 1000000000L;
 	}
 	
-	public Stargate.Type getGateType()
+	public float getVerticalCenterHeight()
 	{
-		BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = this.level.getBlockState(gatePos);
-		
-		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
-			return stargate.getStargateType();
-
-		StargateJourney.LOGGER.info("Couldn't find Stargate Type");
-		return null;
+		return this.verticalCenterHeight;
+	}
+	
+	public float getHorizontalCenterHeight()
+	{
+		return this.horizontalCenterHeight;
 	}
 	
 	public double getGateAddition()
 	{
 		return this.getOrientation() == Orientation.REGULAR
-				? getGateType().getVerticalCenterHeight()
-				: getGateType().getHorizontalCenterHeight();
+				? getVerticalCenterHeight() : getHorizontalCenterHeight();
 	}
 	
 	public void updateClient()

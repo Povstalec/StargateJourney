@@ -24,7 +24,6 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public class ClassicStargateBlock extends AbstractStargateBaseBlock
@@ -32,11 +31,6 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 	public ClassicStargateBlock(Properties properties)
 	{
 		super(properties, 8.0D, 0.0D);
-	}
-
-	public Stargate.Type getStargateType()
-	{
-		return Stargate.Type.CLASSIC;
 	}
 	
 	@Nullable
@@ -88,7 +82,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 			Orientation orientation = level.getBlockState(pos).getValue(ORIENTATION);
 			
 			// Check if there's enough space for the Stargate (Not all Stargates have the same size)
-			for(StargatePart part : baseBlock.getStargateType().getParts())
+			for(StargatePart part : baseBlock.getParts())
 			{
 				BlockState partState = level.getBlockState(part.getRingPos(pos, direction, orientation));
 				if(!part.equals(StargatePart.BASE) && (!partState.canBeReplaced() && !(partState.getBlock() instanceof AbstractStargateBlock)))
@@ -98,7 +92,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 				}
 			}
 			
-			for(StargatePart part : baseBlock.getStargateType().getParts())
+			for(StargatePart part : baseBlock.getParts())
 			{
 				if(!part.equals(StargatePart.BASE))
 				{

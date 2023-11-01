@@ -1214,7 +1214,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	//********************************************Ring********************************************
 	//============================================================================================
 	
-	protected void renderSymbolRing(AbstractStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
+	protected void renderSymbolRing(StargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
 		for(int j = 0; j < this.symbolSides; j++)
 		{
@@ -1327,7 +1327,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		this.renderSymbols(stargate, stack, consumer, source, combinedLight, rotation);
 	}
 	
-	protected void renderSymbols(AbstractStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
+	protected void renderSymbols(StargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
 		//Front Symbols
 		for(int j = 0; j < this.symbolSides; j++)
@@ -1336,7 +1336,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		}
 	}
 	
-	protected void renderSymbol(AbstractStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
+	protected void renderSymbol(StargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
 		int symbolNumber, int symbolRendered, float rotation,
 		float symbolR, float symbolG, float symbolB)
 	{

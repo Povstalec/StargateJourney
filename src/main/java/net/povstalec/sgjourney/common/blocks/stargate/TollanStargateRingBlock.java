@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
+import java.util.ArrayList;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -9,7 +11,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public class TollanStargateRingBlock extends AbstractStargateRingBlock
 {
@@ -18,9 +20,10 @@ public class TollanStargateRingBlock extends AbstractStargateRingBlock
 		super(properties, 3.0D, 1.0D);
 	}
 
-	public Stargate.Type getStargateType()
+	@Override
+	public ArrayList<StargatePart> getParts()
 	{
-		return Stargate.Type.TOLLAN;
+		return StargatePart.TOLLAN_PARTS;
 	}
 
 	@Override

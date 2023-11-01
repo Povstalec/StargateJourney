@@ -8,12 +8,17 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class ClassicStargateEntity extends AbstractStargateEntity
 {
+	public static final float CLASSIC_THICKNESS = 8.0F;
+	public static final float HORIZONTAL_CENTER_CLASSIC_HEIGHT = (CLASSIC_THICKNESS / 2) / 16;
+	
 	private static final short ROTATION_TICK_DURATION = 40;
 	private static final short CHEVRON_LOCK_TICK_DURATION = 20;
 	
@@ -25,7 +30,8 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0);
+		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0,
+				VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT);
 		pointOfOrigin = "sgjourney:tauri";
 		symbols = "sgjourney:milky_way";
 		
@@ -135,6 +141,12 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ChevronLockSpeed getChevronLockSpeed()
+	{
+		return CommonStargateConfig.classic_chevron_lock_speed.get();
 	}
 	
 }

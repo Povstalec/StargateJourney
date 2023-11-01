@@ -26,7 +26,6 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
@@ -35,11 +34,6 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	public MilkyWayStargateBlock(Properties properties)
 	{
 		super(properties, 7.0D, 1.0D);
-	}
-
-	public Stargate.Type getStargateType()
-	{
-		return Stargate.Type.MILKY_WAY;
 	}
 	
 	@Nullable

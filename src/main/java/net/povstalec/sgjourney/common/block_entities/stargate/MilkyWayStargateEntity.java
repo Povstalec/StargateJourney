@@ -25,6 +25,7 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public class MilkyWayStargateEntity extends AbstractStargateEntity
@@ -363,4 +364,10 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 
 	@Override
 	public void stopRotationSound(){}
+
+	@Override
+	public ChevronLockSpeed getChevronLockSpeed()
+	{
+		return CommonStargateConfig.milky_way_chevron_lock_speed.get();
+	}
 }

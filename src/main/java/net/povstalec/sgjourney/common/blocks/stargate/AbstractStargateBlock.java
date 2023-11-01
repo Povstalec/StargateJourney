@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
+import java.util.ArrayList;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -30,7 +32,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
-import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
@@ -52,7 +53,10 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
 	}
 
-	public abstract Stargate.Type getStargateType();
+	public ArrayList<StargatePart> getParts()
+	{
+		return StargatePart.DEFAULT_PARTS;
+	}
 
 	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
 	{
