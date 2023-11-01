@@ -214,15 +214,16 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected String generateID()
 	{
 		Random random = new Random();
-		String address = EMPTY;
+		Address address = new Address().randomAddress(8, 36, random.nextLong());
+		String addressString;
 		while(true)
 		{
-			address = Address.addressIntArrayToString(Address.randomAddress(8, 36, random.nextLong()));
+			addressString = address.toString();
 			
-			if(!BlockEntityList.get(level).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).contains(address))
+			if(!BlockEntityList.get(level).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).contains(addressString))
 				break;
 		}
-		return address;
+		return addressString;
 	}
 
 	

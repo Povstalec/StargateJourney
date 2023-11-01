@@ -27,6 +27,7 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class CartoucheRenderer
@@ -104,20 +105,20 @@ public abstract class CartoucheRenderer
         	Symbols symbols = getSymbols(cartouche);
             light = LevelRenderer.getLightColor(cartouche.getLevel(), pos);
         	
-        	int[] address = cartouche.getAddress();
+        	Address address = cartouche.getAddress();
             
             if(address != null)
             {
-            	float symbolSize = MAX_HEIGHT / address.length;
+            	float symbolSize = MAX_HEIGHT / address.getLength();
                 if(symbolSize > MAX_WIDTH)
                 	symbolSize = MAX_WIDTH;
             	
-                for(int i = 0; i < address.length; i++)
+                for(int i = 0; i < address.getLength(); i++)
                 {
-                	ResourceLocation texture = symbols != null ? symbols.texture(address[i] - 1) : ERROR;
+                	ResourceLocation texture = symbols != null ? symbols.texture(address.getSymbol(i) - 1) : ERROR;
                 	VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
                 	
-                	float yStart = 0.5F + symbolSize * address.length / 2;
+                	float yStart = 0.5F + symbolSize * address.getLength() / 2;
                 	if(yStart > 0.5F + MAX_HEIGHT / 2)
                 		yStart = 0.5F + MAX_HEIGHT / 2;
                 	

@@ -32,9 +32,9 @@ public class Dialing
 	
 	public static Stargate.Feedback dialStargate(Level level, AbstractStargateEntity stargate)
 	{
-		int[] address = stargate.getAddress().toArray();
+		Address address = stargate.getAddress();
 		
-		switch(address.length)
+		switch(address.getLength())
 		{
 		case 6:
 			return get7ChevronStargate(level, stargate, address);
@@ -47,9 +47,9 @@ public class Dialing
 		}
 	}
 	
-	private static Stargate.Feedback get7ChevronStargate(Level level, AbstractStargateEntity stargate, int[] address)
+	private static Stargate.Feedback get7ChevronStargate(Level level, AbstractStargateEntity stargate, Address address)
 	{
-		String addressString = Address.addressIntArrayToString(address);
+		String addressString = address.toString();
 		
 		// List of Galaxies the dialing Dimension is located in
 		ListTag galaxies = Universe.get(level).getGalaxiesFromDimension(level.dimension().location().toString());
@@ -75,9 +75,9 @@ public class Dialing
 		return getStargate(level, stargate, solarSystem);
 	}
 	
-	private static Stargate.Feedback get8ChevronStargate(Level level, AbstractStargateEntity stargate, int[] address)
+	private static Stargate.Feedback get8ChevronStargate(Level level, AbstractStargateEntity stargate, Address address)
 	{
-		String addressString = Address.addressIntArrayToString(address);
+		String addressString = address.toString();
 		String solarSystem = Universe.get(level).getSolarSystemFromExtragalacticAddress(addressString);
 		
 		if(solarSystem.equals(EMPTY))
@@ -187,9 +187,9 @@ public class Dialing
 		return stargate.resetStargate(Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 	}
 	
-	public static Stargate.Feedback get9ChevronStargate(Level level, AbstractStargateEntity stargate, int[] address)
+	public static Stargate.Feedback get9ChevronStargate(Level level, AbstractStargateEntity stargate, Address address)
 	{
-		String id = Address.addressIntArrayToString(address);
+		String id = address.toString();
 		return getStargateFromID(level.getServer(), stargate, id);
 	}
 	

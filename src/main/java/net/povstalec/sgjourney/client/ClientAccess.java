@@ -39,7 +39,7 @@ public class ClientAccess
         if(blockEntity instanceof final CartoucheEntity cartouche)
         {
     		cartouche.setSymbols(symbols);
-    		cartouche.setAddress(address);
+    		cartouche.setAddress(new Address(address));
         }
     }
     

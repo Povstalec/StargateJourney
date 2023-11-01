@@ -201,7 +201,7 @@ public class Connection
 			playStargateOpenSound(this.dialedStargate, kawooshStartTicks, this.openTime);
 			
 			int addressLenght = this.dialingStargate.getAddress().getLength();
-			int[] dialingAddress = Address.addressStringToIntArray(this.dialingStargate.getConnectionAddress(addressLenght));
+			Address dialingAddress = new Address().fromString(this.dialingStargate.getConnectionAddress(addressLenght));
 			
 			this.dialedStargate.setEngagedChevrons(AbstractStargateEntity.getChevronConfiguration(addressLenght));
 			
@@ -215,14 +215,14 @@ public class Connection
 			{
 				int dialedAddressLength = this.dialedStargate.getAddress().getLength();
 				
-				if(dialedAddressLength < dialingAddress.length)
+				if(dialedAddressLength < dialingAddress.getLength())
 				{
 					if(this.openTime / chevronWaitTicks == 4 && addressLenght < 7)
 						return;
 					else if(this.openTime / chevronWaitTicks == 5 && addressLenght < 8)
 						return;
 					else
-						this.dialedStargate.encodeChevron(dialingAddress[dialedAddressLength], true);
+						this.dialedStargate.encodeChevron(dialingAddress.getSymbol(dialedAddressLength), true);
 				}
 				else
 				{

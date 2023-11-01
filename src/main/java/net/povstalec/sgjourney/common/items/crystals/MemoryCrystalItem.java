@@ -140,6 +140,7 @@ public class MemoryCrystalItem extends Item
 	{
 		CompoundTag tag = getMemory(stack, memory);
 		
+		Address address = new Address();
 		if(tag.contains(MEMORY_TYPE, Tag.TAG_STRING))
 		{
 			String memoryType = tag.getString(MEMORY_TYPE);
@@ -148,11 +149,11 @@ public class MemoryCrystalItem extends Item
 			{
 				int[] coordinates = tag.getIntArray(ADDRESS);
 				StargateJourney.LOGGER.info("Found Address at Memory Slot " + memory);
-				return coordinates;
+				address.fromArray(coordinates);
 			}
 		}
 		
-		return new int[0];
+		return address.toArray();
 	}
 	
 	public static boolean saveAddress(ItemStack stack, int[] address)
@@ -181,13 +182,13 @@ public class MemoryCrystalItem extends Item
         	switch(address.length)
         	{
         	case 6:
-        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.GOLD));
+        		tooltipComponents.add(Component.literal(address.toString()).withStyle(ChatFormatting.GOLD));
         		break;
         	case 7:
-        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.LIGHT_PURPLE));
+        		tooltipComponents.add(Component.literal(address.toString()).withStyle(ChatFormatting.LIGHT_PURPLE));
         		break;
         	case 8:
-        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.AQUA));
+        		tooltipComponents.add(Component.literal(address.toString()).withStyle(ChatFormatting.AQUA));
         		break;
         	default:
         		break;

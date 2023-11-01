@@ -111,21 +111,17 @@ public class Address
 		return false;
 	}
 	
-	//============================================================================================
-	//*******************************************Static*******************************************
-	//============================================================================================
-	
-	public static int[] randomAddress(int size, int limit, long seed)
+	public Address randomAddress(int size, int limit, long seed)
 	{
 		return randomAddress(0, size, limit, seed);
 	}
 	
-	public static int[] randomAddress(int prefix, int size, int limit, long seed)
+	public Address randomAddress(int prefix, int size, int limit, long seed)
 	{
 		size = size > MAX_ADDRESS_LENGTH ? MAX_ADDRESS_LENGTH : size;
 		
 		Random random = new Random(seed);
-		int[] address = new int[size];
+		int[] addressArray = new int[size];
 		boolean isValid = false;
 		
 		while(!isValid)
@@ -133,38 +129,24 @@ public class Address
 			for(int i = 0; i < size; i++)
 			{
 				if(i == 0 && prefix > 0 && prefix < limit)
-					address[i] = prefix;
+					addressArray[i] = prefix;
 				else
-					address[i] = random.nextInt(1, limit);
+					addressArray[i] = random.nextInt(1, limit);
 			}
-			if(differentNumbers(address))
+			if(differentNumbers(addressArray))
 				isValid = true;
 		}
 		
-		return address;
+		this.addressArray = addressArray;
+		
+		return this;
 	}
 	
-	//TODO use this somewhere
-	public static int[] randomAddress(int size)
-	{
-		Random random = new Random();
-		int[] address = new int[size];
-		boolean isValid = false;
-		
-		while(!isValid)
-		{
-			for(int i = 0; i < size; i++)
-			{
-				address[i] = random.nextInt(1, 39);
-			}
-			if(differentNumbers(address))
-				isValid = true;
-		}
-		
-		return address;
-	}
+	//============================================================================================
+	//*******************************************Static*******************************************
+	//============================================================================================
 	
-	public static int[] addressStringToIntArray(String addressString)
+	private static int[] addressStringToIntArray(String addressString)
 	{
 		if(addressString == null)
 			return new int[0];
@@ -186,7 +168,7 @@ public class Address
 		return intArray;
 	}
 	
-	public static String addressIntArrayToString(int[] array)
+	private static String addressIntArrayToString(int[] array)
 	{
 		String address = ADDRESS_DIVIDER;
 		

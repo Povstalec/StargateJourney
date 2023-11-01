@@ -127,7 +127,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			
         	if(blockEntity instanceof CartoucheEntity cartouche) 
         	{
-        		MutableComponent symbols = Component.literal(Address.addressIntArrayToString(cartouche.getAddress()));
+        		MutableComponent symbols = Component.literal(cartouche.getAddress().toString());
         		MutableComponent text = Component.literal("Address: ").withStyle(ChatFormatting.YELLOW).append(symbols.withStyle(ChatFormatting.AQUA));
         		
         		player.sendSystemMessage(text);
