@@ -64,16 +64,16 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	
 	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		if(!stargate.isConnected() && stargate.symbolBuffer < stargate.addressBuffer.length)
+		if(!stargate.isConnected() && stargate.symbolBuffer < stargate.addressBuffer.getLength())
 	    {
-			for(int i = 0; i < stargate.getAddress().length; i++)
+			for(int i = 0; i < stargate.getAddress().getLength(); i++)
 	    	{
 	    		// This makes sure the Symbol doesn't render over other existing symbols
 	    		if(stargate.getChevronPosition(i + 1) == this.currentSymbol)
 	    			return;
 	    	}
 
-    		int renderedSymbol = stargate.addressBuffer[stargate.symbolBuffer];
+    		int renderedSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
 			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, R, ENGAGED_G, ENGAGED_B);
 	    }
 		
@@ -82,7 +82,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	@Override
 	protected void renderSymbols(PegasusStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.length > 0 && !stargate.isConnected()))
+		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.getLength() > 0 && !stargate.isConnected()))
 		{
 			// Spinning Symbol
 			renderSpinningSymbol(stargate, stack, consumer, source, combinedLight, rotation);
@@ -94,10 +94,10 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			}
 			
 			// Locked Symbols
-			for(int i = 0; i < stargate.getAddress().length; i++)
+			for(int i = 0; i < stargate.getAddress().getLength(); i++)
 			{
 				int symbolNumber = stargate.getChevronPosition(i + 1);
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress()[i], 0, R, ENGAGED_G, ENGAGED_B);
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress().toArray()[i], 0, R, ENGAGED_G, ENGAGED_B);
 			}
 		}
 		else

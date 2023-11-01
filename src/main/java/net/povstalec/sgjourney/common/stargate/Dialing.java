@@ -32,7 +32,7 @@ public class Dialing
 	
 	public static Stargate.Feedback dialStargate(Level level, AbstractStargateEntity stargate)
 	{
-		int[] address = stargate.getAddress();
+		int[] address = stargate.getAddress().toArray();
 		
 		switch(address.length)
 		{

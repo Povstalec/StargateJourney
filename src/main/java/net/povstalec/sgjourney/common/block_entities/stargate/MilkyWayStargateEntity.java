@@ -133,7 +133,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 
 	private void manualDialing()
 	{
-		if(this.signalStrength > 0 && (getCurrentSymbol() != 0 || getAddress().length > 0))
+		if(this.signalStrength > 0 && (getCurrentSymbol() != 0 || getAddress().getLength() > 0))
 		{
 			if(this.signalStrength == 15)
 			{
@@ -200,7 +200,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public Stargate.Feedback raiseChevron()
 	{
-		if(!this.isChevronRaised && !Address.addressContainsSymbol(getAddress(), getCurrentSymbol()))
+		if(!this.isChevronRaised && !getAddress().containsSymbol(getCurrentSymbol()))
 		{
 			if(!level.isClientSide())
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, true));

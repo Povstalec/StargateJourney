@@ -12,7 +12,6 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -22,7 +21,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 public class PegasusStargateEntity extends AbstractStargateEntity
 {
 	public int currentSymbol = 0;
-	public int[] addressBuffer = new int[0];
+	public Address addressBuffer = new Address();
 	public int symbolBuffer = 0;
 	private boolean passedOver = false;
 	
@@ -44,23 +43,23 @@ public class PegasusStargateEntity extends AbstractStargateEntity
     }
 	
 	@Override
-    public void load(CompoundTag nbt)
+    public void load(CompoundTag tag)
 	{
-        super.load(nbt);
+        super.load(tag);
         
-        addressBuffer = nbt.getIntArray("AddressBuffer");
-        symbolBuffer = nbt.getInt("SymbolBuffer");
-        currentSymbol = nbt.getInt("CurrentSymbol");
+        addressBuffer.fromArray(tag.getIntArray("AddressBuffer"));
+        symbolBuffer = tag.getInt("SymbolBuffer");
+        currentSymbol = tag.getInt("CurrentSymbol");
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(tag);
 		
-		nbt.putIntArray("AddressBuffer", addressBuffer);
-		nbt.putInt("SymbolBuffer", symbolBuffer);
-		nbt.putInt("CurrentSymbol", currentSymbol);
+		tag.putIntArray("AddressBuffer", addressBuffer.toArray());
+		tag.putInt("SymbolBuffer", symbolBuffer);
+		tag.putInt("CurrentSymbol", currentSymbol);
 	}
 
 	@Override
@@ -97,16 +96,16 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(isConnected() && symbol == 0)
 			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 		
-		if(Address.addressContainsSymbol(addressBuffer, symbol))
+		if(addressBuffer.containsSymbol(symbol))
 			return Stargate.Feedback.SYMBOL_ENCODED;
 		
-		if(addressBuffer.length == getAddress().length)
+		if(addressBuffer.getLength() == getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		
-		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
+		addressBuffer.addSymbol(symbol);
 		return Stargate.Feedback.SYMBOL_ENCODED;
 	}
 	
@@ -128,7 +127,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
 		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming);
 		
-		if(addressBuffer.length > getAddress().length)
+		if(addressBuffer.getLength() > getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
@@ -155,9 +154,9 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	
 	private void animateSpin()
 	{
-		if(!isConnected() && addressBuffer.length > symbolBuffer)
+		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
 		{
-			int symbol = addressBuffer[symbolBuffer];
+			int symbol = addressBuffer.getSymbol(symbolBuffer);
 			if(symbol == 0)
 			{
 				if(currentSymbol == getChevronPosition(9))
@@ -195,7 +194,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.currentSymbol));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.currentSymbol));
 	}
 	
 	private void symbolWork()
@@ -216,7 +215,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		currentSymbol = 0;
 		symbolBuffer = 0;
-		addressBuffer = new int[0];
+		addressBuffer.reset();
 		return super.resetStargate(feedback);
 	}
 

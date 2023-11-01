@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClientAccess
 {
@@ -81,7 +82,7 @@ public class ClientAccess
         
         if(blockEntity instanceof final AbstractStargateEntity stargate)
         {
-        	stargate.setAddress(address);
+        	stargate.setAddress(new Address(address));
         	stargate.setEngagedChevrons(engagedChevrons);
         	stargate.setKawooshTickCount(kawooshTick);
         	stargate.setTickCount(tick);
@@ -97,7 +98,7 @@ public class ClientAccess
         if(blockEntity instanceof final UniverseStargateEntity stargate)
         {
         	stargate.symbolBuffer = symbolBuffer;
-        	stargate.addressBuffer = addressBuffer;
+        	stargate.addressBuffer.fromArray(addressBuffer);
         	stargate.animationTicks = animationTicks;
         	stargate.rotation = rotation;
         	stargate.oldRotation = oldRotation;
@@ -127,7 +128,7 @@ public class ClientAccess
         if(blockEntity instanceof final PegasusStargateEntity stargate)
         {
         	stargate.symbolBuffer = symbolBuffer;
-        	stargate.addressBuffer = addressBuffer;
+        	stargate.addressBuffer.fromArray(addressBuffer);
         	stargate.currentSymbol = currentSymbol;
         }
     }

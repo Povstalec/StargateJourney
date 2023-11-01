@@ -93,9 +93,9 @@ public class UniverseStargateModel extends AbstractStargateModel
 			this.getSymbol(i).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, i))), combinedLight, combinedOverlay, 21.0F/255.0F, 9.0F/255.0F, 0.0F/255.0F, 1.0F);
 		}
 		
-		for(int i = 0; i < stargate.getAddress().length; i++)
+		for(int i = 0; i < stargate.getAddress().getLength(); i++)
 	    {
-			int symbol = stargate.getAddress()[i];
+			int symbol = stargate.getAddress().toArray()[i];
 			if(symbol < symbolCount)
 				this.getSymbol(symbol).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, symbol))), 255, combinedOverlay);
 	    }
@@ -130,7 +130,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 		this.getChevron(chevronNumber).setRotation(0.0F, 0.0F, (float) Math.toRadians(-40 * chevronNumber + this.rotation));
 		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
 		
-		if(stargate.isConnected() || stargate.addressBuffer.length > 0)
+		if(stargate.isConnected() || stargate.addressBuffer.getLength() > 0)
 		{
 			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.engagedChevron(ENGAGED_CHEVRON_TEXTURE));
 			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);

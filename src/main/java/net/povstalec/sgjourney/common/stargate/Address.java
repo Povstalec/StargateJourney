@@ -20,16 +20,12 @@ public class Address
 	
 	public Address(int[] addressArray)
 	{
-		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
-			this.addressArray = addressArray;
+		fromArray(addressArray);
 	}
 	
 	public Address(String addressString)
 	{
-		int[] addressArray = addressStringToIntArray(addressString);
-		
-		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
-			this.addressArray = addressArray;
+		fromString(addressString);
 	}
 	
 	public Address addSymbol(int symbol)
@@ -45,30 +41,56 @@ public class Address
 		return this;
 	}
 	
-	public int[] getArray()
+	public Address fromArray(int[] addressArray)
+	{
+		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+			this.addressArray = addressArray;
+		
+		return this;
+	}
+	
+	public Address fromString(String addressString)
+	{
+		int[] addressArray = addressStringToIntArray(addressString);
+		
+		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+			this.addressArray = addressArray;
+		
+		return this;
+	}
+	
+	public int[] toArray()
 	{
 		return this.addressArray;
 	}
 	
-	public int getAddressLength()
+	public int getLength()
 	{
 		return addressArray.length;
 	}
 	
+	public int getSymbol(int number)
+	{
+		if(number < 0 || number > getLength())
+			return 0;
+		
+		return addressArray[number];
+	}
+	
 	public boolean isComplete()
 	{
-		return getAddressLength() >= MIN_ADDRESS_LENGTH;
+		return getLength() >= MIN_ADDRESS_LENGTH;
 	}
 	
 	public boolean canGrow()
 	{
-		return getAddressLength() < MAX_ADDRESS_LENGTH;
+		return getLength() < MAX_ADDRESS_LENGTH;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return addressIntArrayToString(getArray());
+		return addressIntArrayToString(this.addressArray);
 	}
 	
 	public Address reset()
@@ -76,6 +98,17 @@ public class Address
 		addressArray = new int[0];
 		
 		return this;
+	}
+	
+	public boolean containsSymbol(int symbol)
+	{
+		for(int i = 0; i < getLength(); i++)
+		{
+			if(addressArray[i] == symbol)
+				return true;
+		}
+		
+		return false;
 	}
 	
 	//============================================================================================
@@ -169,16 +202,5 @@ public class Address
 		List<Integer> arrayList = Arrays.stream(address).boxed().toList();
 		Set<Integer> arraySet = new HashSet<Integer>(arrayList);
 		return (arraySet.size() == address.length);
-	}
-	
-	public static boolean addressContainsSymbol(int[] address, int symbol)
-	{
-		for(int i = 0; i < address.length; i++)
-		{
-			if(address[i] == symbol)
-				return true;
-		}
-		
-		return false;
 	}
 }

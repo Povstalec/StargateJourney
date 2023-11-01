@@ -15,7 +15,6 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -35,7 +34,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public int oldRotation = 0;
 	public int rotation = 0;
 	
-	public int[] addressBuffer = new int[0];
+	public Address addressBuffer = new Address();
 	public int symbolBuffer = 0;
 	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
@@ -57,24 +56,24 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void load(CompoundTag tag)
 	{
-        super.load(nbt);
+        super.load(tag);
         
-        rotation = nbt.getInt("Rotation");
+        rotation = tag.getInt("Rotation");
         oldRotation = rotation;
-        addressBuffer = nbt.getIntArray("AddressBuffer");
-        symbolBuffer = nbt.getInt("SymbolBuffer");
+        addressBuffer.fromArray(tag.getIntArray("AddressBuffer"));
+        symbolBuffer = tag.getInt("SymbolBuffer");
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(tag);
 		
-		nbt.putInt("Rotation", rotation);
-		nbt.putIntArray("AddressBuffer", addressBuffer);
-		nbt.putInt("SymbolBuffer", symbolBuffer);
+		tag.putInt("Rotation", rotation);
+		tag.putIntArray("AddressBuffer", addressBuffer.toArray());
+		tag.putInt("SymbolBuffer", symbolBuffer);
 	}
 
 	@Override
@@ -127,7 +126,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		if(level.isClientSide())
 			return Stargate.Feedback.NONE;
 		
-		if(Address.addressContainsSymbol(getAddress(), symbol))
+		if(getAddress().containsSymbol(symbol))
 			return Stargate.Feedback.SYMBOL_ENCODED;
 		
 		if(symbol > 35)
@@ -137,15 +136,15 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		{
 			if(isConnected())
 				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
-			else if(!isConnected() && addressBuffer.length == 0)
+			else if(!isConnected() && addressBuffer.getLength() == 0)
 				return Stargate.Feedback.INCOMPLETE_ADDRESS;
 		}
 		
-		if(addressBuffer.length == 0 && address.length == 0)
+		if(addressBuffer.getLength() == 0 && address.getLength() == 0)
 			startSound();
 		
-		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
+		addressBuffer.addSymbol(symbol);
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.animationTicks, this.rotation, this.oldRotation));
 		return Stargate.Feedback.SYMBOL_ENCODED;
 	}
 	
@@ -178,16 +177,16 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, UniverseStargateEntity stargate)
 	{
-		if(!stargate.isConnected() && stargate.addressBuffer.length > stargate.symbolBuffer)
+		if(!stargate.isConnected() && stargate.addressBuffer.getLength() > stargate.symbolBuffer)
 		{
 			if(stargate.animationTicks <= 0)
-				stargate.rotateToSymbol(stargate.addressBuffer[stargate.symbolBuffer]);
+				stargate.rotateToSymbol(stargate.addressBuffer.getSymbol(stargate.symbolBuffer));
 			else if(stargate.animationTicks >= WAIT_TICKS)
 				stargate.animationTicks = 0;
 			else if(stargate.animationTicks > 0)
 				stargate.animationTicks++;
 		}
-		else if(!stargate.isConnected() && stargate.addressBuffer.length == 0)
+		else if(!stargate.isConnected() && stargate.addressBuffer.getLength() == 0)
 			stargate.rotateToDefault();
 		else
 			stargate.synchronizeWithClient(level);
@@ -310,7 +309,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
 		animationTicks = 1;
 		symbolBuffer = 0;
-		addressBuffer = new int[0];
+		addressBuffer.reset();
 		
 		if(isConnected())
 		{
@@ -332,7 +331,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.animationTicks, this.rotation, this.oldRotation));
 	}
 
 	@Override

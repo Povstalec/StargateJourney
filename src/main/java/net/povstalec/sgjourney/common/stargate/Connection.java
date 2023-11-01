@@ -200,7 +200,7 @@ public class Connection
 			playStargateOpenSound(this.dialingStargate, kawooshStartTicks, this.openTime);
 			playStargateOpenSound(this.dialedStargate, kawooshStartTicks, this.openTime);
 			
-			int addressLenght = this.dialingStargate.getAddress().length;
+			int addressLenght = this.dialingStargate.getAddress().getLength();
 			int[] dialingAddress = Address.addressStringToIntArray(this.dialingStargate.getConnectionAddress(addressLenght));
 			
 			this.dialedStargate.setEngagedChevrons(AbstractStargateEntity.getChevronConfiguration(addressLenght));
@@ -213,7 +213,7 @@ public class Connection
 			
 			if(this.openTime % chevronWaitTicks == 0)
 			{
-				int dialedAddressLength = this.dialedStargate.getAddress().length;
+				int dialedAddressLength = this.dialedStargate.getAddress().getLength();
 				
 				if(dialedAddressLength < dialingAddress.length)
 				{
@@ -227,7 +227,7 @@ public class Connection
 				else
 				{
 					this.dialedStargate.chevronSound(true);
-					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().length + 1, 0, true);
+					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().getLength() + 1, 0, true);
 				}
 			}
 			
@@ -237,9 +237,9 @@ public class Connection
 		// Updates Interfaces when wormhole starts forming
 		if(this.openTime == kawooshStartTicks)
 		{
-			List<Integer> dialedAddress = Arrays.stream(dialedStargate.getAddress()).boxed().toList();
+			List<Integer> dialedAddress = Arrays.stream(dialedStargate.getAddress().toArray()).boxed().toList();
 			dialedStargate.updateInterfaceBlocks(EVENT_INCOMING_WORMHOLE, dialedAddress);
-			List<Integer> dialingAddress = Arrays.stream(dialingStargate.getAddress()).boxed().toList();
+			List<Integer> dialingAddress = Arrays.stream(dialingStargate.getAddress().toArray()).boxed().toList();
 			dialingStargate.updateInterfaceBlocks(EVENT_OUTGOING_WORMHOLE, dialingAddress);
 		}
 		

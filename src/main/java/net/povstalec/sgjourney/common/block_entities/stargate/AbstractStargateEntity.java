@@ -35,7 +35,6 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.TagInit;
-import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
@@ -76,7 +75,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected String symbols = EMPTY;
 	
 	// Dialing and memory
-	protected int[] address = new int[0];
+	//protected int[] address = new int[0];
+	protected Address address = new Address();
 	protected String connectionID = EMPTY;
 	protected Wormhole wormhole = new Wormhole();
 
@@ -116,33 +116,33 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void load(CompoundTag tag)
 	{
-		super.load(nbt);
-		timesOpened = nbt.getInt("TimesOpened");
-		address = nbt.getIntArray("Address");
-		network = nbt.getInt("Network");
+		super.load(tag);
+		timesOpened = tag.getInt("TimesOpened");
+		address.fromArray(tag.getIntArray("Address"));
+		network = tag.getInt("Network");
 		
-		connectionID = nbt.getString("ConnectionID");
-		advancedProtocolsEnabled = nbt.getBoolean("AdvancedProtocolsEnabled");
+		connectionID = tag.getString("ConnectionID");
+		advancedProtocolsEnabled = tag.getBoolean("AdvancedProtocolsEnabled");
 
-		displayID = nbt.getBoolean("DisplayID");
-		upgraded = nbt.getBoolean("Upgraded");
+		displayID = tag.getBoolean("DisplayID");
+		upgraded = tag.getBoolean("Upgraded");
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		nbt.putInt("TimesOpened", timesOpened);
-		nbt.putIntArray("Address", address);
-		nbt.putInt("Network", network);
+		tag.putInt("TimesOpened", timesOpened);
+		tag.putIntArray("Address", address.toArray());
+		tag.putInt("Network", network);
 		
-		nbt.putString("ConnectionID", connectionID);
-		nbt.putBoolean("AdvancedProtocolsEnabled", advancedProtocolsEnabled);
+		tag.putString("ConnectionID", connectionID);
+		tag.putBoolean("AdvancedProtocolsEnabled", advancedProtocolsEnabled);
 		
-		nbt.putBoolean("DisplayID", displayID);
-		nbt.putBoolean("Upgraded", upgraded);
-		super.saveAdditional(nbt);
+		tag.putBoolean("DisplayID", displayID);
+		tag.putBoolean("Upgraded", upgraded);
+		super.saveAdditional(tag);
 	}
 	
 	public CompoundTag serializeStargateInfo()
@@ -150,7 +150,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		CompoundTag tag = new CompoundTag();
 		
 		tag.putInt("TimesOpened", timesOpened);
-		tag.putIntArray("Address", address);
+		tag.putIntArray("Address", address.toArray());
 		tag.putInt("Network", network);
 		
 		tag.putString("ConnectionID", connectionID);
@@ -170,7 +170,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
 		timesOpened = tag.getInt("TimesOpened");
-		address = tag.getIntArray("Address");
+		address.fromArray(tag.getIntArray("Address"));
 		network = tag.getInt("Network");
 		
 		connectionID = tag.getString("ConnectionID");
@@ -249,13 +249,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public Stargate.Feedback encodeChevron(int symbol, boolean incoming)
 	{
-		if(Address.addressContainsSymbol(getAddress(), symbol))
+		if(address.containsSymbol(symbol))
 			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
-		if(getAddress().length >= 8)
+		if(!address.canGrow())
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
 		chevronSound(incoming);
-		updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().length, symbol, incoming);
+		updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), symbol, incoming);
 		this.setChanged();
 		
 		return Stargate.Feedback.SYMBOL_ENCODED;
@@ -266,7 +266,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(level.isClientSide())
 			return Stargate.Feedback.NONE;
 		
-		if(getAddress().length < 6)
+		if(!address.isComplete())
 		{
 			chevronSound(false);
 			return resetStargate(Stargate.Feedback.INCOMPLETE_ADDRESS);
@@ -276,7 +276,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			if(!isObstructed())
 			{
 				chevronSound(false);
-				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().length + 1, 0, false);
+				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, 0, false);
 				return setRecentFeedback(engageStargate());
 			}
 			else
@@ -453,14 +453,14 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	protected void growAddress(int symbol)
 	{
-		this.address = ArrayHelper.growIntArray(this.address, symbol);
+		this.address.addSymbol(symbol);
 		setStargateState(this.getConnectionState(), this.getChevronsEngaged());
 		updateClient();
 	}
 	
 	protected void resetAddress()
 	{
-		this.address = new int[0];
+		this.address.reset();
 		engagedChevrons = Dialing.DIALING_CHEVRON_CONFIGURATION;
 		setStargateState(ConnectionState.IDLE, 0);
 	}
@@ -643,19 +643,19 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.symbols;
 	}
 	
-	public void setAddress(int[] address)
+	public void setAddress(Address address)
 	{
 		this.address = address;
 	}
 	
-	public int[] getAddress()
+	public Address getAddress()
 	{
 		return this.address;
 	}
 	
 	public int getChevronsEngaged()
 	{
-		int chevronsEngaged = getAddress().length;
+		int chevronsEngaged = this.address.getLength();
 		return isConnected() ? chevronsEngaged + 1 : chevronsEngaged;
 	}
 	
@@ -686,7 +686,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public int chevronsRendered()
 	{
-		return getAddress().length;
+		return this.address.getLength();
 	}
 	
 	//============================================================================================
@@ -897,7 +897,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		player.sendSystemMessage(Component.translatable("info.sgjourney.has_dhd").append(Component.literal(": " + hasDHD)).withStyle(ChatFormatting.GOLD));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.advanced_protocols_enabled").append(Component.literal(": " + advancedProtocolsEnabled)).withStyle(ChatFormatting.RED));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": " + Address.addressIntArrayToString(getAddress()))).withStyle(ChatFormatting.GREEN));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": " + address.toString())).withStyle(ChatFormatting.GREEN));
 	}
 	
 	@Override
@@ -945,7 +945,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address, this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols));
 		
 	}
 	
