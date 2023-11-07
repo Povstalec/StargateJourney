@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.cctweaked.methods.InterfaceMethod;
 import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods;
@@ -39,6 +40,8 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 			registerUniverseStargateMethods();
 		else if(stargate instanceof PegasusStargateEntity)
 			registerPegasusStargateMethods();
+		else if(stargate instanceof TollanStargateEntity)
+			registerTollanStargateMethods();
 	}
 
     @Override
