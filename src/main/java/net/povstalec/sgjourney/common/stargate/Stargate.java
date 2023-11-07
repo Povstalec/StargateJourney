@@ -125,10 +125,11 @@ public class Stargate
 		RAN_OUT_OF_POWER(-16, FeedbackType.ERROR, createError("ran_out_of_power", false)),
 		CONNECTION_REROUTED(-17, FeedbackType.ERROR, createError("connection_rerouted", false)),
 		WRONG_DISCONNECT_SIDE(-18, FeedbackType.ERROR, createError("wrong_disconnect_side", false)),
+		CONNECTION_FORMING(-19, FeedbackType.ERROR, createError("connection_forming", false)),
 
-		STARGATE_DESTROYED(-19, FeedbackType.ERROR, createError("stargate_destroyed", false)),
-		COULD_NOT_REACH_TARGET_STARGATE(-20, FeedbackType.ERROR, createError("could_not_reach_target_stargate", false)),
-		INTERRUPTED_BY_INCOMING_CONNECTION(-21, FeedbackType.ERROR, createError("interrupted_by_incoming_connection", false)),
+		STARGATE_DESTROYED(-20, FeedbackType.ERROR, createError("stargate_destroyed", false)),
+		COULD_NOT_REACH_TARGET_STARGATE(-21, FeedbackType.ERROR, createError("could_not_reach_target_stargate", false)),
+		INTERRUPTED_BY_INCOMING_CONNECTION(-22, FeedbackType.ERROR, createError("interrupted_by_incoming_connection", false)),
 		
 		// Universe
 		

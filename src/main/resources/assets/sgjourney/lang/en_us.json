@@ -296,6 +296,7 @@
 	"message.sgjourney.stargate.error.ran_out_of_power": "Ran out of power",
 	"message.sgjourney.stargate.error.connection_rerouted": "Connection rerouted",
 	"message.sgjourney.stargate.error.wrong_disconnect_side": "Stargate cannot be disconnected from this side",
+	"message.sgjourney.stargate.error.connection_forming": "Cannot disconnect Stargate while a Connection is forming",
 	
 	"message.sgjourney.stargate.error.could_not_reach_target_stargate": "Could not reach target Stargate",
 	
