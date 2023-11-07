@@ -389,11 +389,12 @@ public abstract class SGJourneySkyRenderer
 			
 			for(int i = 0; i <= 16; ++i)
 			{
-				//TODO Find out what these do
-				float f7 = (float)i * ((float)Math.PI * 2F) / 16.0F;
-				float f8 = Mth.sin(f7);
-				float f9 = Mth.cos(f7);
-				bufferbuilder.vertex(sunriseMatrix, f8 * 120.0F, f9 * 120.0F, -f9 * 40.0F * sunriseA).color(sunriseR, sunriseG, sunriseB, 0.0F).endVertex();
+				// Create a circle to act as the slanted portion of the sunrise
+				float rotation = (float)i * ((float)Math.PI * 2F) / 16.0F;
+				float x = Mth.sin(rotation);
+				float y = Mth.cos(rotation);
+				// The Z coordinate is multiplied by -y to make the circle angle upwards towards the sun
+				bufferbuilder.vertex(sunriseMatrix, x * 120.0F, y * 120.0F, -y * 40.0F * sunriseA).color(sunriseR, sunriseG, sunriseB, 0.0F).endVertex();
 			}
 			
 			BufferUploader.drawWithShader(bufferbuilder.end());
