@@ -270,7 +270,7 @@ public class TransporterNetwork extends SavedData
 	{
 		if(!getConnections().contains(uuid))
 		{
-			StargateJourney.LOGGER.info("Could not find connection " + uuid);
+			StargateJourney.LOGGER.error("Could not find connection " + uuid);
 			return;
 		}
 		

@@ -754,7 +754,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 				this.orientation = gateState.getValue(AbstractStargateBaseBlock.ORIENTATION);
 			else
-				StargateJourney.LOGGER.info("Couldn't find Stargate Orientation");
+				StargateJourney.LOGGER.error("Couldn't find Stargate Orientation");
 		}
 
 		return this.orientation;
@@ -769,7 +769,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 				this.direction = gateState.getValue(AbstractStargateBaseBlock.FACING);
 			else
-				StargateJourney.LOGGER.info("Couldn't find Stargate Direction");
+				StargateJourney.LOGGER.error("Couldn't find Stargate Direction");
 		}
 		
 		return this.direction;
@@ -788,7 +788,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
 			stargate.updateStargate(level, gatePos, gateState, connectionState, chevronsEngaged);
 		else
-			StargateJourney.LOGGER.info("Couldn't find Stargate");
+			StargateJourney.LOGGER.error("Couldn't find Stargate");
 		setChanged();
 		
 	}

@@ -92,7 +92,7 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 		if(gateState.getBlock() instanceof BasicInterfaceBlock)
 			return gateState.getValue(BasicInterfaceBlock.FACING);
 
-		StargateJourney.LOGGER.info("Couldn't find Direction");
+		StargateJourney.LOGGER.error("Couldn't find Direction");
 		return null;
 	}
 
@@ -183,8 +183,8 @@ public class BasicInterfaceEntity extends EnergyBlockEntity
 	{
 		if(!ModList.get().isLoaded("computercraft"))
 			return;
-		
-		this.peripheralWrapper.queueEvent(eventName, objects);
+		if(this.peripheralWrapper != null)
+			this.peripheralWrapper.queueEvent(eventName, objects);
 	}
 	
 	//============================================================================================

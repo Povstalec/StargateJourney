@@ -132,6 +132,8 @@
 	"sounds.sgjourney.milky_way_dhd_press" : "DHD zmáčknuto",
 	
 	"sounds.sgjourney.matok_fire" : "střela z tyčové zbraně",
+	"sounds.sgjourney.matok_open" : "tyčové zbraň se otevře",
+	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
 	

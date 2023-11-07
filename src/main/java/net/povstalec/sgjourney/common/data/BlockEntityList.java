@@ -50,7 +50,7 @@ public class BlockEntityList extends SavedData
 	{
 		if(!getBlockEntities(type).contains(id))
 		{
-			StargateJourney.LOGGER.info(type + " does not contain " + id);
+			StargateJourney.LOGGER.error(type + " does not contain " + id);
 			return;
 		}
 		blockEntityList.getCompound(type).remove(id);

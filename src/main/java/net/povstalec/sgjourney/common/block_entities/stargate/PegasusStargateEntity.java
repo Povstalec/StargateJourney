@@ -21,7 +21,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 public class PegasusStargateEntity extends AbstractStargateEntity
 {
 	public int currentSymbol = 0;
-	public Address addressBuffer = new Address();
+	public Address addressBuffer = new Address(true);
 	public int symbolBuffer = 0;
 	private boolean passedOver = false;
 	
@@ -104,7 +104,6 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			if(!this.level.isClientSide())
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
-		
 		addressBuffer.addSymbol(symbol);
 		return Stargate.Feedback.SYMBOL_ENCODED;
 	}

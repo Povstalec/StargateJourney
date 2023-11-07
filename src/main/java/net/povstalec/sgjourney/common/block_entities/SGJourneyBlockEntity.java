@@ -94,7 +94,7 @@ public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 		CompoundTag blockEntity;
 		if(BlockEntityList.get(level).getBlockEntities(type.id).contains(id))
 		{
-			StargateJourney.LOGGER.info("Block Entity List already contains " + id);
+			StargateJourney.LOGGER.info("Block Entity List already contains " + id + " attempting to add new");
 			blockEntity = addNewToBlockEntityList();
 		}
         else

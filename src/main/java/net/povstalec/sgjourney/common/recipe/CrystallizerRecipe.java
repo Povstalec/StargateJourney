@@ -96,6 +96,12 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 	{
 		return Type.INSTANCE;
 	}
+
+	@Override
+	public NonNullList<Ingredient> getIngredients()
+	{
+		return this.ingredients;
+	}
 	
 	public static class Type implements RecipeType<CrystallizerRecipe>
 	{

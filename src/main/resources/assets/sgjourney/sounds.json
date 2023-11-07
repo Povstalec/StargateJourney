@@ -274,5 +274,21 @@
 		[
 			"sgjourney:matok_fire"
 		]
+	},
+	"matok_open":
+	{
+		"subtitle": "sounds.sgjourney.matok_open",
+		"sounds":
+		[
+			"sgjourney:matok_engage"
+		]
+	},
+	"matok_close":
+	{
+		"subtitle": "sounds.sgjourney.matok_close",
+		"sounds":
+		[
+			"sgjourney:matok_engage"
+		]
 	}
 }

@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +18,10 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,9 +41,28 @@ public class StaffWeaponItem extends Item
 {
 	public static final String IS_OPEN = "IsOpen";
 	
+	private static final float OPEN_ATTACK_DAMAGE = 3.0F;
+	private static final float CLOSED_ATTACK_DAMAGE = 6.0F;
+
+	private static final float OPEN_ATTACK_SPEED = -2.4F;
+	private static final float CLOSED_ATTACK_SPEED = -2.8F;
+	
+	private final Multimap<Attribute, AttributeModifier> openModifiers;
+	private final Multimap<Attribute, AttributeModifier> closedModifiers;
+	
 	public StaffWeaponItem(Properties properties)
 	{
 		super(properties);
+		
+		ImmutableMultimap.Builder<Attribute, AttributeModifier> openBuilder = ImmutableMultimap.builder();
+		openBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", OPEN_ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION));
+		openBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", OPEN_ATTACK_SPEED, AttributeModifier.Operation.ADDITION));
+		this.openModifiers = openBuilder.build();
+		
+		ImmutableMultimap.Builder<Attribute, AttributeModifier> closedBuilder = ImmutableMultimap.builder();
+		closedBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", CLOSED_ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION));
+		closedBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", CLOSED_ATTACK_SPEED, AttributeModifier.Operation.ADDITION));
+		this.closedModifiers = closedBuilder.build();
 	}
 	
 	@Override
@@ -77,7 +103,8 @@ public class StaffWeaponItem extends Item
 					}
 				};
 	}
-	
+
+	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
 	{
 		ItemStack itemstack = player.getItemInHand(hand);
@@ -102,7 +129,7 @@ public class StaffWeaponItem extends Item
 				
 			}
 			else if(mainHandStack.is(ItemInit.MATOK.get()))
-				setOpen(mainHandStack, !isOpen(mainHandStack));
+				setOpen(level, player, mainHandStack, !isOpen(mainHandStack));
 		}
 		else if(!player.isShiftKeyDown() && canShoot(player, player.getItemInHand(hand)))
 		{
@@ -194,14 +221,26 @@ public class StaffWeaponItem extends Item
 		return false;
 	}
 	
-	public static void setOpen(ItemStack stack, boolean isOpen)
+	public static void setOpen(Level level, Player player, ItemStack stack, boolean isOpen)
 	{
 		if(stack.is(ItemInit.MATOK.get()))
 		{
 			CompoundTag tag = stack.getOrCreateTag();
 			tag.putBoolean(IS_OPEN, isOpen);
 			stack.setTag(tag);
+			
+			//TODO This doesn't play for some reason
+			level.playSound(player, player.blockPosition(), isOpen ? SoundInit.MATOK_CLOSE.get() : SoundInit.MATOK_OPEN.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 		}
+	}
+	
+	@Override
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
+	{
+		if(slot == EquipmentSlot.MAINHAND)
+			return isOpen(stack) ? this.openModifiers : this.closedModifiers;
+		
+		return super.getAttributeModifiers(slot, stack);
 	}
 	
 	@Override

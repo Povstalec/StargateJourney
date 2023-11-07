@@ -132,6 +132,8 @@
 	"sounds.sgjourney.milky_way_dhd_press" : "DHD pressed",
 	
 	"sounds.sgjourney.matok_fire" : "Staff Weapon fires",
+	"sounds.sgjourney.matok_open" : "Staff Weapon opens",
+	"sounds.sgjourney.matok_close" : "Staff Weapon closes",
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeologist Map",
 	

@@ -128,7 +128,8 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public long depleteEnergy(long amount, boolean simulate)
 	{
 		long storedEnergy = this.getEnergyStored();
-		long energyDepleted = Math.min(storedEnergy, maxExtract());
+		long maxEnergyDepletion = Math.min(amount, maxExtract());
+		long energyDepleted = Math.min(storedEnergy, maxEnergyDepletion);
 		
 		if(!simulate)
 			this.setEnergy(storedEnergy - energyDepleted);

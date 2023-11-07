@@ -15,8 +15,17 @@ public class Address
 	public static final int MAX_ADDRESS_LENGTH = 9;
 	
 	protected int[] addressArray = new int[0];
+	protected boolean isBuffer = false;
 	
-	public Address() {}
+	public Address(boolean isBuffer)
+	{
+		this.isBuffer = isBuffer;
+	}
+	
+	public Address()
+	{
+		this(false);
+	}
 	
 	public Address(int[] addressArray)
 	{
@@ -30,7 +39,10 @@ public class Address
 	
 	public Address addSymbol(int symbol)
 	{
-		if(symbol <= 0)
+		if(symbol < 0)
+			return this;
+		
+		if(symbol == 0 && !this.isBuffer)
 			return this;
 		
 		if(!canGrow())

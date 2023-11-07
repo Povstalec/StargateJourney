@@ -93,15 +93,15 @@ public class CommonStargateConfig
 		
 		system_wide_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for system-wide connections")
-				.defineInRange("server.system_wide_connection_energy_draw", 500L, 0, 9223372036854775807L);
+				.defineInRange("server.system_wide_connection_energy_draw", 5L, 0, 9223372036854775807L);
 		
 		interstellar_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for interstellar connections")
-				.defineInRange("server.interstellar_connection_energy_draw", 1000L, 0, 9223372036854775807L);
+				.defineInRange("server.interstellar_connection_energy_draw", 50L, 0, 9223372036854775807L);
 		
 		intergalactic_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for intergalactic connections")
-				.defineInRange("server.intergalactic_connection_energy_draw", 1000000L, 0, 9223372036854775807L);
+				.defineInRange("server.intergalactic_connection_energy_draw", 50000L, 0, 9223372036854775807L);
 		
 		system_wide_connection_energy_cost = server
 				.comment("The amount of energy required to estabilish a connection inside a solar system")

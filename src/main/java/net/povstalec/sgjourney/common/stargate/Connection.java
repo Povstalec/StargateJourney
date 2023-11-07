@@ -157,7 +157,7 @@ public class Connection
 	{
 		if(stargate == null)
 		{
-			StargateJourney.LOGGER.info("Stargate does not exist");
+			StargateJourney.LOGGER.error("Stargate does not exist");
 			return false;
 		}
 		

@@ -384,7 +384,7 @@ public class StargateNetwork extends SavedData
 			StargateJourney.LOGGER.info("Removed connection " + uuid);
 		}
 		else
-			StargateJourney.LOGGER.info("Could not find connection " + uuid);
+			StargateJourney.LOGGER.error("Could not find connection " + uuid);
 		this.setDirty();
 	}
 	

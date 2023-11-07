@@ -103,7 +103,7 @@ public class MemoryCrystalItem extends Item
 			return true;
 		}
 		
-		StargateJourney.LOGGER.info("Failed to save Memory");
+		StargateJourney.LOGGER.error("Failed to save Memory");
 		return false;
 	}
 	

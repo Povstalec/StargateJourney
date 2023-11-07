@@ -34,7 +34,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public int oldRotation = 0;
 	public int rotation = 0;
 	
-	public Address addressBuffer = new Address();
+	public Address addressBuffer = new Address(true);
 	public int symbolBuffer = 0;
 	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
