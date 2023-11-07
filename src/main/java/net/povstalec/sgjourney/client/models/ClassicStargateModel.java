@@ -112,7 +112,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 		Matrix3f matrix3 = stack.last().normal();
 		for(int j = 0; j < DEFAULT_SIDES; j++)
 		{
-			stack.mulPose(Axis.ZP.rotationDegrees(10));
+			stack.mulPose(Axis.ZP.rotationDegrees(DEFAULT_ANGLE));
 			//Front
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					-STARGATE_RING_OUTER_CENTER,
@@ -317,7 +317,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 			int combinedLight, int chevronsActive)
 	{
 		renderPrimaryChevron(stargate, stack, source, combinedLight);
-		for(int i = 1; i < 9; i++)
+		for(int i = 1; i < NUMBER_OF_CHEVRONS; i++)
 		{
 			renderChevron(stargate, stack, source, combinedLight, i, i <= chevronsActive);
 		}
@@ -352,7 +352,7 @@ public class ClassicStargateModel extends AbstractStargateModel
 		float subtracted = isEngaged ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
 		
 		stack.pushPose();
-		stack.mulPose(Axis.ZP.rotationDegrees(-40 * chevron));
+		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
 		stack.translate(0, 3.5F - subtracted, 0);
 
 		

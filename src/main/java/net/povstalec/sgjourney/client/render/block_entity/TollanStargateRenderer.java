@@ -49,8 +49,8 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
         stack.pushPose();
         
         double shiftBase = orientation.getIndex() *  0.5;
-        double shiftY = center.y();
 		double shiftX = center.x();
+        double shiftY = center.y();
 		double shiftZ = center.z();
         
 		if(orientation != Orientation.REGULAR)

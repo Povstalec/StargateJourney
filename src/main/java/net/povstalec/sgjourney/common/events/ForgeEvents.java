@@ -1,12 +1,18 @@
 package net.povstalec.sgjourney.common.events;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -15,8 +21,11 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -30,6 +39,8 @@ import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
@@ -58,6 +69,56 @@ public class ForgeEvents
 		MinecraftServer server = event.getServer();
 		if(event.phase.equals(TickEvent.Phase.START) && server != null)
 			StargateNetwork.get(server).handleConnections();
+	}
+	
+	private static AbstractStargateEntity getStargateAtPos(Level level, BlockPos pos, BlockState blockstate)
+	{
+		if(blockstate.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		{
+			System.out.println("Is Stargate Block");
+			AbstractStargateEntity stargate = stargateBlock.getStargate(level, pos, blockstate);
+			
+			return stargate;
+		}
+		
+		return null;
+	}
+	
+	@SubscribeEvent
+	public static void onEntityJoinLevel(EntityJoinLevelEvent event)
+	{
+		Level level = event.getLevel();
+		Entity entity = event.getEntity();
+		
+		if(level.isClientSide())
+			return;
+		
+		// Lightning recharging the Stargate
+		if(entity instanceof LightningBolt lightning)
+		{
+			Vec3 vec3 = lightning.position();
+			BlockPos strikePosition = new BlockPos(vec3.x, vec3.y - 1.0E-6D, vec3.z);
+
+			List<AbstractStargateEntity> list = new ArrayList<AbstractStargateEntity>();
+			BlockState blockstate = level.getBlockState(strikePosition);
+			
+			AbstractStargateEntity stargateCandidate = getStargateAtPos(level, strikePosition, blockstate);
+			if(stargateCandidate != null)
+				list.add(stargateCandidate);
+			
+			for(Direction direction : Direction.values())
+			{
+				BlockPos pos = strikePosition.relative(direction);
+				BlockState state = level.getBlockState(pos);
+				
+				AbstractStargateEntity stargate = getStargateAtPos(level, pos, state);
+				if(stargate != null)
+					list.add(stargate);
+			}
+
+			Set<AbstractStargateEntity> set = new HashSet<AbstractStargateEntity>(list);
+			set.stream().forEach(stargate -> stargate.receiveEnergy(100000, false));
+		}
 	}
 	
 	@SubscribeEvent

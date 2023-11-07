@@ -5,11 +5,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Orientation;
 
 public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
@@ -60,6 +62,17 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	        super.onRemove(oldState, level, pos, newState, isMoving);
 		}
     }
+	
+	@Override
+	public AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state)
+	{
+		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
+		
+		if(blockentity instanceof AbstractStargateEntity stargate)
+			return stargate;
+		
+		return null;
+	}
 
 	/*@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 

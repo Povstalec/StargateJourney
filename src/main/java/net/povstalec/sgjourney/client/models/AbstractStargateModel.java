@@ -14,7 +14,12 @@ public abstract class AbstractStargateModel
 {
 	protected static final float DEFAULT_DISTANCE = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
-	protected static final float STARGATE_RING_X_SHRINK = 0.001F;
+	protected static final float DEFAULT_RING_HEIGHT = 1F;
+	protected static final float STARGATE_RING_SHRINK = 0.001F;
+	
+	protected static final float DEFAULT_ANGLE = 360F / DEFAULT_SIDES;
+	protected static final float NUMBER_OF_CHEVRONS = 9;
+	protected static final float CHEVRON_ANGLE = 360F / 9;
 	
 	protected static final int MAX_LIGHT = 15728864;
 	
@@ -37,40 +42,6 @@ public abstract class AbstractStargateModel
 
 	protected static final float DEFAULT_DISTANCE_FROM_CENTER = 56.0F;
 	protected static final int BOXES_PER_RING = 36;
-	
-	protected static final float CHEVRON_LIGHT_ANGLE = 15.0F;
-	protected static final float CHEVRON_LIGHT_Z = 4.0F;
-	protected static final float CHEVRON_LIGHT_Z_OFFSET = 0.5F;
-	protected static final float CHEVRON_BACK_LIGHT_Z = CHEVRON_LIGHT_Z + 1;
-	
-	protected static final float CHEVRON_LIGHT_TOP_X = 6.0F;
-	protected static final float CHEVRON_LIGHT_TOP_Y = 1.0F;
-
-	protected static final float CHEVRON_LIGHT_CENTER_X = 3.0F;
-	protected static final float CHEVRON_LIGHT_CENTER_Y = 6.0F;
-	
-	protected static final float CHEVRON_LIGHT_SIDE_X = 2.0F;
-	protected static final float CHEVRON_LIGHT_SIDE_Y = 6.1847F;
-	
-	protected static final float OUTER_CHEVRON_ANGLE = 22.5F;
-	protected static final float OUTER_CHEVRON_Z_OFFSET = 3.5F;
-	
-	protected static final float OUTER_CHEVRON_CENTER_X = 4.0F;
-	protected static final float OUTER_CHEVRON_CENTER_Y = 2.0F;
-	protected static final float OUTER_CHEVRON_CENTER_Z = 1.0F;
-	
-	protected static final float OUTER_CHEVRON_SIDE_X = 2.0F;
-	protected static final float OUTER_CHEVRON_SIDE_Y = 10.0F;
-	protected static final float OUTER_CHEVRON_SIDE_Z = 1.0F;
-
-	protected static final float OUTER_CHEVRON_Y_OFFSET = CHEVRON_LIGHT_CENTER_Y + 2.0F + OUTER_CHEVRON_CENTER_Y; // The + 2.0F is there because there's a 2 pixel gap between the Chevron Light and Outer Chevron
-	
-	protected static final float SYMBOL_RING_X = 8.0F;
-	protected static final float SYMBOL_RING_Y = 8.0F;
-	protected static final float SYMBOL_RING_Z = 2.0F;
-	protected static final float SYMBOL_RING_Y_OFFSET = SYMBOL_RING_Y - 2.0F; // The - 2.0F is there because the Symbol Ring is slightly bigger than the open space created by the rest of the ring, to prevent players from being able to see through when it's rotating
-	protected static final float SYMBOL_RING_Z_OFFSET = 0.5F;
-	protected static final float DIVIDER_X = 1.0F;
 	
 	protected String stargateName;
 	protected ResourceLocation stargateTexture;

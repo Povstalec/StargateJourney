@@ -45,8 +45,7 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> CLASSIC_DIAL_FAIL = registerSoundEvent("classic_dial_fail");
 	public static final RegistryObject<SoundEvent> CLASSIC_WORMHOLE_OPEN = registerSoundEvent("classic_wormhole_open");
 	public static final RegistryObject<SoundEvent> CLASSIC_WORMHOLE_CLOSE = registerSoundEvent("classic_wormhole_close");
-
-	//public static final RegistryObject<SoundEvent> WORMHOLE_CLOSE = registerSoundEvent("wormhole_close");
+	
 	public static final RegistryObject<SoundEvent> WORMHOLE_ENTER = registerSoundEvent("wormhole_enter");
 	public static final RegistryObject<SoundEvent> WORMHOLE_IDLE = registerSoundEvent("wormhole_idle");
 

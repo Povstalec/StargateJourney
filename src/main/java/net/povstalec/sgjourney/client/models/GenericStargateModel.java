@@ -17,7 +17,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	protected static final float STARGATE_RING_THICKNESS = 7F;
 	protected static final float STARGATE_RING_OFFSET = STARGATE_RING_THICKNESS / 2 / 16;
 	
-	protected static final float STARGATE_RING_OUTER_HEIGHT = DEFAULT_DISTANCE - STARGATE_RING_X_SHRINK;
+	protected static final float STARGATE_RING_OUTER_HEIGHT = DEFAULT_DISTANCE - STARGATE_RING_SHRINK;
 	protected static final float STARGATE_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_OUTER_HEIGHT, DEFAULT_DISTANCE);
 	protected static final float STARGATE_RING_OUTER_CENTER = STARGATE_RING_OUTER_LENGTH / 2;
 	
@@ -29,7 +29,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	protected static final float STARGATE_RING_START_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_START_HEIGHT, DEFAULT_DISTANCE);
 	protected static final float STARGATE_RING_START_CENTER = STARGATE_RING_START_LENGTH / 2;
 
-	protected static final float STARGATE_RING_INNER_HEIGHT = DEFAULT_DISTANCE - (1 - STARGATE_RING_X_SHRINK);
+	protected static final float STARGATE_RING_INNER_HEIGHT = DEFAULT_DISTANCE - (DEFAULT_RING_HEIGHT - STARGATE_RING_SHRINK);
 	protected static final float STARGATE_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_INNER_HEIGHT, DEFAULT_DISTANCE);
 	protected static final float STARGATE_RING_INNER_CENTER = STARGATE_RING_INNER_LENGTH / 2;
 
@@ -145,7 +145,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture()));
 				
 		renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, false);
-		for(int chevronNumber = 1; chevronNumber < 9; chevronNumber++)
+		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
 		{
 			renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, false);
 		}
@@ -155,7 +155,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		
 		if(isPrimaryChevronEngaged(stargate))
 			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);
-		for(int chevronNumber = 1; chevronNumber < 9; chevronNumber++)
+		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
 		{
 			boolean isChevronEngaged = stargate.chevronsRendered() >= chevronNumber;
 			if(isChevronEngaged)
@@ -211,7 +211,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();
-		stack.mulPose(Axis.ZP.rotationDegrees(-40 * chevron));
+		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
 		stack.translate(0, 3.5F - 2.5F/16, 0);
 		
 		renderChevronLight(stack, consumer, source, light, isChevronLightRaised(stargate, chevronNumber));
@@ -1050,7 +1050,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		for(int j = 0; j < DEFAULT_SIDES; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * -10));
+			stack.mulPose(Axis.ZP.rotationDegrees(j * -DEFAULT_ANGLE));
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
 			//Front

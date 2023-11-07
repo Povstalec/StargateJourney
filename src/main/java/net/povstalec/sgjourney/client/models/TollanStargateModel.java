@@ -1,7 +1,11 @@
 package net.povstalec.sgjourney.client.models;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -25,7 +29,24 @@ public class TollanStargateModel extends AbstractStargateModel
 	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/" + CHEVRON + ".png");
 	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/" + CHEVRON + "_lit.png");
 
-	protected static final float DEFAULT_ANGLE = 10.0F;
+	protected static final float TOLLAN_DISTANCE = 3F;//TODO Added this
+	protected static final float TOLLAN_RING_HEIGHT = 8F / 16;//TODO Added this
+	protected static final float STARGATE_RING_THICKNESS = 3F;//TODO Added this
+	protected static final float STARGATE_RING_OFFSET = STARGATE_RING_THICKNESS / 2 / 16;
+	
+	protected static final float STARGATE_RING_OUTER_HEIGHT = TOLLAN_DISTANCE - STARGATE_RING_SHRINK;
+	protected static final float STARGATE_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_OUTER_HEIGHT, DEFAULT_DISTANCE);
+	protected static final float STARGATE_RING_OUTER_CENTER = STARGATE_RING_OUTER_LENGTH / 2;
+
+	protected static final float STARGATE_RING_INNER_HEIGHT = TOLLAN_DISTANCE - (TOLLAN_RING_HEIGHT - STARGATE_RING_SHRINK);
+	protected static final float STARGATE_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_INNER_HEIGHT, DEFAULT_DISTANCE);
+	protected static final float STARGATE_RING_INNER_CENTER = STARGATE_RING_INNER_LENGTH / 2;
+	
+	protected static final float STARGATE_RING_HEIGHT = STARGATE_RING_OUTER_HEIGHT - STARGATE_RING_INNER_HEIGHT;
+	
+	
+	
+	
 	protected static final float DEFAULT_DISTANCE_FROM_CENTER = 3.0F * 16.0F; // 3 blocks away from the center of the Stargate
 	public static final float DEFAULT_Z = 3.0F;
 	protected static final int BOXES_PER_RING = 36;
@@ -91,7 +112,9 @@ public class TollanStargateModel extends AbstractStargateModel
 	public void renderStargate(TollanStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source,
 							   int combinedLight, int combinedOverlay)
 	{
-		this.renderRing(stargate, stack, source, combinedLight, combinedOverlay, false);
+		//this.renderRing(stargate, stack, source, combinedLight, combinedOverlay, false);
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture()));
+		renderRing(stack, consumer, source, combinedLight);
 		
 		this.renderSymbolRing(stargate, stack, source, combinedLight, combinedOverlay);
 
@@ -487,6 +510,107 @@ public class TollanStargateModel extends AbstractStargateModel
 						-CHEVRON_LIGHT_Z
 				)
 		);
+	}
+	
+	//============================================================================================
+	//******************************************Rendering*****************************************
+	//============================================================================================
+	
+	protected void renderRing(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
+	{
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
+		for(int j = 0; j < DEFAULT_SIDES; j++)
+		{
+			stack.mulPose(Axis.ZP.rotationDegrees(10));
+			//Front
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(5 - STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(5 - STARGATE_RING_INNER_CENTER * 16) / 64, (12 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(5 + STARGATE_RING_INNER_CENTER * 16) / 64, (12 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(5 + STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			
+			//Back
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(15 - STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, (12 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, (12 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(15 + STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			
+			//Outside
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+					-STARGATE_RING_OUTER_CENTER, 
+					STARGATE_RING_OUTER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(5 - STARGATE_RING_OUTER_CENTER * 16) / 64, 0,
+					
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(5 - STARGATE_RING_OUTER_CENTER * 16) / 64, 8F / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(5 + STARGATE_RING_OUTER_CENTER * 16) / 64, 8F / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(5 + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
+			
+			//Inside
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+					STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, 0,
+					
+					STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, 8F / 64,
+					
+					-STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, 8F / 64,
+					
+					-STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, 0);
+		}
 	}
 
 }

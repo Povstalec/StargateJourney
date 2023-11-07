@@ -115,14 +115,14 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
-		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
-		if(blockentity instanceof AbstractStargateEntity stargate)
+		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		if(stargate != null)
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
 				ItemStack itemstack = new ItemStack(asItem());
 
-				blockentity.saveToItem(itemstack);
+				stargate.saveToItem(itemstack);
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -145,4 +145,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	{
 		return RenderShape.MODEL;
 	}
+	
+	public abstract AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state);
 }
