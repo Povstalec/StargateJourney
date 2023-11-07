@@ -359,11 +359,21 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(kawooshTime > Connection.KAWOOSH_TICKS)
 			return;
 		
-		BlockPos centerPos = getCenterPos();
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
 		Direction direction = Orientation.getEffectiveDirection(getDirection(), getOrientation());
 		
 		double frontMultiplier =  kawooshFunction(kawooshTime);
+		
+		if(CommonStargateConfig.kawoosh_destroys_blocks.get())
+			destroyBlocks(frontMultiplier, axisDirection, direction);
+		if(CommonStargateConfig.kawoosh_disintegrates_entities.get())
+			disintegrateEntities(frontMultiplier, axisDirection, direction);
+	}
+	
+	protected void destroyBlocks(double frontMultiplier, Direction axisDirection, Direction direction)
+	{
+		BlockPos centerPos = getCenterPos();
+		
 		for(int width = -1; width <= 1; width++)
 		{
 			for(int height = -1; height <= 1; height++)
@@ -385,26 +395,40 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 					}
 				}
 			}
-			
-			Vec3 centerVector = this.getCenter();
-			
-			Vec3 backVector = centerVector.relative(axisDirection, -2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), -2.25);
-			
-			frontMultiplier = frontMultiplier > 7 ? 7 : frontMultiplier;
-			Vec3 facingVector = Orientation.getEffectiveVector(direction, getOrientation());
-			facingVector = facingVector.multiply(frontMultiplier, frontMultiplier, frontMultiplier);
-			facingVector = facingVector.add(centerVector);
-			facingVector = facingVector.relative(axisDirection, 2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), 2.25);
-			
-			AABB kawooshHitbox = new AABB(backVector.x(), backVector.y(), backVector.z(),
-					facingVector.x(), facingVector.y(), facingVector.z());
-			
-			this.level.getEntitiesOfClass(Entity.class, kawooshHitbox).stream().forEach(entity -> 
-			{
-				if(!(entity instanceof Player player && player.isCreative()) && (!(entity instanceof ItemEntity) || CommonStargateConfig.disintegrate_items.get()))
-					entity.kill();
-			});
 		}
+	}
+	
+	protected void disintegrateEntities(double frontMultiplier, Direction axisDirection, Direction direction)
+	{
+		Vec3 centerVector = this.getCenter();
+		
+		Vec3 backVector = centerVector.relative(axisDirection, -2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), -2.25);
+		
+		frontMultiplier = frontMultiplier > 7 ? 7 : frontMultiplier;
+		Vec3 facingVector = Orientation.getEffectiveVector(direction, getOrientation());
+		facingVector = facingVector.multiply(frontMultiplier, frontMultiplier, frontMultiplier);
+		facingVector = facingVector.add(centerVector);
+		facingVector = facingVector.relative(axisDirection, 2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), 2.25);
+		
+		AABB kawooshHitbox = new AABB(backVector.x(), backVector.y(), backVector.z(),
+				facingVector.x(), facingVector.y(), facingVector.z());
+		
+		this.level.getEntitiesOfClass(Entity.class, kawooshHitbox).stream().forEach(entity -> 
+		{
+			if(shouldDisintegrate(entity))
+				entity.kill();
+		});
+	}
+	
+	public boolean shouldDisintegrate(Entity entity)
+	{
+		if(entity instanceof Player player && player.isCreative())
+			return false;
+		
+		if(!CommonStargateConfig.kawoosh_disintegrates_items.get() && entity instanceof ItemEntity)
+			return false;
+		
+		return true;
 	}
 	
 	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
