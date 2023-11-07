@@ -448,7 +448,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
 		
 		setChanged();
-		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString());
+		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " Code: " + feedback.getCode());
 		return setRecentFeedback(feedback);
 	}
 	
@@ -880,11 +880,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		}
     }
 	
-	public boolean hasEnergy(AbstractStargateEntity targetStargate)
-	{
-		return this.getEnergyStored() >= StargateNetwork.getConnectionType(this.level.getServer(), this, targetStargate).getEstabilishingPowerCost();
-	}
-	
 	public Wormhole getWormhole()
 	{
 		return this.wormhole;
@@ -937,19 +932,19 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	@Override
 	public long capacity()
 	{
-		return 1000000000000L;
+		return CommonStargateConfig.stargate_energy_capacity.get();
 	}
 
 	@Override
 	public long maxReceive()
 	{
-		return 1000000000L;
+		return CommonStargateConfig.stargate_energy_max_receive.get();
 	}
 
 	@Override
 	public long maxExtract()
 	{
-		return 1000000000L;
+		return CommonStargateConfig.intergalactic_connection_energy_cost.get();
 	}
 	
 	public float getVerticalCenterHeight()

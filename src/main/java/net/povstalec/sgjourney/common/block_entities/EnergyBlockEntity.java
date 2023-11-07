@@ -134,6 +134,9 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		if(!simulate)
 			this.setEnergy(storedEnergy - energyDepleted);
 		
+		if(energyDepleted != 0)
+			ENERGY_STORAGE.onEnergyChanged(energyDepleted, simulate);
+		
 		return energyDepleted;
 	}
 	
@@ -160,6 +163,23 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public boolean canExtract()
 	{
 		return ENERGY_STORAGE.canExtract();
+	}
+	
+	public boolean canExtractEnergy(long energy)
+	{
+		// Max amount of energy that can be stored
+		if(ENERGY_STORAGE.getTrueMaxEnergyStored() < energy)
+			return false;
+
+		// Max amount of energy that can be extracted
+		if(ENERGY_STORAGE.maxExtract() < energy)
+			return false;
+		
+		// Amount of energy that is stored
+		if(ENERGY_STORAGE.getTrueEnergyStored() < energy)
+			return false;
+		
+		return true;
 	}
 	
 	public boolean canReceive()

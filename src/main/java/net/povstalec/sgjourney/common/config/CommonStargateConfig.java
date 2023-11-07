@@ -33,6 +33,8 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.LongValue system_wide_connection_energy_cost;
 	public static ForgeConfigSpec.LongValue interstellar_connection_energy_cost;
 	public static ForgeConfigSpec.LongValue intergalactic_connection_energy_cost;
+	public static ForgeConfigSpec.LongValue stargate_energy_capacity;
+	public static ForgeConfigSpec.LongValue stargate_energy_max_receive;
 	public static ForgeConfigSpec.IntValue energy_bypass_multiplier;
 	
 	public static void init(ForgeConfigSpec.Builder server)
@@ -129,6 +131,14 @@ public class CommonStargateConfig
 		intergalactic_connection_energy_cost = server
 				.comment("The amount of energy required to estabilish a connection outside the galaxy")
 				.defineInRange("server.intergalactic_connection_energy_cost", 100000000000L, 0L, 9223372036854775807L);
+		
+		stargate_energy_capacity = server
+				.comment("The maximum amount of energy the Stargate can hold")
+				.defineInRange("server.stargate_energy_capacity", 1000000000000L, 0L, 9223372036854775807L);
+		
+		stargate_energy_max_receive = server
+				.comment("The maximum amount of energy the Stargate can reveive at once")
+				.defineInRange("server.stargate_energy_max_receive", 1000000000000L, 0L, 9223372036854775807L);
 		
 		energy_bypass_multiplier = server
 				.comment("The energy required to keep the Stargate open after exceeding the maximum open time is multiplied by this number")

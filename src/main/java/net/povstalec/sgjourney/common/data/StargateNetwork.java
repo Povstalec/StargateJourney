@@ -341,7 +341,7 @@ public class StargateNetwork extends SavedData
 		
 		if(requireEnergy)
 		{
-			if(dialingStargate.hasEnergy(dialedStargate))
+			if(dialingStargate.canExtractEnergy(connectionType.getEstabilishingPowerCost()))
 				dialingStargate.depleteEnergy(connectionType.getEstabilishingPowerCost(), false);
 			else
 				return dialingStargate.resetStargate(Stargate.Feedback.NOT_ENOUGH_POWER);

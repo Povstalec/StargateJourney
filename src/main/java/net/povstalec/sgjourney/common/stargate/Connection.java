@@ -184,7 +184,7 @@ public class Connection
 		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
 		int maxKawooshTicks = kawooshStartTicks + KAWOOSH_TICKS;
 		int maxOpenTicks = maxKawooshTicks + VORTEX_TICKS;
-		
+
 		if(!isStargateValid(this.dialingStargate) || !isStargateValid(this.dialedStargate))
 		{
 			terminate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
@@ -260,7 +260,7 @@ public class Connection
 		// Prevents anything after this point from happening while the kawoosh has not yet finished
 		if(this.openTime < maxKawooshTicks)
 			return;
-		
+
 		this.dialingStargate.idleWormholeSound();
 		this.dialedStargate.idleWormholeSound();
 		
@@ -276,7 +276,7 @@ public class Connection
 			long energyDraw = this.connectionType.getPowerDraw();
 			energyDraw = this.connectionTime >= maxOpenTime ? energyDraw * energyBypassMultiplier : energyDraw;
 			
-			if(this.dialingStargate.getEnergyStored() < energyDraw && this.dialedStargate.getEnergyStored() < energyDraw)
+			if(!this.dialingStargate.canExtractEnergy(energyDraw) && !this.dialedStargate.canExtractEnergy(energyDraw))
 			{
 				terminate(server, Stargate.Feedback.RAN_OUT_OF_POWER);
 				return;
