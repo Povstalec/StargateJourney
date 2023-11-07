@@ -10,6 +10,7 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
+	public static ForgeConfigSpec.BooleanValue disintegrate_items;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	
 	public static ForgeConfigSpec.BooleanValue enable_classic_stargate_upgrades;
@@ -50,6 +51,9 @@ public class CommonStargateConfig
 				.comment("If true, going through the wrong side of the wormhole will result in death")
 				.define("server.reverse_wormhole_kills", true);
 		
+		disintegrate_items = server
+				.comment("If true, allow the disintegration of items by Kawooshes")
+				.define("server.disintegrate_items", true);
 		enable_redstone_dialing = server
 				.comment("Enables the use of redstone for manual Stargate dialing")
 				.define("server.enable_redstone_dialing", true);
