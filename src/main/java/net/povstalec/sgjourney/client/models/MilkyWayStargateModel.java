@@ -111,7 +111,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	}
 
 	@Override
-	protected boolean isOuterPrimaryChevronLowered(MilkyWayStargateEntity stargate)
+	protected boolean isPrimaryChevronLowered(MilkyWayStargateEntity stargate)
 	{
 		return isPrimaryChevronRaised(stargate);
 	}
@@ -131,7 +131,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	}
 	
 	@Override
-	protected boolean isChevronLightRaised(MilkyWayStargateEntity stargate, int chevronNumber)
+	protected boolean isChevronRaised(MilkyWayStargateEntity stargate, int chevronNumber)
 	{
 		if(!ClientStargateConfig.use_movie_stargate_model.get())
 			return false;
@@ -160,7 +160,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	}
 
 	@Override
-	protected boolean isOuterChevronLowered(MilkyWayStargateEntity stargate, int chevronNumber)
+	protected boolean isChevronLowered(MilkyWayStargateEntity stargate, int chevronNumber)
 	{
 		if(!ClientStargateConfig.use_movie_stargate_model.get())
 			return false;
@@ -241,7 +241,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				50F/64, 35F/64);
 		
 		//Left Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 1, 0,
 				-OUTER_CHEVRON_TOP_OFFSET,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -263,7 +263,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				55F/64, 35F/64);
 		
 		//Left Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
 				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
 				STARGATE_RING_OFFSET,
@@ -334,7 +334,6 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				STARGATE_RING_OFFSET,
 				50F/64, 45F/64);
 		
-		//TODO
 		//Left Front
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 				-(OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
@@ -358,7 +357,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				50F/64, 46F/64);
 		
 		//Left Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
 				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -380,7 +379,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				46F/64, 55F/64);
 
 		//Left Right 1
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
 				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -402,7 +401,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				54F/64, 51F/64);
 
 		//Left Right 2
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 1, 0,
 				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -474,7 +473,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			63F/64, 35F/64);
 		
 		//Right Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
 			OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS,
 			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
 			OUTER_CHEVRON_Z_OFFSET,
@@ -496,7 +495,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			64F/64, 35F/64);
 		
 		//Right Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 1, 0,
 			OUTER_CHEVRON_TOP_OFFSET,
 			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
 			STARGATE_RING_OFFSET,
@@ -567,7 +566,6 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				OUTER_CHEVRON_Z_OFFSET,
 				63F/64, 46F/64);
 		
-		//TODO
 		//Right Front
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
@@ -591,7 +589,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				57F/64, 51F/64);
 		
 		//Right Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
 				OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -613,7 +611,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				63F/64, 46F/64);
 
 		//Right Left 1
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
 				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -635,7 +633,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				56F/64, 55F/64);
 
 		//Right Left 2
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 1, 0,
 				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
 				OUTER_CHEVRON_Z_OFFSET,

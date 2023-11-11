@@ -12,7 +12,7 @@ import net.povstalec.sgjourney.common.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.items.NaquadahBottleItem;
+import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 
@@ -34,7 +34,7 @@ public class TabInit
 				items.accept(ItemInit.NAQUADAH.get());
 				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
 				//items.accept(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
-				items.accept(NaquadahBottleItem.liquidNaquadahSetup());
+				items.accept(VialItem.liquidNaquadahSetup());
 
 				items.accept(ItemInit.NAQUADAH_ROD.get());
 				items.accept(ItemInit.REACTION_CHAMBER.get());
@@ -73,6 +73,8 @@ public class TabInit
 				items.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
 				items.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
 
+				items.accept(ItemInit.CRYSTAL_BASE.get());
+				
 				items.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());

@@ -157,7 +157,7 @@ public class StargateJourney
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-        	ItemProperties.register(ItemInit.LIQUID_NAQUADAH_BOTTLE.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new LiquidNaquadahPropertyFunction());
+        	ItemProperties.register(ItemInit.VIAL.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new LiquidNaquadahPropertyFunction());
         	ItemProperties.register(ItemInit.MATOK.get(), new ResourceLocation(StargateJourney.MODID, "open"), new WeaponStatePropertyFunction());
         	
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());

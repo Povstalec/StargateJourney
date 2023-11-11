@@ -4,15 +4,15 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.povstalec.sgjourney.common.items.NaquadahBottleItem;
+import net.povstalec.sgjourney.common.items.VialItem;
 
 public class LiquidNaquadahPropertyFunction implements ClampedItemPropertyFunction
 {
 	@Override
 	public float unclampedCall(ItemStack stack, ClientLevel level, LivingEntity entity, int id)
 	{
-		if(entity != null && stack.getItem() instanceof NaquadahBottleItem)
-			return (float) NaquadahBottleItem.getLiquidNaquadahAmount(stack) / NaquadahBottleItem.getLiquidNaquadahMaxAmount();
+		if(entity != null && stack.getItem() instanceof VialItem)
+			return (float) VialItem.getLiquidNaquadahAmount(stack) / VialItem.getMaxCapacity();
 		
 		return 0;
 	}

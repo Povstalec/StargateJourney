@@ -1,6 +1,6 @@
 {
 	"type": "sgjourney:crystallizing",
-	"crystal_base": {"item": "minecraft:diamond", "amount": 1},
+	"crystal_base": {"item": "sgjourney:crystal_base", "amount": 1},
 	"primary_ingredient": {"item": "minecraft:redstone", "amount": 3},
 	"secondary_ingredient": {"item": "minecraft:redstone", "amount": 3},
 	"output":

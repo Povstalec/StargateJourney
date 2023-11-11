@@ -65,11 +65,13 @@
 	"item.sgjourney.pure_naquadah": "Pure Naquadah",
 	"item.sgjourney.naquadah": "Weapons Grade Naquadah",
 	"item.sgjourney.liquid_naquadah_bucket": "Liquid Naquadah Bucket",
-	"item.sgjourney.liquid_naquadah_bottle": "Liquid Naquadah Bottle",
+	"item.sgjourney.vial": "Vial",
 	
 	"item.sgjourney.naquadah_rod": "Naquadah Rod",
 	"item.sgjourney.reaction_chamber": "Reaction Chamber",
 	"item.sgjourney.plasma_converter": "Plasma Converter",
+
+	"item.sgjourney.crystal_base": "Crystal Base",
 
 	"item.sgjourney.control_crystal": "Control Crystal",
 	"item.sgjourney.large_control_crystal": "Large Control Crystal",
@@ -132,6 +134,7 @@
 	"sounds.sgjourney.milky_way_dhd_press" : "DHD pressed",
 	
 	"sounds.sgjourney.matok_fire" : "Staff Weapon fires",
+	"sounds.sgjourney.matok_attack" : "Staff Weapon attack",
 	"sounds.sgjourney.matok_open" : "Staff Weapon opens",
 	"sounds.sgjourney.matok_close" : "Staff Weapon closes",
 	

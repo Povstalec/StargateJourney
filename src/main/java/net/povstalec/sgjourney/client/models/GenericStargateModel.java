@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 
-public class GenericStargateModel<StargateEntity extends AbstractStargateEntity> extends AbstractStargateModel
+public class GenericStargateModel<StargateEntity extends AbstractStargateEntity> extends AbstractStargateModel<StargateEntity>
 {
 	// Ring
 	protected static final float STARGATE_RING_THICKNESS = 7F;
@@ -123,6 +123,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	 * @param combinedLight Combined Light
 	 * @param combinedOverlay Combined Overlay
 	 */
+	@Override
 	public void renderStargate(StargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
@@ -138,50 +139,9 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	//******************************************Chevrons******************************************
 	//============================================================================================
 	
-	protected void renderChevrons(StargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		// Renders Chevrons
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture()));
-				
-		renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, false);
-		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
-		{
-			renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, false);
-		}
-		
-		// Renders lit up parts of Chevrons
-		consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture()));
-		
-		if(isPrimaryChevronEngaged(stargate))
-			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);
-		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
-		{
-			boolean isChevronEngaged = stargate.chevronsRendered() >= chevronNumber;
-			if(isChevronEngaged)
-				renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, isChevronEngaged);
-		}
-	}
-	
-	protected boolean isPrimaryChevronRaised(StargateEntity stargate)
-	{
-		return false;
-	}
-	
-	protected boolean isOuterPrimaryChevronLowered(StargateEntity stargate)
-	{
-		return false;
-	}
-	
-	protected boolean isPrimaryChevronEngaged(StargateEntity stargate)
-	{
-		if(stargate.isConnected())
-			return stargate.isDialingOut() || stargate.getKawooshTickCount() > 0;
-		
-		return false;
-	}
-
-	protected void renderPrimaryChevron(StargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged)
+	@Override
+	protected void renderPrimaryChevron(StargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, boolean chevronEngaged)
 	{
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
@@ -189,23 +149,15 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		stack.translate(0, 3.5F - 2.5F/16, 0);
 		
 		renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate));
-		renderOuterChevronFront(stack, consumer, source, light, isOuterPrimaryChevronLowered(stargate));
+		renderOuterChevronFront(stack, consumer, source, light, isPrimaryChevronLowered(stargate));
 		renderOuterChevronBack(stack, consumer, source, light);
 		
 		stack.popPose();
 	}
-	
-	protected boolean isChevronLightRaised(StargateEntity stargate, int chevronNumber)
-	{
-		return false;
-	}
-	
-	protected boolean isOuterChevronLowered(StargateEntity stargate, int chevronNumber)
-	{
-		return false;
-	}
 
-	protected void renderChevron(StargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
+	@Override
+	protected void renderChevron(StargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
 		int chevron = stargate.getEngagedChevrons()[chevronNumber];
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
@@ -214,8 +166,8 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
 		stack.translate(0, 3.5F - 2.5F/16, 0);
 		
-		renderChevronLight(stack, consumer, source, light, isChevronLightRaised(stargate, chevronNumber));
-		renderOuterChevronFront(stack, consumer, source, light, isOuterChevronLowered(stargate, chevronNumber));
+		renderChevronLight(stack, consumer, source, light, isChevronRaised(stargate, chevronNumber));
+		renderOuterChevronFront(stack, consumer, source, light, isChevronLowered(stargate, chevronNumber));
 		renderOuterChevronBack(stack, consumer, source, light);
 		
 		stack.popPose();
@@ -278,7 +230,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 				54F/64, 16F/64);
 
 		//Light Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
 				-CHEVRON_LIGHT_BOTTOM_CENTER,
 				-CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				CHEVRON_LIGHT_FRONT_Z_OFFSET,
@@ -300,7 +252,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 				44F/64, 23F/64);
 
 		//Light Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				CHEVRON_LIGHT_FRONT_Z_OFFSET,
@@ -422,7 +374,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		}
 
 		//Light Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
 				-CHEVRON_LIGHT_BOTTOM_CENTER,
 				-CHEVRON_LIGHT_HEIGHT_CENTER,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -444,7 +396,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 				42F/64, 12F/64);
 
 		//Light Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -640,7 +592,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 				50F/64, 35F/64);
 		
 		//Left Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 1, 0,
 				-OUTER_CHEVRON_TOP_OFFSET,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -662,7 +614,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 				55F/64, 35F/64);
 		
 		//Left Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
 				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				STARGATE_RING_OFFSET,
@@ -734,7 +686,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 			63F/64, 35F/64);
 		
 		//Right Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
 			OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS,
 			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 			OUTER_CHEVRON_Z_OFFSET,
@@ -756,7 +708,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 			64F/64, 35F/64);
 		
 		//Right Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 1, 0,
 			OUTER_CHEVRON_TOP_OFFSET,
 			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 			STARGATE_RING_OFFSET,

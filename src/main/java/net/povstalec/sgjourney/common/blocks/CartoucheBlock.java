@@ -43,7 +43,6 @@ import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock

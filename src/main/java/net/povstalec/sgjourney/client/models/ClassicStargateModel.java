@@ -8,16 +8,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 
-public class ClassicStargateModel extends AbstractStargateModel
+public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity>
 {
-	private static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/classic/classic_stargate.png");
-	private static final ResourceLocation ENGAGED_STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/classic/classic_stargate_lit.png");
-	
 	protected static final int SPINNING_SIDES = 39;
 	private static final float ANGLE = 360F / SPINNING_SIDES;
 	
@@ -86,11 +81,12 @@ public class ClassicStargateModel extends AbstractStargateModel
 		super("classic");
 	}
 	
+	@Override
 	public void renderStargate(ClassicStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
 		
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(STARGATE_TEXTURE));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture()));
 		renderOuterRing(stack, consumer, source, combinedLight);
 		renderSpinnyRing(stargate, stack, consumer, source, combinedLight);
 		
@@ -313,59 +309,48 @@ public class ClassicStargateModel extends AbstractStargateModel
 		}
 	}
 	
-	protected void renderChevrons(ClassicStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int chevronsActive)
+	@Override
+	protected boolean isPrimaryChevronLowered(ClassicStargateEntity stargate)
 	{
-		renderPrimaryChevron(stargate, stack, source, combinedLight);
-		for(int i = 1; i < NUMBER_OF_CHEVRONS; i++)
-		{
-			renderChevron(stargate, stack, source, combinedLight, i, i <= chevronsActive);
-		}
+		return isPrimaryChevronEngaged(stargate);
 	}
 	
-	protected void renderPrimaryChevron(ClassicStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight)
+	@Override
+	protected boolean isChevronLowered(ClassicStargateEntity stargate, int chevronNumber)
 	{
-		boolean isLocked = stargate.isConnected() && (stargate.isDialingOut() || stargate.getKawooshTickCount() > 0);
-		float subtracted = isLocked ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
+		return isChevronEngaged(stargate, chevronNumber);
+	}
+	
+	@Override
+	protected void renderPrimaryChevron(ClassicStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, boolean chevronEngaged)
+	{
+		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
+		float subtracted = isPrimaryChevronLowered(stargate) ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
 		
 		stack.pushPose();
 		stack.translate(0, 3.5F - subtracted, 0);
-
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(STARGATE_TEXTURE));
-		renderChevronLight(stack, consumer, source, combinedLight, isLocked);
-		renderOuterChevron(stack, consumer, source, combinedLight, isLocked);
 		
-		if(isLocked)
-		{
-			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(ENGAGED_STARGATE_TEXTURE));
-			renderChevronLight(stack, consumer, source, 15728864, isLocked);
-			renderOuterChevron(stack, consumer, source, 15728864, isLocked);
-		}
+		renderChevronLight(stack, consumer, source, light, chevronEngaged);
+		renderOuterChevron(stack, consumer, source, light, chevronEngaged);
 		
 		stack.popPose();
 	}
-	
-	protected void renderChevron(ClassicStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int chevronNumber, boolean isEngaged)
+
+	@Override
+	protected void renderChevron(ClassicStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
 		int chevron = stargate.getEngagedChevrons()[chevronNumber];
-		float subtracted = isEngaged ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
+		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
+		float subtracted = isChevronLowered(stargate, chevronNumber) ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
 		
 		stack.pushPose();
 		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
 		stack.translate(0, 3.5F - subtracted, 0);
-
 		
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(STARGATE_TEXTURE));
-		renderChevronLight(stack, consumer, source, combinedLight, isEngaged);
-		renderOuterChevron(stack, consumer, source, combinedLight, isEngaged);
-		
-		if(isEngaged)
-		{
-			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(ENGAGED_STARGATE_TEXTURE));
-			renderChevronLight(stack, consumer, source, MAX_LIGHT, isEngaged);
-			renderOuterChevron(stack, consumer, source, MAX_LIGHT, isEngaged);
-		}
+		renderChevronLight(stack, consumer, source, light, chevronEngaged);
+		renderOuterChevron(stack, consumer, source, light, chevronEngaged);
 		
 		stack.popPose();
 	}

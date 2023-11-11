@@ -1,16 +1,21 @@
 package net.povstalec.sgjourney.client.models;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public abstract class AbstractStargateModel
+public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity>
 {
 	protected static final float DEFAULT_DISTANCE = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
@@ -138,5 +143,88 @@ public abstract class AbstractStargateModel
 			return false;
 		
 		return ResourceLocation.isValidPath(split[1]);
+	}
+	
+	//============================================================================================
+	//******************************************Rendering*****************************************
+	//============================================================================================
+	
+	/**
+	 * Renders the Stargate. By default (no methods are overridden), the resulting rendered Stargate will be a generic model (a mix between the Milky Way and Pegasus Stargate)
+	 * @param stargate Stargate Entity being rendered
+	 * @param partialTick Partial Tick
+	 * @param stack Pose Stack
+	 * @param source Multi Buffer Source
+	 * @param combinedLight Combined Light
+	 * @param combinedOverlay Combined Overlay
+	 */
+	public abstract void renderStargate(StargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay);
+	
+	//============================================================================================
+	//******************************************Chevrons******************************************
+	//============================================================================================
+	
+	protected boolean isPrimaryChevronRaised(StargateEntity stargate)
+	{
+		return false;
+	}
+	
+	protected boolean isPrimaryChevronLowered(StargateEntity stargate)
+	{
+		return false;
+	}
+	
+	protected boolean isPrimaryChevronEngaged(StargateEntity stargate)
+	{
+		if(stargate.isConnected())
+			return stargate.isDialingOut() || stargate.getKawooshTickCount() > 0;
+		
+		return false;
+	}
+	
+	protected boolean isChevronRaised(StargateEntity stargate, int chevronNumber)
+	{
+		return false;
+	}
+	
+	protected boolean isChevronLowered(StargateEntity stargate, int chevronNumber)
+	{
+		return false;
+	}
+	
+	protected boolean isChevronEngaged(StargateEntity stargate, int chevronNumber)
+	{
+		return stargate.chevronsRendered() >= chevronNumber;
+	}
+
+	protected abstract void renderPrimaryChevron(StargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, boolean chevronEngaged);
+	
+	protected abstract void renderChevron(StargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged);
+	
+	protected void renderChevrons(StargateEntity stargate, PoseStack stack, MultiBufferSource source, 
+			int combinedLight, int combinedOverlay)
+	{
+		// Renders Chevrons
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture()));
+				
+		renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, false);
+		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
+		{
+			renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, false);
+		}
+		
+		// Renders lit up parts of Chevrons
+		consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture()));
+		
+		if(isPrimaryChevronEngaged(stargate))
+			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);
+		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
+		{
+			boolean isChevronEngaged = isChevronEngaged(stargate, chevronNumber);
+			if(isChevronEngaged)
+				renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, isChevronEngaged);
+		}
 	}
 }

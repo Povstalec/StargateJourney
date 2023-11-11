@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"DDD",
+		"DND",
+		"DDD"
+	],
+	
+	"key": 
+	{
+		"D": { "item": "minecraft:diamond" },
+		"N": { "item": "sgjourney:pure_naquadah" }
+	},
+	
+	"result": { "item": "sgjourney:crystal_base", "count": 1 }
+}

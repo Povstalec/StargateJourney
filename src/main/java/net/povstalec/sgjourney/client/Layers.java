@@ -25,8 +25,6 @@ public class Layers
 	public static final ModelLayerLocation UNIVERSE_DIVIDER_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "universe_divider_layer"), "main");
 	public static final ModelLayerLocation UNIVERSE_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "universe_chevron_layer"), "main");
 	// Tollan Stargate
-	public static final ModelLayerLocation TOLLAN_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "tollan_ring_layer"), "main");
-	public static final ModelLayerLocation TOLLAN_SYMBOL_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "tollan_symbol_ring_layer"), "main");
 	public static final ModelLayerLocation TOLLAN_CHEVRON_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "tollan_chevron_layer"), "main");
 	
 	// Armor
@@ -44,8 +42,6 @@ public class Layers
 		event.registerLayerDefinition(UNIVERSE_DIVIDER_LAYER, () -> UniverseStargateModel.createDividerLayer());
 		event.registerLayerDefinition(UNIVERSE_CHEVRON_LAYER, () -> UniverseStargateModel.createChevronLayer());
 		// Tollan Stargate
-		event.registerLayerDefinition(TOLLAN_RING_LAYER, () -> TollanStargateModel.createRingLayer());
-		event.registerLayerDefinition(TOLLAN_SYMBOL_RING_LAYER, () -> TollanStargateModel.createSymbolRingLayer());
 		event.registerLayerDefinition(TOLLAN_CHEVRON_LAYER, () -> TollanStargateModel.createChevronLayer());
 		
 		// Armor

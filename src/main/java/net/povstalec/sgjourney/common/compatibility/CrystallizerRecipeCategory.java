@@ -1,8 +1,11 @@
 package net.povstalec.sgjourney.common.compatibility;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -58,10 +61,28 @@ public class CrystallizerRecipeCategory implements IRecipeCategory<CrystallizerR
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, CrystallizerRecipe recipe, IFocusGroup focuses)
 	{
-		builder.addSlot(RecipeIngredientRole.INPUT, 80, 20).addIngredients(recipe.getIngredients().get(0));
-		builder.addSlot(RecipeIngredientRole.INPUT, 67, 50).addIngredients(recipe.getIngredients().get(1));
-		builder.addSlot(RecipeIngredientRole.INPUT, 93, 50).addIngredients(recipe.getIngredients().get(2));
+		ItemStack stack1 = recipe.getIngredients().get(0).getItems()[0];
+		ItemStack stack2 = recipe.getIngredients().get(1).getItems()[0];
+		ItemStack stack3 = recipe.getIngredients().get(2).getItems()[0];
+		
+		stack1.setCount(recipe.getAmountInSlot(0));
+		stack2.setCount(recipe.getAmountInSlot(1));
+		stack3.setCount(recipe.getAmountInSlot(2));
+		
+		builder.addSlot(RecipeIngredientRole.INPUT, 80, 20).addItemStack(stack1);
+		builder.addSlot(RecipeIngredientRole.INPUT, 67, 50).addItemStack(stack2);
+		builder.addSlot(RecipeIngredientRole.INPUT, 93, 50).addItemStack(stack3);
 		
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 130, 36).addItemStack(recipe.getResultItem());
+	}
+	
+	@Override
+	public void draw(CrystallizerRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY)
+	{
+		stack.pushPose();
+		
+		
+		
+		stack.popPose();
 	}
 }

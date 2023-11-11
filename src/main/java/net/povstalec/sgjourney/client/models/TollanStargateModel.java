@@ -21,11 +21,9 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public class TollanStargateModel extends AbstractStargateModel
+public class TollanStargateModel extends AbstractStargateModel<TollanStargateEntity>
 {
 	private static final String CHEVRON = ClientStargateConfig.tollan_stargate_back_lights_up.get() ? "tollan_chevron" : "tollan_chevron_front";
-	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_outer_ring.png");
-	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_inner_ring.png");
 	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/" + CHEVRON + ".png");
 	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/" + CHEVRON + "_lit.png");
 
@@ -44,6 +42,9 @@ public class TollanStargateModel extends AbstractStargateModel
 	
 	protected static final float STARGATE_RING_HEIGHT = STARGATE_RING_OUTER_HEIGHT - STARGATE_RING_INNER_HEIGHT;
 	
+	protected static final float CHEVRON_THICKNESS = STARGATE_RING_THICKNESS + 2F / 16;
+	protected static final float CHEVRON_WIDTH = 5F / 16;
+	protected static final float CHEVRON_HEIGHT = 9F / 16;
 	
 	
 	
@@ -71,99 +72,27 @@ public class TollanStargateModel extends AbstractStargateModel
 	protected static final float CHEVRON_LIGHT_Z_OFFSET = 0.0F;
 
 	protected static final float CHEVRON_LIGHT_CENTER_X = 3.375F;
-	protected static final float CHEVRON_LIGHT_CENTER_Y = 3.375F; //
-
-	protected static final float OUTER_RING_X = 8.5F - (1.0F / 16);
-	protected static final float OUTER_RING_Y = 3.5F;
-	protected static final float OUTER_RING_Z = DEFAULT_Z;
-	protected static final float OUTER_RING_X_CENTER = OUTER_RING_X / 2;
-	protected static final float OUTER_RING_Z_CENTER = OUTER_RING_Z / 2;
-
-	protected static final float BACK_RING_X = 7.875F;
-	protected static final float BACK_RING_Y = 3.0F;
-	protected static final float BACK_RING_Z = 2.0F;
-	protected static final float BACK_RING_Z_OFFSET = DEFAULT_Z / 2;
-	protected static final float BACK_RING_X_CENTER = BACK_RING_X / 2;
-
-	protected static final float INNER_RING_X = 7.25F;
-	protected static final float INNER_RING_Y = 3.0F;
-	protected static final float INNER_RING_Z = DEFAULT_Z;
-
-	protected static final float SYMBOL_RING_X = 7.25F;
-	protected static final float SYMBOL_RING_Y = 4.0F;
-	protected static final float SYMBOL_RING_Z = 0.0F;
-	protected static final float SYMBOL_RING_Y_OFFSET = SYMBOL_RING_Y - 2.0F;
-	protected static final float SYMBOL_RING_Z_OFFSET = 0.625F;
-
-	private final ModelPart ring;
-	private final ModelPart symbolRing;
+	protected static final float CHEVRON_LIGHT_CENTER_Y = 3.375F;
+	
 	private final ModelPart chevrons;
 
-	private static final int symbolCount = 39;
-
-	public TollanStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart chevrons)
+	public TollanStargateModel(ModelPart chevrons)
 	{
 		super("tollan");
-		this.ring = ring;
-		this.symbolRing = symbolRing;
 		this.chevrons = chevrons;
 	}
 	
+	@Override
 	public void renderStargate(TollanStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source,
 							   int combinedLight, int combinedOverlay)
 	{
-		//this.renderRing(stargate, stack, source, combinedLight, combinedOverlay, false);
 		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture()));
 		renderRing(stack, consumer, source, combinedLight);
-		
-		this.renderSymbolRing(stargate, stack, source, combinedLight, combinedOverlay);
 
 		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay);
 	}
-	
-	protected void renderRing(TollanStargateEntity stargate, PoseStack stack, MultiBufferSource source,
-			int combinedLight, int combinedOverlay, boolean isBottomCovered)
-	{
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
-		ModelPart outerRing = this.ring.getChild("outer_ring");
-		ModelPart backRing = this.ring.getChild("back_ring");
-		ModelPart innerRing = this.ring.getChild("inner_ring");
-		
-		int start = 0;
-		
-		if(isBottomCovered)
-			start = 1;
-		
-		for(int i = start; i < BOXES_PER_RING; i++)
-		{
-			outerRing.getChild("outer_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
-		for(int i = 0; i < BOXES_PER_RING; i++)
-		{
-			backRing.getChild("back_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
-		for(int i = start; i < BOXES_PER_RING; i++)
-		{
-			innerRing.getChild("inner_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
-	}
-	
-	protected void renderSymbolRing(TollanStargateEntity stargate, PoseStack stack, MultiBufferSource source,
-			int combinedLight, int combinedOverlay) {
-		VertexConsumer symbolRingTexture = source.getBuffer(RenderType.entitySolid(SYMBOL_RING_TEXTURE));
 
-		for(int i = 0; i < symbolCount; i++)
-		{
-			this.getSymbol(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
-		}
-	}
-
-	protected ModelPart getSymbol(int symbol)
-	{
-		return this.symbolRing.getChild("symbol_" + symbol);
-	}
-
-	protected void renderChevrons(TollanStargateEntity stargate, PoseStack stack, MultiBufferSource source,
+	/*protected void renderChevrons(TollanStargateEntity stargate, PoseStack stack, MultiBufferSource source,
 			int combinedLight, int combinedOverlay)
 	{
 		this.renderTollanPrimaryChevron(stargate, stack, source, combinedLight, combinedOverlay);
@@ -203,121 +132,13 @@ public class TollanStargateModel extends AbstractStargateModel
 			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.engagedChevron(ENGAGED_CHEVRON_TEXTURE));
 		    this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
 		}
-	}
+	}*/
 	
 	//============================================================================================
 	//*******************************************Layers*******************************************
 	//============================================================================================
 
 
-	public static void createOuterRing(PartDefinition outerRing)
-	{
-		for(int i = 0; i < 9; i++)
-		{
-			outerRing.addOrReplaceChild("outer_ring_" + 4 * i, CubeListBuilder.create()
-							.texOffs(0, 0)
-							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z_CENTER, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * 4 * i)));
-			outerRing.addOrReplaceChild("outer_ring_" + (4 * i + 1), CubeListBuilder.create()
-							.texOffs(0, 42)
-							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z_CENTER, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 1))));
-			outerRing.addOrReplaceChild("outer_ring_" + (4 * i + 2), CubeListBuilder.create()
-							.texOffs(0, 28)
-							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z_CENTER, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 2))));
-			outerRing.addOrReplaceChild("outer_ring_" + (4 * i + 3), CubeListBuilder.create()
-							.texOffs(0, 14)
-							.addBox(-OUTER_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER, -OUTER_RING_Z_CENTER, OUTER_RING_X, OUTER_RING_Y, OUTER_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 3))));
-		}
-	}
-
-	public static void createBackRing(PartDefinition backRing)
-	{
-		for(int i = 0; i < 9; i++)
-		{
-			backRing.addOrReplaceChild("back_ring_" + 4 * i, CubeListBuilder.create()
-							.texOffs(34, -2)
-							.addBox(-BACK_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER + OUTER_RING_Y, -BACK_RING_Z_OFFSET, BACK_RING_X, BACK_RING_Y, BACK_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * 4 * i)));
-			backRing.addOrReplaceChild("back_ring_" + (4 * i + 1), CubeListBuilder.create()
-							.texOffs(34, 6)
-							.addBox(-BACK_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER + OUTER_RING_Y, -BACK_RING_Z_OFFSET, BACK_RING_X, BACK_RING_Y, BACK_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 1))));
-			backRing.addOrReplaceChild("back_ring_" + (4 * i + 2), CubeListBuilder.create()
-							.texOffs(34, 14)
-							.addBox(-BACK_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER + OUTER_RING_Y, -BACK_RING_Z_OFFSET, BACK_RING_X, BACK_RING_Y, BACK_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 2))));
-			backRing.addOrReplaceChild("back_ring_" + (4 * i + 3), CubeListBuilder.create()
-							.texOffs(34, 6)
-							.addBox(-BACK_RING_X_CENTER, -DEFAULT_DISTANCE_FROM_CENTER + OUTER_RING_Y, -BACK_RING_Z_OFFSET, BACK_RING_X, BACK_RING_Y, BACK_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * (4 * i + 3))));
-		}
-	}
-
-	public static void createInnerRing(PartDefinition innerRing)
-	{
-		for(int i = 0; i < BOXES_PER_RING; i++)
-		{
-			innerRing.addOrReplaceChild("inner_ring_" + i, CubeListBuilder.create()
-							.texOffs(34, 26)
-							.addBox(-INNER_RING_X / 2, -DEFAULT_DISTANCE_FROM_CENTER + OUTER_RING_Y + BACK_RING_Y, -INNER_RING_Z / 2, INNER_RING_X, INNER_RING_Y, INNER_RING_Z),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-DEFAULT_ANGLE * i)));
-		}
-	}
-
-	public static void createRing(PartDefinition ring)
-	{
-		PartDefinition outerRing = ring.addOrReplaceChild("outer_ring", CubeListBuilder.create(), PartPose.ZERO);
-		createOuterRing(outerRing);
-
-		PartDefinition backRing = ring.addOrReplaceChild("back_ring", CubeListBuilder.create(), PartPose.ZERO);
-		createBackRing(backRing);
-
-		PartDefinition innerRing = ring.addOrReplaceChild("inner_ring", CubeListBuilder.create(), PartPose.ZERO);
-		createInnerRing(innerRing);
-	}
-
-	public static LayerDefinition createRingLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition ring = meshdefinition.getRoot();
-        
-		createRing(ring);
-		
-		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-
-	public static void createSymbolRing(PartDefinition symbolRing, int symbolCount)
-	{
-		double angle = (double) 360 / symbolCount;
-		for(int i = 0; i < symbolCount; i++)
-		{
-			symbolRing.addOrReplaceChild("symbol_" + i, CubeListBuilder.create()
-							.texOffs(-4, 6)
-							.addBox(
-									-SYMBOL_RING_X / 2,
-									-DEFAULT_DISTANCE_FROM_CENTER + SYMBOL_RING_Y_OFFSET,
-									SYMBOL_RING_Z_OFFSET,
-									SYMBOL_RING_X,
-									SYMBOL_RING_Y,
-									SYMBOL_RING_Z
-							),
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i)));
-		}
-	}
-
-	public static LayerDefinition createSymbolRingLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition symbolRing = meshdefinition.getRoot();
-        
-		createSymbolRing(symbolRing, symbolCount);
-		
-		return LayerDefinition.create(meshdefinition, 8, 8);
-	}
-	
 	public static LayerDefinition createChevronLayer()
 	{
 		MeshDefinition meshdefinition = new MeshDefinition();
@@ -444,56 +265,6 @@ public class TollanStargateModel extends AbstractStargateModel
 
 	public static void createBackChevron(PartDefinition backChevron)
 	{
-//		backChevron.addOrReplaceChild("chevron_b", CubeListBuilder.create()
-//						.texOffs(0, 40)
-//						.addBox(
-//								-OUTER_CHEVRON_CENTER_X / 2,
-//								OUTER_CHEVRON_Y_OFFSET - 0.125F,
-//								-OUTER_CHEVRON_Z_OFFSET - OUTER_CHEVRON_CENTER_Z,
-//								OUTER_CHEVRON_CENTER_X,
-//								OUTER_CHEVRON_CENTER_Y,
-//								OUTER_CHEVRON_CENTER_Z
-//						),
-//				PartPose.offset(0.0F, DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED, 0.0F));
-//		backChevron.addOrReplaceChild("chevron_right_b", CubeListBuilder.create()
-//						.texOffs(10, 40)
-//						.addBox(
-//								-(OUTER_CHEVRON_X_OFFSET + OUTER_CHEVRON_SIDE_X),
-//								OUTER_CHEVRON_Y_OFFSET,
-//								-OUTER_CHEVRON_Z_OFFSET - OUTER_CHEVRON_CENTER_Z,
-//								OUTER_CHEVRON_SIDE_X,
-//								OUTER_CHEVRON_SIDE_Y,
-//								OUTER_CHEVRON_SIDE_Z
-//						),
-//				PartPose.offsetAndRotation(
-//						0.0F,
-//						DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED,
-//						0.0F,
-//						0.0F,
-//						0.0F,
-//						(float) Math.toRadians(-OUTER_CHEVRON_ANGLE)
-//				)
-//		);
-//		backChevron.addOrReplaceChild("chevron_left_b", CubeListBuilder.create()
-//						.texOffs(10, 40)
-//						.addBox(
-//								OUTER_CHEVRON_X_OFFSET,
-//								OUTER_CHEVRON_Y_OFFSET,
-//								-OUTER_CHEVRON_Z_OFFSET - 1,
-//								OUTER_CHEVRON_SIDE_X,
-//								OUTER_CHEVRON_SIDE_Y,
-//								OUTER_CHEVRON_SIDE_Z
-//						),
-//				PartPose.offsetAndRotation(
-//						0.0F,
-//						DEFAULT_DISTANCE_FROM_CENTER - OUTER_CHEVRON_Y_OFFSET_ANGLED,
-//						0.0F,
-//						0.0F,
-//						0.0F,
-//						(float) Math.toRadians(OUTER_CHEVRON_ANGLE)
-//				)
-//		);
-
 		backChevron.addOrReplaceChild("chevron_b_center", CubeListBuilder.create()
 						.texOffs(0, 6)
 						.addBox(
@@ -513,7 +284,42 @@ public class TollanStargateModel extends AbstractStargateModel
 	}
 	
 	//============================================================================================
-	//******************************************Rendering*****************************************
+	//******************************************Chevrons******************************************
+	//============================================================================================
+	
+	@Override
+	protected void renderPrimaryChevron(TollanStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged)
+	{
+		/*int light = chevronEngaged ? MAX_LIGHT : combinedLight;
+		
+		stack.pushPose();
+		stack.translate(0, 3.5F - 2.5F/16, 0);
+		
+		renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate));
+		renderOuterChevronFront(stack, consumer, source, light, isOuterPrimaryChevronLowered(stargate));
+		renderOuterChevronBack(stack, consumer, source, light);
+		
+		stack.popPose();*/
+	}
+
+	protected void renderChevron(TollanStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
+	{
+		/*int chevron = stargate.getEngagedChevrons()[chevronNumber];
+		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
+		
+		stack.pushPose();
+		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
+		stack.translate(0, 3.5F - 2.5F/16, 0);
+		
+		renderChevronLight(stack, consumer, source, light, isChevronLightRaised(stargate, chevronNumber));
+		renderOuterChevronFront(stack, consumer, source, light, isOuterChevronLowered(stargate, chevronNumber));
+		renderOuterChevronBack(stack, consumer, source, light);
+		
+		stack.popPose();*/
+	}
+	
+	//============================================================================================
+	//********************************************Ring********************************************
 	//============================================================================================
 	
 	protected void renderRing(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
@@ -528,88 +334,88 @@ public class TollanStargateModel extends AbstractStargateModel
 					-STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_HEIGHT,
 					STARGATE_RING_OFFSET,
-					(5 - STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+					(4.5F - STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_INNER_CENTER, 
 					STARGATE_RING_INNER_HEIGHT,
 					STARGATE_RING_OFFSET,
-					(5 - STARGATE_RING_INNER_CENTER * 16) / 64, (12 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					(4.5F - STARGATE_RING_INNER_CENTER * 16) / 64, (7 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_INNER_CENTER,
 					STARGATE_RING_INNER_HEIGHT,
 					STARGATE_RING_OFFSET,
-					(5 + STARGATE_RING_INNER_CENTER * 16) / 64, (12 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					(4.5F + STARGATE_RING_INNER_CENTER * 16) / 64, (7 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_HEIGHT,
 					STARGATE_RING_OFFSET,
-					(5 + STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Back
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(15 - STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+					(12.5F - STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_INNER_CENTER,
 					STARGATE_RING_INNER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, (12 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					(12.5F - STARGATE_RING_INNER_CENTER * 16) / 64, (7 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_INNER_CENTER, 
 					STARGATE_RING_INNER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, (12 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					(12.5F + STARGATE_RING_INNER_CENTER * 16) / 64, (7 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(15 + STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+					(12.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Outside
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
 					-STARGATE_RING_OUTER_CENTER, 
 					STARGATE_RING_OUTER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(5 - STARGATE_RING_OUTER_CENTER * 16) / 64, 0,
+					(4.5F - STARGATE_RING_OUTER_CENTER * 16) / 64, 0,
 					
 					-STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_HEIGHT,
 					STARGATE_RING_OFFSET,
-					(5 - STARGATE_RING_OUTER_CENTER * 16) / 64, 8F / 64,
+					(4.5F - STARGATE_RING_OUTER_CENTER * 16) / 64, 3F / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_HEIGHT,
 					STARGATE_RING_OFFSET,
-					(5 + STARGATE_RING_OUTER_CENTER * 16) / 64, 8F / 64,
+					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, 3F / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(5 + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
+					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
 			
 			//Inside
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
 					STARGATE_RING_INNER_CENTER,
 					STARGATE_RING_INNER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, 0,
+					(12.5F - STARGATE_RING_INNER_CENTER * 16) / 64, 0,
 					
 					STARGATE_RING_INNER_CENTER, 
 					STARGATE_RING_INNER_HEIGHT,
 					STARGATE_RING_OFFSET,
-					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, 8F / 64,
+					(12.5F - STARGATE_RING_INNER_CENTER * 16) / 64, 3F / 64,
 					
 					-STARGATE_RING_INNER_CENTER,
 					STARGATE_RING_INNER_HEIGHT,
 					STARGATE_RING_OFFSET,
-					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, 8F / 64,
+					(12.5F + STARGATE_RING_INNER_CENTER * 16) / 64, 3F / 64,
 					
 					-STARGATE_RING_INNER_CENTER,
 					STARGATE_RING_INNER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, 0);
+					(12.5F + STARGATE_RING_INNER_CENTER * 16) / 64, 0);
 		}
 	}
 

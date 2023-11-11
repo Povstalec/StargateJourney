@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 
-public class UniverseStargateModel extends AbstractStargateModel
+public class UniverseStargateModel extends AbstractStargateModel<UniverseStargateEntity>
 {
 	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_outer_ring.png");
 	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_inner_ring.png");
@@ -41,6 +41,7 @@ public class UniverseStargateModel extends AbstractStargateModel
 		this.chevrons = chevrons;
 	}
 	
+	@Override
 	public void renderStargate(UniverseStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
@@ -451,5 +452,21 @@ public class UniverseStargateModel extends AbstractStargateModel
 				.texOffs(0, 13)
 				.addBox(0.0F, -2.5F, 0.0F, 4.0F, 1.0F, 1.0F), 
 				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
+	}
+
+	@Override
+	protected void renderPrimaryChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, boolean chevronEngaged)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void renderChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

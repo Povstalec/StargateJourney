@@ -53,6 +53,7 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_PRESS = registerSoundEvent("milky_way_dhd_press");
 	
 	public static final RegistryObject<SoundEvent> MATOK_FIRE = registerSoundEvent("matok_fire");
+	public static final RegistryObject<SoundEvent> MATOK_ATTACK = registerSoundEvent("matok_attack");
 	public static final RegistryObject<SoundEvent> MATOK_OPEN = registerSoundEvent("matok_open");
 	public static final RegistryObject<SoundEvent> MATOK_CLOSE = registerSoundEvent("matok_close");
 

@@ -74,13 +74,13 @@ public class StaffWeaponItem extends Item
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getLiquidNaquadahAmount(stack) / 250);
+		return Math.round(13.0F * (float) getLiquidNaquadahAmount(stack) / VialItem.getMaxCapacity());
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getLiquidNaquadahAmount(stack) / 250);
+		float f = Math.max(0.0F, (float) getLiquidNaquadahAmount(stack) / VialItem.getMaxCapacity());
 		
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
@@ -99,7 +99,7 @@ public class StaffWeaponItem extends Item
 					@Override
 					public boolean isValid(int slot, ItemStack stack)
 					{
-						return stack.is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get()) || stack.is(Items.GLASS_BOTTLE);
+						return stack.is(ItemInit.VIAL.get());
 					}
 				};
 	}
@@ -109,12 +109,12 @@ public class StaffWeaponItem extends Item
 	{
 		ItemStack itemstack = player.getItemInHand(hand);
 		
-		if(player.isShiftKeyDown() && !level.isClientSide())
+		if(player.isShiftKeyDown())
 		{
 			ItemStack mainHandStack = player.getItemInHand(InteractionHand.MAIN_HAND);
 			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
 			
-			if(offHandStack.is(ItemInit.MATOK.get()))
+			if(offHandStack.is(ItemInit.MATOK.get()) && !level.isClientSide())
 			{
 				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
 				{
@@ -129,7 +129,10 @@ public class StaffWeaponItem extends Item
 				
 			}
 			else if(mainHandStack.is(ItemInit.MATOK.get()))
+			{
 				setOpen(level, player, mainHandStack, !isOpen(mainHandStack));
+				player.getCooldowns().addCooldown(this, 15);
+			}
 		}
 		else if(!player.isShiftKeyDown() && canShoot(player, player.getItemInHand(hand)))
 		{
@@ -149,11 +152,23 @@ public class StaffWeaponItem extends Item
 				player.awardStat(Stats.ITEM_USED.get(this));
 				player.getCooldowns().addCooldown(this, 25);
 			}
+			else
+				return InteractionResultHolder.fail(itemstack);
+				
 		}
+		else
+			return InteractionResultHolder.fail(itemstack);
 		
 		
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
 	}
+	
+	/*@Override
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity player)
+	{
+		player.getLevel().playSound(player, player.blockPosition(), SoundInit.MATOK_ATTACK.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+		return super.hurtEnemy(stack, target, player);
+	}*/
 	
 	@Override
 	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player)
@@ -166,8 +181,8 @@ public class StaffWeaponItem extends Item
 		Optional<Integer> optional = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
 		{
 			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
-			if(inventoryStack.is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get()))
-				return NaquadahBottleItem.getLiquidNaquadahAmount(inventoryStack);
+			if(inventoryStack.is(ItemInit.VIAL.get()))
+				return VialItem.getLiquidNaquadahAmount(inventoryStack);
 			else
 				return 0;
 		});
@@ -179,10 +194,10 @@ public class StaffWeaponItem extends Item
 		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler -> 
 		{
 			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
-			if(inventoryStack.is(ItemInit.LIQUID_NAQUADAH_BOTTLE.get()))
+			if(inventoryStack.is(ItemInit.VIAL.get()))
 			{
-				if(NaquadahBottleItem.getLiquidNaquadahAmount(inventoryStack) > 0)
-					NaquadahBottleItem.drainLiquidNaquadah(inventoryStack);
+				if(VialItem.getLiquidNaquadahAmount(inventoryStack) > 0)
+					VialItem.drainLiquidNaquadah(inventoryStack);
 				else
 				{
 					itemHandler.extractItem(0, 1, false);
@@ -229,8 +244,7 @@ public class StaffWeaponItem extends Item
 			tag.putBoolean(IS_OPEN, isOpen);
 			stack.setTag(tag);
 			
-			//TODO This doesn't play for some reason
-			level.playSound(player, player.blockPosition(), isOpen ? SoundInit.MATOK_CLOSE.get() : SoundInit.MATOK_OPEN.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+			level.playSound(player, player.blockPosition(), isOpen ? SoundInit.MATOK_OPEN.get() : SoundInit.MATOK_CLOSE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 		}
 	}
 	

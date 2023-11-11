@@ -644,9 +644,11 @@
 			"translation": [0, -10, 2]
 		},
 		"firstperson_righthand": {
+			"rotation": [-10, 0, 0],
 			"translation": [0, -6, 0]
 		},
 		"firstperson_lefthand": {
+			"rotation": [-10, 0, 0],
 			"translation": [0, -6, 0]
 		},
 		"ground": {

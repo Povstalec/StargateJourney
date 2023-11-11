@@ -275,6 +275,14 @@
 			"sgjourney:matok_fire"
 		]
 	},
+	"matok_attack":
+	{
+		"subtitle": "sounds.sgjourney.matok_attack",
+		"sounds":
+		[
+			"sgjourney:matok_engage"
+		]
+	},
 	"matok_open":
 	{
 		"subtitle": "sounds.sgjourney.matok_open",

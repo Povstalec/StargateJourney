@@ -65,11 +65,13 @@
 	"item.sgjourney.pure_naquadah": "\u010cist\u00fd naquadah",
 	"item.sgjourney.naquadah": "Naquadah vojensk\u00e9 \u00farovn\u011b",
 	"item.sgjourney.liquid_naquadah_bucket": "Kbel\u00edk tekut\u00e9ho naquadahu",
-	"item.sgjourney.liquid_naquadah_bottle": "Lahvi\u010dka tekut\u00e9ho naquadahu",
+	"item.sgjourney.vial": "Ampulka",
 	
 	"item.sgjourney.naquadah_rod": "Naquadahov\u00e1 ty\u010d",
 	"item.sgjourney.reaction_chamber": "Reak\u010dn\u00ed komora",
 	"item.sgjourney.plasma_converter": "Plasmov\u00fd p\u0159evad\u011b\u010d",
+
+	"item.sgjourney.crystal_base": "Základní krystal",
 
 	"item.sgjourney.control_crystal": "Ovl\u00e1dac\u00ed krystal",
 	"item.sgjourney.large_control_crystal": "Velk\u00fd ovl\u00e1dac\u00ed krystal",
@@ -132,6 +134,7 @@
 	"sounds.sgjourney.milky_way_dhd_press" : "DHD zmáčknuto",
 	
 	"sounds.sgjourney.matok_fire" : "střela z tyčové zbraně",
+	"sounds.sgjourney.matok_attack" : "útok z tyčové zbraně",
 	"sounds.sgjourney.matok_open" : "tyčové zbraň se otevře",
 	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
 	
