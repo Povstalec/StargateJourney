@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.cctweaked.peripherals;
+package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 
 import java.util.HashMap;
 
@@ -12,15 +12,15 @@ import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import net.povstalec.sgjourney.common.block_entities.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.cctweaked.methods.InterfaceMethod;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.EndRotation;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.GetCurrentSymbol;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.GetRotation;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.IsCurrentSymbol;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.LowerChevron;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.RaiseChevron;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.RotateAntiClockwise;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods.RotateClockwise;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethod;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods.EndRotation;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods.GetCurrentSymbol;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods.GetRotation;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods.IsCurrentSymbol;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods.LowerChevron;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods.RaiseChevron;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods.RotateAntiClockwise;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods.RotateClockwise;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class CrystalStargatePeripheral extends CrystalInterfacePeripheral implements IDynamicPeripheral

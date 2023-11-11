@@ -10,6 +10,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -353,5 +355,11 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public ChevronLockSpeed getChevronLockSpeed()
 	{
 		return CommonStargateConfig.universe_chevron_lock_speed.get();
+	}
+
+	@Override
+	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	{
+		CCTweakedCompatibility.registerUniverseStargateMethods(wrapper);
 	}
 }

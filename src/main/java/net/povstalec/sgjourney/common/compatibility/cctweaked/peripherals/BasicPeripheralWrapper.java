@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.cctweaked.peripherals;
+package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +12,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 
 public class BasicPeripheralWrapper
 {
-	BasicInterfaceEntity basicInterface;
+	private BasicInterfaceEntity basicInterface;
 	private BasicInterfacePeripheral basicInterfacePeripheral;
 	private LazyOptional<IPeripheral> peripheral;
     protected final List<IComputerAccess> computerList = new LinkedList<>();
@@ -68,5 +68,10 @@ public class BasicPeripheralWrapper
 		{
 			stargatePeripheral.queueEvent(eventName, objects);
 		}
+	}
+	
+	public BasicInterfacePeripheral getPeripheral()
+	{
+		return this.basicInterfacePeripheral;
 	}
 }

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.cctweaked.peripherals;
+package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;

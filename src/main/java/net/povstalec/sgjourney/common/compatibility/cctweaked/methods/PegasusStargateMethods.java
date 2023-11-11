@@ -1,15 +1,15 @@
-package net.povstalec.sgjourney.common.cctweaked.methods;
+package net.povstalec.sgjourney.common.compatibility.cctweaked.methods;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 
-public class TollanStargateMethods
+public class PegasusStargateMethods
 {
-	public static class EngageSymbol implements InterfaceMethod<TollanStargateEntity>
+	public static class EngageSymbol implements InterfaceMethod<PegasusStargateEntity>
 	{
 		@Override
 		public String getName()
@@ -18,7 +18,7 @@ public class TollanStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, TollanStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
 			

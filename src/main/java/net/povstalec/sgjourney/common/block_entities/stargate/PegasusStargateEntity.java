@@ -8,6 +8,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -235,5 +237,11 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public ChevronLockSpeed getChevronLockSpeed()
 	{
 		return CommonStargateConfig.pegasus_chevron_lock_speed.get();
+	}
+
+	@Override
+	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	{
+		CCTweakedCompatibility.registerPegasusStargateMethods(wrapper);
 	}
 }

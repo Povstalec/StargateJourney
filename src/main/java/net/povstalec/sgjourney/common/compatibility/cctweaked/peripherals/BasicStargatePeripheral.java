@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.cctweaked.peripherals;
+package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 
 import java.util.HashMap;
 
@@ -13,15 +13,8 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.common.cctweaked.methods.InterfaceMethod;
-import net.povstalec.sgjourney.common.cctweaked.methods.MilkyWayStargateMethods;
-import net.povstalec.sgjourney.common.cctweaked.methods.PegasusStargateMethods;
-import net.povstalec.sgjourney.common.cctweaked.methods.TollanStargateMethods;
-import net.povstalec.sgjourney.common.cctweaked.methods.UniverseStargateMethods;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethod;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class BasicStargatePeripheral extends BasicInterfacePeripheral implements IDynamicPeripheral
@@ -34,14 +27,7 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 		super(basicInterface);
 		this.stargate = stargate;
 		
-		if(stargate instanceof MilkyWayStargateEntity)
-			registerMilkyWayStargateMethods();
-		else if(stargate instanceof UniverseStargateEntity)
-			registerUniverseStargateMethods();
-		else if(stargate instanceof PegasusStargateEntity)
-			registerPegasusStargateMethods();
-		else if(stargate instanceof TollanStargateEntity)
-			registerTollanStargateMethods();
+		stargate.registerInterfaceMethods(new StargatePeripheralWrapper(this));
 	}
 
     @Override
@@ -130,55 +116,9 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <Stargate extends AbstractStargateEntity> void registerMilkyWayStargateMethod(InterfaceMethod<Stargate> function)
+	public <StargateEntity extends AbstractStargateEntity> void registerStargateMethod(InterfaceMethod<StargateEntity> function)
 	{
+		System.out.println("Registering Method " + function.getName());
 		methods.put(function.getName(), (InterfaceMethod<AbstractStargateEntity>) function);
-	}
-	
-	public void registerMilkyWayStargateMethods()
-	{
-		registerMilkyWayStargateMethod(new MilkyWayStargateMethods.GetCurrentSymbol());
-		registerMilkyWayStargateMethod(new MilkyWayStargateMethods.IsCurrentSymbol());
-		
-		registerMilkyWayStargateMethod(new MilkyWayStargateMethods.GetRotation());
-		registerMilkyWayStargateMethod(new MilkyWayStargateMethods.RotateClockwise());
-		registerMilkyWayStargateMethod(new MilkyWayStargateMethods.RotateAntiClockwise());
-		registerMilkyWayStargateMethod(new MilkyWayStargateMethods.EndRotation());
-
-		registerMilkyWayStargateMethod(new MilkyWayStargateMethods.RaiseChevron());
-		registerMilkyWayStargateMethod(new MilkyWayStargateMethods.LowerChevron());
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <Stargate extends AbstractStargateEntity> void registerUniverseStargateMethod(InterfaceMethod<Stargate> function)
-	{
-		methods.put(function.getName(), (InterfaceMethod<AbstractStargateEntity>) function);
-	}
-	
-	public void registerUniverseStargateMethods()
-	{
-		registerUniverseStargateMethod(new UniverseStargateMethods.EngageSymbol());
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <Stargate extends AbstractStargateEntity> void registerTollanStargateMethod(InterfaceMethod<Stargate> function)
-	{
-		methods.put(function.getName(), (InterfaceMethod<AbstractStargateEntity>) function);
-	}
-	
-	public void registerTollanStargateMethods()
-	{
-		registerTollanStargateMethod(new TollanStargateMethods.EngageSymbol());
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <Stargate extends AbstractStargateEntity> void registerPegasusStargateMethod(InterfaceMethod<Stargate> function)
-	{
-		methods.put(function.getName(), (InterfaceMethod<AbstractStargateEntity>) function);
-	}
-	
-	public void registerPegasusStargateMethods()
-	{
-		registerPegasusStargateMethod(new PegasusStargateMethods.EngageSymbol());
 	}
 }

@@ -30,6 +30,7 @@ import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
@@ -962,6 +963,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.getOrientation() == Orientation.REGULAR
 				? getVerticalCenterHeight() : getHorizontalCenterHeight();
 	}
+	
+	public abstract void registerInterfaceMethods(StargatePeripheralWrapper wrapper);
 	
 	public void updateClient()
 	{

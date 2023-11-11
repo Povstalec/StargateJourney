@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.cctweaked.methods;
+package net.povstalec.sgjourney.common.compatibility.cctweaked.methods;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.ILuaContext;

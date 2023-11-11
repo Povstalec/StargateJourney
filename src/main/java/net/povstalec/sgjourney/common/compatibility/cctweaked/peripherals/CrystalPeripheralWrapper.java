@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.cctweaked.peripherals;
+package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.common.util.LazyOptional;

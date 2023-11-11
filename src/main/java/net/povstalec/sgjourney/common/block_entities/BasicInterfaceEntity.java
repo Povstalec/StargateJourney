@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
-import net.povstalec.sgjourney.common.cctweaked.peripherals.BasicPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.BasicPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;

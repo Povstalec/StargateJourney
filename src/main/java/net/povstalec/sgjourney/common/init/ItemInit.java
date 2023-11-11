@@ -12,12 +12,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.KaraKeshItem;
-import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.PDAItem;
 import net.povstalec.sgjourney.common.items.RingRemoteItem;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
+import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.armor.FalconArmorItem;
 import net.povstalec.sgjourney.common.items.armor.JackalArmorItem;
@@ -46,10 +46,6 @@ public class ItemInit
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant()));
 	public static final RegistryObject<Item> NAQUADAH = ITEMS.register("naquadah", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant()));
-	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
-			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).craftRemainder(Items.BUCKET)));
-	public static final RegistryObject<VialItem> VIAL = ITEMS.register("vial", 
-			() -> new VialItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	
 	// Crafting Items
 	public static final RegistryObject<Item> NAQUADAH_ROD = ITEMS.register("naquadah_rod", 
@@ -65,6 +61,11 @@ public class ItemInit
 	// Food
 	
 	// Useful Items
+	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
+			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+	public static final RegistryObject<VialItem> VIAL = ITEMS.register("vial", 
+			() -> new VialItem(new Item.Properties().stacksTo(1)));
+	
 	public static final RegistryObject<Item> RING_REMOTE = ITEMS.register("ring_remote", 
 			() -> new RingRemoteItem(new RingRemoteItem.Properties().stacksTo(1)));
 	public static final RegistryObject<Item> KARA_KESH = ITEMS.register("kara_kesh", 

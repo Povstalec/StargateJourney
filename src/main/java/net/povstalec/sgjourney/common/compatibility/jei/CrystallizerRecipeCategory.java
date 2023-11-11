@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.compatibility;
+package net.povstalec.sgjourney.common.compatibility.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 

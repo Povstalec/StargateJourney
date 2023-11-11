@@ -20,7 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.blocks.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
-import net.povstalec.sgjourney.common.cctweaked.peripherals.CrystalPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.CrystalPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
