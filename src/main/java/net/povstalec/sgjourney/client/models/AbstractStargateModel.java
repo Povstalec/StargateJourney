@@ -136,7 +136,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	{
 		String[] split = location.split(":");
 		
-		if(split.length > 2)
+		if(split.length != 2)
 			return false;
 		
 		if(!ResourceLocation.isValidNamespace(split[0]))

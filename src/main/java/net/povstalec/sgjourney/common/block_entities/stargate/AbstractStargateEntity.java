@@ -565,7 +565,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	{
 		String[] split = location.split(":");
 		
-		if(split.length > 2)
+		if(split.length != 2)
 			return false;
 		
 		if(!ResourceLocation.isValidNamespace(split[0]))

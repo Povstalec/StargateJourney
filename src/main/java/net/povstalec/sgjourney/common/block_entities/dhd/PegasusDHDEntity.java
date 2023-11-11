@@ -55,6 +55,13 @@ public class PegasusDHDEntity extends AbstractDHDEntity
 		this.recalculateCrystals();
 	}
 	
+	@Override
+	public void invalidateCaps()
+	{
+		super.invalidateCaps();
+		handler.invalidate();
+	}
+	
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)

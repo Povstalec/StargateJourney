@@ -78,24 +78,46 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
     }
 
 	@Override
-	public void load(CompoundTag nbt)
+	public void load(CompoundTag tag)
 	{
-		super.load(nbt);
+		super.load(tag);
 
-		this.pointOfOrigin = nbt.getString("PointOfOrigin");
-		this.symbols = nbt.getString("Symbols");
-		this.rotation = nbt.getInt("Rotation");
+		this.pointOfOrigin = tag.getString("PointOfOrigin");
+		this.symbols = tag.getString("Symbols");
+		this.rotation = tag.getInt("Rotation");
 		this.oldRotation = this.rotation;
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(tag);
 
-		nbt.putString("PointOfOrigin", pointOfOrigin);
-		nbt.putString("Symbols", symbols);
-		nbt.putInt("Rotation", rotation);
+		tag.putString("PointOfOrigin", pointOfOrigin);
+		tag.putString("Symbols", symbols);
+		tag.putInt("Rotation", rotation);
+	}
+
+	@Override
+	public CompoundTag serializeStargateInfo()
+	{
+		CompoundTag tag = super.serializeStargateInfo();
+		
+		tag.putString("PointOfOrigin", pointOfOrigin);
+		tag.putString("Symbols", symbols);
+		
+		return tag;
+	}
+	
+	@Override
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	{
+		if(tag.contains("PointOfOrigin"))
+			this.pointOfOrigin = tag.getString("PointOfOrigin");
+		if(tag.contains("Symbols"))
+			this.symbols = tag.getString("Symbols");
+    	
+    	super.deserializeStargateInfo(tag, isUpgraded);
 	}
 	
 	public boolean isChevronRaised()

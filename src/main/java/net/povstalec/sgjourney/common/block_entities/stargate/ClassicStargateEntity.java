@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import java.util.Random;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -8,11 +10,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
@@ -34,26 +38,84 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	{
 		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0,
 				VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT);
-		pointOfOrigin = "sgjourney:tauri";
-		symbols = "sgjourney:milky_way";
 		
 		displayID = true;
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+    public void onLoad()
 	{
-        super.load(nbt);
-        if(nbt.contains("Rotation"))
-        	rotation = nbt.getShort("Rotation");
+       super.onLoad();
+
+        if(this.level.isClientSide())
+        	return;
+
+        if(!isPointOfOriginValid(this.level))
+        {
+        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
+        	setPointOfOrigin(this.getLevel());
+        }
+
+        if(!areSymbolsValid(this.level))
+        {
+        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
+        	setSymbols(this.getLevel());
+        }
+    }
+	
+	@Override
+	public void load(CompoundTag tag)
+	{
+        super.load(tag);
+
+		this.pointOfOrigin = tag.getString("PointOfOrigin");
+		this.symbols = tag.getString("Symbols");
+        if(tag.contains("Rotation"))
+        	rotation = tag.getShort("Rotation");
     }
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		nbt.putShort("Rotation", rotation);
+		super.saveAdditional(tag);
 		
-		super.saveAdditional(nbt);
+		tag.putString("PointOfOrigin", pointOfOrigin);
+		tag.putString("Symbols", symbols);
+		tag.putShort("Rotation", rotation);
+	}
+
+	@Override
+	public CompoundTag serializeStargateInfo()
+	{
+		CompoundTag tag = super.serializeStargateInfo();
+		
+		tag.putString("PointOfOrigin", pointOfOrigin);
+		tag.putString("Symbols", symbols);
+		
+		return tag;
+	}
+	
+	@Override
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	{
+		if(tag.contains("PointOfOrigin"))
+			this.pointOfOrigin = tag.getString("PointOfOrigin");
+		if(tag.contains("Symbols"))
+			this.pointOfOrigin = tag.getString("Symbols");
+		this.symbols = tag.getString("Symbols");
+    	
+    	super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	/**
+	 * Sets the Stargate's point of origin randomly
+	 */
+	@Override
+	public void setPointOfOrigin(Level level)
+	{
+		Random random = new Random();
+		pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(level.getServer(), random.nextLong()).location().toString();
+		this.setChanged();
 	}
 
 	@Override
