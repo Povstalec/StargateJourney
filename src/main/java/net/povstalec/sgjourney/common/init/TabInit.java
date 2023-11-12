@@ -33,8 +33,7 @@ public class TabInit
 				items.accept(ItemInit.PURE_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH.get());
 				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
-				//items.accept(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
-				items.accept(VialItem.liquidNaquadahSetup());
+				items.accept(ItemInit.VIAL.get());
 
 				items.accept(ItemInit.NAQUADAH_ROD.get());
 				items.accept(ItemInit.REACTION_CHAMBER.get());

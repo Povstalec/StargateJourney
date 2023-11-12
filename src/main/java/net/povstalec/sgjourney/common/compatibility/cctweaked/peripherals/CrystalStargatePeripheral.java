@@ -104,7 +104,7 @@ public class CrystalStargatePeripheral extends CrystalInterfacePeripheral implem
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <Stargate extends AbstractStargateEntity> void registerMilkyWayStargateMethod(InterfaceMethod<Stargate> function)
+	private <StargateEntity extends AbstractStargateEntity> void registerMilkyWayStargateMethod(InterfaceMethod<StargateEntity> function)
 	{
 		methods.put(function.getName(), (InterfaceMethod<AbstractStargateEntity>) function);
 	}

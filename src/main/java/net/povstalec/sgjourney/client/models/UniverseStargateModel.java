@@ -453,6 +453,10 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				.addBox(0.0F, -2.5F, 0.0F, 4.0F, 1.0F, 1.0F), 
 				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
 	}
+	
+	//============================================================================================
+	//******************************************Chevrons******************************************
+	//============================================================================================
 
 	@Override
 	protected void renderPrimaryChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
