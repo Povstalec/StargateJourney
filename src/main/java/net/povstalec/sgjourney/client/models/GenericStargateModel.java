@@ -146,7 +146,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();
-		stack.translate(0, 3.5F - 2.5F/16, 0);
+		stack.translate(0, DEFAULT_DISTANCE - 2.5F/16, 0);
 		
 		renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate));
 		renderOuterChevronFront(stack, consumer, source, light, isPrimaryChevronLowered(stargate));

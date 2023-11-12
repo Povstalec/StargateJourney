@@ -12,7 +12,6 @@ public class ClientStargateConfig
 	public static SGJourneyConfigValue.BooleanValue alternate_movie_chevron_locking;
 	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
 	public static SGJourneyConfigValue.BooleanValue pegasus_stargate_back_lights_up;
-	public static SGJourneyConfigValue.BooleanValue tollan_stargate_back_lights_up;
 
 	public static SGJourneyConfigValue.RGBAValue universe_rgba;
 	public static SGJourneyConfigValue.RGBAValue milky_way_rgba;
@@ -49,10 +48,6 @@ public class ClientStargateConfig
 		pegasus_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.pegasus_stargate_back_lights_up", 
 				true, 
 				"Decide if Chevrons on the back of Pegasus Stargate should light up");
-		
-		tollan_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.tollan_stargate_back_lights_up", 
-				true, 
-				"Decide if Chevrons on the back of Tollan Stargate should light up");
 		
 		universe_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.universe_stargate", 
 				255, 255, 255, 255, 

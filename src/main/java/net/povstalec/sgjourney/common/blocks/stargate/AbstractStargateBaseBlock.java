@@ -146,7 +146,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	int energy = 0;
+    	long energy = 0;
         String id = "";
     	
         if(stack.hasTag())
@@ -154,7 +154,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
             CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
             
             if(blockEntityTag.contains("Energy"))
-            	energy = blockEntityTag.getInt("Energy");
+            	energy = blockEntityTag.getLong("Energy");
         }
         
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + " FE")).withStyle(ChatFormatting.DARK_RED));

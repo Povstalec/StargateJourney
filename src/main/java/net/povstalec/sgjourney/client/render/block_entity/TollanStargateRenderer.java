@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.TollanStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -31,7 +30,7 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 	{
 		super(context);
 		this.wormholeModel = new WormholeModel(ClientStargateConfig.tollan_rgba, 0.125F);
-		this.stargateModel = new TollanStargateModel(context.bakeLayer(Layers.TOLLAN_CHEVRON_LAYER));
+		this.stargateModel = new TollanStargateModel();
 	}
 	
 	@Override
