@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -22,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -55,6 +57,13 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 		 return stargate;
 	}
 	
+	@Override
+	public AbstractStargateRingBlock getRing()
+	{
+		return BlockInit.CLASSIC_RING.get();
+	}
+
+	@Override
 	public BlockState ringState()
 	{
 		return BlockInit.CLASSIC_RING.get().defaultBlockState();
@@ -73,10 +82,9 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 		
 		if(item instanceof StargateUpgradeItem upgrade)
 		{
-			AbstractStargateBlock baseBlock = upgrade.getStargateBaseBlock();
-			AbstractStargateRingBlock ringBlock = upgrade.getStargateRingBlock();
+			Optional<AbstractStargateBaseBlock> baseBlock = upgrade.getStargateBaseBlock(stack);
 			
-			if(baseBlock == null || ringBlock == null)
+			if(!baseBlock.isPresent())
 			{
 				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.invalid_upgrade"), true);
 				return true;
@@ -95,7 +103,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 			Orientation orientation = level.getBlockState(pos).getValue(ORIENTATION);
 			
 			// Check if there's enough space for the Stargate (Not all Stargates have the same size)
-			for(StargatePart part : baseBlock.getParts())
+			for(StargatePart part : baseBlock.get().getParts())
 			{
 				BlockState partState = level.getBlockState(part.getRingPos(pos, direction, orientation));
 				if(!part.equals(StargatePart.BASE) && (!partState.canBeReplaced() && !(partState.getBlock() instanceof AbstractStargateBlock)))
@@ -105,34 +113,42 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 				}
 			}
 			
-			for(StargatePart part : baseBlock.getParts())
+			if(level.getBlockState(pos).getBlock() instanceof AbstractStargateBaseBlock oldBaseBlock)
 			{
-				if(!part.equals(StargatePart.BASE))
+				for(StargatePart part : oldBaseBlock.getParts())
 				{
-					level.setBlock(part.getRingPos(pos, direction, orientation), 
-							ringBlock.defaultBlockState()
-							.setValue(AbstractStargateRingBlock.PART, part)
-							.setValue(AbstractStargateRingBlock.FACING, direction)
-							.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
+					level.setBlock(part.getRingPos(pos, direction, orientation), Blocks.AIR.defaultBlockState(), 3);
 				}
-			}
-			
-			level.setBlock(pos, baseBlock.defaultBlockState()
-					.setValue(AbstractStargateRingBlock.FACING, direction)
-					.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
-			
-			BlockEntity newEntity = level.getBlockEntity(pos);
-			if(newEntity instanceof AbstractStargateEntity stargate)
-			{
-				if(!level.isClientSide())
+				
+				for(StargatePart part : baseBlock.get().getParts())
 				{
-					stargate.deserializeStargateInfo(tag, true);
-					stargate.addToBlockEntityList();
+					if(!part.equals(StargatePart.BASE))
+					{
+						level.setBlock(part.getRingPos(pos, direction, orientation), 
+								baseBlock.get().getRing().defaultBlockState()
+								.setValue(AbstractStargateRingBlock.PART, part)
+								.setValue(AbstractStargateRingBlock.FACING, direction)
+								.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
+					}
 				}
+				
+				level.setBlock(pos, baseBlock.get().defaultBlockState()
+						.setValue(AbstractStargateRingBlock.FACING, direction)
+						.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
+				
+				BlockEntity newEntity = level.getBlockEntity(pos);
+				if(newEntity instanceof AbstractStargateEntity stargate)
+				{
+					if(!level.isClientSide())
+					{
+						stargate.deserializeStargateInfo(tag, true);
+						stargate.addToBlockEntityList();
+					}
+				}
+				
+				if(!player.isCreative())
+					stack.shrink(1);
 			}
-			
-			if(!player.isCreative())
-				stack.shrink(1);
 			
 			return true;
 		}

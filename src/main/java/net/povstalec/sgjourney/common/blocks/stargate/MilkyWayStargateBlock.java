@@ -45,9 +45,16 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 		 return stargate;
 	}
 	
+	@Override
+	public AbstractStargateRingBlock getRing()
+	{
+		return BlockInit.MILKY_WAY_RING.get();
+	}
+
+	@Override
 	public BlockState ringState()
 	{
-		return BlockInit.MILKY_WAY_RING.get().defaultBlockState();
+		return getRing().defaultBlockState();
 	}
 	
 	@Nullable

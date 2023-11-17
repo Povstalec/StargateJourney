@@ -4,6 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ClientStargateConfig
 {
+	public static SGJourneyConfigValue.BooleanValue stargate_variants;
 	public static SGJourneyConfigValue.BooleanValue unique_symbols;
 	public static SGJourneyConfigValue.BooleanValue enable_vortex;
 	public static SGJourneyConfigValue.IntValue event_horizon_distortion;
@@ -21,6 +22,10 @@ public class ClientStargateConfig
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
+		stargate_variants = new SGJourneyConfigValue.BooleanValue(client, "client.stargate_variants", 
+				true, 
+				"If true you will be able to see Stargate Variants");
+		
 		unique_symbols = new SGJourneyConfigValue.BooleanValue(client, "client.unique_symbols", 
 				false, 
 				"If true Solar Systems will use unique Symbols");

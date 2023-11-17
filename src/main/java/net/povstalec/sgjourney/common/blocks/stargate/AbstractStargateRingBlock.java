@@ -2,6 +2,9 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -9,10 +12,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 {
@@ -72,6 +77,18 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 			return stargate;
 		
 		return null;
+	}
+	
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	{
+		StargatePart part = state.getValue(PART);
+		BlockPos baseBlockPos = part.getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
+		
+		if(level.getBlockState(baseBlockPos).getBlock() instanceof AbstractStargateBaseBlock baseBlock)
+			return baseBlock.setVariant(level, baseBlockPos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+		
+		return InteractionResult.FAIL;
 	}
 
 	/*@Override

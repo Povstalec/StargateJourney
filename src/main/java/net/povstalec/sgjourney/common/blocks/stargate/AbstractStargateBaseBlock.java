@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -8,8 +9,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,7 +27,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -34,6 +40,50 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public AbstractStargateBaseBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties, width, horizontalOffset);
+	}
+	
+	public abstract AbstractStargateRingBlock getRing();
+	
+	public boolean setVariant(Level level, BlockPos pos, Player player, InteractionHand hand)
+	{
+		//TODO Add checks for when the variant is the same as the variant of the gate
+		//TODO Make it so that a Variant Crystal with no variant will revert the Stargate to default
+		
+		ItemStack stack = player.getItemInHand(hand);
+		Item item = stack.getItem();
+		
+		if(item instanceof StargateVariantItem)
+		{
+			Optional<String> variant = StargateVariantItem.getVariantString(stack);
+			
+			if(variant.isPresent())
+			{
+				BlockEntity blockEntity = level.getBlockEntity(pos);
+				
+				if(blockEntity instanceof AbstractStargateEntity stargate)
+				{
+					stargate.setVariant(variant.get());
+					
+					if(!player.isCreative())
+						stack.shrink(1);
+					
+					return true;
+				}
+			}
+			else
+			{
+				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.invalid_variant"), true);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	{
+		return setVariant(level, pos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
 	}
 
 	@Override
@@ -91,6 +141,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	@Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
 	{
+		System.out.println("Old state: " + oldState.toString());
+		System.out.println("New state: " + newState.toString());
+		
         if(oldState.getBlock() != newState.getBlock())
         {
     		BlockEntity blockentity = level.getBlockEntity(pos);
@@ -152,6 +205,12 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         if(stack.hasTag())
         {
             CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
+            
+            if(blockEntityTag.contains("Variant"))
+            {
+            	String variant = blockEntityTag.getString("Variant");
+            	tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+            }
             
             if(blockEntityTag.contains("Energy"))
             	energy = blockEntityTag.getLong("Energy");

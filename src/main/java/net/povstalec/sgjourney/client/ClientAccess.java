@@ -76,7 +76,7 @@ public class ClientAccess
         }
     }
     
-    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, String pointOfOrigin, String symbols)
+    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, String pointOfOrigin, String symbols, String variant)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -88,6 +88,7 @@ public class ClientAccess
         	stargate.setTickCount(tick);
         	stargate.setPointOfOrigin(pointOfOrigin);
         	stargate.setSymbols(symbols);
+        	stargate.setVariant(variant);
         }
     }
     

@@ -321,7 +321,7 @@ public class StargateNetwork extends SavedData
 	public int getOpenTime(String uuid)
 	{
 		if(this.connections.containsKey(uuid))
-			return connections.get(uuid).getOpenTime();
+			return connections.get(uuid).getConnectionTime();
 		return 0;
 	}
 	
@@ -332,7 +332,7 @@ public class StargateNetwork extends SavedData
 		return 0;
 	}
 	
-	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
 		Connection.ConnectionType connectionType = getConnectionType(server, dialingStargate, dialedStargate);
 		
@@ -352,7 +352,7 @@ public class StargateNetwork extends SavedData
 		else if(dialedStargate.isObstructed())
 			return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
 		
-		Connection connection = Connection.create(connectionType, dialingStargate, dialedStargate);
+		Connection connection = Connection.create(connectionType, dialingStargate, dialedStargate, doKawoosh);
 		if(connection != null)
 		{
 			this.connections.put(connection.getID(), connection);

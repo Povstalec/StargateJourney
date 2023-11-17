@@ -34,7 +34,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	
 	public UniverseStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
 	{
-		super("universe");
+		super(new ResourceLocation(StargateJourney.MODID, "universe"));
 		this.ring = ring;
 		this.symbolRing = symbolRing;
 		this.dividers = dividers;
@@ -457,6 +457,18 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	//============================================================================================
 	//******************************************Chevrons******************************************
 	//============================================================================================
+	
+	@Override
+	protected boolean isPrimaryChevronEngaged(UniverseStargateEntity stargate)
+	{
+		return stargate.isConnected() || stargate.addressBuffer.getLength() > 0;
+	}
+	
+	@Override
+	protected boolean isChevronEngaged(UniverseStargateEntity stargate, int chevronNumber)
+	{
+		return stargate.isConnected() || stargate.addressBuffer.getLength() > 0;
+	}
 
 	@Override
 	protected void renderPrimaryChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,

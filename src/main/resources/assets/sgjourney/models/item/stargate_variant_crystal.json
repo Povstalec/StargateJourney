@@ -2,6 +2,6 @@
     "parent": "item/generated",
     "textures": 
 	{
-        "layer0": "sgjourney:item/pegasus_upgrade_crystal"
+        "layer0": "sgjourney:item/stargate_variant_crystal"
     }
 }

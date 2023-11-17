@@ -1,0 +1,13 @@
+{
+	"base_stargate": "sgjourney:milky_way",
+	
+	"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_stargate.png",
+	"engaged_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_stargate_engaged.png",
+	"use_alternate_model": true,
+	
+	"chevron_engage_sound": "sgjourney:movie_chevron_engage",
+	"chevron_encode_sound": "sgjourney:movie_chevron_encode",
+	"fail_sound": "sgjourney:milky_way_dial_fail",
+	"wormhole_open_sound": "sgjourney:movie_wormhole_open",
+	"wormhole_close_sound": "sgjourney:movie_wormhole_close"
+}

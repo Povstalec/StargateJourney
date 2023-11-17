@@ -70,7 +70,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		return SoundInit.PEGASUS_CHEVRON_ENGAGE.get();
 	}
 	
-	public SoundEvent chevronIncomingSound()
+	public SoundEvent getChevronIncomingSound()
 	{
 		return SoundInit.PEGASUS_CHEVRON_INCOMING.get();
 	}
@@ -243,5 +243,18 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
 	{
 		CCTweakedCompatibility.registerPegasusStargateMethods(wrapper);
+	}
+	
+	@Override
+	public void doWhileDialed(int openTime, Stargate.ChevronLockSpeed chevronLockSpeed)
+	{
+		if(this.level.isClientSide())
+			return;
+		
+		if(this.currentSymbol >= 36)
+			return;
+		
+		this.currentSymbol = openTime / chevronLockSpeed.getMultiplier();
+		this.updatePegasusStargate();
 	}
 }

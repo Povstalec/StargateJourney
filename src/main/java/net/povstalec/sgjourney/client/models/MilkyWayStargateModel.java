@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.client.models;
 
+import java.util.Optional;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -12,6 +14,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity>
 {
@@ -23,21 +26,21 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	protected static final float MOVIE_OUTER_OUTER_Y_OFFSET = 2F / 16;
 	protected static final float MOVIE_OUTER_OUTER_Y_LENGTH = 4F / 16;
 	
-	protected ResourceLocation alternateStargateTexture;
-	protected ResourceLocation alternateEngagedTexture;
+	protected final ResourceLocation alternateStargateTexture;
+	protected final ResourceLocation alternateEngagedTexture;
 	
 	public MilkyWayStargateModel()
 	{
-		super("milky_way", 39, 48F/255.0F, 49F/255.0F, 63F/255.0F);
+		super(new ResourceLocation(StargateJourney.MODID, "milky_way"), 39, 48F/255.0F, 49F/255.0F, 63F/255.0F);
 		
-		this.alternateStargateTexture = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/" + stargateName + "/" + stargateName +"_stargate_alternate.png");
-		this.alternateEngagedTexture = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/" + stargateName + "/" + stargateName +"_stargate_alternate_engaged.png");
+		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
+		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
 	}
 	
 	public void renderStargate(MilkyWayStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture()));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
 		this.renderOuterRing(stack, consumer, source, combinedLight);
 		
 		this.renderSymbolRing(stargate, stack, consumer, source, combinedLight, this.rotation);
@@ -46,17 +49,34 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	}
 	
 	@Override
-	protected ResourceLocation getStargateTexture()
+	protected ResourceLocation getStargateTexture(MilkyWayStargateEntity stargate)
 	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent())
+			return variant.get().getTexture();
+		
 		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ?
 				this.alternateStargateTexture : this.stargateTexture;
 	}
 
 	@Override
-	protected ResourceLocation getEngagedTexture()
+	protected ResourceLocation getEngagedTexture(MilkyWayStargateEntity stargate)
 	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent())
+			return variant.get().getEngagedTexture();
+		
 		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ?
 				this.alternateEngagedTexture : this.engagedTexture;
+	}
+	
+	protected boolean useMovieStargateModel(MilkyWayStargateEntity stargate)
+	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && variant.get().useAlternateModel().isPresent())
+			return variant.get().useAlternateModel().get();
+		
+		return ClientStargateConfig.use_movie_stargate_model.get();
 	}
 	
 	public void setRotation(float rotation)
@@ -75,7 +95,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected void renderPrimaryChevron(MilkyWayStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged)
 	{
-		if(!ClientStargateConfig.use_movie_stargate_model.get())
+		if(!useMovieStargateModel(stargate))
 		{
 			super.renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, chevronEngaged);
 			return;
@@ -96,7 +116,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isPrimaryChevronRaised(MilkyWayStargateEntity stargate)
 	{
-		if(ClientStargateConfig.use_movie_stargate_model.get())
+		if(useMovieStargateModel(stargate))
 		{
 			if(ClientStargateConfig.alternate_movie_chevron_locking.get())
 				return stargate.isConnected();
@@ -119,7 +139,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isPrimaryChevronEngaged(MilkyWayStargateEntity stargate)
 	{
-		boolean useMovieStargateModel = ClientStargateConfig.use_movie_stargate_model.get();
+		boolean useMovieStargateModel = useMovieStargateModel(stargate);
 		
 		if(!useMovieStargateModel && stargate.isChevronRaised())
 			return true;
@@ -133,7 +153,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isChevronRaised(MilkyWayStargateEntity stargate, int chevronNumber)
 	{
-		if(!ClientStargateConfig.use_movie_stargate_model.get())
+		if(!useMovieStargateModel(stargate))
 			return false;
 		
 		boolean alternateChevronLocking = ClientStargateConfig.alternate_movie_chevron_locking.get();
@@ -162,7 +182,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isChevronLowered(MilkyWayStargateEntity stargate, int chevronNumber)
 	{
-		if(!ClientStargateConfig.use_movie_stargate_model.get())
+		if(!useMovieStargateModel(stargate))
 			return false;
 		
 		boolean alternateChevronLocking = ClientStargateConfig.alternate_movie_chevron_locking.get();

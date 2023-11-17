@@ -5,6 +5,7 @@
 	"secondary_ingredient": {"item": "minecraft:quartz", "amount": 9},
 	"output":
 	{
-		"item": "sgjourney:universe_upgrade_crystal"
+		"item": "sgjourney:stargate_upgrade_crystal",
+		"nbt": {"Type":"sgjourney:universe_stargate"}
 	}
 }

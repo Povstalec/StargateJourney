@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.items.PDAItem;
 import net.povstalec.sgjourney.common.items.RingRemoteItem;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
@@ -108,14 +109,10 @@ public class ItemInit
 	public static final RegistryObject<CommunicationCrystalItem> ADVANCED_COMMUNICATION_CRYSTAL = ITEMS.register("advanced_communication_crystal", 
 			() -> new CommunicationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1), 32));
 
-	public static final RegistryObject<StargateUpgradeItem> UNIVERSE_UPGRADE_CRYSTAL = ITEMS.register("universe_upgrade_crystal", 
-			() -> new StargateUpgradeItem.UniverseUpgrade(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-	public static final RegistryObject<StargateUpgradeItem> MILKY_WAY_UPGRADE_CRYSTAL = ITEMS.register("milky_way_upgrade_crystal", 
-			() -> new StargateUpgradeItem.MilkyWayUpgrade(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-	public static final RegistryObject<StargateUpgradeItem> PEGASUS_UPGRADE_CRYSTAL = ITEMS.register("pegasus_upgrade_crystal", 
-			() -> new StargateUpgradeItem.PegasusUpgrade(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-	public static final RegistryObject<StargateUpgradeItem> TOLLAN_UPGRADE_CRYSTAL = ITEMS.register("tollan_upgrade_crystal", 
-			() -> new StargateUpgradeItem.TollanUpgrade(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<StargateUpgradeItem> STARGATE_UPGRADE_CRYSTAL = ITEMS.register("stargate_upgrade_crystal", 
+			() -> new StargateUpgradeItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<StargateVariantItem> STARGATE_VARIANT_CRYSTAL = ITEMS.register("stargate_variant_crystal", 
+			() -> new StargateVariantItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	
 	// Tools
 	public static final RegistryObject<SGJourneySwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword", 

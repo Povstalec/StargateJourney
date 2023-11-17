@@ -27,10 +27,17 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 		
 		return stargate;
 	}
-	
+
+	@Override
+	public AbstractStargateRingBlock getRing()
+	{
+		return BlockInit.PEGASUS_RING.get();
+	}
+
+	@Override
 	public BlockState ringState()
 	{
-		return BlockInit.PEGASUS_RING.get().defaultBlockState();
+		return getRing().defaultBlockState();
 	}
 	
 	@Nullable

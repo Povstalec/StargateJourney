@@ -76,6 +76,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected String pointOfOrigin = EMPTY;
 	protected String symbols = EMPTY;
 	
+	protected String variant = EMPTY;
+	
 	// Dialing and memory
 	//protected int[] address = new int[0];
 	protected Address address = new Address();
@@ -130,6 +132,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 
 		displayID = tag.getBoolean("DisplayID");
 		upgraded = tag.getBoolean("Upgraded");
+		
+		variant = tag.getString("Variant");
 	}
 	
 	@Override
@@ -144,6 +148,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		tag.putBoolean("DisplayID", displayID);
 		tag.putBoolean("Upgraded", upgraded);
+
+		tag.putString("Variant", variant);
 		super.saveAdditional(tag);
 	}
 	
@@ -280,7 +286,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			{
 				chevronSound(false);
 				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, 0, false);
-				return setRecentFeedback(engageStargate());
+				return setRecentFeedback(engageStargate(this.getAddress(), true));
 			}
 			else
 				return resetStargate(Stargate.Feedback.SELF_OBSTRUCTED);
@@ -327,14 +333,9 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		wormholeIdleSound.playSound();
 	}
 	
-	public Stargate.Feedback engageStargate()
+	public Stargate.Feedback engageStargate(Address address, boolean doKawoosh)
 	{
-		return Dialing.dialStargate(this.level, this);
-	}
-	
-	public Stargate.Feedback dialStargate(AbstractStargateEntity targetStargate)
-	{
-		return StargateNetwork.get(level).createConnection(this.level.getServer(), this, targetStargate);
+		return Dialing.dialStargate(this.level, this, address, doKawoosh);
 	}
 	
 	public void connectStargate(String connectionID, ConnectionState connectionState)
@@ -349,7 +350,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public static double kawooshFunction(int kawooshTime)
 	{
-		return 8 * Math.sin(Math.PI * (double) kawooshTime / (Connection.KAWOOSH_TICKS));
+		return 8 * Math.sin(Math.PI * (double) kawooshTime / Connection.KAWOOSH_TICKS);
 	}
 	
 	public void doKawoosh(int kawooshTime)
@@ -363,7 +364,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
 		Direction direction = Orientation.getEffectiveDirection(getDirection(), getOrientation());
 		
-		double frontMultiplier =  kawooshFunction(kawooshTime);
+		double frontMultiplier = kawooshFunction(kawooshTime);
 		
 		if(CommonStargateConfig.kawoosh_destroys_blocks.get())
 			destroyBlocks(frontMultiplier, axisDirection, direction);
@@ -672,6 +673,16 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.symbols;
 	}
 	
+	public void setVariant(String variant)
+	{
+		this.variant = variant;
+	}
+	
+	public String getVariant()
+	{
+		return this.variant;
+	}
+	
 	public void setAddress(Address address)
 	{
 		this.address = address;
@@ -966,12 +977,14 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public abstract void registerInterfaceMethods(StargatePeripheralWrapper wrapper);
 	
+	public void doWhileDialed(int openTime, Stargate.ChevronLockSpeed chevronLockSpeed) {}
+	
 	public void updateClient()
 	{
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant));
 		
 	}
 	

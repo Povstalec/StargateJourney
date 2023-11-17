@@ -1,92 +1,87 @@
 package net.povstalec.sgjourney.common.items;
 
-import net.minecraft.world.item.Item;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
-import net.povstalec.sgjourney.common.init.BlockInit;
+import java.util.List;
+import java.util.Optional;
 
-public abstract class StargateUpgradeItem extends Item
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+
+public class StargateUpgradeItem extends Item
 {
+	public static final String TYPE = "Type";
+	
 	public StargateUpgradeItem(Properties properties)
 	{
 		super(properties);
 	}
 
-	public abstract AbstractStargateBaseBlock getStargateBaseBlock();
-	
-	public abstract AbstractStargateRingBlock getStargateRingBlock();
-	
-	
-	
-	public static class UniverseUpgrade extends StargateUpgradeItem
+	public Optional<AbstractStargateBaseBlock> getStargateBaseBlock(ItemStack stack)
 	{
-		public UniverseUpgrade(Properties properties)
+		Optional<AbstractStargateBaseBlock> stargate = Optional.empty();
+		
+		Optional<String> string = getStargateString(stack);
+		
+		if(string.isPresent())
 		{
-			super(properties);
+			Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(string.get()));
+			if(block instanceof AbstractStargateBaseBlock stargateBlock)
+				stargate = Optional.of(stargateBlock);
 		}
 		
-		public AbstractStargateBaseBlock getStargateBaseBlock()
-		{
-			return BlockInit.UNIVERSE_STARGATE.get();
-		}
-		
-		public AbstractStargateRingBlock getStargateRingBlock()
-		{
-			return BlockInit.UNIVERSE_RING.get();
-		}
+		return stargate;
 	}
-	
-	public static class MilkyWayUpgrade extends StargateUpgradeItem
+    
+    public static Optional<String> getStargateString(ItemStack stack)
 	{
-		public MilkyWayUpgrade(Properties properties)
+    	Optional<String> stargate = Optional.empty();
+    	
+		if(stack.getItem() instanceof StargateUpgradeItem)
 		{
-			super(properties);
+			if(stack.getOrCreateTag().contains(TYPE))
+			{
+				String stargateString = stack.getTag().getString(TYPE);
+				stargate = Optional.of(stargateString);
+			}
 		}
 		
-		public AbstractStargateBaseBlock getStargateBaseBlock()
-		{
-			return BlockInit.MILKY_WAY_STARGATE.get();
-		}
-		
-		public AbstractStargateRingBlock getStargateRingBlock()
-		{
-			return BlockInit.MILKY_WAY_RING.get();
-		}
+		return stargate;
 	}
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    {
+        if(stack.hasTag())
+        {
+            if(stack.getOrCreateTag().contains(TYPE))
+            {
+            	String variant = stack.getOrCreateTag().getString(TYPE);
+            	
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.stargate_type").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+            }
+        }
+
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    }
 	
-	public static class PegasusUpgrade extends StargateUpgradeItem
+	public static <StargateBlock extends AbstractStargateBlock> ItemStack stargateType(StargateUpgradeItem item, StargateBlock stargate)
 	{
-		public PegasusUpgrade(Properties properties)
-		{
-			super(properties);
-		}
+		ItemStack stack = new ItemStack(item);
+        CompoundTag compoundtag = new CompoundTag();
+        compoundtag.putString(TYPE, ForgeRegistries.BLOCKS.getKey(stargate).toString());
+		stack.setTag(compoundtag);
 		
-		public AbstractStargateBaseBlock getStargateBaseBlock()
-		{
-			return BlockInit.PEGASUS_STARGATE.get();
-		}
-		
-		public AbstractStargateRingBlock getStargateRingBlock()
-		{
-			return BlockInit.PEGASUS_RING.get();
-		}
-	}
-	
-	public static class TollanUpgrade extends StargateUpgradeItem
-	{
-		public TollanUpgrade(Properties properties)
-		{
-			super(properties);
-		}
-		
-		public AbstractStargateBaseBlock getStargateBaseBlock()
-		{
-			return BlockInit.TOLLAN_STARGATE.get();
-		}
-		
-		public AbstractStargateRingBlock getStargateRingBlock()
-		{
-			return BlockInit.TOLLAN_RING.get();
-		}
+		return stack;
 	}
 }

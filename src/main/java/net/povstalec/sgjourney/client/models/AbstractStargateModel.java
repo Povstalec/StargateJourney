@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.client.models;
 
+import java.util.Optional;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -12,7 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity>
@@ -48,21 +52,56 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	protected static final float DEFAULT_DISTANCE_FROM_CENTER = 56.0F;
 	protected static final int BOXES_PER_RING = 36;
 	
-	protected String stargateName;
-	protected ResourceLocation stargateTexture;
-	protected ResourceLocation engagedTexture;
+	private static Minecraft minecraft = Minecraft.getInstance();
 	
-	public AbstractStargateModel(String stargateName)
+	protected final String namespace;
+	protected final String name;
+	
+	protected final ResourceLocation stargateTexture;
+	protected final ResourceLocation engagedTexture;
+	
+	public AbstractStargateModel(ResourceLocation stargateName)
 	{
-		this.stargateName = stargateName;
+		namespace = stargateName.getNamespace();
+		name = stargateName.getPath();
 		
-		stargateTexture = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/" + stargateName + "/" + stargateName +"_stargate.png");
-		engagedTexture = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/" + stargateName + "/" + stargateName +"_stargate_engaged.png");
+		stargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate.png");
+		engagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_engaged.png");
+	}
+	
+	public ResourceLocation getResourceLocation()
+	{
+		return new ResourceLocation(namespace, name);
+	}
+	
+	protected boolean canUseVariant(StargateVariant variant)
+	{
+		return variant.getBaseStargate().equals(getResourceLocation());
+	}
+	
+	protected Optional<StargateVariant> getVariant(AbstractStargateEntity stargate)
+	{
+		Optional<StargateVariant> optional = Optional.empty();
+		
+		if(!ClientStargateConfig.stargate_variants.get())
+			return optional;
+		
+		String variantString = stargate.getVariant();
+		
+		if(variantString.equals(EMPTY))
+			return optional;
+		
+		ClientPacketListener clientPacketListener = minecraft.getConnection();
+		RegistryAccess registries = clientPacketListener.registryAccess();
+		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
+		
+		optional = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variantString)));
+		
+		return optional;
 	}
 	
 	protected ResourceLocation getSymbolTexture(AbstractStargateEntity stargate, int symbol)
 	{
-		Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
@@ -122,12 +161,12 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		return returned;
 	}
 	
-	protected ResourceLocation getStargateTexture()
+	protected ResourceLocation getStargateTexture(StargateEntity stargate)
 	{
 		return this.stargateTexture;
 	}
 	
-	protected ResourceLocation getEngagedTexture()
+	protected ResourceLocation getEngagedTexture(StargateEntity stargate)
 	{
 		return this.engagedTexture;
 	}
@@ -207,7 +246,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			int combinedLight, int combinedOverlay)
 	{
 		// Renders Chevrons
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture()));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture(stargate)));
 				
 		renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, false);
 		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
@@ -216,7 +255,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		}
 		
 		// Renders lit up parts of Chevrons
-		consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture()));
+		consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture(stargate)));
 		
 		if(isPrimaryChevronEngaged(stargate))
 			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);

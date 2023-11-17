@@ -234,6 +234,7 @@
 	"tooltip.sgjourney.dimension": "Dimension",
 	"tooltip.sgjourney.mode": "Mode",
 	"tooltip.sgjourney.upgraded": "Upgraded",
+	"tooltip.sgjourney.variant": "Variant",
 	
 	"tooltip.sgjourney.has_control_crystal": "Has Control Crystal",
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
@@ -320,6 +321,7 @@
 	"gui.sgjourney.disable_smooth_animations": "Disable Smooth Animations",
 	"gui.sgjourney.enable_vortex": "Enable Vortex",
 	"gui.sgjourney.event_horizon_distortion": "Event Horizon Distortion : 0.",
+	"gui.sgjourney.stargate_variants": "Stargate Variants",
 	"gui.sgjourney.unique_symbols": "Unique Symbols",
 	"gui.sgjourney.use_movie_stargate_model": "Use Movie Stargate Model",
 	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",

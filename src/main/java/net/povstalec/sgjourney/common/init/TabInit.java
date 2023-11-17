@@ -12,8 +12,9 @@ import net.povstalec.sgjourney.common.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
-import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
@@ -90,10 +91,21 @@ public class TabInit
 				
 				if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
 				{
-					items.accept(ItemInit.UNIVERSE_UPGRADE_CRYSTAL.get());
-					items.accept(ItemInit.MILKY_WAY_UPGRADE_CRYSTAL.get());
-					items.accept(ItemInit.PEGASUS_UPGRADE_CRYSTAL.get());
-					items.accept(ItemInit.TOLLAN_UPGRADE_CRYSTAL.get());
+					items.accept(StargateUpgradeItem.stargateType(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), 
+							BlockInit.UNIVERSE_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), 
+							BlockInit.MILKY_WAY_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), 
+							BlockInit.PEGASUS_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), 
+							BlockInit.TOLLAN_STARGATE.get()));
+
+					items.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
+					items.accept(StargateVariantItem.stargateVariant(ItemInit.STARGATE_VARIANT_CRYSTAL.get(),
+							"sgjourney:movie_stargate"));
+					items.accept(StargateVariantItem.stargateVariant(ItemInit.STARGATE_VARIANT_CRYSTAL.get(),
+							"sgjourney:sg-1_stargate"));
+					
 				}
 			});
 		});

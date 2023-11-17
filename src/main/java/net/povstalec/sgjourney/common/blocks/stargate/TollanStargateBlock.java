@@ -41,10 +41,17 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 		
 		return stargate;
 	}
-	
+
+	@Override
+	public AbstractStargateRingBlock getRing()
+	{
+		return BlockInit.TOLLAN_RING.get();
+	}
+
+	@Override
 	public BlockState ringState()
 	{
-		return BlockInit.TOLLAN_RING.get().defaultBlockState();
+		return getRing().defaultBlockState();
 	}
 
 	@Override

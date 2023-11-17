@@ -5,6 +5,7 @@
 	"secondary_ingredient": {"item": "minecraft:lapis_lazuli", "amount": 19},
 	"output":
 	{
-		"item": "sgjourney:pegasus_upgrade_crystal"
+		"item": "sgjourney:stargate_upgrade_crystal",
+		"nbt": {"Type":"sgjourney:pegasus_stargate"}
 	}
 }

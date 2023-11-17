@@ -101,7 +101,7 @@ public class Stargate
 		CONNECTION_ESTABLISHED_INTERSTELLAR(3, FeedbackType.INFO, createInfo("connection_established.interstellar")),
 		CONNECTION_ESTABLISHED_INTERGALACTIC(4, FeedbackType.INFO, createInfo("connection_established.intergalactic")),
 		INCOMPLETE_ADDRESS(-4, FeedbackType.ERROR, createError("incomplete_address", false)),
-		INVALID_ADDRESS(-5, FeedbackType.ERROR, createError("invalid_address", false)),
+		INVALID_ADDRESS(-5, FeedbackType.MAJOR_ERROR, createError("invalid_address", false)),
 		NOT_ENOUGH_POWER(-6, FeedbackType.MAJOR_ERROR, createError("not_enough_power", true)),
 		SELF_OBSTRUCTED(-7, FeedbackType.MAJOR_ERROR, createError("self_obstructed", true)),
 		TARGET_OBSTRUCTED(-8, FeedbackType.ERROR, createError("target_obstructed", false)),
@@ -128,7 +128,7 @@ public class Stargate
 		CONNECTION_FORMING(-19, FeedbackType.ERROR, createError("connection_forming", false)),
 
 		STARGATE_DESTROYED(-20, FeedbackType.ERROR, createError("stargate_destroyed", false)),
-		COULD_NOT_REACH_TARGET_STARGATE(-21, FeedbackType.ERROR, createError("could_not_reach_target_stargate", false)),
+		COULD_NOT_REACH_TARGET_STARGATE(-21, FeedbackType.MAJOR_ERROR, createError("could_not_reach_target_stargate", false)),
 		INTERRUPTED_BY_INCOMING_CONNECTION(-22, FeedbackType.ERROR, createError("interrupted_by_incoming_connection", false)),
 		
 		// Universe

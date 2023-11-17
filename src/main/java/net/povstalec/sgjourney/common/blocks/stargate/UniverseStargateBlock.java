@@ -27,10 +27,17 @@ public class UniverseStargateBlock extends AbstractStargateBaseBlock
 		
 		return stargate;
 	}
-	
+
+	@Override
+	public AbstractStargateRingBlock getRing()
+	{
+		return BlockInit.UNIVERSE_RING.get();
+	}
+
+	@Override
 	public BlockState ringState()
 	{
-		return BlockInit.UNIVERSE_RING.get().defaultBlockState();
+		return getRing().defaultBlockState();
 	}
 	
 	@Nullable

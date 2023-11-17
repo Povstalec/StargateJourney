@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -23,22 +22,17 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
 import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 
 public class CrystallizerEntity extends EnergyBlockEntity
 {
-	private static final ResourceLocation UNIVERSE_UPGRADE_CRYSTAL = new ResourceLocation(StargateJourney.MODID, "universe_upgrade_crystal");
-	private static final ResourceLocation MILKY_WAY_UPGRADE_CRYSTAL = new ResourceLocation(StargateJourney.MODID, "milky_way_upgrade_crystal");
-	private static final ResourceLocation PEGASUS_UPGRADE_CRYSTAL = new ResourceLocation(StargateJourney.MODID, "pegasus_upgrade_crystal");
-	private static final ResourceLocation TOLLAN_UPGRADE_CRYSTAL = new ResourceLocation(StargateJourney.MODID, "tollan_upgrade_crystal");
-	
-    protected static final int MAX_PROGRESS = 200;
+	protected static final int MAX_PROGRESS = 200;
     
 	protected final ItemStackHandler itemHandler = createHandler();
 	protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
@@ -244,16 +238,9 @@ public class CrystallizerEntity extends EnergyBlockEntity
 			return false;
 		
 		// Only allows creating Stargate Upgrade Crystals when it's enabled in the config
-		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get())
-		{
-			ResourceLocation recipeID = recipe.get().getId();
-			
-			if(		recipeID.equals(UNIVERSE_UPGRADE_CRYSTAL) ||
-					recipeID.equals(MILKY_WAY_UPGRADE_CRYSTAL) ||
-					recipeID.equals(PEGASUS_UPGRADE_CRYSTAL) ||
-					recipeID.equals(TOLLAN_UPGRADE_CRYSTAL))
-				return false;
-		}
+		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() &&
+				recipe.get().getResultItem().getItem() instanceof StargateUpgradeItem)
+			return false;
 		
 		return hasSpaceInOutputSlot(inventory, recipe.get().getResultItem());
 	}
@@ -276,7 +263,7 @@ public class CrystallizerEntity extends EnergyBlockEntity
 			useUpItems(recipe.get(), 0);
 			useUpItems(recipe.get(), 1);
 			useUpItems(recipe.get(), 2);
-			itemHandler.setStackInSlot(3, new ItemStack(recipe.get().getResultItem().getItem(), 1));
+			itemHandler.setStackInSlot(3, recipe.get().getResultItem());
 			
 			this.progress = 0;
 		}

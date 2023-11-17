@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 
@@ -97,7 +98,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	
 	protected float rotation = 0;
 	
-	public GenericStargateModel(String stargateName, int symbolSides, float symbolR, float symbolG, float symbolB)
+	public GenericStargateModel(ResourceLocation stargateName, int symbolSides, float symbolR, float symbolG, float symbolB)
 	{
 		super(stargateName);
 		this.symbolSides = symbolSides;
@@ -127,7 +128,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	public void renderStargate(StargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture()));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
 		this.renderOuterRing(stack, consumer, source, combinedLight);
 		
 		this.renderSymbolRing(stargate, stack, consumer, source, combinedLight, this.rotation);

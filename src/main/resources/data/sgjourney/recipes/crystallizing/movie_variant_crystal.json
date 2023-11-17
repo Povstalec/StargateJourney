@@ -1,0 +1,11 @@
+{
+	"type": "sgjourney:crystallizing",
+	"crystal_base": {"item": "sgjourney:crystal_base", "amount": 1},
+	"primary_ingredient": {"item": "sgjourney:naquadah", "amount": 1},
+	"secondary_ingredient": {"item": "sgjourney:naquadah_alloy", "amount": 1},
+	"output":
+	{
+		"item": "sgjourney:stargate_variant_crystal",
+		"nbt": {"Variant":"sgjourney:movie_stargate"}
+	}
+}

@@ -21,21 +21,21 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	
 	protected int currentSymbol = 0;
 	
-	protected ResourceLocation alternateStargateTexture;
-	protected ResourceLocation alternateEngagedTexture;
+	protected final ResourceLocation alternateStargateTexture;
+	protected final ResourceLocation alternateEngagedTexture;
 	
 	public PegasusStargateModel()
 	{
-		super("pegasus", 36, R, DEFAULT_G, DEFAULT_B);
+		super(new ResourceLocation(StargateJourney.MODID, "pegasus"), 36, R, DEFAULT_G, DEFAULT_B);
 		
-		this.alternateStargateTexture = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/" + stargateName + "/" + stargateName +"_stargate_alternate.png");
-		this.alternateEngagedTexture = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/" + stargateName + "/" + stargateName +"_stargate_alternate_engaged.png");
+		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
+		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
 	}
 	
 	public void renderStargate(PegasusStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture()));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
 		this.renderOuterRing(stack, consumer, source, combinedLight);
 
 		this.renderSymbolRing(stargate, stack, consumer, source, combinedLight, 0);
@@ -49,14 +49,14 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	}
 	
 	@Override
-	protected ResourceLocation getStargateTexture()
+	protected ResourceLocation getStargateTexture(PegasusStargateEntity stargate)
 	{
 		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ?
 				this.alternateStargateTexture : this.stargateTexture;
 	}
 
 	@Override
-	protected ResourceLocation getEngagedTexture()
+	protected ResourceLocation getEngagedTexture(PegasusStargateEntity stargate)
 	{
 		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ?
 				this.alternateEngagedTexture : this.engagedTexture;

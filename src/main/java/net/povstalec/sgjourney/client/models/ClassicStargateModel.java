@@ -8,6 +8,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 
@@ -78,7 +80,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	
 	public ClassicStargateModel()
 	{
-		super("classic");
+		super(new ResourceLocation(StargateJourney.MODID, "classic"));
 	}
 	
 	@Override
@@ -86,7 +88,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 			int combinedLight, int combinedOverlay)
 	{
 		
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture()));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
 		renderOuterRing(stack, consumer, source, combinedLight);
 		renderSpinnyRing(stargate, stack, consumer, source, combinedLight);
 		

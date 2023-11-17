@@ -298,5 +298,42 @@
 		[
 			"sgjourney:matok_engage"
 		]
+	},
+	
+	
+	
+	"movie_chevron_encode":
+	{
+		"subtitle": "sounds.sgjourney.chevron_encode",
+		"sounds":
+		[
+			"sgjourney:movie_chevron_encode"
+		]
+	},
+	"movie_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:movie_chevron_engage"
+		]
+	},
+	"movie_wormhole_open":
+	{
+		"replace": true,
+		"subtitle": "sounds.sgjourney.wormhole_open",
+		"sounds":
+		[
+			"sgjourney:movie_wormhole_open"
+		]
+	},
+	"movie_wormhole_close":
+	{
+		"replace": true,
+		"subtitle": "sounds.sgjourney.wormhole_close",
+		"sounds":
+		[
+			"sgjourney:movie_wormhole_close"
+		]
 	}
 }
