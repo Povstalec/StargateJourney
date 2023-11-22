@@ -1,11 +1,11 @@
 {
   "structures": [
     {
-      "structure": "sgjourney:stargate_buried/buried_stargate",
+      "structure": "sgjourney:stargate/milky_way/buried/buried_stargate",
       "weight": 1
     },
     {
-      "structure": "sgjourney:stargate_buried/buried_stargate_desert",
+      "structure": "sgjourney:stargate/milky_way/buried/buried_stargate_desert",
       "weight": 1
     }
   ],

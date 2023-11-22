@@ -1,0 +1,30 @@
+{
+  "type": "sgjourney:buried_stargate",
+
+  "start_pool": "sgjourney:stargate/milky_way/buried/buried_stargate_desert",
+
+  "size": 1,
+
+  "max_distance_from_center": 80,
+
+  "biomes": "#sgjourney:has_structure/buried_stargate/buried_stargate_desert_biomes",
+
+  "step": "strongholds",
+
+  "start_height": {
+    "absolute": -5
+  },
+
+  "project_start_to_heightmap": "OCEAN_FLOOR_WG",
+
+  "use_expansion_hack": false,
+
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": [
+        
+      ]
+    }
+  }
+}

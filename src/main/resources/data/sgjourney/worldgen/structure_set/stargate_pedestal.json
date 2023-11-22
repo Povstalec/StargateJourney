@@ -1,39 +1,39 @@
 {
   "structures": [
     {
-      "structure": "sgjourney:terra_stargate",
+      "structure": "sgjourney:stargate/milky_way/terra_stargate",
       "weight": 1
     },
     {
-      "structure": "sgjourney:stargate_pedestal/stargate_pedestal",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal",
       "weight": 1
     },
     {
-      "structure": "sgjourney:stargate_pedestal/stargate_pedestal_badlands",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_badlands",
       "weight": 1
     },
     {
-      "structure": "sgjourney:stargate_pedestal/stargate_pedestal_desert",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_desert",
       "weight": 1
     },
     {
-      "structure": "sgjourney:stargate_pedestal/stargate_pedestal_jungle",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_jungle",
       "weight": 1
     },
     {
-      "structure": "sgjourney:stargate_pedestal/stargate_pedestal_mushroom",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_mushroom",
       "weight": 1
     },
     {
-      "structure": "sgjourney:stargate_pedestal/stargate_pedestal_snow",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_snow",
       "weight": 1
     },
     {
-      "structure": "sgjourney:stargate_pedestal/stargate_pedestal_chulak",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_chulak",
       "weight": 1
     },
     {
-      "structure": "sgjourney:pegasus_stargate",
+      "structure": "sgjourney:stargate/pegasus/pegasus_stargate",
       "weight": 1
     }
   ],

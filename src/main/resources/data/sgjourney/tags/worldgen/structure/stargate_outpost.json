@@ -1,5 +1,6 @@
 {
-  "values": [
-    "sgjourney:stargate_outpost/lantean_outpost_ocean"
-  ]
+	"values":
+	[
+		"sgjourney:stargate/pegasus/outpost/lantean_outpost_ocean"
+	]
 }

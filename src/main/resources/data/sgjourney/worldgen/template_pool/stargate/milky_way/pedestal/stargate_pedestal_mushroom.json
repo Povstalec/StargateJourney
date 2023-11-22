@@ -1,0 +1,19 @@
+{
+	"name": "sgjourney:stargate_pedestal_mushroom",
+	
+	"fallback": "minecraft:empty",
+	
+	"elements":
+	[
+		{
+			"weight": 1,
+			"element":
+			{
+				"location": "sgjourney:stargate/milky_way/pedestal/mushroom/stargate_pedestal_mushroom_1",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}
