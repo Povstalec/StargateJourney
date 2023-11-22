@@ -8,20 +8,22 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-public class CommunicationCrystalItem extends Item
+public class CommunicationCrystalItem extends AbstractCrystalItem
 {
-	private static final String FREQUENCY = "Frequency";
-	private final int distance;
+	public static final int DEFAULT_MAX_DISTANCE = 16;
+	public static final int ADVANCED_MAX_DISTANCE = 32;
 	
-	public CommunicationCrystalItem(Properties properties, int distance)
+	public static final int DEFAULT_FREQUENCY = 0;
+	
+	private static final String FREQUENCY = "Frequency";
+	
+	public CommunicationCrystalItem(Properties properties)
 	{
 		super(properties);
-		this.distance = distance;
 	}
 	
 	public int getFrequency(ItemStack stack)
@@ -30,7 +32,7 @@ public class CommunicationCrystalItem extends Item
 		CompoundTag tag = stack.getOrCreateTag();
 		
 		if(!tag.contains(FREQUENCY))
-			tag.putInt(FREQUENCY, 0);
+			tag.putInt(FREQUENCY, DEFAULT_FREQUENCY);
 		
 		frequency = tag.getInt(FREQUENCY);
 		
@@ -48,7 +50,7 @@ public class CommunicationCrystalItem extends Item
 	
 	public int getMaxDistance()
 	{
-		return this.distance;
+		return DEFAULT_MAX_DISTANCE;
 	}
 
     @Override
@@ -56,11 +58,25 @@ public class CommunicationCrystalItem extends Item
     {
     	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(Component.literal(": ")).withStyle(ChatFormatting.GRAY);
         int frequency = getFrequency(stack);
-        if(frequency == 0)
+        if(frequency == DEFAULT_FREQUENCY)
             tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));
         else
         	tooltipComponents.add(description.append(Component.literal("" + frequency).withStyle(ChatFormatting.GRAY)));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    }
+    
+    public static class Advanced extends CommunicationCrystalItem
+    {
+		public Advanced(Properties properties)
+		{
+			super(properties);
+		}
+		
+		@Override
+		public int getMaxDistance()
+		{
+			return ADVANCED_MAX_DISTANCE;
+		}
     }
 }

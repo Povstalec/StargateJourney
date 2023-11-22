@@ -85,26 +85,22 @@ public class TabInit
 				items.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ENERGY_CRYSTAL.get());
+				items.accept(ItemInit.TRANSFER_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
 				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
 				
 				if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
 				{
-					items.accept(StargateUpgradeItem.stargateType(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), 
-							BlockInit.UNIVERSE_STARGATE.get()));
-					items.accept(StargateUpgradeItem.stargateType(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), 
-							BlockInit.MILKY_WAY_STARGATE.get()));
-					items.accept(StargateUpgradeItem.stargateType(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), 
-							BlockInit.PEGASUS_STARGATE.get()));
-					items.accept(StargateUpgradeItem.stargateType(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), 
-							BlockInit.TOLLAN_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
 
 					items.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
-					items.accept(StargateVariantItem.stargateVariant(ItemInit.STARGATE_VARIANT_CRYSTAL.get(),
-							"sgjourney:movie_stargate"));
-					items.accept(StargateVariantItem.stargateVariant(ItemInit.STARGATE_VARIANT_CRYSTAL.get(),
-							"sgjourney:sg-1_stargate"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:movie_stargate"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:sg-1_stargate"));
 					
 				}
 			});

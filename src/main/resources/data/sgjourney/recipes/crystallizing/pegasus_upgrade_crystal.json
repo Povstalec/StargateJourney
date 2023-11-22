@@ -6,6 +6,17 @@
 	"output":
 	{
 		"item": "sgjourney:stargate_upgrade_crystal",
-		"nbt": {"Type":"sgjourney:pegasus_stargate"}
+		"nbt":
+		{
+			"Type":"sgjourney:pegasus_stargate",
+			"display":
+			{
+				"Name":
+				{
+					"translate":"item.sgjourney.pegasus_upgrade_crystal",
+					"italic":false
+				}
+			}
+		}
 	}
 }

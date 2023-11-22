@@ -15,20 +15,20 @@ import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEnti
 
 public class TollanStargateModel extends AbstractStargateModel<TollanStargateEntity>
 {
-	protected static final float TOLLAN_DISTANCE = 3F;
+	protected static final float TOLLAN_RADIUS = 3F;
 	protected static final float TOLLAN_RING_HEIGHT = 8F / 16;
 	protected static final float STARGATE_RING_THICKNESS = 3F;
 	protected static final float STARGATE_RING_OFFSET = STARGATE_RING_THICKNESS / 2 / 16;
 	
-	protected static final float STARGATE_RING_OUTER_HEIGHT = TOLLAN_DISTANCE - STARGATE_RING_SHRINK;
-	protected static final float STARGATE_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_OUTER_HEIGHT, DEFAULT_DISTANCE);
+	protected static final float STARGATE_RING_OUTER_RADIUS = TOLLAN_RADIUS - STARGATE_RING_SHRINK;
+	protected static final float STARGATE_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_OUTER_RADIUS, DEFAULT_RADIUS);
 	protected static final float STARGATE_RING_OUTER_CENTER = STARGATE_RING_OUTER_LENGTH / 2;
 
-	protected static final float STARGATE_RING_INNER_HEIGHT = TOLLAN_DISTANCE - (TOLLAN_RING_HEIGHT - STARGATE_RING_SHRINK);
-	protected static final float STARGATE_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_INNER_HEIGHT, DEFAULT_DISTANCE);
+	protected static final float STARGATE_RING_INNER_RADIUS = TOLLAN_RADIUS - (TOLLAN_RING_HEIGHT - STARGATE_RING_SHRINK);
+	protected static final float STARGATE_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_INNER_RADIUS, DEFAULT_RADIUS);
 	protected static final float STARGATE_RING_INNER_CENTER = STARGATE_RING_INNER_LENGTH / 2;
 	
-	protected static final float STARGATE_RING_HEIGHT = STARGATE_RING_OUTER_HEIGHT - STARGATE_RING_INNER_HEIGHT;
+	protected static final float STARGATE_RING_HEIGHT = STARGATE_RING_OUTER_RADIUS - STARGATE_RING_INNER_RADIUS;
 
 	protected static final float CHEVRON_OFFSET = 1F / 16;
 	protected static final float CHEVRON_THICKNESS = STARGATE_RING_THICKNESS / 16 + 2 * CHEVRON_OFFSET;
@@ -60,7 +60,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();
-		stack.translate(0, TOLLAN_DISTANCE - 0.5F + STARGATE_RING_SHRINK, 0);
+		stack.translate(0, TOLLAN_RADIUS - 0.5F + STARGATE_RING_SHRINK, 0);
 		
 		renderChevronLight(stack, consumer, source, light, chevronEngaged);
 		
@@ -75,7 +75,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 		
 		stack.pushPose();
 		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
-		stack.translate(0, TOLLAN_DISTANCE - 0.5F + STARGATE_RING_SHRINK, 0);
+		stack.translate(0, TOLLAN_RADIUS - 0.5F + STARGATE_RING_SHRINK, 0);
 		
 		renderChevronLight(stack, consumer, source, light, chevronEngaged);
 		
@@ -257,88 +257,88 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 			//Front
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					-STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(4.5F - STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_INNER_CENTER, 
-					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_INNER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(4.5F - STARGATE_RING_INNER_CENTER * 16) / 64, (7 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_INNER_CENTER,
-					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_INNER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(4.5F + STARGATE_RING_INNER_CENTER * 16) / 64, (7 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Back
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(12.5F - STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_INNER_CENTER,
-					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_INNER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(12.5F - STARGATE_RING_INNER_CENTER * 16) / 64, (7 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_INNER_CENTER, 
-					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_INNER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(12.5F + STARGATE_RING_INNER_CENTER * 16) / 64, (7 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(12.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Outside
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
 					-STARGATE_RING_OUTER_CENTER, 
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(4.5F - STARGATE_RING_OUTER_CENTER * 16) / 64, 0,
 					
 					-STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(4.5F - STARGATE_RING_OUTER_CENTER * 16) / 64, 3F / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, 3F / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
 			
 			//Inside
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
 					STARGATE_RING_INNER_CENTER,
-					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_INNER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(12.5F - STARGATE_RING_INNER_CENTER * 16) / 64, 0,
 					
 					STARGATE_RING_INNER_CENTER, 
-					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_INNER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(12.5F - STARGATE_RING_INNER_CENTER * 16) / 64, 3F / 64,
 					
 					-STARGATE_RING_INNER_CENTER,
-					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_INNER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(12.5F + STARGATE_RING_INNER_CENTER * 16) / 64, 3F / 64,
 					
 					-STARGATE_RING_INNER_CENTER,
-					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_INNER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(12.5F + STARGATE_RING_INNER_CENTER * 16) / 64, 0);
 		}

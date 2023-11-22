@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class StargateUpgradeItem extends Item
 {
@@ -75,9 +76,9 @@ public class StargateUpgradeItem extends Item
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 	
-	public static <StargateBlock extends AbstractStargateBlock> ItemStack stargateType(StargateUpgradeItem item, StargateBlock stargate)
+	public static <StargateBlock extends AbstractStargateBlock> ItemStack stargateType(StargateBlock stargate)
 	{
-		ItemStack stack = new ItemStack(item);
+		ItemStack stack = new ItemStack(ItemInit.STARGATE_UPGRADE_CRYSTAL.get());
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putString(TYPE, ForgeRegistries.BLOCKS.getKey(stargate).toString());
 		stack.setTag(compoundtag);

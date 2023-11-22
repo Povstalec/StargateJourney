@@ -28,15 +28,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargatePart;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
+	public static final String EMPTY = StargateJourney.EMPTY;
+	
 	public AbstractStargateBaseBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties, width, horizontalOffset);
@@ -141,10 +144,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	@Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
 	{
-		System.out.println("Old state: " + oldState.toString());
-		System.out.println("New state: " + newState.toString());
-		
-        if(oldState.getBlock() != newState.getBlock())
+		if(oldState.getBlock() != newState.getBlock())
         {
     		BlockEntity blockentity = level.getBlockEntity(pos);
     		if(blockentity instanceof AbstractStargateEntity stargate)
@@ -209,7 +209,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
             if(blockEntityTag.contains("Variant"))
             {
             	String variant = blockEntityTag.getString("Variant");
-            	tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+            	
+            	if(!variant.equals(EMPTY))
+            		tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
             }
             
             if(blockEntityTag.contains("Energy"))

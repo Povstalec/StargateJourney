@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.misc;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 
 public class MatrixHelper
 {

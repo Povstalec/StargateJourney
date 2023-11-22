@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.stargate;
+package net.povstalec.sgjourney.common.blockstates;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.misc.Orientation;
 
 public enum StargatePart implements StringRepresentable
 {

@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class StargateVariantItem extends Item
 {
@@ -55,9 +56,9 @@ public class StargateVariantItem extends Item
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 	
-	public static <StargateBlock extends AbstractStargateBlock> ItemStack stargateVariant(StargateVariantItem item, String variant)
+	public static <StargateBlock extends AbstractStargateBlock> ItemStack stargateVariant(String variant)
 	{
-		ItemStack stack = new ItemStack(item);
+		ItemStack stack = new ItemStack(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putString(VARIANT, variant);
 		stack.setTag(compoundtag);

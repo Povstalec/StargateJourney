@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
@@ -18,10 +19,13 @@ public class StargateVariant
 	
 	public static final Codec<StargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ResourceLocation.CODEC.fieldOf("base_stargate").forGetter(StargateVariant::getBaseStargate),
-			
+			// Model
 			ResourceLocation.CODEC.fieldOf("texture").forGetter(StargateVariant::getTexture),
 			ResourceLocation.CODEC.fieldOf("engaged_texture").forGetter(StargateVariant::getEngagedTexture),
 			Codec.BOOL.optionalFieldOf("use_alternate_model").forGetter(StargateVariant::useAlternateModel),
+			Codec.INT.listOf().optionalFieldOf("symbol_color").forGetter(StargateVariant::getSymbolColor),
+			Codec.INT.listOf().optionalFieldOf("engaged_symbol_color").forGetter(StargateVariant::getEngagedSymbolColor),
+			Codec.INT.listOf().optionalFieldOf("event_horizon_color").forGetter(StargateVariant::getEventHorizonColor),
 			// Sounds
 			ResourceLocation.CODEC.optionalFieldOf("chevron_engage_sound").forGetter(StargateVariant::getChevronEngageSound),
 			ResourceLocation.CODEC.optionalFieldOf("chevron_encode_sound").forGetter(StargateVariant::getChevronEncodeSound),
@@ -36,6 +40,9 @@ public class StargateVariant
 	private final ResourceLocation texture;
 	private final ResourceLocation engagedTexture;
 	private final Optional<Boolean> useAlternateModel;
+	private final Optional<List<Integer>> symbolColor;
+	private final Optional<List<Integer>> engagedSymbolColor;
+	private final Optional<List<Integer>> eventHorizonColor;
 	
 	private final Optional<ResourceLocation> chevronEngageSound;
 	private final Optional<ResourceLocation> chevronEncodeSound;
@@ -49,6 +56,9 @@ public class StargateVariant
 			ResourceLocation texture,
 			ResourceLocation engagedTexture,
 			Optional<Boolean> useAlternateModel,
+			Optional<List<Integer>> symbolColor,
+			Optional<List<Integer>> engagedSymbolColor,
+			Optional<List<Integer>> eventHorizonColor,
 			
 			Optional<ResourceLocation> chevronEngageSound,
 			Optional<ResourceLocation> chevronEncodeSound,
@@ -62,6 +72,9 @@ public class StargateVariant
 		this.texture = texture;
 		this.engagedTexture = engagedTexture;
 		this.useAlternateModel = useAlternateModel;
+		this.symbolColor = symbolColor;
+		this.engagedSymbolColor = engagedSymbolColor;
+		this.eventHorizonColor = eventHorizonColor;
 		
 		this.chevronEngageSound = chevronEngageSound;
 		this.chevronEncodeSound = chevronEncodeSound;
@@ -89,6 +102,21 @@ public class StargateVariant
 	public Optional<Boolean> useAlternateModel()
 	{
 		return this.useAlternateModel;
+	}
+	
+	public Optional<List<Integer>> getSymbolColor()
+	{
+		return this.symbolColor;
+	}
+	
+	public Optional<List<Integer>> getEngagedSymbolColor()
+	{
+		return this.engagedSymbolColor;
+	}
+	
+	public Optional<List<Integer>> getEventHorizonColor()
+	{
+		return this.eventHorizonColor;
 	}
 	
 	public Optional<ResourceLocation> getChevronEngageSound()

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.misc;
+package net.povstalec.sgjourney.common.blockstates;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;

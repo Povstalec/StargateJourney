@@ -1,8 +1,6 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import net.minecraft.world.item.Item;
-
-public class ControlCrystalItem extends Item
+public class ControlCrystalItem extends AbstractCrystalItem
 {
 	public ControlCrystalItem(Properties properties)
 	{
@@ -37,4 +35,20 @@ public class ControlCrystalItem extends Item
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }*/
+	
+	public static class Large extends ControlCrystalItem
+	{
+		public Large(Properties properties)
+		{
+			super(properties);
+		}
+	}
+	
+	public static class Advanced extends ControlCrystalItem
+	{
+		public Advanced(Properties properties)
+		{
+			super(properties);
+		}
+	}
 }

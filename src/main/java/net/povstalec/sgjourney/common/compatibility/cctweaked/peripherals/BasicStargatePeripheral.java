@@ -118,7 +118,6 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 	@SuppressWarnings("unchecked")
 	public <StargateEntity extends AbstractStargateEntity> void registerStargateMethod(InterfaceMethod<StargateEntity> function)
 	{
-		System.out.println("Registering Method " + function.getName());
 		methods.put(function.getName(), (InterfaceMethod<AbstractStargateEntity>) function);
 	}
 }

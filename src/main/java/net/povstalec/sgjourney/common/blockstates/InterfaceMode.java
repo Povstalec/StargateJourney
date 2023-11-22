@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.misc;
+package net.povstalec.sgjourney.common.blockstates;
 
 import net.minecraft.util.StringRepresentable;
 

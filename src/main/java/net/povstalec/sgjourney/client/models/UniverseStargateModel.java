@@ -31,6 +31,9 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	private static final int symbolCount = 36;
 	private static final double angle = 360F / 54;
 	private float rotation = 0.0F;
+
+	protected static final float DEFAULT_DISTANCE_FROM_CENTER = 56.0F;
+	protected static final int BOXES_PER_RING = 36;
 	
 	public UniverseStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
 	{

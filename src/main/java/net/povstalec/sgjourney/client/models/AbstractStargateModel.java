@@ -21,7 +21,7 @@ import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity>
 {
-	protected static final float DEFAULT_DISTANCE = 3.5F;
+	protected static final float DEFAULT_RADIUS = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
 	protected static final float DEFAULT_RING_HEIGHT = 1F;
 	protected static final float STARGATE_RING_SHRINK = 0.001F;
@@ -48,9 +48,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	 * 
 	 * If there is "-CONSTANT / 2" in the place of offset, it is used for centering
 	 */
-
-	protected static final float DEFAULT_DISTANCE_FROM_CENTER = 56.0F;
-	protected static final int BOXES_PER_RING = 36;
 	
 	private static Minecraft minecraft = Minecraft.getInstance();
 	

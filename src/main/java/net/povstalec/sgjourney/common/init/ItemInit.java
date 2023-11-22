@@ -28,6 +28,7 @@ import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyAxeItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyHoeItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyPickaxeItem;
@@ -88,26 +89,30 @@ public class ItemInit
 	public static final RegistryObject<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal", 
 			() -> new ControlCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<ControlCrystalItem> LARGE_CONTROL_CRYSTAL = ITEMS.register("large_control_crystal", 
-			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
+			() -> new ControlCrystalItem.Large(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<MemoryCrystalItem> MEMORY_CRYSTAL = ITEMS.register("memory_crystal", 
-			() -> new MemoryCrystalItem(new Item.Properties().stacksTo(1), 4));
+			() -> new MemoryCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<MaterializationCrystalItem> MATERIALIZATION_CRYSTAL = ITEMS.register("materialization_crystal", 
 			() -> new MaterializationCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<EnergyCrystalItem> ENERGY_CRYSTAL = ITEMS.register("energy_crystal", 
-			() -> new EnergyCrystalItem(new Item.Properties().stacksTo(1), 50000, 2500, 1500));
+			() -> new EnergyCrystalItem(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<TransferCrystalItem> TRANSFER_CRYSTAL = ITEMS.register("transfer_crystal", 
+			() -> new TransferCrystalItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<CommunicationCrystalItem> COMMUNICATION_CRYSTAL = ITEMS.register("communication_crystal", 
-			() -> new CommunicationCrystalItem(new Item.Properties().stacksTo(1), 16));
+			() -> new CommunicationCrystalItem(new Item.Properties().stacksTo(1)));
 
 	public static final RegistryObject<ControlCrystalItem> ADVANCED_CONTROL_CRYSTAL = ITEMS.register("advanced_control_crystal", 
-			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+			() -> new ControlCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	public static final RegistryObject<MemoryCrystalItem> ADVANCED_MEMORY_CRYSTAL = ITEMS.register("advanced_memory_crystal", 
-			() -> new MemoryCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1), 6));
+			() -> new MemoryCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	public static final RegistryObject<MaterializationCrystalItem> ADVANCED_MATERIALIZATION_CRYSTAL = ITEMS.register("advanced_materialization_crystal", 
-			() -> new MaterializationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+			() -> new MaterializationCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	public static final RegistryObject<EnergyCrystalItem> ADVANCED_ENERGY_CRYSTAL = ITEMS.register("advanced_energy_crystal", 
-			() -> new EnergyCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1), 100000, 2500, 3000));
+			() -> new EnergyCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<TransferCrystalItem> ADVANCED_TRANSFER_CRYSTAL = ITEMS.register("advanced_transfer_crystal", 
+			() -> new TransferCrystalItem.Advanced(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<CommunicationCrystalItem> ADVANCED_COMMUNICATION_CRYSTAL = ITEMS.register("advanced_communication_crystal", 
-			() -> new CommunicationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1), 32));
+			() -> new CommunicationCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 
 	public static final RegistryObject<StargateUpgradeItem> STARGATE_UPGRADE_CRYSTAL = ITEMS.register("stargate_upgrade_crystal", 
 			() -> new StargateUpgradeItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));

@@ -9,15 +9,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.stargate.Address;
 
-public class MemoryCrystalItem extends Item
+public class MemoryCrystalItem extends AbstractCrystalItem
 {
+	public static final int DEFAULT_MEMORY_CAPACITY = 4;
+	public static final int ADVANCED_MEMORY_CAPACITY = 6;
+	
 	private static final String MEMORY_TYPE = "MemoryType";
 	private static final String MEMORY_LIST = "MemoryList";
 
@@ -25,12 +27,9 @@ public class MemoryCrystalItem extends Item
 	private static final String COORDINATES = "Coordinates";
 	private static final String ADDRESS = "Address";
 	
-	private int memoryCapacity;
-	
-	public MemoryCrystalItem(Properties properties, int memoryCapacity)
+	public MemoryCrystalItem(Properties properties)
 	{
 		super(properties);
-		this.memoryCapacity = memoryCapacity;
 	}
 	
 	public enum MemoryType
@@ -38,6 +37,11 @@ public class MemoryCrystalItem extends Item
 		ID,
 		COORDINATES,
 		ADDRESS
+	}
+	
+	public int getMemoryCapacity()
+	{
+		return DEFAULT_MEMORY_CAPACITY;
 	}
 	
 	/*public static ItemStack atlantisAddress()
@@ -86,7 +90,7 @@ public class MemoryCrystalItem extends Item
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
 		{
-			if(getMemoryListSize(stack) >= memoryCrystal.memoryCapacity)
+			if(getMemoryListSize(stack) >= memoryCrystal.getMemoryCapacity())
 			{
 				StargateJourney.LOGGER.info("Memory at maximum capacity");
 				return false;
@@ -197,5 +201,19 @@ public class MemoryCrystalItem extends Item
         }
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    }
+    
+    public static class Advanced extends MemoryCrystalItem
+    {
+    	public Advanced(Properties properties)
+		{
+			super(properties);
+		}
+
+		@Override
+    	public int getMemoryCapacity()
+    	{
+    		return DEFAULT_MEMORY_CAPACITY;
+    	}
     }
 }

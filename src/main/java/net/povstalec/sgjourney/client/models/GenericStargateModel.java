@@ -18,26 +18,26 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	protected static final float STARGATE_RING_THICKNESS = 7F;
 	protected static final float STARGATE_RING_OFFSET = STARGATE_RING_THICKNESS / 2 / 16;
 	
-	protected static final float STARGATE_RING_OUTER_HEIGHT = DEFAULT_DISTANCE - STARGATE_RING_SHRINK;
-	protected static final float STARGATE_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_OUTER_HEIGHT, DEFAULT_DISTANCE);
+	protected static final float STARGATE_RING_OUTER_RADIUS = DEFAULT_RADIUS - STARGATE_RING_SHRINK;
+	protected static final float STARGATE_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_OUTER_RADIUS, DEFAULT_RADIUS);
 	protected static final float STARGATE_RING_OUTER_CENTER = STARGATE_RING_OUTER_LENGTH / 2;
 	
-	protected static final float STARGATE_RING_STOP_HEIGHT = DEFAULT_DISTANCE - 7F / 16;
-	protected static final float STARGATE_RING_STOP_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_STOP_HEIGHT, DEFAULT_DISTANCE);
+	protected static final float STARGATE_RING_STOP_RADIUS = DEFAULT_RADIUS - 7F / 16;
+	protected static final float STARGATE_RING_STOP_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_STOP_RADIUS, DEFAULT_RADIUS);
 	protected static final float STARGATE_RING_STOP_CENTER = STARGATE_RING_STOP_LENGTH / 2;
 
-	protected static final float STARGATE_RING_START_HEIGHT = DEFAULT_DISTANCE - 13F / 16;
-	protected static final float STARGATE_RING_START_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_START_HEIGHT, DEFAULT_DISTANCE);
+	protected static final float STARGATE_RING_START_RADIUS = DEFAULT_RADIUS - 13F / 16;
+	protected static final float STARGATE_RING_START_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_START_RADIUS, DEFAULT_RADIUS);
 	protected static final float STARGATE_RING_START_CENTER = STARGATE_RING_START_LENGTH / 2;
 
-	protected static final float STARGATE_RING_INNER_HEIGHT = DEFAULT_DISTANCE - (DEFAULT_RING_HEIGHT - STARGATE_RING_SHRINK);
-	protected static final float STARGATE_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_INNER_HEIGHT, DEFAULT_DISTANCE);
+	protected static final float STARGATE_RING_INNER_HEIGHT = DEFAULT_RADIUS - (DEFAULT_RING_HEIGHT - STARGATE_RING_SHRINK);
+	protected static final float STARGATE_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(DEFAULT_SIDES, STARGATE_RING_INNER_HEIGHT, DEFAULT_RADIUS);
 	protected static final float STARGATE_RING_INNER_CENTER = STARGATE_RING_INNER_LENGTH / 2;
 
-	protected static final float STARGATE_RING_HEIGHT = STARGATE_RING_OUTER_HEIGHT - STARGATE_RING_INNER_HEIGHT;
-	protected static final float STARGATE_EDGE_TO_CUTOUT_HEIGHT = STARGATE_RING_OUTER_HEIGHT - STARGATE_RING_STOP_HEIGHT;
-	protected static final float STARGATE_RING_CUTOUT_HEIGHT = STARGATE_RING_STOP_HEIGHT - STARGATE_RING_START_HEIGHT;
-	protected static final float STARGATE_CUTOUT_TO_INNER_HEIGHT = STARGATE_RING_START_HEIGHT - STARGATE_RING_INNER_HEIGHT;
+	protected static final float STARGATE_RING_HEIGHT = STARGATE_RING_OUTER_RADIUS - STARGATE_RING_INNER_HEIGHT;
+	protected static final float STARGATE_EDGE_TO_CUTOUT_HEIGHT = STARGATE_RING_OUTER_RADIUS - STARGATE_RING_STOP_RADIUS;
+	protected static final float STARGATE_RING_CUTOUT_HEIGHT = STARGATE_RING_STOP_RADIUS - STARGATE_RING_START_RADIUS;
+	protected static final float STARGATE_CUTOUT_TO_INNER_HEIGHT = STARGATE_RING_START_RADIUS - STARGATE_RING_INNER_HEIGHT;
 
 	// Chevrons
 	protected static final float CHEVRON_LIGHT_FRONT_LENGTH = 4F / 16;
@@ -76,11 +76,11 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	protected int symbolSides;
 	protected float symbolAngle;
 	
-	protected static final float STARGATE_SYMBOL_RING_OUTER_HEIGHT = DEFAULT_DISTANCE - 6F / 16;
+	protected static final float STARGATE_SYMBOL_RING_OUTER_HEIGHT = DEFAULT_RADIUS - 6F / 16;
 	protected float stargateSymbolRingOuterLength;
 	protected float stargateSymbolRingOuterCenter;
 
-	protected static final float STARGATE_SYMBOL_RING_INNER_HEIGHT = DEFAULT_DISTANCE - 14F / 16;
+	protected static final float STARGATE_SYMBOL_RING_INNER_HEIGHT = DEFAULT_RADIUS - 14F / 16;
 	protected float stargateSymbolRingInnerLength;
 	protected float stargateSymbolRingInnerCenter;
 	
@@ -104,10 +104,10 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		this.symbolSides = symbolSides;
 		this.symbolAngle = 360F / symbolSides;
 		
-		this.stargateSymbolRingOuterLength = SGJourneyModel.getUsedWidth(symbolSides, STARGATE_SYMBOL_RING_OUTER_HEIGHT, DEFAULT_DISTANCE);
+		this.stargateSymbolRingOuterLength = SGJourneyModel.getUsedWidth(symbolSides, STARGATE_SYMBOL_RING_OUTER_HEIGHT, DEFAULT_RADIUS);
 		this.stargateSymbolRingOuterCenter = stargateSymbolRingOuterLength / 2;
 
-		this.stargateSymbolRingInnerLength = SGJourneyModel.getUsedWidth(symbolSides, STARGATE_SYMBOL_RING_INNER_HEIGHT, DEFAULT_DISTANCE);
+		this.stargateSymbolRingInnerLength = SGJourneyModel.getUsedWidth(symbolSides, STARGATE_SYMBOL_RING_INNER_HEIGHT, DEFAULT_RADIUS);
 		this.stargateSymbolRingInnerCenter = stargateSymbolRingInnerLength / 2;
 		
 		this.symbolR = symbolR;
@@ -147,7 +147,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();
-		stack.translate(0, DEFAULT_DISTANCE - 2.5F/16, 0);
+		stack.translate(0, DEFAULT_RADIUS - 2.5F/16, 0);
 		
 		renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate));
 		renderOuterChevronFront(stack, consumer, source, light, isPrimaryChevronLowered(stargate));
@@ -1009,29 +1009,29 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 			//Front
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					-STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 - STARGATE_RING_OUTER_CENTER * 16) / 64, (10.5F - STARGATE_EDGE_TO_CUTOUT_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_STOP_CENTER, 
-					STARGATE_RING_STOP_HEIGHT,
+					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 - STARGATE_RING_STOP_CENTER * 16) / 64, (10.5F + STARGATE_EDGE_TO_CUTOUT_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_STOP_CENTER,
-					STARGATE_RING_STOP_HEIGHT,
+					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 + STARGATE_RING_STOP_CENTER * 16) / 64, (10.5F + STARGATE_EDGE_TO_CUTOUT_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 + STARGATE_RING_OUTER_CENTER * 16) / 64, (10.5F - STARGATE_EDGE_TO_CUTOUT_HEIGHT/2 * 16) / 64);
 			
 			//Front 2
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					-STARGATE_RING_START_CENTER,
-					STARGATE_RING_START_HEIGHT,
+					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 - STARGATE_RING_START_CENTER * 16) / 64, (29.5F - STARGATE_CUTOUT_TO_INNER_HEIGHT/2 * 16) / 64,
 					
@@ -1046,14 +1046,14 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 					(10F * (j % 4) + 5 + STARGATE_RING_INNER_CENTER * 16) / 64, (29.5F + STARGATE_CUTOUT_TO_INNER_HEIGHT/2 * 16) / 64,
 					
 					STARGATE_RING_START_CENTER,
-					STARGATE_RING_START_HEIGHT,
+					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 + STARGATE_RING_START_CENTER * 16) / 64, (29.5F - STARGATE_CUTOUT_TO_INNER_HEIGHT/2 * 16) / 64);
 			
 			//Back
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 + STARGATE_RING_OUTER_CENTER * 16) / 64, (23 - STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
@@ -1068,73 +1068,73 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 					(10F * (j % 4) + 5 - STARGATE_RING_STOP_CENTER * 16) / 64, (23 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 - STARGATE_RING_OUTER_CENTER * 16) / 64, (23 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Outside
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
 					-STARGATE_RING_OUTER_CENTER, 
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 - STARGATE_RING_OUTER_CENTER * 16) / 64, 0,
 					
 					-STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 - STARGATE_RING_OUTER_CENTER * 16) / 64, 7F / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 + STARGATE_RING_OUTER_CENTER * 16) / 64, 7F / 64,
 					
 					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_HEIGHT,
+					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
 					(10F * (j % 4) + 5 + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
 			
 			//Inside Stop - This will essentially be just one pixel thick
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
 					STARGATE_RING_STOP_CENTER,
-					STARGATE_RING_STOP_HEIGHT,
+					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
 					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, 14F / 64,
 					
 					STARGATE_RING_STOP_CENTER, 
-					STARGATE_RING_STOP_HEIGHT,
+					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET,
 					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, 15F / 64,
 					
 					-STARGATE_RING_STOP_CENTER,
-					STARGATE_RING_STOP_HEIGHT,
+					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET,
 					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, 15F / 64,
 					
 					-STARGATE_RING_STOP_CENTER,
-					STARGATE_RING_STOP_HEIGHT,
+					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
 					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, 14F / 64);
 			
 			//Inside Start - This will essentially be just one pixel thick
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
 					-STARGATE_RING_START_CENTER,
-					STARGATE_RING_START_HEIGHT,
+					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
 					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, 31F / 64,
 					
 					-STARGATE_RING_START_CENTER, 
-					STARGATE_RING_START_HEIGHT,
+					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET,
 					(15 - STARGATE_RING_INNER_CENTER * 16) / 64, 32F / 64,
 					
 					STARGATE_RING_START_CENTER,
-					STARGATE_RING_START_HEIGHT,
+					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET,
 					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, 32F / 64,
 					
 					STARGATE_RING_START_CENTER,
-					STARGATE_RING_START_HEIGHT,
+					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
 					(15 + STARGATE_RING_INNER_CENTER * 16) / 64, 31F / 64);
 			

@@ -23,7 +23,7 @@ public class WormholeModel
 {
 	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png");
 
-	protected static final float DEFAULT_DISTANCE = 3.5F;
+	protected static final float DEFAULT_RADIUS = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
 	
 	protected static final float SHIELDING_OFFSET = 1F / 16 / 2;
@@ -247,7 +247,7 @@ public class WormholeModel
 		float angle = (float) 360 / sides;
 		float[][] coordinates = new float[sides][3];
 		float baseWidth = 9.8F / 16;
-		float ratio = distanceFromCenter / DEFAULT_DISTANCE;
+		float ratio = distanceFromCenter / DEFAULT_RADIUS;
 		float usedWidth = baseWidth * ratio;
 		
 		float circumcircleRadius = SGJourneyModel.circumcircleRadius(angle, usedWidth);
