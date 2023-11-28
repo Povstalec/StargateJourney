@@ -115,25 +115,13 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		this.symbolB = symbolB;
 	}
 	
-	/**
-	 * Renders the Stargate. By default (no methods are overridden), the resulting rendered Stargate will be a generic model (a mix between the Milky Way and Pegasus Stargate)
-	 * @param stargate Stargate Entity being rendered
-	 * @param partialTick Partial Tick
-	 * @param stack Pose Stack
-	 * @param source Multi Buffer Source
-	 * @param combinedLight Combined Light
-	 * @param combinedOverlay Combined Overlay
-	 */
 	@Override
-	public void renderStargate(StargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+	public void renderRing(StargateEntity stargate, float partialTick, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
 		this.renderOuterRing(stack, consumer, source, combinedLight);
 		
 		this.renderSymbolRing(stargate, stack, consumer, source, combinedLight, this.rotation);
-
-		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay);
 	}
 	
 	//============================================================================================
@@ -165,7 +153,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		
 		stack.pushPose();
 		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
-		stack.translate(0, 3.5F - 2.5F/16, 0);
+		stack.translate(0, DEFAULT_RADIUS - 2.5F/16, 0);
 		
 		renderChevronLight(stack, consumer, source, light, isChevronRaised(stargate, chevronNumber));
 		renderOuterChevronFront(stack, consumer, source, light, isChevronLowered(stargate, chevronNumber));
@@ -1060,12 +1048,12 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 					STARGATE_RING_INNER_CENTER,
 					STARGATE_RING_INNER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(10F * (j % 4) + 5 + STARGATE_RING_STOP_CENTER * 16) / 64, (23 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					(10F * (j % 4) + 5 + STARGATE_RING_INNER_CENTER * 16) / 64, (23 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_INNER_CENTER, 
 					STARGATE_RING_INNER_HEIGHT,
 					-STARGATE_RING_OFFSET,
-					(10F * (j % 4) + 5 - STARGATE_RING_STOP_CENTER * 16) / 64, (23 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					(10F * (j % 4) + 5 - STARGATE_RING_INNER_CENTER * 16) / 64, (23 + STARGATE_RING_HEIGHT/2 * 16) / 64,
 					
 					-STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,

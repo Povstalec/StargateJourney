@@ -10,7 +10,6 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 
 public class TollanStargateModel extends AbstractStargateModel<TollanStargateEntity>
@@ -41,13 +40,10 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 	}
 	
 	@Override
-	public void renderStargate(TollanStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source,
-							   int combinedLight, int combinedOverlay)
+	public void renderRing(TollanStargateEntity stargate, float partialTick, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
-		renderRing(stack, consumer, source, combinedLight);
-
-		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay);
+		renderOuterRing(stack, consumer, source, combinedLight);
 	}
 	
 	//============================================================================================
@@ -247,7 +243,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 	//********************************************Ring********************************************
 	//============================================================================================
 	
-	protected void renderRing(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
+	protected void renderOuterRing(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();

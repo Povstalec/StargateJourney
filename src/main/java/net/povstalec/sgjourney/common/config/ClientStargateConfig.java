@@ -11,6 +11,7 @@ public class ClientStargateConfig
 	
 	public static SGJourneyConfigValue.BooleanValue use_movie_stargate_model;
 	public static SGJourneyConfigValue.BooleanValue alternate_movie_chevron_locking;
+	public static SGJourneyConfigValue.BooleanValue universe_front_rotates;
 	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
 	public static SGJourneyConfigValue.BooleanValue pegasus_stargate_back_lights_up;
 
@@ -41,6 +42,10 @@ public class ClientStargateConfig
 		use_movie_stargate_model = new SGJourneyConfigValue.BooleanValue(client, "client.use_movie_stargate_model", 
 				false, 
 				"Decide if Milky Way Stargate should use the Movie Stargate model");
+		
+		universe_front_rotates = new SGJourneyConfigValue.BooleanValue(client, "client.universe_front_rotates", 
+				false, 
+				"If true only the front of the Universe Stargate will rotate");
 		
 		alternate_movie_chevron_locking = new SGJourneyConfigValue.BooleanValue(client, "client.alternate_movie_chevron_locking", 
 				false, 

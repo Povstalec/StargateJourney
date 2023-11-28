@@ -11,6 +11,7 @@ import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
@@ -74,6 +75,18 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 	//============================================================================================
 	
 	@LuaFunction
+	public final int getStargateGeneration()
+	{
+		return stargate.getGeneration().getGen();
+	}
+	
+	@LuaFunction
+	public final String getStargateType()
+	{
+		return BlockEntityType.getKey(stargate.getType()).toString();
+	}
+	
+	@LuaFunction
 	public final int getRecentFeedback()
 	{
 		return stargate.getRecentFeedback().getCode();
@@ -108,8 +121,13 @@ public class BasicStargatePeripheral extends BasicInterfacePeripheral implements
 	{
 		MethodResult result = context.executeMainThreadTask(() ->
 		{
-			Stargate.Feedback feedback = stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
-			return new Object[] {!feedback.isError()};
+			boolean wasConnected = stargate.isConnected();
+			
+			stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+
+			boolean isConnected = stargate.isConnected();
+					
+			return new Object[] {!isConnected && (wasConnected != isConnected)};
 		});
 		
 		return result;

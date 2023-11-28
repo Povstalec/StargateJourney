@@ -42,6 +42,12 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		{
 			super(properties);
 		}
+		
+		@Override
+		public boolean isLarge()
+		{
+			return true;
+		}
 	}
 	
 	public static class Advanced extends ControlCrystalItem
@@ -49,6 +55,12 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		public Advanced(Properties properties)
 		{
 			super(properties);
+		}
+		
+		@Override
+		public boolean isAdvanced()
+		{
+			return true;
 		}
 	}
 }

@@ -88,5 +88,11 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
     	{
     		return ADVANCED_RANGE_INCREMENT;
     	}
+		
+		@Override
+		public boolean isAdvanced()
+		{
+			return true;
+		}
     }
 }

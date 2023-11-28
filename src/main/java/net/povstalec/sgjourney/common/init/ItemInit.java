@@ -58,7 +58,7 @@ public class ItemInit
 			() -> new Item(new Item.Properties().fireResistant()));
 
 	public static final RegistryObject<Item> CRYSTAL_BASE = ITEMS.register("crystal_base", 
-			() -> new Item(new Item.Properties().fireResistant()));
+			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).fireResistant()));
 	
 	// Food
 	
@@ -87,19 +87,19 @@ public class ItemInit
 	
 	// Crystals
 	public static final RegistryObject<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal", 
-			() -> new ControlCrystalItem(new Item.Properties().stacksTo(1)));
+			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<ControlCrystalItem> LARGE_CONTROL_CRYSTAL = ITEMS.register("large_control_crystal", 
 			() -> new ControlCrystalItem.Large(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<MemoryCrystalItem> MEMORY_CRYSTAL = ITEMS.register("memory_crystal", 
-			() -> new MemoryCrystalItem(new Item.Properties().stacksTo(1)));
+			() -> new MemoryCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<MaterializationCrystalItem> MATERIALIZATION_CRYSTAL = ITEMS.register("materialization_crystal", 
-			() -> new MaterializationCrystalItem(new Item.Properties().stacksTo(1)));
+			() -> new MaterializationCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<EnergyCrystalItem> ENERGY_CRYSTAL = ITEMS.register("energy_crystal", 
-			() -> new EnergyCrystalItem(new Item.Properties().stacksTo(1)));
+			() -> new EnergyCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<TransferCrystalItem> TRANSFER_CRYSTAL = ITEMS.register("transfer_crystal", 
-			() -> new TransferCrystalItem(new Item.Properties().stacksTo(1)));
+			() -> new TransferCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	public static final RegistryObject<CommunicationCrystalItem> COMMUNICATION_CRYSTAL = ITEMS.register("communication_crystal", 
-			() -> new CommunicationCrystalItem(new Item.Properties().stacksTo(1)));
+			() -> new CommunicationCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 
 	public static final RegistryObject<ControlCrystalItem> ADVANCED_CONTROL_CRYSTAL = ITEMS.register("advanced_control_crystal", 
 			() -> new ControlCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
@@ -110,7 +110,7 @@ public class ItemInit
 	public static final RegistryObject<EnergyCrystalItem> ADVANCED_ENERGY_CRYSTAL = ITEMS.register("advanced_energy_crystal", 
 			() -> new EnergyCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	public static final RegistryObject<TransferCrystalItem> ADVANCED_TRANSFER_CRYSTAL = ITEMS.register("advanced_transfer_crystal", 
-			() -> new TransferCrystalItem.Advanced(new Item.Properties().stacksTo(1)));
+			() -> new TransferCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	public static final RegistryObject<CommunicationCrystalItem> ADVANCED_COMMUNICATION_CRYSTAL = ITEMS.register("advanced_communication_crystal", 
 			() -> new CommunicationCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 

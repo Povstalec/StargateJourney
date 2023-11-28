@@ -1,460 +1,376 @@
 package net.povstalec.sgjourney.client.models;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 
 public class UniverseStargateModel extends AbstractStargateModel<UniverseStargateEntity>
 {
-	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_outer_ring.png");
-	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_inner_ring.png");
-	private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_chevron.png");
-	private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_chevron_lit.png");
+	protected static final int SYMBOLS = 36;
 	
-	private final ModelPart ring;
-	private final ModelPart symbolRing;
-	private final ModelPart dividers;
-	private final ModelPart chevrons;
+	protected static final int UNIVERSE_SIDES = 54;
+	protected static final float UNIVERSE_ANGLE = 360F / UNIVERSE_SIDES;
 	
-	private static final int symbolCount = 36;
-	private static final double angle = 360F / 54;
+	protected static final float STARGATE_SYMBOL_RING_OUTER_HEIGHT = DEFAULT_RADIUS - 5F / 16;
+	protected static final float STARGATE_SYMBOL_RING_INNER_HEIGHT = DEFAULT_RADIUS - 13F / 16;
+
+	protected static final float STARGATE_SYMBOL_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(UNIVERSE_SIDES, STARGATE_SYMBOL_RING_OUTER_HEIGHT, DEFAULT_RADIUS);
+	protected static final float STARGATE_SYMBOL_RING_OUTER_CENTER = STARGATE_SYMBOL_RING_OUTER_LENGTH / 2;
+	protected static final float STARGATE_SYMBOL_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(UNIVERSE_SIDES, STARGATE_SYMBOL_RING_INNER_HEIGHT, DEFAULT_RADIUS);
+	protected static final float STARGATE_SYMBOL_RING_INNER_CENTER = STARGATE_SYMBOL_RING_INNER_LENGTH / 2;
+	
+	protected static final float STARGATE_RING_FRONT_THICKNESS = 3F;
+	protected static final float STARGATE_RING_BACK_THICKNESS = 4F;
+	protected static final float STARGATE_RING_OFFSET = (STARGATE_RING_FRONT_THICKNESS + STARGATE_RING_BACK_THICKNESS) / 2 / 16;
+	protected static final float STARGATE_RING_DIVIDE_OFFSET = (STARGATE_RING_BACK_THICKNESS - STARGATE_RING_FRONT_THICKNESS) / 2 / 16;
+	protected static final float SYMBOL_OFFSET = STARGATE_RING_OFFSET + 0.001F;
+	
+	protected static final float STARGATE_RING_OUTER_RADIUS = DEFAULT_RADIUS - STARGATE_RING_SHRINK;
+	protected static final float STARGATE_RING_OUTER_LENGTH = SGJourneyModel.getUsedWidth(UNIVERSE_SIDES, STARGATE_RING_OUTER_RADIUS, DEFAULT_RADIUS);
+	protected static final float STARGATE_RING_OUTER_CENTER = STARGATE_RING_OUTER_LENGTH / 2;
+	
+	protected static final float STARGATE_RING_STOP_RADIUS = DEFAULT_RADIUS - 7F / 16;
+	protected static final float STARGATE_RING_STOP_LENGTH = SGJourneyModel.getUsedWidth(UNIVERSE_SIDES, STARGATE_RING_STOP_RADIUS, DEFAULT_RADIUS);
+	protected static final float STARGATE_RING_STOP_CENTER = STARGATE_RING_STOP_LENGTH / 2;
+
+	protected static final float STARGATE_RING_INNER_HEIGHT = DEFAULT_RADIUS - (DEFAULT_RING_HEIGHT - STARGATE_RING_SHRINK);
+	protected static final float STARGATE_RING_INNER_LENGTH = SGJourneyModel.getUsedWidth(UNIVERSE_SIDES, STARGATE_RING_INNER_HEIGHT, DEFAULT_RADIUS);
+	protected static final float STARGATE_RING_INNER_CENTER = STARGATE_RING_INNER_LENGTH / 2;
+	
+	protected static final float STARGATE_RING_HEIGHT = STARGATE_RING_OUTER_RADIUS - STARGATE_RING_INNER_HEIGHT;
+	protected static final float STARGATE_SYMBOL_RING_HEIGHT = STARGATE_SYMBOL_RING_OUTER_HEIGHT - STARGATE_SYMBOL_RING_INNER_HEIGHT;
+
+	protected static final float CHEVRON_LIGHT_THICKNESS = 1F / 16;
+	protected static final float CHEVRON_LIGHT_Z_OFFSET = STARGATE_RING_OFFSET + CHEVRON_LIGHT_THICKNESS;
+	
+	protected static final float CHEVRON_LIGHT_TOP_LENGTH = 4F / 16;
+	protected static final float CHEVRON_LIGHT_TOP_CENTER = CHEVRON_LIGHT_TOP_LENGTH / 2;
+	protected static final float CHEVRON_LIGHT_TOP_HEIGHT = 5F / 16;
+	
+	protected static final float CHEVRON_LIGHT_MID1_LENGTH = 6F / 16;
+	protected static final float CHEVRON_LIGHT_MID1_CENTER = CHEVRON_LIGHT_MID1_LENGTH / 2;
+	protected static final float CHEVRON_LIGHT_MID1_HEIGHT = 4F / 16;
+	
+	protected static final float CHEVRON_LIGHT_MID2_LENGTH = 3F / 16;
+	protected static final float CHEVRON_LIGHT_MID2_CENTER = CHEVRON_LIGHT_MID2_LENGTH / 2;
+	protected static final float CHEVRON_LIGHT_MID2_HEIGHT = 2F / 16;
+	
+	protected static final float CHEVRON_LIGHT_BOTTOM_LENGTH = 1F / 16;
+	protected static final float CHEVRON_LIGHT_BOTTOM_CENTER = CHEVRON_LIGHT_BOTTOM_LENGTH / 2;
+	protected static final float CHEVRON_LIGHT_BOTTOM_HEIGHT = 0;
+
+	protected static final float OUTER_CHEVRON_THICKNESS = 0.5F / 16;
+	protected static final float OUTER_CHEVRON_Z_OFFSET = STARGATE_RING_OFFSET + OUTER_CHEVRON_THICKNESS;
+	
 	private float rotation = 0.0F;
 
 	protected static final float DEFAULT_DISTANCE_FROM_CENTER = 56.0F;
 	protected static final int BOXES_PER_RING = 36;
 	
-	public UniverseStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
+	public UniverseStargateModel()
 	{
 		super(new ResourceLocation(StargateJourney.MODID, "universe"));
-		this.ring = ring;
-		this.symbolRing = symbolRing;
-		this.dividers = dividers;
-		this.chevrons = chevrons;
+	}
+	
+	protected boolean useAlternateModel(UniverseStargateEntity stargate)
+	{
+		return !ClientStargateConfig.universe_front_rotates.get();
+	}
+	
+	public float getRotation(boolean shouldRotate)
+	{
+		return shouldRotate ? this.rotation : 0;
 	}
 	
 	@Override
-	public void renderStargate(UniverseStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+	public void renderRing(UniverseStargateEntity stargate, float partialTick, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		this.renderRing(stargate, stack, source, combinedLight, combinedOverlay);
+		this.renderOuterRingFront(stargate, stack, consumer, source, combinedLight, combinedOverlay);
+		this.renderOuterRingBack(stargate, stack, consumer, source, combinedLight, combinedOverlay);
 		
-		this.renderSymbolRing(stargate, stack, source, combinedLight, combinedOverlay, combinedOverlay);
-
-		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay, combinedOverlay);
+		this.renderSymbols(stargate, stack, consumer, source, combinedLight, getRotation(true));
 	}
 	
-	protected void renderRing(UniverseStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
+	protected void renderOuterRingFront(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
-		
-		this.ring.setRotation(0.0F, 0.0F, (float) Math.toRadians(this.rotation));
-		this.ring.render(stack, ringTexture, combinedLight, combinedOverlay);
+		for(int j = 0; j < UNIVERSE_SIDES; j++)
+		{
+			stack.pushPose();
+			stack.mulPose(Axis.ZP.rotationDegrees(j * UNIVERSE_ANGLE - UNIVERSE_ANGLE/2 + getRotation(true)));
+			Matrix4f matrix4 = stack.last().pose();
+			Matrix3f matrix3 = stack.last().normal();
+			
+			//Outside
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+					-STARGATE_RING_OUTER_CENTER, 
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 4F / 64,
+					
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 7F / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 7F / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 4F / 64);
+			
+			//Front
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			
+			//Inside
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+					-STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 47F / 64,
+					
+					-STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 44F / 64,
+					
+					STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 44F / 64,
+					
+					STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 47F / 64);
+			
+			//Back
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(52F + STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(52F + STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(52F - STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(52F - STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			
+			stack.popPose();
+		}
 	}
 	
-	protected void renderSymbolRing(UniverseStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay, int chevronsActive)
+	protected void renderOuterRingBack(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, 
+			int combinedLight, int combinedOverlay)
 	{
-		VertexConsumer symbolRingTexture = source.getBuffer(RenderType.entitySolid(SYMBOL_RING_TEXTURE));
+		for(int j = 0; j < UNIVERSE_SIDES; j++)
+		{
+			stack.pushPose();
+			stack.mulPose(Axis.ZP.rotationDegrees(j * -UNIVERSE_ANGLE + UNIVERSE_ANGLE/2 + getRotation(useAlternateModel(stargate))));
+			Matrix4f matrix4 = stack.last().pose();
+			Matrix3f matrix3 = stack.last().normal();
+			
+			//Outside
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+					-STARGATE_RING_OUTER_CENTER, 
+					STARGATE_RING_OUTER_RADIUS,
+					-STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 0,
+					
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 4F / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 4F / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					-STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
+			
+			//Back
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					-STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, (32 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_INNER_CENTER * 16) / 64, (32 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_INNER_CENTER * 16) / 64, (32 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					-STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, (32 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			
+			//Inside
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+					STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 40F / 64,
+					
+					STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 44F / 64,
+					
+					-STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 44F / 64,
+					
+					-STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					-STARGATE_RING_OFFSET,
+					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 40F / 64);
+			
+			//Front
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+					-STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(52F + STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					-STARGATE_RING_INNER_CENTER,
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(52F + STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_INNER_CENTER, 
+					STARGATE_RING_INNER_HEIGHT,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(52F - STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+					
+					STARGATE_RING_OUTER_CENTER,
+					STARGATE_RING_OUTER_RADIUS,
+					STARGATE_RING_DIVIDE_OFFSET,
+					(52F - STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			
+			stack.popPose();
+		}
+	}
+	
+	protected void renderSymbols(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, float rotation)
+	{
+		// Symbols
+		for(int i = 0; i < SYMBOLS; i++)
+		{
+			//TODO Allow changing color
+			renderSymbol(stargate, stack, consumer, source, combinedLight, i, i, rotation, 21F/255F, 9F/255F, 0F/255F);
+		}
 		
-		for(int i = 0; i < 9; i++)
-		{
-			this.getUnderChevronLeft(i).setRotation(0.0F, 0.0F, (float) Math.toRadians(180 - (angle / 2) - (40 * i) + this.rotation));
-			this.getUnderChevronRight(i).setRotation(0.0F, 0.0F, (float) Math.toRadians(180 + (angle / 2) - (40 * i) + this.rotation));
-		}
-		for(int i = 0; i < 9; i++)
-		{
-			this.getUnderChevronLeft(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
-			this.getUnderChevronRight(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
-		}
-
-		for(int i = 0; i < 9; i++)
-		{
-			for(int j = 0; j < 4; j++)
-			{
-				this.getSymbol(i * 4 + j).setRotation(0.0F, 0.0F, (float) Math.toRadians(180 - 3 * (angle / 2) - i * 40 - (angle * j) + this.rotation));
-			}
-		}
-		for(int i = 0; i < symbolCount; i++)
-		{
-			this.getSymbol(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
-		}
-		
-		for(int i = 0; i < symbolCount; i++)
-		{
-			this.getSymbol(i).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, i))), combinedLight, combinedOverlay, 21.0F/255.0F, 9.0F/255.0F, 0.0F/255.0F, 1.0F);
-		}
-		
+		// Engaged Symbols
 		for(int i = 0; i < stargate.getAddress().getLength(); i++)
-	    {
+		{
+			//TODO Allow changing color
 			int symbol = stargate.getAddress().toArray()[i];
-			if(symbol < symbolCount)
-				this.getSymbol(symbol).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, symbol))), 255, combinedOverlay);
-	    }
+			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbol, symbol, rotation, 200F/255F, 220F/255F, 255F/255F);
+		}
 		
+		// Point of Origin when Stargate is connected
 		if(stargate.isConnected())
-	    	this.getSymbol(0).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, 0))), 255, combinedOverlay);
-
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
-		this.dividers.setRotation(0.0F, 0.0F, (float) Math.toRadians(this.rotation));
-		this.dividers.render(stack, ringTexture, combinedLight, combinedOverlay);
+			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, rotation, 200F/255F, 220F/255F, 255F/255F);
 	}
 	
-	protected void renderChevrons(UniverseStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay, int chevronsActive)
+	protected void renderSymbol(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,MultiBufferSource source, int combinedLight, 
+		int symbolNumber, int symbolRendered, float rotation,
+		float symbolR, float symbolG, float symbolB)
 	{
-		for(int i = 0; i <= 8; i++)
-		{
-			this.renderChevron(stargate, stack, source, combinedLight, combinedOverlay, i);
-		}
-	}
-	
-	protected ModelPart getChevron(int chevron)
-	{
-		return this.chevrons.getChild("chevron_" + chevron);
-	}
-	
-	protected void renderChevron(UniverseStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay, int chevronNumber)
-	{
-		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(CHEVRON_TEXTURE));
-
-		this.getChevron(chevronNumber).setRotation(0.0F, 0.0F, (float) Math.toRadians(-40 * chevronNumber + this.rotation));
-		this.getChevron(chevronNumber).render(stack, chevronTexture, combinedLight, combinedOverlay);
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, symbolRendered)));
 		
-		if(stargate.isConnected() || stargate.addressBuffer.getLength() > 0)
-		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.engagedChevron(ENGAGED_CHEVRON_TEXTURE));
-			this.getChevron(chevronNumber).render(stack, engagedChevronTexture, 255, combinedOverlay);
-		}
+		stack.pushPose();
+		int symbolRow = symbolNumber / 4;
+		int symbolInRow = symbolNumber % 4;
+		stack.mulPose(Axis.ZP.rotationDegrees(-UNIVERSE_ANGLE * 3 / 2 + symbolRow * -CHEVRON_ANGLE + symbolInRow * -UNIVERSE_ANGLE + rotation));
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
+		
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				symbolR, symbolG, symbolB, 1.0F, 
+				-STARGATE_SYMBOL_RING_OUTER_CENTER,
+				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
+				SYMBOL_OFFSET,
+				(8 - STARGATE_SYMBOL_RING_OUTER_CENTER * 32) / 16, 0,
+				
+				-STARGATE_SYMBOL_RING_INNER_CENTER, 
+				STARGATE_SYMBOL_RING_INNER_HEIGHT,
+				SYMBOL_OFFSET,
+				(8 - STARGATE_SYMBOL_RING_INNER_CENTER * 32) / 16, 1,
+				
+				STARGATE_SYMBOL_RING_INNER_CENTER,
+				STARGATE_SYMBOL_RING_INNER_HEIGHT,
+				SYMBOL_OFFSET,
+				(8 + STARGATE_SYMBOL_RING_INNER_CENTER * 32) / 16, 1,
+				
+				STARGATE_SYMBOL_RING_OUTER_CENTER,
+				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
+				SYMBOL_OFFSET,
+				(8 + STARGATE_SYMBOL_RING_OUTER_CENTER * 32) / 16, 0);
+		
+		stack.popPose();
 	}
 	
 	public void setRotation(float rotation)
 	{
 		this.rotation = rotation;
-	}
-	
-	//============================================================================================
-	//*******************************************Layers*******************************************
-	//============================================================================================
-	
-	public static LayerDefinition createRingLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition ring = meshdefinition.getRoot();
-		
-		PartDefinition outerRing = ring.addOrReplaceChild("outer_ring", CubeListBuilder.create(), PartPose.ZERO);
-		createOuterRing(outerRing);
-		
-		PartDefinition backRing = ring.addOrReplaceChild("back_ring", CubeListBuilder.create(), PartPose.ZERO);
-		createBackRing(backRing);
-		
-		PartDefinition innerRing = ring.addOrReplaceChild("inner_ring", CubeListBuilder.create(), PartPose.ZERO);
-		createInnerRing(innerRing);
-		
-		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	public static void createOuterRing(PartDefinition outerRing)
-	{
-		for(int i = 0; i < BOXES_PER_RING; i++)
-		{
-			outerRing.addOrReplaceChild("outer_ring_" + i, CubeListBuilder.create()
-					.texOffs(0, 0)
-					.addBox(-5.0F, -56.0F, -3.5F, 10.0F, 4.0F, 7.0F), 
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-10 * i)));
-		}
-	}
-	
-	public static void createBackRing(PartDefinition backRing)
-	{
-		for(int i = 0; i < 54; i++)
-		{
-			backRing.addOrReplaceChild("back_ring_" + i, CubeListBuilder.create()
-					.texOffs(34, 12)
-					.addBox(-3.0F, -53.0F, -2.5F, 6.0F, 9.0F, 3.0F), 
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-(angle / 2) - (angle * i))));
-		}
-	}
-	
-	public static void createInnerRing(PartDefinition innerRing)
-	{
-		for(int i = 0; i < BOXES_PER_RING; i++)
-		{
-			innerRing.addOrReplaceChild("inner_ring_" + i, CubeListBuilder.create()
-					.texOffs(34, 24)
-					.addBox(-4.0F, -44.0F, -3.5F, 8.0F, 4.0F, 7.0F), 
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-10 * i)));
-		}
-	}
-	
-	public static LayerDefinition createSymbolRingLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition symbolRing = meshdefinition.getRoot();
-		
-		createSymbolRing(symbolRing);
-		
-		return LayerDefinition.create(meshdefinition, 8, 8);
-	}
-	
-	public static void createSymbolRing(PartDefinition symbolRing)
-	{
-		for(int i = 0; i < 9; i++)
-		{
-			symbolRing.addOrReplaceChild("under_chevron_left_" + i, CubeListBuilder.create()
-					.texOffs(-1, -3)
-					.addBox(-3.0F, -53.0F, 0.5F, 6.0F, 9.0F, 2.0F), 
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - (angle / 2) - (40 * i))));
-		}
-		
-		for(int i = 0; i < 9; i++)
-		{
-			symbolRing.addOrReplaceChild("under_chevron_right_" + i, CubeListBuilder.create()
-					.texOffs(-1, -3)
-					.addBox(-3.0F, -53.0F, 0.5F, 6.0F, 9.0F, 2.0F), 
-					PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 + (angle / 2) - (40 * i))));
-		}
-		
-		for(int i = 0; i < 9; i++)
-		{
-			for(int j = 0; j < 4; j++)
-			{
-				symbolRing.addOrReplaceChild("symbol_" + (i * 4 + j), CubeListBuilder.create()
-						.texOffs(-1, -3)
-						.addBox(-3.0F, -53.0F, 0.5F, 6.0F, 9.0F, 2.0F), 
-						PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - 3 * (angle / 2) - i * 40 - (angle * j))));
-			}
-		}
-	}
-	
-	protected ModelPart getSymbol(int symbol)
-	{
-		return this.symbolRing.getChild("symbol_" + symbol);
-	}
-	
-	protected ModelPart getUnderChevronLeft(int chevron)
-	{
-		return this.symbolRing.getChild("under_chevron_left_" + chevron);
-	}
-	
-	protected ModelPart getUnderChevronRight(int chevron)
-	{
-		return this.symbolRing.getChild("under_chevron_right_" + chevron);
-	}
-	
-	public static LayerDefinition createDividerLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition dividers = meshdefinition.getRoot();
-		
-		createDividers(dividers);
-		
-		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	public static void createDividers(PartDefinition dividers)
-	{
-		for(int i = 0; i < 54; i++)
-		{
-			if(i % 6 == 0)
-			{
-				dividers.addOrReplaceChild("divider_" + i, CubeListBuilder.create()
-						.texOffs(28, 35)
-						.addBox(-2.0F, -52.0F, -3.5F, 4.0F, 8.0F, 7.0F), 
-						PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i)));
-			}
-			else
-			{
-				dividers.addOrReplaceChild("divider_" + i, CubeListBuilder.create()
-						.texOffs(50, 35)
-						.addBox(-0.5F, -53.0F, -3.0F, 1.0F, 9.0F, 6.0F), 
-						PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i)));
-			}
-		}
-	}
-	
-	public static LayerDefinition createChevronLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition chevrons = meshdefinition.getRoot();
-		
-		for(int i = 0; i <= 8; i++)
-		{
-			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i))));
-		}
-		
-		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	public static void createChevron(PartDefinition chevron)
-	{
-		//	_
-		//	V
-		//	
-		PartDefinition chevronLightFront = chevron.addOrReplaceChild("chevron_light_front", CubeListBuilder.create(), PartPose.offset(0.0F, 54.5F, 4.5F));
-		createChevronLight(chevronLightFront);
-		PartDefinition chevronLightBack = chevron.addOrReplaceChild("chevron_light_back", CubeListBuilder.create(), PartPose.offset(0.0F, 54.5F, -5.5F));
-		createChevronLight(chevronLightBack);
-		
-		// -_   _-
-		//	 - -
-		//	
-		PartDefinition outerChevronFront = chevron.addOrReplaceChild("outer_chevron_front", CubeListBuilder.create(), PartPose.offset(0.0F, 50.0F, 3.5F));
-		createOuterChevron(outerChevronFront);
-		PartDefinition outerChevronFrontLights = chevron.addOrReplaceChild("outer_chevron_front_lights", CubeListBuilder.create(), PartPose.offset(0.0F, 50.0F, 4.0F));
-		createOuterChevronLights(outerChevronFrontLights);
-		PartDefinition outerChevronBack = chevron.addOrReplaceChild("outer_chevron_back", CubeListBuilder.create(), PartPose.offset(0.0F, 50.0F, -4.5F));
-		createOuterChevron(outerChevronBack);
-		PartDefinition outerChevronBackLights = chevron.addOrReplaceChild("outer_chevron_back_lights", CubeListBuilder.create(), PartPose.offset(0.0F, 50.0F, -5.0F));
-		createOuterChevronLights(outerChevronBackLights);
-	}
-	
-	public static void createChevronLight(PartDefinition chevronLight)
-	{
-		chevronLight.addOrReplaceChild("chevron_top", CubeListBuilder.create()
-				.texOffs(0, 0)
-				.addBox(-3.0F, 0.0F, 0.0F, 6.0F, 1.0F, 1.0F), 
-				PartPose.offset(0.0F, 0.0F, 0.0F));
-		chevronLight.addOrReplaceChild("chevron_upper", CubeListBuilder.create()
-				.texOffs(0, 2)
-				.addBox(-2.5F, -1.0F, 0.0F, 5.0F, 1.0F, 1.0F), 
-				PartPose.offset(0.0F, 0.0F, 0.0F));
-		chevronLight.addOrReplaceChild("chevron_center", CubeListBuilder.create()
-				.texOffs(0, 4)
-				.addBox(-1.5F, -2.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
-				PartPose.offset(0.0F, 0.0F, 0.0F));
-		chevronLight.addOrReplaceChild("chevron_bottom", CubeListBuilder.create()
-				.texOffs(0, 6)
-				.addBox(-1.0F, -4.0F, 0.0F, 2.0F, 2.0F, 1.0F), 
-				PartPose.offset(0.0F, 0.0F, 0.0F));
-		chevronLight.addOrReplaceChild("chevron_right", CubeListBuilder.create()
-				.texOffs(0, 9)
-				.addBox(0.0F, -3.0F, 0.0F, 1.0F, 3.0F, 1.0F),
-				PartPose.offsetAndRotation(3.0F, 1.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-40)));
-		chevronLight.addOrReplaceChild("chevron_left", CubeListBuilder.create()
-				.texOffs(0, 9)
-				.addBox(-1.0F, -3.0F, 0.0F, 1.0F, 3.0F, 1.0F),
-				PartPose.offsetAndRotation(-3.0F, 1.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(40)));
-		chevronLight.addOrReplaceChild("chevron_lower_right", CubeListBuilder.create()
-				.texOffs(0, 9)
-				.addBox(-1.0F, 0.0F, 0.0F, 1.0F, 3.0F, 1.0F),
-				PartPose.offsetAndRotation(1.0F, -4.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-25)));
-		chevronLight.addOrReplaceChild("chevron_lower_left", CubeListBuilder.create()
-				.texOffs(0, 9)
-				.addBox(0.0F, 0.0F, 0.0F, 1.0F, 3.0F, 1.0F),
-				PartPose.offsetAndRotation(-1.0F, -4.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(25)));
-	}
-	
-	public static void createOuterChevron(PartDefinition outerChevron)
-	{
-		outerChevron.addOrReplaceChild("outer_chevron_center", CubeListBuilder.create()
-				.texOffs(14, 0)
-				.addBox(-5.0F, 0.0F, 0.0F, 10.0F, 6.0F, 1.0F), 
-				PartPose.offset(0.0F, 0.0F, 0.0F));
-		outerChevron.addOrReplaceChild("outer_chevron_bottom_A", CubeListBuilder.create()
-				.texOffs(20, 7)
-				.addBox(-2.0F, -1.0F, 0.0F, 4.0F, 1.0F, 1.0F), 
-				PartPose.offset(0.0F, 0.0F, 0.0F));
-		outerChevron.addOrReplaceChild("outer_chevron_bottom_B", CubeListBuilder.create()
-				.texOffs(14, 7)
-				.addBox(-1.0F, -7.0F, 0.0F, 2.0F, 6.0F, 1.0F), 
-				PartPose.offset(0.0F, 0.0F, 0.0F));
-		outerChevron.addOrReplaceChild("outer_chevron_bottom_C", CubeListBuilder.create()
-				.texOffs(20, 7)
-				.addBox(-2.0F, -7.0F, 0.0F, 4.0F, 1.0F, 1.0F), 
-				PartPose.offset(0.0F, 0.0F, 0.0F));
-		
-		outerChevron.addOrReplaceChild("outer_chevron_left_top_A", CubeListBuilder.create()
-				.texOffs(14, 14)
-				.addBox(-10.0F, -1.0F, 0.0F, 10.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		outerChevron.addOrReplaceChild("outer_chevron_left_top_B", CubeListBuilder.create()
-				.texOffs(14, 16)
-				.addBox(-8.0F, -2.0F, 0.0F, 8.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		outerChevron.addOrReplaceChild("outer_chevron_left_top_C", CubeListBuilder.create()
-				.texOffs(14, 18)
-				.addBox(-7.0F, -3.0F, 0.0F, 7.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		outerChevron.addOrReplaceChild("outer_chevron_left_A", CubeListBuilder.create()
-				.texOffs(14, 20)
-				.addBox(-4.0F, -4.0F, 0.0F, 4.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		outerChevron.addOrReplaceChild("outer_chevron_left_B", CubeListBuilder.create()
-				.texOffs(14, 22)
-				.addBox(-3.0F, -5.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		outerChevron.addOrReplaceChild("outer_chevron_left_C", CubeListBuilder.create()
-				.texOffs(14, 24)
-				.addBox(-2.0F, -6.0F, 0.0F, 2.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		
-		outerChevron.addOrReplaceChild("outer_chevron_right_top_A", CubeListBuilder.create()
-				.texOffs(14, 14)
-				.addBox(0.0F, -1.0F, 0.0F, 10.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
-		outerChevron.addOrReplaceChild("outer_chevron_right_top_B", CubeListBuilder.create()
-				.texOffs(14, 16)
-				.addBox(0.0F, -2.0F, 0.0F, 8.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
-		outerChevron.addOrReplaceChild("outer_chevron_right_top_C", CubeListBuilder.create()
-				.texOffs(14, 18)
-				.addBox(0.0F, -3.0F, 0.0F, 7.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
-		outerChevron.addOrReplaceChild("outer_chevron_right_A", CubeListBuilder.create()
-				.texOffs(14, 20)
-				.addBox(0.0F, -4.0F, 0.0F, 4.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
-		outerChevron.addOrReplaceChild("outer_chevron_right_B", CubeListBuilder.create()
-				.texOffs(14, 22)
-				.addBox(0.0F, -5.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
-		outerChevron.addOrReplaceChild("outer_chevron_right_C", CubeListBuilder.create()
-				.texOffs(14, 24)
-				.addBox(0.0F, -6.0F, 0.0F, 2.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
-	}
-	
-	public static void createOuterChevronLights(PartDefinition outerChevronLights)
-	{
-		outerChevronLights.addOrReplaceChild("outer_chevron_left_lower_light", CubeListBuilder.create()
-				.texOffs(0, 17)
-				.addBox(0.0F, -5.5F, 0.0F, 2.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		outerChevronLights.addOrReplaceChild("outer_chevron_left_center_light", CubeListBuilder.create()
-				.texOffs(0, 15)
-				.addBox(-2.0F, -4.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		outerChevronLights.addOrReplaceChild("outer_chevron_left_upper_light", CubeListBuilder.create()
-				.texOffs(0, 13)
-				.addBox(-4.0F, -2.5F, 0.0F, 4.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(10)));
-		
-		outerChevronLights.addOrReplaceChild("outer_chevron_right_lower_light", CubeListBuilder.create()
-				.texOffs(0, 17)
-				.addBox(-2.0F, -5.5F, 0.0F, 2.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
-		outerChevronLights.addOrReplaceChild("outer_chevron_right_center_light", CubeListBuilder.create()
-				.texOffs(0, 15)
-				.addBox(-1.0F, -4.0F, 0.0F, 3.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
-		outerChevronLights.addOrReplaceChild("outer_chevron_right_upper_light", CubeListBuilder.create()
-				.texOffs(0, 13)
-				.addBox(0.0F, -2.5F, 0.0F, 4.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(5.0F, 6.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(-10)));
 	}
 	
 	//============================================================================================
@@ -477,15 +393,464 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	protected void renderPrimaryChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, boolean chevronEngaged)
 	{
-		// TODO Auto-generated method stub
-		
+		this.renderChevron(stargate, stack, consumer, source, combinedLight, 0, chevronEngaged);
 	}
 
 	@Override
 	protected void renderChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
-		// TODO Auto-generated method stub
+		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
+		// Front
+		stack.pushPose();
+		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevronNumber + getRotation(true)));
+		stack.translate(0, DEFAULT_RADIUS - 5.5F/16, 0);
+		renderChevronLight(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
+		renderOuterChevron(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
+		stack.popPose();
 		
+		// Back
+		stack.pushPose();
+		stack.mulPose(Axis.YP.rotationDegrees(180));
+		stack.mulPose(Axis.ZP.rotationDegrees(CHEVRON_ANGLE * chevronNumber - getRotation(useAlternateModel(stargate))));
+		stack.translate(0, DEFAULT_RADIUS - 5.5F/16, 0);
+		renderChevronLight(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
+		renderOuterChevron(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
+		stack.popPose();
+	}
+	
+	protected void renderChevronLight(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
+	{
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
+		
+		//Light Top
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+				-CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				STARGATE_RING_OFFSET,
+				13F/64, 47F/64,
+				
+				-CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				13F/64, 48F/64,
+				
+				CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				17F/64, 48F/64,
+				
+				CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				STARGATE_RING_OFFSET,
+				17F/64, 47F/64);
+		
+		//Light Front 1
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				-CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				13F/64, 48F/64,
+				
+				-CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				12F/64, 49F/64,
+				
+				CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				18F/64, 49F/64,
+				
+				CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				17F/64, 48F/64);
+		
+		//Light Left 1
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 1, 0,
+				-CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				STARGATE_RING_OFFSET,
+				11F/64, 48F/64,
+				
+				-CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				STARGATE_RING_OFFSET,
+				11F/64, 49F/64,
+				
+				-CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				12F/64, 49F/64,
+				
+				-CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				12F/64, 48F/64);
+		
+		//Light Right 1
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 1, 0,
+				CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				18F/64, 48F/64,
+				
+				CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				18F/64, 49F/64,
+				
+				CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				STARGATE_RING_OFFSET,
+				19F/64, 49F/64,
+				
+				CHEVRON_LIGHT_TOP_CENTER,
+				CHEVRON_LIGHT_TOP_HEIGHT,
+				STARGATE_RING_OFFSET,
+				19F/64, 48F/64);
+		
+		//Light Front 2
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				-CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				12F/64, 49F/64,
+				
+				-CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				13.5F/64, 51F/64,
+				
+				CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				16.5F/64, 51F/64,
+				
+				CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				18F/64, 49F/64);
+		
+		//Light Left 2
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+				-CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				STARGATE_RING_OFFSET,
+				11F/64, 49F/64,
+				
+				-CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				STARGATE_RING_OFFSET,
+				11F/64, 51F/64,
+				
+				-CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				12F/64, 51F/64,
+				
+				-CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				12F/64, 49F/64);
+		
+		//Light Right 2
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+				CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				18F/64, 49F/64,
+				
+				CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				18F/64, 51F/64,
+				
+				CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				STARGATE_RING_OFFSET,
+				19F/64, 51F/64,
+				
+				CHEVRON_LIGHT_MID1_CENTER,
+				CHEVRON_LIGHT_MID1_HEIGHT,
+				STARGATE_RING_OFFSET,
+				19F/64, 49F/64);
+		
+		//Light Front 3
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				-CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				13.5F/64, 51F/64,
+				
+				-CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				14.5F/64, 53F/64,
+				
+				CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				15.5F/64, 53F/64,
+				
+				CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				16.5F/64, 51F/64);
+		
+		//Light Left 3
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+				-CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				STARGATE_RING_OFFSET,
+				11F/64, 51F/64,
+				
+				-CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				STARGATE_RING_OFFSET,
+				11F/64, 53F/64,
+				
+				-CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				12F/64, 53F/64,
+				
+				-CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				12F/64, 51F/64);
+		
+		//Light Right 3
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+				CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				18F/64, 51F/64,
+				
+				CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				18F/64, 53F/64,
+				
+				CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				STARGATE_RING_OFFSET,
+				19F/64, 53F/64,
+				
+				CHEVRON_LIGHT_MID2_CENTER,
+				CHEVRON_LIGHT_MID2_HEIGHT,
+				STARGATE_RING_OFFSET,
+				19F/64, 51F/64);
+		
+		//Light Bottom
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+				-CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				14.5F/64, 53F/64,
+				
+				-CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				STARGATE_RING_OFFSET,
+				14.5F/64, 54F/64,
+				
+				CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				STARGATE_RING_OFFSET,
+				15.5F/64, 54F/64,
+				
+				CHEVRON_LIGHT_BOTTOM_CENTER,
+				CHEVRON_LIGHT_BOTTOM_HEIGHT,
+				CHEVRON_LIGHT_Z_OFFSET,
+				15.5F/64, 53F/64);
+	}
+	
+	protected void renderOuterChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
+	{
+		// Left 1
+		renderLightStrip(stargate, stack, consumer, source, combinedLight,
+				4F / 16, 1F / 16, 0.5F / 16,
+				-6F / 16, 3.5F / 16, OUTER_CHEVRON_Z_OFFSET,
+				10, 5F, 48F);
+		
+		// Left 2
+		renderLightStrip(stargate, stack, consumer, source, combinedLight,
+				3F / 16, 1F / 16, 0.5F / 16,
+				-4F / 16, 2F / 16, OUTER_CHEVRON_Z_OFFSET,
+				10, 6F, 52F);
+		
+		// Left 3
+		renderLightStrip(stargate, stack, consumer, source, combinedLight,
+				2F / 16, 1F / 16, 0.5F / 16,
+				-2.5F / 16, 0.5F / 16, OUTER_CHEVRON_Z_OFFSET,
+				10, 7F, 56F);
+		
+		// Right 1
+		renderLightStrip(stargate, stack, consumer, source, combinedLight,
+				4F / 16, 1F / 16, 0.5F / 16,
+				6F / 16, 3.5F / 16, OUTER_CHEVRON_Z_OFFSET,
+				-10, 21F, 48F);
+		
+		// Left 2
+		renderLightStrip(stargate, stack, consumer, source, combinedLight,
+				3F / 16, 1F / 16, 0.5F / 16,
+				4F / 16, 2F / 16, OUTER_CHEVRON_Z_OFFSET,
+				-10, 21F, 52F);
+		
+		// Left 3
+		renderLightStrip(stargate, stack, consumer, source, combinedLight,
+				2F / 16, 1F / 16, 0.5F / 16,
+				2.5F / 16, 0.5F / 16, OUTER_CHEVRON_Z_OFFSET,
+				-10, 21F, 56F);
+	}
+	
+	protected void renderLightStrip(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight,
+			float xSize, float ySize, float zSize,
+			float xPos, float yPos, float zPos,
+			float rotation, float textureX, float textureY)
+	{
+		stack.pushPose();
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
+		
+		float halfX = xSize / 2;
+		float halfY = ySize / 2;
+		
+		float r1 = CoordinateHelper.cartesianToPolarR(-halfX, halfY);
+		float phi1 = CoordinateHelper.cartesianToPolarPhi(-halfX, halfY);
+		float x1 = xPos + CoordinateHelper.polarToCartesianX(r1, phi1 + rotation);
+		float y1 = yPos + CoordinateHelper.polarToCartesianY(r1, phi1 + rotation);
+		
+		float r2 = CoordinateHelper.cartesianToPolarR(-halfX, -halfY);
+		float phi2 = CoordinateHelper.cartesianToPolarPhi(-halfX, -halfY);
+		float x2 = xPos + CoordinateHelper.polarToCartesianX(r2, phi2 + rotation);
+		float y2 = yPos + CoordinateHelper.polarToCartesianY(r2, phi2 + rotation);
+		
+		float r3 = CoordinateHelper.cartesianToPolarR(halfX, -halfY);
+		float phi3 = CoordinateHelper.cartesianToPolarPhi(halfX, -halfY);
+		float x3 = xPos + CoordinateHelper.polarToCartesianX(r3, phi3 + rotation);
+		float y3 = yPos + CoordinateHelper.polarToCartesianY(r3, phi3 + rotation);
+		
+		float r4 = CoordinateHelper.cartesianToPolarR(halfX, halfY);
+		float phi4 = CoordinateHelper.cartesianToPolarPhi(halfX, halfY);
+		float x4 = xPos + CoordinateHelper.polarToCartesianX(r4, phi4 + rotation);
+		float y4 = yPos + CoordinateHelper.polarToCartesianY(r4, phi4 + rotation);
+		
+		//Top
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+				x1,
+				y1,
+				STARGATE_RING_OFFSET,
+				textureX / 64, (textureY - zSize * 16) / 64,
+				
+				x1,
+				y1,
+				zPos,
+				textureX / 64, textureY / 64,
+				
+				x4,
+				y4,
+				zPos,
+				(textureX + xSize * 16) / 64, textureY / 64,
+				
+				x4,
+				y4,
+				STARGATE_RING_OFFSET,
+				(textureX + xSize * 16) / 64, (textureY - zSize * 16) / 64);
+		
+		//Front
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				x1,
+				y1,
+				zPos,
+				textureX / 64, textureY / 64,
+				
+				x2,
+				y2,
+				zPos,
+				textureX / 64, (textureY - ySize * 16) / 64,
+				
+				x3,
+				y3,
+				zPos,
+				(textureX + xSize * 16) / 64, (textureY - ySize * 16) / 64,
+				
+				x4,
+				y4,
+				zPos,
+				(textureX + xSize * 16) / 64, textureY / 64);
+		
+		//Left
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+				x1,
+				y1,
+				STARGATE_RING_OFFSET,
+				(textureX - zSize * 16) / 64, textureY / 64,
+				
+				x2,
+				y2,
+				STARGATE_RING_OFFSET,
+				(textureX - zSize * 16) / 64, (textureY + ySize * 16) / 64,
+				
+				x2,
+				y2,
+				zPos,
+				textureX / 64, (textureY + ySize * 16) / 64,
+				
+				x1,
+				y1,
+				zPos,
+				textureX / 64, textureY / 64);
+		
+		//Right
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+				x4,
+				y4,
+				zPos,
+				(textureX + xSize * 16) / 64, textureY / 64,
+				
+				x3,
+				y3,
+				zPos,
+				(textureX + xSize * 16) / 64, (textureY + ySize * 16) / 64,
+				
+				x3,
+				y3,
+				STARGATE_RING_OFFSET,
+				(textureX + xSize * 16 + zSize * 16) / 64, (textureY + ySize * 16) / 64,
+				
+				x4,
+				y4,
+				STARGATE_RING_OFFSET,
+				(textureX + xSize * 16 + zSize * 16) / 64, textureY / 64);
+		
+		//Bottom
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+				x2,
+				y2,
+				zPos,
+				textureX / 64, textureY / 64,
+				
+				x2,
+				y2,
+				STARGATE_RING_OFFSET,
+				textureX / 64, (textureY + zSize * 16) / 64,
+				
+				x3,
+				y3,
+				STARGATE_RING_OFFSET,
+				(textureX + xSize * 16) / 64, (textureY + zSize * 16) / 64,
+				
+				x3,
+				y3,
+				zPos,
+				(textureX + xSize * 16) / 64, textureY / 64);
+		
+		stack.popPose();
 	}
 }

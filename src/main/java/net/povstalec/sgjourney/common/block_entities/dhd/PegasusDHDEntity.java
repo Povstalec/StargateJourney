@@ -17,6 +17,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
@@ -115,16 +116,7 @@ public class PegasusDHDEntity extends AbstractDHDEntity
 	
 	protected boolean isValidCrystal(ItemStack stack)
 	{
-		if(stack.getItem() == ItemInit.ADVANCED_CONTROL_CRYSTAL.get())
-			return true;
-		else if(stack.getItem() == ItemInit.ADVANCED_MEMORY_CRYSTAL.get())
-			return true;
-		else if(stack.getItem() == ItemInit.ADVANCED_ENERGY_CRYSTAL.get())
-			return true;
-		else if(stack.getItem() == ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get())
-			return true;
-		
-		return false;
+		return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isAdvanced();
 	}
 	
 	public void recalculateCrystals()

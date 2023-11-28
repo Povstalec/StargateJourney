@@ -84,15 +84,11 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	}
 	
 	@Override
-	public void renderStargate(ClassicStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+	public void renderRing(ClassicStargateEntity stargate, float partialTick, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
 		renderOuterRing(stack, consumer, source, combinedLight);
 		renderSpinnyRing(stargate, stack, consumer, source, combinedLight);
-		
-		renderChevrons(stargate, stack, source, combinedLight, stargate.chevronsRendered());
 	}
 	
 	public void setRotation(float rotation)
@@ -288,25 +284,25 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 			VertexConsumer symbolConsumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, j)));
 			SGJourneyModel.createQuad(symbolConsumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					0.0F/255.0F, 109.0F/255.0F, 121.0F/255.0F, 1.0F, 
-					-4F/16,
+					-SPINNY_RING_OUTER_CENTER,
 					SPINNY_RING_INNER_RADIUS + 8.5F/16,
 					SYMBOL_OFFSET,
-					0, 0,
+					(8 - SPINNY_RING_OUTER_CENTER * 32) / 16, 0,
 					
-					-4F/16,
+					-SPINNY_RING_INNER_CENTER,
 					SPINNY_RING_INNER_RADIUS + 0.5F/16,
 					SYMBOL_OFFSET,
-					0, 1,
+					(8 - SPINNY_RING_INNER_CENTER * 32) / 16, 1,
 					
-					4F/16, 
+					SPINNY_RING_INNER_CENTER, 
 					SPINNY_RING_INNER_RADIUS + 0.5F/16,
 					SYMBOL_OFFSET,
-					1, 1,
+					(8 + SPINNY_RING_INNER_CENTER * 32) / 16, 1,
 					
-					4F/16,
+					SPINNY_RING_OUTER_CENTER,
 					SPINNY_RING_INNER_RADIUS + 8.5F/16,
 					SYMBOL_OFFSET,
-					1, 0);
+					(8 + SPINNY_RING_OUTER_CENTER * 32) / 16, 0);
 			stack.popPose();
 		}
 	}
@@ -331,7 +327,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		float subtracted = isPrimaryChevronLowered(stargate) ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
 		
 		stack.pushPose();
-		stack.translate(0, 3.5F - subtracted, 0);
+		stack.translate(0, DEFAULT_RADIUS - subtracted, 0);
 		
 		renderChevronLight(stack, consumer, source, light, chevronEngaged);
 		renderOuterChevron(stack, consumer, source, light, chevronEngaged);
@@ -349,7 +345,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		
 		stack.pushPose();
 		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
-		stack.translate(0, 3.5F - subtracted, 0);
+		stack.translate(0, DEFAULT_RADIUS - subtracted, 0);
 		
 		renderChevronLight(stack, consumer, source, light, chevronEngaged);
 		renderOuterChevron(stack, consumer, source, light, chevronEngaged);

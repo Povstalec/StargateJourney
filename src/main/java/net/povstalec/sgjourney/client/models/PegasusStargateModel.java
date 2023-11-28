@@ -89,9 +89,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			
 			// Point of Origin when Stargate is connected
 			if(stargate.isConnected())
-			{
 				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, R, ENGAGED_G, ENGAGED_B);
-			}
 			
 			// Locked Symbols
 			for(int i = 0; i < stargate.getAddress().getLength(); i++)

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.UniverseStargateModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -28,11 +27,7 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
 		super(context);
 		this.wormholeModel = new WormholeModel(ClientStargateConfig.universe_rgba, 0.25F);
 
-		this.stargateModel = new UniverseStargateModel(
-				context.bakeLayer(Layers.UNIVERSE_RING_LAYER), 
-				context.bakeLayer(Layers.UNIVERSE_SYMBOL_RING_LAYER), 
-				context.bakeLayer(Layers.UNIVERSE_DIVIDER_LAYER), 
-				context.bakeLayer(Layers.UNIVERSE_CHEVRON_LAYER));
+		this.stargateModel = new UniverseStargateModel();
 	}
 	
 	@Override

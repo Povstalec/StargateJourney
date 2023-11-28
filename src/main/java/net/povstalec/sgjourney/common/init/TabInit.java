@@ -85,8 +85,8 @@ public class TabInit
 				items.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ENERGY_CRYSTAL.get());
-				items.accept(ItemInit.TRANSFER_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
+				items.accept(ItemInit.TRANSFER_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
 				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());

@@ -134,5 +134,11 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		{
 			return ADVANCED_ENERGY_TRANSFER;
 		}
+		
+		@Override
+		public boolean isAdvanced()
+		{
+			return true;
+		}
 	}
 }

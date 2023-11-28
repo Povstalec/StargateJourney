@@ -32,6 +32,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -225,7 +226,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         {
         	CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
         	
-        	if((blockEntityTag.contains("DisplayID") && blockEntityTag.getBoolean("DisplayID")) || true)//TODO Add config value here
+        	if((blockEntityTag.contains("DisplayID") && blockEntityTag.getBoolean("DisplayID")) || CommonStargateConfig.always_display_stargate_id.get())
         	{
         		if(blockEntityTag.contains("ID"))
         			id = blockEntityTag.getString("ID");

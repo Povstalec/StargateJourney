@@ -8,5 +8,19 @@ public abstract class AbstractCrystalItem extends Item
 	{
 		super(properties);
 	}
-
+	
+	public boolean isLarge()
+	{
+		return false;
+	}
+	
+	public boolean isAdvanced()
+	{
+		return false;
+	}
+	
+	public boolean isRegular()
+	{
+		return !isAdvanced() && !isLarge();
+	}
 }

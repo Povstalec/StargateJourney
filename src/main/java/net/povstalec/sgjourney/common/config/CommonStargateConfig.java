@@ -14,6 +14,7 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_items;
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_entities;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
+	public static ForgeConfigSpec.BooleanValue always_display_stargate_id;
 	
 	public static ForgeConfigSpec.BooleanValue enable_classic_stargate_upgrades;
 	
@@ -74,6 +75,10 @@ public class CommonStargateConfig
 		enable_classic_stargate_upgrades = server
 				.comment("Enables upgrading the Classic Stargate")
 				.define("server.enable_classic_stargate_upgrades", false);
+		
+		always_display_stargate_id = server
+				.comment("If true, Stargate item will always display the 9-Chevron Address of the Stargate in the inventory")
+				.define("server.always_display_stargate_id", false);
 		
 		
 		

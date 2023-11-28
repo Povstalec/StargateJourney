@@ -194,7 +194,17 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	 * @param combinedLight Combined Light
 	 * @param combinedOverlay Combined Overlay
 	 */
-	public abstract void renderStargate(StargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay);
+	public void renderStargate(StargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
+			int combinedLight, int combinedOverlay)
+	{
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
+		this.renderRing(stargate, partialTick, stack, consumer, source, combinedLight, combinedOverlay);
+
+		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay);
+	}
+
+	public abstract void renderRing(StargateEntity stargate, float partialTick, PoseStack stack, VertexConsumer consumer,
+			MultiBufferSource source, int combinedLight, int combinedOverlay);
 	
 	//============================================================================================
 	//******************************************Chevrons******************************************

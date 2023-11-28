@@ -135,6 +135,8 @@ public class Stargate
 		
 		// Milky Way
 		CHEVRON_RAISED(11, FeedbackType.INFO, createInfo("chevron_raised")),
+		ROTATING(12, FeedbackType.INFO, createInfo("rotating")),//TODO Return this somewhere
+		ROTATION_STOPPED(13, FeedbackType.INFO, createInfo("rotation_stopped")),//TODO Return this somewhere
 		CHEVRON_ALREADY_RAISED(-22, FeedbackType.ERROR, createError("chevron_already_raised", false)),
 		CHEVRON_ALREADY_LOWERED(-23, FeedbackType.ERROR, createError("chevron_already_lowered", false));
 		

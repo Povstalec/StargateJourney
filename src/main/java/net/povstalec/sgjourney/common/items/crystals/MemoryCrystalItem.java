@@ -215,5 +215,11 @@ public class MemoryCrystalItem extends AbstractCrystalItem
     	{
     		return DEFAULT_MEMORY_CAPACITY;
     	}
+		
+		@Override
+		public boolean isAdvanced()
+		{
+			return true;
+		}
     }
 }

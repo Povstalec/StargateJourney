@@ -78,5 +78,11 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		{
 			return ADVANCED_MAX_TRANSFER;
 		}
+		
+		@Override
+		public boolean isAdvanced()
+		{
+			return true;
+		}
 	}
 }

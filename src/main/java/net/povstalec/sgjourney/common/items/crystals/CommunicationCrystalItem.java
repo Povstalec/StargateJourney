@@ -78,5 +78,11 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		{
 			return ADVANCED_MAX_DISTANCE;
 		}
+		
+		@Override
+		public boolean isAdvanced()
+		{
+			return true;
+		}
     }
 }

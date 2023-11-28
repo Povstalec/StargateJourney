@@ -17,6 +17,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
@@ -90,7 +91,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
 					if(slot == 0)
-						return stack.getItem() == ItemInit.LARGE_CONTROL_CRYSTAL.get();
+						return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
 					else
 						return isValidCrystal(stack);
 				}
@@ -118,14 +119,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	
 	protected boolean isValidCrystal(ItemStack stack)
 	{
-		if(stack.getItem() == ItemInit.MEMORY_CRYSTAL.get())
-			return true;
-		else if(stack.getItem() == ItemInit.ENERGY_CRYSTAL.get())
-			return true;
-		else if(stack.getItem() == ItemInit.COMMUNICATION_CRYSTAL.get())
-			return true;
-		
-		return false;
+		return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isRegular();
 	}
 	
 	public void recalculateCrystals()
