@@ -39,7 +39,8 @@ public class VialItem extends Item
 		    		@Override
 		    		public boolean isFluidValid(int tank, @NotNull FluidStack stack)
 		    		{
-		    			return stack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get();
+		    			return stack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
+		    					stack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
 		    		}
 				};
 	}

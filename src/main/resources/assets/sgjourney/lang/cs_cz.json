@@ -275,5 +275,21 @@
 	"message.sgjourney.pda.has_naquadah_in_bloodstream": "M\u00e1 v krvi naquadah",
 	
 	"message.sgjourney.stargate.one_way_wormhole": "Nen\u00ed mo\u017en\u00e9 proj\u00edt \u010derv\u00ed d\u00edrou t\u00edmto sm\u011brem",
-	"message.sgjourney.stargate.symbol_encoded": "Symbol byl ji\u017e zad\u00e1n"
+	"message.sgjourney.stargate.symbol_encoded": "Symbol byl ji\u017e zad\u00e1n",
+	
+	"message.sgjourney.command.get_address.no_galaxy": "Nenacházíte se v žádné galaxii",
+	"message.sgjourney.command.get_address.located": "se nenachází v",
+	"message.sgjourney.command.get_address.address": "Addresa",
+	"message.sgjourney.command.get_address.in_galaxy": "v",
+	"message.sgjourney.command.get_address.is": "je",
+	"message.sgjourney.command.get_extragalactic_address.address": "Mimogalaktická adresa",
+	"message.sgjourney.command.get_extragalactic_address.is": "je",
+	"message.sgjourney.command.stellar_update": "Hvězdný update dokončen",
+	"message.sgjourney.command.stargate_network_version": "Verze sítě hvězdných bran",
+	"message.sgjourney.command.stargate_network_settings.changed": "Nastavení sítě hvězdných bran změněny",
+	"message.sgjourney.command.stargate_network_settings.use_datapack_addresses": "Používat adresy z datových balíčků",
+	"message.sgjourney.command.stargate_network_settings.generate_random_solar_systems": "Generovat náhodné solární systémy",
+	"message.sgjourney.command.stargate_network_settings.random_addresses_from_seed": "Náhodné adresy ze semínka",
+	"message.sgjourney.command.get_stargates": "Hvězdné brány v dimenzi",
+	"message.sgjourney.command.get_transporters": "Transportéry v dimenzi"
 }
