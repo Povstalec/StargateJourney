@@ -27,14 +27,16 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 public class UniverseStargateEntity extends AbstractStargateEntity
 {
 	public static final int WAIT_TICKS = 20;
+	public static final int RESET_DEGREES = 240;
+	
 	public int animationTicks = 1;
 	
 	protected static final String UNIVERSAL = StargateJourney.MODID + ":universal";
 	protected static final String POINT_OF_ORIGIN = UNIVERSAL;
 	protected static final String SYMBOLS = UNIVERSAL;
 
-	public int oldRotation = 0;
-	public int rotation = 0;
+	public int oldRotation = RESET_DEGREES;
+	public int rotation = RESET_DEGREES;
 	
 	public Address addressBuffer = new Address(true);
 	public int symbolBuffer = 0;
@@ -191,7 +193,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		else if(!stargate.isConnected() && stargate.addressBuffer.getLength() == 0)
 			stargate.rotateToDefault();
 		else
-			stargate.synchronizeWithClient(level);
+			stargate.updateClient();
 		
 		if(!stargate.level.isClientSide())
 		{
@@ -253,14 +255,14 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		
 		if(isCurrentSymbol(desiredSymbol))
 		{
-			synchronizeWithClient(this.level);
+			updateClient();
 			
 			if(isCurrentSymbol(0))
 				this.lockPrimaryChevron();
 			else
 				this.encodeChevron(desiredSymbol, false);
 			
-			synchronizeWithClient(this.level);
+			updateClient();
 		}
 		else
 			rotate(getBestRotationDirection(desiredSymbol));
@@ -270,10 +272,10 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
 		oldRotation = rotation;
 		
-		if(rotation == 0)
-			synchronizeWithClient(this.level);
+		if(rotation == RESET_DEGREES)
+			updateClient();
 		else
-			rotate(getBestRotationDirection(0.0D, (double) rotation));
+			rotate(getBestRotationDirection(RESET_DEGREES, rotation));
 	}
 	
 	private boolean getBestRotationDirection(int desiredSymbol)
@@ -290,7 +292,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	
 	private static boolean getBestRotationDirection(double desiredRotation, double rotation)
 	{
-		
 		double difference = desiredRotation - rotation;
 		
 		if(difference >= 180.0D)
@@ -322,6 +323,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		resetAddress();
 		this.connectionID = EMPTY;
 		
+		if(feedback.playFailSound() && !level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
 		
 		setChanged();
@@ -329,9 +331,12 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		return setRecentFeedback(feedback);
 	}
 	
-	private void synchronizeWithClient(Level level)
+	@Override
+	public void updateClient()
 	{
-		if(level.isClientSide())
+		super.updateClient();
+		
+		if(this.level.isClientSide())
 			return;
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.animationTicks, this.rotation, this.oldRotation));
 	}
@@ -340,9 +345,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public void playRotationSound()
 	{
 		if(!this.spinSound.isPlaying())
-		{
 			this.spinSound.playSound();
-		}
 	}
 
 	@Override

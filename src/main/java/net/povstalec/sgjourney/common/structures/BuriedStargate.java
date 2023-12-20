@@ -108,6 +108,7 @@ public class BuriedStargate extends Structure
 	public Optional<Structure.GenerationStub> findValidGenerationPoint(Structure.GenerationContext context)
 	{
 		//TODO See if there's a way to check for dimension
+		//context.chunkGenerator().getBiomeSource().findBiomeHorizontal(maxDistanceFromCenter, maxDistanceFromCenter, size, maxDistanceFromCenter, null, null, null);
 		return super.findValidGenerationPoint(context);
 	}
 

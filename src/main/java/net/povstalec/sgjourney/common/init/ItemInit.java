@@ -65,6 +65,9 @@ public class ItemInit
 	// Useful Items
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+	public static final RegistryObject<Item> HEAVY_LIQUID_NAQUADAH_BUCKET = ITEMS.register("heavy_liquid_naquadah_bucket", 
+			() -> new BucketItem(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+	
 	public static final RegistryObject<VialItem> VIAL = ITEMS.register("vial", 
 			() -> new VialItem(new Item.Properties().stacksTo(1)));
 	

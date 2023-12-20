@@ -148,4 +148,22 @@ public class StargateVariant
 	{
 		return this.wormholeCloseSound;
 	}
+	
+	public Optional<Stargate.RGBA> getRGBA()
+	{
+		Optional<List<Integer>> eventHorizonColor = getEventHorizonColor();
+		if(!eventHorizonColor.isPresent())
+			return Optional.empty();
+		
+		int[] colorArray = eventHorizonColor.get().stream().mapToInt((integer) -> integer).toArray();
+		
+		if(colorArray.length < 3)
+			return Optional.empty();
+		
+		int alpha = 255;
+		if(colorArray.length >= 4)
+			alpha = colorArray[3];
+		
+		return Optional.of(new Stargate.RGBA(colorArray[0], colorArray[1], colorArray[2], alpha));
+	}
 }

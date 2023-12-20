@@ -272,14 +272,14 @@ public class StargateNetwork extends SavedData
 			int timesOpened = solarSystem.getCompound(stargateID).getInt(TIMES_OPENED);
 			//System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
 			
-			if(Boolean.compare(hasDHD, bestDHD) > 0)
+			if(!CommonStargateNetworkConfig.disable_dhd_preference.get() && Boolean.compare(hasDHD, bestDHD) > 0)
 			{
 				preferredStargate = stargateID;
 				bestDHD = hasDHD;
 				bestGen = generation;
 				bestTimesOpened = timesOpened;
 			}
-			else if(Boolean.compare(hasDHD, bestDHD) == 0)
+			else if(CommonStargateNetworkConfig.disable_dhd_preference.get() || Boolean.compare(hasDHD, bestDHD) == 0)
 			{
 				if(generation > bestGen)
 				{
@@ -301,7 +301,7 @@ public class StargateNetwork extends SavedData
 			}
 		}
 
-		System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
+		//System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
 		return preferredStargate;
 	}
 	

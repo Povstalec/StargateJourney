@@ -12,8 +12,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.client.models.TollanStargateModel;
-import net.povstalec.sgjourney.client.models.WormholeModel;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
@@ -23,13 +21,17 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 @OnlyIn(Dist.CLIENT)
 public class TollanStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<TollanStargateEntity>
 {
-	protected final WormholeModel wormholeModel;
 	protected final TollanStargateModel stargateModel;
+	
+	public static final int WORMHOLE_R = 50; 
+	public static final int WORMHOLE_G = 100;
+	public static final int WORMHOLE_B = 240;
+	public static final int WORMHOLE_ALPHA = 255;
 
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context);
-		this.wormholeModel = new WormholeModel(ClientStargateConfig.tollan_rgba, 0.125F);
+		super(context, WORMHOLE_R, WORMHOLE_G, WORMHOLE_B, WORMHOLE_ALPHA, 0.125F);
+		this.wormholeModel.setRGBConfigValue(ClientStargateConfig.tollan_rgba);
 		this.stargateModel = new TollanStargateModel();
 	}
 	
@@ -68,8 +70,7 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
         
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
 		
-        if(stargate.isConnected())
-	    	this.wormholeModel.renderEventHorizon((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
+        this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
 		
 	    stack.popPose();
 	}

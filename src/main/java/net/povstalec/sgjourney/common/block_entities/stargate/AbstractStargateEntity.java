@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -26,8 +28,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
-import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
@@ -264,7 +268,17 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
 		chevronSound(incoming);
-		updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), symbol, incoming);
+		if(!incoming)
+		{
+			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
+			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
+		}
+		else
+		{
+			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming);
+			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming);
+		}
+		updateAdvancedCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
 		this.setChanged();
 		
 		return Stargate.Feedback.SYMBOL_ENCODED;
@@ -285,7 +299,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			if(!isObstructed())
 			{
 				chevronSound(false);
-				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, 0, false);
+				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, false, 0);
 				return setRecentFeedback(engageStargate(this.getAddress(), true));
 			}
 			else
@@ -656,6 +670,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void setPointOfOrigin(String pointOfOrigin)
 	{
 		this.pointOfOrigin = pointOfOrigin;
+		this.setChanged();
 	}
 	
 	public String getPointOfOrigin()
@@ -666,6 +681,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void setSymbols(String symbols)
 	{
 		this.symbols = symbols;
+		this.setChanged();
 	}
 	
 	public String getSymbols()
@@ -676,6 +692,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void setVariant(String variant)
 	{
 		this.variant = variant;
+		this.setChanged();
 	}
 	
 	public String getVariant()
@@ -686,6 +703,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void setAddress(Address address)
 	{
 		this.address = address;
+		this.setChanged();
 	}
 	
 	public Address getAddress()
@@ -825,7 +843,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		BlockState gateState = getState();
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
+		{
 			stargate.updateStargate(level, gatePos, gateState, connectionState, chevronsEngaged);
+			updateInterfaceBlocks(null);
+		}
 		else
 			StargateJourney.LOGGER.error("Couldn't find Stargate");
 		setChanged();
@@ -872,7 +893,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return obstructingBlocks > 12;
 	}
 	
-    public void updateInterfaceBlocks(String eventName, Object... objects)
+    public void updateBasicInterfaceBlocks(@Nullable String eventName, Object... objects)
     {
     	BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = getState();
@@ -881,16 +902,81 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		{
 			for(StargatePart part : stargateBlock.getParts())
 			{
-				BlockPos pos = part.getRingPos(gatePos, gateState.getValue(AbstractStargateBlock.FACING), gateState.getValue(AbstractStargateBlock.ORIENTATION));
+				BlockPos ringPos = part.getRingPos(gatePos, gateState.getValue(AbstractStargateBlock.FACING), gateState.getValue(AbstractStargateBlock.ORIENTATION));
 				
 				for(Direction direction : Direction.values())
 		    	{
-		    		if(level.getBlockEntity(pos.relative(direction)) instanceof BasicInterfaceEntity interfaceEntity)
-		    			interfaceEntity.queueEvent(eventName, objects);
+					BlockPos pos = ringPos.relative(direction);
+		    		if(level.getBlockEntity(pos) instanceof BasicInterfaceEntity interfaceEntity)
+		    		{
+		    			if(eventName != null)
+		    				interfaceEntity.queueEvent(eventName, objects);
+		    			level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+		    			interfaceEntity.setChanged();
+		    		}
 		    	}
 			}
 		}
     }
+	
+    public void updateCrystalInterfaceBlocks(@Nullable String eventName, Object... objects)
+    {
+    	BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = getState();
+		
+		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
+		{
+			for(StargatePart part : stargateBlock.getParts())
+			{
+				BlockPos ringPos = part.getRingPos(gatePos, gateState.getValue(AbstractStargateBlock.FACING), gateState.getValue(AbstractStargateBlock.ORIENTATION));
+				
+				for(Direction direction : Direction.values())
+		    	{
+					BlockPos pos = ringPos.relative(direction);
+		    		if(level.getBlockEntity(pos) instanceof CrystalInterfaceEntity interfaceEntity)
+		    		{
+		    			if(eventName != null)
+		    				interfaceEntity.queueEvent(eventName, objects);
+		    			level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+		    			interfaceEntity.setChanged();
+		    		}
+		    	}
+			}
+		}
+    }
+	
+    public void updateAdvancedCrystalInterfaceBlocks(@Nullable String eventName, Object... objects)
+    {
+    	BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = getState();
+		
+		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
+		{
+			for(StargatePart part : stargateBlock.getParts())
+			{
+				BlockPos ringPos = part.getRingPos(gatePos, gateState.getValue(AbstractStargateBlock.FACING), gateState.getValue(AbstractStargateBlock.ORIENTATION));
+				
+				for(Direction direction : Direction.values())
+		    	{
+					BlockPos pos = ringPos.relative(direction);
+		    		if(level.getBlockEntity(pos) instanceof AdvancedCrystalInterfaceEntity interfaceEntity)
+		    		{
+		    			if(eventName != null)
+		    				interfaceEntity.queueEvent(eventName, objects);
+		    			level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+		    			interfaceEntity.setChanged();
+		    		}
+		    	}
+			}
+		}
+    }
+	
+	public void updateInterfaceBlocks(@Nullable String eventName, Object... objects)
+	{
+		updateBasicInterfaceBlocks(eventName, objects);
+		updateCrystalInterfaceBlocks(eventName, objects);
+		updateAdvancedCrystalInterfaceBlocks(eventName, objects);
+	}
 	
 	public Wormhole getWormhole()
 	{

@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
-import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 
 public class AncientGene
 {
@@ -86,16 +85,29 @@ public class AncientGene
 		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
 	}
 	
-	public static void inheritGene(Entity entity)
+	public static void inheritGene(long seed, Entity entity, int inheritanceChance)
+	{
+		Random random = new Random(seed);
+		int chance = random.nextInt(1, 101);
+		
+		inheritGene(entity, inheritanceChance, chance);
+	}
+	
+	public static void inheritGene(Entity entity, int inheritanceChance)
+	{
+		Random random = new Random();
+		int chance = random.nextInt(1, 101);
+		
+		inheritGene(entity, inheritanceChance, chance);
+	}
+	
+	private static void inheritGene(Entity entity, int inheritanceChance, int chance)
 	{
 		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> 
 		{
 			if(cap.firstJoin())
 			{
-				Random random = new Random();
-				int chance = random.nextInt(1, 101);
-				
-				if(chance <= CommonGeneticConfig.player_ata_gene_inheritance_chance.get())
+				if(chance <= inheritanceChance)
 					cap.inheritGene();
 				
 				cap.markJoined();

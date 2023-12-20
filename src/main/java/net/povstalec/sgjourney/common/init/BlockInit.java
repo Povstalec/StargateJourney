@@ -22,10 +22,8 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.ATAGeneDetectorBlock;
 import net.povstalec.sgjourney.common.blocks.ArcheologyTableBlock;
-import net.povstalec.sgjourney.common.blocks.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.blocks.ClassicStargateBaseBlock;
-import net.povstalec.sgjourney.common.blocks.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.CrystallizerBlock;
 import net.povstalec.sgjourney.common.blocks.ExplosiveBlock;
 import net.povstalec.sgjourney.common.blocks.FirePitBlock;
@@ -37,7 +35,6 @@ import net.povstalec.sgjourney.common.blocks.RingPanelBlock;
 import net.povstalec.sgjourney.common.blocks.SecretSwitchBlock;
 import net.povstalec.sgjourney.common.blocks.SymbolBlock;
 import net.povstalec.sgjourney.common.blocks.TransportRingsBlock;
-import net.povstalec.sgjourney.common.blocks.ZPMHubBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
@@ -52,6 +49,10 @@ import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
+import net.povstalec.sgjourney.common.blocks.tech.AdvancedCrystalInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech.BasicInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech.CrystalInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech.ZPMHubBlock;
 import net.povstalec.sgjourney.common.items.blocks.DHDItem;
 import net.povstalec.sgjourney.common.items.blocks.SGJourneyBlockItem;
 
@@ -133,6 +134,8 @@ public class BlockInit
 	
 	public static final RegistryObject<LiquidBlock> LIQUID_NAQUADAH_BLOCK = registerBlock("liquid_naquadah", 
 			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
+	public static final RegistryObject<LiquidBlock> HEAVY_LIQUID_NAQUADAH_BLOCK = registerBlock("heavy_liquid_naquadah", 
+			() -> new LiquidBlock(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
 	
 	public static final RegistryObject<Block> NAQUADAH_BLOCK = registerBlock("naquadah_block", 
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
@@ -185,7 +188,9 @@ public class BlockInit
 	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerBlock("basic_interface", 
 			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerBlock("crystal_interface", 
-			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
+	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerBlock("advanced_crystal_interface", 
+			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	
 	public static final RegistryObject<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
 			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
@@ -194,10 +199,15 @@ public class BlockInit
 			() -> new ZPMHubBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.EPIC, 1);
 	// ZPM Plug
 	
-	public static final RegistryObject<LiquidizerBlock> LIQUIDIZER = registerBlock("liquidizer", 
+	public static final RegistryObject<LiquidizerBlock> LIQUIDIZER = registerBlock("naquadah_liquidizer", 
 			() -> new LiquidizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+	//public static final RegistryObject<LiquidizerBlock> ADVANCED_LIQUIDIZER = registerBlock("advanced_naquadah_liquidizer", 
+	//		() -> new LiquidizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+	
 	public static final RegistryObject<CrystallizerBlock> CRYSTALLIZER = registerBlock("crystallizer", 
 			() -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+	//public static final RegistryObject<CrystallizerBlock> ADVANCED_CRYSTALLIZER = registerBlock("advanced_crystallizer", 
+	//		() -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)

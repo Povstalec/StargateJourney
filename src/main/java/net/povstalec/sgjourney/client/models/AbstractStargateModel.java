@@ -71,12 +71,12 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		return new ResourceLocation(namespace, name);
 	}
 	
-	protected boolean canUseVariant(StargateVariant variant)
+	public boolean canUseVariant(StargateVariant variant)
 	{
 		return variant.getBaseStargate().equals(getResourceLocation());
 	}
 	
-	protected Optional<StargateVariant> getVariant(AbstractStargateEntity stargate)
+	public static Optional<StargateVariant> getVariant(AbstractStargateEntity stargate)
 	{
 		Optional<StargateVariant> optional = Optional.empty();
 		

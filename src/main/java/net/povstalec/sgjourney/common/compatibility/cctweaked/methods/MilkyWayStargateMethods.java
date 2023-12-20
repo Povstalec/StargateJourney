@@ -174,4 +174,27 @@ public class MilkyWayStargateMethods
 			return result;
 		}
 	}
+	
+	public static class EngageSymbol implements InterfaceMethod<MilkyWayStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "engageSymbol";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			int desiredSymbol = arguments.getInt(0);
+			
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				int feedback = stargate.engageSymbol(desiredSymbol).getCode();
+				return new Object[] {feedback};
+			});
+			
+			return result;
+		}
+	}
 }

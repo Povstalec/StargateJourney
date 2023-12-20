@@ -54,6 +54,7 @@
 		
 		"sgjourney:basic_interface",
 		"sgjourney:crystal_interface",
+		"sgjourney:advanced_crystal_interface",
 		
 		"sgjourney:ancient_gene_detector",
 		

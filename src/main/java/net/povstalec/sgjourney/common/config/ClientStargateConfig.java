@@ -60,7 +60,7 @@ public class ClientStargateConfig
 				"Decide if Chevrons on the back of Pegasus Stargate should light up");
 		
 		universe_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.universe_stargate", 
-				255, 255, 255, 255, 
+				200, 220, 255, 255, 
 				"The RGBA values in Universe Stargate's Event Horizon");
 
 		milky_way_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.milky_way_stargate", 

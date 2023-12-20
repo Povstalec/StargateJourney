@@ -1,23 +1,35 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked;
 
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.PegasusStargateMethods;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.TollanStargateMethods;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.UniverseStargateMethods;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.BasicStargatePeripheral;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateMethods;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 
 public class CCTweakedCompatibility
 {
 	public static void registerUniverseStargateMethods(StargatePeripheralWrapper wrapper)
 	{
-		BasicStargatePeripheral peripheral = wrapper.getPeripheral();
+		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
-		peripheral.registerStargateMethod(new UniverseStargateMethods.EngageSymbol());
+		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
+		
+		if(type.hasCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.EngageSymbol());
+			peripheral.registerStargateMethod(new StargateMethods.DialedAddress());
+		}
+		
+		if(type.hasAdvancedCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.ConnectedAddress());
+			peripheral.registerStargateMethod(new StargateMethods.LocalAddress());
+		}
 	}
 	
 	public static void registerMilkyWayStargateMethods(StargatePeripheralWrapper wrapper)
 	{
-		BasicStargatePeripheral peripheral = wrapper.getPeripheral();
+		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
 		peripheral.registerStargateMethod(new MilkyWayStargateMethods.GetCurrentSymbol());
 		peripheral.registerStargateMethod(new MilkyWayStargateMethods.IsCurrentSymbol());
@@ -29,24 +41,80 @@ public class CCTweakedCompatibility
 
 		peripheral.registerStargateMethod(new MilkyWayStargateMethods.RaiseChevron());
 		peripheral.registerStargateMethod(new MilkyWayStargateMethods.LowerChevron());
+		
+		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
+		
+		if(type.hasCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.EngageSymbol());
+			peripheral.registerStargateMethod(new StargateMethods.DialedAddress());
+		}
+		
+		if(type.hasAdvancedCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.ConnectedAddress());
+			peripheral.registerStargateMethod(new StargateMethods.LocalAddress());
+		}
 	}
 	
 	public static void registerPegasusStargateMethods(StargatePeripheralWrapper wrapper)
 	{
-		BasicStargatePeripheral peripheral = wrapper.getPeripheral();
+		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
-		peripheral.registerStargateMethod(new PegasusStargateMethods.EngageSymbol());
+		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
+		
+		if(type.hasCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.EngageSymbol());
+			peripheral.registerStargateMethod(new StargateMethods.DialedAddress());
+		}
+		
+		if(type.hasAdvancedCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.ConnectedAddress());
+			peripheral.registerStargateMethod(new StargateMethods.LocalAddress());
+			
+			peripheral.registerStargateMethod(new PegasusStargateMethods.DynamicSymbols());
+			peripheral.registerStargateMethod(new PegasusStargateMethods.OverrideSymbols());
+			peripheral.registerStargateMethod(new PegasusStargateMethods.OverridePointOfOrigin());
+		}
 	}
 	
 	public static void registerTollanStargateMethods(StargatePeripheralWrapper wrapper)
 	{
-		BasicStargatePeripheral peripheral = wrapper.getPeripheral();
+		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
-		peripheral.registerStargateMethod(new TollanStargateMethods.EngageSymbol());
+		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
+		
+		if(type.hasCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.EngageSymbol());
+			peripheral.registerStargateMethod(new StargateMethods.DialedAddress());
+		}
+		
+		if(type.hasAdvancedCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.ConnectedAddress());
+			peripheral.registerStargateMethod(new StargateMethods.LocalAddress());
+		}
 	}
 	
 	public static void registerClassicStargateMethods(StargatePeripheralWrapper wrapper)
 	{
-		//BasicStargatePeripheral peripheral = wrapper.getPeripheral();
+		StargatePeripheral peripheral = wrapper.getPeripheral();
+		
+		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
+		
+		if(type.hasCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.EngageSymbol());
+			peripheral.registerStargateMethod(new StargateMethods.DialedAddress());
+		}
+		
+		if(type.hasAdvancedCrystalMethods())
+		{
+			peripheral.registerStargateMethod(new StargateMethods.ConnectedAddress());
+			peripheral.registerStargateMethod(new StargateMethods.LocalAddress());
+		}
 	}
 }

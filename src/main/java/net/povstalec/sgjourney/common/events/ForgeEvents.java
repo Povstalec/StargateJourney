@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
@@ -45,6 +46,7 @@ import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
+import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -93,6 +95,9 @@ public class ForgeEvents
 		if(level.isClientSide())
 			return;
 		
+		if(event.getEntity() instanceof AbstractVillager villager)
+			AncientGene.inheritGene(villager, CommonGeneticConfig.villager_player_ata_gene_inheritance_chance.get());
+		
 		// Lightning recharging the Stargate
 		if(entity instanceof LightningBolt lightning)
 		{
@@ -129,7 +134,12 @@ public class ForgeEvents
 		if(player.getName().getString().equals("Dev") || player.getName().getString().equals("Woldericz_junior"))
 			AncientGene.addAncient(player);
 		else
-			AncientGene.inheritGene(player);
+		{
+			long seed = ((ServerLevel) player.getLevel()).getSeed();
+			seed += player.getUUID().hashCode();
+			
+			AncientGene.inheritGene(seed, player, CommonGeneticConfig.player_ata_gene_inheritance_chance.get());
+		}
 	}
 	
 	/*@SubscribeEvent
@@ -205,16 +215,6 @@ public class ForgeEvents
 				event.setCanceled(true);
 			}
 		}
-	}
-	
-	@SubscribeEvent
-	public static void onEntityJoined(EntityJoinLevelEvent event)
-	{
-		if(event.getLevel().isClientSide())
-			return;
-		
-		if(event.getEntity() instanceof AbstractVillager villager)
-			AncientGene.inheritGene(villager);
 	}
 	
 	@SubscribeEvent

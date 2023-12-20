@@ -10,13 +10,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.menu.BasicInterfaceMenu;
+import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 
-public class BasicInterfaceScreen extends AbstractContainerScreen<BasicInterfaceMenu>
+public class BasicInterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/basic_interface_gui.png");
 
-    public BasicInterfaceScreen(BasicInterfaceMenu pMenu, Inventory pPlayerInventory, Component pTitle)
+    public BasicInterfaceScreen(InterfaceMenu pMenu, Inventory pPlayerInventory, Component pTitle)
     {
         super(pMenu, pPlayerInventory, pTitle);
         this.imageWidth = 76;

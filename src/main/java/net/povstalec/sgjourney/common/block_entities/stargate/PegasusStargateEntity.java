@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -27,6 +28,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public int symbolBuffer = 0;
 	private boolean passedOver = false;
 	
+	protected boolean dynamicSymbols = true;
+	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.PEGASUS_STARGATE.get(), pos, state, Stargate.Gen.GEN_3, 3);
@@ -36,12 +39,22 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	@Override
     public void onLoad()
 	{
-        if(level.isClientSide())
-        	return;
-        setPointOfOrigin(this.getLevel());
-        setSymbols(this.getLevel());
-        
         super.onLoad();
+
+        if(this.level.isClientSide())
+        	return;
+
+        if(!isPointOfOriginValid(this.level))
+        {
+        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
+        	setPointOfOrigin(this.getLevel());
+        }
+
+        if(!areSymbolsValid(this.level))
+        {
+        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
+        	setSymbols(this.getLevel());
+        }
     }
 	
 	@Override
@@ -52,6 +65,14 @@ public class PegasusStargateEntity extends AbstractStargateEntity
         addressBuffer.fromArray(tag.getIntArray("AddressBuffer"));
         symbolBuffer = tag.getInt("SymbolBuffer");
         currentSymbol = tag.getInt("CurrentSymbol");
+        
+        dynamicSymbols = tag.getBoolean("DynamicSymbols");
+
+        if(!dynamicSymbols)
+        {
+    		pointOfOrigin = tag.getString("PointOfOrigin");
+    		symbols = tag.getString("Symbols");
+        }
     }
 	
 	@Override
@@ -62,6 +83,25 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		tag.putIntArray("AddressBuffer", addressBuffer.toArray());
 		tag.putInt("SymbolBuffer", symbolBuffer);
 		tag.putInt("CurrentSymbol", currentSymbol);
+		
+		tag.putBoolean("DynamicSymbols", dynamicSymbols);
+
+        if(!dynamicSymbols)
+        {
+    		tag.putString("PointOfOrigin", pointOfOrigin);
+    		tag.putString("Symbols", symbols);
+        }
+	}
+	
+	public void dynamicSymbols(boolean dynamicSymbols)
+	{
+		this.dynamicSymbols = dynamicSymbols;
+		this.setChanged();
+	}
+	
+	public boolean useDynamicSymbols()
+	{
+		return this.dynamicSymbols;
 	}
 
 	@Override
@@ -188,12 +228,15 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		stargate.animateSpin();
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
-		stargate.updatePegasusStargate();
+		stargate.updateClient();
 	}
 	
-	public void updatePegasusStargate()
+	@Override
+	public void updateClient()
 	{
-		if(level.isClientSide())
+		super.updateClient();
+		
+		if(this.level.isClientSide())
 			return;
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.currentSymbol));
 	}
@@ -255,6 +298,6 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			return;
 		
 		this.currentSymbol = openTime / chevronLockSpeed.getMultiplier();
-		this.updatePegasusStargate();
+		this.updateClient();
 	}
 }

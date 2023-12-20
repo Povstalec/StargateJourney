@@ -1,11 +1,32 @@
 {
 	"variants": 
 	{
-		"facing=down": { "model": "sgjourney:block/crystal_interface", "x": 90 },
-		"facing=up": { "model": "sgjourney:block/crystal_interface", "x": 270 },
-		"facing=north": { "model": "sgjourney:block/crystal_interface" },
-		"facing=south": { "model": "sgjourney:block/crystal_interface", "y": 180 },
-		"facing=west": { "model": "sgjourney:block/crystal_interface", "y": 270 },
-		"facing=east": { "model": "sgjourney:block/crystal_interface", "y": 90 }
+		"facing=down,mode=off": { "model": "sgjourney:block/crystal_interface", "x": 90 },
+		"facing=up,mode=off": { "model": "sgjourney:block/crystal_interface", "x": 270 },
+		"facing=north,mode=off": { "model": "sgjourney:block/crystal_interface" },
+		"facing=south,mode=off": { "model": "sgjourney:block/crystal_interface", "y": 180 },
+		"facing=west,mode=off": { "model": "sgjourney:block/crystal_interface", "y": 270 },
+		"facing=east,mode=off": { "model": "sgjourney:block/crystal_interface", "y": 90 },
+		
+		"facing=down,mode=ring_rotation": { "model": "sgjourney:block/crystal_interface_rotation", "x": 90 },
+		"facing=up,mode=ring_rotation": { "model": "sgjourney:block/crystal_interface_rotation", "x": 270 },
+		"facing=north,mode=ring_rotation": { "model": "sgjourney:block/crystal_interface_rotation" },
+		"facing=south,mode=ring_rotation": { "model": "sgjourney:block/crystal_interface_rotation", "y": 180 },
+		"facing=west,mode=ring_rotation": { "model": "sgjourney:block/crystal_interface_rotation", "y": 270 },
+		"facing=east,mode=ring_rotation": { "model": "sgjourney:block/crystal_interface_rotation", "y": 90 },
+		
+		"facing=down,mode=chevrons_active": { "model": "sgjourney:block/crystal_interface_chevron", "x": 90 },
+		"facing=up,mode=chevrons_active": { "model": "sgjourney:block/crystal_interface_chevron", "x": 270 },
+		"facing=north,mode=chevrons_active": { "model": "sgjourney:block/crystal_interface_chevron" },
+		"facing=south,mode=chevrons_active": { "model": "sgjourney:block/crystal_interface_chevron", "y": 180 },
+		"facing=west,mode=chevrons_active": { "model": "sgjourney:block/crystal_interface_chevron", "y": 270 },
+		"facing=east,mode=chevrons_active": { "model": "sgjourney:block/crystal_interface_chevron", "y": 90 },
+		
+		"facing=down,mode=wormhole_active": { "model": "sgjourney:block/crystal_interface_wormhole", "x": 90 },
+		"facing=up,mode=wormhole_active": { "model": "sgjourney:block/crystal_interface_wormhole", "x": 270 },
+		"facing=north,mode=wormhole_active": { "model": "sgjourney:block/crystal_interface_wormhole" },
+		"facing=south,mode=wormhole_active": { "model": "sgjourney:block/crystal_interface_wormhole", "y": 180 },
+		"facing=west,mode=wormhole_active": { "model": "sgjourney:block/crystal_interface_wormhole", "y": 270 },
+		"facing=east,mode=wormhole_active": { "model": "sgjourney:block/crystal_interface_wormhole", "y": 90 }
 	}
 }

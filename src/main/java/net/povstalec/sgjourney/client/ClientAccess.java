@@ -4,17 +4,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
-import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.CrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
-import net.povstalec.sgjourney.common.block_entities.energy_gen.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.stargate.Address;
 
@@ -43,13 +43,13 @@ public class ClientAccess
         }
     }
     
-    public static void updateBasicInterface(BlockPos pos, long energy)
+    public static void updateInterface(BlockPos pos, long energy)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if(blockEntity instanceof final BasicInterfaceEntity basicInterface)
+        if(blockEntity instanceof final AbstractInterfaceEntity interfaceEntity)
         {
-        	basicInterface.setEnergy(energy);
+        	interfaceEntity.setEnergy(energy);
         }
     }
     

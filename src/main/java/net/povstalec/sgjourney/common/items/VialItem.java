@@ -56,11 +56,40 @@ public class VialItem extends Item
 		return stack;
 	}
 	
+	public static ItemStack heavyLiquidNaquadahSetup()
+	{
+		ItemStack stack = new ItemStack(ItemInit.VIAL.get());
+        
+        stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
+        {
+        	fluidHandler.fill(new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get().getSource(), MAX_CAPACITY), FluidAction.EXECUTE);
+        });
+		
+		return stack;
+	}
+	
+	public static int getFluidAmount(ItemStack stack)
+	{
+		FluidStack fluidStack = getFluidStack(stack);
+		
+		return fluidStack.getAmount();
+	}
+	
 	public static int getLiquidNaquadahAmount(ItemStack stack)
 	{
-		Optional<Integer> liquidAmount = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(fluidHandler -> fluidHandler.getFluidInTank(0).getAmount());
+		FluidStack fluidStack = getFluidStack(stack);
 		
-		return liquidAmount.isPresent() ? liquidAmount.get() : 0;
+		if(fluidStack.getFluid() != FluidInit.LIQUID_NAQUADAH_SOURCE.get())
+			return 0;
+		
+		return fluidStack.getAmount();
+	}
+	
+	public static FluidStack getFluidStack(ItemStack stack)
+	{
+		Optional<FluidStack> fluid = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(fluidHandler -> fluidHandler.getFluidInTank(0));
+		
+		return fluid.isPresent() ? fluid.get() : FluidStack.EMPTY;
 	}
 	
 	public static void drainLiquidNaquadah(ItemStack stack)
@@ -79,9 +108,9 @@ public class VialItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		int fluidAmount = getLiquidNaquadahAmount(stack);
+		int fluidAmount = getFluidAmount(stack);
 		
-		MutableComponent liquidNaquadah = Component.translatable("fluid_type.sgjourney.liquid_naquadah").withStyle(ChatFormatting.GREEN);
+		MutableComponent liquidNaquadah = Component.translatable(getFluidStack(stack).getTranslationKey()).withStyle(ChatFormatting.GREEN);
 		liquidNaquadah.append(Component.literal(" " + fluidAmount + "mB").withStyle(ChatFormatting.GREEN));
     	tooltipComponents.add(liquidNaquadah);
     	

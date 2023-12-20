@@ -7,6 +7,7 @@ public class CommonStargateNetworkConfig
 	public static SGJourneyConfigValue.BooleanValue use_datapack_addresses;
 	public static SGJourneyConfigValue.BooleanValue generate_random_solar_systems;
 	public static SGJourneyConfigValue.BooleanValue random_addresses_from_seed;
+	public static SGJourneyConfigValue.BooleanValue disable_dhd_preference;
 
 	public static ForgeConfigSpec.IntValue stargate_generation_center_x_chunk_offset;
 	public static ForgeConfigSpec.IntValue stargate_generation_center_z_chunk_offset;
@@ -28,6 +29,10 @@ public class CommonStargateNetworkConfig
 		random_addresses_from_seed = new SGJourneyConfigValue.BooleanValue(server, "server.random_addresses_from_seed", 
 				true, 
 				"Stargate Network will randomize addresses based on the world seed");
+		
+		disable_dhd_preference = new SGJourneyConfigValue.BooleanValue(server, "server.disable_dhd_preference", 
+				false,
+				"Stargates Network will not consider DHDs when choosing preferred Stargate");
 
 		
 		

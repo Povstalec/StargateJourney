@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
+import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
@@ -34,7 +35,10 @@ public class TabInit
 				items.accept(ItemInit.PURE_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH.get());
 				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
+				items.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
 				items.accept(ItemInit.VIAL.get());
+				items.accept(VialItem.liquidNaquadahSetup());
+				items.accept(VialItem.heavyLiquidNaquadahSetup());
 
 				items.accept(ItemInit.NAQUADAH_ROD.get());
 				items.accept(ItemInit.REACTION_CHAMBER.get());
@@ -163,6 +167,7 @@ public class TabInit
 				
 				items.accept(BlockInit.BASIC_INTERFACE.get());
 				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
+				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 
 				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				

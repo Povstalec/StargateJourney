@@ -9,8 +9,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.client.models.UniverseStargateModel;
-import net.povstalec.sgjourney.client.models.WormholeModel;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
@@ -19,14 +17,17 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public class UniverseStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<UniverseStargateEntity>
 {
-	protected final WormholeModel wormholeModel;
 	protected final UniverseStargateModel stargateModel;
+	
+	public static final int WORMHOLE_R = 200; 
+	public static final int WORMHOLE_G = 220;
+	public static final int WORMHOLE_B = 255;
+	public static final int WORMHOLE_ALPHA = 255;
 	
 	public UniverseStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context);
-		this.wormholeModel = new WormholeModel(ClientStargateConfig.universe_rgba, 0.25F);
-
+		super(context, WORMHOLE_R, WORMHOLE_G, WORMHOLE_B, WORMHOLE_ALPHA, 0.25F);
+		this.wormholeModel.setRGBConfigValue(ClientStargateConfig.universe_rgba);
 		this.stargateModel = new UniverseStargateModel();
 	}
 	
@@ -51,8 +52,7 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
         this.stargateModel.setRotation(stargate.getRotation(partialTick));
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
         
-        if(stargate.isConnected())
-        	this.wormholeModel.renderEventHorizon((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
+        this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
 	    stack.popPose();
 	    
 	}

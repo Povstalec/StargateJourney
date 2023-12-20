@@ -9,26 +9,72 @@ import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEnt
 
 public class PegasusStargateMethods
 {
-	public static class EngageSymbol implements InterfaceMethod<PegasusStargateEntity>
+	public static class DynamicSymbols implements InterfaceMethod<PegasusStargateEntity>
 	{
 		@Override
 		public String getName()
 		{
-			return "engageSymbol";
+			return "dynamicSymbols";
 		}
 
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			int desiredSymbol = arguments.getInt(0);
+			boolean dynamicSymbols = arguments.getBoolean(0);
 			
-			MethodResult result = context.executeMainThreadTask(() ->
+			context.executeMainThreadTask(() ->
 			{
-				int feedback = stargate.engageSymbol(desiredSymbol).getCode();
-				return new Object[] {feedback};
+				stargate.dynamicSymbols(dynamicSymbols);
+				return null;
 			});
 			
-			return result;
+			return MethodResult.of();
+		}
+	}
+	
+	public static class OverrideSymbols implements InterfaceMethod<PegasusStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "overrideSymbols";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			String symbols = arguments.getString(0);
+			
+			context.executeMainThreadTask(() ->
+			{
+				stargate.setSymbols(symbols);
+				return null;
+			});
+			
+			return MethodResult.of();
+		}
+	}
+	
+	public static class OverridePointOfOrigin implements InterfaceMethod<PegasusStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "overridePointOfOrigin";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			String pointOfOrigin = arguments.getString(0);
+			
+			context.executeMainThreadTask(() ->
+			{
+				stargate.setPointOfOrigin(pointOfOrigin);
+				return null;
+			});
+			
+			return MethodResult.of();
 		}
 	}
 }

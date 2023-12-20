@@ -1,0 +1,10 @@
+{
+	"parent": "sgjourney:block/interface_template",
+	"textures":
+	{
+		"bottom": "sgjourney:block/crystal_interface_back_wormhole",
+		"side": "sgjourney:block/crystal_interface_side_wormhole",
+		"top": "sgjourney:block/crystal_interface_top",
+		"front": "sgjourney:block/crystal_interface_front"
+	}
+}

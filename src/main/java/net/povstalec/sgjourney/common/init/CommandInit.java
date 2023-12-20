@@ -12,11 +12,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -25,51 +28,54 @@ import net.povstalec.sgjourney.common.data.Universe;
 public class CommandInit
 {
 	private static final String EMPTY = StargateJourney.EMPTY;
+	private static final String STARGATE_NETWORK = "stargateNetwork";
+	private static final String TRANSPORTER_NETWORK = "transporterNetwork";
+	private static final String GENE = "gene";
 	
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
 	{
-		
+		// Stargate Network Commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("address")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
 										.executes(CommandInit::getAddress))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("extragalacticAddress")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
 										.executes(CommandInit::getExtragalacticAddress))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("getAllStargates")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
 										.executes(CommandInit::getStargates))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("version")
 								.executes(CommandInit::getVersion)))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("forceStellarUpdate")
 								.executes(CommandInit::forceStellarUpdate)))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("getSettings")
 								.executes(CommandInit::getSettings)))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("setSettings")
 								.then(Commands.literal("useDatapackAddresses")
 										.then(Commands.argument("useDatapackAddresses", BoolArgumentType.bool())
@@ -77,7 +83,7 @@ public class CommandInit
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("setSettings")
 								.then(Commands.literal("generateRandomSolarSystems")
 										.then(Commands.argument("generateRandomSolarSystems", BoolArgumentType.bool())
@@ -85,7 +91,7 @@ public class CommandInit
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("stargateNetwork")
+				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("setSettings")
 								.then(Commands.literal("randomAddressFromSeed")
 										.then(Commands.argument("randomAddressFromSeed", BoolArgumentType.bool())
@@ -96,11 +102,41 @@ public class CommandInit
 		
 		// Rings Network Commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("ringsNetwork")
+				.then(Commands.literal(TRANSPORTER_NETWORK)
 						.then(Commands.literal("getAllRings")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
 										.executes(CommandInit::getTransportRings))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		//Gene commands
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(GENE)
+						.then(Commands.argument("target", EntityArgument.entity())
+								.then(Commands.literal("add")
+										.then(Commands.literal("ancient").executes(CommandInit::setAncientGene)))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(GENE)
+						.then(Commands.argument("target", EntityArgument.entity())
+								.then(Commands.literal("add")
+										.then(Commands.literal("inherited").executes(CommandInit::setInheritedGene)))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(GENE)
+						.then(Commands.argument("target", EntityArgument.entity())
+								.then(Commands.literal("add")
+										.then(Commands.literal("artificial").executes(CommandInit::setArtificialGene)))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(GENE)
+						.then(Commands.argument("target", EntityArgument.entity())
+								.then(Commands.literal("remove").executes(CommandInit::removeGene))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		
 		
 		//Dev commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
@@ -273,6 +309,42 @@ public class CommandInit
 			context.getSource().getPlayer().sendSystemMessage(Component.literal("X: " + coords[0] + " Y: " + coords[1] + " Z: " + coords[2]).withStyle(ChatFormatting.AQUA));
 		}
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int setAncientGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Entity entity = EntityArgument.getEntity(context, "target");
+		
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int setInheritedGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Entity entity = EntityArgument.getEntity(context, "target");
+		
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.inheritGene());
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int setArtificialGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Entity entity = EntityArgument.getEntity(context, "target");
+		
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.implantGene());
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int removeGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Entity entity = EntityArgument.getEntity(context, "target");
+		
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.removeGene());
 		
 		return Command.SINGLE_SUCCESS;
 	}

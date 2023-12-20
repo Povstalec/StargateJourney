@@ -85,7 +85,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	
 	protected boolean useAlternateModel(UniverseStargateEntity stargate)
 	{
-		return !ClientStargateConfig.universe_front_rotates.get();
+		return ClientStargateConfig.universe_front_rotates.get();
 	}
 	
 	public float getRotation(boolean shouldRotate)
@@ -179,27 +179,30 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					STARGATE_RING_OFFSET,
 					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 47F / 64);
 			
-			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
-					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_RADIUS,
-					STARGATE_RING_DIVIDE_OFFSET,
-					(52F + STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64,
-					
-					STARGATE_RING_INNER_CENTER,
-					STARGATE_RING_INNER_HEIGHT,
-					STARGATE_RING_DIVIDE_OFFSET,
-					(52F + STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
-					
-					-STARGATE_RING_INNER_CENTER, 
-					STARGATE_RING_INNER_HEIGHT,
-					STARGATE_RING_DIVIDE_OFFSET,
-					(52F - STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
-					
-					-STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_RADIUS,
-					STARGATE_RING_DIVIDE_OFFSET,
-					(52F - STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			if(useAlternateModel(stargate))
+			{
+				//Back
+				SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+						STARGATE_RING_OUTER_CENTER,
+						STARGATE_RING_OUTER_RADIUS,
+						STARGATE_RING_DIVIDE_OFFSET,
+						(52F + STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+						
+						STARGATE_RING_INNER_CENTER,
+						STARGATE_RING_INNER_HEIGHT,
+						STARGATE_RING_DIVIDE_OFFSET,
+						(52F + STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+						
+						-STARGATE_RING_INNER_CENTER, 
+						STARGATE_RING_INNER_HEIGHT,
+						STARGATE_RING_DIVIDE_OFFSET,
+						(52F - STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+						
+						-STARGATE_RING_OUTER_CENTER,
+						STARGATE_RING_OUTER_RADIUS,
+						STARGATE_RING_DIVIDE_OFFSET,
+						(52F - STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			}
 			
 			stack.popPose();
 		}
@@ -211,7 +214,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		for(int j = 0; j < UNIVERSE_SIDES; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * -UNIVERSE_ANGLE + UNIVERSE_ANGLE/2 + getRotation(useAlternateModel(stargate))));
+			stack.mulPose(Axis.ZP.rotationDegrees(j * -UNIVERSE_ANGLE + UNIVERSE_ANGLE/2 + getRotation(!useAlternateModel(stargate))));
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
 			
@@ -281,27 +284,30 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					-STARGATE_RING_OFFSET,
 					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 40F / 64);
 			
-			//Front
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
-					-STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_RADIUS,
-					STARGATE_RING_DIVIDE_OFFSET,
-					(52F + STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64,
-					
-					-STARGATE_RING_INNER_CENTER,
-					STARGATE_RING_INNER_HEIGHT,
-					STARGATE_RING_DIVIDE_OFFSET,
-					(52F + STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
-					
-					STARGATE_RING_INNER_CENTER, 
-					STARGATE_RING_INNER_HEIGHT,
-					STARGATE_RING_DIVIDE_OFFSET,
-					(52F - STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
-					
-					STARGATE_RING_OUTER_CENTER,
-					STARGATE_RING_OUTER_RADIUS,
-					STARGATE_RING_DIVIDE_OFFSET,
-					(52F - STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			if(useAlternateModel(stargate))
+			{
+				//Front
+				SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+						-STARGATE_RING_OUTER_CENTER,
+						STARGATE_RING_OUTER_RADIUS,
+						STARGATE_RING_DIVIDE_OFFSET,
+						(52F + STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64,
+						
+						-STARGATE_RING_INNER_CENTER,
+						STARGATE_RING_INNER_HEIGHT,
+						STARGATE_RING_DIVIDE_OFFSET,
+						(52F + STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+						
+						STARGATE_RING_INNER_CENTER, 
+						STARGATE_RING_INNER_HEIGHT,
+						STARGATE_RING_DIVIDE_OFFSET,
+						(52F - STARGATE_RING_INNER_CENTER * 16) / 64, (15 + STARGATE_RING_HEIGHT/2 * 16) / 64,
+						
+						STARGATE_RING_OUTER_CENTER,
+						STARGATE_RING_OUTER_RADIUS,
+						STARGATE_RING_DIVIDE_OFFSET,
+						(52F - STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64);
+			}
 			
 			stack.popPose();
 		}
@@ -412,7 +418,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		// Back
 		stack.pushPose();
 		stack.mulPose(Axis.YP.rotationDegrees(180));
-		stack.mulPose(Axis.ZP.rotationDegrees(CHEVRON_ANGLE * chevronNumber - getRotation(useAlternateModel(stargate))));
+		stack.mulPose(Axis.ZP.rotationDegrees(CHEVRON_ANGLE * chevronNumber - getRotation(!useAlternateModel(stargate))));
 		stack.translate(0, DEFAULT_RADIUS - 5.5F/16, 0);
 		renderChevronLight(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
 		renderOuterChevron(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);

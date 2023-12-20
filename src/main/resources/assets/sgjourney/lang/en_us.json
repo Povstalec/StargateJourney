@@ -59,12 +59,14 @@
 	"block.sgjourney.zpm_hub": "ZPM Hub",
 	
 	"fluid_type.sgjourney.liquid_naquadah": "Liquid Naquadah",
+	"fluid_type.sgjourney.heavy_liquid_naquadah": "Heavy Liquid Naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Raw Naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadah Alloy",
 	"item.sgjourney.pure_naquadah": "Pure Naquadah",
 	"item.sgjourney.naquadah": "Weapons Grade Naquadah",
 	"item.sgjourney.liquid_naquadah_bucket": "Liquid Naquadah Bucket",
+	"item.sgjourney.heavy_liquid_naquadah_bucket": "Heavy Liquid Naquadah Bucket",
 	"item.sgjourney.vial": "Vial",
 	
 	"item.sgjourney.naquadah_rod": "Naquadah Rod",

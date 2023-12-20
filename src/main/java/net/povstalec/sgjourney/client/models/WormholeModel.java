@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client.models;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.joml.Matrix3f;
@@ -18,6 +19,7 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.SGJourneyConfigValue;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Connection;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class WormholeModel
 {
@@ -28,7 +30,9 @@ public class WormholeModel
 	
 	protected static final float SHIELDING_OFFSET = 1F / 16 / 2;
 	
-	protected SGJourneyConfigValue.RGBAValue rgbaValue;
+	protected Optional<SGJourneyConfigValue.RGBAValue> rgbaValue = Optional.empty();
+	
+	protected Stargate.RGBA rgba;
 	protected float maxDefaultDistortion;
 	
 	protected static final float SCALE = 1F / 32;
@@ -42,10 +46,15 @@ public class WormholeModel
 	
 	protected float[][][] coordinates = new float[][][] {outerCircle, circle1, circle2, circle3, circle4, circle5};
 	
-	public WormholeModel(SGJourneyConfigValue.RGBAValue rgbaValue, float maxDefaultDistortion)
+	public WormholeModel(int red, int green, int blue, int alpha, float maxDefaultDistortion)
 	{
-		this.rgbaValue = rgbaValue;
 		this.maxDefaultDistortion = maxDefaultDistortion;
+		this.rgba = new Stargate.RGBA(red, green, blue, alpha);
+	}
+	
+	public void setRGBConfigValue(SGJourneyConfigValue.RGBAValue rgbaValue)
+	{
+		this.rgbaValue = Optional.of(rgbaValue);
 	}
 	
 	protected float getMaxDistortion()
@@ -54,15 +63,15 @@ public class WormholeModel
 		return configDistortion > maxDefaultDistortion ? maxDefaultDistortion : configDistortion;
 	}
 	
-	public void renderEventHorizon(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	public void renderEventHorizon(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, Optional<Stargate.RGBA> rgba, int combinedLight, int combinedOverlay)
 	{
-		this.renderKawoosh(stack, source, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount(), false);
-		this.renderPuddle(stack, source, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount(), false);
+		this.renderKawoosh(stack, source, rgba, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount(), false);
+		this.renderPuddle(stack, source, rgba, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount(), false);
 		if(ClientStargateConfig.enable_vortex.get())
-			this.renderVortex(stack, source, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount());
+			this.renderVortex(stack, source, rgba, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount());
 	}
 	
-	protected void renderPuddle(PoseStack stack, MultiBufferSource source, float yOffset, int kawooshProgress, boolean isShieldOn)
+	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<Stargate.RGBA> rgba, float yOffset, int kawooshProgress, boolean isShieldOn)
 	{
 		if(kawooshProgress <= 0)
 			return;
@@ -78,7 +87,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(frontConsumer, matrix4, matrix3, 
+				createTriangle(frontConsumer, matrix4, matrix3, rgba, 
 						coordinates[i][j % coordinates[i].length][0], 
 						coordinates[i][j % coordinates[i].length][1],
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
@@ -91,7 +100,7 @@ public class WormholeModel
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0));
 				
-				createTriangle(frontConsumer, matrix4, matrix3, 
+				createTriangle(frontConsumer, matrix4, matrix3, rgba,
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1],
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0),
@@ -109,7 +118,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(backConsumer, matrix4, matrix3, 
+				createTriangle(backConsumer, matrix4, matrix3, rgba,
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
@@ -122,7 +131,7 @@ public class WormholeModel
 						coordinates[i][j % coordinates[i].length][1],
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0));
 				
-				createTriangle(frontConsumer, matrix4, matrix3, 
+				createTriangle(frontConsumer, matrix4, matrix3, rgba,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
@@ -138,7 +147,7 @@ public class WormholeModel
 		}
 	}
 	
-	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, float yOffset, int kawooshProgress, boolean isShieldOn)
+	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, Optional<Stargate.RGBA> rgba, float yOffset, int kawooshProgress, boolean isShieldOn)
 	{
 		if(kawooshProgress <= 0 || kawooshProgress >= Connection.KAWOOSH_TICKS)
 			return;
@@ -153,7 +162,7 @@ public class WormholeModel
 		{
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(kawooshConsumer, matrix4, matrix3, 
+				createTriangle(kawooshConsumer, matrix4, matrix3, rgba,
 						bubbleX(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress),
@@ -166,7 +175,7 @@ public class WormholeModel
 						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress));
 				
-				createTriangle(kawooshConsumer, matrix4, matrix3, 
+				createTriangle(kawooshConsumer, matrix4, matrix3, rgba,
 						bubbleX(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
@@ -182,7 +191,7 @@ public class WormholeModel
 		}
 	}
 	
-	protected void renderVortex(PoseStack stack, MultiBufferSource source, float yOffset, int kawooshProgress)
+	protected void renderVortex(PoseStack stack, MultiBufferSource source, Optional<Stargate.RGBA> rgba, float yOffset, int kawooshProgress)
 	{
 		if(kawooshProgress <= Connection.KAWOOSH_TICKS)
 			return;
@@ -198,7 +207,7 @@ public class WormholeModel
 		{
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(vortexConsumer, matrix4, matrix3, 
+				createTriangle(vortexConsumer, matrix4, matrix3, rgba,
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
 						vortexMaker(getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
@@ -211,7 +220,7 @@ public class WormholeModel
 						coordinates[i][j % coordinates[i].length][1],
 						vortexMaker(getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress));
 				
-				createTriangle(vortexConsumer, matrix4, matrix3, 
+				createTriangle(vortexConsumer, matrix4, matrix3, rgba,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
 						vortexMaker(getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
@@ -322,15 +331,40 @@ public class WormholeModel
 		return totalDistortion;
 	}
 	
-	protected void createTriangle(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, 
+	protected void createTriangle(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, Optional<Stargate.RGBA> rgba,
 			float x1, float y1, float z1,
 			float x2, float y2, float z2,
 			float x3, float y3, float z3)
 	{
-		float red = (float) rgbaValue.getRed() / 255;
-		float blue = (float) rgbaValue.getBlue() / 255;
-		float green = (float) rgbaValue.getGreen() / 255;
-		float alpha = (float) rgbaValue.getAlpha() / 255;
+		float red;
+		float green;
+		float blue;
+		float alpha;
+		
+		if(rgba.isPresent())
+		{
+			red = rgba.get().red / 255F;
+			green = rgba.get().green / 255F;
+			blue = rgba.get().blue / 255F;
+			alpha = rgba.get().alpha / 255F;
+		}
+		else
+		{
+			if(this.rgbaValue.isPresent())
+			{
+				red = rgbaValue.get().getRed() / 255F;
+				green = rgbaValue.get().getGreen() / 255F;
+				blue = rgbaValue.get().getBlue() / 255F;
+				alpha = rgbaValue.get().getAlpha() / 255F;
+			}
+			else
+			{
+				red = this.rgba.red / 255F;
+				green = this.rgba.green / 255F;
+				blue = this.rgba.blue / 255F;
+				alpha = this.rgba.alpha / 255F;
+			}
+		}
 		
 		consumer.vertex(matrix4, x1, y1, z1).color(red, green, blue, alpha).uv(x1 / 2.5F / 2 + 0.5F, y1 / 2.5F / 16 + 0.5F)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();

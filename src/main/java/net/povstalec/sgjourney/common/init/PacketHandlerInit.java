@@ -6,9 +6,9 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.packets.ClientboundBasicInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
@@ -38,10 +38,10 @@ public final class PacketHandlerInit
 		//============================================================================================
 		
 		// Alien Tech
-		INSTANCE.messageBuilder(ClientboundBasicInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundBasicInterfaceUpdatePacket::encode)
-		.decoder(ClientboundBasicInterfaceUpdatePacket::new)
-		.consumerMainThread(ClientboundBasicInterfaceUpdatePacket::handle)
+		INSTANCE.messageBuilder(ClientboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundInterfaceUpdatePacket::encode)
+		.decoder(ClientboundInterfaceUpdatePacket::new)
+		.consumerMainThread(ClientboundInterfaceUpdatePacket::handle)
 		.add();
 		
 		INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)

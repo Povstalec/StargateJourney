@@ -6,9 +6,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.CrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.LiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
@@ -17,14 +15,17 @@ import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.energy_gen.NaquadahGeneratorMarkIEntity;
-import net.povstalec.sgjourney.common.block_entities.energy_gen.NaquadahGeneratorMarkIIEntity;
-import net.povstalec.sgjourney.common.block_entities.energy_gen.ZPMHubEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorMarkIEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorMarkIIEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.ZPMHubEntity;
 public class BlockEntityInit 
 {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, StargateJourney.MODID);
@@ -74,6 +75,8 @@ public class BlockEntityInit
             () -> BlockEntityType.Builder.of(BasicInterfaceEntity::new, BlockInit.BASIC_INTERFACE.get()).build(null));
 	public static final RegistryObject<BlockEntityType<CrystalInterfaceEntity>> CRYSTAL_INTERFACE = BLOCK_ENTITIES.register("crystal_interface",
             () -> BlockEntityType.Builder.of(CrystalInterfaceEntity::new, BlockInit.CRYSTAL_INTERFACE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<AdvancedCrystalInterfaceEntity>> ADVANCED_CRYSTAL_INTERFACE = BLOCK_ENTITIES.register("advanced_crystal_interface",
+            () -> BlockEntityType.Builder.of(AdvancedCrystalInterfaceEntity::new, BlockInit.ADVANCED_CRYSTAL_INTERFACE.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<ZPMHubEntity>> ZPM_HUB = BLOCK_ENTITIES.register("zpm_hub",
             () -> BlockEntityType.Builder.of(ZPMHubEntity::new, BlockInit.ZPM_HUB.get()).build(null));

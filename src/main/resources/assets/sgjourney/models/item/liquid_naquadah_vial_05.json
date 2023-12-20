@@ -1,7 +1,8 @@
 {
-    "parent": "item/generated",
-    "textures": 
+	"parent": "item/generated",
+	"textures": 
 	{
-        "layer0": "sgjourney:item/liquid_naquadah_vial_05"
-    }
+		"layer0": "sgjourney:item/vial",
+		"layer1": "sgjourney:item/liquid_naquadah_vial_05"
+	}
 }

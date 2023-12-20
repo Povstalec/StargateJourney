@@ -229,7 +229,7 @@ public class Connection
 				else
 				{
 					this.dialedStargate.chevronSound(true);
-					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().getLength() + 1, 0, true);
+					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().getLength() + 1, true, 0);
 				}
 			}
 			
@@ -239,8 +239,11 @@ public class Connection
 		// Updates Interfaces when wormhole starts forming
 		if(this.openTime == kawooshStartTicks)
 		{
+			List<Integer> emptyAddress = Arrays.stream(new int[] {}).boxed().toList();
 			List<Integer> dialedAddress = Arrays.stream(dialedStargate.getAddress().toArray()).boxed().toList();
-			dialedStargate.updateInterfaceBlocks(EVENT_INCOMING_WORMHOLE, dialedAddress);
+			dialedStargate.updateBasicInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddress);
+			dialedStargate.updateCrystalInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddress);
+			dialedStargate.updateAdvancedCrystalInterfaceBlocks(EVENT_INCOMING_WORMHOLE, dialedAddress);
 			List<Integer> dialingAddress = Arrays.stream(dialingStargate.getAddress().toArray()).boxed().toList();
 			dialingStargate.updateInterfaceBlocks(EVENT_OUTGOING_WORMHOLE, dialingAddress);
 		}

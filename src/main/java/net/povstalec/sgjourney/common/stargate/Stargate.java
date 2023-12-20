@@ -192,4 +192,20 @@ public class Stargate
 		
 		return majorError ? component.withStyle(ChatFormatting.DARK_RED) : component.withStyle(ChatFormatting.RED);
 	}
+	
+	public static class RGBA
+	{
+		public int red;
+		public int green;
+		public int blue;
+		public int alpha;
+		
+		public RGBA(int red, int green, int blue, int alpha)
+		{
+			this.red = red;
+			this.blue = blue;
+			this.green = green;
+			this.alpha = alpha;
+		}
+	}
 }

@@ -58,13 +58,15 @@
 	"block.sgjourney.zpm_plug": "ZPM Plug",
 	"block.sgjourney.zpm_hub": "ZPM Hub",
 	
-	"fluid_type.sgjourney.liquid_naquadah": "Tekut\u00fd naquadah",
+	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
+	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Vyt\u011b\u017een\u00fd naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadahov\u00e1 slitina",
 	"item.sgjourney.pure_naquadah": "\u010cist\u00fd naquadah",
 	"item.sgjourney.naquadah": "Naquadah vojensk\u00e9 \u00farovn\u011b",
-	"item.sgjourney.liquid_naquadah_bucket": "Kbel\u00edk tekut\u00e9ho naquadahu",
+	"item.sgjourney.liquid_naquadah_bucket": "Kbelík tekutého naquadahu",
+	"item.sgjourney.heavy_liquid_naquadah_bucket": "Kbelík těžkého tekutého naquadahu",
 	"item.sgjourney.vial": "Ampulka",
 	
 	"item.sgjourney.naquadah_rod": "Naquadahov\u00e1 ty\u010d",
