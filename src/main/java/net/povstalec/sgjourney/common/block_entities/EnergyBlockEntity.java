@@ -99,7 +99,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	protected abstract long maxExtract();
 	
-	private final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
+	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
 	{
 		@Override
 		public boolean canExtract()

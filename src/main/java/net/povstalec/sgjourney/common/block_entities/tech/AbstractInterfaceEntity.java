@@ -177,13 +177,10 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		if(energyBlockEntity.getEnergyStored() > energyTarget)
 			return;
 		
-		long storedEnergy = this.getEnergyStored();
-		
-		long energyExtracted = Math.min(storedEnergy, maxExtract());
-		long simulatedReceiveAmount = energyBlockEntity.receiveEnergy(energyExtracted, true);
-
-		this.setEnergy(storedEnergy - energyExtracted);
-		energyBlockEntity.receiveEnergy(simulatedReceiveAmount, false);
+		long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(this.maxExtract(), true);
+		long simulatedReceiveAmount = energyBlockEntity.ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
+		ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
+		energyBlockEntity.ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
 	}
 	
 	public long getEnergyTarget()

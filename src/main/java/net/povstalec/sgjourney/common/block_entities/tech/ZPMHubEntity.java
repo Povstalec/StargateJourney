@@ -188,7 +188,6 @@ public class ZPMHubEntity extends EnergyBlockEntity
 						{
 							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.maxExtract(), true);
 							long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
-							
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
 							sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
 						}
