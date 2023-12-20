@@ -162,7 +162,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	@Override
 	protected boolean outputsEnergy()
 	{
-		return false;
+		return true;
 	}
 	
 	@Override

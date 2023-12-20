@@ -50,7 +50,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	{
 		if(!canExtract())
             return 0;
-
+		
 		long energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
         if(!simulate)
         	energy -= energyExtracted;
