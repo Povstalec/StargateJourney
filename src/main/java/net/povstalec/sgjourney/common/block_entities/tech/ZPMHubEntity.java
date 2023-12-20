@@ -255,7 +255,7 @@ public class ZPMHubEntity extends EnergyBlockEntity
 		
 		hub.outputEnergy(Direction.DOWN);
 
-		ItemStack stack = hub.itemHandler.getStackInSlot(0);
+		//ItemStack stack = hub.itemHandler.getStackInSlot(0);
 		//long energy = ZeroPointModule.isNearingEntropy(stack) ? ZeroPointModule.getEnergyInLevel(stack) : ZeroPointModule.getMaxEnergy();
 		//hub.setEnergy(energy);
 		

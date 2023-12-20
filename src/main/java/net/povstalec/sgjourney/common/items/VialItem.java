@@ -75,7 +75,7 @@ public class VialItem extends Item
 		return fluidStack.getAmount();
 	}
 	
-	public static int getLiquidNaquadahAmount(ItemStack stack)
+	public static int getNaquadahAmount(ItemStack stack)
 	{
 		FluidStack fluidStack = getFluidStack(stack);
 		
@@ -92,11 +92,11 @@ public class VialItem extends Item
 		return fluid.isPresent() ? fluid.get() : FluidStack.EMPTY;
 	}
 	
-	public static void drainLiquidNaquadah(ItemStack stack)
+	public static void drainNaquadah(ItemStack stack, int amount)
 	{
 		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler -> 
 		{
-			fluidHandler.drain(1, FluidAction.EXECUTE);
+			fluidHandler.drain(amount, FluidAction.EXECUTE);
 		});
 	}
 	
@@ -108,11 +108,13 @@ public class VialItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		int fluidAmount = getFluidAmount(stack);
-		
-		MutableComponent liquidNaquadah = Component.translatable(getFluidStack(stack).getTranslationKey()).withStyle(ChatFormatting.GREEN);
-		liquidNaquadah.append(Component.literal(" " + fluidAmount + "mB").withStyle(ChatFormatting.GREEN));
-    	tooltipComponents.add(liquidNaquadah);
+		FluidStack fluidStack = getFluidStack(stack);
+		if(!getFluidStack(stack).equals(FluidStack.EMPTY))
+		{
+			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getTranslationKey()).withStyle(ChatFormatting.GREEN);
+			liquidNaquadah.append(Component.literal(" " + fluidStack.getAmount() + "mB").withStyle(ChatFormatting.GREEN));
+	    	tooltipComponents.add(liquidNaquadah);
+		}
     	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}

@@ -25,15 +25,17 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.EntityInit;
+import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 
@@ -46,6 +48,12 @@ public class StaffWeaponItem extends Item
 
 	private static final float OPEN_ATTACK_SPEED = -2.4F;
 	private static final float CLOSED_ATTACK_SPEED = -2.8F;
+	
+	private static final float LIQUID_NAQUADAH_EXPLOSION_POWER = 0;
+	private static final float HEAVY_LIQUID_NAQUADAH_EXPLOSION_POWER = 1;
+
+	private static final int LIQUID_NAQUADAH_DEPLETION = 1;
+	private static final int HEAVY_LIQUID_NAQUADAH_DEPLETION = 5;
 	
 	private final Multimap<Attribute, AttributeModifier> openModifiers;
 	private final Multimap<Attribute, AttributeModifier> closedModifiers;
@@ -74,13 +82,13 @@ public class StaffWeaponItem extends Item
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getLiquidNaquadahAmount(stack) / VialItem.getMaxCapacity());
+		return Math.round(13.0F * (float) getNaquadahAmount(stack) / VialItem.getMaxCapacity());
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getLiquidNaquadahAmount(stack) / VialItem.getMaxCapacity());
+		float f = Math.max(0.0F, (float) getNaquadahAmount(stack) / VialItem.getMaxCapacity());
 		
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
@@ -114,6 +122,7 @@ public class StaffWeaponItem extends Item
 			ItemStack mainHandStack = player.getItemInHand(InteractionHand.MAIN_HAND);
 			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
 			
+			// Reloading
 			if(offHandStack.is(ItemInit.MATOK.get()) && !level.isClientSide())
 			{
 				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
@@ -128,24 +137,33 @@ public class StaffWeaponItem extends Item
 				});
 				
 			}
+			// Opening and closing
 			else if(mainHandStack.is(ItemInit.MATOK.get()))
 			{
 				setOpen(level, player, mainHandStack, !isOpen(mainHandStack));
 				player.getCooldowns().addCooldown(this, 15);
 			}
 		}
-		else if(!player.isShiftKeyDown() && canShoot(player, player.getItemInHand(hand)))
+		// Shooting
+		else if(!player.isShiftKeyDown()/* && canShoot(player, player.getItemInHand(hand))*/)
 		{
 			ItemStack stack = player.getItemInHand(hand);
 			
 			if(isOpen(stack))
 			{
+				boolean canShoot = player.isCreative() ?
+						true : depleteLiquidNaquadah(player.getItemInHand(hand));
+				
+				if(!canShoot)
+					return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+				
 				level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 				if(!level.isClientSide())
 				{
-					if(!player.isCreative())
-						depleteLiquidNaquadah(player.getItemInHand(hand));
-					PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level);
+					// If the player is in Creative and it's empty, the explosions will be the same size as if it was filled with Liquid Naquadah
+					float explosionPower = getFluidStack(itemstack).getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get() ?
+							HEAVY_LIQUID_NAQUADAH_EXPLOSION_POWER : LIQUID_NAQUADAH_EXPLOSION_POWER;
+					PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level, explosionPower);
 					plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
 					level.addFreshEntity(plasmaProjectile);
 				}
@@ -176,47 +194,78 @@ public class StaffWeaponItem extends Item
 		return !player.isCreative();
 	}
 	
-	public int getLiquidNaquadahAmount(ItemStack stack)
+	public FluidStack getFluidStack(ItemStack staffWeaponItemStack)
 	{
-		Optional<Integer> optional = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
+		Optional<FluidStack> optional = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
 		{
 			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
 			if(inventoryStack.is(ItemInit.VIAL.get()))
-				return VialItem.getLiquidNaquadahAmount(inventoryStack);
+				return VialItem.getFluidStack(inventoryStack);
 			else
-				return 0;
+				return FluidStack.EMPTY;
 		});
-		return optional.isPresent() ? optional.get() : 0;
+		
+		if(optional.isPresent())
+			return optional.get();
+		
+		return FluidStack.EMPTY;
 	}
 	
-	public void depleteLiquidNaquadah(ItemStack stack)
+	public boolean isCorrectFluid(FluidStack fluidStack)
 	{
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler -> 
+		Fluid fluid = fluidStack.getFluid();
+		
+		return fluid == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
+				fluid == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+	}
+	
+	public int getNaquadahAmount(ItemStack staffWeaponItemStack)
+	{
+		FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
+		
+		if(isCorrectFluid(fluidStack))
+			return fluidStack.getAmount();
+		
+		return 0;
+	}
+	
+	/**
+	 * Returns true if it depletes naquadah, otherwise false
+	 * @param stack
+	 * @return
+	 */
+	public boolean depleteLiquidNaquadah(ItemStack staffWeaponItemStack)
+	{
+		Optional<Boolean> drained = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
 		{
 			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
 			if(inventoryStack.is(ItemInit.VIAL.get()))
 			{
-				if(VialItem.getLiquidNaquadahAmount(inventoryStack) > 0)
-					VialItem.drainLiquidNaquadah(inventoryStack);
-				else
+				FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
+				
+				if(!isCorrectFluid(fluidStack))
+					return false;
+				
+				int drainAmount = fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ?
+						LIQUID_NAQUADAH_DEPLETION : HEAVY_LIQUID_NAQUADAH_DEPLETION;
+				
+				if(getNaquadahAmount(staffWeaponItemStack) >= drainAmount)
 				{
-					itemHandler.extractItem(0, 1, false);
-					itemHandler.insertItem(0, new ItemStack(Items.GLASS_BOTTLE), false);
+					VialItem.drainNaquadah(inventoryStack, drainAmount);
+					return true;
 				}
-					
 			}
+			
+			return false;
 		});
+		
+		return drained.isPresent() ? drained.get() : false;
 	}
 	
-	public boolean hasLiquidNaquadah(ItemStack stack)
+	/*public boolean canShoot(Player player, ItemStack stack)
 	{
-		return getLiquidNaquadahAmount(stack) > 0;
-	}
-	
-	public boolean canShoot(Player player, ItemStack stack)
-	{
-		return player.isCreative() ? true : hasLiquidNaquadah(stack);
-	}
+		return player.isCreative() ? true : getNaquadahAmount(stack) > 0;
+	}*/
 	
 	public static boolean isOpen(ItemStack stack)
 	{
@@ -260,15 +309,18 @@ public class StaffWeaponItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		int fluidAmount = getLiquidNaquadahAmount(stack);
 		MutableComponent isOpen = isOpen(stack) ? 
 				Component.translatable("tooltip.sgjourney.matok.open").withStyle(ChatFormatting.YELLOW) :
 					Component.translatable("tooltip.sgjourney.matok.closed").withStyle(ChatFormatting.YELLOW);
 		tooltipComponents.add(isOpen);
 		
-		MutableComponent liquidNaquadah = Component.translatable("fluid_type.sgjourney.liquid_naquadah").withStyle(ChatFormatting.GREEN);
-		liquidNaquadah.append(Component.literal(" " + fluidAmount + "mB").withStyle(ChatFormatting.GREEN));
-    	tooltipComponents.add(liquidNaquadah);
+		FluidStack fluidStack = getFluidStack(stack);
+		if(!getFluidStack(stack).equals(FluidStack.EMPTY))
+		{
+			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getTranslationKey()).withStyle(ChatFormatting.GREEN);
+			liquidNaquadah.append(Component.literal(" " + fluidStack.getAmount() + "mB").withStyle(ChatFormatting.GREEN));
+	    	tooltipComponents.add(liquidNaquadah);
+		}
     	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
