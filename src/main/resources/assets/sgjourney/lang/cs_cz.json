@@ -88,7 +88,8 @@
 	"item.sgjourney.advanced_communication_crystal": "Pokro\u010dil\u00fd komunika\u010dn\u00ed krystal",
 	"item.sgjourney.advanced_memory_crystal": "Pokro\u010dil\u00fd pam\u011b\u0165ov\u00fd krystal",
 	
-	"item.sgjourney.pegasus_upgrade_crystal": "Atlanťanský upgradovací krystal",
+	"item.sgjourney.stargate_upgrade_crystal": "Krystal pro upgradování hvězdné brány",
+	"item.sgjourney.stargate_variant_crystal": "Krystal varianty hvězdné brány",
 	
 	"item.sgjourney.naquadah_sword": "Naquadahov\u00fd me\u010d",
 	"item.sgjourney.naquadah_pickaxe": "Naquadahov\u00fd krump\u00e1\u010d",
@@ -240,6 +241,7 @@
 	"tooltip.sgjourney.mode": "Mód",
 	"tooltip.sgjourney.upgraded": "Upgradováno",
 	"tooltip.sgjourney.variant": "Varianta",
+	"tooltip.sgjourney.stargate_type": "Typ brány",
 	
 	"tooltip.sgjourney.has_control_crystal": "M\u00e1 ovl\u00e1dac\u00ed krystal",
 	"tooltip.sgjourney.not_added_to_network": "Nebude p\u0159id\u00e1no to s\u00edt\u011b",

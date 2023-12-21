@@ -1,27 +1,20 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 
-import java.util.HashMap;
-
-import javax.annotation.Nonnull;
-
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethod;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
-public class StargatePeripheral extends InterfacePeripheral implements IDynamicPeripheral
+public class StargatePeripheral extends InterfacePeripheral
 {
 	protected AbstractStargateEntity stargate;
-	private HashMap<String, InterfaceMethod<AbstractStargateEntity>> methods = new HashMap<String,InterfaceMethod<AbstractStargateEntity>>();
 	
 	public StargatePeripheral(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate)
 	{
@@ -31,31 +24,13 @@ public class StargatePeripheral extends InterfacePeripheral implements IDynamicP
 		stargate.registerInterfaceMethods(new StargatePeripheralWrapper(this, interfaceEntity.getInterfaceType()));
 	}
 
-    @Override
-    public void attach(@Nonnull IComputerAccess computer)
-    {
-    	interfaceEntity.getPeripheralWrapper().computerList.add(computer);
-    }
-
-    @Override
-    public void detach(@Nonnull IComputerAccess computer)
-    {
-    	interfaceEntity.getPeripheralWrapper().computerList.removeIf(computerAccess -> (computerAccess.getID() == computer.getID()));
-    }
-
-	@Override
-	public String[] getMethodNames()
-	{
-		return methods.keySet().toArray(new String[0]);
-	}
-
 	@Override
 	public MethodResult callMethod(IComputerAccess computer, ILuaContext context, int method, IArguments arguments)
 			throws LuaException
 	{
 		String methodName = getMethodNames()[method];
 		
-		return methods.get(methodName).use(computer, context, this.stargate, arguments);
+		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.stargate, arguments);
 	}
 	
 	//============================================================================================
@@ -131,11 +106,5 @@ public class StargatePeripheral extends InterfacePeripheral implements IDynamicP
 		});
 		
 		return result;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <StargateEntity extends AbstractStargateEntity> void registerStargateMethod(InterfaceMethod<StargateEntity> function)
-	{
-		methods.put(function.getName(), (InterfaceMethod<AbstractStargateEntity>) function);
 	}
 }

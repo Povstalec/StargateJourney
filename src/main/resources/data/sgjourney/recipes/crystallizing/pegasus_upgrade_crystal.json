@@ -2,21 +2,13 @@
 	"type": "sgjourney:crystallizing",
 	"crystal_base": {"item": "sgjourney:crystal_base", "amount": 1},
 	"primary_ingredient": {"item": "sgjourney:naquadah", "amount": 16},
-	"secondary_ingredient": {"item": "minecraft:lapis_lazuli", "amount": 19},
+	"secondary_ingredient": {"item": "minecraft:lapis_lazuli", "amount": 9},
 	"output":
 	{
 		"item": "sgjourney:stargate_upgrade_crystal",
 		"nbt":
 		{
-			"Type":"sgjourney:pegasus_stargate",
-			"display":
-			{
-				"Name":
-				{
-					"translate":"item.sgjourney.pegasus_upgrade_crystal",
-					"italic":false
-				}
-			}
+			"Type":"sgjourney:pegasus_stargate"
 		}
 	}
 }

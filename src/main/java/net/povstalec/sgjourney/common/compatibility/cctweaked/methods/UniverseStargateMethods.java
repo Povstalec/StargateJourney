@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 
 public class UniverseStargateMethods
 {
@@ -18,7 +19,7 @@ public class UniverseStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, UniverseStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, UniverseStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
 			

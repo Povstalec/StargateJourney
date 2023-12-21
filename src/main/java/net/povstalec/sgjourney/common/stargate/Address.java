@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.stargate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -37,6 +38,11 @@ public class Address
 		fromString(addressString);
 	}
 	
+	public Address(Map<Double, Double> addressTable)
+	{
+		fromTable(addressTable);
+	}
+	
 	public Address addSymbol(int symbol)
 	{
 		if(symbol < 0)
@@ -64,6 +70,21 @@ public class Address
 	public Address fromString(String addressString)
 	{
 		int[] addressArray = addressStringToIntArray(addressString);
+		
+		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+			this.addressArray = addressArray;
+		
+		return this;
+	}
+	
+	public Address fromTable(Map<Double, Double> addressTable)
+	{
+		int[] addressArray = new int[addressTable.size()];
+		
+		for(int i = 0; i < addressArray.length; i++)
+		{
+			addressArray[i] = (int) Math.floor(addressTable.get((double) (i + 1)));
+		}
 		
 		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
 			this.addressArray = addressArray;

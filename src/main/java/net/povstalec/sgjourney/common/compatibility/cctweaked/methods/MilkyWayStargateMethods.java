@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 
 public class MilkyWayStargateMethods
 {
@@ -18,7 +19,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			return MethodResult.of(stargate.getCurrentSymbol());
 		}
@@ -33,7 +34,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			int symbol = arguments.getInt(0);
 			
@@ -50,7 +51,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			return MethodResult.of(stargate.getRotation());
 		}
@@ -65,7 +66,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
@@ -93,7 +94,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
@@ -121,7 +122,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			context.executeMainThreadTask(() ->
 			{
@@ -142,7 +143,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
@@ -162,7 +163,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
@@ -184,7 +185,7 @@ public class MilkyWayStargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
 			

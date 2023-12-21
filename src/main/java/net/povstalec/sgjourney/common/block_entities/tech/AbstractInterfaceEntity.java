@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -26,12 +27,15 @@ import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 
 public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 {
+	public static final String ENERGY_TARGET = "EnergyTarget";
+	private static final long DEFAULT_ENERGY_TARGET = 200000;
+	
 	private int desiredSymbol = 0;
 	private int currentSymbol = 0;
 	private boolean rotate = false;
 	private boolean rotateClockwise = true;
 	
-	private long energyTarget = 200000;
+	private long energyTarget = DEFAULT_ENERGY_TARGET;
 	
 	public EnergyBlockEntity energyBlockEntity = null;
 	protected InterfacePeripheralWrapper peripheralWrapper;
@@ -87,6 +91,20 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			ccInterface.updateInterface(state, level, pos);
 		
 		super.onLoad();
+	}
+	
+	@Override
+	public void load(CompoundTag tag)
+	{
+		super.load(tag);
+		energyTarget = tag.getLong(ENERGY_TARGET);
+	}
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag)
+	{
+		tag.putLong(ENERGY_TARGET, energyTarget);
+		super.saveAdditional(tag);
 	}
 	
 	//============================================================================================
@@ -174,7 +192,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	@Override
 	protected void outputEnergy(Direction outputDirection)
 	{
-		if(energyBlockEntity.getEnergyStored() > energyTarget)
+		if(energyBlockEntity.getEnergyStored() >= energyTarget)
 			return;
 		
 		long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(this.maxExtract(), true);

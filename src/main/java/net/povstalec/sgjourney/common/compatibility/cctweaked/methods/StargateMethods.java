@@ -9,6 +9,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class StargateMethods
@@ -22,7 +23,7 @@ public class StargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
@@ -41,11 +42,11 @@ public class StargateMethods
 		@Override
 		public String getName()
 		{
-			return "getAddress";
+			return "getDialedAddress";
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
@@ -64,11 +65,11 @@ public class StargateMethods
 		@Override
 		public String getName()
 		{
-			return "getAddress";
+			return "getConnectedAddress";
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
@@ -89,7 +90,7 @@ public class StargateMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{

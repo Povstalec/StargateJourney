@@ -88,7 +88,8 @@
 	"item.sgjourney.advanced_communication_crystal": "Advanced Communication Crystal",
 	"item.sgjourney.advanced_memory_crystal": "Advanced Memory Crystal",
 	
-	"item.sgjourney.pegasus_upgrade_crystal": "Pegasus Upgrade Crystal",
+	"item.sgjourney.stargate_upgrade_crystal": "Stargate Upgrade Crystal",
+	"item.sgjourney.stargate_variant_crystal": "Stargate Variant Crystal",
 	
 	"item.sgjourney.naquadah_sword": "Naquadah Sword",
 	"item.sgjourney.naquadah_pickaxe": "Naquadah Pickaxe",
@@ -239,6 +240,7 @@
 	"tooltip.sgjourney.mode": "Mode",
 	"tooltip.sgjourney.upgraded": "Upgraded",
 	"tooltip.sgjourney.variant": "Variant",
+	"tooltip.sgjourney.stargate_type": "Stargate Type",
 	
 	"tooltip.sgjourney.has_control_crystal": "Has Control Crystal",
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",

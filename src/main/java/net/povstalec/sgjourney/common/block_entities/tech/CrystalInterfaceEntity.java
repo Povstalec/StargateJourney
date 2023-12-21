@@ -39,16 +39,4 @@ public class CrystalInterfaceEntity extends AbstractInterfaceEntity
 	{
 		return CommonInterfaceConfig.crystal_interface_max_transfer.get();
 	}
-	
-	//============================================================================================
-	//*****************************************CC: Tweaked****************************************
-	//============================================================================================
-	
-	/*public String getLocalAddress()
-	{
-		String dimension = this.level.dimension().location().toString();
-		String galaxy = Universe.get(this.level).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys().iterator().next();
-		//TODO What if the Dimension is not located inside a Galaxy
-		return Universe.get(this.level).getAddressInGalaxyFromDimension(galaxy, dimension);
-	}*/
 }
