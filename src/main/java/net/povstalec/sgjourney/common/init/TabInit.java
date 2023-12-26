@@ -78,6 +78,7 @@ public class TabInit
 				items.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
 
 				items.accept(ItemInit.CRYSTAL_BASE.get());
+				items.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
 				
 				items.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.CONTROL_CRYSTAL.get());
@@ -101,11 +102,13 @@ public class TabInit
 					items.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
 					items.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
 					items.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
-
+				}
+				if(CommonStargateConfig.enable_stargate_variants.get())
+				{
 					items.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
-					items.accept(StargateVariantItem.stargateVariant("sgjourney:movie_stargate"));
-					items.accept(StargateVariantItem.stargateVariant("sgjourney:sg-1_stargate"));
-					
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_movie"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_sg-1"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:classic_milky_way"));
 				}
 			});
 		});
@@ -118,10 +121,8 @@ public class TabInit
 			{
 				items.accept(BlockInit.UNIVERSE_STARGATE.get());
 				items.accept(BlockInit.MILKY_WAY_STARGATE.get());
-				//items.accept(BlockInit.MILKY_WAY_DHD.get());
 				items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
 				items.accept(BlockInit.PEGASUS_STARGATE.get());
-				//items.accept(BlockInit.PEGASUS_DHD.get());
 				items.accept(PegasusDHDBlock.pegasusCrystalSetup());
 				items.accept(BlockInit.CLASSIC_STARGATE.get());
 				items.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
@@ -159,8 +160,11 @@ public class TabInit
 				
 				items.accept(BlockInit.FIRE_PIT.get());
 
-				items.accept(BlockInit.LIQUIDIZER.get());
+				items.accept(BlockInit.NAQUADAH_LIQUIDIZER.get());
+				items.accept(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
+				
 				items.accept(BlockInit.CRYSTALLIZER.get());
+				items.accept(BlockInit.ADVANCED_CRYSTALLIZER.get());
 
 				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
 				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());

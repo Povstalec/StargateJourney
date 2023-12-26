@@ -86,7 +86,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		BlockPos baseBlockPos = part.getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
 		
 		if(level.getBlockState(baseBlockPos).getBlock() instanceof AbstractStargateBaseBlock baseBlock)
-			return baseBlock.setVariant(level, baseBlockPos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+			return baseBlock.use(state, level, baseBlockPos, player, hand, result);
 		
 		return InteractionResult.FAIL;
 	}

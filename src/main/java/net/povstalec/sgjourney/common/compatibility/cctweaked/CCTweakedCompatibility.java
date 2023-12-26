@@ -24,6 +24,10 @@ public class CCTweakedCompatibility
 		{
 			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
 			peripheral.registerMethod(new StargateMethods.LocalAddress());
+			peripheral.registerMethod(new StargateMethods.GetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
+			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 		}
 	}
 	
@@ -54,6 +58,10 @@ public class CCTweakedCompatibility
 		{
 			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
 			peripheral.registerMethod(new StargateMethods.LocalAddress());
+			peripheral.registerMethod(new StargateMethods.GetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
+			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 		}
 	}
 	
@@ -73,10 +81,14 @@ public class CCTweakedCompatibility
 		{
 			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
 			peripheral.registerMethod(new StargateMethods.LocalAddress());
+			peripheral.registerMethod(new StargateMethods.GetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
 			
 			peripheral.registerMethod(new PegasusStargateMethods.DynamicSymbols());
 			peripheral.registerMethod(new PegasusStargateMethods.OverrideSymbols());
 			peripheral.registerMethod(new PegasusStargateMethods.OverridePointOfOrigin());
+			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 		}
 	}
 	
@@ -96,6 +108,10 @@ public class CCTweakedCompatibility
 		{
 			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
 			peripheral.registerMethod(new StargateMethods.LocalAddress());
+			peripheral.registerMethod(new StargateMethods.GetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
+			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 		}
 	}
 	
@@ -115,6 +131,10 @@ public class CCTweakedCompatibility
 		{
 			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
 			peripheral.registerMethod(new StargateMethods.LocalAddress());
+			peripheral.registerMethod(new StargateMethods.GetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetNetwork());
+			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
+			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 		}
 	}
 }

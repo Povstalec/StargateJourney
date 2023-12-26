@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 
 public class StargateMethods
 {
+	// Crystal Interface
 	public static class EngageSymbol implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -59,7 +60,8 @@ public class StargateMethods
 			return result;
 		}
 	}
-	
+
+	// Advanced Crystal Interface
 	public static class ConnectedAddress implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -96,6 +98,90 @@ public class StargateMethods
 			{
 				List<Integer> dialedAddress = Arrays.stream(new Address(stargate.getID()).toArray()).boxed().toList();
 				return new Object[] {dialedAddress};
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class GetNetwork implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getNetwork";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {stargate.getNetwork()};
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class SetNetwork implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "setNetwork";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			context.executeMainThreadTask(() ->
+			{
+				int network = arguments.getInt(0);
+				stargate.setNetwork(network);
+				return null;
+			});
+			
+			return MethodResult.of();
+		}
+	}
+	
+	public static class SetRestrictNetwork implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "setRestrictNetwork";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			context.executeMainThreadTask(() ->
+			{
+				boolean restrictNetwork = arguments.getBoolean(0);
+				stargate.setRestrictNetwork(restrictNetwork);
+				return null;
+			});
+			
+			return MethodResult.of();
+		}
+	}
+	
+	public static class GetRestrictNetwork implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getRestrictNetwork";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {stargate.getRestrictNetwork()};
 			});
 			
 			return result;

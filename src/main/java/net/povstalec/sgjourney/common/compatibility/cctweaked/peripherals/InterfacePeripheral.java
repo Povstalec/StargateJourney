@@ -28,10 +28,10 @@ public class InterfacePeripheral implements IPeripheral, IDynamicPeripheral
 		
 		this.registerMethod(new InterfaceMethods.SetEnergyTarget());
 		
-		if(this.interfaceEntity.getInterfaceType().hasCrystalMethods())
+		/*if(this.interfaceEntity.getInterfaceType().hasCrystalMethods())
 		{
-			this.registerMethod(new InterfaceMethods.AddressToDimension());
-		}
+			this.registerMethod(new InterfaceMethods.AddressToDimension());//TODO Move this to its own block
+		}*/
 		
 		/*if(this.interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods())
 		{

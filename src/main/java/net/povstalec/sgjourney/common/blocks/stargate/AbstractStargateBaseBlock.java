@@ -33,6 +33,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -67,6 +68,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				if(blockEntity instanceof AbstractStargateEntity stargate)
 				{
 					stargate.setVariant(variant.get());
+					System.out.println("Setting Variant");
 					
 					if(!player.isCreative())
 						stack.shrink(1);
@@ -87,7 +89,10 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
-		return setVariant(level, pos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+		if(player.getItemInHand(hand).is(ItemInit.STARGATE_VARIANT_CRYSTAL.get()))
+			return setVariant(level, pos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+		
+		return super.use(state, level, pos, player, hand, result);
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public abstract class AbstractStargateRenderer
 			{
 				StargateVariant variant = variantOptional.get();
 				if(model.canUseVariant(variant))
-					rgba = variant.getRGBA();
+					rgba = variant.getEventHorizonRGBA();
 			}
 		}
 		

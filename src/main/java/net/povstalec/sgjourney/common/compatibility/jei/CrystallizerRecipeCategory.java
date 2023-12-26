@@ -1,11 +1,8 @@
 package net.povstalec.sgjourney.common.compatibility.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -21,7 +18,7 @@ import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 public class CrystallizerRecipeCategory implements IRecipeCategory<CrystallizerRecipe>
 {
 	public static final ResourceLocation RECIPE_ID = new ResourceLocation(StargateJourney.MODID, "crystallizing");
-	public static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/crystallizer_gui.png");
+	public static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/crystallizer_gui.png");
 	
 	public static final RecipeType<CrystallizerRecipe> CRYSTALLIZING_TYPE = new RecipeType<>(RECIPE_ID, CrystallizerRecipe.class);
 	
@@ -74,15 +71,5 @@ public class CrystallizerRecipeCategory implements IRecipeCategory<CrystallizerR
 		builder.addSlot(RecipeIngredientRole.INPUT, 93, 50).addItemStack(stack3);
 		
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 130, 36).addItemStack(recipe.getResultItem());
-	}
-	
-	@Override
-	public void draw(CrystallizerRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY)
-	{
-		stack.pushPose();
-		
-		
-		
-		stack.popPose();
 	}
 }

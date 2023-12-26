@@ -1,13 +1,7 @@
 {
 	"values":
 	[
-		"sgjourney:stargate/milky_way/pedestal/stargate_pedestal",
-		"sgjourney:stargate/milky_way/pedestal/stargate_pedestal_badlands",
-		"sgjourney:stargate/milky_way/pedestal/stargate_pedestal_desert",
-		"sgjourney:stargate/milky_way/pedestal/stargate_pedestal_jungle",
-		"sgjourney:stargate/milky_way/pedestal/stargate_pedestal_mushroom",
-		"sgjourney:stargate/milky_way/pedestal/stargate_pedestal_snow",
-		
-		"sgjourney:stargate/milky_way/pedestal/stargate_pedestal_chulak"
+		"#sgjourney:milky_way_stargate_pedestal",
+		"#sgjourney:classic_stargate_pedestal"
 	]
 }

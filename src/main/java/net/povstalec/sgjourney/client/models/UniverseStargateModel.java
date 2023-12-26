@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.client.models;
 
+import java.util.Optional;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -14,6 +16,8 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public class UniverseStargateModel extends AbstractStargateModel<UniverseStargateEntity>
 {
@@ -81,16 +85,38 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	public UniverseStargateModel()
 	{
 		super(new ResourceLocation(StargateJourney.MODID, "universe"));
+		
+		this.symbolColor = new Stargate.RGBA(21, 9, 0, 255);
+		this.engagedSymbolColor = new Stargate.RGBA(200, 220, 255, 255);
 	}
 	
 	protected boolean useAlternateModel(UniverseStargateEntity stargate)
 	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && variant.get().useAlternateModel().isPresent())
+			return variant.get().useAlternateModel().get();
+		
 		return ClientStargateConfig.universe_front_rotates.get();
 	}
 	
 	public float getRotation(boolean shouldRotate)
 	{
 		return shouldRotate ? this.rotation : 0;
+	}
+	
+	@Override
+	protected Stargate.RGBA getSymbolColor(UniverseStargateEntity stargate, boolean isEngaged)
+	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+		{
+			if(!isEngaged && variant.get().getSymbolRGBA().isPresent())
+				return variant.get().getSymbolRGBA().get();
+			else if(isEngaged && variant.get().getEngagedSymbolRGBA().isPresent())
+				return variant.get().getEngagedSymbolRGBA().get();
+		}
+		
+		return isEngaged ? this.engagedSymbolColor : this.symbolColor;
 	}
 	
 	@Override
@@ -319,26 +345,24 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		// Symbols
 		for(int i = 0; i < SYMBOLS; i++)
 		{
-			//TODO Allow changing color
-			renderSymbol(stargate, stack, consumer, source, combinedLight, i, i, rotation, 21F/255F, 9F/255F, 0F/255F);
+			renderSymbol(stargate, stack, consumer, source, combinedLight, i, i, rotation, getSymbolColor(stargate, false));
 		}
 		
 		// Engaged Symbols
 		for(int i = 0; i < stargate.getAddress().getLength(); i++)
 		{
-			//TODO Allow changing color
 			int symbol = stargate.getAddress().toArray()[i];
-			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbol, symbol, rotation, 200F/255F, 220F/255F, 255F/255F);
+			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbol, symbol, rotation, getSymbolColor(stargate, true));
 		}
 		
 		// Point of Origin when Stargate is connected
 		if(stargate.isConnected())
-			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, rotation, 200F/255F, 220F/255F, 255F/255F);
+			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, rotation, getSymbolColor(stargate, true));
 	}
 	
 	protected void renderSymbol(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,MultiBufferSource source, int combinedLight, 
 		int symbolNumber, int symbolRendered, float rotation,
-		float symbolR, float symbolG, float symbolB)
+		Stargate.RGBA symbolColor)
 	{
 		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, symbolRendered)));
 		
@@ -350,7 +374,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		Matrix3f matrix3 = stack.last().normal();
 		
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
-				symbolR, symbolG, symbolB, 1.0F, 
+				symbolColor.getRed(), symbolColor.getGreen(), symbolColor.getBlue(), symbolColor.getAlpha(), 
 				-STARGATE_SYMBOL_RING_OUTER_CENTER,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 				SYMBOL_OFFSET,

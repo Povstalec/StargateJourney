@@ -52,11 +52,17 @@
 	"block.sgjourney.basic_interface": "Basic Interface",
 	"block.sgjourney.crystal_interface": "Crystal Interface",
 	"block.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
+
+	"block.sgjourney.crystallizer": "Crystalizer",
+	"block.sgjourney.advanced_crystallizer": "Advanced Crystalizer",
+	"block.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
+	"block.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 	
 	"block.sgjourney.ancient_gene_detector": "Ancient Gene Detector",
 	
-	"block.sgjourney.zpm_plug": "ZPM Plug",
 	"block.sgjourney.zpm_hub": "ZPM Hub",
+	"block.sgjourney.zpm_port": "ZPM Port",
+	"block.sgjourney.zpm_plug": "ZPM Plug",
 	
 	"fluid_type.sgjourney.liquid_naquadah": "Liquid Naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Heavy Liquid Naquadah",
@@ -74,17 +80,20 @@
 	"item.sgjourney.plasma_converter": "Plasma Converter",
 
 	"item.sgjourney.crystal_base": "Crystal Base",
+	"item.sgjourney.advanced_crystal_base": "Advanced Crystal Base",
 
 	"item.sgjourney.control_crystal": "Control Crystal",
 	"item.sgjourney.large_control_crystal": "Large Control Crystal",
 	"item.sgjourney.materialization_crystal": "Materialization Crystal",
 	"item.sgjourney.energy_crystal": "Energy Crystal",
+	"item.sgjourney.transfer_crystal": "Transfer Crystal",
 	"item.sgjourney.communication_crystal": "Communication Crystal",
 	"item.sgjourney.memory_crystal": "Memory Crystal",
 
 	"item.sgjourney.advanced_control_crystal": "Advanced Control Crystal",
 	"item.sgjourney.advanced_materialization_crystal": "Advanced Materialization Crystal",
 	"item.sgjourney.advanced_energy_crystal": "Advanced Energy Crystal",
+	"item.sgjourney.advanced_transfer_crystal": "Advanced Transfer Crystal",
 	"item.sgjourney.advanced_communication_crystal": "Advanced Communication Crystal",
 	"item.sgjourney.advanced_memory_crystal": "Advanced Memory Crystal",
 	
@@ -155,10 +164,19 @@
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",
 	"screen.sgjourney.crystal_interface": "Crystal Interface",
+	"screen.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
 	"screen.sgjourney.transport_rings": "Transport Rings",
 	"screen.sgjourney.naquadah_generator": "Naquadah Generator",
 	"screen.sgjourney.dhd": "Dial Home Device",
+
 	"screen.sgjourney.zpm_hub": "ZPM Hub",
+	"screen.sgjourney.zpm_port": "ZPM Port",
+	"screen.sgjourney.zpm_plug": "ZPM Plug",
+
+	"screen.sgjourney.crystallizer": "Crystallizer",
+	"screen.sgjourney.advanced_crystallizer": "Advanced Crystallizer",
+	"screen.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
+	"screen.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
 	"biome.sgjourney.abydos_spires": "Abydos Spires",

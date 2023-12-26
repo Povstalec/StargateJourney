@@ -3,16 +3,15 @@
 	"category": "misc",
 	"pattern":
 	[
-		"CCC",
+		"AAA",
 		"NNN",
-		"SSS"
+		"AAA"
 	],
 	
 	"key": 
 	{
-		"N": { "item": "sgjourney:naquadah_alloy" },
-		"S": { "item": "minecraft:cut_sandstone" },
-		"C": { "item": "minecraft:chiseled_sandstone" }
+		"N": { "item": "sgjourney:naquadah" },
+		"A": { "item": "sgjourney:naquadah_alloy" }
 		
 	},
 	

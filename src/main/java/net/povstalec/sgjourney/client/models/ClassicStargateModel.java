@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity>
 {
@@ -75,12 +76,12 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	
 	protected static final float SPINNY_RING_HEIGHT = SPINNY_RING_OUTER_RADIUS - SPINNY_RING_INNER_RADIUS;
 	
-	
 	private float rotation = 0F;
 	
 	public ClassicStargateModel()
 	{
 		super(new ResourceLocation(StargateJourney.MODID, "classic"));
+		this.symbolColor = new Stargate.RGBA(0, 109, 121, 255);
 	}
 	
 	@Override
@@ -281,9 +282,10 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 			stack.mulPose(Axis.ZP.rotationDegrees(j * -ANGLE + rotation));
 			matrix4 = stack.last().pose();
 			matrix3 = stack.last().normal();
+			Stargate.RGBA symbolColor = getSymbolColor(stargate, false);
 			VertexConsumer symbolConsumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, j)));
 			SGJourneyModel.createQuad(symbolConsumer, matrix4, matrix3, combinedLight, 0, 0, 1,
-					0.0F/255.0F, 109.0F/255.0F, 121.0F/255.0F, 1.0F, 
+					symbolColor.getRed(), symbolColor.getGreen(), symbolColor.getBlue(), symbolColor.getAlpha(), 
 					-SPINNY_RING_OUTER_CENTER,
 					SPINNY_RING_INNER_RADIUS + 8.5F/16,
 					SYMBOL_OFFSET,

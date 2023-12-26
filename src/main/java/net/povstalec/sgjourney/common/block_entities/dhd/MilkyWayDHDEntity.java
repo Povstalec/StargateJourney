@@ -15,6 +15,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
@@ -42,6 +43,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	{
 		super.load(nbt);
 		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		addTransferCrystals(itemHandler);
 	}
 	
 	@Override
@@ -176,5 +178,28 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	public int getMaxDistance()
 	{
 		return this.communicationCrystals.length * ItemInit.COMMUNICATION_CRYSTAL.get().getMaxDistance() + 16;
+	}
+	
+	
+	
+
+	// TODO Temporary function for replacing old Energy Crystals with new Transfer Crystals
+	public static void addTransferCrystals(ItemStackHandler itemHandler)
+	{
+		int slots = itemHandler.getSlots();
+		
+		for(int i = 0; i < slots; i++)
+		{
+			ItemStack stack = itemHandler.getStackInSlot(i);
+			
+			if(stack.is(ItemInit.ENERGY_CRYSTAL.get()) && stack.hasTag())
+			{
+				if(stack.getTag().getString(CRYSTAL_MODE).equals(ENERGY_TRANSFER))
+				{
+					itemHandler.setStackInSlot(i, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
+					StargateJourney.LOGGER.info("Replaced Transfer Crystal");
+				}
+			}
+		}
 	}
 }

@@ -10,12 +10,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
-import net.povstalec.sgjourney.common.menu.CrystalInterfaceMenu;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
+import net.povstalec.sgjourney.common.menu.NaquadahLiquidizerMenu;
 import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 import net.povstalec.sgjourney.common.menu.ZPMHubMenu;
@@ -26,9 +26,6 @@ public class MenuInit
 
 	public static final RegistryObject<MenuType<InterfaceMenu>> INTERFACE =
             registerMenuType(InterfaceMenu::new, "interface");
-
-	public static final RegistryObject<MenuType<CrystalInterfaceMenu>> CRYSTAL_INTERFACE =
-            registerMenuType(CrystalInterfaceMenu::new, "crystal_interface");
 	
 	public static final RegistryObject<MenuType<RingPanelMenu>> RING_PANEL =
             registerMenuType(RingPanelMenu::new, "ring_panel");
@@ -53,6 +50,9 @@ public class MenuInit
 	
 	public static final RegistryObject<MenuType<CrystallizerMenu>> CRYSTALLIZER =
             registerMenuType(CrystallizerMenu::new, "crystallizer");
+	
+	public static final RegistryObject<MenuType<NaquadahLiquidizerMenu>> NAQUADAH_LIQUIDIZER =
+            registerMenuType(NaquadahLiquidizerMenu::new, "naquadah_liquidizer");
 
 
 

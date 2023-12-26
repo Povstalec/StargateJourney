@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.CrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
@@ -13,9 +13,9 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
-import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClientAccess
@@ -145,13 +145,26 @@ public class ClientAccess
         }
     }
 
-    public static void updateCrystallizer(BlockPos pos, int fluidAmount)
+    public static void updateCrystallizer(BlockPos pos, FluidStack fluidStack, int progress)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
-        if(blockEntity instanceof final CrystallizerEntity crystallizer)
+        if(blockEntity instanceof final AbstractCrystallizerEntity crystallizer)
         {
-        	crystallizer.setFluid(new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), fluidAmount));
+        	crystallizer.setFluid(fluidStack);
+        	crystallizer.progress = progress;
+        }
+    }
+
+    public static void updateNaquadahLiquidizer(BlockPos pos, FluidStack fluidStack1, FluidStack fluidStack2, int progress)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if(blockEntity instanceof final AbstractNaquadahLiquidizerEntity naquadahLiquidizer)
+        {
+        	naquadahLiquidizer.setFluid1(fluidStack1);
+        	naquadahLiquidizer.setFluid2(fluidStack2);
+        	naquadahLiquidizer.progress = progress;
         }
     }
 }

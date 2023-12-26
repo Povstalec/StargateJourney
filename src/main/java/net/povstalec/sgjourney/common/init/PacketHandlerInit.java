@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacke
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
@@ -92,6 +93,12 @@ public final class PacketHandlerInit
 		.encoder(ClientboundNaquadahGeneratorUpdatePacket::encode)
 		.decoder(ClientboundNaquadahGeneratorUpdatePacket::new)
 		.consumerMainThread(ClientboundNaquadahGeneratorUpdatePacket::handle)
+		.add();
+
+		INSTANCE.messageBuilder(ClientboundNaquadahLiquidizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundNaquadahLiquidizerUpdatePacket::encode)
+		.decoder(ClientboundNaquadahLiquidizerUpdatePacket::new)
+		.consumerMainThread(ClientboundNaquadahLiquidizerUpdatePacket::handle)
 		.add();
 
 		INSTANCE.messageBuilder(ClientboundCrystallizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)

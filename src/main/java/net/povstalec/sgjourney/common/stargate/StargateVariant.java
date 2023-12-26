@@ -149,13 +149,49 @@ public class StargateVariant
 		return this.wormholeCloseSound;
 	}
 	
-	public Optional<Stargate.RGBA> getRGBA()
+	public Optional<Stargate.RGBA> getEventHorizonRGBA()
 	{
 		Optional<List<Integer>> eventHorizonColor = getEventHorizonColor();
 		if(!eventHorizonColor.isPresent())
 			return Optional.empty();
 		
 		int[] colorArray = eventHorizonColor.get().stream().mapToInt((integer) -> integer).toArray();
+		
+		if(colorArray.length < 3)
+			return Optional.empty();
+		
+		int alpha = 255;
+		if(colorArray.length >= 4)
+			alpha = colorArray[3];
+		
+		return Optional.of(new Stargate.RGBA(colorArray[0], colorArray[1], colorArray[2], alpha));
+	}
+	
+	public Optional<Stargate.RGBA> getSymbolRGBA()
+	{
+		Optional<List<Integer>> symbolColor = getSymbolColor();
+		if(!symbolColor.isPresent())
+			return Optional.empty();
+		
+		int[] colorArray = symbolColor.get().stream().mapToInt((integer) -> integer).toArray();
+		
+		if(colorArray.length < 3)
+			return Optional.empty();
+		
+		int alpha = 255;
+		if(colorArray.length >= 4)
+			alpha = colorArray[3];
+		
+		return Optional.of(new Stargate.RGBA(colorArray[0], colorArray[1], colorArray[2], alpha));
+	}
+	
+	public Optional<Stargate.RGBA> getEngagedSymbolRGBA()
+	{
+		Optional<List<Integer>> symbolColor = getEngagedSymbolColor();
+		if(!symbolColor.isPresent())
+			return Optional.empty();
+		
+		int[] colorArray = symbolColor.get().stream().mapToInt((integer) -> integer).toArray();
 		
 		if(colorArray.length < 3)
 			return Optional.empty();

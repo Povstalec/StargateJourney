@@ -22,6 +22,10 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity
 {
+	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
+	protected static final String CRYSTAL_MODE = "CrystalMode";
+	protected static final String ENERGY_TRANSFER = "ENERGY_TRANSFER";
+	
 	private AbstractStargateEntity stargate = null;
 	
 	protected boolean enableAdvancedProtocols = false;

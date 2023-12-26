@@ -56,6 +56,12 @@
 		"sgjourney:crystal_interface",
 		"sgjourney:advanced_crystal_interface",
 		
+		"sgjourney:naquadah_liquidizer",
+		"sgjourney:heavy_naquadah_liquidizer",
+		
+		"sgjourney:crystallizer",
+		"sgjourney:advanced_crystallizer",
+		
 		"sgjourney:ancient_gene_detector",
 		
 		"sgjourney:zpm_hub"

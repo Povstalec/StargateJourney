@@ -3,13 +3,16 @@ package net.povstalec.sgjourney.client.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
 
 public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu>
@@ -31,7 +34,7 @@ public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu
 	
 	private void assignFluidRenderer()
 	{
-		this.renderer = new FluidTankRenderer(64000, true, 16, 54);
+		this.renderer = new FluidTankRenderer(AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY, true, 16, 54);
 	}
 
     @Override
@@ -46,19 +49,20 @@ public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu
         this.blit(stack, x, y, 0, 0, imageWidth, imageHeight);
         
         //this.renderEnergy(pPoseStack, x + 8, y + 62);
+        this.renderProgress(stack, x + 28, y + 37);
+        
+        renderer.render(stack, x + 12, y + 20, menu.getFluid());
     }
 
 	@Override
 	public void render(PoseStack stack, int mouseX, int mouseY, float delta)
     {
-    	int x = (width - imageWidth) / 2;
-    	int y = (height - imageHeight) / 2;
         renderBackground(stack);
         super.render(stack, mouseX, mouseY, delta);
         renderTooltip(stack, mouseX, mouseY);
         
-        //this.energyTooltip(pPoseStack, 8, 62, mouseX, mouseY);
-        renderer.render(stack, x + 12, y + 20, menu.getFluid());
+        //this.energyTooltip(stack, 8, 62, mouseX, mouseY);
+        this.liquidNaquadahTooltip(stack, 12, 20, mouseX, mouseY);
 	}
     
     @Override
@@ -68,12 +72,28 @@ public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu
 	    //this.font.draw(stack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
     
+    protected void renderProgress(PoseStack stack, int x, int y)
+    {
+    	float percentage = (float) this.menu.getProgress() / AbstractCrystallizerEntity.MAX_PROGRESS;
+    	int actual = Math.round(96 * percentage);
+    	this.blit(stack, x, y, 0, 166, actual, 12);
+    }
+    
     /*protected void renderEnergy(PoseStack stack, int x, int y)
     {
     	float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();
     	int actual = Math.round(160 * percentage);
     	this.blit(stack, x, y, 0, 168, actual, 6);
     }*/
+    
+    protected void liquidNaquadahTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
+    {
+    	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
+	    {
+    		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid(), 1);
+	    	renderTooltip(matrixStack, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid().getAmount() + "/" + AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
+	    }
+    }
     
     /*protected void energyTooltip(PoseStack stack, int x, int y, int mouseX, int mouseY)
     {

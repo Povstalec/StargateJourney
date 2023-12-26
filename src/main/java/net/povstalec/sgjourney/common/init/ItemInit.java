@@ -58,7 +58,9 @@ public class ItemInit
 			() -> new Item(new Item.Properties().fireResistant()));
 
 	public static final RegistryObject<Item> CRYSTAL_BASE = ITEMS.register("crystal_base", 
-			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).fireResistant()));
+			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
+	public static final RegistryObject<Item> ADVANCED_CRYSTAL_BASE = ITEMS.register("advanced_crystal_base", 
+			() -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 	
 	// Food
 	

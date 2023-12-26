@@ -57,6 +57,8 @@ import net.povstalec.sgjourney.common.stargate.Wormhole;
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
 	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
+	
+	public static final String RESTRICT_NETWORK = "RestrictNetwork";
 
 	public static final float STANDARD_THICKNESS = 9.0F;
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
@@ -65,6 +67,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	// Basic Info
 	protected final Stargate.Gen generation;
 	protected int network;
+	protected boolean restrictNetwork = false;
 	
 	// Blockstate values
 	protected BlockPos centerPosition;
@@ -130,6 +133,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		timesOpened = tag.getInt("TimesOpened");
 		address.fromArray(tag.getIntArray("Address"));
 		network = tag.getInt("Network");
+		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
 		connectionID = tag.getString("ConnectionID");
 		advancedProtocolsEnabled = tag.getBoolean("AdvancedProtocolsEnabled");
@@ -146,6 +150,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		tag.putInt("TimesOpened", timesOpened);
 		tag.putIntArray("Address", address.toArray());
 		tag.putInt("Network", network);
+		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
 		tag.putString("ConnectionID", connectionID);
 		tag.putBoolean("AdvancedProtocolsEnabled", advancedProtocolsEnabled);
@@ -164,6 +169,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		tag.putInt("TimesOpened", timesOpened);
 		tag.putIntArray("Address", address.toArray());
 		tag.putInt("Network", network);
+		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
 		tag.putString("ConnectionID", connectionID);
 		tag.putBoolean("AdvancedProtocolsEnabled", advancedProtocolsEnabled);
@@ -184,6 +190,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		timesOpened = tag.getInt("TimesOpened");
 		address.fromArray(tag.getIntArray("Address"));
 		network = tag.getInt("Network");
+		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
 		connectionID = tag.getString("ConnectionID");
 		advancedProtocolsEnabled = tag.getBoolean("AdvancedProtocolsEnabled");
@@ -592,6 +599,34 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//============================================================================================
 	//************************************Getters and setters*************************************
 	//============================================================================================
+	
+	public int getNetwork()
+	{
+		return this.network;
+	}
+	
+	public void setNetwork(int network)
+	{
+		this.network = network;
+	}
+	
+	public boolean getRestrictNetwork()
+	{
+		return this.restrictNetwork;
+	}
+	
+	public void setRestrictNetwork(boolean restrictNetwork)
+	{
+		this.restrictNetwork = restrictNetwork;
+	}
+	
+	public boolean isRestricted(AbstractStargateEntity dialingStargate)
+	{
+		if(this.getRestrictNetwork())
+			return dialingStargate.getNetwork() != this.getNetwork();
+		
+		return false;
+	}
 
 	public int getMaxGateOpenTime()
 	{
@@ -600,7 +635,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public Stargate.Gen getGeneration()
 	{
-		return generation;
+		return this.generation;
 	}
 	
 	public void setKawooshTickCount(int kawooshTick)
@@ -890,7 +925,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 					obstructingBlocks++;
 			}
 		}
-		return obstructingBlocks > 12;
+		return obstructingBlocks >= 12;
 	}
 	
     public void updateBasicInterfaceBlocks(@Nullable String eventName, Object... objects)

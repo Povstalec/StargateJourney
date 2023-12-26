@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
 import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 
 @JeiPlugin
@@ -31,13 +32,18 @@ public class SGJourneyJEIPlugin implements IModPlugin
 	public void registerCategories(IRecipeCategoryRegistration registration)
 	{
 		registration.addRecipeCategories(new CrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new AdvancedCrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 	
 	@Override
 	public void registerRecipes(IRecipeRegistration registration)
 	{
 		RecipeManager recipeManager = Objects.requireNonNull(minecraft.level).getRecipeManager();
-		List<CrystallizerRecipe> recipes = recipeManager.getAllRecipesFor(CrystallizerRecipe.Type.INSTANCE);
-		registration.addRecipes(new RecipeType<>(CrystallizerRecipeCategory.RECIPE_ID, CrystallizerRecipe.class), recipes);
+		
+		List<CrystallizerRecipe> crystallizerRecipes = recipeManager.getAllRecipesFor(CrystallizerRecipe.Type.INSTANCE);
+		registration.addRecipes(new RecipeType<>(CrystallizerRecipeCategory.RECIPE_ID, CrystallizerRecipe.class), crystallizerRecipes);
+
+		List<AdvancedCrystallizerRecipe> advancedCrystallizerRecipes = recipeManager.getAllRecipesFor(AdvancedCrystallizerRecipe.Type.INSTANCE);
+		registration.addRecipes(new RecipeType<>(AdvancedCrystallizerRecipeCategory.RECIPE_ID, AdvancedCrystallizerRecipe.class), advancedCrystallizerRecipes);
 	}
 }

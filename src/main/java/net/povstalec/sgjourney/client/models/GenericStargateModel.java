@@ -11,8 +11,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
-public class GenericStargateModel<StargateEntity extends AbstractStargateEntity> extends AbstractStargateModel<StargateEntity>
+public abstract class GenericStargateModel<StargateEntity extends AbstractStargateEntity> extends AbstractStargateModel<StargateEntity>
 {
 	// Ring
 	protected static final float STARGATE_RING_THICKNESS = 7F;
@@ -92,13 +93,9 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 	protected static final float DIVIDER_OFFSET = 0.5F / 16;
 	protected static final float DIVIDER_Y_CENTER = STARGATE_SYMBOL_RING_HEIGHT / 2 + STARGATE_SYMBOL_RING_INNER_HEIGHT;
 	
-	protected float symbolR;
-	protected float symbolG;
-	protected float symbolB;
-	
 	protected float rotation = 0;
 	
-	public GenericStargateModel(ResourceLocation stargateName, int symbolSides, float symbolR, float symbolG, float symbolB)
+	public GenericStargateModel(ResourceLocation stargateName, int symbolSides, Stargate.RGBA symbolColor)
 	{
 		super(stargateName);
 		this.symbolSides = symbolSides;
@@ -110,9 +107,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		this.stargateSymbolRingInnerLength = SGJourneyModel.getUsedWidth(symbolSides, STARGATE_SYMBOL_RING_INNER_HEIGHT, DEFAULT_RADIUS);
 		this.stargateSymbolRingInnerCenter = stargateSymbolRingInnerLength / 2;
 		
-		this.symbolR = symbolR;
-		this.symbolG = symbolG;
-		this.symbolB = symbolB;
+		this.symbolColor = symbolColor;
 	}
 	
 	@Override
@@ -1273,13 +1268,13 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		//Front Symbols
 		for(int j = 0; j < this.symbolSides; j++)
 		{
-			renderSymbol(stargate, stack, consumer, source, combinedLight, j, j, rotation, symbolR, symbolG, symbolB);
+			renderSymbol(stargate, stack, consumer, source, combinedLight, j, j, rotation, this.symbolColor);
 		}
 	}
 	
 	protected void renderSymbol(StargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
 		int symbolNumber, int symbolRendered, float rotation,
-		float symbolR, float symbolG, float symbolB)
+		Stargate.RGBA symbolColor)
 	{
 		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, symbolRendered)));
 		
@@ -1289,7 +1284,7 @@ public class GenericStargateModel<StargateEntity extends AbstractStargateEntity>
 		Matrix3f matrix3 = stack.last().normal();
 		
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
-				symbolR, symbolG, symbolB, 1.0F, 
+				symbolColor.getRed(), symbolColor.getGreen(), symbolColor.getBlue(), symbolColor.getAlpha(), 
 				-stargateSymbolRingOuterCenter,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 				STARGATE_RING_OFFSET - 1F/16,

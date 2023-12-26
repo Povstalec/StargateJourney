@@ -343,10 +343,10 @@ public class WormholeModel
 		
 		if(rgba.isPresent())
 		{
-			red = rgba.get().red / 255F;
-			green = rgba.get().green / 255F;
-			blue = rgba.get().blue / 255F;
-			alpha = rgba.get().alpha / 255F;
+			red = rgba.get().getRed();
+			green = rgba.get().getGreen();
+			blue = rgba.get().getBlue();
+			alpha = rgba.get().getAlpha();
 		}
 		else
 		{
@@ -359,10 +359,10 @@ public class WormholeModel
 			}
 			else
 			{
-				red = this.rgba.red / 255F;
-				green = this.rgba.green / 255F;
-				blue = this.rgba.blue / 255F;
-				alpha = this.rgba.alpha / 255F;
+				red = this.rgba.getRed();
+				green = this.rgba.getGreen();
+				blue = this.rgba.getBlue();
+				alpha = this.rgba.getAlpha();
 			}
 		}
 		

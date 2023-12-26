@@ -42,13 +42,13 @@ import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
-import net.povstalec.sgjourney.client.screens.BasicInterfaceScreen;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
-import net.povstalec.sgjourney.client.screens.CrystalInterfaceScreen;
 import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
 import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
+import net.povstalec.sgjourney.client.screens.InterfaceScreen;
 import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
+import net.povstalec.sgjourney.client.screens.NaquadahLiquidizerScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
@@ -167,8 +167,7 @@ public class StargateJourney
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
 
-        	MenuScreens.register(MenuInit.INTERFACE.get(), BasicInterfaceScreen::new);
-        	MenuScreens.register(MenuInit.CRYSTAL_INTERFACE.get(), CrystalInterfaceScreen::new);
+        	MenuScreens.register(MenuInit.INTERFACE.get(), InterfaceScreen::new);
             
         	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
 
@@ -181,6 +180,7 @@ public class StargateJourney
 
         	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
 
+        	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), NaquadahLiquidizerScreen::new);
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);

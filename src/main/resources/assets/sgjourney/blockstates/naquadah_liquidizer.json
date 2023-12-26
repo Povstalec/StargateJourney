@@ -1,0 +1,9 @@
+{
+	"variants":
+	{
+		"facing=north": { "model": "sgjourney:block/naquadah_liquidizer" },
+		"facing=south": { "model": "sgjourney:block/naquadah_liquidizer", "y": 180 },
+		"facing=west": { "model": "sgjourney:block/naquadah_liquidizer", "y": 270 },
+		"facing=east": { "model": "sgjourney:block/naquadah_liquidizer", "y": 90 }
+	}
+}

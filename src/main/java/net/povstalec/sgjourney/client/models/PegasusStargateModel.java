@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.client.models;
 
+import java.util.Optional;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -9,15 +11,17 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEntity>
 {
-	private static final float R = 0;
-	private static final float DEFAULT_G = 100F / 255;
-	private static final float DEFAULT_B = 200F / 255;
+	private static final int RED = 0;
+	private static final int GREEN = 100;
+	private static final int BLUE = 200;
 	
-	private static final float ENGAGED_G = 200F / 255;
-	private static final float ENGAGED_B = 255F / 255;
+	private static final int ENGAGED_GREEN = 200;
+	private static final int ENGAGED_BLUE = 255;
 	
 	protected int currentSymbol = 0;
 	
@@ -26,10 +30,12 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	
 	public PegasusStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "pegasus"), 36, R, DEFAULT_G, DEFAULT_B);
+		super(new ResourceLocation(StargateJourney.MODID, "pegasus"), 36, new Stargate.RGBA(RED, GREEN, BLUE, 255));
 		
 		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
 		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
+		
+		this.engagedSymbolColor = new Stargate.RGBA(RED, ENGAGED_GREEN, ENGAGED_BLUE, 255);
 	}
 	
 	public void renderStargate(PegasusStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
@@ -47,10 +53,29 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	{
 		this.currentSymbol = currentSymbol;
 	}
+
+	@Override
+	protected Stargate.RGBA getSymbolColor(PegasusStargateEntity stargate, boolean isEngaged)
+	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+		{
+			if(!isEngaged && variant.get().getSymbolRGBA().isPresent())
+				return variant.get().getSymbolRGBA().get();
+			else if(isEngaged && variant.get().getEngagedSymbolRGBA().isPresent())
+				return variant.get().getEngagedSymbolRGBA().get();
+		}
+		
+		return isEngaged ? this.engagedSymbolColor : this.symbolColor;
+	}
 	
 	@Override
 	protected ResourceLocation getStargateTexture(PegasusStargateEntity stargate)
 	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+			return variant.get().getTexture();
+		
 		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ?
 				this.alternateStargateTexture : this.stargateTexture;
 	}
@@ -58,6 +83,10 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	@Override
 	protected ResourceLocation getEngagedTexture(PegasusStargateEntity stargate)
 	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+			return variant.get().getEngagedTexture();
+		
 		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ?
 				this.alternateEngagedTexture : this.engagedTexture;
 	}
@@ -74,7 +103,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	    	}
 
     		int renderedSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
-			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, R, ENGAGED_G, ENGAGED_B);
+			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, getSymbolColor(stargate, true));
 	    }
 		
 	}
@@ -89,35 +118,33 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			
 			// Point of Origin when Stargate is connected
 			if(stargate.isConnected())
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, R, ENGAGED_G, ENGAGED_B);
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, getSymbolColor(stargate, true));
 			
 			// Locked Symbols
 			for(int i = 0; i < stargate.getAddress().getLength(); i++)
 			{
 				int symbolNumber = stargate.getChevronPosition(i + 1);
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress().toArray()[i], 0, R, ENGAGED_G, ENGAGED_B);
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress().toArray()[i], 0, getSymbolColor(stargate, true));
 			}
 		}
 		else
 		{
-			float green = DEFAULT_G;
-			float blue = DEFAULT_B;
+			Stargate.RGBA symbolColor = getSymbolColor(stargate, false);
 			int symbolNumber = symbolSides;
 			
 			if(stargate.isConnected())
 			{
-				green = ENGAGED_G;
-				blue = ENGAGED_B;
+				symbolColor = getSymbolColor(stargate, true);
 				symbolNumber = stargate.currentSymbol < symbolSides ? stargate.currentSymbol : symbolNumber;
 				if(stargate.getKawooshTickCount() > 0)
-					renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, R, ENGAGED_G, ENGAGED_B);
+					renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolColor);
 			}
 			
 			// Idle Symbols
 			for(int i = 0; i < symbolNumber; i++)
 			{
 				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % symbolSides;
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, renderedSymbol, renderedSymbol, 0, symbolR, green, blue);
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, renderedSymbol, renderedSymbol, 0, symbolColor);
 			}
 		}
 	}

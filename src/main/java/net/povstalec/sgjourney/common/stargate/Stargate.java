@@ -111,6 +111,7 @@ public class Stargate
 		NO_GALAXY(-12, FeedbackType.MAJOR_ERROR, createError("no_galaxy", true)),
 		NO_DIMENSIONS(-13, FeedbackType.MAJOR_ERROR, createError("no_dimensions", true)),
 		NO_STARGATES(-14, FeedbackType.MAJOR_ERROR, createError("no_stargates", true)),
+		TARGET_RESTRICTED(-15, FeedbackType.MAJOR_ERROR, createError("target_restricted", false)),
 
 		// Wormhole TODO
 		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),
@@ -122,14 +123,14 @@ public class Stargate
 		CONNECTION_ENDED_BY_NETWORK(9, FeedbackType.INFO, createInfo("connection_ended.stargate_network")),
 		CONNECTION_ENDED_BY_AUTOCLOSE(10, FeedbackType.INFO, createInfo("connection_ended.autoclose")),
 		EXCEEDED_CONNECTION_TIME(-15, FeedbackType.ERROR, createError("exceeded_connection_time", false)),
-		RAN_OUT_OF_POWER(-16, FeedbackType.ERROR, createError("ran_out_of_power", false)),
-		CONNECTION_REROUTED(-17, FeedbackType.ERROR, createError("connection_rerouted", false)),
+		RAN_OUT_OF_POWER(-17, FeedbackType.ERROR, createError("ran_out_of_power", false)),
+		CONNECTION_REROUTED(-18, FeedbackType.ERROR, createError("connection_rerouted", false)),
 		WRONG_DISCONNECT_SIDE(-18, FeedbackType.ERROR, createError("wrong_disconnect_side", false)),
-		CONNECTION_FORMING(-19, FeedbackType.ERROR, createError("connection_forming", false)),
+		CONNECTION_FORMING(-20, FeedbackType.ERROR, createError("connection_forming", false)),
 
-		STARGATE_DESTROYED(-20, FeedbackType.ERROR, createError("stargate_destroyed", false)),
-		COULD_NOT_REACH_TARGET_STARGATE(-21, FeedbackType.MAJOR_ERROR, createError("could_not_reach_target_stargate", false)),
-		INTERRUPTED_BY_INCOMING_CONNECTION(-22, FeedbackType.ERROR, createError("interrupted_by_incoming_connection", false)),
+		STARGATE_DESTROYED(-21, FeedbackType.ERROR, createError("stargate_destroyed", false)),
+		COULD_NOT_REACH_TARGET_STARGATE(-22, FeedbackType.MAJOR_ERROR, createError("could_not_reach_target_stargate", false)),
+		INTERRUPTED_BY_INCOMING_CONNECTION(-23, FeedbackType.ERROR, createError("interrupted_by_incoming_connection", false)),
 		
 		// Universe
 		
@@ -137,8 +138,8 @@ public class Stargate
 		CHEVRON_RAISED(11, FeedbackType.INFO, createInfo("chevron_raised")),
 		ROTATING(12, FeedbackType.INFO, createInfo("rotating")),//TODO Return this somewhere
 		ROTATION_STOPPED(13, FeedbackType.INFO, createInfo("rotation_stopped")),//TODO Return this somewhere
-		CHEVRON_ALREADY_RAISED(-22, FeedbackType.ERROR, createError("chevron_already_raised", false)),
-		CHEVRON_ALREADY_LOWERED(-23, FeedbackType.ERROR, createError("chevron_already_lowered", false));
+		CHEVRON_ALREADY_RAISED(-24, FeedbackType.ERROR, createError("chevron_already_raised", false)),
+		CHEVRON_ALREADY_LOWERED(-25, FeedbackType.ERROR, createError("chevron_already_lowered", false));
 		
 		// Pegasus
 		
@@ -172,13 +173,6 @@ public class Stargate
 		{
 			return this.type.isError();
 		}
-		
-		/*public String getEnglishText()
-		{
-			if(feedbackMessage.getContents() instanceof TranslatableContents translatable)
-				return Language.loadDefault().;
-			return "";
-		}*/
 	}
 	
 	private static Component createInfo(String feedback)
@@ -195,17 +189,39 @@ public class Stargate
 	
 	public static class RGBA
 	{
-		public int red;
-		public int green;
-		public int blue;
-		public int alpha;
+		private float red;
+		private float green;
+		private float blue;
+		private float alpha;
+		
+		public static final RGBA DEFAULT_RGBA = new RGBA(255, 255, 255, 255);
 		
 		public RGBA(int red, int green, int blue, int alpha)
 		{
-			this.red = red;
-			this.blue = blue;
-			this.green = green;
-			this.alpha = alpha;
+			this.red = (float) red / 255;
+			this.green = (float) green / 255;
+			this.blue = (float) blue / 255;
+			this.alpha = (float) alpha / 255;
+		}
+		
+		public float getRed()
+		{
+			return red;
+		}
+		
+		public float getGreen()
+		{
+			return green;
+		}
+		
+		public float getBlue()
+		{
+			return blue;
+		}
+		
+		public float getAlpha()
+		{
+			return alpha;
 		}
 	}
 }

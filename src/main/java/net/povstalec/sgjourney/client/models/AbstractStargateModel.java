@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
@@ -56,6 +57,9 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected final ResourceLocation stargateTexture;
 	protected final ResourceLocation engagedTexture;
+	
+	protected Stargate.RGBA symbolColor = Stargate.RGBA.DEFAULT_RGBA;
+	protected Stargate.RGBA engagedSymbolColor = Stargate.RGBA.DEFAULT_RGBA;
 	
 	public AbstractStargateModel(ResourceLocation stargateName)
 	{
@@ -130,6 +134,20 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		}
 	}
 	
+	protected Stargate.RGBA getSymbolColor(StargateEntity stargate, boolean isEngaged)
+	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+		{
+			if(!isEngaged && variant.get().getSymbolRGBA().isPresent())
+				return variant.get().getSymbolRGBA().get();
+			else if(isEngaged && variant.get().getEngagedSymbolRGBA().isPresent())
+				return variant.get().getEngagedSymbolRGBA().get();
+		}
+		
+		return this.symbolColor;
+	}
+	
 	public static int getChevronConfiguration(boolean defaultOrder, int addresslength, int chevron)
 	{
 		int[] configuration;
@@ -160,11 +178,19 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected ResourceLocation getStargateTexture(StargateEntity stargate)
 	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+			return variant.get().getTexture();
+		
 		return this.stargateTexture;
 	}
 	
 	protected ResourceLocation getEngagedTexture(StargateEntity stargate)
 	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+			return variant.get().getEngagedTexture();
+		
 		return this.engagedTexture;
 	}
 	

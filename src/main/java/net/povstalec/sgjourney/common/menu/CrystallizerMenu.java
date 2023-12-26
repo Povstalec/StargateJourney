@@ -9,16 +9,17 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.SlotItemHandler;
-import net.povstalec.sgjourney.common.block_entities.CrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
 public class CrystallizerMenu extends AbstractContainerMenu
 {
-    protected final CrystallizerEntity blockEntity;
+    protected final AbstractCrystallizerEntity blockEntity;
     protected final Level level;
     protected FluidStack fluidStack;
     
@@ -30,8 +31,8 @@ public class CrystallizerMenu extends AbstractContainerMenu
     public CrystallizerMenu(int containerId, Inventory inventory, BlockEntity blockEntity)
     {
         super(MenuInit.CRYSTALLIZER.get(), containerId);
-        checkContainerSize(inventory, 6);
-        this.blockEntity = ((CrystallizerEntity) blockEntity);
+        checkContainerSize(inventory, 5);
+        this.blockEntity = ((AbstractCrystallizerEntity) blockEntity);
         this.level = inventory.player.level;
         this.fluidStack = this.blockEntity.getFluid();
 
@@ -44,7 +45,6 @@ public class CrystallizerMenu extends AbstractContainerMenu
             this.addSlot(new SlotItemHandler(handler, 2, 93, 50));
             this.addSlot(new SlotItemHandler(handler, 3, 130, 36));
             this.addSlot(new SlotItemHandler(handler, 4, 34, 20));
-            this.addSlot(new SlotItemHandler(handler, 5, 34, 58));
         });
     }
     
@@ -57,11 +57,22 @@ public class CrystallizerMenu extends AbstractContainerMenu
 	{
 		return this.blockEntity.getFluid();
 	}
+	
+	public Fluid getDesiredFluid()
+	{
+		return this.blockEntity.getDesiredFluid();
+	}
+	
+	public int getProgress()
+	{
+		return this.blockEntity.progress;
+	}
     
     @Override
     public boolean stillValid(Player player)
     {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CRYSTALLIZER.get());
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CRYSTALLIZER.get()) ||
+        		stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ADVANCED_CRYSTALLIZER.get());
     }
 
     private void addPlayerInventory(Inventory playerInventory)
@@ -99,7 +110,7 @@ public class CrystallizerMenu extends AbstractContainerMenu
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 6;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
+    private static final int TE_INVENTORY_SLOT_COUNT = 5;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) 

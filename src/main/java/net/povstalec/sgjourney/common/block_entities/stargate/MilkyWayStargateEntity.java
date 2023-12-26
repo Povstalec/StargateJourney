@@ -31,7 +31,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class MilkyWayStargateEntity extends AbstractStargateEntity
 {
-	private static final double angle = (double) 360 / 39;
+	private static final double ANGLE = (double) 360 / 39;
 
 	private int rotation = 0;
 	public int oldRotation = 0;
@@ -253,7 +253,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public int getCurrentSymbol()
 	{
 		int currentSymbol;
-		double position = this.rotation / angle;
+		double position = this.rotation / ANGLE;
 		currentSymbol = (int) position;
 		if(position >= currentSymbol + 0.5)
 			currentSymbol++;
@@ -323,7 +323,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
-		double position = this.rotation / angle;
+		double position = this.rotation / ANGLE;
 		double lowerBound = (double) (desiredSymbol - 0.12);
 		double upperBound = (double) (desiredSymbol + 0.12);
 		

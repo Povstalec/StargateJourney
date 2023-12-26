@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity>
@@ -31,7 +32,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	
 	public MilkyWayStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "milky_way"), 39, 48F/255.0F, 49F/255.0F, 63F/255.0F);
+		super(new ResourceLocation(StargateJourney.MODID, "milky_way"), 39, new Stargate.RGBA(48, 49, 63, 255));
 		
 		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
 		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
@@ -52,7 +53,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	protected ResourceLocation getStargateTexture(MilkyWayStargateEntity stargate)
 	{
 		Optional<StargateVariant> variant = getVariant(stargate);
-		if(variant.isPresent())
+		if(variant.isPresent() && canUseVariant(variant.get()))
 			return variant.get().getTexture();
 		
 		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ?
@@ -63,7 +64,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	protected ResourceLocation getEngagedTexture(MilkyWayStargateEntity stargate)
 	{
 		Optional<StargateVariant> variant = getVariant(stargate);
-		if(variant.isPresent())
+		if(variant.isPresent() && canUseVariant(variant.get()))
 			return variant.get().getEngagedTexture();
 		
 		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ?

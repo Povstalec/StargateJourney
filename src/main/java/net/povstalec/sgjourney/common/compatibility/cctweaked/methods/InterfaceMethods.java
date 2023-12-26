@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 
 public class InterfaceMethods
 {
+	// Basic Interface
 	public static class SetEnergyTarget implements InterfaceMethod<BlockEntity>
 	{
 		@Override
@@ -26,18 +27,45 @@ public class InterfaceMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
+			context.executeMainThreadTask(() ->
 			{
 				long energyTarget = arguments.getLong(0);
 				interfaceEntity.setEnergyTarget(energyTarget);
 				
-				return new Object[] {};
+				return null;
+			});
+			
+			return MethodResult.of();
+		}
+	}
+	
+	public static class AddressToString implements InterfaceMethod<BlockEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "addressToString";
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				Map<Double, Double> addressTable = (Map<Double, Double>) arguments.getTable(0);
+				Address address = new Address(addressTable);
+				
+				return new Object[] {address.toString()};
 			});
 			
 			return result;
 		}
 	}
 	
+	
+
+	// Crystal Interface
 	public static class AddressToDimension implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -53,7 +81,7 @@ public class InterfaceMethods
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressTable = (Map<Double, Double>) arguments.getTable(0);
-				Address address = new Address( addressTable);
+				Address address = new Address(addressTable);
 				
 				String dimension = stargate.getLevel().dimension().location().toString();
 				String galaxy = Universe.get(stargate.getLevel()).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys().iterator().next();

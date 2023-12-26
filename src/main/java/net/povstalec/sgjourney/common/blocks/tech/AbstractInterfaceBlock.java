@@ -128,7 +128,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof AbstractInterfaceEntity)
 		{
-			if(!level.isClientSide() && !player.isCreative())
+			if(!level.isClientSide() && !player.isCreative() && player.hasCorrectToolForDrops(state))
 			{
 				ItemStack itemstack = new ItemStack(getDroppedBlock());
 				
