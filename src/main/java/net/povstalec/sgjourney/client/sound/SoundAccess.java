@@ -148,7 +148,7 @@ public class SoundAccess
         		Optional<StargateVariant> variant = getVariant(variantString);
         		
         		if(variant.isPresent() && variant.get().getChevronEngageSound().isPresent())
-            		return SoundEvent.createVariableRangeEvent(variant.get().getChevronEngageSound().get());
+            		return new SoundEvent(variant.get().getChevronEngageSound().get());
         	}
     	}
     	
@@ -165,7 +165,7 @@ public class SoundAccess
         		Optional<StargateVariant> variant = getVariant(variantString);
         		
         		if(variant.isPresent() && variant.get().getChevronEncodeSound().isPresent())
-            		return SoundEvent.createVariableRangeEvent(variant.get().getChevronEncodeSound().get());
+            		return new SoundEvent(variant.get().getChevronEncodeSound().get());
         	}
     	}
     	
@@ -182,7 +182,7 @@ public class SoundAccess
         		Optional<StargateVariant> variant = getVariant(variantString);
         		
         		if(variant.isPresent() && variant.get().getChevronEncodeSound().isPresent())
-            		return SoundEvent.createVariableRangeEvent(variant.get().getChevronEncodeSound().get());
+            		return new SoundEvent(variant.get().getChevronEncodeSound().get());
         	}
     	}
     	
@@ -199,7 +199,7 @@ public class SoundAccess
         		Optional<StargateVariant> variant = getVariant(variantString);
         		
         		if(variant.isPresent() && variant.get().getFailSound().isPresent())
-            		return SoundEvent.createVariableRangeEvent(variant.get().getFailSound().get());
+            		return new SoundEvent(variant.get().getFailSound().get());
         	}
     	}
     	
@@ -216,7 +216,7 @@ public class SoundAccess
         		Optional<StargateVariant> variant = getVariant(variantString);
         		
         		if(variant.isPresent() && variant.get().getWormholeOpenSound().isPresent())
-            		return SoundEvent.createVariableRangeEvent(variant.get().getWormholeOpenSound().get());
+            		return new SoundEvent(variant.get().getWormholeOpenSound().get());
         	}
     	}
     	
@@ -233,7 +233,7 @@ public class SoundAccess
         		Optional<StargateVariant> variant = getVariant(variantString);
         		
         		if(variant.isPresent() && variant.get().getWormholeCloseSound().isPresent())
-            		return SoundEvent.createVariableRangeEvent(variant.get().getWormholeCloseSound().get());
+            		return new SoundEvent(variant.get().getWormholeCloseSound().get());
         	}
     	}
     	

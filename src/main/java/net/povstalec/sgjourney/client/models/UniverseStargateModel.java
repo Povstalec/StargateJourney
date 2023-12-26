@@ -2,12 +2,11 @@ package net.povstalec.sgjourney.client.models;
 
 import java.util.Optional;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
@@ -135,7 +134,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		for(int j = 0; j < UNIVERSE_SIDES; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * UNIVERSE_ANGLE - UNIVERSE_ANGLE/2 + getRotation(true)));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(j * UNIVERSE_ANGLE - UNIVERSE_ANGLE/2 + getRotation(true)));
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
 			
@@ -240,7 +239,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		for(int j = 0; j < UNIVERSE_SIDES; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * -UNIVERSE_ANGLE + UNIVERSE_ANGLE/2 + getRotation(!useAlternateModel(stargate))));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(j * -UNIVERSE_ANGLE + UNIVERSE_ANGLE/2 + getRotation(!useAlternateModel(stargate))));
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
 			
@@ -369,7 +368,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		stack.pushPose();
 		int symbolRow = symbolNumber / 4;
 		int symbolInRow = symbolNumber % 4;
-		stack.mulPose(Axis.ZP.rotationDegrees(-UNIVERSE_ANGLE * 3 / 2 + symbolRow * -CHEVRON_ANGLE + symbolInRow * -UNIVERSE_ANGLE + rotation));
+		stack.mulPose(Vector3f.ZP.rotationDegrees(-UNIVERSE_ANGLE * 3 / 2 + symbolRow * -CHEVRON_ANGLE + symbolInRow * -UNIVERSE_ANGLE + rotation));
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
@@ -433,7 +432,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		// Front
 		stack.pushPose();
-		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevronNumber + getRotation(true)));
+		stack.mulPose(Vector3f.ZP.rotationDegrees(-CHEVRON_ANGLE * chevronNumber + getRotation(true)));
 		stack.translate(0, DEFAULT_RADIUS - 5.5F/16, 0);
 		renderChevronLight(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
 		renderOuterChevron(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
@@ -441,8 +440,8 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		
 		// Back
 		stack.pushPose();
-		stack.mulPose(Axis.YP.rotationDegrees(180));
-		stack.mulPose(Axis.ZP.rotationDegrees(CHEVRON_ANGLE * chevronNumber - getRotation(!useAlternateModel(stargate))));
+		stack.mulPose(Vector3f.YP.rotationDegrees(180));
+		stack.mulPose(Vector3f.ZP.rotationDegrees(CHEVRON_ANGLE * chevronNumber - getRotation(!useAlternateModel(stargate))));
 		stack.translate(0, DEFAULT_RADIUS - 5.5F/16, 0);
 		renderChevronLight(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
 		renderOuterChevron(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);

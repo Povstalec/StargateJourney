@@ -188,8 +188,8 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 		@Override
 		public void render(PoseStack stack, int i, int j, int k, int l, int m, int n, int o, boolean bl, float partialTick)
 		{
-			this.sliderButton.setX(k);
-	        this.sliderButton.setY(j);
+			this.sliderButton.x = k;
+	        this.sliderButton.y = j;
 	        this.sliderButton.render(stack, n, o, partialTick);
 			super.render(stack, i, j, k, l, m, n, o, bl, partialTick);
 		}

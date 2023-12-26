@@ -32,7 +32,7 @@ public class PlasmaProjectileRenderer extends EntityRenderer<PlasmaProjectile>
 		stack.pushPose();
 		stack.scale(2.0F, 2.0F, 2.0F);
 		stack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-		stack.mulPose(Axis.YP.rotationDegrees(180.0F));
+		stack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 		
 		PoseStack.Pose posestack$pose = stack.last();
 		Matrix4f matrix4f = posestack$pose.pose();

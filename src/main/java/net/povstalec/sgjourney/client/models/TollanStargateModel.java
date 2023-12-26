@@ -1,11 +1,10 @@
 package net.povstalec.sgjourney.client.models;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
@@ -70,7 +69,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();
-		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
+		stack.mulPose(Vector3f.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
 		stack.translate(0, TOLLAN_RADIUS - 0.5F + STARGATE_RING_SHRINK, 0);
 		
 		renderChevronLight(stack, consumer, source, light, chevronEngaged);
@@ -249,7 +248,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 		Matrix3f matrix3 = stack.last().normal();
 		for(int j = 0; j < DEFAULT_SIDES; j++)
 		{
-			stack.mulPose(Axis.ZP.rotationDegrees(10));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(10));
 			//Front
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
 					-STARGATE_RING_OUTER_CENTER,

@@ -1,11 +1,10 @@
 package net.povstalec.sgjourney.client.models;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
@@ -147,7 +146,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();
-		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
+		stack.mulPose(Vector3f.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
 		stack.translate(0, DEFAULT_RADIUS - 2.5F/16, 0);
 		
 		renderChevronLight(stack, consumer, source, light, isChevronRaised(stargate, chevronNumber));
@@ -986,7 +985,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		for(int j = 0; j < DEFAULT_SIDES; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * -DEFAULT_ANGLE));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(j * -DEFAULT_ANGLE));
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
 			//Front
@@ -1155,7 +1154,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		for(int j = 0; j < this.symbolSides; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * -this.symbolAngle + rotation));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(j * -this.symbolAngle + rotation));
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
 			//Front
@@ -1187,7 +1186,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		for(int j = 0; j < this.symbolSides; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * -this.symbolAngle - this.symbolAngle/2 + rotation));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(j * -this.symbolAngle - this.symbolAngle/2 + rotation));
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
 			
@@ -1279,7 +1278,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, symbolRendered)));
 		
 		stack.pushPose();
-		stack.mulPose(Axis.ZP.rotationDegrees(symbolNumber * -this.symbolAngle + rotation));
+		stack.mulPose(Vector3f.ZP.rotationDegrees(symbolNumber * -this.symbolAngle + rotation));
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		

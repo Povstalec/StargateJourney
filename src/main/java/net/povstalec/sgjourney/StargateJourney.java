@@ -2,6 +2,8 @@ package net.povstalec.sgjourney;
 
 import java.util.function.BiFunction;
 
+import org.slf4j.Logger;
+
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.Minecraft;

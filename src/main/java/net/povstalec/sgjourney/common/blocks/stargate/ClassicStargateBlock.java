@@ -107,7 +107,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 			for(StargatePart part : baseBlock.get().getParts())
 			{
 				BlockState partState = level.getBlockState(part.getRingPos(pos, direction, orientation));
-				if(!part.equals(StargatePart.BASE) && (!partState.canBeReplaced() && !(partState.getBlock() instanceof AbstractStargateBlock)))
+				if(!part.equals(StargatePart.BASE) && (!partState.getMaterial().isReplaceable() && !(partState.getBlock() instanceof AbstractStargateBlock)))
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
 					return true;

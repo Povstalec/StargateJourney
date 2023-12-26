@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.client.render.level;
 
 import javax.annotation.Nullable;
+
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -405,8 +407,8 @@ public abstract class SGJourneySkyRenderer
 	{
 		stack.pushPose();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, rain);
-        stack.mulPose(Axis.YP.rotationDegrees(-90.0F));
-        stack.mulPose(Axis.XP.rotationDegrees(level.getTimeOfDay(partialTicks) * 360.0F));
+        stack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+        stack.mulPose(Vector3f.XP.rotationDegrees(level.getTimeOfDay(partialTicks) * 360.0F));
         
         this.renderStars(level, partialTicks, rain, stack, projectionMatrix, setupFog);
 

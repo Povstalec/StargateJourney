@@ -1,6 +1,9 @@
 package net.povstalec.sgjourney.common.recipe;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -115,14 +118,20 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 		public static final Serializer INSTANCE = new Serializer();
 		public static final ResourceLocation ID = new ResourceLocation(StargateJourney.MODID, "crystallizing");
 		
-		public static Pair<Ingredient, Integer> getIngredient(Map<String, JsonElement> pair)
+		public static Pair<Ingredient, Integer> getIngredient(Set<Entry<String, JsonElement>> set)
 		{
-			JsonElement item = pair.get("item");
+			Map<String, JsonElement> mapFromSet = new HashMap<String, JsonElement>();
+		    for(Entry<String, JsonElement> entry : set)
+		    {
+		        mapFromSet.put(entry.getKey(), entry.getValue());
+		    }
+			
+			JsonElement item = mapFromSet.get("item");
 			JsonObject json = new JsonObject();
 			json.add("item", item);
 
 			Ingredient ingredient = Ingredient.fromJson(json);
-			int amount = pair.get("amount").getAsInt();
+			int amount = mapFromSet.get("amount").getAsInt();
 			
 			return new Pair<Ingredient, Integer>(ingredient, amount);
 		}
@@ -135,9 +144,9 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 			NonNullList<Ingredient> ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
 			int[] amounts = new int[ingredients.size()];
 			
-			Pair<Ingredient, Integer> crystalBase = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "crystal_base").asMap());
-			Pair<Ingredient, Integer> primaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "primary_ingredient").asMap());
-			Pair<Ingredient, Integer> secondaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "secondary_ingredient").asMap());
+			Pair<Ingredient, Integer> crystalBase = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "crystal_base").entrySet());
+			Pair<Ingredient, Integer> primaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "primary_ingredient").entrySet());
+			Pair<Ingredient, Integer> secondaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "secondary_ingredient").entrySet());
 
 			ingredients.set(0, crystalBase.getFirst());
 			amounts[0] = crystalBase.getSecond();
