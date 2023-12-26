@@ -429,7 +429,6 @@ public abstract class SGJourneySkyRenderer
 		if(this.isFoggy(camera))
 			return;
 		
-		RenderSystem.disableTexture();
 		Vec3 skyColor = level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), partialTicks);
 		float skyX = (float)skyColor.x;
         float skyY = (float)skyColor.y;
@@ -447,14 +446,12 @@ public abstract class SGJourneySkyRenderer
 		
 		this.renderSunrise(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder);
 		
-		RenderSystem.enableTexture();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		
 		float rain = 1.0F - level.getRainLevel(partialTicks);
 		
 		this.renderEcliptic(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder, rain);
         
-        RenderSystem.disableTexture();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
         
@@ -475,7 +472,6 @@ public abstract class SGJourneySkyRenderer
         else
         	RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
         
-        RenderSystem.enableTexture();
         RenderSystem.depthMask(true);
 	}
 }

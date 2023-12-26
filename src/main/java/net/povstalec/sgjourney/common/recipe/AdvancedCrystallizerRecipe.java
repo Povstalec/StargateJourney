@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -62,7 +63,7 @@ public class AdvancedCrystallizerRecipe implements Recipe<SimpleContainer>
 	}
 
 	@Override
-	public ItemStack assemble(SimpleContainer container)
+	public ItemStack assemble(SimpleContainer container, RegistryAccess access)
 	{
 		return output.copy();
 	}
@@ -74,7 +75,7 @@ public class AdvancedCrystallizerRecipe implements Recipe<SimpleContainer>
 	}
 
 	@Override
-	public ItemStack getResultItem()
+	public ItemStack getResultItem(RegistryAccess access)
 	{
 		return output.copy();
 	}
@@ -176,7 +177,7 @@ public class AdvancedCrystallizerRecipe implements Recipe<SimpleContainer>
 			{
 				ingredient.toNetwork(friendlyByteBuf);
 			}
-			friendlyByteBuf.writeItemStack(recipe.getResultItem(), false);
+			friendlyByteBuf.writeItemStack(recipe.getResultItem(null), false);
 		}
 		
 	}
