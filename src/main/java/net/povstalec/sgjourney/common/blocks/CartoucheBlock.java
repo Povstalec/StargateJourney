@@ -40,10 +40,9 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -127,7 +126,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			
         	if(blockEntity instanceof CartoucheEntity cartouche) 
         	{
-        		MutableComponent symbols = Component.literal(Address.addressIntArrayToString(cartouche.getAddress()));
+        		MutableComponent symbols = Component.literal(cartouche.getAddress().toString());
         		MutableComponent text = Component.literal("Address: ").withStyle(ChatFormatting.YELLOW).append(symbols.withStyle(ChatFormatting.AQUA));
         		
         		player.sendSystemMessage(text);

@@ -4,14 +4,16 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ClientStargateConfig
 {
+	public static SGJourneyConfigValue.BooleanValue stargate_variants;
 	public static SGJourneyConfigValue.BooleanValue unique_symbols;
 	public static SGJourneyConfigValue.BooleanValue enable_vortex;
-	public static SGJourneyConfigValue.BooleanValue flat_event_horizon;
+	public static SGJourneyConfigValue.IntValue event_horizon_distortion;
 	
 	public static SGJourneyConfigValue.BooleanValue use_movie_stargate_model;
+	public static SGJourneyConfigValue.BooleanValue alternate_movie_chevron_locking;
+	public static SGJourneyConfigValue.BooleanValue universe_front_rotates;
 	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
 	public static SGJourneyConfigValue.BooleanValue pegasus_stargate_back_lights_up;
-	public static SGJourneyConfigValue.BooleanValue tollan_stargate_back_lights_up;
 
 	public static SGJourneyConfigValue.RGBAValue universe_rgba;
 	public static SGJourneyConfigValue.RGBAValue milky_way_rgba;
@@ -21,6 +23,10 @@ public class ClientStargateConfig
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
+		stargate_variants = new SGJourneyConfigValue.BooleanValue(client, "client.stargate_variants", 
+				true, 
+				"If true you will be able to see Stargate Variants");
+		
 		unique_symbols = new SGJourneyConfigValue.BooleanValue(client, "client.unique_symbols", 
 				false, 
 				"If true Solar Systems will use unique Symbols");
@@ -29,13 +35,21 @@ public class ClientStargateConfig
 				false, 
 				"If true Wormholes will produce Vortex after a Kawoosh");
 		
-		flat_event_horizon = new SGJourneyConfigValue.BooleanValue(client, "client.flat_event_horizon", 
-				false, 
-				"If true the Event Horizon will be completely flat");
+		event_horizon_distortion = new SGJourneyConfigValue.IntValue(client, "client.event_horizon_distortion", 
+				25, 0, 25, 
+				"The amount of distortion the Stargate Event Horizon will experience");
 		
 		use_movie_stargate_model = new SGJourneyConfigValue.BooleanValue(client, "client.use_movie_stargate_model", 
 				false, 
 				"Decide if Milky Way Stargate should use the Movie Stargate model");
+		
+		universe_front_rotates = new SGJourneyConfigValue.BooleanValue(client, "client.universe_front_rotates", 
+				false, 
+				"If true only the front of the Universe Stargate will rotate");
+		
+		alternate_movie_chevron_locking = new SGJourneyConfigValue.BooleanValue(client, "client.alternate_movie_chevron_locking", 
+				false, 
+				"Decide if Movie Stargate model should use alternate chevron locking");
 		
 		milky_way_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.milky_way_stargate_back_lights_up", 
 				false, 
@@ -45,12 +59,8 @@ public class ClientStargateConfig
 				true, 
 				"Decide if Chevrons on the back of Pegasus Stargate should light up");
 		
-		tollan_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.tollan_stargate_back_lights_up", 
-				true, 
-				"Decide if Chevrons on the back of Tollan Stargate should light up");
-		
 		universe_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.universe_stargate", 
-				255, 255, 255, 255, 
+				200, 220, 255, 255, 
 				"The RGBA values in Universe Stargate's Event Horizon");
 
 		milky_way_rgba = new SGJourneyConfigValue.RGBAValue(client, "client.milky_way_stargate", 

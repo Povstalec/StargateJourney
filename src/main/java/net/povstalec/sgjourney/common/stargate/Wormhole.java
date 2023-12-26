@@ -21,10 +21,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.MatrixHelper;
-import net.povstalec.sgjourney.common.misc.Orientation;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class Wormhole implements ITeleporter
@@ -193,14 +193,22 @@ public class Wormhole implements ITeleporter
 	    		this.used = true;
 	        }
 		}
-		else if(CommonStargateConfig.reverse_wormhole_kills.get())
+		else
 		{
-			if(traveler instanceof Player player && player.isCreative())
-				player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+			if(CommonStargateConfig.reverse_wormhole_kills.get())
+			{
+				if(traveler instanceof Player player && player.isCreative())
+					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+				else
+				{
+		    		deconstructEvent(initialStargate, traveler, true);
+					traveler.kill();
+				}
+			}
 			else
 			{
-	    		deconstructEvent(initialStargate, traveler, true);
-				traveler.kill();
+				if(traveler instanceof Player player)
+					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 			}
 		}
     }

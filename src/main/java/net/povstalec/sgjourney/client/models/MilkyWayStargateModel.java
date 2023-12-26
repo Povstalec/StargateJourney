@@ -1,108 +1,83 @@
 package net.povstalec.sgjourney.client.models;
 
+import java.util.Optional;
+
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
-public class MilkyWayStargateModel extends AbstractStargateModel
+public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity>
 {
-	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_outer_ring.png");
-	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_inner_ring.png");
+	protected static final float MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT = 4F / 16;
+	protected static final float MOVIE_OUTER_CHEVRON_OUTER_CUTOFF_HEIGHT = 4.4F / 16; // Why this? Don't ask me, it just works for some reason
+	protected static final float MOVIE_OUTER_CHEVRON_X_OFFSET = (OUTER_CHEVRON_TOP_OFFSET / (OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_BOTTOM_HEIGHT)) * MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT;
+	protected static final float MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS = ((OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS - OUTER_CHEVRON_SIDE_BOTTOM_THICKNESS) / (OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_BOTTOM_HEIGHT)) * MOVIE_OUTER_CHEVRON_OUTER_CUTOFF_HEIGHT;
+	protected static final float MOVIE_OUTER_OUTER_X_OFFSET = -0.5F / 16;
+	protected static final float MOVIE_OUTER_OUTER_Y_OFFSET = 2F / 16;
+	protected static final float MOVIE_OUTER_OUTER_Y_LENGTH = 4F / 16;
 	
-	private final ModelPart ring;
-	private final ModelPart symbolRing;
-	private final ModelPart dividers;
-	private final ModelPart chevrons;
+	protected final ResourceLocation alternateStargateTexture;
+	protected final ResourceLocation alternateEngagedTexture;
 	
-	private static final int symbolCount = 39;
-	private static final double angle = (double) 360 / symbolCount;
-	private float rotation = 0.0F;
-	
-	public MilkyWayStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
+	public MilkyWayStargateModel()
 	{
-		super("milky_way");
-		this.ring = ring;
-		this.symbolRing = symbolRing;
-		this.dividers = dividers;
-		this.chevrons = chevrons;
+		super(new ResourceLocation(StargateJourney.MODID, "milky_way"), 39, new Stargate.RGBA(48, 49, 63, 255));
+		
+		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
+		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
 	}
 	
 	public void renderStargate(MilkyWayStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		this.renderRing(stargate, stack, source, combinedLight, combinedOverlay, false);
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
+		this.renderOuterRing(stack, consumer, source, combinedLight);
 		
-		this.renderSymbolRing(stargate, stack, source, combinedLight, combinedOverlay);
+		this.renderSymbolRing(stargate, stack, consumer, source, combinedLight, this.rotation);
 
 		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay);
 	}
 	
-	protected void renderRing(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay, boolean isBottomCovered)
+	@Override
+	protected ResourceLocation getStargateTexture(MilkyWayStargateEntity stargate)
 	{
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
-		ModelPart outerRing = this.ring.getChild("outer_ring");
-		ModelPart backRing = this.ring.getChild("back_ring");
-		ModelPart innerRing = this.ring.getChild("inner_ring");
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+			return variant.get().getTexture();
 		
-		int start = 0;
-		
-		if(isBottomCovered)
-			start = 1;
-		
-		for(int i = start; i < BOXES_PER_RING; i++)
-		{
-			outerRing.getChild("outer_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
-		for(int i = 0; i < BOXES_PER_RING; i++)
-		{
-			backRing.getChild("back_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
-		for(int i = start; i < BOXES_PER_RING; i++)
-		{
-			innerRing.getChild("inner_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
+		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ?
+				this.alternateStargateTexture : this.stargateTexture;
 	}
-	
-	protected void renderSymbolRing(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		VertexConsumer symbolRingTexture = source.getBuffer(RenderType.entitySolid(SYMBOL_RING_TEXTURE));
-		
-		for(int i = 0; i < symbolCount; i++)
-		{
-			this.getSymbol(i).setRotation(0.0F, 0.0F, (float) Math.toRadians(180 - angle * i + this.rotation));
-		}
-		for(int i = 0; i < symbolCount; i++)
-		{
-			this.getSymbol(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
-		}
-		for(int i = 0; i < symbolCount; i++)
-		{
-			this.getSymbol(i).render(stack, source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, i))), combinedLight, combinedOverlay, 48.0F/255.0F, 49.0F/255.0F, 63.0F/255.0F, 1.0F);
-		}
 
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
-		this.dividers.setRotation(0.0F, 0.0F, (float) Math.toRadians(this.rotation));
-		this.dividers.render(stack, ringTexture, combinedLight, combinedOverlay);
+	@Override
+	protected ResourceLocation getEngagedTexture(MilkyWayStargateEntity stargate)
+	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+			return variant.get().getEngagedTexture();
+		
+		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ?
+				this.alternateEngagedTexture : this.engagedTexture;
 	}
 	
-	protected ModelPart getSymbol(int symbol)
+	protected boolean useMovieStargateModel(MilkyWayStargateEntity stargate)
 	{
-		return this.symbolRing.getChild("symbol_" + symbol);
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && variant.get().useAlternateModel().isPresent())
+			return variant.get().useAlternateModel().get();
+		
+		return ClientStargateConfig.use_movie_stargate_model.get();
 	}
 	
 	public void setRotation(float rotation)
@@ -110,258 +85,594 @@ public class MilkyWayStargateModel extends AbstractStargateModel
 		this.rotation = rotation;
 	}
 	
-	protected void renderChevrons(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+	protected void renderMovieChevronFront(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
-		if(ClientStargateConfig.use_movie_stargate_model.get())
+		renderLeftMovieChevron(stack, consumer, source, combinedLight);
+		renderLeftMovieOuterChevron(stack, consumer, source, combinedLight);
+		renderRightMovieChevron(stack, consumer, source, combinedLight);
+		renderRightMovieOuterChevron(stack, consumer, source, combinedLight);
+	}
+	
+	@Override
+	protected void renderPrimaryChevron(MilkyWayStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged)
+	{
+		if(!useMovieStargateModel(stargate))
 		{
-			this.doMovieChevron(stargate);
-			this.renderMoviePrimaryChevron(stargate, stack, source, combinedLight, combinedOverlay);
+			super.renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, chevronEngaged);
+			return;
 		}
-		else
-			renderMilkyWayPrimaryChevron(stargate, stack, source, combinedLight, combinedOverlay);
 		
-		for(int i = 1; i <= 8; i++)
+		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
+		
+		stack.pushPose();
+		stack.translate(0, 3.5F - 2.5F/16, 0);
+		
+		renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate));
+		renderMovieChevronFront(stack, consumer, source, light);
+		renderOuterChevronBack(stack, consumer, source, light);
+		
+		stack.popPose();
+	}
+
+	@Override
+	protected boolean isPrimaryChevronRaised(MilkyWayStargateEntity stargate)
+	{
+		if(useMovieStargateModel(stargate))
 		{
-			this.renderChevron(stargate, stack, source, combinedLight, combinedOverlay, i);
+			if(ClientStargateConfig.alternate_movie_chevron_locking.get())
+				return stargate.isConnected();
+			else 
+				return false;
 		}
-	}
-	
-	protected ModelPart getChevron(int chevron)
-	{
-		return this.chevrons.getChild("chevron_" + chevron);
-	}
-	
-	protected ModelPart getMovieChevron()
-	{
-		return this.chevrons.getChild("movie_chevron");
-	}
-	
-	protected ModelPart getChevronLight(int chevron)
-	{
-		return this.getChevron(chevron).getChild("chevron_light");
-	}
-	
-	protected ModelPart getOuterChevron(int chevron)
-	{
-		return this.getChevron(chevron).getChild("outer_chevron");
-	}
-	
-	protected void renderChevron(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay, int chevronNumber)
-	{
-		// Make sure this is at the top, otherwise the lit up chevrons are rendered under the not lit chevrons
-		int chevron = stargate.getEngagedChevrons()[chevronNumber];
 		
-		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? CHEVRON_TEXTURE : CHEVRON_FRONT_TEXTURE));
-		this.getChevron(chevron).render(stack, chevronTexture, combinedLight, combinedOverlay);
+		if(stargate.isChevronRaised())
+			return true;
 		
-		if(stargate.chevronsRendered() >= chevronNumber)
-		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? ENGAGED_CHEVRON_TEXTURE : ENGAGED_CHEVRON_FRONT_TEXTURE));
-			this.getChevron(chevron).render(stack, engagedChevronTexture, 255, combinedOverlay);
-		}
+		return false;
 	}
-	
-	protected void controlChevrons(MilkyWayStargateEntity stargate, int chevronsRaised, boolean onlyOuter)
+
+	@Override
+	protected boolean isPrimaryChevronLowered(MilkyWayStargateEntity stargate)
 	{
-		for(int i = 1; i <= chevronsRaised; i++)
-		{
-			int chevron = stargate.getEngagedChevrons()[i];
+		return isPrimaryChevronRaised(stargate);
+	}
+
+	@Override
+	protected boolean isPrimaryChevronEngaged(MilkyWayStargateEntity stargate)
+	{
+		boolean useMovieStargateModel = useMovieStargateModel(stargate);
+		
+		if(!useMovieStargateModel && stargate.isChevronRaised())
+			return true;
 			
-			if(!onlyOuter)
-				this.getChevronLight(chevron).y = 2;
-			else
-				this.getChevronLight(chevron).y = 0;
-			this.getOuterChevron(chevron).y = -2;
-		}
+		if(stargate.isConnected())
+			return stargate.isDialingOut() || stargate.getKawooshTickCount() > 0;
 		
-		for(int i = chevronsRaised + 1; i < 9; i++)
-		{
-			int chevron = stargate.getEngagedChevrons()[i];
-			
-			this.getChevronLight(chevron).y = 0;
-			this.getOuterChevron(chevron).y = 0;
-		}
+		return false;
 	}
 	
-	protected void controlChevron(MilkyWayStargateEntity stargate, int chevronRaised)
+	@Override
+	protected boolean isChevronRaised(MilkyWayStargateEntity stargate, int chevronNumber)
 	{
-		for(int i = 0; i < 9; i++)
-		{
-			int chevron = stargate.getEngagedChevrons()[i];
-			
-			this.getChevronLight(chevron).y = 0;
-			this.getOuterChevron(chevron).y = 0;
-		}
+		if(!useMovieStargateModel(stargate))
+			return false;
 		
-		int chevron = stargate.getEngagedChevrons()[chevronRaised];
-		
-		this.getChevronLight(chevron).y = 2;
-		this.getOuterChevron(chevron).y = -2;
-	}
-	
-	protected void doMovieChevron(MilkyWayStargateEntity stargate)
-	{
-		//boolean raiseChevron = stargate.isChevronRaised && stargate.getCurrentSymbol() != 0;
+		boolean alternateChevronLocking = ClientStargateConfig.alternate_movie_chevron_locking.get();
 		int chevronsRendered = stargate.chevronsRendered();
 		
-		if(stargate.isConnected())
-			controlChevrons(stargate, chevronsRendered, true);
-		else
+		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
+			return true;
+		
+		if(stargate.isChevronRaised())
 		{
-			if(stargate.isChevronRaised)
+			if(stargate.getCurrentSymbol() == 0 || chevronsRendered >= 8)
 			{
-				if(stargate.getCurrentSymbol() == 0)
-					controlChevrons(stargate, chevronsRendered, false);
-				else
-				{
-					int chevronNumber = chevronsRendered + 1;
-					
-					if(chevronNumber < 9)
-						controlChevron(stargate, chevronNumber);
-					else
-						controlChevrons(stargate, chevronsRendered, false);
-				}
+				if(chevronNumber < chevronsRendered + 1)
+					return !alternateChevronLocking;
 			}
 			else
-				controlChevrons(stargate, 0, false);
+			{
+				if(chevronNumber == chevronsRendered + 1)
+					return true;
+			}
 		}
+		
+		return false;
+	}
+
+	@Override
+	protected boolean isChevronLowered(MilkyWayStargateEntity stargate, int chevronNumber)
+	{
+		if(!useMovieStargateModel(stargate))
+			return false;
+		
+		boolean alternateChevronLocking = ClientStargateConfig.alternate_movie_chevron_locking.get();
+		int chevronsRendered = stargate.chevronsRendered();
+		
+		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
+			return true;
+		
+		if(stargate.isChevronRaised())
+		{
+			if(stargate.getCurrentSymbol() == 0)
+			{
+				if(chevronNumber < chevronsRendered + 1)
+					return false;
+			}
+			else
+			{
+				if(chevronNumber == chevronsRendered + 1)
+					return true;
+			}
+		}
+		
+		if(alternateChevronLocking && chevronNumber < chevronsRendered + 1)
+			return true;
+		
+		return false;
 	}
 	
-	protected void renderMoviePrimaryChevron(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+	protected void renderLeftMovieChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
-		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), false)));
-		this.getMovieChevron().render(stack, chevronTexture, combinedLight, combinedOverlay);
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
 		
-		if(!stargate.isChevronRaised && stargate.isConnected())
-		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), true)));
+		//Left Top
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				47F/64, 34F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				47F/64, 35F/64,
+				
+				-OUTER_CHEVRON_TOP_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				50F/64, 35F/64,
+				
+				-OUTER_CHEVRON_TOP_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				50F/64, 34F/64);
+		
+		//Left Front
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				47F/64, 35F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				OUTER_CHEVRON_Z_OFFSET,
+				(52F - MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS * 16)/64, (44F - MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT * 16)/64,
+				
+				-MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				OUTER_CHEVRON_Z_OFFSET,
+				(54F - MOVIE_OUTER_CHEVRON_X_OFFSET * 16)/64, (44F - MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT * 16)/64,
+				
+				-OUTER_CHEVRON_TOP_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				50F/64, 35F/64);
+		
+		//Left Right
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 1, 0,
+				-OUTER_CHEVRON_TOP_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				54F/64, 35F/64,
+				
+				-MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				OUTER_CHEVRON_Z_OFFSET,
+				54F/64, 40F/64,
+				
+				-MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				STARGATE_RING_OFFSET,
+				55F/64, 40F/64,
+				
+				-OUTER_CHEVRON_TOP_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				55F/64, 35F/64);
+		
+		//Left Left
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				46F/64, 35F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				STARGATE_RING_OFFSET,
+				46F/64, 40F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				OUTER_CHEVRON_Z_OFFSET,
+				47F/64, 40F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				47F/64, 35F/64);
+		
+		//Left Bottom
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+				-MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				STARGATE_RING_OFFSET,
+				(52F - MOVIE_OUTER_CHEVRON_X_OFFSET * 16)/64, 40F/64,
+				
+				-MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				OUTER_CHEVRON_Z_OFFSET,
+				(52F - MOVIE_OUTER_CHEVRON_X_OFFSET * 16)/64, 39F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				OUTER_CHEVRON_Z_OFFSET,
+				(54F - MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS * 16)/64, 39F/64,
 			
-			if(stargate.isDialingOut() || stargate.getKawooshTickCount() > 0)
-				this.getMovieChevron().render(stack, engagedChevronTexture, 255, combinedOverlay);
-		}
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				STARGATE_RING_OFFSET,
+				(54F - MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS * 16)/64, 40F/64);
 	}
 	
-	protected void renderMilkyWayPrimaryChevron(MilkyWayStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+	protected void renderLeftMovieOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
+
+		//Left Top
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+				-(OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				47F/64, 45F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				47F/64, 46F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				50F/64, 46F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				50F/64, 45F/64);
 		
-		if(stargate.isChevronRaised)
-		{
-			this.getChevronLight(0).y = 2;
-			this.getOuterChevron(0).y = -2;
-		}
-		else
-		{
-			this.getChevronLight(0).y = 0;
-			this.getOuterChevron(0).y = 0;
-		}
+		//Left Front
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				-(OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				47F/64, 46F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				OUTER_CHEVRON_Z_OFFSET,
+				53F/64, 55F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				53F/64, 51F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				50F/64, 46F/64);
 		
-		VertexConsumer chevron_texture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), false)));
-		this.getChevron(0).render(stack, chevron_texture, combinedLight, combinedOverlay);
-		
-		if((stargate.isConnected() && stargate.isDialingOut()) || stargate.isChevronRaised || stargate.getKawooshTickCount() > 0)
-		{
-			VertexConsumer engaged_chevron_texture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.milky_way_stargate_back_lights_up.get(), true)));
-			this.getChevron(0).render(stack, engaged_chevron_texture, 255, combinedOverlay);
-		}
+		//Left Left
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				OUTER_CHEVRON_Z_OFFSET,
+				46F/64, 55F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				47F/64, 46F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				47F/64, 46F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				STARGATE_RING_OFFSET,
+				46F/64, 55F/64);
+
+		//Left Right 1
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				53F/64, 51F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				OUTER_CHEVRON_Z_OFFSET,
+				53F/64, 55F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				STARGATE_RING_OFFSET,
+				54F/64, 55F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				54F/64, 51F/64);
+
+		//Left Right 2
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 1, 0,
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				53F/64, 46F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				53F/64, 51F/64,
+				
+				-(MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET),
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				54F/64, 51F/64,
+				
+				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET),
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				54F/64, 46F/64);
 	}
 	
-	//============================================================================================
-	//*******************************************Layers*******************************************
-	//============================================================================================
-	
-	public static LayerDefinition createRingLayer()
+	protected void renderRightMovieChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition ring = meshdefinition.getRoot();
-        
-		createRing(ring);
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
 		
-		return LayerDefinition.create(meshdefinition, 64, 64);
+		//Right Top
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+				OUTER_CHEVRON_TOP_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				60F/64, 34F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				60F/64, 35F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				63F/64, 35F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				63F/64, 34F/64);
+		
+		//Right Front
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			OUTER_CHEVRON_TOP_OFFSET,
+			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+			OUTER_CHEVRON_Z_OFFSET,
+			60F/64, 35F/64,
+			
+			MOVIE_OUTER_CHEVRON_X_OFFSET,
+			-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+			OUTER_CHEVRON_Z_OFFSET,
+			(56F + MOVIE_OUTER_CHEVRON_X_OFFSET * 16)/64, (44F - MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT * 16)/64,
+			
+			MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET,
+			-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+			OUTER_CHEVRON_Z_OFFSET,
+			(58F + MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS * 16)/64, (44F - MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT * 16)/64,
+			
+			OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS,
+			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+			OUTER_CHEVRON_Z_OFFSET,
+			63F/64, 35F/64);
+		
+		//Right Right
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+			OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS,
+			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+			OUTER_CHEVRON_Z_OFFSET,
+			63F/64, 35F/64,
+			
+			MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET,
+			-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+			OUTER_CHEVRON_Z_OFFSET,
+			63F/64, 40F/64,
+			
+			MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET,
+			-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+			STARGATE_RING_OFFSET,
+			64F/64, 40F/64,
+			
+			OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS,
+			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+			STARGATE_RING_OFFSET,
+			64F/64, 35F/64);
+		
+		//Right Left
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 1, 0,
+			OUTER_CHEVRON_TOP_OFFSET,
+			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+			STARGATE_RING_OFFSET,
+			55F/64, 35F/64,
+			
+			MOVIE_OUTER_CHEVRON_X_OFFSET,
+			-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+			STARGATE_RING_OFFSET,
+			55F/64, 40F/64,
+			
+			MOVIE_OUTER_CHEVRON_X_OFFSET,
+			-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+			OUTER_CHEVRON_Z_OFFSET,
+			56F/64, 40F/64,
+			
+			OUTER_CHEVRON_TOP_OFFSET,
+			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
+			OUTER_CHEVRON_Z_OFFSET,
+			56F/64, 35F/64);
+		
+		//Right Bottom
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+				MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				OUTER_CHEVRON_Z_OFFSET,
+				(56F + MOVIE_OUTER_CHEVRON_X_OFFSET * 16)/64, 39F/64,
+				
+				MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				STARGATE_RING_OFFSET,
+				(56F + MOVIE_OUTER_CHEVRON_X_OFFSET * 16)/64, 40F/64,
+				
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				STARGATE_RING_OFFSET,
+				(58F + MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS * 16)/64, 40F/64,
+			
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT,
+				OUTER_CHEVRON_Z_OFFSET,
+				(58F + MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS * 16)/64, 39F/64);
 	}
 	
-	public static LayerDefinition createSymbolRingLayer()
+	protected void renderRightMovieOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition symbolRing = meshdefinition.getRoot();
-        
-		createSymbolRing(symbolRing, symbolCount);
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
 		
-		return LayerDefinition.create(meshdefinition, 8, 8);
-	}
-	
-	public static LayerDefinition createDividerLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition dividers = meshdefinition.getRoot();
+		//Right Top
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+				OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				60F/64, 46F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				60F/64, 45F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				63F/64, 45F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				63F/64, 46F/64);
 		
-		createDividers(dividers, symbolCount);
+		//Right Front
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				OUTER_CHEVRON_Z_OFFSET,
+				57F/64, 55F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				63F/64, 46F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				60F/64, 46F/64,
+				
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				57F/64, 51F/64);
 		
-		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	public static LayerDefinition createChevronLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition chevrons = meshdefinition.getRoot();
-		
-		createMovieChevron(chevrons.addOrReplaceChild("movie_chevron", CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, 0.0F)));
-		
-		for(int i = 0; i < 9; i++)
-		{
-			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i))));
-		}
-		
-		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	protected static void createMovieChevron(PartDefinition chevron)
-	{
-		//	_
-		//	V
-		//	
-		PartDefinition chevronLight = chevron.addOrReplaceChild("chevron_light", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		createChevronLight(chevronLight);
-		
-		//	
-		//	\ /
-		//	
-		PartDefinition outerChevron = chevron.addOrReplaceChild("outer_chevron", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		createOuterMovieChevron(outerChevron);
-		
-		PartDefinition backChevron = chevron.addOrReplaceChild("back_chevron", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		createBackChevron(backChevron);
-	}
-	
-	protected static void createOuterMovieChevron(PartDefinition outerChevron)
-	{
-		outerChevron.addOrReplaceChild("chevron_right_f", CubeListBuilder.create()
-				.texOffs(16, 29)
-				.addBox(-1.0F, 2.0F, 0.0F, 3.0F, 8.0F, 1.0F), 
-				PartPose.offsetAndRotation(2.0F, 46.0F, 3.5F, 0.0F, 0.0F, (float) Math.toRadians(-22.5)));
-		outerChevron.addOrReplaceChild("chevron_right_f2", CubeListBuilder.create()
-				.texOffs(25, 29)
-				.addBox(0.0F, 0.0F, 0.0F, 2.0F, 2.0F, 1.0F), 
-				PartPose.offsetAndRotation(2.0F, 46.0F, 3.5F, 0.0F, 0.0F, (float) Math.toRadians(-22.5)));
-		outerChevron.addOrReplaceChild("chevron_right_f3", CubeListBuilder.create()
-				.texOffs(31, 29)
-				.addBox(1.0F, -1.0F, 0.0F, 1.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(2.0F, 46.0F, 3.5F, 0.0F, 0.0F, (float) Math.toRadians(-22.5)));
-		
-		outerChevron.addOrReplaceChild("chevron_left_f", CubeListBuilder.create()
-				.texOffs(16, 29)
-				.addBox(-2.0F, 2.0F, 0.0F, 3.0F, 8.0F, 1.0F), 
-				PartPose.offsetAndRotation(-2.0F, 46.0F, 3.5F, 0.0F, 0.0F, (float) Math.toRadians(22.5)));
-		outerChevron.addOrReplaceChild("chevron_left_f2", CubeListBuilder.create()
-				.texOffs(25, 29)
-				.addBox(-2.0F, 0.0F, 0.0F, 2.0F, 2.0F, 1.0F), 
-				PartPose.offsetAndRotation(-2.0F, 46.0F, 3.5F, 0.0F, 0.0F, (float) Math.toRadians(22.5)));
-		outerChevron.addOrReplaceChild("chevron_left_f3", CubeListBuilder.create()
-				.texOffs(31, 29)
-				.addBox(-2.0F, -1.0F, 0.0F, 1.0F, 1.0F, 1.0F), 
-				PartPose.offsetAndRotation(-2.0F, 46.0F, 3.5F, 0.0F, 0.0F, (float) Math.toRadians(22.5)));
+		//Right Right
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+				OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				63F/64, 46F/64,
+				
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				OUTER_CHEVRON_Z_OFFSET,
+				64F/64, 55F/64,
+				
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				STARGATE_RING_OFFSET,
+				64F/64, 55F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + 2 * OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				63F/64, 46F/64);
+
+		//Right Left 1
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				OUTER_CHEVRON_Z_OFFSET,
+				57F/64, 55F/64,
+				
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				57F/64, 51F/64,
+				
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				56F/64, 51F/64,
+				
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET - MOVIE_OUTER_OUTER_Y_LENGTH,
+				STARGATE_RING_OFFSET,
+				56F/64, 55F/64);
+
+		//Right Left 2
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 1, 0,
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				57F/64, 51F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				OUTER_CHEVRON_Z_OFFSET,
+				57F/64, 46F/64,
+				
+				OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS + MOVIE_OUTER_OUTER_X_OFFSET,
+				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				56F/64, 46F/64,
+				
+				MOVIE_OUTER_CHEVRON_BOTTOM_THICKNESS + MOVIE_OUTER_CHEVRON_X_OFFSET + MOVIE_OUTER_OUTER_X_OFFSET,
+				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + MOVIE_OUTER_CHEVRON_CUTOFF_HEIGHT - MOVIE_OUTER_OUTER_Y_OFFSET,
+				STARGATE_RING_OFFSET,
+				56F/64, 51F/64);
 	}
 }

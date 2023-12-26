@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"GIG",
+		"G G",
+		" G "
+	],
+	
+	"key": 
+	{
+		"I": { "item": "minecraft:iron_nugget" },
+		"G": { "item": "minecraft:glass_pane" }
+		
+	},
+	
+	"result": { "item": "sgjourney:vial", "count": 1 }
+}

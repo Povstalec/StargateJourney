@@ -1,0 +1,23 @@
+{
+	"loader": "forge:separate_transforms",
+	"gui_light": "front",
+	"base":
+	{
+		"parent": "sgjourney:item/jaffa_staff_weapon_closed"
+	},
+	"perspectives":
+	{
+		"gui":
+		{
+			"parent": "sgjourney:item/jaffa_staff_weapon_inventory"
+		},
+		"fixed":
+		{
+			"parent": "sgjourney:item/jaffa_staff_weapon_inventory"
+		},
+		"ground":
+		{
+			"parent": "sgjourney:item/jaffa_staff_weapon_inventory"
+		}
+	}
+}

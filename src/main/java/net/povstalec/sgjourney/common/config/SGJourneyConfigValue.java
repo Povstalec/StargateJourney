@@ -36,12 +36,16 @@ public abstract class SGJourneyConfigValue
 	public static class IntValue
 	{
 		public ForgeConfigSpec.IntValue int_value;
+		protected int min;
+		protected int max;
 		
 		public IntValue(ForgeConfigSpec.Builder builder, String path, int defaultValue, int min, int max, String comment)
 		{
 			this.int_value = builder
 					.comment(comment)
 					.defineInRange(path, defaultValue, min, max);
+			this.min = min;
+			this.max = max;
 		}
 		
 		public void set(int value)
@@ -58,6 +62,16 @@ public abstract class SGJourneyConfigValue
 		public int getDefault()
 		{
 			return int_value.getDefault();
+		}
+		
+		public int getMin()
+		{
+			return this.min;
+		}
+		
+		public int getMax()
+		{
+			return this.max;
 		}
 	}
 	

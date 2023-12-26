@@ -1,0 +1,19 @@
+{
+	"name": "sgjourney:destiny",
+	
+	"fallback": "minecraft:empty",
+	
+	"elements":
+	[
+		{
+			"weight": 1,
+			"element":
+			{
+				"location": "sgjourney:stargate/universe/destiny/destiny_gate_room",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}

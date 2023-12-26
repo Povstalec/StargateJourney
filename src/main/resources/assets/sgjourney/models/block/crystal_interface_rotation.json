@@ -1,0 +1,10 @@
+{
+	"parent": "sgjourney:block/interface_template",
+	"textures":
+	{
+		"bottom": "sgjourney:block/crystal_interface_back_rotation",
+		"side": "sgjourney:block/crystal_interface_side_rotation",
+		"top": "sgjourney:block/crystal_interface_top",
+		"front": "sgjourney:block/crystal_interface_front"
+	}
+}

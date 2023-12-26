@@ -1,0 +1,19 @@
+{
+	"name": "sgjourney:stargate_pedestal_deep_dark",
+	
+	"fallback": "minecraft:empty",
+	
+	"elements":
+	[
+		{
+			"weight": 1,
+			"element":
+			{
+				"location": "sgjourney:stargate/milky_way/pedestal/deep_dark/stargate_pedestal_deep_dark_1",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}

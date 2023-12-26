@@ -13,6 +13,9 @@ out
 *.iml
 .idea
 
+# vscode
+.vscode
+
 # gradle
 build
 .gradle
@@ -25,3 +28,6 @@ run
 forge*changelog.txt
 /.apt_generated/
 /.apt_generated_tests/
+
+# Log files
+logs

@@ -52,37 +52,53 @@
 	"block.sgjourney.basic_interface": "Z\u00e1kladn\u00ed rozhran\u00ed",
 	"block.sgjourney.crystal_interface": "Krystalov\u00e9 rozhran\u00ed",
 	"block.sgjourney.advanced_crystal_interface": "Pokro\u010dil\u00e9 krystalov\u00e9 rozhran\u00ed",
+
+	"block.sgjourney.crystallizer": "Krystalizér",
+	"block.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
+	"block.sgjourney.naquadah_liquidizer": "Zkapalňovač naquadahu",
+	"block.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
 	
 	"block.sgjourney.ancient_gene_detector": "Detektor antick\u00e9ho genu",
 	
-	"block.sgjourney.zpm_plug": "ZPM Plug",
 	"block.sgjourney.zpm_hub": "ZPM Hub",
+	"block.sgjourney.zpm_port": "ZPM Port",
+	"block.sgjourney.zpm_plug": "ZPM zástrčka",
 	
-	"fluid_type.sgjourney.liquid_naquadah": "Tekut\u00fd naquadah",
+	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
+	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Vyt\u011b\u017een\u00fd naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadahov\u00e1 slitina",
 	"item.sgjourney.pure_naquadah": "\u010cist\u00fd naquadah",
 	"item.sgjourney.naquadah": "Naquadah vojensk\u00e9 \u00farovn\u011b",
-	"item.sgjourney.liquid_naquadah_bucket": "Kbel\u00edk tekut\u00e9ho naquadahu",
-	"item.sgjourney.liquid_naquadah_bottle": "Lahvi\u010dka tekut\u00e9ho naquadahu",
+	"item.sgjourney.liquid_naquadah_bucket": "Kbelík tekutého naquadahu",
+	"item.sgjourney.heavy_liquid_naquadah_bucket": "Kbelík těžkého tekutého naquadahu",
+	"item.sgjourney.vial": "Ampulka",
 	
 	"item.sgjourney.naquadah_rod": "Naquadahov\u00e1 ty\u010d",
 	"item.sgjourney.reaction_chamber": "Reak\u010dn\u00ed komora",
 	"item.sgjourney.plasma_converter": "Plasmov\u00fd p\u0159evad\u011b\u010d",
 
+	"item.sgjourney.crystal_base": "Základní krystal",
+	"item.sgjourney.advanced_crystal_base": "Pokročilý základní krystal",
+
 	"item.sgjourney.control_crystal": "Ovl\u00e1dac\u00ed krystal",
 	"item.sgjourney.large_control_crystal": "Velk\u00fd ovl\u00e1dac\u00ed krystal",
 	"item.sgjourney.materialization_crystal": "Materializa\u010dn\u00ed krystal",
 	"item.sgjourney.energy_crystal": "Energetick\u00fd krystal",
+	"item.sgjourney.transfer_crystal": "Přenosový krystal",
 	"item.sgjourney.communication_crystal": "Komunika\u010dn\u00ed krystal",
 	"item.sgjourney.memory_crystal": "Pam\u011b\u0165ov\u00fd krystal",
 
-	"item.sgjourney.advanced_control_crystal": "Pokro\u010dil\u00fd ovl\u00e1dac\u00ed krystal",
-	"item.sgjourney.advanced_materialization_crystal": "Pokro\u010dil\u00fd materializa\u010dn\u00ed krystal",
-	"item.sgjourney.advanced_energy_crystal": "Pokro\u010dil\u00fd energetick\u00fd krystal",
-	"item.sgjourney.advanced_communication_crystal": "Pokro\u010dil\u00fd komunika\u010dn\u00ed krystal",
-	"item.sgjourney.advanced_memory_crystal": "Pokro\u010dil\u00fd pam\u011b\u0165ov\u00fd krystal",
+	"item.sgjourney.advanced_control_crystal": "Pokročilý ovládací krystal",
+	"item.sgjourney.advanced_materialization_crystal": "Pokročilý materializační krystal",
+	"item.sgjourney.advanced_energy_crystal": "Pokročilý energetický krystal",
+	"item.sgjourney.advanced_communication_crystal": "Pokročilý komunikační krystal",
+	"item.sgjourney.advanced_transfer_crystal": "Pokročilý přenosový krystal",
+	"item.sgjourney.advanced_memory_crystal": "Pokročilý paměťový krystal",
+	
+	"item.sgjourney.stargate_upgrade_crystal": "Krystal pro upgradování hvězdné brány",
+	"item.sgjourney.stargate_variant_crystal": "Krystal varianty hvězdné brány",
 	
 	"item.sgjourney.naquadah_sword": "Naquadahov\u00fd me\u010d",
 	"item.sgjourney.naquadah_pickaxe": "Naquadahov\u00fd krump\u00e1\u010d",
@@ -96,7 +112,7 @@
 	"item.sgjourney.matok": "Ty\u010dov\u00e1 zbra\u0148",
 	
 	"item.sgjourney.pda": "PDA",
-	"item.sgjourney.zero_point_module": "Modul nulov\u00e9ho bodu",
+	"item.sgjourney.zero_point_module": "ZPM",
 	"item.sgjourney.personal_shield_emitter": "Gener\u00e1tor osobn\u00edho \u0161t\u00edtu",
 	
 	"item.sgjourney.syringe": "Injekce",
@@ -132,22 +148,35 @@
 	"sounds.sgjourney.milky_way_dhd_press" : "DHD zmáčknuto",
 	
 	"sounds.sgjourney.matok_fire" : "střela z tyčové zbraně",
+	"sounds.sgjourney.matok_attack" : "útok z tyčové zbraně",
+	"sounds.sgjourney.matok_open" : "tyčové zbraň se otevře",
+	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
 	
 	"filled_map.sgjourney.archeologist": "Archeologova mapa",
 	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu boh\u016f",
+	"filled_map.sgjourney.chappa_ai": "Mapa k Chappa'ai",
 	
 	"itemGroup.stargate_blocks": "Hv\u011bzdn\u00e1 br\u00e1na - Bloky",
 	"itemGroup.stargate_items": "Hv\u011bzdn\u00e1 br\u00e1na - P\u0159edm\u011bty",
 
 	"screen.sgjourney.archeology_table": "Arheologick\u00fd st\u016fl",
-	"screen.sgjourney.basic_interface": "Z\u00e1kladn\u00ed rozhran\u00ed",
-	"screen.sgjourney.crystal_interface": "Krystalov\u00e9 rozhran\u00ed",
-	"screen.sgjourney.transport_rings": "Transportn\u00ed kruhy",
-	"screen.sgjourney.naquadah_generator": "Naquadahov\u00fd Gener\u00e1tor",
+	"screen.sgjourney.basic_interface": "Základní rozhraní",
+	"screen.sgjourney.crystal_interface": "Krystalové rozhraní",
+	"screen.sgjourney.advanced_crystal_interface": "Pokročilé krystalové rozhraní",
+	"screen.sgjourney.transport_rings": "Transportní kruhy",
+	"screen.sgjourney.naquadah_generator": "Naquadahový Generátor",
 	"screen.sgjourney.dhd": "DHD",
+
 	"screen.sgjourney.zpm_hub": "ZPM Hub",
+	"screen.sgjourney.zpm_port": "ZPM Port",
+	"screen.sgjourney.zpm_plug": "ZPM zástrčka",
+
+	"screen.sgjourney.crystallizer": "Krystalizér",
+	"screen.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
+	"screen.sgjourney.naquadah_liquidizer": "Zkapalňovač naquadahu",
+	"screen.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
 	
 	"biome.sgjourney.abydos_desert": "Abydosk\u00e1 pou\u0161\u0165",
 	"biome.sgjourney.abydos_spires": "Abydosk\u00e9 v\u011b\u017ee",
@@ -223,11 +252,14 @@
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symboly",
-	"tooltip.sgjourney.point_of_origin": "V\u00fdchoz\u00ed bod",
+	"tooltip.sgjourney.point_of_origin": "Výchozí bod",
 	"tooltip.sgjourney.address": "Adresa",
 	"tooltip.sgjourney.energy": "Energie",
 	"tooltip.sgjourney.dimension": "Dimenze",
-	"tooltip.sgjourney.mode": "M\u00f3d",
+	"tooltip.sgjourney.mode": "Mód",
+	"tooltip.sgjourney.upgraded": "Upgradováno",
+	"tooltip.sgjourney.variant": "Varianta",
+	"tooltip.sgjourney.stargate_type": "Typ brány",
 	
 	"tooltip.sgjourney.has_control_crystal": "M\u00e1 ovl\u00e1dac\u00ed krystal",
 	"tooltip.sgjourney.not_added_to_network": "Nebude p\u0159id\u00e1no to s\u00edt\u011b",
@@ -263,5 +295,21 @@
 	"message.sgjourney.pda.has_naquadah_in_bloodstream": "M\u00e1 v krvi naquadah",
 	
 	"message.sgjourney.stargate.one_way_wormhole": "Nen\u00ed mo\u017en\u00e9 proj\u00edt \u010derv\u00ed d\u00edrou t\u00edmto sm\u011brem",
-	"message.sgjourney.stargate.symbol_encoded": "Symbol byl ji\u017e zad\u00e1n"
+	"message.sgjourney.stargate.symbol_encoded": "Symbol byl ji\u017e zad\u00e1n",
+	
+	"message.sgjourney.command.get_address.no_galaxy": "Nenacházíte se v žádné galaxii",
+	"message.sgjourney.command.get_address.located": "se nenachází v",
+	"message.sgjourney.command.get_address.address": "Addresa",
+	"message.sgjourney.command.get_address.in_galaxy": "v",
+	"message.sgjourney.command.get_address.is": "je",
+	"message.sgjourney.command.get_extragalactic_address.address": "Mimogalaktická adresa",
+	"message.sgjourney.command.get_extragalactic_address.is": "je",
+	"message.sgjourney.command.stellar_update": "Hvězdný update dokončen",
+	"message.sgjourney.command.stargate_network_version": "Verze sítě hvězdných bran",
+	"message.sgjourney.command.stargate_network_settings.changed": "Nastavení sítě hvězdných bran změněny",
+	"message.sgjourney.command.stargate_network_settings.use_datapack_addresses": "Používat adresy z datových balíčků",
+	"message.sgjourney.command.stargate_network_settings.generate_random_solar_systems": "Generovat náhodné solární systémy",
+	"message.sgjourney.command.stargate_network_settings.random_addresses_from_seed": "Náhodné adresy ze semínka",
+	"message.sgjourney.command.get_stargates": "Hvězdné brány v dimenzi",
+	"message.sgjourney.command.get_transporters": "Transportéry v dimenzi"
 }

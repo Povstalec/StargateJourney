@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import java.util.Random;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -8,12 +10,21 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class ClassicStargateEntity extends AbstractStargateEntity
 {
+	public static final float CLASSIC_THICKNESS = 8.0F;
+	public static final float HORIZONTAL_CENTER_CLASSIC_HEIGHT = (CLASSIC_THICKNESS / 2) / 16;
+	
 	private static final short ROTATION_TICK_DURATION = 40;
 	private static final short CHEVRON_LOCK_TICK_DURATION = 20;
 	
@@ -25,38 +36,110 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0);
-		pointOfOrigin = "sgjourney:tauri";
-		symbols = "sgjourney:milky_way";
+		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0,
+				VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT);
+		
+		displayID = true;
 	}
 	
-	public void load(CompoundTag nbt)
+	@Override
+    public void onLoad()
 	{
-        super.load(nbt);
-        if(nbt.contains("Rotation"))
-        	rotation = nbt.getShort("Rotation");
+       super.onLoad();
+
+        if(this.level.isClientSide())
+        	return;
+
+        if(!isPointOfOriginValid(this.level))
+        {
+        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
+        	setPointOfOrigin(this.getLevel());
+        }
+
+        if(!areSymbolsValid(this.level))
+        {
+        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
+        	setSymbols(this.getLevel());
+        }
     }
 	
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	@Override
+	public void load(CompoundTag tag)
 	{
-		nbt.putShort("Rotation", rotation);
+        super.load(tag);
+
+		this.pointOfOrigin = tag.getString("PointOfOrigin");
+		this.symbols = tag.getString("Symbols");
+        if(tag.contains("Rotation"))
+        	rotation = tag.getShort("Rotation");
+    }
+
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag)
+	{
+		super.saveAdditional(tag);
 		
-		super.saveAdditional(nbt);
+		tag.putString("PointOfOrigin", pointOfOrigin);
+		tag.putString("Symbols", symbols);
+		tag.putShort("Rotation", rotation);
+	}
+
+	@Override
+	public CompoundTag serializeStargateInfo()
+	{
+		CompoundTag tag = super.serializeStargateInfo();
+		
+		tag.putString("PointOfOrigin", pointOfOrigin);
+		tag.putString("Symbols", symbols);
+		
+		return tag;
 	}
 	
+	@Override
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	{
+		if(tag.contains("PointOfOrigin"))
+			this.pointOfOrigin = tag.getString("PointOfOrigin");
+		if(tag.contains("Symbols"))
+			this.pointOfOrigin = tag.getString("Symbols");
+		this.symbols = tag.getString("Symbols");
+    	
+    	super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	/**
+	 * Sets the Stargate's point of origin randomly
+	 */
+	@Override
+	public void setPointOfOrigin(Level level)
+	{
+		Random random = new Random();
+		pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(level.getServer(), random.nextLong()).location().toString();
+		this.setChanged();
+	}
+
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
-		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
+		return SoundInit.CLASSIC_CHEVRON_ENGAGE.get();
 	}
-	
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
-		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
+		return SoundInit.CLASSIC_WORMHOLE_OPEN.get();
 	}
-	
+
+	@Override
+	public SoundEvent getWormholeCloseSound()
+	{
+		return SoundInit.CLASSIC_WORMHOLE_CLOSE.get();
+	}
+
+	@Override
 	public SoundEvent getFailSound()
 	{
-		return SoundInit.MILKY_WAY_DIAL_FAIL.get();
+		return SoundInit.CLASSIC_DIAL_FAIL.get();
 	}
 	
 	public double angle()
@@ -122,6 +205,18 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ChevronLockSpeed getChevronLockSpeed()
+	{
+		return CommonStargateConfig.classic_chevron_lock_speed.get();
+	}
+
+	@Override
+	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	{
+		CCTweakedCompatibility.registerClassicStargateMethods(wrapper);
 	}
 	
 }

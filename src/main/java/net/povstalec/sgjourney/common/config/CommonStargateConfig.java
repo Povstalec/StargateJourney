@@ -10,7 +10,14 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
+	public static ForgeConfigSpec.BooleanValue kawoosh_destroys_blocks;
+	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_items;
+	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_entities;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
+	public static ForgeConfigSpec.BooleanValue always_display_stargate_id;
+	
+	public static ForgeConfigSpec.BooleanValue enable_classic_stargate_upgrades;
+	public static ForgeConfigSpec.BooleanValue enable_stargate_variants;
 	
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> universe_chevron_lock_speed;
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> milky_way_chevron_lock_speed;
@@ -28,6 +35,8 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.LongValue system_wide_connection_energy_cost;
 	public static ForgeConfigSpec.LongValue interstellar_connection_energy_cost;
 	public static ForgeConfigSpec.LongValue intergalactic_connection_energy_cost;
+	public static ForgeConfigSpec.LongValue stargate_energy_capacity;
+	public static ForgeConfigSpec.LongValue stargate_energy_max_receive;
 	public static ForgeConfigSpec.IntValue energy_bypass_multiplier;
 	
 	public static void init(ForgeConfigSpec.Builder server)
@@ -48,9 +57,33 @@ public class CommonStargateConfig
 				.comment("If true, going through the wrong side of the wormhole will result in death")
 				.define("server.reverse_wormhole_kills", true);
 		
+		kawoosh_destroys_blocks = server
+				.comment("If true, allow the destruction of Blocks by Kawooshes")
+				.define("server.kawoosh_destroys_blocks", true);
+		
+		kawoosh_disintegrates_entities = server
+				.comment("If true, allow the disintegration of Entities by Kawooshes")
+				.define("server.kawoosh_disintegrates_entities", true);
+		
+		kawoosh_disintegrates_items = server
+				.comment("If true, allow the disintegration of Items by Kawooshes")
+				.define("server.kawoosh_disintegrates_items", true);
+		
 		enable_redstone_dialing = server
 				.comment("Enables the use of redstone for manual Stargate dialing")
 				.define("server.enable_redstone_dialing", true);
+		
+		enable_classic_stargate_upgrades = server
+				.comment("Enables upgrading the Classic Stargate")
+				.define("server.enable_classic_stargate_upgrades", true);
+		
+		enable_stargate_variants = server
+				.comment("Enables creating Stargate Variants")
+				.define("server.enable_stargate_variants", true);
+		
+		always_display_stargate_id = server
+				.comment("If true, Stargate item will always display the 9-Chevron Address of the Stargate in the inventory")
+				.define("server.always_display_stargate_id", false);
 		
 		
 		
@@ -87,15 +120,15 @@ public class CommonStargateConfig
 		
 		system_wide_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for system-wide connections")
-				.defineInRange("server.system_wide_connection_energy_draw", 500L, 0, 9223372036854775807L);
+				.defineInRange("server.system_wide_connection_energy_draw", 5L, 0, 9223372036854775807L);
 		
 		interstellar_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for interstellar connections")
-				.defineInRange("server.interstellar_connection_energy_draw", 1000L, 0, 9223372036854775807L);
+				.defineInRange("server.interstellar_connection_energy_draw", 50L, 0, 9223372036854775807L);
 		
 		intergalactic_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for intergalactic connections")
-				.defineInRange("server.intergalactic_connection_energy_draw", 1000000L, 0, 9223372036854775807L);
+				.defineInRange("server.intergalactic_connection_energy_draw", 50000L, 0, 9223372036854775807L);
 		
 		system_wide_connection_energy_cost = server
 				.comment("The amount of energy required to estabilish a connection inside a solar system")
@@ -108,6 +141,14 @@ public class CommonStargateConfig
 		intergalactic_connection_energy_cost = server
 				.comment("The amount of energy required to estabilish a connection outside the galaxy")
 				.defineInRange("server.intergalactic_connection_energy_cost", 100000000000L, 0L, 9223372036854775807L);
+		
+		stargate_energy_capacity = server
+				.comment("The maximum amount of energy the Stargate can hold")
+				.defineInRange("server.stargate_energy_capacity", 1000000000000L, 0L, 9223372036854775807L);
+		
+		stargate_energy_max_receive = server
+				.comment("The maximum amount of energy the Stargate can reveive at once")
+				.defineInRange("server.stargate_energy_max_receive", 1000000000000L, 0L, 9223372036854775807L);
 		
 		energy_bypass_multiplier = server
 				.comment("The energy required to keep the Stargate open after exceeding the maximum open time is multiplied by this number")

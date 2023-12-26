@@ -137,10 +137,10 @@ public class Universe extends SavedData
 	
 	private void addSolarSystemFromDataPack(MinecraftServer server, SolarSystem system, String systemID)
 	{
-		String extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
+		String extragalacticAddress;
 		
 		if(useDatapackAddresses(server))
-			extragalacticAddress = Address.addressIntArrayToString(system.getAddressArray());
+			extragalacticAddress = new Address(system.getAddressArray()).toString();
 		else
 		{
 			int prefix = system.getSymbolPrefix();
@@ -196,18 +196,18 @@ public class Universe extends SavedData
 	
 	protected String generateExtragalacticAddress(int prefix, long seed)
 	{
-		String extragalacticAddress = "";
+		String extragalacticAddressString;
 		
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			extragalacticAddress = Address.addressIntArrayToString(Address.randomAddress(prefix, 7, 39, seed));
+			extragalacticAddressString = new Address().randomAddress(prefix, 7, 39, seed).toString();
 			
-			if(!getExtragalacticAddressInfo().contains(extragalacticAddress))
+			if(!getExtragalacticAddressInfo().contains(extragalacticAddressString))
 				break;
 		}
 		
-		return extragalacticAddress;
+		return extragalacticAddressString;
 	}
 	
 	private void saveSolarSystem(String systemID, String extragalacticAddress, String pointOfOrigin, String symbols, List<ResourceKey<Level>> dimensions, boolean generated)
@@ -288,7 +288,7 @@ public class Universe extends SavedData
         		String address;
 
     			if(useDatapackAddresses(server))
-    				address = Address.addressIntArrayToString(system.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray());
+    				address = new Address(system.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray()).toString();
     			else
     			{
     				ResourceKey<GalaxyType> type = galaxy.getValue().getType();
@@ -331,18 +331,18 @@ public class Universe extends SavedData
 	
 	protected String generateAddress(String galaxyID, int galaxySize, long seed)
 	{
-		String address = "";
+		String addressString;
 		
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			address = Address.addressIntArrayToString(Address.randomAddress(6, galaxySize, seed));
+			addressString = new Address().randomAddress(6, galaxySize, seed).toString();
 			
-			if(!getGalaxy(galaxyID).contains(address))
+			if(!getGalaxy(galaxyID).contains(addressString))
 				break;
 		}
 		
-		return address;
+		return addressString;
 	}
 	
 	private void registerGalaxyReferences(String galaxyID, String systemID, String address)

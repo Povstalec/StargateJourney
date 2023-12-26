@@ -1,253 +1,151 @@
 package net.povstalec.sgjourney.client.models;
 
+import java.util.Optional;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
-public class PegasusStargateModel extends AbstractStargateModel
+public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEntity>
 {
-	//private static final String CHEVRON = ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? "pegasus_chevron" : "pegasus_chevron_front";
-	private static final ResourceLocation RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_outer_ring.png");
-	private static final ResourceLocation SYMBOL_RING_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_inner_ring.png");
-	//private static final ResourceLocation CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/" + CHEVRON + ".png");
-	//private static final ResourceLocation ENGAGED_CHEVRON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/" + CHEVRON + "_lit.png");
+	private static final int RED = 0;
+	private static final int GREEN = 100;
+	private static final int BLUE = 200;
 	
-	private final ModelPart ring;
-	private final ModelPart symbolRing;
-	private final ModelPart dividers;
-	private final ModelPart chevrons;
+	private static final int ENGAGED_GREEN = 200;
+	private static final int ENGAGED_BLUE = 255;
 	
-	private static final int symbolCount = 36;
-	private int currentSymbol = 0;
+	protected int currentSymbol = 0;
 	
-	public PegasusStargateModel(ModelPart ring, ModelPart symbolRing, ModelPart dividers, ModelPart chevrons)
+	protected final ResourceLocation alternateStargateTexture;
+	protected final ResourceLocation alternateEngagedTexture;
+	
+	public PegasusStargateModel()
 	{
-		super("pegasus");
-		this.ring = ring;
-		this.symbolRing = symbolRing;
-		this.dividers = dividers;
-		this.chevrons = chevrons;
+		super(new ResourceLocation(StargateJourney.MODID, "pegasus"), 36, new Stargate.RGBA(RED, GREEN, BLUE, 255));
+		
+		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
+		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
+		
+		this.engagedSymbolColor = new Stargate.RGBA(RED, ENGAGED_GREEN, ENGAGED_BLUE, 255);
 	}
 	
 	public void renderStargate(PegasusStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		this.renderRing(stargate, stack, source, combinedLight, combinedOverlay, false);
-		
-		this.renderSymbolRing(stargate, stack, source, combinedLight, combinedOverlay);
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate)));
+		this.renderOuterRing(stack, consumer, source, combinedLight);
+
+		this.renderSymbolRing(stargate, stack, consumer, source, combinedLight, 0);
 
 		this.renderChevrons(stargate, stack, source, combinedLight, combinedOverlay);
-	}
-	
-	protected void renderRing(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay, boolean isBottomCovered)
-	{
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
-		ModelPart outerRing = this.ring.getChild("outer_ring");
-		ModelPart backRing = this.ring.getChild("back_ring");
-		ModelPart innerRing = this.ring.getChild("inner_ring");
-		
-		int start = 0;
-		
-		if(isBottomCovered)
-			start = 1;
-		
-		for(int i = start; i < BOXES_PER_RING; i++)
-		{
-			outerRing.getChild("outer_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
-		for(int i = 0; i < BOXES_PER_RING; i++)
-		{
-			backRing.getChild("back_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
-		for(int i = start; i < BOXES_PER_RING; i++)
-		{
-			innerRing.getChild("inner_ring_" + i).render(stack, ringTexture, combinedLight, combinedOverlay);
-		}
-	}
-	
-	protected void renderSymbolRing(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(RING_TEXTURE));
-		this.dividers.render(stack, ringTexture, combinedLight, combinedOverlay);
-		
-		VertexConsumer symbolRingTexture = source.getBuffer(RenderType.entitySolid(SYMBOL_RING_TEXTURE));
-
-		for(int i = 0; i < symbolCount; i++)
-		{
-			this.getSymbol(i).render(stack, symbolRingTexture, combinedLight, combinedOverlay);
-		}
-		
-		renderSpinningSymbol(stargate, stack, source, combinedLight, combinedOverlay);
-		
-		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.length > 0 && !stargate.isConnected()))
-			renderLockedSymbols(stargate, stack, source, combinedLight, combinedOverlay);
-		else
-			renderIdleSymbols(stargate, stack, source, combinedLight, combinedOverlay);
-		
-	}
-	
-	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		if(stargate.symbolBuffer < stargate.addressBuffer.length)
-	    {
-	    	for(int i = 0; i < stargate.getAddress().length; i++)
-	    	{
-	    		if(stargate.getChevronPosition(i + 1) == this.currentSymbol)
-	    			return;
-	    	}
-	    	this.getSymbol(this.currentSymbol).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, stargate.addressBuffer[stargate.symbolBuffer]))), 255, combinedOverlay, 0.0F/255.0F, 200.0F/255.0F, 255.0F/255.0F, 1.0F);
-	    }
-	}
-	
-	protected void renderLockedSymbols(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		for(int i = 0; i < stargate.getAddress().length; i++)
-		{
-			this.getSymbol(stargate.getChevronPosition(i + 1)).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, stargate.getAddress()[i]))), 255, combinedOverlay, 0.0F/255.0F, 200.0F/255.0F, 255.0F/255.0F, 1.0F);
-		}
-	}
-	
-	protected void renderIdleSymbols(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		float r = 0.0F;
-		float g = 100.0F;
-		float b = 200.0F;
-		
-		int symbolNumber = symbolCount;
-		
-		if(stargate.isConnected())
-		{
-			g = 200.0F;
-			b = 255.0F;
-			symbolNumber = stargate.currentSymbol < symbolCount ? stargate.currentSymbol : symbolNumber;
-		}
-		
-		for(int i = 0; i < symbolNumber + 1; i++)
-		{
-			int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % symbolCount;
-			this.getSymbol(renderedSymbol).render(stack, source.getBuffer(RenderType.entityNoOutline(getSymbolTexture(stargate, renderedSymbol))), 255, combinedOverlay, r/255.0F, g/255.0F, b/255.0F, 1.0F);
-		}
-	}
-	
-	protected ModelPart getSymbol(int symbol)
-	{
-		return this.symbolRing.getChild("symbol_" + symbol);
 	}
 	
 	public void setCurrentSymbol(int currentSymbol)
 	{
 		this.currentSymbol = currentSymbol;
 	}
-	
-	protected void renderChevrons(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+
+	@Override
+	protected Stargate.RGBA getSymbolColor(PegasusStargateEntity stargate, boolean isEngaged)
 	{
-		this.renderPegasusPrimaryChevron(stargate, stack, source, combinedLight, combinedOverlay);
-		
-		for(int i = 1; i <= 8; i++)
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
 		{
-			this.renderChevron(stargate, stack, source, combinedLight, combinedOverlay, i);
-		}
-	}
-	
-	protected ModelPart getChevron(int chevron)
-	{
-		return this.chevrons.getChild("chevron_" + chevron);
-	}
-	
-	protected void renderChevron(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay, int chevronNumber)
-	{
-		// Make sure this is at the top, otherwise the lit up chevrons are rendered under the not lit chevrons
-		int chevron = stargate.getEngagedChevrons()[chevronNumber];
-		
-		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? CHEVRON_TEXTURE : CHEVRON_FRONT_TEXTURE));
-		this.getChevron(chevron).render(stack, chevronTexture, combinedLight, combinedOverlay);
-		
-		if(stargate.chevronsRendered() >= chevronNumber)
-		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? ENGAGED_CHEVRON_TEXTURE : ENGAGED_CHEVRON_FRONT_TEXTURE));
-			this.getChevron(chevron).render(stack, engagedChevronTexture, 255, combinedOverlay);
-		}
-	}
-	
-	protected void renderPegasusPrimaryChevron(PegasusStargateEntity stargate, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
-	{
-		VertexConsumer chevronTexture = source.getBuffer(RenderType.entitySolid(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), false)));
-	    this.getChevron(0).render(stack, chevronTexture, combinedLight, combinedOverlay);
-		
-		if(stargate.isConnected())
-		{
-			VertexConsumer engagedChevronTexture = source.getBuffer(SGJourneyRenderTypes.stargateChevron(getChevronTexture(ClientStargateConfig.pegasus_stargate_back_lights_up.get(), true)));
-		    
-			if(stargate.isDialingOut() || stargate.getKawooshTickCount() > 0)
-				this.getChevron(0).render(stack, engagedChevronTexture, 255, combinedOverlay);
-		}
-	}
-	
-	//============================================================================================
-	//*******************************************Layers*******************************************
-	//============================================================================================
-	
-	public static LayerDefinition createRingLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition ring = meshdefinition.getRoot();
-        
-		createRing(ring);
-		
-		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	public static LayerDefinition createSymbolRingLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition symbolRing = meshdefinition.getRoot();
-        
-		createSymbolRing(symbolRing, symbolCount);
-		
-		return LayerDefinition.create(meshdefinition, 8, 8);
-	}
-	
-	public static LayerDefinition createDividerLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition dividers = meshdefinition.getRoot();
-		
-		createDividers(dividers, symbolCount);
-		
-		return LayerDefinition.create(meshdefinition, 64, 64);
-	}
-	
-	public static LayerDefinition createChevronLayer()
-	{
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition chevrons = meshdefinition.getRoot();
-		
-		for(int i = 0; i < 9; i++)
-		{
-			createChevron(chevrons.addOrReplaceChild("chevron_" + i, CubeListBuilder.create(), PartPose.rotation(0.0F, 0.0F, (float) Math.toRadians(-40 * i))));
+			if(!isEngaged && variant.get().getSymbolRGBA().isPresent())
+				return variant.get().getSymbolRGBA().get();
+			else if(isEngaged && variant.get().getEngagedSymbolRGBA().isPresent())
+				return variant.get().getEngagedSymbolRGBA().get();
 		}
 		
-		return LayerDefinition.create(meshdefinition, 64, 64);
+		return isEngaged ? this.engagedSymbolColor : this.symbolColor;
+	}
+	
+	@Override
+	protected ResourceLocation getStargateTexture(PegasusStargateEntity stargate)
+	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+			return variant.get().getTexture();
+		
+		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ?
+				this.alternateStargateTexture : this.stargateTexture;
+	}
+
+	@Override
+	protected ResourceLocation getEngagedTexture(PegasusStargateEntity stargate)
+	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && canUseVariant(variant.get()))
+			return variant.get().getEngagedTexture();
+		
+		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ?
+				this.alternateEngagedTexture : this.engagedTexture;
+	}
+	
+	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
+	{
+		if(!stargate.isConnected() && stargate.symbolBuffer < stargate.addressBuffer.getLength())
+	    {
+			for(int i = 0; i < stargate.getAddress().getLength(); i++)
+	    	{
+	    		// This makes sure the Symbol doesn't render over other existing symbols
+	    		if(stargate.getChevronPosition(i + 1) == this.currentSymbol)
+	    			return;
+	    	}
+
+    		int renderedSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
+			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, getSymbolColor(stargate, true));
+	    }
+		
+	}
+	
+	@Override
+	protected void renderSymbols(PegasusStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
+	{
+		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.getLength() > 0 && !stargate.isConnected()))
+		{
+			// Spinning Symbol
+			renderSpinningSymbol(stargate, stack, consumer, source, combinedLight, rotation);
+			
+			// Point of Origin when Stargate is connected
+			if(stargate.isConnected())
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, getSymbolColor(stargate, true));
+			
+			// Locked Symbols
+			for(int i = 0; i < stargate.getAddress().getLength(); i++)
+			{
+				int symbolNumber = stargate.getChevronPosition(i + 1);
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress().toArray()[i], 0, getSymbolColor(stargate, true));
+			}
+		}
+		else
+		{
+			Stargate.RGBA symbolColor = getSymbolColor(stargate, false);
+			int symbolNumber = symbolSides;
+			
+			if(stargate.isConnected())
+			{
+				symbolColor = getSymbolColor(stargate, true);
+				symbolNumber = stargate.currentSymbol < symbolSides ? stargate.currentSymbol : symbolNumber;
+				if(stargate.getKawooshTickCount() > 0)
+					renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolColor);
+			}
+			
+			// Idle Symbols
+			for(int i = 0; i < symbolNumber; i++)
+			{
+				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % symbolSides;
+				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, renderedSymbol, renderedSymbol, 0, symbolColor);
+			}
+		}
 	}
 }

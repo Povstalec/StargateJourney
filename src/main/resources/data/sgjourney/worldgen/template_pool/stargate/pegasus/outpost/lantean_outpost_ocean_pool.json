@@ -1,0 +1,18 @@
+{
+  "name": "sgjourney:lantean_ocean_outpost",
+
+  "fallback": "minecraft:empty",
+
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+
+        "location": "sgjourney:stargate/pegasus/outpost/lantean_outpost_ocean",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

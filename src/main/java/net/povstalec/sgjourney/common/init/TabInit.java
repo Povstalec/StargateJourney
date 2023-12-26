@@ -11,8 +11,11 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
-import net.povstalec.sgjourney.common.items.NaquadahBottleItem;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
+import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
@@ -32,8 +35,10 @@ public class TabInit
 				output.accept(ItemInit.PURE_NAQUADAH.get());
 				output.accept(ItemInit.NAQUADAH.get());
 				output.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
-				//items.accept(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
-				output.accept(NaquadahBottleItem.liquidNaquadahSetup());
+				output.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
+				output.accept(ItemInit.VIAL.get());
+				output.accept(VialItem.liquidNaquadahSetup());
+				output.accept(VialItem.heavyLiquidNaquadahSetup());
 
 				output.accept(ItemInit.NAQUADAH_ROD.get());
 				output.accept(ItemInit.REACTION_CHAMBER.get());
@@ -71,20 +76,40 @@ public class TabInit
 				output.accept(ItemInit.SYRINGE.get());
 				output.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
 				output.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
-
+				
+				output.accept(ItemInit.CRYSTAL_BASE.get());
+				output.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
+				
 				output.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
 				output.accept(ItemInit.CONTROL_CRYSTAL.get());
 				output.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
 				output.accept(ItemInit.MEMORY_CRYSTAL.get());
 				output.accept(ItemInit.ADVANCED_MEMORY_CRYSTAL.get());
-				//items.accept(MemoryCrystalItem.atlantisAddress());
-				//items.accept(MemoryCrystalItem.abydosAddress());
+				//output.accept(MemoryCrystalItem.atlantisAddress());
+				//output.accept(MemoryCrystalItem.abydosAddress());
 				output.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
 				output.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
 				output.accept(ItemInit.ENERGY_CRYSTAL.get());
 				output.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
+				output.accept(ItemInit.TRANSFER_CRYSTAL.get());
+				output.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
 				output.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 				output.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
+				
+				if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
+				{
+					output.accept(StargateUpgradeItem.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
+					output.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
+					output.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
+					output.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
+				}
+				if(CommonStargateConfig.enable_stargate_variants.get())
+				{
+					output.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
+					output.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_movie"));
+					output.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_sg-1"));
+					output.accept(StargateVariantItem.stargateVariant("sgjourney:classic_milky_way"));
+				}
 			});
 		});
 		
@@ -96,10 +121,8 @@ public class TabInit
 			{
 				output.accept(BlockInit.UNIVERSE_STARGATE.get());
 				output.accept(BlockInit.MILKY_WAY_STARGATE.get());
-				//items.accept(BlockInit.MILKY_WAY_DHD.get());
 				output.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
 				output.accept(BlockInit.PEGASUS_STARGATE.get());
-				//items.accept(BlockInit.PEGASUS_DHD.get());
 				output.accept(PegasusDHDBlock.pegasusCrystalSetup());
 				output.accept(BlockInit.CLASSIC_STARGATE.get());
 				output.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
@@ -136,18 +159,23 @@ public class TabInit
 				output.accept(BlockInit.STONE_CARTOUCHE.get());
 				
 				output.accept(BlockInit.FIRE_PIT.get());
+				
+				output.accept(BlockInit.NAQUADAH_LIQUIDIZER.get());
+				output.accept(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
+				
+				output.accept(BlockInit.CRYSTALLIZER.get());
+				output.accept(BlockInit.ADVANCED_CRYSTALLIZER.get());
 
 				output.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
 				output.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 				
 				output.accept(BlockInit.BASIC_INTERFACE.get());
 				output.accept(BlockInit.CRYSTAL_INTERFACE.get());
+				output.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 
 				output.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				
 				output.accept(BlockInit.ZPM_HUB.get());
-
-				//items.accept(BlockInit.CRYSTALLIZER.get());
 			});
 		});
 	}
@@ -155,11 +183,13 @@ public class TabInit
 	@SubscribeEvent
 	public static void addCreative(final CreativeModeTabEvent.BuildContents event)
 	{
-		if(event.getTab() == CreativeModeTabs.OP_BLOCKS)
+		if(event.getTab() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
 		{
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
+			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
+			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
 		}
 	}

@@ -4,13 +4,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class VoxelShapeProvider {
-
+public class VoxelShapeProvider
+{
     private static final double MIN = 0.0D;
     private static final double MAX = 16.0D;
     private static final double MID = MAX / 2;
     //private static final double HORIZONTAL_OFFSET = 1.0D;
 
+    public static final VoxelShape FULL_BLOCK = Block.box(MIN, MIN, MIN, MAX, MAX, MAX);
+    
     public final VoxelShape HORIZONTAL;
 
     public final VoxelShape X_FULL;
@@ -49,7 +51,6 @@ public class VoxelShapeProvider {
         double verticalStart = MID - (width / 2);
         double verticalEnd = MID + (width / 2);
 
-//        VoxelShape FULL_BLOCK = Block.box(MIN, MIN, MIN, MAX, MAX, MAX);
         HORIZONTAL = Block.box(MIN, horizontalOffset, MIN, MAX, horizontalMax, MAX);
 
         VoxelShape horizontalBottom = Block.box(MIN, horizontalOffset, MIN, MAX, horizontalMax, MID);

@@ -26,7 +26,7 @@ public abstract class AbstractDHDMenu extends AbstractContainerMenu
     public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, BlockEntity entity)
     {
         super(menu, containerId);
-        checkContainerSize(inv, 6);
+        checkContainerSize(inv, 9);
         blockEntity = ((AbstractDHDEntity) entity);
         this.level = inv.player.level;
     }
@@ -35,6 +35,7 @@ public abstract class AbstractDHDMenu extends AbstractContainerMenu
     {
     	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(this.blockEntity.getBlockPos(), symbol));
     }
+    
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) 
     {

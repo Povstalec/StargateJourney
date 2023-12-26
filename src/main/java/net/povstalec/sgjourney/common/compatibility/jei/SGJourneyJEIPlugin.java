@@ -1,0 +1,49 @@
+package net.povstalec.sgjourney.common.compatibility.jei;
+
+import java.util.List;
+import java.util.Objects;
+
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
+import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
+
+@JeiPlugin
+public class SGJourneyJEIPlugin implements IModPlugin
+{
+	private static final ResourceLocation PLUGIN_LOCATION = new ResourceLocation(StargateJourney.MODID, "jei_plugin");
+
+	private static Minecraft minecraft = Minecraft.getInstance();
+	
+	@Override
+	public ResourceLocation getPluginUid()
+	{
+		return PLUGIN_LOCATION;
+	}
+
+	@Override
+	public void registerCategories(IRecipeCategoryRegistration registration)
+	{
+		registration.addRecipeCategories(new CrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new AdvancedCrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+	}
+	
+	@Override
+	public void registerRecipes(IRecipeRegistration registration)
+	{
+		RecipeManager recipeManager = Objects.requireNonNull(minecraft.level).getRecipeManager();
+		
+		List<CrystallizerRecipe> crystallizerRecipes = recipeManager.getAllRecipesFor(CrystallizerRecipe.Type.INSTANCE);
+		registration.addRecipes(new RecipeType<>(CrystallizerRecipeCategory.RECIPE_ID, CrystallizerRecipe.class), crystallizerRecipes);
+
+		List<AdvancedCrystallizerRecipe> advancedCrystallizerRecipes = recipeManager.getAllRecipesFor(AdvancedCrystallizerRecipe.Type.INSTANCE);
+		registration.addRecipes(new RecipeType<>(AdvancedCrystallizerRecipeCategory.RECIPE_ID, AdvancedCrystallizerRecipe.class), advancedCrystallizerRecipes);
+	}
+}

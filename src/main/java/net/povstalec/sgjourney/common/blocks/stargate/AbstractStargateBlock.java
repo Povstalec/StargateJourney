@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
+import java.util.ArrayList;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -13,7 +15,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -27,10 +28,10 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargatePart;
+import net.povstalec.sgjourney.common.stargate.ConnectionState;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
 {
@@ -38,20 +39,23 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	public static final EnumProperty<StargatePart> PART = EnumProperty.create("stargate_part", StargatePart.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
+	public static final EnumProperty<ConnectionState> CONNECTION_STATE = EnumProperty.create("connection_state", ConnectionState.class);
 	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
 	//TODO public static final BooleanProperty FULL = BooleanProperty.create("full");
 
-	protected VoxelShapeProvider SHAPE_PROVIDER;
+	protected VoxelShapeProvider shapeProvider;
 
 	public AbstractStargateBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTED, Boolean.valueOf(false)).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
-		SHAPE_PROVIDER = new VoxelShapeProvider(width, horizontalOffset);
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTION_STATE, ConnectionState.IDLE).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
+		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
 	}
 
-	public abstract Stargate.Type getStargateType();
+	public ArrayList<StargatePart> getParts()
+	{
+		return StargatePart.DEFAULT_PARTS;
+	}
 
 	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
 	{
@@ -64,7 +68,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(FACING).add(WATERLOGGED).add(ORIENTATION).add(PART).add(CONNECTED).add(CHEVRONS_ACTIVE);
+		state.add(FACING).add(WATERLOGGED).add(ORIENTATION).add(PART).add(CONNECTION_STATE).add(CHEVRONS_ACTIVE);
 	}
 
 	@Override
@@ -94,8 +98,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return SHAPE_PROVIDER.HORIZONTAL;
-		return state.getValue(FACING).getAxis() == Direction.Axis.X ? SHAPE_PROVIDER.Z_FULL : SHAPE_PROVIDER.X_FULL;
+			return shapeProvider.HORIZONTAL;
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_FULL : shapeProvider.X_FULL;
 	}
 
 	@Override
@@ -110,14 +114,14 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
-		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
-		if(blockentity instanceof AbstractStargateEntity stargate)
+		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		if(stargate != null)
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
 				ItemStack itemstack = new ItemStack(asItem());
 
-				blockentity.saveToItem(itemstack);
+				stargate.saveToItem(itemstack);
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -140,4 +144,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	{
 		return RenderShape.MODEL;
 	}
+	
+	public abstract AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state);
 }

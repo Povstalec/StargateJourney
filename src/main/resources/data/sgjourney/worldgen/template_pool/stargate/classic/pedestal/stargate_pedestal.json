@@ -1,0 +1,19 @@
+{
+	"name": "sgjourney:classic_stargate_pedestal",
+	
+	"fallback": "minecraft:empty",
+	
+	"elements":
+	[
+		{
+			"weight": 1,
+			"element":
+			{
+				"location": "sgjourney:stargate/classic/pedestal/classic_stargate_pedestal_1",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}
