@@ -1,0 +1,19 @@
+{
+	"parent": "item/generated",
+	"textures": 
+	{
+		"layer0": "sgjourney:item/vial"
+	},
+	"overrides":
+	[
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.01 }, "model": "sgjourney:item/liquid_naquadah_vial_08" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.125 }, "model": "sgjourney:item/liquid_naquadah_vial_07" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.25 }, "model": "sgjourney:item/liquid_naquadah_vial_06" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.375 }, "model": "sgjourney:item/liquid_naquadah_vial_05" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.5 }, "model": "sgjourney:item/liquid_naquadah_vial_04" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.625 }, "model": "sgjourney:item/liquid_naquadah_vial_03" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.75 }, "model": "sgjourney:item/liquid_naquadah_vial_02" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.875 }, "model": "sgjourney:item/liquid_naquadah_vial_01" },
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.95 }, "model": "sgjourney:item/liquid_naquadah_vial_00" }
+	]
+}

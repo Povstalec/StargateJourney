@@ -14,7 +14,7 @@
     }
   },
   "noise": {
-    "min_y": -64,
+    "min_y": 0,
     "height": 512,
     "size_horizontal": 2,
     "size_vertical": 2
@@ -35,8 +35,8 @@
       "type": "minecraft:add",
       "argument1": {
         "type": "minecraft:y_clamped_gradient",
-        "from_y": -24,
-        "to_y": 32,
+        "from_y": 0,
+        "to_y": 64,
         "from_value": 2,
         "to_value": -2
       },

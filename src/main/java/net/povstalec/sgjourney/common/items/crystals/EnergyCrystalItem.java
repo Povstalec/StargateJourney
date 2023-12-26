@@ -8,79 +8,54 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 
-public class EnergyCrystalItem extends Item
+public class EnergyCrystalItem extends AbstractCrystalItem
 {
-	public static final String CRYSTAL_MODE = "CrystalMode";
+	public static final int DEFAULT_CAPACITY = 50000;
+	public static final int DEFAULT_ENERGY_TRANSFER = 1500;
+
+	public static final int ADVANCED_CAPACITY = 100000;
+	public static final int ADVANCED_ENERGY_TRANSFER = 3000;
+	
 	public static final String ENERGY_LIMIT = "EnergyLimit";
 	public static final String ENERGY = "Energy";
-	public static final String TRANSFER_LIMIT = "TransferLimit";
 	
-	public final int maxEnergy;
-	public final int maxTransfer;
-	public final int maxRegularTransfer;
-	
-	public EnergyCrystalItem(Properties properties, int maxEnergy, int maxTransfer, int maxRegularTransfer)
+	public EnergyCrystalItem(Properties properties)
 	{
 		super(properties);
-		this.maxEnergy = maxEnergy;
-		this.maxTransfer = maxTransfer;
-		this.maxRegularTransfer = maxRegularTransfer;
-	}
-	
-	public enum CrystalMode
-	{
-		ENERGY_STORAGE,
-		ENERGY_TRANSFER;
 	}
 	
 	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
-		return getCrystalMode(stack) == CrystalMode.ENERGY_STORAGE;
+		return true;
 	}
 
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getEnergy(stack) / maxEnergy);
+		return Math.round(13.0F * (float) getEnergy(stack) / getCapacity());
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getEnergy(stack) / maxEnergy);
+		float f = Math.max(0.0F, (float) getEnergy(stack) / getCapacity());
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
-	public static CompoundTag tagSetup(CrystalMode crystalMode, int energy, int maxTransfer)
+	public static CompoundTag tagSetup(int energy)
 	{
 		CompoundTag tag = new CompoundTag();
 		
-		tag.putString(CRYSTAL_MODE, crystalMode.toString().toUpperCase());
 		tag.putInt(ENERGY, energy);
-		tag.putInt(TRANSFER_LIMIT, maxTransfer);
 		
 		return tag;
-	}
-	
-	public static CrystalMode getCrystalMode(ItemStack stack)
-	{
-		CrystalMode mode;
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(!tag.contains(CRYSTAL_MODE))
-			tag.putString(CRYSTAL_MODE, CrystalMode.ENERGY_STORAGE.toString().toUpperCase());
-		
-		mode = CrystalMode.valueOf(tag.getString(CRYSTAL_MODE));
-		
-		return mode;
 	}
 	
 	public static int getEnergy(ItemStack stack)
@@ -96,78 +71,74 @@ public class EnergyCrystalItem extends Item
 		return energy;
 	}
 	
-	public static int getMaxTransfer(ItemStack stack)
+	public int getCapacity()
 	{
-		if(stack.getItem() instanceof EnergyCrystalItem crystal)
-		{
-			int maxTransfer;
-			CompoundTag tag = stack.getOrCreateTag();
-			
-			if(!tag.contains(TRANSFER_LIMIT))
-				tag.putInt(TRANSFER_LIMIT, crystal.maxTransfer);
-			
-			maxTransfer = tag.getInt(TRANSFER_LIMIT);
-			
-			return maxTransfer;
-		}
-		
-		return 0;
+		return DEFAULT_CAPACITY;
 	}
 	
-	public int getMaxTransfer()
+	public int getTransfer()
 	{
-		return this.maxTransfer;
-	}
-	
-	public int getMaxStorage()
-	{
-		return this.maxEnergy;
+		return DEFAULT_ENERGY_TRANSFER;
 	}
 	
 	@Override
-    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
+	public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
 	{
 		return new ItemEnergyProvider(stack)
-				{
-					@Override
-					public long capacity()
-					{
-						return maxEnergy;
-					}
+		{
+			@Override
+			public long capacity()
+			{
+				return getCapacity();
+			}
+			
+			@Override
+			public long maxReceive()
+			{
+				return getTransfer();
+			}
 
-					@Override
-					public long maxReceive()
-					{
-						return maxRegularTransfer;
-					}
-
-					@Override
-					public long maxExtract()
-					{
-						return maxRegularTransfer;
-					}
-				};
+			@Override
+			public long maxExtract()
+			{
+				return getTransfer();
+			}
+		};
 	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		int energy = getEnergy(stack);
+		
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy +  "/" + getCapacity() + " FE")).withStyle(ChatFormatting.DARK_RED));
+		
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+	}
+	
+	public static final class Advanced extends EnergyCrystalItem
+	{
+		public Advanced(Properties properties)
+		{
+			super(properties);
+		}
+		
+		@Override
+		public int getCapacity()
+		{
+			return ADVANCED_CAPACITY;
+		}
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
-    {
-    	CrystalMode mode = getCrystalMode(stack);
-        
-        switch(mode)
-        {
-        case ENERGY_STORAGE:
-        	int energy = getEnergy(stack);
-        	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy +  "/" + maxEnergy + " FE")).withStyle(ChatFormatting.DARK_RED));
-        	break;
-        case ENERGY_TRANSFER:
-        	int maxEnergyTransfer = getMaxTransfer(stack);
-        	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + maxEnergyTransfer + " FE")).withStyle(ChatFormatting.RED));
-        	break;
-        	
-        }
-        
-
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-    }
+		@Override
+		public int getTransfer()
+		{
+			return ADVANCED_ENERGY_TRANSFER;
+		}
+		
+		@Override
+		public boolean isAdvanced()
+		{
+			return true;
+		}
+	}
 }

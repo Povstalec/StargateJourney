@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.stargate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -10,103 +11,150 @@ import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
 public class Address
 {
-	/*protected int[] addressArray = new int[] {-1, -1, -1, -1, -1, -1, -1, -1};
-	protected int length = 0;
-	protected boolean hasPointOfOrigin = false;
+	public static final String ADDRESS_DIVIDER = "-";
+	public static final int MIN_ADDRESS_LENGTH = 6;
+	public static final int MAX_ADDRESS_LENGTH = 9;
 	
-	public Address() {}
+	protected int[] addressArray = new int[0];
+	protected boolean isBuffer = false;
+	
+	public Address(boolean isBuffer)
+	{
+		this.isBuffer = isBuffer;
+	}
+	
+	public Address()
+	{
+		this(false);
+	}
+	
+	public Address(int[] addressArray)
+	{
+		fromArray(addressArray);
+	}
+	
+	public Address(String addressString)
+	{
+		fromString(addressString);
+	}
+	
+	public Address(Map<Double, Double> addressTable)
+	{
+		fromTable(addressTable);
+	}
 	
 	public Address addSymbol(int symbol)
 	{
-		if(this.hasPointOfOrigin)
-		{
-			StargateJourney.LOGGER.info("Address is finalized and can't accept more symbols");
-			return this;
-		}
-		
 		if(symbol < 0)
 			return this;
 		
-		if(length >= 9)
+		if(symbol == 0 && !this.isBuffer)
 			return this;
 		
-		this.addressArray[length] = symbol;
-		length++;
+		if(!canGrow())
+			return this;
+		
+		this.addressArray = ArrayHelper.growIntArray(this.addressArray, symbol);
 		
 		return this;
 	}
 	
-	public int[] getFullAddressArray()
+	public Address fromArray(int[] addressArray)
+	{
+		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+			this.addressArray = addressArray;
+		
+		return this;
+	}
+	
+	public Address fromString(String addressString)
+	{
+		int[] addressArray = addressStringToIntArray(addressString);
+		
+		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+			this.addressArray = addressArray;
+		
+		return this;
+	}
+	
+	public Address fromTable(Map<Double, Double> addressTable)
+	{
+		int[] addressArray = new int[addressTable.size()];
+		
+		for(int i = 0; i < addressArray.length; i++)
+		{
+			addressArray[i] = (int) Math.floor(addressTable.get((double) (i + 1)));
+		}
+		
+		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+			this.addressArray = addressArray;
+		
+		return this;
+	}
+	
+	public int[] toArray()
 	{
 		return this.addressArray;
 	}
 	
-	public int[] getAddressArray()
+	public int getLength()
 	{
-		int[] address = new int[length];
-		
-		for(int i = 0; i < length; i++)
-		{
-			address[i] = this.addressArray[i];
-		}
-		
-		return address;
+		return addressArray.length;
 	}
 	
-	public String getAddressString()
+	public int getSymbol(int number)
 	{
-		return addressIntArrayToString(getAddressArray());
-	}
-	
-	public int getAddressLength()
-	{
-		return this.length;
+		if(number < 0 || number > getLength())
+			return 0;
+		
+		return addressArray[number];
 	}
 	
 	public boolean isComplete()
 	{
-		return this.length > 6;
-	}*/
-	
-	//============================================================================================
-	//*******************************************Static*******************************************
-	//============================================================================================
-	
-	public enum AddressType
-	{
-		ADDRESS_7_CHEVRON(6, new int[] {1, 2, 3, 4, 5, 6, 0}),
-		ADDRESS_8_CHEVRON(7, new int[] {1, 2, 3, 7, 4, 5, 6, 0}),
-		ADDRESS_9_CHEVRON(8, new int[] {1, 2, 3, 7, 8, 4, 5, 6, 0});
-		
-		private int numberOfSymbols;
-		private int[] dialedOrder;
-		
-		AddressType(int numberOfSymbols, int[] dialedOrder)
-		{
-			this.numberOfSymbols = numberOfSymbols;
-			this.dialedOrder = dialedOrder;
-		}
-		
-		public int getNumberOfSymbols()
-		{
-			return this.numberOfSymbols;
-		}
-		
-		public int[] getDialedOrder()
-		{
-			return this.dialedOrder;
-		}
+		return getLength() >= MIN_ADDRESS_LENGTH;
 	}
 	
-	public static int[] randomAddress(int size, int limit, long seed)
+	public boolean canGrow()
+	{
+		return getLength() < MAX_ADDRESS_LENGTH;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return addressIntArrayToString(this.addressArray);
+	}
+	
+	public Address reset()
+	{
+		addressArray = new int[0];
+		
+		return this;
+	}
+	
+	public boolean containsSymbol(int symbol)
+	{
+		for(int i = 0; i < getLength(); i++)
+		{
+			if(addressArray[i] == symbol)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public Address randomAddress(int size, int limit, long seed)
 	{
 		return randomAddress(0, size, limit, seed);
 	}
 	
-	public static int[] randomAddress(int prefix, int size, int limit, long seed)
+	public Address randomAddress(int prefix, int size, int limit, long seed)
 	{
+		size = size > MAX_ADDRESS_LENGTH ? MAX_ADDRESS_LENGTH : size;
+		
 		Random random = new Random(seed);
-		int[] address = new int[size];
+		int[] addressArray = new int[size];
 		boolean isValid = false;
 		
 		while(!isValid)
@@ -114,43 +162,29 @@ public class Address
 			for(int i = 0; i < size; i++)
 			{
 				if(i == 0 && prefix > 0 && prefix < limit)
-					address[i] = prefix;
+					addressArray[i] = prefix;
 				else
-					address[i] = random.nextInt(1, limit);
+					addressArray[i] = random.nextInt(1, limit);
 			}
-			if(differentNumbers(address))
+			if(differentNumbers(addressArray))
 				isValid = true;
 		}
 		
-		return address;
+		this.addressArray = addressArray;
+		
+		return this;
 	}
 	
-	//TODO use this somewhere
-	public static int[] randomAddress(int size)
-	{
-		Random random = new Random();
-		int[] address = new int[size];
-		boolean isValid = false;
-		
-		while(!isValid)
-		{
-			for(int i = 0; i < size; i++)
-			{
-				address[i] = random.nextInt(1, 39);
-			}
-			if(differentNumbers(address))
-				isValid = true;
-		}
-		
-		return address;
-	}
+	//============================================================================================
+	//*******************************************Static*******************************************
+	//============================================================================================
 	
-	public static int[] addressStringToIntArray(String addressString)
+	private static int[] addressStringToIntArray(String addressString)
 	{
 		if(addressString == null)
 			return new int[0];
 		
-		String[] stringArray = addressString.split("-");
+		String[] stringArray = addressString.split(ADDRESS_DIVIDER);
 		int[] intArray = new int[0];
 		
 		for(int i = 1; i < stringArray.length; i++)
@@ -167,20 +201,15 @@ public class Address
 		return intArray;
 	}
 	
-	public static String addressIntArrayToString(int[] array, int offset)
+	private static String addressIntArrayToString(int[] array)
 	{
-		String address = "-";
+		String address = ADDRESS_DIVIDER;
 		
-		for(int i = offset; i < array.length; i++)
+		for(int i = 0; i < array.length; i++)
 		{
-			address = address + array[i] + "-";
+			address = address + array[i] + ADDRESS_DIVIDER;
 		}
 		return address;
-	}
-	
-	public static String addressIntArrayToString(int[] array)
-	{
-		return addressIntArrayToString(array, 0);
 	}
 	
 	private static boolean differentNumbers(int[] address)
@@ -188,16 +217,5 @@ public class Address
 		List<Integer> arrayList = Arrays.stream(address).boxed().toList();
 		Set<Integer> arraySet = new HashSet<Integer>(arrayList);
 		return (arraySet.size() == address.length);
-	}
-	
-	public static boolean addressContainsSymbol(int[] address, int symbol)
-	{
-		for(int i = 0; i < address.length; i++)
-		{
-			if(address[i] == symbol)
-				return true;
-		}
-		
-		return false;
 	}
 }

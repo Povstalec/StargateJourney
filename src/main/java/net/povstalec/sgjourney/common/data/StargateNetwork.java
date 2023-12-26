@@ -46,7 +46,8 @@ public class StargateNetwork extends SavedData
 	
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
-	private static final int updateVersion = 5;
+	//Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
+	private static final int updateVersion = 6;
 	
 	private MinecraftServer server;
 	private Map<String, Connection> connections = new HashMap<String, Connection>();
@@ -269,16 +270,16 @@ public class StargateNetwork extends SavedData
 			boolean hasDHD = solarSystem.getCompound(stargateID).getBoolean(HAS_DHD);
 			int generation = solarSystem.getCompound(stargateID).getInt(GENERATION);
 			int timesOpened = solarSystem.getCompound(stargateID).getInt(TIMES_OPENED);
-			System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
+			//System.out.println(stargateID + " Has DHD: " + hasDHD + " Gen: " + generation + " Times Opened: " + timesOpened);
 			
-			if(Boolean.compare(hasDHD, bestDHD) > 0)
+			if(!CommonStargateNetworkConfig.disable_dhd_preference.get() && Boolean.compare(hasDHD, bestDHD) > 0)
 			{
 				preferredStargate = stargateID;
 				bestDHD = hasDHD;
 				bestGen = generation;
 				bestTimesOpened = timesOpened;
 			}
-			else if(Boolean.compare(hasDHD, bestDHD) == 0)
+			else if(CommonStargateNetworkConfig.disable_dhd_preference.get() || Boolean.compare(hasDHD, bestDHD) == 0)
 			{
 				if(generation > bestGen)
 				{
@@ -300,7 +301,7 @@ public class StargateNetwork extends SavedData
 			}
 		}
 
-		System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
+		//System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
 		return preferredStargate;
 	}
 	
@@ -320,7 +321,7 @@ public class StargateNetwork extends SavedData
 	public int getOpenTime(String uuid)
 	{
 		if(this.connections.containsKey(uuid))
-			return connections.get(uuid).getOpenTime();
+			return connections.get(uuid).getConnectionTime();
 		return 0;
 	}
 	
@@ -331,16 +332,16 @@ public class StargateNetwork extends SavedData
 		return 0;
 	}
 	
-	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
-		Stargate.ConnectionType connectionType = getConnectionType(server, dialingStargate, dialedStargate);
+		Connection.ConnectionType connectionType = getConnectionType(server, dialingStargate, dialedStargate);
 		
 		if(dialingStargate.equals(dialedStargate))
 			return dialingStargate.resetStargate(Stargate.Feedback.SELF_DIAL);
 		
 		if(requireEnergy)
 		{
-			if(dialingStargate.hasEnergy(dialedStargate))
+			if(dialingStargate.canExtractEnergy(connectionType.getEstabilishingPowerCost()))
 				dialingStargate.depleteEnergy(connectionType.getEstabilishingPowerCost(), false);
 			else
 				return dialingStargate.resetStargate(Stargate.Feedback.NOT_ENOUGH_POWER);
@@ -351,7 +352,7 @@ public class StargateNetwork extends SavedData
 		else if(dialedStargate.isObstructed())
 			return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
 		
-		Connection connection = Connection.create(connectionType, dialingStargate, dialedStargate);
+		Connection connection = Connection.create(connectionType, dialingStargate, dialedStargate, doKawoosh);
 		if(connection != null)
 		{
 			this.connections.put(connection.getID(), connection);
@@ -359,11 +360,11 @@ public class StargateNetwork extends SavedData
 			switch(connectionType)
 			{
 			case SYSTEM_WIDE:
-				return Stargate.Feedback.CONNECTION_ESTABILISHED_SYSTEM_WIDE;
+				return Stargate.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
 			case INTERSTELLAR:
-				return Stargate.Feedback.CONNECTION_ESTABILISHED_INTERSTELLAR;
+				return Stargate.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR;
 			default:
-				return Stargate.Feedback.CONNECTION_ESTABILISHED_INTERGALACTIC;
+				return Stargate.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC;
 			}
 		}
 		return Stargate.Feedback.UNKNOWN_ERROR;
@@ -383,11 +384,12 @@ public class StargateNetwork extends SavedData
 			StargateJourney.LOGGER.info("Removed connection " + uuid);
 		}
 		else
-			StargateJourney.LOGGER.info("Could not find connection " + uuid);
+			StargateJourney.LOGGER.error("Could not find connection " + uuid);
 		this.setDirty();
 	}
 	
-	public void rerouteConnection(MinecraftServer server, String uuid, AbstractStargateEntity newDialedStargate)
+	// TODO make this work
+	/*public void rerouteConnection(MinecraftServer server, String uuid, AbstractStargateEntity newDialedStargate)
 	{
 		if(this.connections.containsKey(uuid))
 		{
@@ -397,19 +399,19 @@ public class StargateNetwork extends SavedData
 		else
 			StargateJourney.LOGGER.info("Could not find connection " + uuid);
 		this.setDirty();
-	}
+	}*/
 	
 	//============================================================================================
 	//******************************************Utility*******************************************
 	//============================================================================================
 	
-	public static Stargate.ConnectionType getConnectionType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	public static Connection.ConnectionType getConnectionType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
 	{
 		String dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension().location().toString());
 		String dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
 		
 		if(dialingSystem.equals(dialedSystem))
-			return Stargate.ConnectionType.SYSTEM_WIDE;
+			return Connection.ConnectionType.SYSTEM_WIDE;
 		
 		ListTag dialingGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialingSystem);
 		ListTag dialedGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialedSystem);
@@ -423,12 +425,12 @@ public class StargateNetwork extends SavedData
 					String dialingGalaxy = dialingGalaxyCandidates.getCompound(i).getAllKeys().iterator().next();
 					String dialedGalaxy = dialedGalaxyCandidates.getCompound(j).getAllKeys().iterator().next();
 					if(dialingGalaxy.equals(dialedGalaxy))
-						return Stargate.ConnectionType.INTERSTELLAR;
+						return Connection.ConnectionType.INTERSTELLAR;
 				}
 			}
 		}
 		
-		return Stargate.ConnectionType.INTERGALACTIC;
+		return Connection.ConnectionType.INTERGALACTIC;
 	}
 	
 	//============================================================================================

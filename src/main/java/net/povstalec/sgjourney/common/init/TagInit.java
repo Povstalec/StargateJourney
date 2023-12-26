@@ -29,6 +29,7 @@ public class TagInit
 	
 	public class Blocks
 	{
+		public static final TagKey<Block> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<Block> PLASMA_FLAMMABLE = tag("plasma_flammable");
 		public static final TagKey<Block> STONE_SPIRE_PROTRUDES_THROUGH = tag("stone_spire_protrudes_through");
 		
@@ -45,6 +46,7 @@ public class TagInit
 	
 	public class Structures
 	{
+		public static final TagKey<Structure> STARGATE_MAP = tag("stargate_map");
 		public static final TagKey<Structure> HAS_STARGATE = tag("has_stargate");
 		public static final TagKey<Structure> BURIED_STARGATE = tag("buried_stargate");
 		public static final TagKey<Structure> STARGATE_PEDESTAL = tag("stargate_pedestal");

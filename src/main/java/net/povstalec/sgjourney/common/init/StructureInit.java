@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.structures.JaffaHouse;
 import net.povstalec.sgjourney.common.structures.StargateOutpost;
 import net.povstalec.sgjourney.common.structures.StargatePedestal;
 import net.povstalec.sgjourney.common.structures.StargateTemple;
+import net.povstalec.sgjourney.common.structures.StargateVoidStructure;
 
 public class StructureInit
 {
@@ -37,6 +38,9 @@ public class StructureInit
 	
 	public static final RegistryObject<StructureType<?>> BURIED_STARGATE =
             DEFERRED_REGISTRY_STRUCTURE.register("buried_stargate", () -> typeConvert(BuriedStargate.CODEC));
+	
+	public static final RegistryObject<StructureType<?>> STARGATE_VOID_STRUCTURE =
+            DEFERRED_REGISTRY_STRUCTURE.register("stargate_void_structure", () -> typeConvert(StargateVoidStructure.CODEC));
 	
 	public static final RegistryObject<StructureType<?>> GOAULD_TEMPLE =
             DEFERRED_REGISTRY_STRUCTURE.register("goauld_temple", () -> typeConvert(GoauldTemple.CODEC));

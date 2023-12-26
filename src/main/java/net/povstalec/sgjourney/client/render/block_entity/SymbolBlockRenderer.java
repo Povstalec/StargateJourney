@@ -24,7 +24,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blocks.SymbolBlock;
-import net.povstalec.sgjourney.common.misc.Orientation;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 
 public abstract class SymbolBlockRenderer

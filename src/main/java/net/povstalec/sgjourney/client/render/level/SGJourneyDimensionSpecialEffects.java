@@ -17,7 +17,9 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	
 	public static final ResourceLocation ABYDOS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "abydos");
 	public static final ResourceLocation CHULAK_EFFECTS = new ResourceLocation(StargateJourney.MODID, "chulak");
+	public static final ResourceLocation CAVUM_TENEBRAE_EFFECTS = new ResourceLocation(StargateJourney.MODID, "cavum_tenebrae");
 	public static final ResourceLocation LANTEA_EFFECTS = new ResourceLocation(StargateJourney.MODID, "lantea");
+	public static final ResourceLocation ATHOS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "athos");
 	
 	protected SGJourneySkyRenderer skyRenderer;
 	
@@ -57,12 +59,14 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
         return false;
     }
 	
+	
+	
 	public static class Abydos extends SGJourneyDimensionSpecialEffects
 	{
 		public Abydos()
 		{
 			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			skyRenderer = new AbydosSkyRenderer();
+			skyRenderer = new PlanetSkyRenderers.AbydosSkyRenderer();
 		}
 		
 		@Override
@@ -79,7 +83,24 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		public Chulak()
 		{
 			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			skyRenderer = new ChulakSkyRenderer();
+			skyRenderer = new PlanetSkyRenderers.ChulakSkyRenderer();
+		}
+		
+		@Override
+		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+	    {
+			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+			
+	        return true;
+	    }
+	}
+	
+	public static class CavumTenebrae extends SGJourneyDimensionSpecialEffects
+	{
+		public CavumTenebrae()
+		{
+			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new PlanetSkyRenderers.CavumTenebraeSkyRenderer();
 		}
 		
 		@Override
@@ -96,7 +117,24 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		public Lantea()
 		{
 			super(386.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			skyRenderer = new LanteaSkyRenderer();
+			skyRenderer = new PlanetSkyRenderers.LanteaSkyRenderer();
+		}
+		
+		@Override
+		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+	    {
+			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+			
+	        return true;
+	    }
+	}
+	
+	public static class Athos extends SGJourneyDimensionSpecialEffects
+	{
+		public Athos()
+		{
+			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new PlanetSkyRenderers.AthosSkyRenderer();
 		}
 		
 		@Override

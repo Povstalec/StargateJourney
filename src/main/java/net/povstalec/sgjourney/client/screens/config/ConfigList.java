@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.client.gui.widget.ForgeSlider;
 import net.povstalec.sgjourney.common.config.SGJourneyConfigValue;
 
 public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
@@ -116,6 +117,80 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 			this.cycleButton.x = k;
 	        this.cycleButton.y = j;
 	        this.cycleButton.render(stack, n, o, partialTick);
+			super.render(stack, i, j, k, l, m, n, o, bl, partialTick);
+		}
+		
+	}
+	
+	public static class SliderConfigEntry extends ConfigEntry
+	{
+		protected AbstractWidget sliderButton;
+		protected SGJourneyConfigValue.IntValue value;
+		
+		public SliderConfigEntry(Component component1, Component component2, int screenWidth, SGJourneyConfigValue.IntValue value)
+		{
+			this.value = value;
+			this.sliderButton = new ForgeSlider(0, 0, 200, 20, 
+					component1, component2,
+					value.getMin(), value.getMax(), value.get(), 1.0, 1, true);
+		}
+		
+		protected void reset()
+		{
+			this.value.set(this.value.getDefault());
+			((ForgeSlider) this.sliderButton).setValue((double) this.value.get());
+			super.reset();
+		}
+		
+		protected void onChanged()
+		{
+	    	value.set((int) ((ForgeSlider) this.sliderButton).getValue());
+		}
+	    
+	    @Override
+	    public boolean mouseClicked(double mouseX, double mouseY, int key)
+	    {
+	    	if(this.sliderButton.isMouseOver(mouseX, mouseY))
+	    		((ForgeSlider) this.sliderButton).mouseClicked(mouseX, mouseY, key);
+	    	onChanged();
+	    	
+			return super.mouseClicked(mouseX, mouseY, key);
+	    }
+	    
+	    @Override
+	    public boolean mouseDragged(double mouseX, double mouseY, int key, double dragX, double dragY)
+	    {
+	    	if(this.sliderButton.isMouseOver(mouseX, mouseY))
+	    		((ForgeSlider) this.sliderButton).mouseDragged(mouseX, mouseY, key, dragX, dragY);
+	    	
+			return super.mouseDragged(mouseX, mouseY, key, dragX, dragY);
+	    }
+	    
+	    @Override
+	    public boolean mouseReleased(double mouseX, double mouseY, int key)
+	    {
+	    	if(this.sliderButton.isMouseOver(mouseX, mouseY))
+	    		((ForgeSlider) this.sliderButton).mouseReleased(mouseX, mouseY, key);
+	    	onChanged();
+	    	
+			return super.mouseReleased(mouseX, mouseY, key);
+	    }
+	    
+	    @Override
+	    public void mouseMoved(double mouseX, double mouseY)
+	    {
+	    	if(this.sliderButton.isMouseOver(mouseX, mouseY))
+	    		((ForgeSlider) this.sliderButton).mouseMoved(mouseX, mouseY);
+	    	
+			super.mouseMoved(mouseX, mouseY);
+	    }
+		
+		@Override
+		public void render(PoseStack stack, int i, int j, int k, int l, int m, int n, int o, boolean bl, float partialTick)
+		{
+			this.sliderButton.setX(k);
+	        this.sliderButton.setY(j);
+	        this.sliderButton.render(stack, n, o, partialTick);
 			super.render(stack, i, j, k, l, m, n, o, bl, partialTick);
 		}
 		

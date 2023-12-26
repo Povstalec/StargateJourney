@@ -81,11 +81,9 @@ public class BuriedStargate extends Structure
     @Override
     public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context)
     {
-
-        if (!BuriedStargate.extraSpawningChecks(context))
-        {
+        if(!BuriedStargate.extraSpawningChecks(context))
             return Optional.empty();
-        }
+        
         // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
         ChunkPos chunkPos = context.chunkPos();
         int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
@@ -105,6 +103,14 @@ public class BuriedStargate extends Structure
         
         return structurePiecesGenerator;
     }
+    
+	@Override
+	public Optional<Structure.GenerationStub> findValidGenerationPoint(Structure.GenerationContext context)
+	{
+		//TODO See if there's a way to check for dimension
+		//context.chunkGenerator().getBiomeSource().findBiomeHorizontal(maxDistanceFromCenter, maxDistanceFromCenter, size, maxDistanceFromCenter, null, null, null);
+		return super.findValidGenerationPoint(context);
+	}
 
     @Override
     public StructureType<?> type()

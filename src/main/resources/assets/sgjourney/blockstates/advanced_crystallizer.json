@@ -1,0 +1,9 @@
+{
+	"variants":
+	{
+		"facing=north": { "model": "sgjourney:block/advanced_crystallizer" },
+		"facing=south": { "model": "sgjourney:block/advanced_crystallizer", "y": 180 },
+		"facing=west": { "model": "sgjourney:block/advanced_crystallizer", "y": 270 },
+		"facing=east": { "model": "sgjourney:block/advanced_crystallizer", "y": 90 }
+	}
+}

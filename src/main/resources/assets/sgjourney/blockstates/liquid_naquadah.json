@@ -1,0 +1,9 @@
+{
+	"variants":
+	{
+		"":
+		{
+			"model": "sgjourney:block/liquid_naquadah"
+		}
+	}
+}

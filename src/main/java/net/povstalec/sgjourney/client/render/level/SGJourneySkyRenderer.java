@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.render.level;
 
 import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -18,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -386,11 +386,12 @@ public abstract class SGJourneySkyRenderer
 			
 			for(int i = 0; i <= 16; ++i)
 			{
-				//TODO Find out what these do
-				float f7 = (float)i * ((float)Math.PI * 2F) / 16.0F;
-				float f8 = Mth.sin(f7);
-				float f9 = Mth.cos(f7);
-				bufferbuilder.vertex(sunriseMatrix, f8 * 120.0F, f9 * 120.0F, -f9 * 40.0F * sunriseA).color(sunriseR, sunriseG, sunriseB, 0.0F).endVertex();
+				// Create a circle to act as the slanted portion of the sunrise
+				float rotation = (float)i * ((float)Math.PI * 2F) / 16.0F;
+				float x = Mth.sin(rotation);
+				float y = Mth.cos(rotation);
+				// The Z coordinate is multiplied by -y to make the circle angle upwards towards the sun
+				bufferbuilder.vertex(sunriseMatrix, x * 120.0F, y * 120.0F, -y * 40.0F * sunriseA).color(sunriseR, sunriseG, sunriseB, 0.0F).endVertex();
 			}
 			
 			BufferUploader.drawWithShader(bufferbuilder.end());
@@ -398,5 +399,81 @@ public abstract class SGJourneySkyRenderer
 		}
 	}
 	
-	public abstract void renderSky(ClientLevel level, float partialTicks, PoseStack stack, Camera camera, Matrix4f projectionMatrix, Runnable setupFog);
+	protected abstract void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f projectionMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain);
+	
+	protected void renderEcliptic(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f projectionMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
+	{
+		stack.pushPose();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, rain);
+        stack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+        stack.mulPose(Axis.XP.rotationDegrees(level.getTimeOfDay(partialTicks) * 360.0F));
+        
+        this.renderStars(level, partialTicks, rain, stack, projectionMatrix, setupFog);
+
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        
+        Matrix4f lastMatrix = stack.last().pose();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        
+        this.renderCelestials(level, partialTicks, stack, lastMatrix, setupFog, bufferbuilder, rain);
+        
+        stack.popPose();
+	}
+	
+	public void renderSky(ClientLevel level, float partialTicks, PoseStack stack, Camera camera, Matrix4f projectionMatrix, Runnable setupFog)
+	{
+		setupFog.run();
+		
+		if(this.isFoggy(camera))
+			return;
+		
+		RenderSystem.disableTexture();
+		Vec3 skyColor = level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), partialTicks);
+		float skyX = (float)skyColor.x;
+        float skyY = (float)skyColor.y;
+        float skyZ = (float)skyColor.z;
+        FogRenderer.levelFogColor();
+		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+		RenderSystem.depthMask(false);
+		RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
+		ShaderInstance shaderinstance = RenderSystem.getShader();
+		this.skyBuffer.bind();
+		this.skyBuffer.drawWithShader(stack.last().pose(), projectionMatrix, shaderinstance);
+		VertexBuffer.unbind();
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		
+		this.renderSunrise(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder);
+		
+		RenderSystem.enableTexture();
+		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		
+		float rain = 1.0F - level.getRainLevel(partialTicks);
+		
+		this.renderEcliptic(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder, rain);
+        
+        RenderSystem.disableTexture();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.disableBlend();
+        
+        RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
+        double height = this.minecraft.player.getEyePosition(partialTicks).y - level.getLevelData().getHorizonHeight(level);
+        if(height < 0.0D)
+        {
+        	stack.pushPose();
+        	stack.translate(0.0F, 12.0F, 0.0F);
+        	this.darkBuffer.bind();
+        	this.darkBuffer.drawWithShader(stack.last().pose(), projectionMatrix, shaderinstance);
+        	VertexBuffer.unbind();
+        	stack.popPose();
+        }
+        
+        if(level.effects().hasGround())
+        	RenderSystem.setShaderColor(skyX * 0.2F + 0.04F, skyY * 0.2F + 0.04F, skyZ * 0.6F + 0.1F, 1.0F);
+        else
+        	RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
+        
+        RenderSystem.enableTexture();
+        RenderSystem.depthMask(true);
+	}
 }

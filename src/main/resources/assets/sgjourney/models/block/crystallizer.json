@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/orientable",
+	"textures":
+	{
+		"front": "sgjourney:block/crystallizer_front",
+		"side": "sgjourney:block/crystallizer_side",
+		"top": "sgjourney:block/crystallizer_top"
+	}
+}

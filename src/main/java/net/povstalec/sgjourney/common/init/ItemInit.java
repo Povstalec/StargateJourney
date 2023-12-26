@@ -12,11 +12,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.KaraKeshItem;
-import net.povstalec.sgjourney.common.items.NaquadahBottleItem;
 import net.povstalec.sgjourney.common.items.PDAItem;
 import net.povstalec.sgjourney.common.items.RingRemoteItem;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
+import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
+import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.armor.FalconArmorItem;
 import net.povstalec.sgjourney.common.items.armor.JackalArmorItem;
@@ -26,6 +28,7 @@ import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyAxeItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyHoeItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyPickaxeItem;
@@ -45,10 +48,6 @@ public class ItemInit
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant().tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<Item> NAQUADAH = ITEMS.register("naquadah", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant().tab(TabInit.STARGATE_ITEMS)));
-	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
-			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).craftRemainder(Items.BUCKET).tab(TabInit.STARGATE_ITEMS)));
-	public static final RegistryObject<NaquadahBottleItem> LIQUID_NAQUADAH_BOTTLE = ITEMS.register("liquid_naquadah_bottle", 
-			() -> new NaquadahBottleItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	
 	// Crafting Items
 	public static final RegistryObject<Item> NAQUADAH_ROD = ITEMS.register("naquadah_rod", 
@@ -57,10 +56,23 @@ public class ItemInit
 			() -> new Item(new Item.Properties().fireResistant().tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<Item> PLASMA_CONVERTER = ITEMS.register("plasma_converter", 
 			() -> new Item(new Item.Properties().fireResistant().tab(TabInit.STARGATE_ITEMS)));
+
+	public static final RegistryObject<Item> CRYSTAL_BASE = ITEMS.register("crystal_base", 
+			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).tab(TabInit.STARGATE_ITEMS)));
+	public static final RegistryObject<Item> ADVANCED_CRYSTAL_BASE = ITEMS.register("advanced_crystal_base", 
+			() -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(TabInit.STARGATE_ITEMS)));
 	
 	// Food
 	
 	// Useful Items
+	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
+			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET).tab(TabInit.STARGATE_ITEMS)));
+	public static final RegistryObject<Item> HEAVY_LIQUID_NAQUADAH_BUCKET = ITEMS.register("heavy_liquid_naquadah_bucket", 
+			() -> new BucketItem(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET).tab(TabInit.STARGATE_ITEMS)));
+	
+	public static final RegistryObject<VialItem> VIAL = ITEMS.register("vial", 
+			() -> new VialItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+	
 	public static final RegistryObject<Item> RING_REMOTE = ITEMS.register("ring_remote", 
 			() -> new RingRemoteItem(new RingRemoteItem.Properties().stacksTo(1)));
 	public static final RegistryObject<Item> KARA_KESH = ITEMS.register("kara_kesh", 
@@ -80,28 +92,37 @@ public class ItemInit
 	
 	// Crystals
 	public static final RegistryObject<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal", 
-			() -> new ControlCrystalItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
-	public static final RegistryObject<ControlCrystalItem> LARGE_CONTROL_CRYSTAL = ITEMS.register("large_control_crystal", 
 			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+	public static final RegistryObject<ControlCrystalItem> LARGE_CONTROL_CRYSTAL = ITEMS.register("large_control_crystal", 
+			() -> new ControlCrystalItem.Large(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<MemoryCrystalItem> MEMORY_CRYSTAL = ITEMS.register("memory_crystal", 
-			() -> new MemoryCrystalItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS), 4));
+			() -> new MemoryCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<MaterializationCrystalItem> MATERIALIZATION_CRYSTAL = ITEMS.register("materialization_crystal", 
-			() -> new MaterializationCrystalItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+			() -> new MaterializationCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<EnergyCrystalItem> ENERGY_CRYSTAL = ITEMS.register("energy_crystal", 
-			() -> new EnergyCrystalItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS), 50000, 2500, 1500));
+			() -> new EnergyCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+	public static final RegistryObject<TransferCrystalItem> TRANSFER_CRYSTAL = ITEMS.register("transfer_crystal", 
+			() -> new TransferCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<CommunicationCrystalItem> COMMUNICATION_CRYSTAL = ITEMS.register("communication_crystal", 
-			() -> new CommunicationCrystalItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS), 16));
+			() -> new CommunicationCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 
 	public static final RegistryObject<ControlCrystalItem> ADVANCED_CONTROL_CRYSTAL = ITEMS.register("advanced_control_crystal", 
-			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+			() -> new ControlCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<MemoryCrystalItem> ADVANCED_MEMORY_CRYSTAL = ITEMS.register("advanced_memory_crystal", 
-			() -> new MemoryCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS), 6));
+			() -> new MemoryCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<MaterializationCrystalItem> ADVANCED_MATERIALIZATION_CRYSTAL = ITEMS.register("advanced_materialization_crystal", 
-			() -> new MaterializationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+			() -> new MaterializationCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<EnergyCrystalItem> ADVANCED_ENERGY_CRYSTAL = ITEMS.register("advanced_energy_crystal", 
-			() -> new EnergyCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS), 100000, 2500, 3000));
+			() -> new EnergyCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+	public static final RegistryObject<TransferCrystalItem> ADVANCED_TRANSFER_CRYSTAL = ITEMS.register("advanced_transfer_crystal", 
+			() -> new TransferCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<CommunicationCrystalItem> ADVANCED_COMMUNICATION_CRYSTAL = ITEMS.register("advanced_communication_crystal", 
-			() -> new CommunicationCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS), 32));
+			() -> new CommunicationCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+
+	public static final RegistryObject<StargateUpgradeItem> STARGATE_UPGRADE_CRYSTAL = ITEMS.register("stargate_upgrade_crystal", 
+			() -> new StargateUpgradeItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+	public static final RegistryObject<StargateVariantItem> STARGATE_VARIANT_CRYSTAL = ITEMS.register("stargate_variant_crystal", 
+			() -> new StargateVariantItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	
 	// Tools
 	public static final RegistryObject<SGJourneySwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword", 

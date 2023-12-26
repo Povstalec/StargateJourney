@@ -2,8 +2,6 @@ package net.povstalec.sgjourney;
 
 import java.util.function.BiFunction;
 
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.Minecraft;
@@ -43,12 +41,13 @@ import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
-import net.povstalec.sgjourney.client.screens.BasicInterfaceScreen;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
-import net.povstalec.sgjourney.client.screens.CrystalInterfaceScreen;
+import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
 import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
+import net.povstalec.sgjourney.client.screens.InterfaceScreen;
 import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
+import net.povstalec.sgjourney.client.screens.NaquadahLiquidizerScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
@@ -65,6 +64,7 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.init.MiscInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.RecipeTypeInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
@@ -74,6 +74,7 @@ import net.povstalec.sgjourney.common.stargate.AddressTable;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.SolarSystem;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.SymbolSet;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
@@ -104,6 +105,7 @@ public class StargateJourney
         BiomeModifiers.register(eventBus);
         EntityInit.register(eventBus);
         SoundInit.register(eventBus);
+        RecipeTypeInit.register(eventBus);
         
         GalaxyInit.register(eventBus);
         
@@ -134,12 +136,17 @@ public class StargateJourney
         	addressTableBuilder.setName(new ResourceLocation(MODID, "address_table"));
         	event.create(addressTableBuilder);
 
+        	RegistryBuilder<StargateVariant> stargateVariantBuilder = new RegistryBuilder<>();
+        	stargateVariantBuilder.setName(new ResourceLocation(MODID, "stargate_variant"));
+        	event.create(stargateVariantBuilder);
+
         	symbolSetBuilder.dataPackRegistry(SymbolSet.CODEC, SymbolSet.CODEC);
         	symbolBuilder.dataPackRegistry(Symbols.CODEC, Symbols.CODEC);
         	pointOfOriginBuilder.dataPackRegistry(PointOfOrigin.CODEC, PointOfOrigin.CODEC);
         	solarSystemBuilder.dataPackRegistry(SolarSystem.CODEC, SolarSystem.CODEC);
         	galaxyBuilder.dataPackRegistry(Galaxy.CODEC, Galaxy.CODEC);
         	addressTableBuilder.dataPackRegistry(AddressTable.CODEC, AddressTable.CODEC);
+        	stargateVariantBuilder.dataPackRegistry(StargateVariant.CODEC, StargateVariant.CODEC);
         });
         
         eventBus.addListener(this::commonSetup);
@@ -177,14 +184,15 @@ public class StargateJourney
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-        	ItemProperties.register(ItemInit.LIQUID_NAQUADAH_BOTTLE.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new LiquidNaquadahPropertyFunction());
+        	ItemProperties.register(ItemInit.VIAL.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new LiquidNaquadahPropertyFunction());
         	ItemProperties.register(ItemInit.MATOK.get(), new ResourceLocation(StargateJourney.MODID, "open"), new WeaponStatePropertyFunction());
         	
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
+            ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
+            ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
 
-        	MenuScreens.register(MenuInit.BASIC_INTERFACE.get(), BasicInterfaceScreen::new);
-        	MenuScreens.register(MenuInit.CRYSTAL_INTERFACE.get(), CrystalInterfaceScreen::new);
+        	MenuScreens.register(MenuInit.INTERFACE.get(), InterfaceScreen::new);
             
         	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
 
@@ -196,6 +204,9 @@ public class StargateJourney
         	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
 
         	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
+
+        	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), NaquadahLiquidizerScreen::new);
+        	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	

@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -13,10 +15,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.misc.Orientation;
-import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class TollanStargateBlock extends AbstractStargateBaseBlock
 {
@@ -24,10 +26,11 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 	{
 		super(properties, 3.0D, 1.0D);
 	}
-
-	public Stargate.Type getStargateType()
+	
+	@Override
+	public ArrayList<StargatePart> getParts()
 	{
-		return Stargate.Type.TOLLAN;
+		return StargatePart.TOLLAN_PARTS;
 	}
 	
 	@Nullable
@@ -38,18 +41,25 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 		
 		return stargate;
 	}
-	
+
+	@Override
+	public AbstractStargateRingBlock getRing()
+	{
+		return BlockInit.TOLLAN_RING.get();
+	}
+
+	@Override
 	public BlockState ringState()
 	{
-		return BlockInit.TOLLAN_RING.get().defaultBlockState();
+		return getRing().defaultBlockState();
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return getShapeFromArray(SHAPE_PROVIDER.BOTTOM, state.getValue(FACING), state.getValue(ORIENTATION));
-		return state.getValue(FACING).getAxis() == Direction.Axis.X ? SHAPE_PROVIDER.Z_BOTTOM : SHAPE_PROVIDER.X_BOTTOM;
+			return getShapeFromArray(shapeProvider.BOTTOM, state.getValue(FACING), state.getValue(ORIENTATION));
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_BOTTOM : shapeProvider.X_BOTTOM;
 	}
 	
 	@Nullable

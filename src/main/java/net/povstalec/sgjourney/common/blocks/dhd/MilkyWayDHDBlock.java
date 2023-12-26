@@ -43,6 +43,7 @@ import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
@@ -157,11 +158,11 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
 		ListTag nbtTagList = new ListTag();
 		
 		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer())));
+		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer())));
-		nbtTagList.add(InventoryHelper.addItem(5, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_STORAGE, 0, ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer())));
-		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(EnergyCrystalItem.CrystalMode.ENERGY_TRANSFER, 0, ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer())));
+		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(5, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(TransferCrystalItem.DEFAULT_MAX_TRANSFER)));
 		
 		return nbtTagList;
 	}

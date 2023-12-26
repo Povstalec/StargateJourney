@@ -15,9 +15,11 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
 public class MilkyWayDHDEntity extends AbstractDHDEntity
@@ -25,6 +27,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	protected int[] memoryCrystals = new int[0];
 	protected int[] controlCrystals = new int[0];
 	protected int[] energyCrystals = new int[0];
+	protected int[] transferCrystals = new int[0];
 	protected int[] communicationCrystals = new int[0];
 	
 	protected final ItemStackHandler itemHandler = createHandler();
@@ -40,6 +43,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	{
 		super.load(nbt);
 		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		addTransferCrystals(itemHandler);
 	}
 	
 	@Override
@@ -53,6 +57,13 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	public void onLoad()
 	{
 		this.recalculateCrystals();
+	}
+	
+	@Override
+	public void invalidateCaps()
+	{
+		super.invalidateCaps();
+		handler.invalidate();
 	}
 	
 	@Nonnull
@@ -82,7 +93,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
 					if(slot == 0)
-						return stack.getItem() == ItemInit.LARGE_CONTROL_CRYSTAL.get();
+						return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
 					else
 						return isValidCrystal(stack);
 				}
@@ -110,14 +121,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	
 	protected boolean isValidCrystal(ItemStack stack)
 	{
-		if(stack.getItem() == ItemInit.MEMORY_CRYSTAL.get())
-			return true;
-		else if(stack.getItem() == ItemInit.ENERGY_CRYSTAL.get())
-			return true;
-		else if(stack.getItem() == ItemInit.COMMUNICATION_CRYSTAL.get())
-			return true;
-		
-		return false;
+		return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isRegular();
 	}
 	
 	public void recalculateCrystals()
@@ -127,6 +131,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 		this.memoryCrystals = new int[0];
 		this.controlCrystals = new int[0];
 		this.energyCrystals = new int[0];
+		this.transferCrystals = new int[0];
 		this.desiredEnergyLevel = 0;
 		this.maxEnergyTransfer = 0;
 		this.communicationCrystals = new int[0];
@@ -142,6 +147,8 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 				this.memoryCrystals = ArrayHelper.growIntArray(this.memoryCrystals, i);
 			else if(item == ItemInit.ENERGY_CRYSTAL.get())
 				this.energyCrystals = ArrayHelper.growIntArray(this.energyCrystals, i);
+			else if(item == ItemInit.TRANSFER_CRYSTAL.get())
+				this.transferCrystals = ArrayHelper.growIntArray(this.transferCrystals, i);
 			else if(item == ItemInit.COMMUNICATION_CRYSTAL.get())
 				this.communicationCrystals = ArrayHelper.growIntArray(this.communicationCrystals, i);
 		}
@@ -152,18 +159,17 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 			ItemStack stack = itemHandler.getStackInSlot(energyCrystals[i]);
 			
 			if(!stack.isEmpty())
+				this.desiredEnergyLevel += ItemInit.ENERGY_CRYSTAL.get().getCapacity();
+		}
+		
+		// Set up Transfer Crystals
+		for(int i = 0; i < this.transferCrystals.length; i++)
+		{
+			ItemStack stack = itemHandler.getStackInSlot(transferCrystals[i]);
+			
+			if(!stack.isEmpty())
 			{
-				EnergyCrystalItem.CrystalMode mode = EnergyCrystalItem.getCrystalMode(stack);
-				
-				switch(mode)
-				{
-				case ENERGY_STORAGE:
-					this.desiredEnergyLevel += ItemInit.ENERGY_CRYSTAL.get().getMaxStorage();
-					break;
-				case ENERGY_TRANSFER:
-					this.maxEnergyTransfer += ItemInit.ENERGY_CRYSTAL.get().getMaxTransfer();
-					break;
-				}
+				this.maxEnergyTransfer += TransferCrystalItem.getMaxTransfer(stack);
 			}
 		}
 	}
@@ -172,5 +178,28 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	public int getMaxDistance()
 	{
 		return this.communicationCrystals.length * ItemInit.COMMUNICATION_CRYSTAL.get().getMaxDistance() + 16;
+	}
+	
+	
+	
+
+	// TODO Temporary function for replacing old Energy Crystals with new Transfer Crystals
+	public static void addTransferCrystals(ItemStackHandler itemHandler)
+	{
+		int slots = itemHandler.getSlots();
+		
+		for(int i = 0; i < slots; i++)
+		{
+			ItemStack stack = itemHandler.getStackInSlot(i);
+			
+			if(stack.is(ItemInit.ENERGY_CRYSTAL.get()) && stack.hasTag())
+			{
+				if(stack.getTag().getString(CRYSTAL_MODE).equals(ENERGY_TRANSFER))
+				{
+					itemHandler.setStackInSlot(i, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
+					StargateJourney.LOGGER.info("Replaced Transfer Crystal");
+				}
+			}
+		}
 	}
 }

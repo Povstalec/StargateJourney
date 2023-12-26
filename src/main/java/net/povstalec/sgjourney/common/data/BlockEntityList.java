@@ -17,7 +17,8 @@ import net.povstalec.sgjourney.StargateJourney;
  */
 public class BlockEntityList extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-block_enties";
+	private static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
+	private static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties";
 	
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";
@@ -49,7 +50,7 @@ public class BlockEntityList extends SavedData
 	{
 		if(!getBlockEntities(type).contains(id))
 		{
-			StargateJourney.LOGGER.info(type + " does not contain " + id);
+			StargateJourney.LOGGER.error(type + " does not contain " + id);
 			return;
 		}
 		blockEntityList.getCompound(type).remove(id);
@@ -174,7 +175,7 @@ public class BlockEntityList extends SavedData
 	@Nonnull
 	public static BlockEntityList get(Level level)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			throw new RuntimeException("Don't access this client-side!");
 		
 		return BlockEntityList.get(level.getServer());
@@ -185,7 +186,7 @@ public class BlockEntityList extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, FILE_NAME);
+        return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, INCORRECT_FILE_NAME);
     }
     
 //================================================================================================
