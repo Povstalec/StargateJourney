@@ -55,7 +55,7 @@ public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 	        return;
         
         if(!addToNetwork)
-    		addNewToBlockEntityList();
+    		addToBlockEntityList();
 	}
 	
 	@Override
@@ -92,9 +92,9 @@ public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 	public CompoundTag addToBlockEntityList()
 	{
 		CompoundTag blockEntity;
-		if(BlockEntityList.get(level).getBlockEntities(type.id).contains(id))
+		if(this.id.equals(EMPTY) || BlockEntityList.get(level).getBlockEntities(type.id).contains(id))
 		{
-			StargateJourney.LOGGER.info("Block Entity List already contains " + id);
+			StargateJourney.LOGGER.info("Block Entity List already contains " + id + " attempting to add new");
 			blockEntity = addNewToBlockEntityList();
 		}
         else
@@ -110,7 +110,7 @@ public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 	
 	public CompoundTag addNewToBlockEntityList()
 	{
-    	setID(generateID());
+		setID(generateID());
 		CompoundTag blockEntity = BlockEntityList.get(level).addBlockEntity(level, worldPosition, type.id, id);
 		StargateJourney.LOGGER.info("Block Entity " + id + " added.");
 		

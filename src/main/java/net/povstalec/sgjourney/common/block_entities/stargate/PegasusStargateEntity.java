@@ -8,21 +8,27 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class PegasusStargateEntity extends AbstractStargateEntity
 {
 	public int currentSymbol = 0;
-	public int[] addressBuffer = new int[0];
+	public Address addressBuffer = new Address(true);
 	public int symbolBuffer = 0;
 	private boolean passedOver = false;
+	
+	protected boolean dynamicSymbols = true;
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
@@ -33,47 +39,92 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	@Override
     public void onLoad()
 	{
-        if(level.isClientSide())
-        	return;
-        setPointOfOrigin(this.getLevel());
-        setSymbols(this.getLevel());
-        
         super.onLoad();
+
+        if(this.level.isClientSide())
+        	return;
+
+        if(!isPointOfOriginValid(this.level))
+        {
+        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
+        	setPointOfOrigin(this.getLevel());
+        }
+
+        if(!areSymbolsValid(this.level))
+        {
+        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
+        	setSymbols(this.getLevel());
+        }
     }
 	
 	@Override
-    public void load(CompoundTag nbt)
+    public void load(CompoundTag tag)
 	{
-        super.load(nbt);
+        super.load(tag);
         
-        addressBuffer = nbt.getIntArray("AddressBuffer");
-        symbolBuffer = nbt.getInt("SymbolBuffer");
-        currentSymbol = nbt.getInt("CurrentSymbol");
+        addressBuffer.fromArray(tag.getIntArray("AddressBuffer"));
+        symbolBuffer = tag.getInt("SymbolBuffer");
+        currentSymbol = tag.getInt("CurrentSymbol");
+        
+        dynamicSymbols = tag.getBoolean("DynamicSymbols");
+
+        if(!dynamicSymbols)
+        {
+    		pointOfOrigin = tag.getString("PointOfOrigin");
+    		symbols = tag.getString("Symbols");
+        }
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(tag);
 		
-		nbt.putIntArray("AddressBuffer", addressBuffer);
-		nbt.putInt("SymbolBuffer", symbolBuffer);
-		nbt.putInt("CurrentSymbol", currentSymbol);
+		tag.putIntArray("AddressBuffer", addressBuffer.toArray());
+		tag.putInt("SymbolBuffer", symbolBuffer);
+		tag.putInt("CurrentSymbol", currentSymbol);
+		
+		tag.putBoolean("DynamicSymbols", dynamicSymbols);
+
+        if(!dynamicSymbols)
+        {
+    		tag.putString("PointOfOrigin", pointOfOrigin);
+    		tag.putString("Symbols", symbols);
+        }
 	}
 	
+	public void dynamicSymbols(boolean dynamicSymbols)
+	{
+		this.dynamicSymbols = dynamicSymbols;
+		this.setChanged();
+	}
+	
+	public boolean useDynamicSymbols()
+	{
+		return this.dynamicSymbols;
+	}
+
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.PEGASUS_CHEVRON_ENGAGE.get();
 	}
 	
-	public SoundEvent chevronIncomingSound()
+	public SoundEvent getChevronIncomingSound()
 	{
 		return SoundInit.PEGASUS_CHEVRON_INCOMING.get();
 	}
-	
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.PEGASUS_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeCloseSound()
+	{
+		return SoundInit.PEGASUS_WORMHOLE_CLOSE.get();
 	}
 	
 	public SoundEvent getFailSound()
@@ -87,16 +138,15 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(isConnected() && symbol == 0)
 			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 		
-		if(Address.addressContainsSymbol(addressBuffer, symbol))
+		if(addressBuffer.containsSymbol(symbol))
 			return Stargate.Feedback.SYMBOL_ENCODED;
 		
-		if(addressBuffer.length == getAddress().length)
+		if(addressBuffer.getLength() == getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
-		
-		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
+		addressBuffer.addSymbol(symbol);
 		return Stargate.Feedback.SYMBOL_ENCODED;
 	}
 	
@@ -118,7 +168,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
 		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming);
 		
-		if(addressBuffer.length > getAddress().length)
+		if(addressBuffer.getLength() > getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
@@ -145,9 +195,9 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	
 	private void animateSpin()
 	{
-		if(!isConnected() && addressBuffer.length > symbolBuffer)
+		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
 		{
-			int symbol = addressBuffer[symbolBuffer];
+			int symbol = addressBuffer.getSymbol(symbolBuffer);
 			if(symbol == 0)
 			{
 				if(currentSymbol == getChevronPosition(9))
@@ -178,14 +228,17 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		stargate.animateSpin();
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
-		stargate.updatePegasusStargate();
+		stargate.updateClient();
 	}
 	
-	public void updatePegasusStargate()
+	@Override
+	public void updateClient()
 	{
-		if(level.isClientSide())
+		super.updateClient();
+		
+		if(this.level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer, this.currentSymbol));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.currentSymbol));
 	}
 	
 	private void symbolWork()
@@ -206,7 +259,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		currentSymbol = 0;
 		symbolBuffer = 0;
-		addressBuffer = new int[0];
+		addressBuffer.reset();
 		return super.resetStargate(feedback);
 	}
 
@@ -221,5 +274,30 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public void stopRotationSound()
 	{
 		this.spinSound.stopSound();
+	}
+
+	@Override
+	public ChevronLockSpeed getChevronLockSpeed()
+	{
+		return CommonStargateConfig.pegasus_chevron_lock_speed.get();
+	}
+
+	@Override
+	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	{
+		CCTweakedCompatibility.registerPegasusStargateMethods(wrapper);
+	}
+	
+	@Override
+	public void doWhileDialed(int openTime, Stargate.ChevronLockSpeed chevronLockSpeed)
+	{
+		if(this.level.isClientSide())
+			return;
+		
+		if(this.currentSymbol >= 36)
+			return;
+		
+		this.currentSymbol = openTime / chevronLockSpeed.getMultiplier();
+		this.updateClient();
 	}
 }

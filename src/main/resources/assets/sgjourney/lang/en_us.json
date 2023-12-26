@@ -52,37 +52,53 @@
 	"block.sgjourney.basic_interface": "Basic Interface",
 	"block.sgjourney.crystal_interface": "Crystal Interface",
 	"block.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
+
+	"block.sgjourney.crystallizer": "Crystalizer",
+	"block.sgjourney.advanced_crystallizer": "Advanced Crystalizer",
+	"block.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
+	"block.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 	
 	"block.sgjourney.ancient_gene_detector": "Ancient Gene Detector",
 	
-	"block.sgjourney.zpm_plug": "ZPM Plug",
 	"block.sgjourney.zpm_hub": "ZPM Hub",
+	"block.sgjourney.zpm_port": "ZPM Port",
+	"block.sgjourney.zpm_plug": "ZPM Plug",
 	
 	"fluid_type.sgjourney.liquid_naquadah": "Liquid Naquadah",
+	"fluid_type.sgjourney.heavy_liquid_naquadah": "Heavy Liquid Naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Raw Naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadah Alloy",
 	"item.sgjourney.pure_naquadah": "Pure Naquadah",
 	"item.sgjourney.naquadah": "Weapons Grade Naquadah",
 	"item.sgjourney.liquid_naquadah_bucket": "Liquid Naquadah Bucket",
-	"item.sgjourney.liquid_naquadah_bottle": "Liquid Naquadah Bottle",
+	"item.sgjourney.heavy_liquid_naquadah_bucket": "Heavy Liquid Naquadah Bucket",
+	"item.sgjourney.vial": "Vial",
 	
 	"item.sgjourney.naquadah_rod": "Naquadah Rod",
 	"item.sgjourney.reaction_chamber": "Reaction Chamber",
 	"item.sgjourney.plasma_converter": "Plasma Converter",
 
+	"item.sgjourney.crystal_base": "Crystal Base",
+	"item.sgjourney.advanced_crystal_base": "Advanced Crystal Base",
+
 	"item.sgjourney.control_crystal": "Control Crystal",
 	"item.sgjourney.large_control_crystal": "Large Control Crystal",
 	"item.sgjourney.materialization_crystal": "Materialization Crystal",
 	"item.sgjourney.energy_crystal": "Energy Crystal",
+	"item.sgjourney.transfer_crystal": "Transfer Crystal",
 	"item.sgjourney.communication_crystal": "Communication Crystal",
 	"item.sgjourney.memory_crystal": "Memory Crystal",
 
 	"item.sgjourney.advanced_control_crystal": "Advanced Control Crystal",
 	"item.sgjourney.advanced_materialization_crystal": "Advanced Materialization Crystal",
 	"item.sgjourney.advanced_energy_crystal": "Advanced Energy Crystal",
+	"item.sgjourney.advanced_transfer_crystal": "Advanced Transfer Crystal",
 	"item.sgjourney.advanced_communication_crystal": "Advanced Communication Crystal",
 	"item.sgjourney.advanced_memory_crystal": "Advanced Memory Crystal",
+	
+	"item.sgjourney.stargate_upgrade_crystal": "Stargate Upgrade Crystal",
+	"item.sgjourney.stargate_variant_crystal": "Stargate Variant Crystal",
 	
 	"item.sgjourney.naquadah_sword": "Naquadah Sword",
 	"item.sgjourney.naquadah_pickaxe": "Naquadah Pickaxe",
@@ -96,7 +112,7 @@
 	"item.sgjourney.matok": "Staff Weapon",
 	
 	"item.sgjourney.pda": "PDA",
-	"item.sgjourney.zero_point_module": "Zero Point Module",
+	"item.sgjourney.zero_point_module": "ZPM",
 	"item.sgjourney.personal_shield_emitter": "Personal Shield Emitter",
 	
 	"item.sgjourney.syringe": "Syringe",
@@ -132,11 +148,15 @@
 	"sounds.sgjourney.milky_way_dhd_press" : "DHD pressed",
 	
 	"sounds.sgjourney.matok_fire" : "Staff Weapon fires",
+	"sounds.sgjourney.matok_attack" : "Staff Weapon attack",
+	"sounds.sgjourney.matok_open" : "Staff Weapon opens",
+	"sounds.sgjourney.matok_close" : "Staff Weapon closes",
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeologist Map",
 	
 	"filled_map.sgjourney.archeologist": "Archeologist Map",
 	"filled_map.sgjourney.astria_porta": "Map to the Ring of Gods",
+	"filled_map.sgjourney.chappa_ai": "Map to Chappa'ai",
 	
 	"creativemodetab.stargate_blocks": "Stargate Blocks",
 	"creativemodetab.stargate_items": "Stargate Items",
@@ -144,10 +164,19 @@
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",
 	"screen.sgjourney.crystal_interface": "Crystal Interface",
+	"screen.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
 	"screen.sgjourney.transport_rings": "Transport Rings",
 	"screen.sgjourney.naquadah_generator": "Naquadah Generator",
 	"screen.sgjourney.dhd": "Dial Home Device",
+
 	"screen.sgjourney.zpm_hub": "ZPM Hub",
+	"screen.sgjourney.zpm_port": "ZPM Port",
+	"screen.sgjourney.zpm_plug": "ZPM Plug",
+
+	"screen.sgjourney.crystallizer": "Crystallizer",
+	"screen.sgjourney.advanced_crystallizer": "Advanced Crystallizer",
+	"screen.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
+	"screen.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
 	"biome.sgjourney.abydos_spires": "Abydos Spires",
@@ -227,6 +256,9 @@
 	"tooltip.sgjourney.energy": "Energy",
 	"tooltip.sgjourney.dimension": "Dimension",
 	"tooltip.sgjourney.mode": "Mode",
+	"tooltip.sgjourney.upgraded": "Upgraded",
+	"tooltip.sgjourney.variant": "Variant",
+	"tooltip.sgjourney.stargate_type": "Stargate Type",
 	
 	"tooltip.sgjourney.has_control_crystal": "Has Control Crystal",
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
@@ -269,9 +301,9 @@
 	"message.sgjourney.stargate.error.symbol_in_addres": "Symbol is already encoded",
 	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol is out of bounds",
 	
-	"message.sgjourney.stargate.info.connection_estabilished.system_wide": "System-wide connection estabilished",
-	"message.sgjourney.stargate.info.connection_estabilished.interstellar": "Interstellar connection estabilished",
-	"message.sgjourney.stargate.info.connection_estabilished.intergalactic": "Intergalactic connection estabilished",
+	"message.sgjourney.stargate.info.connection_established.system_wide": "System-wide connection estabilished",
+	"message.sgjourney.stargate.info.connection_established.interstellar": "Interstellar connection estabilished",
+	"message.sgjourney.stargate.info.connection_established.intergalactic": "Intergalactic connection estabilished",
 	"message.sgjourney.stargate.error.incomplete_address": "Incomplete Address",
 	"message.sgjourney.stargate.error.invalid_address": "Invalid Address",
 	"message.sgjourney.stargate.error.not_enough_power": "Not enough power",
@@ -292,6 +324,7 @@
 	"message.sgjourney.stargate.error.ran_out_of_power": "Ran out of power",
 	"message.sgjourney.stargate.error.connection_rerouted": "Connection rerouted",
 	"message.sgjourney.stargate.error.wrong_disconnect_side": "Stargate cannot be disconnected from this side",
+	"message.sgjourney.stargate.error.connection_forming": "Cannot disconnect Stargate while a Connection is forming",
 	
 	"message.sgjourney.stargate.error.could_not_reach_target_stargate": "Could not reach target Stargate",
 	
@@ -299,6 +332,22 @@
 	"message.sgjourney.stargate.info.chevron_lowered": "Chevron lowered",
 	"message.sgjourney.stargate.error.chevron_already_raised": "Chevron is already raised",
 	"message.sgjourney.stargate.error.chevron_already_lowered": "Chevron is already lowered",
+	
+	"message.sgjourney.command.get_address.no_galaxy": "You are not located in any Galaxy",
+	"message.sgjourney.command.get_address.located": "is not located in",
+	"message.sgjourney.command.get_address.address": "The address of",
+	"message.sgjourney.command.get_address.in_galaxy": "in",
+	"message.sgjourney.command.get_address.is": "is",
+	"message.sgjourney.command.get_extragalactic_address.address": "The extragalactic address of",
+	"message.sgjourney.command.get_extragalactic_address.is": "is",
+	"message.sgjourney.command.stellar_update": "Stellar update applied",
+	"message.sgjourney.command.stargate_network_version": "Stargate Network version",
+	"message.sgjourney.command.stargate_network_settings.changed": "Stargate Network settings changed",
+	"message.sgjourney.command.stargate_network_settings.use_datapack_addresses": "Use Datapack Addresses",
+	"message.sgjourney.command.stargate_network_settings.generate_random_solar_systems": "Generate Random Solar Systems",
+	"message.sgjourney.command.stargate_network_settings.random_addresses_from_seed": "Random Addresses From Seed",
+	"message.sgjourney.command.get_stargates": "Stargates in dimension",
+	"message.sgjourney.command.get_transporters": "Transporters in dimension",
 	
 	"gui.sgjourney.config": "Stargate Journey Config",
 	"gui.sgjourney.client": "Client",
@@ -311,9 +360,11 @@
 	
 	"gui.sgjourney.disable_smooth_animations": "Disable Smooth Animations",
 	"gui.sgjourney.enable_vortex": "Enable Vortex",
-	"gui.sgjourney.flat_event_horizon": "Flat Event Horizon",
+	"gui.sgjourney.event_horizon_distortion": "Event Horizon Distortion : 0.",
+	"gui.sgjourney.stargate_variants": "Stargate Variants",
 	"gui.sgjourney.unique_symbols": "Unique Symbols",
 	"gui.sgjourney.use_movie_stargate_model": "Use Movie Stargate Model",
+	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",
 	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",
 	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back"
 }

@@ -13,9 +13,7 @@ public class InventoryUtil
         {
             ItemStack currentStack = player.getInventory().getItem(i);
             if (!currentStack.isEmpty() && currentStack.is(item))
-            {
                 return true;
-            }
         }
 
         return false;
@@ -27,9 +25,7 @@ public class InventoryUtil
         {
             ItemStack currentStack = player.getInventory().getItem(i);
             if (!currentStack.isEmpty() && currentStack.is(item))
-            {
                 return i;
-            }
         }
 
         return -1;

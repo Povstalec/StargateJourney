@@ -14,8 +14,11 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.SGJourneyBaseEntityBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
-import net.povstalec.sgjourney.common.items.NaquadahBottleItem;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
+import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 
 public class TabInit
@@ -29,6 +32,76 @@ public class TabInit
 	public static RegistryObject<CreativeModeTab> STARGATE_BLOCKS = CREATIVE_MODE_TABS.register("stargate_blocks", () ->
 		CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
 		.title(Component.translatable("creativemodetab.stargate_blocks")).build());
+	/*@SubscribeEvent
+	public static void onRegisterModTabs(final CreativeModeTabEvent.Register event)
+	{
+		
+		event.registerCreativeModeTab(new ResourceLocation(StargateJourney.MODID, "stargate_blocks"), (builder) ->
+		{
+			builder.title(Component.translatable("itemGroup.stargate_blocks"))
+			.icon(() -> new ItemStack(BlockInit.NAQUADAH_BLOCK.get()))
+			.displayItems((flag, items, hasPermisions) ->
+			{
+				items.accept(BlockInit.UNIVERSE_STARGATE.get());
+				items.accept(BlockInit.MILKY_WAY_STARGATE.get());
+				items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
+				items.accept(BlockInit.PEGASUS_STARGATE.get());
+				items.accept(PegasusDHDBlock.pegasusCrystalSetup());
+				items.accept(BlockInit.CLASSIC_STARGATE.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_DHD.get());
+				items.accept(BlockInit.TOLLAN_STARGATE.get());
+
+				items.accept(BlockInit.TRANSPORT_RINGS.get());
+				items.accept(BlockInit.RING_PANEL.get());
+				
+				items.accept(BlockInit.ARCHEOLOGY_TABLE.get());
+				items.accept(BlockInit.GOLDEN_IDOL.get());
+
+				items.accept(BlockInit.NAQUADAH_ORE.get());
+				items.accept(BlockInit.DEEPSLATE_NAQUADAH_ORE.get());
+				items.accept(BlockInit.NETHER_NAQUADAH_ORE.get());
+				items.accept(BlockInit.RAW_NAQUADAH_BLOCK.get());
+				
+				items.accept(BlockInit.NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.NAQUADAH_SLAB.get());
+				items.accept(BlockInit.CUT_NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.CUT_NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.CUT_NAQUADAH_SLAB.get());
+				
+				items.accept(BlockInit.SANDSTONE_HIEROGLYPHS.get());
+				items.accept(BlockInit.SANDSTONE_SWITCH.get());
+				items.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
+				items.accept(BlockInit.SANDSTONE_SYMBOL.get());
+				items.accept(BlockInit.STONE_SYMBOL.get());
+				
+				items.accept(BlockInit.SANDSTONE_CARTOUCHE.get());
+				items.accept(BlockInit.STONE_CARTOUCHE.get());
+				
+				items.accept(BlockInit.FIRE_PIT.get());
+
+				items.accept(BlockInit.NAQUADAH_LIQUIDIZER.get());
+				items.accept(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
+				
+				items.accept(BlockInit.CRYSTALLIZER.get());
+				items.accept(BlockInit.ADVANCED_CRYSTALLIZER.get());
+
+				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
+				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
+				
+				items.accept(BlockInit.BASIC_INTERFACE.get());
+				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
+				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+
+				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
+				
+				items.accept(BlockInit.ZPM_HUB.get());
+			});
+		});
+	}*/
 	
 	@SubscribeEvent
 	public static void addCreative(final BuildCreativeModeTabContentsEvent event)
@@ -40,8 +113,10 @@ public class TabInit
 			event.accept(ItemInit.PURE_NAQUADAH.get());
 			event.accept(ItemInit.NAQUADAH.get());
 			event.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
-			//event.accept(ItemInit.LIQUID_NAQUADAH_BOTTLE.get());
-			event.accept(NaquadahBottleItem.liquidNaquadahSetup());
+			event.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
+			event.accept(ItemInit.VIAL.get());
+			event.accept(VialItem.liquidNaquadahSetup());
+			event.accept(VialItem.heavyLiquidNaquadahSetup());
 
 			event.accept(ItemInit.NAQUADAH_ROD.get());
 			event.accept(ItemInit.REACTION_CHAMBER.get());
@@ -66,7 +141,7 @@ public class TabInit
 			event.accept(ItemInit.MATOK.get());
 			
 			event.accept(ItemInit.JACKAL_HELMET.get());
-			//items.accept(ItemInit.HORUS_HELMET.get());
+			//event.accept(ItemInit.HORUS_HELMET.get());
 			event.accept(ItemInit.JAFFA_HELMET.get());
 			event.accept(ItemInit.JAFFA_CHESTPLATE.get());
 			event.accept(ItemInit.JAFFA_LEGGINGS.get());
@@ -80,6 +155,9 @@ public class TabInit
 			event.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
 			event.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
 
+			event.accept(ItemInit.CRYSTAL_BASE.get());
+			event.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
+			
 			event.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
 			event.accept(ItemInit.CONTROL_CRYSTAL.get());
 			event.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
@@ -91,17 +169,32 @@ public class TabInit
 			event.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
 			event.accept(ItemInit.ENERGY_CRYSTAL.get());
 			event.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
+			event.accept(ItemInit.TRANSFER_CRYSTAL.get());
+			event.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
 			event.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 			event.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
+			
+			if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
+			{
+				event.accept(StargateUpgradeItem.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
+				event.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
+				event.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
+				event.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
+			}
+			if(CommonStargateConfig.enable_stargate_variants.get())
+			{
+				event.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
+				event.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_movie"));
+				event.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_sg-1"));
+				event.accept(StargateVariantItem.stargateVariant("sgjourney:classic_milky_way"));
+			}
 		}
 		else if(event.getTab() == STARGATE_BLOCKS.get())
 		{
 			event.accept(BlockInit.UNIVERSE_STARGATE.get());
 			event.accept(BlockInit.MILKY_WAY_STARGATE.get());
-			//items.accept(BlockInit.MILKY_WAY_DHD.get());
 			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
 			event.accept(BlockInit.PEGASUS_STARGATE.get());
-			//items.accept(BlockInit.PEGASUS_DHD.get());
 			event.accept(PegasusDHDBlock.pegasusCrystalSetup());
 			event.accept(BlockInit.CLASSIC_STARGATE.get());
 			event.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
@@ -139,23 +232,30 @@ public class TabInit
 			
 			event.accept(BlockInit.FIRE_PIT.get());
 
+			event.accept(BlockInit.NAQUADAH_LIQUIDIZER.get());
+			event.accept(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
+			
+			event.accept(BlockInit.CRYSTALLIZER.get());
+			event.accept(BlockInit.ADVANCED_CRYSTALLIZER.get());
+
 			event.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
 			event.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 			
 			event.accept(BlockInit.BASIC_INTERFACE.get());
 			event.accept(BlockInit.CRYSTAL_INTERFACE.get());
+			event.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 
 			event.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 			
 			event.accept(BlockInit.ZPM_HUB.get());
-
-			//items.accept(BlockInit.CRYSTALLIZER.get());
 		}
-		else if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS)
+		else if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
 		{
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
+			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
+			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get())));
 			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
 		}
 	}

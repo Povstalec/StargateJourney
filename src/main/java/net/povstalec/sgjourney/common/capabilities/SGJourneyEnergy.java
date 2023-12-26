@@ -34,7 +34,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
         long energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
         if(!simulate)
         	energy += energyReceived;
-        
+
         if(energyReceived != 0)
 			onEnergyChanged(energyReceived, simulate);
         return energyReceived;
@@ -50,7 +50,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	{
 		if(!canExtract())
             return 0;
-
+		
 		long energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
         if(!simulate)
         	energy -= energyExtracted;

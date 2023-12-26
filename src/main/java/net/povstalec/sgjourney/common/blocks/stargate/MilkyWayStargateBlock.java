@@ -22,12 +22,11 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
@@ -35,11 +34,6 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	public MilkyWayStargateBlock(Properties properties)
 	{
 		super(properties, 7.0D, 1.0D);
-	}
-
-	public Stargate.Type getStargateType()
-	{
-		return Stargate.Type.MILKY_WAY;
 	}
 	
 	@Nullable
@@ -51,9 +45,16 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 		 return stargate;
 	}
 	
+	@Override
+	public AbstractStargateRingBlock getRing()
+	{
+		return BlockInit.MILKY_WAY_RING.get();
+	}
+
+	@Override
 	public BlockState ringState()
 	{
-		return BlockInit.MILKY_WAY_RING.get().defaultBlockState();
+		return getRing().defaultBlockState();
 	}
 	
 	@Nullable

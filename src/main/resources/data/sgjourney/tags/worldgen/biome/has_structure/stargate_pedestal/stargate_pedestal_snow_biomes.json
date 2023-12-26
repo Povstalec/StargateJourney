@@ -3,9 +3,5 @@
 	
 	"_comment": " This biome tag can specify the biome directly. Or specify another biome tag by starting with # ",
 	"values":
-	[
-		"minecraft:snowy_taiga",
-		"minecraft:snowy_plains",
-		"minecraft:ice_spikes"
-	]
+	[]
 }

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.entities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,45 +12,51 @@ import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.povstalec.sgjourney.common.init.TagInit;
 
 public class PlasmaProjectile extends ThrowableProjectile
 {
-	private int explosionPower = 0;
+	private float explosionPower = 0;
 	
-	public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, Level worldIn)
+	public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, Level level)
 	{
-        super(type, worldIn);
+        super(type, level);
     }
 
-    public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, double x, double y, double z, Level worldIn)
+    public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, double x, double y, double z, Level level, float explosionPower)
     {
-        super(type, x, y, z, worldIn);
+        super(type, x, y, z, level);
+        this.explosionPower = explosionPower;
     }
 
-    public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, LivingEntity livingEntityIn, Level worldIn)
+    public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, LivingEntity livingEntityIn, Level level, float explosionPower)
     {
-        super(type, livingEntityIn, worldIn);
+        super(type, livingEntityIn, level);
+        this.explosionPower = explosionPower;
     }
 
-	protected void onHit(HitResult p_37218_)
+	protected void onHit(HitResult hitResult)
 	{
-	      super.onHit(p_37218_);
+	      super.onHit(hitResult);
+	      
 	      if (!this.level().isClientSide())
 	      {
-	         boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
-	         this.level().explode((Entity)null, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
+	         boolean canDestroy = ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
+	         this.level().explode((Entity)null, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, canDestroy,
+	        		 canDestroy ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
 	         this.discard();
 	      }
 
 	   }
 
-	protected void onHitEntity(EntityHitResult p_37216_)
+	protected void onHitEntity(EntityHitResult hitResult)
 	{
-		super.onHitEntity(p_37216_);
+		super.onHitEntity(hitResult);
+		
 		if (!this.level().isClientSide())
 		{
-			Entity entity = p_37216_.getEntity();
+			Entity entity = hitResult.getEntity();
 			Entity entity1 = this.getOwner();
 			entity.hurt(level().damageSources().explosion((Player)entity1, entity), 14.0F);
 			if (entity1 instanceof LivingEntity)
@@ -67,23 +74,16 @@ public class PlasmaProjectile extends ThrowableProjectile
 		if(!this.level().isClientSide())
 		{
 			Entity entity = this.getOwner();
-			if(!(entity instanceof Mob) || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), entity))
+			if(!(entity instanceof Mob) || ForgeEventFactory.getMobGriefingEvent(this.level(), entity))
 			{
 				BlockPos blockpos = result.getBlockPos().relative(result.getDirection());
 				
-				// Note: I don't like how this looks, but I don't have time to think of anything better, so who cares
-				if (this.level().isEmptyBlock(blockpos))
+				if(this.level().isEmptyBlock(blockpos))
 				{
-					if(trySetFireToBlock(blockpos, blockpos.north()))
-						return;
-					if(trySetFireToBlock(blockpos, blockpos.east()))
-						return;
-					if(trySetFireToBlock(blockpos, blockpos.south()))
-						return;
-					if(trySetFireToBlock(blockpos, blockpos.west()))
-						return;
-					if(trySetFireToBlock(blockpos, blockpos.below()))
-						return;
+					for(Direction direction : Direction.values())
+					{
+						trySetFireToBlock(blockpos, blockpos.relative(direction));
+					}
 				}
 			}
 

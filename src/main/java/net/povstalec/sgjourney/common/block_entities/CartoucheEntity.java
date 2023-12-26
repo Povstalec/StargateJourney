@@ -37,7 +37,7 @@ public abstract class CartoucheEntity extends BlockEntity
 	private String dimension;
 	
 	private String symbols;
-	private int[] address = new int[0];
+	private Address address = new Address();
 	
 	public CartoucheEntity(BlockEntityType<?> cartouche, BlockPos pos, BlockState state) 
 	{
@@ -132,12 +132,12 @@ public abstract class CartoucheEntity extends BlockEntity
 		return this.symbols;
 	}
 	
-	public void setAddress(int[] address)
+	public void setAddress(Address address)
 	{
 		this.address = address;
 	}
 	
-	public int[] getAddress()
+	public Address getAddress()
 	{
 		return this.address;
 	}
@@ -159,16 +159,15 @@ public abstract class CartoucheEntity extends BlockEntity
 	{
 		if(level.isClientSide())
 			return;
-		//System.out.println(this.dimension);
 		
-		int[] address = addressTable.equals(EMPTY) ? this.address : new int[0];
+		int[] address = addressTable.equals(EMPTY) ? this.address.toArray() : new int[0];
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundCartoucheUpdatePacket(worldPosition, symbols, address));
 	}
 	
 	public void tick(Level level, BlockPos pos, BlockState state)
 	{
-		if(this.address.length == 0)
-			setAddress(Address.addressStringToIntArray(getAddressFromDimension()));
+		if(this.address.getLength() == 0)
+			this.address.fromString(getAddressFromDimension());
 		
 		if(state.getValue(CartoucheBlock.HALF) == DoubleBlockHalf.LOWER)
 			updateClient();

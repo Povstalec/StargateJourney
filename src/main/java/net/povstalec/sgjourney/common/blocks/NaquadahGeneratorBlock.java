@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.energy_gen.NaquadahGeneratorEntity;
+import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
 
 public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
@@ -34,7 +34,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if(!level.isClientSide) 
+        if(!level.isClientSide()) 
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			

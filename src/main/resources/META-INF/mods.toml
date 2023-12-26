@@ -4,7 +4,7 @@ license="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 issueTrackerURL="https://github.com/Povstalec/StargateJourney/issues"
 [[mods]]
 modId="sgjourney"
-version="0.6.8"
+version="0.6.9"
 displayName="Stargate Journey"
 logoFile="sgjourney_large.png"
 credits="TakeruDavis, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt, SquidDev"
@@ -35,7 +35,7 @@ Stargate in Minecraft! And much more.
 [[dependencies.sgjourney]]
     modId="stellarview"
     mandatory=false
-    versionRange="[0.1.5,)"
+    versionRange="[0.1.0,0.2.0)"
     ordering="AFTER"
     side="CLIENT"
 

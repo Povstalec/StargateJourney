@@ -1,0 +1,15 @@
+{
+  "name": "sgjourney:abydos_pyramid/entrance_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "sgjourney:stargate/milky_way/temple/abydos_pyramid/abydos_pyramid_entrance",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

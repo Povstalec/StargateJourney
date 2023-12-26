@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "sgjourney:stargate/universe/destiny",
+      "weight": 1
+    }
+  ],
+  "placement": {
+     "salt": 8615654,
+
+    "spacing": 1,
+
+    "separation": 0,
+
+    "type": "minecraft:random_spread"
+  }
+}

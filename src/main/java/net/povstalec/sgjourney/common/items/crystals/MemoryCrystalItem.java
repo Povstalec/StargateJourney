@@ -9,15 +9,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.stargate.Address;
 
-public class MemoryCrystalItem extends Item
+public class MemoryCrystalItem extends AbstractCrystalItem
 {
+	public static final int DEFAULT_MEMORY_CAPACITY = 4;
+	public static final int ADVANCED_MEMORY_CAPACITY = 6;
+	
 	private static final String MEMORY_TYPE = "MemoryType";
 	private static final String MEMORY_LIST = "MemoryList";
 
@@ -25,12 +27,9 @@ public class MemoryCrystalItem extends Item
 	private static final String COORDINATES = "Coordinates";
 	private static final String ADDRESS = "Address";
 	
-	private int memoryCapacity;
-	
-	public MemoryCrystalItem(Properties properties, int memoryCapacity)
+	public MemoryCrystalItem(Properties properties)
 	{
 		super(properties);
-		this.memoryCapacity = memoryCapacity;
 	}
 	
 	public enum MemoryType
@@ -38,6 +37,11 @@ public class MemoryCrystalItem extends Item
 		ID,
 		COORDINATES,
 		ADDRESS
+	}
+	
+	public int getMemoryCapacity()
+	{
+		return DEFAULT_MEMORY_CAPACITY;
 	}
 	
 	/*public static ItemStack atlantisAddress()
@@ -86,7 +90,7 @@ public class MemoryCrystalItem extends Item
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
 		{
-			if(getMemoryListSize(stack) >= memoryCrystal.memoryCapacity)
+			if(getMemoryListSize(stack) >= memoryCrystal.getMemoryCapacity())
 			{
 				StargateJourney.LOGGER.info("Memory at maximum capacity");
 				return false;
@@ -103,7 +107,7 @@ public class MemoryCrystalItem extends Item
 			return true;
 		}
 		
-		StargateJourney.LOGGER.info("Failed to save Memory");
+		StargateJourney.LOGGER.error("Failed to save Memory");
 		return false;
 	}
 	
@@ -140,6 +144,7 @@ public class MemoryCrystalItem extends Item
 	{
 		CompoundTag tag = getMemory(stack, memory);
 		
+		Address address = new Address();
 		if(tag.contains(MEMORY_TYPE, Tag.TAG_STRING))
 		{
 			String memoryType = tag.getString(MEMORY_TYPE);
@@ -148,11 +153,11 @@ public class MemoryCrystalItem extends Item
 			{
 				int[] coordinates = tag.getIntArray(ADDRESS);
 				StargateJourney.LOGGER.info("Found Address at Memory Slot " + memory);
-				return coordinates;
+				address.fromArray(coordinates);
 			}
 		}
 		
-		return new int[0];
+		return address.toArray();
 	}
 	
 	public static boolean saveAddress(ItemStack stack, int[] address)
@@ -181,13 +186,13 @@ public class MemoryCrystalItem extends Item
         	switch(address.length)
         	{
         	case 6:
-        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.GOLD));
+        		tooltipComponents.add(Component.literal(address.toString()).withStyle(ChatFormatting.GOLD));
         		break;
         	case 7:
-        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.LIGHT_PURPLE));
+        		tooltipComponents.add(Component.literal(address.toString()).withStyle(ChatFormatting.LIGHT_PURPLE));
         		break;
         	case 8:
-        		tooltipComponents.add(Component.literal(Address.addressIntArrayToString(address)).withStyle(ChatFormatting.AQUA));
+        		tooltipComponents.add(Component.literal(address.toString()).withStyle(ChatFormatting.AQUA));
         		break;
         	default:
         		break;
@@ -196,5 +201,25 @@ public class MemoryCrystalItem extends Item
         }
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    }
+    
+    public static class Advanced extends MemoryCrystalItem
+    {
+    	public Advanced(Properties properties)
+		{
+			super(properties);
+		}
+
+		@Override
+    	public int getMemoryCapacity()
+    	{
+    		return DEFAULT_MEMORY_CAPACITY;
+    	}
+		
+		@Override
+		public boolean isAdvanced()
+		{
+			return true;
+		}
     }
 }

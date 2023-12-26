@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.povstalec.sgjourney.client.screens.config.ConfigList.BooleanConfigEntry;
+import net.povstalec.sgjourney.client.screens.config.ConfigList.SliderConfigEntry;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public class ConfigScreenClientStargate extends Screen
@@ -37,10 +38,13 @@ public class ConfigScreenClientStargate extends Screen
 		
 		this.configList = new ConfigList(minecraft, this.width, this.height, 
 				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.stargate_variants"), this.width, ClientStargateConfig.stargate_variants));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.unique_symbols"), this.width, ClientStargateConfig.unique_symbols));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.enable_vortex"), this.width, ClientStargateConfig.enable_vortex));
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.flat_event_horizon"), this.width, ClientStargateConfig.flat_event_horizon));
+		this.configList.add(new SliderConfigEntry(Component.translatable("gui.sgjourney.event_horizon_distortion"), Component.empty(), this.width, ClientStargateConfig.event_horizon_distortion));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.use_movie_stargate_model"), this.width, ClientStargateConfig.use_movie_stargate_model));
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.universe_front_rotates"), this.width, ClientStargateConfig.universe_front_rotates));
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.alternate_movie_chevron_locking"), this.width, ClientStargateConfig.alternate_movie_chevron_locking));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.milky_way_stargate_back_lights_up"), this.width, ClientStargateConfig.milky_way_stargate_back_lights_up));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.pegasus_stargate_back_lights_up"), this.width, ClientStargateConfig.pegasus_stargate_back_lights_up));
 		

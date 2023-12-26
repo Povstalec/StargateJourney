@@ -1,5 +1,5 @@
 {
-	"parent": "sgjourney:block/basic_interface_template",
+	"parent": "sgjourney:block/interface_template",
 	"textures":
 	{
 		"bottom": "sgjourney:block/basic_interface_back_wormhole",

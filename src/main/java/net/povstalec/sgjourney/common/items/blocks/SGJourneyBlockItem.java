@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 
@@ -108,6 +109,18 @@ public class SGJourneyBlockItem extends BlockItem
 						milkyWayStargate.setPointOfOrigin(EMPTY);
 					if(!info.contains(SYMBOLS))
 						milkyWayStargate.setSymbols(EMPTY);
+				}
+			}
+			
+			// Sets up symbols on the Classic Stargate
+			else if(blockEntity instanceof ClassicStargateEntity classicStargate)
+			{
+				if(!addToNetwork)
+				{
+					if(!info.contains(POINT_OF_ORIGIN))
+						classicStargate.setPointOfOrigin(EMPTY);
+					if(!info.contains(SYMBOLS))
+						classicStargate.setSymbols(EMPTY);
 				}
 			}
 		}

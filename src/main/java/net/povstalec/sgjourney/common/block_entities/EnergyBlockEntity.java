@@ -68,7 +68,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ENERGY && isCorrectSide(side))
+		if(capability == ForgeCapabilities.ENERGY && isCorrectEnergySide(side))
 			return lazyEnergyHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -78,7 +78,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
-	protected boolean isCorrectSide(Direction side)
+	protected boolean isCorrectEnergySide(Direction side)
 	{
 		return true;
 	}
@@ -99,7 +99,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	protected abstract long maxExtract();
 	
-	private final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
+	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
 	{
 		@Override
 		public boolean canExtract()
@@ -128,10 +128,14 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public long depleteEnergy(long amount, boolean simulate)
 	{
 		long storedEnergy = this.getEnergyStored();
-		long energyDepleted = Math.min(storedEnergy, maxExtract());
+		long maxEnergyDepletion = Math.min(amount, maxExtract());
+		long energyDepleted = Math.min(storedEnergy, maxEnergyDepletion);
 		
 		if(!simulate)
 			this.setEnergy(storedEnergy - energyDepleted);
+		
+		if(energyDepleted != 0)
+			ENERGY_STORAGE.onEnergyChanged(energyDepleted, simulate);
 		
 		return energyDepleted;
 	}
@@ -159,6 +163,23 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public boolean canExtract()
 	{
 		return ENERGY_STORAGE.canExtract();
+	}
+	
+	public boolean canExtractEnergy(long energy)
+	{
+		// Max amount of energy that can be stored
+		if(ENERGY_STORAGE.getTrueMaxEnergyStored() < energy)
+			return false;
+
+		// Max amount of energy that can be extracted
+		if(ENERGY_STORAGE.maxExtract() < energy)
+			return false;
+		
+		// Amount of energy that is stored
+		if(ENERGY_STORAGE.getTrueEnergyStored() < energy)
+			return false;
+		
+		return true;
 	}
 	
 	public boolean canReceive()

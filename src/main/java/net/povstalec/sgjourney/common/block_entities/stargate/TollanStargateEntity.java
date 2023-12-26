@@ -1,24 +1,26 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class TollanStargateEntity extends AbstractStargateEntity
 {
-	public int currentSymbol = 0;
-	public int[] addressBuffer = new int[0];
-
+	public static final float TOLLAN_THICKNESS = 5.0F;
+	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0F;
+	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
+	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2);
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2,
+				VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 	}
 	
 	@Override
@@ -26,87 +28,51 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	{
         if(level.isClientSide())
         	return;
-        setPointOfOrigin(this.getLevel());
-        setSymbols(this.getLevel());
+		pointOfOrigin = "sgjourney:tauri";
+		symbols = "sgjourney:milky_way";
         
         super.onLoad();
     }
-	
+
 	@Override
-    public void load(CompoundTag nbt)
-	{
-        super.load(nbt);
-        
-        addressBuffer = nbt.getIntArray("AddressBuffer");
-        currentSymbol = nbt.getInt("CurrentSymbol");
-    }
-	
-	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
-	{
-		super.saveAdditional(nbt);
-		
-		nbt.putIntArray("AddressBuffer", addressBuffer);
-		nbt.putInt("CurrentSymbol", currentSymbol);
-	}
-	
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.TOLLAN_CHEVRON_ENGAGE.get();
 	}
-	
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
-		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
+		return SoundInit.TOLLAN_WORMHOLE_OPEN.get();
 	}
-	
+
+	@Override
+	public SoundEvent getWormholeCloseSound()
+	{
+		return SoundInit.TOLLAN_WORMHOLE_CLOSE.get();
+	}
+
+	@Override
 	public SoundEvent getFailSound()
 	{
 		return SoundInit.TOLLAN_DIAL_FAIL.get();
 	}
-	
-//	@Override
-//	public Stargate.Feedback engageSymbol(int symbol)
-//	{
-//		System.out.println("engageSymbol: " + symbol);
-//		if(isConnected() && symbol == 0)
-//			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
-//
-//		if(Addressing.addressContainsSymbol(addressBuffer, symbol))
-//			return Stargate.Feedback.SYMBOL_ENCODED;
-//
-//		addressBuffer = ArrayHelper.growIntArray(addressBuffer, symbol);
-//		System.out.println("addressBuffer length: " + addressBuffer.length);
-//		return Stargate.Feedback.SYMBOL_ENCODED;
-//	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, TollanStargateEntity stargate)
+	@Override
+	public void playRotationSound(){}
+
+	@Override
+	public void stopRotationSound(){}
+
+	@Override
+	public ChevronLockSpeed getChevronLockSpeed()
 	{
-		if(level.isClientSide())
-			return;
-
-		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		return CommonStargateConfig.tollan_chevron_lock_speed.get();
 	}
 
 	@Override
-	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
+	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
 	{
-		currentSymbol = 0;
-		addressBuffer = new int[0];
-		return super.resetStargate(feedback);
-	}
-
-	@Override
-	public void playRotationSound()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void stopRotationSound()
-	{
-		// TODO Auto-generated method stub
-		
+		CCTweakedCompatibility.registerTollanStargateMethods(wrapper);
 	}
 }

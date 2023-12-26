@@ -5,6 +5,11 @@
 		"#sgjourney:stargate_pedestal",
 		"#sgjourney:stargate_temple",
 		"#sgjourney:stargate_outpost",
-		"#sgjourney:pegasus_stargate"
+
+		"sgjourney:stargate/milky_way/terra_stargate",
+
+		"sgjourney:stargate/pegasus/pegasus_stargate",
+
+		"sgjourney:stargate/universe/destiny"
 	]
 }

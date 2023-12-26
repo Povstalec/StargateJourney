@@ -1,23 +1,11 @@
 {
-	"parent": "minecraft:item/handheld",
-	"loader": "forge:separate_transforms",
 	"base":
 	{
-		"parent": "sgjourney:item/jaffa_staff_weapon_3d"
+		"parent": "sgjourney:item/jaffa_staff_weapon_inventory"
 	},
-	"perspectives":
-	{
-		"gui":
-		{
-			"parent": "sgjourney:item/jaffa_staff_weapon_2d"
-		},
-		"ground":
-		{
-			"parent": "sgjourney:item/jaffa_staff_weapon_2d"
-		},
-		"fixed":
-		{
-			"parent": "sgjourney:item/jaffa_staff_weapon_2d"
-		}
-	}
+	"overrides":
+	[
+		{ "predicate": { "sgjourney:open": 0.0 }, "model": "sgjourney:item/matok_closed"},
+		{ "predicate": { "sgjourney:open": 1.0 }, "model": "sgjourney:item/matok_open"}
+	]
 }

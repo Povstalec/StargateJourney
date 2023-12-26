@@ -3,19 +3,18 @@
 	"category": "misc",
 	"pattern":
 	[
-		"CGC",
+		"ATA",
 		"NEN",
-		"SRS"
+		"ARA"
 	],
 	
 	"key": 
 	{
-		"N": { "item": "sgjourney:naquadah_alloy" },
-		"S": { "item": "minecraft:cut_sandstone" },
-		"C": { "item": "minecraft:chiseled_sandstone" },
-		"E": { "item": "minecraft:ender_pearl" },
-		"G": { "item": "minecraft:glowstone_dust" },
-		"R": { "item": "minecraft:redstone" }
+		"N": { "item": "sgjourney:naquadah" },
+		"A": { "item": "sgjourney:naquadah_alloy" },
+		"E": { "item": "sgjourney:materialization_crystal" },
+		"T": { "item": "sgjourney:transfer_crystal" },
+		"R": { "item": "sgjourney:energy_crystal" }
 		
 	},
 	

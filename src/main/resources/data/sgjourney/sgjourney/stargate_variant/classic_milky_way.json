@@ -1,0 +1,8 @@
+{
+	"base_stargate": "sgjourney:classic",
+	
+	"texture": "sgjourney:textures/entity/stargate/classic/classic_milky_way/classic_milky_way_stargate.png",
+	"engaged_texture": "sgjourney:textures/entity/stargate/classic/classic_milky_way/classic_milky_way_stargate_engaged.png",
+	
+	"symbol_color": [48, 49, 63, 255]
+}

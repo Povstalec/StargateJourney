@@ -14,11 +14,15 @@ public class FluidInit
 	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, StargateJourney.MODID);
 	
 	
-	public static final RegistryObject<FlowingFluid> LIQUID_NAQUADAH_SOURCE = FLUIDS.register("liquid_naquadah_source", 
+	public static final RegistryObject<FlowingFluid> LIQUID_NAQUADAH_SOURCE = FLUIDS.register("liquid_naquadah", 
 			() -> new ForgeFlowingFluid.Source(FluidTypeInit.LIQUID_NAQUADAH_PROPERTIES));
-	
-	public static final RegistryObject<FlowingFluid> LIQUID_NAQUADAH_FLOWING = FLUIDS.register("liquid_naquadah_flowing", 
+	public static final RegistryObject<FlowingFluid> LIQUID_NAQUADAH_FLOWING = FLUIDS.register("flowing_liquid_naquadah", 
 			() -> new ForgeFlowingFluid.Flowing(FluidTypeInit.LIQUID_NAQUADAH_PROPERTIES));
+
+	public static final RegistryObject<FlowingFluid> HEAVY_LIQUID_NAQUADAH_SOURCE = FLUIDS.register("heavy_liquid_naquadah", 
+			() -> new ForgeFlowingFluid.Source(FluidTypeInit.HEAVY_LIQUID_NAQUADAH_PROPERTIES));
+	public static final RegistryObject<FlowingFluid> HEAVY_LIQUID_NAQUADAH_FLOWING = FLUIDS.register("flowing_heavy_liquid_naquadah", 
+			() -> new ForgeFlowingFluid.Flowing(FluidTypeInit.HEAVY_LIQUID_NAQUADAH_PROPERTIES));
 	
 	
 	
