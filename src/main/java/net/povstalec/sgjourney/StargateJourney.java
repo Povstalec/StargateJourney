@@ -107,11 +107,8 @@ public class StargateJourney
         BiomeModifiers.register(eventBus);
         EntityInit.register(eventBus);
         SoundInit.register(eventBus);
-<<<<<<< HEAD
         TabInit.register(eventBus);
-=======
         RecipeTypeInit.register(eventBus);
->>>>>>> stargatejourney-1.19.3
         
         GalaxyInit.register(eventBus);
         

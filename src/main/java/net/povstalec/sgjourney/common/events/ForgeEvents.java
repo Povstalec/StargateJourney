@@ -102,7 +102,7 @@ public class ForgeEvents
 		if(entity instanceof LightningBolt lightning)
 		{
 			Vec3 vec3 = lightning.position();
-			BlockPos strikePosition = new BlockPos(vec3.x, vec3.y - 1.0E-6D, vec3.z);
+			BlockPos strikePosition = new BlockPos((int) Math.round(vec3.x), (int) Math.round(vec3.y - 1.0E-6D), (int) Math.round(vec3.z));
 
 			List<AbstractStargateEntity> list = new ArrayList<AbstractStargateEntity>();
 			BlockState blockstate = level.getBlockState(strikePosition);
@@ -135,7 +135,7 @@ public class ForgeEvents
 			AncientGene.addAncient(player);
 		else
 		{
-			long seed = ((ServerLevel) player.getLevel()).getSeed();
+			long seed = ((ServerLevel) player.level()).getSeed();
 			seed += player.getUUID().hashCode();
 			
 			AncientGene.inheritGene(seed, player, CommonGeneticConfig.player_ata_gene_inheritance_chance.get());

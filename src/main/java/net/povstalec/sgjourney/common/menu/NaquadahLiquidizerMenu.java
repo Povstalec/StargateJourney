@@ -26,7 +26,7 @@ public class NaquadahLiquidizerMenu extends AbstractContainerMenu
     
     public NaquadahLiquidizerMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
     {
-        this(containerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public NaquadahLiquidizerMenu(int containerId, Inventory inventory, BlockEntity blockEntity)
@@ -34,7 +34,7 @@ public class NaquadahLiquidizerMenu extends AbstractContainerMenu
         super(MenuInit.NAQUADAH_LIQUIDIZER.get(), containerId);
         checkContainerSize(inventory, 3);
         this.blockEntity = ((AbstractNaquadahLiquidizerEntity) blockEntity);
-        this.level = inventory.player.level;
+        this.level = inventory.player.level();
         this.fluidStack1 = this.blockEntity.getFluid1();
         this.fluidStack2 = this.blockEntity.getFluid2();
 

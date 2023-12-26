@@ -85,9 +85,7 @@ public class BlockInit
 	
 	public static final RegistryObject<ClassicStargateBlock> CLASSIC_STARGATE = registerEntityBlock("classic_stargate", 
 			() -> new ClassicStargateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)
-					.sound(SoundType.METAL).noOcclusion()));
-			//() -> new ClassicStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
-			//		.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
+					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
 	public static final RegistryObject<ClassicStargateRingBlock> CLASSIC_RING = BLOCKS.register("classic_ring", 
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));

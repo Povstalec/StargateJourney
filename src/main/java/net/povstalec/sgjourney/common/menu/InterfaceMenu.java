@@ -20,14 +20,14 @@ public class InterfaceMenu extends AbstractContainerMenu
     
     public InterfaceMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
     {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public InterfaceMenu(int containerId, Inventory inv, BlockEntity entity)
     {
         super(MenuInit.INTERFACE.get(), containerId);
         interfaceEntity = ((AbstractInterfaceEntity) entity);
-        this.level = inv.player.level;
+        this.level = inv.player.level();
     }
     
     public long getEnergy()
