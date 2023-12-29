@@ -32,7 +32,7 @@ public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight + 1);
+        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
         
         this.renderEnergy(graphics, x + 52, y + 54);
     }
