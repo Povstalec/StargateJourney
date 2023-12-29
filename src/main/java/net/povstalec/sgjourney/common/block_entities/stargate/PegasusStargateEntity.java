@@ -190,7 +190,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		if(chevron < 1 || chevron > 8)
 			return 0;
-		return new int[] {4, 8, 12, 24, 28, 32, 16, 20}[chevron - 1];
+		
+		return 4 * getEngagedChevrons()[chevron];
 	}
 	
 	private void animateSpin()

@@ -50,6 +50,7 @@ public class CCTweakedCompatibility
 		
 		if(type.hasCrystalMethods())
 		{
+			peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
 			peripheral.registerMethod(new StargateMethods.EngageSymbol());
 			peripheral.registerMethod(new StargateMethods.DialedAddress());
 		}
@@ -73,6 +74,7 @@ public class CCTweakedCompatibility
 		
 		if(type.hasCrystalMethods())
 		{
+			peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
 			peripheral.registerMethod(new StargateMethods.EngageSymbol());
 			peripheral.registerMethod(new StargateMethods.DialedAddress());
 		}
@@ -100,6 +102,7 @@ public class CCTweakedCompatibility
 		
 		if(type.hasCrystalMethods())
 		{
+			peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
 			peripheral.registerMethod(new StargateMethods.EngageSymbol());
 			peripheral.registerMethod(new StargateMethods.DialedAddress());
 		}
@@ -123,6 +126,7 @@ public class CCTweakedCompatibility
 		
 		if(type.hasCrystalMethods())
 		{
+			peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
 			peripheral.registerMethod(new StargateMethods.EngageSymbol());
 			peripheral.registerMethod(new StargateMethods.DialedAddress());
 		}

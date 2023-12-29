@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
+import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.TagInit;
@@ -28,7 +28,7 @@ public class Dialing
 	public static final int[] DIALED_8_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 4, 6, 7, 8, 5};
 	public static final int[] DIALED_9_CHEVRON_CONFIGURATION = new int [] {0, 1, 2, 3, 4, 5, 6, 7, 8};
 	
-	public static final int[] DIALING_CHEVRON_CONFIGURATION = DIALED_7_CHEVRON_CONFIGURATION;
+	public static final int[] DEFAULT_CHEVRON_CONFIGURATION = DIALED_7_CHEVRON_CONFIGURATION;
 	
 	public static Stargate.Feedback dialStargate(Level level, AbstractStargateEntity dialingStargate, Address address, boolean doKawoosh)
 	{
@@ -130,8 +130,8 @@ public class Dialing
 	{
 		StargateJourney.LOGGER.info("Attempting to locate the Stargate Structure in " + level.dimension().location().toString());
 		
-		int xOffset = CommonStargateNetworkConfig.stargate_generation_center_x_chunk_offset.get();
-        int zOffset = CommonStargateNetworkConfig.stargate_generation_center_z_chunk_offset.get();
+		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
+        int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
 		//Nearest Structure that potentially has a Stargate
 		BlockPos blockpos = ((ServerLevel) level).findNearestMapStructure(TagInit.Structures.HAS_STARGATE, new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
 		if(blockpos == null)

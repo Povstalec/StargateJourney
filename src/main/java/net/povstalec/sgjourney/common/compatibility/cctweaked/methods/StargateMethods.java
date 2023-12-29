@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.compatibility.cctweaked.methods;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -10,6 +11,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class StargateMethods
@@ -58,6 +60,43 @@ public class StargateMethods
 			});
 			
 			return result;
+		}
+	}
+	
+	public static class SetChevronConfiguration implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "setChevronConfiguration";
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			context.executeMainThreadTask(() ->
+			{
+				Map<Double, Double> chevronConfiguration = (Map<Double, Double>) arguments.getTable(0);
+				
+				int[] configurationArray = ArrayHelper.tableToArray(chevronConfiguration);
+
+				
+				if(configurationArray.length != 9)
+					throw new LuaException("Array is too short");
+				else if(!ArrayHelper.differentNumbers(configurationArray))
+					throw new LuaException("Array contains duplicate numbers");
+				else if(!ArrayHelper.differentNumbers(configurationArray))
+					throw new LuaException("Array contains duplicate numbers");
+				else if(!ArrayHelper.isArrayPositive(configurationArray, true))
+					throw new LuaException("Array contains negative numbers");
+				
+				stargate.setEngagedChevrons(configurationArray);
+				
+				return null;
+			});
+			
+			return MethodResult.of();
 		}
 	}
 

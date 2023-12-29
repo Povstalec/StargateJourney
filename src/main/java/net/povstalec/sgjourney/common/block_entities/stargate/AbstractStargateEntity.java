@@ -78,7 +78,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected Stargate.Feedback recentFeedback = Stargate.Feedback.NONE;
 	protected int kawooshTick = 0;
 	protected int animationTick = 0;
-	protected int[] engagedChevrons = Dialing.DIALING_CHEVRON_CONFIGURATION;
+	protected int[] engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 	protected int timesOpened = 0;
 	protected String pointOfOrigin = EMPTY;
 	protected String symbols = EMPTY;
@@ -512,7 +512,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected void resetAddress()
 	{
 		this.address.reset();
-		engagedChevrons = Dialing.DIALING_CHEVRON_CONFIGURATION;
+		engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 		setStargateState(ConnectionState.IDLE, 0);
 	}
 	
@@ -768,7 +768,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		case 8:
 			return Dialing.DIALED_9_CHEVRON_CONFIGURATION;
 		default:
-			return Dialing.DIALING_CHEVRON_CONFIGURATION;
+			return Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 		}
 	}
 	

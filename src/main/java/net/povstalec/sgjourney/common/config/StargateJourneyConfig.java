@@ -47,6 +47,10 @@ public class StargateJourneyConfig
 		CommonStargateNetworkConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
 		
+		COMMON_BUILDER.push("Generation Config");
+		CommonGenerationConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
 		COMMON_BUILDER.push("Tech Config");
 		CommonTechConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
