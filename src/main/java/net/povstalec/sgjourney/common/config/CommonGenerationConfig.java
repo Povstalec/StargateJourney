@@ -18,7 +18,7 @@ public class CommonGenerationConfig
 		common_stargate_generation = new SGJourneyConfigValue.BooleanValue(server, "server.common_stargate_generation", 
 				false,
 				"Common Stargates will generate around the Overworld");
-
+		
 		
 		
 		stargate_generation_center_x_chunk_offset = server
