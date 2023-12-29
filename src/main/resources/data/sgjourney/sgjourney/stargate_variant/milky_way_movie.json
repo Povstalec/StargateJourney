@@ -7,7 +7,7 @@
 	"event_horizon_color": [119, 208, 248, 255],
 	
 	"chevron_engage_sound": "sgjourney:movie_chevron_engage",
-	"chevron_encode_sound": "sgjourney:movie_chevron_encode",
+	"chevron_raise_sound": "sgjourney:movie_chevron_raise",
 	"fail_sound": "sgjourney:milky_way_dial_fail",
 	"wormhole_open_sound": "sgjourney:movie_wormhole_open",
 	"wormhole_close_sound": "sgjourney:movie_wormhole_close"

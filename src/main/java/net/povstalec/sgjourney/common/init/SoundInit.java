@@ -24,6 +24,7 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> MILKY_WAY_RING_SPIN_START = registerSoundEvent("milky_way_ring_spin_start");
 	public static final RegistryObject<SoundEvent> MILKY_WAY_RING_SPIN = registerSoundEvent("milky_way_ring_spin");
 	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENCODE = registerSoundEvent("milky_way_chevron_encode");
+	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_RAISE = registerSoundEvent("milky_way_chevron_raise");
 	public static final RegistryObject<SoundEvent> MILKY_WAY_CHEVRON_ENGAGE = registerSoundEvent("milky_way_chevron_engage");
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DIAL_FAIL = registerSoundEvent("milky_way_dial_fail");
 	public static final RegistryObject<SoundEvent> MILKY_WAY_WORMHOLE_OPEN = registerSoundEvent("milky_way_wormhole_open");

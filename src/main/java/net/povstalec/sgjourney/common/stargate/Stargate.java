@@ -139,7 +139,8 @@ public class Stargate
 		ROTATING(12, FeedbackType.INFO, createInfo("rotating")),//TODO Return this somewhere
 		ROTATION_STOPPED(13, FeedbackType.INFO, createInfo("rotation_stopped")),//TODO Return this somewhere
 		CHEVRON_ALREADY_RAISED(-24, FeedbackType.ERROR, createError("chevron_already_raised", false)),
-		CHEVRON_ALREADY_LOWERED(-25, FeedbackType.ERROR, createError("chevron_already_lowered", false));
+		CHEVRON_ALREADY_LOWERED(-25, FeedbackType.ERROR, createError("chevron_already_lowered", false)),
+		CANNOT_ENCODE_POINT_OF_ORIGIN(-26, FeedbackType.ERROR, createError("cannot_encode_point_of_origin", false));
 		
 		// Pegasus
 		

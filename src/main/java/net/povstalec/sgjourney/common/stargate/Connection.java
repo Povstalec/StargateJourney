@@ -224,11 +224,11 @@ public class Connection
 					else if(this.openTime / chevronWaitTicks == 5 && addressLenght < 8)
 						return;
 					else
-						this.dialedStargate.encodeChevron(dialingAddress.getSymbol(dialedAddressLength), true);
+						this.dialedStargate.encodeChevron(dialingAddress.getSymbol(dialedAddressLength), true, false);
 				}
 				else
 				{
-					this.dialedStargate.chevronSound(true);
+					this.dialedStargate.chevronSound(true, true, false, false);
 					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().getLength() + 1, true, 0);
 				}
 			}

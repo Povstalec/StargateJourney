@@ -264,17 +264,17 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(symbol == 0)
 			return setRecentFeedback(lockPrimaryChevron());
 		else
-			return setRecentFeedback(encodeChevron(symbol, false));
+			return setRecentFeedback(encodeChevron(symbol, false, false));
 	}
 	
-	public Stargate.Feedback encodeChevron(int symbol, boolean incoming)
+	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encodeSound)
 	{
 		if(address.containsSymbol(symbol))
 			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		if(!address.canGrow())
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
-		chevronSound(incoming);
+		chevronSound(false, incoming, false, false);
 		if(!incoming)
 		{
 			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
@@ -298,14 +298,14 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		if(!address.isComplete())
 		{
-			chevronSound(false);
+			chevronSound(true, false, false, false);
 			return resetStargate(Stargate.Feedback.INCOMPLETE_ADDRESS);
 		}
 		else if(!isConnected())
 		{
 			if(!isObstructed())
 			{
-				chevronSound(false);
+				chevronSound(true, false, false, false);
 				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, false, 0);
 				return setRecentFeedback(engageStargate(this.getAddress(), true));
 			}
@@ -317,10 +317,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 	}
 	
-	public void chevronSound(boolean incoming)
+	public void chevronSound(boolean primary, boolean incoming, boolean raise, boolean encode)
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, false));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, primary, incoming, raise, encode));
 	}
 	
 	public void openWormholeSound()

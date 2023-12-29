@@ -126,7 +126,7 @@ public class MilkyWayStargateMethods
 		{
 			context.executeMainThreadTask(() ->
 			{
-				stargate.endRotation();
+				stargate.endRotation(true);
 				return null;
 			});
 			
@@ -154,6 +154,27 @@ public class MilkyWayStargateMethods
 		}
 	}
 	
+	public static class EngageChevron implements InterfaceMethod<MilkyWayStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "encodeChevron";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				int feedback = stargate.encodeChevron().getCode();
+				return new Object[] {feedback};
+			});
+			
+			return result;
+		}
+	}
+	
 	public static class LowerChevron implements InterfaceMethod<MilkyWayStargateEntity>
 	{
 		@Override
@@ -169,29 +190,6 @@ public class MilkyWayStargateMethods
 			{
 				int feedback = stargate.lowerChevron().getCode();
 				
-				return new Object[] {feedback};
-			});
-			
-			return result;
-		}
-	}
-	
-	public static class EngageSymbol implements InterfaceMethod<MilkyWayStargateEntity>
-	{
-		@Override
-		public String getName()
-		{
-			return "engageSymbol";
-		}
-
-		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
-		{
-			int desiredSymbol = arguments.getInt(0);
-			
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				int feedback = stargate.engageSymbol(desiredSymbol).getCode();
 				return new Object[] {feedback};
 			});
 			

@@ -159,12 +159,12 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback encodeChevron(int symbol, boolean incoming)
+	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;
 		animationTicks++;
 		
-		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming);
+		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming, encode);
 		return feedback;
 	}
 	
@@ -260,7 +260,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			if(isCurrentSymbol(0))
 				this.lockPrimaryChevron();
 			else
-				this.encodeChevron(desiredSymbol, false);
+				this.encodeChevron(desiredSymbol, false, false);
 			
 			updateClient();
 		}

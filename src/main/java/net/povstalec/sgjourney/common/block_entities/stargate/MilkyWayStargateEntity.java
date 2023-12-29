@@ -124,11 +124,21 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		return this.isChevronRaised;
 	}
+	
+	public SoundEvent getRingRotationStopSound() //TODO
+	{
+		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
+	}
 
 	@Override
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
+	}
+	
+	public SoundEvent getChevronRaiseSound()
+	{
+		return SoundInit.MILKY_WAY_CHEVRON_RAISE.get();
 	}
 	
 	public SoundEvent getChevronEncodeSound()
@@ -226,7 +236,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		if(!this.isChevronRaised && !getAddress().containsSymbol(getCurrentSymbol()))
 		{
 			if(!level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, true));
+				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentSymbol() == 0, false, true, false));
 			this.isChevronRaised = true;
 			
 			if(!level.isClientSide())
@@ -236,12 +246,34 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_RAISED);
 	}
 	
+	public Stargate.Feedback encodeChevron()
+	{
+		if(!level.isClientSide())
+		{
+			synchronizeWithClient(level);//TODO add sound
+		}
+		
+		int symbol = getCurrentSymbol();
+		
+		if(symbol == 0)
+			return setRecentFeedback(Stargate.Feedback.CANNOT_ENCODE_POINT_OF_ORIGIN);
+		
+		return setRecentFeedback(encodeChevron(symbol, false, true));
+	}
+	
 	public Stargate.Feedback lowerChevron()
 	{
 		if(this.isChevronRaised)
 		{
 			this.isChevronRaised = false;
-			return setRecentFeedback(engageSymbol(getCurrentSymbol()));
+			
+			Stargate.Feedback feedback = engageSymbol(getCurrentSymbol());
+			
+			// This is a dumb way to make sure the sound plays even after the chevron is engaged 
+			if(feedback == Stargate.Feedback.SYMBOL_IN_ADDRESS)
+				chevronSound(getCurrentSymbol() == 0, false, false, false);
+			
+			return setRecentFeedback(feedback);
 		}
 		
 		if(!level.isClientSide())
@@ -280,7 +312,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			if(this.computerRotation)
 			{
 				if(isCurrentSymbol(this.desiredSymbol))
-					endRotation();
+					endRotation(false);
 				else
 					rotate(this.rotateClockwise);
 			}
@@ -361,11 +393,14 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		synchronizeWithClient(this.level);
 	}
 	
-	public void endRotation()
+	public void endRotation(boolean playSound)
 	{
 		this.computerRotation = false;
 		
 		synchronizeWithClient(this.level);
+		
+		if(!this.level.isClientSide() && playSound)
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.MilkyWayStop(worldPosition));
 	}
 	
 	public void playBuildupSound()

@@ -44,6 +44,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new MilkyWayStargateMethods.EndRotation());
 
 		peripheral.registerMethod(new MilkyWayStargateMethods.RaiseChevron());
+		peripheral.registerMethod(new MilkyWayStargateMethods.EngageChevron());
 		peripheral.registerMethod(new MilkyWayStargateMethods.LowerChevron());
 		
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
