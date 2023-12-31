@@ -135,6 +135,8 @@
 	"sounds.sgjourney.dial_start" : "Stargate starts dialing",
 	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",
 	"sounds.sgjourney.ring_spin" : "Stargate ring spins",
+	"sounds.sgjourney.ring_spin_stop" : "Stargate ring spinning stopped",
+	"sounds.sgjourney.chevron_raise" : "Chevron raised",
 	"sounds.sgjourney.chevron_encode" : "Chevron encoded",
 	"sounds.sgjourney.chevron_engage" : "Chevron engaged",
 	"sounds.sgjourney.dial_fail" : "Stargate dialing fails",
@@ -364,6 +366,7 @@
 	"gui.sgjourney.stargate_variants": "Stargate Variants",
 	"gui.sgjourney.unique_symbols": "Unique Symbols",
 	"gui.sgjourney.use_movie_stargate_model": "Use Movie Stargate Model",
+	"gui.sgjourney.universe_front_rotates": "Universe Stargate front rotates",
 	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",
 	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",
 	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back"

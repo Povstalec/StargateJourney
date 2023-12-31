@@ -28,6 +28,7 @@ public class StargateVariant
 			Codec.INT.listOf().optionalFieldOf("event_horizon_color").forGetter(StargateVariant::getEventHorizonColor),
 			// Sounds
 			ResourceLocation.CODEC.optionalFieldOf("chevron_engage_sound").forGetter(StargateVariant::getChevronEngageSound),
+			ResourceLocation.CODEC.optionalFieldOf("chevron_raise_sound").forGetter(StargateVariant::getChevronRaiseSound),
 			ResourceLocation.CODEC.optionalFieldOf("chevron_encode_sound").forGetter(StargateVariant::getChevronEncodeSound),
 			ResourceLocation.CODEC.optionalFieldOf("chevron_incoming_sound").forGetter(StargateVariant::getChevronIncomingSound),
 			ResourceLocation.CODEC.optionalFieldOf("dial_fail_sound").forGetter(StargateVariant::getFailSound),
@@ -45,6 +46,7 @@ public class StargateVariant
 	private final Optional<List<Integer>> eventHorizonColor;
 	
 	private final Optional<ResourceLocation> chevronEngageSound;
+	private final Optional<ResourceLocation> chevronRaiseSound;
 	private final Optional<ResourceLocation> chevronEncodeSound;
 	private final Optional<ResourceLocation> chevronIncomingSound;
 	private final Optional<ResourceLocation> failSound;
@@ -61,6 +63,7 @@ public class StargateVariant
 			Optional<List<Integer>> eventHorizonColor,
 			
 			Optional<ResourceLocation> chevronEngageSound,
+			Optional<ResourceLocation> chevronRaiseSound,
 			Optional<ResourceLocation> chevronEncodeSound,
 			Optional<ResourceLocation> chevronIncomingSound,
 			Optional<ResourceLocation> failSound,
@@ -77,6 +80,7 @@ public class StargateVariant
 		this.eventHorizonColor = eventHorizonColor;
 		
 		this.chevronEngageSound = chevronEngageSound;
+		this.chevronRaiseSound = chevronRaiseSound;
 		this.chevronEncodeSound = chevronEncodeSound;
 		this.chevronIncomingSound = chevronIncomingSound;
 		this.failSound = failSound;
@@ -122,6 +126,11 @@ public class StargateVariant
 	public Optional<ResourceLocation> getChevronEngageSound()
 	{
 		return this.chevronEngageSound;
+	}
+	
+	public Optional<ResourceLocation> getChevronRaiseSound()
+	{
+		return this.chevronRaiseSound;
 	}
 	
 	public Optional<ResourceLocation> getChevronEncodeSound()

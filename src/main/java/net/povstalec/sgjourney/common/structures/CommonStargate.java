@@ -54,10 +54,18 @@ public class CommonStargate extends Structure
         this.projectStartToHeightmap = projectStartToHeightmap;
         this.maxDistanceFromCenter = maxDistanceFromCenter;
     }
+    
+	/*private static boolean extraSpawningChecks(Structure.GenerationContext context)
+	{
+    	return CommonGenerationConfig.common_stargate_generation.get();
+	}*/
 
     @Override
     public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context)
     {
+        /*if(!CommonStargate.extraSpawningChecks(context))
+            return Optional.empty();*/
+        
         int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
 
         // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)

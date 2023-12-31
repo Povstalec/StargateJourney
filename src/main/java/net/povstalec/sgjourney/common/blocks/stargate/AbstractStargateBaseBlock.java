@@ -111,7 +111,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		{
 			if(!part.equals(StargatePart.BASE) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
 			{
-				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
+				if(player != null)
+					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
 				return null;
 			}
 		}

@@ -32,6 +32,10 @@
       "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_chulak",
       "weight": 1
     },
+    {
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_cavum_tenebrae",
+      "weight": 1
+    },
 
     {
       "structure": "sgjourney:stargate/classic/pedestal/stargate_pedestal",

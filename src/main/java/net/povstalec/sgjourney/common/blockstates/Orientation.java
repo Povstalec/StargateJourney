@@ -41,6 +41,9 @@ public enum Orientation implements StringRepresentable
 	
 	public static Orientation getOrientationFromXRot(Player player)
 	{
+		if(player == null)
+			return REGULAR;
+		
 		float rotation = player.getXRot();
 		
 		if(rotation > 65.0F)

@@ -10,12 +10,12 @@ import net.povstalec.sgjourney.client.sound.SoundAccess;
 public abstract class ClientBoundSoundPackets
 {
     public final BlockPos pos;
-    public final boolean bool;
+    public final boolean stop;
 
     public ClientBoundSoundPackets(BlockPos pos, boolean stop)
     {
         this.pos = pos;
-        this.bool = stop;
+        this.stop = stop;
     }
 
     public ClientBoundSoundPackets(FriendlyByteBuf buffer)
@@ -26,7 +26,7 @@ public abstract class ClientBoundSoundPackets
     public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
-        buffer.writeBoolean(this.bool);
+        buffer.writeBoolean(this.stop);
     }
 
     public abstract boolean handle(Supplier<NetworkEvent.Context> ctx);
@@ -99,23 +99,41 @@ public abstract class ClientBoundSoundPackets
         }
     }
 
-    public static class Chevron extends ClientBoundSoundPackets
+    public static class Chevron
     {
-    	public Chevron(BlockPos pos, boolean raise)
+	    public final BlockPos pos;
+    	public final boolean primary;
+    	public final boolean incoming;
+    	public final boolean raise;
+    	public final boolean encode;
+    	
+    	public Chevron(BlockPos pos, boolean primary, boolean incoming, boolean raise, boolean encode)
     	{
-    		super(pos, raise);
+    		this.pos = pos;
+    		this.primary = primary;
+    		this.incoming = incoming;
+    		this.raise = raise;
+    		this.encode = encode;
     	}
     	public Chevron(FriendlyByteBuf buffer)
     	{
-    		super(buffer);
+    		 this(buffer.readBlockPos(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean());
     	}
+
+        public void encode(FriendlyByteBuf buffer)
+        {
+            buffer.writeBlockPos(this.pos);
+            buffer.writeBoolean(this.primary);
+            buffer.writeBoolean(this.incoming);
+            buffer.writeBoolean(this.raise);
+            buffer.writeBoolean(this.encode);
+        }
     	
-    	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playChevronSound(pos, bool);
+            	SoundAccess.playChevronSound(pos, primary, incoming, raise, encode);
             });
             return true;
         }
@@ -159,7 +177,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playRotationSound(pos, bool);
+            	SoundAccess.playRotationSound(pos, stop);
             });
             return true;
         }
@@ -204,6 +222,28 @@ public abstract class ClientBoundSoundPackets
             ctx.get().enqueueWork(() ->
             {
             	SoundAccess.playMilkyWayBuildupSound(pos);
+            });
+            return true;
+        }
+    }
+    
+    public static class MilkyWayStop extends ClientBoundSoundPackets
+    {
+    	public MilkyWayStop(BlockPos pos)
+    	{
+    		super(pos, false);
+    	}
+    	public MilkyWayStop(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    	}
+    	
+    	@Override
+    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playMilkyWayStopSound(pos);
             });
             return true;
         }
