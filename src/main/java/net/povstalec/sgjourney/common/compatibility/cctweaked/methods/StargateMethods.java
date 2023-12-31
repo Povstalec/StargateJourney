@@ -13,9 +13,40 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class StargateMethods
 {
+	public static Object[] returnedFeedback(AbstractInterfaceEntity interfaceEntity, Stargate.Feedback feedback)
+	{
+		if(interfaceEntity.getInterfaceType().hasCrystalMethods())
+			return new Object[] {feedback.getCode(), feedback.getMessage()};
+		
+		return new Object[] {feedback.getCode()};
+	}
+	
+	// Basic Interface
+	public static class GetRecentFeedback implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getRecentFeedback";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				Stargate.Feedback feedback = stargate.getRecentFeedback();
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
+			});
+			
+			return result;
+		}
+	}
+	
 	// Crystal Interface
 	public static class EngageSymbol implements InterfaceMethod<AbstractStargateEntity>
 	{
@@ -32,8 +63,8 @@ public class StargateMethods
 			
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				int feedback = stargate.engageSymbol(desiredSymbol).getCode();
-				return new Object[] {feedback};
+				Stargate.Feedback feedback = stargate.engageSymbol(desiredSymbol);
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
 			return result;

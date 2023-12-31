@@ -274,7 +274,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(!address.canGrow())
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
-		chevronSound(false, incoming, false, false);
+		chevronSound(false, incoming, false, encodeSound);
 		if(!incoming)
 		{
 			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
@@ -310,7 +310,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 				return setRecentFeedback(engageStargate(this.getAddress(), true));
 			}
 			else
-				return resetStargate(Stargate.Feedback.SELF_OBSTRUCTED);
+				return resetStargate(Stargate.Feedback.SELF_OBSTRUCTED, false);
 		}
 		else
 			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
@@ -366,7 +366,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.timesOpened++;
 		this.setChanged();
 		
-		this.updateStargate();
+		this.updateStargate(false);
 	}
 	
 	public static double kawooshFunction(int kawooshTime)
@@ -454,7 +454,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return true;
 	}
 	
-	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
+	public Stargate.Feedback resetStargate(Stargate.Feedback feedback, boolean updateInterfaces)
 	{
 		if(isConnected())
 		{
@@ -462,7 +462,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			setConnected(ConnectionState.IDLE);
 		}
 
-		resetAddress();
+		resetAddress(updateInterfaces);
 		this.connectionID = EMPTY;
 		setKawooshTickCount(0);
 		updateClient();
@@ -471,8 +471,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
 		
 		setChanged();
-		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " Code: " + feedback.getCode());
+		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " " + feedback.getMessage());
 		return setRecentFeedback(feedback);
+	}
+	
+	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
+	{
+		return resetStargate(feedback, true);
 	}
 	
 	public Stargate.Feedback disconnectStargate(Stargate.Feedback feedback)
@@ -488,32 +493,32 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public Stargate.Feedback bypassDisconnectStargate(Stargate.Feedback feedback)
 	{
 		StargateNetwork.get(level).terminateConnection(level.getServer(), connectionID, feedback);
-		return resetStargate(feedback);
+		return resetStargate(feedback, false);
 	}
 	
-	public void updateStargate()
+	public void updateStargate(boolean updateInterfaces)
 	{
-		updateStargate(this.level, this.getID(), this.timesOpened, this.hasDHD);
+		updateStargate(this.level, this.getID(), this.timesOpened, this.hasDHD, updateInterfaces);
 	}
 	
-	private void updateStargate(Level level, String id, int timesOpened, boolean hasDHD)
+	private void updateStargate(Level level, String id, int timesOpened, boolean hasDHD, boolean updateInterfaces)
 	{
 		StargateNetwork.get(level).updateStargate(level, id, timesOpened, hasDHD);
-		setStargateState(this.getConnectionState(), this.getChevronsEngaged());
+		setStargateState(this.getConnectionState(), this.getChevronsEngaged(), updateInterfaces);
 	}
 	
 	protected void growAddress(int symbol)
 	{
 		this.address.addSymbol(symbol);
-		setStargateState(this.getConnectionState(), this.getChevronsEngaged());
+		setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true);
 		updateClient();
 	}
 	
-	protected void resetAddress()
+	protected void resetAddress(boolean updateInterfaces)
 	{
 		this.address.reset();
 		engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
-		setStargateState(ConnectionState.IDLE, 0);
+		setStargateState(ConnectionState.IDLE, 0, updateInterfaces);
 	}
 	
 	public String getConnectionAddress(int addressLength)
@@ -667,7 +672,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void setDHD(boolean hasDHD, boolean enableAdvancedProtocols)
 	{
 		if(this.hasDHD != hasDHD)
-			updateStargate(this.level, this.getID(), this.timesOpened, hasDHD);
+			updateStargate(this.level, this.getID(), this.timesOpened, hasDHD, false);
 		
 		this.advancedProtocolsEnabled = hasDHD ? enableAdvancedProtocols : false;
 		this.hasDHD = hasDHD;
@@ -869,10 +874,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public void setConnected(ConnectionState connectionState)
 	{
-		setStargateState(connectionState, this.getChevronsEngaged());
+		setStargateState(connectionState, this.getChevronsEngaged(), true);
 	}
 	
-	public void setStargateState(ConnectionState connectionState, int chevronsEngaged)
+	public void setStargateState(ConnectionState connectionState, int chevronsEngaged, boolean updateInterfaces)
 	{
 		BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = getState();
@@ -880,7 +885,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
 		{
 			stargate.updateStargate(level, gatePos, gateState, connectionState, chevronsEngaged);
-			updateInterfaceBlocks(null);
+			if(updateInterfaces)
+				updateInterfaceBlocks(null);
 		}
 		else
 			StargateJourney.LOGGER.error("Couldn't find Stargate");

@@ -1,10 +1,15 @@
 package net.povstalec.sgjourney.common.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -18,18 +23,19 @@ import net.povstalec.sgjourney.StargateJourney;
 public class BlockEntityList extends SavedData
 {
 	private static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
-	private static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties";
+	private static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties"; //I wish there was a way to replace this
 	
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";
+	public static final String TRANSPORTERS = "Transporters"; //TODO Replace TransportRings with this
 
 	private static final String DIMENSION = "Dimension";
 	private static final String COORDINATES = "Coordinates";
 	
 	protected CompoundTag blockEntityList = new CompoundTag();
 	
-	//protected Map<String, Tuple<ResourceKey<Level>, BlockPos>> stargateMap = new HashMap<>();
-	//protected Map<String, Tuple<ResourceKey<Level>, BlockPos>> transportRingsMap = new HashMap<>();
+	protected Map<String, Tuple<ResourceKey<Level>, BlockPos>> stargateMap = new HashMap<>();
+	protected Map<String, Tuple<ResourceKey<Level>, BlockPos>> transporterMap = new HashMap<>();
 	
 	public CompoundTag addBlockEntity(Level level, BlockPos pos, String listName, String id)
 	{
@@ -46,6 +52,24 @@ public class BlockEntityList extends SavedData
 		return blockEntity;
 	}
 	
+	/*public void addStargate(Level level, BlockPos pos, String id)
+	{
+		Tuple<ResourceKey<Level>, BlockPos> dimensionAndCoords = new Tuple<ResourceKey<Level>, BlockPos>(level.dimension(), pos);
+		
+		this.stargateMap.put(id, dimensionAndCoords);
+		
+		this.setDirty();
+	}
+	
+	public void addTransporter(Level level, BlockPos pos, String id)
+	{
+		Tuple<ResourceKey<Level>, BlockPos> dimensionAndCoords = new Tuple<ResourceKey<Level>, BlockPos>(level.dimension(), pos);
+		
+		this.transporterMap.put(id, dimensionAndCoords);
+		
+		this.setDirty();
+	}*/
+	
 	public void removeBlockEntity(String type, String id)
 	{
 		if(!getBlockEntities(type).contains(id))
@@ -58,10 +82,44 @@ public class BlockEntityList extends SavedData
 		setDirty();
 	}
 	
+	/*public void removeStargate(String id)
+	{
+		if(!this.stargateMap.containsKey(id))
+		{
+			StargateJourney.LOGGER.error(id + " not found in BlockEntityList");
+			return;
+		}
+		this.stargateMap.remove(id);
+		StargateJourney.LOGGER.info("Removed " + id + " from BlockEntityList");
+		setDirty();
+	}
+	
+	public void removeTransporter(String id)
+	{
+		if(!this.stargateMap.containsKey(id))
+		{
+			StargateJourney.LOGGER.error(id + " not found in BlockEntityList");
+			return;
+		}
+		this.stargateMap.remove(id);
+		StargateJourney.LOGGER.info("Removed " + id + " from BlockEntityList");
+		setDirty();
+	}*/
+	
 	public CompoundTag getBlockEntities(String blockEntities)
 	{
 		return blockEntityList.copy().getCompound(blockEntities);
 	}
+	
+	/*public Map<String, Tuple<ResourceKey<Level>, BlockPos>> getStargates()
+	{
+		return this.stargateMap;
+	}
+	
+	public Map<String, Tuple<ResourceKey<Level>, BlockPos>> getTransporters()
+	{
+		return this.transporterMap;
+	}*/
 	
 	//================================================================================================
 	
@@ -69,7 +127,7 @@ public class BlockEntityList extends SavedData
 	{
 		CompoundTag blockEntityList = new CompoundTag();
 		CompoundTag stargates = serializeStargates();
-		CompoundTag transportRings = serializeTransportRings();
+		CompoundTag transportRings = serializeTransporters();
 		
 		blockEntityList.put(STARGATES, stargates);
 		blockEntityList.put(TRANSPORT_RINGS, transportRings);
@@ -77,7 +135,7 @@ public class BlockEntityList extends SavedData
 		return blockEntityList;
 	}
 	
-	public CompoundTag serializeStargates()
+	private CompoundTag serializeStargates()
 	{
 		CompoundTag stargates = new CompoundTag();
 		
@@ -95,11 +153,11 @@ public class BlockEntityList extends SavedData
 		return stargates;
 	}
 	
-	public CompoundTag serializeTransportRings()
+	private CompoundTag serializeTransporters()
 	{
 		CompoundTag transportRings = new CompoundTag();
 		
-		this.transportRingsMap.forEach((ringsID, info) -> 
+		this.transporterMap.forEach((ringsID, info) -> 
 		{
 			CompoundTag rings = new CompoundTag();
 			ResourceKey<Level> level = info.getA();
@@ -118,10 +176,10 @@ public class BlockEntityList extends SavedData
 		CompoundTag blockEntityList = tag.copy();
 		
 		deserializeStargates(blockEntityList);
-		deserializeTransportRings(blockEntityList);
+		deserializeTransporters(blockEntityList);
 	}
 	
-	protected void deserializeStargates(CompoundTag blockEntityList)
+	private void deserializeStargates(CompoundTag blockEntityList)
 	{
 		CompoundTag stargates = blockEntityList.getCompound(STARGATES);
 		
@@ -135,7 +193,7 @@ public class BlockEntityList extends SavedData
 		});
 	}
 	
-	protected void deserializeTransportRings(CompoundTag blockEntityList)
+	private void deserializeTransporters(CompoundTag blockEntityList)
 	{
 		CompoundTag transportRings = blockEntityList.getCompound(TRANSPORT_RINGS);
 		
@@ -145,7 +203,7 @@ public class BlockEntityList extends SavedData
 			BlockPos pos = Conversion.intArrayToBlockPos(transportRings.getCompound(stargate).getIntArray(COORDINATES));
 			
 			Tuple<ResourceKey<Level>, BlockPos> dimensionAndPos = new Tuple<ResourceKey<Level>, BlockPos>(level, pos);
-			this.transportRingsMap.put(stargate, dimensionAndPos);
+			this.transporterMap.put(stargate, dimensionAndPos);
 		});
 	}*/
 	
@@ -188,6 +246,4 @@ public class BlockEntityList extends SavedData
         
         return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, INCORRECT_FILE_NAME);
     }
-    
-//================================================================================================
 }

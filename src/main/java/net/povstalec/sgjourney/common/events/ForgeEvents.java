@@ -33,6 +33,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -77,7 +78,6 @@ public class ForgeEvents
 	{
 		if(blockstate.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
-			System.out.println("Is Stargate Block");
 			AbstractStargateEntity stargate = stargateBlock.getStargate(level, pos, blockstate);
 			
 			return stargate;
@@ -142,23 +142,37 @@ public class ForgeEvents
 		}
 	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public static void onLivingTick(LivingEvent.LivingTickEvent event)
 	{
 		Entity entity = event.getEntity();
 		Level level = entity.getLevel();
-		long daytime = (level.getDayTime() + 6000) % 24000;
-		double percentage = (double) daytime / 24000;
 		
-		double sin = Math.sin(percentage * Math.PI);
-		//double cos = Math.cos(percentage * Math.PI);
-		Vec3 gravityVector = new Vec3(0, 0.07 * sin, 0);
+		//TODO Make this into something you can edit with Datapacks
+		if(!level.dimension().location().equals(new ResourceLocation(StargateJourney.MODID, "cavum_tenebrae")))
+			return;
+		
+		if(entity instanceof Player player)
+		{
+			if(player.isCreative() && player.getAbilities().flying)
+				return;
+			else if(player.isSpectator() && player.getAbilities().flying)
+				return;
+		}
+		
+		long daytime = (level.getDayTime() + 6000) % 24000;
+		double percentage = (double) daytime / 12000;
+		
+		double sin = Math.sin(percentage * Math.PI - Math.PI / 2);
+		double cos = Math.cos(percentage * Math.PI - Math.PI / 2);
+		Vec3 gravityVector = new Vec3(Math.abs(cos) > 0.2 ? 0.07 * cos : 0, sin < 0 ? 0 : 0.07 * sin, 0);
 		
 		Vec3 movementVector = entity.getDeltaMovement();
 		movementVector = movementVector.add(gravityVector);
-		
 		entity.setDeltaMovement(movementVector);
-	}*/
+		
+		entity.fallDistance = entity.fallDistance * (float) (-sin + 1);
+	}
 	
 	@SubscribeEvent
 	public static void onLivingHurt(LivingAttackEvent event)

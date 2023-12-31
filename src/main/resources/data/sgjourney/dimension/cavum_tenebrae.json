@@ -1,0 +1,13 @@
+{
+	"type": "sgjourney:cavum_tenebrae",
+	"generator":
+	{
+		"type": "minecraft:noise",
+		"settings": "sgjourney:cavum_tenebrae",
+		"biome_source":
+		{
+			"type": "minecraft:fixed",
+			"biome": "sgjourney:cavum_tenebrae_shattered_crust"
+		}
+	}
+}

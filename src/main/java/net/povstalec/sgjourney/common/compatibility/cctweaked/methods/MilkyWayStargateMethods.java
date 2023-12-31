@@ -7,6 +7,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class MilkyWayStargateMethods
 {
@@ -70,18 +71,18 @@ public class MilkyWayStargateMethods
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			context.executeMainThreadTask(() ->
+			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				if(stargate.isChevronRaised())
 					throw new LuaException("Can't rotate while chevron is raised");
 				else if(desiredSymbol < -1 || desiredSymbol > 38)
 					throw new LuaException("Symbol out of bounds <-1, 38>");
 				
-				stargate.startRotation(desiredSymbol, true);
-				return null;
+				Stargate.Feedback feedback = stargate.startRotation(desiredSymbol, true);
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
-			return MethodResult.of();
+			return result;
 		}
 	}
 	
@@ -98,18 +99,18 @@ public class MilkyWayStargateMethods
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			context.executeMainThreadTask(() ->
+			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				if(stargate.isChevronRaised())
 					throw new LuaException("Can't rotate while chevron is raised");
 				else if(desiredSymbol < -1 || desiredSymbol > 38)
 					throw new LuaException("Symbol out of bounds <-1, 38>");
 				
-				stargate.startRotation(desiredSymbol, false);
-				return null;
+				Stargate.Feedback feedback = stargate.startRotation(desiredSymbol, false);
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
-			return MethodResult.of();
+			return result;
 		}
 	}
 	
@@ -124,13 +125,13 @@ public class MilkyWayStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
+			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				stargate.endRotation(true);
-				return null;
+				Stargate.Feedback feedback = stargate.endRotation(true);
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
-			return MethodResult.of();
+			return result;
 		}
 	}
 	
@@ -147,7 +148,8 @@ public class MilkyWayStargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				return new Object[] {stargate.raiseChevron().getCode()};
+				Stargate.Feedback feedback = stargate.raiseChevron();
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
 			return result;
@@ -167,8 +169,8 @@ public class MilkyWayStargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				int feedback = stargate.encodeChevron().getCode();
-				return new Object[] {feedback};
+				Stargate.Feedback feedback = stargate.encodeChevron();
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
 			return result;
@@ -188,9 +190,8 @@ public class MilkyWayStargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				int feedback = stargate.lowerChevron().getCode();
-				
-				return new Object[] {feedback};
+				Stargate.Feedback feedback = stargate.lowerChevron();
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
 			return result;

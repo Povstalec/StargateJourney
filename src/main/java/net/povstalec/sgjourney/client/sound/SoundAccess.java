@@ -135,8 +135,10 @@ public class SoundAccess
 	
     public static void playMilkyWayStopSound(BlockPos pos)
     {
+		System.out.println("stop");
     	if(minecraft.level.getBlockEntity(pos) instanceof MilkyWayStargateEntity stargate)
     	{
+    		System.out.println("stop");
     		GenericStargateSound sound = new GenericStargateSound(stargate, stargate.getRingRotationStopSound(), 0.75F);
     		minecraft.getSoundManager().play(sound);
     	}

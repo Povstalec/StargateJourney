@@ -320,7 +320,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			setConnected(ConnectionState.IDLE);
 		}
 		
-		resetAddress();
+		resetAddress(true);
 		this.connectionID = EMPTY;
 		
 		if(feedback.playFailSound() && !level.isClientSide())
