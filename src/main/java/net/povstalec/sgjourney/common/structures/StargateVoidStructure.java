@@ -14,7 +14,7 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
+import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 
@@ -60,8 +60,8 @@ public class StargateVoidStructure extends Structure
         // Grabs the chunk position we are at
     	 ChunkPos chunkpos = context.chunkPos();
          
-         int xOffset = CommonStargateNetworkConfig.stargate_generation_center_x_chunk_offset.get();
-         int zOffset = CommonStargateNetworkConfig.stargate_generation_center_z_chunk_offset.get();
+         int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
+         int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
          
          int chunkX = xOffset;
          int chunkZ = zOffset;

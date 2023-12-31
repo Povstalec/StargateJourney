@@ -159,14 +159,14 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback encodeChevron(int symbol, boolean incoming)
+	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
-		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming);
+		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming, encode);
 		
 		if(addressBuffer.getLength() > getAddress().getLength())
 		{
@@ -177,20 +177,12 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		return feedback;
 	}
 	
-	@Override
-	public void chevronSound(boolean incoming)
-	{
-		if(!level.isClientSide())
-		{
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, incoming));
-		}
-	}
-	
 	public int getChevronPosition(int chevron)
 	{
 		if(chevron < 1 || chevron > 8)
 			return 0;
-		return new int[] {4, 8, 12, 24, 28, 32, 16, 20}[chevron - 1];
+		
+		return 4 * getEngagedChevrons()[chevron];
 	}
 	
 	private void animateSpin()
@@ -213,7 +205,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 					symbolWork();
 				}
 				else
-					encodeChevron(symbol, false);
+					encodeChevron(symbol, false, false);
 			}
 			else
 				symbolWork();

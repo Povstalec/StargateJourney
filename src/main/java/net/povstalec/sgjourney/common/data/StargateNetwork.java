@@ -47,7 +47,7 @@ public class StargateNetwork extends SavedData
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
 	//Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int updateVersion = 6;
+	private static final int updateVersion = 7;
 	
 	private MinecraftServer server;
 	private Map<String, Connection> connections = new HashMap<String, Connection>();
@@ -83,7 +83,7 @@ public class StargateNetwork extends SavedData
 		
 		StargateJourney.LOGGER.info("Detected an incompatible Stargate Network version (Version: " + getVersion() + ") - updating to version " + version);
 		
-		stellarUpdate(server);
+		stellarUpdate(server, false);
 	}
 	
 	public void eraseNetwork()
@@ -101,7 +101,7 @@ public class StargateNetwork extends SavedData
 		return CommonStargateNetworkConfig.use_datapack_addresses.get();
 	}
 	
-	public void stellarUpdate(MinecraftServer server)
+	public void stellarUpdate(MinecraftServer server, boolean updateInterfaces)
 	{
 		Iterator<Entry<String, Connection>> iterator = this.connections.entrySet().iterator();
 		
@@ -121,7 +121,7 @@ public class StargateNetwork extends SavedData
 		StargateJourney.LOGGER.info("Universe regenerated");
 		eraseNetwork();
 		StargateJourney.LOGGER.info("Network erased");
-		resetStargates(server);
+		resetStargates(server, updateInterfaces);
 		StargateJourney.LOGGER.info("Stargates reset");
 		updateVersion();
 		StargateJourney.LOGGER.info("Version updated");
@@ -133,7 +133,7 @@ public class StargateNetwork extends SavedData
 	//*****************************************Stargates******************************************
 	//============================================================================================
 	
-	private void resetStargates(MinecraftServer server)
+	private void resetStargates(MinecraftServer server, boolean updateInterfaces)
 	{
 		CompoundTag stargates = BlockEntityList.get(server).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id);
 		
@@ -151,12 +151,12 @@ public class StargateNetwork extends SavedData
 				if(!stargateID.equals(stargate.getID()))
 					removeStargate(server.getLevel(dimension), stargateID);
 				
-				stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
+				stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
 				
 				if(!getStargates().contains(stargateID))
 				{
 					addStargate(server, stargateID, BlockEntityList.get(server).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).getCompound(stargateID), stargate.getGeneration().getGen());
-					stargate.updateStargate();
+					stargate.updateStargate(updateInterfaces);
 				}
 			}
 			else
@@ -337,20 +337,20 @@ public class StargateNetwork extends SavedData
 		Connection.ConnectionType connectionType = getConnectionType(server, dialingStargate, dialedStargate);
 		
 		if(dialingStargate.equals(dialedStargate))
-			return dialingStargate.resetStargate(Stargate.Feedback.SELF_DIAL);
+			return dialingStargate.resetStargate(Stargate.Feedback.SELF_DIAL, true);
 		
 		if(requireEnergy)
 		{
 			if(dialingStargate.canExtractEnergy(connectionType.getEstabilishingPowerCost()))
 				dialingStargate.depleteEnergy(connectionType.getEstabilishingPowerCost(), false);
 			else
-				return dialingStargate.resetStargate(Stargate.Feedback.NOT_ENOUGH_POWER);
+				return dialingStargate.resetStargate(Stargate.Feedback.NOT_ENOUGH_POWER, true);
 		}
 		
 		if(dialedStargate.isConnected())
-			return dialingStargate.resetStargate(Stargate.Feedback.ALREADY_CONNECTED);
+			return dialingStargate.resetStargate(Stargate.Feedback.ALREADY_CONNECTED, true);
 		else if(dialedStargate.isObstructed())
-			return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
+			return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED, true);
 		
 		Connection connection = Connection.create(connectionType, dialingStargate, dialedStargate, doKawoosh);
 		if(connection != null)

@@ -135,8 +135,10 @@
 	"sounds.sgjourney.dial_start" : "vytáčení začalo",
 	"sounds.sgjourney.ring_spin_start" : "otáčení začalo",
 	"sounds.sgjourney.ring_spin" : "brána se otáčí",
-	"sounds.sgjourney.chevron_encode" : "symbol vybrán",
-	"sounds.sgjourney.chevron_engage" : "symbol zadán",
+	"sounds.sgjourney.ring_spin_stop" : "otáčení zastaveno",
+	"sounds.sgjourney.chevron_raise" : "chevron otevřen",
+	"sounds.sgjourney.chevron_encode" : "symbol zadán",
+	"sounds.sgjourney.chevron_engage" : "chevron zapnut",
 	"sounds.sgjourney.dial_fail" : "vytáčení selhalo",
 	
 	"sounds.sgjourney.wormhole_open" : "červí díra se zavírá",

@@ -13,6 +13,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
@@ -164,14 +165,20 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		
 		if(stargate.isChevronRaised())
 		{
-			if(stargate.getCurrentSymbol() == 0 || chevronsRendered >= 8)
+			if(stargate.getCurrentSymbol() == 0 || chevronsRendered > 8)
 			{
 				if(chevronNumber < chevronsRendered + 1)
 					return !alternateChevronLocking;
 			}
 			else
 			{
-				if(chevronNumber == chevronsRendered + 1)
+				Address address = stargate.getAddress();
+				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
+				{
+					if(chevronNumber == chevronsRendered)
+						return true;
+				}
+				else if(chevronNumber == chevronsRendered + 1)
 					return true;
 			}
 		}
@@ -193,14 +200,20 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		
 		if(stargate.isChevronRaised())
 		{
-			if(stargate.getCurrentSymbol() == 0)
+			if(stargate.getCurrentSymbol() == 0 || chevronsRendered > 8)
 			{
 				if(chevronNumber < chevronsRendered + 1)
 					return false;
 			}
 			else
 			{
-				if(chevronNumber == chevronsRendered + 1)
+				Address address = stargate.getAddress();
+				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
+				{
+					if(chevronNumber == chevronsRendered)
+						return true;
+				}
+				else if(chevronNumber == chevronsRendered + 1)
 					return true;
 			}
 		}
