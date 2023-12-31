@@ -1,39 +1,39 @@
 {
-"display": 
+	"display": 
 	{
-	"icon": 
+		"icon": 
 		{
-		"item": "sgjourney:milky_way_stargate"
+			"item": "sgjourney:milky_way_stargate"
 		},
-	"title": 
+		"title": 
 		{
-		"translate": "advancements.sgjourney.root.title"
+			"translate": "advancements.sgjourney.root.title"
 		},
-	"description": 
+		"description": 
 		{
-		"translate": "advancements.sgjourney.root.description"
+			"translate": "advancements.sgjourney.root.description"
 		},
-	"frame": "task",
-	"show_toast": false,
-	"announce_to_chat": true,
-	"hidden": false,
-    "background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
 	},
-"criteria": 
+	"criteria": 
 	{
-	"entered_abydos": 
+		"entered_abydos": 
 		{
-		"trigger": "minecraft:changed_dimension",
-		"conditions": 
+			"trigger": "minecraft:changed_dimension",
+			"conditions": 
 			{
-			"to": "sgjourney:abydos"
+				"to": "sgjourney:abydos"
 			}
 		}
 	},
-"requirements": 
+	"requirements": 
 	[
 		[
-		"entered_abydos"
+			"entered_abydos"
 		]
 	]
 }

@@ -32,7 +32,7 @@ public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
+        blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
         
         this.renderEnergy(pPoseStack, x + 52, y + 54);
     }
@@ -57,7 +57,7 @@ public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
     {
     	float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();
     	int actual = Math.round(106 * percentage);
-    	this.blit(matrixStack, x, y, 0, 88, actual, 16);
+    	blit(matrixStack, x, y, 0, 88, actual, 16);
     }
     
     protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)

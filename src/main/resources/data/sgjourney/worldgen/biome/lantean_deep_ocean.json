@@ -84,7 +84,6 @@
     ]
   ],
   "has_precipitation": true,
-  "temperature_modifier": "none",
   "spawn_costs": {},
   "spawners": {},
   "temperature": 0.5

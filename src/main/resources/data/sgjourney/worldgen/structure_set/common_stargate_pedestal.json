@@ -1,0 +1,25 @@
+{
+  "structures": [
+    {
+      "structure": "sgjourney:common_stargate/classic/pedestal/stargate_pedestal",
+      "weight": 1
+    },
+    {
+      "structure": "sgjourney:common_stargate/classic/pedestal/red_sandstone_stargate_pedestal",
+      "weight": 1
+    },
+    {
+      "structure": "sgjourney:common_stargate/classic/pedestal/sandstone_stargate_pedestal",
+      "weight": 1
+    }
+  ],
+  "placement": {
+     "salt": 1875847473,
+
+    "spacing": 80,
+
+    "separation": 64,
+
+    "type": "minecraft:random_spread"
+  }
+}
