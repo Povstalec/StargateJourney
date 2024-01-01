@@ -61,7 +61,7 @@ public class SoundAccess
     		{
     			if(raise)
     			{
-        			GenericStargateSound sound = new GenericStargateSound(stargate, getChevronRaiseSound(milkyWayStargate), 0.5F);
+        			GenericStargateSound sound = new GenericStargateSound(stargate, getChevronOpenSound(milkyWayStargate), 0.5F);
             		minecraft.getSoundManager().play(sound);
     			}
     			else if(encode)
@@ -135,10 +135,8 @@ public class SoundAccess
 	
     public static void playMilkyWayStopSound(BlockPos pos)
     {
-		System.out.println("stop");
     	if(minecraft.level.getBlockEntity(pos) instanceof MilkyWayStargateEntity stargate)
     	{
-    		System.out.println("stop");
     		GenericStargateSound sound = new GenericStargateSound(stargate, stargate.getRingRotationStopSound(), 0.75F);
     		minecraft.getSoundManager().play(sound);
     	}
@@ -174,7 +172,7 @@ public class SoundAccess
     	return stargate.getChevronEngageSound();
     }
     
-    private static SoundEvent getChevronRaiseSound(MilkyWayStargateEntity stargate)
+    private static SoundEvent getChevronOpenSound(MilkyWayStargateEntity stargate)
     {
     	if(ClientStargateConfig.stargate_variants.get())
     	{
@@ -183,12 +181,12 @@ public class SoundAccess
         	{
         		Optional<StargateVariant> variant = getVariant(variantString);
         		
-        		if(variant.isPresent() && variant.get().getChevronRaiseSound().isPresent())
-            		return SoundEvent.createVariableRangeEvent(variant.get().getChevronRaiseSound().get());
+        		if(variant.isPresent() && variant.get().getChevronOpenSound().isPresent())
+            		return SoundEvent.createVariableRangeEvent(variant.get().getChevronOpenSound().get());
         	}
     	}
     	
-    	return stargate.getChevronRaiseSound();
+    	return stargate.getChevronOpenSound();
     }
     
     private static SoundEvent getChevronEncodeSound(MilkyWayStargateEntity stargate)

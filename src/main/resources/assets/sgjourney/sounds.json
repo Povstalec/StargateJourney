@@ -78,12 +78,12 @@
 			"sgjourney:milky_way_ring_spin_stop"
 		]
 	},
-	"milky_way_chevron_raise":
+	"milky_way_chevron_open":
 	{
-		"subtitle": "sounds.sgjourney.chevron_raise",
+		"subtitle": "sounds.sgjourney.chevron_open",
 		"sounds":
 		[
-			"sgjourney:milky_way_chevron_raise"
+			"sgjourney:milky_way_chevron_open"
 		]
 	},
 	"milky_way_chevron_encode":
@@ -319,12 +319,12 @@
 	
 	
 	
-	"movie_chevron_raise":
+	"movie_chevron_open":
 	{
-		"subtitle": "sounds.sgjourney.chevron_raise",
+		"subtitle": "sounds.sgjourney.chevron_open",
 		"sounds":
 		[
-			"sgjourney:movie_chevron_raise"
+			"sgjourney:movie_chevron_open"
 		]
 	},
 	"movie_chevron_engage":

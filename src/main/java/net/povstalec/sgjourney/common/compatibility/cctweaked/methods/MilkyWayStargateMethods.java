@@ -73,7 +73,7 @@ public class MilkyWayStargateMethods
 			
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				if(stargate.isChevronRaised())
+				if(stargate.isChevronOpen())
 					throw new LuaException("Can't rotate while chevron is raised");
 				else if(desiredSymbol < -1 || desiredSymbol > 38)
 					throw new LuaException("Symbol out of bounds <-1, 38>");
@@ -101,7 +101,7 @@ public class MilkyWayStargateMethods
 			
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				if(stargate.isChevronRaised())
+				if(stargate.isChevronOpen())
 					throw new LuaException("Can't rotate while chevron is raised");
 				else if(desiredSymbol < -1 || desiredSymbol > 38)
 					throw new LuaException("Symbol out of bounds <-1, 38>");
@@ -148,7 +148,7 @@ public class MilkyWayStargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				Stargate.Feedback feedback = stargate.raiseChevron();
+				Stargate.Feedback feedback = stargate.openChevron();
 				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
@@ -190,7 +190,7 @@ public class MilkyWayStargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				Stargate.Feedback feedback = stargate.lowerChevron();
+				Stargate.Feedback feedback = stargate.closeChevron();
 				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			

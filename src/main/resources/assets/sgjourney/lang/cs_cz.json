@@ -136,7 +136,7 @@
 	"sounds.sgjourney.ring_spin_start" : "otáčení začalo",
 	"sounds.sgjourney.ring_spin" : "brána se otáčí",
 	"sounds.sgjourney.ring_spin_stop" : "otáčení zastaveno",
-	"sounds.sgjourney.chevron_raise" : "chevron otevřen",
+	"sounds.sgjourney.chevron_open" : "chevron otevřen",
 	"sounds.sgjourney.chevron_encode" : "symbol zadán",
 	"sounds.sgjourney.chevron_engage" : "chevron zapnut",
 	"sounds.sgjourney.dial_fail" : "vytáčení selhalo",

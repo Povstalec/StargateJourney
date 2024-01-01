@@ -10,6 +10,8 @@ public class ClientStargateConfig
 	public static SGJourneyConfigValue.IntValue event_horizon_distortion;
 	
 	public static SGJourneyConfigValue.BooleanValue use_movie_stargate_model;
+	public static SGJourneyConfigValue.BooleanValue cap_movie_chevron_locking;
+	public static SGJourneyConfigValue.BooleanValue movie_front_chevrons_locking;
 	public static SGJourneyConfigValue.BooleanValue alternate_movie_chevron_locking;
 	public static SGJourneyConfigValue.BooleanValue universe_front_rotates;
 	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
@@ -46,6 +48,14 @@ public class ClientStargateConfig
 		universe_front_rotates = new SGJourneyConfigValue.BooleanValue(client, "client.universe_front_rotates", 
 				false, 
 				"If true only the front of the Universe Stargate will rotate");
+		
+		cap_movie_chevron_locking = new SGJourneyConfigValue.BooleanValue(client, "client.cap_movie_chevron_locking", 
+				false, 
+				"Decide if Movie Stargate model should use chevron locking based on Carter's Addon Pack");
+		
+		movie_front_chevrons_locking = new SGJourneyConfigValue.BooleanValue(client, "client.movie_front_chevrons_locking", 
+				false, 
+				"Decide if Movie Stargate model should only move front chevrons");
 		
 		alternate_movie_chevron_locking = new SGJourneyConfigValue.BooleanValue(client, "client.alternate_movie_chevron_locking", 
 				false, 

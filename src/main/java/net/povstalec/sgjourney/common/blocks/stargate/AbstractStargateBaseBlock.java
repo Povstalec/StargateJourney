@@ -59,6 +59,20 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		
 		if(item instanceof StargateVariantItem)
 		{
+			if(!stack.hasTag())
+			{
+				BlockEntity blockEntity = level.getBlockEntity(pos);
+				if(blockEntity instanceof AbstractStargateEntity stargate)
+				{
+					stargate.setVariant(StargateJourney.EMPTY);
+					
+					if(!player.isCreative())
+						stack.shrink(1);
+				}
+				
+				return true;
+			}
+			
 			Optional<String> variant = StargateVariantItem.getVariantString(stack);
 			
 			if(variant.isPresent())
@@ -67,8 +81,13 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				
 				if(blockEntity instanceof AbstractStargateEntity stargate)
 				{
+					if(variant.get().equals(stargate.getVariant()))
+					{
+						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
+						return true;
+					}
+					
 					stargate.setVariant(variant.get());
-					System.out.println("Setting Variant");
 					
 					if(!player.isCreative())
 						stack.shrink(1);

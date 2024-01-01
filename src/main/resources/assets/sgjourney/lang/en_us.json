@@ -136,7 +136,7 @@
 	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",
 	"sounds.sgjourney.ring_spin" : "Stargate ring spins",
 	"sounds.sgjourney.ring_spin_stop" : "Stargate ring spinning stopped",
-	"sounds.sgjourney.chevron_raise" : "Chevron raised",
+	"sounds.sgjourney.chevron_open" : "Chevron opened",
 	"sounds.sgjourney.chevron_encode" : "Chevron encoded",
 	"sounds.sgjourney.chevron_engage" : "Chevron engaged",
 	"sounds.sgjourney.dial_fail" : "Stargate dialing fails",
