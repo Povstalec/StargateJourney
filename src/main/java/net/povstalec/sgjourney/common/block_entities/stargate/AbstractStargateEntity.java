@@ -317,10 +317,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 	}
 	
-	public void chevronSound(boolean primary, boolean incoming, boolean raise, boolean encode)
+	public void chevronSound(boolean primary, boolean incoming, boolean open, boolean encode)
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, primary, incoming, raise, encode));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, primary, incoming, open, encode));
 	}
 	
 	public void openWormholeSound()
@@ -1037,6 +1037,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public abstract Stargate.ChevronLockSpeed getChevronLockSpeed();
 	
 	public abstract SoundEvent getChevronEngageSound();
+	
+	public SoundEvent getChevronIncomingSound()
+	{
+		return getChevronEngageSound();
+	}
 	
 	public abstract SoundEvent getWormholeOpenSound();
 	

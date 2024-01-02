@@ -109,7 +109,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		return SoundInit.PEGASUS_CHEVRON_ENGAGE.get();
 	}
-	
+
+	@Override
 	public SoundEvent getChevronIncomingSound()
 	{
 		return SoundInit.PEGASUS_CHEVRON_INCOMING.get();
@@ -218,6 +219,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			return;
 		
 		stargate.animateSpin();
+		System.out.println("Address Server " + stargate.addressBuffer.getLength());
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 		stargate.updateClient();

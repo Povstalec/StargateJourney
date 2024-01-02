@@ -114,7 +114,7 @@ public class ClientAccess
         {
         	stargate.setRotation(rotation);
         	stargate.oldRotation = oldRotation;
-        	stargate.isChevronRaised = isChevronRaised;
+        	stargate.isChevronOpen = isChevronRaised;
         	stargate.signalStrength = signalStrength;
         	stargate.computerRotation = computerRotation;
         	stargate.rotateClockwise = rotateClockwise;

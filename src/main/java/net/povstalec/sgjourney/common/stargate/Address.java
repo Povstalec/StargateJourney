@@ -57,7 +57,9 @@ public class Address
 	
 	public Address fromArray(int[] addressArray)
 	{
-		if(addressArray.length < MAX_ADDRESS_LENGTH && ArrayHelper.differentNumbers(addressArray))
+		if(addressArray.length < MAX_ADDRESS_LENGTH &&
+				ArrayHelper.differentNumbers(addressArray) &&
+				ArrayHelper.isArrayPositive(addressArray, this.isBuffer))
 			this.addressArray = addressArray;
 		
 		return this;
@@ -109,6 +111,11 @@ public class Address
 	public boolean canGrow()
 	{
 		return getLength() < MAX_ADDRESS_LENGTH;
+	}
+	
+	public boolean isBuffer()
+	{
+		return this.isBuffer;
 	}
 	
 	@Override
@@ -170,9 +177,22 @@ public class Address
 	//*******************************************Static*******************************************
 	//============================================================================================
 	
+	public static boolean canBeTransformedToAddress(String addressString)
+	{
+		for(int i = 0; i < addressString.length(); i++)
+		{
+			char character = addressString.charAt(i);
+			
+			if(!Character.isDigit(character) && character != '-')
+				return false;
+		}
+		
+		return true;
+	}
+	
 	public static int[] addressStringToIntArray(String addressString)
 	{
-		if(addressString == null)
+		if(addressString == null || !canBeTransformedToAddress(addressString))
 			return new int[0];
 		
 		String[] stringArray = addressString.split(ADDRESS_DIVIDER);
@@ -180,7 +200,6 @@ public class Address
 		
 		for(int i = 1; i < stringArray.length; i++)
 		{
-
 			int number = Character.getNumericValue(stringArray[i].charAt(0));
 			int length = stringArray[i].length();
 			if(length > 1)

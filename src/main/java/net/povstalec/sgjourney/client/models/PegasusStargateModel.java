@@ -93,6 +93,13 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	
 	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
+		//System.out.println("Symbol " + stargate.symbolBuffer);
+		System.out.println("Address Client " + stargate.addressBuffer.getLength());
+		/*for(int i = 0; i < stargate.addressBuffer.getLength(); i++)
+		{
+			System.out.println(stargate.addressBuffer.toArray()[i]);
+		}*/
+		
 		if(!stargate.isConnected() && stargate.symbolBuffer < stargate.addressBuffer.getLength())
 	    {
 			for(int i = 0; i < stargate.getAddress().getLength(); i++)

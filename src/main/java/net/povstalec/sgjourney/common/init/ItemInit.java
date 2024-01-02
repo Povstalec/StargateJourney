@@ -74,7 +74,7 @@ public class ItemInit
 			() -> new VialItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	
 	public static final RegistryObject<Item> RING_REMOTE = ITEMS.register("ring_remote", 
-			() -> new RingRemoteItem(new RingRemoteItem.Properties().stacksTo(1)));
+			() -> new RingRemoteItem(new RingRemoteItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> KARA_KESH = ITEMS.register("kara_kesh", 
 			() -> new KaraKeshItem(new KaraKeshItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(TabInit.STARGATE_ITEMS)));
 	

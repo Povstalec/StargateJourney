@@ -185,7 +185,7 @@ public class Connection
 		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
 		int maxKawooshTicks = kawooshStartTicks + KAWOOSH_TICKS;
 		int maxOpenTicks = maxKawooshTicks + VORTEX_TICKS;
-
+		
 		if(!isStargateValid(this.dialingStargate) || !isStargateValid(this.dialedStargate))
 		{
 			terminate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
