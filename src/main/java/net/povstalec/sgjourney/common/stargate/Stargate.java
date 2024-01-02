@@ -158,7 +158,7 @@ public class Stargate
 			this.type = type;
 			this.message = message;
 			
-			if(type == FeedbackType.ERROR)
+			if(type.isError())
 				this.feedbackMessage = createError(message, type == FeedbackType.MAJOR_ERROR);
 			else
 				this.feedbackMessage = createInfo(message);

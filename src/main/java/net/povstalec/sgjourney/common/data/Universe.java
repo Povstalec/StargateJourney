@@ -201,7 +201,7 @@ public class Universe extends SavedData
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			extragalacticAddressString = new Address().randomAddress(prefix, 7, 39, seed).toString();
+			extragalacticAddressString = new Address().randomAddress(prefix, 7, 36, seed).toString();
 			
 			if(!getExtragalacticAddressInfo().contains(extragalacticAddressString))
 				break;

@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -105,6 +106,12 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 			}
 		};
 	}
+
+	@Override
+	public Optional<Component> descriptionInDHD()
+	{
+		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+	}
 	
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
@@ -139,6 +146,12 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		public boolean isAdvanced()
 		{
 			return true;
+		}
+
+		@Override
+		public Optional<Component> descriptionInDHD()
+		{
+			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}
 	}
 }

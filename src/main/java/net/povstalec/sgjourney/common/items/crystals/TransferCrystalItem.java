@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +58,12 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	}
 
 	@Override
+	public Optional<Component> descriptionInDHD()
+	{
+		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.transfer").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+	}
+
+	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		int maxEnergyTransfer = getMaxTransfer(stack);
@@ -83,6 +90,12 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		public boolean isAdvanced()
 		{
 			return true;
+		}
+
+		@Override
+		public Optional<Component> descriptionInDHD()
+		{
+			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.transfer.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}
 	}
 }

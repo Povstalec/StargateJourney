@@ -20,7 +20,6 @@ import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
@@ -314,21 +313,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		symbolBuffer = 0;
 		addressBuffer.reset();
 		
-		if(isConnected())
-		{
-			closeWormholeSound();
-			setConnected(ConnectionState.IDLE);
-		}
-		
-		resetAddress(true);
-		this.connectionID = EMPTY;
-		
-		if(feedback.playFailSound() && !level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
-		
-		setChanged();
-		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ());
-		return setRecentFeedback(feedback);
+		return super.resetStargate(feedback);
 	}
 	
 	@Override

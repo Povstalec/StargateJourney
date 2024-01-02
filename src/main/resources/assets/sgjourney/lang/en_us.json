@@ -40,7 +40,10 @@
 	"block.sgjourney.classic_dhd": "Classic DHD",
 	
 	"block.sgjourney.stargate.not_enough_space": "Stargate does not have enough space",
+	"block.sgjourney.stargate.same_variant": "Same variant",
 	"block.sgjourney.stargate.classic.incorrect_setup": "Incorrect setup",
+	"block.sgjourney.stargate.classic.invalid_address": "Invalid Address",
+	"block.sgjourney.stargate.classic.address_exists": "Address already exists",
 	"block.sgjourney.cartouche.not_enough_space": "Cartouche does not have enough space",
 
 	"block.sgjourney.transport_rings": "Transport Rings",
@@ -136,7 +139,7 @@
 	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",
 	"sounds.sgjourney.ring_spin" : "Stargate ring spins",
 	"sounds.sgjourney.ring_spin_stop" : "Stargate ring spinning stopped",
-	"sounds.sgjourney.chevron_raise" : "Chevron raised",
+	"sounds.sgjourney.chevron_open" : "Chevron opened",
 	"sounds.sgjourney.chevron_encode" : "Chevron encoded",
 	"sounds.sgjourney.chevron_engage" : "Chevron engaged",
 	"sounds.sgjourney.dial_fail" : "Stargate dialing fails",
@@ -153,6 +156,8 @@
 	"sounds.sgjourney.matok_attack" : "Staff Weapon attack",
 	"sounds.sgjourney.matok_open" : "Staff Weapon opens",
 	"sounds.sgjourney.matok_close" : "Staff Weapon closes",
+	
+	"sounds.sgjourney.nothing" : "Nothing",
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeologist Map",
 	
@@ -267,9 +272,21 @@
 	"tooltip.sgjourney.address_table": "Address Table",
 	
 	"tooltip.sgjourney.crystal.none": "None",
+	"tooltip.sgjourney.crystal.in_dhd": "In DHD:",
+	"tooltip.sgjourney.crystal.in_dhd.control.large": "Enables advanced protocols in Stargate",
+	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Enables advanced protocols in Stargate",
+	"tooltip.sgjourney.crystal.in_dhd.energy": "Increases targeted Energy capacity in Stargate by 50000 FE",
+	"tooltip.sgjourney.crystal.in_dhd.energy.advanced": "Increases targeted Energy capacity in Stargate by 100000 FE",
+	"tooltip.sgjourney.crystal.in_dhd.transfer": "Increases the amount of Energy transferred to the Stargate by 2500 FE",
+	"tooltip.sgjourney.crystal.in_dhd.transfer.advanced": "Increases the amount of Energy transferred to the Stargate by 5000 FE",
+	"tooltip.sgjourney.crystal.in_dhd.communication": "Increases the range at which the DHD can communicate with a Stargate by 16 blocks",
+	"tooltip.sgjourney.crystal.in_dhd.communication.advanced": "Increases the range at which the DHD can communicate with a Stargate by 32 blocks",
 	"tooltip.sgjourney.communication_crystal.frequency": "Frequency",
 	"tooltip.sgjourney.materialization_crystal.increased_range": "Increased Range",
 	"tooltip.sgjourney.materialization_crystal.interdimensional": "Enable Interdimensional Transport",
+	
+	"tooltip.sgjourney.stargate_upgrade.description": "Right-click on a Classic Stargate to upgrade it",
+	"tooltip.sgjourney.stargate_variant.description": "Right-click on a Stargate to change its variant",
 	
 	"tooltip.sgjourney.zpm.entropy": "Entropy",
 	"tooltip.sgjourney.zpm.energy_in_level": "Energy in Level",
@@ -277,8 +294,12 @@
 	"tooltip.sgjourney.energy_transfer": "Max Energy Transfer",
 	"tooltip.sgjourney.matok.open": "Open",
 	"tooltip.sgjourney.matok.closed": "Closed",
+	"tooltip.sgjourney.matok.open_close": "Shift + Right-Click in Main Hand to Open/Close",
+	"tooltip.sgjourney.matok.reload": "Shift + Right-Click in Off-Hand to Reload with Naquadah Vial in Main Hand",
 	"tooltip.sgjourney.kara_kesh.terror": "Mode: Terror",
 	"tooltip.sgjourney.kara_kesh.knockback": "Mode: Knockback",
+	"tooltip.sgjourney.kara_kesh.terror_knockback": "Shift + Right-Click in Main Hand to change modes",
+	"tooltip.sgjourney.kara_kesh.use": "Right-Click on an Entity to use",
 	"tooltip.sgjourney.pda.info": "Right-click: Get information about the target",
 	"tooltip.sgjourney.syringe.contents": "Contents",
 	"tooltip.sgjourney.syringe.empty": "Empty",
@@ -366,6 +387,7 @@
 	"gui.sgjourney.stargate_variants": "Stargate Variants",
 	"gui.sgjourney.unique_symbols": "Unique Symbols",
 	"gui.sgjourney.use_movie_stargate_model": "Use Movie Stargate Model",
+	"gui.sgjourney.movie_primary_chevron_opens": "Movie Primary Chevron opens",
 	"gui.sgjourney.universe_front_rotates": "Universe Stargate front rotates",
 	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",
 	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",

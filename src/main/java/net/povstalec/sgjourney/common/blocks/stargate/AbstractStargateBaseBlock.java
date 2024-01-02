@@ -51,14 +51,31 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	
 	public boolean setVariant(Level level, BlockPos pos, Player player, InteractionHand hand)
 	{
-		//TODO Add checks for when the variant is the same as the variant of the gate
-		//TODO Make it so that a Variant Crystal with no variant will revert the Stargate to default
-		
 		ItemStack stack = player.getItemInHand(hand);
 		Item item = stack.getItem();
 		
 		if(item instanceof StargateVariantItem)
 		{
+			if(!stack.hasTag())
+			{
+				BlockEntity blockEntity = level.getBlockEntity(pos);
+				if(blockEntity instanceof AbstractStargateEntity stargate)
+				{
+					if(stargate.getVariant().equals(StargateJourney.EMPTY))
+					{
+						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
+						return true;
+					}
+					
+					stargate.setVariant(StargateJourney.EMPTY);
+					
+					if(!player.isCreative())
+						stack.shrink(1);
+				}
+				
+				return true;
+			}
+			
 			Optional<String> variant = StargateVariantItem.getVariantString(stack);
 			
 			if(variant.isPresent())
@@ -67,8 +84,13 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				
 				if(blockEntity instanceof AbstractStargateEntity stargate)
 				{
+					if(variant.get().equals(stargate.getVariant()))
+					{
+						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
+						return true;
+					}
+					
 					stargate.setVariant(variant.get());
-					System.out.println("Setting Variant");
 					
 					if(!player.isCreative())
 						stack.shrink(1);
