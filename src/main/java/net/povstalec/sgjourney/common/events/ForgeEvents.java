@@ -146,7 +146,7 @@ public class ForgeEvents
 	public static void onLivingTick(LivingEvent.LivingTickEvent event)
 	{
 		Entity entity = event.getEntity();
-		Level level = entity.getLevel();
+		Level level = entity.level();
 		
 		//TODO Make this into something you can edit with Datapacks
 		if(!level.dimension().location().equals(new ResourceLocation(StargateJourney.MODID, "cavum_tenebrae")))
