@@ -7,6 +7,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class MilkyWayStargateMethods
 {
@@ -70,18 +71,18 @@ public class MilkyWayStargateMethods
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			context.executeMainThreadTask(() ->
+			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				if(stargate.isChevronRaised())
+				if(stargate.isChevronOpen())
 					throw new LuaException("Can't rotate while chevron is raised");
 				else if(desiredSymbol < -1 || desiredSymbol > 38)
 					throw new LuaException("Symbol out of bounds <-1, 38>");
 				
-				stargate.startRotation(desiredSymbol, true);
-				return null;
+				Stargate.Feedback feedback = stargate.startRotation(desiredSymbol, true);
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
-			return MethodResult.of();
+			return result;
 		}
 	}
 	
@@ -98,18 +99,18 @@ public class MilkyWayStargateMethods
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			context.executeMainThreadTask(() ->
+			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				if(stargate.isChevronRaised())
+				if(stargate.isChevronOpen())
 					throw new LuaException("Can't rotate while chevron is raised");
 				else if(desiredSymbol < -1 || desiredSymbol > 38)
 					throw new LuaException("Symbol out of bounds <-1, 38>");
 				
-				stargate.startRotation(desiredSymbol, false);
-				return null;
+				Stargate.Feedback feedback = stargate.startRotation(desiredSymbol, false);
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
-			return MethodResult.of();
+			return result;
 		}
 	}
 	
@@ -124,13 +125,13 @@ public class MilkyWayStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
+			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				stargate.endRotation();
-				return null;
+				Stargate.Feedback feedback = stargate.endRotation(true);
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
-			return MethodResult.of();
+			return result;
 		}
 	}
 	
@@ -147,7 +148,29 @@ public class MilkyWayStargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				return new Object[] {stargate.raiseChevron().getCode()};
+				Stargate.Feedback feedback = stargate.openChevron();
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class EngageChevron implements InterfaceMethod<MilkyWayStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "encodeChevron";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				Stargate.Feedback feedback = stargate.encodeChevron();
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
 			return result;
@@ -167,32 +190,8 @@ public class MilkyWayStargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				int feedback = stargate.lowerChevron().getCode();
-				
-				return new Object[] {feedback};
-			});
-			
-			return result;
-		}
-	}
-	
-	public static class EngageSymbol implements InterfaceMethod<MilkyWayStargateEntity>
-	{
-		@Override
-		public String getName()
-		{
-			return "engageSymbol";
-		}
-
-		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
-		{
-			int desiredSymbol = arguments.getInt(0);
-			
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				int feedback = stargate.engageSymbol(desiredSymbol).getCode();
-				return new Object[] {feedback};
+				Stargate.Feedback feedback = stargate.closeChevron();
+				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			
 			return result;

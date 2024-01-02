@@ -294,9 +294,8 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);
 		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
 		{
-			boolean isChevronEngaged = isChevronEngaged(stargate, chevronNumber);
-			if(isChevronEngaged)
-				renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, isChevronEngaged);
+			if(isChevronEngaged(stargate, chevronNumber))
+				renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, true);
 		}
 	}
 }

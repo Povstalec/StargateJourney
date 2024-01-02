@@ -1,11 +1,7 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
@@ -61,7 +57,9 @@ public class Address
 	
 	public Address fromArray(int[] addressArray)
 	{
-		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+		if(addressArray.length < MAX_ADDRESS_LENGTH &&
+				ArrayHelper.differentNumbers(addressArray) &&
+				ArrayHelper.isArrayPositive(addressArray, this.isBuffer))
 			this.addressArray = addressArray;
 		
 		return this;
@@ -71,7 +69,7 @@ public class Address
 	{
 		int[] addressArray = addressStringToIntArray(addressString);
 		
-		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+		if(addressArray.length < MAX_ADDRESS_LENGTH && ArrayHelper.differentNumbers(addressArray))
 			this.addressArray = addressArray;
 		
 		return this;
@@ -79,14 +77,9 @@ public class Address
 	
 	public Address fromTable(Map<Double, Double> addressTable)
 	{
-		int[] addressArray = new int[addressTable.size()];
+		int[] addressArray = ArrayHelper.tableToArray(addressTable);
 		
-		for(int i = 0; i < addressArray.length; i++)
-		{
-			addressArray[i] = (int) Math.floor(addressTable.get((double) (i + 1)));
-		}
-		
-		if(addressArray.length < MAX_ADDRESS_LENGTH && differentNumbers(addressArray))
+		if(addressArray.length < MAX_ADDRESS_LENGTH && ArrayHelper.differentNumbers(addressArray))
 			this.addressArray = addressArray;
 		
 		return this;
@@ -118,6 +111,11 @@ public class Address
 	public boolean canGrow()
 	{
 		return getLength() < MAX_ADDRESS_LENGTH;
+	}
+	
+	public boolean isBuffer()
+	{
+		return this.isBuffer;
 	}
 	
 	@Override
@@ -166,7 +164,7 @@ public class Address
 				else
 					addressArray[i] = random.nextInt(1, limit);
 			}
-			if(differentNumbers(addressArray))
+			if(ArrayHelper.differentNumbers(addressArray))
 				isValid = true;
 		}
 		
@@ -179,9 +177,22 @@ public class Address
 	//*******************************************Static*******************************************
 	//============================================================================================
 	
-	private static int[] addressStringToIntArray(String addressString)
+	public static boolean canBeTransformedToAddress(String addressString)
 	{
-		if(addressString == null)
+		for(int i = 0; i < addressString.length(); i++)
+		{
+			char character = addressString.charAt(i);
+			
+			if(!Character.isDigit(character) && character != '-')
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public static int[] addressStringToIntArray(String addressString)
+	{
+		if(addressString == null || !canBeTransformedToAddress(addressString))
 			return new int[0];
 		
 		String[] stringArray = addressString.split(ADDRESS_DIVIDER);
@@ -189,7 +200,6 @@ public class Address
 		
 		for(int i = 1; i < stringArray.length; i++)
 		{
-
 			int number = Character.getNumericValue(stringArray[i].charAt(0));
 			int length = stringArray[i].length();
 			if(length > 1)
@@ -201,7 +211,7 @@ public class Address
 		return intArray;
 	}
 	
-	private static String addressIntArrayToString(int[] array)
+	public static String addressIntArrayToString(int[] array)
 	{
 		String address = ADDRESS_DIVIDER;
 		
@@ -210,12 +220,5 @@ public class Address
 			address = address + array[i] + ADDRESS_DIVIDER;
 		}
 		return address;
-	}
-	
-	private static boolean differentNumbers(int[] address)
-	{
-		List<Integer> arrayList = Arrays.stream(address).boxed().toList();
-		Set<Integer> arraySet = new HashSet<Integer>(arrayList);
-		return (arraySet.size() == address.length);
 	}
 }

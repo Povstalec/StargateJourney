@@ -171,6 +171,12 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientBoundSoundPackets.MilkyWayBuildup::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.MilkyWayStop.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.MilkyWayStop::encode)
+		.decoder(ClientBoundSoundPackets.MilkyWayStop::new)
+		.consumerMainThread(ClientBoundSoundPackets.MilkyWayStop::handle)
+		.add();
+		
 		//============================================================================================
 		//****************************************Server-bound****************************************
 		//============================================================================================

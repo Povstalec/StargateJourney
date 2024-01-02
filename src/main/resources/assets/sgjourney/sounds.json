@@ -69,6 +69,23 @@
 			"sgjourney:milky_way_ring_spin"
 		]
 	},
+	
+	"milky_way_ring_spin_stop":
+	{
+		"subtitle": "sounds.sgjourney.ring_spin_stop",
+		"sounds":
+		[
+			"sgjourney:milky_way_ring_spin_stop"
+		]
+	},
+	"milky_way_chevron_open":
+	{
+		"subtitle": "sounds.sgjourney.chevron_open",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_open"
+		]
+	},
 	"milky_way_chevron_encode":
 	{
 		"subtitle": "sounds.sgjourney.chevron_encode",
@@ -302,12 +319,12 @@
 	
 	
 	
-	"movie_chevron_encode":
+	"movie_chevron_open":
 	{
-		"subtitle": "sounds.sgjourney.chevron_encode",
+		"subtitle": "sounds.sgjourney.chevron_open",
 		"sounds":
 		[
-			"sgjourney:movie_chevron_encode"
+			"sgjourney:movie_chevron_open"
 		]
 	},
 	"movie_chevron_engage":
@@ -334,6 +351,16 @@
 		"sounds":
 		[
 			"sgjourney:movie_wormhole_close"
+		]
+	},
+
+	"nothing":
+	{
+		"replace": true,
+		"subtitle": "sounds.sgjourney.nothing",
+		"sounds":
+		[
+			"sgjourney:nothing"
 		]
 	}
 }

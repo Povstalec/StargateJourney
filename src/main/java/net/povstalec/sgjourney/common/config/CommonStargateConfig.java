@@ -15,7 +15,8 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_entities;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	public static ForgeConfigSpec.BooleanValue always_display_stargate_id;
-	
+
+	public static ForgeConfigSpec.BooleanValue enable_address_choice;
 	public static ForgeConfigSpec.BooleanValue enable_classic_stargate_upgrades;
 	public static ForgeConfigSpec.BooleanValue enable_stargate_variants;
 	
@@ -72,6 +73,12 @@ public class CommonStargateConfig
 		enable_redstone_dialing = server
 				.comment("Enables the use of redstone for manual Stargate dialing")
 				.define("server.enable_redstone_dialing", true);
+		
+		
+		
+		enable_address_choice = server
+				.comment("Enables choosing the Address when first creating a Stargate by right-clicking it with a renamed Control Crystal")
+				.define("server.enable_address_choice", false);
 		
 		enable_classic_stargate_upgrades = server
 				.comment("Enables upgrading the Classic Stargate")

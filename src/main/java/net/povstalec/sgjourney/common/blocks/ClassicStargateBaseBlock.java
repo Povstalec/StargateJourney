@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +22,11 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 {
@@ -60,6 +65,27 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 	{
 		if(!level.isClientSide())
 		{
+			ItemStack stack = player.getItemInHand(hand);
+			Address address = new Address();
+			
+			if(CommonStargateConfig.enable_address_choice.get() && stack.is(ItemInit.CONTROL_CRYSTAL.get()))
+			{
+				String name = stack.getHoverName().getString();
+				address = new Address(name);
+				
+				if(address.getLength() != 8)
+				{
+					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.invalid_address"), true);
+					return InteractionResult.FAIL;
+				}
+				
+				if(BlockEntityList.get(level).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).contains(address.toString()))
+				{
+					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.address_exists"), true);
+					return InteractionResult.FAIL;
+				}
+			}
+			
 			Direction direction = level.getBlockState(pos).getValue(FACING);
 			Orientation orientation = getPlacementOrientation(level, pos, direction);
 			
@@ -89,7 +115,17 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			
 			if(baseEntity instanceof SGJourneyBlockEntity blockEntity)
-				blockEntity.addNewToBlockEntityList();
+			{
+				if(address.getLength() == 8)
+				{
+					blockEntity.setID(address.toString());
+					
+					if(!player.isCreative())
+						stack.shrink(1);
+				}
+				
+				blockEntity.addToBlockEntityList();
+			}
 			
 			return InteractionResult.SUCCESS;
 		}

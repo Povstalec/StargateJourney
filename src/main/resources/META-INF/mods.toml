@@ -4,10 +4,10 @@ license="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 issueTrackerURL="https://github.com/Povstalec/StargateJourney/issues"
 [[mods]]
 modId="sgjourney"
-version="0.6.9"
+version="0.6.10"
 displayName="Stargate Journey"
 logoFile="sgjourney_large.png"
-credits="TakeruDavis, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt, SquidDev"
+credits="TakeruDavis, tehgreatdoge, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt, SquidDev"
 authors="Woldericz_Junior"
 displayTest="MATCH_VERSION"
 

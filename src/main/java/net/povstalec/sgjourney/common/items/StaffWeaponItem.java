@@ -322,6 +322,9 @@ public class StaffWeaponItem extends Item
 	    	tooltipComponents.add(liquidNaquadah);
 		}
     	
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.open_close").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+    	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 }

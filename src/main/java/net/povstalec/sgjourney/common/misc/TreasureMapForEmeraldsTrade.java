@@ -16,7 +16,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
+import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.TagInit;
 
 public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
@@ -78,8 +78,8 @@ public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
 			{
 				ServerLevel serverlevel = (ServerLevel)entity.getLevel();
 				
-				int xOffset = 16 * CommonStargateNetworkConfig.stargate_generation_center_x_chunk_offset.get();
-		        int zOffset = 16 * CommonStargateNetworkConfig.stargate_generation_center_z_chunk_offset.get();
+				int xOffset = 16 * CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
+		        int zOffset = 16 * CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
 		        
 				BlockPos blockpos = serverlevel.findNearestMapStructure(this.destination, new BlockPos(xOffset, 0, zOffset), 100, true);
 				
