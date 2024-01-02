@@ -352,5 +352,15 @@
 		[
 			"sgjourney:movie_wormhole_close"
 		]
+	},
+
+	"nothing":
+	{
+		"replace": true,
+		"subtitle": "sounds.sgjourney.nothing",
+		"sounds":
+		[
+			"sgjourney:nothing"
+		]
 	}
 }

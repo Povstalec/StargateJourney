@@ -81,6 +81,15 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		return ClientStargateConfig.use_movie_stargate_model.get();
 	}
 	
+	protected boolean raiseBackChevrons(MilkyWayStargateEntity stargate)
+	{
+		Optional<StargateVariant> variant = getVariant(stargate);
+		if(variant.isPresent() && variant.get().backChevrons().isPresent())
+			return variant.get().backChevrons().get();
+		
+		return ClientStargateConfig.milky_way_stargate_back_lights_up.get();
+	}
+	
 	public void setRotation(float rotation)
 	{
 		this.rotation = rotation;
@@ -120,7 +129,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	{
 		if(useMovieStargateModel(stargate))
 		{
-			if(ClientStargateConfig.cap_movie_chevron_locking.get())
+			if(ClientStargateConfig.movie_primary_chevron_opens.get())
 				return stargate.isConnected();
 			else 
 				return false;
@@ -134,18 +143,10 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 
 	protected boolean isPrimaryChevronBackRaised(MilkyWayStargateEntity stargate)
 	{
-		if(useMovieStargateModel(stargate))
-		{
-			if(ClientStargateConfig.movie_front_chevrons_locking.get())
-				return false;
-			
-			if(ClientStargateConfig.cap_movie_chevron_locking.get())
-				return stargate.isConnected();
-			else 
-				return false;
-		}
+		if(!raiseBackChevrons(stargate))
+			return false;
 		
-		return false;
+		return isPrimaryChevronRaised(stargate);
 	}
 
 	@Override
@@ -157,12 +158,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isPrimaryChevronEngaged(MilkyWayStargateEntity stargate)
 	{
-		if(useMovieStargateModel(stargate))
-		{
-			if(stargate.isChevronOpen() && (stargate.getCurrentSymbol() == 0 || stargate.chevronsRendered() > 8))
-				return true;
-		}
-		else if(stargate.isChevronOpen())
+		if(!useMovieStargateModel(stargate) && stargate.isChevronOpen())
 			return true;
 			
 		if(stargate.isConnected())
@@ -182,16 +178,24 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
 			return true;
 		
-		if(stargate.isChevronOpen() && !(stargate.getCurrentSymbol() == 0 || chevronsRendered > 8))
+		if(stargate.isChevronOpen())
 		{
-			Address address = stargate.getAddress();
-			if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
+			if(stargate.getCurrentSymbol() == 0 || chevronsRendered > 8)
 			{
-				if(chevronNumber == chevronsRendered)
+				if(chevronNumber < chevronsRendered + 1)
 					return true;
 			}
-			else if(chevronNumber == chevronsRendered + 1)
-				return true;
+			else
+			{
+				Address address = stargate.getAddress();
+				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
+				{
+					if(chevronNumber == chevronsRendered)
+						return true;
+				}
+				else if(chevronNumber == chevronsRendered + 1)
+					return true;
+			}
 		}
 		
 		return false;
@@ -199,30 +203,10 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 
 	protected boolean isChevronBackRaised(MilkyWayStargateEntity stargate, int chevronNumber)
 	{
-		if(!useMovieStargateModel(stargate))
+		if(!raiseBackChevrons(stargate))
 			return false;
 		
-		if(ClientStargateConfig.movie_front_chevrons_locking.get())
-			return false;
-		
-		int chevronsRendered = stargate.chevronsRendered();
-		
-		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
-			return true;
-		
-		if(stargate.isChevronOpen() && !(stargate.getCurrentSymbol() == 0 || chevronsRendered > 8))
-		{
-			Address address = stargate.getAddress();
-			if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
-			{
-				if(chevronNumber == chevronsRendered)
-					return true;
-			}
-			else if(chevronNumber == chevronsRendered + 1)
-				return true;
-		}
-		
-		return false;
+		return isChevronRaised(stargate, chevronNumber);
 	}
 
 	@Override
@@ -242,7 +226,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			if(stargate.getCurrentSymbol() == 0 || chevronsRendered > 8)
 			{
 				if(chevronNumber < chevronsRendered + 1)
-					return alternateChevronLocking;
+					return true;
 			}
 			else
 			{

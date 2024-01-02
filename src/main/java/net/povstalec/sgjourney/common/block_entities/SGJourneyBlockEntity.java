@@ -130,7 +130,7 @@ public abstract class SGJourneyBlockEntity extends EnergyBlockEntity
 		return UUID.randomUUID().toString();
 	}
 	
-	protected void setID(String blockentityID)
+	public void setID(String blockentityID)
 	{
     	this.id = blockentityID;
 		setChanged();

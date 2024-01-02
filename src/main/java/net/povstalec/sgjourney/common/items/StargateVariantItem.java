@@ -23,6 +23,30 @@ public class StargateVariantItem extends Item
 	{
 		super(properties);
 	}
+	
+	@Override
+	public boolean isFoil(ItemStack stack)
+	{
+		return stack.hasTag();
+	}
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    {
+        if(stack.hasTag())
+        {
+            if(stack.getOrCreateTag().contains(VARIANT))
+            {
+            	String variant = stack.getOrCreateTag().getString(VARIANT);
+            	
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+            }
+        }
+        
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.stargate_variant.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    }
 
 	public static Optional<String> getVariantString(ItemStack stack)
 	{
@@ -39,22 +63,6 @@ public class StargateVariantItem extends Item
 		
 		return variant;
 	}
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
-    {
-        if(stack.hasTag())
-        {
-            if(stack.getOrCreateTag().contains(VARIANT))
-            {
-            	String variant = stack.getOrCreateTag().getString(VARIANT);
-            	
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
-            }
-        }
-
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-    }
 	
 	public static <StargateBlock extends AbstractStargateBlock> ItemStack stargateVariant(String variant)
 	{

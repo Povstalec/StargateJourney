@@ -1,5 +1,10 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
+import java.util.Optional;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+
 public class ControlCrystalItem extends AbstractCrystalItem
 {
 	public ControlCrystalItem(Properties properties)
@@ -27,14 +32,6 @@ public class ControlCrystalItem extends AbstractCrystalItem
 			
 		}
 	}
-
-    /*@Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
-    {
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.control_crystal"));
-
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-    }*/
 	
 	public static class Large extends ControlCrystalItem
 	{
@@ -47,6 +44,12 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		public boolean isLarge()
 		{
 			return true;
+		}
+
+		@Override
+		public Optional<Component> descriptionInDHD()
+		{
+			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.control.large").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}
 	}
 	
@@ -61,6 +64,12 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		public boolean isAdvanced()
 		{
 			return true;
+		}
+
+		@Override
+		public Optional<Component> descriptionInDHD()
+		{
+			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.control.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}
 	}
 }

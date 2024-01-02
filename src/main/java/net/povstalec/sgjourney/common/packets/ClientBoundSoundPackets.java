@@ -104,15 +104,15 @@ public abstract class ClientBoundSoundPackets
 	    public final BlockPos pos;
     	public final boolean primary;
     	public final boolean incoming;
-    	public final boolean raise;
+    	public final boolean open;
     	public final boolean encode;
     	
-    	public Chevron(BlockPos pos, boolean primary, boolean incoming, boolean raise, boolean encode)
+    	public Chevron(BlockPos pos, boolean primary, boolean incoming, boolean open, boolean encode)
     	{
     		this.pos = pos;
     		this.primary = primary;
     		this.incoming = incoming;
-    		this.raise = raise;
+    		this.open = open;
     		this.encode = encode;
     	}
     	public Chevron(FriendlyByteBuf buffer)
@@ -125,7 +125,7 @@ public abstract class ClientBoundSoundPackets
             buffer.writeBlockPos(this.pos);
             buffer.writeBoolean(this.primary);
             buffer.writeBoolean(this.incoming);
-            buffer.writeBoolean(this.raise);
+            buffer.writeBoolean(this.open);
             buffer.writeBoolean(this.encode);
         }
     	
@@ -133,7 +133,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playChevronSound(pos, primary, incoming, raise, encode);
+            	SoundAccess.playChevronSound(pos, primary, incoming, open, encode);
             });
             return true;
         }
