@@ -1,10 +1,39 @@
 package net.povstalec.sgjourney.common.misc;
 
+import static net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement.getRandomNamedJigsaw;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 
+import com.google.common.collect.Lists;
 import com.mojang.logging.LogUtils;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.pools.EmptyPoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * Pretty much just a copy paste of the vanilla Jigsaw placement, but with rotation set to none
@@ -15,7 +44,7 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 {
 	static final Logger LOGGER = LogUtils.getLogger();
 	
-	/*public static Optional<Structure.GenerationStub> addPieces(Structure.GenerationContext p_227239_, Holder<StructureTemplatePool> p_227240_, Optional<ResourceLocation> p_227241_, int p_227242_, BlockPos p_227243_, boolean p_227244_, Optional<Heightmap.Types> p_227245_, int p_227246_) {
+	public static Optional<Structure.GenerationStub> addPieces(Structure.GenerationContext p_227239_, Holder<StructureTemplatePool> p_227240_, Optional<ResourceLocation> p_227241_, int p_227242_, BlockPos p_227243_, boolean p_227244_, Optional<Heightmap.Types> p_227245_, int p_227246_) {
 	      RegistryAccess registryaccess = p_227239_.registryAccess();
 	      ChunkGenerator chunkgenerator = p_227239_.chunkGenerator();
 	      StructureTemplateManager structuretemplatemanager = p_227239_.structureTemplateManager();
@@ -69,5 +98,5 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 	            }
 	         }));
 	      }
-	   }*/
+	   }
 }
