@@ -93,10 +93,10 @@ public class Stargate
 		
 		// Chevron/Symbol
 		SYMBOL_ENCODED(1, FeedbackType.INFO, "symbol_encoded"),
-		SYMBOL_IN_ADDRESS(-2, FeedbackType.ERROR, "symbol_in_addres"),
+		SYMBOL_IN_ADDRESS(-2, FeedbackType.ERROR, "symbol_in_address"),
 		SYMBOL_OUT_OF_BOUNDS(-3, FeedbackType.ERROR, "symbol_out_of_bounds"),
 		
-		// Estabilishing Connection
+		// Establishing Connection
 		CONNECTION_ESTABLISHED_SYSTEM_WIDE(2, FeedbackType.INFO, "connection_established.system_wide"),
 		CONNECTION_ESTABLISHED_INTERSTELLAR(3, FeedbackType.INFO, "connection_established.interstellar"),
 		CONNECTION_ESTABLISHED_INTERGALACTIC(4, FeedbackType.INFO, "connection_established.intergalactic"),

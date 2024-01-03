@@ -127,7 +127,7 @@ public class SGJourneyRenderTypes extends RenderType
 	
 	public static RenderType engagedChevron(ResourceLocation resourceLocation)
 	{
-		return create("engaged_chveron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, 
+		return create("engaged_chevron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
