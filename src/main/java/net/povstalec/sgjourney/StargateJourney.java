@@ -185,7 +185,7 @@ public class StargateJourney
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	
-        	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+        	//EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
         	BlockEntityRenderers.register(BlockEntityInit.STONE_CARTOUCHE.get(), CartoucheRenderer.Stone::new);
@@ -205,14 +205,16 @@ public class StargateJourney
         @SubscribeEvent
         public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
         {
-        	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
+        	/*if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
         		StellarViewRendering.registerStellarViewEffects(event);
         	else
-        	{
+        	{*/
         		event.register(SGJourneyDimensionSpecialEffects.ABYDOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Abydos());
             	event.register(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, new SGJourneyDimensionSpecialEffects.Chulak());
+            	event.register(SGJourneyDimensionSpecialEffects.CAVUM_TENEBRAE_EFFECTS, new SGJourneyDimensionSpecialEffects.CavumTenebrae());
             	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());
-        	}
+            	event.register(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Athos());
+        	//}
         }
     }
     
