@@ -341,7 +341,7 @@ public abstract class SGJourneySkyRenderer
         RenderSystem.disableBlend();
         
 		this.createCelestialObject(bufferbuilder, lastMatrix, BLACK_HOLE_LOCATION, 
-				size * 0.3125F, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
+				size, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 
 		RenderSystem.enableBlend();
 	}

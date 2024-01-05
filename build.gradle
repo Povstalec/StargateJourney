@@ -175,8 +175,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
-    compileOnly(fg.deobf('com.github.Povstalec:StellarView:4b760b8eaf'))
-    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:4b760b8eaf'))
+    compileOnly(fg.deobf('com.github.Povstalec:StellarView:1aaa85b245'))
+    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:1aaa85b245'))
     
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
@@ -187,15 +187,6 @@ dependencies {
 	compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
 	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
     runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}"))
-    
-    //runtimeOnly fg.deobf("curse.maven:mcjtylib-233105:4389808")
-    //runtimeOnly fg.deobf("curse.maven:rftools-base-326041:4389811")
-    //runtimeOnly fg.deobf("curse.maven:rftools-power-290209:4367297")
-    
-    //runtimeOnly fg.deobf("curse.maven:botarium-704113:4416456")
-    //runtimeOnly fg.deobf("curse.maven:resourceful-lib-570073:4378849")
-    //runtimeOnly fg.deobf("curse.maven:resourceful-config-714059:4394154")
-	//runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

@@ -8,8 +8,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.entities.Goauld;
-import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.VialItem;
 
@@ -21,7 +19,7 @@ public class ModEvents
 		@SubscribeEvent
 		public static void entityAttributeEvent(EntityAttributeCreationEvent event)
 		{
-			event.put(EntityInit.GOAULD.get(), Goauld.createAttributes().build());
+			//event.put(EntityInit.GOAULD.get(), Goauld.createAttributes().build());
 		}
 	}
 	
