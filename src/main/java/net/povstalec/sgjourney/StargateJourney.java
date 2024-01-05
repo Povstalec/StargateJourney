@@ -38,7 +38,6 @@ import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
-import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
@@ -185,7 +184,7 @@ public class StargateJourney
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	
-        	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+        	//EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
         	BlockEntityRenderers.register(BlockEntityInit.STONE_CARTOUCHE.get(), CartoucheRenderer.Stone::new);
@@ -208,11 +207,7 @@ public class StargateJourney
         	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
         		StellarViewRendering.registerStellarViewEffects(event);
         	else
-        	{
-        		event.register(SGJourneyDimensionSpecialEffects.ABYDOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Abydos());
-            	event.register(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, new SGJourneyDimensionSpecialEffects.Chulak());
-            	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());
-        	}
+        		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
         }
     }
     

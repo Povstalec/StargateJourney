@@ -138,15 +138,15 @@ public class CommonStargateConfig
 				.defineInRange("server.intergalactic_connection_energy_draw", 50000L, 0, 9223372036854775807L);
 		
 		system_wide_connection_energy_cost = server
-				.comment("The amount of energy required to estabilish a connection inside a solar system")
+				.comment("The amount of energy required to establish a connection inside a solar system")
 				.defineInRange("server.system_wide_connection_energy_cost", 50000L, 0L, 9223372036854775807L);
 		
 		interstellar_connection_energy_cost = server
-				.comment("The amount of energy required to estabilish a connection inside the galaxy")
+				.comment("The amount of energy required to establish a connection inside the galaxy")
 				.defineInRange("server.interstellar_connection_energy_cost", 100000L, 0L, 9223372036854775807L);
 		
 		intergalactic_connection_energy_cost = server
-				.comment("The amount of energy required to estabilish a connection outside the galaxy")
+				.comment("The amount of energy required to establish a connection outside the galaxy")
 				.defineInRange("server.intergalactic_connection_energy_cost", 100000000000L, 0L, 9223372036854775807L);
 		
 		stargate_energy_capacity = server
@@ -154,7 +154,7 @@ public class CommonStargateConfig
 				.defineInRange("server.stargate_energy_capacity", 1000000000000L, 0L, 9223372036854775807L);
 		
 		stargate_energy_max_receive = server
-				.comment("The maximum amount of energy the Stargate can reveive at once")
+				.comment("The maximum amount of energy the Stargate can receive at once")
 				.defineInRange("server.stargate_energy_max_receive", 1000000000000L, 0L, 9223372036854775807L);
 		
 		energy_bypass_multiplier = server

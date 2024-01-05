@@ -1,8 +1,8 @@
 {
-    "replace": false,
-    "values": [
-        "sgjourney:milky_way_dhd",
-        "sgjourney:pegasus_dhd",
-        "sgjourney:classic_dhd"
-    ]
+	"replace": false,
+	"values":
+	[
+		"sgjourney:milky_way_dhd",
+		"sgjourney:pegasus_dhd"
+	]
 }

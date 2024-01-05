@@ -88,13 +88,13 @@ public class Connection
 		private long establishingPowerCost;
 		private long powerDraw;
 		
-		ConnectionType(long estabilishingPowerCost, long powerDraw)
+		ConnectionType(long establishingPowerCost, long powerDraw)
 		{
-			this.establishingPowerCost = estabilishingPowerCost;
+			this.establishingPowerCost = establishingPowerCost;
 			this.powerDraw = powerDraw;
 		}
 		
-		public long getEstabilishingPowerCost()
+		public long getEstablishingPowerCost()
 		{
 			return this.establishingPowerCost;
 		}
@@ -180,17 +180,17 @@ public class Connection
 	
 	public void tick(MinecraftServer server)
 	{
-		Stargate.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? Stargate.ChevronLockSpeed.FAST : this.dialedStargate.getChevronLockSpeed();
-		int chevronWaitTicks = chevronLockSpeed.getChevronWaitTicks();
-		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
-		int maxKawooshTicks = kawooshStartTicks + KAWOOSH_TICKS;
-		int maxOpenTicks = maxKawooshTicks + VORTEX_TICKS;
-		
 		if(!isStargateValid(this.dialingStargate) || !isStargateValid(this.dialedStargate))
 		{
 			terminate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 			return;
 		}
+		
+		Stargate.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? Stargate.ChevronLockSpeed.FAST : this.dialedStargate.getChevronLockSpeed();
+		int chevronWaitTicks = chevronLockSpeed.getChevronWaitTicks();
+		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
+		int maxKawooshTicks = kawooshStartTicks + KAWOOSH_TICKS;
+		int maxOpenTicks = maxKawooshTicks + VORTEX_TICKS;
 		
 		this.increaseTicks(kawooshStartTicks, maxKawooshTicks, maxOpenTicks);
 		int realOpenTime = this.openTime - kawooshStartTicks;
@@ -204,10 +204,10 @@ public class Connection
 				playStargateOpenSound(this.dialedStargate, kawooshStartTicks, this.openTime);
 			}
 			
-			int addressLenght = this.dialingStargate.getAddress().getLength();
-			Address dialingAddress = new Address().fromString(this.dialingStargate.getConnectionAddress(addressLenght));
+			int addressLength = this.dialingStargate.getAddress().getLength();
+			Address dialingAddress = new Address().fromString(this.dialingStargate.getConnectionAddress(addressLength));
 			
-			this.dialedStargate.setEngagedChevrons(AbstractStargateEntity.getChevronConfiguration(addressLenght));
+			this.dialedStargate.setEngagedChevrons(AbstractStargateEntity.getChevronConfiguration(addressLength));
 			
 			// Used for handling what the Stargate does when it's being dialed
 			// For example: Pegasus Stargate's ring booting up
@@ -219,9 +219,9 @@ public class Connection
 				
 				if(dialedAddressLength < dialingAddress.getLength())
 				{
-					if(this.openTime / chevronWaitTicks == 4 && addressLenght < 7)
+					if(this.openTime / chevronWaitTicks == 4 && addressLength < 7)
 						return;
-					else if(this.openTime / chevronWaitTicks == 5 && addressLenght < 8)
+					else if(this.openTime / chevronWaitTicks == 5 && addressLength < 8)
 						return;
 					else
 						this.dialedStargate.encodeChevron(dialingAddress.getSymbol(dialedAddressLength), true, false);

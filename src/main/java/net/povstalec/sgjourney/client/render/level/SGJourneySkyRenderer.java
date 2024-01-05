@@ -169,7 +169,7 @@ public abstract class SGJourneySkyRenderer
 				 * Spherical equations (adjusted for Minecraft, since usually +Z is up, while in Minecraft +Y is up):
 				 * 
 				 * r = sqrt(x * x + y * y + z * z)
-				 * tetha = arctg(x / z)
+				 * theta = arctan2(x, z)
 				 * phi = arccos(y / r)
 				 * 
 				 * x = r * sin(phi) * sin(theta)
@@ -191,7 +191,7 @@ public abstract class SGJourneySkyRenderer
 				double cosPhi = Math.cos(sphericalPhi);
 				
 				// sin and cos are used to effectively clamp the random number between two values without actually clamping it,
-				// wwhich would result in some awkward lines as Stars would be brought to the clamped values
+				// which would result in some awkward lines as Stars would be brought to the clamped values
 				// Both affect Star size and rotation
 				double random = randomsource.nextDouble() * Math.PI * 2.0D;
 				double sinRandom = Math.sin(random);
@@ -289,15 +289,15 @@ public abstract class SGJourneySkyRenderer
         }
 	}
 	
-	public static float[] moveSpherical(float offsetX, float offsetY, float r, double tetha, double phi)
+	public static float[] moveSpherical(float offsetX, float offsetY, float r, double theta, double phi)
 	{
-		double x = r * Math.sin(phi) * Math.sin(tetha);
+		double x = r * Math.sin(phi) * Math.sin(theta);
 		double y = r * Math.cos(phi);
-		double z = r * Math.sin(phi) * Math.cos(tetha);
+		double z = r * Math.sin(phi) * Math.cos(theta);
 		
-		x += - offsetY * Math.cos(phi) * Math.sin(tetha) - offsetX * Math.cos(tetha);
+		x += - offsetY * Math.cos(phi) * Math.sin(theta) - offsetX * Math.cos(theta);
 		y += offsetY * Math.sin(phi);
-		z += - offsetY * Math.cos(phi) * Math.cos(tetha) + offsetX * Math.sin(tetha);
+		z += - offsetY * Math.cos(phi) * Math.cos(theta) + offsetX * Math.sin(theta);
 		
 		return new float[] {(float) x, (float) y, (float) z};
 	}
@@ -341,7 +341,7 @@ public abstract class SGJourneySkyRenderer
         RenderSystem.disableBlend();
         
 		this.createCelestialObject(bufferbuilder, lastMatrix, BLACK_HOLE_LOCATION, 
-				size * 0.3125F, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
+				size, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 
 		RenderSystem.enableBlend();
 	}
