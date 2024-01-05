@@ -219,7 +219,6 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			return;
 		
 		stargate.animateSpin();
-		System.out.println("Address Server " + stargate.addressBuffer.getLength());
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 		stargate.updateClient();

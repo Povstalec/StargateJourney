@@ -49,7 +49,7 @@ public class PlanetSkyRenderers
 		
 		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
 		{
-			this.renderBlackHole(bufferbuilder, lastMatrix, 50.0F, 0.0F, 0.0F);
+			this.renderBlackHole(bufferbuilder, lastMatrix, 70.0F, 0.0F, 0.0F);
 		}
 	}
 	

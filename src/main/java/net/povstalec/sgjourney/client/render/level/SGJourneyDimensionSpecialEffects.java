@@ -9,7 +9,9 @@ import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.ClientSkyConfig;
 
 public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialEffects
 {
@@ -72,9 +74,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
-			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+			if(ClientSkyConfig.custom_abydos_sky.get())
+				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
-	        return true;
+	        return ClientSkyConfig.custom_abydos_sky.get();
 	    }
 	}
 	
@@ -89,9 +92,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
-			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+			if(ClientSkyConfig.custom_chulak_sky.get())
+				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
-	        return true;
+	        return ClientSkyConfig.custom_chulak_sky.get();
 	    }
 	}
 	
@@ -106,9 +110,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
-			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+			if(ClientSkyConfig.custom_cavum_tenebrae_sky.get())
+				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
-	        return true;
+	        return ClientSkyConfig.custom_cavum_tenebrae_sky.get();
 	    }
 	}
 	
@@ -123,9 +128,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
-			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+			if(ClientSkyConfig.custom_lantea_sky.get())
+				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
-	        return true;
+	        return ClientSkyConfig.custom_lantea_sky.get();
 	    }
 	}
 	
@@ -140,9 +146,19 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
-			skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+			if(ClientSkyConfig.custom_athos_sky.get())
+				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
-	        return true;
+	        return ClientSkyConfig.custom_athos_sky.get();
 	    }
+	}
+	
+	public static void registerStargateJourneyEffects(RegisterDimensionSpecialEffectsEvent event)
+	{
+		event.register(SGJourneyDimensionSpecialEffects.ABYDOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Abydos());
+    	event.register(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, new SGJourneyDimensionSpecialEffects.Chulak());
+    	event.register(SGJourneyDimensionSpecialEffects.CAVUM_TENEBRAE_EFFECTS, new SGJourneyDimensionSpecialEffects.CavumTenebrae());
+    	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());
+    	event.register(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Athos());
 	}
 }

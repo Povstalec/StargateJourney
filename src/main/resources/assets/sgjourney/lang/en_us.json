@@ -56,8 +56,8 @@
 	"block.sgjourney.crystal_interface": "Crystal Interface",
 	"block.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
 
-	"block.sgjourney.crystallizer": "Crystalizer",
-	"block.sgjourney.advanced_crystallizer": "Advanced Crystalizer",
+	"block.sgjourney.crystallizer": "Crystallizer",
+	"block.sgjourney.advanced_crystallizer": "Advanced Crystallizer",
 	"block.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
 	"block.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 	
@@ -321,12 +321,12 @@
 	"message.sgjourney.stargate.error.unknown": "Unknown Error",
 	
 	"message.sgjourney.stargate.info.symbol_encoded": "Symbol Encoded",
-	"message.sgjourney.stargate.error.symbol_in_addres": "Symbol is already encoded",
+	"message.sgjourney.stargate.error.symbol_in_address": "Symbol is already encoded",
 	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol is out of bounds",
 	
-	"message.sgjourney.stargate.info.connection_established.system_wide": "System-wide connection estabilished",
-	"message.sgjourney.stargate.info.connection_established.interstellar": "Interstellar connection estabilished",
-	"message.sgjourney.stargate.info.connection_established.intergalactic": "Intergalactic connection estabilished",
+	"message.sgjourney.stargate.info.connection_established.system_wide": "System-wide connection established",
+	"message.sgjourney.stargate.info.connection_established.interstellar": "Interstellar connection established",
+	"message.sgjourney.stargate.info.connection_established.intergalactic": "Intergalactic connection established",
 	"message.sgjourney.stargate.error.incomplete_address": "Incomplete Address",
 	"message.sgjourney.stargate.error.invalid_address": "Invalid Address",
 	"message.sgjourney.stargate.error.not_enough_power": "Not enough power",
@@ -391,5 +391,13 @@
 	"gui.sgjourney.universe_front_rotates": "Universe Stargate front rotates",
 	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",
 	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",
-	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back"
+	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back",
+	
+	"gui.sgjourney.config_sky": "Sky",
+	
+	"gui.sgjourney.custom_abydos_sky": "Custom Abydos sky",
+	"gui.sgjourney.custom_chulak_sky": "Custom Chulak sky",
+	"gui.sgjourney.custom_cavum_tenebrae_sky": "Custom Cavum Tenebrae sky",
+	"gui.sgjourney.custom_lantea_sky": "Custom Lantea sky",
+	"gui.sgjourney.custom_athos_sky": "Custom Athos sky"
 }

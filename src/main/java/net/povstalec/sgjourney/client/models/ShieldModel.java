@@ -27,11 +27,11 @@ public class ShieldModel
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 
-		VertexConsumer consmer = source.getBuffer(SGJourneyRenderTypes.shield(SHIELD_TEXTURE));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.shield(SHIELD_TEXTURE));
 		
 		for(int j = 0; j < TOTAL_SIDES; j++)
 		{
-			SGJourneyModel.createCircleTriangle(consmer, matrix4, matrix3, combinedLight, 
+			SGJourneyModel.createCircleTriangle(consumer, matrix4, matrix3, combinedLight, 
 					outerCircle[j % outerCircle.length][0], 
 					outerCircle[j % outerCircle.length][1],
 					OFFSET,
@@ -44,7 +44,7 @@ public class ShieldModel
 					outerCircle[(j + 1) % outerCircle.length][1], 
 					OFFSET);
 			
-			SGJourneyModel.createCircleTriangle(consmer, matrix4, matrix3, combinedLight, 
+			SGJourneyModel.createCircleTriangle(consumer, matrix4, matrix3, combinedLight, 
 					outerCircle[(j + 1) % outerCircle.length][0], 
 					outerCircle[(j + 1) % outerCircle.length][1], 
 					OFFSET,

@@ -174,14 +174,14 @@ public class FluidTankRenderer
 
      RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-     Tesselator tessellator = Tesselator.getInstance();
-     BufferBuilder bufferBuilder = tessellator.getBuilder();
+     Tesselator tesselator = Tesselator.getInstance();
+     BufferBuilder bufferBuilder = tesselator.getBuilder();
      bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
      bufferBuilder.vertex(matrix, xCoord, yCoord + 16, zLevel).uv(uMin, vMax).endVertex();
      bufferBuilder.vertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).uv(uMax, vMax).endVertex();
      bufferBuilder.vertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).uv(uMax, vMin).endVertex();
      bufferBuilder.vertex(matrix, xCoord, yCoord + maskTop, zLevel).uv(uMin, vMin).endVertex();
-     tessellator.end();
+     tesselator.end();
  }
 
  public List<Component> getTooltip(FluidStack fluidStack, TooltipFlag tooltipFlag)

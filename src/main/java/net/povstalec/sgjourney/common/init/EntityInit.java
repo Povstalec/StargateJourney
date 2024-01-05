@@ -23,10 +23,10 @@ public class EntityInit
 
 	
 	// Creatures
-	public static final RegistryObject<EntityType<Goauld>> GOAULD = ENTITIES.register("goauld",
+	/*public static final RegistryObject<EntityType<Goauld>> GOAULD = ENTITIES.register("goauld",
 					() -> EntityType.Builder.<Goauld>of(Goauld::new, MobCategory.CREATURE)
 						.sized(0.4F, 0.4F)
-						.build(new ResourceLocation(StargateJourney.MODID, "goauld").toString()));
+						.build(new ResourceLocation(StargateJourney.MODID, "goauld").toString()));*/
 	
 	public static void register(IEventBus eventBus)
 	{

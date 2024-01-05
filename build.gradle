@@ -143,8 +143,8 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
     
-    compileOnly(fg.deobf('com.github.Povstalec:StellarView:de38e55a6d'))
-    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:de38e55a6d'))
+    compileOnly(fg.deobf('com.github.Povstalec:StellarView:stellarview-1.19.2-SNAPSHOT'))
+    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:stellarview-1.19.2-SNAPSHOT'))
     
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))

@@ -38,11 +38,11 @@ public class PlacedFeatureInit
 	//******************************************Placement*****************************************
 	//============================================================================================
     
-    private static final PlacementModifier ORE_SPIRE_TRESHOLD = SurfaceWaterDepthFilter.forMaxDepth(0);
+    private static final PlacementModifier ORE_SPIRE_THRESHOLD = SurfaceWaterDepthFilter.forMaxDepth(0);
     
 	private static List<PlacementModifier> oreSpirePlacement(PlacementModifier modifier)
 	{
-    	return ImmutableList.<PlacementModifier>builder().add(modifier).add(InSquarePlacement.spread()).add(ORE_SPIRE_TRESHOLD).add(PlacementUtils.HEIGHTMAP_OCEAN_FLOOR).add(BiomeFilter.biome()).build();
+    	return ImmutableList.<PlacementModifier>builder().add(modifier).add(InSquarePlacement.spread()).add(ORE_SPIRE_THRESHOLD).add(PlacementUtils.HEIGHTMAP_OCEAN_FLOOR).add(BiomeFilter.biome()).build();
     }
 	
 	public static void register(IEventBus eventBus)

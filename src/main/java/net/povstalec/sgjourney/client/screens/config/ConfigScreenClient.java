@@ -33,8 +33,17 @@ public class ConfigScreenClient extends Screen
 		this.addRenderableWidget(new Button(this.width / 2 - 100, l, 200, 20, Component.translatable("gui.sgjourney.config_stargate"), 
 				(button) -> this.minecraft.setScreen(new ConfigScreenClientStargate(this))));
 		
+		this.addRenderableWidget(new Button(this.width / 2 - 100, l + 24, 200, 20, Component.translatable("gui.sgjourney.config_sky"), 
+				(button) -> this.minecraft.setScreen(new ConfigScreenClientSky(this))));
+	
+		/*this.addRenderableWidget(Button.builder(Component.translatable("gui.sgjourney.config_stargate"), 
+				(button) -> this.minecraft.setScreen(new ConfigScreenClientStargate(this))).bounds(this.width / 2 - 100, l, 200, 20).build());
+
+		this.addRenderableWidget(Button.builder(Component.translatable("gui.sgjourney.config_sky"), 
+				(button) -> this.minecraft.setScreen(new ConfigScreenClientSky(this))).bounds(this.width / 2 - 100, l + 24, 200, 20).build());*/
+		
 		this.addRenderableWidget(CycleButton.booleanBuilder(Component.translatable("gui.sgjourney.true").withStyle(ChatFormatting.GREEN),
-				Component.translatable("gui.sgjourney.false").withStyle(ChatFormatting.RED)).withInitialValue(StargateJourneyConfig.disable_smooth_animations.get()).create(this.width / 2 - 100, l + 24, 200, 20, Component.translatable("gui.sgjourney.disable_smooth_animations"), 
+				Component.translatable("gui.sgjourney.false").withStyle(ChatFormatting.RED)).withInitialValue(StargateJourneyConfig.disable_smooth_animations.get()).create(this.width / 2 - 100, l + 48, 200, 20, Component.translatable("gui.sgjourney.disable_smooth_animations"), 
 						(cycleButton, isTrue)->StargateJourneyConfig.disable_smooth_animations.set(isTrue)));
 
 		this.addRenderableWidget(new Button((this.width - BACK_BUTTON_WIDTH) / 2, this.height - BACK_BUTTON_TOP_OFFSET, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT, CommonComponents.GUI_BACK, 
