@@ -391,5 +391,13 @@
 	"gui.sgjourney.universe_front_rotates": "Universe Stargate front rotates",
 	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",
 	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",
-	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back"
+	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back",
+	
+	"gui.sgjourney.config_sky": "Sky",
+	
+	"gui.sgjourney.custom_abydos_sky": "Custom Abydos sky",
+	"gui.sgjourney.custom_chulak_sky": "Custom Chulak sky",
+	"gui.sgjourney.custom_cavum_tenebrae_sky": "Custom Cavum Tenebrae sky",
+	"gui.sgjourney.custom_lantea_sky": "Custom Lantea sky",
+	"gui.sgjourney.custom_athos_sky": "Custom Athos sky"
 }

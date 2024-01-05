@@ -72,6 +72,10 @@ public class StargateJourneyConfig
 		ClientStargateConfig.init(CLIENT_BUILDER);
 		CLIENT_BUILDER.pop();
 		
+		CLIENT_BUILDER.push("Sky Config");
+		ClientSkyConfig.init(CLIENT_BUILDER);
+		CLIENT_BUILDER.pop();
+		
 		CLIENT_BUILDER.pop();
 		CLIENT_CONFIG = CLIENT_BUILDER.build();
 	}
