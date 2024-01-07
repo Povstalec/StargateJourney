@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.slf4j.Logger;
@@ -87,6 +88,9 @@ public class StargateJourney
     public static final String EMPTY = MODID + ":empty";
     
     public static final String STELLAR_VIEW_MODID = "stellarview";
+    public static final String OCULUS_MODID = "oculus";
+    
+    private static Optional<Boolean> isOculusLoaded = Optional.empty();
     
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -150,6 +154,15 @@ public class StargateJourney
     		PacketHandlerInit.register();
     		//VillagerInit.registerPOIs();
     	});
+    }
+    
+    // BECAUSE OCULUS MESSES WITH RENDERING TOO MUCH
+    public static boolean isOculusLoaded()
+    {
+    	if(isOculusLoaded.isEmpty())
+    		isOculusLoaded = Optional.of(ModList.get().isLoaded(OCULUS_MODID));
+    	
+    	return isOculusLoaded.get();	
     }
 
     @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
