@@ -342,10 +342,13 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	protected void renderSymbols(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, float rotation)
 	{
-		// Symbols
-		for(int i = 0; i < SYMBOLS; i++)
+		if(!StargateJourney.isOculusLoaded())
 		{
-			renderSymbol(stargate, stack, consumer, source, combinedLight, i, i, rotation, getSymbolColor(stargate, false));
+			// Symbols
+			for(int i = 0; i < SYMBOLS; i++)
+			{
+				renderSymbol(stargate, stack, consumer, source, combinedLight, i, i, rotation, getSymbolColor(stargate, false));
+			}
 		}
 		
 		// Engaged Symbols
@@ -358,6 +361,15 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		// Point of Origin when Stargate is connected
 		if(stargate.isConnected())
 			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, rotation, getSymbolColor(stargate, true));
+		
+		if(StargateJourney.isOculusLoaded())
+		{
+			// Symbols
+			for(int i = 0; i < SYMBOLS; i++)
+			{
+				renderSymbol(stargate, stack, consumer, source, combinedLight, i, i, rotation, getSymbolColor(stargate, false));
+			}
+		}
 	}
 	
 	protected void renderSymbol(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,MultiBufferSource source, int combinedLight, 
