@@ -28,6 +28,8 @@ public class WormholeModel
 	protected static final float DEFAULT_RADIUS = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
 	
+	protected static final int MAX_LIGHT = 15728864;
+	
 	protected static final float SHIELDING_OFFSET = 1F / 16 / 2;
 	
 	protected Optional<SGJourneyConfigValue.RGBAValue> rgbaValue = Optional.empty();
@@ -367,12 +369,12 @@ public class WormholeModel
 		}
 		
 		consumer.vertex(matrix4, x1, y1, z1).color(red, green, blue, alpha).uv(x1 / 2.5F / 2 + 0.5F, y1 / 2.5F / 16 + 0.5F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1.0F, 1.0F, 1.0F).endVertex();
 		
 		consumer.vertex(matrix4, x2, y2, z2).color(red, green, blue, alpha).uv(x2 / 2.5F / 2 + 0.5F, y2 / 2.5F / 16 + 0.5F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1.0F, 1.0F, 1.0F).endVertex();
 		
 		consumer.vertex(matrix4, x3, y3, z3).color(red, green, blue, alpha).uv(x3 / 2.5F / 2 + 0.5F, y3 / 2.5F / 16 + 0.5F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(matrix3, 0.0F, 1.0F, 0.0F).endVertex();
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1.0F, 1.0F, 1.0F).endVertex();
 	}
 }
