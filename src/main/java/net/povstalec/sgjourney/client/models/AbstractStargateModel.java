@@ -278,8 +278,23 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	protected void renderChevrons(StargateEntity stargate, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
+		VertexConsumer consumer;
+		
+		if(StargateJourney.isOculusLoaded())
+		{
+			// Renders lit up parts of Chevrons
+			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture(stargate)));
+			
+			if(isPrimaryChevronEngaged(stargate))
+				renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);
+			for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
+			{
+				if(isChevronEngaged(stargate, chevronNumber))
+					renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, true);
+			}
+		}
 		// Renders Chevrons
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture(stargate)));
+		consumer = source.getBuffer(SGJourneyRenderTypes.chevron(getStargateTexture(stargate)));
 				
 		renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, false);
 		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
@@ -287,15 +302,18 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, false);
 		}
 		
-		// Renders lit up parts of Chevrons
-		consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture(stargate)));
-		
-		if(isPrimaryChevronEngaged(stargate))
-			renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);
-		for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
+		if(!StargateJourney.isOculusLoaded())
 		{
-			if(isChevronEngaged(stargate, chevronNumber))
-				renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, true);
+			// Renders lit up parts of Chevrons
+			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(getEngagedTexture(stargate)));
+			
+			if(isPrimaryChevronEngaged(stargate))
+				renderPrimaryChevron(stargate, stack, consumer, source, combinedLight, true);
+			for(int chevronNumber = 1; chevronNumber < NUMBER_OF_CHEVRONS; chevronNumber++)
+			{
+				if(isChevronEngaged(stargate, chevronNumber))
+					renderChevron(stargate, stack, consumer, source, combinedLight, chevronNumber, true);
+			}
 		}
 	}
 }
