@@ -26,12 +26,13 @@ public class SGJourneyRenderTypes extends RenderType
 				.setOutputState(ITEM_ENTITY_TARGET)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(OVERLAY)
-				.setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true));
+				.setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
+				.createCompositeState(true));
 	}
 
 	public static RenderType eventHorizonFront(ResourceLocation resourceLocation, float xOffset, float zOffset)
 	{
-		return create("event_horizon_front", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+		return create("event_horizon_front", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
@@ -45,7 +46,7 @@ public class SGJourneyRenderTypes extends RenderType
 
 	public static RenderType eventHorizonBack(ResourceLocation resourceLocation, float xOffset, float zOffset)
 	{
-		return create("event_horizon_back", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+		return create("event_horizon_back", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
