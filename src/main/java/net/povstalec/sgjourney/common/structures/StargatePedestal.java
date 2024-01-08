@@ -10,15 +10,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.StructureInit;
+import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
 public class StargatePedestal extends Structure
@@ -93,7 +94,7 @@ public class StargatePedestal extends Structure
         BlockPos blockPos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
 
         Optional<Structure.GenerationStub> structurePiecesGenerator =
-                JigsawPlacement.addPieces(
+                SGJourneyJigsawPlacement.addPieces(
                         context,
                         this.startPool,
                         this.startJigsawName,
@@ -101,7 +102,8 @@ public class StargatePedestal extends Structure
                         blockPos,
                         false,
                         this.projectStartToHeightmap,
-                        this.maxDistanceFromCenter);
+                        this.maxDistanceFromCenter,
+                        Rotation.NONE);
         
         return structurePiecesGenerator;
     }
