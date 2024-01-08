@@ -2,8 +2,10 @@ package net.povstalec.sgjourney.common.stargate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -54,7 +57,19 @@ public class Wormhole implements ITeleporter
 		
 		localEntities = level.getEntitiesOfClass(Entity.class, localBox);
 		
-		return !localEntities.isEmpty();
+		if(localEntities.isEmpty())
+			return false;
+		
+		Stream<Entity> entityStream = localEntities.stream();
+		Iterator<Entity> iterator = entityStream.iterator();
+		
+		while(iterator.hasNext())
+		{
+			if(!EntityType.getKey(iterator.next().getType()).getNamespace().equals(StargateJourney.CREATE_MODID))
+				return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole)
