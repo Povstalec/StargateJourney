@@ -44,14 +44,15 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 {
 	static final Logger LOGGER = LogUtils.getLogger();
 	
-	public static Optional<Structure.GenerationStub> addPieces(Structure.GenerationContext p_227239_, Holder<StructureTemplatePool> p_227240_, Optional<ResourceLocation> p_227241_, int p_227242_, BlockPos p_227243_, boolean p_227244_, Optional<Heightmap.Types> p_227245_, int p_227246_) {
+	public static Optional<Structure.GenerationStub> addPieces(Structure.GenerationContext p_227239_, Holder<StructureTemplatePool> p_227240_, Optional<ResourceLocation> p_227241_, int p_227242_, BlockPos p_227243_, boolean p_227244_, Optional<Heightmap.Types> p_227245_, int p_227246_,
+			Rotation rotation)
+	{
 	      RegistryAccess registryaccess = p_227239_.registryAccess();
 	      ChunkGenerator chunkgenerator = p_227239_.chunkGenerator();
 	      StructureTemplateManager structuretemplatemanager = p_227239_.structureTemplateManager();
 	      LevelHeightAccessor levelheightaccessor = p_227239_.heightAccessor();
 	      WorldgenRandom worldgenrandom = p_227239_.random();
 	      Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registries.TEMPLATE_POOL);
-	      Rotation rotation = Rotation.COUNTERCLOCKWISE_90;
 	      StructureTemplatePool structuretemplatepool = p_227240_.value();
 	      StructurePoolElement structurepoolelement = structuretemplatepool.getRandomTemplate(worldgenrandom);
 	      if (structurepoolelement == EmptyPoolElement.INSTANCE) {
