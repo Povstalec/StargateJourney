@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -64,7 +65,7 @@ public class Wormhole implements ITeleporter
 		
 		while(iterator.hasNext())
 		{
-			if(!EntityType.getKey(iterator.next().getType()).getNamespace().equals("create"))
+			if(!EntityType.getKey(iterator.next().getType()).getNamespace().equals(StargateJourney.CREATE_MODID))
 				return true;
 		}
 		
