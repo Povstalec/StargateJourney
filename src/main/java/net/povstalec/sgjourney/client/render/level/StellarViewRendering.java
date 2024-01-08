@@ -18,6 +18,8 @@ import net.povstalec.stellarview.api.celestials.orbiting.BlackHole;
 import net.povstalec.stellarview.api.celestials.orbiting.Moon;
 import net.povstalec.stellarview.api.celestials.orbiting.Planet;
 import net.povstalec.stellarview.api.celestials.orbiting.Sun;
+import net.povstalec.stellarview.api.sky_effects.MeteorShower;
+import net.povstalec.stellarview.api.sky_effects.ShootingStar;
 import net.povstalec.stellarview.client.render.level.StellarViewSky;
 
 public class StellarViewRendering
@@ -30,9 +32,9 @@ public class StellarViewRendering
 		
 		private static final Planet ABYDOS = (Planet) new Planet(Planet.EARTH_TEXTURE, 30, Planet.EARTH_DAY_LENGTH)
 				//TODO Add these
-				//.addAtmosphere(new Planet.Atmosphere(
-				//				(ShootingStar) new ShootingStar().setDefaultRarity(10),
-				//				(MeteorShower) new MeteorShower().setDefaultRarity(10)))
+				.addAtmosphere(new Planet.Atmosphere(
+								(ShootingStar) new ShootingStar().setDefaultRarity(10),
+								(MeteorShower) new MeteorShower().setDefaultRarity(10)))
 				.addOrbitingObject(EDFU, 384400F, 360F / 8, (float) Math.toRadians(45), 0, 0)//TODO Add rotations
 				.addOrbitingObject(DJA_NET, 384400F, 360F / 8, (float) Math.toRadians(35), (float) Math.toRadians(75), 0)
 				.addOrbitingObject(NUTURO, 384400F, 360F / 8, (float) Math.toRadians(40), (float) Math.toRadians(-55), 0);
@@ -67,9 +69,9 @@ public class StellarViewRendering
 		
 		private static final Planet CHULAK = (Planet) new Planet(Planet.EARTH_TEXTURE, 30, Planet.EARTH_DAY_LENGTH)
 				//TODO Add these
-				//.addAtmosphere(new Planet.Atmosphere(
-				//				(ShootingStar) new ShootingStar().setDefaultRarity(10),
-				//				(MeteorShower) new MeteorShower().setDefaultRarity(10)))
+				.addAtmosphere(new Planet.Atmosphere(
+								(ShootingStar) new ShootingStar().setDefaultRarity(10),
+								(MeteorShower) new MeteorShower().setDefaultRarity(10)))
 				.addOrbitingObject(JERBAAS, 384400F, 360F / 8, (float) Math.toRadians(45), (float) Math.toRadians(63), 0);//TODO Add rotation
 		
 		private static final Sun CHULAK_SUN = (Sun) new Sun.VanillaSun()
@@ -99,10 +101,6 @@ public class StellarViewRendering
 	public static class StellarViewCavumTenebraeEffects extends StellarViewSpecialEffects
 	{
 		private static final Planet CAVUM_TENBRAE = (Planet) new Planet(Planet.EARTH_TEXTURE, 30, Planet.EARTH_DAY_LENGTH);
-				//TODO Add these
-				//.addAtmosphere(new Planet.Atmosphere(
-				//				(ShootingStar) new ShootingStar().setDefaultRarity(10),
-				//				(MeteorShower) new MeteorShower().setDefaultRarity(10)))
 
 		private static final BlackHole P3W_451_BLACK_HOLE = (BlackHole) new BlackHole.DefaultBlackHole(70F)
 				.addOrbitingObject(CAVUM_TENBRAE, 147280000, 360F / 96, 0, 0, 0);
@@ -134,9 +132,9 @@ public class StellarViewRendering
 		
 		private static final Planet LANTEA = (Planet) new Planet(Planet.EARTH_TEXTURE, 30, Planet.EARTH_DAY_LENGTH)
 				//TODO Add these
-				//.addAtmosphere(new Planet.Atmosphere(
-				//				(ShootingStar) new ShootingStar().setDefaultRarity(10),
-				//				(MeteorShower) new MeteorShower().setDefaultRarity(10)))
+				.addAtmosphere(new Planet.Atmosphere(
+								(ShootingStar) new ShootingStar().setDefaultRarity(10),
+								(MeteorShower) new MeteorShower().setDefaultRarity(10)))
 				.addOrbitingObject(LANTEAN_MOON, 384400F, 360F / 8, (float) Math.toRadians(45), (float) Math.toRadians(12), 0);//TODO Add rotation
 		
 		private static final Sun LANTEAN_SUN = (Sun) new Sun.VanillaSun()
