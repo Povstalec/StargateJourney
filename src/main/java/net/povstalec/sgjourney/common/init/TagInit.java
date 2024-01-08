@@ -52,12 +52,12 @@ public class TagInit
 		
 		private static TagKey<EntityType<?>> tag(String name)
 		{
-            return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(StargateJourney.MODID, name));
+            return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(StargateJourney.MODID, name));
         }
 
         private static TagKey<EntityType<?>> forgeTag(String name)
         {
-            return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("forge", name));
+            return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation("forge", name));
         }
 	}
 	
