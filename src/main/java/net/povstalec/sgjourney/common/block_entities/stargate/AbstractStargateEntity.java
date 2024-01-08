@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -448,7 +449,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(entity instanceof Player player && player.isCreative())
 			return false;
 		
+		if(!CommonStargateConfig.kawoosh_disintegrates_create_entities.get() && EntityType.getKey(entity.getType()).getNamespace().equals(StargateJourney.CREATE_MODID))
+			return false;
+		
 		if(!CommonStargateConfig.kawoosh_disintegrates_items.get() && entity instanceof ItemEntity)
+			return false;
+		
+		if(entity.getType().is(TagInit.Entities.KAWOOSH_IMMUNE))
 			return false;
 		
 		return true;
