@@ -175,8 +175,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
-    compileOnly(fg.deobf('com.github.Povstalec:StellarView:1aaa85b245'))
-    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:1aaa85b245'))
+    compileOnly(fg.deobf('com.github.Povstalec:StellarView:stellarview-1.19.4-SNAPSHOT'))
+    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:stellarview-1.19.4-SNAPSHOT'))
     
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
