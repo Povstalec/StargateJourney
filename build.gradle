@@ -179,8 +179,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
-    compileOnly(fg.deobf('com.github.Povstalec:StellarView:main-SNAPSHOT'))
-    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:main-SNAPSHOT'))
+    compileOnly(fg.deobf('com.github.Povstalec:StellarView:3628fd46ea'))
+    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:3628fd46ea'))
     
 	compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cct_version}")
 	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}"))
