@@ -270,12 +270,15 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encodeSound)
 	{
+		
 		if(address.containsSymbol(symbol))
 			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		if(!address.canGrow())
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
+		
 		chevronSound(false, incoming, false, encodeSound);
+		
 		if(!incoming)
 		{
 			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
