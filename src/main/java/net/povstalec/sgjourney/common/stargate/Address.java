@@ -57,7 +57,7 @@ public class Address
 	
 	public Address fromArray(int[] addressArray)
 	{
-		if(addressArray.length < MAX_ADDRESS_LENGTH &&
+		if(addressArray.length < getMaxAddressLength() &&
 				ArrayHelper.differentNumbers(addressArray) &&
 				ArrayHelper.isArrayPositive(addressArray, this.isBuffer))
 			this.addressArray = addressArray;
@@ -69,7 +69,7 @@ public class Address
 	{
 		int[] addressArray = addressStringToIntArray(addressString);
 		
-		if(addressArray.length < MAX_ADDRESS_LENGTH && ArrayHelper.differentNumbers(addressArray))
+		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
 			this.addressArray = addressArray;
 		
 		return this;
@@ -79,7 +79,7 @@ public class Address
 	{
 		int[] addressArray = ArrayHelper.tableToArray(addressTable);
 		
-		if(addressArray.length < MAX_ADDRESS_LENGTH && ArrayHelper.differentNumbers(addressArray))
+		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
 			this.addressArray = addressArray;
 		
 		return this;
@@ -108,9 +108,14 @@ public class Address
 		return getLength() >= MIN_ADDRESS_LENGTH;
 	}
 	
+	public int getMaxAddressLength()
+	{
+		return this.isBuffer ? MAX_ADDRESS_LENGTH + 1 : MAX_ADDRESS_LENGTH;
+	}
+	
 	public boolean canGrow()
 	{
-		return getLength() < MAX_ADDRESS_LENGTH;
+		return getLength() < getMaxAddressLength() - 1;
 	}
 	
 	public boolean isBuffer()
