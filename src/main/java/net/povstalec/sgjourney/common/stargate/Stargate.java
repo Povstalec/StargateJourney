@@ -100,7 +100,7 @@ public class Stargate
 		CONNECTION_ESTABLISHED_SYSTEM_WIDE(2, FeedbackType.INFO, "connection_established.system_wide"),
 		CONNECTION_ESTABLISHED_INTERSTELLAR(3, FeedbackType.INFO, "connection_established.interstellar"),
 		CONNECTION_ESTABLISHED_INTERGALACTIC(4, FeedbackType.INFO, "connection_established.intergalactic"),
-		INCOMPLETE_ADDRESS(-4, FeedbackType.ERROR, "incomplete_address"),
+		INCOMPLETE_ADDRESS(-4, FeedbackType.MAJOR_ERROR, "incomplete_address"),
 		INVALID_ADDRESS(-5, FeedbackType.MAJOR_ERROR, "invalid_address"),
 		NOT_ENOUGH_POWER(-6, FeedbackType.MAJOR_ERROR, "not_enough_power"),
 		SELF_OBSTRUCTED(-7, FeedbackType.MAJOR_ERROR, "self_obstructed"),
