@@ -1408,7 +1408,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		//Front Symbols
 		for(int j = 0; j < this.symbolSides; j++)
 		{
-			renderSymbol(stargate, stack, consumer, source, combinedLight, j, j, rotation, this.symbolColor);
+			renderSymbol(stargate, stack, consumer, source, combinedLight, j, j, rotation, getSymbolColor(stargate, false));
 		}
 	}
 	
