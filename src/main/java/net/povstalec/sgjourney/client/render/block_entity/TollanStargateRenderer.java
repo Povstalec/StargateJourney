@@ -7,10 +7,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.TollanStargateModel;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
@@ -23,14 +25,16 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 {
 	protected final TollanStargateModel stargateModel;
 	
-	public static final int WORMHOLE_R = 50; 
+	/*public static final int WORMHOLE_R = 50; 
 	public static final int WORMHOLE_G = 100;
 	public static final int WORMHOLE_B = 240;
-	public static final int WORMHOLE_ALPHA = 255;
+	public static final int WORMHOLE_ALPHA = 255;*/
+	
+	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon.png");
 
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, WORMHOLE_R, WORMHOLE_G, WORMHOLE_B, WORMHOLE_ALPHA, 0.125F);
+		super(context, EVENT_HORIZON_TEXTURE, 0.125F);
 		this.wormholeModel.setRGBConfigValue(ClientStargateConfig.tollan_rgba);
 		this.stargateModel = new TollanStargateModel();
 	}

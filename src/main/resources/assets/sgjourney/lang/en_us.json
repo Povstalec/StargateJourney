@@ -255,6 +255,7 @@
 	"info.sgjourney.advanced_protocols_enabled": "Advanced Protocols Enabled",
 	"info.sgjourney.last_traveler_time": "Time Since Last Traveler",
 	"info.sgjourney.address": "Address",
+	"info.sgjourney.recent_feedback": "Recent Feedback",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symbols",
@@ -318,6 +319,7 @@
 	
 	"message.sgjourney.stargate.error.one_way_wormhole": "Can't travel through wormhole in this direction",
 	
+	"message.sgjourney.stargate.info.none": "None",
 	"message.sgjourney.stargate.error.unknown": "Unknown Error",
 	
 	"message.sgjourney.stargate.info.symbol_encoded": "Symbol Encoded",
@@ -327,6 +329,7 @@
 	"message.sgjourney.stargate.info.connection_established.system_wide": "System-wide connection established",
 	"message.sgjourney.stargate.info.connection_established.interstellar": "Interstellar connection established",
 	"message.sgjourney.stargate.info.connection_established.intergalactic": "Intergalactic connection established",
+	
 	"message.sgjourney.stargate.error.incomplete_address": "Incomplete Address",
 	"message.sgjourney.stargate.error.invalid_address": "Invalid Address",
 	"message.sgjourney.stargate.error.not_enough_power": "Not enough power",
@@ -338,6 +341,7 @@
 	"message.sgjourney.stargate.error.no_galaxy": "Stargate is not located inside any Galaxy",
 	"message.sgjourney.stargate.error.no_dimensions": "Dialed Solar System has no Dimensions",
 	"message.sgjourney.stargate.error.no_stargates": "Dialed Solar System has no Stargates",
+	"message.sgjourney.stargate.error.target_restricted": "Dialed Stargate is restricted",
 	
 	"message.sgjourney.stargate.info.connection_ended.disconnect": "Stargate disconnected",
 	"message.sgjourney.stargate.info.connection_ended.point_of_origin": "Stargate disconnected by locking point of origin",
@@ -349,12 +353,14 @@
 	"message.sgjourney.stargate.error.wrong_disconnect_side": "Stargate cannot be disconnected from this side",
 	"message.sgjourney.stargate.error.connection_forming": "Cannot disconnect Stargate while a Connection is forming",
 	
+	"message.sgjourney.stargate.error.stargate_destroyed": "Targate Stargate was destroyed",
 	"message.sgjourney.stargate.error.could_not_reach_target_stargate": "Could not reach target Stargate",
+	"message.sgjourney.stargate.error.interrupted_by_incoming_connection": "Stargate was interrupted by incoming connection",
 	
-	"message.sgjourney.stargate.info.chevron_raised": "Chevron raised",
-	"message.sgjourney.stargate.info.chevron_lowered": "Chevron lowered",
-	"message.sgjourney.stargate.error.chevron_already_raised": "Chevron is already raised",
-	"message.sgjourney.stargate.error.chevron_already_lowered": "Chevron is already lowered",
+	"message.sgjourney.stargate.info.chevron_opened": "Chevron opened",
+	"message.sgjourney.stargate.info.chevron_closed": "Chevron lowered",
+	"message.sgjourney.stargate.error.chevron_already_opened": "Chevron is already raised",
+	"message.sgjourney.stargate.error.chevron_already_closed": "Chevron is already lowered",
 	
 	"message.sgjourney.command.get_address.no_galaxy": "You are not located in any Galaxy",
 	"message.sgjourney.command.get_address.located": "is not located in",

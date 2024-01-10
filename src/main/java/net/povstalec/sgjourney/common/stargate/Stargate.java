@@ -100,6 +100,7 @@ public class Stargate
 		CONNECTION_ESTABLISHED_SYSTEM_WIDE(2, FeedbackType.INFO, "connection_established.system_wide"),
 		CONNECTION_ESTABLISHED_INTERSTELLAR(3, FeedbackType.INFO, "connection_established.interstellar"),
 		CONNECTION_ESTABLISHED_INTERGALACTIC(4, FeedbackType.INFO, "connection_established.intergalactic"),
+		
 		INCOMPLETE_ADDRESS(-4, FeedbackType.MAJOR_ERROR, "incomplete_address"),
 		INVALID_ADDRESS(-5, FeedbackType.MAJOR_ERROR, "invalid_address"),
 		NOT_ENOUGH_POWER(-6, FeedbackType.MAJOR_ERROR, "not_enough_power"),
@@ -135,13 +136,13 @@ public class Stargate
 		// Universe
 		
 		// Milky Way
-		CHEVRON_RAISED(11, FeedbackType.INFO, "chevron_raised"),
-		ROTATING(12, FeedbackType.INFO, "rotating"),//TODO Return this somewhere
+		CHEVRON_RAISED(11, FeedbackType.INFO, "chevron_opened"),
+		ROTATING(12, FeedbackType.INFO, "rotating"),
 		ROTATION_BLOCKED(-24, FeedbackType.INFO, "rotation_blocked"),
 		NOT_ROTATING(-25, FeedbackType.INFO, "not_rotating"),
-		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"),//TODO Return this somewhere
-		CHEVRON_ALREADY_RAISED(-26, FeedbackType.ERROR, "chevron_already_raised"),
-		CHEVRON_ALREADY_LOWERED(-27, FeedbackType.ERROR, "chevron_already_lowered"),
+		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"),
+		CHEVRON_ALREADY_RAISED(-26, FeedbackType.ERROR, "chevron_already_opened"),
+		CHEVRON_ALREADY_LOWERED(-27, FeedbackType.ERROR, "chevron_already_closed"),
 		CHEVRON_NOT_RAISED(-28, FeedbackType.ERROR, "chevron_not_raised"),
 		CANNOT_ENCODE_POINT_OF_ORIGIN(-29, FeedbackType.ERROR, "cannot_encode_point_of_origin");
 		

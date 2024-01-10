@@ -43,6 +43,7 @@ import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
@@ -1046,6 +1047,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public abstract Stargate.ChevronLockSpeed getChevronLockSpeed();
 	
+	public abstract SoundEvent getRotationSound();
+	
 	public abstract SoundEvent getChevronEngageSound();
 	
 	public SoundEvent getChevronIncomingSound()
@@ -1054,6 +1057,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	}
 	
 	public abstract SoundEvent getWormholeOpenSound();
+
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.WORMHOLE_IDLE.get();
+	}
 	
 	public abstract SoundEvent getWormholeCloseSound();
 
@@ -1075,6 +1083,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		player.sendSystemMessage(Component.translatable("info.sgjourney.advanced_protocols_enabled").append(Component.literal(": " + advancedProtocolsEnabled)).withStyle(ChatFormatting.RED));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": " + address.toString())).withStyle(ChatFormatting.GREEN));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
 	}
 	
 	@Override
