@@ -43,6 +43,7 @@ import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
@@ -1046,6 +1047,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public abstract Stargate.ChevronLockSpeed getChevronLockSpeed();
 	
+	public abstract SoundEvent getRotationSound();
+	
 	public abstract SoundEvent getChevronEngageSound();
 	
 	public SoundEvent getChevronIncomingSound()
@@ -1054,6 +1057,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	}
 	
 	public abstract SoundEvent getWormholeOpenSound();
+
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.WORMHOLE_IDLE.get();
+	}
 	
 	public abstract SoundEvent getWormholeCloseSound();
 

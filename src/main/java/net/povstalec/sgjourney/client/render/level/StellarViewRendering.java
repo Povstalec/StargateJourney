@@ -31,7 +31,6 @@ public class StellarViewRendering
 		private static final Moon NUTURO = new Moon.DefaultMoon(30F);
 		
 		private static final Planet ABYDOS = (Planet) new Planet(Planet.EARTH_TEXTURE, 30, Planet.EARTH_DAY_LENGTH)
-				//TODO Add these
 				.addAtmosphere(new Planet.Atmosphere(
 								(ShootingStar) new ShootingStar().setDefaultRarity(10),
 								(MeteorShower) new MeteorShower().setDefaultRarity(10)))
@@ -68,7 +67,6 @@ public class StellarViewRendering
 		private static final Moon JERBAAS = new Moon.DefaultMoon(25F);
 		
 		private static final Planet CHULAK = (Planet) new Planet(Planet.EARTH_TEXTURE, 30, Planet.EARTH_DAY_LENGTH)
-				//TODO Add these
 				.addAtmosphere(new Planet.Atmosphere(
 								(ShootingStar) new ShootingStar().setDefaultRarity(10),
 								(MeteorShower) new MeteorShower().setDefaultRarity(10)))
@@ -131,7 +129,6 @@ public class StellarViewRendering
 		private static final Moon LANTEAN_MOON = new Moon.DefaultMoon(25F);
 		
 		private static final Planet LANTEA = (Planet) new Planet(Planet.EARTH_TEXTURE, 30, Planet.EARTH_DAY_LENGTH)
-				//TODO Add these
 				.addAtmosphere(new Planet.Atmosphere(
 								(ShootingStar) new ShootingStar().setDefaultRarity(10),
 								(MeteorShower) new MeteorShower().setDefaultRarity(10)))
@@ -141,7 +138,8 @@ public class StellarViewRendering
 				.addOrbitingObject(LANTEA, 147280000, 360F / 96, 0, 0, 0);
 		
 		private static final SpiralGalaxy PEGASUS = (SpiralGalaxy) new Galaxy.SpiralGalaxy(100, 17892L, (byte) 2, (short) 2250)
-				.addGalacticObject(new Supernova(10.0F, 15 * CelestialObject.TICKS_PER_DAY + 18000, 5 * CelestialObject.TICKS_PER_DAY), 10, -3, 2)
+				.addGalacticObject(new Supernova(10.0F, 32 * CelestialObject.TICKS_PER_DAY + 15000, 3 * CelestialObject.TICKS_PER_DAY), 1, -2, 4)
+				.addGalacticObject(new Supernova(10.0F, 48 * CelestialObject.TICKS_PER_DAY + 1000, 6 * CelestialObject.TICKS_PER_DAY), 7, 3, 0)
 				.addGalacticObject(LANTEAN_SUN, 8, 0, 16, (float) (0.35 * Math.PI), (float) (0.35 * Math.PI), (float) (0.15 * Math.PI));
 		
 		public StellarViewLanteaEffects()
@@ -166,17 +164,17 @@ public class StellarViewRendering
 		private static final Moon ATHOS_MOON = new Moon.DefaultMoon(25F);
 		
 		private static final Planet ATHOS = (Planet) new Planet(Planet.EARTH_TEXTURE, 30, Planet.EARTH_DAY_LENGTH)
-				//TODO Add these
-				//.addAtmosphere(new Planet.Atmosphere(
-				//				(ShootingStar) new ShootingStar().setDefaultRarity(10),
-				//				(MeteorShower) new MeteorShower().setDefaultRarity(10)))
+				.addAtmosphere(new Planet.Atmosphere(
+								(ShootingStar) new ShootingStar().setDefaultRarity(10),
+								(MeteorShower) new MeteorShower().setDefaultRarity(10)))
 				.addOrbitingObject(ATHOS_MOON, 384400F, 360F / 8, (float) Math.toRadians(45), (float) Math.toRadians(12), 0);//TODO Add rotation
 		
 		private static final Sun ATHOS_SUN = (Sun) new Sun.VanillaSun()
 				.addOrbitingObject(ATHOS, 147280000, 360F / 96, 0, 0, 0);
 		
 		private static final SpiralGalaxy PEGASUS = (SpiralGalaxy) new Galaxy.SpiralGalaxy(100, 17892L, (byte) 2, (short) 2250)
-				.addGalacticObject(new Supernova(10.0F, 15 * CelestialObject.TICKS_PER_DAY + 18000, 5 * CelestialObject.TICKS_PER_DAY), 10, -3, 2)
+				.addGalacticObject(new Supernova(10.0F, 32 * CelestialObject.TICKS_PER_DAY + 15000, 3 * CelestialObject.TICKS_PER_DAY), 1, -2, 4)
+				.addGalacticObject(new Supernova(10.0F, 48 * CelestialObject.TICKS_PER_DAY + 1000, 6 * CelestialObject.TICKS_PER_DAY), 7, 3, 0)
 				.addGalacticObject(ATHOS_SUN, 7, 5, 14, (float) (0.35 * Math.PI), (float) (0.35 * Math.PI), (float) (0.15 * Math.PI));
 		
 		public StellarViewAthosEffects()

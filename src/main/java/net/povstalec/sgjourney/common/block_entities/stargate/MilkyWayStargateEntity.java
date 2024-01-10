@@ -125,6 +125,17 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return this.isChevronOpen;
 	}
 	
+	public SoundEvent getRingRotationBuildupSound()
+	{
+		return SoundInit.MILKY_WAY_RING_SPIN_START.get();
+	}
+	
+	@Override
+	public SoundEvent getRotationSound()
+	{
+		return SoundInit.MILKY_WAY_RING_SPIN.get();
+	}
+	
 	public SoundEvent getRingRotationStopSound()
 	{
 		return SoundInit.MILKY_WAY_RING_SPIN_STOP.get();

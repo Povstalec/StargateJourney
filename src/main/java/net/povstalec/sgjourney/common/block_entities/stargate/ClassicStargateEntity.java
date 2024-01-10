@@ -119,6 +119,12 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
+	public SoundEvent getRotationSound()
+	{
+		return SoundInit.MILKY_WAY_RING_SPIN.get();
+	}
+
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.CLASSIC_CHEVRON_ENGAGE.get();
