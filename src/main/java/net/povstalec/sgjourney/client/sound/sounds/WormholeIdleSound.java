@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client.sound.sounds;
 
+import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.stargate.Connection;
 
 public class WormholeIdleSound extends StargateSound
@@ -9,9 +9,9 @@ public class WormholeIdleSound extends StargateSound
 	private static final float VOLUME_MIN = 0.0F;
 	private static final float VOLUME_MAX = 1.0F;
 	
-	public WormholeIdleSound(AbstractStargateEntity stargate)
+	public WormholeIdleSound(AbstractStargateEntity stargate, SoundEvent soundEvent)
 	{
-		super(stargate, SoundInit.WORMHOLE_IDLE.get());
+		super(stargate, soundEvent);
 		this.volume = VOLUME_MIN;
 		this.looping = true;
 	}

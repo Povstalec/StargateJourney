@@ -103,6 +103,12 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		return this.dynamicSymbols;
 	}
+	
+	@Override
+	public SoundEvent getRotationSound()
+	{
+		return SoundInit.PEGASUS_RING_SPIN.get();
+	}
 
 	@Override
 	public SoundEvent getChevronEngageSound()

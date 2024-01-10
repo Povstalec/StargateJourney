@@ -256,6 +256,7 @@
 	"info.sgjourney.advanced_protocols_enabled": "Povoleno pokro\u010dil\u00e9 nastaven\u00ed",
 	"info.sgjourney.last_traveler_time": "Doba od posledn\u00edho cestovatele",
 	"info.sgjourney.address": "Addresa",
+	"info.sgjourney.feedback": "Poslední zpětná vazba",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symboly",
@@ -317,8 +318,50 @@
 	"message.sgjourney.pda.has_ancient_gene": "M\u00e1 antick\u00fd gen",
 	"message.sgjourney.pda.has_naquadah_in_bloodstream": "M\u00e1 v krvi naquadah",
 	
-	"message.sgjourney.stargate.one_way_wormhole": "Nen\u00ed mo\u017en\u00e9 proj\u00edt \u010derv\u00ed d\u00edrou t\u00edmto sm\u011brem",
-	"message.sgjourney.stargate.symbol_encoded": "Symbol byl ji\u017e zad\u00e1n",
+	"message.sgjourney.stargate.one_way_wormhole": "Není možné projít červí dírou tímto směrem",
+	
+	"message.sgjourney.stargate.info.none": "Nic",
+	"message.sgjourney.stargate.error.unknown": "Neznámá chyba",
+	
+	"message.sgjourney.stargate.symbol_encoded": "Symbol zadán",
+	"message.sgjourney.stargate.error.symbol_in_address": "Symbol byl již zadán",
+	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol mimo meze",
+	
+	"message.sgjourney.stargate.info.connection_established.system_wide": "Vnitro-systémové spojení navázáno",
+	"message.sgjourney.stargate.info.connection_established.interstellar": "Mezihvězdné spojení navázáno",
+	"message.sgjourney.stargate.info.connection_established.intergalactic": "Mezigalaktické spojení navázáno",
+	
+	"message.sgjourney.stargate.error.incomplete_address": "Neúplná adresa",
+	"message.sgjourney.stargate.error.invalid_address": "Neplatná adresa",
+	"message.sgjourney.stargate.error.not_enough_power": "Nedostatek energie",
+	"message.sgjourney.stargate.error.self_obstructed": "Hvězdná brána je blokována",
+	"message.sgjourney.stargate.error.target_obstructed": "Cílová hvězdná brána je blokována",
+	"message.sgjourney.stargate.error.self_dial": "Hvězdná brána nemůže navázat spojení sama se sebou",
+	"message.sgjourney.stargate.error.same_system_dial": "Hvězdná brána nemůže vytočit svůj vlastní solární systém",
+	"message.sgjourney.stargate.error.already_connected": "Cílová hvězdná je již spojena",
+	"message.sgjourney.stargate.error.no_galaxy": "Hvězdná brána se nenachází v žádné galaxii",
+	"message.sgjourney.stargate.error.no_dimensions": "Vytáčený systém nemá dimenze",
+	"message.sgjourney.stargate.error.no_stargates": "Vytáčený systém nemá hvězdné brány",
+	"message.sgjourney.stargate.error.target_restricted": "Spojení s vytáčenou branou jsou omezená",
+	
+	"message.sgjourney.stargate.info.connection_ended.disconnect": "Hvězedná brána odpojena",
+	"message.sgjourney.stargate.info.connection_ended.point_of_origin": "Hvězedná brána odpojena skrze výchozí bod",
+	"message.sgjourney.stargate.info.connection_ended.stargate_network": "Hvězedná brána odpojena sítí bran",
+	"message.sgjourney.stargate.info.connection_ended.autoclose": "Hvězedná brána odpojena automaticky",
+	"message.sgjourney.stargate.error.exceeded_connection_time": "Hvězedná brána maximální čas spojení",
+	"message.sgjourney.stargate.error.ran_out_of_power": "Došla energie",
+	"message.sgjourney.stargate.error.connection_rerouted": "Spojení přesměrováno",
+	"message.sgjourney.stargate.error.wrong_disconnect_side": "Hvězedná brána nemůže být odpojena z této strany",
+	"message.sgjourney.stargate.error.connection_forming": "Hvězedná brána nemůže být odpojena během tvorby spojení",
+	
+	"message.sgjourney.stargate.error.stargate_destroyed": "Cílová hvězdná brána byla zničena",
+	"message.sgjourney.stargate.error.could_not_reach_target_stargate": "Cílová hvězdná brána je nedostupná",
+	"message.sgjourney.stargate.error.interrupted_by_incoming_connection": "Hvězedná brána byla vyrušena příchozím spojením",
+	
+	"message.sgjourney.stargate.info.chevron_opened": "Chevron otevřen",
+	"message.sgjourney.stargate.info.chevron_closed": "Chevron zavřen",
+	"message.sgjourney.stargate.error.chevron_already_opened": "Chevron je již otevřen",
+	"message.sgjourney.stargate.error.chevron_already_closed": "Chevron je již zavřen",
 	
 	"message.sgjourney.command.get_address.no_galaxy": "Nenacházíte se v žádné galaxii",
 	"message.sgjourney.command.get_address.located": "se nenachází v",

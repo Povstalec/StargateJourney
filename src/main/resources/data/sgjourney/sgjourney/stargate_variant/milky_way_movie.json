@@ -3,7 +3,7 @@
 	
 	"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_stargate.png",
 	"engaged_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_stargate_engaged.png",
-	"event_horizon_color": [119, 208, 248, 255],
+	"event_horizon_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon.png",
 	"symbol_color": [48, 49, 63, 255],
 	
 	"model":
@@ -22,6 +22,8 @@
 		"fail_sound": "sgjourney:milky_way_dial_fail",
 		
 		"wormhole_open_sound": "sgjourney:movie_wormhole_open",
-		"wormhole_close_sound": "sgjourney:movie_wormhole_close"
+		"wormhole_close_sound": "sgjourney:movie_wormhole_close",
+
+		"rotation_buildup_sound": "sgjourney:nothing"
 	}
 }

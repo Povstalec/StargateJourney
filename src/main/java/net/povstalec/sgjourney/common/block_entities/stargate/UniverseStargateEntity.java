@@ -80,6 +80,12 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
+	public SoundEvent getRotationSound()
+	{
+		return SoundInit.UNIVERSE_RING_SPIN.get();
+	}
+
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.UNIVERSE_CHEVRON_ENGAGE.get();
@@ -173,7 +179,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.UniverseStart(this.worldPosition));
 	}
 	
-	public SoundEvent getStartSound()
+	public SoundEvent getStartupSound()
 	{
 		return SoundInit.UNIVERSE_DIAL_START.get();
 	}
