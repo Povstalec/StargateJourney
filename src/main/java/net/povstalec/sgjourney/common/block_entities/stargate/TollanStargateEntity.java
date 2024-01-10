@@ -35,6 +35,12 @@ public class TollanStargateEntity extends AbstractStargateEntity
     }
 
 	@Override
+	public SoundEvent getRotationSound()
+	{
+		return SoundInit.MILKY_WAY_RING_SPIN.get();
+	}
+
+	@Override
 	public SoundEvent getChevronEngageSound()
 	{
 		return SoundInit.TOLLAN_CHEVRON_ENGAGE.get();

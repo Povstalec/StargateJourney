@@ -1,16 +1,16 @@
 package net.povstalec.sgjourney.client.sound.sounds;
 
+import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.init.SoundInit;
 
 public class MilkyWayStargateRingBuildupSound extends StargateSound
 {
 	private static final float VOLUME_MIN = 0.0F;
 	private static final float VOLUME_MAX = 0.5F;
 	
-	public MilkyWayStargateRingBuildupSound(MilkyWayStargateEntity stargate)
+	public MilkyWayStargateRingBuildupSound(MilkyWayStargateEntity stargate, SoundEvent soundEvent)
 	{
-		super(stargate, SoundInit.MILKY_WAY_RING_SPIN_START.get());
+		super(stargate, soundEvent);
         this.volume = VOLUME_MIN;
 	}
 	

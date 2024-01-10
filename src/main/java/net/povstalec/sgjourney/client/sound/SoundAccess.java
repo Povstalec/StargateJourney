@@ -118,7 +118,7 @@ public class SoundAccess
     {
     	if(minecraft.level.getBlockEntity(pos) instanceof UniverseStargateEntity stargate)
     	{
-    		GenericStargateSound sound = new GenericStargateSound(stargate, stargate.getStartSound(), 0.75F);
+    		GenericStargateSound sound = new GenericStargateSound(stargate, getStartupSound(stargate), 0.75F);
     		minecraft.getSoundManager().play(sound);
     	}
     }
@@ -172,12 +172,13 @@ public class SoundAccess
         			
         			if(isPrimary)
             		{
-            			if(stargateVariant.getPrimaryChevronOpenSound().isPresent())
+            			if(stargateVariant.getPrimaryChevronEngageSound().isPresent())
                     		return new SoundEvent(stargateVariant.getPrimaryChevronEngageSound().get());
             		}
-            		
-        			if(stargateVariant.getChevronOpenSound().isPresent())
+        			if(stargateVariant.getChevronEngageSound().isPresent())
+        			{
                 		return new SoundEvent(stargateVariant.getChevronEngageSound().get());
+        			}
         		}
         	}
     	}
@@ -214,6 +215,75 @@ public class SoundAccess
     	return stargate.getChevronOpenSound();
     }
     
+    public static SoundEvent getStartupSound(UniverseStargateEntity stargate)
+    {
+    	if(ClientStargateConfig.stargate_variants.get())
+    	{
+    		String variantString = stargate.getVariant();
+    		
+        	if(!variantString.equals(EMPTY))
+        	{
+        		Optional<StargateVariant> variant = getVariant(variantString);
+        		
+        		if(variant.isPresent())
+        		{
+        			StargateVariant stargateVariant = variant.get();
+        			
+        			if(stargateVariant.getStartupSound().isPresent())
+                		return new SoundEvent(stargateVariant.getStartupSound().get());
+        		}
+        	}
+    	}
+    	
+    	return stargate.getStartupSound();
+    }
+    
+    public static SoundEvent getRotationSound(AbstractStargateEntity stargate)
+    {
+    	if(ClientStargateConfig.stargate_variants.get())
+    	{
+    		String variantString = stargate.getVariant();
+    		
+        	if(!variantString.equals(EMPTY))
+        	{
+        		Optional<StargateVariant> variant = getVariant(variantString);
+        		
+        		if(variant.isPresent())
+        		{
+        			StargateVariant stargateVariant = variant.get();
+        			
+        			if(stargateVariant.getRotationSound().isPresent())
+                		return new SoundEvent(stargateVariant.getRotationSound().get());
+        		}
+        	}
+    	}
+    	
+    	return stargate.getRotationSound();
+    }
+    
+    public static SoundEvent getRotationBuildupSound(MilkyWayStargateEntity stargate)
+    {
+    	if(ClientStargateConfig.stargate_variants.get())
+    	{
+    		String variantString = stargate.getVariant();
+    		
+        	if(!variantString.equals(EMPTY))
+        	{
+        		Optional<StargateVariant> variant = getVariant(variantString);
+        		
+        		if(variant.isPresent())
+        		{
+        			StargateVariant stargateVariant = variant.get();
+        			
+        			if(stargateVariant.getRotationBuildupSound().isPresent())
+                		return new SoundEvent(stargateVariant.getRotationBuildupSound().get());
+        		}
+        	}
+    	}
+    	
+    	return stargate.getRingRotationBuildupSound();
+    }
+    
     private static SoundEvent getChevronEncodeSound(MilkyWayStargateEntity stargate)
     {
     	if(ClientStargateConfig.stargate_variants.get())
@@ -247,11 +317,11 @@ public class SoundAccess
         			
         			if(isPrimary)
             		{
-            			if(stargateVariant.getPrimaryChevronOpenSound().isPresent())
+            			if(stargateVariant.getPrimaryChevronIncomingSound().isPresent())
                     		return new SoundEvent(stargateVariant.getPrimaryChevronIncomingSound().get());
             		}
             		
-        			if(stargateVariant.getChevronOpenSound().isPresent())
+        			if(stargateVariant.getChevronIncomingSound().isPresent())
                 		return new SoundEvent(stargateVariant.getChevronIncomingSound().get());
         		}
         	}
@@ -268,7 +338,7 @@ public class SoundAccess
         	if(!variantString.equals(EMPTY))
         	{
         		Optional<StargateVariant> variant = getVariant(variantString);
-        		
+
         		if(variant.isPresent() && variant.get().getFailSound().isPresent())
             		return new SoundEvent(variant.get().getFailSound().get());
         	}
@@ -292,6 +362,23 @@ public class SoundAccess
     	}
     	
     	return stargate.getWormholeOpenSound();
+    }
+    
+    public static SoundEvent getWormholeIdleSound(AbstractStargateEntity stargate)
+    {
+    	if(ClientStargateConfig.stargate_variants.get())
+    	{
+    		String variantString = stargate.getVariant();
+        	if(!variantString.equals(EMPTY))
+        	{
+        		Optional<StargateVariant> variant = getVariant(variantString);
+        		
+        		if(variant.isPresent() && variant.get().getWormholeIdleSound().isPresent())
+            		return new SoundEvent(variant.get().getWormholeIdleSound().get());
+        	}
+    	}
+    	
+    	return stargate.getWormholeIdleSound();
     }
     
     private static SoundEvent getWormholeCloseSound(AbstractStargateEntity stargate)
