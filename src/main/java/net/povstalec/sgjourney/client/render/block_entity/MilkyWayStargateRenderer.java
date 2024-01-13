@@ -53,7 +53,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Axis.XP.rotationDegrees(90));
 		
-        this.stargateModel.setRotation(stargate.getRotation(partialTick));
+        this.stargateModel.setRotation(stargate.getRotation(partialTick) / (float) MilkyWayStargateEntity.MAX_ROTATION * 360F);
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
         
         this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);

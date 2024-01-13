@@ -72,7 +72,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	public ResourceLocation getResourceLocation()
 	{
-		return new ResourceLocation(namespace, name);
+		return new ResourceLocation(namespace, name + "_stargate");
 	}
 	
 	public boolean canUseVariant(StargateVariant variant)

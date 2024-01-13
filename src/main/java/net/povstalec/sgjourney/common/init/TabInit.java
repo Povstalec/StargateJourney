@@ -107,6 +107,7 @@ public class TabInit
 				{
 					items.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
 					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_movie"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_promo"));
 					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_sg-1"));
 					items.accept(StargateVariantItem.stargateVariant("sgjourney:classic_milky_way"));
 				}

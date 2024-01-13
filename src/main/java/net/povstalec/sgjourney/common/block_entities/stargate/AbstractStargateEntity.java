@@ -942,7 +942,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 					obstructingBlocks++;
 			}
 		}
-		return obstructingBlocks >= 12;
+		return obstructingBlocks >= CommonStargateConfig.max_obstructive_blocks.get();
 	}
 	
     public void updateBasicInterfaceBlocks(@Nullable String eventName, Object... objects)
