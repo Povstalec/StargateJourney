@@ -339,13 +339,13 @@ public class WormholeModel
 			float x3, float y3, float z3)
 	{
 		
-		consumer.vertex(matrix4, x1, y1, z1).color(1F, 1F, 1F, 0.75F).uv(x1 / 2.5F / 2 + 0.5F, y1 / 2.5F / 80 + 0.5F)
+		consumer.vertex(matrix4, x1, y1, z1).color(1F, 1F, 1F, 0.75F).uv(x1 / 2.5F / 2 + 0.5F, y1 / 2.5F / 80 + 2.5F / 2 / 80)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1.0F, 1.0F, 1.0F).endVertex();
 		
-		consumer.vertex(matrix4, x2, y2, z2).color(1F, 1F, 1F, 0.75F).uv(x2 / 2.5F / 2 + 0.5F, y2 / 2.5F / 80 + 0.5F)
+		consumer.vertex(matrix4, x2, y2, z2).color(1F, 1F, 1F, 0.75F).uv(x2 / 2.5F / 2 + 0.5F, y2 / 2.5F / 80 + 2.5F / 2 / 80)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1.0F, 1.0F, 1.0F).endVertex();
 		
-		consumer.vertex(matrix4, x3, y3, z3).color(1F, 1F, 1F, 0.75F).uv(x3 / 2.5F / 2 + 0.5F, y3 / 2.5F / 80 + 0.5F)
+		consumer.vertex(matrix4, x3, y3, z3).color(1F, 1F, 1F, 0.75F).uv(x3 / 2.5F / 2 + 0.5F, y3 / 2.5F / 80 + 2.5F / 2 / 80)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1.0F, 1.0F, 1.0F).endVertex();
 	}
 }
