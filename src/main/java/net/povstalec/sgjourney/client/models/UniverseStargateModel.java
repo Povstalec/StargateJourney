@@ -90,11 +90,10 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		this.engagedSymbolColor = new Stargate.RGBA(200, 220, 255, 255);
 	}
 	
-	protected boolean useAlternateModel(UniverseStargateEntity stargate)
+	protected boolean useAlternateModel(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant)
 	{
-		Optional<StargateVariant> variant = getVariant(stargate);
-		if(variant.isPresent() && variant.get().useAlternateModel().isPresent())
-			return variant.get().useAlternateModel().get();
+		if(stargateVariant.isPresent() && stargateVariant.get().useAlternateModel().isPresent())
+			return stargateVariant.get().useAlternateModel().get();
 		
 		return ClientStargateConfig.universe_front_rotates.get();
 	}
@@ -105,31 +104,30 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	}
 	
 	@Override
-	protected Stargate.RGBA getSymbolColor(UniverseStargateEntity stargate, boolean isEngaged)
+	protected Stargate.RGBA getSymbolColor(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, boolean isEngaged)
 	{
-		Optional<StargateVariant> variant = getVariant(stargate);
-		if(variant.isPresent() && canUseVariant(variant.get()))
+		if(stargateVariant.isPresent())
 		{
-			if(!isEngaged && variant.get().getSymbolRGBA().isPresent())
-				return variant.get().getSymbolRGBA().get();
-			else if(isEngaged && variant.get().getEngagedSymbolRGBA().isPresent())
-				return variant.get().getEngagedSymbolRGBA().get();
+			if(!isEngaged && stargateVariant.get().getSymbolRGBA().isPresent())
+				return stargateVariant.get().getSymbolRGBA().get();
+			else if(isEngaged && stargateVariant.get().getEngagedSymbolRGBA().isPresent())
+				return stargateVariant.get().getEngagedSymbolRGBA().get();
 		}
 		
 		return isEngaged ? this.engagedSymbolColor : this.symbolColor;
 	}
 	
 	@Override
-	public void renderRing(UniverseStargateEntity stargate, float partialTick, PoseStack stack, VertexConsumer consumer,
+	public void renderRing(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, float partialTick, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		this.renderOuterRingFront(stargate, stack, consumer, source, combinedLight, combinedOverlay);
-		this.renderOuterRingBack(stargate, stack, consumer, source, combinedLight, combinedOverlay);
+		this.renderOuterRingFront(stargate, stargateVariant, stack, consumer, source, combinedLight, combinedOverlay);
+		this.renderOuterRingBack(stargate, stargateVariant, stack, consumer, source, combinedLight, combinedOverlay);
 		
-		this.renderSymbols(stargate, stack, consumer, source, combinedLight, getRotation(true));
+		this.renderSymbols(stargate, stargateVariant, stack, consumer, source, combinedLight, getRotation(true));
 	}
 	
-	protected void renderOuterRingFront(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, 
+	protected void renderOuterRingFront(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
 		for(int j = 0; j < UNIVERSE_SIDES; j++)
@@ -205,7 +203,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					STARGATE_RING_OFFSET,
 					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 47F / 64);
 			
-			if(useAlternateModel(stargate))
+			if(useAlternateModel(stargate, stargateVariant))
 			{
 				//Back
 				SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
@@ -234,13 +232,13 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		}
 	}
 	
-	protected void renderOuterRingBack(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, 
+	protected void renderOuterRingBack(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
 		for(int j = 0; j < UNIVERSE_SIDES; j++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(j * -UNIVERSE_ANGLE + UNIVERSE_ANGLE/2 + getRotation(!useAlternateModel(stargate))));
+			stack.mulPose(Axis.ZP.rotationDegrees(j * -UNIVERSE_ANGLE + UNIVERSE_ANGLE/2 + getRotation(!useAlternateModel(stargate, stargateVariant))));
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
 			
@@ -310,7 +308,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					-STARGATE_RING_OFFSET,
 					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 40F / 64);
 			
-			if(useAlternateModel(stargate))
+			if(useAlternateModel(stargate, stargateVariant))
 			{
 				//Front
 				SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
@@ -339,7 +337,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		}
 	}
 	
-	protected void renderSymbols(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+	protected void renderSymbols(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, float rotation)
 	{
 		if(!StargateJourney.isOculusLoaded())
@@ -347,7 +345,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			// Symbols
 			for(int i = 0; i < SYMBOLS; i++)
 			{
-				renderSymbol(stargate, stack, consumer, source, combinedLight, i, i, rotation, getSymbolColor(stargate, false));
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, combinedLight, i, i, rotation, getSymbolColor(stargate, stargateVariant, false));
 			}
 		}
 		
@@ -355,24 +353,24 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		for(int i = 0; i < stargate.getAddress().getLength(); i++)
 		{
 			int symbol = stargate.getAddress().toArray()[i];
-			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbol, symbol, rotation, getSymbolColor(stargate, true));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbol, symbol, rotation, getSymbolColor(stargate, stargateVariant, true));
 		}
 		
 		// Point of Origin when Stargate is connected
 		if(stargate.isConnected())
-			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, rotation, getSymbolColor(stargate, true));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0, rotation, getSymbolColor(stargate, stargateVariant, true));
 		
 		if(StargateJourney.isOculusLoaded())
 		{
 			// Symbols
 			for(int i = 0; i < SYMBOLS; i++)
 			{
-				renderSymbol(stargate, stack, consumer, source, combinedLight, i, i, rotation, getSymbolColor(stargate, false));
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, combinedLight, i, i, rotation, getSymbolColor(stargate, stargateVariant, false));
 			}
 		}
 	}
 	
-	protected void renderSymbol(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,MultiBufferSource source, int combinedLight, 
+	protected void renderSymbol(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,MultiBufferSource source, int combinedLight, 
 		int symbolNumber, int symbolRendered, float rotation,
 		Stargate.RGBA symbolColor)
 	{
@@ -420,26 +418,26 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	//============================================================================================
 	
 	@Override
-	protected boolean isPrimaryChevronEngaged(UniverseStargateEntity stargate)
+	protected boolean isPrimaryChevronEngaged(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant)
 	{
 		return stargate.isConnected() || stargate.addressBuffer.getLength() > 0;
 	}
 	
 	@Override
-	protected boolean isChevronEngaged(UniverseStargateEntity stargate, int chevronNumber)
+	protected boolean isChevronEngaged(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, int chevronNumber)
 	{
 		return stargate.isConnected() || stargate.addressBuffer.getLength() > 0;
 	}
 
 	@Override
-	protected void renderPrimaryChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+	protected void renderPrimaryChevron(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, boolean chevronEngaged)
 	{
-		this.renderChevron(stargate, stack, consumer, source, combinedLight, 0, chevronEngaged);
+		this.renderChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, 0, chevronEngaged);
 	}
 
 	@Override
-	protected void renderChevron(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,
+	protected void renderChevron(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
@@ -454,7 +452,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		// Back
 		stack.pushPose();
 		stack.mulPose(Axis.YP.rotationDegrees(180));
-		stack.mulPose(Axis.ZP.rotationDegrees(CHEVRON_ANGLE * chevronNumber - getRotation(!useAlternateModel(stargate))));
+		stack.mulPose(Axis.ZP.rotationDegrees(CHEVRON_ANGLE * chevronNumber - getRotation(!useAlternateModel(stargate, stargateVariant))));
 		stack.translate(0, DEFAULT_RADIUS - 5.5F/16, 0);
 		renderChevronLight(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);
 		renderOuterChevron(stargate, stack, consumer, source, light, chevronNumber, chevronEngaged);

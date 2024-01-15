@@ -4,6 +4,7 @@
 	"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_stargate.png",
 	"engaged_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_stargate_engaged.png",
 	"event_horizon_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon.png",
+	"shiny_event_horizon_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon_shiny.png",
 	"symbol_color": [48, 49, 63, 255],
 	
 	"model":

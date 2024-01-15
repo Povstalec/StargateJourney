@@ -23,7 +23,8 @@ public class StargateVariant
 			// Textures and colors
 			ResourceLocation.CODEC.fieldOf("texture").forGetter(StargateVariant::getTexture),
 			ResourceLocation.CODEC.fieldOf("engaged_texture").forGetter(StargateVariant::getEngagedTexture),
-			ResourceLocation.CODEC.optionalFieldOf("event_horizon_texture").forGetter(StargateVariant::getEventHorizonTexture),
+			ResourceLocation.CODEC.fieldOf("event_horizon_texture").forGetter(StargateVariant::getEventHorizonTexture),
+			ResourceLocation.CODEC.optionalFieldOf("shiny_event_horizon_texture").forGetter(StargateVariant::getShinyEventHorizonTexture),
 			Codec.INT.listOf().optionalFieldOf("symbol_color").forGetter(StargateVariant::getSymbolColor),
 			Codec.INT.listOf().optionalFieldOf("engaged_symbol_color").forGetter(StargateVariant::getEngagedSymbolColor),
 			// Model
@@ -36,7 +37,8 @@ public class StargateVariant
 	
 	private final ResourceLocation texture;
 	private final ResourceLocation engagedTexture;
-	private final Optional<ResourceLocation> eventHorizonTexture;
+	private final ResourceLocation eventHorizonTexture;
+	private final Optional<ResourceLocation> shinyEventHorizonTexture;
 	
 	private final Optional<List<Integer>> symbolColor;
 	private final Optional<List<Integer>> engagedSymbolColor;
@@ -45,6 +47,10 @@ public class StargateVariant
 
 	private Optional<Boolean> useAlternateModel = Optional.empty();
 	private Optional<Boolean> backChevrons = Optional.empty();
+	private Optional<Boolean> symbolsGlow = Optional.empty();
+	private Optional<Boolean> engagedSymbolsGlow = Optional.empty();
+	private Optional<Boolean> dialedSymbolsGlow = Optional.empty();
+	private Optional<Boolean> connectedSymbolsGlow = Optional.empty();
 	
 	private final Optional<Map<String, ResourceLocation>> sounds;
 
@@ -61,6 +67,7 @@ public class StargateVariant
 
 	private Optional<ResourceLocation> rotationBuildupSound = Optional.empty();
 	private Optional<ResourceLocation> rotationSound = Optional.empty();
+	private Optional<ResourceLocation> rotationStopSound = Optional.empty();
 	
 	private Optional<ResourceLocation> failSound = Optional.empty();
 	
@@ -72,7 +79,8 @@ public class StargateVariant
 			
 			ResourceLocation texture,
 			ResourceLocation engagedTexture,
-			Optional<ResourceLocation> eventHorizonTexture,
+			ResourceLocation eventHorizonTexture,
+			Optional<ResourceLocation> shinyEventHorizonTexture,
 			
 			Optional<List<Integer>> symbolColor,
 			Optional<List<Integer>> engagedSymbolColor,
@@ -86,6 +94,7 @@ public class StargateVariant
 		this.texture = texture;
 		this.engagedTexture = engagedTexture;
 		this.eventHorizonTexture = eventHorizonTexture;
+		this.shinyEventHorizonTexture = shinyEventHorizonTexture;
 		
 		this.symbolColor = symbolColor;
 		this.engagedSymbolColor = engagedSymbolColor;
@@ -114,6 +123,18 @@ public class StargateVariant
 		
 		if(soundMap.containsKey("back_chevrons"))
 			this.backChevrons = Optional.of(soundMap.get("back_chevrons"));
+		
+		if(soundMap.containsKey("symbols_glow"))
+			this.symbolsGlow = Optional.of(soundMap.get("symbols_glow"));
+		
+		if(soundMap.containsKey("engaged_symbols_glow"))
+			this.engagedSymbolsGlow = Optional.of(soundMap.get("engaged_symbols_glow"));
+		
+		/*if(soundMap.containsKey("dialed_symbols_glow"))
+			this.dialedSymbolsGlow = Optional.of(soundMap.get("dialed_symbols_glow"));
+		
+		if(soundMap.containsKey("connected_symbols_glow"))
+			this.connectedSymbolsGlow = Optional.of(soundMap.get("connected_symbols_glow"));*/
 	}
 	
 	private void setupSounds(Map<String, ResourceLocation> soundMap)
@@ -151,6 +172,9 @@ public class StargateVariant
 		if(soundMap.containsKey("rotation_buildup_sound"))
 			this.rotationBuildupSound = Optional.of(soundMap.get("rotation_buildup_sound"));
 		
+		if(soundMap.containsKey("rotation_stop_sound"))
+			this.rotationStopSound = Optional.of(soundMap.get("rotation_stop_sound"));
+		
 		// Dialing
 		if(soundMap.containsKey("dial_fail_sound"))
 			this.failSound = Optional.of(soundMap.get("dial_fail_sound"));
@@ -176,9 +200,14 @@ public class StargateVariant
 		return this.engagedTexture;
 	}
 	
-	public Optional<ResourceLocation> getEventHorizonTexture()
+	public ResourceLocation getEventHorizonTexture()
 	{
 		return this.eventHorizonTexture;
+	}
+	
+	public Optional<ResourceLocation> getShinyEventHorizonTexture()
+	{
+		return this.shinyEventHorizonTexture;
 	}
 	
 	public ResourceLocation getBaseStargate()
@@ -274,6 +303,11 @@ public class StargateVariant
 	public Optional<ResourceLocation> getRotationSound()
 	{
 		return this.rotationSound;
+	}
+	
+	public Optional<ResourceLocation> getRotationStopSound()
+	{
+		return this.rotationStopSound;
 	}
 	
 	

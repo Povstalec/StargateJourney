@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.config.SGJourneyConfigValue;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Connection;
 
@@ -28,8 +27,6 @@ public class WormholeModel
 	
 	protected static final float SHIELDING_OFFSET = 1F / 16 / 2;
 	
-	protected Optional<SGJourneyConfigValue.RGBAValue> rgbaValue = Optional.empty();
-	
 	//protected Stargate.RGBA rgba;
 	protected float maxDefaultDistortion;
 	
@@ -37,6 +34,7 @@ public class WormholeModel
 	
 	//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png")
 	private final ResourceLocation eventHorizonTexture;
+	private final Optional<ResourceLocation> shinyEventHorizonTexture;
 	
 	protected float[][] outerCircle = coordinates(DEFAULT_SIDES, 2.5F, 5, 0);
 	protected float[][] circle1 = coordinates(DEFAULT_SIDES, 2.0F, 0, 98);
@@ -47,22 +45,28 @@ public class WormholeModel
 	
 	protected float[][][] coordinates = new float[][][] {outerCircle, circle1, circle2, circle3, circle4, circle5};
 	
-	public WormholeModel(ResourceLocation eventHorizonTexture, float maxDefaultDistortion)
+	public WormholeModel(ResourceLocation eventHorizonTexture, Optional<ResourceLocation> shinyEventHorizonTexture, float maxDefaultDistortion)
 	{
 		this.eventHorizonTexture = eventHorizonTexture;
+		this.shinyEventHorizonTexture = shinyEventHorizonTexture;
 		this.maxDefaultDistortion = maxDefaultDistortion;
 		//this.rgba = new Stargate.RGBA(red, green, blue, alpha);
-	}
-	
-	public void setRGBConfigValue(SGJourneyConfigValue.RGBAValue rgbaValue)
-	{
-		this.rgbaValue = Optional.of(rgbaValue);
 	}
 	
 	protected float getMaxDistortion()
 	{
 		float configDistortion = (float) ClientStargateConfig.event_horizon_distortion.get() / 100;
 		return configDistortion > maxDefaultDistortion ? maxDefaultDistortion : configDistortion;
+	}
+	
+	protected ResourceLocation getEventHorizonTexture()
+	{
+		if(ClientStargateConfig.shiny_event_horizons.get())
+		{
+			if(shinyEventHorizonTexture.isPresent())
+				return shinyEventHorizonTexture.get();
+		}
+		return eventHorizonTexture;
 	}
 	
 	public void renderEventHorizon(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int combinedLight, int combinedOverlay)
@@ -83,7 +87,7 @@ public class WormholeModel
 
 		for(int i = 0; i < 5; i++)
 		{
-			VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonFront(texture.isPresent() ? texture.get() : eventHorizonTexture, 0.0F, yOffset));
+			VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonFront(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, yOffset));
 			
 			int totalSides = coordinates[0].length;
 			
@@ -116,7 +120,7 @@ public class WormholeModel
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0));
 			}
 			
-			VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonBack(texture.isPresent() ? texture.get() : eventHorizonTexture, 0.0F, yOffset));
+			VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonBack(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, yOffset));
 			
 			for(int j = 0; j < totalSides; j++)
 			{
@@ -156,7 +160,7 @@ public class WormholeModel
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
-		VertexConsumer kawooshConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : eventHorizonTexture, 0, yOffset));
+		VertexConsumer kawooshConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0, yOffset));
 		
 		int totalSides = coordinates[0].length;
 		
@@ -201,7 +205,7 @@ public class WormholeModel
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
-		VertexConsumer vortexConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : eventHorizonTexture, yOffset, yOffset));
+		VertexConsumer vortexConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0, yOffset));
 		
 		int totalSides = coordinates[0].length;
 		

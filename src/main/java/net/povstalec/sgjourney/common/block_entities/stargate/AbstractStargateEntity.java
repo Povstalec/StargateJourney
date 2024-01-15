@@ -476,6 +476,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		resetAddress(updateInterfaces);
 		this.connectionID = EMPTY;
 		setKawooshTickCount(0);
+		setTickCount(0);
 		updateClient();
 		
 		if(feedback.playFailSound() && !level.isClientSide())
