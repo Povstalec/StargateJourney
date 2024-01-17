@@ -85,7 +85,7 @@ public class StargateMethods
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				// Will only display the dialed Address
-				int[] stargateAddress = stargate.isConnected() ? new int[] {} : stargate.getAddress().toArray();
+				int[] stargateAddress = !stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ? stargate.getAddress().toArray() : new int[] {};
 				List<Integer> address = Arrays.stream(stargateAddress).boxed().toList();
 				return new Object[] {address};
 			});

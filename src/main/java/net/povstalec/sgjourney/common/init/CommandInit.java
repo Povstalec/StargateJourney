@@ -15,7 +15,10 @@ import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
@@ -177,7 +180,11 @@ public class CommandInit
 							.append(Component.literal(" " + dimension + " ").withStyle(ChatFormatting.GOLD)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
 							.append(Component.literal(" " + galaxy + " ").withStyle(ChatFormatting.LIGHT_PURPLE))
 							.append(Component.translatable("message.sgjourney.command.get_address.is")));
-					context.getSource().getPlayer().sendSystemMessage(Component.literal(address).withStyle(ChatFormatting.GOLD));
+					
+					Style style = Style.EMPTY;
+					style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+					style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address));
+					context.getSource().getPlayer().sendSystemMessage(Component.literal(address).setStyle(style.applyFormat(ChatFormatting.GOLD)));
 				}
 			}
 			
@@ -192,11 +199,14 @@ public class CommandInit
 		Level level = context.getSource().getPlayer().level();
 		
 		String address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
-		
+
+		Style style = Style.EMPTY;
+		style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+		style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address));
 		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.address")
 				.append(Component.literal(" " + dimension + " ").withStyle(ChatFormatting.GOLD))
 				.append(Component.translatable("message.sgjourney.command.get_extragalactic_address.is")));
-		context.getSource().getPlayer().sendSystemMessage(Component.literal(address).withStyle(ChatFormatting.LIGHT_PURPLE));
+		context.getSource().getPlayer().sendSystemMessage(Component.literal(address).setStyle(style.applyFormat(ChatFormatting.LIGHT_PURPLE)));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -221,7 +231,11 @@ public class CommandInit
 				if(stargateDimension.equals(dimension))
 				{
 					int[] coordinates = stargate.getIntArray("Coordinates");
-					context.getSource().getPlayer().sendSystemMessage(Component.literal(stargateID).withStyle(ChatFormatting.AQUA)
+					
+					Style style = Style.EMPTY;
+					style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+					style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargateID));
+					context.getSource().getPlayer().sendSystemMessage(Component.literal(stargateID).setStyle(style.applyFormat(ChatFormatting.AQUA))
 							.append(Component.literal(" X: " + coordinates[0] + " Y: " + coordinates[1] + " Z: " + coordinates[2]).withStyle(ChatFormatting.BLUE)));
 				}
 			});

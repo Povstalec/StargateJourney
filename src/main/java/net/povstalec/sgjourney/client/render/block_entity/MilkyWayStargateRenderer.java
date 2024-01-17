@@ -15,7 +15,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public class MilkyWayStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<MilkyWayStargateEntity>
 {
@@ -27,11 +26,11 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
 	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_event_horizon.png");
+	private static final ResourceLocation SHINY_EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_event_horizon_shiny.png");
 	
 	public MilkyWayStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, EVENT_HORIZON_TEXTURE, 0.25F);
-		this.wormholeModel.setRGBConfigValue(ClientStargateConfig.milky_way_rgba);
+		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F);
 		this.stargateModel = new MilkyWayStargateModel();
 	}
 	
@@ -53,7 +52,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Axis.XP.rotationDegrees(90));
 		
-        this.stargateModel.setRotation(stargate.getRotation(partialTick));
+        this.stargateModel.setRotation(stargate.getRotation(partialTick) / (float) MilkyWayStargateEntity.MAX_ROTATION * 360F);
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
         
         this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);

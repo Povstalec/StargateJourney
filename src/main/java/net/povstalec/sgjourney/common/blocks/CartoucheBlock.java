@@ -11,8 +11,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -127,7 +130,10 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
         	if(blockEntity instanceof CartoucheEntity cartouche) 
         	{
         		MutableComponent symbols = Component.literal(cartouche.getAddress().toString());
-        		MutableComponent text = Component.literal("Address: ").withStyle(ChatFormatting.YELLOW).append(symbols.withStyle(ChatFormatting.AQUA));
+				Style style = Style.EMPTY;
+				style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+				style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, cartouche.getAddress().toString()));
+        		MutableComponent text = Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(symbols.setStyle(style.applyFormat(ChatFormatting.AQUA)));
         		
         		player.sendSystemMessage(text);
         	}

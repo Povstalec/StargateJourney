@@ -476,6 +476,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		resetAddress(updateInterfaces);
 		this.connectionID = EMPTY;
 		setKawooshTickCount(0);
+		setTickCount(0);
 		updateClient();
 		
 		if(feedback.playFailSound() && !level.isClientSide())
@@ -942,7 +943,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 					obstructingBlocks++;
 			}
 		}
-		return obstructingBlocks >= 12;
+		return obstructingBlocks >= CommonStargateConfig.max_obstructive_blocks.get();
 	}
 	
     public void updateBasicInterfaceBlocks(@Nullable String eventName, Object... objects)

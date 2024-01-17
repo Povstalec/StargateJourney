@@ -15,7 +15,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEn
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public class UniverseStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<UniverseStargateEntity>
 {
@@ -27,11 +26,11 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
 	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_event_horizon.png");
+	private static final ResourceLocation SHINY_EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_event_horizon_shiny.png");
 	
 	public UniverseStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, EVENT_HORIZON_TEXTURE, 0.25F);
-		this.wormholeModel.setRGBConfigValue(ClientStargateConfig.universe_rgba);
+		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F);
 		this.stargateModel = new UniverseStargateModel();
 	}
 	
