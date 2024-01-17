@@ -18,7 +18,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEnti
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 @OnlyIn(Dist.CLIENT)
 public class TollanStargateRenderer extends AbstractStargateRenderer implements BlockEntityRenderer<TollanStargateEntity>
@@ -31,11 +30,11 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
 	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon.png");
+	private static final ResourceLocation SHINY_EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon_shiny.png");
 
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, EVENT_HORIZON_TEXTURE, 0.125F);
-		this.wormholeModel.setRGBConfigValue(ClientStargateConfig.tollan_rgba);
+		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.125F);
 		this.stargateModel = new TollanStargateModel();
 	}
 	

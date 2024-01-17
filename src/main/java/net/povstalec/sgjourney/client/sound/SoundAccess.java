@@ -138,7 +138,7 @@ public class SoundAccess
     {
     	if(minecraft.level.getBlockEntity(pos) instanceof MilkyWayStargateEntity stargate)
     	{
-    		GenericStargateSound sound = new GenericStargateSound(stargate, stargate.getRingRotationStopSound(), 0.75F);
+    		GenericStargateSound sound = new GenericStargateSound(stargate, getRotationStopSound(stargate), 0.75F);
     		minecraft.getSoundManager().play(sound);
     	}
     }
@@ -282,6 +282,29 @@ public class SoundAccess
     	}
     	
     	return stargate.getRingRotationBuildupSound();
+    }
+    
+    public static SoundEvent getRotationStopSound(MilkyWayStargateEntity stargate)
+    {
+    	if(ClientStargateConfig.stargate_variants.get())
+    	{
+    		String variantString = stargate.getVariant();
+    		
+        	if(!variantString.equals(EMPTY))
+        	{
+        		Optional<StargateVariant> variant = getVariant(variantString);
+        		
+        		if(variant.isPresent())
+        		{
+        			StargateVariant stargateVariant = variant.get();
+        			
+        			if(stargateVariant.getRotationStopSound().isPresent())
+                		return new SoundEvent(stargateVariant.getRotationStopSound().get());
+        		}
+        	}
+    	}
+    	
+    	return stargate.getRingRotationStopSound();
     }
     
     private static SoundEvent getChevronEncodeSound(MilkyWayStargateEntity stargate)

@@ -23,47 +23,46 @@ public class PlasmaProjectile extends ThrowableProjectile
 	
 	public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, Level level)
 	{
-        super(type, level);
-    }
-
-    public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, double x, double y, double z, Level level, float explosionPower)
-    {
-        super(type, x, y, z, level);
-        this.explosionPower = explosionPower;
-    }
-
-    public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, LivingEntity livingEntityIn, Level level, float explosionPower)
-    {
-        super(type, livingEntityIn, level);
-        this.explosionPower = explosionPower;
-    }
-
+		super(type, level);
+	}
+	
+ 	public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, double x, double y, double z, Level level, float explosionPower)
+	{
+ 		super(type, x, y, z, level);
+ 		this.explosionPower = explosionPower;
+	}
+ 	
+	public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, LivingEntity livingEntityIn, Level level, float explosionPower)
+	{
+		super(type, livingEntityIn, level);
+		this.explosionPower = explosionPower;
+	}
+	
 	protected void onHit(HitResult hitResult)
 	{
 	      super.onHit(hitResult);
 	      if(!this.level.isClientSide())
 	      {
 	         boolean canDestroy = ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-	         this.level.explode((Entity)null, this.getX(), this.getY(), this.getZ(), this.explosionPower, canDestroy, 
+	         this.level.explode((Entity)this.getOwner(), this.getX(), this.getY(), this.getZ(), this.explosionPower, canDestroy, 
 			 canDestroy ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
 	         this.discard();
 	      }
-
-	   }
-
+		
+	}
+	
 	protected void onHitEntity(EntityHitResult hitResult)
 	{
 		super.onHitEntity(hitResult);
-		if (!this.level.isClientSide())
+		if(!this.level.isClientSide())
 		{
 			Entity entity = hitResult.getEntity();
-			Entity entity1 = this.getOwner();
-			entity.hurt(DamageSource.explosion((Player)entity1), 14.0F);
-			if (entity1 instanceof LivingEntity)
-			{
-				this.doEnchantDamageEffects((LivingEntity)entity1, entity);
-			}
-
+			Entity attacker = this.getOwner();
+			
+			entity.hurt(DamageSource.explosion((Player)attacker), 14.0F);
+			
+			if(attacker instanceof LivingEntity)
+				this.doEnchantDamageEffects((LivingEntity)attacker, entity);
 		}
 	}
 	

@@ -61,6 +61,8 @@ public class SoundInit
 
 	public static final RegistryObject<SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
 	
+	public static final RegistryObject<SoundEvent> NOTHING = registerSoundEvent("nothing");
+	
 	
 	
 	private static RegistryObject<SoundEvent> registerSoundEvent(String sound)

@@ -40,6 +40,7 @@ public class ConfigScreenClientStargate extends Screen
 				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.stargate_variants"), this.width, ClientStargateConfig.stargate_variants));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.unique_symbols"), this.width, ClientStargateConfig.unique_symbols));
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.shiny_event_horizons"), this.width, ClientStargateConfig.shiny_event_horizons));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.enable_vortex"), this.width, ClientStargateConfig.enable_vortex));
 		this.configList.add(new SliderConfigEntry(Component.translatable("gui.sgjourney.event_horizon_distortion"), Component.empty(), this.width, ClientStargateConfig.event_horizon_distortion));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.use_movie_stargate_model"), this.width, ClientStargateConfig.use_movie_stargate_model));
