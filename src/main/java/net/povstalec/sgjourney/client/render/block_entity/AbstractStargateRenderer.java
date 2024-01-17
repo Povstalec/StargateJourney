@@ -26,6 +26,7 @@ import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public abstract class AbstractStargateRenderer
@@ -33,10 +34,16 @@ public abstract class AbstractStargateRenderer
 	protected final WormholeModel wormholeModel;
 	protected final ShieldModel shieldModel;
 	
+	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context, ResourceLocation eventHorizonTexture, ResourceLocation shinyEventHorizonTexture, float maxDefaultDistortion)
+	{
+		this.shieldModel = new ShieldModel();
+		this.wormholeModel = new WormholeModel(eventHorizonTexture, Optional.of(shinyEventHorizonTexture), maxDefaultDistortion);
+	}
+	
 	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context, ResourceLocation eventHorizonTexture, float maxDefaultDistortion)
 	{
 		this.shieldModel = new ShieldModel();
-		this.wormholeModel = new WormholeModel(eventHorizonTexture, maxDefaultDistortion);
+		this.wormholeModel = new WormholeModel(eventHorizonTexture, Optional.empty(), maxDefaultDistortion);
 	}
 	
 	protected void renderWormhole(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, @SuppressWarnings("rawtypes") @Nullable AbstractStargateModel model, int combinedLight, int combinedOverlay)
@@ -51,7 +58,12 @@ public abstract class AbstractStargateRenderer
 			{
 				StargateVariant variant = variantOptional.get();
 				if(model.canUseVariant(variant))
-					eventHorizonTexture = variant.getEventHorizonTexture();
+				{
+					if(ClientStargateConfig.shiny_event_horizons.get() && variant.getShinyEventHorizonTexture().isPresent())
+						eventHorizonTexture = variant.getShinyEventHorizonTexture();
+					else
+						eventHorizonTexture = Optional.of(variant.getEventHorizonTexture());
+				}
 			}
 		}
 		

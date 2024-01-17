@@ -27,11 +27,11 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
 	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon.png");
+	private static final ResourceLocation SHINY_EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon_shiny.png");
 	
 	public PegasusStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, EVENT_HORIZON_TEXTURE, 0.25F);
-		this.wormholeModel.setRGBConfigValue(ClientStargateConfig.pegasus_rgba);
+		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F);
 		this.stargateModel = new PegasusStargateModel();
 	}
 	
