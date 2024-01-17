@@ -109,6 +109,17 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		return SoundInit.UNIVERSE_DIAL_FAIL.get();
 	}
 	
+	public SoundEvent getStartupSound()
+	{
+		return SoundInit.UNIVERSE_DIAL_START.get();
+	}
+
+	@Override
+	public SoundEvent getChevronIncomingSound()
+	{
+		return SoundInit.NOTHING.get();
+	}
+	
 	public double angle()
 	{
 		return (double) 360 / 54;
@@ -179,17 +190,12 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.UniverseStart(this.worldPosition));
 	}
 	
-	public SoundEvent getStartupSound()
-	{
-		return SoundInit.UNIVERSE_DIAL_START.get();
-	}
-	
 	public static void tick(Level level, BlockPos pos, BlockState state, UniverseStargateEntity stargate)
 	{
 		if(!stargate.isConnected() && stargate.addressBuffer.getLength() > stargate.symbolBuffer)
 		{
 			if(stargate.animationTicks <= 0)
-				stargate.rotateToSymbol(stargate.addressBuffer.getSymbol(stargate.symbolBuffer));
+				stargate.rotateToSymbol(stargate.addressBuffer.getSymbol(stargate.symbolBuffer), true);
 			else if(stargate.animationTicks >= WAIT_TICKS)
 				stargate.animationTicks = 0;
 			else if(stargate.animationTicks > 0)
@@ -254,12 +260,15 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 				(float) getRotation() : Mth.lerp(partialTick, this.oldRotation, this.rotation);
 	}
 	
-	private void rotateToSymbol(int desiredSymbol)
+	private void rotateToSymbol(int desiredSymbol, boolean engage)
 	{
 		oldRotation = rotation;
 		
 		if(isCurrentSymbol(desiredSymbol))
 		{
+			if(!engage)
+				return;
+			
 			updateClient();
 			
 			if(isCurrentSymbol(0))
@@ -355,5 +364,17 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
 	{
 		CCTweakedCompatibility.registerUniverseStargateMethods(wrapper);
+	}
+	
+	@Override
+	public void doWhileDialed(int openTime, Stargate.ChevronLockSpeed chevronLockSpeed)
+	{
+		if(this.level.isClientSide())
+			return;
+		
+		if(openTime == 1)
+			startSound();
+		
+		this.rotateToSymbol(0, false);
 	}
 }

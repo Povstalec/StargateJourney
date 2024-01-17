@@ -26,6 +26,7 @@ public class StargateVariant
 			ResourceLocation.CODEC.fieldOf("event_horizon_texture").forGetter(StargateVariant::getEventHorizonTexture),
 			ResourceLocation.CODEC.optionalFieldOf("shiny_event_horizon_texture").forGetter(StargateVariant::getShinyEventHorizonTexture),
 			Codec.INT.listOf().optionalFieldOf("symbol_color").forGetter(StargateVariant::getSymbolColor),
+			Codec.INT.listOf().optionalFieldOf("encoded_symbol_color").forGetter(StargateVariant::getEncodedSymbolColor),
 			Codec.INT.listOf().optionalFieldOf("engaged_symbol_color").forGetter(StargateVariant::getEngagedSymbolColor),
 			// Model
 			Codec.unboundedMap(Codec.STRING, Codec.BOOL).optionalFieldOf("model").forGetter(StargateVariant::getModel),
@@ -41,6 +42,7 @@ public class StargateVariant
 	private final Optional<ResourceLocation> shinyEventHorizonTexture;
 	
 	private final Optional<List<Integer>> symbolColor;
+	private final Optional<List<Integer>> encodedSymbolColor;
 	private final Optional<List<Integer>> engagedSymbolColor;
 	
 	private final Optional<Map<String, Boolean>> model;
@@ -48,9 +50,10 @@ public class StargateVariant
 	private Optional<Boolean> useAlternateModel = Optional.empty();
 	private Optional<Boolean> backChevrons = Optional.empty();
 	private Optional<Boolean> symbolsGlow = Optional.empty();
+	private Optional<Boolean> encodedSymbolsGlow = Optional.empty();
 	private Optional<Boolean> engagedSymbolsGlow = Optional.empty();
-	private Optional<Boolean> dialedSymbolsGlow = Optional.empty();
-	private Optional<Boolean> connectedSymbolsGlow = Optional.empty();
+	private Optional<Boolean> engageEncodedSymbols = Optional.empty();
+	private Optional<Boolean> engageSymbolsOnIncoming = Optional.empty();
 	
 	private final Optional<Map<String, ResourceLocation>> sounds;
 
@@ -83,6 +86,7 @@ public class StargateVariant
 			Optional<ResourceLocation> shinyEventHorizonTexture,
 			
 			Optional<List<Integer>> symbolColor,
+			Optional<List<Integer>> encodedSymbolColor,
 			Optional<List<Integer>> engagedSymbolColor,
 			
 			Optional<Map<String, Boolean>> model,
@@ -97,6 +101,7 @@ public class StargateVariant
 		this.shinyEventHorizonTexture = shinyEventHorizonTexture;
 		
 		this.symbolColor = symbolColor;
+		this.encodedSymbolColor = encodedSymbolColor;
 		this.engagedSymbolColor = engagedSymbolColor;
 		
 		this.model = model;
@@ -127,14 +132,17 @@ public class StargateVariant
 		if(soundMap.containsKey("symbols_glow"))
 			this.symbolsGlow = Optional.of(soundMap.get("symbols_glow"));
 		
+		if(soundMap.containsKey("encoded_symbols_glow"))
+			this.encodedSymbolsGlow = Optional.of(soundMap.get("encoded_symbols_glow"));
+		
 		if(soundMap.containsKey("engaged_symbols_glow"))
 			this.engagedSymbolsGlow = Optional.of(soundMap.get("engaged_symbols_glow"));
 		
-		/*if(soundMap.containsKey("dialed_symbols_glow"))
-			this.dialedSymbolsGlow = Optional.of(soundMap.get("dialed_symbols_glow"));
+		if(soundMap.containsKey("engage_encoded_symbols"))
+			this.engageEncodedSymbols = Optional.of(soundMap.get("engage_encoded_symbols"));
 		
-		if(soundMap.containsKey("connected_symbols_glow"))
-			this.connectedSymbolsGlow = Optional.of(soundMap.get("connected_symbols_glow"));*/
+		if(soundMap.containsKey("engage_symbols_on_incoming"))
+			this.engageSymbolsOnIncoming = Optional.of(soundMap.get("engage_symbols_on_incoming"));
 	}
 	
 	private void setupSounds(Map<String, ResourceLocation> soundMap)
@@ -220,6 +228,11 @@ public class StargateVariant
 		return this.symbolColor;
 	}
 	
+	public Optional<List<Integer>> getEncodedSymbolColor()
+	{
+		return this.encodedSymbolColor;
+	}
+	
 	public Optional<List<Integer>> getEngagedSymbolColor()
 	{
 		return this.engagedSymbolColor;
@@ -241,6 +254,31 @@ public class StargateVariant
 	public Optional<Boolean> backChevrons()
 	{
 		return this.backChevrons;
+	}
+	
+	public Optional<Boolean> symbolsGlow()
+	{
+		return this.symbolsGlow;
+	}
+	
+	public Optional<Boolean> encodedSymbolsGlow()
+	{
+		return this.encodedSymbolsGlow;
+	}
+	
+	public Optional<Boolean> engagedSymbolsGlow()
+	{
+		return this.engagedSymbolsGlow;
+	}
+	
+	public Optional<Boolean> engageEncodedSymbols()
+	{
+		return this.engageEncodedSymbols;
+	}
+	
+	public Optional<Boolean> engageSymbolsOnIncoming()
+	{
+		return this.engageSymbolsOnIncoming;
 	}
 	
 	
@@ -334,9 +372,8 @@ public class StargateVariant
 		return this.wormholeCloseSound;
 	}
 	
-	public Optional<Stargate.RGBA> getSymbolRGBA()
+	private static Optional<Stargate.RGBA> getRGBA(Optional<List<Integer>> symbolColor)
 	{
-		Optional<List<Integer>> symbolColor = getSymbolColor();
 		if(!symbolColor.isPresent())
 			return Optional.empty();
 		
@@ -352,21 +389,18 @@ public class StargateVariant
 		return Optional.of(new Stargate.RGBA(colorArray[0], colorArray[1], colorArray[2], alpha));
 	}
 	
+	public Optional<Stargate.RGBA> getSymbolRGBA()
+	{
+		return getRGBA(getSymbolColor());
+	}
+	
+	public Optional<Stargate.RGBA> getEncodedSymbolRGBA()
+	{
+		return getRGBA(getEncodedSymbolColor());
+	}
+	
 	public Optional<Stargate.RGBA> getEngagedSymbolRGBA()
 	{
-		Optional<List<Integer>> symbolColor = getEngagedSymbolColor();
-		if(!symbolColor.isPresent())
-			return Optional.empty();
-		
-		int[] colorArray = symbolColor.get().stream().mapToInt((integer) -> integer).toArray();
-		
-		if(colorArray.length < 3)
-			return Optional.empty();
-		
-		int alpha = 255;
-		if(colorArray.length >= 4)
-			alpha = colorArray[3];
-		
-		return Optional.of(new Stargate.RGBA(colorArray[0], colorArray[1], colorArray[2], alpha));
+		return getRGBA(getEngagedSymbolColor());
 	}
 }

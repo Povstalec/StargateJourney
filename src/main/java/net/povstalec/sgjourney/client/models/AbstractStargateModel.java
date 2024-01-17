@@ -61,13 +61,17 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	protected Stargate.RGBA symbolColor = Stargate.RGBA.DEFAULT_RGBA;
 	protected Stargate.RGBA engagedSymbolColor = Stargate.RGBA.DEFAULT_RGBA;
 	
-	public AbstractStargateModel(ResourceLocation stargateName)
+	protected final short numberOfSymbols;
+	
+	public AbstractStargateModel(ResourceLocation stargateName, short numberOfSymbols)
 	{
 		namespace = stargateName.getNamespace();
 		name = stargateName.getPath();
 		
 		stargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate.png");
 		engagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_engaged.png");
+		
+		this.numberOfSymbols = numberOfSymbols;
 	}
 	
 	public ResourceLocation getResourceLocation()
@@ -142,19 +146,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			
 			return ERROR_LOCATION;
 		}
-	}
-	
-	protected Stargate.RGBA getSymbolColor(StargateEntity stargate, Optional<StargateVariant> stargateVariant, boolean isEngaged)
-	{
-		if(stargateVariant.isPresent())
-		{
-			if(!isEngaged && stargateVariant.get().getSymbolRGBA().isPresent())
-				return stargateVariant.get().getSymbolRGBA().get();
-			else if(isEngaged && stargateVariant.get().getEngagedSymbolRGBA().isPresent())
-				return stargateVariant.get().getEngagedSymbolRGBA().get();
-		}
-		
-		return this.symbolColor;
 	}
 	
 	public static int getChevronConfiguration(boolean defaultOrder, int addresslength, int chevron)
@@ -324,5 +315,71 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 					renderChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, chevronNumber, true);
 			}
 		}
+	}
+
+	//============================================================================================
+	//******************************************Symbols*******************************************
+	//============================================================================================
+	
+	protected boolean symbolsGlow(StargateEntity stargate, Optional<StargateVariant> stargateVariant, boolean isEngaged)
+	{
+		if(stargateVariant.isPresent())
+		{
+			if(isEngaged)
+			{
+				if(!stargate.isConnected() && stargateVariant.get().encodedSymbolsGlow().isPresent())
+					return stargateVariant.get().encodedSymbolsGlow().get();
+				
+				else if(stargateVariant.get().engagedSymbolsGlow().isPresent())
+					return stargateVariant.get().engagedSymbolsGlow().get();
+			}
+			
+			if(!isEngaged && stargateVariant.get().symbolsGlow().isPresent())
+				return stargateVariant.get().symbolsGlow().get();
+		}
+		
+		return false;
+	}
+	
+	protected boolean engageEncodedSymbols(StargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	{
+		if(stargateVariant.isPresent())
+		{
+			if(stargateVariant.get().engageEncodedSymbols().isPresent())
+				return stargateVariant.get().engageEncodedSymbols().get();
+		}
+		
+		return false;
+	}
+	
+	protected boolean engageSymbolsOnIncoming(StargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	{
+		if(stargateVariant.isPresent())
+		{
+			if(stargateVariant.get().engageSymbolsOnIncoming().isPresent())
+				return stargateVariant.get().engageSymbolsOnIncoming().get();
+		}
+		
+		return false;
+	}
+	
+	protected Stargate.RGBA getSymbolColor(StargateEntity stargate, Optional<StargateVariant> stargateVariant, boolean isEngaged)
+	{
+		if(stargateVariant.isPresent())
+		{
+			if(isEngaged)
+			{
+				if(!stargate.isConnected() && stargateVariant.get().getEncodedSymbolRGBA().isPresent())
+					return stargateVariant.get().getEncodedSymbolRGBA().get();
+				
+				else if(stargateVariant.get().getEngagedSymbolRGBA().isPresent())
+					return stargateVariant.get().getEngagedSymbolRGBA().get();
+			}
+			
+			else if(!isEngaged && stargateVariant.get().getSymbolRGBA().isPresent())
+				return stargateVariant.get().getSymbolRGBA().get();
+		}
+		
+		return this.symbolColor;
 	}
 }

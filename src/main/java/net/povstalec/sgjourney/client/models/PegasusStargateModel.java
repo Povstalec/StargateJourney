@@ -30,7 +30,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	
 	public PegasusStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "pegasus"), 36, new Stargate.RGBA(RED, GREEN, BLUE, 255));
+		super(new ResourceLocation(StargateJourney.MODID, "pegasus"), (short) 36, new Stargate.RGBA(RED, GREEN, BLUE, 255));
 		
 		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
 		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
@@ -71,10 +71,17 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	{
 		if(stargateVariant.isPresent())
 		{
-			if(!isEngaged && stargateVariant.get().getSymbolRGBA().isPresent())
+			if(isEngaged)
+			{
+				if(!stargate.isConnected() && stargateVariant.get().getEncodedSymbolRGBA().isPresent())
+					return stargateVariant.get().getEncodedSymbolRGBA().get();
+				
+				else if(stargateVariant.get().getEngagedSymbolRGBA().isPresent())
+					return stargateVariant.get().getEngagedSymbolRGBA().get();
+			}
+			
+			else if(!isEngaged && stargateVariant.get().getSymbolRGBA().isPresent())
 				return stargateVariant.get().getSymbolRGBA().get();
-			else if(isEngaged && stargateVariant.get().getEngagedSymbolRGBA().isPresent())
-				return stargateVariant.get().getEngagedSymbolRGBA().get();
 		}
 		
 		return isEngaged ? this.engagedSymbolColor : this.symbolColor;
@@ -139,12 +146,12 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 		else
 		{
 			Stargate.RGBA symbolColor = getSymbolColor(stargate, stargateVariant, false);
-			int symbolNumber = symbolSides;
+			int symbolNumber = this.numberOfSymbols;
 			
 			if(stargate.isConnected())
 			{
 				symbolColor = getSymbolColor(stargate, stargateVariant, true);
-				symbolNumber = stargate.currentSymbol < symbolSides ? stargate.currentSymbol : symbolNumber;
+				symbolNumber = stargate.currentSymbol < this.numberOfSymbols ? stargate.currentSymbol : symbolNumber;
 				if(stargate.getKawooshTickCount() > 0)
 					renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolColor);
 			}
@@ -152,7 +159,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			// Idle Symbols
 			for(int i = 0; i < symbolNumber; i++)
 			{
-				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % symbolSides;
+				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % this.numberOfSymbols;
 				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, renderedSymbol, renderedSymbol, 0, symbolColor);
 			}
 		}
