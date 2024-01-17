@@ -41,11 +41,11 @@ public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
 	@Nullable
 	public MerchantOffer getOffer(Entity entity, RandomSource source)
 	{
-		if(!(entity.getLevel() instanceof ServerLevel))
+		if(!(entity.level() instanceof ServerLevel))
 			return null;
 		else
 		{
-			ServerLevel serverlevel = (ServerLevel)entity.getLevel();
+			ServerLevel serverlevel = (ServerLevel)entity.level();
 			BlockPos blockpos = serverlevel.findNearestMapStructure(this.destination, entity.blockPosition(), 100, true);
 			
 			if(blockpos != null)
@@ -72,11 +72,11 @@ public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
 		@Nullable
 		public MerchantOffer getOffer(Entity entity, RandomSource source)
 		{
-			if(!(entity.getLevel() instanceof ServerLevel))
+			if(!(entity.level() instanceof ServerLevel))
 				return null;
 			else
 			{
-				ServerLevel serverlevel = (ServerLevel)entity.getLevel();
+				ServerLevel serverlevel = (ServerLevel)entity.level();
 				
 				int xOffset = 16 * CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
 		        int zOffset = 16 * CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();

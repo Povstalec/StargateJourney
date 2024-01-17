@@ -44,6 +44,7 @@
 	"block.sgjourney.stargate.classic.incorrect_setup": "Špatně sestaveno",
 	"block.sgjourney.stargate.classic.invalid_address": "Nesprávná adresa",
 	"block.sgjourney.stargate.classic.address_exists": "Addresa již existujes",
+	"block.sgjourney.stargate.incorrect_stargate_type": "Špatný druh brány",
 	"block.sgjourney.cartouche.not_enough_space": "Kartuše nemá dost místa",
 	
 	"block.sgjourney.transport_rings": "Transportní kruhy",
@@ -165,8 +166,8 @@
 	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu boh\u016f",
 	"filled_map.sgjourney.chappa_ai": "Mapa k Chappa'ai",
 	
-	"itemGroup.stargate_blocks": "Hv\u011bzdn\u00e1 br\u00e1na - Bloky",
-	"itemGroup.stargate_items": "Hv\u011bzdn\u00e1 br\u00e1na - P\u0159edm\u011bty",
+	"creativemodetab.stargate_blocks": "Hv\u011bzdn\u00e1 br\u00e1na - Bloky",
+	"creativemodetab.stargate_items": "Hv\u011bzdn\u00e1 br\u00e1na - P\u0159edm\u011bty",
 
 	"screen.sgjourney.archeology_table": "Arheologick\u00fd st\u016fl",
 	"screen.sgjourney.basic_interface": "Základní rozhraní",
@@ -377,5 +378,6 @@
 	"message.sgjourney.command.stargate_network_settings.generate_random_solar_systems": "Generovat náhodné solární systémy",
 	"message.sgjourney.command.stargate_network_settings.random_addresses_from_seed": "Náhodné adresy ze semínka",
 	"message.sgjourney.command.get_stargates": "Hvězdné brány v dimenzi",
-	"message.sgjourney.command.get_transporters": "Transportéry v dimenzi"
+	"message.sgjourney.command.get_transporters": "Transportéry v dimenzi",
+	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy"
 }

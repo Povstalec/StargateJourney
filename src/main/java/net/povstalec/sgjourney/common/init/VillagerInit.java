@@ -1,14 +1,11 @@
 package net.povstalec.sgjourney.common.init;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -30,7 +27,7 @@ public class VillagerInit
 			() -> new VillagerProfession("archeologist", x -> x.get() == ARCHEOLOGIST_POI.get(), x -> x.get() == ARCHEOLOGIST_POI.get(), 
 			ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER));
 	
-	public static void registerPOIs()
+	/*public static void registerPOIs()
 	{
 		try
 		{
@@ -40,7 +37,7 @@ public class VillagerInit
 		{
 			exception.printStackTrace();
 		}
-	}
+	}*/
 	
 	public static void register(IEventBus eventBus)
 	{

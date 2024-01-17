@@ -82,7 +82,7 @@ public abstract class SGJourneySkyRenderer
 		if (this.darkBuffer != null)
 			this.darkBuffer.close();
 		
-		this.darkBuffer = new VertexBuffer();
+		this.darkBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = buildSkyDisc(bufferbuilder, -16.0F);
 		this.darkBuffer.bind();
 		this.darkBuffer.upload(bufferbuilder$renderedbuffer);
@@ -96,7 +96,7 @@ public abstract class SGJourneySkyRenderer
 		if (this.skyBuffer != null)
 			this.skyBuffer.close();
 		
-		this.skyBuffer = new VertexBuffer();
+		this.skyBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = buildSkyDisc(bufferbuilder, 16.0F);
 		this.skyBuffer.bind();
 		this.skyBuffer.upload(bufferbuilder$renderedbuffer);
@@ -126,7 +126,7 @@ public abstract class SGJourneySkyRenderer
 		if(this.starBuffer != null)
 			this.starBuffer.close();
 
-		this.starBuffer = new VertexBuffer();
+		this.starBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = this.drawStars(bufferbuilder, seed, numberOfStars);
 		this.starBuffer.bind();
 		this.starBuffer.upload(bufferbuilder$renderedbuffer);
@@ -372,7 +372,6 @@ public abstract class SGJourneySkyRenderer
 		if(sunriseColor != null)
 		{
 			RenderSystem.setShader(GameRenderer::getPositionColorShader);
-			RenderSystem.disableTexture();
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			stack.pushPose();
 			stack.mulPose(Axis.XP.rotationDegrees(90.0F));
@@ -430,7 +429,6 @@ public abstract class SGJourneySkyRenderer
 		if(this.isFoggy(camera))
 			return;
 		
-		RenderSystem.disableTexture();
 		Vec3 skyColor = level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), partialTicks);
 		float skyX = (float)skyColor.x;
         float skyY = (float)skyColor.y;
@@ -448,14 +446,12 @@ public abstract class SGJourneySkyRenderer
 		
 		this.renderSunrise(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder);
 		
-		RenderSystem.enableTexture();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		
 		float rain = 1.0F - level.getRainLevel(partialTicks);
 		
 		this.renderEcliptic(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder, rain);
         
-        RenderSystem.disableTexture();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
         
@@ -471,12 +467,7 @@ public abstract class SGJourneySkyRenderer
         	stack.popPose();
         }
         
-        if(level.effects().hasGround())
-        	RenderSystem.setShaderColor(skyX * 0.2F + 0.04F, skyY * 0.2F + 0.04F, skyZ * 0.6F + 0.1F, 1.0F);
-        else
-        	RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
-        
-        RenderSystem.enableTexture();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.depthMask(true);
 	}
 }

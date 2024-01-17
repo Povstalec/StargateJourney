@@ -111,6 +111,7 @@ public class StargateJourney
         BiomeModifiers.register(eventBus);
         EntityInit.register(eventBus);
         SoundInit.register(eventBus);
+        TabInit.register(eventBus);
         RecipeTypeInit.register(eventBus);
         
         GalaxyInit.register(eventBus);
@@ -128,7 +129,6 @@ public class StargateJourney
         
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(Layers::registerLayers);
-        eventBus.addListener(TabInit::onRegisterModTabs);
         eventBus.addListener(TabInit::addCreative);
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
@@ -153,7 +153,7 @@ public class StargateJourney
     	event.enqueueWork(() -> 
     	{
     		PacketHandlerInit.register();
-    		VillagerInit.registerPOIs();
+    		//VillagerInit.registerPOIs();
     	});
     }
     

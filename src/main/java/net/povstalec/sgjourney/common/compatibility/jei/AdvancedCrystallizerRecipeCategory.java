@@ -70,6 +70,6 @@ public class AdvancedCrystallizerRecipeCategory implements IRecipeCategory<Advan
 		builder.addSlot(RecipeIngredientRole.INPUT, 67, 50).addItemStack(stack2);
 		builder.addSlot(RecipeIngredientRole.INPUT, 93, 50).addItemStack(stack3);
 		
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 130, 36).addItemStack(recipe.getResultItem());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 130, 36).addItemStack(recipe.getResultItem(null));
 	}
 }

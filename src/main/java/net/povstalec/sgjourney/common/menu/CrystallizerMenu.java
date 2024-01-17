@@ -25,7 +25,8 @@ public class CrystallizerMenu extends AbstractContainerMenu
     
     public CrystallizerMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
     {
-        this(containerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+       // this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public CrystallizerMenu(int containerId, Inventory inventory, BlockEntity blockEntity)
@@ -33,7 +34,7 @@ public class CrystallizerMenu extends AbstractContainerMenu
         super(MenuInit.CRYSTALLIZER.get(), containerId);
         checkContainerSize(inventory, 5);
         this.blockEntity = ((AbstractCrystallizerEntity) blockEntity);
-        this.level = inventory.player.level;
+        this.level = inventory.player.level();
         this.fluidStack = this.blockEntity.getFluid();
 
         addPlayerInventory(inventory);

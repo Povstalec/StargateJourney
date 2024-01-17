@@ -44,6 +44,7 @@
 	"block.sgjourney.stargate.classic.incorrect_setup": "Incorrect setup",
 	"block.sgjourney.stargate.classic.invalid_address": "Invalid Address",
 	"block.sgjourney.stargate.classic.address_exists": "Address already exists",
+	"block.sgjourney.stargate.incorrect_stargate_type": "Incorrect Stargate type",
 	"block.sgjourney.cartouche.not_enough_space": "Cartouche does not have enough space",
 
 	"block.sgjourney.transport_rings": "Transport Rings",
@@ -166,8 +167,8 @@
 	"filled_map.sgjourney.astria_porta": "Map to the Ring of Gods",
 	"filled_map.sgjourney.chappa_ai": "Map to Chappa'ai",
 	
-	"itemGroup.stargate_blocks": "Stargate Blocks",
-	"itemGroup.stargate_items": "Stargate Items",
+	"creativemodetab.stargate_blocks": "Stargate Blocks",
+	"creativemodetab.stargate_items": "Stargate Items",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",
@@ -378,6 +379,7 @@
 	"message.sgjourney.command.stargate_network_settings.random_addresses_from_seed": "Random Addresses From Seed",
 	"message.sgjourney.command.get_stargates": "Stargates in dimension",
 	"message.sgjourney.command.get_transporters": "Transporters in dimension",
+	"message.sgjourney.command.click_to_copy.address": "Click to copy Address",
 	
 	"gui.sgjourney.config": "Stargate Journey Config",
 	"gui.sgjourney.client": "Client",
@@ -399,6 +401,7 @@
 	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",
 	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",
 	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back",
+	"gui.sgjourney.shiny_event_horizons": "Shiny Event Horizons",
 	
 	"gui.sgjourney.config_sky": "Sky",
 	

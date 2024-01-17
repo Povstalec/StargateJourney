@@ -1,10 +1,10 @@
 modLoader="javafml"
-loaderVersion="[44,)"
+loaderVersion="[47,)"
 license="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License"
 issueTrackerURL="https://github.com/Povstalec/StargateJourney/issues"
 [[mods]]
 modId="sgjourney"
-version="0.6.14"
+version="0.6.15"
 displayName="Stargate Journey"
 logoFile="sgjourney_large.png"
 credits="TakeruDavis, tehgreatdoge, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt, SquidDev"
@@ -17,19 +17,19 @@ Stargate in Minecraft! And much more.
 [[dependencies.sgjourney]]
     modId="forge"
     mandatory=true
-    versionRange="[44,)"
+    versionRange="[47,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.sgjourney]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.3,1.20)"
+    versionRange="[1.20.1,1.21)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.sgjourney]]
     modId="computercraft"
     mandatory=false
-    versionRange="[1.103.1,)"
+    versionRange="[1.104.0,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.sgjourney]]
@@ -38,3 +38,4 @@ Stargate in Minecraft! And much more.
     versionRange="[0.2.1,0.3.0)"
     ordering="AFTER"
     side="CLIENT"
+

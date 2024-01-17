@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -138,30 +137,30 @@ public class ItemInit
 	
 	// Armor
 	public static final RegistryObject<ArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet", 
-			() -> new ArmorItem(ArmorMaterialInit.naquadah, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.naquadah, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
 	public static final RegistryObject<ArmorItem> NAQUADAH_CHESTPLATE = ITEMS.register("naquadah_chestplate", 
-			() -> new ArmorItem(ArmorMaterialInit.naquadah, EquipmentSlot.CHEST, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.naquadah, ArmorItem.Type.CHESTPLATE, new Item.Properties().fireResistant()));
 	public static final RegistryObject<ArmorItem> NAQUADAH_LEGGINGS = ITEMS.register("naquadah_leggings", 
-			() -> new ArmorItem(ArmorMaterialInit.naquadah, EquipmentSlot.LEGS, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.naquadah, ArmorItem.Type.LEGGINGS, new Item.Properties().fireResistant()));
 	public static final RegistryObject<ArmorItem> NAQUADAH_BOOTS = ITEMS.register("naquadah_boots", 
-			() -> new ArmorItem(ArmorMaterialInit.naquadah, EquipmentSlot.FEET, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.naquadah, ArmorItem.Type.BOOTS, new Item.Properties().fireResistant()));
 	
 	public static final RegistryObject<ArmorItem> JAFFA_HELMET = ITEMS.register("jaffa_helmet", 
-			() -> new ArmorItem(ArmorMaterialInit.jaffa, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.jaffa, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
 	public static final RegistryObject<ArmorItem> JAFFA_CHESTPLATE = ITEMS.register("jaffa_chestplate", 
-			() -> new ArmorItem(ArmorMaterialInit.jaffa, EquipmentSlot.CHEST, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.jaffa, ArmorItem.Type.CHESTPLATE, new Item.Properties().fireResistant()));
 	public static final RegistryObject<ArmorItem> JAFFA_LEGGINGS = ITEMS.register("jaffa_leggings", 
-			() -> new ArmorItem(ArmorMaterialInit.jaffa, EquipmentSlot.LEGS, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.jaffa, ArmorItem.Type.LEGGINGS, new Item.Properties().fireResistant()));
 	public static final RegistryObject<ArmorItem> JAFFA_BOOTS = ITEMS.register("jaffa_boots", 
-			() -> new ArmorItem(ArmorMaterialInit.jaffa, EquipmentSlot.FEET, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.jaffa, ArmorItem.Type.BOOTS, new Item.Properties().fireResistant()));
 	
 	public static final RegistryObject<JackalArmorItem> JACKAL_HELMET = ITEMS.register("jackal_helmet", 
-			() -> new JackalArmorItem(ArmorMaterialInit.jaffa, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+			() -> new JackalArmorItem(ArmorMaterialInit.jaffa, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
 	public static final RegistryObject<FalconArmorItem> FALCON_HELMET = ITEMS.register("falcon_helmet", 
-			() -> new FalconArmorItem(ArmorMaterialInit.jaffa, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+			() -> new FalconArmorItem(ArmorMaterialInit.jaffa, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
 	
 	public static final RegistryObject<PersonalShieldItem> PERSONAL_SHIELD_EMITTER = ITEMS.register("personal_shield_emitter", 
-			() -> new PersonalShieldItem(ArmorMaterialInit.personal_shield, EquipmentSlot.CHEST, new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
+			() -> new PersonalShieldItem(ArmorMaterialInit.personal_shield, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 		
 	
 	public static void register(IEventBus eventBus)

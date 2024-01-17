@@ -44,10 +44,10 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 		
 		// Only allows creating Stargate Upgrade Crystals when it's enabled in the config
 		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() &&
-				recipe.get().getResultItem().getItem() instanceof StargateUpgradeItem)
+				recipe.get().getResultItem(null).getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return hasSpaceInOutputSlot(inventory, recipe.get().getResultItem());
+		return hasSpaceInOutputSlot(inventory, recipe.get().getResultItem(null));
 	}
 	
 	protected void crystallize()
@@ -68,7 +68,7 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 			useUpItems(recipe.get(), 0);
 			useUpItems(recipe.get(), 1);
 			useUpItems(recipe.get(), 2);
-			itemHandler.setStackInSlot(3, recipe.get().getResultItem());
+			itemHandler.setStackInSlot(3, recipe.get().getResultItem(null));
 			
 			this.progress = 0;
 		}

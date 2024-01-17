@@ -16,6 +16,7 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_create_entities;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	public static ForgeConfigSpec.BooleanValue always_display_stargate_id;
+	public static ForgeConfigSpec.IntValue max_obstructive_blocks;
 
 	public static ForgeConfigSpec.BooleanValue enable_address_choice;
 	public static ForgeConfigSpec.BooleanValue enable_classic_stargate_upgrades;
@@ -78,6 +79,10 @@ public class CommonStargateConfig
 		enable_redstone_dialing = server
 				.comment("Enables the use of redstone for manual Stargate dialing")
 				.define("server.enable_redstone_dialing", true);
+		
+		max_obstructive_blocks = server
+				.comment("The maximum amount of blocks allowed within the ring area before Stargate becomes obstructed")
+				.defineInRange("server.max_obstructive_blocks", 12, 1, 21);
 		
 		
 		

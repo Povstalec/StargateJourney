@@ -68,7 +68,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand)
 	{
-		if(!player.getLevel().isClientSide())
+		if(!player.level().isClientSide())
 			this.scanEntity(player, target);
 		
 		return super.interactLivingEntity(stack, player, target, hand);

@@ -7,8 +7,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,8 +38,10 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
+import net.povstalec.sgjourney.common.stargate.AddressTable;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
@@ -80,6 +85,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			
 			if(variant.isPresent())
 			{
+				if(level.isClientSide())
+					return true;
+				
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				
 				if(blockEntity instanceof AbstractStargateEntity stargate)
@@ -87,6 +95,17 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 					if(variant.get().equals(stargate.getVariant()))
 					{
 						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
+						return true;
+					}
+					
+					RegistryAccess registries = level.getServer().registryAccess();
+			        Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
+			        
+			        Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variant.get())));
+					
+					if(stargateVariant.isPresent() && !stargateVariant.get().getBaseStargate().equals(BlockEntityType.getKey(stargate.getType())))
+					{
+						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.incorrect_stargate_type"), true);
 						return true;
 					}
 					

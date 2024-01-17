@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.misc;
 
+import static net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement.getRandomNamedJigsaw;
+
 import java.util.List;
 import java.util.Optional;
 

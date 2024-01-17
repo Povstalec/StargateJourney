@@ -1,9 +1,9 @@
 package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,7 @@ public class NaquadahLiquidizerScreen extends AbstractContainerScreen<NaquadahLi
 	}
 
     @Override
-    protected void renderBg(PoseStack stack, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -46,39 +46,39 @@ public class NaquadahLiquidizerScreen extends AbstractContainerScreen<NaquadahLi
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(stack, x, y, 0, 0, imageWidth, imageHeight);
+        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
         
         //this.renderEnergy(pPoseStack, x + 8, y + 62);
-        this.renderProgress(stack, x + 28, y + 37);
+        this.renderProgress(graphics, x + 28, y + 37);
         
-        renderer.render(stack, x + 12, y + 20, menu.getFluid1());
-        renderer.render(stack, x + 148, y + 20, menu.getFluid2());
+        renderer.render(graphics, x + 12, y + 20, menu.getFluid1());
+        renderer.render(graphics, x + 148, y + 20, menu.getFluid2());
     }
 
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float delta)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-        renderBackground(stack);
-        super.render(stack, mouseX, mouseY, delta);
-        renderTooltip(stack, mouseX, mouseY);
+        renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, delta);
+        renderTooltip(graphics, mouseX, mouseY);
         
         //this.energyTooltip(stack, 8, 62, mouseX, mouseY);
-        this.liquidFluid1Tooltip(stack, 12, 20, mouseX, mouseY);
-        this.liquidFluid2Tooltip(stack, 148, 20, mouseX, mouseY);
+        this.liquidFluid1Tooltip(graphics, 12, 20, mouseX, mouseY);
+        this.liquidFluid2Tooltip(graphics, 148, 20, mouseX, mouseY);
 	}
     
     @Override
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY) 
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) 
 	{
-		this.font.draw(stack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+    	graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
 	    //this.font.draw(stack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
     
-    protected void renderProgress(PoseStack stack, int x, int y)
+    protected void renderProgress(GuiGraphics graphics, int x, int y)
     {
     	float percentage = (float) this.menu.getProgress() / AbstractNaquadahLiquidizerEntity.MAX_PROGRESS;
     	int actual = Math.round(119 * percentage);
-    	this.blit(stack, x, y, 0, 166, actual, 12);
+    	graphics.blit(TEXTURE, x, y, 0, 166, actual, 12);
     }
     
     /*protected void renderEnergy(PoseStack stack, int x, int y)
@@ -88,21 +88,21 @@ public class NaquadahLiquidizerScreen extends AbstractContainerScreen<NaquadahLi
     	this.blit(stack, x, y, 0, 168, actual, 6);
     }*/
     
-    protected void liquidFluid1Tooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
+    protected void liquidFluid1Tooltip(GuiGraphics graphics, int x, int y, int mouseX, int mouseY)
     {
     	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
 	    {
     		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid1(), 1);
-	    	renderTooltip(matrixStack, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid1().getAmount() + "/" + AbstractNaquadahLiquidizerEntity.TANK_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
+    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid1().getAmount() + "/" + AbstractNaquadahLiquidizerEntity.TANK_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
 	    }
     }
     
-    protected void liquidFluid2Tooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
+    protected void liquidFluid2Tooltip(GuiGraphics graphics, int x, int y, int mouseX, int mouseY)
     {
     	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
 	    {
     		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid2(), 1);
-	    	renderTooltip(matrixStack, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid2().getAmount() + "/" + AbstractNaquadahLiquidizerEntity.TANK_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
+    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid2().getAmount() + "/" + AbstractNaquadahLiquidizerEntity.TANK_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
 	    }
     }
     

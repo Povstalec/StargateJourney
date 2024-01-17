@@ -63,6 +63,8 @@ public class SoundInit
 	public static final SoundEvent EMPTY_SOUND_INSTANCE = SoundEvent.createVariableRangeEvent(new ResourceLocation(StargateJourney.MODID, "empty"));
 	public static final RegistryObject<SoundEvent> EMPTY_SOUND = SOUNDS.register("empty", () -> EMPTY_SOUND_INSTANCE);
 	
+	public static final RegistryObject<SoundEvent> NOTHING = registerSoundEvent("nothing");
+	
 	
 	
 	private static RegistryObject<SoundEvent> registerSoundEvent(String sound)

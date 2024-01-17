@@ -31,8 +31,9 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class MilkyWayStargateEntity extends AbstractStargateEntity
 {
-	private static final double ANGLE = (double) 360 / 39;
-
+	public static final int MAX_ROTATION = 312;
+	//private static final double ANGLE = (double) MAX_ROTATION / 39;
+	
 	private int rotation = 0;
 	public int oldRotation = 0;
 	public boolean isChevronOpen = false;
@@ -56,7 +57,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
         if(!this.level.isClientSide() && !addToNetwork)
         {
         	Random random = new Random();
-        	setRotation(2 * random.nextInt(0, 181));
+        	setRotation(2 * random.nextInt(0, MAX_ROTATION / 2 + 1));
         }
 
         super.onLoad();
@@ -296,14 +297,18 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public int getCurrentSymbol()
 	{
-		int currentSymbol;
+		/*int currentSymbol;
 		double position = this.rotation / ANGLE;
 		currentSymbol = (int) position;
 		if(position >= currentSymbol + 0.5)
 			currentSymbol++;
 		
 		if(currentSymbol > 38)
-			currentSymbol = currentSymbol - 39;
+			currentSymbol = currentSymbol - 39;*/
+		
+		int symbolPosition = this.rotation + 4;
+		
+		int currentSymbol = (symbolPosition / 8) % 39;
 		
 		return currentSymbol;
 	}
@@ -352,26 +357,29 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		else
 			this.rotation += 2;
 		
-		if(this.rotation >= 360)
+		if(this.rotation >= MAX_ROTATION)
 		{
-			this.rotation -= 360;
-			this.oldRotation -= 360;
+			this.rotation -= MAX_ROTATION;
+			this.oldRotation -= MAX_ROTATION;
 		}
 		else if(this.rotation < 0)
 		{
-			this.rotation += 360;
-			this.oldRotation += 360;
+			this.rotation += MAX_ROTATION;
+			this.oldRotation += MAX_ROTATION;
 		}
 		setChanged();
 	}
 	
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
-		double position = this.rotation / ANGLE;
+		/*double position = this.rotation / ANGLE;
 		double lowerBound = (double) (desiredSymbol - 0.12);
 		double upperBound = (double) (desiredSymbol + 0.12);
 		
 		if(position > lowerBound && position < upperBound)
+			return true;*/
+		
+		if(desiredSymbol * 8 == this.rotation)
 			return true;
 		
 		return false;

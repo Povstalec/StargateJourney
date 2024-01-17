@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.screens.config;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -40,6 +39,7 @@ public class ConfigScreenClientStargate extends Screen
 				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.stargate_variants"), this.width, ClientStargateConfig.stargate_variants));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.unique_symbols"), this.width, ClientStargateConfig.unique_symbols));
+		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.shiny_event_horizons"), this.width, ClientStargateConfig.shiny_event_horizons));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.enable_vortex"), this.width, ClientStargateConfig.enable_vortex));
 		this.configList.add(new SliderConfigEntry(Component.translatable("gui.sgjourney.event_horizon_distortion"), Component.empty(), this.width, ClientStargateConfig.event_horizon_distortion));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.use_movie_stargate_model"), this.width, ClientStargateConfig.use_movie_stargate_model));
@@ -57,12 +57,12 @@ public class ConfigScreenClientStargate extends Screen
     }
 	
 	@Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.renderBackground(poseStack);
-        this.configList.render(poseStack, mouseX, mouseY, partialTick);
-        drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
-        super.render(poseStack, mouseX, mouseY, partialTick);
+        this.renderBackground(graphics);
+        this.configList.render(graphics, mouseX, mouseY, partialTick);
+        graphics.drawString(this.font, this.title, this.width / 2, 8, 16777215);
+        super.render(graphics, mouseX, mouseY, partialTick);
     }
 	
 }

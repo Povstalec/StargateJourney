@@ -1,9 +1,8 @@
 package net.povstalec.sgjourney.client.screens.config;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -67,11 +66,11 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 		}
 
 		@Override
-		public void render(PoseStack stack, int i, int j, int k, int l, int m, int n, int o, boolean bl, float partialTick)
+		public void render(GuiGraphics graphics, int i, int j, int k, int l, int m, int n, int o, boolean bl, float partialTick)
 		{
 			this.resetToDefault.setX(k + 210);
 	        this.resetToDefault.setY(j);
-	        this.resetToDefault.render(stack, n, o, partialTick);
+	        this.resetToDefault.render(graphics, n, o, partialTick);
 		}
 	}
 	
@@ -112,12 +111,12 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 	    }
 		
 		@Override
-		public void render(PoseStack stack, int i, int j, int k, int l, int m, int n, int o, boolean bl, float partialTick)
+		public void render(GuiGraphics graphics, int i, int j, int k, int l, int m, int n, int o, boolean bl, float partialTick)
 		{
 			this.cycleButton.setX(k);
 	        this.cycleButton.setY(j);
-	        this.cycleButton.render(stack, n, o, partialTick);
-			super.render(stack, i, j, k, l, m, n, o, bl, partialTick);
+	        this.cycleButton.render(graphics, n, o, partialTick);
+			super.render(graphics, i, j, k, l, m, n, o, bl, partialTick);
 		}
 		
 	}
@@ -186,12 +185,12 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 	    }
 		
 		@Override
-		public void render(PoseStack stack, int i, int j, int k, int l, int m, int n, int o, boolean bl, float partialTick)
+		public void render(GuiGraphics graphics, int i, int j, int k, int l, int m, int n, int o, boolean bl, float partialTick)
 		{
 			this.sliderButton.setX(k);
 	        this.sliderButton.setY(j);
-	        this.sliderButton.render(stack, n, o, partialTick);
-			super.render(stack, i, j, k, l, m, n, o, bl, partialTick);
+	        this.sliderButton.render(graphics, n, o, partialTick);
+			super.render(graphics, i, j, k, l, m, n, o, bl, partialTick);
 		}
 		
 	}
