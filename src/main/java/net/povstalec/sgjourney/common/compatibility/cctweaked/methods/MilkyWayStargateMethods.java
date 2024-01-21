@@ -140,7 +140,7 @@ public class MilkyWayStargateMethods
 		@Override
 		public String getName()
 		{
-			return "raiseChevron";
+			return "openChevron";
 		}
 
 		@Override
@@ -182,7 +182,7 @@ public class MilkyWayStargateMethods
 		@Override
 		public String getName()
 		{
-			return "lowerChevron";
+			return "closeChevron";
 		}
 
 		@Override
