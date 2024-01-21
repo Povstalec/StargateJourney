@@ -106,28 +106,28 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
+			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> chevronConfiguration = (Map<Double, Double>) arguments.getTable(0);
 				
 				int[] configurationArray = ArrayHelper.tableToArray(chevronConfiguration);
 
 				
-				if(configurationArray.length != 9)
-					throw new LuaException("Array is too short");
+				if(configurationArray.length < 9)
+					throw new LuaException("Array is too short (required length: 9)");
+				else if(configurationArray.length > 9)
+					throw new LuaException("Array is too long (required length: 9)");
 				else if(!ArrayHelper.differentNumbers(configurationArray))
 					throw new LuaException("Array contains duplicate numbers");
-				else if(!ArrayHelper.differentNumbers(configurationArray))
-					throw new LuaException("Array contains duplicate numbers");
-				else if(!ArrayHelper.isArrayPositive(configurationArray, true))
-					throw new LuaException("Array contains negative numbers");
+				else if(!ArrayHelper.isArrayInBounds(configurationArray, 0, 8))
+					throw new LuaException("Array contains numbers which are out of bounds <0,8>");
 				
 				stargate.setEngagedChevrons(configurationArray);
 				
-				return null;
+				return  new Object[] {"Chevron configuration set successfully"};
 			});
 			
-			return MethodResult.of();
+			return result;
 		}
 	}
 

@@ -51,4 +51,15 @@ public class ArrayHelper
 		
 		return true;
 	}
+	
+	public static boolean isArrayInBounds(int[] array, int lowestAllowed, int highestAllowed)
+	{
+		for(int i = 0; i < array.length; i++)
+		{
+			if(array[i] < lowestAllowed || array[i] > highestAllowed)
+				return false;
+		}
+		
+		return true;
+	}
 }
