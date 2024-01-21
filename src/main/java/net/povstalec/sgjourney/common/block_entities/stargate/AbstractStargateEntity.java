@@ -369,6 +369,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.connectionID = connectionID;
 		this.setConnected(connectionState);
 		this.timesOpened++;
+		this.animationTick = 0;
 		this.setChanged();
 		
 		this.updateStargate(false);
@@ -1150,7 +1151,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)
     {
-		stargate.increaseTickCount();
+		if(stargate.isConnected())
+			stargate.increaseTickCount();
 		
 		if(level.isClientSide())
 			return;
