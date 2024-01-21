@@ -10,7 +10,8 @@
 	"model":
 	{
 		"alternate_model": true,
-		"back_chevrons": true
+		"back_chevrons": true,
+		"chevrons_glow:": false
 	},
 	
 	"sounds":
@@ -18,13 +19,13 @@
 		"chevron_engage_sound": "sgjourney:movie_chevron_engage",
 		"chevron_open_sound": "sgjourney:movie_chevron_open",
 		"primary_chevron_open_sound": "sgjourney:movie_chevron_open",
-		"primary_chevron_engage_sound": "sgjourney:nothing",
+		"primary_chevron_engage_sound": "sgjourney:empty",
 		
 		"fail_sound": "sgjourney:milky_way_dial_fail",
 		
 		"wormhole_open_sound": "sgjourney:movie_wormhole_open",
 		"wormhole_close_sound": "sgjourney:movie_wormhole_close",
 
-		"rotation_buildup_sound": "sgjourney:nothing"
+		"rotation_buildup_sound": "sgjourney:empty"
 	}
 }
