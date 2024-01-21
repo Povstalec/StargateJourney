@@ -69,7 +69,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 	@Override
 	protected void renderChevron(TollanStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
-		int chevron = getChevron(stargate, chevronNumber, chevronEngaged);
+		int chevron = getChevron(stargate, chevronNumber);
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();

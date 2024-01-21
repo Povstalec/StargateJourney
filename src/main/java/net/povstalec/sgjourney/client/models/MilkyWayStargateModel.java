@@ -135,7 +135,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			return false;
 		
 		int chevronsRendered = stargate.chevronsRendered();
-		
+		System.out.println(chevronNumber + " < " + (chevronsRendered + 1));
 		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
 			return true;
 		
@@ -151,10 +151,10 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				Address address = stargate.getAddress();
 				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
 				{
-					if(chevronNumber == chevronsRendered)
+					if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered))
 						return true;
 				}
-				else if(chevronNumber == getChevron(stargate, chevronsRendered + 1, true))
+				else if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered + 1))
 					return true;
 			}
 		}
@@ -195,15 +195,15 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				Address address = stargate.getAddress();
 				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
 				{
-					if(chevronNumber == chevronsRendered)
+					if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered))
 						return true;
 				}
-				else if(chevronNumber == getChevron(stargate, chevronsRendered + 1, true))
+				else if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered + 1))
 					return true;
 			}
 		}
 		
-		if(alternateChevronLocking && chevronNumber < getChevron(stargate, chevronsRendered + 1, true))
+		if(alternateChevronLocking && getChevron(stargate, chevronNumber) < getChevron(stargate, chevronsRendered + 1))
 			return true;
 		
 		return false;

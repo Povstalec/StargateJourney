@@ -114,9 +114,9 @@ public class StargateMethods
 
 				
 				if(configurationArray.length < 9)
-					throw new LuaException("Array is too short");
+					throw new LuaException("Array is too short (required length: 9)");
 				else if(configurationArray.length > 9)
-					throw new LuaException("Array is too long");
+					throw new LuaException("Array is too long (required length: 9)");
 				else if(!ArrayHelper.differentNumbers(configurationArray))
 					throw new LuaException("Array contains duplicate numbers");
 				else if(!ArrayHelper.isArrayInBounds(configurationArray, 0, 8))

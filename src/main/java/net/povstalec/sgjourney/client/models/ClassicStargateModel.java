@@ -378,7 +378,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	protected void renderChevron(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
-		int chevron = getChevron(stargate, chevronNumber, chevronEngaged);
+		int chevron = getChevron(stargate, chevronNumber);
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		float subtracted = isChevronLowered(stargate, stargateVariant, chevronNumber) ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
 		
