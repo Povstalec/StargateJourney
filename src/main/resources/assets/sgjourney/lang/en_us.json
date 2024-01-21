@@ -144,6 +144,7 @@
 	"sounds.sgjourney.chevron_encode" : "Chevron encoded",
 	"sounds.sgjourney.chevron_engage" : "Chevron engaged",
 	"sounds.sgjourney.dial_fail" : "Stargate dialing fails",
+	"sounds.sgjourney.empty" : "ERROR, contact devs",
 	
 	"sounds.sgjourney.wormhole_open" : "Wormhole opens",
 	"sounds.sgjourney.wormhole_close" : "Wormhole closes",
