@@ -135,7 +135,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			return false;
 		
 		int chevronsRendered = stargate.chevronsRendered();
-		System.out.println(chevronNumber + " < " + (chevronsRendered + 1));
+		
 		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
 			return true;
 		
