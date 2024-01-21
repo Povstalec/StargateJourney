@@ -36,9 +36,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
 	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
 	public static final String EMPTY = StargateJourney.EMPTY;
-
-	private static final int[] dialed9ChevronConfiguration = new int[] {0, 1, 2, 3, 7, 8, 4, 5, 6};
-	private static final int[] dialed8ChevronConfiguration = new int[] {0, 1, 2, 3, 7, 4, 5, 6};
 	
 	/*
 	 * X = Width
@@ -148,32 +145,12 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		}
 	}
 	
-	public static int getChevronConfiguration(boolean defaultOrder, int addresslength, int chevron)
+	public static int getChevron(AbstractStargateEntity stargate, int chevronNumber)
 	{
-		int[] configuration;
-		
-		if(defaultOrder)
-			return chevron;
-		else
-		{
-			switch(addresslength)
-			{
-			case 7:
-				configuration = dialed8ChevronConfiguration;
-				break;
-			case 8:
-				configuration = dialed9ChevronConfiguration;
-				break;
-			default:
-				return chevron;
-			}
-		}
-		
-		if(chevron >= configuration.length)
+		if(chevronNumber < 0 || chevronNumber > 8)
 			return 0;
-		
-		int returned = configuration[chevron];
-		return returned;
+		else
+			return stargate.getEngagedChevrons()[chevronNumber];
 	}
 	
 	protected ResourceLocation getStargateTexture(StargateEntity stargate, Optional<StargateVariant> stargateVariant)

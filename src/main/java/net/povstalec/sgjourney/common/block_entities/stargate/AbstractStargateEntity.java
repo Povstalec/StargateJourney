@@ -494,17 +494,21 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public Stargate.Feedback disconnectStargate(Stargate.Feedback feedback)
 	{
-		if(!CommonStargateConfig.end_connection_from_both_ends.get() && !this.isDialingOut())
-			return Stargate.Feedback.WRONG_DISCONNECT_SIDE;
-		else if(this.getOpenTime() <= 0 && this.isConnected())
-			return Stargate.Feedback.CONNECTION_FORMING;
-		else
-			return bypassDisconnectStargate(feedback);
+		if(this.isConnected())
+		{
+			if(!CommonStargateConfig.end_connection_from_both_ends.get() && !this.isDialingOut())
+				return Stargate.Feedback.WRONG_DISCONNECT_SIDE;
+			else if(this.getOpenTime() <= 0)
+				return Stargate.Feedback.CONNECTION_FORMING;
+		}
+		
+		return bypassDisconnectStargate(feedback);
 	}
 	
 	public Stargate.Feedback bypassDisconnectStargate(Stargate.Feedback feedback)
 	{
-		StargateNetwork.get(level).terminateConnection(level.getServer(), connectionID, feedback);
+		if(connectionID != null && !connectionID.equals(EMPTY))
+			StargateNetwork.get(level).terminateConnection(level.getServer(), connectionID, feedback);
 		return resetStargate(feedback, false);
 	}
 	

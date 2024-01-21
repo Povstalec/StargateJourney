@@ -101,6 +101,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		return false;
 	}
 
+	@Override
 	protected boolean isPrimaryChevronBackRaised(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
 	{
 		if(!raiseBackChevrons(stargate, stargateVariant))
@@ -134,13 +135,13 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			return false;
 		
 		int chevronsRendered = stargate.chevronsRendered();
-		
+		System.out.println(chevronNumber + " < " + (chevronsRendered + 1));
 		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
 			return true;
 		
 		if(stargate.isChevronOpen())
 		{
-			if(stargate.getCurrentSymbol() == 0 || chevronsRendered > 8)
+			if(stargate.getCurrentSymbol() == 0 || chevronsRendered >= 8)
 			{
 				if(chevronNumber < chevronsRendered + 1)
 					return true;
@@ -150,10 +151,10 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				Address address = stargate.getAddress();
 				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
 				{
-					if(chevronNumber == chevronsRendered)
+					if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered))
 						return true;
 				}
-				else if(chevronNumber == chevronsRendered + 1)
+				else if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered + 1))
 					return true;
 			}
 		}
@@ -161,6 +162,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		return false;
 	}
 
+	@Override
 	protected boolean isChevronBackRaised(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant, int chevronNumber)
 	{
 		if(!raiseBackChevrons(stargate, stargateVariant))
@@ -193,15 +195,15 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				Address address = stargate.getAddress();
 				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
 				{
-					if(chevronNumber == chevronsRendered)
+					if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered))
 						return true;
 				}
-				else if(chevronNumber == chevronsRendered + 1)
+				else if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered + 1))
 					return true;
 			}
 		}
 		
-		if(alternateChevronLocking && chevronNumber < chevronsRendered + 1)
+		if(alternateChevronLocking && getChevron(stargate, chevronNumber) < getChevron(stargate, chevronsRendered + 1))
 			return true;
 		
 		return false;
