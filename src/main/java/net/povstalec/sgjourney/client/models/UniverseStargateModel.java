@@ -400,15 +400,15 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			else if(stargate.isConnected())
 				symbolEngaged = engageSymbolsOnIncoming(stargate, stargateVariant);
 			
-			renderSymbol(stargate, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? MAX_LIGHT : combinedLight, j, j, rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? MAX_LIGHT : combinedLight, j, j, rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
 		}
 	}
 	
-	protected void renderSymbol(UniverseStargateEntity stargate, PoseStack stack, VertexConsumer consumer,MultiBufferSource source, int combinedLight, 
+	protected void renderSymbol(UniverseStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,MultiBufferSource source, int combinedLight, 
 		int symbolNumber, int symbolRendered, float rotation,
 		Stargate.RGBA symbolColor)
 	{
-		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, symbolRendered)));
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, stargateVariant, symbolRendered)));
 		
 		stack.pushPose();
 		int symbolRow = symbolNumber / 4;
