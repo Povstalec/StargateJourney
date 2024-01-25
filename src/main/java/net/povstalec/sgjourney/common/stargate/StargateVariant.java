@@ -25,6 +25,10 @@ public class StargateVariant
 			ResourceLocation.CODEC.fieldOf("engaged_texture").forGetter(StargateVariant::getEngagedTexture),
 			ResourceLocation.CODEC.fieldOf("event_horizon_texture").forGetter(StargateVariant::getEventHorizonTexture),
 			ResourceLocation.CODEC.optionalFieldOf("shiny_event_horizon_texture").forGetter(StargateVariant::getShinyEventHorizonTexture),
+
+			PointOfOrigin.RESOURCE_KEY_CODEC.optionalFieldOf("point_of_origin").forGetter(StargateVariant::getPointOfOrigin),
+			Symbols.RESOURCE_KEY_CODEC.optionalFieldOf("symbols").forGetter(StargateVariant::getSymbols),
+			
 			Codec.INT.listOf().optionalFieldOf("symbol_color").forGetter(StargateVariant::getSymbolColor),
 			Codec.INT.listOf().optionalFieldOf("encoded_symbol_color").forGetter(StargateVariant::getEncodedSymbolColor),
 			Codec.INT.listOf().optionalFieldOf("engaged_symbol_color").forGetter(StargateVariant::getEngagedSymbolColor),
@@ -40,6 +44,9 @@ public class StargateVariant
 	private final ResourceLocation engagedTexture;
 	private final ResourceLocation eventHorizonTexture;
 	private final Optional<ResourceLocation> shinyEventHorizonTexture;
+
+	private final Optional<ResourceKey<PointOfOrigin>> pointOfOrigin;
+	private final Optional<ResourceKey<Symbols>> symbols;
 	
 	private final Optional<List<Integer>> symbolColor;
 	private final Optional<List<Integer>> encodedSymbolColor;
@@ -84,6 +91,9 @@ public class StargateVariant
 			ResourceLocation engagedTexture,
 			ResourceLocation eventHorizonTexture,
 			Optional<ResourceLocation> shinyEventHorizonTexture,
+
+			Optional<ResourceKey<PointOfOrigin>> pointOfOrigin,
+			Optional<ResourceKey<Symbols>> symbols,
 			
 			Optional<List<Integer>> symbolColor,
 			Optional<List<Integer>> encodedSymbolColor,
@@ -99,6 +109,9 @@ public class StargateVariant
 		this.engagedTexture = engagedTexture;
 		this.eventHorizonTexture = eventHorizonTexture;
 		this.shinyEventHorizonTexture = shinyEventHorizonTexture;
+		
+		this.symbols = symbols;
+		this.pointOfOrigin = pointOfOrigin;
 		
 		this.symbolColor = symbolColor;
 		this.encodedSymbolColor = encodedSymbolColor;
@@ -222,6 +235,20 @@ public class StargateVariant
 	{
 		return this.baseStargate;
 	}
+	
+	
+	
+	public Optional<ResourceKey<Symbols>> getSymbols()
+	{
+		return this.symbols;
+	}
+	
+	public Optional<ResourceKey<PointOfOrigin>> getPointOfOrigin()
+	{
+		return this.pointOfOrigin;
+	}
+	
+	
 	
 	public Optional<List<Integer>> getSymbolColor()
 	{

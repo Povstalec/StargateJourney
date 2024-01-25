@@ -119,7 +119,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	    	}
 
     		int renderedSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
-			renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, getSymbolColor(stargate, stargateVariant, true));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, getSymbolColor(stargate, stargateVariant, true));
 	    }
 		
 	}
@@ -134,13 +134,13 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			
 			// Point of Origin when Stargate is connected
 			if(stargate.isConnected())
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, getSymbolColor(stargate, stargateVariant, true));
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0, 0, getSymbolColor(stargate, stargateVariant, true));
 			
 			// Locked Symbols
 			for(int i = 0; i < stargate.getAddress().getLength(); i++)
 			{
 				int symbolNumber = stargate.getChevronPosition(i + 1);
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress().toArray()[i], 0, getSymbolColor(stargate, stargateVariant, true));
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress().toArray()[i], 0, getSymbolColor(stargate, stargateVariant, true));
 			}
 		}
 		else
@@ -153,14 +153,14 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 				symbolColor = getSymbolColor(stargate, stargateVariant, true);
 				symbolNumber = stargate.currentSymbol < this.numberOfSymbols ? stargate.currentSymbol : symbolNumber;
 				if(stargate.getKawooshTickCount() > 0)
-					renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolColor);
+					renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolColor);
 			}
 			
 			// Idle Symbols
 			for(int i = 0; i < symbolNumber; i++)
 			{
 				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % this.numberOfSymbols;
-				renderSymbol(stargate, stack, consumer, source, MAX_LIGHT, renderedSymbol, renderedSymbol, 0, symbolColor);
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, renderedSymbol, renderedSymbol, 0, symbolColor);
 			}
 		}
 	}
