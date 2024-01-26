@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -12,24 +14,23 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 
 
-public abstract class AbstractDHDBlock extends BaseEntityBlock
+public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock
 {
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-	
 	public AbstractDHDBlock(Properties properties) 
 	{
 		super(properties);
@@ -73,6 +74,8 @@ public abstract class AbstractDHDBlock extends BaseEntityBlock
         	if (blockEntity instanceof AbstractDHDEntity dhd)
         		dhd.disconnectFromStargate();
 		}
+		
+		super.onRemove(oldState, level, pos, newState, isMoving);
 	}
     
     public abstract Block getDHD();
@@ -115,5 +118,12 @@ public abstract class AbstractDHDBlock extends BaseEntityBlock
 			}
 		};
 		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Nullable
+	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typeA, BlockEntityType<E> typeB, BlockEntityTicker<? super E> ticker)
+	{
+		return typeB == typeA ? (BlockEntityTicker<A>)ticker : null;
 	}
 }

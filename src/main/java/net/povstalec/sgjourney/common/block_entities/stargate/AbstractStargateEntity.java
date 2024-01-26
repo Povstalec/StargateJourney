@@ -1079,8 +1079,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(level.isClientSide())
 			return;
 		
-		super.getStatus(player);
-		
 		player.sendSystemMessage(Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": " + pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
@@ -1090,6 +1088,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": " + address.toString())).withStyle(ChatFormatting.GREEN));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
+		
+		super.getStatus(player);
 	}
 	
 	@Override
