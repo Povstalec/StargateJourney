@@ -134,28 +134,28 @@ public class StargateVariant
 		}
 	}
 	
-	private void setupModel(Map<String, Boolean> soundMap)
+	private void setupModel(Map<String, Boolean> modelMap)
 	{
-		if(soundMap.containsKey("alternate_model"))
-			this.useAlternateModel = Optional.of(soundMap.get("alternate_model"));
+		if(modelMap.containsKey("alternate_model"))
+			this.useAlternateModel = Optional.of(modelMap.get("alternate_model"));
 		
-		if(soundMap.containsKey("back_chevrons"))
-			this.backChevrons = Optional.of(soundMap.get("back_chevrons"));
+		if(modelMap.containsKey("back_chevrons"))
+			this.backChevrons = Optional.of(modelMap.get("back_chevrons"));
 		
-		if(soundMap.containsKey("symbols_glow"))
-			this.symbolsGlow = Optional.of(soundMap.get("symbols_glow"));
+		if(modelMap.containsKey("symbols_glow"))
+			this.symbolsGlow = Optional.of(modelMap.get("symbols_glow"));
 		
-		if(soundMap.containsKey("encoded_symbols_glow"))
-			this.encodedSymbolsGlow = Optional.of(soundMap.get("encoded_symbols_glow"));
+		if(modelMap.containsKey("encoded_symbols_glow"))
+			this.encodedSymbolsGlow = Optional.of(modelMap.get("encoded_symbols_glow"));
 		
-		if(soundMap.containsKey("engaged_symbols_glow"))
-			this.engagedSymbolsGlow = Optional.of(soundMap.get("engaged_symbols_glow"));
+		if(modelMap.containsKey("engaged_symbols_glow"))
+			this.engagedSymbolsGlow = Optional.of(modelMap.get("engaged_symbols_glow"));
 		
-		if(soundMap.containsKey("engage_encoded_symbols"))
-			this.engageEncodedSymbols = Optional.of(soundMap.get("engage_encoded_symbols"));
+		if(modelMap.containsKey("engage_encoded_symbols"))
+			this.engageEncodedSymbols = Optional.of(modelMap.get("engage_encoded_symbols"));
 		
-		if(soundMap.containsKey("engage_symbols_on_incoming"))
-			this.engageSymbolsOnIncoming = Optional.of(soundMap.get("engage_symbols_on_incoming"));
+		if(modelMap.containsKey("engage_symbols_on_incoming"))
+			this.engageSymbolsOnIncoming = Optional.of(modelMap.get("engage_symbols_on_incoming"));
 	}
 	
 	private void setupSounds(Map<String, ResourceLocation> soundMap)

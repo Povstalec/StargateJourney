@@ -62,8 +62,8 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	@Override
 	public void invalidateCaps()
 	{
-		super.invalidateCaps();
 		handler.invalidate();
+		super.invalidateCaps();
 	}
 	
 	@Nonnull
