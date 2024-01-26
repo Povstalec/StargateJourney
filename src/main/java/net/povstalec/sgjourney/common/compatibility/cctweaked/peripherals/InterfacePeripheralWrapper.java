@@ -33,7 +33,7 @@ public class InterfacePeripheralWrapper
 	public boolean resetInterface()
 	{
 		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-		if (basicInterfacePeripheral != null && basicInterfacePeripheral.equals(newPeripheral))
+		if(basicInterfacePeripheral != null && basicInterfacePeripheral.equals(newPeripheral))
 		{
 			// Peripheral is same as before, no changes needed.
 			return false;
@@ -41,7 +41,7 @@ public class InterfacePeripheralWrapper
 
 		// Peripheral has changed, invalidate the capability and trigger a block update.
 		basicInterfacePeripheral = newPeripheral;
-		if (peripheral != null)
+		if(peripheral != null)
 		{
 			peripheral.invalidate();
 			peripheral = LazyOptional.of(() -> newPeripheral);
@@ -51,7 +51,7 @@ public class InterfacePeripheralWrapper
 	
 	public LazyOptional<IPeripheral> newPeripheral()
 	{
-		basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.energyBlockEntity);
+		basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
 		peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
 		
 		if(peripheral == null)

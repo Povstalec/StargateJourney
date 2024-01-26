@@ -109,6 +109,7 @@ public class TabInit
 					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_movie"));
 					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_promo"));
 					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_sg-1"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:pegasus_atlantis"));
 					items.accept(StargateVariantItem.stargateVariant("sgjourney:classic_milky_way"));
 				}
 			});
