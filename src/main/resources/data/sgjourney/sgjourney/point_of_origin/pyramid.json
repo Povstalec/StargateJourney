@@ -1,0 +1,5 @@
+{
+	"name": "point_of_origin.sgjourney.pyramid",
+	"texture": "sgjourney:milky_way/points_of_origin/pyramid.png",
+	"generates_randomly": true
+}
