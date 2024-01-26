@@ -43,8 +43,8 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	@Override
 	public void invalidateCaps()
 	{
-		super.invalidateCaps();
 		lazyEnergyHandler.invalidate();
+		super.invalidateCaps();
 	}
 	
 	@Override

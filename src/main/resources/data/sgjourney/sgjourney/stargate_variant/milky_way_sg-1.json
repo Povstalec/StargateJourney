@@ -6,6 +6,9 @@
 	"shiny_event_horizon_texture": "sgjourney:textures/entity/stargate/milky_way/sg-1/sg-1_event_horizon_shiny.png",
 	"symbol_color": [48, 49, 63, 255],
 	
+	"point_of_origin": "sgjourney:tauri",
+	"symbols": "sgjourney:milky_way",
+	
 	"model":
 	{
 		"alternate_model": false,

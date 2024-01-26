@@ -1,0 +1,5 @@
+{
+	"name": "point_of_origin.sgjourney.triforce",
+	"texture": "sgjourney:milky_way/points_of_origin/triforce.png",
+	"generates_randomly": true
+}
