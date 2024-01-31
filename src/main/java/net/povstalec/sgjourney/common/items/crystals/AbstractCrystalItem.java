@@ -47,17 +47,17 @@ public abstract class AbstractCrystalItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-//		if(descriptionInDHD().isPresent())
-//		{
-//			tooltipComponents.add(Component.translatable("tooltip.sgjourney.crystal.in_dhd").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.ITALIC));
-//			tooltipComponents.add(descriptionInDHD().get());
-//		}
+		if(descriptionInDHD().isPresent())
+		{
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.crystal.in_dhd").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.ITALIC));
+			tooltipComponents.add(descriptionInDHD().get());
+		}
 
-//		if(descriptionInRing().isPresent())
-//		{
-//			tooltipComponents.add(Component.translatable("tooltip.sgjourney.crystal.in_ring").withStyle(ChatFormatting.AQUA).withStyle(ChatFormatting.ITALIC));
-//			tooltipComponents.add(descriptionInRing().get());
-//		}
+		/*if(descriptionInRing().isPresent())
+		{
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.crystal.in_ring").withStyle(ChatFormatting.AQUA).withStyle(ChatFormatting.ITALIC));
+			tooltipComponents.add(descriptionInRing().get());
+		}*/
 
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
