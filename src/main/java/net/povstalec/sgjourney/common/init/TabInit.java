@@ -154,6 +154,7 @@ public class TabInit
 				items.accept(BlockInit.SANDSTONE_HIEROGLYPHS.get());
 				items.accept(BlockInit.SANDSTONE_SWITCH.get());
 				items.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
+				items.accept(BlockInit.SANDSTONE_WITH_GOLD.get());
 				items.accept(BlockInit.SANDSTONE_SYMBOL.get());
 				items.accept(BlockInit.STONE_SYMBOL.get());
 				
