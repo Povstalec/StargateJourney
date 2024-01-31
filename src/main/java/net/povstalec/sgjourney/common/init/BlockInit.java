@@ -165,6 +165,8 @@ public class BlockInit
 			.sound(SoundType.STONE).lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 15 : 0), ParticleTypes.FLAME));
 	public static final RegistryObject<Block> SANDSTONE_WITH_LAPIS = registerBlock("sandstone_with_lapis", 
 			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> SANDSTONE_WITH_GOLD = registerBlock("sandstone_with_gold",
+			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.7F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> SANDSTONE_HIEROGLYPHS = registerBlock("sandstone_hieroglyphs", 
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<SecretSwitchBlock> SANDSTONE_SWITCH = registerBlock("sandstone_switch", 
