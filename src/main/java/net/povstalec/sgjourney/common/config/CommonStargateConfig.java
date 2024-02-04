@@ -13,7 +13,6 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue kawoosh_destroys_blocks;
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_items;
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_entities;
-	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_create_entities;
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	public static ForgeConfigSpec.BooleanValue always_display_stargate_id;
 	public static ForgeConfigSpec.IntValue max_obstructive_blocks;
@@ -67,10 +66,6 @@ public class CommonStargateConfig
 		kawoosh_disintegrates_entities = server
 				.comment("If true, allow the disintegration of Entities by Kawooshes")
 				.define("server.kawoosh_disintegrates_entities", true);
-		
-		kawoosh_disintegrates_create_entities = server
-				.comment("If true, allow the disintegration of Create Entities by Kawooshes")
-				.define("server.kawoosh_disintegrates_create_entities", false);
 		
 		kawoosh_disintegrates_items = server
 				.comment("If true, allow the disintegration of Items by Kawooshes")
