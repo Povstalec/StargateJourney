@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	
+	"_comment": " This biome tag can specify the biome directly. Or specify another biome tag by starting with # ",
+	"values":
+	[
+		{"id": "ad_astra:glacio_ice_peaks", "required": false},
+		{"id": "ad_astra:glacio_snowy_barrens", "required": false}
+	]
+}
