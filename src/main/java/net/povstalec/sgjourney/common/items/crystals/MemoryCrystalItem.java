@@ -230,7 +230,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 			return DEFAULT_MEMORY_CAPACITY;
 		}
 
-		@Override
+		/*@Override
 		public Optional<Component> descriptionInDHD()
 		{
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.memory.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
@@ -240,7 +240,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		public Optional<Component> descriptionInRing()
 		{
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_ring.memory.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		}
+		}*/
 
 		@Override
 		public boolean isAdvanced()
