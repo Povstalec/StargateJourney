@@ -2,7 +2,7 @@
 	"block.sgjourney.naquadah_ore": "Naquadah Ore",
 	"block.sgjourney.nether_naquadah_ore": "Nether Naquadah Ore",
 	"block.sgjourney.deepslate_naquadah_ore": "Deepslate Naquadah Ore",
-	"block.sgjourney.raw_naquadah_block": "Raw Naquadah Block",
+	"block.sgjourney.raw_naquadah_block": "Block of Raw Naquadah",
 	"block.sgjourney.naquadah_block": "Block of Naquadah",
 	"block.sgjourney.naquadah_stairs": "Naquadah Stairs",
 	"block.sgjourney.naquadah_slab": "Naquadah Slab",
@@ -14,6 +14,7 @@
 	"block.sgjourney.golden_idol": "Golden Idol",
 
 	"block.sgjourney.sandstone_with_lapis": "Sandstone With Lapis",
+	"block.sgjourney.sandstone_with_gold": "Sandstone With Gold",
 	"block.sgjourney.sandstone_hieroglyphs": "Sandstone With Hieroglyphs",
 	"block.sgjourney.sandstone_switch": "Sandstone Switch",
 	"block.sgjourney.sandstone_symbol": "Sandstone Symbol",
@@ -282,6 +283,7 @@
 	
 	"tooltip.sgjourney.crystal.none": "None",
 	"tooltip.sgjourney.crystal.in_dhd": "In DHD:",
+	"tooltip.sgjourney.crystal.in_ring_panel": "In Ring Panel:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Enables advanced protocols in Stargate",
 	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Enables advanced protocols in Stargate",
 	"tooltip.sgjourney.crystal.in_dhd.energy": "Increases targeted Energy capacity in Stargate by 50000 FE",

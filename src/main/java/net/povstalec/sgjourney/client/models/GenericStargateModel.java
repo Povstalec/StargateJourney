@@ -125,7 +125,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 	protected void renderChevron(StargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
-		int chevron = getChevron(stargate, chevronNumber);
+		int chevron = AbstractStargateEntity.getChevron(stargate, chevronNumber);
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();

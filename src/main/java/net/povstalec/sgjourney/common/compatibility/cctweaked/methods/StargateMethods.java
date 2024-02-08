@@ -221,7 +221,7 @@ public class StargateMethods
 		@Override
 		public String getName()
 		{
-			return "setRestrictNetwork";
+			return "restrictNetwork";
 		}
 
 		@Override
@@ -243,7 +243,7 @@ public class StargateMethods
 		@Override
 		public String getName()
 		{
-			return "getRestrictNetwork";
+			return "isNetworkRestricted";
 		}
 
 		@Override

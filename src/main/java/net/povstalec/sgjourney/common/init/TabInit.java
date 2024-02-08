@@ -28,89 +28,89 @@ public class TabInit
 		{
 			builder.title(Component.translatable("itemGroup.stargate_items"))
 			.icon(() -> new ItemStack(ItemInit.NAQUADAH.get()))
-			.displayItems((parameters, output) ->
+			.displayItems((parameters, items) ->
 			{
-				output.accept(ItemInit.RAW_NAQUADAH.get());
-				output.accept(ItemInit.NAQUADAH_ALLOY.get());
-				output.accept(ItemInit.PURE_NAQUADAH.get());
-				output.accept(ItemInit.NAQUADAH.get());
-				output.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
-				output.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
-				output.accept(ItemInit.VIAL.get());
-				output.accept(VialItem.liquidNaquadahSetup());
-				output.accept(VialItem.heavyLiquidNaquadahSetup());
+				items.accept(ItemInit.RAW_NAQUADAH.get());
+				items.accept(ItemInit.NAQUADAH_ALLOY.get());
+				items.accept(ItemInit.PURE_NAQUADAH.get());
+				items.accept(ItemInit.NAQUADAH.get());
+				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
+				items.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
+				items.accept(ItemInit.VIAL.get());
+				items.accept(VialItem.liquidNaquadahSetup());
+				items.accept(VialItem.heavyLiquidNaquadahSetup());
 
-				output.accept(ItemInit.NAQUADAH_ROD.get());
-				output.accept(ItemInit.REACTION_CHAMBER.get());
-				output.accept(ItemInit.PLASMA_CONVERTER.get());
+				items.accept(ItemInit.NAQUADAH_ROD.get());
+				items.accept(ItemInit.REACTION_CHAMBER.get());
+				items.accept(ItemInit.PLASMA_CONVERTER.get());
 				
-				output.accept(ItemInit.PDA.get());
+				items.accept(ItemInit.PDA.get());
 				
-				output.accept(ItemInit.NAQUADAH_SWORD.get());
-				output.accept(ItemInit.NAQUADAH_PICKAXE.get());
-				output.accept(ItemInit.NAQUADAH_AXE.get());
-				output.accept(ItemInit.NAQUADAH_SHOVEL.get());
-				output.accept(ItemInit.NAQUADAH_HOE.get());
+				items.accept(ItemInit.NAQUADAH_SWORD.get());
+				items.accept(ItemInit.NAQUADAH_PICKAXE.get());
+				items.accept(ItemInit.NAQUADAH_AXE.get());
+				items.accept(ItemInit.NAQUADAH_SHOVEL.get());
+				items.accept(ItemInit.NAQUADAH_HOE.get());
 				
-				output.accept(ItemInit.NAQUADAH_HELMET.get());
-				output.accept(ItemInit.NAQUADAH_CHESTPLATE.get());
-				output.accept(ItemInit.NAQUADAH_LEGGINGS.get());
-				output.accept(ItemInit.NAQUADAH_BOOTS.get());
+				items.accept(ItemInit.NAQUADAH_HELMET.get());
+				items.accept(ItemInit.NAQUADAH_CHESTPLATE.get());
+				items.accept(ItemInit.NAQUADAH_LEGGINGS.get());
+				items.accept(ItemInit.NAQUADAH_BOOTS.get());
 				
-				output.accept(ItemInit.KARA_KESH.get());
-				output.accept(ItemInit.RING_REMOTE.get());
+				items.accept(ItemInit.KARA_KESH.get());
+				items.accept(ItemInit.RING_REMOTE.get());
 				
-				output.accept(ItemInit.MATOK.get());
+				items.accept(ItemInit.MATOK.get());
 				
-				output.accept(ItemInit.JACKAL_HELMET.get());
+				items.accept(ItemInit.JACKAL_HELMET.get());
 				//items.accept(ItemInit.HORUS_HELMET.get());
-				output.accept(ItemInit.JAFFA_HELMET.get());
-				output.accept(ItemInit.JAFFA_CHESTPLATE.get());
-				output.accept(ItemInit.JAFFA_LEGGINGS.get());
-				output.accept(ItemInit.JAFFA_BOOTS.get());
+				items.accept(ItemInit.JAFFA_HELMET.get());
+				items.accept(ItemInit.JAFFA_CHESTPLATE.get());
+				items.accept(ItemInit.JAFFA_LEGGINGS.get());
+				items.accept(ItemInit.JAFFA_BOOTS.get());
 
-				output.accept(ItemInit.ZPM.get());
+				items.accept(ItemInit.ZPM.get());
 				//items.accept(ItemInit.PERSONAL_SHIELD_EMITTER.get());
-				output.accept(PersonalShieldItem.personalShieldSetup());
+				items.accept(PersonalShieldItem.personalShieldSetup());
 
-				output.accept(ItemInit.SYRINGE.get());
-				output.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
-				output.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
+				items.accept(ItemInit.SYRINGE.get());
+				items.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
+				items.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
 				
-				output.accept(ItemInit.CRYSTAL_BASE.get());
-				output.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
+				items.accept(ItemInit.CRYSTAL_BASE.get());
+				items.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
 				
-				output.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
-				output.accept(ItemInit.CONTROL_CRYSTAL.get());
-				output.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
-				output.accept(ItemInit.MEMORY_CRYSTAL.get());
-				output.accept(ItemInit.ADVANCED_MEMORY_CRYSTAL.get());
+				items.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
+				items.accept(ItemInit.CONTROL_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
+				items.accept(ItemInit.MEMORY_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_MEMORY_CRYSTAL.get());
 				//output.accept(MemoryCrystalItem.atlantisAddress());
 				//output.accept(MemoryCrystalItem.abydosAddress());
-				output.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
-				output.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
-				output.accept(ItemInit.ENERGY_CRYSTAL.get());
-				output.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
-				output.accept(ItemInit.TRANSFER_CRYSTAL.get());
-				output.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
-				output.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
-				output.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
+				items.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
+				items.accept(ItemInit.ENERGY_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
+				items.accept(ItemInit.TRANSFER_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
+				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
+				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
 				
 				if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
 				{
-					output.accept(StargateUpgradeItem.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
-					output.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
-					output.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
-					output.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
 				}
 				if(CommonStargateConfig.enable_stargate_variants.get())
 				{
-					output.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
-					output.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_movie"));
-					output.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_promo"));
-					output.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_sg-1"));
-					output.accept(StargateVariantItem.stargateVariant("sgjourney:pegasus_atlantis"));
-					output.accept(StargateVariantItem.stargateVariant("sgjourney:classic_milky_way"));
+					items.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_movie"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_promo"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_sg-1"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:pegasus_atlantis"));
+					items.accept(StargateVariantItem.stargateVariant("sgjourney:classic_milky_way"));
 				}
 			});
 		});
@@ -119,65 +119,66 @@ public class TabInit
 		{
 			builder.title(Component.translatable("itemGroup.stargate_blocks"))
 			.icon(() -> new ItemStack(BlockInit.NAQUADAH_BLOCK.get()))
-			.displayItems((parameters, output) ->
+			.displayItems((parameters, items) ->
 			{
-				output.accept(BlockInit.UNIVERSE_STARGATE.get());
-				output.accept(BlockInit.MILKY_WAY_STARGATE.get());
-				output.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
-				output.accept(BlockInit.PEGASUS_STARGATE.get());
-				output.accept(PegasusDHDBlock.pegasusCrystalSetup());
-				output.accept(BlockInit.CLASSIC_STARGATE.get());
-				output.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
-				output.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
-				output.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
-				output.accept(BlockInit.CLASSIC_DHD.get());
-				output.accept(BlockInit.TOLLAN_STARGATE.get());
+				items.accept(BlockInit.UNIVERSE_STARGATE.get());
+				items.accept(BlockInit.MILKY_WAY_STARGATE.get());
+				items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
+				items.accept(BlockInit.PEGASUS_STARGATE.get());
+				items.accept(PegasusDHDBlock.pegasusCrystalSetup());
+				items.accept(BlockInit.CLASSIC_STARGATE.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_DHD.get());
+				items.accept(BlockInit.TOLLAN_STARGATE.get());
 
-				output.accept(BlockInit.TRANSPORT_RINGS.get());
-				output.accept(BlockInit.RING_PANEL.get());
+				items.accept(BlockInit.TRANSPORT_RINGS.get());
+				items.accept(BlockInit.RING_PANEL.get());
 				
-				output.accept(BlockInit.ARCHEOLOGY_TABLE.get());
-				output.accept(BlockInit.GOLDEN_IDOL.get());
+				items.accept(BlockInit.ARCHEOLOGY_TABLE.get());
+				items.accept(BlockInit.GOLDEN_IDOL.get());
 
-				output.accept(BlockInit.NAQUADAH_ORE.get());
-				output.accept(BlockInit.DEEPSLATE_NAQUADAH_ORE.get());
-				output.accept(BlockInit.NETHER_NAQUADAH_ORE.get());
-				output.accept(BlockInit.RAW_NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.NAQUADAH_ORE.get());
+				items.accept(BlockInit.DEEPSLATE_NAQUADAH_ORE.get());
+				items.accept(BlockInit.NETHER_NAQUADAH_ORE.get());
+				items.accept(BlockInit.RAW_NAQUADAH_BLOCK.get());
 				
-				output.accept(BlockInit.NAQUADAH_BLOCK.get());
-				output.accept(BlockInit.NAQUADAH_STAIRS.get());
-				output.accept(BlockInit.NAQUADAH_SLAB.get());
-				output.accept(BlockInit.CUT_NAQUADAH_BLOCK.get());
-				output.accept(BlockInit.CUT_NAQUADAH_STAIRS.get());
-				output.accept(BlockInit.CUT_NAQUADAH_SLAB.get());
+				items.accept(BlockInit.NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.NAQUADAH_SLAB.get());
+				items.accept(BlockInit.CUT_NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.CUT_NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.CUT_NAQUADAH_SLAB.get());
 				
-				output.accept(BlockInit.SANDSTONE_HIEROGLYPHS.get());
-				output.accept(BlockInit.SANDSTONE_SWITCH.get());
-				output.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
-				output.accept(BlockInit.SANDSTONE_SYMBOL.get());
-				output.accept(BlockInit.STONE_SYMBOL.get());
+				items.accept(BlockInit.SANDSTONE_HIEROGLYPHS.get());
+				items.accept(BlockInit.SANDSTONE_SWITCH.get());
+				items.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
+				items.accept(BlockInit.SANDSTONE_WITH_GOLD.get());
+				items.accept(BlockInit.SANDSTONE_SYMBOL.get());
+				items.accept(BlockInit.STONE_SYMBOL.get());
 				
-				output.accept(BlockInit.SANDSTONE_CARTOUCHE.get());
-				output.accept(BlockInit.STONE_CARTOUCHE.get());
+				items.accept(BlockInit.SANDSTONE_CARTOUCHE.get());
+				items.accept(BlockInit.STONE_CARTOUCHE.get());
 				
-				output.accept(BlockInit.FIRE_PIT.get());
+				items.accept(BlockInit.FIRE_PIT.get());
 				
-				output.accept(BlockInit.NAQUADAH_LIQUIDIZER.get());
-				output.accept(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
+				items.accept(BlockInit.NAQUADAH_LIQUIDIZER.get());
+				items.accept(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
 				
-				output.accept(BlockInit.CRYSTALLIZER.get());
-				output.accept(BlockInit.ADVANCED_CRYSTALLIZER.get());
+				items.accept(BlockInit.CRYSTALLIZER.get());
+				items.accept(BlockInit.ADVANCED_CRYSTALLIZER.get());
 
-				output.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
-				output.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
+				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
+				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 				
-				output.accept(BlockInit.BASIC_INTERFACE.get());
-				output.accept(BlockInit.CRYSTAL_INTERFACE.get());
-				output.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+				items.accept(BlockInit.BASIC_INTERFACE.get());
+				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
+				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 
-				output.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
+				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				
-				output.accept(BlockInit.ZPM_HUB.get());
+				items.accept(BlockInit.ZPM_HUB.get());
 			});
 		});
 	}

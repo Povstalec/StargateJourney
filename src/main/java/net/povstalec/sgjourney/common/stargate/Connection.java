@@ -229,7 +229,7 @@ public class Connection
 				else
 				{
 					this.dialedStargate.chevronSound(true, true, false, false);
-					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().getLength() + 1, true, 0);
+					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().getLength() + 1, AbstractStargateEntity.getChevron(this.dialedStargate, this.dialedStargate.getAddress().getLength()), true, 0);
 				}
 			}
 			

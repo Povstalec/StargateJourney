@@ -31,7 +31,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	protected static final float NUMBER_OF_CHEVRONS = 9;
 	protected static final float CHEVRON_ANGLE = 360F / 9;
 	
-	protected static final int MAX_LIGHT = 15728864;
+	protected static final int MAX_LIGHT = 15728880;
 	
 	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
 	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
@@ -155,14 +155,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			
 			return ERROR_LOCATION;
 		}
-	}
-	
-	public static int getChevron(AbstractStargateEntity stargate, int chevronNumber)
-	{
-		if(chevronNumber < 0 || chevronNumber > 8)
-			return 0;
-		else
-			return stargate.getEngagedChevrons()[chevronNumber];
 	}
 	
 	protected ResourceLocation getStargateTexture(StargateEntity stargate, Optional<StargateVariant> stargateVariant)

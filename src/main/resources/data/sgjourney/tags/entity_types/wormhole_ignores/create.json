@@ -1,0 +1,12 @@
+{
+	"replace": false,
+	"values":
+	[
+		"create:carriage_contraption",
+		"create:contraption",
+		"create:gantry_contraption",
+		"create:seat",
+		"create:stationary_contraption",
+		"create:super_glue"
+	]
+}

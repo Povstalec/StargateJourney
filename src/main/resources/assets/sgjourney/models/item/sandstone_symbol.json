@@ -1,7 +1,3 @@
 {
-    "parent": "item/generated",
-    "textures": 
-	{
-        "layer0": "sgjourney:item/sandstone_symbol"
-    }
+    "parent": "sgjourney:block/sandstone_symbol"
 }

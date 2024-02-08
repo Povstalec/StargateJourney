@@ -18,27 +18,32 @@ public abstract class AbstractCrystalItem extends Item
 	{
 		super(properties);
 	}
-	
+
 	public boolean isLarge()
 	{
 		return false;
 	}
-	
+
 	public boolean isAdvanced()
 	{
 		return false;
 	}
-	
+
 	public boolean isRegular()
 	{
 		return !isAdvanced() && !isLarge();
 	}
-	
+
 	public Optional<Component> descriptionInDHD()
 	{
 		return Optional.empty();
 	}
-	
+
+	public Optional<Component> descriptionInRing()
+	{
+		return Optional.empty();
+	}
+
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
@@ -47,7 +52,13 @@ public abstract class AbstractCrystalItem extends Item
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.crystal.in_dhd").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.ITALIC));
 			tooltipComponents.add(descriptionInDHD().get());
 		}
-		
+
+		/*if(descriptionInRing().isPresent())
+		{
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.crystal.in_ring").withStyle(ChatFormatting.AQUA).withStyle(ChatFormatting.ITALIC));
+			tooltipComponents.add(descriptionInRing().get());
+		}*/
+
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 }
