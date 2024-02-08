@@ -128,10 +128,15 @@ public class StaffWeaponItem extends Item
 				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
 				{
 					ItemStack returnStack;
-					if(!mainHandStack.isEmpty())
-						returnStack = itemHandler.insertItem(0, mainHandStack, false);
-					else
+					if(mainHandStack.isEmpty())
 						returnStack = itemHandler.extractItem(0, 1, false);
+					else if(mainHandStack.is(ItemInit.VIAL.get()))
+					{
+						returnStack = itemHandler.extractItem(0, 1, false);
+						itemHandler.insertItem(0, mainHandStack, false);
+					}
+					else
+						returnStack = itemHandler.insertItem(0, mainHandStack, false);
 					
 					player.setItemInHand(InteractionHand.MAIN_HAND, returnStack);
 				});

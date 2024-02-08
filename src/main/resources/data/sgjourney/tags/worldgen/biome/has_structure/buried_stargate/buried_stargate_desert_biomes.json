@@ -6,6 +6,6 @@
 	[
 		"minecraft:desert",
 		
-		"forge:is_desert"
+		"#forge:is_desert"
 	]
 }
