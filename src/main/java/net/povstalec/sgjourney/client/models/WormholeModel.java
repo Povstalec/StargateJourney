@@ -30,7 +30,8 @@ public class WormholeModel
 	//protected Stargate.RGBA rgba;
 	protected float maxDefaultDistortion;
 	
-	protected static final float SCALE = 1F / 32;
+	protected static final int FRAMES = 32;
+	protected static final float SCALE = 1F / FRAMES;
 	
 	//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png")
 	private final ResourceLocation eventHorizonTexture;
@@ -71,14 +72,17 @@ public class WormholeModel
 	
 	public void renderEventHorizon(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int combinedLight, int combinedOverlay)
 	{
-		this.renderKawoosh(stack, source, texture, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount(), false);
-		this.renderPuddle(stack, source, texture, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount(), false);
+		this.renderKawoosh(stack, source, texture, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
+		this.renderPuddle(stack, source, texture, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
 		if(ClientStargateConfig.enable_vortex.get())
-			this.renderVortex(stack, source, texture, (float)stargate.getTickCount() * SCALE, stargate.getKawooshTickCount());
+			this.renderVortex(stack, source, texture, stargate.getTickCount(), stargate.getKawooshTickCount());
 	}
 	
-	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, float yOffset, int kawooshProgress, boolean isShieldOn)
+	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int ticks, int kawooshProgress, boolean isShieldOn)
 	{
+		float yOffset = ticks * SCALE;
+		float textureTickOffset = (ticks % FRAMES) * SCALE;
+		
 		if(kawooshProgress <= 0)
 			return;
 		
@@ -87,7 +91,7 @@ public class WormholeModel
 
 		for(int i = 0; i < 5; i++)
 		{
-			VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonFront(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, yOffset));
+			VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonFront(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, textureTickOffset));
 			
 			int totalSides = coordinates[0].length;
 			
@@ -153,14 +157,17 @@ public class WormholeModel
 		}
 	}
 	
-	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, float yOffset, int kawooshProgress, boolean isShieldOn)
+	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int ticks, int kawooshProgress, boolean isShieldOn)
 	{
+		float yOffset = ticks * SCALE;
+		float textureTickOffset = (ticks % FRAMES) * SCALE;
+		
 		if(kawooshProgress <= 0 || kawooshProgress >= Connection.KAWOOSH_TICKS)
 			return;
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
-		VertexConsumer kawooshConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0, yOffset));
+		VertexConsumer kawooshConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0, textureTickOffset));
 		
 		int totalSides = coordinates[0].length;
 		
@@ -197,15 +204,18 @@ public class WormholeModel
 		}
 	}
 	
-	protected void renderVortex(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, float yOffset, int kawooshProgress)
+	protected void renderVortex(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int ticks, int kawooshProgress)
 	{
+		float yOffset = ticks * SCALE;
+		float textureTickOffset = (ticks % FRAMES) * SCALE;
+		
 		if(kawooshProgress <= Connection.KAWOOSH_TICKS)
 			return;
 		
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
-		VertexConsumer vortexConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0, yOffset));
+		VertexConsumer vortexConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0, textureTickOffset));
 		
 		int totalSides = coordinates[0].length;
 		
