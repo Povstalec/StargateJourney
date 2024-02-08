@@ -10,7 +10,7 @@
 	"key":
 	{
 		"S": {"item": "minecraft:smooth_sandstone"},
-		"G": {"item": "minecraft:gold_ingot"}
+		"G": {"item": "minecraft:gold_nugget"}
 	},
 	"result":
 	{

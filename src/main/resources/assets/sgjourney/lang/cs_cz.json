@@ -14,7 +14,7 @@
 	"block.sgjourney.golden_idol": "Zlatá soška",
 
 	"block.sgjourney.sandstone_with_lapis": "Pískovec s lapisem",
-	"block.sgjourney.sandstone_with_gold": "Pískovec s lapisem",
+	"block.sgjourney.sandstone_with_gold": "Pískovec se zlatem",
 	"block.sgjourney.sandstone_hieroglyphs": "Pískovec s hieroglyfy",
 	"block.sgjourney.sandstone_switch": "Tajný pískovcový spínač",
 	"block.sgjourney.sandstone_symbol": "Pískovcový symbol",
@@ -167,8 +167,8 @@
 	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu boh\u016f",
 	"filled_map.sgjourney.chappa_ai": "Mapa k Chappa'ai",
 	
-	"itemGroup.stargate_blocks": "Hv\u011bzdn\u00e1 br\u00e1na - Bloky",
-	"itemGroup.stargate_items": "Hv\u011bzdn\u00e1 br\u00e1na - P\u0159edm\u011bty",
+	"itemGroup.stargate_blocks": "Hvězdná brána - Bloky",
+	"itemGroup.stargate_items": "Hvězdná brána - Předměty",
 
 	"screen.sgjourney.archeology_table": "Arheologick\u00fd st\u016fl",
 	"screen.sgjourney.basic_interface": "Základní rozhraní",

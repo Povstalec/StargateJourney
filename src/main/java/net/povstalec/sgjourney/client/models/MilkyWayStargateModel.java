@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -151,10 +152,10 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				Address address = stargate.getAddress();
 				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
 				{
-					if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered))
+					if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered))
 						return true;
 				}
-				else if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered + 1))
+				else if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered + 1))
 					return true;
 			}
 		}
@@ -195,15 +196,15 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 				Address address = stargate.getAddress();
 				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
 				{
-					if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered))
+					if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered))
 						return true;
 				}
-				else if(getChevron(stargate, chevronNumber) == getChevron(stargate, chevronsRendered + 1))
+				else if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered + 1))
 					return true;
 			}
 		}
 		
-		if(alternateChevronLocking && getChevron(stargate, chevronNumber) < getChevron(stargate, chevronsRendered + 1))
+		if(alternateChevronLocking && AbstractStargateEntity.getChevron(stargate, chevronNumber) < AbstractStargateEntity.getChevron(stargate, chevronsRendered + 1))
 			return true;
 		
 		return false;

@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -59,6 +58,7 @@ import net.povstalec.sgjourney.common.stargate.Wormhole;
 public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 {
 	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
+	private static final String EVENT_RESET = "stargate_reset";
 	
 	public static final String RESTRICT_NETWORK = "RestrictNetwork";
 
@@ -258,6 +258,14 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//******************************************Dialing*******************************************
 	//============================================================================================
 	
+	public static int getChevron(AbstractStargateEntity stargate, int chevronNumber)
+	{
+		if(chevronNumber < 0 || chevronNumber > 8)
+			return 0;
+		else
+			return stargate.getEngagedChevrons()[chevronNumber];
+	}
+	
 	public Stargate.Feedback engageSymbol(int symbol)
 	{
 		if(level.isClientSide())
@@ -282,15 +290,15 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		if(!incoming)
 		{
-			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
-			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
+			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming, symbol);
+			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming, symbol);
 		}
 		else
 		{
-			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming);
-			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming);
+			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming);
+			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming);
 		}
-		updateAdvancedCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), incoming, symbol);
+		updateAdvancedCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming, symbol);
 		this.setChanged();
 		
 		return Stargate.Feedback.SYMBOL_ENCODED;
@@ -454,9 +462,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(entity instanceof Player player && player.isCreative())
 			return false;
 		
-		if(!CommonStargateConfig.kawoosh_disintegrates_create_entities.get() && EntityType.getKey(entity.getType()).getNamespace().equals(StargateJourney.CREATE_MODID))
-			return false;
-		
 		if(!CommonStargateConfig.kawoosh_disintegrates_items.get() && entity instanceof ItemEntity)
 			return false;
 		
@@ -482,6 +487,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		if(feedback.playFailSound() && !level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
+
+		updateBasicInterfaceBlocks(EVENT_RESET, feedback.getCode());
+		updateCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
+		updateAdvancedCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
 		
 		setChanged();
 		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " " + feedback.getMessage());
