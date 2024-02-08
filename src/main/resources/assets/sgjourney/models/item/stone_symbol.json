@@ -1,7 +1,3 @@
 {
-    "parent": "item/generated",
-    "textures": 
-	{
-        "layer0": "sgjourney:item/stone_symbol"
-    }
+    "parent": "sgjourney:block/stone_symbol"
 }
