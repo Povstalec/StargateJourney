@@ -3,15 +3,20 @@ package net.povstalec.sgjourney.common.compatibility.jei;
 import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
 import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 
@@ -45,5 +50,22 @@ public class SGJourneyJEIPlugin implements IModPlugin
 
 		List<AdvancedCrystallizerRecipe> advancedCrystallizerRecipes = recipeManager.getAllRecipesFor(AdvancedCrystallizerRecipe.Type.INSTANCE);
 		registration.addRecipes(new RecipeType<>(AdvancedCrystallizerRecipeCategory.RECIPE_ID, AdvancedCrystallizerRecipe.class), advancedCrystallizerRecipes);
+	}
+	@Override
+	public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registration)
+	{
+		// Crystallizers
+		BlockInit.CRYSTALLIZER.ifPresent(crystallizerBlock -> {
+			var item = crystallizerBlock.asItem();
+			if (item != null) {
+				registration.addRecipeCatalyst(new ItemStack(item), CrystallizerRecipeCategory.CRYSTALLIZING_TYPE);
+			}
+		});
+		BlockInit.ADVANCED_CRYSTALLIZER.ifPresent(crystallizerBlock -> {
+			var item = crystallizerBlock.asItem();
+			if (item != null) {
+				registration.addRecipeCatalyst(new ItemStack(item), AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE);
+			}
+		});
 	}
 }
