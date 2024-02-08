@@ -178,7 +178,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return stack.hasTag();
 	}
 
-	@Override
+	/*@Override
 	public Optional<Component> descriptionInDHD()
 	{
 		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.memory.basic").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
@@ -188,7 +188,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	public Optional<Component> descriptionInRing()
 	{
 		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_ring.memory.basic").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-	}
+	}*/
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
