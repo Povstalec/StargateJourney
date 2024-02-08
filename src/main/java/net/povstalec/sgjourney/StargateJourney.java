@@ -89,7 +89,6 @@ public class StargateJourney
     
     public static final String STELLAR_VIEW_MODID = "stellarview";
     public static final String OCULUS_MODID = "oculus";
-    public static final String CREATE_MODID = "create";
     
     private static Optional<Boolean> isOculusLoaded = Optional.empty();
     

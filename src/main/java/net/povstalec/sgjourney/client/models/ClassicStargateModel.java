@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
@@ -377,7 +378,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	protected void renderChevron(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
-		int chevron = getChevron(stargate, chevronNumber);
+		int chevron = AbstractStargateEntity.getChevron(stargate, chevronNumber);
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		float subtracted = isChevronLowered(stargate, stargateVariant, chevronNumber) ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
 		

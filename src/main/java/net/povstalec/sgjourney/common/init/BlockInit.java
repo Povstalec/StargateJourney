@@ -136,7 +136,7 @@ public class BlockInit
 	
 	public static final RegistryObject<LiquidBlock> LIQUID_NAQUADAH_BLOCK = BLOCKS.register("liquid_naquadah", 
 			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
-	public static final RegistryObject<LiquidBlock> HEAVY_LIQUID_NAQUADAH_BLOCK = registerBlock("heavy_liquid_naquadah", 
+	public static final RegistryObject<LiquidBlock> HEAVY_LIQUID_NAQUADAH_BLOCK = BLOCKS.register("heavy_liquid_naquadah", 
 			() -> new LiquidBlock(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
 	
 	public static final RegistryObject<Block> NAQUADAH_BLOCK = registerBlock("naquadah_block", 
@@ -165,8 +165,12 @@ public class BlockInit
 	public static final RegistryObject<FirePitBlock> FIRE_PIT = registerBlock("fire_pit", 
 			() -> new FirePitBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.TERRACOTTA_ORANGE).instabreak()
 			.sound(SoundType.STONE).lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 15 : 0), ParticleTypes.FLAME));
+	
 	public static final RegistryObject<Block> SANDSTONE_WITH_LAPIS = registerBlock("sandstone_with_lapis", 
-			() -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<RotatedPillarBlock> SANDSTONE_WITH_GOLD = registerBlock("sandstone_with_gold", 
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<RotatedPillarBlock> SANDSTONE_HIEROGLYPHS = registerBlock("sandstone_hieroglyphs", 
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<SecretSwitchBlock> SANDSTONE_SWITCH = registerBlock("sandstone_switch", 

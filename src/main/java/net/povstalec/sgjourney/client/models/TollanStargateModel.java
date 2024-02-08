@@ -11,6 +11,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
@@ -68,7 +69,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 	@Override
 	protected void renderChevron(TollanStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
-		int chevron = getChevron(stargate, chevronNumber);
+		int chevron = AbstractStargateEntity.getChevron(stargate, chevronNumber);
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
 		stack.pushPose();

@@ -1,5 +1,20 @@
 {
-    "variants": {
-        "": { "model": "sgjourney:block/sandstone_with_lapis" }
-    }
+	"variants":
+	{
+		"axis=x":
+		{
+			"model": "sgjourney:block/sandstone_with_lapis",
+			"x": 90,
+			"y": 90
+		},
+		"axis=y":
+		{
+			"model": "sgjourney:block/sandstone_with_lapis"
+		},
+		"axis=z":
+		{
+			"model": "sgjourney:block/sandstone_with_lapis",
+			"x": 90
+		}
+	}
 }
