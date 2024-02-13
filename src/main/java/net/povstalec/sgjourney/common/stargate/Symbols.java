@@ -80,8 +80,11 @@ public class Symbols
 		{
 			SymbolSet symbolSet = SymbolSet.getClientSymbolSet(this.symbolSet);
 			
-			return symbolSet.texture(i);
+			if(symbolSet != null)
+				return symbolSet.texture(i);
 		}
+		
+		return ERROR_LOCATION;
 	}
 	
 	public static Symbols getSymbols(Level level, ResourceKey<Symbols> symbols)
