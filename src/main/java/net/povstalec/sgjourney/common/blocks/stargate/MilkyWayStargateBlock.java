@@ -88,35 +88,40 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
     {
     	Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-    	
-    	String pointOfOrigin = "";
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
+		
+		if(clientPacketListener != null)
 		{
-			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
-			if(location.toString().equals("sgjourney:empty"))
-				pointOfOrigin = "Empty";
-			else if(pointOfOriginRegistry.containsKey(location))
-				pointOfOrigin = pointOfOriginRegistry.get(location).getName();
-			else
-				pointOfOrigin = "Error";
-		}
-		String symbols = "";
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
-		{
-			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
-			if(location.toString().equals("sgjourney:empty"))
-				symbols = "Empty";
-			else if(symbolsRegistry.containsKey(location))
-				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
-			else
-				symbols = "Error";
+			RegistryAccess registries = clientPacketListener.registryAccess();
+			Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
+			Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
+	    	
+	    	String pointOfOrigin = "";
+			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
+			{
+				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
+				if(location.toString().equals("sgjourney:empty"))
+					pointOfOrigin = "Empty";
+				else if(pointOfOriginRegistry.containsKey(location))
+					pointOfOrigin = pointOfOriginRegistry.get(location).getName();
+				else
+					pointOfOrigin = "Error";
+			}
+			String symbols = "";
+			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
+			{
+				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
+				if(location.toString().equals("sgjourney:empty"))
+					symbols = "Empty";
+				else if(symbolsRegistry.containsKey(location))
+					symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
+				else
+					symbols = "Error";
+			}
+			
+	        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+	        tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 }
