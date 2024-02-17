@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
-import net.povstalec.sgjourney.common.misc.AncientTech;
+import net.povstalec.sgjourney.common.tech.AncientTech;
 
 public class ATAGeneDetectorBlock extends Block implements AncientTech
 {

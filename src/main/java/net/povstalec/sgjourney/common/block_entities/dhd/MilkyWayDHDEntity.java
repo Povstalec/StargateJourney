@@ -56,7 +56,10 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	@Override
 	public void onLoad()
 	{
-		this.recalculateCrystals();
+		if(!this.getLevel().isClientSide())
+			this.recalculateCrystals();
+		
+		super.onLoad();
 	}
 	
 	@Override
@@ -132,7 +135,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 		this.controlCrystals = new int[0];
 		this.energyCrystals = new int[0];
 		this.transferCrystals = new int[0];
-		this.desiredEnergyLevel = 0;
+		this.energyTarget = 0;
 		this.maxEnergyTransfer = 0;
 		this.communicationCrystals = new int[0];
 		
@@ -159,7 +162,7 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 			ItemStack stack = itemHandler.getStackInSlot(energyCrystals[i]);
 			
 			if(!stack.isEmpty())
-				this.desiredEnergyLevel += ItemInit.ENERGY_CRYSTAL.get().getCapacity();
+				this.energyTarget += ItemInit.ENERGY_CRYSTAL.get().getCapacity();
 		}
 		
 		// Set up Transfer Crystals
@@ -172,12 +175,14 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 				this.maxEnergyTransfer += TransferCrystalItem.getMaxTransfer(stack);
 			}
 		}
+		
+		setStargate();
 	}
 	
 	@Override
 	public int getMaxDistance()
 	{
-		return this.communicationCrystals.length * ItemInit.COMMUNICATION_CRYSTAL.get().getMaxDistance() + 16;
+		return this.communicationCrystals.length * ItemInit.COMMUNICATION_CRYSTAL.get().getMaxDistance() + DEFAULT_CONNECTION_DISTANCE;
 	}
 	
 	

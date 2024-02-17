@@ -282,8 +282,8 @@ public class WormholeModel
 		{
 			for(int i = 0; i < sides; i++)
 			{
-				coordinates[i][0] = CoordinateHelper.polarToCartesianY(circumcircleRadius, angle * i - offset);
-				coordinates[i][1] = CoordinateHelper.polarToCartesianX(circumcircleRadius, angle * i - offset);
+				coordinates[i][0] = CoordinateHelper.CoordinateSystems.polarToCartesianY(circumcircleRadius, angle * i - offset);
+				coordinates[i][1] = CoordinateHelper.CoordinateSystems.polarToCartesianX(circumcircleRadius, angle * i - offset);
 				coordinates[i][2] = seed <= 0 ? defaultOffset : 2 * random.nextFloat() - 1;
 			}
 		}
@@ -299,22 +299,22 @@ public class WormholeModel
 	
 	protected static float bubbleX(float x, float y, int multiplier, int progress)
 	{
-		float r = CoordinateHelper.cartesianToPolarR(x, y);
-		float phi = CoordinateHelper.cartesianToPolarPhi(x, y);
+		float r = CoordinateHelper.CoordinateSystems.cartesianToPolarR(x, y);
+		float phi = CoordinateHelper.CoordinateSystems.cartesianToPolarPhi(x, y);
 		
 		r *= (1 + 0.4 * (float) (Math.pow(Math.sin((double) multiplier / 3), 4) * AbstractStargateEntity.kawooshFunction(progress)));
 		
-		return CoordinateHelper.polarToCartesianX(r, phi);
+		return CoordinateHelper.CoordinateSystems.polarToCartesianX(r, phi);
 	}
 	
 	protected static float bubbleY(float x, float y, int multiplier, int progress)
 	{
-		float r = CoordinateHelper.cartesianToPolarR(x, y);
-		float phi = CoordinateHelper.cartesianToPolarPhi(x, y);
+		float r = CoordinateHelper.CoordinateSystems.cartesianToPolarR(x, y);
+		float phi = CoordinateHelper.CoordinateSystems.cartesianToPolarPhi(x, y);
 		
 		r *= (1 + 0.4 * (float) (Math.pow(Math.sin((double) multiplier / 3), 4) * AbstractStargateEntity.kawooshFunction(progress)));
 		
-		return CoordinateHelper.polarToCartesianY(r, phi);
+		return CoordinateHelper.CoordinateSystems.polarToCartesianY(r, phi);
 	}
 	
 	protected static float distortionMaker(boolean shielded, float maxDefaultDistortion, float defaultOffset, float distortionOffset, int multiplier, int progress)

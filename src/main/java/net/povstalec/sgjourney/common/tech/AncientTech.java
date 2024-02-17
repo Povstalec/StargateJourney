@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.misc;
+package net.povstalec.sgjourney.common.tech;
 
 import java.util.Optional;
 

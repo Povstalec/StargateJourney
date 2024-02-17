@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
@@ -21,6 +22,11 @@ import net.povstalec.sgjourney.common.stargate.Address;
 public class ClientAccess
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
+    
+    public static void updateDialer(BlockPos pos)
+    {
+    	minecraft.setScreen(new DialerScreen());
+    }
 	
     public static void updateSymbol(BlockPos pos, String symbol)
     {

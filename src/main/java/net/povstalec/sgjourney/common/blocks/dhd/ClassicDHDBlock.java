@@ -48,6 +48,8 @@ public class ClassicDHDBlock extends AbstractDHDBlock
 			
         	if(blockEntity instanceof AbstractDHDEntity dhd) 
         	{
+        		dhd.setStargate();
+        		
         		MenuProvider containerProvider = new MenuProvider() 
         		{
         			@Override

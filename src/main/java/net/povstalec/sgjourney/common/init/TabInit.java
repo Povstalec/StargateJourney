@@ -45,6 +45,7 @@ public class TabInit
 				items.accept(ItemInit.PLASMA_CONVERTER.get());
 				
 				items.accept(ItemInit.PDA.get());
+				items.accept(ItemInit.UNIVERSE_DIALER.get());
 				
 				items.accept(ItemInit.NAQUADAH_SWORD.get());
 				items.accept(ItemInit.NAQUADAH_PICKAXE.get());
