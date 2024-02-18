@@ -65,8 +65,18 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	private static final String EVENT_RESET = "stargate_reset";
 
 	public static final String ADDRESS = "Address";
-	public static final String RESTRICT_NETWORK = "RestrictNetwork";
 	public static final String DHD_POS = "DHDPos";
+	public static final String ENERGY = "Energy";
+	// Connections
+	public static final String CONNECTION_ID = "ConnectionID";
+	public static final String NETWORK = "Network";
+	public static final String RESTRICT_NETWORK = "RestrictNetwork";
+	public static final String TIMES_OPENED = "TimesOpened";
+	public static final String AUTOCLOSE = "Autoclose";
+	// Upgrading and variants
+	public static final String UPGRADED = "Upgraded";
+	public static final String DISPLAY_ID = "DisplayID";
+	public static final String VARIANT = "Variant";
 
 	public static final float STANDARD_THICKNESS = 9.0F;
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
@@ -94,16 +104,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	protected String variant = EMPTY;
 	
 	// Dialing and memory
-	//protected int[] address = new int[0];
 	protected Address address = new Address();
 	protected String connectionID = EMPTY;
 	protected Wormhole wormhole = new Wormhole();
 	
 	protected Optional<AbstractDHDEntity> dhd = Optional.empty();
 	protected Optional<Vec3i> dhdRelativePos = Optional.empty();
-	protected boolean advancedProtocolsEnabled = false;
-	
-	//protected boolean hasDHD = false;
+	protected int autoclose = 0;
 
 	protected int openSoundLead = 28;
 	protected float verticalCenterHeight;
@@ -152,49 +159,74 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void load(CompoundTag tag)
 	{
 		super.load(tag);
-		timesOpened = tag.getInt("TimesOpened");
+		timesOpened = tag.getInt(TIMES_OPENED);
 		address.fromArray(tag.getIntArray(ADDRESS));
-		network = tag.getInt("Network");
+		network = tag.getInt(NETWORK);
 		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
-		connectionID = tag.getString("ConnectionID");
+		connectionID = tag.getString(CONNECTION_ID);
 
-		displayID = tag.getBoolean("DisplayID");
-		upgraded = tag.getBoolean("Upgraded");
+		displayID = tag.getBoolean(DISPLAY_ID);
+		upgraded = tag.getBoolean(UPGRADED);
 		
-		variant = tag.getString("Variant");
+		variant = tag.getString(VARIANT);
 		
 		if(tag.contains(DHD_POS))
 		{
 			int[] pos = tag.getIntArray(DHD_POS);
 			dhdRelativePos = Optional.of(new Vec3i(pos[0], pos[1], pos[2]));
 		}
-		advancedProtocolsEnabled = tag.getBoolean("AdvancedProtocolsEnabled");
+		autoclose = tag.getInt(AUTOCLOSE);
+	}
+	
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	{
+		timesOpened = tag.getInt(TIMES_OPENED);
+		address.fromArray(tag.getIntArray(ADDRESS));
+		network = tag.getInt(NETWORK);
+		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
+		connectionID = tag.getString(CONNECTION_ID);
 		
+    	setID(tag.getString(ID));
+    	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
+    	
+		this.setEnergy(tag.getLong(ENERGY));
+		
+		displayID = tag.getBoolean(DISPLAY_ID);
+		upgraded = isUpgraded ? isUpgraded : tag.getBoolean(UPGRADED);
+    	
+		if(tag.contains(DHD_POS))
+		{
+			int[] pos = tag.getIntArray(DHD_POS);
+			dhdRelativePos = Optional.of(new Vec3i(pos[0], pos[1], pos[2]));
+		}
+		autoclose = tag.getInt(AUTOCLOSE);
+		
+    	this.setChanged();
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		tag.putInt("TimesOpened", timesOpened);
+		tag.putInt(TIMES_OPENED, timesOpened);
 		tag.putIntArray(ADDRESS, address.toArray());
-		tag.putInt("Network", network);
+		tag.putInt(NETWORK, network);
 		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
-		tag.putString("ConnectionID", connectionID);
+		tag.putString(CONNECTION_ID, connectionID);
 		
-		tag.putBoolean("DisplayID", displayID);
-		tag.putBoolean("Upgraded", upgraded);
+		tag.putBoolean(DISPLAY_ID, displayID);
+		tag.putBoolean(UPGRADED, upgraded);
 
-		tag.putString("Variant", variant);
+		tag.putString(VARIANT, variant);
 		
 		if(dhdRelativePos.isPresent())
 		{
 			Vec3i pos = dhdRelativePos.get();
 			tag.putIntArray(DHD_POS, new int[] {pos.getX(), pos.getY(), pos.getZ()});
 		}
-		tag.putBoolean("AdvancedProtocolsEnabled", advancedProtocolsEnabled);
+		tag.putInt(AUTOCLOSE, autoclose);
 		
 		super.saveAdditional(tag);
 	}
@@ -203,56 +235,29 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	{
 		CompoundTag tag = new CompoundTag();
 		
-		tag.putInt("TimesOpened", timesOpened);
-		tag.putIntArray("Address", address.toArray());
-		tag.putInt("Network", network);
+		tag.putInt(TIMES_OPENED, timesOpened);
+		tag.putIntArray(ADDRESS, address.toArray());
+		tag.putInt(NETWORK, network);
 		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
-		tag.putString("ConnectionID", connectionID);
+		tag.putString(CONNECTION_ID, connectionID);
 		
 		tag.putString(ID, getID());
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 
-		tag.putLong("Energy", this.getEnergyStored());
+		tag.putLong(ENERGY, this.getEnergyStored());
 
-		tag.putBoolean("DisplayID", displayID);
-		tag.putBoolean("Upgraded", upgraded);
+		tag.putBoolean(DISPLAY_ID, displayID);
+		tag.putBoolean(UPGRADED, upgraded);
 		
 		if(dhdRelativePos.isPresent())
 		{
 			Vec3i pos = dhdRelativePos.get();
 			tag.putIntArray(DHD_POS, new int[] {pos.getX(), pos.getY(), pos.getZ()});
 		}
-		tag.putBoolean("AdvancedProtocolsEnabled", advancedProtocolsEnabled);
+		tag.putInt(AUTOCLOSE, autoclose);
 		
 		return tag;
-	}
-	
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
-	{
-		timesOpened = tag.getInt("TimesOpened");
-		address.fromArray(tag.getIntArray("Address"));
-		network = tag.getInt("Network");
-		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
-		
-		connectionID = tag.getString("ConnectionID");
-		
-    	setID(tag.getString(ID));
-    	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
-    	
-		this.setEnergy(tag.getLong("Energy"));
-		
-		displayID = tag.getBoolean("DisplayID");
-		upgraded = isUpgraded ? isUpgraded : tag.getBoolean("Upgraded");
-    	
-		if(tag.contains(DHD_POS))
-		{
-			int[] pos = tag.getIntArray(DHD_POS);
-			dhdRelativePos = Optional.of(new Vec3i(pos[0], pos[1], pos[2]));
-		}
-		advancedProtocolsEnabled = tag.getBoolean("AdvancedProtocolsEnabled");
-		
-    	this.setChanged();
 	}
 	
 	@Override
@@ -757,20 +762,26 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return this.animationTick;
 	}
 	
-	public void setDHD(AbstractDHDEntity dhd, boolean enableAdvancedProtocols)
+	public void setDHD(AbstractDHDEntity dhd, int autoclose)
 	{
 		Direction direction = this.getDirection();
 		
 		if(dhd != null && direction != null)
 		{
-			Vec3i relativeOffset = CoordinateHelper.Relative.getRelativeOffset(direction, this.getBlockPos(), dhd.getBlockPos());
+			if(this.dhd.isEmpty() || (this.dhd.isPresent() && this.dhd.get() == dhd))
+			{
+				Vec3i relativeOffset = CoordinateHelper.Relative.getRelativeOffset(direction, this.getBlockPos(), dhd.getBlockPos());
+				
+				this.dhdRelativePos = Optional.of(relativeOffset);
+				this.dhd = Optional.of(dhd);
+				
+				updateStargate(this.level, this.getID(), this.timesOpened, true, false);
+			}
 			
-			this.dhdRelativePos = Optional.of(relativeOffset);
-			this.dhd = Optional.of(dhd);
-			this.advancedProtocolsEnabled = enableAdvancedProtocols;
-			
-			updateStargate(this.level, this.getID(), this.timesOpened, true, false);
+			this.autoclose = autoclose;
 		}
+		
+		this.setChanged();
 	}
 	
 	public void unsetDHD(boolean notifyDHD)
@@ -780,8 +791,11 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		this.dhd = Optional.empty();
 		this.dhdRelativePos = Optional.empty();
+		this.autoclose = 0;
 		
 		updateStargate(this.level, this.getID(), this.timesOpened, false, false);
+		
+		this.setChanged();
 	}
 	
 	public Optional<BlockPos> getDHDPos()
@@ -805,9 +819,9 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.setChanged();
 	}
 	
-	public boolean advancedProtocolsEnabled()
+	public int autoclose()
 	{
-		return this.advancedProtocolsEnabled;
+		return this.autoclose;
 	}
 	
 	public boolean hasDHD()
@@ -1208,7 +1222,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.times_opened").append(Component.literal(": " + timesOpened)).withStyle(ChatFormatting.BLUE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.has_dhd").append(Component.literal(": " + hasDHD())).withStyle(ChatFormatting.GOLD));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.advanced_protocols_enabled").append(Component.literal(": " + advancedProtocolsEnabled())).withStyle(ChatFormatting.RED));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.autoclose").append(Component.literal(": " + autoclose())).withStyle(ChatFormatting.RED));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": " + address.toString())).withStyle(ChatFormatting.GREEN));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));

@@ -300,7 +300,10 @@ public class Connection
 		doWormhole(this.dialedStargate.getWormhole(), this.dialedStargate, this.dialingStargate, CommonStargateConfig.two_way_wormholes.get());
 		
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
-		if((this.dialingStargate.advancedProtocolsEnabled() || this.dialedStargate.advancedProtocolsEnabled()) && this.timeSinceLastTraveler >= 200)
+		if(this.dialingStargate.autoclose() > 0 && this.timeSinceLastTraveler >= this.dialingStargate.autoclose() * 20)
+			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
+		
+		if(this.dialedStargate.autoclose() > 0 && this.timeSinceLastTraveler >= this.dialedStargate.autoclose() * 20)
 			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 	}
 	

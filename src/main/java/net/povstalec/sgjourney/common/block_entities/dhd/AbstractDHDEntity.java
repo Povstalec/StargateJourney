@@ -106,6 +106,19 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		return this.maxEnergyTransfer;
 	}
 	
+	protected void updateStargate()
+	{
+		if(this.stargate.isEmpty())
+			return;
+		
+		AbstractStargateEntity stargate = this.stargate.get();
+		
+		if(stargate == null)
+			return;
+		
+		stargate.setDHD(this, this.enableAdvancedProtocols ? 10 : 0);
+	}
+	
 	protected boolean setStargateFromPos(BlockPos pos)
 	{
 		BlockEntity blockEntity = this.getLevel().getBlockEntity(pos);
@@ -113,7 +126,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		{
 			//this.stargateRelativePos = Optional.of(new Vec3i(pos.getX(), pos.getY(), pos.getZ()));
 			this.stargate = Optional.of(stargate);
-			stargate.setDHD(this, this.enableAdvancedProtocols);
 			
 			return true;
 		}
@@ -128,6 +140,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	 */
 	public void setStargate()
 	{
+		updateStargate();
+		
 		if(stargate.isPresent())
 			return;
 

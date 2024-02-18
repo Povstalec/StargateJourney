@@ -54,6 +54,15 @@ public class FirePitBlock extends Block
 				
 				return InteractionResult.SUCCESS;
 			}
+			else if(state.getValue(LIT) == false && player.getItemInHand(hand).getItem() == Items.FIRE_CHARGE)
+			{
+				level.playSound((Player)null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+				level.setBlock(pos, state.setValue(LIT, true), 3);
+				if(!player.isCreative())
+					player.getItemInHand(hand).shrink(1);
+				
+				return InteractionResult.SUCCESS;
+			}
 		}
 		
 		return InteractionResult.FAIL;

@@ -261,7 +261,7 @@
 	"info.sgjourney.open_time": "Open Time",
 	"info.sgjourney.times_opened": "Times Opened",
 	"info.sgjourney.has_dhd": "Connected to DHD",
-	"info.sgjourney.advanced_protocols_enabled": "Advanced Protocols Enabled",
+	"info.sgjourney.autoclose": "Autoclose",
 	"info.sgjourney.last_traveler_time": "Time Since Last Traveler",
 	"info.sgjourney.address": "Address",
 	"info.sgjourney.recent_feedback": "Recent Feedback",
