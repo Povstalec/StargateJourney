@@ -1,0 +1,9 @@
+{
+	"loader": "forge:obj",
+	"model": "sgjourney:models/block/universe_stargate_chevron_engaged.obj",
+	"textures":
+	{
+		"particle": "sgjourney:item/universe_stargate_chevron_engaged"
+	},
+	"flip_v": true
+}

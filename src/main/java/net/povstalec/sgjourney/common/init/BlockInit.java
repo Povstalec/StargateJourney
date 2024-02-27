@@ -33,6 +33,7 @@ import net.povstalec.sgjourney.common.blocks.RingPanelBlock;
 import net.povstalec.sgjourney.common.blocks.SecretSwitchBlock;
 import net.povstalec.sgjourney.common.blocks.SymbolBlock;
 import net.povstalec.sgjourney.common.blocks.TransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.ChevronBlock;
 import net.povstalec.sgjourney.common.blocks.ZPMHubBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
@@ -116,6 +117,11 @@ public class BlockInit
 	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd", 
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
+	
+	public static final RegistryObject<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerBlock("universe_stargate_chevron", 
+			() -> new ChevronBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F)
+					.requiresCorrectToolForDrops().noOcclusion().noCollission()
+					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)));
 	
 	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerEntityBlock("transport_rings", 
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
