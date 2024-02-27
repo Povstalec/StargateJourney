@@ -140,6 +140,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	 */
 	public void setStargate()
 	{
+		if(this.getLevel() == null)
+			return;
+			
 		updateStargate();
 		
 		if(stargate.isPresent())

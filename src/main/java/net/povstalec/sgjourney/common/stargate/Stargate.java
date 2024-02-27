@@ -113,6 +113,7 @@ public class Stargate
 		NO_DIMENSIONS(-13, FeedbackType.MAJOR_ERROR, "no_dimensions"),
 		NO_STARGATES(-14, FeedbackType.MAJOR_ERROR, "no_stargates"),
 		TARGET_RESTRICTED(-15, FeedbackType.MAJOR_ERROR, "target_restricted"),
+		INVALID_EXTRAGALACTIC_CONNECTION(-16, FeedbackType.ERROR, "invalid_extragalactic_connection"),
 
 		// Wormhole TODO
 		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),
@@ -123,28 +124,28 @@ public class Stargate
 		CONNECTION_ENDED_BY_POINT_OF_ORIGIN(8, FeedbackType.INFO, "connection_ended.point_of_origin"),
 		CONNECTION_ENDED_BY_NETWORK(9, FeedbackType.INFO, "connection_ended.stargate_network"),
 		CONNECTION_ENDED_BY_AUTOCLOSE(10, FeedbackType.INFO, "connection_ended.autoclose"),
-		EXCEEDED_CONNECTION_TIME(-15, FeedbackType.ERROR, "exceeded_connection_time"),
-		RAN_OUT_OF_POWER(-17, FeedbackType.ERROR, "ran_out_of_power"),
-		CONNECTION_REROUTED(-18, FeedbackType.ERROR, "connection_rerouted"),
-		WRONG_DISCONNECT_SIDE(-18, FeedbackType.ERROR, "wrong_disconnect_side"),
-		CONNECTION_FORMING(-20, FeedbackType.ERROR, "connection_forming"),
+		EXCEEDED_CONNECTION_TIME(-17, FeedbackType.ERROR, "exceeded_connection_time"),
+		RAN_OUT_OF_POWER(-18, FeedbackType.ERROR, "ran_out_of_power"),
+		CONNECTION_REROUTED(-19, FeedbackType.ERROR, "connection_rerouted"),
+		WRONG_DISCONNECT_SIDE(-20, FeedbackType.ERROR, "wrong_disconnect_side"),
+		CONNECTION_FORMING(-21, FeedbackType.ERROR, "connection_forming"),
 
-		STARGATE_DESTROYED(-21, FeedbackType.ERROR, "stargate_destroyed"),
-		COULD_NOT_REACH_TARGET_STARGATE(-22, FeedbackType.MAJOR_ERROR, "could_not_reach_target_stargate"),
-		INTERRUPTED_BY_INCOMING_CONNECTION(-23, FeedbackType.ERROR, "interrupted_by_incoming_connection"),
+		STARGATE_DESTROYED(-22, FeedbackType.ERROR, "stargate_destroyed"),
+		COULD_NOT_REACH_TARGET_STARGATE(-23, FeedbackType.MAJOR_ERROR, "could_not_reach_target_stargate"),
+		INTERRUPTED_BY_INCOMING_CONNECTION(-24, FeedbackType.ERROR, "interrupted_by_incoming_connection"),
 		
 		// Universe
 		
 		// Milky Way
 		CHEVRON_RAISED(11, FeedbackType.INFO, "chevron_opened"),
 		ROTATING(12, FeedbackType.INFO, "rotating"),
-		ROTATION_BLOCKED(-24, FeedbackType.INFO, "rotation_blocked"),
-		NOT_ROTATING(-25, FeedbackType.INFO, "not_rotating"),
+		ROTATION_BLOCKED(-25, FeedbackType.INFO, "rotation_blocked"),
+		NOT_ROTATING(-26, FeedbackType.INFO, "not_rotating"),
 		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"),
-		CHEVRON_ALREADY_RAISED(-26, FeedbackType.ERROR, "chevron_already_opened"),
-		CHEVRON_ALREADY_LOWERED(-27, FeedbackType.ERROR, "chevron_already_closed"),
-		CHEVRON_NOT_RAISED(-28, FeedbackType.ERROR, "chevron_not_raised"),
-		CANNOT_ENCODE_POINT_OF_ORIGIN(-29, FeedbackType.ERROR, "cannot_encode_point_of_origin");
+		CHEVRON_ALREADY_RAISED(-27, FeedbackType.ERROR, "chevron_already_opened"),
+		CHEVRON_ALREADY_LOWERED(-28, FeedbackType.ERROR, "chevron_already_closed"),
+		CHEVRON_NOT_RAISED(-29, FeedbackType.ERROR, "chevron_not_raised"),
+		CANNOT_ENCODE_POINT_OF_ORIGIN(-30, FeedbackType.ERROR, "cannot_encode_point_of_origin");
 		
 		// Pegasus
 		
