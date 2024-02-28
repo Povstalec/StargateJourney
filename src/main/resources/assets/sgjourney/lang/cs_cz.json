@@ -352,6 +352,8 @@
 	"message.sgjourney.stargate.error.no_dimensions": "Vytáčený systém nemá dimenze",
 	"message.sgjourney.stargate.error.no_stargates": "Vytáčený systém nemá hvězdné brány",
 	"message.sgjourney.stargate.error.target_restricted": "Spojení s vytáčenou branou jsou omezená",
+	"message.sgjourney.stargate.error.invalid_8_chevron_address": "8-chevronová adresa nemůže vytočit stejnou galaxii",
+	"message.sgjourney.stargate.error.invalid_system_wide_connection": "Hvězdné brány se nemohou spojit ve stejném solárním systému",
 	
 	"message.sgjourney.stargate.info.connection_ended.disconnect": "Hvězedná brána odpojena",
 	"message.sgjourney.stargate.info.connection_ended.point_of_origin": "Hvězedná brána odpojena skrze výchozí bod",
