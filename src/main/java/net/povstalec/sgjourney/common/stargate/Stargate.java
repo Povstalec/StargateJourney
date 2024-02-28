@@ -113,8 +113,8 @@ public class Stargate
 		NO_DIMENSIONS(-13, FeedbackType.MAJOR_ERROR, "no_dimensions"),
 		NO_STARGATES(-14, FeedbackType.MAJOR_ERROR, "no_stargates"),
 		TARGET_RESTRICTED(-15, FeedbackType.MAJOR_ERROR, "target_restricted"),
-		INVALID_8_CHEVRON_ADDRESS(-16, FeedbackType.ERROR, "invalid_8_chevron_address"),
-		INVALID_SYSTEM_WIDE_CONNECTION(-17, FeedbackType.ERROR, "invalid_system_wide_connection"),
+		INVALID_8_CHEVRON_ADDRESS(-16, FeedbackType.MAJOR_ERROR, "invalid_8_chevron_address"),
+		INVALID_SYSTEM_WIDE_CONNECTION(-17, FeedbackType.MAJOR_ERROR, "invalid_system_wide_connection"),
 
 		// Wormhole TODO
 		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),
