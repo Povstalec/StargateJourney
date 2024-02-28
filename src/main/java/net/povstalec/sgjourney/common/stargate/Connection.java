@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -16,6 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Connection
@@ -103,6 +105,38 @@ public class Connection
 		{
 			return this.powerDraw;
 		}
+	}
+	
+	//============================================================================================
+	//******************************************Utility*******************************************
+	//============================================================================================
+	
+	public static final Connection.ConnectionType getType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	{
+		String dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension().location().toString());
+		String dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
+		
+		if(dialingSystem.equals(dialedSystem))
+			return Connection.ConnectionType.SYSTEM_WIDE;
+		
+		ListTag dialingGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialingSystem);
+		ListTag dialedGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialedSystem);
+		
+		if(!dialingGalaxyCandidates.isEmpty())
+		{
+			for(int i = 0; i < dialingGalaxyCandidates.size(); i++)
+			{
+				for(int j = 0; j < dialedGalaxyCandidates.size(); j++)
+				{
+					String dialingGalaxy = dialingGalaxyCandidates.getCompound(i).getAllKeys().iterator().next();
+					String dialedGalaxy = dialedGalaxyCandidates.getCompound(j).getAllKeys().iterator().next();
+					if(dialingGalaxy.equals(dialedGalaxy))
+						return Connection.ConnectionType.INTERSTELLAR;
+				}
+			}
+		}
+		
+		return Connection.ConnectionType.INTERGALACTIC;
 	}
 	
 	private Connection(String uuid, ConnectionType connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)

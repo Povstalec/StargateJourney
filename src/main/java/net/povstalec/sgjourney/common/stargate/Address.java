@@ -39,6 +39,29 @@ public class Address
 		fromTable(addressTable);
 	}
 	
+	public enum Type
+	{
+		ADDRESS_INVALID,
+		ADDRESS_9_CHEVRON,
+		ADDRESS_8_CHEVRON,
+		ADDRESS_7_CHEVRON;
+		
+		public static final Address.Type fromInt(int addressLength)
+		{
+			switch(addressLength)
+			{
+			case 7:
+				return ADDRESS_7_CHEVRON;
+			case 8:
+				return ADDRESS_8_CHEVRON;
+			case 9:
+				return ADDRESS_9_CHEVRON;
+			default:
+				return ADDRESS_INVALID;
+			}
+		}
+	}
+	
 	public Address addSymbol(int symbol)
 	{
 		if(symbol < 0)

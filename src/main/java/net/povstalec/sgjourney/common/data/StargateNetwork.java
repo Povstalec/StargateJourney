@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -19,9 +18,11 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Connection;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
@@ -332,9 +333,17 @@ public class StargateNetwork extends SavedData
 		return 0;
 	}
 	
-	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
+	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
-		Connection.ConnectionType connectionType = getConnectionType(server, dialingStargate, dialedStargate);
+		Connection.ConnectionType connectionType = Connection.getType(server, dialingStargate, dialedStargate);
+		
+		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
+				addressType == Address.Type.ADDRESS_8_CHEVRON &&
+				connectionType == Connection.ConnectionType.INTERSTELLAR)
+			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_8_CHEVRON_ADDRESS, true);
+		
+		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == Connection.ConnectionType.SYSTEM_WIDE)
+			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_SYSTEM_WIDE_CONNECTION, true);
 		
 		if(dialingStargate.equals(dialedStargate))
 			return dialingStargate.resetStargate(Stargate.Feedback.SELF_DIAL, true);
@@ -400,38 +409,6 @@ public class StargateNetwork extends SavedData
 			StargateJourney.LOGGER.info("Could not find connection " + uuid);
 		this.setDirty();
 	}*/
-	
-	//============================================================================================
-	//******************************************Utility*******************************************
-	//============================================================================================
-	
-	public static Connection.ConnectionType getConnectionType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
-	{
-		String dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension().location().toString());
-		String dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
-		
-		if(dialingSystem.equals(dialedSystem))
-			return Connection.ConnectionType.SYSTEM_WIDE;
-		
-		ListTag dialingGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialingSystem);
-		ListTag dialedGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialedSystem);
-		
-		if(!dialingGalaxyCandidates.isEmpty())
-		{
-			for(int i = 0; i < dialingGalaxyCandidates.size(); i++)
-			{
-				for(int j = 0; j < dialedGalaxyCandidates.size(); j++)
-				{
-					String dialingGalaxy = dialingGalaxyCandidates.getCompound(i).getAllKeys().iterator().next();
-					String dialedGalaxy = dialedGalaxyCandidates.getCompound(j).getAllKeys().iterator().next();
-					if(dialingGalaxy.equals(dialedGalaxy))
-						return Connection.ConnectionType.INTERSTELLAR;
-				}
-			}
-		}
-		
-		return Connection.ConnectionType.INTERGALACTIC;
-	}
 	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************
