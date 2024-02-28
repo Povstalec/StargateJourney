@@ -105,7 +105,7 @@ public class Stargate
 		INVALID_ADDRESS(-5, FeedbackType.MAJOR_ERROR, "invalid_address"),
 		NOT_ENOUGH_POWER(-6, FeedbackType.MAJOR_ERROR, "not_enough_power"),
 		SELF_OBSTRUCTED(-7, FeedbackType.MAJOR_ERROR, "self_obstructed"),
-		TARGET_OBSTRUCTED(-8, FeedbackType.ERROR, "target_obstructed"),
+		TARGET_OBSTRUCTED(-8, FeedbackType.MAJOR_ERROR, "target_obstructed"),
 		SELF_DIAL(-9, FeedbackType.MAJOR_ERROR, "self_dial"),
 		SAME_SYSTEM_DIAL(-10, FeedbackType.MAJOR_ERROR, "same_system_dial"),
 		ALREADY_CONNECTED(-11, FeedbackType.MAJOR_ERROR, "already_connected"),
