@@ -335,14 +335,14 @@ public class StargateNetwork extends SavedData
 	
 	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
-		Connection.ConnectionType connectionType = Connection.getType(server, dialingStargate, dialedStargate);
+		Connection.Type connectionType = Connection.getType(server, dialingStargate, dialedStargate);
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
 				addressType == Address.Type.ADDRESS_8_CHEVRON &&
-				connectionType == Connection.ConnectionType.INTERSTELLAR)
+				connectionType == Connection.Type.INTERSTELLAR)
 			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_8_CHEVRON_ADDRESS, true);
 		
-		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == Connection.ConnectionType.SYSTEM_WIDE)
+		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == Connection.Type.SYSTEM_WIDE)
 			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_SYSTEM_WIDE_CONNECTION, true);
 		
 		if(dialingStargate.equals(dialedStargate))

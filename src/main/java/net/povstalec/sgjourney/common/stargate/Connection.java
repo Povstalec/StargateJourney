@@ -57,7 +57,7 @@ public class Connection
 	protected static final long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
 	
 	protected final String uuid;
-	protected final ConnectionType connectionType;
+	protected final Connection.Type connectionType;
 	protected final AbstractStargateEntity dialingStargate;
 	protected AbstractStargateEntity dialedStargate; // Dialed Stargates can be changed mid connection
 	protected boolean doKawoosh;
@@ -67,7 +67,7 @@ public class Connection
 	protected int connectionTime = 0;
 	protected int timeSinceLastTraveler = 0;
 	
-	private Connection(String uuid, ConnectionType connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate,
+	private Connection(String uuid, Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate,
 			boolean used, int openTime, int connectionTime, int timeSinceLastTraveler, boolean doKawoosh)
 	{
 		this.uuid = uuid;
@@ -81,7 +81,7 @@ public class Connection
 		this.doKawoosh = doKawoosh;
 	}
 	
-	public enum ConnectionType
+	public enum Type
 	{
 		SYSTEM_WIDE(systemWideConnectionCost, systemWideConnectionDraw),
 		INTERSTELLAR(interstellarConnectionCost, interstellarConnectionDraw),
@@ -90,7 +90,7 @@ public class Connection
 		private long establishingPowerCost;
 		private long powerDraw;
 		
-		ConnectionType(long establishingPowerCost, long powerDraw)
+		Type(long establishingPowerCost, long powerDraw)
 		{
 			this.establishingPowerCost = establishingPowerCost;
 			this.powerDraw = powerDraw;
@@ -111,13 +111,13 @@ public class Connection
 	//******************************************Utility*******************************************
 	//============================================================================================
 	
-	public static final Connection.ConnectionType getType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	public static final Connection.Type getType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
 	{
 		String dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension().location().toString());
 		String dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
 		
 		if(dialingSystem.equals(dialedSystem))
-			return Connection.ConnectionType.SYSTEM_WIDE;
+			return Connection.Type.SYSTEM_WIDE;
 		
 		ListTag dialingGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialingSystem);
 		ListTag dialedGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialedSystem);
@@ -131,20 +131,20 @@ public class Connection
 					String dialingGalaxy = dialingGalaxyCandidates.getCompound(i).getAllKeys().iterator().next();
 					String dialedGalaxy = dialedGalaxyCandidates.getCompound(j).getAllKeys().iterator().next();
 					if(dialingGalaxy.equals(dialedGalaxy))
-						return Connection.ConnectionType.INTERSTELLAR;
+						return Connection.Type.INTERSTELLAR;
 				}
 			}
 		}
 		
-		return Connection.ConnectionType.INTERGALACTIC;
+		return Connection.Type.INTERGALACTIC;
 	}
 	
-	private Connection(String uuid, ConnectionType connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
+	private Connection(String uuid, Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
 		this(uuid, connectionType, dialingStargate, dialedStargate, false, 0, 0, 0, doKawoosh);
 	}
 	
-	public static Connection create(ConnectionType connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
+	public static Connection create(Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
 		String uuid = UUID.randomUUID().toString();
 		
@@ -429,7 +429,7 @@ public class Connection
 	
 	public static Connection deserialize(MinecraftServer server, String uuid, CompoundTag tag)
 	{
-		ConnectionType connectionType = ConnectionType.valueOf(tag.getString(CONNECTION_TYPE));
+		Type connectionType = Type.valueOf(tag.getString(CONNECTION_TYPE));
 		AbstractStargateEntity dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
 		AbstractStargateEntity dialedStargate = deserializeStargate(server, tag.getCompound(DIALED_STARGATE));
 		boolean used = tag.getBoolean(USED);
