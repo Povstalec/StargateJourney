@@ -30,19 +30,26 @@ public abstract class AbstractDHDScreen extends AbstractContainerScreen<Abstract
         int y = (height - imageHeight) / 2;
 		super.init();
 		
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 8, y + 68, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_1));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 14, y + 43, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_2));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 27, y + 23, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_3));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 50, y + 11, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_4));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 75, y + 8, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_5));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 103, y + 9, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_6));
+		
 		this.addRenderableWidget(new DHDSymbolButton(x + 102, y + 140, menu, 1));
 		this.addRenderableWidget(new DHDSymbolButton(x + 107, y + 160, menu, 2));
 		this.addRenderableWidget(new DHDSymbolButton(x + 82, y + 162, menu, 3));
 		this.addRenderableWidget(new DHDSymbolButton(x + 22, y + 124, menu, 4));
-		this.addRenderableWidget(new DHDSymbolButton(x + 107, y + 16, menu, 5));
 		
-		this.addRenderableWidget(new DHDSymbolButton(x + 58, y + 18, menu, 6));
+		
+		
 		this.addRenderableWidget(new DHDSymbolButton(x + 51, y + 126, menu, 7));
 		this.addRenderableWidget(new DHDSymbolButton(x + 38, y + 144, menu, 8));
 		this.addRenderableWidget(new DHDSymbolButton(x + 102, y + 38, menu, 9));
 		this.addRenderableWidget(new DHDSymbolButton(x + 148, y + 135, menu, 10));
 		this.addRenderableWidget(new DHDSymbolButton(x + 164, y + 88, menu, 11));
-		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 8, y + 68, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_1));
+		
 		this.addRenderableWidget(new DHDSymbolButton(x + 130, y + 118, menu, 13));
 		
 		this.addRenderableWidget(new DHDSymbolButton(x + 36, y + 80, menu, 14));
@@ -50,20 +57,20 @@ public abstract class AbstractDHDScreen extends AbstractContainerScreen<Abstract
 		this.addRenderableWidget(new DHDSymbolButton(x + 116, y + 132, menu, 16));
 		
 		this.addRenderableWidget(new DHDSymbolButton(x + 138, y + 104, menu, 17));
-		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 14, y + 43, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_2));
+		
 		this.addRenderableWidget(new DHDSymbolButton(x + 58, y + 156, menu, 19));
 		
 		this.addRenderableWidget(new DHDSymbolButton(x + 130, y + 150, menu, 20));
-		this.addRenderableWidget(new DHDSymbolButton(x + 37, y + 33, menu, 21));
+		
 		this.addRenderableWidget(new DHDSymbolButton(x + 142, y + 88, menu, 22));
 		
-		this.addRenderableWidget(new DHDSymbolButton(x + 148, y + 42, menu, 23));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 140, y + 32, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_8));
 		this.addRenderableWidget(new DHDSymbolButton(x + 83, y + 140, menu, 24));
 		this.addRenderableWidget(new DHDSymbolButton(x + 138, y + 71, menu, 25));
 		
 		this.addRenderableWidget(new DHDSymbolButton(x + 42, y + 112, menu, 26));
 		this.addRenderableWidget(new DHDSymbolButton(x + 84, y + 36, menu, 27));
-		this.addRenderableWidget(new DHDSymbolButton(x + 129, y + 25, menu, 28));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 122, y + 16, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_7));
 		this.addRenderableWidget(new DHDSymbolButton(x + 52, y + 48, menu, 29));
 		this.addRenderableWidget(new DHDSymbolButton(x + 38, y + 97, menu, 30));
 		this.addRenderableWidget(new DHDSymbolButton(x + 14, y + 100, menu, 31));
@@ -73,7 +80,7 @@ public abstract class AbstractDHDScreen extends AbstractContainerScreen<Abstract
 		this.addRenderableWidget(new DHDSymbolButton(x + 42, y + 64, menu, 34));
 		this.addRenderableWidget(new DHDSymbolButton(x + 66, y + 135, menu, 35));
 		this.addRenderableWidget(new DHDSymbolButton(x + 160, y + 112, menu, 36));
-		this.addRenderableWidget(new DHDSymbolButton(x + 83, y + 12, menu, 37));
+		
 		this.addRenderableWidget(new DHDSymbolButton(x + 130, y + 58, menu, 38));
 	}
 

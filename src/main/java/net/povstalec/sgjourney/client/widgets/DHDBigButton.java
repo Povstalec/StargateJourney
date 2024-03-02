@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +13,7 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class DHDBigButton extends DHDButton
 {
-	public ResourceLocation WIDGETS_LOCATION;
+	public ResourceLocation widgetsLocation;
 
 	private static final int RADIUS = 27;
 	private static final int DIAMETER = RADIUS * 2;
@@ -23,7 +22,7 @@ public class DHDBigButton extends DHDButton
     public DHDBigButton(int x, int y, OnPress press, ResourceLocation widgets)
 	{
 		super(x, y, DIAMETER, DIAMETER, Component.empty(), press);
-		WIDGETS_LOCATION = widgets;
+		widgetsLocation = widgets;
 	}
     
     @Override
@@ -43,14 +42,13 @@ public class DHDBigButton extends DHDButton
 		Minecraft minecraft = Minecraft.getInstance();
 		Font font = minecraft.font;
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+		RenderSystem.setShaderTexture(0, widgetsLocation);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
 		int yOffset = this.getYImage(this.isHoveredOrFocused());
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.enableDepthTest();
 		this.blit(poseStack, this.getX(), this.getY(), 0, yOffset * DIAMETER, this.width, this.height);
-		this.blit(poseStack, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + yOffset * 20, this.width / 2, this.height);
 		this.renderBg(poseStack, minecraft, mouseX, mouseY);
 		int j = getFGColor();
 		drawCenteredString(poseStack, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
@@ -86,7 +84,7 @@ public class DHDBigButton extends DHDButton
 	{
 		public MilkyWay(int x, int y, OnPress press)
 		{
-			super(x, y, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_widgets.png"));
+			super(x, y, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/dhd_big_red_button.png"));
 		}
 	}
 }

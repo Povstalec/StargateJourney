@@ -539,10 +539,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		if(feedback.playFailSound() && !level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
-
-		updateBasicInterfaceBlocks(EVENT_RESET, feedback.getCode());
-		updateCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
-		updateAdvancedCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
+		
+		if(updateInterfaces)
+		{
+			updateBasicInterfaceBlocks(EVENT_RESET, feedback.getCode());
+			updateCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
+			updateAdvancedCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
+		}
 		
 		if(this.dhdRelativePos.isPresent())
 		{

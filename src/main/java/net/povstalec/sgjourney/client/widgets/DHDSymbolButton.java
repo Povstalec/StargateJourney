@@ -15,7 +15,7 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
 public class DHDSymbolButton extends DHDButton
 {
-	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/milky_way_dhd_widgets.png");
+	public static final ResourceLocation PLACEHOLDER_WIDGETS = new ResourceLocation(StargateJourney.MODID, "textures/gui/milky_way_dhd_widgets.png");
 	
 	protected ResourceLocation widgets;
 	protected int widgetX = 0;
@@ -30,7 +30,7 @@ public class DHDSymbolButton extends DHDButton
 	
     public DHDSymbolButton(int x, int y, AbstractDHDMenu menu, int symbol)
 	{
-		this(x, y, 16, 16, menu, symbol, WIDGETS_LOCATION);
+		this(x, y, 16, 16, menu, symbol, PLACEHOLDER_WIDGETS);
 	}
 	    
 	@Override
@@ -57,7 +57,6 @@ public class DHDSymbolButton extends DHDButton
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         this.blit(poseStack, this.getX(), this.getY(), widgetX, widgetY + i * this.getHeight(), this.width, this.height);
-        this.blit(poseStack, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         this.renderBg(poseStack, minecraft, mouseX, mouseY);
         int j = getFGColor();
         drawCenteredString(poseStack, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
@@ -73,9 +72,35 @@ public class DHDSymbolButton extends DHDButton
     
     public static class MilkyWay extends DHDSymbolButton
     {
+    	public static final ResourceLocation MILKY_WAY_OUTER_BUTTONS = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_outer_buttons.png");
+    	
+    	public static final int BUTTON_1_OFFSET = 0;
+    	public static final int BUTTON_1_WIDTH = 28;
+
+    	public static final int BUTTON_2_OFFSET = BUTTON_1_OFFSET + BUTTON_1_WIDTH;
+    	public static final int BUTTON_2_WIDTH = 31;
+
+    	public static final int BUTTON_3_OFFSET = BUTTON_2_OFFSET + BUTTON_2_WIDTH;
+    	public static final int BUTTON_3_WIDTH = 34;
+
+    	public static final int BUTTON_4_OFFSET = BUTTON_3_OFFSET + BUTTON_3_WIDTH;
+    	public static final int BUTTON_4_WIDTH = 29;
+
+    	public static final int BUTTON_5_OFFSET = BUTTON_4_OFFSET + BUTTON_4_WIDTH;
+    	public static final int BUTTON_5_WIDTH = 28;
+
+    	public static final int BUTTON_6_OFFSET = BUTTON_5_OFFSET + BUTTON_5_WIDTH;
+    	public static final int BUTTON_6_WIDTH = 28;
+
+    	public static final int BUTTON_7_OFFSET = BUTTON_6_OFFSET + BUTTON_6_WIDTH;
+    	public static final int BUTTON_7_WIDTH = 33;
+
+    	public static final int BUTTON_8_OFFSET = BUTTON_7_OFFSET + BUTTON_7_WIDTH;
+    	public static final int BUTTON_8_WIDTH = 33;
+    	
         public MilkyWay(int x, int y, AbstractDHDMenu menu, MilkyWayButton button)
         {
-        	super(x, y, button.getXSize(), button.getYSize(), menu, button.getSymbol(), new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_widgets.png"));
+        	super(x, y, button.getXSize(), button.getYSize(), menu, button.getSymbol(), MILKY_WAY_OUTER_BUTTONS);
         	
         	this.widgetX = button.getX();
         	this.widgetY = button.getY();
@@ -83,8 +108,14 @@ public class DHDSymbolButton extends DHDButton
     	
         public enum MilkyWayButton
         {
-        	BUTTON_1(12, 54, 0, 28, 27),
-        	BUTTON_2(18, 82, 0, 31, 31);
+        	BUTTON_1(12, BUTTON_1_OFFSET, 0, BUTTON_1_WIDTH, 27),
+        	BUTTON_2(18, BUTTON_2_OFFSET, 0, BUTTON_2_WIDTH, 31),
+        	BUTTON_3(21, BUTTON_3_OFFSET, 0, BUTTON_3_WIDTH, 34),
+        	BUTTON_4(6, BUTTON_4_OFFSET, 0, BUTTON_4_WIDTH, 31),
+        	BUTTON_5(37, BUTTON_5_OFFSET, 0, BUTTON_5_WIDTH, 26),
+        	BUTTON_6(5, BUTTON_6_OFFSET, 0, BUTTON_6_WIDTH, 29),
+        	BUTTON_7(28, BUTTON_7_OFFSET, 0, BUTTON_7_WIDTH, 33),
+        	BUTTON_8(23, BUTTON_8_OFFSET, 0, BUTTON_8_WIDTH, 33);
 
         	private int symbol;
         	private int x;
