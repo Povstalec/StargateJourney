@@ -92,9 +92,33 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
+	public SoundEvent getPrimaryChevronEngageSound()
+	{
+		return SoundInit.UNIVERSE_PRIMARY_CHEVRON_ENGAGE.get();
+	}
+
+	@Override
+	public SoundEvent getChevronIncomingSound()
+	{
+		return SoundInit.UNIVERSE_CHEVRON_INCOMING.get();
+	}
+
+	@Override
+	public SoundEvent getPrimaryChevronIncomingSound()
+	{
+		return SoundInit.UNIVERSE_PRIMARY_CHEVRON_INCOMING.get();
+	}
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.UNIVERSE_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.UNIVERSE_WORMHOLE_IDLE.get();
 	}
 
 	@Override
@@ -109,15 +133,10 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		return SoundInit.UNIVERSE_DIAL_FAIL.get();
 	}
 	
+	@Override
 	public SoundEvent getStartupSound()
 	{
 		return SoundInit.UNIVERSE_DIAL_START.get();
-	}
-
-	@Override
-	public SoundEvent getChevronIncomingSound()
-	{
-		return SoundInit.NOTHING.get();
 	}
 	
 	public double angle()

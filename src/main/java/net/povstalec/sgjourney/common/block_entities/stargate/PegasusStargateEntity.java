@@ -117,15 +117,33 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
+	public SoundEvent getPrimaryChevronEngageSound()
+	{
+		return SoundInit.PEGASUS_PRIMARY_CHEVRON_ENGAGE.get();
+	}
+
+	@Override
 	public SoundEvent getChevronIncomingSound()
 	{
 		return SoundInit.PEGASUS_CHEVRON_INCOMING.get();
 	}
 
 	@Override
+	public SoundEvent getPrimaryChevronIncomingSound()
+	{
+		return SoundInit.PEGASUS_PRIMARY_CHEVRON_INCOMING.get();
+	}
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.PEGASUS_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.PEGASUS_WORMHOLE_IDLE.get();
 	}
 
 	@Override

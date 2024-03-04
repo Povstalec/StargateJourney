@@ -1198,21 +1198,28 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public abstract SoundEvent getChevronEngageSound();
 	
-	public SoundEvent getChevronIncomingSound()
-	{
-		return getChevronEngageSound();
-	}
+	public abstract SoundEvent getPrimaryChevronEngageSound();
+	
+	public abstract SoundEvent getChevronIncomingSound();
+	
+	public abstract SoundEvent getPrimaryChevronIncomingSound();
 	
 	public abstract SoundEvent getWormholeOpenSound();
-
-	public SoundEvent getWormholeIdleSound()
-	{
+	
+	public abstract SoundEvent getWormholeIdleSound();
+	/*{
 		return SoundInit.WORMHOLE_IDLE.get();
-	}
+	}*/
 	
 	public abstract SoundEvent getWormholeCloseSound();
 
 	public abstract SoundEvent getFailSound();
+
+	//TODO Add it to Stargates other than Universe Stargate
+	public SoundEvent getStartupSound()
+	{
+		return SoundInit.EMPTY_SOUND_INSTANCE;
+	}
 	
 	@Override
 	public void getStatus(Player player)

@@ -47,9 +47,33 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
+	public SoundEvent getPrimaryChevronEngageSound()
+	{
+		return SoundInit.TOLLAN_PRIMARY_CHEVRON_ENGAGE.get();
+	}
+
+	@Override
+	public SoundEvent getChevronIncomingSound()
+	{
+		return SoundInit.TOLLAN_CHEVRON_INCOMING.get();
+	}
+
+	@Override
+	public SoundEvent getPrimaryChevronIncomingSound()
+	{
+		return SoundInit.TOLLAN_PRIMARY_CHEVRON_INCOMING.get();
+	}
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.TOLLAN_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.TOLLAN_WORMHOLE_IDLE.get();
 	}
 
 	@Override
