@@ -156,6 +156,11 @@ public class Address
 		return addressArray[number];
 	}
 	
+	public boolean isEmpty()
+	{
+		return getLength() <= 0;
+	}
+	
 	public boolean isComplete()
 	{
 		return getLength() >= MIN_ADDRESS_LENGTH;

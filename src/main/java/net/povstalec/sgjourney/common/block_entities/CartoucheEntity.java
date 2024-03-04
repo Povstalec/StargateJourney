@@ -57,6 +57,9 @@ public abstract class CartoucheEntity extends BlockEntity
 		
 		if(symbols == null)
 			setSymbols(level);
+		
+		if(address.isEmpty())
+			this.address.fromDimension((ServerLevel) level, this.dimension);
 	}
 	
 	@Override
@@ -70,6 +73,9 @@ public abstract class CartoucheEntity extends BlockEntity
     		dimension = tag.getString(DIMENSION);
     	if(tag.contains(SYMBOLS))
     		symbols = tag.getString(SYMBOLS);
+    	
+    	if(tag.contains(ADDRESS))
+    		address.fromArray(tag.getIntArray(ADDRESS));
 	}
 	
 	@Override
@@ -82,8 +88,8 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols);
 		
-		/*if(!address.isFromDimension())
-			tag.putString(ADDRESS, address.toString());*/
+		if(!address.isFromDimension())
+			tag.putIntArray(ADDRESS, address.toArray());
 		
 		super.saveAdditional(tag);
 	}
@@ -156,8 +162,8 @@ public abstract class CartoucheEntity extends BlockEntity
 	{
 		if(state.getValue(CartoucheBlock.HALF) == DoubleBlockHalf.LOWER)
 		{
-			if(this.address.getLength() == 0)
-				this.address.fromDimension((ServerLevel) level, this.dimension);
+			/*if(this.address.getLength() == 0)
+				this.address.fromDimension((ServerLevel) level, this.dimension);*/
 			
 			updateClient();
 		}
