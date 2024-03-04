@@ -43,7 +43,7 @@ public class DHDSymbolButton extends DHDButton
 		
 		return i;
 	}
-    
+	
     @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
@@ -72,7 +72,8 @@ public class DHDSymbolButton extends DHDButton
     
     public static class MilkyWay extends DHDSymbolButton
     {
-    	public static final ResourceLocation MILKY_WAY_OUTER_BUTTONS = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_outer_buttons.png");
+    	public static final ResourceLocation MILKY_WAY_OUTER_BUTTONS_1 = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_outer_buttons_1.png");
+    	public static final ResourceLocation MILKY_WAY_OUTER_BUTTONS_2 = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_outer_buttons_2.png");
     	
     	public static final int BUTTON_1_OFFSET = 0;
     	public static final int BUTTON_1_WIDTH = 28;
@@ -97,10 +98,43 @@ public class DHDSymbolButton extends DHDButton
 
     	public static final int BUTTON_8_OFFSET = BUTTON_7_OFFSET + BUTTON_7_WIDTH;
     	public static final int BUTTON_8_WIDTH = 33;
+
+    	public static final int BUTTON_9_OFFSET = 0;
+    	public static final int BUTTON_9_WIDTH = 30;
+    	//--------
+    	public static final int BUTTON_10_OFFSET = BUTTON_9_OFFSET + BUTTON_9_WIDTH;
+    	public static final int BUTTON_10_WIDTH = 26;
+    	//--------
+    	public static final int BUTTON_11_OFFSET = 0;
+    	public static final int BUTTON_11_WIDTH = 30;
+
+    	public static final int BUTTON_12_OFFSET = BUTTON_11_OFFSET + BUTTON_11_WIDTH;
+    	public static final int BUTTON_12_WIDTH = 33;
+
+    	public static final int BUTTON_13_OFFSET = BUTTON_12_OFFSET + BUTTON_12_WIDTH;
+    	public static final int BUTTON_13_WIDTH = 33;
+
+    	public static final int BUTTON_14_OFFSET = BUTTON_13_OFFSET + BUTTON_13_WIDTH;
+    	public static final int BUTTON_14_WIDTH = 28;
+
+    	public static final int BUTTON_15_OFFSET = BUTTON_14_OFFSET + BUTTON_14_WIDTH;
+    	public static final int BUTTON_15_WIDTH = 28;
+
+    	public static final int BUTTON_16_OFFSET = BUTTON_15_OFFSET + BUTTON_15_WIDTH;
+    	public static final int BUTTON_16_WIDTH = 29;
+
+    	public static final int BUTTON_17_OFFSET = BUTTON_16_OFFSET + BUTTON_16_WIDTH;
+    	public static final int BUTTON_17_WIDTH = 34;
+
+    	public static final int BUTTON_18_OFFSET = BUTTON_17_OFFSET + BUTTON_17_WIDTH;
+    	public static final int BUTTON_18_WIDTH = 31;
+
+    	public static final int BUTTON_19_OFFSET = 0;
+    	public static final int BUTTON_19_WIDTH = 28;
     	
         public MilkyWay(int x, int y, AbstractDHDMenu menu, MilkyWayButton button)
         {
-        	super(x, y, button.getXSize(), button.getYSize(), menu, button.getSymbol(), MILKY_WAY_OUTER_BUTTONS);
+        	super(x, y, button.getXSize(), button.getYSize(), menu, button.getSymbol(), button.getWidgets());
         	
         	this.widgetX = button.getX();
         	this.widgetY = button.getY();
@@ -108,28 +142,43 @@ public class DHDSymbolButton extends DHDButton
     	
         public enum MilkyWayButton
         {
-        	BUTTON_1(12, BUTTON_1_OFFSET, 0, BUTTON_1_WIDTH, 27),
-        	BUTTON_2(18, BUTTON_2_OFFSET, 0, BUTTON_2_WIDTH, 31),
-        	BUTTON_3(21, BUTTON_3_OFFSET, 0, BUTTON_3_WIDTH, 34),
-        	BUTTON_4(6, BUTTON_4_OFFSET, 0, BUTTON_4_WIDTH, 31),
-        	BUTTON_5(37, BUTTON_5_OFFSET, 0, BUTTON_5_WIDTH, 26),
-        	BUTTON_6(5, BUTTON_6_OFFSET, 0, BUTTON_6_WIDTH, 29),
-        	BUTTON_7(28, BUTTON_7_OFFSET, 0, BUTTON_7_WIDTH, 33),
-        	BUTTON_8(23, BUTTON_8_OFFSET, 0, BUTTON_8_WIDTH, 33);
+        	BUTTON_1(12, BUTTON_1_OFFSET, 0, BUTTON_1_WIDTH, 27, MILKY_WAY_OUTER_BUTTONS_1),
+        	BUTTON_2(18, BUTTON_2_OFFSET, 0, BUTTON_2_WIDTH, 31, MILKY_WAY_OUTER_BUTTONS_1),
+        	BUTTON_3(21, BUTTON_3_OFFSET, 0, BUTTON_3_WIDTH, 34, MILKY_WAY_OUTER_BUTTONS_1),
+        	BUTTON_4(6, BUTTON_4_OFFSET, 0, BUTTON_4_WIDTH, 31, MILKY_WAY_OUTER_BUTTONS_1),
+        	BUTTON_5(37, BUTTON_5_OFFSET, 0, BUTTON_5_WIDTH, 26, MILKY_WAY_OUTER_BUTTONS_1),
+        	BUTTON_6(5, BUTTON_6_OFFSET, 0, BUTTON_6_WIDTH, 29, MILKY_WAY_OUTER_BUTTONS_1),
+        	BUTTON_7(28, BUTTON_7_OFFSET, 0, BUTTON_7_WIDTH, 33, MILKY_WAY_OUTER_BUTTONS_1),
+        	BUTTON_8(23, BUTTON_8_OFFSET, 0, BUTTON_8_WIDTH, 33, MILKY_WAY_OUTER_BUTTONS_1),
+        	BUTTON_9(33, BUTTON_9_OFFSET, 93, BUTTON_9_WIDTH, 28, MILKY_WAY_OUTER_BUTTONS_1),
+        	//--------
+        	BUTTON_10(11, BUTTON_10_OFFSET, 93, BUTTON_10_WIDTH, 28, MILKY_WAY_OUTER_BUTTONS_1),
+        	//--------
+        	BUTTON_11(36, BUTTON_11_OFFSET, 0, BUTTON_11_WIDTH, 28, MILKY_WAY_OUTER_BUTTONS_2),
+        	BUTTON_12(10, BUTTON_12_OFFSET, 0, BUTTON_12_WIDTH, 33, MILKY_WAY_OUTER_BUTTONS_2),
+        	BUTTON_13(20, BUTTON_13_OFFSET, 0, BUTTON_13_WIDTH, 33, MILKY_WAY_OUTER_BUTTONS_2),
+        	BUTTON_14(2, BUTTON_14_OFFSET, 0, BUTTON_14_WIDTH, 29, MILKY_WAY_OUTER_BUTTONS_2),
+        	BUTTON_15(3, BUTTON_15_OFFSET, 0, BUTTON_15_WIDTH, 26, MILKY_WAY_OUTER_BUTTONS_2),
+        	BUTTON_16(19, BUTTON_16_OFFSET, 0, BUTTON_16_WIDTH, 31, MILKY_WAY_OUTER_BUTTONS_2),
+        	BUTTON_17(8, BUTTON_17_OFFSET, 0, BUTTON_17_WIDTH, 34, MILKY_WAY_OUTER_BUTTONS_2),
+        	BUTTON_18(4, BUTTON_18_OFFSET, 0, BUTTON_18_WIDTH, 31, MILKY_WAY_OUTER_BUTTONS_2),
+        	BUTTON_19(31, BUTTON_19_OFFSET, 84, BUTTON_19_WIDTH, 27, MILKY_WAY_OUTER_BUTTONS_2);
 
         	private int symbol;
         	private int x;
         	private int y;
         	private int xSize;
         	private int ySize;
+        	private ResourceLocation widgets;
         	
-        	MilkyWayButton(int canonSymbol, int widgetX, int widgetY, int xSize, int ySize)
+        	MilkyWayButton(int canonSymbol, int widgetX, int widgetY, int xSize, int ySize, ResourceLocation widgets)
         	{
         		this.symbol = canonSymbol;
         		this.x = widgetX;
         		this.y = widgetY;
         		this.xSize = xSize;
         		this.ySize = ySize;
+        		this.widgets = widgets;
         	}
         	
         	public int getSymbol()
@@ -155,6 +204,11 @@ public class DHDSymbolButton extends DHDButton
         	public int getYSize()
         	{
         		return this.ySize;
+        	}
+        	
+        	public ResourceLocation getWidgets()
+        	{
+        		return this.widgets;
         	}
         }
     }

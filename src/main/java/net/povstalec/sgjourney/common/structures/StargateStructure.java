@@ -44,7 +44,7 @@ public abstract class StargateStructure extends SGJourneyStructure
     	checkSeed(seed);
     	if(x.isEmpty())
     	{
-            Random random = new Random(seed);
+            Random random = new Random(seed + 2);
             int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
             int xBound = CommonGenerationConfig.stargate_generation_x_bound.get();
             
@@ -62,7 +62,7 @@ public abstract class StargateStructure extends SGJourneyStructure
     	checkSeed(seed);
     	if(z.isEmpty())
     	{
-            Random random = new Random(seed + 1);
+            Random random = new Random(seed + 3);
             int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
             int zBound = CommonGenerationConfig.stargate_generation_z_bound.get();
             
