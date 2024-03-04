@@ -25,6 +25,8 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue enable_address_choice;
 	public static ForgeConfigSpec.BooleanValue enable_classic_stargate_upgrades;
 	public static ForgeConfigSpec.BooleanValue enable_stargate_variants;
+
+	public static ForgeConfigSpec.BooleanValue universe_best_direction;
 	
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> universe_chevron_lock_speed;
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> milky_way_chevron_lock_speed;
@@ -115,6 +117,12 @@ public class CommonStargateConfig
 		always_display_stargate_id = server
 				.comment("If true, Stargate item will always display the 9-Chevron Address of the Stargate in the inventory")
 				.define("server.always_display_stargate_id", false);
+		
+		
+		
+		universe_best_direction = server
+				.comment("If true, the Universe Stargate will always rotate in the best direction; If false, the Universe Stargate will alternate between rotation directions")
+				.define("server.universe_stargate_best_direction", true);
 		
 		
 		

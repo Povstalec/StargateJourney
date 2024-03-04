@@ -52,51 +52,28 @@ public abstract class AbstractDHDScreen extends AbstractContainerScreen<Abstract
 		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 14, y + 118, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_18));
 		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 8, y + 97, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_19));
 		
-		this.addRenderableWidget(new DHDSymbolButton(x + 102, y + 140, menu, 1));
 		
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 35, y + 77, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_20));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 39, y + 59, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_21));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 49, y + 46, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_22));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 64, y + 38, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_23));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 82, y + 35, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_24));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 99, y + 35, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_25));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 110, y + 41, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_26));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 119, y + 52, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_27));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 126, y + 68, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_28));
 		
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 129, y + 87, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_29));
 		
-		
-		
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 51, y + 126, menu, 7));
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 102, y + 38, menu, 9));
-		
-		
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 130, y + 118, menu, 13));
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 36, y + 80, menu, 14));
-		this.addRenderableWidget(new DHDSymbolButton(x + 66, y + 38, menu, 15));
-		this.addRenderableWidget(new DHDSymbolButton(x + 116, y + 132, menu, 16));
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 138, y + 104, menu, 17));
-		
-		
-		
-		
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 142, y + 88, menu, 22));
-		
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 83, y + 140, menu, 24));
-		this.addRenderableWidget(new DHDSymbolButton(x + 138, y + 71, menu, 25));
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 42, y + 112, menu, 26));
-		this.addRenderableWidget(new DHDSymbolButton(x + 84, y + 36, menu, 27));
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 52, y + 48, menu, 29));
-		this.addRenderableWidget(new DHDSymbolButton(x + 38, y + 97, menu, 30));
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 118, y + 44, menu, 32));
-		
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 42, y + 64, menu, 34));
-		this.addRenderableWidget(new DHDSymbolButton(x + 66, y + 135, menu, 35));
-		
-		
-		this.addRenderableWidget(new DHDSymbolButton(x + 130, y + 58, menu, 38));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 126, y + 102, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_30));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 119, y + 113, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_31));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 110, y + 121, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_32));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 99, y + 127, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_33));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 82, y + 128, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_34));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 64, y + 124, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_35));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 49, y + 117, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_36));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 39, y + 108, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_37));
+		this.addRenderableWidget(new DHDSymbolButton.MilkyWay(x + 35, y + 97, menu, DHDSymbolButton.MilkyWay.MilkyWayButton.BUTTON_38));
 	}
 
     @Override

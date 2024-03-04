@@ -1,8 +1,14 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
+import net.minecraft.server.level.ServerLevel;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
 public class Address
@@ -13,6 +19,7 @@ public class Address
 	
 	protected int[] addressArray = new int[0];
 	protected boolean isBuffer = false;
+	protected Optional<String> dimension = Optional.empty();
 	
 	public Address(boolean isBuffer)
 	{
@@ -80,6 +87,8 @@ public class Address
 	
 	public Address fromArray(int[] addressArray)
 	{
+		this.dimension = Optional.empty();
+		
 		if(addressArray.length < getMaxAddressLength() &&
 				ArrayHelper.differentNumbers(addressArray) &&
 				ArrayHelper.isArrayPositive(addressArray, this.isBuffer))
@@ -90,6 +99,8 @@ public class Address
 	
 	public Address fromString(String addressString)
 	{
+		this.dimension = Optional.empty();
+		
 		int[] addressArray = addressStringToIntArray(addressString);
 		
 		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
@@ -100,10 +111,29 @@ public class Address
 	
 	public Address fromTable(Map<Double, Double> addressTable)
 	{
+		this.dimension = Optional.empty();
+		
 		int[] addressArray = ArrayHelper.tableToArray(addressTable);
 		
 		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
 			this.addressArray = addressArray;
+		
+		return this;
+	}
+	
+	//TODO Replace String with ResourceKey<Level> eventually
+	public Address fromDimension(ServerLevel level, String dimension)
+	{
+		String galaxy = StargateJourney.EMPTY;
+		Set<String> galaxies = Universe.get(level).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys();
+		
+		Iterator<String> iterator = galaxies.iterator();
+		if(iterator.hasNext())
+			galaxy = iterator.next();
+		
+		fromString(Universe.get(level).getAddressInGalaxyFromDimension(galaxy, dimension));
+		
+		this.dimension = Optional.of(dimension);
 		
 		return this;
 	}
@@ -144,6 +174,11 @@ public class Address
 	public boolean isBuffer()
 	{
 		return this.isBuffer;
+	}
+	
+	public boolean isFromDimension()
+	{
+		return this.dimension.isPresent();
 	}
 	
 	@Override

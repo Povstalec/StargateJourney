@@ -298,7 +298,12 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			updateClient();
 		}
 		else
-			rotate(getBestRotationDirection(desiredSymbol));
+		{
+			if(CommonStargateConfig.universe_best_direction.get())
+				rotate(getBestRotationDirection(desiredSymbol));
+			else
+				rotate(getAlternatingRotationDirection(this.getAddress().getLength()));
+		}
 	}
 	
 	private void rotateToDefault()
@@ -309,6 +314,11 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			updateClient();
 		else
 			rotate(getBestRotationDirection(RESET_DEGREES, rotation));
+	}
+	
+	private boolean getAlternatingRotationDirection(int addressLength)
+	{
+		return addressLength % 2 == 1;
 	}
 	
 	private boolean getBestRotationDirection(int desiredSymbol)

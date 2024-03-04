@@ -132,6 +132,66 @@ public class DHDSymbolButton extends DHDButton
 
     	public static final int BUTTON_19_OFFSET = 0;
     	public static final int BUTTON_19_WIDTH = 28;
+
+    	
+    	public static final int BUTTON_20_OFFSET = 0;
+    	public static final int BUTTON_20_WIDTH = 29;
+    	
+    	public static final int BUTTON_21_OFFSET = BUTTON_20_OFFSET + BUTTON_20_WIDTH;
+    	public static final int BUTTON_21_WIDTH = 30;
+    	
+    	public static final int BUTTON_22_OFFSET = BUTTON_21_OFFSET + BUTTON_21_WIDTH;
+    	public static final int BUTTON_22_WIDTH = 28;
+    	
+    	public static final int BUTTON_23_OFFSET = BUTTON_22_OFFSET + BUTTON_22_WIDTH;
+    	public static final int BUTTON_23_WIDTH = 22;
+    	
+    	public static final int BUTTON_24_OFFSET = BUTTON_23_OFFSET + BUTTON_23_WIDTH;
+    	public static final int BUTTON_24_WIDTH = 18;
+    	
+    	public static final int BUTTON_25_OFFSET = BUTTON_24_OFFSET + BUTTON_24_WIDTH;
+    	public static final int BUTTON_25_WIDTH = 20;
+    	
+    	public static final int BUTTON_26_OFFSET = BUTTON_25_OFFSET + BUTTON_25_WIDTH;
+    	public static final int BUTTON_26_WIDTH = 27;
+    	
+    	public static final int BUTTON_27_OFFSET = BUTTON_26_OFFSET + BUTTON_26_WIDTH;
+    	public static final int BUTTON_27_WIDTH = 30;
+    	
+    	public static final int BUTTON_28_OFFSET = BUTTON_27_OFFSET + BUTTON_27_WIDTH;
+    	public static final int BUTTON_28_WIDTH = 30;
+    	//--------
+    	public static final int BUTTON_29_OFFSET = 0;
+    	public static final int BUTTON_29_WIDTH = 28;
+    	//--------
+    	public static final int BUTTON_30_OFFSET = BUTTON_29_OFFSET + BUTTON_29_WIDTH;
+    	public static final int BUTTON_30_WIDTH = 30;
+    	
+    	public static final int BUTTON_31_OFFSET = BUTTON_30_OFFSET + BUTTON_30_WIDTH;
+    	public static final int BUTTON_31_WIDTH = 30;
+    	
+    	public static final int BUTTON_32_OFFSET = BUTTON_31_OFFSET + BUTTON_31_WIDTH;
+    	public static final int BUTTON_32_WIDTH = 27;
+    	
+    	public static final int BUTTON_33_OFFSET = BUTTON_32_OFFSET + BUTTON_32_WIDTH;
+    	public static final int BUTTON_33_WIDTH = 20;
+    	
+    	public static final int BUTTON_34_OFFSET = BUTTON_33_OFFSET + BUTTON_33_WIDTH;
+    	public static final int BUTTON_34_WIDTH = 18;
+    	
+    	public static final int BUTTON_35_OFFSET = BUTTON_34_OFFSET + BUTTON_34_WIDTH;
+    	public static final int BUTTON_35_WIDTH = 22;
+    	
+    	public static final int BUTTON_36_OFFSET = BUTTON_35_OFFSET + BUTTON_35_WIDTH;
+    	public static final int BUTTON_36_WIDTH = 28;
+    	
+    	public static final int BUTTON_37_OFFSET = BUTTON_36_OFFSET + BUTTON_36_WIDTH;
+    	public static final int BUTTON_37_WIDTH = 30;
+    	
+    	public static final int BUTTON_38_OFFSET = 0;
+    	public static final int BUTTON_38_WIDTH = 29;
+    	
+    	
     	
         public MilkyWay(int x, int y, AbstractDHDMenu menu, MilkyWayButton button)
         {
@@ -163,7 +223,30 @@ public class DHDSymbolButton extends DHDButton
         	BUTTON_16(19, BUTTON_16_OFFSET, 0, BUTTON_16_WIDTH, 31, MILKY_WAY_OUTER_BUTTONS_2),
         	BUTTON_17(8, BUTTON_17_OFFSET, 0, BUTTON_17_WIDTH, 34, MILKY_WAY_OUTER_BUTTONS_2),
         	BUTTON_18(4, BUTTON_18_OFFSET, 0, BUTTON_18_WIDTH, 31, MILKY_WAY_OUTER_BUTTONS_2),
-        	BUTTON_19(31, BUTTON_19_OFFSET, 84, BUTTON_19_WIDTH, 27, MILKY_WAY_OUTER_BUTTONS_2);
+        	BUTTON_19(31, BUTTON_19_OFFSET, 84, BUTTON_19_WIDTH, 27, MILKY_WAY_OUTER_BUTTONS_2),
+        	
+        	
+        	BUTTON_20(14, BUTTON_20_OFFSET, 0, BUTTON_20_WIDTH, 18, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_21(34, BUTTON_21_OFFSET, 0, BUTTON_21_WIDTH, 25, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_22(29, BUTTON_22_OFFSET, 0, BUTTON_22_WIDTH, 29, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_23(15, BUTTON_23_OFFSET, 0, BUTTON_23_WIDTH, 30, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_24(27, BUTTON_24_OFFSET, 0, BUTTON_24_WIDTH, 29, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_25(9, BUTTON_25_OFFSET, 0, BUTTON_25_WIDTH, 30, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_26(32, BUTTON_26_OFFSET, 0, BUTTON_26_WIDTH, 30, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_27(38, BUTTON_27_OFFSET, 0, BUTTON_27_WIDTH, 27, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_28(25, BUTTON_28_OFFSET, 0, BUTTON_28_WIDTH, 22, MILKY_WAY_INNER_BUTTONS),
+        	
+        	BUTTON_29(22, BUTTON_29_OFFSET, 90, BUTTON_29_WIDTH, 18, MILKY_WAY_INNER_BUTTONS),
+        	
+        	BUTTON_30(17, BUTTON_30_OFFSET, 90, BUTTON_30_WIDTH, 22, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_31(13, BUTTON_31_OFFSET, 90, BUTTON_31_WIDTH, 27, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_32(16, BUTTON_32_OFFSET, 90, BUTTON_32_WIDTH, 30, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_33(1, BUTTON_33_OFFSET, 90, BUTTON_33_WIDTH, 30, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_34(24, BUTTON_34_OFFSET, 90, BUTTON_34_WIDTH, 29, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_35(35, BUTTON_35_OFFSET, 90, BUTTON_35_WIDTH, 30, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_36(7, BUTTON_36_OFFSET, 90, BUTTON_36_WIDTH, 29, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_37(26, BUTTON_37_OFFSET, 90, BUTTON_37_WIDTH, 25, MILKY_WAY_INNER_BUTTONS),
+        	BUTTON_38(30, BUTTON_38_OFFSET, 180, BUTTON_38_WIDTH, 18, MILKY_WAY_INNER_BUTTONS);
 
         	private int symbol;
         	private int x;

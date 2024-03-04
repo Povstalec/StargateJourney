@@ -1,13 +1,11 @@
 package net.povstalec.sgjourney.common.block_entities;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -84,6 +82,9 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols);
 		
+		/*if(!address.isFromDimension())
+			tag.putString(ADDRESS, address.toString());*/
+		
 		super.saveAdditional(tag);
 	}
 	
@@ -142,19 +143,6 @@ public abstract class CartoucheEntity extends BlockEntity
 		return this.address;
 	}
 	
-	public String getAddressFromDimension()
-	{
-		String galaxy = EMPTY;
-		Set<String> galaxies = Universe.get(level).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys();
-		
-		Iterator<String> iterator = galaxies.iterator();
-		if(iterator.hasNext())
-			galaxy = iterator.next();
-			
-		
-		return Universe.get(level).getAddressInGalaxyFromDimension(galaxy, dimension);
-	}
-	
 	protected void updateClient()
 	{
 		if(level.isClientSide())
@@ -166,11 +154,13 @@ public abstract class CartoucheEntity extends BlockEntity
 	
 	public void tick(Level level, BlockPos pos, BlockState state)
 	{
-		if(this.address.getLength() == 0)
-			this.address.fromString(getAddressFromDimension());
-		
 		if(state.getValue(CartoucheBlock.HALF) == DoubleBlockHalf.LOWER)
+		{
+			if(this.address.getLength() == 0)
+				this.address.fromDimension((ServerLevel) level, this.dimension);
+			
 			updateClient();
+		}
 	}
 	
 	public static class Stone extends CartoucheEntity
