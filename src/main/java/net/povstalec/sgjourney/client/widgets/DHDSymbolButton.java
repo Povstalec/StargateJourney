@@ -74,6 +74,7 @@ public class DHDSymbolButton extends DHDButton
     {
     	public static final ResourceLocation MILKY_WAY_OUTER_BUTTONS_1 = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_outer_buttons_1.png");
     	public static final ResourceLocation MILKY_WAY_OUTER_BUTTONS_2 = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_outer_buttons_2.png");
+    	public static final ResourceLocation MILKY_WAY_INNER_BUTTONS = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way_dhd_inner_buttons.png");
     	
     	public static final int BUTTON_1_OFFSET = 0;
     	public static final int BUTTON_1_WIDTH = 28;
