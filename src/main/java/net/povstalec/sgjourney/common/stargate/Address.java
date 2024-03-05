@@ -6,6 +6,11 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -57,11 +62,11 @@ public class Address
 		{
 			switch(addressLength)
 			{
-			case 7:
+			case 6:
 				return ADDRESS_7_CHEVRON;
-			case 8:
+			case 7:
 				return ADDRESS_8_CHEVRON;
-			case 9:
+			case 8:
 				return ADDRESS_9_CHEVRON;
 			default:
 				return ADDRESS_INVALID;
@@ -186,10 +191,41 @@ public class Address
 		return this.dimension.isPresent();
 	}
 	
+	public Address.Type getType()
+	{
+		return Address.Type.fromInt(this.getLength());
+	}
+	
 	@Override
 	public String toString()
 	{
 		return addressIntArrayToString(this.addressArray);
+	}
+	
+	public Component toComponent(boolean copyToClipboard)
+	{
+		ChatFormatting chatFormatting;
+		
+		switch(this.getType())
+		{
+		case ADDRESS_7_CHEVRON:
+			chatFormatting = ChatFormatting.GOLD;
+			break;
+		case ADDRESS_8_CHEVRON:
+			chatFormatting = ChatFormatting.LIGHT_PURPLE;
+			break;
+		case ADDRESS_9_CHEVRON:
+			chatFormatting = ChatFormatting.AQUA;
+			break;
+		default:
+			chatFormatting = ChatFormatting.GRAY;
+		}
+		
+		Style style = Style.EMPTY;
+		style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+		style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
+		
+		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
 	}
 	
 	public Address reset()

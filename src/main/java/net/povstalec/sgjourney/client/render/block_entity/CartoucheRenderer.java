@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
@@ -46,17 +47,7 @@ public abstract class CartoucheRenderer
 	
 	protected Symbols getSymbols(CartoucheEntity symbolBlock)
 	{
-		String symbols = symbolBlock.getSymbols();
-		
-		Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		
-		if(symbols != null)
-			return registry.get(new ResourceLocation(symbols));
-		
-		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
+		return ClientUtil.getSymbols(symbolBlock.getSymbols());
 	}
 	
 	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light,

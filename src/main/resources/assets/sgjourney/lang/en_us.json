@@ -259,6 +259,7 @@
 	"info.sgjourney.add_to_network": "Add To Network",
 	"info.sgjourney.point_of_origin": "Point of Origin",
 	"info.sgjourney.symbols": "Symbols",
+	"info.sgjourney.symbol_number": "Symbol Number",
 	"info.sgjourney.open_time": "Open Time",
 	"info.sgjourney.times_opened": "Times Opened",
 	"info.sgjourney.has_dhd": "Connected to DHD",

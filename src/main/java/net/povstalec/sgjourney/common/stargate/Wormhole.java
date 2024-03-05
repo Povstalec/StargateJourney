@@ -247,6 +247,6 @@ public class Wormhole implements ITeleporter
     }
 	private static void playWormholeSound(Level level, Entity traveler)
 	{
-		level.playSound((Player)null, traveler.blockPosition(), SoundInit.WORMHOLE_ENTER.get(), SoundSource.BLOCKS, 0.25F, 1F);
+		level.playSound((Player)null, traveler.blockPosition(), SoundInit.WORMHOLE_ENTER.get(), SoundSource.BLOCKS, 0.5F, 1F);
 	}
 }

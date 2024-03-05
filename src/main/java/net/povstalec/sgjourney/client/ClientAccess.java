@@ -28,13 +28,15 @@ public class ClientAccess
     	minecraft.setScreen(new DialerScreen());
     }
 	
-    public static void updateSymbol(BlockPos pos, String symbol)
+    public static void updateSymbol(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final SymbolBlockEntity symbolEntity)
         {
-        	symbolEntity.symbol = symbol;
+        	symbolEntity.symbolNumber = symbolNumber;
+        	symbolEntity.pointOfOrigin = pointOfOrigin;
+        	symbolEntity.symbols = symbols;
         }
     }
     

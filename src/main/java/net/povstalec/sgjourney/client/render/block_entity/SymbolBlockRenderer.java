@@ -7,8 +7,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -17,16 +15,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Con
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blocks.SymbolBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class SymbolBlockRenderer
 {
@@ -45,14 +43,12 @@ public abstract class SymbolBlockRenderer
 	
 	protected PointOfOrigin getPointOfOrigin(SymbolBlockEntity symbolBlock)
 	{
-		String pointOfOrigin = symbolBlock.symbol;
-		
-		Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		
-		return registry.get(new ResourceLocation(pointOfOrigin));
+		return ClientUtil.getPointOfOrigin(symbolBlock.pointOfOrigin);
+	}
+	
+	protected Symbols getSymbols(SymbolBlockEntity symbolBlock)
+	{
+		return ClientUtil.getSymbols(symbolBlock.symbols);
 	}
 	
 	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light)
@@ -71,13 +67,13 @@ public abstract class SymbolBlockRenderer
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 	}
 	
-	protected void renderSymbolBlock(SymbolBlockEntity symbol, PoseStack stack, MultiBufferSource source, int light)
+	protected void renderSymbolBlock(SymbolBlockEntity symbolBlock, PoseStack stack, MultiBufferSource source, int light)
 	{
-		BlockState blockstate = symbol.getBlockState();
+		BlockState blockstate = symbolBlock.getBlockState();
 		float facing = blockstate.getValue(SymbolBlock.FACING).toYRot();
 		Direction direction = blockstate.getValue(SymbolBlock.FACING);
 		Orientation orientation = blockstate.getValue(SymbolBlock.ORIENTATION);
-		BlockPos pos = symbol.getBlockPos().relative(Orientation.getEffectiveDirection(direction, orientation));
+		BlockPos pos = symbolBlock.getBlockPos().relative(Orientation.getEffectiveDirection(direction, orientation));
 		
 		stack.pushPose();
 		stack.translate(0.5F, 0.5F, 0.5F);
@@ -88,15 +84,29 @@ public abstract class SymbolBlockRenderer
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Axis.XP.rotationDegrees(90));
 
-        if(symbol != null)
+        if(symbolBlock != null)
         {
+        	VertexConsumer consumer;
     		Matrix4f matrix4 = stack.last().pose();
     		Matrix3f matrix3 = stack.last().normal();
-        	PointOfOrigin pointOfOrigin = getPointOfOrigin(symbol);
-        	ResourceLocation texture = pointOfOrigin != null ? pointOfOrigin.texture() : ERROR;
-            light = LevelRenderer.getLightColor(symbol.getLevel(), pos);
+            light = LevelRenderer.getLightColor(symbolBlock.getLevel(), pos);
+    		
+        	if(symbolBlock.symbolNumber == 0)
+        	{
+            	PointOfOrigin pointOfOrigin = getPointOfOrigin(symbolBlock);
+            	ResourceLocation texture = pointOfOrigin != null ? pointOfOrigin.texture() : ERROR;
+            	
+                consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
+        	}
+        	else
+        	{
+        		Symbols symbols = getSymbols(symbolBlock);
+            	ResourceLocation texture = symbols != null ? symbols.texture(symbolBlock.symbolNumber - 1) : ERROR;
+            	
+                consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
+        	}
         	
-            VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
+    		
             renderSymbol(consumer, matrix4, matrix3, light);
         }
         
