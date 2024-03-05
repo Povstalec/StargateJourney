@@ -18,7 +18,7 @@ public class MilkyWayDHDScreen extends AbstractDHDScreen
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 		super.init();
-		this.addRenderableWidget(new DHDBigButton.MilkyWay(x + 69, y + 69, (n) -> {menu.engageChevron(0); this.onClose();}));
+		this.addRenderableWidget(new DHDBigButton.MilkyWay(x + 69, y + 69, menu, (n) -> {menu.engageChevron(0); this.onClose();}));
 	}
 	
 }

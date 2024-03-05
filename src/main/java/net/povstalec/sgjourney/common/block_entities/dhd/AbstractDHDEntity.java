@@ -22,12 +22,16 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
+import net.povstalec.sgjourney.common.stargate.Address;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity
 {
@@ -45,6 +49,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	
 	private Optional<AbstractStargateEntity> stargate = Optional.empty();
 	protected Optional<Vec3i> stargateRelativePos = Optional.empty();
+	
+	protected boolean isCenterButtonEngaged = false;
+	protected Address address = new Address();
 	
 	protected boolean enableAdvancedProtocols = false;
 	
@@ -178,7 +185,36 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		if(stargateRelativePos.isPresent())
 			stargateRelativePos = Optional.empty();
 		
+		updateDHD(new Address(), false);
+		
 		this.setChanged();
+	}
+	
+	public void updateDHD(Address address, boolean isStargateConnected)
+	{
+		this.setAddress(address);
+		this.setCenterButtonEngaged(isStargateConnected);
+		this.updateClient();
+	}
+	
+	public void setAddress(Address address)
+	{
+		this.address = address;
+	}
+	
+	public Address getAddress()
+	{
+		return this.address;
+	}
+	
+	public void setCenterButtonEngaged(boolean isCenterButtonEngaged)
+	{
+		this.isCenterButtonEngaged = isCenterButtonEngaged;
+	}
+	
+	public boolean isCenterButtonEngaged()
+	{
+		return this.isCenterButtonEngaged;
 	}
 	
 	//============================================================================================
@@ -249,12 +285,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		}
 		
 		return this.direction;
-	}
-	
-	//TODO
-	protected void resetDHD()
-	{
-		
 	}
 	
 	protected List<AbstractStargateEntity> getNearbyStargates(int maxDistance)
@@ -345,18 +375,15 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 			else
 				level.playSound((Player)null, this.getBlockPos(), SoundInit.MILKY_WAY_DHD_PRESS.get(), SoundSource.BLOCKS, 0.25F, 1F);
 			
-			//TODO
-			/*Stargate.Feedback feedback = */stargate.engageSymbol(symbol);
-			
-			/*if(feedback.isError())
-			{
-				Component message = feedback.getFeedbackMessage();
-				sendMessageToNearbyPlayers(message);
-			}*/
+			stargate.engageSymbol(symbol);
 		}
 		else
-			sendMessageToNearbyPlayers(Component.literal("DHD is not connected to a Stargate").withStyle(ChatFormatting.DARK_RED), 5);
-		//TODO Make it translatable
+			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), 5);
+	}
+	
+	public boolean isSymbolEngaged(int symbol)
+	{
+		return this.address.containsSymbol(symbol);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractDHDEntity dhd)
@@ -366,4 +393,12 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		
 		dhd.outputEnergy(null);
     }
+	
+	public void updateClient()
+	{
+		if(level.isClientSide())
+			return;
+		
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, StargateJourney.EMPTY, this.address.toArray(), this.isCenterButtonEngaged));
+	}
 }

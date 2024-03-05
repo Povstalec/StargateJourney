@@ -10,6 +10,7 @@ import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
@@ -81,6 +82,19 @@ public class ClientAccess
         {
         	panel.ringsFound = ringsFound;
         	panel.ringsPos = ringsPos;
+        }
+    }
+    
+    public static void updateDHD(BlockPos pos, String symbols, int[] address, boolean isCenterButtonEngaged)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if(blockEntity instanceof final AbstractDHDEntity dhd)
+        {
+        	//TODO Make DHD use symbols
+        	//dhd.setSymbols(symbols);
+        	dhd.setAddress(new Address(address));
+        	dhd.setCenterButtonEngaged(isCenterButtonEngaged);
         }
     }
     

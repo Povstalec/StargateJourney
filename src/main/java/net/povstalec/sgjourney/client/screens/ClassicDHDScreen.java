@@ -9,9 +9,9 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
 public class ClassicDHDScreen extends AbstractDHDScreen
 {
-	public ClassicDHDScreen(AbstractDHDMenu pMenu, Inventory pPlayerInventory, Component pTitle)
+	public ClassicDHDScreen(AbstractDHDMenu menu, Inventory playerInventory, Component title)
 	{
-		super(pMenu, pPlayerInventory, pTitle);
+		super(menu, playerInventory, title);
 	}
 	
 	@Override
@@ -20,7 +20,7 @@ public class ClassicDHDScreen extends AbstractDHDScreen
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 		super.init();
-		this.addRenderableWidget(new DHDBigButton(x + 72, y + 48, (n) -> {menu.engageChevron(0); this.onClose();}, new ResourceLocation(StargateJourney.MODID, "textures/gui/milky_way_dhd_widgets.png")));
+		this.addRenderableWidget(new DHDBigButton(x + 72, y + 48, menu, (n) -> {menu.engageChevron(0); this.onClose();}, new ResourceLocation(StargateJourney.MODID, "textures/gui/milky_way_dhd_widgets.png")));
 	}
 	
 }

@@ -329,14 +329,17 @@
 	"message.sgjourney.pda.has_ancient_gene": "Has Ancient Gene",
 	"message.sgjourney.pda.has_naquadah_in_bloodstream": "Has Naquadah in bloodstream",
 	
+	"message.sgjourney.dhd.error.not_connected_to_stargate": "DHD is not connected to a Stargate",
+	
 	"message.sgjourney.stargate.error.one_way_wormhole": "Can't travel through wormhole in this direction",
 	
 	"message.sgjourney.stargate.info.none": "None",
 	"message.sgjourney.stargate.error.unknown": "Unknown Error",
 	
-	"message.sgjourney.stargate.info.symbol_encoded": "Symbol Encoded",
+	"message.sgjourney.stargate.info.symbol_encoded": "Symbol encoded",
 	"message.sgjourney.stargate.error.symbol_in_address": "Symbol is already encoded",
 	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol is out of bounds",
+	"message.sgjourney.stargate.error.encode_when_connected": "Cannot encode Symbols when connected",
 	
 	"message.sgjourney.stargate.info.connection_established.system_wide": "System-wide connection established",
 	"message.sgjourney.stargate.info.connection_established.interstellar": "Interstellar connection established",
@@ -367,7 +370,7 @@
 	"message.sgjourney.stargate.error.wrong_disconnect_side": "Stargate cannot be disconnected from this side",
 	"message.sgjourney.stargate.error.connection_forming": "Cannot disconnect Stargate while a Connection is forming",
 	
-	"message.sgjourney.stargate.error.stargate_destroyed": "Targate Stargate was destroyed",
+	"message.sgjourney.stargate.error.stargate_destroyed": "Stargate was destroyed",
 	"message.sgjourney.stargate.error.could_not_reach_target_stargate": "Could not reach target Stargate",
 	"message.sgjourney.stargate.error.interrupted_by_incoming_connection": "Stargate was interrupted by incoming connection",
 	

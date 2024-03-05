@@ -8,6 +8,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundDialerUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
@@ -68,6 +69,12 @@ public final class PacketHandlerInit
 		.encoder(ClientboundRingPanelUpdatePacket::encode)
 		.decoder(ClientboundRingPanelUpdatePacket::new)
 		.consumerMainThread(ClientboundRingPanelUpdatePacket::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ClientboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundDHDUpdatePacket::encode)
+		.decoder(ClientboundDHDUpdatePacket::new)
+		.consumerMainThread(ClientboundDHDUpdatePacket::handle)
 		.add();
 		
 		// Stargates

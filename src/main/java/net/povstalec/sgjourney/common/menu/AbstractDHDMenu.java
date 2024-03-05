@@ -36,6 +36,22 @@ public abstract class AbstractDHDMenu extends AbstractContainerMenu
     	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(this.blockEntity.getBlockPos(), symbol));
     }
     
+    public boolean isSymbolEngaged(int symbol)
+    {
+    	if(blockEntity != null)
+    		return blockEntity.isSymbolEngaged(symbol);
+    	
+    	return false;
+    }
+    
+    public boolean isCenterButtonEngaged()
+    {
+    	if(blockEntity != null)
+    		return blockEntity.isCenterButtonEngaged();
+    	
+    	return false;
+    }
+    
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) 
     {

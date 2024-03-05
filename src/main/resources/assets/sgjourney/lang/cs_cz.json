@@ -256,7 +256,7 @@
 	"point_of_origin.sgjourney.serpent": "Had",
 	"point_of_origin.sgjourney.triforce": "Triforce",
 	
-	"info.sgjourney.add_to_network": "řidat do sítě",
+	"info.sgjourney.add_to_network": "Přidat do sítě",
 	"info.sgjourney.point_of_origin": "Výchozí bod",
 	"info.sgjourney.symbols": "Symboly",
 	"info.sgjourney.symbol_number": "Číslo symbolu",
@@ -328,6 +328,8 @@
 	"message.sgjourney.pda.has_ancient_gene": "Má antický gen",
 	"message.sgjourney.pda.has_naquadah_in_bloodstream": "Má v krvi naquadah",
 	
+	"message.sgjourney.dhd.error.not_connected_to_stargate": "Ovládací panel není připojen k hvězdné bráně",
+	
 	"message.sgjourney.stargate.one_way_wormhole": "Není možné projít červí dírou tímto směrem",
 	
 	"message.sgjourney.stargate.info.none": "Nic",
@@ -336,6 +338,7 @@
 	"message.sgjourney.stargate.symbol_encoded": "Symbol zadán",
 	"message.sgjourney.stargate.error.symbol_in_address": "Symbol byl již zadán",
 	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol mimo meze",
+	"message.sgjourney.stargate.error.encode_when_connected": "Nelze zadávat symboly během spojení",
 	
 	"message.sgjourney.stargate.info.connection_established.system_wide": "Vnitro-systémové spojení navázáno",
 	"message.sgjourney.stargate.info.connection_established.interstellar": "Mezihvězdné spojení navázáno",
@@ -366,7 +369,7 @@
 	"message.sgjourney.stargate.error.wrong_disconnect_side": "Hvězedná brána nemůže být odpojena z této strany",
 	"message.sgjourney.stargate.error.connection_forming": "Hvězedná brána nemůže být odpojena během tvorby spojení",
 	
-	"message.sgjourney.stargate.error.stargate_destroyed": "Cílová hvězdná brána byla zničena",
+	"message.sgjourney.stargate.error.stargate_destroyed": "Hvězdná brána byla zničena",
 	"message.sgjourney.stargate.error.could_not_reach_target_stargate": "Cílová hvězdná brána je nedostupná",
 	"message.sgjourney.stargate.error.interrupted_by_incoming_connection": "Hvězedná brána byla vyrušena příchozím spojením",
 	

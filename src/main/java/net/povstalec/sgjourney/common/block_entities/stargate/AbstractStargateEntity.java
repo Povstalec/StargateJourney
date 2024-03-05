@@ -331,9 +331,12 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encodeSound)
 	{
+		if(this.isConnected() && !incoming)
+			return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
 		
 		if(address.containsSymbol(symbol))
 			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
+		
 		if(!address.canGrow())
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
@@ -638,6 +641,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.recentFeedback = feedback;
 		
 		sendDHDFeedback(feedback);
+		updateDHD();
 		
 		return getRecentFeedback();
 	}
@@ -779,6 +783,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 				this.dhd = Optional.of(dhd);
 				
 				updateStargate(this.level, this.getID(), this.timesOpened, true, false);
+				updateDHD();
 			}
 			
 			this.autoclose = autoclose;
@@ -797,6 +802,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.autoclose = 0;
 		
 		updateStargate(this.level, this.getID(), this.timesOpened, false, false);
+		updateDHD();
 		
 		this.setChanged();
 	}
@@ -819,6 +825,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(this.getLevel().getBlockEntity(dhdPos.get()) instanceof AbstractDHDEntity dhd)
 			this.dhd = Optional.of(dhd);
 		
+        updateDHD();
+		
 		this.setChanged();
 	}
 	
@@ -838,6 +846,13 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		}
 		
 		return false;
+	}
+	
+	public void updateDHD()
+	{
+		if(hasDHD())
+			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
+					address : new Address(), this.isConnected());
 	}
 	
 	public void sendDHDFeedback(Stargate.Feedback feedback)
@@ -1290,7 +1305,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 			return;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant));
-		
 	}
 	
 	//============================================================================================

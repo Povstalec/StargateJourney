@@ -93,6 +93,14 @@ public class PegasusStargateEntity extends AbstractStargateEntity
         }
 	}
 	
+	@Override
+	public void updateDHD()
+	{
+		if(hasDHD())
+			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
+					addressBuffer : new Address(), this.isConnected());
+	}
+	
 	public void dynamicSymbols(boolean dynamicSymbols)
 	{
 		this.dynamicSymbols = dynamicSymbols;
@@ -172,7 +180,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		addressBuffer.addSymbol(symbol);
-		return Stargate.Feedback.SYMBOL_ENCODED;
+		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
 	}
 	
 	@Override
@@ -199,7 +207,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		
-		return feedback;
+		return setRecentFeedback(feedback);
 	}
 	
 	public int getChevronPosition(int chevron)

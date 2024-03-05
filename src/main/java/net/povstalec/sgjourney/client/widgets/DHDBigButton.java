@@ -10,30 +10,41 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
 public class DHDBigButton extends DHDButton
 {
 	public ResourceLocation widgetsLocation;
+	public AbstractDHDMenu menu;
 
 	private static final int RADIUS = 27;
 	private static final int DIAMETER = RADIUS * 2;
 	private static final int RADIUS_2 = RADIUS * RADIUS;
 	
-    public DHDBigButton(int x, int y, OnPress press, ResourceLocation widgets)
+    public DHDBigButton(int x, int y, AbstractDHDMenu menu, OnPress press, ResourceLocation widgets)
 	{
 		super(x, y, DIAMETER, DIAMETER, Component.empty(), press);
+		
+		this.menu = menu;
+		
 		widgetsLocation = widgets;
 	}
     
     @Override
     protected int getYImage(boolean isHovering)
     {
-    	int i = 0;
-    	
     	if(isHovering)
-    		i = 1;
-	
-    	return i;
+    	{
+    		if(this.menu.isCenterButtonEngaged())
+    			return 3;
+    		else
+    			return 1;
+    	}
+    	
+    	if(this.menu.isCenterButtonEngaged())
+			return 2;
+		else
+			return 0;
     }
     
 	@Override
@@ -82,9 +93,9 @@ public class DHDBigButton extends DHDButton
 	
 	public static final class MilkyWay extends DHDBigButton
 	{
-		public MilkyWay(int x, int y, OnPress press)
+		public MilkyWay(int x, int y, AbstractDHDMenu menu, OnPress press)
 		{
-			super(x, y, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/dhd_big_red_button.png"));
+			super(x, y, menu, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/dhd_big_red_button.png"));
 		}
 	}
 }
