@@ -1,6 +1,10 @@
 {
   "structures": [
     {
+      "structure": "sgjourney:stargate/universe/pedestal/universe_stargate_pedestal_end",
+      "weight": 1
+    },
+    {
       "structure": "sgjourney:stargate/milky_way/terra_stargate",
       "weight": 1
     },

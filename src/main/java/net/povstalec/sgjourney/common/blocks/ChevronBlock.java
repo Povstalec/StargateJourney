@@ -12,19 +12,24 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class ChevronBlock extends Block
+public class ChevronBlock extends Block implements SimpleWaterloggedBlock
 {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 	public static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;
-	//TODO Add waterlogging
+	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	private static final VoxelShape TOP = Block.box(0.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 	private static final VoxelShape BOTTOM = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
@@ -39,13 +44,24 @@ public class ChevronBlock extends Block
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(ORIENTATION, FrontAndTop.UP_NORTH)
-				.setValue(LIT, Boolean.valueOf(false)));
+				.setValue(LIT, Boolean.valueOf(false))
+				.setValue(WATERLOGGED, false));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(ORIENTATION).add(LIT);
+		state.add(ORIENTATION).add(LIT).add(WATERLOGGED);
+	}
+	
+	public BlockState rotate(BlockState state, Rotation rotation)
+	{
+		return state.setValue(ORIENTATION, rotation.rotation().rotate(state.getValue(ORIENTATION)));
+	}
+	
+	public BlockState mirror(BlockState rotation, Mirror mirror)
+	{
+		return rotation.setValue(ORIENTATION, mirror.rotation().rotate(rotation.getValue(ORIENTATION)));
 	}
 	
 	@Override
@@ -64,8 +80,17 @@ public class ChevronBlock extends Block
 			direction1 = context.getHorizontalDirection().getOpposite();
 		else
 			direction1 = Direction.UP;
-		
-		return this.defaultBlockState().setValue(ORIENTATION, FrontAndTop.fromFrontAndTop(direction, direction1));
+
+		FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+		return this.defaultBlockState()
+				.setValue(ORIENTATION, FrontAndTop.fromFrontAndTop(direction, direction1))
+				.setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
+	}
+
+	@Override
+	public FluidState getFluidState(BlockState state)
+	{
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
 	@Override
@@ -144,6 +169,9 @@ public class ChevronBlock extends Block
 	@Override
 	public BlockState updateShape(BlockState state1, Direction direction, BlockState state2, LevelAccessor levelAccessor, BlockPos pos1, BlockPos pos2)
 	{
+		if(state1.getValue(WATERLOGGED))
+			levelAccessor.scheduleTick(pos1, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+
 		return !this.canSurvive(state1, levelAccessor, pos1) ?
 				Blocks.AIR.defaultBlockState() : super.updateShape(state1, direction, state2, levelAccessor, pos1, pos2);
 	}
