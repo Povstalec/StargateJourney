@@ -189,8 +189,16 @@
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
+	"biome.sgjourney.abydos_oasis": "Abydos Oasis",
 	"biome.sgjourney.abydos_spires": "Abydos Spires",
-	"biome.sgjourney.lantean_ocean": "Lantean Ocean",
+	"biome.sgjourney.athos_forest": "Athos Forest",
+	"biome.sgjourney.cavum_tenebrae_shattered_crust": "Shattered Crust",
+	"biome.sgjourney.chulak_forest": "Chulak Forest",
+	"biome.sgjourney.chulak_plains": "Chulak Plains",
+	"biome.sgjourney.destiny": "Destiny",
+	"biome.sgjourney.lantean_deep_ocean": "Lantean Ocean",
+	"biome.sgjourney.milky_way_forest": "Milky Way Forest",
+	"biome.sgjourney.milky_way_plains": "Milky Way Plains",
 	
 	"advancements.sgjourney.root.title": "Further than ever before",
 	"advancements.sgjourney.root.description": "Step through a Stargate",
