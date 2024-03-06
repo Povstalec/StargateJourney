@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
-public class Address
+public final class Address
 {
 	public static final String ADDRESS_DIVIDER = "-";
 	public static final int MIN_ADDRESS_LENGTH = 6;
@@ -76,6 +76,10 @@ public class Address
 	
 	public Address addSymbol(int symbol)
 	{
+		// Can't grow if it contains 0
+		if(hasPointOfOrigin())
+			return this;
+		
 		if(symbol < 0)
 			return this;
 		
@@ -179,6 +183,11 @@ public class Address
 	public boolean canGrow()
 	{
 		return getLength() < getMaxAddressLength() - 1;
+	}
+	
+	public boolean hasPointOfOrigin()
+	{
+		return this.containsSymbol(0);
 	}
 	
 	public boolean isBuffer()

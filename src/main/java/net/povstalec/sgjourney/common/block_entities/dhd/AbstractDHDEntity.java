@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -28,7 +29,6 @@ import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -51,7 +51,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	protected Optional<Vec3i> stargateRelativePos = Optional.empty();
 	
 	protected boolean isCenterButtonEngaged = false;
-	protected Address address = new Address();
+	protected Address address = new Address(true);
 	
 	protected boolean enableAdvancedProtocols = false;
 	
@@ -360,6 +360,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		level.getEntitiesOfClass(Player.class, localBox).stream().forEach((player) -> player.displayClientMessage(message, true));
 	}
 	
+	protected abstract SoundEvent getEnterSound();
+	
+	protected abstract SoundEvent getPressSound();
+	
 	/**
 	 * Engages the next Stargate chevron
 	 * @param symbol
@@ -371,9 +375,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 			AbstractStargateEntity stargate = this.stargate.get();
 			
 			if(symbol == 0)
-				level.playSound((Player)null, this.getBlockPos(), SoundInit.MILKY_WAY_DHD_ENTER.get(), SoundSource.BLOCKS, 0.25F, 1F);
+				level.playSound((Player)null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.25F, 1F);
 			else
-				level.playSound((Player)null, this.getBlockPos(), SoundInit.MILKY_WAY_DHD_PRESS.get(), SoundSource.BLOCKS, 0.25F, 1F);
+				level.playSound((Player)null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.25F, 1F);
 			
 			stargate.engageSymbol(symbol);
 		}

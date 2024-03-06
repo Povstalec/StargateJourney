@@ -153,8 +153,8 @@
 	"sounds.sgjourney.wormhole_enter" : "Wormhole entered",
 	"sounds.sgjourney.wormhole_idle" : "Wormhole idle",
 	
-	"sounds.sgjourney.milky_way_dhd_enter" : "DHD enter",
-	"sounds.sgjourney.milky_way_dhd_press" : "DHD pressed",
+	"sounds.sgjourney.dhd_enter" : "DHD enter",
+	"sounds.sgjourney.dhd_press" : "DHD pressed",
 	
 	"sounds.sgjourney.matok_fire" : "Staff Weapon fires",
 	"sounds.sgjourney.matok_attack" : "Staff Weapon attack",

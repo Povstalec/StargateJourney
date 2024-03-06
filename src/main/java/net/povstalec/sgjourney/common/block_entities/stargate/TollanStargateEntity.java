@@ -21,6 +21,7 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	{
 		super(BlockEntityInit.TOLLAN_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2,
 				VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
+		this.symbolBounds = 47;
 	}
 	
 	@Override

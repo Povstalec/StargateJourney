@@ -93,7 +93,7 @@ public class ClientAccess
         {
         	//TODO Make DHD use symbols
         	//dhd.setSymbols(symbols);
-        	dhd.setAddress(new Address(address));
+        	dhd.setAddress(new Address(true).fromArray(address));
         	dhd.setCenterButtonEngaged(isCenterButtonEngaged);
         }
     }

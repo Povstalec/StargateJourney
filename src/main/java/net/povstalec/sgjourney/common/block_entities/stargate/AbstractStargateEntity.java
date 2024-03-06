@@ -84,6 +84,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	// Basic Info
 	protected final Stargate.Gen generation;
+	protected int symbolBounds = 38;
 	protected int network;
 	protected boolean restrictNetwork = false;
 	
@@ -310,6 +311,22 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//******************************************Dialing*******************************************
 	//============================================================================================
 	
+	public int getSymbolBounds()
+	{
+		return this.symbolBounds;
+	}
+	
+	public boolean isSymbolOutOfBounds(int symbol)
+	{
+		if(symbol < 0)
+			return true;
+		
+		if(symbol >  getSymbolBounds())
+			return true;
+		
+		return false;
+	}
+	
 	public static int getChevron(AbstractStargateEntity stargate, int chevronNumber)
 	{
 		if(chevronNumber < 0 || chevronNumber > 8)
@@ -323,6 +340,17 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(level.isClientSide())
 			return Stargate.Feedback.NONE;
 		
+		if(isSymbolOutOfBounds(symbol))
+			return Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS;
+		
+		if(isConnected())
+		{
+			if(symbol == 0)
+				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+			else
+				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
+		}
+		
 		if(symbol == 0)
 			return setRecentFeedback(lockPrimaryChevron());
 		else
@@ -331,9 +359,6 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encodeSound)
 	{
-		if(this.isConnected() && !incoming)
-			return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
-		
 		if(address.containsSymbol(symbol))
 			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		

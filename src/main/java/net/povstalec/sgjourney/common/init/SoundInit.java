@@ -73,6 +73,12 @@ public class SoundInit
 
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_ENTER = registerSoundEvent("milky_way_dhd_enter");
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_PRESS = registerSoundEvent("milky_way_dhd_press");
+
+	public static final RegistryObject<SoundEvent> PEGASUS_DHD_ENTER = registerSoundEvent("pegasus_dhd_enter");
+	public static final RegistryObject<SoundEvent> PEGASUS_DHD_PRESS = registerSoundEvent("pegasus_dhd_press");
+
+	public static final RegistryObject<SoundEvent> CLASSIC_DHD_ENTER = registerSoundEvent("classic_dhd_enter");
+	public static final RegistryObject<SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
 	
 	public static final RegistryObject<SoundEvent> MATOK_FIRE = registerSoundEvent("matok_fire");
 	public static final RegistryObject<SoundEvent> MATOK_ATTACK = registerSoundEvent("matok_attack");

@@ -44,6 +44,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
 		super(BlockEntityInit.UNIVERSE_STARGATE.get(), pos, state, Stargate.Gen.GEN_1, 1);
 		this.setOpenSoundLead(8);
+		this.symbolBounds = 35;
 	}
 	
 	@Override
@@ -139,6 +140,14 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		return SoundInit.UNIVERSE_DIAL_START.get();
 	}
 	
+	@Override
+	public void updateDHD()
+	{
+		if(hasDHD())
+			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
+					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin());
+	}
+	
 	public double angle()
 	{
 		return (double) 360 / 54;
@@ -165,26 +174,28 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		if(level.isClientSide())
 			return Stargate.Feedback.NONE;
 		
-		if(getAddress().containsSymbol(symbol))
-			return Stargate.Feedback.SYMBOL_ENCODED;
+		if(isSymbolOutOfBounds(symbol))
+			return setRecentFeedback(Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS);
 		
-		if(symbol > 35)
-			return Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS;
-		
-		if(symbol == 0)
+		if(isConnected())
 		{
-			if(isConnected())
+			if(symbol == 0)
 				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
-			else if(!isConnected() && addressBuffer.getLength() == 0)
-				return Stargate.Feedback.INCOMPLETE_ADDRESS;
+			else
+				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
 		}
+		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
+			return setRecentFeedback(Stargate.Feedback.INCOMPLETE_ADDRESS);
+		
+		if(this.addressBuffer.containsSymbol(symbol))
+			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() == 0)
 			startSound();
 		
 		addressBuffer.addSymbol(symbol);
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.animationTicks, this.rotation, this.oldRotation));
-		return Stargate.Feedback.SYMBOL_ENCODED;
+		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
 	}
 	
 	@Override

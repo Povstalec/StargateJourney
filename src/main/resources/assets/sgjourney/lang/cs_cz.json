@@ -152,8 +152,8 @@
 	"sounds.sgjourney.wormhole_enter" : "červí díra použita",
 	"sounds.sgjourney.wormhole_idle" : "červí díra vyčkává",
 	
-	"sounds.sgjourney.milky_way_dhd_enter" : "DHD zadáno",
-	"sounds.sgjourney.milky_way_dhd_press" : "DHD zmáčknuto",
+	"sounds.sgjourney.dhd_enter" : "DHD zadáno",
+	"sounds.sgjourney.dhd_press" : "DHD zmáčknuto",
 	
 	"sounds.sgjourney.nothing" : "nic",
 	
