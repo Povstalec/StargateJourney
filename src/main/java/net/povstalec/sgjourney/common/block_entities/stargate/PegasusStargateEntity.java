@@ -34,6 +34,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		super(BlockEntityInit.PEGASUS_STARGATE.get(), pos, state, Stargate.Gen.GEN_3, 3);
 		this.setOpenSoundLead(13);
+		this.symbolBounds = 47;
 	}
 	
 	@Override
@@ -93,6 +94,14 @@ public class PegasusStargateEntity extends AbstractStargateEntity
         }
 	}
 	
+	@Override
+	public void updateDHD()
+	{
+		if(hasDHD())
+			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
+					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin());
+	}
+	
 	public void dynamicSymbols(boolean dynamicSymbols)
 	{
 		this.dynamicSymbols = dynamicSymbols;
@@ -117,15 +126,33 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
+	public SoundEvent getPrimaryChevronEngageSound()
+	{
+		return SoundInit.PEGASUS_PRIMARY_CHEVRON_ENGAGE.get();
+	}
+
+	@Override
 	public SoundEvent getChevronIncomingSound()
 	{
 		return SoundInit.PEGASUS_CHEVRON_INCOMING.get();
 	}
 
 	@Override
+	public SoundEvent getPrimaryChevronIncomingSound()
+	{
+		return SoundInit.PEGASUS_PRIMARY_CHEVRON_INCOMING.get();
+	}
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.PEGASUS_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.PEGASUS_WORMHOLE_IDLE.get();
 	}
 
 	@Override
@@ -142,11 +169,22 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	@Override
 	public Stargate.Feedback engageSymbol(int symbol)
 	{
-		if(isConnected() && symbol == 0)
-			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+		if(level.isClientSide())
+			return Stargate.Feedback.NONE;
+		
+		if(isSymbolOutOfBounds(symbol))
+			return Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS;
+		
+		if(isConnected())
+		{
+			if(symbol == 0)
+				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+			else
+				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
+		}
 		
 		if(addressBuffer.containsSymbol(symbol))
-			return Stargate.Feedback.SYMBOL_ENCODED;
+			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		
 		if(addressBuffer.getLength() == getAddress().getLength())
 		{
@@ -154,7 +192,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		addressBuffer.addSymbol(symbol);
-		return Stargate.Feedback.SYMBOL_ENCODED;
+		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
 	}
 	
 	@Override
@@ -181,7 +219,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		
-		return feedback;
+		return setRecentFeedback(feedback);
 	}
 	
 	public int getChevronPosition(int chevron)

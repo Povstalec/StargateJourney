@@ -183,6 +183,9 @@ public class SoundAccess
         	}
     	}
     	
+    	if(isPrimary)
+    		return stargate.getPrimaryChevronEngageSound();
+    	
     	return stargate.getChevronEngageSound();
     }
     
@@ -211,6 +214,9 @@ public class SoundAccess
         		}
         	}
     	}
+    	
+    	if(isPrimary)
+    		return stargate.getPrimaryChevronOpenSound();
     	
     	return stargate.getChevronOpenSound();
     }
@@ -349,6 +355,9 @@ public class SoundAccess
         		}
         	}
     	}
+    	
+    	if(isPrimary)
+    		return stargate.getPrimaryChevronIncomingSound();
     	
     	return stargate.getChevronIncomingSound();
     }

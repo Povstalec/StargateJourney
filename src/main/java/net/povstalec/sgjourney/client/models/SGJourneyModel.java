@@ -126,8 +126,8 @@ public class SGJourneyModel
 		{
 			for(int i = 0; i < sides; i++)
 			{
-				coordinates[i][0] = CoordinateHelper.polarToCartesianY(circumcircleRadius, angle * i - xyOffset);
-				coordinates[i][1] = CoordinateHelper.polarToCartesianX(circumcircleRadius, angle * i - xyOffset);
+				coordinates[i][0] = CoordinateHelper.CoordinateSystems.polarToCartesianY(circumcircleRadius, angle * i - xyOffset);
+				coordinates[i][1] = CoordinateHelper.CoordinateSystems.polarToCartesianX(circumcircleRadius, angle * i - xyOffset);
 			}
 		}
 		else

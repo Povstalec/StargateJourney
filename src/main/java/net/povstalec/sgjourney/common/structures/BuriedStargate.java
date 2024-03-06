@@ -6,22 +6,18 @@ import java.util.Random;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.StructureInit;
 
-//Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
-public class BuriedStargate extends Structure
+public class BuriedStargate extends SGJourneyStructure
 {
     public static final Codec<BuriedStargate> CODEC = RecordCodecBuilder.<BuriedStargate>mapCodec(instance ->
             instance.group(BuriedStargate.settingsCodec(instance),
@@ -33,76 +29,87 @@ public class BuriedStargate extends Structure
                     Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
             ).apply(instance, BuriedStargate::new)).codec();
 
-    private final Holder<StructureTemplatePool> startPool;
-    private final Optional<ResourceLocation> startJigsawName;
-    private final int size;
-    private final HeightProvider startHeight;
-    private final Optional<Heightmap.Types> projectStartToHeightmap;
-    private final int maxDistanceFromCenter;
-
+    private static Optional<Long> currentSeed = Optional.empty();
+    private static Optional<Integer> x = Optional.empty();
+    private static Optional<Integer> z = Optional.empty();
+    
     public BuriedStargate(Structure.StructureSettings config,
-                         Holder<StructureTemplatePool> startPool,
-                         Optional<ResourceLocation> startJigsawName,
-                         int size,
-                         HeightProvider startHeight,
-                         Optional<Heightmap.Types> projectStartToHeightmap,
-                         int maxDistanceFromCenter)
+			Holder<StructureTemplatePool> startPool,
+			Optional<ResourceLocation> startJigsawName,
+			int size,
+			HeightProvider startHeight,
+			Optional<Heightmap.Types> projectStartToHeightmap,
+			int maxDistanceFromCenter)
     {
-        super(config);
-        this.startPool = startPool;
-        this.startJigsawName = startJigsawName;
-        this.size = size;
-        this.startHeight = startHeight;
-        this.projectStartToHeightmap = projectStartToHeightmap;
-        this.maxDistanceFromCenter = maxDistanceFromCenter;
+    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter);
     }
     
-    private static boolean extraSpawningChecks(Structure.GenerationContext context)
+    private static final void checkSeed(long seed)
     {
-        // Grabs the chunk position we are at
-    	 ChunkPos chunkpos = context.chunkPos();
-         Random random = new Random(context.seed());
-         
-         int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
-         int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
-         
-         int xBound = CommonGenerationConfig.buried_stargate_generation_x_bound.get();
-         int zBound = CommonGenerationConfig.buried_stargate_generation_z_bound.get();
-         
-         int chunkX = xBound <= 0 ? xOffset : xOffset + random.nextInt(-xBound, xBound + 1);
-         int chunkZ = zBound <= 0 ? zOffset : zOffset + random.nextInt(-zBound, zBound + 1);
-         
-         if(chunkpos.x == chunkX && chunkpos.z == chunkZ)
-         	return true;
-         else
-         	return false;
+    	if(currentSeed.isEmpty() || (currentSeed.isPresent() && currentSeed.get() != seed))
+    	{
+    		currentSeed = Optional.of(seed);
+            x = Optional.empty();
+            z = Optional.empty();
+    	}
     }
-
-    @Override
-    public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context)
+    
+    public static final int getX(long seed)
     {
-        if(!BuriedStargate.extraSpawningChecks(context))
-            return Optional.empty();
-        
-        // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
-        ChunkPos chunkPos = context.chunkPos();
-        int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
+    	checkSeed(seed);
+    	if(x.isEmpty())
+    	{
+            Random random = new Random(seed);
+            int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
+            int xBound = CommonGenerationConfig.buried_stargate_generation_x_bound.get();
+            
 
-        BlockPos blockPos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
+            int chunkX = xBound <= 0 ? xOffset : xOffset + random.nextInt(-xBound, xBound + 1);
+            
+            x = Optional.of(chunkX);
+    	}
 
-        Optional<Structure.GenerationStub> structurePiecesGenerator =
-                JigsawPlacement.addPieces(
-                        context,
-                        this.startPool,
-                        this.startJigsawName,
-                        this.size,
-                        blockPos,
-                        false,
-                        this.projectStartToHeightmap,
-                        this.maxDistanceFromCenter);
-        
-        return structurePiecesGenerator;
+    	return x.get();
     }
+    
+    public static final int getZ(long seed)
+    {
+    	checkSeed(seed);
+    	if(z.isEmpty())
+    	{
+            Random random = new Random(seed + 1);
+            int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
+            int zBound = CommonGenerationConfig.buried_stargate_generation_z_bound.get();
+            
+
+            int chunkZ = zBound <= 0 ? zOffset : zOffset + random.nextInt(-zBound, zBound + 1);
+            
+            z = Optional.of(chunkZ);
+    	}
+
+    	return z.get();
+    }
+    
+	@Override
+	protected boolean extraSpawningChecks(Structure.GenerationContext context)
+	{
+		// Grabs the chunk position we are at
+		ChunkPos chunkpos = context.chunkPos();
+		long seed = context.seed();
+		
+		if(chunkpos.x == getX(seed) && chunkpos.z == getZ(seed))
+			return true;
+		else
+			return false;
+	}
+	
+	@Override
+	public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context)
+	{
+		//TODO See if there's a way to check for dimension
+		//context.chunkGenerator().getBiomeSource().findBiomeHorizontal(maxDistanceFromCenter, maxDistanceFromCenter, size, maxDistanceFromCenter, null, null, null);
+		return super.findGenerationPoint(context);
+	}
 
     @Override
     public StructureType<?> type()

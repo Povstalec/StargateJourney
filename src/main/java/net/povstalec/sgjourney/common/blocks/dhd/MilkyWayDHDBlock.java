@@ -87,12 +87,14 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if(!level.isClientSide()) 
+		if(!level.isClientSide()) 
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			
         	if(blockEntity instanceof AbstractDHDEntity dhd) 
         	{
+        		dhd.setStargate();
+        		
         		if(player.isShiftKeyDown())
         			this.openCrystalMenu(player, blockEntity);
         		else
@@ -119,7 +121,7 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
         		throw new IllegalStateException("Our named container provider is missing!");
         	}
         }
-        return InteractionResult.SUCCESS;
+        return super.use(state, level, pos, player, hand, trace);
     }
 
 	@Override

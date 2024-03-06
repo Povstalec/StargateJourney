@@ -1,0 +1,19 @@
+{
+	"name": "sgjourney:universe_stargate_pedestal_end",
+	
+	"fallback": "minecraft:empty",
+	
+	"elements":
+	[
+		{
+			"weight": 1,
+			"element":
+			{
+				"location": "sgjourney:stargate/universe/pedestal/end/universe_stargate_pedestal_end_1",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}

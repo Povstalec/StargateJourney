@@ -794,25 +794,25 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		float halfX = xSize / 2;
 		float halfY = ySize / 2;
 		
-		float r1 = CoordinateHelper.cartesianToPolarR(-halfX, halfY);
-		float phi1 = CoordinateHelper.cartesianToPolarPhi(-halfX, halfY);
-		float x1 = xPos + CoordinateHelper.polarToCartesianX(r1, phi1 + rotation);
-		float y1 = yPos + CoordinateHelper.polarToCartesianY(r1, phi1 + rotation);
+		float r1 = CoordinateHelper.CoordinateSystems.cartesianToPolarR(-halfX, halfY);
+		float phi1 = CoordinateHelper.CoordinateSystems.cartesianToPolarPhi(-halfX, halfY);
+		float x1 = xPos + CoordinateHelper.CoordinateSystems.polarToCartesianX(r1, phi1 + rotation);
+		float y1 = yPos + CoordinateHelper.CoordinateSystems.polarToCartesianY(r1, phi1 + rotation);
 		
-		float r2 = CoordinateHelper.cartesianToPolarR(-halfX, -halfY);
-		float phi2 = CoordinateHelper.cartesianToPolarPhi(-halfX, -halfY);
-		float x2 = xPos + CoordinateHelper.polarToCartesianX(r2, phi2 + rotation);
-		float y2 = yPos + CoordinateHelper.polarToCartesianY(r2, phi2 + rotation);
+		float r2 = CoordinateHelper.CoordinateSystems.cartesianToPolarR(-halfX, -halfY);
+		float phi2 = CoordinateHelper.CoordinateSystems.cartesianToPolarPhi(-halfX, -halfY);
+		float x2 = xPos + CoordinateHelper.CoordinateSystems.polarToCartesianX(r2, phi2 + rotation);
+		float y2 = yPos + CoordinateHelper.CoordinateSystems.polarToCartesianY(r2, phi2 + rotation);
 		
-		float r3 = CoordinateHelper.cartesianToPolarR(halfX, -halfY);
-		float phi3 = CoordinateHelper.cartesianToPolarPhi(halfX, -halfY);
-		float x3 = xPos + CoordinateHelper.polarToCartesianX(r3, phi3 + rotation);
-		float y3 = yPos + CoordinateHelper.polarToCartesianY(r3, phi3 + rotation);
+		float r3 = CoordinateHelper.CoordinateSystems.cartesianToPolarR(halfX, -halfY);
+		float phi3 = CoordinateHelper.CoordinateSystems.cartesianToPolarPhi(halfX, -halfY);
+		float x3 = xPos + CoordinateHelper.CoordinateSystems.polarToCartesianX(r3, phi3 + rotation);
+		float y3 = yPos + CoordinateHelper.CoordinateSystems.polarToCartesianY(r3, phi3 + rotation);
 		
-		float r4 = CoordinateHelper.cartesianToPolarR(halfX, halfY);
-		float phi4 = CoordinateHelper.cartesianToPolarPhi(halfX, halfY);
-		float x4 = xPos + CoordinateHelper.polarToCartesianX(r4, phi4 + rotation);
-		float y4 = yPos + CoordinateHelper.polarToCartesianY(r4, phi4 + rotation);
+		float r4 = CoordinateHelper.CoordinateSystems.cartesianToPolarR(halfX, halfY);
+		float phi4 = CoordinateHelper.CoordinateSystems.cartesianToPolarPhi(halfX, halfY);
+		float x4 = xPos + CoordinateHelper.CoordinateSystems.polarToCartesianX(r4, phi4 + rotation);
+		float y4 = yPos + CoordinateHelper.CoordinateSystems.polarToCartesianY(r4, phi4 + rotation);
 		
 		//Top
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,

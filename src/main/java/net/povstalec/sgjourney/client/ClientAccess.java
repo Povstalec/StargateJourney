@@ -4,11 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
@@ -21,14 +23,21 @@ import net.povstalec.sgjourney.common.stargate.Address;
 public class ClientAccess
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
+    
+    public static void updateDialer(BlockPos pos)
+    {
+    	minecraft.setScreen(new DialerScreen());
+    }
 	
-    public static void updateSymbol(BlockPos pos, String symbol)
+    public static void updateSymbol(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final SymbolBlockEntity symbolEntity)
         {
-        	symbolEntity.symbol = symbol;
+        	symbolEntity.symbolNumber = symbolNumber;
+        	symbolEntity.pointOfOrigin = pointOfOrigin;
+        	symbolEntity.symbols = symbols;
         }
     }
     
@@ -73,6 +82,19 @@ public class ClientAccess
         {
         	panel.ringsFound = ringsFound;
         	panel.ringsPos = ringsPos;
+        }
+    }
+    
+    public static void updateDHD(BlockPos pos, String symbols, int[] address, boolean isCenterButtonEngaged)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if(blockEntity instanceof final AbstractDHDEntity dhd)
+        {
+        	//TODO Make DHD use symbols
+        	//dhd.setSymbols(symbols);
+        	dhd.setAddress(new Address(true).fromArray(address));
+        	dhd.setCenterButtonEngaged(isCenterButtonEngaged);
         }
     }
     
