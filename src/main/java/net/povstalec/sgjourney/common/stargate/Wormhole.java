@@ -14,7 +14,6 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -22,12 +21,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.TagInit;
-import net.povstalec.sgjourney.common.misc.MatrixHelper;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class Wormhole implements ITeleporter
@@ -167,9 +167,9 @@ public class Wormhole implements ITeleporter
 		{
 			ServerLevel destinationlevel = (ServerLevel) targetStargate.getLevel();
 	        
-	        if (destinationlevel == null)
+	        if(destinationlevel == null)
 	        {
-	        	System.out.println("Dimension is null");
+	        	StargateJourney.LOGGER.info("Can't teleport Entity because Dimension is null");
 	            return;
 	        }
 	        
@@ -182,13 +182,13 @@ public class Wormhole implements ITeleporter
 		        double initialYAddition = initialStargate.getGateAddition();
 		        double destinationYAddition = targetStargate.getGateAddition();
 		        
-	    		Vec3 position = preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + 0.5), traveler.getY() - (initialStargate.getCenterPos().getY() + initialYAddition), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
+	    		Vec3 position = CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + 0.5), traveler.getY() - (initialStargate.getCenterPos().getY() + initialYAddition), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
 	    		
 	    		if(traveler instanceof ServerPlayer player)
 		    	{
 		    		deconstructEvent(initialStargate, player, false);
-		        	player.teleportTo(destinationlevel, targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
-		        	player.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
+		        	player.teleportTo(destinationlevel, targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
+		        	player.setDeltaMovement(CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
 		    		reconstructEvent(targetStargate, player);
@@ -200,8 +200,8 @@ public class Wormhole implements ITeleporter
 		    		if((ServerLevel) level != destinationlevel)
 		    			newTraveler = traveler.changeDimension(destinationlevel, this);
 
-		    		newTraveler.moveTo(targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
-		    		newTraveler.setDeltaMovement(preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
+		    		newTraveler.moveTo(targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
+		    		newTraveler.setDeltaMovement(CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		    		playWormholeSound(level, newTraveler);
 		    		reconstructEvent(targetStargate, newTraveler);
 		    	}
@@ -245,26 +245,8 @@ public class Wormhole implements ITeleporter
     	
     	targetStargate.updateInterfaceBlocks(EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
     }
-
-	private static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
-    {
-    	return MatrixHelper.rotateVector(initial, initialDirection, initialOrientation, destinationDirection, destinationOrientation);
-    }
-	
-	private static float preserveYRot(Direction initialDirection, Direction destinationDirection, float yRot)
-	{
-		float initialStargateDirection = Mth.wrapDegrees(initialDirection.toYRot());
-    	float destinationStargateDirection = Mth.wrapDegrees(destinationDirection.toYRot());
-    	
-    	float relativeRot = destinationStargateDirection - initialStargateDirection;
-    	
-    	yRot = yRot + relativeRot + 180;
-    	
-    	return yRot;
-	}
-	
 	private static void playWormholeSound(Level level, Entity traveler)
 	{
-		level.playSound((Player)null, traveler.blockPosition(), SoundInit.WORMHOLE_ENTER.get(), SoundSource.BLOCKS, 0.25F, 1F);
+		level.playSound((Player)null, traveler.blockPosition(), SoundInit.WORMHOLE_ENTER.get(), SoundSource.BLOCKS, 0.5F, 1F);
 	}
 }

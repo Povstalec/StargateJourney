@@ -1,0 +1,8 @@
+{
+	"include_generated_addresses": false,
+	"dimensions":
+	[
+		{"dimension": "sgjourney:chulak", "weight": 4},
+		{"dimension": "sgjourney:cavum_tenebrae", "weight": 1}
+	]
+}

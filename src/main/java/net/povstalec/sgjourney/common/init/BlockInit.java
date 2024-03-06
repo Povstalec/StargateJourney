@@ -23,6 +23,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.ATAGeneDetectorBlock;
 import net.povstalec.sgjourney.common.blocks.ArcheologyTableBlock;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
+import net.povstalec.sgjourney.common.blocks.ChevronBlock;
 import net.povstalec.sgjourney.common.blocks.ClassicStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.ExplosiveBlock;
 import net.povstalec.sgjourney.common.blocks.FirePitBlock;
@@ -92,11 +93,11 @@ public class BlockInit
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	public static final RegistryObject<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerBlock("classic_stargate_base_block", 
-			() -> new ClassicStargateBaseBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)){});
+			() -> new ClassicStargateBaseBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
 	public static final RegistryObject<Block> CLASSIC_STARGATE_CHEVRON_BLOCK = registerBlock("classic_stargate_chevron_block", 
-			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)));
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
 	public static final RegistryObject<Block> CLASSIC_STARGATE_RING_BLOCK = registerBlock("classic_stargate_ring_block", 
-			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)));
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
 	
 	public static final RegistryObject<TollanStargateBlock> TOLLAN_STARGATE = registerEntityBlock("tollan_stargate",
 			() -> new TollanStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
@@ -115,7 +116,12 @@ public class BlockInit
 	
 	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd", 
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
-					.sound(SoundType.METAL).noOcclusion()), Rarity.COMMON);
+					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
+	
+	public static final RegistryObject<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerBlock("universe_stargate_chevron", 
+			() -> new ChevronBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F)
+					.requiresCorrectToolForDrops().noOcclusion().noCollission()
+					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
 	
 	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerEntityBlock("transport_rings", 
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
@@ -155,7 +161,7 @@ public class BlockInit
 	
 	public static final RegistryObject<GoldenIdolBlock> GOLDEN_IDOL = registerBlock("golden_idol", 
 			() -> new GoldenIdolBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.GOLD).strength(3.0F, 6.0F)
-					.sound(SoundType.METAL).requiresCorrectToolForDrops()), Rarity.UNCOMMON, 1);
+					.sound(SoundType.METAL).requiresCorrectToolForDrops()), Rarity.UNCOMMON, 16);
 	
 	public static final RegistryObject<ArcheologyTableBlock> ARCHEOLOGY_TABLE = registerBlock("archeology_table", 
 			() -> new ArcheologyTableBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F)

@@ -30,7 +30,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 {
-	protected ClassicStargateBaseBlock(Properties properties)
+	public ClassicStargateBaseBlock(Properties properties)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));

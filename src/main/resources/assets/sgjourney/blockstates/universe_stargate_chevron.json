@@ -1,0 +1,110 @@
+{
+  "variants": {
+    "orientation=down_east,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "x": 180,
+      "y": 90
+    },
+    "orientation=down_north,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "x": 180
+    },
+    "orientation=down_south,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "x": 180,
+      "y": 180
+    },
+    "orientation=down_west,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "x": 180,
+      "y": 270
+    },
+    "orientation=east_up,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "x": 90,
+      "y": 90
+    },
+    "orientation=north_up,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "x": 90
+    },
+    "orientation=south_up,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "x": 90,
+      "y": 180
+    },
+    "orientation=up_east,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "y": 90
+    },
+    "orientation=up_north,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron"
+    },
+    "orientation=up_south,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "y": 180
+    },
+    "orientation=up_west,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "y": 270
+    },
+    "orientation=west_up,lit=false": {
+      "model": "sgjourney:block/universe_stargate_chevron",
+      "x": 90,
+      "y": 270
+    },
+    "orientation=down_east,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "x": 180,
+      "y": 90
+    },
+    "orientation=down_north,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "x": 180
+    },
+    "orientation=down_south,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "x": 180,
+      "y": 180
+    },
+    "orientation=down_west,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "x": 180,
+      "y": 270
+    },
+    "orientation=east_up,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "x": 90,
+      "y": 90
+    },
+    "orientation=north_up,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "x": 90
+    },
+    "orientation=south_up,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "x": 90,
+      "y": 180
+    },
+    "orientation=up_east,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "y": 90
+    },
+    "orientation=up_north,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged"
+    },
+    "orientation=up_south,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "y": 180
+    },
+    "orientation=up_west,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "y": 270
+    },
+    "orientation=west_up,lit=true": {
+      "model": "sgjourney:block/universe_stargate_chevron_engaged",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

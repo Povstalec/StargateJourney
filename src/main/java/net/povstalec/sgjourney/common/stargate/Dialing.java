@@ -70,7 +70,7 @@ public class Dialing
 		if(solarSystem.equals(EMPTY))
 			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		
-		return getStargate(level, dialingStargate, solarSystem, doKawoosh);
+		return getStargate(level, dialingStargate, solarSystem, Address.Type.ADDRESS_7_CHEVRON, doKawoosh);
 	}
 	
 	private static Stargate.Feedback get8ChevronStargate(Level level, AbstractStargateEntity dialingStargate, Address address, boolean doKawoosh)
@@ -81,10 +81,10 @@ public class Dialing
 		if(solarSystem.equals(EMPTY))
 			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		
-		return getStargate(level, dialingStargate, solarSystem, doKawoosh);
+		return getStargate(level, dialingStargate, solarSystem, Address.Type.ADDRESS_8_CHEVRON, doKawoosh);
 	}
 	
-	private static Stargate.Feedback getStargate(Level level, AbstractStargateEntity dialingStargate, String systemID, boolean doKawoosh)
+	private static Stargate.Feedback getStargate(Level level, AbstractStargateEntity dialingStargate, String systemID, Address.Type addressType, boolean doKawoosh)
 	{
 		String currentSystem = Universe.get(level).getSolarSystemFromDimension(level.dimension().location().toString());
 		
@@ -123,7 +123,7 @@ public class Dialing
 			solarSystem = StargateNetwork.get(server).getSolarSystem(systemID);
 		}
 		
-		return getPreferredStargate(server, dialingStargate, solarSystem, doKawoosh);
+		return getPreferredStargate(server, dialingStargate, solarSystem, addressType, doKawoosh);
 	}
 	
 	private static void findStargates(Level level)
@@ -180,7 +180,7 @@ public class Dialing
 		{
 			if(targetStargate.isObstructed())
 				return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
-			return dialStargate(dialingStargate, targetStargate, doKawoosh);
+			return dialStargate(dialingStargate, targetStargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh);
 		}
 		return dialingStargate.resetStargate(Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 	}
@@ -191,7 +191,7 @@ public class Dialing
 		return getStargateFromID(level.getServer(), dialingStargate, id, doKawoosh);
 	}
 	
-	private static Stargate.Feedback getPreferredStargate(MinecraftServer server, AbstractStargateEntity dialingStargate, CompoundTag solarSystem, boolean doKawoosh)
+	private static Stargate.Feedback getPreferredStargate(MinecraftServer server, AbstractStargateEntity dialingStargate, CompoundTag solarSystem, Address.Type addressType, boolean doKawoosh)
 	{
 		while(!solarSystem.isEmpty())
 		{
@@ -209,7 +209,7 @@ public class Dialing
 				if(targetLevel.getBlockEntity(pos) instanceof AbstractStargateEntity targetStargate)
 				{
 					if(!targetStargate.isObstructed() && !targetStargate.isRestricted(dialingStargate))
-						return dialStargate(dialingStargate, targetStargate, doKawoosh);
+						return dialStargate(dialingStargate, targetStargate, addressType, doKawoosh);
 					else if(targetStargate.isObstructed() && solarSystem.size() == 1)
 						return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
 					else if(targetStargate.isRestricted(dialingStargate) && solarSystem.size() == 1)
@@ -223,9 +223,9 @@ public class Dialing
 		return dialingStargate.resetStargate(Stargate.Feedback.UNKNOWN_ERROR);
 	}
 	
-	private static Stargate.Feedback dialStargate(AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
+	private static Stargate.Feedback dialStargate(AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		Level level = dialingStargate.getLevel();
-		return StargateNetwork.get(level).createConnection(level.getServer(), dialingStargate, dialedStargate, doKawoosh);
+		return StargateNetwork.get(level).createConnection(level.getServer(), dialingStargate, dialedStargate, addressType, doKawoosh);
 	}
 }

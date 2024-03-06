@@ -131,9 +131,33 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
+	public SoundEvent getPrimaryChevronEngageSound()
+	{
+		return SoundInit.CLASSIC_PRIMARY_CHEVRON_ENGAGE.get();
+	}
+
+	@Override
+	public SoundEvent getChevronIncomingSound()
+	{
+		return SoundInit.CLASSIC_CHEVRON_INCOMING.get();
+	}
+
+	@Override
+	public SoundEvent getPrimaryChevronIncomingSound()
+	{
+		return SoundInit.CLASSIC_PRIMARY_CHEVRON_INCOMING.get();
+	}
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.CLASSIC_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.CLASSIC_WORMHOLE_IDLE.get();
 	}
 
 	@Override

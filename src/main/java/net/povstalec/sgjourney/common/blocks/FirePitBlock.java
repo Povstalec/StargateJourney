@@ -54,16 +54,27 @@ public class FirePitBlock extends Block
 				
 				return InteractionResult.SUCCESS;
 			}
+			else if(state.getValue(LIT) == false && player.getItemInHand(hand).getItem() == Items.FIRE_CHARGE)
+			{
+				level.playSound((Player)null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+				level.setBlock(pos, state.setValue(LIT, true), 3);
+				if(!player.isCreative())
+					player.getItemInHand(hand).shrink(1);
+				
+				return InteractionResult.SUCCESS;
+			}
 		}
 		
 		return InteractionResult.FAIL;
 	}
-	
+
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
 		state.add(LIT);
 	}
-	
+
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
 	      return this.defaultBlockState().setValue(LIT, false);
@@ -76,29 +87,35 @@ public class FirePitBlock extends Block
 	private static final VoxelShape SIDE_4 = Block.box(5.0D, 1.0D, 11.0D, 11.0D, 2.0D, 12.0D);
 	
 	private static final VoxelShape FIRE_PIT = Shapes.or(BOTTOM, SIDE_1, SIDE_2, SIDE_3, SIDE_4);
-	
+
+	@Override
 	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) 
 	{
 		return true;
 	}
-	
+
+	@Override
 	public boolean canSurvive(BlockState state, LevelReader reader, BlockPos pos)
 	{
 		return canSupportCenter(reader, pos.below(), Direction.UP);
 	}
-	
-	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
-	      double d0 = (double)pos.getX() + 0.5D;
-	      double d1 = (double)pos.getY() + 0.3D;
-	      double d2 = (double)pos.getZ() + 0.5D;
-	      if(state.getValue(LIT) == true)
-	      {
-		      level.addParticle(ParticleTypes.SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-		      level.addParticle(this.flameParticle, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-	      }
-	   }
-	
-	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision) {
-	      return FIRE_PIT;
-	   }
+
+	@Override
+	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand)
+	{
+		double d0 = (double)pos.getX() + 0.5D;
+		double d1 = (double)pos.getY() + 0.3D;
+		double d2 = (double)pos.getZ() + 0.5D;
+		if(state.getValue(LIT) == true)
+	   	{
+			level.addParticle(ParticleTypes.SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+			level.addParticle(this.flameParticle, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+	   	}
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision)
+	{
+		return FIRE_PIT;
+	}
 }

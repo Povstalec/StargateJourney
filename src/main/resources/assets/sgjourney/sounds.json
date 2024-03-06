@@ -26,6 +26,30 @@
 			"sgjourney:universe_chevron_engage"
 		]
 	},
+	"universe_primary_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:universe_chevron_engage"
+		]
+	},
+	"universe_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.nothing",
+		"sounds":
+		[
+			"sgjourney:nothing"
+		]
+	},
+	"universe_primary_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.nothing",
+		"sounds":
+		[
+			"sgjourney:nothing"
+		]
+	},
 	"universe_dial_fail":
 	{
 		"subtitle": "sounds.sgjourney.dial_fail",
@@ -42,6 +66,14 @@
 		"sounds":
 		[
 			"sgjourney:universe_wormhole_open"
+		]
+	},
+	"universe_wormhole_idle":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_idle",
+		"sounds":
+		[
+			"sgjourney:wormhole_idle"
 		]
 	},
 	"universe_wormhole_close":
@@ -86,6 +118,14 @@
 			"sgjourney:milky_way_chevron_open"
 		]
 	},
+	"milky_way_primary_chevron_open":
+	{
+		"subtitle": "sounds.sgjourney.chevron_open",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_open"
+		]
+	},
 	"milky_way_chevron_encode":
 	{
 		"subtitle": "sounds.sgjourney.chevron_encode",
@@ -95,6 +135,30 @@
 		]
 	},
 	"milky_way_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_engage"
+		]
+	},
+	"milky_way_primary_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_engage"
+		]
+	},
+	"milky_way_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_engage"
+		]
+	},
+	"milky_way_primary_chevron_incoming":
 	{
 		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
@@ -116,6 +180,14 @@
 		"sounds":
 		[
 			"sgjourney:milky_way_wormhole_open"
+		]
+	},
+	"milky_way_wormhole_idle":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_idle",
+		"sounds":
+		[
+			"sgjourney:wormhole_idle"
 		]
 	},
 	"milky_way_wormhole_close":
@@ -144,7 +216,23 @@
 			"sgjourney:pegasus_chevron_engage"
 		]
 	},
+	"pegasus_primary_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:pegasus_chevron_engage"
+		]
+	},
 	"pegasus_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:pegasus_chevron_incoming"
+		]
+	},
+	"pegasus_primary_chevron_incoming":
 	{
 		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
@@ -168,6 +256,14 @@
 			"sgjourney:pegasus_wormhole_open"
 		]
 	},
+	"pegasus_wormhole_idle":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_idle",
+		"sounds":
+		[
+			"sgjourney:wormhole_idle"
+		]
+	},
 	"pegasus_wormhole_close":
 	{
 		"subtitle": "sounds.sgjourney.wormhole_close",
@@ -178,6 +274,36 @@
 	},
 	
 	"tollan_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_press_1",
+			"sgjourney:milky_way_dhd_press_2",
+			"sgjourney:milky_way_dhd_press_3"
+		]
+	},
+	"tollan_primary_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_press_1",
+			"sgjourney:milky_way_dhd_press_2",
+			"sgjourney:milky_way_dhd_press_3"
+		]
+	},
+	"tollan_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_press_1",
+			"sgjourney:milky_way_dhd_press_2",
+			"sgjourney:milky_way_dhd_press_3"
+		]
+	},
+	"tollan_primary_chevron_incoming":
 	{
 		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
@@ -203,6 +329,14 @@
 			"sgjourney:milky_way_wormhole_open"
 		]
 	},
+	"tollan_wormhole_idle":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_idle",
+		"sounds":
+		[
+			"sgjourney:wormhole_idle"
+		]
+	},
 	"tollan_wormhole_close":
 	{
 		"subtitle": "sounds.sgjourney.wormhole_close",
@@ -213,6 +347,30 @@
 	},
 	
 	"classic_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_engage"
+		]
+	},
+	"classic_primary_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_engage"
+		]
+	},
+	"classic_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:milky_way_chevron_engage"
+		]
+	},
+	"classic_primary_chevron_incoming":
 	{
 		"subtitle": "sounds.sgjourney.chevron_engage",
 		"sounds":
@@ -234,6 +392,14 @@
 		"sounds":
 		[
 			"sgjourney:milky_way_wormhole_open"
+		]
+	},
+	"classic_wormhole_idle":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_idle",
+		"sounds":
+		[
+			"sgjourney:wormhole_idle"
 		]
 	},
 	"classic_wormhole_close":
@@ -267,7 +433,7 @@
 	
 	"milky_way_dhd_enter":
 	{
-		"subtitle": "sounds.sgjourney.milky_way_dhd_enter",
+		"subtitle": "sounds.sgjourney.dhd_enter",
 		"sounds":
 		[
 			"sgjourney:milky_way_dhd_enter"
@@ -275,7 +441,43 @@
 	},
 	"milky_way_dhd_press":
 	{
-		"subtitle": "sounds.sgjourney.milky_way_dhd_press",
+		"subtitle": "sounds.sgjourney.dhd_press",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_press_1",
+			"sgjourney:milky_way_dhd_press_2",
+			"sgjourney:milky_way_dhd_press_3"
+		]
+	},
+	
+	"pegasus_dhd_enter":
+	{
+		"subtitle": "sounds.sgjourney.dhd_enter",
+		"sounds":
+		[
+			"sgjourney:pegasus_dhd_enter"
+		]
+	},
+	"pegasus_dhd_press":
+	{
+		"subtitle": "sounds.sgjourney.dhd_press",
+		"sounds":
+		[
+			"sgjourney:pegasus_dhd_press"
+		]
+	},
+	
+	"classic_dhd_enter":
+	{
+		"subtitle": "sounds.sgjourney.dhd_enter",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_enter"
+		]
+	},
+	"classic_dhd_press":
+	{
+		"subtitle": "sounds.sgjourney.dhd_press",
 		"sounds":
 		[
 			"sgjourney:milky_way_dhd_press_1",
@@ -337,7 +539,6 @@
 	},
 	"movie_wormhole_open":
 	{
-		"replace": true,
 		"subtitle": "sounds.sgjourney.wormhole_open",
 		"sounds":
 		[
@@ -346,7 +547,6 @@
 	},
 	"movie_wormhole_close":
 	{
-		"replace": true,
 		"subtitle": "sounds.sgjourney.wormhole_close",
 		"sounds":
 		[
@@ -354,9 +554,22 @@
 		]
 	},
 
-	"nothing":
+	"equip_naquadah_armor":
 	{
-		"replace": true,
+		"subtitle": "sounds.sgjourney.equip_naquadah_armor",
+		"sounds":
+		[
+			"minecraft:item/armor/equip_iron1",
+			"minecraft:item/armor/equip_iron2",
+			"minecraft:item/armor/equip_iron3",
+			"minecraft:item/armor/equip_iron4",
+			"minecraft:item/armor/equip_iron5",
+			"minecraft:item/armor/equip_iron6"
+		]
+	},
+
+	"empty":
+	{
 		"subtitle": "sounds.sgjourney.nothing",
 		"sounds":
 		[

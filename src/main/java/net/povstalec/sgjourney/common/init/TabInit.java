@@ -45,6 +45,7 @@ public class TabInit
 				items.accept(ItemInit.PLASMA_CONVERTER.get());
 				
 				items.accept(ItemInit.PDA.get());
+				//items.accept(ItemInit.UNIVERSE_DIALER.get());
 				
 				items.accept(ItemInit.NAQUADAH_SWORD.get());
 				items.accept(ItemInit.NAQUADAH_PICKAXE.get());
@@ -132,6 +133,8 @@ public class TabInit
 				items.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
 				items.accept(BlockInit.CLASSIC_DHD.get());
 				items.accept(BlockInit.TOLLAN_STARGATE.get());
+				
+				items.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 
 				items.accept(BlockInit.TRANSPORT_RINGS.get());
 				items.accept(BlockInit.RING_PANEL.get());

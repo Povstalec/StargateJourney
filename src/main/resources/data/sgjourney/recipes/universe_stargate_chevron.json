@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"GTG",
+		"GEG",
+		" R "
+	],
+	
+	"key": 
+	{
+		"G": { "item": "minecraft:white_stained_glass_pane" },
+		"E": { "item": "sgjourney:materialization_crystal" },
+		"T": { "item": "sgjourney:transfer_crystal" },
+		"R": { "item": "sgjourney:energy_crystal" }
+		
+	},
+	
+	"result": { "item": "sgjourney:universe_stargate_chevron" }
+}

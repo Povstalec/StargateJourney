@@ -87,12 +87,14 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if (!level.isClientSide()) 
+        if(!level.isClientSide()) 
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if (blockEntity instanceof AbstractDHDEntity dhd) 
+        	if(blockEntity instanceof AbstractDHDEntity dhd) 
         	{
+        		dhd.setStargate();
+        		
         		if(player.isShiftKeyDown())
         			this.openCrystalMenu(player, blockEntity);
         		else
