@@ -121,7 +121,7 @@ public class BlockInit
 	public static final RegistryObject<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerBlock("universe_stargate_chevron", 
 			() -> new ChevronBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F)
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
-					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)));
+					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
 	
 	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerEntityBlock("transport_rings", 
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
