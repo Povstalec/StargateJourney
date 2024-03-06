@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper.CoordinateSystems;
@@ -182,7 +181,7 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	}
 	
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		if(this.visible)
 		{
@@ -197,7 +196,7 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 			else
 				this.isHovered = false;	
 			
-			this.renderButton(poseStack, mouseX, mouseY, partialTick);
+			this.renderWidget(graphics, mouseX, mouseY, partialTick);
 			//this.updateTooltip();
 		}
 	}
