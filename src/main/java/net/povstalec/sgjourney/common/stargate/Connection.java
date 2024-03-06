@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -16,6 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Connection
@@ -55,7 +57,7 @@ public class Connection
 	protected static final long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
 	
 	protected final String uuid;
-	protected final ConnectionType connectionType;
+	protected final Connection.Type connectionType;
 	protected final AbstractStargateEntity dialingStargate;
 	protected AbstractStargateEntity dialedStargate; // Dialed Stargates can be changed mid connection
 	protected boolean doKawoosh;
@@ -65,7 +67,7 @@ public class Connection
 	protected int connectionTime = 0;
 	protected int timeSinceLastTraveler = 0;
 	
-	private Connection(String uuid, ConnectionType connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate,
+	private Connection(String uuid, Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate,
 			boolean used, int openTime, int connectionTime, int timeSinceLastTraveler, boolean doKawoosh)
 	{
 		this.uuid = uuid;
@@ -79,7 +81,7 @@ public class Connection
 		this.doKawoosh = doKawoosh;
 	}
 	
-	public enum ConnectionType
+	public enum Type
 	{
 		SYSTEM_WIDE(systemWideConnectionCost, systemWideConnectionDraw),
 		INTERSTELLAR(interstellarConnectionCost, interstellarConnectionDraw),
@@ -88,7 +90,7 @@ public class Connection
 		private long establishingPowerCost;
 		private long powerDraw;
 		
-		ConnectionType(long establishingPowerCost, long powerDraw)
+		Type(long establishingPowerCost, long powerDraw)
 		{
 			this.establishingPowerCost = establishingPowerCost;
 			this.powerDraw = powerDraw;
@@ -105,12 +107,44 @@ public class Connection
 		}
 	}
 	
-	private Connection(String uuid, ConnectionType connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
+	//============================================================================================
+	//******************************************Utility*******************************************
+	//============================================================================================
+	
+	public static final Connection.Type getType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	{
+		String dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension().location().toString());
+		String dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
+		
+		if(dialingSystem.equals(dialedSystem))
+			return Connection.Type.SYSTEM_WIDE;
+		
+		ListTag dialingGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialingSystem);
+		ListTag dialedGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialedSystem);
+		
+		if(!dialingGalaxyCandidates.isEmpty())
+		{
+			for(int i = 0; i < dialingGalaxyCandidates.size(); i++)
+			{
+				for(int j = 0; j < dialedGalaxyCandidates.size(); j++)
+				{
+					String dialingGalaxy = dialingGalaxyCandidates.getCompound(i).getAllKeys().iterator().next();
+					String dialedGalaxy = dialedGalaxyCandidates.getCompound(j).getAllKeys().iterator().next();
+					if(dialingGalaxy.equals(dialedGalaxy))
+						return Connection.Type.INTERSTELLAR;
+				}
+			}
+		}
+		
+		return Connection.Type.INTERGALACTIC;
+	}
+	
+	private Connection(String uuid, Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
 		this(uuid, connectionType, dialingStargate, dialedStargate, false, 0, 0, 0, doKawoosh);
 	}
 	
-	public static Connection create(ConnectionType connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
+	public static Connection create(Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
 		String uuid = UUID.randomUUID().toString();
 		
@@ -300,7 +334,10 @@ public class Connection
 		doWormhole(this.dialedStargate.getWormhole(), this.dialedStargate, this.dialingStargate, CommonStargateConfig.two_way_wormholes.get());
 		
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
-		if((this.dialingStargate.advancedProtocolsEnabled() || this.dialedStargate.advancedProtocolsEnabled()) && this.timeSinceLastTraveler >= 200)
+		if(this.dialingStargate.autoclose() > 0 && this.timeSinceLastTraveler >= this.dialingStargate.autoclose() * 20)
+			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
+		
+		if(this.dialedStargate.autoclose() > 0 && this.timeSinceLastTraveler >= this.dialedStargate.autoclose() * 20)
 			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 	}
 	
@@ -392,7 +429,7 @@ public class Connection
 	
 	public static Connection deserialize(MinecraftServer server, String uuid, CompoundTag tag)
 	{
-		ConnectionType connectionType = ConnectionType.valueOf(tag.getString(CONNECTION_TYPE));
+		Type connectionType = Type.valueOf(tag.getString(CONNECTION_TYPE));
 		AbstractStargateEntity dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
 		AbstractStargateEntity dialedStargate = deserializeStargate(server, tag.getCompound(DIALED_STARGATE));
 		boolean used = tag.getBoolean(USED);

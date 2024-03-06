@@ -4,9 +4,6 @@
 	[
 		{"dimension": "minecraft:overworld", "weight": 2},
 		{"dimension": "sgjourney:abydos", "weight": 1},
-		{"dimension": "sgjourney:cavum_tenebrae", "weight": 2},
-		{"dimension": "minecraft:the_nether", "weight": 2},
-		{"dimension": "minecraft:the_end", "weight": 2},
-		{"dimension": "ad_astra:glacio", "weight": 2}
+		{"dimension": "sgjourney:cavum_tenebrae", "weight": 2}
 	]
 }

@@ -147,10 +147,33 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
 	}
+
+	@Override
+	public SoundEvent getPrimaryChevronEngageSound()
+	{
+		return SoundInit.MILKY_WAY_PRIMARY_CHEVRON_ENGAGE.get();
+	}
+
+	@Override
+	public SoundEvent getChevronIncomingSound()
+	{
+		return SoundInit.MILKY_WAY_CHEVRON_INCOMING.get();
+	}
+
+	@Override
+	public SoundEvent getPrimaryChevronIncomingSound()
+	{
+		return SoundInit.MILKY_WAY_PRIMARY_CHEVRON_INCOMING.get();
+	}
 	
 	public SoundEvent getChevronOpenSound()
 	{
 		return SoundInit.MILKY_WAY_CHEVRON_OPEN.get();
+	}
+	
+	public SoundEvent getPrimaryChevronOpenSound()
+	{
+		return SoundInit.MILKY_WAY_PRIMARY_CHEVRON_OPEN.get();
 	}
 	
 	public SoundEvent getChevronEncodeSound()
@@ -162,6 +185,12 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.MILKY_WAY_WORMHOLE_IDLE.get();
 	}
 
 	@Override

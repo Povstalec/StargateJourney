@@ -7,7 +7,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -55,5 +57,17 @@ public class ArcheologyTableBlock extends DirectionalBlock
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state) 
 	{
 	      state.add(FACING);
+	}
+
+	@Override
+	public BlockState rotate(BlockState state, Rotation rotation)
+	{
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirror)
+	{
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 }

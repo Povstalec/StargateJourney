@@ -44,6 +44,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
 		super(BlockEntityInit.UNIVERSE_STARGATE.get(), pos, state, Stargate.Gen.GEN_1, 1);
 		this.setOpenSoundLead(8);
+		this.symbolBounds = 35;
 	}
 	
 	@Override
@@ -92,9 +93,33 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
+	public SoundEvent getPrimaryChevronEngageSound()
+	{
+		return SoundInit.UNIVERSE_PRIMARY_CHEVRON_ENGAGE.get();
+	}
+
+	@Override
+	public SoundEvent getChevronIncomingSound()
+	{
+		return SoundInit.UNIVERSE_CHEVRON_INCOMING.get();
+	}
+
+	@Override
+	public SoundEvent getPrimaryChevronIncomingSound()
+	{
+		return SoundInit.UNIVERSE_PRIMARY_CHEVRON_INCOMING.get();
+	}
+
+	@Override
 	public SoundEvent getWormholeOpenSound()
 	{
 		return SoundInit.UNIVERSE_WORMHOLE_OPEN.get();
+	}
+
+	@Override
+	public SoundEvent getWormholeIdleSound()
+	{
+		return SoundInit.UNIVERSE_WORMHOLE_IDLE.get();
 	}
 
 	@Override
@@ -109,15 +134,18 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		return SoundInit.UNIVERSE_DIAL_FAIL.get();
 	}
 	
+	@Override
 	public SoundEvent getStartupSound()
 	{
 		return SoundInit.UNIVERSE_DIAL_START.get();
 	}
-
+	
 	@Override
-	public SoundEvent getChevronIncomingSound()
+	public void updateDHD()
 	{
-		return SoundInit.NOTHING.get();
+		if(hasDHD())
+			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
+					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin());
 	}
 	
 	public double angle()
@@ -146,26 +174,28 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		if(level.isClientSide())
 			return Stargate.Feedback.NONE;
 		
-		if(getAddress().containsSymbol(symbol))
-			return Stargate.Feedback.SYMBOL_ENCODED;
+		if(isSymbolOutOfBounds(symbol))
+			return setRecentFeedback(Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS);
 		
-		if(symbol > 35)
-			return Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS;
-		
-		if(symbol == 0)
+		if(isConnected())
 		{
-			if(isConnected())
+			if(symbol == 0)
 				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
-			else if(!isConnected() && addressBuffer.getLength() == 0)
-				return Stargate.Feedback.INCOMPLETE_ADDRESS;
+			else
+				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
 		}
+		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
+			return setRecentFeedback(Stargate.Feedback.INCOMPLETE_ADDRESS);
+		
+		if(this.addressBuffer.containsSymbol(symbol))
+			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() == 0)
 			startSound();
 		
 		addressBuffer.addSymbol(symbol);
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.animationTicks, this.rotation, this.oldRotation));
-		return Stargate.Feedback.SYMBOL_ENCODED;
+		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
 	}
 	
 	@Override
@@ -279,7 +309,12 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			updateClient();
 		}
 		else
-			rotate(getBestRotationDirection(desiredSymbol));
+		{
+			if(CommonStargateConfig.universe_best_direction.get())
+				rotate(getBestRotationDirection(desiredSymbol));
+			else
+				rotate(getAlternatingRotationDirection(this.getAddress().getLength()));
+		}
 	}
 	
 	private void rotateToDefault()
@@ -290,6 +325,11 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 			updateClient();
 		else
 			rotate(getBestRotationDirection(RESET_DEGREES, rotation));
+	}
+	
+	private boolean getAlternatingRotationDirection(int addressLength)
+	{
+		return addressLength % 2 == 1;
 	}
 	
 	private boolean getBestRotationDirection(int desiredSymbol)

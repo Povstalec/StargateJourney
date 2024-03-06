@@ -27,11 +27,11 @@ public class TabInit
 	
 	public static RegistryObject<CreativeModeTab> STARGATE_ITEMS = CREATIVE_MODE_TABS.register("stargate_items", () ->
 		CreativeModeTab.builder().icon(() -> new ItemStack(ItemInit.NAQUADAH.get()))
-		.title(Component.translatable("creativemodetab.stargate_items")).build());
+		.title(Component.translatable("itemGroup.stargate_items")).build());
 
 	public static RegistryObject<CreativeModeTab> STARGATE_BLOCKS = CREATIVE_MODE_TABS.register("stargate_blocks", () ->
 		CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
-		.title(Component.translatable("creativemodetab.stargate_blocks")).build());
+		.title(Component.translatable("itemGroup.stargate_blocks")).build());
 	
 	@SubscribeEvent
 	public static void addCreative(final BuildCreativeModeTabContentsEvent event)
@@ -134,6 +134,8 @@ public class TabInit
 			event.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_DHD.get());
 			event.accept(BlockInit.TOLLAN_STARGATE.get());
+			
+			event.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 
 			event.accept(BlockInit.TRANSPORT_RINGS.get());
 			event.accept(BlockInit.RING_PANEL.get());

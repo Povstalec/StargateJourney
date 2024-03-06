@@ -10,16 +10,23 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
+	
 	public static ForgeConfigSpec.BooleanValue kawoosh_destroys_blocks;
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_items;
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_entities;
+	
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	public static ForgeConfigSpec.BooleanValue always_display_stargate_id;
 	public static ForgeConfigSpec.IntValue max_obstructive_blocks;
+	
+	public static ForgeConfigSpec.BooleanValue allow_interstellar_8_chevron_addresses;
+	public static ForgeConfigSpec.BooleanValue allow_system_wide_connections;
 
 	public static ForgeConfigSpec.BooleanValue enable_address_choice;
 	public static ForgeConfigSpec.BooleanValue enable_classic_stargate_upgrades;
 	public static ForgeConfigSpec.BooleanValue enable_stargate_variants;
+
+	public static ForgeConfigSpec.BooleanValue universe_best_direction;
 	
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> universe_chevron_lock_speed;
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> milky_way_chevron_lock_speed;
@@ -59,6 +66,8 @@ public class CommonStargateConfig
 				.comment("If true, going through the wrong side of the wormhole will result in death")
 				.define("server.reverse_wormhole_kills", true);
 		
+		
+		
 		kawoosh_destroys_blocks = server
 				.comment("If true, allow the destruction of Blocks by Kawooshes")
 				.define("server.kawoosh_destroys_blocks", true);
@@ -70,6 +79,18 @@ public class CommonStargateConfig
 		kawoosh_disintegrates_items = server
 				.comment("If true, allow the disintegration of Items by Kawooshes")
 				.define("server.kawoosh_disintegrates_items", true);
+		
+		
+		
+		allow_interstellar_8_chevron_addresses = server
+				.comment("Decides if 8-chevron addresses can be used for dialing within the same galaxy")
+				.define("server.allow_interstellar_8_chevron_addresses", false);
+				
+		allow_system_wide_connections = server
+				.comment("Decides if two Stargates from the same Solar System should be able to connect")
+				.define("server.allow_system_wide_connections", true);
+		
+		
 		
 		enable_redstone_dialing = server
 				.comment("Enables the use of redstone for manual Stargate dialing")
@@ -96,6 +117,12 @@ public class CommonStargateConfig
 		always_display_stargate_id = server
 				.comment("If true, Stargate item will always display the 9-Chevron Address of the Stargate in the inventory")
 				.define("server.always_display_stargate_id", false);
+		
+		
+		
+		universe_best_direction = server
+				.comment("If true, the Universe Stargate will always rotate in the best direction; If false, the Universe Stargate will alternate between rotation directions")
+				.define("server.universe_stargate_best_direction", true);
 		
 		
 		

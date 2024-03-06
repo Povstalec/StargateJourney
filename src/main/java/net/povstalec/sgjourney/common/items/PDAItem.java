@@ -22,8 +22,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
-import net.povstalec.sgjourney.common.misc.AncientTech;
-import net.povstalec.sgjourney.common.misc.GoauldTech;
+import net.povstalec.sgjourney.common.tech.AncientTech;
+import net.povstalec.sgjourney.common.tech.GoauldTech;
 
 public class PDAItem extends Item implements AncientTech, GoauldTech
 {

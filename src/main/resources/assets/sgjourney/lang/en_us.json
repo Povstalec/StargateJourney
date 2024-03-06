@@ -13,9 +13,9 @@
 	"block.sgjourney.archeology_table": "Archeology Table",
 	"block.sgjourney.golden_idol": "Golden Idol",
 
-	"block.sgjourney.sandstone_with_lapis": "Sandstone With Lapis",
-	"block.sgjourney.sandstone_with_gold": "Sandstone With Gold",
-	"block.sgjourney.sandstone_hieroglyphs": "Sandstone With Hieroglyphs",
+	"block.sgjourney.sandstone_with_lapis": "Sandstone with Lapis",
+	"block.sgjourney.sandstone_with_gold": "Sandstone with Gold",
+	"block.sgjourney.sandstone_hieroglyphs": "Sandstone with Hieroglyphs",
 	"block.sgjourney.sandstone_switch": "Sandstone Switch",
 	"block.sgjourney.sandstone_symbol": "Sandstone Symbol",
 	"block.sgjourney.stone_symbol": "Stone Symbol",
@@ -24,6 +24,7 @@
 	
 	"block.sgjourney.universe_stargate": "Universe Stargate",
 	"block.sgjourney.universe_ring": "Universe Stargate",
+	"block.sgjourney.universe_stargate_chevron": "Universe Stargate Chevron",
 	"block.sgjourney.milky_way_stargate": "Milky Way Stargate",
 	"block.sgjourney.milky_way_ring": "Milky Way Stargate",
 	"block.sgjourney.pegasus_stargate": "Pegasus Stargate",
@@ -152,8 +153,8 @@
 	"sounds.sgjourney.wormhole_enter" : "Wormhole entered",
 	"sounds.sgjourney.wormhole_idle" : "Wormhole idle",
 	
-	"sounds.sgjourney.milky_way_dhd_enter" : "DHD enter",
-	"sounds.sgjourney.milky_way_dhd_press" : "DHD pressed",
+	"sounds.sgjourney.dhd_enter" : "DHD enter",
+	"sounds.sgjourney.dhd_press" : "DHD pressed",
 	
 	"sounds.sgjourney.matok_fire" : "Staff Weapon fires",
 	"sounds.sgjourney.matok_attack" : "Staff Weapon attack",
@@ -189,8 +190,16 @@
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
+	"biome.sgjourney.abydos_oasis": "Abydos Oasis",
 	"biome.sgjourney.abydos_spires": "Abydos Spires",
-	"biome.sgjourney.lantean_ocean": "Lantean Ocean",
+	"biome.sgjourney.athos_forest": "Athos Forest",
+	"biome.sgjourney.cavum_tenebrae_shattered_crust": "Shattered Crust",
+	"biome.sgjourney.chulak_forest": "Chulak Forest",
+	"biome.sgjourney.chulak_plains": "Chulak Plains",
+	"biome.sgjourney.destiny": "Destiny",
+	"biome.sgjourney.lantean_deep_ocean": "Deep Lantean Ocean",
+	"biome.sgjourney.milky_way_forest": "Milky Way Forest",
+	"biome.sgjourney.milky_way_plains": "Milky Way Plains",
 	
 	"advancements.sgjourney.root.title": "Further than ever before",
 	"advancements.sgjourney.root.description": "Step through a Stargate",
@@ -258,10 +267,11 @@
 	"info.sgjourney.add_to_network": "Add To Network",
 	"info.sgjourney.point_of_origin": "Point of Origin",
 	"info.sgjourney.symbols": "Symbols",
+	"info.sgjourney.symbol_number": "Symbol Number",
 	"info.sgjourney.open_time": "Open Time",
 	"info.sgjourney.times_opened": "Times Opened",
 	"info.sgjourney.has_dhd": "Connected to DHD",
-	"info.sgjourney.advanced_protocols_enabled": "Advanced Protocols Enabled",
+	"info.sgjourney.autoclose": "Autoclose",
 	"info.sgjourney.last_traveler_time": "Time Since Last Traveler",
 	"info.sgjourney.address": "Address",
 	"info.sgjourney.recent_feedback": "Recent Feedback",
@@ -327,14 +337,17 @@
 	"message.sgjourney.pda.has_ancient_gene": "Has Ancient Gene",
 	"message.sgjourney.pda.has_naquadah_in_bloodstream": "Has Naquadah in bloodstream",
 	
+	"message.sgjourney.dhd.error.not_connected_to_stargate": "DHD is not connected to a Stargate",
+	
 	"message.sgjourney.stargate.error.one_way_wormhole": "Can't travel through wormhole in this direction",
 	
 	"message.sgjourney.stargate.info.none": "None",
 	"message.sgjourney.stargate.error.unknown": "Unknown Error",
 	
-	"message.sgjourney.stargate.info.symbol_encoded": "Symbol Encoded",
+	"message.sgjourney.stargate.info.symbol_encoded": "Symbol encoded",
 	"message.sgjourney.stargate.error.symbol_in_address": "Symbol is already encoded",
 	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol is out of bounds",
+	"message.sgjourney.stargate.error.encode_when_connected": "Cannot encode Symbols when connected",
 	
 	"message.sgjourney.stargate.info.connection_established.system_wide": "System-wide connection established",
 	"message.sgjourney.stargate.info.connection_established.interstellar": "Interstellar connection established",
@@ -352,6 +365,8 @@
 	"message.sgjourney.stargate.error.no_dimensions": "Dialed Solar System has no Dimensions",
 	"message.sgjourney.stargate.error.no_stargates": "Dialed Solar System has no Stargates",
 	"message.sgjourney.stargate.error.target_restricted": "Dialed Stargate is restricted",
+	"message.sgjourney.stargate.error.invalid_8_chevron_address": "8-chevron address can't dial within the same Galaxy",
+	"message.sgjourney.stargate.error.invalid_system_wide_connection": "Cannot connect within the same Solar System",
 	
 	"message.sgjourney.stargate.info.connection_ended.disconnect": "Stargate disconnected",
 	"message.sgjourney.stargate.info.connection_ended.point_of_origin": "Stargate disconnected by locking point of origin",
@@ -363,7 +378,7 @@
 	"message.sgjourney.stargate.error.wrong_disconnect_side": "Stargate cannot be disconnected from this side",
 	"message.sgjourney.stargate.error.connection_forming": "Cannot disconnect Stargate while a Connection is forming",
 	
-	"message.sgjourney.stargate.error.stargate_destroyed": "Targate Stargate was destroyed",
+	"message.sgjourney.stargate.error.stargate_destroyed": "Stargate was destroyed",
 	"message.sgjourney.stargate.error.could_not_reach_target_stargate": "Could not reach target Stargate",
 	"message.sgjourney.stargate.error.interrupted_by_incoming_connection": "Stargate was interrupted by incoming connection",
 	

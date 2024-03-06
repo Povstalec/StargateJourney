@@ -69,33 +69,37 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
     {
     	Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-    	
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
+		
+		if(clientPacketListener != null)
 		{
-	    	String pointOfOrigin = "";
-			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
-			if(location.toString().equals("sgjourney:empty"))
-				pointOfOrigin = "Empty";
-			else if(pointOfOriginRegistry.containsKey(location))
-				pointOfOrigin = pointOfOriginRegistry.get(location).getName();
-			else
-				pointOfOrigin = "Error";
-	        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-		}
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
-		{
-			String symbols = "";
-			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
-			if(location.toString().equals("sgjourney:empty"))
-				symbols = "Empty";
-			else if(symbolsRegistry.containsKey(location))
-				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
-			else
-				symbols = "Error";
-	        tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+			RegistryAccess registries = clientPacketListener.registryAccess();
+			Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
+			Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
+	    	
+			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
+			{
+		    	String pointOfOrigin = "";
+				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
+				if(location.toString().equals("sgjourney:empty"))
+					pointOfOrigin = "Empty";
+				else if(pointOfOriginRegistry.containsKey(location))
+					pointOfOrigin = pointOfOriginRegistry.get(location).getName();
+				else
+					pointOfOrigin = "Error";
+		        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+			}
+			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
+			{
+				String symbols = "";
+				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
+				if(location.toString().equals("sgjourney:empty"))
+					symbols = "Empty";
+				else if(symbolsRegistry.containsKey(location))
+					symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
+				else
+					symbols = "Error";
+		        tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+			}
 		}
 		
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);

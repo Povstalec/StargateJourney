@@ -19,7 +19,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.misc.AncientTech;
+import net.povstalec.sgjourney.common.tech.AncientTech;
 
 public class PersonalShieldItem extends ArmorItem implements AncientTech
 {

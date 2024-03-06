@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -46,6 +47,7 @@ import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -201,38 +203,55 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
+    	boolean hasAddress = false;
     	String dimension = "";
     	String symbols = "";
     	String addressTable = "";
     	
-    	if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Dimension"))
-    		dimension = stack.getTag().getCompound("BlockEntityTag").getString("Dimension");
-    	
-    	if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
-		{
-    		Minecraft minecraft = Minecraft.getInstance();
-    		ClientPacketListener clientPacketListener = minecraft.getConnection();
-    		RegistryAccess registries = clientPacketListener.registryAccess();
-    		Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-    		
-			ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
-			if(location.toString().equals("sgjourney:empty"))
-				symbols = "Empty";
-			else if(symbolsRegistry.containsKey(location))
-				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
-			else
-				symbols = "Error";
-		}
-    	
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimension)).withStyle(ChatFormatting.YELLOW));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
-    	
-    	if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("AddressTable"))
+    	if(stack.hasTag() && stack.getTag().contains("BlockEntityTag"))
     	{
-    		addressTable = stack.getTag().getCompound("BlockEntityTag").getString("AddressTable");
-    		if(!addressTable.equals("sgjourney:empty"))
-    			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + addressTable)).withStyle(ChatFormatting.YELLOW));
+    		CompoundTag tag = stack.getTag().getCompound("BlockEntityTag");
+    		
+    		if(tag.contains(CartoucheEntity.ADDRESS))
+    		{
+    			hasAddress = true;
+    			
+    			int[] addressArray = tag.getIntArray(CartoucheEntity.ADDRESS);
+    			
+    			Address address = new Address(addressArray);
+    			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": ").append(address.toComponent(false))).withStyle(ChatFormatting.YELLOW));
+    		}
+    		
+    		if(tag.contains(CartoucheEntity.DIMENSION))
+    			dimension = tag.getString(CartoucheEntity.DIMENSION);
+    		
+    		if(tag.contains(CartoucheEntity.SYMBOLS))
+    		{
+        		Minecraft minecraft = Minecraft.getInstance();
+        		ClientPacketListener clientPacketListener = minecraft.getConnection();
+        		RegistryAccess registries = clientPacketListener.registryAccess();
+        		Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
+        		
+    			ResourceLocation location = new ResourceLocation(tag.getString(CartoucheEntity.SYMBOLS));
+    			if(location.toString().equals("sgjourney:empty"))
+    				symbols = "Empty";
+    			else if(symbolsRegistry.containsKey(location))
+    				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
+    			else
+    				symbols = "Error";
+    		}
+        	
+        	if(tag.contains(CartoucheEntity.ADDRESS_TABLE))
+        	{
+        		addressTable = tag.getString(CartoucheEntity.ADDRESS_TABLE);
+        		if(!addressTable.equals("sgjourney:empty"))
+        			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + addressTable)).withStyle(ChatFormatting.YELLOW));
+        	}
     	}
+    	
+    	if(!hasAddress)
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimension)).withStyle(ChatFormatting.YELLOW));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }

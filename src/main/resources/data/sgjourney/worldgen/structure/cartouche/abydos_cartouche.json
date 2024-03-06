@@ -13,7 +13,7 @@
 	
 	"start_height":
 	{
-		"absolute": -4
+		"absolute": -8
 	},
 
 	"project_start_to_heightmap": "OCEAN_FLOOR_WG",
