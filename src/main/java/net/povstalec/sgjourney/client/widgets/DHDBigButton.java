@@ -30,7 +30,6 @@ public class DHDBigButton extends DHDButton
 		widgetsLocation = widgets;
 	}
     
-    @Override
     protected int getYImage(boolean isHovering)
     {
     	if(isHovering)
@@ -48,7 +47,7 @@ public class DHDBigButton extends DHDButton
     }
     
 	@Override
-	public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+	public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
 		Font font = minecraft.font;
@@ -59,8 +58,8 @@ public class DHDBigButton extends DHDButton
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.enableDepthTest();
-		this.blit(poseStack, this.getX(), this.getY(), 0, yOffset * DIAMETER, this.width, this.height);
-		this.renderBg(poseStack, minecraft, mouseX, mouseY);
+		blit(poseStack, this.getX(), this.getY(), 0, yOffset * DIAMETER, this.width, this.height);
+		//this.renderBg(poseStack, minecraft, mouseX, mouseY);
 		int j = getFGColor();
 		drawCenteredString(poseStack, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 	}
@@ -72,7 +71,7 @@ public class DHDBigButton extends DHDButton
 		{
 			this.isHovered = ((Math.pow(mouseX - (this.getX() + RADIUS), 2) + Math.pow(mouseY - (this.getY() + RADIUS), 2)) <= RADIUS_2);
 			
-			this.renderButton(poseStack, mouseX, mouseY, partialTick);
+			this.renderWidget(poseStack, mouseX, mouseY, partialTick);
 			//this.updateTooltip();
 		}
 	}

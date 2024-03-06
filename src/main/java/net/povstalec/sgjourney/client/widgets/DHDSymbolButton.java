@@ -31,7 +31,6 @@ public abstract class DHDSymbolButton extends DHDButton
 		this.symbol = symbol;
 	}
     
-    @Override
     protected int getYImage(boolean isHovering)
     {
     	if(this.menu.isSymbolEngaged(this.symbol))
@@ -44,7 +43,7 @@ public abstract class DHDSymbolButton extends DHDButton
     }
 	
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
@@ -55,8 +54,8 @@ public abstract class DHDSymbolButton extends DHDButton
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(poseStack, this.getX(), this.getY(), widgetTextureOffsetX, widgetTextureOffsetY + i * this.getHeight(), this.width, this.height);
-        this.renderBg(poseStack, minecraft, mouseX, mouseY);
+        blit(poseStack, this.getX(), this.getY(), widgetTextureOffsetX, widgetTextureOffsetY + i * this.getHeight(), this.width, this.height);
+        //this.renderBg(poseStack, minecraft, mouseX, mouseY);
         int j = getFGColor();
         drawCenteredString(poseStack, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
      }
