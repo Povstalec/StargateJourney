@@ -128,7 +128,13 @@ repositories {
     name = "Jared's maven"
     url = "https://maven.blamejared.com/"
     }
-    maven { url 'https://jitpack.io' }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
     maven {
     url 'https://squiddev.cc/maven/'
     content {
@@ -143,8 +149,8 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
     
-    compileOnly(fg.deobf('com.github.Povstalec:StellarView:stellarview-1.19.2-SNAPSHOT'))
-    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:stellarview-1.19.2-SNAPSHOT'))
+    compileOnly fg.deobf("maven.modrinth:stellarview:0.2.2")
+    runtimeOnly fg.deobf("maven.modrinth:stellarview:0.2.2")
     
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
