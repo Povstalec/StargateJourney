@@ -205,8 +205,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		
 		if(ClientStargateConfig.alternate_movie_chevron_locking.get() && chevronNumber < chevronsRendered + 1)
 			return true;
-
-		System.out.println(chevronNumber);
+		
 		return false;
 	}
 }
