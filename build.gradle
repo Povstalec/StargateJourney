@@ -128,7 +128,13 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
-    maven { url 'https://jitpack.io' }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
     maven {
     url "https://squiddev.cc/maven/"
     content {
@@ -174,8 +180,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
-    compileOnly(fg.deobf('com.github.Povstalec:StellarView:stellarview-1.19.3-SNAPSHOT'))
-    runtimeOnly(fg.deobf('com.github.Povstalec:StellarView:stellarview-1.19.3-SNAPSHOT'))
+    compileOnly fg.deobf("maven.modrinth:stellarview:W2KqdZ1A")
+    runtimeOnly fg.deobf("maven.modrinth:stellarview:W2KqdZ1A")
     
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))

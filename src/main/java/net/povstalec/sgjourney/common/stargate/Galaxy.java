@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.init.GalaxyInit;
 
 public class Galaxy
 {
@@ -22,17 +23,17 @@ public class Galaxy
 	
     public static final Codec<Galaxy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(Galaxy::getName),
-    		GalaxyType.RESOURCE_KEY_CODEC.fieldOf("type").forGetter(Galaxy::getType),
+    		GalaxyInit.CODEC.fieldOf("type").forGetter(Galaxy::getType),
 			Symbols.RESOURCE_KEY_CODEC.fieldOf("default_symbols").forGetter(Galaxy::getDefaultSymbols),
 			SYSTEM_WITH_ADDRESS.listOf().fieldOf("solar_systems").forGetter(Galaxy::getSystems)
 			).apply(instance, Galaxy::new));
 
 	private final String name;
-	private final ResourceKey<GalaxyType> type;
+	private final GalaxyType type;
 	private final ResourceKey<Symbols> defaultSymbols;
 	private final List<Pair<ResourceKey<SolarSystem>, Pair<List<Integer>, Boolean>>> systems;
 	
-	public Galaxy(String name, ResourceKey<GalaxyType> type, ResourceKey<Symbols> defaultSymbols, List<Pair<ResourceKey<SolarSystem>, Pair<List<Integer>, Boolean>>> systems)
+	public Galaxy(String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols, List<Pair<ResourceKey<SolarSystem>, Pair<List<Integer>, Boolean>>> systems)
 	{
 		this.name = name;
 		this.type = type;
@@ -45,7 +46,7 @@ public class Galaxy
 		return name;
 	}
 	
-	public ResourceKey<GalaxyType> getType()
+	public GalaxyType getType()
 	{
 		return type;
 	}
