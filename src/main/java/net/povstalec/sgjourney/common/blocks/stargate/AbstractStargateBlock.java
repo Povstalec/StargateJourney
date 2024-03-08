@@ -15,6 +15,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
@@ -35,7 +36,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
-import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
 
@@ -165,7 +165,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			
 			BlockState blockState = block.getStateForPlacement(context);
 			
-			blockState.getCollisionShape(level, pos);
+			if(blockState.isCollisionShapeFullBlock(level, pos) && !(block instanceof EntityBlock))
+				System.out.println("Is full and isn't BlockEntity");
 		}
 		
 		return super.use(state, level, pos, player, hand, result);
