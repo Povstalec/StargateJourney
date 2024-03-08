@@ -121,7 +121,7 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
         		throw new IllegalStateException("Our named container provider is missing!");
         	}
         }
-        return super.use(state, level, pos, player, hand, trace);
+        return InteractionResult.SUCCESS;
     }
 
 	@Override

@@ -180,7 +180,6 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		if(!useMovieStargateModel(stargate, stargateVariant))
 			return false;
 
-		boolean alternateChevronLocking = ClientStargateConfig.alternate_movie_chevron_locking.get();
 		int chevronsRendered = stargate.chevronsRendered();
 		
 		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
@@ -206,9 +205,10 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			}
 		}
 		
-		if(alternateChevronLocking && AbstractStargateEntity.getChevron(stargate, chevronNumber) < AbstractStargateEntity.getChevron(stargate, chevronsRendered + 1))
+		if(ClientStargateConfig.alternate_movie_chevron_locking.get() && chevronNumber < chevronsRendered + 1)
 			return true;
-		
+
+		System.out.println(chevronNumber);
 		return false;
 	}
 }

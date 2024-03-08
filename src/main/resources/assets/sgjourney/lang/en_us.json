@@ -383,9 +383,10 @@
 	"message.sgjourney.stargate.error.interrupted_by_incoming_connection": "Stargate was interrupted by incoming connection",
 	
 	"message.sgjourney.stargate.info.chevron_opened": "Chevron opened",
-	"message.sgjourney.stargate.info.chevron_closed": "Chevron lowered",
-	"message.sgjourney.stargate.error.chevron_already_opened": "Chevron is already raised",
-	"message.sgjourney.stargate.error.chevron_already_closed": "Chevron is already lowered",
+	"message.sgjourney.stargate.info.chevron_closed": "Chevron closed",
+	"message.sgjourney.stargate.error.chevron_already_opened": "Chevron is already opened",
+	"message.sgjourney.stargate.error.chevron_already_closed": "Chevron is already closed",
+	"message.sgjourney.stargate.error.cannot_encode_point_of_origin": "Cannot encode Point of Origin",
 	
 	"message.sgjourney.command.get_address.no_galaxy": "You are not located in any Galaxy",
 	"message.sgjourney.command.get_address.located": "is not located in",
