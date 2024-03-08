@@ -291,8 +291,8 @@ public class Universe extends SavedData
     				address = new Address(system.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray()).toString();
     			else
     			{
-    				ResourceKey<GalaxyType> type = galaxy.getValue().getType();
-    				int size = GalaxyInit.getGalaxyType(type.location()).getSize();
+    				GalaxyType type = galaxy.getValue().getType();
+    				int size = type.getSize();
     				
     				long systemValue = generateRandomAddressSeed(server, systemID);
     				
@@ -312,8 +312,8 @@ public class Universe extends SavedData
 		String galaxyID = MILKY_WAY.toString();
 		
 		Galaxy defaultGalaxy = galaxyRegistry.get(MILKY_WAY);
-		ResourceKey<GalaxyType> type = defaultGalaxy.getType();
-		int size = GalaxyInit.getGalaxyType(type.location()).getSize();
+		GalaxyType type = defaultGalaxy.getType();
+		int size = type.getSize();
 		
 		solarSystems.getAllKeys().stream().forEach(systemID ->
 		{
