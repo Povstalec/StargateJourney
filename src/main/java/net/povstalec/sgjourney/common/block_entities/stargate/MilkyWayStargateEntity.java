@@ -38,7 +38,10 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public int oldRotation = 0;
 	public boolean isChevronOpen = false;
 	private Map<StargatePart, Integer> signalMap = Maps.newHashMap();
+	
+	public int previousSignalStrength = 0;
 	public int signalStrength = 0;
+	
 	public boolean computerRotation = false;
 	public int desiredSymbol = 0;
 	public boolean rotateClockwise = true;
@@ -207,9 +210,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 
 	private void manualDialing()
 	{
-		if(this.signalStrength > 0 && (getCurrentSymbol() != 0 || getAddress().getLength() > 0))
+		if(this.signalStrength > 0)
 		{
-			if(this.signalStrength == 15)
+			if(this.signalStrength == 15 && (getCurrentSymbol() != 0 || getAddress().getLength() > 0))
 			{
 				if(!isConnected())
 					openChevron();
@@ -217,7 +220,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 					disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN);
 			}
 		}
-		else
+		else if(this.signalStrength == 0 && this.previousSignalStrength == 15)
 			closeChevron();
 
 		if(!this.level.isClientSide())
@@ -226,7 +229,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	private boolean hadBestRedstoneSignalChanged()
 	{
-		int previousSignalStrength = signalStrength;
+		this.previousSignalStrength = this.signalStrength;
 		this.signalStrength = 0;
 		this.signalMap.forEach((stargatePart, signal) -> 
 		{
@@ -246,9 +249,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			this.signalMap.remove(part);
 		this.signalMap.put(part, signal);
 
-		if (hadBestRedstoneSignalChanged()) {
+		if(hadBestRedstoneSignalChanged())
 			manualDialing();
-		}
 	}
 	
 	public int getRotation()
@@ -274,17 +276,23 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public Stargate.Feedback openChevron()
 	{
-		if(!this.isChevronOpen && !getAddress().containsSymbol(getCurrentSymbol()))
+		if(!this.isChevronOpen)
 		{
-			if(!level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentSymbol() == 0, false, true, false));
-			this.isChevronOpen = true;
-			
-			if(!level.isClientSide())
-				synchronizeWithClient(level);
-			return Stargate.Feedback.CHEVRON_RAISED;
+			if(!getAddress().containsSymbol(getCurrentSymbol()))
+			{
+				if(!level.isClientSide())
+					PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentSymbol() == 0, false, true, false));
+				this.isChevronOpen = true;
+				
+				if(!level.isClientSide())
+					synchronizeWithClient(level);
+				
+				return setRecentFeedback(Stargate.Feedback.CHEVRON_RAISED);
+			}
+			else
+				return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
 		}
-		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_RAISED);
+		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_OPENED);
 	}
 	
 	public Stargate.Feedback encodeChevron()
@@ -321,7 +329,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		if(!level.isClientSide())
 			synchronizeWithClient(level);
 		
-		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_LOWERED);
+		return setRecentFeedback(Stargate.Feedback.CHEVRON_ALREADY_CLOSED);
 	}
 	
 	public int getCurrentSymbol()

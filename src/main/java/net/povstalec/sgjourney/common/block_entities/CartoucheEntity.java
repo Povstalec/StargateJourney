@@ -53,26 +53,27 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(addressTable != null && !addressTable.equals(EMPTY))
 			setDimensionFromAddressTable();
 		else if(dimension == null)
-			setDimension(level);
+			setDimensionFromLevel(level);
 		
 		if(symbols == null)
 			setSymbols(level);
-		
+
+    	
 		if(address.isEmpty())
-			this.address.fromDimension((ServerLevel) level, this.dimension);
+			setAddressFromDimension();
 	}
 	
 	@Override
     public void load(CompoundTag tag)
     {
     	super.load(tag);
-
     	if(tag.contains(ADDRESS_TABLE))
     		addressTable = tag.getString(ADDRESS_TABLE);
     	if(tag.contains(DIMENSION))
     		dimension = tag.getString(DIMENSION);
     	if(tag.contains(SYMBOLS))
     		symbols = tag.getString(SYMBOLS);
+    	
     	
     	if(tag.contains(ADDRESS))
     		address.fromArray(tag.getIntArray(ADDRESS));
@@ -101,12 +102,17 @@ public abstract class CartoucheEntity extends BlockEntity
         		getBlockPos().getX() + 2, getBlockPos().getY() + 2, getBlockPos().getZ() + 2);
     }
 	
-	public void setDimension(Level level)
+	public void setDimensionFromLevel(Level level)
 	{
 		if(level.isClientSide())
 			return;
 		
 		dimension = level.dimension().location().toString();
+	}
+	
+	public void setDimension(String dimension)
+	{
+		this.dimension = dimension;
 	}
 	
 	public void setDimensionFromAddressTable()
@@ -119,6 +125,11 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(dimension != null && !dimension.equals(EMPTY))
 			this.dimension = dimension;
 		this.addressTable = EMPTY;
+	}
+	
+	public void setAddressFromDimension()
+	{
+		this.address.fromDimension((ServerLevel) level, this.dimension);
 	}
 	
 	public void setSymbols(Level level)

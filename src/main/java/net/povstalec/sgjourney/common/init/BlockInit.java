@@ -55,6 +55,7 @@ import net.povstalec.sgjourney.common.blocks.tech.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech.CrystallizerBlock;
 import net.povstalec.sgjourney.common.blocks.tech.HeavyNaquadahLiquidizerBlock;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahLiquidizerBlock;
+import net.povstalec.sgjourney.common.items.blocks.CartoucheBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.DHDItem;
 import net.povstalec.sgjourney.common.items.blocks.SGJourneyBlockItem;
 
@@ -179,10 +180,10 @@ public class BlockInit
 	public static final RegistryObject<SecretSwitchBlock> SANDSTONE_SWITCH = registerBlock("sandstone_switch", 
 			() -> new SecretSwitchBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 
-	public static final RegistryObject<CartoucheBlock> SANDSTONE_CARTOUCHE = registerBlock("sandstone_cartouche", 
-			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()), 1);
-	public static final RegistryObject<CartoucheBlock> STONE_CARTOUCHE = registerBlock("stone_cartouche", 
-			() -> new CartoucheBlock.Stone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()), 1);
+	public static final RegistryObject<CartoucheBlock> SANDSTONE_CARTOUCHE = registerCartoucheBlock("sandstone_cartouche", 
+			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<CartoucheBlock> STONE_CARTOUCHE = registerCartoucheBlock("stone_cartouche", 
+			() -> new CartoucheBlock.Stone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<SymbolBlock> STONE_SYMBOL = registerBlock("stone_symbol", 
 			() -> new SymbolBlock.Stone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
@@ -263,6 +264,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>RegistryObject<T> registerCartoucheBlock(String name, Supplier<T> block)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		
+		registerCartoucheBlockItem(name, toReturn, 1);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<T> registerEntityBlock(String name, Supplier<T> block)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -300,6 +310,11 @@ public class BlockInit
 	private static <T extends Block>RegistryObject<Item> registerDHDItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
 		return ItemInit.ITEMS.register(name, () -> new DHDItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo)));
+	}
+	
+	private static <T extends Block>RegistryObject<Item> registerCartoucheBlockItem(String name, RegistryObject<T> block, int stacksTo)
+	{
+		return ItemInit.ITEMS.register(name, () -> new CartoucheBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
 	}
 	
 	public static void register(IEventBus eventBus)
