@@ -4,9 +4,13 @@ import java.util.ArrayList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -25,11 +29,13 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
 
@@ -146,4 +152,22 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 	
 	public abstract AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state);
+	
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	{
+		BlockPlaceContext context = new BlockPlaceContext(player, hand, player.getItemInHand(hand), result);
+		BlockPlaceContext.at(context, pos, context.getNearestLookingDirection());
+		
+		if(player.getItemInHand(hand).getItem() instanceof BlockItem blockItem)
+		{
+			Block block = blockItem.getBlock();
+			
+			BlockState blockState = block.getStateForPlacement(context);
+			
+			blockState.getCollisionShape(level, pos);
+		}
+		
+		return super.use(state, level, pos, player, hand, result);
+	}
 }

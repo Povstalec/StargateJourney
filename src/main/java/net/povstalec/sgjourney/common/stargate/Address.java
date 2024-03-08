@@ -244,13 +244,6 @@ public final class Address
 		return this;
 	}
 	
-	public Address copy()
-	{
-		Address copyAddress = new Address(this.isBuffer).fromArray(addressArray);
-		copyAddress.dimension = this.dimension;
-		return copyAddress;
-	}
-	
 	public boolean containsSymbol(int symbol)
 	{
 		for(int i = 0; i < getLength(); i++)
