@@ -144,8 +144,8 @@ public class Stargate
 		ROTATION_BLOCKED(-27, FeedbackType.INFO, "rotation_blocked"),
 		NOT_ROTATING(-28, FeedbackType.INFO, "not_rotating"),
 		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"),
-		CHEVRON_ALREADY_RAISED(-29, FeedbackType.ERROR, "chevron_already_opened"),
-		CHEVRON_ALREADY_LOWERED(-30, FeedbackType.ERROR, "chevron_already_closed"),
+		CHEVRON_ALREADY_OPENED(-29, FeedbackType.ERROR, "chevron_already_opened"),
+		CHEVRON_ALREADY_CLOSED(-30, FeedbackType.ERROR, "chevron_already_closed"),
 		CHEVRON_NOT_RAISED(-31, FeedbackType.ERROR, "chevron_not_raised"),
 		CANNOT_ENCODE_POINT_OF_ORIGIN(-32, FeedbackType.ERROR, "cannot_encode_point_of_origin");
 		

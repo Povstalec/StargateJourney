@@ -385,6 +385,7 @@
 	"message.sgjourney.stargate.info.chevron_closed": "Chevron zavřen",
 	"message.sgjourney.stargate.error.chevron_already_opened": "Chevron je již otevřen",
 	"message.sgjourney.stargate.error.chevron_already_closed": "Chevron je již zavřen",
+	"message.sgjourney.stargate.error.cannot_encode_point_of_origin": "Nelze zakódovat výhozí bod",
 	
 	"message.sgjourney.command.get_address.no_galaxy": "Nenacházíte se v žádné galaxii",
 	"message.sgjourney.command.get_address.located": "se nenachází v",

@@ -153,7 +153,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	
 	public abstract AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state);
 	
-	@Override
+	/*@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
 		BlockPlaceContext context = new BlockPlaceContext(player, hand, player.getItemInHand(hand), result);
@@ -170,5 +170,5 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		}
 		
 		return super.use(state, level, pos, player, hand, result);
-	}
+	}*/
 }
