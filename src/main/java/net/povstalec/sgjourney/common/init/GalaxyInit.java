@@ -25,7 +25,7 @@ public class GalaxyInit
 	public static final RegistryObject<GalaxyType> GIANT_GALAXY = GALAXY_TYPES.register("giant_galaxy", () -> new GalaxyType(45)); // Like M87
 	public static final RegistryObject<GalaxyType> SUPERGIANT_GALAXY = GALAXY_TYPES.register("supergiant_galaxy", () -> new GalaxyType(48)); // Like IC 1101
 	
-	public static Codec<GalaxyType> CODEC = ExtraCodecs.lazyInitializedCodec(() -> GALAXY_TYPE.get().getCodec());
+	public static final Codec<GalaxyType> CODEC = ExtraCodecs.lazyInitializedCodec(() -> GALAXY_TYPE.get().getCodec());
 
 	public static void register(IEventBus eventBus)
 	{

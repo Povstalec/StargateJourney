@@ -20,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.init.GalaxyInit;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.GalaxyType;
