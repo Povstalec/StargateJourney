@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -145,25 +146,31 @@ public class StargateNetwork extends SavedData
 			int[] coordinates = stargates.getCompound(stargateID).getIntArray(COORDINATES);
 			
 			BlockPos pos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
-			BlockEntity blockentity = server.getLevel(dimension).getBlockEntity(pos);
 			
-			if(blockentity instanceof AbstractStargateEntity stargate)
+			ServerLevel level = server.getLevel(dimension);
+			
+			if(level!= null)
 			{
-				if(!stargateID.equals(stargate.getID()))
-					removeStargate(server.getLevel(dimension), stargateID);
+				BlockEntity blockentity = server.getLevel(dimension).getBlockEntity(pos);
 				
-				stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
-				
-				if(!getStargates().contains(stargateID))
+				if(blockentity instanceof AbstractStargateEntity stargate)
 				{
-					addStargate(server, stargateID, BlockEntityList.get(server).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).getCompound(stargateID), stargate.getGeneration().getGen());
-					stargate.updateStargate(updateInterfaces);
+					if(!stargateID.equals(stargate.getID()))
+						removeStargate(server.getLevel(dimension), stargateID);
+					
+					stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
+					
+					if(!getStargates().contains(stargateID))
+					{
+						addStargate(server, stargateID, BlockEntityList.get(server).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).getCompound(stargateID), stargate.getGeneration().getGen());
+						stargate.updateStargate(updateInterfaces);
+					}
 				}
-			}
-			else
-			{
-				removeStargate(server.getLevel(dimension), stargateID);
-				BlockEntityList.get(server).removeBlockEntity(SGJourneyBlockEntity.Type.STARGATE.id, stargateID);
+				else
+				{
+					removeStargate(server.getLevel(dimension), stargateID);
+					BlockEntityList.get(server).removeBlockEntity(SGJourneyBlockEntity.Type.STARGATE.id, stargateID);
+				}
 			}
 		});
 	}
