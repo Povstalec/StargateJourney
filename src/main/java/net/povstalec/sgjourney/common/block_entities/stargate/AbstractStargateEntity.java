@@ -261,42 +261,57 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		return tag;
 	}
 	
-	@Override
-	public CompoundTag addToBlockEntityList()
+	public void addStargateToNetwork()
 	{
-		CompoundTag blockEntity = super.addToBlockEntityList();
-    	StargateNetwork.get(level).addStargate(level.getServer(), getID(), blockEntity, this.getGeneration().getGen());
-		return blockEntity;
+		if(this.getID().equals(EMPTY) || BlockEntityList.get(level).getStargate(new Address(getID())).isPresent())
+		{
+			setID(generateID());
+		}
+		
+		BlockEntityList.get(level).addStargate(this);
+		StargateNetwork.get(level).addStargate(level.getServer(), this);
+		
+		addToNetwork = true;
+		this.setChanged();
 	}
 	
 	@Override
+	public CompoundTag addToBlockEntityList()
+	{
+		addStargateToNetwork();
+		return new CompoundTag();
+	}
+	
 	public CompoundTag addNewToBlockEntityList()
 	{
-		CompoundTag blockEntity = super.addNewToBlockEntityList();
-    	StargateNetwork.get(level).addStargate(level.getServer(), getID(), blockEntity, this.getGeneration().getGen());
-		return blockEntity;
+		addStargateToNetwork();
+		
+		return new CompoundTag();
 	}
 
 	@Override
 	public void removeFromBlockEntityList()
 	{
-		super.removeFromBlockEntityList();
+		//super.removeFromBlockEntityList();
 		StargateNetwork.get(level).removeStargate(level, getID());
+		BlockEntityList.get(level).removeStargate(new Address(getID()));
 	}
 	
 	@Override
 	protected String generateID()
 	{
 		Random random = new Random();
-		Address address = new Address().randomAddress(8, 36, random.nextLong());
 		String addressString;
+		Address address;
 		while(true)
 		{
-			addressString = address.toString();
+			address = new Address().randomAddress(8, 36, random.nextLong());
 			
-			if(!BlockEntityList.get(level).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).contains(addressString))
+			if(BlockEntityList.get(level).getStargate(address).isEmpty())
 				break;
 		}
+		
+		addressString = address.toString();
 		return addressString;
 	}
 

@@ -137,55 +137,56 @@ public class StargateNetwork extends SavedData
 	
 	private void resetStargates(MinecraftServer server, boolean updateInterfaces)
 	{
-		CompoundTag stargates = BlockEntityList.get(server).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id);
+		HashMap<Address, BlockEntityList.Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
-		stargates.getAllKeys().forEach((stargateID) ->
+		stargates.entrySet().forEach((stargateInfo) ->
 		{
-			String dimensionString = stargates.getCompound(stargateID).getString(DIMENSION);
-			ResourceKey<Level> dimension = Conversion.stringToDimension(dimensionString);
-			int[] coordinates = stargates.getCompound(stargateID).getIntArray(COORDINATES);
+			Address address = stargateInfo.getKey();
+			BlockEntityList.Stargate mapStargate = stargateInfo.getValue();
 			
-			BlockPos pos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
+			ResourceKey<Level> dimension = mapStargate.getDimension();
+			
+			BlockPos pos = mapStargate.getBlockPos();
 			
 			ServerLevel level = server.getLevel(dimension);
 			
-			if(level!= null)
+			if(level != null)
 			{
 				BlockEntity blockentity = server.getLevel(dimension).getBlockEntity(pos);
 				
 				if(blockentity instanceof AbstractStargateEntity stargate)
 				{
-					if(!stargateID.equals(stargate.getID()))
-						removeStargate(server.getLevel(dimension), stargateID);
+					if(!address.toString().equals(stargate.getID()))
+						removeStargate(server.getLevel(dimension), address.toString());
 					
 					stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
 					
-					if(!getStargates().contains(stargateID))
+					if(!getStargates().contains(address.toString()))
 					{
-						addStargate(server, stargateID, BlockEntityList.get(server).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).getCompound(stargateID), stargate.getGeneration().getGen());
+						addStargate(server, stargate);
 						stargate.updateStargate(updateInterfaces);
 					}
 				}
 				else
 				{
-					removeStargate(server.getLevel(dimension), stargateID);
-					BlockEntityList.get(server).removeBlockEntity(SGJourneyBlockEntity.Type.STARGATE.id, stargateID);
+					removeStargate(server.getLevel(dimension), address.toString());
+					BlockEntityList.get(server).removeStargate(address);
 				}
 			}
 		});
 	}
 	
-	public void addStargate(MinecraftServer server, String stargateID, CompoundTag stargateInfo, int generation)
+	public void addStargate(MinecraftServer server, AbstractStargateEntity stargate)
 	{
-		String dimension = stargateInfo.getString(DIMENSION);
-		String stargateDimension = stargateInfo.getString(DIMENSION);
-		int[] stargateCoordinates = stargateInfo.getIntArray(COORDINATES);
+		String dimension = stargate.getLevel().dimension().location().toString();
+		BlockPos pos = stargate.getBlockPos();
+		
 		CompoundTag stargates = getStargates();
-		CompoundTag stargate = new CompoundTag();
+		CompoundTag stargateTag = new CompoundTag();
 
-		stargate.putString(DIMENSION, stargateDimension);
-		stargate.putIntArray(COORDINATES, stargateCoordinates);
-		stargate.putInt(GENERATION, generation);
+		stargateTag.putString(DIMENSION, dimension);
+		stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+		stargateTag.putInt(GENERATION, stargate.getGeneration().getGen());
 		
 		//Adds the Stargate reference to a Solar System (Will only work if the Dimension is inside a Solar System)
 		if(Universe.get(server).getDimensions().contains(dimension))
@@ -194,16 +195,16 @@ public class StargateNetwork extends SavedData
 			CompoundTag solarSystems = getSolarSystems();
 			CompoundTag solarSystem = getSolarSystem(systemID);
 			
-			solarSystem.put(stargateID, stargate);
+			solarSystem.put(stargate.getID(), stargateTag);
 			solarSystems.put(systemID, solarSystem);
 			this.stargateNetwork.put(SOLAR_SYSTEMS, solarSystems);
 		}
 		
 		//Adds the Stargate reference to the list of Stargates
-		stargates.put(stargateID, stargate);
+		stargates.put(stargate.getID(), stargateTag);
 		this.stargateNetwork.put(STARGATES, stargates);
 		this.setDirty();
-		StargateJourney.LOGGER.info("Added Stargate " + stargateID);
+		StargateJourney.LOGGER.info("Added Stargate " + stargate.getID());
 	}
 	
 	public void removeStargate(Level level, String stargateID)

@@ -57,7 +57,8 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
         return INFINITE_EXTENT_AABB;
     }
 	
-	@Override
+	//TODO Figure these out
+	/*@Override
 	public CompoundTag addNewToBlockEntityList()
 	{
 		CompoundTag blockEntity = super.addNewToBlockEntityList();
@@ -71,7 +72,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 		CompoundTag blockEntity = super.addToBlockEntityList();
 		TransporterNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
 		return blockEntity;
-	}
+	}*/
 
 	@Override
 	public void removeFromBlockEntityList()

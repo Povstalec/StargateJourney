@@ -225,10 +225,11 @@ public class RingPanelEntity extends BlockEntity
 		
 		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
 			return this.itemHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
-
-		CompoundTag ringsTag = BlockEntityList.get(level).getBlockEntities("TransportRings");
-		int[] coords = {ringsTag.getIntArray(this.rings[chosenNumber])[0], ringsTag.getIntArray(this.rings[chosenNumber])[1], ringsTag.getIntArray(this.rings[chosenNumber])[2]};
-		return coords;
+		
+		//TODO FIX THIS
+		//CompoundTag ringsTag = BlockEntityList.get(level).getBlockEntities("TransportRings");
+		//int[] coords = {ringsTag.getIntArray(this.rings[chosenNumber])[0], ringsTag.getIntArray(this.rings[chosenNumber])[1], ringsTag.getIntArray(this.rings[chosenNumber])[2]};
+		return new int[] {0, 0, 0};//coords;
 	}
 	
 }

@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.data;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -9,11 +9,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.stargate.Address;
 
 /**
  * This class is designed to save all Block Entities along with their coordinates and dimensions. 
@@ -34,10 +36,10 @@ public class BlockEntityList extends SavedData
 	
 	protected CompoundTag blockEntityList = new CompoundTag();
 	
-	protected Map<String, Tuple<ResourceKey<Level>, BlockPos>> stargateMap = new HashMap<>();
-	protected Map<String, Tuple<ResourceKey<Level>, BlockPos>> transporterMap = new HashMap<>();
+	protected HashMap<Address, Stargate> stargateMap = new HashMap<>();
+	protected HashMap<String, Transporter> transporterMap = new HashMap<>();
 	
-	public CompoundTag addBlockEntity(Level level, BlockPos pos, String listName, String id)
+	/*public CompoundTag addBlockEntity(Level level, BlockPos pos, String listName, String id)
 	{
 		String dimension = level.dimension().location().toString();
 		CompoundTag localList = blockEntityList.getCompound(listName);
@@ -50,27 +52,45 @@ public class BlockEntityList extends SavedData
 		
 		this.setDirty();
 		return blockEntity;
-	}
+	}*/
 	
-	/*public void addStargate(Level level, BlockPos pos, String id)
+	public boolean addStargate(AbstractStargateEntity stargate)
 	{
-		Tuple<ResourceKey<Level>, BlockPos> dimensionAndCoords = new Tuple<ResourceKey<Level>, BlockPos>(level.dimension(), pos);
+		Address address = new Address(stargate.getID());
 		
-		this.stargateMap.put(id, dimensionAndCoords);
+		if(address.getLength() != 8)
+			return false;
+		
+		if(this.stargateMap.containsKey(address))
+			return false;
+		
+		if(stargate.getLevel() == null)
+			return false;
+		
+		if(stargate.getBlockPos() == null)
+			return false;
+		
+		BlockEntityList.Stargate savedStargate = new BlockEntityList.Stargate(stargate.getLevel().dimension(), stargate.getBlockPos());
+		
+		this.stargateMap.put(address, savedStargate);
 		
 		this.setDirty();
+		
+		StargateJourney.LOGGER.info("Stargate " + address.toString() + " to BlockEntityList");
+		
+		return true;
 	}
 	
 	public void addTransporter(Level level, BlockPos pos, String id)
 	{
-		Tuple<ResourceKey<Level>, BlockPos> dimensionAndCoords = new Tuple<ResourceKey<Level>, BlockPos>(level.dimension(), pos);
+		BlockEntityList.Transporter transporter = new BlockEntityList.Transporter(level.dimension(), pos);
 		
-		this.transporterMap.put(id, dimensionAndCoords);
+		this.transporterMap.put(id, transporter);
 		
 		this.setDirty();
-	}*/
+	}
 	
-	public void removeBlockEntity(String type, String id)
+	/*public void removeBlockEntity(String type, String id)
 	{
 		if(!getBlockEntities(type).contains(id))
 		{
@@ -80,9 +100,9 @@ public class BlockEntityList extends SavedData
 		blockEntityList.getCompound(type).remove(id);
 		StargateJourney.LOGGER.info("Removed " + id + " from " + type);
 		setDirty();
-	}
+	}*/
 	
-	/*public void removeStargate(String id)
+	public void removeStargate(Address id)
 	{
 		if(!this.stargateMap.containsKey(id))
 		{
@@ -96,34 +116,57 @@ public class BlockEntityList extends SavedData
 	
 	public void removeTransporter(String id)
 	{
-		if(!this.stargateMap.containsKey(id))
+		if(!this.transporterMap.containsKey(id))
 		{
 			StargateJourney.LOGGER.error(id + " not found in BlockEntityList");
 			return;
 		}
-		this.stargateMap.remove(id);
+		this.transporterMap.remove(id);
 		StargateJourney.LOGGER.info("Removed " + id + " from BlockEntityList");
 		setDirty();
-	}*/
+	}
 	
-	public CompoundTag getBlockEntities(String blockEntities)
+	/*public CompoundTag getBlockEntities(String blockEntities)
 	{
 		return blockEntityList.copy().getCompound(blockEntities);
-	}
-	
-	/*public Map<String, Tuple<ResourceKey<Level>, BlockPos>> getStargates()
-	{
-		return this.stargateMap;
-	}
-	
-	public Map<String, Tuple<ResourceKey<Level>, BlockPos>> getTransporters()
-	{
-		return this.transporterMap;
 	}*/
+	
+	public HashMap<Address, Stargate> getStargates()
+	{
+		return stargateMap;
+	}
+	
+	public HashMap<String, Transporter> getTransporters()
+	{
+		return transporterMap;
+	}
+	
+	public Optional<BlockEntityList.Stargate> getStargate(Address address)
+	{
+		if(address.getLength() == 8)
+		{
+			BlockEntityList.Stargate stargate = stargateMap.get(address);
+			
+			if(stargate!= null)
+				return Optional.of(stargate);
+		}
+		
+		return Optional.empty();
+	}
+	
+	public Optional<BlockEntityList.Transporter> getTransporter(String id)
+	{
+		BlockEntityList.Transporter transporter = transporterMap.get(id);
+		
+		if(transporter!= null)
+			return Optional.of(transporter);
+		
+		return Optional.empty();
+	}
 	
 	//================================================================================================
 	
-	/*public CompoundTag serialize()
+	public CompoundTag serialize()
 	{
 		CompoundTag blockEntityList = new CompoundTag();
 		CompoundTag stargates = serializeStargates();
@@ -139,15 +182,15 @@ public class BlockEntityList extends SavedData
 	{
 		CompoundTag stargates = new CompoundTag();
 		
-		this.stargateMap.forEach((stargateID, info) -> 
+		this.stargateMap.forEach((stargateID, stargate) -> 
 		{
-			CompoundTag stargate = new CompoundTag();
-			ResourceKey<Level> level = info.getA();
-			BlockPos pos = info.getB();
+			CompoundTag stargateTag = new CompoundTag();
+			ResourceKey<Level> level = stargate.getDimension();
+			BlockPos pos = stargate.getBlockPos();
 			
-			stargate.putString(DIMENSION, level.location().toString());
-			stargate.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
-			stargates.put(stargateID, stargate);
+			stargateTag.putString(DIMENSION, level.location().toString());
+			stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+			stargates.put(stargateID.toString(), stargateTag);
 		});
 		
 		return stargates;
@@ -155,20 +198,20 @@ public class BlockEntityList extends SavedData
 	
 	private CompoundTag serializeTransporters()
 	{
-		CompoundTag transportRings = new CompoundTag();
+		CompoundTag transporters = new CompoundTag();
 		
-		this.transporterMap.forEach((ringsID, info) -> 
+		this.transporterMap.forEach((ringsID, transporter) -> 
 		{
-			CompoundTag rings = new CompoundTag();
-			ResourceKey<Level> level = info.getA();
-			BlockPos pos = info.getB();
+			CompoundTag transporterTag = new CompoundTag();
+			ResourceKey<Level> level = transporter.getDimension();
+			BlockPos pos = transporter.getBlockPos();
 			
-			rings.putString(DIMENSION, level.location().toString());
-			rings.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
-			transportRings.put(ringsID, rings);
+			transporterTag.putString(DIMENSION, level.location().toString());
+			transporterTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+			transporters.put(ringsID, transporterTag);
 		});
 		
-		return transportRings;
+		return transporters;
 	}
 	
 	public void deserialize(CompoundTag tag)
@@ -188,8 +231,7 @@ public class BlockEntityList extends SavedData
 			ResourceKey<Level> level = Conversion.stringToDimension(stargates.getCompound(stargate).getString(DIMENSION));
 			BlockPos pos = Conversion.intArrayToBlockPos(stargates.getCompound(stargate).getIntArray(COORDINATES));
 			
-			Tuple<ResourceKey<Level>, BlockPos> dimensionAndPos = new Tuple<ResourceKey<Level>, BlockPos>(level, pos);
-			this.stargateMap.put(stargate, dimensionAndPos);
+			this.stargateMap.put(new Address(stargate), new BlockEntityList.Stargate(level, pos));
 		});
 	}
 	
@@ -202,10 +244,9 @@ public class BlockEntityList extends SavedData
 			ResourceKey<Level> level = Conversion.stringToDimension(transportRings.getCompound(stargate).getString(DIMENSION));
 			BlockPos pos = Conversion.intArrayToBlockPos(transportRings.getCompound(stargate).getIntArray(COORDINATES));
 			
-			Tuple<ResourceKey<Level>, BlockPos> dimensionAndPos = new Tuple<ResourceKey<Level>, BlockPos>(level, pos);
-			this.transporterMap.put(stargate, dimensionAndPos);
+			this.transporterMap.put(stargate, new BlockEntityList.Transporter(level, pos));
 		});
-	}*/
+	}
 	
 	//================================================================================================
 
@@ -245,5 +286,95 @@ public class BlockEntityList extends SavedData
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
         return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, INCORRECT_FILE_NAME);
+    }
+    
+    public static final class Stargate
+    {
+    	private final ResourceKey<Level> dimension;
+    	private final BlockPos blockPos;
+    	
+    	public Stargate(ResourceKey<Level> dimension, BlockPos blockPos)
+    	{
+    		this.dimension = dimension;
+    		this.blockPos = blockPos;
+    	}
+    	
+    	public ResourceKey<Level> getDimension()
+    	{
+    		return dimension;
+    	}
+    	
+    	public BlockPos getBlockPos()
+    	{
+    		return blockPos;
+    	}
+    	
+    	public CompoundTag serialize()
+    	{
+    		CompoundTag stargateTag = new CompoundTag();
+			ResourceKey<Level> level = this.getDimension();
+			BlockPos pos = this.getBlockPos();
+			
+			stargateTag.putString(DIMENSION, level.location().toString());
+			stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+			
+			return stargateTag;
+    	}
+    	
+    	public static Stargate deserialize(CompoundTag tag)
+    	{
+    		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+    		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
+    		
+    		if(dimension != null && blockPos != null)
+    			return new Stargate(dimension, blockPos);
+    		
+    		return null;
+    	}
+    }
+    
+    public static final class Transporter
+    {
+    	private ResourceKey<Level> dimension;
+    	private BlockPos blockPos;
+    	
+    	public Transporter(ResourceKey<Level> dimension, BlockPos blockPos)
+    	{
+    		this.dimension = dimension;
+    		this.blockPos = blockPos;
+    	}
+    	
+    	public ResourceKey<Level> getDimension()
+    	{
+    		return dimension;
+    	}
+    	
+    	public BlockPos getBlockPos()
+    	{
+    		return blockPos;
+    	}
+    	
+    	public CompoundTag serialize()
+    	{
+    		CompoundTag transporterTag = new CompoundTag();
+			ResourceKey<Level> level = this.getDimension();
+			BlockPos pos = this.getBlockPos();
+			
+			transporterTag.putString(DIMENSION, level.location().toString());
+			transporterTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+			
+			return transporterTag;
+    	}
+    	
+    	public static Transporter deserialize(CompoundTag tag)
+    	{
+    		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+    		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
+    		
+    		if(dimension != null && blockPos != null)
+    			return new Transporter(dimension, blockPos);
+    		
+    		return null;
+    	}
     }
 }
