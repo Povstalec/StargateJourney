@@ -27,8 +27,8 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 	protected StargateSound(AbstractStargateEntity stargate, SoundEvent soundEvent, double fullDistance, double maxDistance)
 	{
 		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
-		if (soundEvent == SoundInit.EMPTY_SOUND_INSTANCE)
-			this.stop();
+		/*if (soundEvent == SoundInit.EMPTY_SOUND_INSTANCE)
+			this.stop();*/
 		this.stargate = stargate;
 		this.x = stargate.getBlockPos().getX();
 		this.y = stargate.getBlockPos().getY();

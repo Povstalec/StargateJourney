@@ -1258,7 +1258,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//TODO Add it to Stargates other than Universe Stargate
 	public SoundEvent getStartupSound()
 	{
-		return SoundInit.EMPTY_SOUND_INSTANCE;
+		return SoundInit.EMPTY.get();
 	}
 	
 	@Override

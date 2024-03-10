@@ -34,22 +34,8 @@
 			"sgjourney:universe_chevron_engage"
 		]
 	},
-	"universe_chevron_incoming":
-	{
-		"subtitle": "sounds.sgjourney.nothing",
-		"sounds":
-		[
-			"sgjourney:nothing"
-		]
-	},
-	"universe_primary_chevron_incoming":
-	{
-		"subtitle": "sounds.sgjourney.nothing",
-		"sounds":
-		[
-			"sgjourney:nothing"
-		]
-	},
+	"universe_chevron_incoming": {},
+	"universe_primary_chevron_incoming": {},
 	"universe_dial_fail":
 	{
 		"subtitle": "sounds.sgjourney.dial_fail",
@@ -568,12 +554,5 @@
 		]
 	},
 
-	"empty":
-	{
-		"subtitle": "sounds.sgjourney.nothing",
-		"sounds":
-		[
-			"sgjourney:nothing"
-		]
-	}
+	"empty": {}
 }
