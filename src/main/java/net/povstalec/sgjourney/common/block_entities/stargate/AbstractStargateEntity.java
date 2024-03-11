@@ -16,6 +16,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -292,8 +293,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(id9ChevronAddress.isEmpty() || BlockEntityList.get(level).getStargate(id9ChevronAddress).isPresent())
 			set9ChevronAddress(generate9ChevronAddress());
 		
-		BlockEntityList.get(level).addStargate(this);
-		StargateNetwork.get(level).addStargate(level.getServer(), this);
+		Optional<Stargate> stargate = BlockEntityList.get(level).addStargate(this);
+		if(stargate.isPresent())
+			StargateNetwork.get(level).addStargate(level.getServer(), stargate.get());
 		
 		addToNetwork = true;
 		this.setChanged();
@@ -321,7 +323,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public void removeStargateFromNetwork()
 	{
-		StargateNetwork.get(level).removeStargate(level, id9ChevronAddress.toString());
+		StargateNetwork.get(level).removeStargate(level, id9ChevronAddress);
 		BlockEntityList.get(level).removeStargate(id9ChevronAddress);
 	}
 	
@@ -675,12 +677,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		updateStargate(this.level, this.getID(), this.timesOpened, this.hasDHD(), updateInterfaces);
 	}
 	
+	//TODO Why is it done like this again?
 	private void updateStargate(Level level, String id, int timesOpened, boolean hasDHD, boolean updateInterfaces)
 	{
 		if(level.isClientSide())
 			return;
 			
-		StargateNetwork.get(level).updateStargate(level, id, timesOpened, hasDHD);
+		StargateNetwork.get(level).updateStargate((ServerLevel) level, this);
 		setStargateState(this.getConnectionState(), this.getChevronsEngaged(), updateInterfaces);
 	}
 	

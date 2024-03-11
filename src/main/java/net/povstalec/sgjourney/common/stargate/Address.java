@@ -1,7 +1,9 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -159,7 +161,7 @@ public final class Address
 	
 	public int getSymbol(int number)
 	{
-		if(number < 0 || number > getLength())
+		if(number < 0 || number >= getLength())
 			return 0;
 		
 		return addressArray[number];
@@ -289,23 +291,18 @@ public final class Address
 	@Override
 	public boolean equals(Object object)
 	{
-		// Right now I don't really care if the Addresses have different specifics, only if their symbols are the same
 		if(object instanceof Address address)
-		{
-			int length = this.getLength();
-			if(address.getLength() == length)
-			{
-				for(int i = 0; i < length; i++)
-				{
-					if(address.getSymbol(i) != this.getSymbol(i))
-						return false;
-				}
-				
-				return true;
-			}
-		}
+			return Arrays.equals(this.addressArray, address.addressArray);
 		
 		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(this.getSymbol(0), this.getSymbol(1), this.getSymbol(2),
+				this.getSymbol(3), this.getSymbol(4), this.getSymbol(5),
+				this.getSymbol(6), this.getSymbol(7));
 	}
 	
 	//============================================================================================

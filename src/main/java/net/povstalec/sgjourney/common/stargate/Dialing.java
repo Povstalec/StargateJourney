@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.stargate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
@@ -167,28 +168,33 @@ public class Dialing
 		return;
 	}
 	
-	public static Stargate.Feedback getStargateFromID(MinecraftServer server, AbstractStargateEntity dialingStargate, String id, boolean doKawoosh)
+	public static Stargate.Feedback getStargateFromAddress(MinecraftServer server, AbstractStargateEntity dialingStargate, Address address, boolean doKawoosh)
 	{
-		CompoundTag stargateList = StargateNetwork.get(server).getStargates();
+		Optional<Stargate> stargate = StargateNetwork.get(server).getStargate(address);
 		
-		if(!stargateList.contains(id))
+		if(stargate.isEmpty())
 			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		
-		BlockPos pos = Conversion.intArrayToBlockPos(stargateList.getCompound(id).getIntArray("Coordinates"));
+		BlockPos pos = stargate.get().getBlockPos();
+		ResourceKey<Level> dimension = stargate.get().getDimension();
 		
-		if(server.getLevel(Conversion.stringToDimension(stargateList.getCompound(id).getString("Dimension"))).getBlockEntity(pos) instanceof AbstractStargateEntity targetStargate)
+		if(pos != null && dimension != null)
 		{
-			if(targetStargate.isObstructed())
-				return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
-			return dialStargate(dialingStargate, targetStargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh);
+			if(server.getLevel(dimension).getBlockEntity(pos) instanceof AbstractStargateEntity targetStargate)
+			{
+				if(targetStargate.isObstructed())
+					return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
+				
+				return dialStargate(dialingStargate, targetStargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh);
+			}
 		}
+		
 		return dialingStargate.resetStargate(Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 	}
 	
 	public static Stargate.Feedback get9ChevronStargate(Level level, AbstractStargateEntity dialingStargate, Address address, boolean doKawoosh)
 	{
-		String id = address.toString();
-		return getStargateFromID(level.getServer(), dialingStargate, id, doKawoosh);
+		return getStargateFromAddress(level.getServer(), dialingStargate, address, doKawoosh);
 	}
 	
 	private static Stargate.Feedback getPreferredStargate(MinecraftServer server, AbstractStargateEntity dialingStargate, CompoundTag solarSystem, Address.Type addressType, boolean doKawoosh)

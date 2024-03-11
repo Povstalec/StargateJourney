@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
@@ -8,6 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -72,5 +74,47 @@ public class Galaxy
         final Registry<Galaxy> registry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
         
         return registry.get(galaxy);
+	}
+	
+	/**
+	 * Version of Galaxy used for Stargate Network
+	 * @author Povstalec
+	 *
+	 */
+	public static class Serializable
+	{
+		private final String translationName;
+		private final GalaxyType type;
+		private final Symbols defaultSymbols;
+		private final HashMap<Address, SolarSystem.Serializable> solarSystems;
+		
+		public Serializable(String translationName, GalaxyType type, Symbols defaultSymbols, 
+				HashMap<Address, SolarSystem.Serializable> solarSystems)
+		{
+			this.translationName = translationName;
+			this.type = type;
+			this.defaultSymbols = defaultSymbols;
+			this.solarSystems = solarSystems;
+		}
+		
+		public Component getName()
+		{
+			return Component.translatable(translationName);
+		}
+		
+		public Symbols getDefaultSymbols()
+		{
+			return defaultSymbols;
+		}
+		
+		public GalaxyType getType()
+		{
+			return type;
+		}
+		
+		public HashMap<Address, SolarSystem.Serializable> getSolarSystems()
+		{
+			return solarSystems;
+		}
 	}
 }

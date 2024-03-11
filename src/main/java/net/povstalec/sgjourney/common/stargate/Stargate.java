@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Stargate
@@ -15,13 +16,28 @@ public class Stargate
 	public static final String COORDINATES = "Coordinates";
 	
 	//TODO Should it know its own ID?
+	private final Address address;
+	//TODO Add Stargate Generation
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
 	
-	public Stargate(ResourceKey<Level> dimension, BlockPos blockPos)
+	public Stargate(Address address, ResourceKey<Level> dimension, BlockPos blockPos)
 	{
+		this.address = address;
 		this.dimension = dimension;
 		this.blockPos = blockPos;
+	}
+	
+	public Stargate(AbstractStargateEntity stargate)
+	{
+		this.address = stargate.get9ChevronAddress();
+		this.dimension = stargate.getLevel().dimension();
+		this.blockPos = stargate.getBlockPos();
+	}
+	
+	public Address getAddress()
+	{
+		return address;
 	}
 	
 	public ResourceKey<Level> getDimension()
@@ -46,13 +62,13 @@ public class Stargate
 		return stargateTag;
 	}
 	
-	public static Stargate deserialize(CompoundTag tag)
+	public static Stargate deserialize(CompoundTag tag, Address address)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
 		if(dimension != null && blockPos != null)
-			return new Stargate(dimension, blockPos);
+			return new Stargate(address, dimension, blockPos);
 		
 		return null;
 	}

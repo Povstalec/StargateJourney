@@ -7,14 +7,12 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Transporter;
@@ -54,23 +52,28 @@ public class BlockEntityList extends SavedData
 		return blockEntity;
 	}*/
 	
-	public boolean addStargate(AbstractStargateEntity stargate)
+	/**
+	 * Adds Stargate to Stargate Network
+	 * @param stargate
+	 * @return Optional containing Stargate that got added if successful, empty optional if unsuccessful
+	 */
+	public Optional<Stargate> addStargate(AbstractStargateEntity stargate)
 	{
-		Address address = new Address(stargate.getID());
+		Address address = stargate.get9ChevronAddress();
 		
 		if(address.getLength() != 8)
-			return false;
+			return Optional.empty();
 		
 		if(this.stargateMap.containsKey(address))
-			return false;
+			return Optional.empty();
 		
 		if(stargate.getLevel() == null)
-			return false;
+			return Optional.empty();
 		
 		if(stargate.getBlockPos() == null)
-			return false;
+			return Optional.empty();
 		
-		Stargate savedStargate = new Stargate(stargate.getLevel().dimension(), stargate.getBlockPos());
+		Stargate savedStargate = new Stargate(stargate);
 		
 		this.stargateMap.put(address, savedStargate);
 		
@@ -78,7 +81,7 @@ public class BlockEntityList extends SavedData
 		
 		StargateJourney.LOGGER.info("Stargate " + address.toString() + " to BlockEntityList");
 		
-		return true;
+		return Optional.of(savedStargate);
 	}
 	
 	public void addTransporter(Level level, BlockPos pos, String id)
@@ -220,7 +223,8 @@ public class BlockEntityList extends SavedData
 		stargates.getAllKeys().stream().forEach(stargate ->
 		{
 			StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
-			this.stargateMap.put(new Address(stargate), Stargate.deserialize(stargates.getCompound(stargate)));
+			Address address = new Address(stargate);
+			this.stargateMap.put(address, Stargate.deserialize(stargates.getCompound(stargate), address));
 		});
 	}
 	

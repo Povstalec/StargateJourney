@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -20,11 +21,9 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 
 public class StargateBlockItem extends BlockItem
 {
-	private static final String ID = "ID";
 	private static final String ADD_TO_NETWORK = "AddToNetwork";
 	private static final String POINT_OF_ORIGIN = "PointOfOrigin";
 	private static final String SYMBOLS = "Symbols";
-	private static final String TIMES_OPENED = "TimesOpened";
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
 	public StargateBlockItem(Block block, Properties properties)
@@ -92,7 +91,8 @@ public class StargateBlockItem extends BlockItem
 				// Registers it as one of the Block Entities in the list
 				stargate.addStargateToNetwork();
 				
-				StargateNetwork.get(level).updateStargate(level, info.getString(ID), info.getInt(TIMES_OPENED), false);//TODO Add stuff for having a DHD
+				if(!level.isClientSide())
+					StargateNetwork.get(level).updateStargate((ServerLevel) level, stargate);
 			}
 			
 			// Sets up symbols on the Milky Way Stargate

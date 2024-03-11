@@ -6,8 +6,11 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -97,5 +100,85 @@ public class SolarSystem
         Registry<SolarSystem> registry = registries.registryOrThrow(SolarSystem.REGISTRY_KEY);
         
         return registry.get(solarSystem);
+	}
+	
+	/**
+	 * Version of Solar System used for Stargate Network
+	 * @author Povstalec
+	 *
+	 */
+	public static class Serializable
+	{
+		public static final String TRANSLATION_NAME = "TranslationName";
+		public static final String POINT_OF_ORIGIN = "PointOfOrigin";
+		public static final String SYMBOLS = "Sybmols";
+		public static final String SYMBOL_PREFIX = "SybmolPrefix";
+		public static final String EXTRAGALACTIC_ADDRESS = "ExtragalacticAddress";
+		public static final String DIMENSIONS = "Dimensions";
+		
+		private final String translationName;
+		private final PointOfOrigin pointOfOrigin;
+		private final Symbols symbols;
+		private final int symbolPrefix;
+		private final Address extragalacticAddress;
+		private final List<ResourceKey<Level>> dimensions;
+		
+		public Serializable(String translationName, PointOfOrigin pointOfOrigin, Symbols symbols, int symbolPrefix, 
+				Address extragalacticAddress,
+				List<ResourceKey<Level>> dimensions)
+		{
+			this.translationName = translationName;
+			this.pointOfOrigin = pointOfOrigin;
+			this.symbols = symbols;
+			this.symbolPrefix = symbolPrefix;
+			this.extragalacticAddress = extragalacticAddress;
+			this.dimensions = dimensions;
+		}
+		
+		public Component getName()
+		{
+			return Component.translatable(translationName);
+		}
+		
+		public PointOfOrigin getPointOfOrigin()
+		{
+			return pointOfOrigin;
+		}
+		
+		public Symbols getSymbols()
+		{
+			return symbols;
+		}
+		
+		public int getSymbolPrefix()
+		{
+			return symbolPrefix;
+		}
+		
+		public Address getExtragalacticAddress()
+		{
+			return extragalacticAddress;
+		}
+		
+		public List<ResourceKey<Level>> getDimensions()
+		{
+			return dimensions;
+		}
+		
+		/*public CompoundTag serialize()
+		{
+			CompoundTag solarSystemTag = new CompoundTag();
+			
+			ResourceKey<Level> level = this.getDimension();
+			BlockPos pos = this.getBlockPos();
+			
+			stargateTag.putString(DIMENSION, level.location().toString());
+			stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+			
+			solarSystemTag.putString(TRANSLATION_NAME, translationName);
+			//TODO Point of Origin
+			
+			return solarSystemTag;
+		}*/
 	}
 }
