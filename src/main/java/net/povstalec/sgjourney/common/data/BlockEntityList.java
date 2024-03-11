@@ -36,8 +36,6 @@ public class BlockEntityList extends SavedData
 	private static final String DIMENSION = "Dimension";
 	private static final String COORDINATES = "Coordinates";
 	
-	protected CompoundTag blockEntityList = new CompoundTag();
-	
 	protected HashMap<Address, Stargate> stargateMap = new HashMap<>();
 	protected HashMap<String, Transporter> transporterMap = new HashMap<>();
 	
@@ -132,15 +130,17 @@ public class BlockEntityList extends SavedData
 	{
 		return blockEntityList.copy().getCompound(blockEntities);
 	}*/
-	
+
+    @SuppressWarnings("unchecked")
 	public HashMap<Address, Stargate> getStargates()
 	{
-		return stargateMap;
+		return (HashMap<Address, Stargate>) stargateMap.clone();
 	}
-	
+
+    @SuppressWarnings("unchecked")
 	public HashMap<String, Transporter> getTransporters()
 	{
-		return transporterMap;
+		return (HashMap<String, Transporter>) transporterMap.clone();
 	}
 	
 	public Optional<Stargate> getStargate(Address address)
@@ -214,10 +214,12 @@ public class BlockEntityList extends SavedData
 	
 	private void deserializeStargates(CompoundTag blockEntityList)
 	{
+		StargateJourney.LOGGER.info("Deserializing Stargates");
 		CompoundTag stargates = blockEntityList.getCompound(STARGATES);
 		
 		stargates.getAllKeys().stream().forEach(stargate ->
 		{
+			StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
 			this.stargateMap.put(new Address(stargate), Stargate.deserialize(stargates.getCompound(stargate)));
 		});
 	}
@@ -254,14 +256,14 @@ public class BlockEntityList extends SavedData
 	{
 		BlockEntityList data = create();
 		
-		data.blockEntityList = tag.copy();
+		data.deserialize(tag);
 		
 		return data;
 	}
 
 	public CompoundTag save(CompoundTag tag)
 	{
-		tag = this.blockEntityList.copy();
+		tag = serialize();
 		
 		return tag;
 	}

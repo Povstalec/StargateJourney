@@ -30,6 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
+import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
@@ -59,8 +60,13 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.Wormhole;
 
-public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
+public abstract class AbstractStargateEntity extends EnergyBlockEntity
 {
+	protected static final String EMPTY = StargateJourney.EMPTY;
+	protected static final String ADD_TO_NETWORK = "AddToNetwork";
+	protected static final String ID = "ID"; //TODO For legacy reasons
+	protected static final String ID_9_CHEVRON_ADDRESS = "9ChevronAddress";
+	
 	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
 	private static final String EVENT_RESET = "stargate_reset";
 
@@ -83,6 +89,9 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
 	// Basic Info
+	protected Address id9ChevronAddress = new Address();//TODO
+	protected boolean addToNetwork = true;
+	
 	protected final Stargate.Gen generation;
 	protected int symbolBounds = 38;
 	protected int network;
@@ -131,7 +140,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
 			float verticalCenterHeight, float horizontalCenterHeight)
 	{
-		super(blockEntity, pos, state, SGJourneyBlockEntity.Type.STARGATE);
+		super(blockEntity, pos, state);
 		
 		generation = gen;
 		this.network = defaultNetwork;
@@ -153,6 +162,9 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
         if(level.isClientSide())
 	        return;
         
+        if(!addToNetwork)
+    		addStargateToNetwork();
+        
         loadDHD();
 	}
 	
@@ -166,6 +178,12 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
 		connectionID = tag.getString(CONNECTION_ID);
+		
+		if(tag.contains(ID)) //TODO For legacy reasons
+			id9ChevronAddress.fromString(tag.getString(ID));
+		else
+			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
+    	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
 
 		displayID = tag.getBoolean(DISPLAY_ID);
 		upgraded = tag.getBoolean(UPGRADED);
@@ -189,7 +207,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		connectionID = tag.getString(CONNECTION_ID);
 		
-    	setID(tag.getString(ID));
+		if(tag.contains(ID)) //TODO For legacy reasons
+			id9ChevronAddress.fromString(tag.getString(ID));
+		else
+			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
     	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
     	
 		this.setEnergy(tag.getLong(ENERGY));
@@ -217,6 +238,10 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		tag.putString(CONNECTION_ID, connectionID);
 		
+		//tag.putString(ID, getID());
+		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
+		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
+		
 		tag.putBoolean(DISPLAY_ID, displayID);
 		tag.putBoolean(UPGRADED, upgraded);
 
@@ -243,7 +268,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		tag.putString(CONNECTION_ID, connectionID);
 		
-		tag.putString(ID, getID());
+		//tag.putString(ID, getID());
+		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 
 		tag.putLong(ENERGY, this.getEnergyStored());
@@ -263,10 +289,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	public void addStargateToNetwork()
 	{
-		if(this.getID().equals(EMPTY) || BlockEntityList.get(level).getStargate(new Address(getID())).isPresent())
-		{
-			setID(generateID());
-		}
+		if(id9ChevronAddress.isEmpty() || BlockEntityList.get(level).getStargate(id9ChevronAddress).isPresent())
+			set9ChevronAddress(generate9ChevronAddress());
 		
 		BlockEntityList.get(level).addStargate(this);
 		StargateNetwork.get(level).addStargate(level.getServer(), this);
@@ -275,7 +299,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		this.setChanged();
 	}
 	
-	@Override
+	/*@Override
 	public CompoundTag addToBlockEntityList()
 	{
 		addStargateToNetwork();
@@ -293,15 +317,33 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public void removeFromBlockEntityList()
 	{
 		//super.removeFromBlockEntityList();
-		StargateNetwork.get(level).removeStargate(level, getID());
-		BlockEntityList.get(level).removeStargate(new Address(getID()));
+	}*/
+	
+	public void removeStargateFromNetwork()
+	{
+		StargateNetwork.get(level).removeStargate(level, id9ChevronAddress.toString());
+		BlockEntityList.get(level).removeStargate(id9ChevronAddress);
 	}
 	
-	@Override
-	protected String generateID()
+	protected void set9ChevronAddress(Address address)
+	{
+		this.id9ChevronAddress = address;
+	}
+	
+	public Address get9ChevronAddress()
+	{
+		return id9ChevronAddress;
+	}
+	
+	//TODO Remove this
+	public String getID()
+	{
+		return get9ChevronAddress().toString();
+	}
+	
+	protected Address generate9ChevronAddress()
 	{
 		Random random = new Random();
-		String addressString;
 		Address address;
 		while(true)
 		{
@@ -311,8 +353,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 				break;
 		}
 		
-		addressString = address.toString();
-		return addressString;
+		return address;
 	}
 
 	
@@ -1291,6 +1332,9 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": " + address.toString())).withStyle(ChatFormatting.GREEN));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
+
+		player.sendSystemMessage(Component.translatable("info.sgjourney.9_chevron_address").append(": " + id9ChevronAddress).withStyle(ChatFormatting.AQUA));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));
 		
 		super.getStatus(player);
 	}

@@ -137,10 +137,13 @@ public class StargateNetwork extends SavedData
 	{
 		HashMap<Address, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
-		stargates.entrySet().forEach((stargateInfo) ->
+		System.out.println("Stargates " + stargates.size());
+		
+		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
 			Address address = stargateInfo.getKey();
 			Stargate mapStargate = stargateInfo.getValue();
+			System.out.println("Stargate " + address.toString());
 			
 			ResourceKey<Level> dimension = mapStargate.getDimension();
 			
@@ -154,12 +157,12 @@ public class StargateNetwork extends SavedData
 				
 				if(blockentity instanceof AbstractStargateEntity stargate)
 				{
-					if(!address.toString().equals(stargate.getID()))
+					if(!address.equals(stargate.get9ChevronAddress()))
 						removeStargate(server.getLevel(dimension), address.toString());
 					
 					stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
 					
-					if(!getStargates().contains(address.toString()))
+					if(!getStargates().contains(stargate.get9ChevronAddress().toString()))
 					{
 						addStargate(server, stargate);
 						stargate.updateStargate(updateInterfaces);

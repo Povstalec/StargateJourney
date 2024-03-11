@@ -286,6 +286,28 @@ public final class Address
 		return this;
 	}
 	
+	@Override
+	public boolean equals(Object object)
+	{
+		// Right now I don't really care if the Addresses have different specifics, only if their symbols are the same
+		if(object instanceof Address address)
+		{
+			int length = this.getLength();
+			if(address.getLength() == length)
+			{
+				for(int i = 0; i < length; i++)
+				{
+					if(address.getSymbol(i) != this.getSymbol(i))
+						return false;
+				}
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	//============================================================================================
 	//*******************************************Static*******************************************
 	//============================================================================================
