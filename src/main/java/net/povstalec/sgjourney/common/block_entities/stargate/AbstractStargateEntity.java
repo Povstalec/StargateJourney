@@ -62,10 +62,10 @@ import net.povstalec.sgjourney.common.stargate.Wormhole;
 
 public abstract class AbstractStargateEntity extends EnergyBlockEntity
 {
-	protected static final String EMPTY = StargateJourney.EMPTY;
-	protected static final String ADD_TO_NETWORK = "AddToNetwork";
-	protected static final String ID = "ID"; //TODO For legacy reasons
-	protected static final String ID_9_CHEVRON_ADDRESS = "9ChevronAddress";
+	public static final String EMPTY = StargateJourney.EMPTY;
+	public static final String ADD_TO_NETWORK = "AddToNetwork";
+	public static final String ID = "ID"; //TODO For legacy reasons
+	public static final String ID_9_CHEVRON_ADDRESS = "9ChevronAddress";
 	
 	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
 	private static final String EVENT_RESET = "stargate_reset";
