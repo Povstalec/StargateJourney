@@ -1,11 +1,64 @@
 package net.povstalec.sgjourney.common.stargate;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Stargate
 {
+	public static final String DIMENSION = "Dimension";
+	public static final String COORDINATES = "Coordinates";
+	
+	//TODO Should it know its own ID?
+	private final ResourceKey<Level> dimension;
+	private final BlockPos blockPos;
+	
+	public Stargate(ResourceKey<Level> dimension, BlockPos blockPos)
+	{
+		this.dimension = dimension;
+		this.blockPos = blockPos;
+	}
+	
+	public ResourceKey<Level> getDimension()
+	{
+		return dimension;
+	}
+	
+	public BlockPos getBlockPos()
+	{
+		return blockPos;
+	}
+	
+	public CompoundTag serialize()
+	{
+		CompoundTag stargateTag = new CompoundTag();
+		ResourceKey<Level> level = this.getDimension();
+		BlockPos pos = this.getBlockPos();
+		
+		stargateTag.putString(DIMENSION, level.location().toString());
+		stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+		
+		return stargateTag;
+	}
+	
+	public static Stargate deserialize(CompoundTag tag)
+	{
+		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
+		
+		if(dimension != null && blockPos != null)
+			return new Stargate(dimension, blockPos);
+		
+		return null;
+	}
+	
+	
+	
 	public enum Gen
 	{
 		NONE(0),

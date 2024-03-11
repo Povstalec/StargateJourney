@@ -17,12 +17,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Connection;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -137,12 +135,12 @@ public class StargateNetwork extends SavedData
 	
 	private void resetStargates(MinecraftServer server, boolean updateInterfaces)
 	{
-		HashMap<Address, BlockEntityList.Stargate> stargates = BlockEntityList.get(server).getStargates();
+		HashMap<Address, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
 		stargates.entrySet().forEach((stargateInfo) ->
 		{
 			Address address = stargateInfo.getKey();
-			BlockEntityList.Stargate mapStargate = stargateInfo.getValue();
+			Stargate mapStargate = stargateInfo.getValue();
 			
 			ResourceKey<Level> dimension = mapStargate.getDimension();
 			
