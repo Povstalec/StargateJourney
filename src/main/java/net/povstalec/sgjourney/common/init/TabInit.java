@@ -20,6 +20,7 @@ import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public class TabInit
 {
@@ -114,11 +115,18 @@ public class TabInit
 			if(CommonStargateConfig.enable_stargate_variants.get())
 			{
 				event.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
-				event.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_movie"));
-				event.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_promo"));
-				event.accept(StargateVariantItem.stargateVariant("sgjourney:milky_way_sg-1"));
-				event.accept(StargateVariantItem.stargateVariant("sgjourney:pegasus_atlantis"));
-				event.accept(StargateVariantItem.stargateVariant("sgjourney:classic_milky_way"));
+				event.getParameters().holders()
+						.lookup(StargateVariant.REGISTRY_KEY)
+						.ifPresent(regLookup ->
+								regLookup.listElementIds()
+										.forEach(variantId ->
+												event.accept(
+														StargateVariantItem.stargateVariant(
+																variantId.location().toString()
+														)
+												)
+										)
+						);
 			}
 		}
 		else if(event.getTab() == STARGATE_BLOCKS.get())
