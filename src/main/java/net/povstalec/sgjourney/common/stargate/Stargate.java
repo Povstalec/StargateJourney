@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.Optional;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -15,11 +17,12 @@ public class Stargate
 	public static final String DIMENSION = "Dimension";
 	public static final String COORDINATES = "Coordinates";
 	
-	//TODO Should it know its own ID?
 	private final Address address;
-	//TODO Add Stargate Generation
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
+
+	//private Optional<Boolean> hasDHD;
+	//private Optional<Integer> generation;
 	
 	public Stargate(Address address, ResourceKey<Level> dimension, BlockPos blockPos)
 	{
@@ -33,6 +36,9 @@ public class Stargate
 		this.address = stargate.get9ChevronAddress();
 		this.dimension = stargate.getLevel().dimension();
 		this.blockPos = stargate.getBlockPos();
+
+		//this.hasDHD = Optional.of(stargate.hasDHD());
+		//this.generation = Optional.of(stargate.getGeneration().getGen());
 	}
 	
 	public Address getAddress()

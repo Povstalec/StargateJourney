@@ -226,7 +226,7 @@ public class StargateNetwork extends SavedData
 		this.stargateNetwork.getCompound(STARGATES).remove(stargateID);*/
 		if(!this.stargates.containsKey(address))
 		{
-			StargateJourney.LOGGER.error(address.toString() + " not found in Stargate Network");
+			StargateJourney.LOGGER.error("Failed to remove " + address.toString() + " from Stargate Network - key not found");
 			return;
 		}
 		
@@ -456,7 +456,7 @@ public class StargateNetwork extends SavedData
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
-	private CompoundTag serialize() //TODO Use this
+	private CompoundTag serialize()
 	{
 		CompoundTag tag = new CompoundTag();
 		
@@ -491,7 +491,7 @@ public class StargateNetwork extends SavedData
 		return connectionsTag;
 	}
 	
-	private void deserialize(CompoundTag tag) //TODO Use this
+	private void deserialize(CompoundTag tag)
 	{
 		this.version = tag.getInt(VERSION);
 		deserializeConnections(tag.getCompound(CONNECTIONS));

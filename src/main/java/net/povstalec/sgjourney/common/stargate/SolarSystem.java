@@ -1,20 +1,23 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class SolarSystem
 {
@@ -117,15 +120,16 @@ public class SolarSystem
 		public static final String DIMENSIONS = "Dimensions";
 		
 		private final String translationName;
-		private final PointOfOrigin pointOfOrigin;
-		private final Symbols symbols;
+		private final ResourceKey<PointOfOrigin> pointOfOrigin;
+		private final ResourceKey<Symbols> symbols;
 		private final int symbolPrefix;
 		private final Address extragalacticAddress;
 		private final List<ResourceKey<Level>> dimensions;
 		
-		public Serializable(String translationName, PointOfOrigin pointOfOrigin, Symbols symbols, int symbolPrefix, 
-				Address extragalacticAddress,
-				List<ResourceKey<Level>> dimensions)
+		private List<Stargate> stargates = new ArrayList<Stargate>();//TODO
+		
+		public Serializable(String translationName, ResourceKey<PointOfOrigin> pointOfOrigin, ResourceKey<Symbols> symbols, int symbolPrefix, 
+				Address extragalacticAddress, List<ResourceKey<Level>> dimensions)
 		{
 			this.translationName = translationName;
 			this.pointOfOrigin = pointOfOrigin;
@@ -140,12 +144,12 @@ public class SolarSystem
 			return Component.translatable(translationName);
 		}
 		
-		public PointOfOrigin getPointOfOrigin()
+		public ResourceKey<PointOfOrigin> getPointOfOrigin() //TODO
 		{
 			return pointOfOrigin;
 		}
 		
-		public Symbols getSymbols()
+		public ResourceKey<Symbols> getSymbols() //TODO
 		{
 			return symbols;
 		}
@@ -165,20 +169,46 @@ public class SolarSystem
 			return dimensions;
 		}
 		
-		/*public CompoundTag serialize()
+		public CompoundTag serialize()
 		{
 			CompoundTag solarSystemTag = new CompoundTag();
 			
-			ResourceKey<Level> level = this.getDimension();
-			BlockPos pos = this.getBlockPos();
+			solarSystemTag.putString(TRANSLATION_NAME, this.translationName);
+			solarSystemTag.putString(POINT_OF_ORIGIN, this.pointOfOrigin.location().toString());
+			solarSystemTag.putString(SYMBOLS, this.symbols.location().toString());
+			solarSystemTag.putInt(SYMBOL_PREFIX, this.symbolPrefix);
+			solarSystemTag.putIntArray(EXTRAGALACTIC_ADDRESS, this.extragalacticAddress.toArray());
 			
-			stargateTag.putString(DIMENSION, level.location().toString());
-			stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+			//TODO Dimensions
+			CompoundTag dimensionsTag = new CompoundTag();
+			dimensions.stream().forEach(dimension ->
+			{
+				dimensionsTag.putString(dimension.location().toString(), dimension.location().toString());
+			});
+			solarSystemTag.put(DIMENSIONS, dimensionsTag);
 			
-			solarSystemTag.putString(TRANSLATION_NAME, translationName);
-			//TODO Point of Origin
+			//TODO Stargates
 			
 			return solarSystemTag;
-		}*/
+		}
+		
+		public static SolarSystem.Serializable deserialize(CompoundTag solarSystemTag)
+		{
+			String translationName = solarSystemTag.getString(TRANSLATION_NAME);
+			ResourceKey<PointOfOrigin> pointOfOrigin = Conversion.stringToPointOfOrigin(solarSystemTag.getString(POINT_OF_ORIGIN));
+			ResourceKey<Symbols> symbols = Conversion.stringToSymbols(solarSystemTag.getString(SYMBOLS));
+			int symbolPrefix = solarSystemTag.getInt(SYMBOL_PREFIX);
+			Address extragalacticAddress = new Address(solarSystemTag.getIntArray(EXTRAGALACTIC_ADDRESS));
+			
+			List<ResourceKey<Level>> dimensions = new ArrayList<ResourceKey<Level>>();
+			solarSystemTag.getCompound(DIMENSIONS).getAllKeys().forEach(dimensionString ->
+			{
+				dimensions.add(Conversion.stringToDimension(dimensionString));
+			});
+			
+			//TODO Stargates
+			
+			return new SolarSystem.Serializable(translationName, pointOfOrigin, symbols, symbolPrefix, extragalacticAddress, dimensions);
+		}
 	}
 }

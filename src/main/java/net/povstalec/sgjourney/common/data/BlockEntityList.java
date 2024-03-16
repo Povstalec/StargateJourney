@@ -30,27 +30,9 @@ public class BlockEntityList extends SavedData
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";
 	public static final String TRANSPORTERS = "Transporters"; //TODO Replace TransportRings with this
-
-	private static final String DIMENSION = "Dimension";
-	private static final String COORDINATES = "Coordinates";
 	
 	protected HashMap<Address, Stargate> stargateMap = new HashMap<>();
 	protected HashMap<String, Transporter> transporterMap = new HashMap<>();
-	
-	/*public CompoundTag addBlockEntity(Level level, BlockPos pos, String listName, String id)
-	{
-		String dimension = level.dimension().location().toString();
-		CompoundTag localList = blockEntityList.getCompound(listName);
-		CompoundTag blockEntity = new CompoundTag();
-		
-		blockEntity.putString(DIMENSION, dimension);
-		blockEntity.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
-		localList.put(id, blockEntity);
-		blockEntityList.put(listName, localList);
-		
-		this.setDirty();
-		return blockEntity;
-	}*/
 	
 	/**
 	 * Adds Stargate to Stargate Network
@@ -93,18 +75,6 @@ public class BlockEntityList extends SavedData
 		this.setDirty();
 	}
 	
-	/*public void removeBlockEntity(String type, String id)
-	{
-		if(!getBlockEntities(type).contains(id))
-		{
-			StargateJourney.LOGGER.error(type + " does not contain " + id);
-			return;
-		}
-		blockEntityList.getCompound(type).remove(id);
-		StargateJourney.LOGGER.info("Removed " + id + " from " + type);
-		setDirty();
-	}*/
-	
 	public void removeStargate(Address id)
 	{
 		if(!this.stargateMap.containsKey(id))
@@ -128,11 +98,6 @@ public class BlockEntityList extends SavedData
 		StargateJourney.LOGGER.info("Removed " + id + " from BlockEntityList");
 		setDirty();
 	}
-	
-	/*public CompoundTag getBlockEntities(String blockEntities)
-	{
-		return blockEntityList.copy().getCompound(blockEntities);
-	}*/
 
     @SuppressWarnings("unchecked")
 	public HashMap<Address, Stargate> getStargates()
@@ -288,49 +253,4 @@ public class BlockEntityList extends SavedData
         
         return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, INCORRECT_FILE_NAME);
     }
-    
-    /*public static final class Stargate
-    {
-    	private final ResourceKey<Level> dimension;
-    	private final BlockPos blockPos;
-    	
-    	public Stargate(ResourceKey<Level> dimension, BlockPos blockPos)
-    	{
-    		this.dimension = dimension;
-    		this.blockPos = blockPos;
-    	}
-    	
-    	public ResourceKey<Level> getDimension()
-    	{
-    		return dimension;
-    	}
-    	
-    	public BlockPos getBlockPos()
-    	{
-    		return blockPos;
-    	}
-    	
-    	public CompoundTag serialize()
-    	{
-    		CompoundTag stargateTag = new CompoundTag();
-			ResourceKey<Level> level = this.getDimension();
-			BlockPos pos = this.getBlockPos();
-			
-			stargateTag.putString(DIMENSION, level.location().toString());
-			stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
-			
-			return stargateTag;
-    	}
-    	
-    	public static Stargate deserialize(CompoundTag tag)
-    	{
-    		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
-    		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
-    		
-    		if(dimension != null && blockPos != null)
-    			return new Stargate(dimension, blockPos);
-    		
-    		return null;
-    	}
-    }*/
 }
