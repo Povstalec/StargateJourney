@@ -109,7 +109,7 @@ public class TabInit
 		{
 			builder.title(Component.translatable("itemGroup.stargate_stuff"))
 			.icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
-			.displayItems((flag, items, hasPermisions) ->
+			.displayItems((parameters, items) ->
 			{
 				items.accept(BlockInit.UNIVERSE_STARGATE.get());
 				items.accept(BlockInit.MILKY_WAY_STARGATE.get());
