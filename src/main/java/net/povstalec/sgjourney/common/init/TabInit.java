@@ -35,7 +35,7 @@ public class TabInit
 		.title(Component.translatable("itemGroup.stargate_stuff")).build());
 
 	public static RegistryObject<CreativeModeTab> STARGATE_BLOCKS = CREATIVE_MODE_TABS.register("stargate_blocks", () ->
-		CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
+		CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.NAQUADAH_BLOCK.get()))
 		.title(Component.translatable("itemGroup.stargate_blocks")).build());
 	
 	@SubscribeEvent
