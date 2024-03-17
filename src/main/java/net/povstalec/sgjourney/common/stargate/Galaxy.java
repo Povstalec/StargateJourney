@@ -84,32 +84,33 @@ public class Galaxy
 	public static class Serializable
 	{
 		private final String translationName;
-		private final GalaxyType type;
-		private final Symbols defaultSymbols;
-		private final HashMap<Address, SolarSystem.Serializable> solarSystems;
+		private final int galaxySize;
+		private final ResourceKey<Symbols> defaultSymbols;
 		
-		public Serializable(String translationName, GalaxyType type, Symbols defaultSymbols, 
+		private HashMap<Address, SolarSystem.Serializable> solarSystems;
+		
+		public Serializable(String translationName, int galaxySize,  ResourceKey<Symbols> defaultSymbols, 
 				HashMap<Address, SolarSystem.Serializable> solarSystems)
 		{
 			this.translationName = translationName;
-			this.type = type;
+			this.galaxySize = galaxySize;
 			this.defaultSymbols = defaultSymbols;
 			this.solarSystems = solarSystems;
 		}
 		
-		public Component getName()
+		public Component getTranslationName()
 		{
 			return Component.translatable(translationName);
 		}
 		
-		public Symbols getDefaultSymbols()
+		public  ResourceKey<Symbols> getDefaultSymbols()
 		{
 			return defaultSymbols;
 		}
 		
-		public GalaxyType getType()
+		public int getSize()
 		{
-			return type;
+			return galaxySize;
 		}
 		
 		public HashMap<Address, SolarSystem.Serializable> getSolarSystems()
