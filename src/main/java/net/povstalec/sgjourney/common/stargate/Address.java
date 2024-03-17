@@ -200,6 +200,11 @@ public final class Address
 		return this.dimension.isPresent();
 	}
 	
+	public Optional<String> getDimension()
+	{
+		return this.dimension;
+	}
+	
 	public Address.Type getType()
 	{
 		return Address.Type.fromInt(this.getLength());

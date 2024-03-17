@@ -48,6 +48,7 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.SolarSystem;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -131,13 +132,30 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			
         	if(blockEntity instanceof CartoucheEntity cartouche) 
         	{
-        		MutableComponent symbols = Component.literal(cartouche.getAddress().toString());
-				Style style = Style.EMPTY;
-				style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-				style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, cartouche.getAddress().toString()));
-        		MutableComponent text = Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(symbols.setStyle(style.applyFormat(ChatFormatting.AQUA)));
+        		Address address = cartouche.getAddress();
         		
-        		player.sendSystemMessage(text);
+        		if(address.getDimension().isPresent())
+        			player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": " + address.getDimension().get())).withStyle(ChatFormatting.YELLOW));
+        		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
+
+        		final RegistryAccess registries = level.getServer().registryAccess();
+        		final Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
+        		
+        		if(cartouche.getSymbols() != null && ResourceLocation.isValidResourceLocation(cartouche.getSymbols()))
+        		{
+        			String symbols = "";
+        			ResourceLocation location = new ResourceLocation(cartouche.getSymbols());
+        			if(location.toString().equals("sgjourney:empty"))
+        				symbols = "Empty";
+        			else if(symbolsRegistry.containsKey(location))
+        				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
+        			else
+        				symbols = "Error";
+            		
+            		MutableComponent symbolsText = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE);
+
+            		player.sendSystemMessage(symbolsText);
+        		}
         	}
         }
         return InteractionResult.SUCCESS;
