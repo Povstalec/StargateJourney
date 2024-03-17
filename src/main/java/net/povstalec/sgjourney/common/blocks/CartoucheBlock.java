@@ -134,21 +134,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
         			player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(address.getDimension().get()).withStyle(ChatFormatting.GREEN));
         		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
 
-        		final RegistryAccess registries = level.getServer().registryAccess();
-        		final Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-        		
-        		if(cartouche.getSymbols() != null && ResourceLocation.isValidResourceLocation(cartouche.getSymbols()))
+        		if(cartouche.getSymbols() != null)
         		{
-        			String symbols = "";
-        			ResourceLocation location = new ResourceLocation(cartouche.getSymbols());
-        			if(location.toString().equals("sgjourney:empty"))
-        				symbols = "Empty";
-        			else if(symbolsRegistry.containsKey(location))
-        				symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
-        			else
-        				symbols = "Error";
-            		
-            		MutableComponent symbolsText = Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE);
+        			MutableComponent symbolsText = Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols())).withStyle(ChatFormatting.LIGHT_PURPLE);
 
             		player.sendSystemMessage(symbolsText);
         		}
