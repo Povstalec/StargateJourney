@@ -221,7 +221,7 @@
 	"solar_system.sgjourney.lantea": "Lantea",
 	"solar_system.sgjourney.proxima_centauri": "Proxima Centauri",
 	
-	"symbol_set.sgjourney.milky_way": "Symboly Mléčné dráh",
+	"symbol_set.sgjourney.milky_way": "Symboly Mléčné dráhy",
 	"symbol_set.sgjourney.kaliem": "Symboly Kaliemu",
 	"symbol_set.sgjourney.pegasus": "Symboly Pegasu",
 	"symbol_set.sgjourney.universal": "Univerzální symboly",
@@ -268,6 +268,7 @@
 	"info.sgjourney.add_to_network": "Přidat do sítě",
 	"info.sgjourney.point_of_origin": "Výchozí bod",
 	"info.sgjourney.symbols": "Symboly",
+	"info.sgjourney.symbol_set": "Soubor symbolů",
 	"info.sgjourney.symbol_number": "Číslo symbolu",
 	"info.sgjourney.open_time": "Doba otevření",
 	"info.sgjourney.times_opened": "Počet otevření",
