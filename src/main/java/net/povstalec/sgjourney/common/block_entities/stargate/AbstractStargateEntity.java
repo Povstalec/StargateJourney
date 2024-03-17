@@ -837,7 +837,12 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(this.dhdRelativePos.isEmpty())
 			return Optional.empty();
 		
-		return Optional.of(CoordinateHelper.Relative.getOffsetPos(this.getDirection(), this.getBlockPos(), this.dhdRelativePos.get()));
+		BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(this.getDirection(), this.getBlockPos(), this.dhdRelativePos.get());
+		
+		if(dhdPos != null)
+			return Optional.of(dhdPos);
+		
+		return Optional.empty();
 	}
 	
 	public void loadDHD()
@@ -1258,7 +1263,7 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	//TODO Add it to Stargates other than Universe Stargate
 	public SoundEvent getStartupSound()
 	{
-		return SoundInit.EMPTY_SOUND_INSTANCE;
+		return SoundInit.EMPTY.get();
 	}
 	
 	@Override

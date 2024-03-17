@@ -86,8 +86,8 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> MATOK_CLOSE = registerSoundEvent("matok_close");
 
 	public static final RegistryObject<SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
-	public static final SoundEvent EMPTY_SOUND_INSTANCE = SoundEvent.createVariableRangeEvent(new ResourceLocation(StargateJourney.MODID, "empty"));
-	public static final RegistryObject<SoundEvent> EMPTY_SOUND = SOUNDS.register("empty", () -> EMPTY_SOUND_INSTANCE);
+	
+	public static final RegistryObject<SoundEvent> EMPTY = registerSoundEvent("empty");
 	
 	
 	

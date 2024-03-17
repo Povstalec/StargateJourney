@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.init;
 
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -21,10 +23,14 @@ import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
 public class TabInit
 {
+	public static final ResourceLocation STARGATE_ITEMS = new ResourceLocation(StargateJourney.MODID, "stargate_items");
+	public static final ResourceLocation STARGATE_STUFF = new ResourceLocation(StargateJourney.MODID, "stargate_stuff");
+	public static final ResourceLocation STARGATE_BLOCKS = new ResourceLocation(StargateJourney.MODID, "stargate_blocks");
+	
 	@SubscribeEvent
 	public static void onRegisterModTabs(final CreativeModeTabEvent.Register event)
 	{
-		event.registerCreativeModeTab(new ResourceLocation(StargateJourney.MODID, "stargate_items"), (builder) ->
+		event.registerCreativeModeTab(STARGATE_ITEMS, (builder) ->
 		{
 			builder.title(Component.translatable("itemGroup.stargate_items"))
 			.icon(() -> new ItemStack(ItemInit.NAQUADAH.get()))
@@ -71,7 +77,6 @@ public class TabInit
 				items.accept(ItemInit.JAFFA_BOOTS.get());
 
 				items.accept(ItemInit.ZPM.get());
-				//items.accept(ItemInit.PERSONAL_SHIELD_EMITTER.get());
 				items.accept(PersonalShieldItem.personalShieldSetup());
 
 				items.accept(ItemInit.SYRINGE.get());
@@ -96,7 +101,34 @@ public class TabInit
 				items.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
 				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
+			});
+		});
+		
+		event.registerCreativeModeTab(STARGATE_STUFF,
+				List.of(STARGATE_ITEMS), List.of(STARGATE_BLOCKS), (builder) ->
+		{
+			builder.title(Component.translatable("itemGroup.stargate_stuff"))
+			.icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
+			.displayItems((flag, items, hasPermisions) ->
+			{
+				items.accept(BlockInit.UNIVERSE_STARGATE.get());
+				items.accept(BlockInit.MILKY_WAY_STARGATE.get());
+				items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
+				items.accept(BlockInit.PEGASUS_STARGATE.get());
+				items.accept(PegasusDHDBlock.pegasusCrystalSetup());
+				items.accept(BlockInit.CLASSIC_STARGATE.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
+				items.accept(BlockInit.CLASSIC_DHD.get());
+				items.accept(BlockInit.TOLLAN_STARGATE.get());
 				
+				items.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
+				
+				items.accept(BlockInit.BASIC_INTERFACE.get());
+				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
+				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+
 				if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
 				{
 					items.accept(StargateUpgradeItem.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
@@ -116,26 +148,14 @@ public class TabInit
 			});
 		});
 		
-		event.registerCreativeModeTab(new ResourceLocation(StargateJourney.MODID, "stargate_blocks"), (builder) ->
+		event.registerCreativeModeTab(STARGATE_BLOCKS, (builder) ->
 		{
 			builder.title(Component.translatable("itemGroup.stargate_blocks"))
 			.icon(() -> new ItemStack(BlockInit.NAQUADAH_BLOCK.get()))
 			.displayItems((parameters, items) ->
 			{
-				items.accept(BlockInit.UNIVERSE_STARGATE.get());
-				items.accept(BlockInit.MILKY_WAY_STARGATE.get());
-				items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
-				items.accept(BlockInit.PEGASUS_STARGATE.get());
-				items.accept(PegasusDHDBlock.pegasusCrystalSetup());
-				items.accept(BlockInit.CLASSIC_STARGATE.get());
-				items.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
-				items.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
-				items.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
-				items.accept(BlockInit.CLASSIC_DHD.get());
-				items.accept(BlockInit.TOLLAN_STARGATE.get());
-				
 				items.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
-
+				
 				items.accept(BlockInit.TRANSPORT_RINGS.get());
 				items.accept(BlockInit.RING_PANEL.get());
 				
