@@ -166,7 +166,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 			
 			if(direction != null)
 			{
-				if(!setStargateFromPos(CoordinateHelper.Relative.getOffsetPos(direction, this.getBlockPos(), pos)))
+				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(direction, this.getBlockPos(), pos);
+				
+				if(stargatePos != null && !setStargateFromPos(stargatePos))
 					stargateRelativePos = Optional.empty();
 			}
 		}
