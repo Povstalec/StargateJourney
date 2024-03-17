@@ -7,6 +7,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -43,7 +45,7 @@ public class Symbols
 		return name;
 	}
 	
-	public String getName(boolean uniqueSymbols)
+	public String getTranslationName(boolean uniqueSymbols)
 	{
 		if(!ClientStargateConfig.unique_symbols.get())
 		{
@@ -53,6 +55,11 @@ public class Symbols
 		}
 		
 		return name;
+	}
+	
+	public static String symbolsOrSet()
+	{
+		return ClientStargateConfig.unique_symbols.get() ? "info.sgjourney.symbols" :  "info.sgjourney.symbol_set";
 	}
 	
 	public ResourceKey<SymbolSet> getSymbolSet()

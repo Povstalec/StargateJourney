@@ -144,11 +144,11 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
         			if(location.toString().equals("sgjourney:empty"))
         				symbols = "Empty";
         			else if(symbolsRegistry.containsKey(location))
-        				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
+        				symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
         			else
         				symbols = "Error";
             		
-            		MutableComponent symbolsText = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE);
+            		MutableComponent symbolsText = Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE);
 
             		player.sendSystemMessage(symbolsText);
         		}
@@ -250,7 +250,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     			if(location.toString().equals("sgjourney:empty"))
     				symbols = "Empty";
     			else if(symbolsRegistry.containsKey(location))
-    				symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
+    				symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
     			else
     				symbols = "Error";
     		}
@@ -265,7 +265,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	
     	if(!hasAddress)
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimension)).withStyle(ChatFormatting.GREEN));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltipComponents.add(Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
