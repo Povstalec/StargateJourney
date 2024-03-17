@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.init;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +33,9 @@ public class TabInit
 
 	public static RegistryObject<CreativeModeTab> STARGATE_STUFF = CREATIVE_MODE_TABS.register("stargate_stuff", () ->
 		CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
-		.title(Component.translatable("itemGroup.stargate_stuff")).build());
+		.title(Component.translatable("itemGroup.stargate_stuff"))
+		.withTabsBefore(new ResourceLocation(StargateJourney.MODID, "stargate_blocks")).withTabsAfter(new ResourceLocation(StargateJourney.MODID, "stargate_items"))
+		.build());
 
 	public static RegistryObject<CreativeModeTab> STARGATE_BLOCKS = CREATIVE_MODE_TABS.register("stargate_blocks", () ->
 		CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.NAQUADAH_BLOCK.get()))
@@ -155,6 +158,8 @@ public class TabInit
 		}
 		else if(event.getTab() == STARGATE_BLOCKS.get())
 		{
+			event.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
+			
 			event.accept(BlockInit.TRANSPORT_RINGS.get());
 			event.accept(BlockInit.RING_PANEL.get());
 			
