@@ -169,8 +169,9 @@
 	"filled_map.sgjourney.astria_porta": "Map to the Ring of Gods",
 	"filled_map.sgjourney.chappa_ai": "Map to Chappa'ai",
 	
-	"itemGroup.stargate_blocks": "Stargate Blocks",
-	"itemGroup.stargate_items": "Stargate Items",
+	"itemGroup.stargate_blocks": "Stargate Journey - Blocks",
+	"itemGroup.stargate_stuff": "Stargate Journey - Stargate Stuff",
+	"itemGroup.stargate_items": "Stargate Journey - Items",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",
@@ -274,6 +275,7 @@
 	"info.sgjourney.autoclose": "Autoclose",
 	"info.sgjourney.last_traveler_time": "Time Since Last Traveler",
 	"info.sgjourney.address": "Address",
+	"info.sgjourney.dimension": "Dimension",
 	"info.sgjourney.recent_feedback": "Recent Feedback",
 	
 	"tooltip.sgjourney.symbol": "Symbol",

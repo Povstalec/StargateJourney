@@ -66,41 +66,41 @@ public class BlockInit
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, StargateJourney.MODID);
 	
 	//Block Tab
-	public static final RegistryObject<UniverseStargateBlock> UNIVERSE_STARGATE = registerEntityBlock("universe_stargate", 
+	public static final RegistryObject<UniverseStargateBlock> UNIVERSE_STARGATE = registerStargate("universe_stargate", 
 			() -> new UniverseStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	public static final RegistryObject<UniverseStargateRingBlock> UNIVERSE_RING = BLOCKS.register("universe_ring", 
 			() -> new UniverseStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	
-	public static final RegistryObject<MilkyWayStargateBlock> MILKY_WAY_STARGATE = registerEntityBlock("milky_way_stargate", 
+	public static final RegistryObject<MilkyWayStargateBlock> MILKY_WAY_STARGATE = registerStargate("milky_way_stargate", 
 			() -> new MilkyWayStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	public static final RegistryObject<MilkyWayStargateRingBlock> MILKY_WAY_RING = BLOCKS.register("milky_way_ring", 
 			() -> new MilkyWayStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	
-	public static final RegistryObject<PegasusStargateBlock> PEGASUS_STARGATE = registerEntityBlock("pegasus_stargate", 
+	public static final RegistryObject<PegasusStargateBlock> PEGASUS_STARGATE = registerStargate("pegasus_stargate", 
 			() -> new PegasusStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	public static final RegistryObject<PegasusStargateRingBlock> PEGASUS_RING = BLOCKS.register("pegasus_ring", 
 			() -> new PegasusStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	
-	public static final RegistryObject<ClassicStargateBlock> CLASSIC_STARGATE = registerEntityBlock("classic_stargate", 
+	public static final RegistryObject<ClassicStargateBlock> CLASSIC_STARGATE = registerStargate("classic_stargate", 
 			() -> new ClassicStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
 	public static final RegistryObject<ClassicStargateRingBlock> CLASSIC_RING = BLOCKS.register("classic_ring", 
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
-	public static final RegistryObject<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerBlock("classic_stargate_base_block", 
+	public static final RegistryObject<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerStargateBlock("classic_stargate_base_block", 
 			() -> new ClassicStargateBaseBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
-	public static final RegistryObject<Block> CLASSIC_STARGATE_CHEVRON_BLOCK = registerBlock("classic_stargate_chevron_block", 
+	public static final RegistryObject<Block> CLASSIC_STARGATE_CHEVRON_BLOCK = registerStargateBlock("classic_stargate_chevron_block", 
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
-	public static final RegistryObject<Block> CLASSIC_STARGATE_RING_BLOCK = registerBlock("classic_stargate_ring_block", 
+	public static final RegistryObject<Block> CLASSIC_STARGATE_RING_BLOCK = registerStargateBlock("classic_stargate_ring_block", 
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
 	
-	public static final RegistryObject<TollanStargateBlock> TOLLAN_STARGATE = registerEntityBlock("tollan_stargate",
+	public static final RegistryObject<TollanStargateBlock> TOLLAN_STARGATE = registerStargate("tollan_stargate",
 			() -> new TollanStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	public static final RegistryObject<TollanStargateRingBlock> TOLLAN_RING = BLOCKS.register("tollan_ring",
@@ -119,7 +119,7 @@ public class BlockInit
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
 	
-	public static final RegistryObject<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerBlock("universe_stargate_chevron", 
+	public static final RegistryObject<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerStargateBlock("universe_stargate_chevron", 
 			() -> new ChevronBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F)
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
 					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
@@ -198,11 +198,11 @@ public class BlockInit
 	public static final RegistryObject<NaquadahGeneratorMarkIIBlock> NAQUADAH_GENERATOR_MARK_II = registerBlock("naquadah_generator_mark_ii", 
 			() -> new NaquadahGeneratorMarkIIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	
-	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerBlock("basic_interface", 
-			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
-	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerBlock("crystal_interface", 
+	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerStargateBlock("basic_interface", 
+			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.COMMON, 1);
+	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerStargateBlock("crystal_interface", 
 			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
-	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerBlock("advanced_crystal_interface", 
+	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerStargateBlock("advanced_crystal_interface", 
 			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	
 	public static final RegistryObject<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
@@ -234,6 +234,7 @@ public class BlockInit
 		
 		return toReturn;
 	}
+	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block, int stacksTo)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -242,11 +243,30 @@ public class BlockInit
 		
 		return toReturn;
 	}
+	
+	private static <T extends Block>RegistryObject<T> registerStargateBlock(String name, Supplier<T> block, Rarity rarity, int stacksTo)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		
+		registerStargateBlockItem(name, toReturn, rarity, stacksTo);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block, Rarity rarity, int stacksTo)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
 		
 		registerBlockItem(name, toReturn, rarity, stacksTo);
+		
+		return toReturn;
+	}
+	
+	private static <T extends Block>RegistryObject<T> registerStargate(String name, Supplier<T> block, Rarity rarity)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+
+		registerStargateItem(name, toReturn, rarity, 1);
 		
 		return toReturn;
 	}
@@ -302,6 +322,16 @@ public class BlockInit
 		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
+	private static <T extends Block>RegistryObject<Item> registerStargateBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
+	{
+		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).tab(TabInit.STARGATE_STUFF)));
+	}
+	
+	private static <T extends Block>RegistryObject<Item> registerStargateItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
+	{
+		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant().tab(TabInit.STARGATE_STUFF)));
+	}
+	
 	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
 		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant().tab(TabInit.STARGATE_BLOCKS)));
@@ -309,17 +339,17 @@ public class BlockInit
 	
 	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
+		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo).tab(TabInit.STARGATE_STUFF)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerDHDItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new DHDItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
+		return ItemInit.ITEMS.register(name, () -> new DHDItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).tab(TabInit.STARGATE_STUFF)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerCartoucheBlockItem(String name, RegistryObject<T> block, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new CartoucheBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+		return ItemInit.ITEMS.register(name, () -> new CartoucheBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo).tab(TabInit.STARGATE_BLOCKS)));
 	}
 	
 	public static void register(IEventBus eventBus)

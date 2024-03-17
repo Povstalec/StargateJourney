@@ -13,6 +13,15 @@ public class TabInit
 			return new ItemStack(ItemInit.NAQUADAH.get());
 		}
 	};
+
+	public static final CreativeModeTab STARGATE_STUFF = new CreativeModeTab("stargate_stuff")
+	{
+		@Override
+		public ItemStack makeIcon()
+		{
+			return new ItemStack(BlockInit.MILKY_WAY_STARGATE.get());
+		}
+	};
 	
 	public static final CreativeModeTab STARGATE_BLOCKS = new CreativeModeTab("stargate_blocks")
 	{

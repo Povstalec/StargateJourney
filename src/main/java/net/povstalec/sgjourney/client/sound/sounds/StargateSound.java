@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.init.SoundInit;
 
 public abstract class StargateSound extends AbstractTickableSoundInstance
 {
@@ -27,8 +26,8 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 	protected StargateSound(AbstractStargateEntity stargate, SoundEvent soundEvent, double fullDistance, double maxDistance)
 	{
 		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
-		if (soundEvent == SoundInit.EMPTY_SOUND_INSTANCE)
-			this.stop();
+		/*if (soundEvent == SoundInit.EMPTY_SOUND_INSTANCE)
+			this.stop();*/
 		this.stargate = stargate;
 		this.x = stargate.getBlockPos().getX();
 		this.y = stargate.getBlockPos().getY();

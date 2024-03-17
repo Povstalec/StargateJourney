@@ -187,6 +187,9 @@ public class CoordinateHelper
 		
 		public static final Vec3i getAbsoluteOffset(Direction initialDirection, Vec3i relativeOffset)
 		{
+			if(initialDirection == null)
+				return null;
+			
 			int destinationRotation = initialDirection.get2DDataValue();
 			
 			int rotation = destinationRotation;
@@ -199,6 +202,9 @@ public class CoordinateHelper
 		public static final BlockPos getOffsetPos(Direction initialDirection, BlockPos initialPos, Vec3i relativeOffset)
 		{
 			Vec3i absoluteOffset = getAbsoluteOffset(initialDirection, relativeOffset);
+			
+			if(absoluteOffset == null)
+				return null;
 			
 			return initialPos.offset(absoluteOffset);
 		}

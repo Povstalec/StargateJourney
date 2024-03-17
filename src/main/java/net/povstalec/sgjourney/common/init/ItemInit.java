@@ -11,7 +11,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.items.DialerItem;
 import net.povstalec.sgjourney.common.items.KaraKeshItem;
 import net.povstalec.sgjourney.common.items.PDAItem;
 import net.povstalec.sgjourney.common.items.RingRemoteItem;
@@ -124,9 +123,9 @@ public class ItemInit
 			() -> new CommunicationCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 
 	public static final RegistryObject<StargateUpgradeItem> STARGATE_UPGRADE_CRYSTAL = ITEMS.register("stargate_upgrade_crystal", 
-			() -> new StargateUpgradeItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+			() -> new StargateUpgradeItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_STUFF)));
 	public static final RegistryObject<StargateVariantItem> STARGATE_VARIANT_CRYSTAL = ITEMS.register("stargate_variant_crystal", 
-			() -> new StargateVariantItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+			() -> new StargateVariantItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_STUFF)));
 	
 	// Tools
 	public static final RegistryObject<SGJourneySwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword", 
