@@ -12,11 +12,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -48,7 +45,6 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.SolarSystem;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -135,7 +131,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
         		Address address = cartouche.getAddress();
         		
         		if(address.getDimension().isPresent())
-        			player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": " + address.getDimension().get())).withStyle(ChatFormatting.YELLOW));
+        			player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(address.getDimension().get()).withStyle(ChatFormatting.GREEN));
         		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
 
         		final RegistryAccess registries = level.getServer().registryAccess();
@@ -268,7 +264,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	}
     	
     	if(!hasAddress)
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimension)).withStyle(ChatFormatting.YELLOW));
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimension)).withStyle(ChatFormatting.GREEN));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
