@@ -10,8 +10,8 @@
 	
 	"key": 
 	{
-		"N": { "item": "sgjourney:naquadah" },
-		"A": { "item": "sgjourney:naquadah_alloy" }
+		"N": { "tag": "forge:ingots/naquadah" },
+		"A": { "tag": "forge:ingots/naquadah_alloy" }
 		
 	},
 	

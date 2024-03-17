@@ -10,8 +10,8 @@
 	
 	"key": 
 	{
-		"N": { "item": "sgjourney:naquadah" },
-		"A": { "item": "sgjourney:naquadah_alloy" },
+		"N": { "tag": "forge:ingots/naquadah" },
+		"A": { "tag": "forge:ingots/naquadah_alloy" },
 		"T": { "item": "sgjourney:transfer_crystal" },
 		"G": { "item": "sgjourney:communication_crystal" },
 		"D": { "item": "sgjourney:control_crystal" }

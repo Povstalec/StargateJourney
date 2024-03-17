@@ -30,6 +30,10 @@ public class TabInit
 		CreativeModeTab.builder().icon(() -> new ItemStack(ItemInit.NAQUADAH.get()))
 		.title(Component.translatable("itemGroup.stargate_items")).build());
 
+	public static RegistryObject<CreativeModeTab> STARGATE_STUFF = CREATIVE_MODE_TABS.register("stargate_stuff", () ->
+		CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
+		.title(Component.translatable("itemGroup.stargate_stuff")).build());
+
 	public static RegistryObject<CreativeModeTab> STARGATE_BLOCKS = CREATIVE_MODE_TABS.register("stargate_blocks", () ->
 		CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
 		.title(Component.translatable("itemGroup.stargate_blocks")).build());
@@ -104,6 +108,26 @@ public class TabInit
 			event.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
 			event.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 			event.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
+		}
+		else if(event.getTab() == STARGATE_STUFF.get())
+		{
+			event.accept(BlockInit.UNIVERSE_STARGATE.get());
+			event.accept(BlockInit.MILKY_WAY_STARGATE.get());
+			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
+			event.accept(BlockInit.PEGASUS_STARGATE.get());
+			event.accept(PegasusDHDBlock.pegasusCrystalSetup());
+			event.accept(BlockInit.CLASSIC_STARGATE.get());
+			event.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
+			event.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
+			event.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
+			event.accept(BlockInit.CLASSIC_DHD.get());
+			event.accept(BlockInit.TOLLAN_STARGATE.get());
+			
+			event.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
+			
+			event.accept(BlockInit.BASIC_INTERFACE.get());
+			event.accept(BlockInit.CRYSTAL_INTERFACE.get());
+			event.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 			
 			if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
 			{
@@ -131,20 +155,6 @@ public class TabInit
 		}
 		else if(event.getTab() == STARGATE_BLOCKS.get())
 		{
-			event.accept(BlockInit.UNIVERSE_STARGATE.get());
-			event.accept(BlockInit.MILKY_WAY_STARGATE.get());
-			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
-			event.accept(BlockInit.PEGASUS_STARGATE.get());
-			event.accept(PegasusDHDBlock.pegasusCrystalSetup());
-			event.accept(BlockInit.CLASSIC_STARGATE.get());
-			event.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
-			event.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
-			event.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
-			event.accept(BlockInit.CLASSIC_DHD.get());
-			event.accept(BlockInit.TOLLAN_STARGATE.get());
-			
-			event.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
-
 			event.accept(BlockInit.TRANSPORT_RINGS.get());
 			event.accept(BlockInit.RING_PANEL.get());
 			

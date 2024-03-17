@@ -168,8 +168,9 @@
 	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu boh\u016f",
 	"filled_map.sgjourney.chappa_ai": "Mapa k Chappa'ai",
 	
-	"itemGroup.stargate_blocks": "Hvězdná brána - Bloky",
-	"itemGroup.stargate_items": "Hvězdná brána - Předměty",
+	"itemGroup.stargate_blocks": "Stargate Journey - Bloky",
+	"itemGroup.stargate_stuff": "Stargate Journey - Brány a ovládání",
+	"itemGroup.stargate_items": "Stargate Journey - Předměty",
 
 	"screen.sgjourney.archeology_table": "Arheologický stůl",
 	"screen.sgjourney.basic_interface": "Základní rozhraní",
@@ -196,7 +197,7 @@
 	"biome.sgjourney.chulak_forest": "Chulacký les",
 	"biome.sgjourney.chulak_plains": "Chulacké pláně",
 	"biome.sgjourney.destiny": "Destiny",
-	"biome.sgjourney.lantean_ocean": "Hluboký atlanťanský oceán",
+	"biome.sgjourney.lantean_deep_ocean": "Hluboký atlanťanský oceán",
 	"biome.sgjourney.milky_way_forest": "Les z Mléčné dráhy",
 	"biome.sgjourney.milky_way_plains": "Pláně z Mléčné dráhy",
 	
@@ -274,6 +275,7 @@
 	"info.sgjourney.autoclose": "Automatické zavření",
 	"info.sgjourney.last_traveler_time": "Doba od posledního cestovatele",
 	"info.sgjourney.address": "Addresa",
+	"info.sgjourney.dimension": "Dimenze",
 	"info.sgjourney.feedback": "Poslední zpětná vazba",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
