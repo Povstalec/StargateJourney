@@ -95,10 +95,10 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 				if(location.toString().equals("sgjourney:empty"))
 					symbols = "Empty";
 				else if(symbolsRegistry.containsKey(location))
-					symbols = symbolsRegistry.get(location).getName(!ClientStargateConfig.unique_symbols.get());
+					symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
 				else
 					symbols = "Error";
-		        tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		        tooltipComponents.add(Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 			}
 		}
 		
