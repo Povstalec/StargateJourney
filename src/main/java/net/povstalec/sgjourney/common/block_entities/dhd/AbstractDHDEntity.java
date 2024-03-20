@@ -54,6 +54,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	protected Address address = new Address(true);
 	
 	protected boolean enableAdvancedProtocols = false;
+	protected boolean enableCFD = false;
 	
 	protected long energyTarget = DEFAULT_ENERGY_TARGET;
 	protected int maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
@@ -266,6 +267,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 			
 			stargate.receiveEnergy(energySent, false);
 		}
+	}
+
+	public void setCFDState(boolean state){
+		this.enableCFD = state;
+	}
+
+	public boolean getCFDState(){
+		return this.enableCFD;
 	}
     
     protected BlockState getState()

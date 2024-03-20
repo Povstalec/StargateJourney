@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntit
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import org.spongepowered.asm.mixin.Interface;
 
 public class StargateMethods
 {
@@ -128,6 +129,94 @@ public class StargateMethods
 			});
 			
 			return result;
+		}
+	}
+
+	public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
+	{
+
+		@Override
+		public String getName() {
+			return "setCallForwarding";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
+			return context.executeMainThreadTask(() -> {
+				boolean input = arguments.getBoolean(0);
+
+				blockEntity.setCFD(input);
+				return new Object[]{"Status changed successfully"};
+			});
+		}
+	}
+
+	public static class SetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
+	{
+
+		@Override
+		public String getName() {
+			return "setCallForwardingTarget";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException {
+
+			MethodResult result = context.executeMainThreadTask(() -> {
+
+				Map<Double, Double> chevronConfiguration = (Map<Double, Double>) arguments.getTable(0);
+
+				int[] configurationArray = ArrayHelper.tableToArray(chevronConfiguration);
+
+
+				if(configurationArray.length == 0)
+					stargate.setCFDTarget(new Address());
+				else if(configurationArray.length < 8)
+					throw new LuaException("Array is too short (required length: 8)");
+				else if(configurationArray.length > 8)
+					throw new LuaException("Array is too long (required length: 8)");
+				else if(!ArrayHelper.differentNumbers(configurationArray))
+					throw new LuaException("Array contains duplicate numbers");
+				else if(!ArrayHelper.isArrayInBounds(configurationArray, 0, 39))
+					throw new LuaException("Array contains numbers which are out of bounds <0,39>");
+
+				stargate.setCFDTarget(new Address().fromArray(configurationArray));
+
+				return new Object[] {"Target set successfully"};
+			});
+
+			return result;
+		}
+	}
+
+	public static class GetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
+	{
+
+		@Override
+		public String getName() {
+			return "getCallForwarding";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
+			return context.executeMainThreadTask(() -> new Object[]{blockEntity.getCFD()});
+		}
+	}
+
+	public static class GetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
+	{
+
+		@Override
+		public String getName() {
+			return "getCallForwardingTarget";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
+			return context.executeMainThreadTask(() -> {
+				List<Integer> address = Arrays.stream(blockEntity.getCFDTarget().toArray()).boxed().toList();
+				return new Object[] {address};
+			});
 		}
 	}
 
