@@ -55,7 +55,7 @@ public class NaquadahGeneratorMenu extends AbstractContainerMenu
     
     public long getMaxEnergy()
     {
-    	return this.blockEntity.getCapacity();
+    	return this.blockEntity.getEnergyCapacity();
     }
 	
 	@Override

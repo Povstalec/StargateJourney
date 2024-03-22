@@ -91,14 +91,20 @@ public class InterfacePeripheral implements IPeripheral, IDynamicPeripheral
 	//============================================================================================
 	//*****************************************CC: Tweaked****************************************
 	//============================================================================================
-	
-	@LuaFunction
+
+	@LuaFunction(mainThread = true)
 	public final long getEnergy() throws LuaException
 	{
 		return interfaceEntity.getEnergyStored();
 	}
-	
-	@LuaFunction
+
+	@LuaFunction(mainThread = true)
+	public final long getEnergyCapacity() throws LuaException
+	{
+		return interfaceEntity.getEnergyCapacity();
+	}
+
+	@LuaFunction(mainThread = true)
 	public final long getEnergyTarget() throws LuaException
 	{
 		return interfaceEntity.getEnergyTarget();
