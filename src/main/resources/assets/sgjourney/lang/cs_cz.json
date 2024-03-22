@@ -266,6 +266,7 @@
 	
 	"info.sgjourney.add_to_network": "Přidat do sítě",
 	"info.sgjourney.point_of_origin": "Výchozí bod",
+	"info.sgjourney.symbol": "Symbol",
 	"info.sgjourney.symbols": "Symboly",
 	"info.sgjourney.symbol_number": "Číslo symbolu",
 	"info.sgjourney.open_time": "Doba otevření",
@@ -274,7 +275,8 @@
 	"info.sgjourney.autoclose": "Automatické zavření",
 	"info.sgjourney.last_traveler_time": "Doba od posledního cestovatele",
 	"info.sgjourney.address": "Addresa",
-	"info.sgjourney.9_chevron_address": "9chevronová adresa",
+	"info.sgjourney.encoded_address": "Zadaná adresa",
+	"info.sgjourney.9_chevron_address": "9-chevronová adresa",
 	"info.sgjourney.feedback": "Poslední zpětná vazba",
 	
 	"tooltip.sgjourney.symbol": "Symbol",

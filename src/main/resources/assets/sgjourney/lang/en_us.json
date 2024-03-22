@@ -266,6 +266,7 @@
 	
 	"info.sgjourney.add_to_network": "Add To Network",
 	"info.sgjourney.point_of_origin": "Point of Origin",
+	"info.sgjourney.symbol": "Symbol",
 	"info.sgjourney.symbols": "Symbols",
 	"info.sgjourney.symbol_number": "Symbol Number",
 	"info.sgjourney.open_time": "Open Time",
@@ -274,6 +275,7 @@
 	"info.sgjourney.autoclose": "Autoclose",
 	"info.sgjourney.last_traveler_time": "Time Since Last Traveler",
 	"info.sgjourney.address": "Address",
+	"info.sgjourney.encoded_address": "Encoded Address",
 	"info.sgjourney.9_chevron_address": "9-Chevron Address",
 	"info.sgjourney.recent_feedback": "Recent Feedback",
 	
