@@ -244,24 +244,17 @@ public class SolarSystem
 		{
 			List<SolarSystem.Serializable> solarSystems = new ArrayList<SolarSystem.Serializable>();
 
-			System.out.println("Here1");
 			this.galacticAddresses.entrySet().stream().forEach(galaxyEntry ->
 			{
-				System.out.println("Here2");
 				Galaxy.Serializable galaxy = galaxyEntry.getKey();
 
-				System.out.println("Here3");
 				if(galaxy.containsSolarSystem(address))
 				{
 					Optional<SolarSystem.Serializable> solarSystemOptional = galaxy.getSolarSystem(address);
-					System.out.println("Here4 " + solarSystemOptional.isPresent());
 					SolarSystem.Serializable solarSystem = solarSystemOptional.get();
-					System.out.println("Here5");
 					solarSystems.add(solarSystem);
 				}
-				System.out.println("Here6");
 			});
-			System.out.println("Here7");
 			
 			if(solarSystems.size() > 0)
 				return Optional.of(solarSystems.get(0));

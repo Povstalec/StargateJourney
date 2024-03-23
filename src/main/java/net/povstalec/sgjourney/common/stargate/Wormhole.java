@@ -80,7 +80,7 @@ public class Wormhole implements ITeleporter
 		Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 		localEntities.stream().forEach((traveler) ->
 		{
-			if(this.entityLocations.containsKey(traveler.getId()))
+			if(!traveler.getType().is(TagInit.Entities.WORMHOLE_CANNOT_TELEPORT) && this.entityLocations.containsKey(traveler.getId()))
 			{
 				double previousX = this.entityLocations.get(traveler.getId()).x();
 				double previousY = this.entityLocations.get(traveler.getId()).y();
