@@ -143,7 +143,7 @@ public final class Address
 			{
 				//TODO Would be nice to use copy here
 				fromArray(address.get().toArray());
-				this.dimension = Optional.of(dimension.toString());
+				this.dimension = Optional.of(dimension.location().toString());
 			}
 		}
 		
@@ -201,6 +201,11 @@ public final class Address
 	public boolean isFromDimension()
 	{
 		return this.dimension.isPresent();
+	}
+	
+	public Optional<String> getDimension()
+	{
+		return this.dimension;
 	}
 	
 	public Address.Type getType()

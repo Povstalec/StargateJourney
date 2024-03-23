@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -189,6 +191,34 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		}
 	}
 	
+	public static void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, Direction direction, Orientation orientation)
+	{
+		if(direction == null)
+		{
+			StargateJourney.LOGGER.error("Failed to destroy Stargate because direction is null");
+			return;
+		}
+		
+		if(orientation == null)
+		{
+			StargateJourney.LOGGER.error("Failed to destroy Stargate because orientation is null");
+			return;
+		}
+		
+		for(StargatePart part : parts)
+		{
+			BlockPos ringPos = part.getRingPos(pos, direction, orientation);
+			BlockState state = level.getBlockState(ringPos);
+			
+			if(state.getBlock() instanceof AbstractStargateBlock)
+			{
+				boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
+				
+				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
+			}
+		}
+	}
+	
 	@Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
 	{
@@ -202,7 +232,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     			stargate.removeStargateFromNetwork();
     		}
     		
-    		for(StargatePart part : getParts())
+    		/*for(StargatePart part : getParts())
     		{
     			if(!part.equals(StargatePart.BASE))
     			{
@@ -216,7 +246,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
         			}
     			}
-    		}
+    		}*/
+    		destroyStargate(level, pos, getParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+    		
             super.onRemove(oldState, level, pos, newState, isMoving);
         }
     }

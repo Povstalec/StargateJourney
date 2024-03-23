@@ -64,7 +64,7 @@ public class CartoucheBlockItem extends BlockItem
 	{
 		if(baseEntity instanceof CartoucheEntity cartouche)
 		{
-			if(info.contains(CartoucheEntity.DIMENSION))
+			if(info.contains(CartoucheEntity.DIMENSION) && !info.contains(CartoucheEntity.ADDRESS))
 			{
 				cartouche.setDimension(info.getString(CartoucheEntity.DIMENSION));
 				cartouche.setAddressFromDimension();

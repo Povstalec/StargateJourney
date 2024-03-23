@@ -169,8 +169,9 @@
 	"filled_map.sgjourney.astria_porta": "Map to the Ring of Gods",
 	"filled_map.sgjourney.chappa_ai": "Map to Chappa'ai",
 	
-	"itemGroup.stargate_blocks": "Stargate Blocks",
-	"itemGroup.stargate_items": "Stargate Items",
+	"itemGroup.stargate_blocks": "Stargate Journey - Blocks",
+	"itemGroup.stargate_stuff": "Stargate Journey - Stargate Stuff",
+	"itemGroup.stargate_items": "Stargate Journey - Items",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",
@@ -268,6 +269,7 @@
 	"info.sgjourney.point_of_origin": "Point of Origin",
 	"info.sgjourney.symbol": "Symbol",
 	"info.sgjourney.symbols": "Symbols",
+	"info.sgjourney.symbol_set": "Symbol Set",
 	"info.sgjourney.symbol_number": "Symbol Number",
 	"info.sgjourney.open_time": "Open Time",
 	"info.sgjourney.times_opened": "Times Opened",
@@ -277,6 +279,7 @@
 	"info.sgjourney.address": "Address",
 	"info.sgjourney.encoded_address": "Encoded Address",
 	"info.sgjourney.9_chevron_address": "9-Chevron Address",
+	"info.sgjourney.dimension": "Dimension",
 	"info.sgjourney.recent_feedback": "Recent Feedback",
 	
 	"tooltip.sgjourney.symbol": "Symbol",

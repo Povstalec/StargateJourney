@@ -168,8 +168,9 @@
 	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu boh\u016f",
 	"filled_map.sgjourney.chappa_ai": "Mapa k Chappa'ai",
 	
-	"itemGroup.stargate_blocks": "Hvězdná brána - Bloky",
-	"itemGroup.stargate_items": "Hvězdná brána - Předměty",
+	"itemGroup.stargate_blocks": "Stargate Journey - Bloky",
+	"itemGroup.stargate_stuff": "Stargate Journey - Brány a ovládání",
+	"itemGroup.stargate_items": "Stargate Journey - Předměty",
 
 	"screen.sgjourney.archeology_table": "Arheologický stůl",
 	"screen.sgjourney.basic_interface": "Základní rozhraní",
@@ -220,7 +221,7 @@
 	"solar_system.sgjourney.lantea": "Lantea",
 	"solar_system.sgjourney.proxima_centauri": "Proxima Centauri",
 	
-	"symbol_set.sgjourney.milky_way": "Symboly Mléčné dráh",
+	"symbol_set.sgjourney.milky_way": "Symboly Mléčné dráhy",
 	"symbol_set.sgjourney.kaliem": "Symboly Kaliemu",
 	"symbol_set.sgjourney.pegasus": "Symboly Pegasu",
 	"symbol_set.sgjourney.universal": "Univerzální symboly",
@@ -268,6 +269,7 @@
 	"info.sgjourney.point_of_origin": "Výchozí bod",
 	"info.sgjourney.symbol": "Symbol",
 	"info.sgjourney.symbols": "Symboly",
+	"info.sgjourney.symbol_set": "Soubor symbolů",
 	"info.sgjourney.symbol_number": "Číslo symbolu",
 	"info.sgjourney.open_time": "Doba otevření",
 	"info.sgjourney.times_opened": "Počet otevření",
@@ -277,6 +279,7 @@
 	"info.sgjourney.address": "Addresa",
 	"info.sgjourney.encoded_address": "Zadaná adresa",
 	"info.sgjourney.9_chevron_address": "9-chevronová adresa",
+	"info.sgjourney.dimension": "Dimenze",
 	"info.sgjourney.feedback": "Poslední zpětná vazba",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
