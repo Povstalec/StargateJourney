@@ -64,6 +64,7 @@ public class ForgeEvents
 		MinecraftServer server = event.getServer();
 		
 		StargateNetwork.get(server).updateNetwork(server);
+		StargateNetwork.get(server).addStargates(server);
 	}
 	
 	@SubscribeEvent

@@ -31,6 +31,8 @@ public class BlockEntityList extends SavedData
 	public static final String TRANSPORT_RINGS = "TransportRings";
 	public static final String TRANSPORTERS = "Transporters"; //TODO Replace TransportRings with this
 	
+	private MinecraftServer server;
+	
 	protected HashMap<Address, Stargate> stargateMap = new HashMap<>();
 	protected HashMap<String, Transporter> transporterMap = new HashMap<>();
 	
@@ -189,7 +191,7 @@ public class BlockEntityList extends SavedData
 		{
 			StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
 			Address address = new Address(stargate);
-			this.stargateMap.put(address, Stargate.deserialize(stargates.getCompound(stargate), address));
+			this.stargateMap.put(address, Stargate.deserialize(server, stargates.getCompound(stargate), address));
 		});
 	}
 	
@@ -215,15 +217,22 @@ public class BlockEntityList extends SavedData
 	}
 	
 	//================================================================================================
-
-	public static BlockEntityList create()
+	
+	public BlockEntityList(MinecraftServer server)
 	{
-		return new BlockEntityList();
+		this.server = server;
+	}
+
+	public static BlockEntityList create(MinecraftServer server)
+	{
+		return new BlockEntityList(server);
 	}
 	
-	public static BlockEntityList load(CompoundTag tag)
+	public static BlockEntityList load(MinecraftServer server, CompoundTag tag)
 	{
-		BlockEntityList data = create();
+		BlockEntityList data = create(server);
+
+		data.server = server;
 		
 		data.deserialize(tag);
 		
@@ -251,6 +260,6 @@ public class BlockEntityList extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent(BlockEntityList::load, BlockEntityList::create, INCORRECT_FILE_NAME);
+        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), INCORRECT_FILE_NAME);
     }
 }

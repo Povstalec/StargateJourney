@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class PointOfOrigin
 {
@@ -95,6 +96,11 @@ public class PointOfOrigin
 		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
 		return registry.get(new ResourceLocation(split[0], split[1]));
+	}
+	
+	public static ResourceKey<PointOfOrigin> defaultPointOfOrigin()
+	{
+		return Conversion.stringToPointOfOrigin(StargateJourney.MODID + ":universal");
 	}
 	
 }

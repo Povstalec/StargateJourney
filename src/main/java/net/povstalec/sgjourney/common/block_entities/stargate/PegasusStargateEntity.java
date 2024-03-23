@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -46,16 +45,10 @@ public class PegasusStargateEntity extends AbstractStargateEntity
         	return;
 
         if(!isPointOfOriginValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
         	setPointOfOrigin(this.getLevel());
-        }
 
         if(!areSymbolsValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
         	setSymbols(this.getLevel());
-        }
     }
 	
 	@Override

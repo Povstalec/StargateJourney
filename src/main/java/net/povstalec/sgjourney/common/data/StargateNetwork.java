@@ -3,8 +3,8 @@ package net.povstalec.sgjourney.common.data;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -24,7 +24,6 @@ import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Connection;
-import net.povstalec.sgjourney.common.stargate.SolarSystem;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class StargateNetwork extends SavedData
@@ -49,17 +48,18 @@ public class StargateNetwork extends SavedData
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
 	//Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int updateVersion = 7;//TODO change to 8
+	private static final int updateVersion = 8;
 	
 	private MinecraftServer server;
+	
 	private Map<String, Connection> connections = new HashMap<String, Connection>();
 	private CompoundTag stargateNetwork = new CompoundTag();
 	private int version = updateVersion;
 
 	private HashMap<Address, Stargate> stargates = new HashMap<Address, Stargate>();
 
-	private HashMap<ResourceKey<Level>, Address> dimensions = new HashMap<ResourceKey<Level>, Address>();
-	private HashMap<Address, SolarSystem.Serializable> solarSystems = new HashMap<Address, SolarSystem.Serializable>();
+	//private HashMap<ResourceKey<Level>, Address> dimensions = new HashMap<ResourceKey<Level>, Address>();
+	//private HashMap<Address, SolarSystem.Serializable> solarSystems = new HashMap<Address, SolarSystem.Serializable>();
 	
 	//============================================================================================
 	//******************************************Versions******************************************
@@ -140,6 +140,33 @@ public class StargateNetwork extends SavedData
 	//*****************************************Stargates******************************************
 	//============================================================================================
 	
+	public void addStargates(MinecraftServer server)
+	{
+		HashMap<Address, Stargate> stargates = BlockEntityList.get(server).getStargates();
+		
+		stargates.entrySet().stream().forEach((stargateInfo) ->
+		{
+			System.out.println(stargateInfo.getKey().toString());
+			Stargate mapStargate = stargateInfo.getValue();
+			
+			ResourceKey<Level> dimension = mapStargate.getDimension();
+			
+			BlockPos pos = mapStargate.getBlockPos();
+			
+			ServerLevel level = server.getLevel(dimension);
+			
+			if(level != null)
+			{
+				BlockEntity blockentity = server.getLevel(dimension).getBlockEntity(pos);
+				
+				if(blockentity instanceof AbstractStargateEntity stargate)
+				{
+					addStargate(server, new Stargate(stargate));
+				}
+			}
+		});
+	}
+	
 	private void resetStargates(MinecraftServer server, boolean updateInterfaces)
 	{
 		HashMap<Address, Stargate> stargates = BlockEntityList.get(server).getStargates();
@@ -166,11 +193,8 @@ public class StargateNetwork extends SavedData
 					
 					stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
 					
-					if(getStargate(stargate.get9ChevronAddress()).isEmpty())
-					{
-						addStargate(server, new Stargate(stargate));
-						stargate.updateStargate(updateInterfaces);
-					}
+					addStargate(server, new Stargate(stargate));
+					stargate.updateStargate(updateInterfaces);//TODO Probably should look at this
 				}
 				else
 				{
@@ -183,9 +207,11 @@ public class StargateNetwork extends SavedData
 	
 	public void addStargate(MinecraftServer server, Stargate stargate)
 	{
-		//TODO Add other info, like Generation
-		this.stargates.put(stargate.getAddress(), stargate);
-		System.out.println("Size: " + stargates.size());
+		if(!this.stargates.containsKey(stargate.getAddress()))
+		{
+			this.stargates.put(stargate.getAddress(), stargate);
+			StargateJourney.LOGGER.info("Added Stargate " + stargate.getAddress().toString() + " to Stargate Network");
+		}
 		
 		/*CompoundTag stargates = getStargates();
 		CompoundTag stargateTag = new CompoundTag();
@@ -207,12 +233,12 @@ public class StargateNetwork extends SavedData
 			solarSystems.put(systemID, solarSystem);
 			this.stargateNetwork.put(SOLAR_SYSTEMS, solarSystems);
 		}*/
+		Universe.get(server).addStargateToDimension(stargate.getDimension(), stargate);
 		
 		//Adds the Stargate reference to the list of Stargates
 		//stargates.put(stargate.getID(), stargateTag);
 		//this.stargateNetwork.put(STARGATES, stargates);
 		this.setDirty();
-		StargateJourney.LOGGER.info("Added Stargate " + stargate.getAddress().toString());
 	}
 	
 	public void removeStargate(Level level, Address address)
@@ -238,12 +264,13 @@ public class StargateNetwork extends SavedData
 	
 	public void updateStargate(ServerLevel level, AbstractStargateEntity stargate)
 	{
-		String stargateID = stargate.getID();
+		//TODO
+		/*String stargateID = stargate.getID();
 		int timesOpened = stargate.getTimesOpened();
 		boolean hasDHD = stargate.hasDHD();
 		
 		CompoundTag solarSystems = getSolarSystems();
-		String systemID = Universe.get(level).getSolarSystemFromDimension(level.dimension().location().toString());
+		String systemID = Universe.get(level).getSolarSystemFromDimension(level.dimension());
 		CompoundTag solarSystem = getSolarSystem(systemID);
 		
 		if(systemID.equals(EMPTY) || !solarSystem.contains(stargateID))
@@ -257,10 +284,11 @@ public class StargateNetwork extends SavedData
 		solarSystem.put(stargateID, stargateTag);
 		solarSystems.put(systemID, solarSystem);
 		this.stargateNetwork.put(SOLAR_SYSTEMS, solarSystems);
-		this.setDirty();
+		this.setDirty();*/
 	}
 	
-	public CompoundTag getSolarSystems()
+	//TODO Why even use these?
+	/*public CompoundTag getSolarSystems()
 	{
 		return this.stargateNetwork.copy().getCompound(SOLAR_SYSTEMS);
 	}
@@ -268,12 +296,21 @@ public class StargateNetwork extends SavedData
 	public CompoundTag getSolarSystem(String systemID)
 	{
 		return getSolarSystems().getCompound(systemID);
-	}
+	}*/
 	
 	@SuppressWarnings("unchecked")
 	public HashMap<Address, Stargate> getStargates()
 	{
 		return (HashMap<Address, Stargate>) this.stargates.clone();
+	}
+	
+	public void printStargates()
+	{
+		System.out.println("[Stargates]");
+		this.stargates.entrySet().stream().forEach(stargateEntry ->
+		{
+			System.out.println("- " + stargateEntry.getKey().toString());
+		});
 	}
 	
 	public Optional<Stargate> getStargate(Address address)
@@ -295,8 +332,10 @@ public class StargateNetwork extends SavedData
 	 * 2. Stargate Generation
 	 * 3. The amount of times the Stargate was used
 	 */
-	public String getPreferredStargate(CompoundTag solarSystem)
+	/*public Optional<Stargate> getPreferredStargate(SolarSystem.Serializable solarSystem)
 	{
+		List<Stargate> stargates = solarSystem.getStargates();
+		
 		if(solarSystem.isEmpty())
 			return EMPTY;
 		
@@ -346,7 +385,7 @@ public class StargateNetwork extends SavedData
 
 		//System.out.println("Chose: " + preferredStargate + " Has DHD: " + bestDHD + " Gen: " + bestGen + " Times Opened: " + bestTimesOpened);
 		return preferredStargate;
-	}
+	}*/
 	
 	//============================================================================================
 	//****************************************Connections*****************************************
@@ -510,13 +549,14 @@ public class StargateNetwork extends SavedData
 	{
 		tag.getAllKeys().forEach(stargateID ->
 		{
-			this.stargates.put(new Address(stargateID), Stargate.deserialize(tag.getCompound(stargateID), new Address(stargateID)));
+			this.stargates.put(new Address(stargateID), Stargate.deserialize(server, tag.getCompound(stargateID), new Address(stargateID)));
 		});
 	}
 	
 	//============================================================================================
 	//**************************************Stargate Network**************************************
 	//============================================================================================
+	
 	public StargateNetwork(MinecraftServer server)
 	{
 		this.server = server;

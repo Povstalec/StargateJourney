@@ -1,13 +1,12 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.Optional;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -21,15 +20,16 @@ public class Stargate
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
 
-	//private Optional<Boolean> hasDHD;
-	//private Optional<Integer> generation;
+	private boolean hasDHD;
+	private int generation;
+	private int timesOpened;
 	
-	public Stargate(Address address, ResourceKey<Level> dimension, BlockPos blockPos)
+	/*public Stargate(Address address, ResourceKey<Level> dimension, BlockPos blockPos)
 	{
 		this.address = address;
 		this.dimension = dimension;
 		this.blockPos = blockPos;
-	}
+	}*/
 	
 	public Stargate(AbstractStargateEntity stargate)
 	{
@@ -37,8 +37,9 @@ public class Stargate
 		this.dimension = stargate.getLevel().dimension();
 		this.blockPos = stargate.getBlockPos();
 
-		//this.hasDHD = Optional.of(stargate.hasDHD());
-		//this.generation = Optional.of(stargate.getGeneration().getGen());
+		this.hasDHD = stargate.hasDHD();
+		this.generation = stargate.getGeneration().getGen();
+		this.timesOpened = stargate.getTimesOpened();
 	}
 	
 	public Address getAddress()
@@ -56,6 +57,23 @@ public class Stargate
 		return blockPos;
 	}
 	
+	public boolean hasDHD()
+	{
+		return hasDHD;
+	}
+	
+	public int getGeneration()
+	{
+		return generation;
+	}
+	
+	public int getTimesOpened()
+	{
+		return timesOpened;
+	}
+	
+	
+	
 	public CompoundTag serialize()
 	{
 		CompoundTag stargateTag = new CompoundTag();
@@ -68,13 +86,13 @@ public class Stargate
 		return stargateTag;
 	}
 	
-	public static Stargate deserialize(CompoundTag tag, Address address)
+	public static Stargate deserialize(MinecraftServer server, CompoundTag tag, Address address)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		if(dimension != null && blockPos != null)
-			return new Stargate(address, dimension, blockPos);
+		if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
+			return new Stargate(stargate);
 		
 		return null;
 	}

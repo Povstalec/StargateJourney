@@ -85,7 +85,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension().location().toString());
+		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension()).location().toString();
 	}
 	
 	public String getPointOfOrigin()
@@ -98,7 +98,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		symbols = Universe.get(level).getSymbols(level.dimension().location().toString());
+		symbols = Universe.get(level).getSymbols(level.dimension()).location().toString();
 	}
 	
 	public String getSymbols()

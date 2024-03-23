@@ -7,7 +7,6 @@ import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -48,12 +47,12 @@ public class Dialing
 	
 	private static Stargate.Feedback get7ChevronStargate(Level level, AbstractStargateEntity dialingStargate, Address address, boolean doKawoosh)
 	{
-		String addressString = address.toString();
+		//String addressString = address.toString();
 		
 		// List of Galaxies the dialing Dimension is located in
-		ListTag galaxies = Universe.get(level).getGalaxiesFromDimension(level.dimension().location().toString());
+		Optional<SolarSystem.Serializable> solarSystem = Universe.get(level).getSolarSystemFromAddress(level.dimension(), address);
 		
-		if(galaxies.isEmpty())
+		/*if(galaxies.isEmpty())
 			return dialingStargate.resetStargate(Stargate.Feedback.NO_GALAXY);
 		
 		String solarSystem = EMPTY;
@@ -66,45 +65,47 @@ public class Dialing
 			
 			if(!solarSystem.equals(EMPTY))
 				break;
-		}
+		}*/
 		
-		if(solarSystem.equals(EMPTY))
+		if(solarSystem.isEmpty())
 			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		
-		return getStargate(level, dialingStargate, solarSystem, Address.Type.ADDRESS_7_CHEVRON, doKawoosh);
+		return getStargate(level, dialingStargate, solarSystem.get(), Address.Type.ADDRESS_7_CHEVRON, doKawoosh);
 	}
 	
-	private static Stargate.Feedback get8ChevronStargate(Level level, AbstractStargateEntity dialingStargate, Address address, boolean doKawoosh)
+	private static Stargate.Feedback get8ChevronStargate(Level level, AbstractStargateEntity dialingStargate, Address extragalacticAddress, boolean doKawoosh)
 	{
-		String addressString = address.toString();
-		String solarSystem = Universe.get(level).getSolarSystemFromExtragalacticAddress(addressString);
+		Optional<SolarSystem.Serializable> solarSystem = Universe.get(level).getSolarSystemFromExtragalacticAddress(extragalacticAddress);
 		
-		if(solarSystem.equals(EMPTY))
+		if(solarSystem.isEmpty())
 			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		
-		return getStargate(level, dialingStargate, solarSystem, Address.Type.ADDRESS_8_CHEVRON, doKawoosh);
+		return getStargate(level, dialingStargate, solarSystem.get(), Address.Type.ADDRESS_8_CHEVRON, doKawoosh);
 	}
 	
-	private static Stargate.Feedback getStargate(Level level, AbstractStargateEntity dialingStargate, String systemID, Address.Type addressType, boolean doKawoosh)
+	private static Stargate.Feedback getStargate(Level level, AbstractStargateEntity dialingStargate, SolarSystem.Serializable dialedSystem, Address.Type addressType, boolean doKawoosh)
 	{
-		String currentSystem = Universe.get(level).getSolarSystemFromDimension(level.dimension().location().toString());
+		Optional<SolarSystem.Serializable> currentSystem = Universe.get(level).getSolarSystemFromDimension(level.dimension());
 		
-		if(systemID.equals(currentSystem))
+		if(currentSystem.isPresent() && dialedSystem.equals(currentSystem.get()))
 			return dialingStargate.resetStargate(Stargate.Feedback.SAME_SYSTEM_DIAL);
 		
 		MinecraftServer server = level.getServer();
 		
-		CompoundTag solarSystem = StargateNetwork.get(server).getSolarSystem(systemID);
+		//CompoundTag solarSystem = StargateNetwork.get(server).getSolarSystem(systemID);
 		
-		if(solarSystem.isEmpty())
+		if(dialedSystem.getStargates().isEmpty())
 		{
-			ListTag dimensionList = Universe.get(server).getDimensionsFromSolarSystem(systemID);
+			List<ResourceKey<Level>> dimensionList = dialedSystem.getDimensions();
+			
+			
+			//ListTag dimensionList = Universe.get(server).getDimensionsFromSolarSystem(systemID);
 			
 			// Cycles through the list of Dimensions in the Solar System
 			int dimensions = 0;
 			for(int i = 0; i < dimensionList.size(); i++)
 			{
-				ResourceKey<Level> levelKey = Conversion.stringToDimension(dimensionList.getString(i));
+				ResourceKey<Level> levelKey = dimensionList.get(i);
 				
 				if(level.getServer().levelKeys().contains(levelKey))
 				{
@@ -117,14 +118,14 @@ public class Dialing
 			if(dimensions == 0)
 				return dialingStargate.resetStargate(Stargate.Feedback.NO_DIMENSIONS);
 			
-			solarSystem = StargateNetwork.get(server).getSolarSystem(systemID);
-			if(solarSystem.isEmpty())
-				return dialingStargate.resetStargate(Stargate.Feedback.NO_STARGATES);
+			//solarSystem = StargateNetwork.get(server).getSolarSystem(systemID);
+			//if(dialedSystem.getStargates().isEmpty())
+			//	return dialingStargate.resetStargate(Stargate.Feedback.NO_STARGATES);
 			
-			solarSystem = StargateNetwork.get(server).getSolarSystem(systemID);
+			//solarSystem = StargateNetwork.get(server).getSolarSystem(systemID);
 		}
 		
-		return getPreferredStargate(server, dialingStargate, solarSystem, addressType, doKawoosh);
+		return getPreferredStargate(server, dialingStargate, dialedSystem, addressType, doKawoosh);
 	}
 	
 	private static void findStargates(Level level)
@@ -173,7 +174,7 @@ public class Dialing
 		Optional<Stargate> stargate = StargateNetwork.get(server).getStargate(address);
 		
 		if(stargate.isEmpty())
-			return dialingStargate.resetStargate(Stargate.Feedback.INVALID_ADDRESS);
+			return dialingStargate.resetStargate(Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 		
 		BlockPos pos = stargate.get().getBlockPos();
 		ResourceKey<Level> dimension = stargate.get().getDimension();
@@ -197,9 +198,32 @@ public class Dialing
 		return getStargateFromAddress(level.getServer(), dialingStargate, address, doKawoosh);
 	}
 	
-	private static Stargate.Feedback getPreferredStargate(MinecraftServer server, AbstractStargateEntity dialingStargate, CompoundTag solarSystem, Address.Type addressType, boolean doKawoosh)
+	private static Stargate.Feedback getPreferredStargate(MinecraftServer server, AbstractStargateEntity dialingStargate, SolarSystem.Serializable solarSystem, Address.Type addressType, boolean doKawoosh)
 	{
-		while(!solarSystem.isEmpty())
+		List<Stargate> stargates = solarSystem.getStargates();
+		
+		if(stargates.isEmpty())
+			return dialingStargate.resetStargate(Stargate.Feedback.NO_STARGATES);
+		else
+		{
+			for(int i = 0; i < stargates.size(); i++)
+			{
+				boolean isLastStargate = i == stargates.size() - 1;
+				Stargate stargate = stargates.get(i);
+				
+				if(server.getLevel(stargate.getDimension()).getBlockEntity(stargate.getBlockPos()) instanceof AbstractStargateEntity targetStargate)
+				{
+					if(!targetStargate.isObstructed() && !targetStargate.isRestricted(dialingStargate))
+						return dialStargate(dialingStargate, targetStargate, addressType, doKawoosh);
+					else if(targetStargate.isObstructed() && isLastStargate)
+						return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED);
+					else if(targetStargate.isRestricted(dialingStargate) && isLastStargate)
+						return dialingStargate.resetStargate(Stargate.Feedback.TARGET_RESTRICTED);
+				}
+			}
+		}
+		
+		/*while(!solarSystem.isEmpty())
 		{
 			String preferredStargate = StargateNetwork.get(server).getPreferredStargate(solarSystem);
 			
@@ -224,7 +248,7 @@ public class Dialing
 				}
 			}
 			solarSystem.remove(preferredStargate);
-		}
+		}*/
 		
 		return dialingStargate.resetStargate(Stargate.Feedback.UNKNOWN_ERROR);
 	}

@@ -14,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
@@ -69,16 +68,10 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
         	return;
 
         if(!isPointOfOriginValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
         	setPointOfOrigin(this.getLevel());
-        }
 
         if(!areSymbolsValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
         	setSymbols(this.getLevel());
-        }
     }
 
 	@Override

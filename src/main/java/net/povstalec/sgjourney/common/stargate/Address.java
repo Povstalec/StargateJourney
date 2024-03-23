@@ -1,20 +1,19 @@
 package net.povstalec.sgjourney.common.stargate;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.povstalec.sgjourney.StargateJourney;
+import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
@@ -24,9 +23,9 @@ public final class Address
 	public static final int MIN_ADDRESS_LENGTH = 6;
 	public static final int MAX_ADDRESS_LENGTH = 9;
 	
-	protected int[] addressArray = new int[0];
-	protected boolean isBuffer = false;
-	protected Optional<String> dimension = Optional.empty();
+	private int[] addressArray = new int[0];
+	private boolean isBuffer = false;
+	private Optional<String> dimension = Optional.empty();//TODO Maybe replace this with ResourceKey<Level> ?
 	
 	public Address(boolean isBuffer)
 	{
@@ -132,19 +131,21 @@ public final class Address
 		return this;
 	}
 	
-	//TODO Replace String with ResourceKey<Level> eventually
-	public Address fromDimension(ServerLevel level, String dimension)
+	public Address fromDimension(ServerLevel level, ResourceKey<Level> dimension)
 	{
-		String galaxy = StargateJourney.EMPTY;
-		Set<String> galaxies = Universe.get(level).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys();
+		Optional<Galaxy.Serializable> galaxy = Universe.get(level).getGalaxyFromDimension(dimension);
 		
-		Iterator<String> iterator = galaxies.iterator();
-		if(iterator.hasNext())
-			galaxy = iterator.next();
-		
-		fromString(Universe.get(level).getAddressInGalaxyFromDimension(galaxy, dimension));
-		
-		this.dimension = Optional.of(dimension);
+		if(galaxy.isPresent())
+		{
+			Optional<Address> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
+			
+			if(address.isPresent())
+			{
+				//TODO Would be nice to use copy here
+				fromArray(address.get().toArray());
+				this.dimension = Optional.of(dimension.toString());
+			}
+		}
 		
 		return this;
 	}

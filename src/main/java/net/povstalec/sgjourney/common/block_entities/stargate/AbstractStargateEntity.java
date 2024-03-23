@@ -15,6 +15,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -32,7 +33,6 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
@@ -56,6 +56,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Connection;
 import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Dialing;
+import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Symbols;
@@ -701,19 +702,29 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		setStargateState(ConnectionState.IDLE, 0, updateInterfaces);
 	}
 	
-	public String getConnectionAddress(int addressLength)
+	public Address getConnectionAddress(int addressLength)
 	{
-		String dimension = this.level.dimension().location().toString();
-		switch(addressLength)
+		ResourceKey<Level> dimension = this.level.dimension();
+		
+		if(addressLength == 6)
 		{
-		case 6:
-			String galaxy = Universe.get(this.level).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys().iterator().next();
-			return Universe.get(level).getAddressInGalaxyFromDimension(galaxy, dimension);
-		case 7:
-			return Universe.get(level).getExtragalacticAddressFromDimension(dimension);
-		default:
-			return this.getID();
+			Optional<Galaxy.Serializable> galaxy = Universe.get(this.level).getGalaxyFromDimension(dimension);
+			if(galaxy.isPresent())
+			{
+				Optional<Address> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
+				if(address.isPresent())
+					return address.get();
+			}
 		}
+		else if(addressLength == 7)
+		{
+			Optional<Address> address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
+			if(address.isPresent())
+				return address.get();
+		}
+		
+		return this.get9ChevronAddress();
+		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
 	}
 	
 	//============================================================================================
@@ -740,7 +751,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	 */
 	public void setPointOfOrigin(Level level)
 	{
-		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension().location().toString());
+		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension()).location().toString();
 		this.setChanged();
 	}
 	
@@ -757,7 +768,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public void setSymbols(Level level)
 	{
-		symbols = Universe.get(level).getSymbols(level.dimension().location().toString());
+		symbols = Universe.get(level).getSymbols(level.dimension()).location().toString();
 		this.setChanged();
 	}
 	

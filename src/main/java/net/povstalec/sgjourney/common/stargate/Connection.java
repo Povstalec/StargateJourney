@@ -2,11 +2,12 @@ package net.povstalec.sgjourney.common.stargate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -113,25 +114,32 @@ public class Connection
 	
 	public static final Connection.Type getType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
 	{
-		String dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension().location().toString());
-		String dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
+		Optional<SolarSystem.Serializable> dialingSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension());
+		Optional<SolarSystem.Serializable> dialedSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension());
 		
-		if(dialingSystem.equals(dialedSystem))
-			return Connection.Type.SYSTEM_WIDE;
-		
-		ListTag dialingGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialingSystem);
-		ListTag dialedGalaxyCandidates = Universe.get(server).getGalaxiesFromSolarSystem(dialedSystem);
-		
-		if(!dialingGalaxyCandidates.isEmpty())
+		if(dialingSystemOptional.isPresent() && dialedSystemOptional.isPresent())
 		{
-			for(int i = 0; i < dialingGalaxyCandidates.size(); i++)
+			SolarSystem.Serializable dialingSystem = dialingSystemOptional.get();
+			SolarSystem.Serializable dialedSystem = dialedSystemOptional.get();
+			
+			if(dialingSystem.equals(dialedSystem))
+				return Connection.Type.SYSTEM_WIDE;
+			
+			List<Entry<Galaxy.Serializable, Address>> dialingGalaxies = dialingSystem.getGalacticAddresses().entrySet().stream().toList();
+			List<Entry<Galaxy.Serializable, Address>> dialedGalaxies = dialedSystem.getGalacticAddresses().entrySet().stream().toList();
+			
+			if(!dialingGalaxies.isEmpty() && !dialedGalaxies.isEmpty())
 			{
-				for(int j = 0; j < dialedGalaxyCandidates.size(); j++)
+				for(int i = 0; i < dialingGalaxies.size(); i++)
 				{
-					String dialingGalaxy = dialingGalaxyCandidates.getCompound(i).getAllKeys().iterator().next();
-					String dialedGalaxy = dialedGalaxyCandidates.getCompound(j).getAllKeys().iterator().next();
-					if(dialingGalaxy.equals(dialedGalaxy))
-						return Connection.Type.INTERSTELLAR;
+					for(int j = 0; j < dialedGalaxies.size(); j++)
+					{
+						Galaxy.Serializable dialingGalaxy = dialingGalaxies.get(i).getKey();
+						Galaxy.Serializable dialedGalaxy = dialedGalaxies.get(j).getKey();
+						
+						if(dialingGalaxy.equals(dialedGalaxy))
+							return Connection.Type.INTERSTELLAR;
+					}
 				}
 			}
 		}
@@ -239,7 +247,7 @@ public class Connection
 			}
 			
 			int addressLength = this.dialingStargate.getAddress().getLength();
-			Address dialingAddress = new Address().fromString(this.dialingStargate.getConnectionAddress(addressLength));
+			Address dialingAddress = this.dialingStargate.getConnectionAddress(addressLength);
 			
 			this.dialedStargate.setEngagedChevrons(AbstractStargateEntity.getChevronConfiguration(addressLength));
 			

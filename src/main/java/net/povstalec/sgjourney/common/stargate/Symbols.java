@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Symbols
 {
@@ -102,6 +103,11 @@ public class Symbols
 		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
 		return registry.get(new ResourceLocation(split[0], split[1]));
+	}
+	
+	public static ResourceKey<Symbols> defaultSymbols()
+	{
+		return Conversion.stringToSymbols(StargateJourney.MODID + ":universal");
 	}
 	
 }
