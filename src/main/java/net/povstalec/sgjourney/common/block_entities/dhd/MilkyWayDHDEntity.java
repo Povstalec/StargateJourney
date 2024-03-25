@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import javax.annotation.Nonnull;
 
+import net.povstalec.sgjourney.common.items.crystals.CFDCrystalItem;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -126,12 +127,16 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 	
 	protected boolean isValidCrystal(ItemStack stack)
 	{
+		if(stack.getItem() instanceof CFDCrystalItem){
+			return true;
+		}
 		return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isRegular();
 	}
 	
 	public void recalculateCrystals()
 	{
 		// Check if the DHD has a Control Crystal
+		this.enableCFD = false;
 		this.enableAdvancedProtocols = !itemHandler.getStackInSlot(0).isEmpty();
 		this.memoryCrystals = new int[0];
 		this.controlCrystals = new int[0];
@@ -156,6 +161,9 @@ public class MilkyWayDHDEntity extends AbstractDHDEntity
 				this.transferCrystals = ArrayHelper.growIntArray(this.transferCrystals, i);
 			else if(item == ItemInit.COMMUNICATION_CRYSTAL.get())
 				this.communicationCrystals = ArrayHelper.growIntArray(this.communicationCrystals, i);
+			else if(item == ItemInit.CFD_CRYSTAL.get()){
+				this.enableCFD = true;
+			}
 		}
 		
 		// Set up Energy Crystals

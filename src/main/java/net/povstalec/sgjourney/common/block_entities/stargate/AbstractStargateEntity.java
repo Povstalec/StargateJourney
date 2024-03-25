@@ -68,6 +68,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	public static final String DHD_POS = "DHDPos";
 	public static final String ENERGY = "Energy";
 	// Connections
+	public static final String HAS_CFD = "hasCFD";
+	public static final String REROUTE_TO = "cfd_reroute_target";
 	public static final String CONNECTION_ID = "ConnectionID";
 	public static final String NETWORK = "Network";
 	public static final String RESTRICT_NETWORK = "RestrictNetwork";
@@ -106,6 +108,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 	
 	// Dialing and memory
 	protected Address address = new Address();
+	protected Address reroute_to = new Address();
+	protected boolean hasCFD = false;
 	protected String connectionID = EMPTY;
 	protected Wormhole wormhole = new Wormhole();
 	
@@ -166,6 +170,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
 		connectionID = tag.getString(CONNECTION_ID);
+		hasCFD = tag.getBoolean(HAS_CFD);
+		reroute_to.fromArray(tag.getIntArray(REROUTE_TO));
 
 		displayID = tag.getBoolean(DISPLAY_ID);
 		upgraded = tag.getBoolean(UPGRADED);
@@ -188,6 +194,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
 		connectionID = tag.getString(CONNECTION_ID);
+		hasCFD = tag.getBoolean(HAS_CFD);
+		reroute_to.fromArray(tag.getIntArray(REROUTE_TO));
 		
     	setID(tag.getString(ID));
     	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
@@ -216,6 +224,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
 		tag.putString(CONNECTION_ID, connectionID);
+		tag.putBoolean(HAS_CFD, hasCFD);
+		tag.putIntArray(REROUTE_TO, reroute_to.toArray());
 		
 		tag.putBoolean(DISPLAY_ID, displayID);
 		tag.putBoolean(UPGRADED, upgraded);
@@ -242,6 +252,8 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
 		tag.putString(CONNECTION_ID, connectionID);
+		tag.putBoolean(HAS_CFD, hasCFD);
+		tag.putIntArray(REROUTE_TO, reroute_to.toArray());
 		
 		tag.putString(ID, getID());
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
@@ -890,7 +902,23 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		if(hasDHD() && feedback.isError())
 			this.dhd.get().sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), 5);
 	}
-	
+
+	public boolean getCFD(){
+		return this.hasCFD;
+	}
+
+	public Address getCFDTarget(){
+		return this.reroute_to;
+	}
+
+	public void setCFD(boolean hasCFD){
+		this.hasCFD = hasCFD;
+	}
+
+	public void setCFDTarget(Address target){
+		this.reroute_to = target;
+	}
+
 	public int getOpenTime()
 	{
 		if(this.level.isClientSide())
@@ -1348,7 +1376,15 @@ public abstract class AbstractStargateEntity extends SGJourneyBlockEntity
 		
 		if(level.isClientSide())
 			return;
-		
+
+		if(level.getGameTime() % 20 == 0) {
+			if (stargate.getDHDPos().isPresent()) {
+				if(level.getBlockEntity(stargate.getDHDPos().get()) instanceof AbstractDHDEntity dhd) {
+					stargate.setCFD(dhd.getCFDState());
+				}
+			}
+		}
+
 		stargate.updateClient();
     }
 }

@@ -1,8 +1,6 @@
 package net.povstalec.sgjourney.common.data;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
@@ -367,7 +365,43 @@ public class StargateNetwork extends SavedData
 			return dialingStargate.resetStargate(Stargate.Feedback.ALREADY_CONNECTED, true);
 		else if(dialedStargate.isObstructed())
 			return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED, true);
-		
+
+		if(dialedStargate.getCFD()) {
+			String solarSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension().location().toString());
+			Set<String> set = this.getSolarSystem(solarSystem).getAllKeys();
+			String reroutedStargateID = dialedStargate.getCFDTarget().toString();
+			if (reroutedStargateID.equals(new Address().toString())) {
+				for (String sg : set) {
+					if (!sg.equals(dialingStargate.getID()) && !sg.equals(dialedStargate.getID())) {
+						CompoundTag stargateInfo = this.getSolarSystem(solarSystem).getCompound(sg);
+
+						int[] coordinates = stargateInfo.getIntArray("Coordinates");
+						BlockPos pos = Conversion.intArrayToBlockPos(coordinates);
+						ResourceKey<Level> dimension = Conversion.stringToDimension(stargateInfo.getString("Dimension"));
+						ServerLevel targetLevel = server.getLevel(dimension);
+
+						if (targetLevel.getBlockEntity(pos) instanceof AbstractStargateEntity targetStargate) {
+							if (!targetStargate.getCFD()) {
+								reroutedStargateID = targetStargate.getID();
+								break;
+							}
+						}
+					}
+				}
+			}
+			CompoundTag stargateInfo = this.getSolarSystem(solarSystem).getCompound(reroutedStargateID);
+
+			int[] coordinates = stargateInfo.getIntArray("Coordinates");
+			BlockPos pos = Conversion.intArrayToBlockPos(coordinates);
+			ResourceKey<Level> dimension = Conversion.stringToDimension(stargateInfo.getString("Dimension"));
+			ServerLevel targetLevel = server.getLevel(dimension);
+
+			if (targetLevel.getBlockEntity(pos) instanceof AbstractStargateEntity targetStargate) {
+				if(!reroutedStargateID.equals(dialingStargate.getID()))
+					dialedStargate = targetStargate;
+
+			}
+		}
 		Connection connection = Connection.create(connectionType, dialingStargate, dialedStargate, doKawoosh);
 		if(connection != null)
 		{

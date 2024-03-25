@@ -364,8 +364,13 @@ public class Connection
 		
 		if(wormhole.findCandidates(initialStargate.getLevel(), stargatePos, initialStargate.getDirection()) && this.used)
 			this.timeSinceLastTraveler = 0;
-		if(wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
-			this.used = true;
+		if(targetStargate.getCFD()) {
+			if (wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel))
+				this.used = true;
+		} else {
+			if (wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
+				this.used = true;
+		}
 	}
 	
 	//============================================================================================
