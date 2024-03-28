@@ -280,7 +280,6 @@ public class SolarSystem
 				int i = 0;
 				for(; i < this.stargates.size(); i++)
 				{
-					//TODO Get this to order them correctly
 					Stargate existingStargate = this.stargates.get(i);
 					
 					if(DHD_PREFERENCE && Boolean.compare(addedStargate.hasDHD(), existingStargate.hasDHD()) > 0)

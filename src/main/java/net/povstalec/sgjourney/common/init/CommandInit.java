@@ -187,13 +187,13 @@ public class CommandInit
 					if(addressOptional.isEmpty())
 						context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension + " ").withStyle(ChatFormatting.GOLD)
 								.append(Component.translatable("message.sgjourney.command.get_address.located"))
-								.append(Component.literal(" " + galaxy).withStyle(ChatFormatting.LIGHT_PURPLE)));
+								.append(Component.literal(" ").append(galaxy.getTranslationName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
 					else
 					{
 						Address address = addressOptional.get();
 						context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address")
-								.append(Component.literal(" " + dimension + " ").withStyle(ChatFormatting.GOLD)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
-								.append(Component.literal(" " + galaxy + " ").withStyle(ChatFormatting.LIGHT_PURPLE))
+								.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GOLD)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
+								.append(Component.literal(" ").append(galaxy.getTranslationName()).append(Component.literal(" ")).withStyle(ChatFormatting.LIGHT_PURPLE))
 								.append(Component.translatable("message.sgjourney.command.get_address.is")));
 						
 						Style style = Style.EMPTY;
@@ -204,8 +204,8 @@ public class CommandInit
 				}
 			}
 		}
-		else //TODO Change this to translatable "message.sgjourney.command.get_address.no_galaxy"
-			context.getSource().getPlayer().sendSystemMessage(Component.literal("You are not located in any Galaxy").withStyle(ChatFormatting.DARK_RED));
+		else
+			context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
