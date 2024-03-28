@@ -27,6 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -413,7 +414,7 @@ public class CommandInit
 		Universe.get(level).printGalaxies();
 		
 		System.out.println("=============================");
-		StargateNetwork.get(level).printStargates();
+		BlockEntityList.get(level).printStargates();
 		//System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
 
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info onto the console"));

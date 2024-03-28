@@ -92,7 +92,7 @@ public class StargateBlockItem extends BlockItem
 				stargate.addStargateToNetwork();
 				
 				if(!level.isClientSide())
-					StargateNetwork.get(level).updateStargate((ServerLevel) level, stargate);
+					StargateNetwork.get(level).updateStargate((ServerLevel) level, stargate.getAddress());
 			}
 			
 			// Sets up symbols on the Milky Way Stargate

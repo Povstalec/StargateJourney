@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.Optional;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -7,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -23,13 +26,6 @@ public class Stargate
 	private boolean hasDHD;
 	private int generation;
 	private int timesOpened;
-	
-	/*public Stargate(Address address, ResourceKey<Level> dimension, BlockPos blockPos)
-	{
-		this.address = address;
-		this.dimension = dimension;
-		this.blockPos = blockPos;
-	}*/
 	
 	public Stargate(AbstractStargateEntity stargate)
 	{
@@ -70,6 +66,14 @@ public class Stargate
 	public int getTimesOpened()
 	{
 		return timesOpened;
+	}
+	
+	public Optional<AbstractStargateEntity> getStargateEntity(ServerLevel level)
+	{
+		if(level.getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
+			return Optional.of(stargate);
+		
+		return Optional.empty();
 	}
 	
 	

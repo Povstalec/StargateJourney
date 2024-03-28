@@ -49,7 +49,7 @@ public class BlockEntityList extends SavedData
 			return Optional.empty();
 		
 		if(this.stargateMap.containsKey(address))
-			return Optional.empty();
+			return Optional.of(stargateMap.get(address)); // Returns an existing Stargate
 		
 		if(stargate.getLevel() == null)
 			return Optional.empty();
@@ -99,6 +99,15 @@ public class BlockEntityList extends SavedData
 		this.transporterMap.remove(id);
 		StargateJourney.LOGGER.info("Removed " + id + " from BlockEntityList");
 		setDirty();
+	}
+	
+	public void printStargates()
+	{
+		System.out.println("[Stargates]");
+		this.stargateMap.entrySet().stream().forEach(stargateEntry ->
+		{
+			System.out.println("- " + stargateEntry.getKey().toString());
+		});
 	}
 
     @SuppressWarnings("unchecked")

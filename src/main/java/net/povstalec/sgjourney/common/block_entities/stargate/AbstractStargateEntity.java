@@ -209,7 +209,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		connectionID = tag.getString(CONNECTION_ID);
 		
-		if(tag.contains(ID)) //TODO For legacy reasons
+		if(tag.contains(ID)) //TODO Keeping this here for the time being for legacy reasons
 			id9ChevronAddress.fromString(tag.getString(ID));
 		else
 			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
@@ -240,7 +240,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		tag.putString(CONNECTION_ID, connectionID);
 		
-		//tag.putString(ID, getID());
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 		
@@ -270,7 +269,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		tag.putString(CONNECTION_ID, connectionID);
 		
-		//tag.putString(ID, getID());
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 
@@ -294,38 +292,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(id9ChevronAddress.isEmpty() || BlockEntityList.get(level).getStargate(id9ChevronAddress).isPresent())
 			set9ChevronAddress(generate9ChevronAddress());
 		
-		Optional<Stargate> stargate = BlockEntityList.get(level).addStargate(this);
-		if(stargate.isPresent())
-			StargateNetwork.get(level).addStargate(level.getServer(), stargate.get());
+		StargateNetwork.get(level).addStargate(this);
 		
 		addToNetwork = true;
 		this.setChanged();
 	}
 	
-	/*@Override
-	public CompoundTag addToBlockEntityList()
-	{
-		addStargateToNetwork();
-		return new CompoundTag();
-	}
-	
-	public CompoundTag addNewToBlockEntityList()
-	{
-		addStargateToNetwork();
-		
-		return new CompoundTag();
-	}
-
-	@Override
-	public void removeFromBlockEntityList()
-	{
-		//super.removeFromBlockEntityList();
-	}*/
-	
 	public void removeStargateFromNetwork()
 	{
 		StargateNetwork.get(level).removeStargate(level, id9ChevronAddress);
-		BlockEntityList.get(level).removeStargate(id9ChevronAddress);
 	}
 	
 	protected void set9ChevronAddress(Address address)
@@ -675,16 +650,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public void updateStargate(boolean updateInterfaces)
 	{
-		updateStargate(this.level, this.getID(), this.timesOpened, this.hasDHD(), updateInterfaces);
+		updateStargate(this.level, updateInterfaces);
 	}
 	
-	//TODO Why is it done like this again?
-	private void updateStargate(Level level, String id, int timesOpened, boolean hasDHD, boolean updateInterfaces)
+	private void updateStargate(Level level, boolean updateInterfaces)
 	{
 		if(level.isClientSide())
 			return;
 			
-		StargateNetwork.get(level).updateStargate((ServerLevel) level, this);
+		StargateNetwork.get(level).updateStargate((ServerLevel) level, this.get9ChevronAddress());
 		setStargateState(this.getConnectionState(), this.getChevronsEngaged(), updateInterfaces);
 	}
 	
@@ -876,14 +850,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 				
 				this.dhdRelativePos = Optional.of(relativeOffset);
 				this.dhd = Optional.of(dhd);
-				
-				updateStargate(this.level, this.getID(), this.timesOpened, true, false);
 				updateDHD();
 			}
 			
 			this.autoclose = autoclose;
 		}
 		
+		updateStargate(this.level, false);
 		this.setChanged();
 	}
 	
@@ -896,7 +869,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		this.dhdRelativePos = Optional.empty();
 		this.autoclose = 0;
 		
-		updateStargate(this.level, this.getID(), this.timesOpened, false, false);
+		updateStargate(this.level, false);
 		updateDHD();
 		
 		this.setChanged();

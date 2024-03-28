@@ -456,7 +456,7 @@ public class Universe extends SavedData
 		if(solarSystem.isPresent())
 		{
 			solarSystem.get().addStargate(stargate);
-			StargateJourney.LOGGER.info("Added Stargate " + stargate.getAddress().toString() + " to Solar System");
+			StargateJourney.LOGGER.info("Added Stargate " + stargate.getAddress().toString() + " to " + solarSystem.get().getName());
 			
 			this.setDirty();
 		}
@@ -469,6 +469,7 @@ public class Universe extends SavedData
 		if(solarSystem.isPresent())
 		{
 			solarSystem.get().removeStargate(stargate);
+			StargateJourney.LOGGER.info("Removed Stargate " + stargate.getAddress().toString() + " from " + solarSystem.get().getName());
 			
 			this.setDirty();
 		}
