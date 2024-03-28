@@ -78,6 +78,23 @@ public class Stargate
 	
 	
 	
+	public void update(AbstractStargateEntity stargate)
+	{
+		this.hasDHD = stargate.hasDHD();
+		this.generation = stargate.getGeneration().getGen();
+		this.timesOpened = stargate.getTimesOpened();
+	}
+	
+	
+	
+	@Override
+	public String toString()
+	{
+		return "[ " + this.address.toString() + " | DHD: " + this.hasDHD + " | Generation: " + this.generation + " | Times Opened: " + this.timesOpened + " ]";
+	}
+	
+	
+	
 	public CompoundTag serialize()
 	{
 		CompoundTag stargateTag = new CompoundTag();

@@ -498,7 +498,7 @@ public class Universe extends SavedData
 			
 			solarSystem.getStargates().stream().forEach(stargate ->
 			{
-				System.out.println("--- " + stargate.getAddress());
+				System.out.println("--- " + stargate.toString());
 			});
 		});
 	}

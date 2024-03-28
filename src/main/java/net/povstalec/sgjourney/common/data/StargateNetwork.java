@@ -227,14 +227,15 @@ public class StargateNetwork extends SavedData
 		setDirty();
 	}
 	
-	public void updateStargate(ServerLevel level, Address address)
+	public void updateStargate(ServerLevel level, AbstractStargateEntity stargate)
 	{
-		Optional<Stargate> stargate = getStargate(address);
+		Optional<Stargate> stargateOptional = getStargate(stargate.get9ChevronAddress());
 		
-		if(stargate.isPresent())
+		if(stargateOptional.isPresent())
 		{
-			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate.get());
-			Universe.get(server).addStargateToDimension(level.dimension(), stargate.get());
+			Universe.get(server).removeStargateFromDimension(level.dimension(), stargateOptional.get());
+			stargateOptional.get().update(stargate);
+			Universe.get(server).addStargateToDimension(level.dimension(), stargateOptional.get());
 		}
 	}
 	

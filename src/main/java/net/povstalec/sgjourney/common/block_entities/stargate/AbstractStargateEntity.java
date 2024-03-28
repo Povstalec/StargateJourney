@@ -658,7 +658,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(level.isClientSide())
 			return;
 			
-		StargateNetwork.get(level).updateStargate((ServerLevel) level, this.get9ChevronAddress());
+		StargateNetwork.get(level).updateStargate((ServerLevel) level, this);
 		setStargateState(this.getConnectionState(), this.getChevronsEngaged(), updateInterfaces);
 	}
 	

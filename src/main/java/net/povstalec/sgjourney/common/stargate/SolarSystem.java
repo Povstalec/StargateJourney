@@ -285,12 +285,16 @@ public class SolarSystem
 					
 					if(DHD_PREFERENCE && Boolean.compare(addedStargate.hasDHD(), existingStargate.hasDHD()) > 0)
 						break;
-					
-					else if(addedStargate.getGeneration() > existingStargate.getGeneration())
-						break;
-					
-					else if(addedStargate.getTimesOpened() > existingStargate.getTimesOpened())
-						break;
+					else if(!DHD_PREFERENCE || Boolean.compare(addedStargate.hasDHD(), existingStargate.hasDHD()) == 0)
+					{
+						if(addedStargate.getGeneration() > existingStargate.getGeneration())
+							break;
+						else if(addedStargate.getGeneration() == existingStargate.getGeneration())
+						{
+							if(addedStargate.getTimesOpened() > existingStargate.getTimesOpened())
+								break;
+						}
+					}
 				}
 				
 				this.stargates.add(i, addedStargate);
@@ -330,8 +334,6 @@ public class SolarSystem
 			// Extragalactic Address may be randomized, so it needs to always be saved
 			solarSystemTag.putIntArray(EXTRAGALACTIC_ADDRESS, this.extragalacticAddress.toArray());
 			
-			//TODO Stargates
-			
 			return solarSystemTag;
 		}
 		
@@ -343,8 +345,6 @@ public class SolarSystem
 				
 				SolarSystem solarSystem = solarSystemRegistry.get(solarSystemKey);
 				Address extragalacticAddress = new Address(solarSystemTag.getIntArray(EXTRAGALACTIC_ADDRESS));
-				
-				//TODO Stargates
 				
 				return new SolarSystem.Serializable(extragalacticAddress, solarSystemKey, solarSystem);
 			}
@@ -362,8 +362,6 @@ public class SolarSystem
 				{
 					dimensions.add(Conversion.stringToDimension(dimensionString));
 				});
-				
-				//TODO Stargates
 				
 				return new SolarSystem.Serializable(translationName, extragalacticAddress, pointOfOrigin, symbols, symbolPrefix, dimensions);
 			}
