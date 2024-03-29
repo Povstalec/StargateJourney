@@ -263,7 +263,12 @@
 	"point_of_origin.sgjourney.phoenix": "Fénix",
 	"point_of_origin.sgjourney.pyramid": "Pyramida",
 	"point_of_origin.sgjourney.serpent": "Had",
+	
 	"point_of_origin.sgjourney.triforce": "Triforce",
+	"point_of_origin.sgjourney.aurum": "Aurum",
+	"point_of_origin.sgjourney.ankh": "Anch",
+	"point_of_origin.sgjourney.aasb": "Aasb",
+	"point_of_origin.sgjourney.wheel": "Kolo",
 	
 	"info.sgjourney.add_to_network": "Přidat do sítě",
 	"info.sgjourney.point_of_origin": "Výchozí bod",

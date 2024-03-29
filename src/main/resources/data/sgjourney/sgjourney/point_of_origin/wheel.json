@@ -1,0 +1,5 @@
+{
+	"name": "point_of_origin.sgjourney.wheel",
+	"texture": "sgjourney:milky_way/points_of_origin/submitted/wheel.png",
+	"generates_randomly": true
+}

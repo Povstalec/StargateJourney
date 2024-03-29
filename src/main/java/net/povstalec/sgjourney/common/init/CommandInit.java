@@ -39,7 +39,6 @@ import net.povstalec.sgjourney.common.stargate.SolarSystem;
 
 public class CommandInit
 {
-	private static final String EMPTY = StargateJourney.EMPTY;
 	private static final String STARGATE_NETWORK = "stargateNetwork";
 	private static final String TRANSPORTER_NETWORK = "transporterNetwork";
 	private static final String GENE = "gene";
@@ -192,7 +191,7 @@ public class CommandInit
 					{
 						Address address = addressOptional.get();
 						context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address")
-								.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GOLD)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
+								.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
 								.append(Component.literal(" ").append(galaxy.getTranslationName()).append(Component.literal(" ")).withStyle(ChatFormatting.LIGHT_PURPLE))
 								.append(Component.translatable("message.sgjourney.command.get_address.is")));
 						
@@ -225,7 +224,7 @@ public class CommandInit
 			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
 			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
 			context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.address")
-					.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GOLD))
+					.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN))
 					.append(Component.translatable("message.sgjourney.command.get_extragalactic_address.is")));
 			context.getSource().getPlayer().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.LIGHT_PURPLE)));
 		}

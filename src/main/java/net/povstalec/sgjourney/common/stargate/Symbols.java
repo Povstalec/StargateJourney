@@ -1,14 +1,13 @@
 package net.povstalec.sgjourney.common.stargate;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -26,15 +25,15 @@ public class Symbols
 	
 	public static final Codec<Symbols> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(Symbols::getName),
-			SymbolSet.RESOURCE_KEY_CODEC.fieldOf("symbol_set").forGetter(Symbols::getSymbolSet),
+			SymbolSet.RESOURCE_KEY_CODEC.optionalFieldOf("symbol_set").forGetter(Symbols::getSymbolSet),
 			ResourceLocation.CODEC.listOf().fieldOf("textures").forGetter(Symbols::getTextures)
 			).apply(instance, Symbols::new));
 	
 	private final String name;
-	private final ResourceKey<SymbolSet> symbolSet;
+	private final Optional<ResourceKey<SymbolSet>> symbolSet;
 	private final List<ResourceLocation> textures;
 	
-	public Symbols(String name, ResourceKey<SymbolSet> symbolSet, List<ResourceLocation> textures)
+	public Symbols(String name, Optional<ResourceKey<SymbolSet>> symbolSet, List<ResourceLocation> textures)
 	{
 		this.name = name;
 		this.symbolSet = symbolSet;
@@ -48,9 +47,9 @@ public class Symbols
 	
 	public String getTranslationName(boolean uniqueSymbols)
 	{
-		if(!ClientStargateConfig.unique_symbols.get())
+		if(useSymbolSet())
 		{
-			SymbolSet symbolSet = SymbolSet.getClientSymbolSet(this.symbolSet);
+			SymbolSet symbolSet = SymbolSet.getClientSymbolSet(this.symbolSet.get());
 			
 			return symbolSet.getName();
 		}
@@ -58,12 +57,20 @@ public class Symbols
 		return name;
 	}
 	
+	public boolean useSymbolSet()
+	{
+		if(!ClientStargateConfig.unique_symbols.get() && this.symbolSet.isPresent())
+			return true;
+		
+		return false;
+	}
+	
 	public static String symbolsOrSet()
 	{
 		return ClientStargateConfig.unique_symbols.get() ? "info.sgjourney.symbols" :  "info.sgjourney.symbol_set";
 	}
 	
-	public ResourceKey<SymbolSet> getSymbolSet()
+	public Optional<ResourceKey<SymbolSet>> getSymbolSet()
 	{
 		return symbolSet;
 	}
@@ -75,7 +82,7 @@ public class Symbols
 	
 	public ResourceLocation texture(int i)
 	{
-		if(ClientStargateConfig.unique_symbols.get())
+		if(!useSymbolSet())
 		{
 			if(i >= textures.size() || i < 0)
 				return ERROR_LOCATION;
@@ -86,7 +93,7 @@ public class Symbols
 		}
 		else
 		{
-			SymbolSet symbolSet = SymbolSet.getClientSymbolSet(this.symbolSet);
+			SymbolSet symbolSet = SymbolSet.getClientSymbolSet(this.symbolSet.get());
 			
 			if(symbolSet != null)
 				return symbolSet.texture(i);

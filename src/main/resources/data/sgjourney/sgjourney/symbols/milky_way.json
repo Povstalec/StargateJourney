@@ -1,6 +1,5 @@
 {
 	"name": "symbols.sgjourney.milky_way",
-	"symbol_set": "sgjourney:milky_way",
 	"textures":
 	[
 		"sgjourney:milky_way/crater.png",

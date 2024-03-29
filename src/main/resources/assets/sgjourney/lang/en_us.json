@@ -263,7 +263,12 @@
 	"point_of_origin.sgjourney.phoenix": "Phoenix",
 	"point_of_origin.sgjourney.pyramid": "Pyramid",
 	"point_of_origin.sgjourney.serpent": "Serpent",
+	
 	"point_of_origin.sgjourney.triforce": "Triforce",
+	"point_of_origin.sgjourney.aurum": "Aurum",
+	"point_of_origin.sgjourney.ankh": "Ankh",
+	"point_of_origin.sgjourney.aasb": "Aasb",
+	"point_of_origin.sgjourney.wheel": "Wheel",
 	
 	"info.sgjourney.add_to_network": "Add To Network",
 	"info.sgjourney.point_of_origin": "Point of Origin",

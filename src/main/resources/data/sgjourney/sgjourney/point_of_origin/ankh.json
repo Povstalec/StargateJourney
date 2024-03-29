@@ -1,0 +1,5 @@
+{
+	"name": "point_of_origin.sgjourney.ankh",
+	"texture": "sgjourney:milky_way/points_of_origin/submitted/ankh.png",
+	"generates_randomly": true
+}
