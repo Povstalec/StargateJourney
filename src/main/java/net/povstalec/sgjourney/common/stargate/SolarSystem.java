@@ -27,12 +27,14 @@ public class SolarSystem
 	public static final Codec<ResourceKey<SolarSystem>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
 	private static final Codec<Pair<List<Integer>, Boolean>> ADDRESS = Codec.pair(Codec.INT.listOf().fieldOf("address").codec(), Codec.BOOL.fieldOf("randomizable").codec());
+	private static final Codec<Pair<ResourceKey<Galaxy>, Pair<List<Integer>, Boolean>>> GALAXY_AND_ADDRESS = Codec.pair(Galaxy.RESOURCE_KEY_CODEC.fieldOf("galaxy").codec(), ADDRESS.fieldOf("address").codec());
 	
     public static final Codec<SolarSystem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(SolarSystem::getName),
 			Symbols.RESOURCE_KEY_CODEC.fieldOf("symbols").forGetter(SolarSystem::getSymbols),
 			Codec.INT.fieldOf("symbol_prefix").forGetter(SolarSystem::getSymbolPrefix),
 			ADDRESS.fieldOf("extragalactic_address").forGetter(SolarSystem::getExtragalacticAddress),
+			GALAXY_AND_ADDRESS.listOf().optionalFieldOf("addresses").forGetter(SolarSystem::getAddresses),
 			PointOfOrigin.RESOURCE_KEY_CODEC.fieldOf("point_of_origin").forGetter(SolarSystem::getPointOfOrigin),
 			Level.RESOURCE_KEY_CODEC.listOf().fieldOf("dimensions").forGetter(SolarSystem::getDimensions)
 			).apply(instance, SolarSystem::new));
@@ -42,15 +44,20 @@ public class SolarSystem
 	private final int symbolPrefix;
 	private final Pair<List<Integer>, Boolean> extragalactic_address;
 	private final ResourceKey<PointOfOrigin> point_of_origin;
+	private final Optional<List<Pair<ResourceKey<Galaxy>, Pair<List<Integer>, Boolean>>>> addresses;
 	private final List<ResourceKey<Level>> dimensions;
 	
-	public SolarSystem(String name, ResourceKey<Symbols> symbols, int symbolPrefix, Pair<List<Integer>, Boolean> extragalactic_address, ResourceKey<PointOfOrigin> point_of_origin, List<ResourceKey<Level>> dimensions)
+	public SolarSystem(String name, ResourceKey<Symbols> symbols, int symbolPrefix, 
+			Pair<List<Integer>, Boolean> extragalactic_address, 
+			Optional<List<Pair<ResourceKey<Galaxy>, Pair<List<Integer>, Boolean>>>> addresses,
+			ResourceKey<PointOfOrigin> point_of_origin, List<ResourceKey<Level>> dimensions)
 	{
 		this.name = name;
 		this.symbols = symbols;
 		this.symbolPrefix = symbolPrefix;
 		this.extragalactic_address = extragalactic_address;
 		this.point_of_origin = point_of_origin;
+		this.addresses = addresses;
 		this.dimensions = dimensions;
 	}
 	
@@ -82,6 +89,11 @@ public class SolarSystem
 	public boolean isAddressRandomizable()
 	{
 		return extragalactic_address.getSecond();
+	}
+	
+	public Optional<List<Pair<ResourceKey<Galaxy>, Pair<List<Integer>, Boolean>>>> getAddresses()
+	{
+		return addresses;
 	}
 	
 	public ResourceKey<PointOfOrigin> getPointOfOrigin()

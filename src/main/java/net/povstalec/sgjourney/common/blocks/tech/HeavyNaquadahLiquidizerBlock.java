@@ -23,7 +23,6 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquid
 import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 
 public class HeavyNaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock

@@ -184,8 +184,8 @@ public class CommandInit
 					Optional<Address> addressOptional = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey().location().toString(), dimension);
 					
 					if(addressOptional.isEmpty())
-						context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension + " ").withStyle(ChatFormatting.GOLD)
-								.append(Component.translatable("message.sgjourney.command.get_address.located"))
+						context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension.location().toString() + " ").withStyle(ChatFormatting.GOLD)
+								.append(Component.translatable("message.sgjourney.command.get_address.located").withStyle(ChatFormatting.WHITE))
 								.append(Component.literal(" ").append(galaxy.getTranslationName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
 					else
 					{

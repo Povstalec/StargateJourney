@@ -1,20 +1,5 @@
 {
 	"name": "galaxy.sgjourney.pegasus",
 	"type": "sgjourney:dwarf_galaxy",
-	"default_symbols": "sgjourney:pegasus",
-	"solar_systems":
-	[
-		{
-			"solar_system": "sgjourney:lantea",
-			"address": {"address": [29, 5, 17, 34, 6, 12], "randomizable": true}
-		},
-		{
-			"solar_system": "sgjourney:athos",
-			"address": {"address": [21, 14, 24, 1, 26, 28], "randomizable": true}
-		},
-		{
-			"solar_system": "sgjourney:end",
-			"address": {"address": [14, 30, 6, 13, 17, 23], "randomizable": true}
-		}
-	]
+	"default_symbols": "sgjourney:pegasus"
 }

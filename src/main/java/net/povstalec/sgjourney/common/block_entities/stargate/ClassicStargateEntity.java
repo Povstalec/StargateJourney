@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import java.util.Random;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -15,7 +13,6 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheral
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 

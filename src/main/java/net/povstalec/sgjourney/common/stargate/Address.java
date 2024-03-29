@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.stargate;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -124,6 +125,16 @@ public final class Address
 		this.dimension = Optional.empty();
 		
 		int[] addressArray = ArrayHelper.tableToArray(addressTable);
+		
+		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
+			this.addressArray = addressArray;
+		
+		return this;
+	}
+	
+	public Address fromIntegerList(List<Integer> integerList)
+	{
+		int[] addressArray = integerListToArray(integerList);
 		
 		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
 			this.addressArray = addressArray;
@@ -358,5 +369,10 @@ public final class Address
 			address = address + array[i] + ADDRESS_DIVIDER;
 		}
 		return address;
+	}
+	
+	public static int[] integerListToArray(List<Integer> integerList)
+	{
+		return integerList.stream().mapToInt((integer) -> integer).toArray();
 	}
 }
