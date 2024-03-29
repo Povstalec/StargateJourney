@@ -67,11 +67,11 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 
-        if(!isPointOfOriginValid(this.level))
-        	setPointOfOrigin(this.getLevel());
+        if(!isPointOfOriginValid(this.getLevel()))
+        	setPointOfOriginFromDimension(this.getLevel().dimension());
 
-        if(!areSymbolsValid(this.level))
-        	setSymbols(this.getLevel());
+        if(!areSymbolsValid(this.getLevel()))
+        	setSymbolsFromDimension(this.getLevel().dimension());
     }
 
 	@Override
@@ -327,15 +327,6 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public int getCurrentSymbol()
 	{
-		/*int currentSymbol;
-		double position = this.rotation / ANGLE;
-		currentSymbol = (int) position;
-		if(position >= currentSymbol + 0.5)
-			currentSymbol++;
-		
-		if(currentSymbol > 38)
-			currentSymbol = currentSymbol - 39;*/
-		
 		int symbolPosition = this.rotation + 4;
 		
 		int currentSymbol = (symbolPosition / 8) % 39;
@@ -402,13 +393,6 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
-		/*double position = this.rotation / ANGLE;
-		double lowerBound = (double) (desiredSymbol - 0.12);
-		double upperBound = (double) (desiredSymbol + 0.12);
-		
-		if(position > lowerBound && position < upperBound)
-			return true;*/
-		
 		if(desiredSymbol * 8 == this.rotation)
 			return true;
 		

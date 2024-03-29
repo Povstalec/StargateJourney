@@ -186,7 +186,7 @@ public class Connection
 			this.dialedStargate.resetStargate(feedback);
 		}
 		
-		StargateNetwork.get(server).removeConnection(server, uuid, feedback);
+		StargateNetwork.get(server).removeConnection(uuid, feedback);
 	}
 	
 	//TODO make this work

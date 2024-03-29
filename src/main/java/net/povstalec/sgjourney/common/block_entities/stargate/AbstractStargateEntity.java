@@ -644,7 +644,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public Stargate.Feedback bypassDisconnectStargate(Stargate.Feedback feedback)
 	{
 		if(connectionID != null && !connectionID.equals(EMPTY))
-			StargateNetwork.get(level).terminateConnection(level.getServer(), connectionID, feedback);
+			StargateNetwork.get(level).terminateConnection(connectionID, feedback);
 		return resetStargate(feedback, false);
 	}
 	
@@ -723,10 +723,17 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	/**
 	 * Sets the Stargate's point of origin based on the dimension
 	 */
-	public void setPointOfOrigin(Level level)
+	public void setPointOfOriginFromDimension(ResourceKey<Level> dimension)
 	{
-		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension()).location().toString();
+		pointOfOrigin = Universe.get(level).getPointOfOrigin(dimension).location().toString();
 		this.setChanged();
+	}
+	
+	
+	public void setRandomPointOfOrigin(ResourceKey<Level> dimension)
+	{
+		Random random = new Random();
+		pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(level.getServer(), random.nextLong()).location().toString();
 	}
 	
 	protected boolean isPointOfOriginValid(Level level)
@@ -740,7 +747,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin));
 	}
 	
-	public void setSymbols(Level level)
+	public void setSymbolsFromDimension(ResourceKey<Level> dimension)
 	{
 		symbols = Universe.get(level).getSymbols(level.dimension()).location().toString();
 		this.setChanged();
@@ -1381,6 +1388,18 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			return;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant));
+	}
+	
+	public static void checkStargate(AbstractStargateEntity stargate)
+	{
+		if(stargate == null)
+			StargateJourney.LOGGER.error("Stargate does not exist");
+		
+		if(stargate.isConnected())
+		{
+			if(!StargateNetwork.get(stargate.getLevel()).hasConnection(stargate.connectionID))
+				stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
+		}
 	}
 	
 	//============================================================================================

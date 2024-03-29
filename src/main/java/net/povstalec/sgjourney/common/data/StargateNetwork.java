@@ -281,6 +281,9 @@ public class StargateNetwork extends SavedData
 	
 	public Stargate.Feedback createConnection(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
+		// Will reset the Stargate if something's wrong
+		AbstractStargateEntity.checkStargate(dialedStargate);
+		
 		Connection.Type connectionType = Connection.getType(server, dialingStargate, dialedStargate);
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
@@ -294,6 +297,11 @@ public class StargateNetwork extends SavedData
 		if(dialingStargate.equals(dialedStargate))
 			return dialingStargate.resetStargate(Stargate.Feedback.SELF_DIAL, true);
 		
+		if(dialedStargate.isConnected())
+			return dialingStargate.resetStargate(Stargate.Feedback.ALREADY_CONNECTED, true);
+		else if(dialedStargate.isObstructed())
+			return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED, true);
+		
 		if(requireEnergy)
 		{
 			if(dialingStargate.canExtractEnergy(connectionType.getEstablishingPowerCost()))
@@ -301,11 +309,6 @@ public class StargateNetwork extends SavedData
 			else
 				return dialingStargate.resetStargate(Stargate.Feedback.NOT_ENOUGH_POWER, true);
 		}
-		
-		if(dialedStargate.isConnected())
-			return dialingStargate.resetStargate(Stargate.Feedback.ALREADY_CONNECTED, true);
-		else if(dialedStargate.isObstructed())
-			return dialingStargate.resetStargate(Stargate.Feedback.TARGET_OBSTRUCTED, true);
 		
 		Connection connection = Connection.create(connectionType, dialingStargate, dialedStargate, doKawoosh);
 		if(connection != null)
@@ -325,15 +328,23 @@ public class StargateNetwork extends SavedData
 		return Stargate.Feedback.UNKNOWN_ERROR;
 	}
 	
-	public void terminateConnection(MinecraftServer server, String uuid, Stargate.Feedback feedback)
+	public boolean hasConnection(String uuid)
 	{
 		if(this.connections.containsKey(uuid))
+			return true;
+		
+		return false;
+	}
+	
+	public void terminateConnection(String uuid, Stargate.Feedback feedback)
+	{
+		if(hasConnection(uuid))
 			this.connections.get(uuid).terminate(server, feedback);
 	}
 	
-	public void removeConnection(MinecraftServer server, String uuid, Stargate.Feedback feedback)
+	public void removeConnection(String uuid, Stargate.Feedback feedback)
 	{
-		if(this.connections.containsKey(uuid))
+		if(hasConnection(uuid))
 		{
 			this.connections.remove(uuid);
 			StargateJourney.LOGGER.info("Removed connection " + uuid);

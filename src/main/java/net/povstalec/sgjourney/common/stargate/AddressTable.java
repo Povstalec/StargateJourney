@@ -64,7 +64,7 @@ public class AddressTable
 	public static Optional<ResourceKey<Level>> getRandomDimension(Level level, AddressTable addressTable)
 	{
 		if(addressTable == null)
-			return null;
+			return Optional.empty();
 		
 		List<ResourceKey<Level>> dimensions = new ArrayList<ResourceKey<Level>>();
 		

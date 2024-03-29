@@ -71,7 +71,17 @@ public class StargateBlockItem extends BlockItem
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			
 			if(baseEntity instanceof AbstractStargateEntity stargate)
+			{
 				stargate.addStargateToNetwork();
+				
+				// Sets up symbols on the Milky Way Stargate
+				if(stargate instanceof MilkyWayStargateEntity)
+					stargate.setRandomPointOfOrigin(level.dimension());
+				
+				// Sets up symbols on the Classic Stargate
+				else if(stargate instanceof ClassicStargateEntity)
+					stargate.setRandomPointOfOrigin(level.dimension());
+			}
 		}
 		
 		return false;
@@ -96,26 +106,26 @@ public class StargateBlockItem extends BlockItem
 			}
 			
 			// Sets up symbols on the Milky Way Stargate
-			if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
+			if(stargate instanceof MilkyWayStargateEntity)
 			{
 				if(!addToNetwork)
 				{
 					if(!info.contains(POINT_OF_ORIGIN))
-						milkyWayStargate.setPointOfOrigin(EMPTY);
+						stargate.setPointOfOrigin(EMPTY);
 					if(!info.contains(SYMBOLS))
-						milkyWayStargate.setSymbols(EMPTY);
+						stargate.setSymbols(EMPTY);
 				}
 			}
 			
 			// Sets up symbols on the Classic Stargate
-			else if(stargate instanceof ClassicStargateEntity classicStargate)
+			else if(stargate instanceof ClassicStargateEntity)
 			{
 				if(!addToNetwork)
 				{
 					if(!info.contains(POINT_OF_ORIGIN))
-						classicStargate.setPointOfOrigin(EMPTY);
+						stargate.setPointOfOrigin(EMPTY);
 					if(!info.contains(SYMBOLS))
-						classicStargate.setSymbols(EMPTY);
+						stargate.setSymbols(EMPTY);
 				}
 			}
 		}

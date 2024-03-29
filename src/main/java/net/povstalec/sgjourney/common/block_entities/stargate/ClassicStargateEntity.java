@@ -49,11 +49,11 @@ public class ClassicStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 
-        if(!isPointOfOriginValid(this.level))
-        	setPointOfOrigin(this.getLevel());
+        if(!isPointOfOriginValid(this.getLevel()))
+        	setPointOfOriginFromDimension(this.getLevel().dimension());
 
-        if(!areSymbolsValid(this.level))
-        	setSymbols(this.getLevel());
+        if(!areSymbolsValid(this.getLevel()))
+        	setSymbolsFromDimension(this.getLevel().dimension());
     }
 	
 	@Override
@@ -98,17 +98,6 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 		this.symbols = tag.getString("Symbols");
     	
     	super.deserializeStargateInfo(tag, isUpgraded);
-	}
-	
-	/**
-	 * Sets the Stargate's point of origin randomly
-	 */
-	@Override
-	public void setPointOfOrigin(Level level)
-	{
-		Random random = new Random();
-		pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(level.getServer(), random.nextLong()).location().toString();
-		this.setChanged();
 	}
 
 	@Override

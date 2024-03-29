@@ -58,17 +58,6 @@ public class Universe extends SavedData
 	private static final String DIMENSIONS = "Dimensions";
 	private static final String SOLAR_SYSTEMS = "SolarSystems";
 	private static final String GALAXIES = "Galaxies";
-	//private static final String EXTRAGALACTIC_ADDRESS_INFO = "ExtragalacticAddressInfo";
-	//private static final String SOLAR_SYSTEM_DIMENSIONS = "SolarSystemDimensions";
-	//private static final String SOLAR_SYSTEM_GALAXIES = "SolarSystemGalaxies";
-	//private static final String EXTRAGALACTIC_ADDRESS = "ExtragalacticAddress";
-	//private static final String SYMBOLS = "Symbols";
-	//private static final String POINT_OF_ORIGIN = "PointOfOrigin";
-	//private static final String GENERATED = "Generated";
-	
-	private static final String EMPTY = StargateJourney.EMPTY;
-	
-	//private CompoundTag universe = new CompoundTag();
 
 	private MinecraftServer server;
 
@@ -94,7 +83,6 @@ public class Universe extends SavedData
 	
 	public void eraseUniverseInfo()
 	{
-		//universe = new CompoundTag();
 		this.galaxies.clear();
 		this.dimensions.clear();
 		this.solarSystems.clear();
@@ -139,7 +127,6 @@ public class Universe extends SavedData
 		Set<ResourceKey<Level>> levelSet = server.levelKeys();
 		levelSet.forEach((dimension) ->
 		{
-			//if(!getDimensions().contains(dimension.location().toString()))
 			if(!this.dimensions.containsKey(dimension))
 				generateNewSolarSystem(server, dimension);
 		});
@@ -219,7 +206,6 @@ public class Universe extends SavedData
 			seed += i;
 			extragalacticAddress = new Address().randomAddress(prefix, 7, 36, seed);
 			
-			//if(!getExtragalacticAddressInfo().contains(extragalacticAddressString))
 			if(!this.solarSystems.containsKey(extragalacticAddress))
 				break;
 		}
@@ -241,66 +227,11 @@ public class Universe extends SavedData
 		
 		solarSystem.getDimensions().forEach((dimension) ->this.dimensions.put(dimension, solarSystem));
 		
-		//saveSolarSystemInfo(systemID, extragalacticAddress, pointOfOrigin, symbols, generated);
-		//saveDimensionInfo(systemID, dimensions);
-		
 		String pointOfOrigin = solarSystem.getPointOfOrigin().location().toString();
 		String symbols = solarSystem.getSymbols().location().toString();
 		
 		StargateJourney.LOGGER.info("Saved Solar System: " + solarSystemName + "[PoO: " + pointOfOrigin + " Symbols: " + symbols + "]");
 	}
-	
-	/*private void saveSolarSystemInfo(String systemID, String extragalacticAddress, String pointOfOrigin, String symbols, boolean generated)
-	{
-		CompoundTag solarSystems = getSolarSystems();
-		CompoundTag solarSystem = new CompoundTag();
-		ListTag dimensionList = new ListTag();
-		
-		//Saves an Extragalactic Address reference to the Solar System
-		CompoundTag extragalacticAddresses = getExtragalacticAddressInfo();
-		extragalacticAddresses.putString(extragalacticAddress, systemID);
-		this.universe.put(EXTRAGALACTIC_ADDRESS_INFO, extragalacticAddresses);
-		
-		//Saves important info to the Solar System
-		solarSystem.putString(POINT_OF_ORIGIN, pointOfOrigin);
-		solarSystem.putString(SYMBOLS, symbols);
-		solarSystem.putString(EXTRAGALACTIC_ADDRESS, extragalacticAddress);
-		solarSystem.put(SOLAR_SYSTEM_DIMENSIONS, dimensionList);
-		solarSystem.putBoolean(GENERATED, generated);
-		
-		solarSystems.put(systemID, solarSystem);
-		this.universe.put(SOLAR_SYSTEMS, solarSystems);
-		
-	}*/
-	
-	/*private void saveDimensionInfo(String systemID, List<ResourceKey<Level>> dimensions)
-	{
-		dimensions.forEach(level ->
-		{
-			CompoundTag dimensionList = getDimensions();
-			String dimension = level.location().toString();
-			
-			if(!dimensionList.contains(dimension))
-			{
-				//Save Dimension reference to the Solar System
-				CompoundTag solarSystems = getSolarSystems();
-				CompoundTag solarSystem = getSolarSystem(systemID);
-				ListTag solarSystemDimensionList = solarSystem.getList(SOLAR_SYSTEM_DIMENSIONS, Tag.TAG_STRING);
-				
-				solarSystemDimensionList.add(StringTag.valueOf(dimension));
-				solarSystem.put(SOLAR_SYSTEM_DIMENSIONS, solarSystemDimensionList);
-				solarSystems.put(systemID, solarSystem);
-				this.universe.put(SOLAR_SYSTEMS, solarSystems);
-				
-				//Save Solar System reference to DimensionList
-				dimensionList.putString(dimension, systemID);
-				this.universe.put(DIMENSIONS, dimensionList);
-				StargateJourney.LOGGER.info("Registered Dimension " + dimension + " under Solar System " + systemID);
-			}
-			else
-				StargateJourney.LOGGER.info(dimension + " is already registered in a Solar System");
-		});
-	}*/
 	
 	//============================================================================================
 	//*******************************************Galaxy*******************************************
@@ -347,23 +278,6 @@ public class Universe extends SavedData
             		this.galaxies.get(galaxyKey.location().toString()).addSolarSystem(address, networkSolarSystem);
             		networkSolarSystem.addToGalaxy(galaxy, address);
         		}
-        		
-        		/*String galaxyID = galaxyEntry.getKey().location().toString();
-        		String systemID = system.getFirst().location().toString();
-        		String address;
-
-    			if(useDatapackAddresses(server))
-    				address = new Address(system.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray()).toString();
-    			else
-    			{
-    				int size = type.getSize();
-    				
-    				long systemValue = generateRandomAddressSeed(server, systemID);
-    				
-    				address = generateAddress(galaxyID, size, systemValue);
-    			}
-        		
-        		registerGalaxyReferences(galaxyID, systemID, address);*/
         	});
         });
 	}
@@ -373,7 +287,6 @@ public class Universe extends SavedData
 		final RegistryAccess registries = server.registryAccess();
 		final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
 		
-		//CompoundTag solarSystems = getSolarSystems();
 		String galaxyID = MILKY_WAY.toString();
 		
 		Galaxy milkyWayGalaxy = galaxyRegistry.get(MILKY_WAY);
@@ -394,19 +307,6 @@ public class Universe extends SavedData
 				this.galaxies.get(galaxyID).addSolarSystem(address, solarSystem);
 			}
 		});
-		
-		/*solarSystems.getAllKeys().stream().forEach(systemID ->
-		{
-			boolean generated = getSolarSystem(systemID).getBoolean(GENERATED);
-			if(generated)
-			{
-				long systemValue = generateRandomAddressSeed(server, systemID);
-				
-				String address = generateAddress(galaxyID, size, systemValue);
-				
-				registerGalaxyReferences(galaxyID, systemID, address);
-			}
-		});*/
 	}
 	
 	protected Address generateAddress(String galaxyID, int galaxySize, long seed)
@@ -418,36 +318,12 @@ public class Universe extends SavedData
 			seed += i;
 			address = new Address().randomAddress(6, galaxySize, seed);
 			
-			//if(!getGalaxy(galaxyID).contains(address))
 			if(!this.galaxies.get(galaxyID).containsSolarSystem(address))
 				break;
 		}
 		
 		return address;
 	}
-	
-	/*private void registerGalaxyReferences(String galaxyID, String systemID, String address)
-	{
-		CompoundTag galaxies = getGalaxies();
-		CompoundTag galaxy = getGalaxy(galaxyID);
-		CompoundTag solarSystems = getSolarSystems();
-		CompoundTag solarSystem = getSolarSystem(systemID);
-
-		//Saves Address reference to Solar System
-		ListTag galaxyList = solarSystem.getList(SOLAR_SYSTEM_GALAXIES, Tag.TAG_COMPOUND);
-		CompoundTag galaxyTag = new CompoundTag();
-		galaxyTag.putString(galaxyID, address);
-		galaxyList.add(galaxyTag);
-		solarSystem.put(SOLAR_SYSTEM_GALAXIES, galaxyList);
-		solarSystems.put(systemID, solarSystem);
-		this.universe.put(SOLAR_SYSTEMS, solarSystems);
-
-		//Saves Solar System reference to Address
-		galaxy.putString(address, systemID);
-		galaxies.put(galaxyID, galaxy);
-		this.universe.put(GALAXIES, galaxies);
-		StargateJourney.LOGGER.info("Registered Solar System " + systemID + " under Galaxy " + galaxyID);
-	}*/
 	
 	public void addStargateToDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
@@ -456,7 +332,6 @@ public class Universe extends SavedData
 		if(solarSystem.isPresent())
 		{
 			solarSystem.get().addStargate(stargate);
-			StargateJourney.LOGGER.info("Added Stargate " + stargate.getAddress().toString() + " to " + solarSystem.get().getName());
 			
 			this.setDirty();
 		}
@@ -469,7 +344,6 @@ public class Universe extends SavedData
 		if(solarSystem.isPresent())
 		{
 			solarSystem.get().removeStargate(stargate);
-			StargateJourney.LOGGER.info("Removed Stargate " + stargate.getAddress().toString() + " from " + solarSystem.get().getName());
 			
 			this.setDirty();
 		}

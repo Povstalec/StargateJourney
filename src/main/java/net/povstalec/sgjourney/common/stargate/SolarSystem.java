@@ -282,14 +282,19 @@ public class SolarSystem
 				{
 					Stargate existingStargate = this.stargates.get(i);
 					
+					// If the gate has a DHD and the other one doesn't, end right there
 					if(DHD_PREFERENCE && Boolean.compare(addedStargate.hasDHD(), existingStargate.hasDHD()) > 0)
 						break;
+					// If either both gates have a DHD or neither one does, continue choosing
 					else if(!DHD_PREFERENCE || Boolean.compare(addedStargate.hasDHD(), existingStargate.hasDHD()) == 0)
 					{
+						// If the gate is of a newer generation, end right there
 						if(addedStargate.getGeneration() > existingStargate.getGeneration())
 							break;
+						// If the gate's generation is the same as the other one's, continue choosing
 						else if(addedStargate.getGeneration() == existingStargate.getGeneration())
 						{
+							// If the gate has been used more times than the other gate, end right here
 							if(addedStargate.getTimesOpened() > existingStargate.getTimesOpened())
 								break;
 						}
