@@ -13,16 +13,17 @@ import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
-import net.povstalec.sgjourney.common.menu.NaquadahLiquidizerMenu;
+import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 
-public class NaquadahLiquidizerScreen extends AbstractContainerScreen<NaquadahLiquidizerMenu>
+public abstract class LiquidizerScreen extends AbstractContainerScreen<LiquidizerMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/naquadah_liquidizer_gui.png");
+	private final ResourceLocation texture;
 	private FluidTankRenderer renderer;
 	
-    public NaquadahLiquidizerScreen(NaquadahLiquidizerMenu menu, Inventory inventory, Component component)
+    public LiquidizerScreen(LiquidizerMenu menu, ResourceLocation texture, Inventory inventory, Component component)
     {
         super(menu, inventory, component);
+        this.texture = texture;
     }
 	
 	@Override
@@ -42,7 +43,7 @@ public class NaquadahLiquidizerScreen extends AbstractContainerScreen<NaquadahLi
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+        RenderSystem.setShaderTexture(0, texture);
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
@@ -113,4 +114,20 @@ public class NaquadahLiquidizerScreen extends AbstractContainerScreen<NaquadahLi
 	    	renderTooltip(stack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE")).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
 	    }
     }*/
+    
+    public static class LiquidNaquadah extends LiquidizerScreen
+    {
+		public LiquidNaquadah(LiquidizerMenu menu, Inventory inventory, Component component)
+		{
+			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/naquadah_liquidizer_gui.png"), inventory, component);
+		}
+    }
+    
+    public static class HeavyLiquidNaquadah extends LiquidizerScreen
+    {
+		public HeavyLiquidNaquadah(LiquidizerMenu menu, Inventory inventory, Component component)
+		{
+			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/heavy_naquadah_liquidizer_gui.png"), inventory, component);
+		}
+    }
 }

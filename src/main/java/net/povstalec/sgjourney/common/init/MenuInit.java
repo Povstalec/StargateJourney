@@ -15,7 +15,7 @@ import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
-import net.povstalec.sgjourney.common.menu.NaquadahLiquidizerMenu;
+import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 import net.povstalec.sgjourney.common.menu.ZPMHubMenu;
@@ -51,8 +51,11 @@ public class MenuInit
 	public static final RegistryObject<MenuType<CrystallizerMenu>> CRYSTALLIZER =
             registerMenuType(CrystallizerMenu::new, "crystallizer");
 	
-	public static final RegistryObject<MenuType<NaquadahLiquidizerMenu>> NAQUADAH_LIQUIDIZER =
-            registerMenuType(NaquadahLiquidizerMenu::new, "naquadah_liquidizer");
+	public static final RegistryObject<MenuType<LiquidizerMenu>> NAQUADAH_LIQUIDIZER =
+            registerMenuType(LiquidizerMenu.LiquidNaquadah::new, "naquadah_liquidizer");
+	
+	public static final RegistryObject<MenuType<LiquidizerMenu>> HEAVY_NAQUADAH_LIQUIDIZER =
+            registerMenuType(LiquidizerMenu.HeavyLiquidNaquadah::new, "heavy_naquadah_liquidizer");
 
 
 

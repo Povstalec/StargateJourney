@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -17,21 +18,16 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquid
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
-public class NaquadahLiquidizerMenu extends AbstractContainerMenu
+public abstract class LiquidizerMenu extends AbstractContainerMenu
 {
     protected final AbstractNaquadahLiquidizerEntity blockEntity;
     protected final Level level;
     protected FluidStack fluidStack1;
     protected FluidStack fluidStack2;
-    
-    public NaquadahLiquidizerMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
-    {
-        this(containerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
-    }
 
-    public NaquadahLiquidizerMenu(int containerId, Inventory inventory, BlockEntity blockEntity)
+    public LiquidizerMenu(MenuType<LiquidizerMenu> type, int containerId, Inventory inventory, BlockEntity blockEntity)
     {
-        super(MenuInit.NAQUADAH_LIQUIDIZER.get(), containerId);
+        super(type, containerId);
         checkContainerSize(inventory, 3);
         this.blockEntity = ((AbstractNaquadahLiquidizerEntity) blockEntity);
         this.level = inventory.player.level;
@@ -169,4 +165,31 @@ public class NaquadahLiquidizerMenu extends AbstractContainerMenu
         return copyOfSourceStack;
     }
 	
+    public static class LiquidNaquadah extends LiquidizerMenu
+    {
+        public LiquidNaquadah(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+        {
+            this(containerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+        }
+
+		public LiquidNaquadah(int containerId, Inventory inventory, BlockEntity blockEntity)
+		{
+			super(MenuInit.NAQUADAH_LIQUIDIZER.get(), containerId, inventory, blockEntity);
+		}
+    	
+    }
+	
+    public static class HeavyLiquidNaquadah extends LiquidizerMenu
+    {
+        public HeavyLiquidNaquadah(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+        {
+            this(containerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+        }
+
+		public HeavyLiquidNaquadah(int containerId, Inventory inventory, BlockEntity blockEntity)
+		{
+			super(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), containerId, inventory, blockEntity);
+		}
+    	
+    }
 }
