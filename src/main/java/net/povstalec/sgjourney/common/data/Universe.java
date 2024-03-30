@@ -25,7 +25,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
-import net.povstalec.sgjourney.common.stargate.GalaxyType;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.SolarSystem;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -60,6 +59,8 @@ public class Universe extends SavedData
 	private static final String DIMENSIONS = "Dimensions";
 	private static final String SOLAR_SYSTEMS = "SolarSystems";
 	private static final String GALAXIES = "Galaxies";
+	
+	private static final String NUMBERS_AND_LETTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	private MinecraftServer server;
 
@@ -221,14 +222,8 @@ public class Universe extends SavedData
 		
 		String dimensionName = dimension.location().toString();
 		long seed = generateRandomAddressSeed(server, dimensionName);
-
-		Random random = new Random(seed);
 		
-		int prefixValue = random.nextInt(1, 100);
-		int suffixValue = random.nextInt(1, 1000);
-		
-		String prefix = prefixValue < 10 ? "P0" + prefixValue : "P" + prefixValue;
-		String systemName = prefix + "-" + suffixValue;
+		String systemName = generateSolarSystemName(seed);
 		
 		int milkyWayPrefix = 1;
 		
@@ -249,6 +244,24 @@ public class Universe extends SavedData
 			
 			this.galaxies.get(galaxyID).addSolarSystem(address, solarSystem);
 		}
+	}
+	
+	private String generateSolarSystemName(long seed)
+	{
+		int maxRandom = NUMBERS_AND_LETTERS.length();
+		
+		Random random = new Random(seed);
+		int prefixAValue = random.nextInt(0, maxRandom);
+		int prefixBValue = random.nextInt(0, maxRandom);
+		
+		char prefixA = NUMBERS_AND_LETTERS.charAt(prefixAValue);
+		char prefixB = NUMBERS_AND_LETTERS.charAt(prefixBValue);
+		
+		int suffixValue = random.nextInt(1, 10000);
+		
+		String systemName = "P" + prefixA + prefixB + "-" + suffixValue;
+		
+		return systemName;
 	}
 	
 	protected long generateRandomAddressSeed(MinecraftServer server, String name)
