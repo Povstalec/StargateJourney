@@ -76,6 +76,8 @@ public class Universe extends SavedData
 	{
 		registerGalaxies(server);
 		
+		registerPointsOfOrigin(server);
+		
 		registerSolarSystemsFromDataPacks(server);
 		if(generateRandomSolarSystems(server))
 			generateAndRegisterSolarSystems(server);
@@ -124,11 +126,54 @@ public class Universe extends SavedData
         {
         	ResourceKey<Galaxy> galaxyKey = galaxyEntry.getKey();
         	
-        	Galaxy.Serializable galaxy = new Galaxy.Serializable(galaxyKey, galaxyEntry.getValue(), new HashMap<Address, SolarSystem.Serializable>());
+        	Galaxy.Serializable galaxy = new Galaxy.Serializable(galaxyKey, galaxyEntry.getValue(), new HashMap<Address, SolarSystem.Serializable>(), new ArrayList<ResourceKey<PointOfOrigin>>());
         	
         	this.galaxies.put(galaxyEntry.getKey().location().toString(), galaxy);
         });
 		StargateJourney.LOGGER.info("Galaxies registered");
+	}
+	
+	//============================================================================================
+	//********************************Registering Points of Origin********************************
+	//============================================================================================
+	
+	private void registerPointsOfOrigin(MinecraftServer server)
+	{
+		RegistryAccess registries = server.registryAccess();
+		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
+		Set<Entry<ResourceKey<PointOfOrigin>, PointOfOrigin>> pointOfOriginSet = pointOfOriginRegistry.entrySet();
+		
+		pointOfOriginSet.forEach((pointOfOriginEntry) -> 
+		{
+			PointOfOrigin pointOfOrigin = pointOfOriginEntry.getValue();
+			ResourceKey<PointOfOrigin> pointOfOriginKey = pointOfOriginEntry.getKey();
+			
+			Optional<List<ResourceKey<Galaxy>>> galaxiesOptional = pointOfOrigin.generatedGalaxies();
+			
+			if(galaxiesOptional.isPresent())
+			{
+				galaxiesOptional.get().stream().forEach(galaxyKey ->
+				{
+					Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey.location().toString());
+					
+					if(galaxy != null)
+						galaxy.addPointOfOrigin(pointOfOriginKey);
+				});
+			}
+		});
+	}
+	
+	public ResourceKey<PointOfOrigin> getRandomPointOfOriginFromDimension(ResourceKey<Level> dimension, long seed)
+	{
+		Optional<Galaxy.Serializable> galaxyOptional = getGalaxyFromDimension(dimension);
+		
+		if(galaxyOptional.isPresent())
+		{
+			Galaxy.Serializable galaxy = galaxyOptional.get();
+			return galaxy.getRandomPointOfOrigin(seed);
+		}
+		
+		return PointOfOrigin.defaultPointOfOrigin();
 	}
 	
 	//============================================================================================
@@ -228,8 +273,15 @@ public class Universe extends SavedData
 		int milkyWayPrefix = 1;
 		
 		Address extragalacticAddress = generateExtragalacticAddress(milkyWayPrefix, seed);
+
+		String galaxyID = StargateJourney.MODID + ":milky_way";
+		Galaxy.Serializable galaxy = this.galaxies.get(galaxyID);
 		
-		ResourceKey<PointOfOrigin> pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(server, seed);
+		ResourceKey<PointOfOrigin> pointOfOrigin;
+		if(galaxy != null)
+			pointOfOrigin = galaxy.getRandomPointOfOrigin(seed);
+		else
+			pointOfOrigin = PointOfOrigin.defaultPointOfOrigin();
 		
 		SolarSystem.Serializable solarSystem = new SolarSystem.Serializable(systemName, extragalacticAddress, 
 				pointOfOrigin, defaultSymbols, milkyWayPrefix, List.of(dimension));
@@ -239,10 +291,10 @@ public class Universe extends SavedData
 			// Generates a random address for the Solar System and adds it to Milky Way under that address
 			long systemValue = generateRandomAddressSeed(server, solarSystem.getName());
 			
-			String galaxyID = StargateJourney.MODID + ":milky_way";
 			Address address = generateAddress(galaxyID, defaultGalaxy.getType().getSize(), systemValue);
 			
-			this.galaxies.get(galaxyID).addSolarSystem(address, solarSystem);
+			if(galaxy != null)
+				galaxy.addSolarSystem(address, solarSystem);
 		}
 	}
 	
@@ -264,7 +316,7 @@ public class Universe extends SavedData
 		return systemName;
 	}
 	
-	protected long generateRandomAddressSeed(MinecraftServer server, String name)
+	private long generateRandomAddressSeed(MinecraftServer server, String name)
 	{
 		// Creates a number from the dimension name that works as a seed for the Solar System
 		long seed = randomAddressFromSeed(server) ? server.getWorldData().worldGenOptions().seed() : 0;
@@ -276,7 +328,7 @@ public class Universe extends SavedData
 		return seed;
 	}
 	
-	protected Address generateExtragalacticAddress(int prefix, long seed)
+	private Address generateExtragalacticAddress(int prefix, long seed)
 	{
 		Address extragalacticAddress;
 		
@@ -313,83 +365,7 @@ public class Universe extends SavedData
 		return true;
 	}
 	
-	//============================================================================================
-	//*******************************************Galaxy*******************************************
-	//============================================================================================
-	//TODO
-	/*private void addSolarSystemsToGalaxies(MinecraftServer server)
-	{
-		final RegistryAccess registries = server.registryAccess();
-		final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
-		final Registry<SolarSystem> solarSystemRegistry = registries.registryOrThrow(SolarSystem.REGISTRY_KEY);
-		
-		Set<Entry<ResourceKey<Galaxy>, Galaxy>> galaxySet = galaxyRegistry.entrySet();
-		galaxySet.forEach((galaxyEntry) -> 
-        {
-        	ResourceKey<Galaxy> galaxyKey = galaxyEntry.getKey();
-        	
-        	Galaxy.Serializable galaxy = new Galaxy.Serializable(galaxyKey, galaxyEntry.getValue(), new HashMap<Address, SolarSystem.Serializable>());
-        	
-        	this.galaxies.put(galaxyEntry.getKey().location().toString(), galaxy);
-        	
-        	galaxyEntry.getValue().getSystems().forEach((systemEntry) ->
-        	{
-        		ResourceKey<SolarSystem> solarSystemKey = systemEntry.getFirst();
-        		SolarSystem solarSystem = solarSystemRegistry.get(solarSystemKey);
-        		Address extragalacticAddress = new Address(solarSystem.getAddressArray());
-        		
-        		if(this.solarSystems.containsKey(extragalacticAddress))
-        		{
-            		SolarSystem.Serializable networkSolarSystem = this.solarSystems.get(extragalacticAddress);
-            		
-            		// Either use the Datapack Address or generate a new Address
-            		Address address;
-            		if(useDatapackAddresses(server))
-        				address = new Address(systemEntry.getSecond().getFirst().stream().mapToInt((integer) -> integer).toArray());
-        			else
-        			{
-        				int size = galaxy.getSize();
-        				long systemValue = generateRandomAddressSeed(server, solarSystemKey.location().toString());
-        				
-        				address = generateAddress(galaxyKey.location().toString(), size, systemValue);
-        			}
-            		
-            		// Add Solar System to Galaxy
-            		this.galaxies.get(galaxyKey.location().toString()).addSolarSystem(address, networkSolarSystem);
-            		networkSolarSystem.addToGalaxy(galaxy, address);
-        		}
-        	});
-        });
-	}
-	
-	private void addGeneratedSolarSystemsToGalaxies(MinecraftServer server)
-	{
-		final RegistryAccess registries = server.registryAccess();
-		final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
-		
-		String galaxyID = MILKY_WAY.toString();
-		
-		Galaxy milkyWayGalaxy = galaxyRegistry.get(MILKY_WAY);
-		GalaxyType type = milkyWayGalaxy.getType();
-		int size = type.getSize();
-		
-		getDimensionsWithGeneratedSolarSystems().stream().forEach(dimension ->
-		{
-			Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
-			
-			if(solarSystemOptional.isPresent())
-			{
-				SolarSystem.Serializable solarSystem = solarSystemOptional.get();
-				
-	    		long systemValue = generateRandomAddressSeed(server, solarSystem.getName());
-				Address address = generateAddress(galaxyID, size, systemValue);
-				
-				this.galaxies.get(galaxyID).addSolarSystem(address, solarSystem);
-			}
-		});
-	}*/
-	
-	protected Address generateAddress(String galaxyID, int galaxySize, long seed)
+	private Address generateAddress(String galaxyID, int galaxySize, long seed)
 	{
 		Address address;
 		

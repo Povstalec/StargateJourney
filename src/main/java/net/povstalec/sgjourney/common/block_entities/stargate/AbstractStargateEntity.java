@@ -733,7 +733,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public void setRandomPointOfOrigin(ResourceKey<Level> dimension)
 	{
 		Random random = new Random();
-		pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(level.getServer(), random.nextLong()).location().toString();
+		pointOfOrigin = Universe.get(level).getRandomPointOfOriginFromDimension(dimension, random.nextLong()).location().toString();
 	}
 	
 	protected boolean isPointOfOriginValid(Level level)

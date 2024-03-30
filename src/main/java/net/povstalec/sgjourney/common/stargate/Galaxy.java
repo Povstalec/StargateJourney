@@ -1,7 +1,10 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -77,19 +80,22 @@ public class Galaxy
 	{
 		public static final String GALAXY_KEY = "GalaxyKey";
 		public static final String SOLAR_SYSTEMS = "SolarSystems";
+		public static final String POINTS_OF_ORIGIN = "PointsOfOrigin";
 		
 		private final ResourceKey<Galaxy> galaxyKey;
 		private final Galaxy galaxy;
 		
 		private HashMap<Address, SolarSystem.Serializable> solarSystems;
+		private List<ResourceKey<PointOfOrigin>> pointsOfOrigin;
 		
 		public Serializable(ResourceKey<Galaxy> galaxyKey, Galaxy galaxy, 
-				HashMap<Address, SolarSystem.Serializable> solarSystems)
+				HashMap<Address, SolarSystem.Serializable> solarSystems, List<ResourceKey<PointOfOrigin>> pointsOfOrigin)
 		{
 			this.galaxyKey = galaxyKey;
 			this.galaxy = galaxy;
 			
 			this.solarSystems = solarSystems;
+			this.pointsOfOrigin = pointsOfOrigin;
 		}
 		
 		public ResourceKey<Galaxy> getKey()
@@ -144,12 +150,31 @@ public class Galaxy
 				this.solarSystems.remove(address);
 		}
 		
+		public void addPointOfOrigin(ResourceKey<PointOfOrigin> pointOfOrigin)
+		{
+			if(!this.pointsOfOrigin.contains(pointOfOrigin))
+				this.pointsOfOrigin.add(pointOfOrigin);
+		}
+		
+		public ResourceKey<PointOfOrigin> getRandomPointOfOrigin(long seed)
+		{
+			int size = this.pointsOfOrigin.size();
+			
+			if(size < 1)
+				return PointOfOrigin.defaultPointOfOrigin();
+			
+			Random random = new Random(seed);
+			
+			int randomValue = random.nextInt(0, size);
+			
+			return this.pointsOfOrigin.get(randomValue);
+		}
+		
 		
 		
 		public CompoundTag serialize()
 		{
 			CompoundTag galaxyTag = new CompoundTag();
-			
 			galaxyTag.putString(GALAXY_KEY, galaxyKey.location().toString());
 			
 			CompoundTag solarSystemsTag = new CompoundTag();
@@ -159,15 +184,23 @@ public class Galaxy
 			});
 			
 			galaxyTag.put(SOLAR_SYSTEMS, solarSystemsTag);
+
+			CompoundTag pointOfOriginTag = new CompoundTag();
+			pointsOfOrigin.stream().forEach(pointOfOrigin ->
+			{
+				String pointOfOriginString = pointOfOrigin.location().toString();
+				pointOfOriginTag.putString(pointOfOriginString, pointOfOriginString);
+			});
+			
+			galaxyTag.put(POINTS_OF_ORIGIN, pointOfOriginTag);
 			
 			return galaxyTag;
 		}
 		
-		public static Galaxy.Serializable deserialize(MinecraftServer server, HashMap<Address, SolarSystem.Serializable> solarSystems, 
+		public static Galaxy.Serializable deserialize(MinecraftServer server, HashMap<Address, SolarSystem.Serializable> solarSystems,
 				Registry<Galaxy> galaxyRegistry, CompoundTag galaxyTag)
 		{
 			ResourceKey<Galaxy> galaxyKey = Conversion.stringToGalaxyKey(galaxyTag.getString(GALAXY_KEY));
-			
 			Galaxy galaxy = galaxyRegistry.get(galaxyKey);
 			
 			HashMap<Address, SolarSystem.Serializable> galaxySolarSystems = new HashMap<Address, SolarSystem.Serializable>();
@@ -183,7 +216,15 @@ public class Galaxy
 					galaxySolarSystems.put(address, solarSystems.get(extragalacticAddress));
 			});
 			
-			return new Galaxy.Serializable(galaxyKey, galaxy, solarSystems);
+			CompoundTag pointOfOriginTag = galaxyTag.getCompound(POINTS_OF_ORIGIN);
+			List<ResourceKey<PointOfOrigin>> pointsOfOrigin = new ArrayList<ResourceKey<PointOfOrigin>>();
+			
+			pointOfOriginTag.getAllKeys().forEach(pointOfOriginString ->
+			{
+				pointsOfOrigin.add(Conversion.stringToPointOfOrigin(pointOfOriginString));
+			});
+			
+			return new Galaxy.Serializable(galaxyKey, galaxy, solarSystems, pointsOfOrigin);
 		}
 	}
 }
