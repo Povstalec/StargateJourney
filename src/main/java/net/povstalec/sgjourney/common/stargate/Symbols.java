@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
@@ -26,23 +25,26 @@ public class Symbols
 	public static final Codec<Symbols> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(Symbols::getName),
 			SymbolSet.RESOURCE_KEY_CODEC.optionalFieldOf("symbol_set").forGetter(Symbols::getSymbolSet),
-			ResourceLocation.CODEC.listOf().fieldOf("textures").forGetter(Symbols::getTextures)
+			ResourceLocation.CODEC.fieldOf("texture").forGetter(Symbols::getTexture),
+			Codec.INT.optionalFieldOf("size", 38).forGetter(Symbols::getSize)
 			).apply(instance, Symbols::new));
 	
 	private final String name;
 	private final Optional<ResourceKey<SymbolSet>> symbolSet;
-	private final List<ResourceLocation> textures;
+	private final ResourceLocation texture;
+	private final int size;
 	
-	public Symbols(String name, Optional<ResourceKey<SymbolSet>> symbolSet, List<ResourceLocation> textures)
+	public Symbols(String name, Optional<ResourceKey<SymbolSet>> symbolSet, ResourceLocation texture, int size)
 	{
 		this.name = name;
 		this.symbolSet = symbolSet;
-		this.textures = textures;
+		this.texture = texture;
+		this.size = size;
 	}
 	
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 	
 	public String getTranslationName(boolean uniqueSymbols)
@@ -54,7 +56,7 @@ public class Symbols
 			return symbolSet.getName();
 		}
 		
-		return name;
+		return this.name;
 	}
 	
 	public boolean useSymbolSet()
@@ -72,34 +74,54 @@ public class Symbols
 	
 	public Optional<ResourceKey<SymbolSet>> getSymbolSet()
 	{
-		return symbolSet;
+		return this.symbolSet;
 	}
 	
-	public List<ResourceLocation> getTextures()
+	public ResourceLocation getTexture()
 	{
-		return textures;
+		return this.texture;
 	}
 	
-	public ResourceLocation texture(int i)
+	public int getSize()
 	{
-		if(!useSymbolSet())
-		{
-			if(i >= textures.size() || i < 0)
-				return ERROR_LOCATION;
-			
-			ResourceLocation path = textures.get(i);
-			ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
-			return texture;
-		}
-		else
+		return this.size;
+	}
+	
+	public ResourceLocation getSymbolTexture()
+	{
+		if(useSymbolSet())
 		{
 			SymbolSet symbolSet = SymbolSet.getClientSymbolSet(this.symbolSet.get());
 			
 			if(symbolSet != null)
-				return symbolSet.texture(i);
+				return symbolSet.getSymbolTexture();
 		}
 		
-		return ERROR_LOCATION;
+		ResourceLocation texture = new ResourceLocation(this.texture.getNamespace(), "textures/symbols/" + this.texture.getPath());
+		return texture;
+	}
+	
+	public boolean shouldRenderSymbol(int symbol)
+	{
+		if(useSymbolSet())
+		{
+			SymbolSet symbolSet = SymbolSet.getClientSymbolSet(this.symbolSet.get());
+			
+			if(symbolSet != null)
+				return symbolSet.shouldRenderSymbol(symbol);
+		}
+		
+		if(symbol >= 0 && symbol < size)
+			return true;
+		
+		return false;
+	}
+	
+	public float getTextureOffset(int symbol)
+	{
+		symbol -= 1;
+		float symbolSize = 1F / (float) size;
+		return symbolSize * symbol + symbolSize / 2F;
 	}
 	
 	public static Symbols getSymbols(Level level, ResourceKey<Symbols> symbols)
@@ -123,5 +145,4 @@ public class Symbols
 	{
 		return Conversion.stringToSymbols(StargateJourney.MODID + ":universal");
 	}
-	
 }

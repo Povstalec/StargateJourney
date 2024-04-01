@@ -13,6 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEnt
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEntity>
 {
@@ -107,7 +108,8 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 				this.alternateEngagedTexture : this.engagedTexture;
 	}
 	
-	protected void renderSpinningSymbol(PegasusStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
+	protected void renderSpinningSymbol(PegasusStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
+			float symbolOffset, int textureXSize, float rotation)
 	{
 		if(!stargate.isConnected() && stargate.symbolBuffer < stargate.addressBuffer.getLength())
 	    {
@@ -118,8 +120,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	    			return;
 	    	}
 
-    		int renderedSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, this.currentSymbol, renderedSymbol, 0, getSymbolColor(stargate, stargateVariant, true));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, this.currentSymbol, symbolOffset, textureXSize, 0, getSymbolColor(stargate, stargateVariant, true));
 	    }
 		
 	}
@@ -127,20 +128,51 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	@Override
 	protected void renderSymbols(PegasusStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
+		int currentSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
+		
+		// Point of Origin
+		if(stargate.isDialingOut() && stargate.isConnected() || stargate.isConnected() && stargate.getKawooshTickCount() > 0)
+		{
+			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(stargate, stargateVariant)));
+			
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, true));
+		}
+		else if(stargate.addressBuffer.getLength() > 0 && !stargate.isConnected() && currentSymbol == 0)
+		{
+			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(stargate, stargateVariant)));
+
+			renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0.5F, 1, rotation);
+		}
+		else if(!stargate.isConnected() && stargate.addressBuffer.getLength() == 0)
+		{
+			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(stargate, stargateVariant)));
+			
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, false));
+		}
+		
+		Optional<Symbols> symbols = getSymbols(stargate, stargateVariant);
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
+		
+		if(symbols.isEmpty())
+			return;
+		
+		// When a Stargate is dialing out or connected after dialing out
 		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.getLength() > 0 && !stargate.isConnected()))
 		{
 			// Spinning Symbol
-			renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, combinedLight, rotation);
+			if(currentSymbol > 0)
+				renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, combinedLight, symbols.get().getTextureOffset(currentSymbol), symbols.get().getSize(), rotation);
 			
 			// Point of Origin when Stargate is connected
-			if(stargate.isConnected())
-				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0, 0, getSymbolColor(stargate, stargateVariant, true));
+			//if(stargate.isConnected())
+			//	renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0, 0, getSymbolColor(stargate, stargateVariant, true));
 			
 			// Locked Symbols
 			for(int i = 0; i < stargate.getAddress().getLength(); i++)
 			{
 				int symbolNumber = stargate.getChevronPosition(i + 1);
-				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbolNumber, stargate.getAddress().toArray()[i], 0, getSymbolColor(stargate, stargateVariant, true));
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbolNumber, 
+						symbols.get().getTextureOffset(stargate.getAddress().toArray()[i]), symbols.get().getSize(), 0, getSymbolColor(stargate, stargateVariant, true));
 			}
 		}
 		else
@@ -152,15 +184,17 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			{
 				symbolColor = getSymbolColor(stargate, stargateVariant, true);
 				symbolNumber = stargate.currentSymbol < this.numberOfSymbols ? stargate.currentSymbol : symbolNumber;
-				if(stargate.getKawooshTickCount() > 0)
-					renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolColor);
+				//if(stargate.getKawooshTickCount() > 0)
+				//	renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0, 0, symbolColor);
 			}
 			
 			// Idle Symbols
-			for(int i = 0; i < symbolNumber; i++)
+			int startFrom = stargate.isConnected() ? 0 : 1;
+			for(int i = startFrom; i < symbolNumber; i++)
 			{
 				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % this.numberOfSymbols;
-				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, renderedSymbol, renderedSymbol, 0, symbolColor);
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, renderedSymbol, 
+						symbols.get().getTextureOffset(renderedSymbol), symbols.get().getSize(), 0, symbolColor);
 			}
 		}
 	}

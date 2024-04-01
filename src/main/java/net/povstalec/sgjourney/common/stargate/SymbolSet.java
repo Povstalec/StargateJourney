@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.List;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -24,16 +22,19 @@ public class SymbolSet
 	
 	public static final Codec<SymbolSet> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(SymbolSet::getName),
-			ResourceLocation.CODEC.listOf().fieldOf("textures").forGetter(SymbolSet::getTextures)
+			ResourceLocation.CODEC.fieldOf("texture").forGetter(SymbolSet::getTexture),
+			Codec.INT.optionalFieldOf("size", 38).forGetter(SymbolSet::getSize)
 			).apply(instance, SymbolSet::new));
 	
 	private final String name;
-	private final List<ResourceLocation> textures;
+	private final ResourceLocation texture;
+	private final int size;
 	
-	public SymbolSet(String name, List<ResourceLocation> textures)
+	public SymbolSet(String name, ResourceLocation texture, int size)
 	{
 		this.name = name;
-		this.textures = textures;
+		this.texture = texture;
+		this.size = size;
 	}
 	
 	public String getName()
@@ -41,12 +42,31 @@ public class SymbolSet
 		return name;
 	}
 	
-	public List<ResourceLocation> getTextures()
+	public ResourceLocation getTexture()
 	{
-		return textures;
+		return texture;
 	}
 	
-	public ResourceLocation texture(int i)
+	public int getSize()
+	{
+		return size;
+	}
+	
+	public ResourceLocation getSymbolTexture()
+	{
+		ResourceLocation texture = new ResourceLocation(this.texture.getNamespace(), "textures/symbols/" + this.texture.getPath());
+		return texture;
+	}
+	
+	public boolean shouldRenderSymbol(int symbol)
+	{
+		if(symbol >= 0 && symbol < size)
+			return true;
+		
+		return false;
+	}
+	
+	/*public ResourceLocation texture(int i)
 	{
 		if(i >= textures.size() || i < 0)
 			return ERROR_LOCATION;
@@ -54,7 +74,7 @@ public class SymbolSet
 		ResourceLocation path = textures.get(i);
 		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
 		return texture;
-	}
+	}*/
 	
 	public static SymbolSet getClientSymbolSet(ResourceKey<SymbolSet> symbols)
 	{

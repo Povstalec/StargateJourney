@@ -17,6 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity>
 {
@@ -284,38 +285,47 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	
 	protected void renderSymbols(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		for(int j = 0; j < this.numberOfSymbols; j++)
+		boolean pointOfOriginEngaged = false;
+		if(engageEncodedSymbols(stargate, stargateVariant) && (!stargate.isConnected() || stargate.isDialingOut()))
+			pointOfOriginEngaged = stargate.isConnected();
+		else if(stargate.isConnected())
+			pointOfOriginEngaged = engageSymbolsOnIncoming(stargate, stargateVariant);
+		
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(stargate, stargateVariant)));
+		
+		renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
+		
+		Optional<Symbols> symbols = getSymbols(stargate, stargateVariant);
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
+		
+		if(symbols.isEmpty())
+			return;
+		
+		for(int j = 1; j < this.numberOfSymbols; j++)
 		{
 			boolean symbolEngaged = false;
 			if(engageEncodedSymbols(stargate, stargateVariant) && (!stargate.isConnected() || stargate.isDialingOut()))
 			{
-				if(j == 0)
-					symbolEngaged = stargate.isConnected();
-				else
+				for(int i = 0; i < stargate.getAddress().getLength(); i++)
 				{
-					for(int i = 0; i < stargate.getAddress().getLength(); i++)
-					{
-						int addressSymbol = stargate.getAddress().toArray()[i];
-						if(addressSymbol == j)
-							symbolEngaged = true;
-					}
+					int addressSymbol = stargate.getAddress().toArray()[i];
+					if(addressSymbol == j)
+						symbolEngaged = true;
 				}
 			}
 			else if(stargate.isConnected())
 				symbolEngaged = engageSymbolsOnIncoming(stargate, stargateVariant);
 			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? MAX_LIGHT : combinedLight, j, j, rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
+					MAX_LIGHT : combinedLight, j, symbols.get().getTextureOffset(j), symbols.get().getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
 		}
 	}
 	
 	protected void renderSymbol(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
-		int symbolNumber, int symbolRendered, float rotation,
-		Stargate.RGBA symbolColor)
+			int symbolNumber, float symbolOffset, int textureXSize, float rotation, Stargate.RGBA symbolColor)
 	{
 		if(symbolNumber >= this.numberOfSymbols)
 			return;
-		
-		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(stargate, stargateVariant, symbolRendered)));
 		
 		stack.pushPose();
 		stack.mulPose(Axis.ZP.rotationDegrees(symbolNumber * -ANGLE + rotation));
@@ -327,22 +337,22 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 				-SPINNY_RING_OUTER_CENTER,
 				SPINNY_RING_INNER_RADIUS + 8.5F/16,
 				SYMBOL_OFFSET,
-				(8 - SPINNY_RING_OUTER_CENTER * 32) / 16, 0,
+				symbolOffset - (SPINNY_RING_OUTER_CENTER * 32 / 16 / textureXSize), 0,
 				
 				-SPINNY_RING_INNER_CENTER,
 				SPINNY_RING_INNER_RADIUS + 0.5F/16,
 				SYMBOL_OFFSET,
-				(8 - SPINNY_RING_INNER_CENTER * 32) / 16, 1,
+				symbolOffset - (SPINNY_RING_INNER_CENTER * 32 / 16 / textureXSize), 1,
 				
 				SPINNY_RING_INNER_CENTER, 
 				SPINNY_RING_INNER_RADIUS + 0.5F/16,
 				SYMBOL_OFFSET,
-				(8 + SPINNY_RING_INNER_CENTER * 32) / 16, 1,
+				symbolOffset + (SPINNY_RING_INNER_CENTER * 32 / 16 / textureXSize), 1,
 				
 				SPINNY_RING_OUTER_CENTER,
 				SPINNY_RING_INNER_RADIUS + 8.5F/16,
 				SYMBOL_OFFSET,
-				(8 + SPINNY_RING_OUTER_CENTER * 32) / 16, 0);
+				symbolOffset + (SPINNY_RING_OUTER_CENTER * 32 / 16 / textureXSize), 0);
 		
 		stack.popPose();
 	}
