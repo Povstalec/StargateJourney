@@ -9,7 +9,7 @@
 		{"galaxy": "sgjourney:pegasus", "address": {"address": [14, 30, 6, 13, 17, 23], "randomizable": true}}
 	],
 
-	"point_of_origin": "sgjourney:ender_eye",
+	"point_of_origin": "sgjourney:pontem",
 
 	"dimensions":
 	[
