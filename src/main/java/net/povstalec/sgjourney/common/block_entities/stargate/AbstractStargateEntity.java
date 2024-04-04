@@ -1309,9 +1309,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public abstract SoundEvent getWormholeOpenSound();
 	
 	public abstract SoundEvent getWormholeIdleSound();
-	/*{
-		return SoundInit.WORMHOLE_IDLE.get();
-	}*/
 	
 	public abstract SoundEvent getWormholeCloseSound();
 

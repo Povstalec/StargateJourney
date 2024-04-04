@@ -49,6 +49,8 @@ public abstract class AbstractStargateRenderer
 	protected void renderWormhole(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, @SuppressWarnings("rawtypes") @Nullable AbstractStargateModel model, int combinedLight, int combinedOverlay)
 	{
 		Optional<ResourceLocation> eventHorizonTexture = Optional.empty();
+		int frames = 32;
+		boolean hasVortex = ClientStargateConfig.enable_vortex.get();
 		
 		if(model != null)
 		{
@@ -63,12 +65,20 @@ public abstract class AbstractStargateRenderer
 						eventHorizonTexture = variant.getShinyEventHorizonTexture();
 					else
 						eventHorizonTexture = Optional.of(variant.getEventHorizonTexture());
+					
+					frames = variant.getEventHorizonFrames();
+					if(frames <= 0)
+						frames = 1;
+					
+					Optional<Boolean> variantHasVortex = variant.hasVortex();
+					if(variantHasVortex.isPresent())
+						hasVortex = variantHasVortex.get();
 				}
 			}
 		}
 		
 		if(stargate.isConnected())
-	    	this.wormholeModel.renderEventHorizon(stargate, stack, source, eventHorizonTexture, combinedLight, combinedOverlay);
+	    	this.wormholeModel.renderEventHorizon(stargate, stack, source, eventHorizonTexture, frames, combinedLight, combinedOverlay, hasVortex);
 	}
 	
 	protected void renderCover(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
