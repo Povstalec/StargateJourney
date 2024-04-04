@@ -92,7 +92,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		if(hasDHD())
 			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
-					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin());
+					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || this.isConnected());
 	}
 	
 	public void dynamicSymbols(boolean dynamicSymbols)
