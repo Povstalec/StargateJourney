@@ -96,6 +96,11 @@ public class Galaxy
 			
 			this.solarSystems = solarSystems;
 			this.pointsOfOrigin = pointsOfOrigin;
+			
+			this.solarSystems.entrySet().stream().forEach(solarSystemEntry ->
+			{
+				solarSystemEntry.getValue().addToGalaxy(this, solarSystemEntry.getKey());
+			});
 		}
 		
 		public ResourceKey<Galaxy> getKey()
@@ -142,6 +147,7 @@ public class Galaxy
 		public void addSolarSystem(Address address, SolarSystem.Serializable solarSystem)
 		{
 			this.solarSystems.put(address, solarSystem);
+			System.out.println("Added " + solarSystem.getName() + " to " + this.getKey().location().toString() + " as " + address.toString());
 		}
 		
 		public void removeSolarSystem(Address address)
@@ -176,11 +182,13 @@ public class Galaxy
 		{
 			CompoundTag galaxyTag = new CompoundTag();
 			galaxyTag.putString(GALAXY_KEY, galaxyKey.location().toString());
-			
+
+			//System.out.println("Galaxy: " + galaxyKey.location().toString());
 			CompoundTag solarSystemsTag = new CompoundTag();
 			solarSystems.entrySet().forEach(solarSystem ->
 			{
 				solarSystemsTag.putIntArray(solarSystem.getKey().toString(), solarSystem.getValue().getExtragalacticAddress().toArray());
+				//System.out.println("Serializing: " + solarSystem.getValue().getName() + " " + solarSystem.getKey().toString());
 			});
 			
 			galaxyTag.put(SOLAR_SYSTEMS, solarSystemsTag);
@@ -206,14 +214,19 @@ public class Galaxy
 			HashMap<Address, SolarSystem.Serializable> galaxySolarSystems = new HashMap<Address, SolarSystem.Serializable>();
 			
 			CompoundTag solarSystemsTag = galaxyTag.getCompound(SOLAR_SYSTEMS);
-			
+
+			//System.out.println("Galaxy: " + galaxyKey.location().toString());
 			solarSystemsTag.getAllKeys().forEach(addressString ->
 			{
 				Address extragalacticAddress = new Address(solarSystemsTag.getIntArray(addressString)); // 8-chevron address
 				Address address = new Address(addressString); // 7-chevron address
 				
 				if(solarSystems.containsKey(extragalacticAddress))
-					galaxySolarSystems.put(address, solarSystems.get(extragalacticAddress));
+				{
+					SolarSystem.Serializable solarSystem = solarSystems.get(extragalacticAddress);
+					galaxySolarSystems.put(address, solarSystem);
+					//System.out.println("Deserializing: " + solarSystems.get(extragalacticAddress).getName() + " " + address.toString());
+				}
 			});
 			
 			CompoundTag pointOfOriginTag = galaxyTag.getCompound(POINTS_OF_ORIGIN);
@@ -224,7 +237,7 @@ public class Galaxy
 				pointsOfOrigin.add(Conversion.stringToPointOfOrigin(pointOfOriginString));
 			});
 			
-			return new Galaxy.Serializable(galaxyKey, galaxy, solarSystems, pointsOfOrigin);
+			return new Galaxy.Serializable(galaxyKey, galaxy, galaxySolarSystems, pointsOfOrigin);
 		}
 	}
 }

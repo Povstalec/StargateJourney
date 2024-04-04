@@ -305,6 +305,13 @@ public final class Address
 		return this;
 	}
 	
+	public Address copy()
+	{
+		Address copyAddress = new Address(this.isBuffer).fromArray(addressArray);
+		copyAddress.dimension = this.dimension;
+		return copyAddress;
+	}
+	
 	@Override
 	public boolean equals(Object object)
 	{

@@ -112,10 +112,10 @@ public class Connection
 	//******************************************Utility*******************************************
 	//============================================================================================
 	
-	public static final Connection.Type getType(MinecraftServer server, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate)
+	public static final Connection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
 	{
-		Optional<SolarSystem.Serializable> dialingSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getLevel().dimension());
-		Optional<SolarSystem.Serializable> dialedSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getLevel().dimension());
+		Optional<SolarSystem.Serializable> dialingSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getDimension());
+		Optional<SolarSystem.Serializable> dialedSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension());
 		
 		if(dialingSystemOptional.isPresent() && dialedSystemOptional.isPresent())
 		{
@@ -151,7 +151,8 @@ public class Connection
 	{
 		this(uuid, connectionType, dialingStargate, dialedStargate, false, 0, 0, 0, doKawoosh);
 	}
-	
+
+	//TODO Replace these parameters with Stargate object
 	public static Connection create(Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
 		String uuid = UUID.randomUUID().toString();

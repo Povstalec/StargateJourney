@@ -180,7 +180,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 			else
 				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
 		}
@@ -360,15 +360,14 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		else
 			return false;
 	}
-	
+
 	@Override
-	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
+	protected void resetAddress(boolean updateInterfaces)
 	{
 		animationTicks = 1;
 		symbolBuffer = 0;
 		addressBuffer.reset();
-		
-		return super.resetStargate(feedback);
+		super.resetAddress(updateInterfaces);
 	}
 	
 	@Override

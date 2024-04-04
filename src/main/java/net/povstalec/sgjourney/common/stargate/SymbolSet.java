@@ -66,16 +66,6 @@ public class SymbolSet
 		return false;
 	}
 	
-	/*public ResourceLocation texture(int i)
-	{
-		if(i >= textures.size() || i < 0)
-			return ERROR_LOCATION;
-		
-		ResourceLocation path = textures.get(i);
-		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
-		return texture;
-	}*/
-	
 	public static SymbolSet getClientSymbolSet(ResourceKey<SymbolSet> symbols)
 	{
 		Minecraft minecraft = Minecraft.getInstance();

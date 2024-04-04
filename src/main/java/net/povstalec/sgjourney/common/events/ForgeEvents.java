@@ -49,12 +49,15 @@ import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.events.custom.StargateEvent;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
+import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
 {

@@ -198,7 +198,7 @@ public class BlockEntityList extends SavedData
 		
 		stargates.getAllKeys().stream().forEach(stargate ->
 		{
-			StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
+			//StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
 			Address address = new Address(stargate);
 			this.stargateMap.put(address, Stargate.deserialize(server, stargates.getCompound(stargate), address));
 		});

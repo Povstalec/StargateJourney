@@ -210,7 +210,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 				if(!isConnected())
 					openChevron();
 				else
-					disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN);
+					disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN, true);
 			}
 		}
 		else if(this.signalStrength == 0 && this.previousSignalStrength == 15)

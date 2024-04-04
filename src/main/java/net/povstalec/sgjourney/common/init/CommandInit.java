@@ -172,7 +172,7 @@ public class CommandInit
 		if(galaxiesOptional.isPresent())
 		{
 			List<Entry<Serializable, Address>> galaxies = galaxiesOptional.get().entrySet().stream().toList();
-			
+
 			if(!galaxies.isEmpty())
 			{
 				// Creates a chat message for each galaxy the Dimension is located in
@@ -201,10 +201,11 @@ public class CommandInit
 						context.getSource().getPlayer().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.GOLD)));
 					}
 				}
+				return Command.SINGLE_SUCCESS;
 			}
 		}
-		else
-			context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -258,8 +259,8 @@ public class CommandInit
 					{
 						Style style = Style.EMPTY;
 						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.getAddress().toString()));
-						context.getSource().getPlayer().sendSystemMessage(Component.literal(stargate.getAddress().toString()).setStyle(style.applyFormat(ChatFormatting.AQUA))
+						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.get9ChevronAddress().toString()));
+						context.getSource().getPlayer().sendSystemMessage(Component.literal(stargate.get9ChevronAddress().toString()).setStyle(style.applyFormat(ChatFormatting.AQUA))
 								.append(Component.literal(" X: " + stargatePos.getX() + " Y: " + stargatePos.getY() + " Z: " + stargatePos.getZ()).withStyle(ChatFormatting.BLUE)));
 					}
 				});

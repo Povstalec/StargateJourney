@@ -380,7 +380,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 			else
 				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
 		}
@@ -433,14 +433,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			if(!isObstructed())
 			{
 				chevronSound(true, false, false, false);
-				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, false, 0);
+				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, 0, false, 0);
 				return setRecentFeedback(engageStargate(this.getAddress(), true));
 			}
 			else
 				return resetStargate(Stargate.Feedback.SELF_OBSTRUCTED, false);
 		}
 		else
-			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+			return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 		
 	}
 	
@@ -483,7 +483,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public Stargate.Feedback engageStargate(Address address, boolean doKawoosh)
 	{
-		return Dialing.dialStargate(this.level, this, address, doKawoosh);
+		Optional<Stargate> stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress());
+		
+		if(stargate.isPresent())
+			return Dialing.dialStargate((ServerLevel) this.level, stargate.get(), address, doKawoosh);
+		
+		return resetStargate(Stargate.Feedback.UNKNOWN_ERROR);
 	}
 	
 	public void connectStargate(String connectionID, ConnectionState connectionState)
@@ -628,7 +633,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return resetStargate(feedback, true);
 	}
 	
-	public Stargate.Feedback disconnectStargate(Stargate.Feedback feedback)
+	public Stargate.Feedback disconnectStargate(Stargate.Feedback feedback, boolean updateInterfaces)
 	{
 		if(this.isConnected())
 		{
@@ -638,14 +643,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 				return Stargate.Feedback.CONNECTION_FORMING;
 		}
 		
-		return bypassDisconnectStargate(feedback);
+		return bypassDisconnectStargate(feedback, updateInterfaces);
 	}
 	
-	public Stargate.Feedback bypassDisconnectStargate(Stargate.Feedback feedback)
+	public Stargate.Feedback bypassDisconnectStargate(Stargate.Feedback feedback, boolean updateInterfaces)
 	{
 		if(connectionID != null && !connectionID.equals(EMPTY))
 			StargateNetwork.get(level).terminateConnection(connectionID, feedback);
-		return resetStargate(feedback, false);
+		return resetStargate(feedback, updateInterfaces);
 	}
 	
 	public void updateStargate(boolean updateInterfaces)
@@ -707,7 +712,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public Stargate.Feedback setRecentFeedback(Stargate.Feedback feedback)
 	{
-		this.recentFeedback = feedback;
+		//TODO Is this a good idea?
+		if(feedback != Stargate.Feedback.NONE)
+			this.recentFeedback = feedback;
 		
 		sendDHDFeedback(feedback);
 		updateDHD();
@@ -801,10 +808,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		this.restrictNetwork = restrictNetwork;
 	}
 	
-	public boolean isRestricted(AbstractStargateEntity dialingStargate)
+	public boolean isRestricted(int network)
 	{
 		if(this.getRestrictNetwork())
-			return dialingStargate.getNetwork() != this.getNetwork();
+			return network != this.getNetwork();
 		
 		return false;
 	}
@@ -1390,16 +1397,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant));
 	}
 	
-	public static void checkStargate(AbstractStargateEntity stargate)
+	public String getConnectionID()
 	{
-		if(stargate == null)
-			StargateJourney.LOGGER.error("Stargate does not exist");
-		
-		if(stargate.isConnected())
-		{
-			if(!StargateNetwork.get(stargate.getLevel()).hasConnection(stargate.connectionID))
-				stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
-		}
+		return this.connectionID;
 	}
 	
 	//============================================================================================

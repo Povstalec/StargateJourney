@@ -171,7 +171,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 			else
 				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
 		}
@@ -283,14 +283,14 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		else if(currentSymbol < 0)
 			currentSymbol = 35;
 	}
-	
+
 	@Override
-	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
+	protected void resetAddress(boolean updateInterfaces)
 	{
 		currentSymbol = 0;
 		symbolBuffer = 0;
 		addressBuffer.reset();
-		return super.resetStargate(feedback);
+		super.resetAddress(updateInterfaces);
 	}
 
 	@Override
