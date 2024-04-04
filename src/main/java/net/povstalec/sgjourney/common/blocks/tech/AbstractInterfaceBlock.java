@@ -185,7 +185,9 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	private int getConnectionOutput(EnergyBlockEntity blockEntity)
 	{
 		if(blockEntity instanceof AbstractStargateEntity stargate)
-			return stargate.isConnected() ? 15 : 0;
+			return stargate.isConnected()
+					? (stargate.isDialingOut() ? 15 : 7)
+					: 0;
 		return 0;
 	}
 	
