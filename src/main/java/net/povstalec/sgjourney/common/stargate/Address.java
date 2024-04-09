@@ -329,6 +329,11 @@ public final class Address
 				this.getSymbol(6), this.getSymbol(7));
 	}
 	
+	public Address.Immutable immutable()
+	{
+		return new Address.Immutable(this);
+	}
+	
 	//============================================================================================
 	//*******************************************Static*******************************************
 	//============================================================================================
@@ -381,5 +386,105 @@ public final class Address
 	public static int[] integerListToArray(List<Integer> integerList)
 	{
 		return integerList.stream().mapToInt((integer) -> integer).toArray();
+	}
+	
+	
+	
+	public static final class Immutable
+	{
+		private final int[] addressArray;
+		
+		public Immutable(Address address)
+		{
+			this.addressArray = address.toArray();
+		}
+		
+		public final Address toAddress()
+		{
+			return new Address(addressArray);
+		}
+		
+		public final int getLength()
+		{
+			return addressArray.length;
+		}
+		
+		public final int getSymbol(int number)
+		{
+			if(number < 0 || number >= getLength())
+				return 0;
+			
+			return addressArray[number];
+		}
+		
+		public final int[] toArray()
+		{
+			return addressArray;
+		}
+		
+		@Override
+		public final String toString()
+		{
+			return addressIntArrayToString(this.addressArray);
+		}
+		
+		public final Address.Type getType()
+		{
+			return Address.Type.fromInt(this.getLength());
+		}
+		
+		public final Component toComponent(boolean copyToClipboard)
+		{
+			ChatFormatting chatFormatting;
+			
+			switch(this.getType())
+			{
+			case ADDRESS_7_CHEVRON:
+				chatFormatting = ChatFormatting.GOLD;
+				break;
+			case ADDRESS_8_CHEVRON:
+				chatFormatting = ChatFormatting.LIGHT_PURPLE;
+				break;
+			case ADDRESS_9_CHEVRON:
+				chatFormatting = ChatFormatting.AQUA;
+				break;
+			default:
+				chatFormatting = ChatFormatting.GRAY;
+			}
+			
+			Style style = Style.EMPTY;
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
+			
+			return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
+		}
+		
+		public final boolean containsSymbol(int symbol)
+		{
+			for(int i = 0; i < getLength(); i++)
+			{
+				if(addressArray[i] == symbol)
+					return true;
+			}
+			
+			return false;
+		}
+		
+		@Override
+		public final boolean equals(Object object)
+		{
+			if(object instanceof Address address)
+				return Arrays.equals(this.addressArray, address.addressArray);
+			
+			return false;
+		}
+		
+		@Override
+		public final int hashCode()
+		{
+			return Objects.hash(this.getSymbol(0), this.getSymbol(1), this.getSymbol(2),
+					this.getSymbol(3), this.getSymbol(4), this.getSymbol(5),
+					this.getSymbol(6), this.getSymbol(7));
+		}
 	}
 }
