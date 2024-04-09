@@ -317,6 +317,8 @@ public final class Address
 	{
 		if(object instanceof Address address)
 			return Arrays.equals(this.addressArray, address.addressArray);
+		else if(object instanceof Address.Immutable address)
+				return Arrays.equals(this.addressArray, address.addressArray);
 		
 		return false;
 	}
@@ -476,6 +478,8 @@ public final class Address
 		public final boolean equals(Object object)
 		{
 			if(object instanceof Address.Immutable address)
+				return Arrays.equals(this.addressArray, address.addressArray);
+			else if(object instanceof Address address)
 				return Arrays.equals(this.addressArray, address.addressArray);
 			
 			return false;
