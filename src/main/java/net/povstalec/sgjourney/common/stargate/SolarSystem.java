@@ -146,13 +146,13 @@ public class SolarSystem
 		private final ResourceKey<PointOfOrigin> pointOfOrigin;
 		private final ResourceKey<Symbols> symbols;
 		private final int symbolPrefix;
-		private final Address extragalacticAddress;
+		private final Address.Immutable extragalacticAddress;
 		private final List<ResourceKey<Level>> dimensions;
 		
-		private HashMap<Galaxy.Serializable, Address> galacticAddresses = new HashMap<Galaxy.Serializable, Address>();
+		private HashMap<Galaxy.Serializable, Address.Immutable> galacticAddresses = new HashMap<Galaxy.Serializable, Address.Immutable>();
 		private List<Stargate> stargates = new ArrayList<Stargate>();
 		
-		public Serializable(Address extragalacticAddress, ResourceKey<SolarSystem> solarSystemKey, SolarSystem solarSystem)
+		public Serializable(Address.Immutable extragalacticAddress, ResourceKey<SolarSystem> solarSystemKey, SolarSystem solarSystem)
 		{
 			this.solarSystemKey = Optional.of(solarSystemKey);
 			
@@ -166,7 +166,7 @@ public class SolarSystem
 			this.dimensions = solarSystem.getDimensions();
 		}
 		
-		public Serializable(String translationName, Address extragalacticAddress, 
+		public Serializable(String translationName, Address.Immutable extragalacticAddress, 
 				ResourceKey<PointOfOrigin> pointOfOrigin, ResourceKey<Symbols> symbols, 
 				int symbolPrefix, List<ResourceKey<Level>> dimensions)
 		{
@@ -214,7 +214,7 @@ public class SolarSystem
 			return symbolPrefix;
 		}
 		
-		public Address getExtragalacticAddress()
+		public Address.Immutable getExtragalacticAddress()
 		{
 			return extragalacticAddress;
 		}
@@ -229,17 +229,17 @@ public class SolarSystem
 			return this.solarSystemKey.isEmpty();
 		}
 		
-		public HashMap<Galaxy.Serializable, Address> getGalacticAddresses()
+		public HashMap<Galaxy.Serializable, Address.Immutable> getGalacticAddresses()
 		{
 			return this.galacticAddresses;
 		}
 		
-		public void addToGalaxy(Galaxy.Serializable galaxy, Address address)
+		public void addToGalaxy(Galaxy.Serializable galaxy, Address.Immutable address)
 		{
 			this.galacticAddresses.put(galaxy, address);
 		}
 		
-		public Optional<Address> getAddressFromGalaxy(Galaxy.Serializable galaxy)
+		public Optional<Address.Immutable> getAddressFromGalaxy(Galaxy.Serializable galaxy)
 		{
 			if(this.galacticAddresses.containsKey(galaxy))
 				return Optional.of(this.galacticAddresses.get(galaxy));
@@ -252,7 +252,7 @@ public class SolarSystem
 		 * @param address
 		 * @return
 		 */
-		public Optional<SolarSystem.Serializable> getSolarSystemFromAddress(Address address)
+		public Optional<SolarSystem.Serializable> getSolarSystemFromAddress(Address.Immutable address)
 		{
 			List<SolarSystem.Serializable> solarSystems = new ArrayList<SolarSystem.Serializable>();
 
@@ -360,7 +360,7 @@ public class SolarSystem
 				ResourceKey<SolarSystem> solarSystemKey = Conversion.stringToSolarSystemKey(solarSystemTag.getString(SOLAR_SYSTEM_KEY));
 				
 				SolarSystem solarSystem = solarSystemRegistry.get(solarSystemKey);
-				Address extragalacticAddress = new Address(solarSystemTag.getIntArray(EXTRAGALACTIC_ADDRESS));
+				Address.Immutable extragalacticAddress = new Address(solarSystemTag.getIntArray(EXTRAGALACTIC_ADDRESS)).immutable();
 				
 				return new SolarSystem.Serializable(extragalacticAddress, solarSystemKey, solarSystem);
 			}
@@ -371,7 +371,7 @@ public class SolarSystem
 				ResourceKey<PointOfOrigin> pointOfOrigin = Conversion.stringToPointOfOrigin(solarSystemTag.getString(POINT_OF_ORIGIN));
 				ResourceKey<Symbols> symbols = Conversion.stringToSymbols(solarSystemTag.getString(SYMBOLS));
 				int symbolPrefix = solarSystemTag.getInt(SYMBOL_PREFIX);
-				Address extragalacticAddress = new Address(solarSystemTag.getIntArray(EXTRAGALACTIC_ADDRESS));
+				Address.Immutable extragalacticAddress = new Address(solarSystemTag.getIntArray(EXTRAGALACTIC_ADDRESS)).immutable();
 				
 				List<ResourceKey<Level>> dimensions = new ArrayList<ResourceKey<Level>>();
 				solarSystemTag.getCompound(DIMENSIONS).getAllKeys().forEach(dimensionString ->

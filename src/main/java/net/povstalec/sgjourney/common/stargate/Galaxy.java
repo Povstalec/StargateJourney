@@ -85,11 +85,11 @@ public class Galaxy
 		private final ResourceKey<Galaxy> galaxyKey;
 		private final Galaxy galaxy;
 		
-		private HashMap<Address, SolarSystem.Serializable> solarSystems;
+		private HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems;
 		private List<ResourceKey<PointOfOrigin>> pointsOfOrigin;
 		
 		public Serializable(ResourceKey<Galaxy> galaxyKey, Galaxy galaxy, 
-				HashMap<Address, SolarSystem.Serializable> solarSystems, List<ResourceKey<PointOfOrigin>> pointsOfOrigin)
+				HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems, List<ResourceKey<PointOfOrigin>> pointsOfOrigin)
 		{
 			this.galaxyKey = galaxyKey;
 			this.galaxy = galaxy;
@@ -131,12 +131,12 @@ public class Galaxy
 			});
 		}
 		
-		public boolean containsSolarSystem(Address address)
+		public boolean containsSolarSystem(Address.Immutable address)
 		{
 			return this.solarSystems.containsKey(address);
 		}
 		
-		public Optional<SolarSystem.Serializable> getSolarSystem(Address address)
+		public Optional<SolarSystem.Serializable> getSolarSystem(Address.Immutable address)
 		{
 			if(!containsSolarSystem(address))
 				return Optional.empty();
@@ -144,13 +144,13 @@ public class Galaxy
 			return Optional.of(this.solarSystems.get(address));
 		}
 		
-		public void addSolarSystem(Address address, SolarSystem.Serializable solarSystem)
+		public void addSolarSystem(Address.Immutable address, SolarSystem.Serializable solarSystem)
 		{
 			this.solarSystems.put(address, solarSystem);
 			System.out.println("Added " + solarSystem.getName() + " to " + this.getKey().location().toString() + " as " + address.toString());
 		}
 		
-		public void removeSolarSystem(Address address)
+		public void removeSolarSystem(Address.Immutable address)
 		{
 			if(containsSolarSystem(address))
 				this.solarSystems.remove(address);
@@ -205,21 +205,21 @@ public class Galaxy
 			return galaxyTag;
 		}
 		
-		public static Galaxy.Serializable deserialize(MinecraftServer server, HashMap<Address, SolarSystem.Serializable> solarSystems,
+		public static Galaxy.Serializable deserialize(MinecraftServer server, HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems,
 				Registry<Galaxy> galaxyRegistry, CompoundTag galaxyTag)
 		{
 			ResourceKey<Galaxy> galaxyKey = Conversion.stringToGalaxyKey(galaxyTag.getString(GALAXY_KEY));
 			Galaxy galaxy = galaxyRegistry.get(galaxyKey);
 			
-			HashMap<Address, SolarSystem.Serializable> galaxySolarSystems = new HashMap<Address, SolarSystem.Serializable>();
+			HashMap<Address.Immutable, SolarSystem.Serializable> galaxySolarSystems = new HashMap<Address.Immutable, SolarSystem.Serializable>();
 			
 			CompoundTag solarSystemsTag = galaxyTag.getCompound(SOLAR_SYSTEMS);
 
 			//System.out.println("Galaxy: " + galaxyKey.location().toString());
 			solarSystemsTag.getAllKeys().forEach(addressString ->
 			{
-				Address extragalacticAddress = new Address(solarSystemsTag.getIntArray(addressString)); // 8-chevron address
-				Address address = new Address(addressString); // 7-chevron address
+				Address.Immutable extragalacticAddress = new Address(solarSystemsTag.getIntArray(addressString)).immutable(); // 8-chevron address
+				Address.Immutable address = new Address(addressString).immutable(); // 7-chevron address
 				
 				if(solarSystems.containsKey(extragalacticAddress))
 				{

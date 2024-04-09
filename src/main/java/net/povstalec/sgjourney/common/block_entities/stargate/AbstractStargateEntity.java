@@ -289,7 +289,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public void addStargateToNetwork()
 	{
-		if(id9ChevronAddress.isEmpty() || BlockEntityList.get(level).getStargate(id9ChevronAddress).isPresent())
+		if(id9ChevronAddress.isEmpty() || BlockEntityList.get(level).getStargate(id9ChevronAddress.immutable()).isPresent())
 			set9ChevronAddress(generate9ChevronAddress());
 		
 		StargateNetwork.get(level).addStargate(this);
@@ -300,7 +300,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public void removeStargateFromNetwork()
 	{
-		StargateNetwork.get(level).removeStargate(level, id9ChevronAddress);
+		StargateNetwork.get(level).removeStargate(level, id9ChevronAddress.immutable());
 	}
 	
 	protected void set9ChevronAddress(Address address)
@@ -327,7 +327,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		{
 			address = new Address().randomAddress(8, 36, random.nextLong());
 			
-			if(BlockEntityList.get(level).getStargate(address).isEmpty())
+			if(BlockEntityList.get(level).getStargate(address.immutable()).isEmpty())
 				break;
 		}
 		
@@ -483,10 +483,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public Stargate.Feedback engageStargate(Address address, boolean doKawoosh)
 	{
-		Optional<Stargate> stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress());
+		Optional<Stargate> stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress().immutable());
 		
 		if(stargate.isPresent())
-			return Dialing.dialStargate((ServerLevel) this.level, stargate.get(), address, doKawoosh);
+			return Dialing.dialStargate((ServerLevel) this.level, stargate.get(), address.immutable(), doKawoosh);
 		
 		return resetStargate(Stargate.Feedback.UNKNOWN_ERROR);
 	}
@@ -690,16 +690,16 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			Optional<Galaxy.Serializable> galaxy = Universe.get(this.level).getGalaxyFromDimension(dimension);
 			if(galaxy.isPresent())
 			{
-				Optional<Address> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
+				Optional<Address.Immutable> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
 				if(address.isPresent())
-					return address.get();
+					return address.get().mutable();
 			}
 		}
 		else if(addressLength == 7)
 		{
-			Optional<Address> address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
+			Optional<Address.Immutable> address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
 			if(address.isPresent())
-				return address.get();
+				return address.get().mutable();
 		}
 		
 		return this.get9ChevronAddress();

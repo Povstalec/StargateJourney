@@ -116,7 +116,7 @@ public class StargateNetwork extends SavedData
 	
 	public void addStargates(MinecraftServer server)
 	{
-		HashMap<Address, Stargate> stargates = BlockEntityList.get(server).getStargates();
+		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
 		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
@@ -142,11 +142,11 @@ public class StargateNetwork extends SavedData
 	
 	private void resetStargates(MinecraftServer server, boolean updateInterfaces)
 	{
-		HashMap<Address, Stargate> stargates = BlockEntityList.get(server).getStargates();
+		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
 		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
-			Address address = stargateInfo.getKey();
+			Address.Immutable address = stargateInfo.getKey();
 			Stargate mapStargate = stargateInfo.getValue();
 			
 			if(mapStargate != null)
@@ -163,7 +163,7 @@ public class StargateNetwork extends SavedData
 					
 					if(blockentity instanceof AbstractStargateEntity stargate)
 					{
-						if(!address.equals(stargate.get9ChevronAddress()))
+						if(!address.equals(stargate.get9ChevronAddress().immutable()))
 							removeStargate(server.getLevel(dimension), address);
 						
 						stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
@@ -196,7 +196,7 @@ public class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public void removeStargate(Level level, Address address)
+	public void removeStargate(Level level, Address.Immutable address)
 	{
 		Optional<Stargate> stargate = getStargate(address);
 		
@@ -211,7 +211,7 @@ public class StargateNetwork extends SavedData
 	
 	public void updateStargate(ServerLevel level, AbstractStargateEntity stargate)
 	{
-		Optional<Stargate> stargateOptional = getStargate(stargate.get9ChevronAddress());
+		Optional<Stargate> stargateOptional = getStargate(stargate.get9ChevronAddress().immutable());
 		
 		if(stargateOptional.isPresent())
 		{
@@ -221,7 +221,7 @@ public class StargateNetwork extends SavedData
 		}
 	}
 	
-	public Optional<Stargate> getStargate(Address address)
+	public Optional<Stargate> getStargate(Address.Immutable address)
 	{
 		if(address.getLength() == 8)
 		{
@@ -319,7 +319,7 @@ public class StargateNetwork extends SavedData
 			}
 		}
 		
-		return Stargate.Feedback.UNKNOWN_ERROR;
+		return Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
 	}
 	
 	public boolean hasConnection(String uuid)

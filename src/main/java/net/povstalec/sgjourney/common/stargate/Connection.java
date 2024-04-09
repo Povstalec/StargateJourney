@@ -125,8 +125,8 @@ public class Connection
 			if(dialingSystem.equals(dialedSystem))
 				return Connection.Type.SYSTEM_WIDE;
 			
-			List<Entry<Galaxy.Serializable, Address>> dialingGalaxies = dialingSystem.getGalacticAddresses().entrySet().stream().toList();
-			List<Entry<Galaxy.Serializable, Address>> dialedGalaxies = dialedSystem.getGalacticAddresses().entrySet().stream().toList();
+			List<Entry<Galaxy.Serializable, Address.Immutable>> dialingGalaxies = dialingSystem.getGalacticAddresses().entrySet().stream().toList();
+			List<Entry<Galaxy.Serializable, Address.Immutable>> dialedGalaxies = dialedSystem.getGalacticAddresses().entrySet().stream().toList();
 			
 			if(!dialingGalaxies.isEmpty() && !dialedGalaxies.isEmpty())
 			{

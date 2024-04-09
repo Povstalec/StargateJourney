@@ -64,7 +64,7 @@ public class Universe extends SavedData
 
 	private MinecraftServer server;
 
-	private HashMap<Address, SolarSystem.Serializable> solarSystems = new HashMap<Address, SolarSystem.Serializable>();
+	private HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems = new HashMap<Address.Immutable, SolarSystem.Serializable>();
 	private HashMap<ResourceKey<Level>, SolarSystem.Serializable> dimensions = new HashMap<ResourceKey<Level>, SolarSystem.Serializable>();
 	private HashMap<String, Galaxy.Serializable> galaxies = new HashMap<String, Galaxy.Serializable>();
 	
@@ -126,7 +126,7 @@ public class Universe extends SavedData
         {
         	ResourceKey<Galaxy> galaxyKey = galaxyEntry.getKey();
         	
-        	Galaxy.Serializable galaxy = new Galaxy.Serializable(galaxyKey, galaxyEntry.getValue(), new HashMap<Address, SolarSystem.Serializable>(), new ArrayList<ResourceKey<PointOfOrigin>>());
+        	Galaxy.Serializable galaxy = new Galaxy.Serializable(galaxyKey, galaxyEntry.getValue(), new HashMap<Address.Immutable, SolarSystem.Serializable>(), new ArrayList<ResourceKey<PointOfOrigin>>());
         	
         	this.galaxies.put(galaxyEntry.getKey().location().toString(), galaxy);
         });
@@ -210,10 +210,10 @@ public class Universe extends SavedData
 	
 	private void addSolarSystemFromDataPack(MinecraftServer server, ResourceKey<SolarSystem> solarSystemKey, SolarSystem solarSystem)
 	{
-		Address extragalacticAddress;
+		Address.Immutable extragalacticAddress;
 		
 		if(useDatapackAddresses(server))
-			extragalacticAddress = new Address(solarSystem.getAddressArray());
+			extragalacticAddress = new Address(solarSystem.getAddressArray()).immutable();
 		else
 		{
 			int prefix = solarSystem.getSymbolPrefix();
@@ -236,7 +236,7 @@ public class Universe extends SavedData
 					{
 						Pair<List<Integer>,Boolean> randomizableAddress = galaxyAndAddress.getSecond();
 						
-						Address address;
+						Address.Immutable address;
 						boolean isRandomizable = randomizableAddress.getSecond();
 						
 						// Either use the Datapack Address or generate a new Address
@@ -246,7 +246,7 @@ public class Universe extends SavedData
 							address = generateAddress(galaxyKey.location().toString(), galaxy.getSize(), systemValue);
 						}
 						else
-							address = new Address(Address.integerListToArray(randomizableAddress.getFirst()));
+							address = new Address(Address.integerListToArray(randomizableAddress.getFirst())).immutable();
 						
 						galaxy.addSolarSystem(address, networkSolarSystem);
 			    		networkSolarSystem.addToGalaxy(galaxy, address);
@@ -272,7 +272,7 @@ public class Universe extends SavedData
 		
 		int milkyWayPrefix = 1;
 		
-		Address extragalacticAddress = generateExtragalacticAddress(milkyWayPrefix, seed);
+		Address.Immutable extragalacticAddress = generateExtragalacticAddress(milkyWayPrefix, seed);
 
 		String galaxyID = StargateJourney.MODID + ":milky_way";
 		Galaxy.Serializable galaxy = this.galaxies.get(galaxyID);
@@ -291,7 +291,7 @@ public class Universe extends SavedData
 			// Generates a random address for the Solar System and adds it to Milky Way under that address
 			long systemValue = generateRandomAddressSeed(server, solarSystem.getName());
 			
-			Address address = generateAddress(galaxyID, defaultGalaxy.getType().getSize(), systemValue);
+			Address.Immutable address = generateAddress(galaxyID, defaultGalaxy.getType().getSize(), systemValue);
 			
 			if(galaxy != null)
 				galaxy.addSolarSystem(address, solarSystem);
@@ -328,14 +328,14 @@ public class Universe extends SavedData
 		return seed;
 	}
 	
-	private Address generateExtragalacticAddress(int prefix, long seed)
+	private Address.Immutable generateExtragalacticAddress(int prefix, long seed)
 	{
-		Address extragalacticAddress;
+		Address.Immutable extragalacticAddress;
 		
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			extragalacticAddress = new Address().randomAddress(prefix, 7, 36, seed);
+			extragalacticAddress = new Address().randomAddress(prefix, 7, 36, seed).immutable();
 			
 			if(!this.solarSystems.containsKey(extragalacticAddress))
 				break;
@@ -344,7 +344,7 @@ public class Universe extends SavedData
 		return extragalacticAddress;
 	}
 	
-	private boolean saveSolarSystem(Address extragalacticAddress, SolarSystem.Serializable solarSystem)
+	private boolean saveSolarSystem(Address.Immutable extragalacticAddress, SolarSystem.Serializable solarSystem)
 	{
 		String solarSystemName = solarSystem.getName();
 		
@@ -365,14 +365,14 @@ public class Universe extends SavedData
 		return true;
 	}
 	
-	private Address generateAddress(String galaxyID, int galaxySize, long seed)
+	private Address.Immutable generateAddress(String galaxyID, int galaxySize, long seed)
 	{
-		Address address;
+		Address.Immutable address;
 		
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			address = new Address().randomAddress(6, galaxySize, seed);
+			address = new Address().randomAddress(6, galaxySize, seed).immutable();
 			
 			if(!this.galaxies.get(galaxyID).containsSolarSystem(address))
 				break;
@@ -457,7 +457,7 @@ public class Universe extends SavedData
 		return Optional.of(this.dimensions.get(dimension));
 	}
 	
-	public Optional<SolarSystem.Serializable> getSolarSystemFromExtragalacticAddress(Address extragalacticAddress)
+	public Optional<SolarSystem.Serializable> getSolarSystemFromExtragalacticAddress(Address.Immutable extragalacticAddress)
 	{
 		if(!this.solarSystems.containsKey(extragalacticAddress))
 			return Optional.empty();
@@ -478,7 +478,7 @@ public class Universe extends SavedData
 		return dimensions;
 	}
 	
-	public Optional<List<ResourceKey<Level>>> getDimensionsFromSolarSystem(Address extragalacticAddress)
+	public Optional<List<ResourceKey<Level>>> getDimensionsFromSolarSystem(Address.Immutable extragalacticAddress)
 	{
 		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromExtragalacticAddress(extragalacticAddress);
 		
@@ -488,7 +488,7 @@ public class Universe extends SavedData
 		return Optional.empty();
 	}
 	
-	public Optional<SolarSystem.Serializable> getSolarSystemInGalaxy(String galaxyID, Address address)
+	public Optional<SolarSystem.Serializable> getSolarSystemInGalaxy(String galaxyID, Address.Immutable address)
 	{
 		if(!this.galaxies.containsKey(galaxyID))
 			return Optional.empty();
@@ -496,7 +496,7 @@ public class Universe extends SavedData
 		return this.galaxies.get(galaxyID).getSolarSystem(address);
 	}
 	
-	public Optional<SolarSystem.Serializable> getSolarSystemFromAddress(ResourceKey<Level> dimension, Address address)
+	public Optional<SolarSystem.Serializable> getSolarSystemFromAddress(ResourceKey<Level> dimension, Address.Immutable address)
 	{
 		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
 		
@@ -506,7 +506,7 @@ public class Universe extends SavedData
 		return Optional.empty();
 	}
 	
-	public Optional<HashMap<Galaxy.Serializable, Address>> getGalaxiesFromDimension(ResourceKey<Level> dimension)
+	public Optional<HashMap<Galaxy.Serializable, Address.Immutable>> getGalaxiesFromDimension(ResourceKey<Level> dimension)
 	{
 		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
 		
@@ -518,11 +518,11 @@ public class Universe extends SavedData
 	
 	public Optional<Galaxy.Serializable> getGalaxyFromDimension(ResourceKey<Level> dimension)
 	{
-		Optional<HashMap<Galaxy.Serializable, Address>> galaxiesOptional = getGalaxiesFromDimension(dimension);
+		Optional<HashMap<Galaxy.Serializable, Address.Immutable>> galaxiesOptional = getGalaxiesFromDimension(dimension);
 		
 		if(galaxiesOptional.isPresent())
 		{
-			HashMap<Galaxy.Serializable, Address> galaxies = galaxiesOptional.get();
+			HashMap<Galaxy.Serializable, Address.Immutable> galaxies = galaxiesOptional.get();
 			
 			if(!galaxies.isEmpty())
 				return Optional.of(galaxies.entrySet().iterator().next().getKey());
@@ -531,7 +531,7 @@ public class Universe extends SavedData
 		return Optional.empty();
 	}
 	
-	public Optional<Address> getAddressInGalaxyFromSolarSystem(String galaxyID, SolarSystem.Serializable solarSystem)
+	public Optional<Address.Immutable> getAddressInGalaxyFromSolarSystem(String galaxyID, SolarSystem.Serializable solarSystem)
 	{
 		if(this.galaxies.containsKey(galaxyID))
 		{
@@ -543,7 +543,7 @@ public class Universe extends SavedData
 		return Optional.empty();
 	}
 	
-	public Optional<Address> getAddressInGalaxyFromDimension(String galaxyID, ResourceKey<Level> dimension)
+	public Optional<Address.Immutable> getAddressInGalaxyFromDimension(String galaxyID, ResourceKey<Level> dimension)
 	{
 		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
 		
@@ -553,7 +553,7 @@ public class Universe extends SavedData
 		return Optional.empty();
 	}
 	
-	public Optional<Address> getExtragalacticAddressFromDimension(ResourceKey<Level> dimension)
+	public Optional<Address.Immutable> getExtragalacticAddressFromDimension(ResourceKey<Level> dimension)
 	{
 		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
 		
@@ -669,7 +669,7 @@ public class Universe extends SavedData
 	{
 		tag.getAllKeys().forEach(dimensionString ->
 		{
-			Address extragalacticAddress = new Address(tag.getIntArray(dimensionString));
+			Address.Immutable extragalacticAddress = new Address(tag.getIntArray(dimensionString)).immutable();
 			
 			if(this.solarSystems.containsKey(extragalacticAddress))
 			{

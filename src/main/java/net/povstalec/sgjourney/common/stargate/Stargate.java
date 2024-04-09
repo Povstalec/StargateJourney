@@ -21,7 +21,7 @@ public class Stargate
 	public static final String DIMENSION = "Dimension";
 	public static final String COORDINATES = "Coordinates";
 	
-	private final Address address;
+	private final Address.Immutable address;
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
 
@@ -34,7 +34,7 @@ public class Stargate
 	
 	public Stargate(AbstractStargateEntity stargate)
 	{
-		this.address = stargate.get9ChevronAddress();
+		this.address = stargate.get9ChevronAddress().immutable();
 		this.dimension = stargate.getLevel().dimension();
 		this.blockPos = stargate.getBlockPos();
 
@@ -46,7 +46,7 @@ public class Stargate
 		this.network = stargate.getNetwork();
 	}
 	
-	public Address get9ChevronAddress()
+	public Address.Immutable get9ChevronAddress()
 	{
 		return this.address;
 	}
@@ -213,7 +213,7 @@ public class Stargate
 		return stargateTag;
 	}
 	
-	public static Stargate deserialize(MinecraftServer server, CompoundTag tag, Address address)
+	public static Stargate deserialize(MinecraftServer server, CompoundTag tag, Address.Immutable address)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));

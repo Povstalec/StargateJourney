@@ -33,7 +33,7 @@ public class BlockEntityList extends SavedData
 	
 	private MinecraftServer server;
 	
-	protected HashMap<Address, Stargate> stargateMap = new HashMap<>();
+	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<>();
 	protected HashMap<String, Transporter> transporterMap = new HashMap<>();
 	
 	/**
@@ -43,7 +43,7 @@ public class BlockEntityList extends SavedData
 	 */
 	public Optional<Stargate> addStargate(AbstractStargateEntity stargate)
 	{
-		Address address = stargate.get9ChevronAddress();
+		Address.Immutable address = stargate.get9ChevronAddress().immutable();
 		
 		if(address.getLength() != 8)
 			return Optional.empty();
@@ -77,7 +77,7 @@ public class BlockEntityList extends SavedData
 		this.setDirty();
 	}
 	
-	public void removeStargate(Address id)
+	public void removeStargate(Address.Immutable id)
 	{
 		if(!this.stargateMap.containsKey(id))
 		{
@@ -111,9 +111,9 @@ public class BlockEntityList extends SavedData
 	}
 
     @SuppressWarnings("unchecked")
-	public HashMap<Address, Stargate> getStargates()
+	public HashMap<Address.Immutable, Stargate> getStargates()
 	{
-		return (HashMap<Address, Stargate>) stargateMap.clone();
+		return (HashMap<Address.Immutable, Stargate>) stargateMap.clone();
 	}
 
     @SuppressWarnings("unchecked")
@@ -122,7 +122,7 @@ public class BlockEntityList extends SavedData
 		return (HashMap<String, Transporter>) transporterMap.clone();
 	}
 	
-	public Optional<Stargate> getStargate(Address address)
+	public Optional<Stargate> getStargate(Address.Immutable address)
 	{
 		if(address.getLength() == 8)
 		{
@@ -199,7 +199,7 @@ public class BlockEntityList extends SavedData
 		stargates.getAllKeys().stream().forEach(stargate ->
 		{
 			//StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
-			Address address = new Address(stargate);
+			Address.Immutable address = new Address(stargate).immutable();
 			this.stargateMap.put(address, Stargate.deserialize(server, stargates.getCompound(stargate), address));
 		});
 	}

@@ -148,7 +148,7 @@ public final class Address
 		
 		if(galaxy.isPresent())
 		{
-			Optional<Address> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
+			Optional<Address.Immutable> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
 			
 			if(address.isPresent())
 			{
@@ -399,11 +399,6 @@ public final class Address
 			this.addressArray = address.toArray();
 		}
 		
-		public final Address toAddress()
-		{
-			return new Address(addressArray);
-		}
-		
 		public final int getLength()
 		{
 			return addressArray.length;
@@ -470,10 +465,17 @@ public final class Address
 			return false;
 		}
 		
+		public final Address.Immutable copy()
+		{
+			Address.Immutable copyAddress = new Address(true).fromArray(addressArray).immutable();
+			
+			return copyAddress;
+		}
+		
 		@Override
 		public final boolean equals(Object object)
 		{
-			if(object instanceof Address address)
+			if(object instanceof Address.Immutable address)
 				return Arrays.equals(this.addressArray, address.addressArray);
 			
 			return false;
@@ -485,6 +487,11 @@ public final class Address
 			return Objects.hash(this.getSymbol(0), this.getSymbol(1), this.getSymbol(2),
 					this.getSymbol(3), this.getSymbol(4), this.getSymbol(5),
 					this.getSymbol(6), this.getSymbol(7));
+		}
+		
+		public final Address mutable()
+		{
+			return new Address(addressArray);
 		}
 	}
 }

@@ -8,7 +8,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class SGJourneyEvents
 {
-	public static boolean onStargateDial(MinecraftServer server, Stargate stargate, Address address)
+	public static boolean onStargateDial(MinecraftServer server, Stargate stargate, Address.Immutable address)
     {
         return MinecraftForge.EVENT_BUS.post(new StargateEvent.Dial(server, stargate, address));
     }

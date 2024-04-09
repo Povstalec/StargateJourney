@@ -27,7 +27,7 @@ public class Dialing
 	
 	public static final int[] DEFAULT_CHEVRON_CONFIGURATION = DIALED_7_CHEVRON_CONFIGURATION;
 	
-	public static Stargate.Feedback dialStargate(ServerLevel level, Stargate dialingStargate, Address address, boolean doKawoosh)
+	public static Stargate.Feedback dialStargate(ServerLevel level, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
 	{
 		if(SGJourneyEvents.onStargateDial(level.getServer(), dialingStargate, address))
 			return Stargate.Feedback.NONE;
@@ -45,7 +45,7 @@ public class Dialing
 		}
 	}
 	
-	private static Stargate.Feedback get7ChevronStargate(ServerLevel level, Stargate dialingStargate, Address address, boolean doKawoosh)
+	private static Stargate.Feedback get7ChevronStargate(ServerLevel level, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
 	{
 		Optional<SolarSystem.Serializable> solarSystem = Universe.get(level).getSolarSystemFromAddress(level.dimension(), address);
 		
@@ -55,7 +55,7 @@ public class Dialing
 		return getStargate(level, dialingStargate, solarSystem.get(), Address.Type.ADDRESS_7_CHEVRON, doKawoosh);
 	}
 	
-	private static Stargate.Feedback get8ChevronStargate(ServerLevel level, Stargate dialingStargate, Address extragalacticAddress, boolean doKawoosh)
+	private static Stargate.Feedback get8ChevronStargate(ServerLevel level, Stargate dialingStargate, Address.Immutable extragalacticAddress, boolean doKawoosh)
 	{
 		Optional<SolarSystem.Serializable> solarSystem = Universe.get(level).getSolarSystemFromExtragalacticAddress(extragalacticAddress);
 		
@@ -140,7 +140,7 @@ public class Dialing
 		return;
 	}
 	
-	private static Stargate.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh)
+	private static Stargate.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
 	{
 		Optional<Stargate> stargate = StargateNetwork.get(server).getStargate(address);
 		
@@ -164,7 +164,7 @@ public class Dialing
 		return dialingStargate.resetStargate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 	}
 	
-	private static Stargate.Feedback get9ChevronStargate(ServerLevel level, Stargate dialingStargate, Address address, boolean doKawoosh)
+	private static Stargate.Feedback get9ChevronStargate(ServerLevel level, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
 	{
 		return getStargateFromAddress(level.getServer(), dialingStargate, address, doKawoosh);
 	}
