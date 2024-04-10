@@ -1047,6 +1047,16 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return this.address.getLength();
 	}
 	
+	public int getRedstoneSymbolOutput()
+	{
+		return 0;
+	}
+	
+	public int getRedstoneSegmentOutput()
+	{
+		return 0;
+	}
+	
 	//============================================================================================
 	//**************************************Blockstate stuff**************************************
 	//============================================================================================
@@ -1397,6 +1407,16 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public String getConnectionID()
 	{
 		return this.connectionID;
+	}
+	
+	public void checkStargate()
+	{
+		if(isConnected())
+		{
+			// Will reset the Stargate if it incorrectly thinks it's connected
+			if(!StargateNetwork.get(getLevel()).hasConnection(getConnectionID()) || getConnectionID().equals(StargateJourney.EMPTY))
+				resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
+		}
 	}
 	
 	//============================================================================================

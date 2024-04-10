@@ -155,7 +155,7 @@ public class CommandInit
 		
 		//Dev commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("info").executes(CommandInit::printStargateNetworkInfo))
+				.then(Commands.literal("debugInfo").executes(CommandInit::printStargateNetworkInfo))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 	}
 	
@@ -415,7 +415,7 @@ public class CommandInit
 		
 		System.out.println("=============================");
 		BlockEntityList.get(level).printStargates();
-		//System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
+		StargateNetwork.get(level).printConnections();
 
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info onto the console"));
 		

@@ -183,13 +183,7 @@ public class Stargate
 				StargateJourney.LOGGER.error("Stargate does not exist");
 			else
 			{
-				if(stargate.isConnected())
-				{
-					// Will reset the Stargate if it incorrectly thinks it's connected
-					if(!StargateNetwork.get(stargate.getLevel()).hasConnection(stargate.getConnectionID()) || stargate.getConnectionID().equals(StargateJourney.EMPTY))
-						stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
-				}
-				
+				stargate.checkStargate();
 				return true;
 			}
 		}

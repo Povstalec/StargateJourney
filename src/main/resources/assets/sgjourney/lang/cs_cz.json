@@ -212,6 +212,7 @@
 	"galaxy.sgjourney.ida": "Ida",
 	"galaxy.sgjourney.othala": "Othala",
 	"galaxy.sgjourney.kaliem": "Kaliem",
+	"galaxy.sgjourney.triangulum": "Trojúhelník",
 	"galaxy.sgjourney.andromeda": "Andromeda",
 	
 	
@@ -232,6 +233,7 @@
 	"symbol_set.sgjourney.galaxy_ida": "Symboly Idy",
 	"symbol_set.sgjourney.galaxy_othala": "Symboly Othaly",
 	"symbol_set.sgjourney.galaxy_kaliem": "Symboly Kaliemu",
+	"symbol_set.sgjourney.galaxy_triangulum": "Symboly Trojúhelníku",
 	"symbol_set.sgjourney.galaxy_andromeda": "Symboly Andromedy",
 	
 	
@@ -241,6 +243,7 @@
 	"symbols.sgjourney.galaxy_ida": "Ida",
 	"symbols.sgjourney.galaxy_othala": "Othala",
 	"symbols.sgjourney.galaxy_kaliem": "Kaliem",
+	"symbols.sgjourney.galaxy_triangulum": "Trojúhelník",
 	"symbols.sgjourney.galaxy_andromeda": "Andromeda",
 	
 	"symbols.sgjourney.terra": "Terra",

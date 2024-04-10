@@ -112,6 +112,15 @@ public class Connection
 	//******************************************Utility*******************************************
 	//============================================================================================
 	
+	public final void printConnection()
+	{
+		System.out.println("-[" + uuid + "]");
+		System.out.println(" | From: " + dialingStargate.get9ChevronAddress().toString());
+		System.out.println(" | To: " + dialedStargate.get9ChevronAddress().toString());
+		System.out.println(" | Open Time: " + openTime);
+		System.out.println(" | Connection Time: " + connectionTime);
+	}
+	
 	public static final Connection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
 	{
 		Optional<SolarSystem.Serializable> dialingSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getDimension());
@@ -153,7 +162,7 @@ public class Connection
 	}
 
 	//TODO Replace these parameters with Stargate object
-	public static Connection create(Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
+	public static final Connection create(Connection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
 		String uuid = UUID.randomUUID().toString();
 		
@@ -174,7 +183,7 @@ public class Connection
 		return null;
 	}
 	
-	public void terminate(MinecraftServer server, Stargate.Feedback feedback)
+	public final void terminate(MinecraftServer server, Stargate.Feedback feedback)
 	{
 		if(this.dialingStargate != null)
 		{
@@ -198,7 +207,7 @@ public class Connection
 		newDialedStargate.connectStargate(this.uuid, false);
 	}*/
 	
-	public boolean isStargateValid(AbstractStargateEntity stargate)
+	public final boolean isStargateValid(AbstractStargateEntity stargate)
 	{
 		if(stargate == null)
 		{
@@ -221,7 +230,7 @@ public class Connection
 		return false;
 	}
 	
-	public void tick(MinecraftServer server)
+	public final void tick(MinecraftServer server)
 	{
 		if(!isStargateValid(this.dialingStargate) || !isStargateValid(this.dialedStargate))
 		{
@@ -350,13 +359,13 @@ public class Connection
 			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 	}
 	
-	protected void playStargateOpenSound(AbstractStargateEntity stargate, int kawooshStartTicks, int ticks)
+	private final void playStargateOpenSound(AbstractStargateEntity stargate, int kawooshStartTicks, int ticks)
 	{
 		if(ticks == kawooshStartTicks - stargate.getOpenSoundLead())
 			stargate.openWormholeSound();
 	}
 	
-	protected void increaseTicks(int kawooshStartTicks, int maxKawooshTicks, int maxOpenTicks)
+	private final void increaseTicks(int kawooshStartTicks, int maxKawooshTicks, int maxOpenTicks)
 	{
 		if(!doKawoosh() && this.openTime >= kawooshStartTicks && this.openTime < maxKawooshTicks)
 			this.openTime += KAWOOSH_TICKS + VORTEX_TICKS;
@@ -367,7 +376,7 @@ public class Connection
 			this.connectionTime++;
 	}
 	
-	protected void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel wormholeTravel)
+	private final void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel wormholeTravel)
 	{
 		Vec3 stargatePos = initialStargate.getCenter();
 		

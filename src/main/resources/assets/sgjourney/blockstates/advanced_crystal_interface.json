@@ -8,6 +8,13 @@
 		"facing=west,mode=off": { "model": "sgjourney:block/advanced_crystal_interface", "y": 270 },
 		"facing=east,mode=off": { "model": "sgjourney:block/advanced_crystal_interface", "y": 90 },
 		
+		"facing=down,mode=ring_segment": { "model": "sgjourney:block/advanced_crystal_interface_ring_segment", "x": 90 },
+		"facing=up,mode=ring_segment": { "model": "sgjourney:block/advanced_crystal_interface_ring_segment", "x": 270 },
+		"facing=north,mode=ring_segment": { "model": "sgjourney:block/advanced_crystal_interface_ring_segment" },
+		"facing=south,mode=ring_segment": { "model": "sgjourney:block/advanced_crystal_interface_ring_segment", "y": 180 },
+		"facing=west,mode=ring_segment": { "model": "sgjourney:block/advanced_crystal_interface_ring_segment", "y": 270 },
+		"facing=east,mode=ring_segment": { "model": "sgjourney:block/advanced_crystal_interface_ring_segment", "y": 90 },
+		
 		"facing=down,mode=ring_rotation": { "model": "sgjourney:block/advanced_crystal_interface_rotation", "x": 90 },
 		"facing=up,mode=ring_rotation": { "model": "sgjourney:block/advanced_crystal_interface_rotation", "x": 270 },
 		"facing=north,mode=ring_rotation": { "model": "sgjourney:block/advanced_crystal_interface_rotation" },

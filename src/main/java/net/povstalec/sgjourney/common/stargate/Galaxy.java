@@ -147,7 +147,7 @@ public class Galaxy
 		public void addSolarSystem(Address.Immutable address, SolarSystem.Serializable solarSystem)
 		{
 			this.solarSystems.put(address, solarSystem);
-			System.out.println("Added " + solarSystem.getName() + " to " + this.getKey().location().toString() + " as " + address.toString());
+			//System.out.println("Added " + solarSystem.getName() + " to " + this.getKey().location().toString() + " as " + address.toString());
 		}
 		
 		public void removeSolarSystem(Address.Immutable address)

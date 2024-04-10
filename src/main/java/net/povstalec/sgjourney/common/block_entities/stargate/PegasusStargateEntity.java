@@ -223,6 +223,11 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		return 4 * getEngagedChevrons()[chevron];
 	}
 	
+	public int getCurrentSymbol()
+	{
+		return this.currentSymbol;
+	}
+	
 	private void animateSpin()
 	{
 		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)

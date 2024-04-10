@@ -29,7 +29,7 @@ public class Dialing
 	
 	public static Stargate.Feedback dialStargate(ServerLevel level, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
 	{
-		if(SGJourneyEvents.onStargateDial(level.getServer(), dialingStargate, address))
+		if(SGJourneyEvents.onStargateDial(level.getServer(), dialingStargate, address, doKawoosh))
 			return Stargate.Feedback.NONE;
 		
 		switch(address.getLength())
@@ -145,7 +145,7 @@ public class Dialing
 		Optional<Stargate> stargate = StargateNetwork.get(server).getStargate(address);
 		
 		if(stargate.isEmpty())
-			return dialingStargate.resetStargate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
+			return dialingStargate.resetStargate(server, Stargate.Feedback.INVALID_ADDRESS);
 		
 		BlockPos pos = stargate.get().getBlockPos();
 		ResourceKey<Level> dimension = stargate.get().getDimension();

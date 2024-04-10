@@ -30,8 +30,8 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class MilkyWayStargateEntity extends AbstractStargateEntity
 {
-	public static final int MAX_ROTATION = 312;
-	//private static final double ANGLE = (double) MAX_ROTATION / 39;
+	public static final int MAX_ROTATION = 156;
+	public static final int ROTATION_INCREASE = 1;
 	
 	private int rotation = 0;
 	public int oldRotation = 0;
@@ -334,6 +334,18 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return currentSymbol;
 	}
 	
+	@Override
+	public int getRedstoneSymbolOutput()
+	{
+		return (getCurrentSymbol() % 13) + 1;
+	}
+
+	@Override
+	public int getRedstoneSegmentOutput()
+	{
+		return (getCurrentSymbol() / 13 + 1) * 5;
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
 	{
 		stargate.rotate();
@@ -374,9 +386,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		this.oldRotation = this.rotation;
 		
 		if(clockwise)
-			this.rotation -= 2;
+			this.rotation -= ROTATION_INCREASE;
 		else
-			this.rotation += 2;
+			this.rotation += ROTATION_INCREASE;
 		
 		if(this.rotation >= MAX_ROTATION)
 		{

@@ -38,17 +38,24 @@ public class StargateEvent extends Event
 	 */
 	public static class Dial extends StargateEvent
 	{
-		Address.Immutable dialedAddress;
+		private final Address.Immutable dialedAddress;
+		private final boolean doKawoosh;
 		
-		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress)
+		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, boolean doKawoosh)
 		{
 			super(server, stargate);
 			this.dialedAddress = dialedAddress.copy();
+			this.doKawoosh = doKawoosh;
 		}
 		
 		public Address.Immutable getDialedAddress()
 		{
 			return dialedAddress;
+		}
+		
+		public boolean doKawoosh()
+		{
+			return this.doKawoosh;
 		}
 	}
 	
@@ -62,13 +69,17 @@ public class StargateEvent extends Event
 	{
 		private final Connection.Type connectionType;
 		private final Stargate connectedStargate;
+		private final Address.Type addressType;
+		private final boolean doKawoosh;
 		
-		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, Connection.Type connectionType)
+		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, Connection.Type connectionType, Address.Type addressType, boolean doKawoosh)
 		{
 			super(server, stargate);
 
 			this.connectedStargate = connectedStargate;
 			this.connectionType = connectionType;
+			this.addressType = addressType;
+			this.doKawoosh = doKawoosh;
 		}
 		
 		public Stargate getConnectedStargate()
@@ -79,6 +90,16 @@ public class StargateEvent extends Event
 		public Connection.Type getConnectionType()
 		{
 			return this.connectionType;
+		}
+		
+		public Address.Type getAddressType()
+		{
+			return this.addressType;
+		}
+		
+		public boolean doKawoosh()
+		{
+			return this.doKawoosh;
 		}
 	}
 }

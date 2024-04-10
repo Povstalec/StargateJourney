@@ -39,7 +39,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
@@ -168,10 +167,19 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 	}
 	
+	private int getRingSegmentOutput(EnergyBlockEntity blockEntity)
+	{
+		if(blockEntity instanceof AbstractStargateEntity stargate)
+			return stargate.getRedstoneSegmentOutput();
+		
+		return 0;
+	}
+	
 	private int getRotationOutput(EnergyBlockEntity blockEntity)
 	{
-		if(blockEntity instanceof MilkyWayStargateEntity stargate)
-			return stargate.getCurrentSymbol() / 3;
+		if(blockEntity instanceof AbstractStargateEntity stargate)
+			return stargate.getRedstoneSymbolOutput();
+		
 		return 0;
 	}
 	
@@ -195,6 +203,8 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	{
 		switch(state.getValue(MODE))
 		{
+		case RING_SEGMENT:
+			return getRingSegmentOutput(blockEntity);
 		case RING_ROTATION:
 			return getRotationOutput(blockEntity);
 		case CHEVRONS_ACTIVE:

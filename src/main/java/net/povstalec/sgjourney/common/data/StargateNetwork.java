@@ -47,17 +47,17 @@ public class StargateNetwork extends SavedData
 	//******************************************Versions******************************************
 	//============================================================================================
 	
-	public int getVersion()
+	public final int getVersion()
 	{
 		return this.version;
 	}
 	
-	private void updateVersion()
+	private final void updateVersion()
 	{
 		this.version = updateVersion;
 	}
 	
-	public void updateNetwork(MinecraftServer server)
+	public final void updateNetwork(MinecraftServer server)
 	{
 		if(getVersion() == updateVersion)
 		{
@@ -70,19 +70,19 @@ public class StargateNetwork extends SavedData
 		stellarUpdate(server, false);
 	}
 	
-	public void eraseNetwork()
+	public final void eraseNetwork()
 	{
 		this.connections.clear();
 		
 		this.setDirty();
 	}
 	
-	public boolean shouldUseDatapackAddresses()
+	public final boolean shouldUseDatapackAddresses()
 	{
 		return StargateNetworkSettings.get(server).useDatapackAddresses();
 	}
 	
-	public void stellarUpdate(MinecraftServer server, boolean updateInterfaces)
+	public final void stellarUpdate(MinecraftServer server, boolean updateInterfaces)
 	{
 		Iterator<Entry<String, Connection>> iterator = this.connections.entrySet().iterator();
 		
@@ -114,7 +114,7 @@ public class StargateNetwork extends SavedData
 	//*****************************************Stargates******************************************
 	//============================================================================================
 	
-	public void addStargates(MinecraftServer server)
+	public final void addStargates(MinecraftServer server)
 	{
 		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
@@ -140,7 +140,7 @@ public class StargateNetwork extends SavedData
 		});
 	}
 	
-	private void resetStargates(MinecraftServer server, boolean updateInterfaces)
+	private final void resetStargates(MinecraftServer server, boolean updateInterfaces)
 	{
 		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
@@ -183,7 +183,7 @@ public class StargateNetwork extends SavedData
 		});
 	}
 	
-	public void addStargate(AbstractStargateEntity stargateEntity)
+	public final void addStargate(AbstractStargateEntity stargateEntity)
 	{
 		Optional<Stargate> stargateOptional = BlockEntityList.get(server).addStargate(stargateEntity);
 		
@@ -196,7 +196,7 @@ public class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public void removeStargate(Level level, Address.Immutable address)
+	public final void removeStargate(Level level, Address.Immutable address)
 	{
 		Optional<Stargate> stargate = getStargate(address);
 		
@@ -209,7 +209,7 @@ public class StargateNetwork extends SavedData
 		setDirty();
 	}
 	
-	public void updateStargate(ServerLevel level, AbstractStargateEntity stargate)
+	public final void updateStargate(ServerLevel level, AbstractStargateEntity stargate)
 	{
 		Optional<Stargate> stargateOptional = getStargate(stargate.get9ChevronAddress().immutable());
 		
@@ -221,7 +221,7 @@ public class StargateNetwork extends SavedData
 		}
 	}
 	
-	public Optional<Stargate> getStargate(Address.Immutable address)
+	public final Optional<Stargate> getStargate(Address.Immutable address)
 	{
 		if(address.getLength() == 8)
 		{
@@ -238,7 +238,7 @@ public class StargateNetwork extends SavedData
 	//****************************************Connections*****************************************
 	//============================================================================================
 	
-	public void handleConnections()
+	public final void handleConnections()
 	{
 		Map<String, Connection> connections = new HashMap<>();
 		connections.putAll(this.connections);
@@ -247,26 +247,38 @@ public class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public int getOpenTime(String uuid)
+	public final int getOpenTime(String uuid)
 	{
 		if(this.connections.containsKey(uuid))
 			return connections.get(uuid).getConnectionTime();
 		return 0;
 	}
 	
-	public int getTimeSinceLastTraveler(String uuid)
+	public final int getTimeSinceLastTraveler(String uuid)
 	{
 		if(this.connections.containsKey(uuid))
 			return connections.get(uuid).getTimeSinceLastTraveler();
 		return 0;
 	}
 	
-	public Stargate.Feedback createConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
+	public final boolean addConnection(Connection connection)
+	{
+		if(!this.connections.containsKey(connection.getID()))
+		{
+			this.connections.put(connection.getID(), connection);
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public final Stargate.Feedback createConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		Connection.Type connectionType = Connection.getType(server, dialingStargate, dialedStargate);
 		
 		// Event for Stargate connecting, can be cancelled - !!!NOTE That it does NOT reset the Stargate or actually change its feedback when cancelled!!!
-		if(SGJourneyEvents.onStargateConnect(server, dialingStargate, dialedStargate, connectionType))
+		if(SGJourneyEvents.onStargateConnect(server, dialingStargate, dialedStargate, connectionType, addressType, doKawoosh))
 			return Stargate.Feedback.NONE;
 		
 		// Will reset the Stargate if something's wrong
@@ -305,7 +317,7 @@ public class StargateNetwork extends SavedData
 			Connection connection = Connection.create(connectionType, outgoingStargate.get(), incomingStargate.get(), doKawoosh);
 			if(connection != null)
 			{
-				this.connections.put(connection.getID(), connection);
+				addConnection(connection);
 				
 				switch(connectionType)
 				{
@@ -322,7 +334,7 @@ public class StargateNetwork extends SavedData
 		return Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
 	}
 	
-	public boolean hasConnection(String uuid)
+	public final boolean hasConnection(String uuid)
 	{
 		if(this.connections.containsKey(uuid))
 			return true;
@@ -330,13 +342,13 @@ public class StargateNetwork extends SavedData
 		return false;
 	}
 	
-	public void terminateConnection(String uuid, Stargate.Feedback feedback)
+	public final void terminateConnection(String uuid, Stargate.Feedback feedback)
 	{
 		if(hasConnection(uuid))
 			this.connections.get(uuid).terminate(server, feedback);
 	}
 	
-	public void removeConnection(String uuid, Stargate.Feedback feedback)
+	public final void removeConnection(String uuid, Stargate.Feedback feedback)
 	{
 		if(hasConnection(uuid))
 		{
@@ -348,11 +360,20 @@ public class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
+	public final void printConnections()
+	{
+		System.out.println("[Connections]");
+		this.connections.entrySet().stream().forEach(connectionEntry ->
+		{
+			connectionEntry.getValue().printConnection();
+		});
+	}
+	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
-	private CompoundTag serialize()
+	private final CompoundTag serialize()
 	{
 		CompoundTag tag = new CompoundTag();
 		
@@ -362,7 +383,7 @@ public class StargateNetwork extends SavedData
 		return tag;
 	}
 	
-	private CompoundTag serializeConnections()
+	private final CompoundTag serializeConnections()
 	{
 		CompoundTag connectionsTag = new CompoundTag();
 		
@@ -374,13 +395,13 @@ public class StargateNetwork extends SavedData
 		return connectionsTag;
 	}
 	
-	private void deserialize(CompoundTag tag)
+	private final void deserialize(CompoundTag tag)
 	{
 		this.version = tag.getInt(VERSION);
 		deserializeConnections(tag.getCompound(CONNECTIONS));
 	}
 	
-	private void deserializeConnections(CompoundTag tag)
+	private final void deserializeConnections(CompoundTag tag)
 	{
 		tag.getAllKeys().forEach(connectionID ->
 		{

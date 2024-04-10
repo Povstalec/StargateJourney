@@ -25,8 +25,16 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class UniverseStargateEntity extends AbstractStargateEntity
 {
+	public static final boolean FAST_ROTATION = CommonStargateConfig.universe_fast_rotation.get();
+	
+	public static final int MAX_ROTATION = 54 * (FAST_ROTATION ? 2 : 3); // 108 : 162
+	public static final int ROTATION_INCREASE = 1; // 1
+	
+	public static final int ANGLE = MAX_ROTATION / 54;
+	public static final int ROTATION_THIRD = MAX_ROTATION / 3;
+	public static final int RESET_DEGREES = ROTATION_THIRD * 2;
+	
 	public static final int WAIT_TICKS = 20;
-	public static final int RESET_DEGREES = 240;
 	
 	public int animationTicks = 1;
 	
@@ -148,11 +156,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || this.isConnected());
 	}
 	
-	public double angle()
-	{
-		return (double) 360 / 54;
-	}
-	
 	public int getRotation()
 	{
 		return rotation;
@@ -247,41 +250,62 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 	}
 	
+	public int getDesiredRotation(int desiredSymbol)
+	{
+		int whole = desiredSymbol / 4;
+		int leftover = desiredSymbol % 4;
+		
+		return 3 * (ANGLE / 2) + whole * MAX_ROTATION / 9 + (ANGLE * leftover);
+	}
+	
 	public void rotate(boolean clockwise)
 	{
 		if(clockwise)
-			rotation -= 2;
+			rotation -= ROTATION_INCREASE;
 		else
-			rotation += 2;
-		
-		if(rotation >= 360)
+			rotation += ROTATION_INCREASE;
+
+		if(rotation >= MAX_ROTATION)
 		{
-			rotation -= 360;
-			oldRotation -= 360;
+			rotation -= MAX_ROTATION;
+			oldRotation -= MAX_ROTATION;
 		}
 		else if(rotation < 0)
 		{
-			rotation += 360;
-			oldRotation += 360;
+			rotation += MAX_ROTATION;
+			oldRotation += MAX_ROTATION;
 		}
 		setChanged();
 	}
 	
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
-		int whole = desiredSymbol / 4;
-		int leftover = desiredSymbol % 4;
-		
-		double desiredPosition = 3 * (angle() / 2) + whole * 40 + (angle() * leftover);
-		
-		double position = (double) rotation;
-		double lowerBound = (double) (desiredPosition - 1);
-		double upperBound = (double) (desiredPosition + 1);
-		
-		if(position > lowerBound && position < upperBound)
+		if(getDesiredRotation(desiredSymbol) == rotation)
 			return true;
 		
 		return false;
+	}
+	
+	@Override
+	public int getRedstoneSymbolOutput()
+	{
+		int halfRotation = rotation / 2;
+		
+		if(halfRotation % 6 == 0 || halfRotation % 6 == 1)
+			return 0;
+		
+		int emptyASymbols = halfRotation / 6 + 1;
+		int emptyBSymbols = halfRotation / 6;
+		
+		int result = (rotation / 2 - emptyASymbols - emptyBSymbols);
+		
+		return result % 12 + 1;
+	}
+	
+	@Override
+	public int getRedstoneSegmentOutput()
+	{
+		return ((rotation / ROTATION_THIRD) + 1) * 5;
 	}
 	
 	public float getRotation(float partialTick)
@@ -337,7 +361,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		int whole = desiredSymbol / 4;
 		int leftover = desiredSymbol % 4;
 		
-		double desiredPosition = 3 * (angle() / 2) + whole * 40 + angle() * leftover;
+		double desiredPosition = 3 * (ANGLE / 2) + whole * MAX_ROTATION / 9 + ANGLE * leftover;
 		
 		double position = (double) rotation;
 		
@@ -348,10 +372,10 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
 		double difference = desiredRotation - rotation;
 		
-		if(difference >= 180.0D)
-			rotation =+ 360.0D;
-		else if(difference <= -180.0D)
-			rotation =- 360.0D;
+		if(difference >= MAX_ROTATION / 2)
+			rotation =+ MAX_ROTATION;
+		else if(difference <= -MAX_ROTATION / 2)
+			rotation =- MAX_ROTATION;
 		
 		double lowerBound = (double) (desiredRotation - 1);
 		

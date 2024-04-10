@@ -5,6 +5,7 @@ import net.minecraft.util.StringRepresentable;
 public enum InterfaceMode implements StringRepresentable
 {
 	OFF("off"),
+	RING_SEGMENT("ring_segment"),
 	RING_ROTATION("ring_rotation"),
 	CHEVRONS_ACTIVE("chevrons_active"),
 	WORMHOLE_ACTIVE("wormhole_active");

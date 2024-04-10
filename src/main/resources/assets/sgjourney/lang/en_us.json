@@ -212,6 +212,7 @@
 	"galaxy.sgjourney.ida": "Ida",
 	"galaxy.sgjourney.othala": "Othala",
 	"galaxy.sgjourney.kaliem": "Kaliem",
+	"galaxy.sgjourney.triangulum": "Triangulum",
 	"galaxy.sgjourney.andromeda": "Andromeda",
 	
 	"solar_system.sgjourney.milky_way": "Terra",
@@ -230,14 +231,16 @@
 	"symbol_set.sgjourney.galaxy_ida": "Ida Symbol Set",
 	"symbol_set.sgjourney.galaxy_othala": "Othala Symbol Set",
 	"symbol_set.sgjourney.galaxy_kaliem": "Kaliem Symbol Set",
+	"symbol_set.sgjourney.galaxy_triangulum": "Triangulum Symbol Set",
 	"symbol_set.sgjourney.galaxy_andromeda": "Andromeda Symbol Set",
 	
-	"symbols.sgjourney.galaxy_universal": "Universal",
+	"symbols.sgjourney.universal": "Universal",
 	"symbols.sgjourney.galaxy_milky_way": "Milky Way",
 	"symbols.sgjourney.galaxy_pegasus": "Pegasus",
 	"symbols.sgjourney.galaxy_ida": "Ida",
 	"symbols.sgjourney.galaxy_othala": "Othala",
 	"symbols.sgjourney.galaxy_kaliem": "Kaliem",
+	"symbols.sgjourney.galaxy_triangulum": "Triangulum",
 	"symbols.sgjourney.galaxy_andromeda": "Andromeda",
 	
 	"symbols.sgjourney.terra": "Terra",
