@@ -27,6 +27,7 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue enable_stargate_variants;
 
 	public static ForgeConfigSpec.BooleanValue universe_best_direction;
+	public static ForgeConfigSpec.BooleanValue universe_fast_rotation;
 	
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> universe_chevron_lock_speed;
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> milky_way_chevron_lock_speed;
@@ -123,6 +124,10 @@ public class CommonStargateConfig
 		universe_best_direction = server
 				.comment("If true, the Universe Stargate will always rotate in the best direction; If false, the Universe Stargate will alternate between rotation directions")
 				.define("server.universe_stargate_best_direction", true);
+		
+		universe_fast_rotation = server
+				.comment("If true, the Universe Stargate will rotate faster (Fast full rotation takes 108 ticks, slow full toration takes 162 ticks)")
+				.define("server.universe_fast_rotation", true);
 		
 		
 		

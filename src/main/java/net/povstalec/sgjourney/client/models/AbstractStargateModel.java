@@ -33,19 +33,11 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected static final int MAX_LIGHT = 15728880;
 	
+	protected static final int DEFAULT_TEXTURE_SIZE = 64;
+	
 	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
 	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
 	public static final String EMPTY = StargateJourney.EMPTY;
-	
-	/*
-	 * X = Width
-	 * Y = Height
-	 * Z = Thickness
-	 * 
-	 * When viewing "(x_offset, y_offset, z_offset, x_size, y_size, z_size)":
-	 * 
-	 * If there is "-CONSTANT / 2" in the place of offset, it is used for centering
-	 */
 	
 	private static Minecraft minecraft = Minecraft.getInstance();
 	
@@ -112,49 +104,55 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		return Optional.empty();
 	}
 	
-	protected ResourceLocation getSymbolTexture(AbstractStargateEntity stargate, Optional<StargateVariant> stargateVariant, int symbol)
+	protected ResourceLocation getPointOfOriginTexture(AbstractStargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	{
+		ClientPacketListener clientPacketListener = minecraft.getConnection();
+		RegistryAccess registries = clientPacketListener.registryAccess();
+		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
+		
+		if(stargateVariant.isPresent() && stargateVariant.get().getPointOfOrigin().isPresent()
+				&& pointOfOriginRegistry.containsKey(stargateVariant.get().getPointOfOrigin().get()))
+			return pointOfOriginRegistry.get(stargateVariant.get().getPointOfOrigin().get()).texture();
+		else
+		{
+			String pointOfOrigin = stargate.getPointOfOrigin();
+			
+			if(isLocationValid(pointOfOrigin) && pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin)))
+				return pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).texture();
+			
+			else if(pointOfOrigin.equals(EMPTY))
+				return EMPTY_LOCATION;
+		}
+		
+		return ERROR_LOCATION;
+	}
+	
+	protected Optional<Symbols> getSymbols(AbstractStargateEntity stargate, Optional<StargateVariant> stargateVariant)
 	{
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
-		if(symbol > 0)
-		{
-			if(stargateVariant.isPresent() && stargateVariant.get().getSymbols().isPresent()
-					&& symbolRegistry.containsKey(stargateVariant.get().getSymbols().get()))
-				return symbolRegistry.get(stargateVariant.get().getSymbols().get()).texture(symbol - 1);
-			else
-			{
-				String symbols = stargate.getSymbols();
-				
-				if(isLocationValid(symbols) && symbolRegistry.containsKey(new ResourceLocation(symbols)))
-					return symbolRegistry.get(new ResourceLocation(symbols)).texture(symbol - 1);
-				
-				else if(symbols.equals(EMPTY))
-					return EMPTY_LOCATION;
-			}
-			
-			return ERROR_LOCATION;
-		}
+		if(stargateVariant.isPresent() && stargateVariant.get().getSymbols().isPresent()
+				&& symbolRegistry.containsKey(stargateVariant.get().getSymbols().get()))
+			return Optional.of(symbolRegistry.get(stargateVariant.get().getSymbols().get()));
 		else
 		{
-			if(stargateVariant.isPresent() && stargateVariant.get().getPointOfOrigin().isPresent()
-					&& pointOfOriginRegistry.containsKey(stargateVariant.get().getPointOfOrigin().get()))
-				return pointOfOriginRegistry.get(stargateVariant.get().getPointOfOrigin().get()).texture();
-			else
-			{
-				String pointOfOrigin = stargate.getPointOfOrigin();
-				
-				if(isLocationValid(pointOfOrigin) && pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin)))
-					return pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).texture();
-				
-				else if(pointOfOrigin.equals(EMPTY))
-					return EMPTY_LOCATION;
-			}
+			String symbols = stargate.getSymbols();
 			
-			return ERROR_LOCATION;
+			if(isLocationValid(symbols) && symbolRegistry.containsKey(new ResourceLocation(symbols)))
+				return Optional.of(symbolRegistry.get(new ResourceLocation(symbols)));
 		}
+		
+		return Optional.empty();
+	}
+	
+	protected ResourceLocation getSymbolTexture(Optional<Symbols> symbols)
+	{
+		if(symbols.isPresent())
+			return symbols.get().getSymbolTexture();
+		
+		return EMPTY_LOCATION;
 	}
 	
 	protected ResourceLocation getStargateTexture(StargateEntity stargate, Optional<StargateVariant> stargateVariant)

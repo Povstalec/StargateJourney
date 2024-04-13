@@ -1,9 +1,12 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -18,6 +21,7 @@ import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.AddressTable;
@@ -121,15 +125,17 @@ public abstract class CartoucheEntity extends BlockEntity
 			return;
 		
 		AddressTable addressTable = AddressTable.getAddressTable(level, ResourceLocation.tryParse(this.addressTable));
-		String dimension = AddressTable.getRandomDimension(level, addressTable);
-		if(dimension != null && !dimension.equals(EMPTY))
-			this.dimension = dimension;
+		Optional<ResourceKey<Level>> dimension = AddressTable.getRandomDimension(level, addressTable);
+		
+		if(dimension.isPresent())
+			this.dimension = dimension.get().location().toString();
+		
 		this.addressTable = EMPTY;
 	}
 	
 	public void setAddressFromDimension()
 	{
-		this.address.fromDimension((ServerLevel) level, this.dimension);
+		this.address.fromDimension((ServerLevel) level, Conversion.stringToDimension(this.dimension));
 	}
 	
 	public void setSymbols(Level level)
@@ -137,7 +143,7 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		symbols = Universe.get(level).getSymbols(level.dimension().location().toString());
+		symbols = Universe.get(level).getSymbols(level.dimension()).location().toString();
 	}
 	
 	public void setSymbols(String symbols)

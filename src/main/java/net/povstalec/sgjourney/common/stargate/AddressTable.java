@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.stargate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.datafixers.util.Pair;
@@ -11,8 +12,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -62,37 +61,16 @@ public class AddressTable
         return registry.get(addressTable);
 	}
 	
-	public static List<String> getRandomGeneratedDimension(Level level)
-	{
-		List<String> dimensions = new ArrayList<String>();
-		CompoundTag solarSystems = Universe.get(level).getSolarSystems();
-		solarSystems.getAllKeys().stream().forEach(systemID ->
-		{
-			boolean generated = Universe.get(level).getSolarSystem(systemID).getBoolean(GENERATED);
-			if(generated)
-			{
-				ListTag dimensionList = Universe.get(level).getDimensionsFromSolarSystem(systemID);
-				
-				for(int i = 0; i < dimensionList.size(); i++)
-				{
-					dimensions.add(dimensionList.getString(i));
-				}
-			}
-		});
-		
-		return dimensions;
-	}
-	
-	public static String getRandomDimension(Level level, AddressTable addressTable)
+	public static Optional<ResourceKey<Level>> getRandomDimension(Level level, AddressTable addressTable)
 	{
 		if(addressTable == null)
-			return null;
+			return Optional.empty();
 		
-		List<String> dimensions = new ArrayList<String>();
+		List<ResourceKey<Level>> dimensions = new ArrayList<ResourceKey<Level>>();
 		
 		if(addressTable.includeGeneratedAddresses())
 		{
-			List<String> generatedDimensions = getRandomGeneratedDimension(level);
+			List<ResourceKey<Level>> generatedDimensions =  Universe.get(level).getDimensionsWithGeneratedSolarSystems();
 			dimensions.addAll(generatedDimensions);
 		}
 		
@@ -102,12 +80,12 @@ public class AddressTable
 		while(iterator.hasNext())
 		{
 			Pair<ResourceKey<Level>, Integer> dimension = iterator.next();
-			String dimensionString = dimension.getFirst().location().toString();
+			ResourceKey<Level> dimensionKey = dimension.getFirst();
 			int repeats = dimension.getSecond();
 			
 			for(int i = 0; i < repeats; i++)
 			{
-				dimensions.add(dimensionString);
+				dimensions.add(dimensionKey);
 			}
 		}
 		
@@ -116,9 +94,9 @@ public class AddressTable
 			Random random = new Random();
 			int randomNumber = random.nextInt(dimensions.size());
 			
-			return dimensions.get(randomNumber);
+			return Optional.of(dimensions.get(randomNumber));
 		}
 		
-		return EMPTY;
+		return Optional.empty();
 	}
 }

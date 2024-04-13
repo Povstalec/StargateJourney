@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +17,6 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -57,7 +55,8 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
         return INFINITE_EXTENT_AABB;
     }
 	
-	@Override
+	//TODO Figure these out
+	/*@Override
 	public CompoundTag addNewToBlockEntityList()
 	{
 		CompoundTag blockEntity = super.addNewToBlockEntityList();
@@ -71,7 +70,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 		CompoundTag blockEntity = super.addToBlockEntityList();
 		TransporterNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
 		return blockEntity;
-	}
+	}*/
 
 	@Override
 	public void removeFromBlockEntityList()

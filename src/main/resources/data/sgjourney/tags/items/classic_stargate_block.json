@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:classic_stargate_base_block",
+		"sgjourney:classic_stargate_chevron_block",
+		"sgjourney:classic_stargate_ring_block"
+	]
+}

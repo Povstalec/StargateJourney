@@ -5,13 +5,17 @@
 	"engaged_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_stargate_engaged.png",
 	"event_horizon_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon.png",
 	"shiny_event_horizon_texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon_shiny.png",
+	"event_horizon_frames": 32,
+
 	"symbol_color": [48, 49, 63, 255],
 	
 	"model":
 	{
 		"alternate_model": true,
 		"back_chevrons": true,
-		"chevrons_glow:": false
+		"chevrons_glow:": false,
+		
+		"vortex": true
 	},
 	
 	"sounds":

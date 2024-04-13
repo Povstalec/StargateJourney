@@ -11,7 +11,7 @@ public interface SGJourneyEntityBlock
 	{
 		BlockEntity entity = level.getBlockEntity(pos);
         
-        if (entity instanceof SGJourneyBlockEntity blockEntity)
+        if(entity instanceof SGJourneyBlockEntity blockEntity)
             blockEntity.removeFromBlockEntityList();
 	}
 }

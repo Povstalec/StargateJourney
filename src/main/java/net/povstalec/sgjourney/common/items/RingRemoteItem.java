@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.items;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -17,21 +18,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
-import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 
 public class RingRemoteItem extends Item
 {
-	private BlockPos center;
-	private int[] distance;
-	private CompoundTag tag;
-	private BlockPos target;
-
 	public RingRemoteItem(Properties properties)
 	{
 		super(properties);
@@ -54,6 +50,51 @@ public class RingRemoteItem extends Item
 						return stack.is(ItemInit.MEMORY_CRYSTAL.get());
 					}
 				};
+	}
+	
+	protected List<TransportRingsEntity> getNearbyTransportRings(Level level, BlockPos blockPos, int maxDistance)
+	{
+		List<TransportRingsEntity> transporters = new ArrayList<TransportRingsEntity>();
+		
+		for(int x = -maxDistance / 16; x <= maxDistance / 16; x++)
+		{
+			for(int z = -maxDistance / 16; z <= maxDistance / 16; z++)
+			{
+				ChunkAccess chunk = level.getChunk(blockPos.east(16 * x).south(16 * z));
+				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
+				
+				positions.stream().forEach(pos ->
+				{
+					if(level.getBlockEntity(pos) instanceof TransportRingsEntity transportRings)
+						transporters.add(transportRings);
+				});
+			}
+		}
+		
+		return transporters;
+	}
+	
+	private double distance(BlockPos pos, BlockPos targetPos)
+	{
+		int x = Math.abs(targetPos.getX() - pos.getX());
+		int y = Math.abs(targetPos.getY() - pos.getY());
+		int z = Math.abs(targetPos.getZ() - pos.getZ());
+		
+		return Math.sqrt(x*x + y*y + z*z);
+	}
+	
+	public Optional<TransportRingsEntity> findNearestTransportRings(Level level, BlockPos blockPos, int maxDistance)
+	{
+		List<TransportRingsEntity> transporters = getNearbyTransportRings(level, blockPos, maxDistance);
+		
+		transporters.sort((stargateA, stargateB) ->
+				Double.valueOf(distance(blockPos, stargateA.getBlockPos()))
+				.compareTo(Double.valueOf(distance(blockPos, stargateB.getBlockPos()))));
+		
+		if(!transporters.isEmpty())
+			return Optional.of(transporters.get(0));
+		
+		return Optional.empty();
 	}
 	
 	@Override
@@ -108,20 +149,17 @@ public class RingRemoteItem extends Item
 						{
 							BlockPos targetPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
 							
-							BlockPos pos = this.getNearestRings(BlockEntityList.get(level).getBlockEntities("TransportRingsList"), player.blockPosition(), 16);
-							if(pos != null)
+							Optional<TransportRingsEntity> transportRings = findNearestTransportRings(level, player.blockPosition(), 16);
+							if(transportRings.isPresent())
 							{
-								if(level.getBlockEntity(pos) instanceof TransportRingsEntity transportRings)
+								if(level.getBlockEntity(targetPos) instanceof TransportRingsEntity targetRings)
 								{
-									if(level.getBlockEntity(targetPos) instanceof TransportRingsEntity targetRings)
+									if(transportRings.get().canTransport() && targetRings.canTransport())
 									{
-										if(transportRings.canTransport() && targetRings.canTransport())
-										{
-											transportRings.activate(targetPos);
-										}
-										else
-											player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.BLUE), true);
+										transportRings.get().activate(targetPos);
 									}
+									else
+										player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.BLUE), true);
 								}
 							}
 							else
@@ -188,7 +226,7 @@ public class RingRemoteItem extends Item
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 	
-	public BlockPos getNearestRings(CompoundTag nbtTag, BlockPos center, int maxDistance)
+	/*public BlockPos getNearestRings(CompoundTag nbtTag, BlockPos center, int maxDistance)
 	{
 		this.center = center;
 		int[] distance = {maxDistance, maxDistance, maxDistance};
@@ -222,5 +260,5 @@ public class RingRemoteItem extends Item
 			
 			this.target = new BlockPos(targetX, targetY, targetZ);
 		}
-	}
+	}*/
 }

@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import java.util.Random;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -10,13 +8,11 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
@@ -50,17 +46,11 @@ public class ClassicStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 
-        if(!isPointOfOriginValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
-        	setPointOfOrigin(this.getLevel());
-        }
+        if(!isPointOfOriginValid(this.getLevel()))
+        	setPointOfOriginFromDimension(this.getLevel().dimension());
 
-        if(!areSymbolsValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
-        	setSymbols(this.getLevel());
-        }
+        if(!areSymbolsValid(this.getLevel()))
+        	setSymbolsFromDimension(this.getLevel().dimension());
     }
 	
 	@Override
@@ -105,17 +95,6 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 		this.symbols = tag.getString("Symbols");
     	
     	super.deserializeStargateInfo(tag, isUpgraded);
-	}
-	
-	/**
-	 * Sets the Stargate's point of origin randomly
-	 */
-	@Override
-	public void setPointOfOrigin(Level level)
-	{
-		Random random = new Random();
-		pointOfOrigin = PointOfOrigin.getRandomPointOfOrigin(level.getServer(), random.nextLong()).location().toString();
-		this.setChanged();
 	}
 
 	@Override

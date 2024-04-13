@@ -46,14 +46,15 @@ import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
 import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
 import net.povstalec.sgjourney.client.screens.InterfaceScreen;
+import net.povstalec.sgjourney.client.screens.LiquidizerScreen;
 import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
-import net.povstalec.sgjourney.client.screens.NaquadahLiquidizerScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.AdvancementInit;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -115,13 +116,17 @@ public class StargateJourney
         
         GalaxyInit.register(eventBus);
         
+        AdvancementInit.register();
+        
         eventBus.addListener((DataPackRegistryEvent.NewRegistry event) -> 
         {
+        	//TODO Move Galaxy above Point of Origin
+        	// DON'T DELETE THIS COMMENT UNTIL I APPLY THE CHANGE TO OTHER VERSIONS OR I MIGHT FORGET
             event.dataPackRegistry(SymbolSet.REGISTRY_KEY, SymbolSet.CODEC, SymbolSet.CODEC);
             event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
+            event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
             event.dataPackRegistry(PointOfOrigin.REGISTRY_KEY, PointOfOrigin.CODEC, PointOfOrigin.CODEC);
             event.dataPackRegistry(SolarSystem.REGISTRY_KEY, SolarSystem.CODEC, SolarSystem.CODEC);
-            event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
             event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
             event.dataPackRegistry(StargateVariant.REGISTRY_KEY, StargateVariant.CODEC, StargateVariant.CODEC);
         });
@@ -192,7 +197,8 @@ public class StargateJourney
 
         	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
 
-        	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), NaquadahLiquidizerScreen::new);
+        	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
+        	MenuScreens.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);

@@ -1,6 +1,9 @@
 package net.povstalec.sgjourney.common.init;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -13,24 +16,29 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.Galaxy;
+import net.povstalec.sgjourney.common.stargate.Galaxy.Serializable;
+import net.povstalec.sgjourney.common.stargate.SolarSystem;
 
 public class CommandInit
 {
-	private static final String EMPTY = StargateJourney.EMPTY;
 	private static final String STARGATE_NETWORK = "stargateNetwork";
 	private static final String TRANSPORTER_NETWORK = "transporterNetwork";
 	private static final String GENE = "gene";
@@ -147,102 +155,122 @@ public class CommandInit
 		
 		//Dev commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("info").executes(CommandInit::printStargateNetworkInfo))
+				.then(Commands.literal("debugInfo").executes(CommandInit::printStargateNetworkInfo))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 	}
 	
 	private static int getAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
+		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getPlayer().level();
 		
-		String currentDimension = level.dimension().location().toString();
+		ResourceKey<Level> currentDimension = level.dimension();
 		
 		// List of Galaxies the dialing Dimension is located in
-		ListTag galaxies = Universe.get(level).getGalaxiesFromDimension(currentDimension);
+		Optional<HashMap<Serializable, Address.Immutable>> galaxiesOptional = Universe.get(level).getGalaxiesFromDimension(currentDimension);
 		
-		if(galaxies.isEmpty())
-			context.getSource().getPlayer().sendSystemMessage(Component.literal("You are not located in any Galaxy").withStyle(ChatFormatting.DARK_RED));
-		else
+		if(galaxiesOptional.isPresent())
 		{
-			// Makes a chat message for each galaxy the Dimension is located in
-			for(int i = 0; i < galaxies.size(); i++)
+			List<Entry<Serializable, Address.Immutable>> galaxies = galaxiesOptional.get().entrySet().stream().toList();
+
+			if(!galaxies.isEmpty())
 			{
-				String galaxy = galaxies.getCompound(i).getAllKeys().iterator().next();
-				String address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy, dimension);
-				if(address.equals(EMPTY))
-					context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension + " ").withStyle(ChatFormatting.GOLD)
-							.append(Component.translatable("message.sgjourney.command.get_address.located"))
-							.append(Component.literal(" " + galaxy).withStyle(ChatFormatting.LIGHT_PURPLE)));
-				else
+				// Creates a chat message for each galaxy the Dimension is located in
+				for(int i = 0; i < galaxies.size(); i++)
 				{
-					context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address")
-							.append(Component.literal(" " + dimension + " ").withStyle(ChatFormatting.GOLD)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
-							.append(Component.literal(" " + galaxy + " ").withStyle(ChatFormatting.LIGHT_PURPLE))
-							.append(Component.translatable("message.sgjourney.command.get_address.is")));
+					Entry<Serializable, Address.Immutable> galaxyEntry = galaxies.get(i);
+					Galaxy.Serializable galaxy = galaxyEntry.getKey();
 					
-					Style style = Style.EMPTY;
-					style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-					style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address));
-					context.getSource().getPlayer().sendSystemMessage(Component.literal(address).setStyle(style.applyFormat(ChatFormatting.GOLD)));
+					Optional<Address.Immutable> addressOptional = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey().location().toString(), dimension);
+					
+					if(addressOptional.isEmpty())
+						context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension.location().toString() + " ").withStyle(ChatFormatting.GOLD)
+								.append(Component.translatable("message.sgjourney.command.get_address.located").withStyle(ChatFormatting.WHITE))
+								.append(Component.literal(" ").append(galaxy.getTranslationName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
+					else
+					{
+						Address.Immutable address = addressOptional.get();
+						context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address")
+								.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
+								.append(Component.literal(" ").append(galaxy.getTranslationName()).append(Component.literal(" ")).withStyle(ChatFormatting.LIGHT_PURPLE))
+								.append(Component.translatable("message.sgjourney.command.get_address.is")));
+						
+						Style style = Style.EMPTY;
+						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
+						context.getSource().getPlayer().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.GOLD)));
+					}
 				}
+				return Command.SINGLE_SUCCESS;
 			}
-			
 		}
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
 	
 	private static int getExtragalacticAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
+		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getPlayer().level();
 		
-		String address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
-
-		Style style = Style.EMPTY;
-		style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-		style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address));
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.address")
-				.append(Component.literal(" " + dimension + " ").withStyle(ChatFormatting.GOLD))
-				.append(Component.translatable("message.sgjourney.command.get_extragalactic_address.is")));
-		context.getSource().getPlayer().sendSystemMessage(Component.literal(address).setStyle(style.applyFormat(ChatFormatting.LIGHT_PURPLE)));
+		Optional<Address.Immutable> addressOptional = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
+		
+		if(addressOptional.isPresent())
+		{
+			Address.Immutable address = addressOptional.get();
+			
+			Style style = Style.EMPTY;
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
+			context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.address")
+					.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN))
+					.append(Component.translatable("message.sgjourney.command.get_extragalactic_address.is")));
+			context.getSource().getPlayer().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.LIGHT_PURPLE)));
+		}
+		else
+			context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.none").withStyle(ChatFormatting.DARK_RED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
 	
 	private static int getStargates(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
+		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getPlayer().level();
-		String solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
+		Optional<SolarSystem.Serializable> solarSystemOptional = Universe.get(level).getSolarSystemFromDimension(dimension);
 		
-		if(!solarSystem.isEmpty())
+		if(solarSystemOptional.isPresent())
 		{
-			context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_stargates")
-					.append(Component.literal(" " + dimension).withStyle(ChatFormatting.GOLD)));
-			context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
-			CompoundTag stargates = StargateNetwork.get(level).getSolarSystem(solarSystem);
-			stargates.getAllKeys().forEach(stargateID ->
+			SolarSystem.Serializable solarSystem = solarSystemOptional.get();
+			if(!solarSystem.getStargates().isEmpty())
 			{
-				CompoundTag stargate = stargates.getCompound(stargateID);
-				String stargateDimension = stargate.getString("Dimension");
+				context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_stargates")
+						.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)));
+				context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
 				
-				if(stargateDimension.equals(dimension))
+				solarSystem.getStargates().stream().forEach(stargate ->
 				{
-					int[] coordinates = stargate.getIntArray("Coordinates");
+					ResourceKey<Level> stargateDimension = stargate.getDimension();
+					BlockPos stargatePos = stargate.getBlockPos();
 					
-					Style style = Style.EMPTY;
-					style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-					style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargateID));
-					context.getSource().getPlayer().sendSystemMessage(Component.literal(stargateID).setStyle(style.applyFormat(ChatFormatting.AQUA))
-							.append(Component.literal(" X: " + coordinates[0] + " Y: " + coordinates[1] + " Z: " + coordinates[2]).withStyle(ChatFormatting.BLUE)));
-				}
-			});
-			context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+					if(stargateDimension.equals(dimension))
+					{
+						Style style = Style.EMPTY;
+						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.get9ChevronAddress().toString()));
+						context.getSource().getPlayer().sendSystemMessage(Component.literal(stargate.get9ChevronAddress().toString()).setStyle(style.applyFormat(ChatFormatting.AQUA))
+								.append(Component.literal(" X: " + stargatePos.getX() + " Y: " + stargatePos.getY() + " Z: " + stargatePos.getZ()).withStyle(ChatFormatting.BLUE)));
+					}
+				});
+				context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+				
+				return Command.SINGLE_SUCCESS;
+			}
 		}
-		else
-			context.getSource().getPlayer().sendSystemMessage(Component.literal("No Stargates could be located in " + dimension).withStyle(ChatFormatting.RED));
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.literal("No Stargates could be located in " + dimension.location().toString()).withStyle(ChatFormatting.RED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -381,14 +409,13 @@ public class CommandInit
 	{
 		Level level = context.getSource().getPlayer().level();
 
-		System.out.println("Dimensions:\n" + Universe.get(level).getDimensions());
-		System.out.println("Solar Systems:\n" + Universe.get(level).getSolarSystems());
-		System.out.println("Galaxies:\n" + Universe.get(level).getGalaxies());
-		System.out.println("Extragalactic Addresses:\n" + Universe.get(level).getExtragalacticAddressInfo());
+		Universe.get(level).printDimensions();
+		Universe.get(level).printSolarSystems();
+		Universe.get(level).printGalaxies();
+		
 		System.out.println("=============================");
-		System.out.println("Stargates:\n" + StargateNetwork.get(level).getStargates());
-		System.out.println("Stargates in Solar Systems:\n" + StargateNetwork.get(level).getSolarSystems());
-		//System.out.println("Connections:\n" + StargateNetwork.get(level).getConnections());
+		BlockEntityList.get(level).printStargates();
+		StargateNetwork.get(level).printConnections();
 
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info onto the console"));
 		
