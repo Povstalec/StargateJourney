@@ -7,8 +7,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +22,7 @@ public class WormholeTravelCriterion extends SimpleCriterionTrigger<WormholeTrav
 	private static final ResourceLocation CRITERION_ID = new ResourceLocation(StargateJourney.MODID, "stargate_wormhole_travel");
 	
 	@Override
-	protected WormholeTravelTrigger createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer)
+	protected WormholeTravelTrigger createInstance(JsonObject obj, ContextAwarePredicate playerPredicate, DeserializationContext predicateDeserializer)
 	{
 		Optional<ResourceLocation> initialDimension = Optional.empty();
 		Optional<ResourceLocation> destinationDimension = Optional.empty();
@@ -57,7 +57,7 @@ public class WormholeTravelCriterion extends SimpleCriterionTrigger<WormholeTrav
 		private final Optional<ResourceLocation> destinationDimension;
 		private final Optional<Long> distanceTraveled;
 
-		public WormholeTravelTrigger(EntityPredicate.Composite entity,
+		public WormholeTravelTrigger(ContextAwarePredicate entity,
 				Optional<ResourceLocation> initialDimension, Optional<ResourceLocation> destinationDimension,
 				Optional<Long> distanceTraveled)
 		{

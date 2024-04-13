@@ -47,7 +47,7 @@ public abstract class LiquidizerScreen extends AbstractContainerScreen<Liquidize
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+        graphics.blit(texture, x, y, 0, 0, imageWidth, imageHeight);
         
         //this.renderEnergy(pPoseStack, x + 8, y + 62);
         this.renderProgress(graphics, x + 28, y + 37);
@@ -79,7 +79,7 @@ public abstract class LiquidizerScreen extends AbstractContainerScreen<Liquidize
     {
     	float percentage = (float) this.menu.getProgress() / AbstractNaquadahLiquidizerEntity.MAX_PROGRESS;
     	int actual = Math.round(119 * percentage);
-    	graphics.blit(TEXTURE, x, y, 0, 166, actual, 12);
+    	graphics.blit(texture, x, y, 0, 166, actual, 12);
     }
     
     /*protected void renderEnergy(PoseStack stack, int x, int y)
