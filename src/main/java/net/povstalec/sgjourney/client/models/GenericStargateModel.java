@@ -193,7 +193,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					(10F * (j % 4) + 5 + STARGATE_RING_START_CENTER * 16) / 64, (29.5F - STARGATE_CUTOUT_TO_INNER_HEIGHT/2 * 16) / 64);
 			
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,

@@ -136,7 +136,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 					(5 + STARGATE_RING_OUTER_CENTER * 16) / 64, (12 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
@@ -236,7 +236,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 					SPINNY_RING_OFFSET,
 					(24.5F + SPINNY_RING_OUTER_CENTER * 16) / 64, (11.5F - SPINNY_RING_HEIGHT/2 * 16) / 64);
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 					SPINNY_RING_OUTER_CENTER, 
 					SPINNY_RING_OUTER_RADIUS,
 					-SPINNY_RING_OFFSET,
@@ -455,7 +455,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		if(!isLocked)
 		{
 			//Light Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 					CHEVRON_LIGHT_UPPER_X_OFFSET,
 					CHEVRON_LIGHT_HEIGHT_Y_OFFSET,
 					CHEVRON_LIGHT_Z_OFFSET - CHEVRON_LIGHT_THICKNESS,
@@ -642,7 +642,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		if(!isLocked)
 		{
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 					-OUTER_CHEVRON_BOTTOM_X_OFFSET - OUTER_CHEVRON_SIDE_HEIGHT_X_PROJECTION + OUTER_CHEVRON_SIDE_WIDTH_X_PROJECTION,
 					-OUTER_CHEVRON_BOTTOM_Y_OFFSET - (CHEVRON_LIGHT_HEIGHT_Y_OFFSET + OUTER_CHEVRON_BOTTOM_Y_OFFSET) + OUTER_CHEVRON_SIDE_HEIGHT_Y_PROJECTION + OUTER_CHEVRON_SIDE_WIDTH_Y_PROJECTION,
 					OUTER_CHEVRON_Z_OFFSET - OUTER_CHEVRON_THICKNESS,
@@ -755,7 +755,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		if(!isLocked)
 		{
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 					OUTER_CHEVRON_BOTTOM_X_OFFSET + OUTER_CHEVRON_SIDE_HEIGHT_X_PROJECTION,
 					-OUTER_CHEVRON_BOTTOM_Y_OFFSET - (CHEVRON_LIGHT_HEIGHT_Y_OFFSET + OUTER_CHEVRON_BOTTOM_Y_OFFSET) + OUTER_CHEVRON_SIDE_HEIGHT_Y_PROJECTION,
 					OUTER_CHEVRON_Z_OFFSET - OUTER_CHEVRON_THICKNESS,

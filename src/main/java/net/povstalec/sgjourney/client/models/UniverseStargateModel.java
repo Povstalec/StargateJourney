@@ -247,7 +247,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			if(useAlternateModel(stargate, stargateVariant))
 			{
 				//Back
-				SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 						STARGATE_RING_OUTER_CENTER,
 						STARGATE_RING_OUTER_RADIUS,
 						STARGATE_RING_DIVIDE_OFFSET,
@@ -306,7 +306,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
 			
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,

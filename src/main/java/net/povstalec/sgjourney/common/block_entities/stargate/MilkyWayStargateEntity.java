@@ -327,9 +327,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public int getCurrentSymbol()
 	{
-		int symbolPosition = this.rotation + 4;
+		int symbolPosition = this.rotation + 2;
 		
-		int currentSymbol = (symbolPosition / 8) % 39;
+		int currentSymbol = (symbolPosition / 4) % 39;
 		
 		return currentSymbol;
 	}
