@@ -1,0 +1,12 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:advanced_control_crystal",
+		"sgjourney:advanced_memory_crystal",
+		"sgjourney:advanced_materialization_crystal",
+		"sgjourney:advanced_energy_crystal",
+		"sgjourney:advanced_transfer_crystal",
+		"sgjourney:advanced_communication_crystal"
+	]
+}

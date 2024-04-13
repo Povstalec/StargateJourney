@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.data;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.annotation.Nonnull;
 
@@ -115,12 +116,6 @@ public class BlockEntityList extends SavedData
 	{
 		return (HashMap<Address.Immutable, Stargate>) stargateMap.clone();
 	}
-
-    @SuppressWarnings("unchecked")
-	public HashMap<String, Transporter> getTransporters()
-	{
-		return (HashMap<String, Transporter>) transporterMap.clone();
-	}
 	
 	public Optional<Stargate> getStargate(Address.Immutable address)
 	{
@@ -133,6 +128,30 @@ public class BlockEntityList extends SavedData
 		}
 		
 		return Optional.empty();
+	}
+	
+	public Optional<Stargate> getRandomStargate(long seed)
+	{
+		int size = this.stargateMap.size();
+		
+		if(size < 1)
+			return Optional.empty();
+		
+		Random random = new Random(seed);
+		
+		int randomValue = random.nextInt(0, size);
+		
+		Stargate randomStargate = (Stargate) this.stargateMap.entrySet().stream().toArray()[randomValue];
+		
+		return Optional.of(randomStargate);
+	}
+	
+	
+	
+    @SuppressWarnings("unchecked")
+	public HashMap<String, Transporter> getTransporters()
+	{
+		return (HashMap<String, Transporter>) transporterMap.clone();
 	}
 	
 	public Optional<Transporter> getTransporter(String id)

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -321,6 +322,22 @@ public class SolarSystem
 		{
 			if(this.stargates.contains(stargate))
 				this.stargates.remove(stargate);
+		}
+		
+		public Optional<Stargate> getRandomStargate(long seed)
+		{
+			int size = this.stargates.size();
+			
+			if(size < 1)
+				return Optional.empty();
+			
+			Random random = new Random(seed);
+			
+			int randomValue = random.nextInt(0, size);
+			
+			Stargate randomStargate = this.stargates.get(randomValue);
+			
+			return Optional.of(randomStargate);
 		}
 		
 		

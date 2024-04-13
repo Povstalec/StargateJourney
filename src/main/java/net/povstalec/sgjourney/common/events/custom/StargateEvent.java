@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.events.custom;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Connection;
@@ -60,6 +61,7 @@ public class StargateEvent extends Event
 	}
 	
 	
+	
 	/**
 	 * Fired when a Stargate attempts to form a connection with another Stargate
 	 * @author Povstalec
@@ -100,6 +102,52 @@ public class StargateEvent extends Event
 		public boolean doKawoosh()
 		{
 			return this.doKawoosh;
+		}
+	}
+	
+	
+	
+	/**
+	 * Fired when a an Entity goes through the Wormhole
+	 * @author Povstalec
+	 *
+	 */
+	public static class WormholeTravel extends StargateEvent
+	{
+		private final Stargate connectedStargate;
+		private final Connection.Type connectionType;
+		private final Entity traveler;
+		private final Stargate.WormholeTravel wormholeTravel;
+
+		public WormholeTravel(MinecraftServer server, Stargate stargate, Stargate connectedStargate,
+				Connection.Type connectionType, Entity traveler, Stargate.WormholeTravel wormholeTravel)
+		{
+			super(server, stargate);
+			
+			this.connectedStargate = connectedStargate;
+			this.connectionType = connectionType;
+			this.traveler = traveler;
+			this.wormholeTravel = wormholeTravel;
+		}
+		
+		public Stargate getConnectedStargate()
+		{
+			return this.connectedStargate;
+		}
+		
+		public Connection.Type getConnectionType()
+		{
+			return this.connectionType;
+		}
+		
+		public Entity getTraveler()
+		{
+			return this.traveler;
+		}
+		
+		public Stargate.WormholeTravel getWormholeTravel()
+		{
+			return this.wormholeTravel;
 		}
 	}
 }

@@ -1,0 +1,11 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:universe_stargate",
+		"sgjourney:milky_way_stargate",
+		"sgjourney:pegasus_stargate",
+		"sgjourney:tollan_stargate",
+		"sgjourney:classic_stargate"
+	]
+}

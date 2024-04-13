@@ -26,7 +26,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Connection;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
-public class StargateNetwork extends SavedData
+public final class StargateNetwork extends SavedData
 {
 	private static boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -261,18 +261,6 @@ public class StargateNetwork extends SavedData
 		return 0;
 	}
 	
-	public final boolean addConnection(Connection connection)
-	{
-		if(!this.connections.containsKey(connection.getID()))
-		{
-			this.connections.put(connection.getID(), connection);
-			
-			return true;
-		}
-		
-		return false;
-	}
-	
 	public final Stargate.Feedback createConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		Connection.Type connectionType = Connection.getType(server, dialingStargate, dialedStargate);
@@ -332,6 +320,18 @@ public class StargateNetwork extends SavedData
 		}
 		
 		return Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
+	}
+	
+	public final boolean addConnection(Connection connection)
+	{
+		if(!this.connections.containsKey(connection.getID()))
+		{
+			this.connections.put(connection.getID(), connection);
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public final boolean hasConnection(String uuid)

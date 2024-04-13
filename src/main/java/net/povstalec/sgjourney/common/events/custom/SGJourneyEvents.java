@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.events.custom;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Connection;
@@ -18,9 +19,9 @@ public class SGJourneyEvents
         return MinecraftForge.EVENT_BUS.post(new StargateEvent.Connect(server, stargate, connectedStargate, connectionType, addressType, doKawoosh));
     }
 	
-	/*public static boolean onWormhole(MinecraftServer server, Stargate stargate, Stargate connectedStargate, Connection.Type connectionType,
-			Entity traveler, Vec3 momentum, Stargate.WormholeTravel twoWayWormhole)
+	public static boolean onWormholeTravel(MinecraftServer server, Stargate stargate, Stargate connectedStargate, Connection.Type connectionType,
+			Entity traveler, Stargate.WormholeTravel wormholeTravel)
     {
-        return MinecraftForge.EVENT_BUS.post(new StargateEvent.Connect(server, stargate, connectedStargate, connectionType));
-    }*/
+        return MinecraftForge.EVENT_BUS.post(new StargateEvent.WormholeTravel(server, stargate, connectedStargate, connectionType, traveler, wormholeTravel));
+    }
 }

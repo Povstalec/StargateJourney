@@ -76,7 +76,7 @@ public class Galaxy
 	 * @author Povstalec
 	 *
 	 */
-	public static class Serializable
+	public static final class Serializable
 	{
 		public static final String GALAXY_KEY = "GalaxyKey";
 		public static final String SOLAR_SYSTEMS = "SolarSystems";
@@ -154,6 +154,22 @@ public class Galaxy
 		{
 			if(containsSolarSystem(address))
 				this.solarSystems.remove(address);
+		}
+		
+		public Optional<SolarSystem.Serializable> getRandomSolarSystem(long seed)
+		{
+			int size = this.solarSystems.size();
+			
+			if(size < 1)
+				return Optional.empty();
+			
+			Random random = new Random(seed);
+			
+			int randomValue = random.nextInt(0, size);
+			
+			SolarSystem.Serializable randomSolarSystem = (SolarSystem.Serializable) this.solarSystems.entrySet().stream().toArray()[randomValue];
+			
+			return Optional.of(randomSolarSystem);
 		}
 		
 		public void addPointOfOrigin(ResourceKey<PointOfOrigin> pointOfOrigin)

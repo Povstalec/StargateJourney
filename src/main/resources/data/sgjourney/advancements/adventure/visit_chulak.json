@@ -1,17 +1,18 @@
 {
+	"parent": "sgjourney:adventure/use_stargate",
 	"display": 
 	{
 		"icon": 
 		{
-			"item": "sgjourney:milky_way_stargate"
+			"item": "sgjourney:matok"
 		},
 		"title": 
 		{
-			"translate": "advancements.sgjourney.root.title"
+			"translate": "advancements.sgjourney.adventure.visit_chulak.title"
 		},
 		"description": 
 		{
-			"translate": "advancements.sgjourney.root.description"
+			"translate": "advancements.sgjourney.adventure.visit_chulak.description"
 		},
 		"frame": "task",
 		"show_toast": false,
@@ -21,19 +22,19 @@
 	},
 	"criteria": 
 	{
-		"entered_abydos": 
+		"entered_chulak": 
 		{
 			"trigger": "minecraft:changed_dimension",
 			"conditions": 
 			{
-				"to": "sgjourney:abydos"
+				"to": "sgjourney:chulak"
 			}
 		}
 	},
 	"requirements": 
 	[
 		[
-			"entered_abydos"
+			"entered_chulak"
 		]
 	]
 }
