@@ -8,9 +8,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class InterfaceMethods
@@ -54,9 +52,10 @@ public class InterfaceMethods
 	}
 	
 	
-
+	
+	//TODO
 	// Crystal Interface
-	public static class AddressToDimension implements InterfaceMethod<AbstractStargateEntity>
+	/*public static class AddressToDimension implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
 		public String getName()
@@ -84,5 +83,5 @@ public class InterfaceMethods
 			
 			return result;
 		}
-	}
+	}*/
 }

@@ -1,5 +1,4 @@
 {
 	"name": "point_of_origin.sgjourney.icarus",
-	"texture": "sgjourney:milky_way/points_of_origin/icarus.png",
-	"generates_randomly": false
+	"texture": "sgjourney:milky_way/points_of_origin/icarus.png"
 }

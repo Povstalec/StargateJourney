@@ -766,7 +766,7 @@ public class GenericChevronModel
 				56F/64, 32F/64);
 		
 		//Center Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 				0F / 16,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -838,7 +838,7 @@ public class GenericChevronModel
 				50F/64, 24F/64);
 		
 		//Left Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 				-OUTER_CHEVRON_SIDE_BOTTOM_THICKNESS,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -932,7 +932,7 @@ public class GenericChevronModel
 				63F/64, 24F/64);
 		
 		//Right Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 				0F / 16,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,

@@ -1,5 +1,8 @@
 {
 	"name": "point_of_origin.sgjourney.giza",
 	"texture": "sgjourney:milky_way/points_of_origin/giza.png",
-	"generates_randomly": true
+	"generated_galaxies":
+	[
+		"sgjourney:milky_way"
+	]
 }

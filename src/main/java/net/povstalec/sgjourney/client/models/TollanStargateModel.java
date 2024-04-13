@@ -276,7 +276,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,

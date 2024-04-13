@@ -23,7 +23,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquid
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.menu.NaquadahLiquidizerMenu;
+import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 
 public class NaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
 {
@@ -58,7 +58,7 @@ public class NaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
         			@Override
         			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
         			{
-        				return new NaquadahLiquidizerMenu(windowId, playerInventory, blockEntity);
+        				return new LiquidizerMenu.LiquidNaquadah(windowId, playerInventory, blockEntity);
         			}
         		};
         		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

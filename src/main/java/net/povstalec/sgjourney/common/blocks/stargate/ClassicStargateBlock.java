@@ -143,7 +143,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 					if(!level.isClientSide())
 					{
 						stargate.deserializeStargateInfo(tag, true);
-						stargate.addToBlockEntityList();
+						stargate.addStargateToNetwork();
 					}
 				}
 				

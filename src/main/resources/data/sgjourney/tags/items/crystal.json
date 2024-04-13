@@ -1,0 +1,13 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:large_control_crystal",
+		"sgjourney:control_crystal",
+		"sgjourney:memory_crystal",
+		"sgjourney:materialization_crystal",
+		"sgjourney:energy_crystal",
+		"sgjourney:transfer_crystal",
+		"sgjourney:communication_crystal"
+	]
+}

@@ -40,7 +40,7 @@ public abstract class SGJourneyBaseEntityBlock extends BaseEntityBlock
         {
             BlockEntity entity = level.getBlockEntity(pos);
             
-            if (entity instanceof SGJourneyBlockEntity blockEntity)
+            if(entity instanceof SGJourneyBlockEntity blockEntity)
                 blockEntity.removeFromBlockEntityList();
         }
         super.onRemove(state, level, pos, newState, isMoving);

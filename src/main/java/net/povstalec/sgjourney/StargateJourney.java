@@ -47,14 +47,15 @@ import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
 import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
 import net.povstalec.sgjourney.client.screens.InterfaceScreen;
+import net.povstalec.sgjourney.client.screens.LiquidizerScreen;
 import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
-import net.povstalec.sgjourney.client.screens.NaquadahLiquidizerScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.AdvancementInit;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -114,6 +115,8 @@ public class StargateJourney
         
         GalaxyInit.register(eventBus);
         
+        AdvancementInit.register();
+        
         eventBus.addListener((NewRegistryEvent event) -> 
         {
         	
@@ -125,6 +128,10 @@ public class StargateJourney
         	symbolBuilder.setName(new ResourceLocation(MODID, "symbols"));
         	event.create(symbolBuilder);
 
+        	RegistryBuilder<Galaxy> galaxyBuilder = new RegistryBuilder<>();
+        	galaxyBuilder.setName(new ResourceLocation(MODID, "galaxy"));
+        	event.create(galaxyBuilder);
+
         	RegistryBuilder<PointOfOrigin> pointOfOriginBuilder = new RegistryBuilder<>();
         	pointOfOriginBuilder.setName(new ResourceLocation(MODID, "point_of_origin"));
         	event.create(pointOfOriginBuilder);
@@ -132,10 +139,6 @@ public class StargateJourney
         	RegistryBuilder<SolarSystem> solarSystemBuilder = new RegistryBuilder<>();
         	solarSystemBuilder.setName(new ResourceLocation(MODID, "solar_system"));
         	event.create(solarSystemBuilder);
-
-        	RegistryBuilder<Galaxy> galaxyBuilder = new RegistryBuilder<>();
-        	galaxyBuilder.setName(new ResourceLocation(MODID, "galaxy"));
-        	event.create(galaxyBuilder);
 
         	RegistryBuilder<AddressTable> addressTableBuilder = new RegistryBuilder<>();
         	addressTableBuilder.setName(new ResourceLocation(MODID, "address_table"));
@@ -147,9 +150,9 @@ public class StargateJourney
 
         	symbolSetBuilder.dataPackRegistry(SymbolSet.CODEC, SymbolSet.CODEC);
         	symbolBuilder.dataPackRegistry(Symbols.CODEC, Symbols.CODEC);
+        	galaxyBuilder.dataPackRegistry(Galaxy.CODEC, Galaxy.CODEC);
         	pointOfOriginBuilder.dataPackRegistry(PointOfOrigin.CODEC, PointOfOrigin.CODEC);
         	solarSystemBuilder.dataPackRegistry(SolarSystem.CODEC, SolarSystem.CODEC);
-        	galaxyBuilder.dataPackRegistry(Galaxy.CODEC, Galaxy.CODEC);
         	addressTableBuilder.dataPackRegistry(AddressTable.CODEC, AddressTable.CODEC);
         	stargateVariantBuilder.dataPackRegistry(StargateVariant.CODEC, StargateVariant.CODEC);
         });
@@ -219,7 +222,8 @@ public class StargateJourney
 
         	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
 
-        	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), NaquadahLiquidizerScreen::new);
+        	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
+        	MenuScreens.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);

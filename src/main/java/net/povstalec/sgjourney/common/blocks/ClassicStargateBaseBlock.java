@@ -79,7 +79,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 					return InteractionResult.FAIL;
 				}
 				
-				if(BlockEntityList.get(level).getBlockEntities(SGJourneyBlockEntity.Type.STARGATE.id).contains(address.toString()))
+				if(BlockEntityList.get(level).getStargate(address.immutable()).isPresent())
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.address_exists"), true);
 					return InteractionResult.FAIL;
