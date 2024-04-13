@@ -1,18 +1,20 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.povstalec.sgjourney.StargateJourney;
+import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
@@ -22,9 +24,9 @@ public final class Address
 	public static final int MIN_ADDRESS_LENGTH = 6;
 	public static final int MAX_ADDRESS_LENGTH = 9;
 	
-	protected int[] addressArray = new int[0];
-	protected boolean isBuffer = false;
-	protected Optional<String> dimension = Optional.empty();
+	private int[] addressArray = new int[0];
+	private boolean isBuffer = false;
+	private Optional<String> dimension = Optional.empty();//TODO Maybe replace this with ResourceKey<Level> ?
 	
 	public Address(boolean isBuffer)
 	{
@@ -130,19 +132,31 @@ public final class Address
 		return this;
 	}
 	
-	//TODO Replace String with ResourceKey<Level> eventually
-	public Address fromDimension(ServerLevel level, String dimension)
+	public Address fromIntegerList(List<Integer> integerList)
 	{
-		String galaxy = StargateJourney.EMPTY;
-		Set<String> galaxies = Universe.get(level).getGalaxiesFromDimension(dimension).getCompound(0).getAllKeys();
+		int[] addressArray = integerListToArray(integerList);
 		
-		Iterator<String> iterator = galaxies.iterator();
-		if(iterator.hasNext())
-			galaxy = iterator.next();
+		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
+			this.addressArray = addressArray;
 		
-		fromString(Universe.get(level).getAddressInGalaxyFromDimension(galaxy, dimension));
+		return this;
+	}
+	
+	public Address fromDimension(ServerLevel level, ResourceKey<Level> dimension)
+	{
+		Optional<Galaxy.Serializable> galaxy = Universe.get(level).getGalaxyFromDimension(dimension);
 		
-		this.dimension = Optional.of(dimension);
+		if(galaxy.isPresent())
+		{
+			Optional<Address.Immutable> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
+			
+			if(address.isPresent())
+			{
+				//TODO Would be nice to use copy here
+				fromArray(address.get().toArray());
+				this.dimension = Optional.of(dimension.location().toString());
+			}
+		}
 		
 		return this;
 	}
@@ -159,7 +173,7 @@ public final class Address
 	
 	public int getSymbol(int number)
 	{
-		if(number < 0 || number > getLength())
+		if(number < 0 || number >= getLength())
 			return 0;
 		
 		return addressArray[number];
@@ -291,6 +305,37 @@ public final class Address
 		return this;
 	}
 	
+	public Address copy()
+	{
+		Address copyAddress = new Address(this.isBuffer).fromArray(addressArray);
+		copyAddress.dimension = this.dimension;
+		return copyAddress;
+	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		if(object instanceof Address address)
+			return Arrays.equals(this.addressArray, address.addressArray);
+		else if(object instanceof Address.Immutable address)
+				return Arrays.equals(this.addressArray, address.addressArray);
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(this.getSymbol(0), this.getSymbol(1), this.getSymbol(2),
+				this.getSymbol(3), this.getSymbol(4), this.getSymbol(5),
+				this.getSymbol(6), this.getSymbol(7));
+	}
+	
+	public Address.Immutable immutable()
+	{
+		return new Address.Immutable(this);
+	}
+	
 	//============================================================================================
 	//*******************************************Static*******************************************
 	//============================================================================================
@@ -338,5 +383,119 @@ public final class Address
 			address = address + array[i] + ADDRESS_DIVIDER;
 		}
 		return address;
+	}
+	
+	public static int[] integerListToArray(List<Integer> integerList)
+	{
+		return integerList.stream().mapToInt((integer) -> integer).toArray();
+	}
+	
+	
+	
+	public static final class Immutable
+	{
+		private final int[] addressArray;
+		
+		public Immutable(Address address)
+		{
+			this.addressArray = address.toArray();
+		}
+		
+		public final int getLength()
+		{
+			return addressArray.length;
+		}
+		
+		public final int getSymbol(int number)
+		{
+			if(number < 0 || number >= getLength())
+				return 0;
+			
+			return addressArray[number];
+		}
+		
+		public final int[] toArray()
+		{
+			return addressArray;
+		}
+		
+		@Override
+		public final String toString()
+		{
+			return addressIntArrayToString(this.addressArray);
+		}
+		
+		public final Address.Type getType()
+		{
+			return Address.Type.fromInt(this.getLength());
+		}
+		
+		public final Component toComponent(boolean copyToClipboard)
+		{
+			ChatFormatting chatFormatting;
+			
+			switch(this.getType())
+			{
+			case ADDRESS_7_CHEVRON:
+				chatFormatting = ChatFormatting.GOLD;
+				break;
+			case ADDRESS_8_CHEVRON:
+				chatFormatting = ChatFormatting.LIGHT_PURPLE;
+				break;
+			case ADDRESS_9_CHEVRON:
+				chatFormatting = ChatFormatting.AQUA;
+				break;
+			default:
+				chatFormatting = ChatFormatting.GRAY;
+			}
+			
+			Style style = Style.EMPTY;
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
+			
+			return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
+		}
+		
+		public final boolean containsSymbol(int symbol)
+		{
+			for(int i = 0; i < getLength(); i++)
+			{
+				if(addressArray[i] == symbol)
+					return true;
+			}
+			
+			return false;
+		}
+		
+		public final Address.Immutable copy()
+		{
+			Address.Immutable copyAddress = new Address(true).fromArray(addressArray).immutable();
+			
+			return copyAddress;
+		}
+		
+		@Override
+		public final boolean equals(Object object)
+		{
+			if(object instanceof Address.Immutable address)
+				return Arrays.equals(this.addressArray, address.addressArray);
+			else if(object instanceof Address address)
+				return Arrays.equals(this.addressArray, address.addressArray);
+			
+			return false;
+		}
+		
+		@Override
+		public final int hashCode()
+		{
+			return Objects.hash(this.getSymbol(0), this.getSymbol(1), this.getSymbol(2),
+					this.getSymbol(3), this.getSymbol(4), this.getSymbol(5),
+					this.getSymbol(6), this.getSymbol(7));
+		}
+		
+		public final Address mutable()
+		{
+			return new Address(addressArray);
+		}
 	}
 }

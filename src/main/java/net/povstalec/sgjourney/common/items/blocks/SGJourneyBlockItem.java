@@ -14,19 +14,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.data.StargateNetwork;
 
 public class SGJourneyBlockItem extends BlockItem
 {
 	private static final String ID = "ID";
 	private static final String ADD_TO_NETWORK = "AddToNetwork";
-	private static final String POINT_OF_ORIGIN = "PointOfOrigin";
-	private static final String SYMBOLS = "Symbols";
-	private static final String TIMES_OPENED = "TimesOpened";
-	private static final String EMPTY = StargateJourney.EMPTY;
 	
 	public SGJourneyBlockItem(Block block, Properties properties)
 	{
@@ -95,33 +87,6 @@ public class SGJourneyBlockItem extends BlockItem
 					blockEntity.addToBlockEntityList();
 				else
 					blockEntity.addNewToBlockEntityList();
-				
-				if(blockEntity instanceof AbstractStargateEntity stargate)
-					StargateNetwork.get(level).updateStargate(level, info.getString(ID), info.getInt(TIMES_OPENED), false);//TODO Add stuff for having a DHD
-			}
-			
-			// Sets up symbols on the Milky Way Stargate
-			if(blockEntity instanceof MilkyWayStargateEntity milkyWayStargate)
-			{
-				if(!addToNetwork)
-				{
-					if(!info.contains(POINT_OF_ORIGIN))
-						milkyWayStargate.setPointOfOrigin(EMPTY);
-					if(!info.contains(SYMBOLS))
-						milkyWayStargate.setSymbols(EMPTY);
-				}
-			}
-			
-			// Sets up symbols on the Classic Stargate
-			else if(blockEntity instanceof ClassicStargateEntity classicStargate)
-			{
-				if(!addToNetwork)
-				{
-					if(!info.contains(POINT_OF_ORIGIN))
-						classicStargate.setPointOfOrigin(EMPTY);
-					if(!info.contains(SYMBOLS))
-						classicStargate.setSymbols(EMPTY);
-				}
 			}
 		}
 		

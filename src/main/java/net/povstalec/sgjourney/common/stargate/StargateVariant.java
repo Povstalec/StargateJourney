@@ -25,6 +25,7 @@ public class StargateVariant
 			ResourceLocation.CODEC.fieldOf("engaged_texture").forGetter(StargateVariant::getEngagedTexture),
 			ResourceLocation.CODEC.fieldOf("event_horizon_texture").forGetter(StargateVariant::getEventHorizonTexture),
 			ResourceLocation.CODEC.optionalFieldOf("shiny_event_horizon_texture").forGetter(StargateVariant::getShinyEventHorizonTexture),
+			Codec.INT.optionalFieldOf("event_horizon_frames", 32).forGetter(StargateVariant::getEventHorizonFrames),
 
 			PointOfOrigin.RESOURCE_KEY_CODEC.optionalFieldOf("point_of_origin").forGetter(StargateVariant::getPointOfOrigin),
 			Symbols.RESOURCE_KEY_CODEC.optionalFieldOf("symbols").forGetter(StargateVariant::getSymbols),
@@ -44,6 +45,7 @@ public class StargateVariant
 	private final ResourceLocation engagedTexture;
 	private final ResourceLocation eventHorizonTexture;
 	private final Optional<ResourceLocation> shinyEventHorizonTexture;
+	private final int eventHorizonFrames;
 
 	private final Optional<ResourceKey<PointOfOrigin>> pointOfOrigin;
 	private final Optional<ResourceKey<Symbols>> symbols;
@@ -61,6 +63,7 @@ public class StargateVariant
 	private Optional<Boolean> engagedSymbolsGlow = Optional.empty();
 	private Optional<Boolean> engageEncodedSymbols = Optional.empty();
 	private Optional<Boolean> engageSymbolsOnIncoming = Optional.empty();
+	private Optional<Boolean> vortex = Optional.empty();
 	
 	private final Optional<Map<String, ResourceLocation>> sounds;
 
@@ -91,6 +94,7 @@ public class StargateVariant
 			ResourceLocation engagedTexture,
 			ResourceLocation eventHorizonTexture,
 			Optional<ResourceLocation> shinyEventHorizonTexture,
+			int eventHorizonFrames,
 
 			Optional<ResourceKey<PointOfOrigin>> pointOfOrigin,
 			Optional<ResourceKey<Symbols>> symbols,
@@ -109,6 +113,7 @@ public class StargateVariant
 		this.engagedTexture = engagedTexture;
 		this.eventHorizonTexture = eventHorizonTexture;
 		this.shinyEventHorizonTexture = shinyEventHorizonTexture;
+		this.eventHorizonFrames = eventHorizonFrames;
 		
 		this.symbols = symbols;
 		this.pointOfOrigin = pointOfOrigin;
@@ -156,6 +161,9 @@ public class StargateVariant
 		
 		if(modelMap.containsKey("engage_symbols_on_incoming"))
 			this.engageSymbolsOnIncoming = Optional.of(modelMap.get("engage_symbols_on_incoming"));
+		
+		if(modelMap.containsKey("vortex"))
+			this.vortex = Optional.of(modelMap.get("vortex"));
 	}
 	
 	private void setupSounds(Map<String, ResourceLocation> soundMap)
@@ -211,6 +219,15 @@ public class StargateVariant
 			this.wormholeCloseSound = Optional.of(soundMap.get("wormhole_close_sound"));
 	}
 	
+	
+	
+	public ResourceLocation getBaseStargate()
+	{
+		return this.baseStargate;
+	}
+	
+	
+	
 	public ResourceLocation getTexture()
 	{
 		return this.texture;
@@ -231,9 +248,9 @@ public class StargateVariant
 		return this.shinyEventHorizonTexture;
 	}
 	
-	public ResourceLocation getBaseStargate()
+	public int getEventHorizonFrames()
 	{
-		return this.baseStargate;
+		return this.eventHorizonFrames;
 	}
 	
 	
@@ -306,6 +323,11 @@ public class StargateVariant
 	public Optional<Boolean> engageSymbolsOnIncoming()
 	{
 		return this.engageSymbolsOnIncoming;
+	}
+	
+	public Optional<Boolean> hasVortex()
+	{
+		return this.vortex;
 	}
 	
 	

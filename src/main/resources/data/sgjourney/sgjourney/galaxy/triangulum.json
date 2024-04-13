@@ -1,0 +1,5 @@
+{
+	"name": "galaxy.sgjourney.triangulum",
+	"type": "sgjourney:dwarf_galaxy",
+	"default_symbols": "sgjourney:galaxy_triangulum"
+}

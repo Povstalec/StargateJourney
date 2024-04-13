@@ -187,7 +187,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		return ENERGY_STORAGE.canReceive();
 	}
 	
-	public long getCapacity()
+	public long getEnergyCapacity()
 	{
 		return ENERGY_STORAGE.getTrueMaxEnergyStored();
 	}

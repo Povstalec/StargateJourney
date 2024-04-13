@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.sound.sounds;
 
 import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public class MilkyWayStargateRingBuildupSound extends StargateSound
 {
@@ -28,7 +29,7 @@ public class MilkyWayStargateRingBuildupSound extends StargateSound
 		else
 			fadeOut();
 		
-		if(getDistanceFromSource() > this.maxDistance)
+		if(getDistanceFromSource() > ClientStargateConfig.stargate_max_sound_distance.get())
 			this.stopSound();
 		
 		super.tick();

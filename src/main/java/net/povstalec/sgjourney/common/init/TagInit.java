@@ -49,6 +49,7 @@ public class TagInit
 	{
 		public static final TagKey<EntityType<?>> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<EntityType<?>> WORMHOLE_IGNORES = tag("wormhole_ignores");
+		public static final TagKey<EntityType<?>> WORMHOLE_CANNOT_TELEPORT = tag("wormhole_cannot_teleport");
 		
 		private static TagKey<EntityType<?>> tag(String name)
 		{

@@ -1,0 +1,5 @@
+{
+	"name": "galaxy.sgjourney.andromeda",
+	"type": "sgjourney:large_galaxy",
+	"default_symbols": "sgjourney:galaxy_andromeda"
+}

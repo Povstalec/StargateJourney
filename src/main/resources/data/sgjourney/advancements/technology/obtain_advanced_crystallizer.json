@@ -1,0 +1,43 @@
+{
+	"parent": "sgjourney:technology/obtain_crystal",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:advanced_crystallizer"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_advanced_crystallizer.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_advanced_crystallizer.description"
+		},
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"got_advanced_crystallizer": 
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions": 
+			{
+				"items":
+				[
+          			{"items":["sgjourney:advanced_crystallizer"]}
+        		]
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"got_advanced_crystallizer"
+		]
+	]
+}
