@@ -54,6 +54,7 @@ import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.AdvancementInit;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -113,6 +114,8 @@ public class StargateJourney
         RecipeTypeInit.register(eventBus);
         
         GalaxyInit.register(eventBus);
+        
+        AdvancementInit.register();
         
         eventBus.addListener((DataPackRegistryEvent.NewRegistry event) -> 
         {

@@ -22,6 +22,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -192,6 +193,8 @@ public class Wormhole implements ITeleporter
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
 		    		reconstructEvent(targetStargate, player);
+		    		
+		    		WormholeTravelCriterion.INSTANCE.trigger(player, false);
 		    	}
 		    	else
 		    	{
@@ -212,8 +215,13 @@ public class Wormhole implements ITeleporter
 		{
 			if(CommonStargateConfig.reverse_wormhole_kills.get())
 			{
-				if(traveler instanceof Player player && player.isCreative())
-					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+				if(traveler instanceof ServerPlayer player)
+				{
+					if(player.isCreative())
+						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+					else
+						WormholeTravelCriterion.INSTANCE.trigger(player, true);
+				}
 				else
 				{
 		    		deconstructEvent(initialStargate, traveler, true);
@@ -222,7 +230,7 @@ public class Wormhole implements ITeleporter
 			}
 			else
 			{
-				if(traveler instanceof Player player)
+				if(traveler instanceof ServerPlayer player)
 					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 			}
 		}

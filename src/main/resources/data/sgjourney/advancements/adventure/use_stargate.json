@@ -22,19 +22,19 @@
 	},
 	"criteria": 
 	{
-		"entered_abydos": 
+		"used_stargate": 
 		{
-			"trigger": "minecraft:changed_dimension",
+			"trigger": "sgjourney:stargate_wormhole_travel",
 			"conditions": 
 			{
-				"to": "sgjourney:abydos"
+				"disintegrated": false
 			}
 		}
 	},
 	"requirements": 
 	[
 		[
-			"entered_abydos"
+			"used_stargate"
 		]
 	]
 }

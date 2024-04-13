@@ -33,6 +33,13 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public static final int MAX_ROTATION = 156;
 	public static final int ROTATION_INCREASE = 1;
 	
+	public static final int SYMBOL_NUMBER = 39;
+	public static final int RING_SEGMENTS = 3;
+	public static final int SYMBOLS_PER_SEGMENT = SYMBOL_NUMBER / RING_SEGMENTS;
+
+	public static final int STEPS_PER_SYMBOL = MAX_ROTATION / SYMBOL_NUMBER;
+	public static final int SYMBOL_ADDITION = STEPS_PER_SYMBOL / 2;
+	
 	private int rotation = 0;
 	public int oldRotation = 0;
 	public boolean isChevronOpen = false;
@@ -327,9 +334,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public int getCurrentSymbol()
 	{
-		int symbolPosition = this.rotation + 2;
+		int symbolPosition = this.rotation + SYMBOL_ADDITION;
 		
-		int currentSymbol = (symbolPosition / 4) % 39;
+		int currentSymbol = (symbolPosition / STEPS_PER_SYMBOL) % SYMBOL_NUMBER;
 		
 		return currentSymbol;
 	}
@@ -337,13 +344,13 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	@Override
 	public int getRedstoneSymbolOutput()
 	{
-		return (getCurrentSymbol() % 13) + 1;
+		return (getCurrentSymbol() % SYMBOLS_PER_SEGMENT) + 1;
 	}
 
 	@Override
 	public int getRedstoneSegmentOutput()
 	{
-		return (getCurrentSymbol() / 13 + 1) * 5;
+		return (getCurrentSymbol() / SYMBOLS_PER_SEGMENT + 1) * 5;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
@@ -405,7 +412,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
-		if(desiredSymbol * 8 == this.rotation)
+		if(desiredSymbol * STEPS_PER_SYMBOL == this.rotation)
 			return true;
 		
 		return false;
