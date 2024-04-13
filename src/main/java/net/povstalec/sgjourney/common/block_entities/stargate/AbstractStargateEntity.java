@@ -39,6 +39,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
@@ -1218,7 +1219,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 				for(Direction direction : Direction.values())
 		    	{
 					BlockPos pos = ringPos.relative(direction);
-		    		if(level.getBlockEntity(pos) instanceof BasicInterfaceEntity interfaceEntity)
+					BlockState state = level.getBlockState(pos);
+					
+		    		if(level.getBlockEntity(pos) instanceof BasicInterfaceEntity interfaceEntity
+		    				&& direction.getOpposite() == state.getValue(AbstractInterfaceBlock.FACING))
 		    		{
 		    			if(eventName != null)
 		    				interfaceEntity.queueEvent(eventName, objects);
@@ -1244,7 +1248,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 				for(Direction direction : Direction.values())
 		    	{
 					BlockPos pos = ringPos.relative(direction);
-		    		if(level.getBlockEntity(pos) instanceof CrystalInterfaceEntity interfaceEntity)
+					BlockState state = level.getBlockState(pos);
+					
+		    		if(level.getBlockEntity(pos) instanceof CrystalInterfaceEntity interfaceEntity
+		    				&& direction.getOpposite() == state.getValue(AbstractInterfaceBlock.FACING))
 		    		{
 		    			if(eventName != null)
 		    				interfaceEntity.queueEvent(eventName, objects);
@@ -1270,7 +1277,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 				for(Direction direction : Direction.values())
 		    	{
 					BlockPos pos = ringPos.relative(direction);
-		    		if(level.getBlockEntity(pos) instanceof AdvancedCrystalInterfaceEntity interfaceEntity)
+					BlockState state = level.getBlockState(pos);
+					
+		    		if(level.getBlockEntity(pos) instanceof AdvancedCrystalInterfaceEntity interfaceEntity
+		    				&& direction.getOpposite() == state.getValue(AbstractInterfaceBlock.FACING))
 		    		{
 		    			if(eventName != null)
 		    				interfaceEntity.queueEvent(eventName, objects);

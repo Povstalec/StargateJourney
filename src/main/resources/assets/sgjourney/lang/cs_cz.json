@@ -146,6 +146,7 @@
 	"sounds.sgjourney.chevron_encode" : "symbol zadán",
 	"sounds.sgjourney.chevron_engage" : "chevron zapnut",
 	"sounds.sgjourney.dial_fail" : "vytáčení selhalo",
+	"sounds.sgjourney.empty" : "ERROR, kontaktujte vývojáře",
 	
 	"sounds.sgjourney.wormhole_open" : "červí díra se zavírá",
 	"sounds.sgjourney.wormhole_close" : "červí díra se orevírá",
@@ -155,12 +156,12 @@
 	"sounds.sgjourney.dhd_enter" : "DHD zadáno",
 	"sounds.sgjourney.dhd_press" : "DHD zmáčknuto",
 	
-	"sounds.sgjourney.nothing" : "nic",
-	
 	"sounds.sgjourney.matok_fire" : "střela z tyčové zbraně",
 	"sounds.sgjourney.matok_attack" : "útok z tyčové zbraně",
 	"sounds.sgjourney.matok_open" : "tyčové zbraň se otevře",
 	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
+	
+	"sounds.sgjourney.nothing" : "nic",
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
 	
@@ -208,6 +209,8 @@
 	"advancements.sgjourney.adventure.archeology_table.description": "Vytvoř archeologický stůl",
 	"advancements.sgjourney.adventure.use_stargate.title": "Kdo potřebuje vesmírné lodě?",
 	"advancements.sgjourney.adventure.use_stargate.description": "Poprvé projdi hvězdnou bránou",
+	"advancements.sgjourney.adventure.travel_far.title": "Ne zrovna světelné roky daleko",
+	"advancements.sgjourney.adventure.travel_far.description": "Cestuj 50000 bloků daleko skrze hvězdnou bránu",
 	"advancements.sgjourney.adventure.visit_abydos.title": "Dále než kdy dříve",
 	"advancements.sgjourney.adventure.visit_abydos.description": "Navštiv Abydos",
 	"advancements.sgjourney.adventure.visit_chulak.title": "Tak, kde je ten Apofis?",

@@ -11,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -193,8 +194,12 @@ public class Wormhole implements ITeleporter
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
 		    		reconstructEvent(targetStargate, player);
-		    		
-		    		WormholeTravelCriterion.INSTANCE.trigger(player, false);
+
+		    		ResourceLocation initialDimension = initialStargate.getLevel().dimension().location();
+		    		ResourceLocation targetDimension = targetStargate.getLevel().dimension().location();
+		    		long distanceTraveled = (int) Math.round(Math.sqrt(initialStargate.getCenterPos().distSqr(targetStargate.getCenterPos())));
+
+		    		WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
 		    	}
 		    	else
 		    	{
@@ -219,8 +224,6 @@ public class Wormhole implements ITeleporter
 				{
 					if(player.isCreative())
 						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
-					else
-						WormholeTravelCriterion.INSTANCE.trigger(player, true);
 				}
 				else
 				{

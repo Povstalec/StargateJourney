@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.advancements;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -23,14 +24,25 @@ public class WormholeTravelCriterion extends SimpleCriterionTrigger<WormholeTrav
 	@Override
 	protected WormholeTravelTrigger createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer)
 	{
-		boolean disintegrated = GsonHelper.getAsBoolean(obj, "disintegrated");
+		Optional<ResourceLocation> initialDimension = Optional.empty();
+		Optional<ResourceLocation> destinationDimension = Optional.empty();
+		Optional<Long> distanceTraveled = Optional.empty();
 		
-		return new WormholeTravelTrigger(playerPredicate, disintegrated);
+		if(GsonHelper.isStringValue(obj, "from"))
+			initialDimension = Optional.of(ResourceLocation.tryParse(GsonHelper.getAsString(obj, "from")));
+		
+		if(GsonHelper.isStringValue(obj, "to"))
+			destinationDimension = Optional.of(ResourceLocation.tryParse(GsonHelper.getAsString(obj, "to")));
+		
+		if(GsonHelper.isNumberValue(obj, "distance"))
+			distanceTraveled = Optional.of(GsonHelper.getAsLong(obj, "distance"));
+		
+		return new WormholeTravelTrigger(playerPredicate, initialDimension, destinationDimension, distanceTraveled);
 	}
 
-	public void trigger(ServerPlayer player, boolean disintegrated)
+	public void trigger(ServerPlayer player, ResourceLocation initialDimension, ResourceLocation destinationDimension, long distanceTraveled)
 	{
-		this.trigger(player, (trigger -> true));
+		this.trigger(player, (trigger -> trigger.matches(initialDimension, destinationDimension, distanceTraveled)));
 	}
 
 	@Override
@@ -41,23 +53,53 @@ public class WormholeTravelCriterion extends SimpleCriterionTrigger<WormholeTrav
 	
 	public static class WormholeTravelTrigger extends AbstractCriterionTriggerInstance
 	{
-		private final boolean disintegrated;
+		private final Optional<ResourceLocation> initialDimension;
+		private final Optional<ResourceLocation> destinationDimension;
+		private final Optional<Long> distanceTraveled;
 
-		public WormholeTravelTrigger(EntityPredicate.Composite entity, boolean disintegrated)
+		public WormholeTravelTrigger(EntityPredicate.Composite entity,
+				Optional<ResourceLocation> initialDimension, Optional<ResourceLocation> destinationDimension,
+				Optional<Long> distanceTraveled)
 		{
 			super(WormholeTravelCriterion.CRITERION_ID, entity);
-			this.disintegrated = disintegrated;
+			this.initialDimension = initialDimension;
+			this.destinationDimension = destinationDimension;
+			this.distanceTraveled = distanceTraveled;
 		}
 		
-		public boolean matches(WormholeTravelTrigger trigger)
+		public boolean matches(ResourceLocation initialDimension, ResourceLocation destinationDimension, long distanceTraveled)
 		{
-			return Objects.equals(trigger.disintegrated, this.disintegrated);
+			if(this.initialDimension.isPresent())
+			{
+				if(!Objects.equals(this.initialDimension.get(), initialDimension))
+					return false;
+			}
+			
+			if(this.destinationDimension.isPresent())
+			{
+				if(!Objects.equals(this.destinationDimension.get(), destinationDimension))
+					return false;
+			}
+			
+			if(this.distanceTraveled.isPresent())
+			{
+				if(this.distanceTraveled.get() > distanceTraveled)
+					return false;
+			}
+
+			return true;
 		}
 
 		public JsonObject serializeToJson(SerializationContext predicateSerializer)
 		{
 			JsonObject jsonObject = super.serializeToJson(predicateSerializer);
-			jsonObject.add("disintegrated", new JsonPrimitive(disintegrated));
+			
+			if(initialDimension.isPresent())
+				jsonObject.add("from", new JsonPrimitive(initialDimension.get().toString()));
+			if(destinationDimension.isPresent())
+				jsonObject.add("to", new JsonPrimitive(destinationDimension.get().toString()));
+			if(distanceTraveled.isPresent())
+				jsonObject.add("distance", new JsonPrimitive(distanceTraveled.get()));
 			
 			return jsonObject;
 		}
