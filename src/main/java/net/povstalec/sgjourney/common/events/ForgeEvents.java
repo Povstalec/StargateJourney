@@ -49,6 +49,7 @@ import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
@@ -65,6 +66,8 @@ public class ForgeEvents
 		
 		StargateNetwork.get(server).updateNetwork(server);
 		StargateNetwork.get(server).addStargates(server);
+
+		TransporterNetwork.get(server).updateNetwork(server);
 	}
 	
 	@SubscribeEvent

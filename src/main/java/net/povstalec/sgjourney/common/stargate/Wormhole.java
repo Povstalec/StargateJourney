@@ -19,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
@@ -194,10 +195,13 @@ public class Wormhole implements ITeleporter
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
 		    		reconstructEvent(targetStargate, player);
-
-		    		ResourceLocation initialDimension = initialStargate.getLevel().dimension().location();
-		    		ResourceLocation targetDimension = targetStargate.getLevel().dimension().location();
-		    		long distanceTraveled = (int) Math.round(Math.sqrt(initialStargate.getCenterPos().distSqr(targetStargate.getCenterPos())));
+		    		
+		    		Level initialLevel = initialStargate.getLevel();
+		    		ResourceLocation initialDimension = initialLevel.dimension().location();
+		    		
+		    		Level targetLevel = targetStargate.getLevel();
+		    		ResourceLocation targetDimension = targetLevel.dimension().location();
+		    		long distanceTraveled = (int) Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), targetLevel.dimensionType()) * Math.sqrt(initialStargate.getCenterPos().distSqr(targetStargate.getCenterPos())));
 
 		    		WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
 		    	}

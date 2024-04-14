@@ -6,7 +6,6 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -14,6 +13,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Transporter;
@@ -50,7 +50,7 @@ public class BlockEntityList extends SavedData
 			return Optional.empty();
 		
 		if(this.stargateMap.containsKey(address))
-			return Optional.of(stargateMap.get(address)); // Returns an existing Stargate
+			return Optional.of(this.stargateMap.get(address)); // Returns an existing Stargate
 		
 		if(stargate.getLevel() == null)
 			return Optional.empty();
@@ -64,18 +64,33 @@ public class BlockEntityList extends SavedData
 		
 		this.setDirty();
 		
-		StargateJourney.LOGGER.info("Stargate " + address.toString() + " to BlockEntityList");
+		StargateJourney.LOGGER.info("Added Stargate " + address.toString() + " to BlockEntityList");
 		
 		return Optional.of(savedStargate);
 	}
 	
-	public void addTransporter(Level level, BlockPos pos, String id)
+	public Optional<Transporter> addTransporter(AbstractTransporterEntity transporterEntity)
 	{
-		Transporter transporter = new Transporter(level.dimension(), pos);
+		String id = transporterEntity.getID();
+		
+		if(this.transporterMap.containsKey(id))
+			return Optional.of(this.transporterMap.get(id)); // Returns an existing Transporter
+		
+		if(transporterEntity.getLevel() == null)
+			return Optional.empty();
+		
+		if(transporterEntity.getBlockPos() == null)
+			return Optional.empty();
+		
+		Transporter transporter = new Transporter(transporterEntity);
 		
 		this.transporterMap.put(id, transporter);
 		
 		this.setDirty();
+		
+		StargateJourney.LOGGER.info("Added Transporter " + id + " to BlockEntityList");
+		
+		return Optional.of(transporter);
 	}
 	
 	public void removeStargate(Address.Immutable id)
@@ -86,7 +101,7 @@ public class BlockEntityList extends SavedData
 			return;
 		}
 		this.stargateMap.remove(id);
-		StargateJourney.LOGGER.info("Removed " + id + " from BlockEntityList");
+		StargateJourney.LOGGER.info("Removed Stargate " + id + " from BlockEntityList");
 		setDirty();
 	}
 	
@@ -98,7 +113,7 @@ public class BlockEntityList extends SavedData
 			return;
 		}
 		this.transporterMap.remove(id);
-		StargateJourney.LOGGER.info("Removed " + id + " from BlockEntityList");
+		StargateJourney.LOGGER.info("Removed Transporter " + id + " from BlockEntityList");
 		setDirty();
 	}
 	
@@ -107,7 +122,7 @@ public class BlockEntityList extends SavedData
 		System.out.println("[Stargates]");
 		this.stargateMap.entrySet().stream().forEach(stargateEntry ->
 		{
-			System.out.println("- " + stargateEntry.getKey().toString());
+			System.out.println("- " + stargateEntry.getValue().toString());
 		});
 	}
 
@@ -162,6 +177,15 @@ public class BlockEntityList extends SavedData
 			return Optional.of(transporter);
 		
 		return Optional.empty();
+	}
+	
+	public void printTransporters()
+	{
+		System.out.println("[Transporters]");
+		this.transporterMap.entrySet().stream().forEach(transporterEntry ->
+		{
+			System.out.println("- " + transporterEntry.getKey() + " " + transporterEntry.getValue().toString());
+		});
 	}
 	
 	//================================================================================================
@@ -219,7 +243,7 @@ public class BlockEntityList extends SavedData
 		{
 			//StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
 			Address.Immutable address = new Address(stargate).immutable();
-			this.stargateMap.put(address, Stargate.deserialize(server, stargates.getCompound(stargate), address));
+			this.stargateMap.put(address, Stargate.deserialize(server, stargates.getCompound(stargate)));
 		});
 	}
 	
@@ -232,7 +256,7 @@ public class BlockEntityList extends SavedData
 			
 			transportRingsTag.getAllKeys().stream().forEach(transportRings ->
 			{
-				this.transporterMap.put(transportRings, Transporter.deserialize(transportRingsTag.getCompound(transportRings)));
+				this.transporterMap.put(transportRings, Transporter.deserialize(server, transportRingsTag.getCompound(transportRings)));
 			});
 		}
 		
@@ -240,7 +264,7 @@ public class BlockEntityList extends SavedData
 		
 		transportersTag.getAllKeys().stream().forEach(transporter ->
 		{
-			this.transporterMap.put(transporter, Transporter.deserialize(transportersTag.getCompound(transporter)));
+			this.transporterMap.put(transporter, Transporter.deserialize(server, transportersTag.getCompound(transporter)));
 		});
 	}
 	

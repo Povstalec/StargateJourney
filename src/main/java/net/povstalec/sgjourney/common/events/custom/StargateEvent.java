@@ -4,7 +4,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Event;
 import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Connection;
+import net.povstalec.sgjourney.common.stargate.StargateConnection;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class StargateEvent extends Event
@@ -69,12 +69,12 @@ public class StargateEvent extends Event
 	 */
 	public static class Connect extends StargateEvent
 	{
-		private final Connection.Type connectionType;
+		private final StargateConnection.Type connectionType;
 		private final Stargate connectedStargate;
 		private final Address.Type addressType;
 		private final boolean doKawoosh;
 		
-		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, Connection.Type connectionType, Address.Type addressType, boolean doKawoosh)
+		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh)
 		{
 			super(server, stargate);
 
@@ -89,7 +89,7 @@ public class StargateEvent extends Event
 			return this.connectedStargate;
 		}
 		
-		public Connection.Type getConnectionType()
+		public StargateConnection.Type getConnectionType()
 		{
 			return this.connectionType;
 		}
@@ -115,12 +115,12 @@ public class StargateEvent extends Event
 	public static class WormholeTravel extends StargateEvent
 	{
 		private final Stargate connectedStargate;
-		private final Connection.Type connectionType;
+		private final StargateConnection.Type connectionType;
 		private final Entity traveler;
 		private final Stargate.WormholeTravel wormholeTravel;
 
 		public WormholeTravel(MinecraftServer server, Stargate stargate, Stargate connectedStargate,
-				Connection.Type connectionType, Entity traveler, Stargate.WormholeTravel wormholeTravel)
+				StargateConnection.Type connectionType, Entity traveler, Stargate.WormholeTravel wormholeTravel)
 		{
 			super(server, stargate);
 			
@@ -135,7 +135,7 @@ public class StargateEvent extends Event
 			return this.connectedStargate;
 		}
 		
-		public Connection.Type getConnectionType()
+		public StargateConnection.Type getConnectionType()
 		{
 			return this.connectionType;
 		}

@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.stargate.Connection;
+import net.povstalec.sgjourney.common.stargate.StargateConnection;
 
 public class WormholeModel
 {
@@ -160,7 +160,7 @@ public class WormholeModel
 		float yOffset = ticks * scale;
 		float textureTickOffset = (ticks % frames) * scale;
 		
-		if(kawooshProgress <= 0 || kawooshProgress >= Connection.KAWOOSH_TICKS)
+		if(kawooshProgress <= 0 || kawooshProgress >= StargateConnection.KAWOOSH_TICKS)
 			return;
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -207,7 +207,7 @@ public class WormholeModel
 		float yOffset = ticks * scale;
 		float textureTickOffset = (ticks % frames) * scale;
 		
-		if(kawooshProgress <= Connection.KAWOOSH_TICKS)
+		if(kawooshProgress <= StargateConnection.KAWOOSH_TICKS)
 			return;
 		
 		Matrix4f matrix4 = stack.last().pose();

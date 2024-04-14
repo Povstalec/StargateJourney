@@ -54,12 +54,11 @@ import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Connection;
-import net.povstalec.sgjourney.common.stargate.ConnectionState;
 import net.povstalec.sgjourney.common.stargate.Dialing;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateConnection;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.Wormhole;
 
@@ -307,6 +306,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	protected void set9ChevronAddress(Address address)
 	{
 		this.id9ChevronAddress = address;
+		setChanged();
+		StargateJourney.LOGGER.info("Set 9-Chevron Address to " + this.id9ChevronAddress);
 	}
 	
 	public Address get9ChevronAddress()
@@ -492,7 +493,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return resetStargate(Stargate.Feedback.UNKNOWN_ERROR);
 	}
 	
-	public void connectStargate(String connectionID, ConnectionState connectionState)
+	public void connectStargate(String connectionID, StargateConnection.State connectionState)
 	{
 		this.connectionID = connectionID;
 		this.setConnected(connectionState);
@@ -505,7 +506,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public static double kawooshFunction(int kawooshTime)
 	{
-		return 8 * Math.sin(Math.PI * (double) kawooshTime / Connection.KAWOOSH_TICKS);
+		return 8 * Math.sin(Math.PI * (double) kawooshTime / StargateConnection.KAWOOSH_TICKS);
 	}
 	
 	public void doKawoosh(int kawooshTime)
@@ -513,7 +514,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		setKawooshTickCount(kawooshTime);
 		updateClient();
 		
-		if(kawooshTime > Connection.KAWOOSH_TICKS)
+		if(kawooshTime > StargateConnection.KAWOOSH_TICKS)
 			return;
 		
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
@@ -596,7 +597,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(isConnected())
 		{
 			closeWormholeSound();
-			setConnected(ConnectionState.IDLE);
+			setConnected(StargateConnection.State.IDLE);
 		}
 
 		resetAddress(updateInterfaces);
@@ -679,7 +680,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	{
 		this.address.reset();
 		engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
-		setStargateState(ConnectionState.IDLE, 0, updateInterfaces);
+		setStargateState(StargateConnection.State.IDLE, 0, updateInterfaces);
 	}
 	
 	public Address getConnectionAddress(int addressLength)
@@ -1143,12 +1144,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return this.direction;
 	}
 	
-	public void setConnected(ConnectionState connectionState)
+	public void setConnected(StargateConnection.State connectionState)
 	{
 		setStargateState(connectionState, this.getChevronsEngaged(), true);
 	}
 	
-	public void setStargateState(ConnectionState connectionState, int chevronsEngaged, boolean updateInterfaces)
+	public void setStargateState(StargateConnection.State connectionState, int chevronsEngaged, boolean updateInterfaces)
 	{
 		BlockPos gatePos = this.getBlockPos();
 		BlockState gateState = getState();
@@ -1165,14 +1166,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 	}
 	
-	public ConnectionState getConnectionState()
+	public StargateConnection.State getConnectionState()
 	{
 		BlockState gateState = getState();
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 			return gateState.getValue(AbstractStargateBaseBlock.CONNECTION_STATE);
 		
-		return ConnectionState.IDLE;
+		return StargateConnection.State.IDLE;
 	}
 	
 	public boolean isConnected()
