@@ -69,6 +69,7 @@ import net.povstalec.sgjourney.common.init.MiscInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.RecipeTypeInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
@@ -112,7 +113,8 @@ public class StargateJourney
         EntityInit.register(eventBus);
         SoundInit.register(eventBus);
         RecipeTypeInit.register(eventBus);
-        
+        StatisticsInit.register(eventBus);
+
         GalaxyInit.register(eventBus);
         
         AdvancementInit.register();
@@ -181,7 +183,8 @@ public class StargateJourney
     {
     	event.enqueueWork(() -> 
     	{
-    		PacketHandlerInit.register();
+            StatisticsInit.register();
+            PacketHandlerInit.register();
     		VillagerInit.registerPOIs();
     	});
     }

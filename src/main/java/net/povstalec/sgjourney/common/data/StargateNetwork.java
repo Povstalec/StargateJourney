@@ -23,8 +23,8 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Connection;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateConnection;
 
 public final class StargateNetwork extends SavedData
 {
@@ -40,7 +40,7 @@ public final class StargateNetwork extends SavedData
 	
 	private MinecraftServer server;
 	
-	private Map<String, Connection> connections = new HashMap<String, Connection>();
+	private Map<String, StargateConnection> connections = new HashMap<String, StargateConnection>();
 	private int version = 0;
 	
 	//============================================================================================
@@ -84,12 +84,12 @@ public final class StargateNetwork extends SavedData
 	
 	public final void stellarUpdate(MinecraftServer server, boolean updateInterfaces)
 	{
-		Iterator<Entry<String, Connection>> iterator = this.connections.entrySet().iterator();
+		Iterator<Entry<String, StargateConnection>> iterator = this.connections.entrySet().iterator();
 		
 		while(iterator.hasNext())
 		{
-			Entry<String, Connection> nextConnection = iterator.next();
-			Connection connection = nextConnection.getValue();
+			Entry<String, StargateConnection> nextConnection = iterator.next();
+			StargateConnection connection = nextConnection.getValue();
 			connection.terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
 		}
 		StargateJourney.LOGGER.info("Connections terminated");
@@ -98,16 +98,20 @@ public final class StargateNetwork extends SavedData
 		
 		Universe.get(server).eraseUniverseInfo();
 		StargateJourney.LOGGER.info("Universe erased");
+		
 		Universe.get(server).generateUniverseInfo(server);
 		StargateJourney.LOGGER.info("Universe regenerated");
+		
 		eraseNetwork();
-		StargateJourney.LOGGER.info("Network erased");
+		StargateJourney.LOGGER.info("Stargate Network erased");
+		
 		resetStargates(server, updateInterfaces);
 		StargateJourney.LOGGER.info("Stargates reset");
+		
 		updateVersion();
 		StargateJourney.LOGGER.info("Version updated");
+		
 		this.setDirty();
-		StargateJourney.LOGGER.info("Changes applied");
 	}
 	
 	//============================================================================================
@@ -240,7 +244,7 @@ public final class StargateNetwork extends SavedData
 	
 	public final void handleConnections()
 	{
-		Map<String, Connection> connections = new HashMap<>();
+		Map<String, StargateConnection> connections = new HashMap<>();
 		connections.putAll(this.connections);
 		
 		connections.forEach((connectionID, connection) -> connection.tick(server));
@@ -263,7 +267,7 @@ public final class StargateNetwork extends SavedData
 	
 	public final Stargate.Feedback createConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
-		Connection.Type connectionType = Connection.getType(server, dialingStargate, dialedStargate);
+		StargateConnection.Type connectionType = StargateConnection.getType(server, dialingStargate, dialedStargate);
 		
 		// Event for Stargate connecting, can be cancelled - !!!NOTE That it does NOT reset the Stargate or actually change its feedback when cancelled!!!
 		if(SGJourneyEvents.onStargateConnect(server, dialingStargate, dialedStargate, connectionType, addressType, doKawoosh))
@@ -275,10 +279,10 @@ public final class StargateNetwork extends SavedData
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
 				addressType == Address.Type.ADDRESS_8_CHEVRON &&
-				connectionType == Connection.Type.INTERSTELLAR)
+				connectionType == StargateConnection.Type.INTERSTELLAR)
 			return dialingStargate.resetStargate(server, Stargate.Feedback.INVALID_8_CHEVRON_ADDRESS, true);
 		
-		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == Connection.Type.SYSTEM_WIDE)
+		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == StargateConnection.Type.SYSTEM_WIDE)
 			return dialingStargate.resetStargate(server, Stargate.Feedback.INVALID_SYSTEM_WIDE_CONNECTION, true);
 		
 		if(dialingStargate.equals(dialedStargate))
@@ -302,7 +306,7 @@ public final class StargateNetwork extends SavedData
 		
 		if(outgoingStargate.isPresent() && incomingStargate.isPresent())
 		{
-			Connection connection = Connection.create(connectionType, outgoingStargate.get(), incomingStargate.get(), doKawoosh);
+			StargateConnection connection = StargateConnection.create(connectionType, outgoingStargate.get(), incomingStargate.get(), doKawoosh);
 			if(connection != null)
 			{
 				addConnection(connection);
@@ -322,7 +326,7 @@ public final class StargateNetwork extends SavedData
 		return Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
 	}
 	
-	public final boolean addConnection(Connection connection)
+	public final boolean addConnection(StargateConnection connection)
 	{
 		if(!this.connections.containsKey(connection.getID()))
 		{
@@ -405,7 +409,7 @@ public final class StargateNetwork extends SavedData
 	{
 		tag.getAllKeys().forEach(connectionID ->
 		{
-			this.connections.put(connectionID, Connection.deserialize(server, connectionID, tag.getCompound(connectionID)));
+			this.connections.put(connectionID, StargateConnection.deserialize(server, connectionID, tag.getCompound(connectionID)));
 		});
 	}
 	

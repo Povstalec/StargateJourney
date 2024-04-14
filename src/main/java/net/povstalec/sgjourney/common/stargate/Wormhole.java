@@ -19,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
@@ -28,6 +29,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
@@ -194,11 +196,16 @@ public class Wormhole implements ITeleporter
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
 		    		reconstructEvent(targetStargate, player);
+		    		
+		    		Level initialLevel = initialStargate.getLevel();
+		    		ResourceLocation initialDimension = initialLevel.dimension().location();
+		    		
+		    		Level targetLevel = targetStargate.getLevel();
+		    		ResourceLocation targetDimension = targetLevel.dimension().location();
+		    		long distanceTraveled = (int) Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), targetLevel.dimensionType()) * Math.sqrt(initialStargate.getCenterPos().distSqr(targetStargate.getCenterPos())));
 
-		    		ResourceLocation initialDimension = initialStargate.getLevel().dimension().location();
-		    		ResourceLocation targetDimension = targetStargate.getLevel().dimension().location();
-		    		long distanceTraveled = (int) Math.round(Math.sqrt(initialStargate.getCenterPos().distSqr(targetStargate.getCenterPos())));
-
+					player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
+					player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled*100);
 		    		WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
 		    	}
 		    	else
@@ -220,15 +227,16 @@ public class Wormhole implements ITeleporter
 		{
 			if(CommonStargateConfig.reverse_wormhole_kills.get())
 			{
-				if(traveler instanceof ServerPlayer player)
+				if(traveler.isAlive())
 				{
-					if(player.isCreative())
+					if(traveler instanceof ServerPlayer player && player.isCreative())
 						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
-				}
-				else
-				{
-		    		deconstructEvent(initialStargate, traveler, true);
-					traveler.kill();
+					else
+					{
+						if(traveler instanceof ServerPlayer player)
+							player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
+						traveler.kill();
+					}
 				}
 			}
 			else

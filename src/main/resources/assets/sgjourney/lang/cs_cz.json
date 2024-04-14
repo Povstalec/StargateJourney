@@ -1,4 +1,3 @@
-{
 	"block.sgjourney.naquadah_ore": "Naquadahová ruda",
 	"block.sgjourney.nether_naquadah_ore": "Netherová naquadahová ruda",
 	"block.sgjourney.deepslate_naquadah_ore": "Hlubinná Naquadahová ruda",
@@ -162,6 +161,12 @@
 	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
 	
 	"sounds.sgjourney.nothing" : "nic",
+
+	"stat.sgjourney.times_killed_by_kawoosh": "Počet úmrtí v nestabilním víru",
+	"stat.sgjourney.times_killed_by_wormhole": "Počet úmrtí v červí díře",
+	"stat.sgjourney.times_used_wormhole": "Počet použití červí díry",
+	"stat.sgjourney.distance_traveled_by_stargate": "Nacestováno hvězdnou bránou",
+	
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
 	
@@ -486,5 +491,6 @@
 	"message.sgjourney.command.stargate_network_settings.random_addresses_from_seed": "Náhodné adresy ze semínka",
 	"message.sgjourney.command.get_stargates": "Hvězdné brány v dimenzi",
 	"message.sgjourney.command.get_transporters": "Transportéry v dimenzi",
+	"message.sgjourney.command.transporter_network_reload": "Transportéry načteny",
 	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy"
 }

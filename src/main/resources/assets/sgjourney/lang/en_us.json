@@ -162,7 +162,13 @@
 	"sounds.sgjourney.matok_close" : "Staff Weapon closes",
 	
 	"sounds.sgjourney.nothing" : "Nothing",
-	
+
+	"stat.sgjourney.times_killed_by_kawoosh": "Times killed by Kawoosh",
+	"stat.sgjourney.times_killed_by_wormhole": "Times killed by Wormhole",
+	"stat.sgjourney.times_used_wormhole": "Times travelled by Wormhole",
+	"stat.sgjourney.distance_traveled_by_stargate": "Distance by Stargate",
+
+
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeologist Map",
 	
 	"filled_map.sgjourney.archeologist": "Archeologist Map",
@@ -482,6 +488,7 @@
 	"message.sgjourney.command.stargate_network_settings.random_addresses_from_seed": "Random Addresses From Seed",
 	"message.sgjourney.command.get_stargates": "Stargates in dimension",
 	"message.sgjourney.command.get_transporters": "Transporters in dimension",
+	"message.sgjourney.command.transporter_network_reload": "Transporter Network reloaded",
 	"message.sgjourney.command.click_to_copy.address": "Click to copy Address",
 	
 	"gui.sgjourney.config": "Stargate Journey Config",

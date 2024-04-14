@@ -15,15 +15,15 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 
-public class TransportRingsEntity extends SGJourneyBlockEntity
+public class TransportRingsEntity extends AbstractTransporterEntity
 {
 	ItemStack stack0;
 	ItemStack stack1;
@@ -46,7 +46,7 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
 	
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state, SGJourneyBlockEntity.Type.TRANSPORT_RINGS);
+		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state);
 	}
 
 	@Override
@@ -54,30 +54,6 @@ public class TransportRingsEntity extends SGJourneyBlockEntity
     {
         return INFINITE_EXTENT_AABB;
     }
-	
-	//TODO Figure these out
-	/*@Override
-	public CompoundTag addNewToBlockEntityList()
-	{
-		CompoundTag blockEntity = super.addNewToBlockEntityList();
-		TransporterNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
-		return blockEntity;
-	}
-	
-	@Override
-	public CompoundTag addToBlockEntityList()
-	{
-		CompoundTag blockEntity = super.addToBlockEntityList();
-		TransporterNetwork.get(level).addToNetwork(getID(), BlockEntityList.get(level).getBlockEntities("TransportRings").getCompound(getID()));
-		return blockEntity;
-	}*/
-
-	@Override
-	public void removeFromBlockEntityList()
-	{
-		super.removeFromBlockEntityList();
-		TransporterNetwork.get(level).removeFromNetwork(level, getID());
-	}
 	
 	public boolean canTransport()
 	{
