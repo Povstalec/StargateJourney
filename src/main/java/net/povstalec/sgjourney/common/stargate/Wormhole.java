@@ -29,6 +29,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
@@ -203,6 +204,8 @@ public class Wormhole implements ITeleporter
 		    		ResourceLocation targetDimension = targetLevel.dimension().location();
 		    		long distanceTraveled = (int) Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), targetLevel.dimensionType()) * Math.sqrt(initialStargate.getCenterPos().distSqr(targetStargate.getCenterPos())));
 
+					player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
+					player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled*100);
 		    		WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
 		    	}
 		    	else
@@ -228,6 +231,7 @@ public class Wormhole implements ITeleporter
 				{
 					if(player.isCreative())
 						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+					else player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
 				}
 				else
 				{
