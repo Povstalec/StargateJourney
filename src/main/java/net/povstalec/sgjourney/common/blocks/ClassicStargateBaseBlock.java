@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
-import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
@@ -114,17 +114,17 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 			
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			
-			if(baseEntity instanceof SGJourneyBlockEntity blockEntity)
+			if(baseEntity instanceof ClassicStargateEntity stargate)
 			{
 				if(address.getLength() == 8)
 				{
-					blockEntity.setID(address.toString());
+					stargate.set9ChevronAddress(address);
 					
 					if(!player.isCreative())
 						stack.shrink(1);
 				}
 				
-				blockEntity.addToBlockEntityList();
+				stargate.addStargateToNetwork();
 			}
 			
 			return InteractionResult.SUCCESS;

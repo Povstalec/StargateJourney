@@ -58,7 +58,6 @@ import net.povstalec.sgjourney.common.blocks.tech.HeavyNaquadahLiquidizerBlock;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahLiquidizerBlock;
 import net.povstalec.sgjourney.common.items.blocks.CartoucheBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.DHDItem;
-import net.povstalec.sgjourney.common.items.blocks.SGJourneyBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.StargateBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.TransporterBlockItem;
 
@@ -269,15 +268,6 @@ public class BlockInit
 		return toReturn;
 	}
 	
-	private static <T extends Block>RegistryObject<T> registerEntityBlock(String name, Supplier<T> block, Rarity rarity)
-	{
-		RegistryObject<T> toReturn = BLOCKS.register(name, block);
-
-		registerSGJourneyBlockItem(name, toReturn, rarity, 1);
-		
-		return toReturn;
-	}
-	
 	private static <T extends Block>RegistryObject<T> registerDHDBlock(String name, Supplier<T> block, Rarity rarity)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -292,15 +282,6 @@ public class BlockInit
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
 		
 		registerCartoucheBlockItem(name, toReturn, 1);
-		
-		return toReturn;
-	}
-	
-	private static <T extends Block>RegistryObject<T> registerEntityBlock(String name, Supplier<T> block)
-	{
-		RegistryObject<T> toReturn = BLOCKS.register(name, block);
-
-		registerSGJourneyBlockItem(name, toReturn, 1);
 		
 		return toReturn;
 	}
@@ -328,16 +309,6 @@ public class BlockInit
 	private static <T extends Block>RegistryObject<Item> registerTransporterBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
 		return ItemInit.ITEMS.register(name, () -> new TransporterBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant()));
-	}
-	
-	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
-	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant()));
-	}
-	
-	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, int stacksTo)
-	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerDHDItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)

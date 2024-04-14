@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.UUID;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -13,24 +15,18 @@ public class Transporter
 	public static final String DIMENSION = "Dimension";
 	public static final String COORDINATES = "Coordinates";
 	
-	private final String id;
+	private final UUID id;
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
 	
 	public Transporter(AbstractTransporterEntity transporterEntity)
 	{
-		this.id = transporterEntity.getID();
+		this.id = UUID.fromString(transporterEntity.getID());
 		this.dimension = transporterEntity.getLevel().dimension();
 		this.blockPos = transporterEntity.getBlockPos();
 	}
 	
-	/*public Transporter(ResourceKey<Level> dimension, BlockPos blockPos)
-	{
-		this.dimension = dimension;
-		this.blockPos = blockPos;
-	}*/
-	
-	public String getID()
+	public UUID getID()
 	{
 		return id;
 	}

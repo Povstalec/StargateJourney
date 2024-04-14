@@ -13,11 +13,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
 public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 {
+	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
+	
 	public static final String ADD_TO_NETWORK = "AddToNetwork";
 	public static final String ID = "ID";
 	
@@ -84,7 +87,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 	
 	public void addTransporterToNetwork()
 	{
-		if(id == null || BlockEntityList.get(level).getTransporter(id).isPresent())
+		if(id == null || BlockEntityList.get(level).getTransporter(UUID.fromString(id)).isPresent())
 			setID(generateID());
 		
 		TransporterNetwork.get(level).addTransporter(this);

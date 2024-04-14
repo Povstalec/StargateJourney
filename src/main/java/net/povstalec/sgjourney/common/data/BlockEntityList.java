@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.data;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
@@ -34,8 +35,8 @@ public class BlockEntityList extends SavedData
 	
 	private MinecraftServer server;
 	
-	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<>();
-	protected HashMap<String, Transporter> transporterMap = new HashMap<>();
+	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<Address.Immutable, Stargate>();
+	protected HashMap<UUID, Transporter> transporterMap = new HashMap<UUID, Transporter>();
 	
 	/**
 	 * Adds Stargate to Stargate Network
@@ -71,7 +72,7 @@ public class BlockEntityList extends SavedData
 	
 	public Optional<Transporter> addTransporter(AbstractTransporterEntity transporterEntity)
 	{
-		String id = transporterEntity.getID();
+		UUID id = UUID.fromString(transporterEntity.getID());
 		
 		if(this.transporterMap.containsKey(id))
 			return Optional.of(this.transporterMap.get(id)); // Returns an existing Transporter
@@ -105,7 +106,7 @@ public class BlockEntityList extends SavedData
 		setDirty();
 	}
 	
-	public void removeTransporter(String id)
+	public void removeTransporter(UUID id)
 	{
 		if(!this.transporterMap.containsKey(id))
 		{
@@ -164,12 +165,12 @@ public class BlockEntityList extends SavedData
 	
 	
     @SuppressWarnings("unchecked")
-	public HashMap<String, Transporter> getTransporters()
+	public HashMap<UUID, Transporter> getTransporters()
 	{
-		return (HashMap<String, Transporter>) transporterMap.clone();
+		return (HashMap<UUID, Transporter>) transporterMap.clone();
 	}
 	
-	public Optional<Transporter> getTransporter(String id)
+	public Optional<Transporter> getTransporter(UUID id)
 	{
 		Transporter transporter = transporterMap.get(id);
 		
@@ -220,7 +221,7 @@ public class BlockEntityList extends SavedData
 		
 		this.transporterMap.forEach((ringsID, transporter) -> 
 		{
-			transportersTag.put(ringsID, transporter.serialize());
+			transportersTag.put(ringsID.toString(), transporter.serialize());
 		});
 		
 		return transportersTag;
@@ -256,15 +257,21 @@ public class BlockEntityList extends SavedData
 			
 			transportRingsTag.getAllKeys().stream().forEach(transportRings ->
 			{
-				this.transporterMap.put(transportRings, Transporter.deserialize(server, transportRingsTag.getCompound(transportRings)));
+				Transporter transporter = Transporter.deserialize(server, transportRingsTag.getCompound(transportRings));
+				
+				if(!this.transporterMap.containsKey(transporter.getID()))
+					this.transporterMap.put(transporter.getID(), transporter);
 			});
 		}
 		
 		CompoundTag transportersTag = blockEntityList.getCompound(TRANSPORTERS);
 		
-		transportersTag.getAllKeys().stream().forEach(transporter ->
+		transportersTag.getAllKeys().stream().forEach(transporterString ->
 		{
-			this.transporterMap.put(transporter, Transporter.deserialize(server, transportersTag.getCompound(transporter)));
+			Transporter transporter = Transporter.deserialize(server, transportersTag.getCompound(transporterString));
+			
+			if(!this.transporterMap.containsKey(transporter.getID()))
+				this.transporterMap.put(transporter.getID(), transporter);
 		});
 	}
 	

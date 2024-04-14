@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
@@ -12,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
@@ -69,10 +71,10 @@ public final class TransporterNetwork extends SavedData
 		
 		StargateJourney.LOGGER.info("Detected an incompatible Transporter Network version (Version: " + getVersion() + ") - updating to version " + updateVersion);
 		
-		networkUpdate(server, false);
+		reloadNetwork(server, false);
 	}
 	
-	public final void networkUpdate(MinecraftServer server, boolean updateInterfaces)
+	public final void reloadNetwork(MinecraftServer server, boolean updateInterfaces)
 	{
 		eraseNetwork();
 		StargateJourney.LOGGER.info("Transporter Network erased");
@@ -95,12 +97,34 @@ public final class TransporterNetwork extends SavedData
 	
 	private final void addTransporters()
 	{
-		HashMap<String, Transporter> transporters = BlockEntityList.get(server).getTransporters();
+		HashMap<UUID, Transporter> transporters = BlockEntityList.get(server).getTransporters();
 		
 		transporters.entrySet().stream().forEach((transporterInfo) ->
 		{
 			Transporter transporter = transporterInfo.getValue();
-			addTransporterToDimension(transporter.getDimension(), transporter);
+			
+			BlockEntity blockentity = server.getLevel(transporter.getDimension()).getBlockEntity(transporter.getBlockPos());
+			
+			if(blockentity instanceof AbstractTransporterEntity transporterEntity)
+			{
+				System.out.println(transporterEntity.getID() + " == " + transporter.getID().toString());
+				
+				if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID().toString()))
+				{
+
+					System.out.println("Same");
+					addTransporterToDimension(transporter.getDimension(), transporter);
+				}
+				else
+				{
+					System.out.println("Not same");
+					BlockEntityList.get(server).removeTransporter(transporter.getID());
+					addTransporter(transporterEntity);
+				}
+			}
+			else
+				BlockEntityList.get(server).removeTransporter(transporter.getID());
+			
 		});
 	}
 	
@@ -115,7 +139,9 @@ public final class TransporterNetwork extends SavedData
 		if(transporterOptional.isPresent())
 		{
 			Transporter transporter = transporterOptional.get();
-			addTransporterToDimension(transporter.getDimension(), transporter);
+			
+			if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID().toString()))
+				addTransporterToDimension(transporter.getDimension(), transporter);
 		}
 		
 		this.setDirty();
@@ -128,7 +154,7 @@ public final class TransporterNetwork extends SavedData
 		if(transporter.isPresent())
 			removeTransporterFromDimension(level.dimension(), transporter.get());
 
-		BlockEntityList.get(level).removeTransporter(id);
+		BlockEntityList.get(level).removeTransporter(UUID.fromString(id));
 		
 		StargateJourney.LOGGER.info("Removed " + id.toString() + " from Transporter Network");
 		setDirty();
@@ -354,7 +380,7 @@ public final class TransporterNetwork extends SavedData
 			CompoundTag transportersTag = new CompoundTag();
 			transporters.stream().forEach(transporter ->
 			{
-				transportersTag.putString(transporter.getID(), transporter.getID());
+				transportersTag.putString(transporter.getID().toString(), transporter.getID().toString());
 			});
 			dimensionTag.put(TRANSPORTERS, transportersTag);
 			
@@ -368,7 +394,7 @@ public final class TransporterNetwork extends SavedData
 	    	List<Transporter> transporters = new ArrayList<Transporter>();
 			dimensionTag.getCompound(TRANSPORTERS).getAllKeys().forEach(transporterID ->
 			{
-				Optional<Transporter> transporter = BlockEntityList.get(server).getTransporter(transporterID);
+				Optional<Transporter> transporter = BlockEntityList.get(server).getTransporter(UUID.fromString(transporterID));
 				
 				if(transporter.isPresent())
 					transporters.add(transporter.get());

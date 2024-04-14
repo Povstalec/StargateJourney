@@ -123,6 +123,14 @@ public class CommandInit
 										.executes(CommandInit::getTransporters))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(TRANSPORTER_NETWORK)
+						.then(Commands.literal("reload")
+								.executes(CommandInit::reloadTransporterNetwork)))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		
+		
 		//Gene commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(GENE)
@@ -369,6 +377,16 @@ public class CommandInit
 		}
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
 		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int reloadTransporterNetwork(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getPlayer().getLevel();
+		
+		TransporterNetwork.get(level).reloadNetwork(level.getServer(), true);
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.transporter_network_reload").withStyle(ChatFormatting.RED));
 		return Command.SINGLE_SUCCESS;
 	}
 	
