@@ -227,20 +227,16 @@ public class Wormhole implements ITeleporter
 		{
 			if(CommonStargateConfig.reverse_wormhole_kills.get())
 			{
-				if(traveler instanceof ServerPlayer player)
+				if(traveler.isAlive())
 				{
-					if(player.isCreative())
+					if(traveler instanceof ServerPlayer player && player.isCreative())
 						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
-					else if(!player.isDeadOrDying())
+					else
 					{
-						player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
-						player.kill();
+						if(traveler instanceof ServerPlayer player)
+							player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
+						traveler.kill();
 					}
-				}
-				else
-				{
-		    		deconstructEvent(initialStargate, traveler, true);
-					traveler.kill();
 				}
 			}
 			else

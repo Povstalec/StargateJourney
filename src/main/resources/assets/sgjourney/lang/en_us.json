@@ -488,6 +488,7 @@
 	"message.sgjourney.command.stargate_network_settings.random_addresses_from_seed": "Random Addresses From Seed",
 	"message.sgjourney.command.get_stargates": "Stargates in dimension",
 	"message.sgjourney.command.get_transporters": "Transporters in dimension",
+	"message.sgjourney.command.transporter_network_reload": "Transporter Network reloaded",
 	"message.sgjourney.command.click_to_copy.address": "Click to copy Address",
 	
 	"gui.sgjourney.config": "Stargate Journey Config",
