@@ -162,6 +162,12 @@
 	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
 	
 	"sounds.sgjourney.nothing" : "nic",
+
+	"stat.sgjourney.times_killed_by_kawoosh": "Počet úmrtí v nestabilním víru",
+	"stat.sgjourney.times_killed_by_wormhole": "Počet úmrtí v červí díře",
+	"stat.sgjourney.times_used_wormhole": "Počet použití červí díry",
+	"stat.sgjourney.distance_traveled_by_stargate": "Nacestováno hvězdnou bránou",
+	
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
 	

@@ -12,35 +12,39 @@ import net.povstalec.sgjourney.StargateJourney;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatisticsInit {
+public class StatisticsInit
+{
+	public static final DeferredRegister<ResourceLocation> STATISTICS = DeferredRegister.create(Registries.CUSTOM_STAT, StargateJourney.MODID);
+	private static final List<Runnable> STATISTIC_SETUP = new ArrayList<>();
+	
+	public static final RegistryObject<ResourceLocation> TIMES_USED_WORMHOLE = STATISTICS.register("times_used_wormhole", () -> registerDefaultStatistic("times_used_wormhole"));
+	public static final RegistryObject<ResourceLocation> TIMES_KILLED_BY_KAWOOSH = STATISTICS.register("times_killed_by_kawoosh", () -> registerDefaultStatistic("times_killed_by_kawoosh"));
+	public static final RegistryObject<ResourceLocation> TIMES_KILLED_BY_WORMHOLE = STATISTICS.register("times_killed_by_wormhole", () -> registerDefaultStatistic("times_killed_by_wormhole"));
+	public static final RegistryObject<ResourceLocation> DISTANCE_TRAVELED_BY_STARGATE = STATISTICS.register("distance_traveled_by_stargate", () -> registerDistanceStatistic("distance_traveled_by_stargate"));
+	
+	
+	private static ResourceLocation registerDefaultStatistic(String key)
+	{
+		ResourceLocation resourceLocation = new ResourceLocation(StargateJourney.MODID, key);
+		STATISTIC_SETUP.add(() -> Stats.CUSTOM.get(resourceLocation, StatFormatter.DEFAULT));
+		return resourceLocation;
+	}
+	
+	private static ResourceLocation registerDistanceStatistic(String key)
+	{
+		ResourceLocation resourceLocation = new ResourceLocation(StargateJourney.MODID, key);
+		STATISTIC_SETUP.add(() -> Stats.CUSTOM.get(resourceLocation, StatFormatter.DISTANCE));
+		return resourceLocation;
+	}
 
-    public static final DeferredRegister<ResourceLocation> STATISTICS = DeferredRegister.create(Registries.CUSTOM_STAT, StargateJourney.MODID);
-    private static final List<Runnable> STATISTIC_SETUP = new ArrayList<>();
+	public static void register()
+	{
+		STATISTIC_SETUP.forEach(Runnable::run);
+	}
 
-    public static final RegistryObject<ResourceLocation> TIMES_USED_WORMHOLE = STATISTICS.register("times_used_wormhole", () -> registerCustomStatBasic("times_used_wormhole"));
-    public static final RegistryObject<ResourceLocation> TIMES_KILLED_BY_KAWOOSH = STATISTICS.register("times_killed_by_kawoosh", () -> registerCustomStatBasic("times_killed_by_kawoosh"));
-    public static final RegistryObject<ResourceLocation> TIMES_KILLED_BY_WORMHOLE = STATISTICS.register("times_killed_by_wormhole", () -> registerCustomStatBasic("times_killed_by_wormhole"));
-    public static final RegistryObject<ResourceLocation> DISTANCE_TRAVELED_BY_STARGATE = STATISTICS.register("distance_traveled_by_stargate", () -> registerCustomStatDistance("distance_traveled_by_stargate"));
-
-
-    private static ResourceLocation registerCustomStatBasic(String key){
-        ResourceLocation resourceLocation = new ResourceLocation(StargateJourney.MODID, key);
-        STATISTIC_SETUP.add(() -> Stats.CUSTOM.get(resourceLocation, StatFormatter.DEFAULT));
-        return resourceLocation;
-    }
-
-    private static ResourceLocation registerCustomStatDistance(String key){
-        ResourceLocation resourceLocation = new ResourceLocation(StargateJourney.MODID, key);
-        STATISTIC_SETUP.add(() -> Stats.CUSTOM.get(resourceLocation, StatFormatter.DISTANCE));
-        return resourceLocation;
-    }
-
-    public static void register(){
-        STATISTIC_SETUP.forEach(Runnable::run);
-    }
-
-    public static void register(IEventBus bus){
-        STATISTICS.register(bus);
-    }
+	public static void register(IEventBus bus)
+	{
+		STATISTICS.register(bus);
+	}
 }
 

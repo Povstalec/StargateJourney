@@ -231,7 +231,11 @@ public class Wormhole implements ITeleporter
 				{
 					if(player.isCreative())
 						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
-					else player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
+					else if(!player.isDeadOrDying())
+					{
+						player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
+						player.kill();
+					}
 				}
 				else
 				{

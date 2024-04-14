@@ -575,7 +575,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		this.level.getEntitiesOfClass(Entity.class, kawooshHitbox).stream().forEach(entity -> 
 		{
 			if(shouldDisintegrate(entity))
+			{
+				if(entity instanceof Player player && !player.isDeadOrDying())
+					player.awardStat(StatisticsInit.TIMES_KILLED_BY_KAWOOSH.get());
+				
 				entity.kill();
+			}
 		});
 	}
 	
