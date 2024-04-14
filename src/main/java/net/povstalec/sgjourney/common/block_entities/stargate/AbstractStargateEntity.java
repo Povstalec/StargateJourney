@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.init.StatisticsInit;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
