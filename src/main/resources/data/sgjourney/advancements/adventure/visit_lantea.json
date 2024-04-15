@@ -1,0 +1,40 @@
+{
+	"parent": "sgjourney:adventure/use_stargate",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:pegasus_stargate"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.adventure.visit_lantea.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.adventure.visit_lantea.description"
+		},
+		"frame": "challenge",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": true,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"entered_lantea": 
+		{
+			"trigger": "minecraft:changed_dimension",
+			"conditions": 
+			{
+				"to": "sgjourney:lantea"
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"entered_lantea"
+		]
+	]
+}

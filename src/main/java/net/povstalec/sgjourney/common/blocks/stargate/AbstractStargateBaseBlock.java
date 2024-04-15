@@ -40,8 +40,9 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.stargate.ConnectionState;
+import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateConnection;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
@@ -226,9 +227,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     		BlockEntity blockentity = level.getBlockEntity(pos);
     		if(blockentity instanceof AbstractStargateEntity stargate)
     		{
-    			stargate.bypassDisconnectStargate(Stargate.Feedback.STARGATE_DESTROYED);
+    			stargate.bypassDisconnectStargate(Stargate.Feedback.STARGATE_DESTROYED, false);
     			stargate.unsetDHD(true);
-    			stargate.removeFromBlockEntityList();
+    			stargate.removeStargateFromNetwork();
     		}
     		
     		/*for(StargatePart part : getParts())
@@ -252,7 +253,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         }
     }
 	
-	public void updateStargate(Level level, BlockPos pos, BlockState state, ConnectionState connectionState, int chevronsActive)
+	public void updateStargate(Level level, BlockPos pos, BlockState state, StargateConnection.State connectionState, int chevronsActive)
 	{
 		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTION_STATE, connectionState).setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
 		
@@ -305,12 +306,20 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         {
         	CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
         	
-        	if((blockEntityTag.contains("DisplayID") && blockEntityTag.getBoolean("DisplayID")) || CommonStargateConfig.always_display_stargate_id.get())
+        	if((blockEntityTag.contains(AbstractStargateEntity.DISPLAY_ID) && blockEntityTag.getBoolean(AbstractStargateEntity.DISPLAY_ID)) || CommonStargateConfig.always_display_stargate_id.get())
         	{
-        		if(blockEntityTag.contains("ID"))
-        			id = blockEntityTag.getString("ID");
+        		if(blockEntityTag.contains(AbstractStargateEntity.ID))
+        		{
+        			id = blockEntityTag.getString(AbstractStargateEntity.ID);
+                	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
+        		}
+        		else if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
+        		{
+
+        			id = new Address(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS)).toString();
+                	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
+        		}
             	
-            	tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
         	}
         	
         	if((blockEntityTag.contains("Upgraded") && blockEntityTag.getBoolean("Upgraded")))

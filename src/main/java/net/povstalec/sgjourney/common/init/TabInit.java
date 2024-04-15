@@ -10,7 +10,7 @@ import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.blocks.SGJourneyBaseEntityBlock;
+import net.povstalec.sgjourney.common.blocks.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -212,12 +212,12 @@ public class TabInit
 	{
 		if(event.getTab() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
 		{
-			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
-			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
-			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
-			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
-			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get())));
-			event.accept(SGJourneyBaseEntityBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get())));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
 		}
 	}
 }

@@ -1,10 +1,7 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,9 +11,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class PointOfOrigin
 {
@@ -29,18 +26,18 @@ public class PointOfOrigin
 	public static final Codec<PointOfOrigin> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(PointOfOrigin::getName),
 			ResourceLocation.CODEC.fieldOf("texture").forGetter(PointOfOrigin::getTexture),
-			Codec.BOOL.fieldOf("generates_randomly").forGetter(PointOfOrigin::generatesRandomly)
+			Galaxy.RESOURCE_KEY_CODEC.listOf().optionalFieldOf("generated_galaxies").forGetter(PointOfOrigin::generatedGalaxies)
 			).apply(instance, PointOfOrigin::new));
 	
 	private final String name;
 	private final ResourceLocation texture;
-	private final boolean generatesRandomly;
+	private final Optional<List<ResourceKey<Galaxy>>> generatedGalaxies;
 	
-	public PointOfOrigin(String name, ResourceLocation texture, boolean generatesRandomly)
+	public PointOfOrigin(String name, ResourceLocation texture, Optional<List<ResourceKey<Galaxy>>> generatedGalaxies)
 	{
 		this.name = name;
 		this.texture = texture;
-		this.generatesRandomly = generatesRandomly;
+		this.generatedGalaxies = generatedGalaxies;
 	}
 	
 	public String getName()
@@ -63,29 +60,9 @@ public class PointOfOrigin
 		return ERROR_LOCATION;
 	}
 	
-	public boolean generatesRandomly()
+	public Optional<List<ResourceKey<Galaxy>>> generatedGalaxies()
 	{
-		return generatesRandomly;
-	}
-	
-	public static ResourceKey<PointOfOrigin> getRandomPointOfOrigin(MinecraftServer server, long seed)
-	{
-		Random random = new Random(seed);
-		RegistryAccess registries = server.registryAccess();
-		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		Set<Entry<ResourceKey<PointOfOrigin>, PointOfOrigin>> set = registry.entrySet();
-		
-		List<ResourceKey<PointOfOrigin>> list = new ArrayList<ResourceKey<PointOfOrigin>>();
-		
-		set.forEach((pointOfOrigin) -> 
-		{
-			PointOfOrigin PoO = pointOfOrigin.getValue();
-			if(PoO.generatesRandomly)
-				list.add(pointOfOrigin.getKey());
-		});
-		
-		return list.get(random.nextInt(0, list.size()));
-		
+		return generatedGalaxies;
 	}
 	
 	public static PointOfOrigin getPointOfOrigin(Level level, String name)
@@ -95,6 +72,11 @@ public class PointOfOrigin
 		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
 		return registry.get(new ResourceLocation(split[0], split[1]));
+	}
+	
+	public static ResourceKey<PointOfOrigin> defaultPointOfOrigin()
+	{
+		return Conversion.stringToPointOfOrigin(StargateJourney.MODID + ":universal");
 	}
 	
 }

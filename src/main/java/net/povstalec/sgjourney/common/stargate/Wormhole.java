@@ -11,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -18,14 +19,17 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
@@ -80,7 +84,7 @@ public class Wormhole implements ITeleporter
 		Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 		localEntities.stream().forEach((traveler) ->
 		{
-			if(this.entityLocations.containsKey(traveler.getId()))
+			if(!traveler.getType().is(TagInit.Entities.WORMHOLE_CANNOT_TELEPORT) && this.entityLocations.containsKey(traveler.getId()))
 			{
 				double previousX = this.entityLocations.get(traveler.getId()).x();
 				double previousY = this.entityLocations.get(traveler.getId()).y();
@@ -192,6 +196,17 @@ public class Wormhole implements ITeleporter
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
 		    		reconstructEvent(targetStargate, player);
+		    		
+		    		Level initialLevel = initialStargate.getLevel();
+		    		ResourceLocation initialDimension = initialLevel.dimension().location();
+		    		
+		    		Level targetLevel = targetStargate.getLevel();
+		    		ResourceLocation targetDimension = targetLevel.dimension().location();
+		    		long distanceTraveled = (int) Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), targetLevel.dimensionType()) * Math.sqrt(initialStargate.getCenterPos().distSqr(targetStargate.getCenterPos())));
+
+					player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
+					player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled*100);
+		    		WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
 		    	}
 		    	else
 		    	{
@@ -212,17 +227,21 @@ public class Wormhole implements ITeleporter
 		{
 			if(CommonStargateConfig.reverse_wormhole_kills.get())
 			{
-				if(traveler instanceof Player player && player.isCreative())
-					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
-				else
+				if(traveler.isAlive())
 				{
-		    		deconstructEvent(initialStargate, traveler, true);
-					traveler.kill();
+					if(traveler instanceof ServerPlayer player && player.isCreative())
+						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+					else
+					{
+						if(traveler instanceof ServerPlayer player)
+							player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
+						traveler.kill();
+					}
 				}
 			}
 			else
 			{
-				if(traveler instanceof Player player)
+				if(traveler instanceof ServerPlayer player)
 					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 			}
 		}

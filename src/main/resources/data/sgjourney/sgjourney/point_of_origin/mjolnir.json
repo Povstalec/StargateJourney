@@ -1,5 +1,4 @@
 {
 	"name": "point_of_origin.sgjourney.mjolnir",
-	"texture": "sgjourney:milky_way/points_of_origin/mjolnir.png",
-	"generates_randomly": false
+	"texture": "sgjourney:milky_way/points_of_origin/mjolnir.png"
 }

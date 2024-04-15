@@ -16,6 +16,9 @@ public class ClientStargateConfig
 	public static SGJourneyConfigValue.BooleanValue universe_front_rotates;
 	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
 	public static SGJourneyConfigValue.BooleanValue pegasus_stargate_back_lights_up;
+
+	public static SGJourneyConfigValue.IntValue stargate_full_sound_distance;
+	public static SGJourneyConfigValue.IntValue stargate_max_sound_distance;
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
@@ -64,5 +67,15 @@ public class ClientStargateConfig
 		pegasus_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.pegasus_stargate_back_lights_up", 
 				true, 
 				"Decide if Chevrons on the back of Pegasus Stargate should light up");
+		
+		
+		
+		stargate_full_sound_distance = new SGJourneyConfigValue.IntValue(client, "client.stargate_full_sound_distance", 
+				32, 0, 128, 
+				"The distance at which the sounds a Stargate makes can still be heard at full volume");
+
+		stargate_max_sound_distance = new SGJourneyConfigValue.IntValue(client, "client.stargate_max_sound_distance", 
+				64, 16, 128, 
+				"The distance at which the sounds a Stargate makes can still be heard");
 	}
 }

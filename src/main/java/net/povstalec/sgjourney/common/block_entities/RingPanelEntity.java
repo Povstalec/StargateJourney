@@ -1,7 +1,10 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,30 +20,35 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
+import net.povstalec.sgjourney.common.stargate.Transporter;
 
 public class RingPanelEntity extends BlockEntity
 {
-	private String[] rings;
-	public int ringsFound;
-	private BlockPos connectedPos;
+	public static final String INVENTORY = "Inventory";
+	
 	private BlockPos targetPos;
 	
+	// Used for Client syncing
+	public int ringsFound;
+	private String[] rings;
 	public BlockPos ringsPos[] = new BlockPos[6];
 	
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+	
+	private TransportRingsEntity transportRings;
 	
 	public RingPanelEntity(BlockPos pos, BlockState state)
 	{
@@ -51,17 +59,17 @@ public class RingPanelEntity extends BlockEntity
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		itemHandler.deserializeNBT(nbt.getCompound(INVENTORY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
-		nbt.put("Inventory", itemHandler.serializeNBT());
+		nbt.put(INVENTORY, itemHandler.serializeNBT());
 		super.saveAdditional(nbt);
 	}
-		
-	public void drops()
+	
+	private void drops()
 	{
 		SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
 		for (int i = 0; i < itemHandler.getSlots(); i++)
@@ -142,44 +150,100 @@ public class RingPanelEntity extends BlockEntity
 		return super.getCapability(capability, side);
 	}
 	
-	public CompoundTag getNearest6Rings(Level level, BlockPos pos, double maxDistance)
+	
+	
+	public void getNearest6Rings(Level level, BlockPos pos, double maxDistance)
 	{
-		String connected = connectToRings();
+		if(transportRings == null)
+			return;
+
+		Optional<List<Transporter>> transporterListOptional = TransporterNetwork.get(level).getTransportersFromDimension(level.dimension());
 		
-		CompoundTag tag = TransporterNetwork.get(level).get6ClosestRingsFromTag(level.dimension().location().toString(), pos, maxDistance, connected);
-		List<String> tagList = tag.getAllKeys().stream().collect(Collectors.toList());
+		if(transporterListOptional.isEmpty())
+			return;
 		
-		ringsFound = tag.size();
+		List<Transporter> transporters = transporterListOptional.get();
+		
+		transporters.sort((transportRingsA, transportRingsB) ->
+		Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()))
+		.compareTo(Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos()))));
+		
+		int size = transporters.size();
+		
+		ringsFound = size;
 		for(int i = 0; i < 6; i++)
 		{
 			
-			if(i < ringsFound)
+			if(i + 1 < ringsFound)
 			{
-				int[] coords = tag.getCompound(tagList.get(i)).getIntArray("Coordinates");
-				ringsPos[i] = new BlockPos(coords[0], coords[1], coords[2]);
+				ringsPos[i] = transporters.get(i + 1).getBlockPos();
 			}
 			else
 				ringsPos[i] = new BlockPos(0, 0, 0);
 		}
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientboundRingPanelUpdatePacket(worldPosition, ringsFound, ringsPos[0], ringsPos[1], ringsPos[2], ringsPos[3], ringsPos[4], ringsPos[5]));
-		return tag;
+		return;
 	}
 	
-	public String connectToRings()
+	protected List<TransportRingsEntity> getNearbyTransportRings(int maxDistance)
 	{
-		CompoundTag rings = TransporterNetwork.get(level).getClosestRingsFromTag(this.level.dimension().location().toString(), this.getBlockPos(), new CompoundTag(), 32000);
+		List<TransportRingsEntity> transportRingsList = new ArrayList<TransportRingsEntity>();
 		
-		if(rings.isEmpty())
-			return null;
+		for(int x = -maxDistance / 16; x <= maxDistance / 16; x++)
+		{
+			for(int z = -maxDistance / 16; z <= maxDistance / 16; z++)
+			{
+				ChunkAccess chunk = this.level.getChunk(this.getBlockPos().east(16 * x).south(16 * z));
+				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
+				
+				positions.stream().forEach(pos ->
+				{
+					if(this.level.getBlockEntity(pos) instanceof TransportRingsEntity transportRings)
+						transportRingsList.add(transportRings);
+				});
+			}
+		}
 		
-		List<String> tagList = rings.getAllKeys().stream().collect(Collectors.toList());
-		String connected = tagList.get(0);
-		int[] coords = rings.getCompound(connected).getIntArray("Coordinates");
+		return transportRingsList;
+	}
+	
+	private long distanceSqr(BlockPos pos, BlockPos targetPos)
+	{
+		int x = Math.abs(targetPos.getX() - pos.getX());
+		int y = Math.abs(targetPos.getY() - pos.getY());
+		int z = Math.abs(targetPos.getZ() - pos.getZ());
 		
-		this.connectedPos = new BlockPos(coords[0], coords[1], coords[2]);
+		long distance = x*x + y*y + z*z;
 		
-		return connected;
+		return distance;
+	}
+	
+	public TransportRingsEntity findNearestTransportRings(int maxDistance)
+	{
+		List<TransportRingsEntity> transportRingsList = getNearbyTransportRings(maxDistance);
+		
+		transportRingsList.sort((transportRingsA, transportRingsB) ->
+				Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()))
+				.compareTo(Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos()))));
+		
+		if(!transportRingsList.isEmpty())
+		{
+			Iterator<TransportRingsEntity> iterator = transportRingsList.iterator();
+			
+			if(iterator.hasNext())
+				return iterator.next();
+		}
+		
+		return null;
+	}
+	
+	public void setTransportRings()
+	{
+		if(this.getLevel() == null)
+			return;
+		
+		this.transportRings = findNearestTransportRings(16);
 	}
 	
 	public void activateRings(int chosenNumber)
@@ -199,23 +263,17 @@ public class RingPanelEntity extends BlockEntity
 		if(targetPos == null)
 			return;
 		
-		if(connectedPos == null)
+		if(transportRings == null || !transportRings.canTransport())
 			return;
 		
-		BlockEntity localRings = level.getBlockEntity(connectedPos);
+		BlockEntity targetRings = level.getBlockEntity(targetPos);
 		
-		if(localRings instanceof TransportRingsEntity rings)
+		if(targetRings instanceof TransportRingsEntity target)
 		{
-			if(!rings.canTransport())
+			if(!target.canTransport())
 				return;
-			BlockEntity targetRings = level.getBlockEntity(targetPos);
-    		
-			if(targetRings instanceof TransportRingsEntity target)
-			{
-				if(!target.canTransport())
-					return;
-				rings.activate(targetPos);
-			}
+			
+			transportRings.activate(targetPos);
 		}
 	}
 	
@@ -225,10 +283,11 @@ public class RingPanelEntity extends BlockEntity
 		
 		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
 			return this.itemHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
-
-		CompoundTag ringsTag = BlockEntityList.get(level).getBlockEntities("TransportRings");
-		int[] coords = {ringsTag.getIntArray(this.rings[chosenNumber])[0], ringsTag.getIntArray(this.rings[chosenNumber])[1], ringsTag.getIntArray(this.rings[chosenNumber])[2]};
-		return coords;
+		
+		//TODO FIX THIS
+		//CompoundTag ringsTag = BlockEntityList.get(level).getBlockEntities("TransportRings");
+		//int[] coords = {ringsTag.getIntArray(this.rings[chosenNumber])[0], ringsTag.getIntArray(this.rings[chosenNumber])[1], ringsTag.getIntArray(this.rings[chosenNumber])[2]};
+		return new int[] {0, 0, 0};//coords;
 	}
 	
 }

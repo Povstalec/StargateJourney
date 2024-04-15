@@ -1,0 +1,40 @@
+{
+	"parent": "sgjourney:adventure/use_stargate",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:milky_way_stargate"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.adventure.travel_far.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.adventure.travel_far.description"
+		},
+		"frame": "challenge",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": true,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"used_stargate": 
+		{
+			"trigger": "sgjourney:stargate_wormhole_travel",
+			"conditions":
+			{
+				"distance": 50000
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"used_stargate"
+		]
+	]
+}

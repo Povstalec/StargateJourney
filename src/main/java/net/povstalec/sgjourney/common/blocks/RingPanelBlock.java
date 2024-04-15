@@ -58,6 +58,7 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 			
         	if (blockEntity instanceof RingPanelEntity panel) 
         	{
+        		panel.setTransportRings();
         		panel.getNearest6Rings(level, pos, 32768);
 				
         		MenuProvider containerProvider = new MenuProvider() 
