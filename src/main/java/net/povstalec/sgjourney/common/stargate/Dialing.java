@@ -1,23 +1,17 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
-import net.povstalec.sgjourney.common.init.TagInit;
 
 public class Dialing
 {
@@ -87,7 +81,7 @@ public class Dialing
 				if(level.getServer().levelKeys().contains(levelKey))
 				{
 					Level targetLevel = server.getLevel(levelKey);
-					findStargates((ServerLevel) targetLevel);
+					StargateNetwork.findStargates((ServerLevel) targetLevel);
 					dimensions++;
 				}
 			}
@@ -97,47 +91,6 @@ public class Dialing
 		}
 		
 		return getPreferredStargate(level, dialingStargate, dialedSystem, addressType, doKawoosh);
-	}
-	
-	private static void findStargates(ServerLevel level)
-	{
-		StargateJourney.LOGGER.info("Attempting to locate the Stargate Structure in " + level.dimension().location().toString());
-		
-		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
-        int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
-		//Nearest Structure that potentially has a Stargate
-		BlockPos blockpos = ((ServerLevel) level).findNearestMapStructure(TagInit.Structures.HAS_STARGATE, new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
-		if(blockpos == null)
-		{
-			StargateJourney.LOGGER.info("Stargate Structure not found");
-			return;
-		}
-		//Map of Block Entities that might contain a Stargate
-		List<AbstractStargateEntity> stargates = new ArrayList<AbstractStargateEntity>();
-		
-		for(int x = -2; x <= 2; x++)
-		{
-			for(int z = -2; z <= 2; z++)
-			{
-				ChunkAccess chunk = level.getChunk(blockpos.east(16 * x).south(16 * z));
-				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
-				
-				positions.stream().forEach(pos ->
-				{
-					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
-						stargates.add(stargate);
-				});
-			}
-		}
-		
-		if(stargates.isEmpty())
-		{
-			StargateJourney.LOGGER.info("No Stargates found in Stargate Structure");
-			return;
-		}
-		
-		stargates.stream().forEach(stargate -> stargate.onLoad());
-		return;
 	}
 	
 	private static Stargate.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
