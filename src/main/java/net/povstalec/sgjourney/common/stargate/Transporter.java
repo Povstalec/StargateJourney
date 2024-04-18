@@ -1,9 +1,13 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.UUID;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Transporter
@@ -11,13 +15,20 @@ public class Transporter
 	public static final String DIMENSION = "Dimension";
 	public static final String COORDINATES = "Coordinates";
 	
-	private ResourceKey<Level> dimension;
-	private BlockPos blockPos;
+	private final UUID id;
+	private final ResourceKey<Level> dimension;
+	private final BlockPos blockPos;
 	
-	public Transporter(ResourceKey<Level> dimension, BlockPos blockPos)
+	public Transporter(AbstractTransporterEntity transporterEntity)
 	{
-		this.dimension = dimension;
-		this.blockPos = blockPos;
+		this.id = UUID.fromString(transporterEntity.getID());
+		this.dimension = transporterEntity.getLevel().dimension();
+		this.blockPos = transporterEntity.getBlockPos();
+	}
+	
+	public UUID getID()
+	{
+		return id;
 	}
 	
 	public ResourceKey<Level> getDimension()
@@ -29,6 +40,16 @@ public class Transporter
 	{
 		return blockPos;
 	}
+	
+	
+	
+	@Override
+	public String toString()
+	{
+		return "[ " + id + " | Pos: " + blockPos.toString() + " ]";
+	}
+	
+	
 	
 	public CompoundTag serialize()
 	{
@@ -42,13 +63,13 @@ public class Transporter
 		return transporterTag;
 	}
 	
-	public static Transporter deserialize(CompoundTag tag)
+	public static Transporter deserialize(MinecraftServer server, CompoundTag tag)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		if(dimension != null && blockPos != null)
-			return new Transporter(dimension, blockPos);
+		if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractTransporterEntity transporter)
+			return new Transporter(transporter);
 		
 		return null;
 	}

@@ -3,6 +3,8 @@
 	"crystal_base": {"item": "sgjourney:stargate_variant_crystal", "amount": 1},
 	"primary_ingredient": {"item": "sgjourney:naquadah", "amount": 1},
 	"secondary_ingredient": {"item": "minecraft:redstone_block", "amount": 1},
+	"deplete_primary": true,
+	"deplete_secondary": true,
 	"output":
 	{
 		"item": "sgjourney:stargate_variant_crystal",
