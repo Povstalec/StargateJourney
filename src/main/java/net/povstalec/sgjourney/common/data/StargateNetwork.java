@@ -126,19 +126,22 @@ public final class StargateNetwork extends SavedData
 		{
 			Stargate mapStargate = stargateInfo.getValue();
 			
-			ResourceKey<Level> dimension = mapStargate.getDimension();
-			
-			BlockPos pos = mapStargate.getBlockPos();
-			
-			ServerLevel level = server.getLevel(dimension);
-			
-			if(level != null)
+			if(mapStargate != null)
 			{
-				BlockEntity blockentity = server.getLevel(dimension).getBlockEntity(pos);
+				ResourceKey<Level> dimension = mapStargate.getDimension();
 				
-				if(blockentity instanceof AbstractStargateEntity stargate)
+				BlockPos pos = mapStargate.getBlockPos();
+				
+				ServerLevel level = server.getLevel(dimension);
+				
+				if(level != null)
 				{
-					addStargate(stargate);
+					BlockEntity blockentity = server.getLevel(dimension).getBlockEntity(pos);
+					
+					if(blockentity instanceof AbstractStargateEntity stargate)
+					{
+						addStargate(stargate);
+					}
 				}
 			}
 		});

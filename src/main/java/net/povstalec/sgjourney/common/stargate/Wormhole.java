@@ -106,6 +106,9 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getX() + 0.5 - previousX;
 					travelerPos = initialStargate.getCenterPos().getX() + 0.5 - traveler.getX();
 					axisMomentum = momentum.x();
+					
+					if(momentum.x() < 1)
+						momentum = new Vec3(reverseIfNeeded(unitDistance < 0, 0.4), momentum.y(), momentum.z());
 				}
 				else if(orientationDirection.getAxis() == Direction.Axis.Z)
 				{
@@ -113,6 +116,9 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getZ() + 0.5 - previousZ;
 					travelerPos = initialStargate.getCenterPos().getZ() + 0.5 - traveler.getZ();
 					axisMomentum = momentum.z();
+					
+					if(momentum.z() < 1)
+						momentum = new Vec3(momentum.x(), momentum.y(), reverseIfNeeded(unitDistance < 0, 0.4));
 				}
 				else
 				{
@@ -120,6 +126,9 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getY() + initialStargate.getGateAddition() - previousY;
 					travelerPos = initialStargate.getCenterPos().getY() + initialStargate.getGateAddition() - traveler.getY();
 					axisMomentum = momentum.y();
+					
+					if(momentum.y() < 1)
+						momentum = new Vec3(momentum.x(), reverseIfNeeded(unitDistance < 0, 0.4), momentum.z());
 				}
 				
 				if(shouldWormhole(initialStargate, traveler, unitDistance, previousTravelerPos, travelerPos, axisMomentum))
