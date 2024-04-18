@@ -39,6 +39,8 @@ public class Wormhole implements ITeleporter
 	private static final String EVENT_DECONSTRUCTING_ENTITY = "stargate_deconstructing_entity";
 	private static final String EVENT_RECONSTRUCTING_ENTITY = "stargate_reconstructing_entity";
 	
+	public static final double MIN_SPEED = 0.4;
+	
 	protected Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 	protected List<Entity> localEntities = new ArrayList<Entity>();
 	protected boolean used = false;
@@ -106,6 +108,9 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getX() + 0.5 - previousX;
 					travelerPos = initialStargate.getCenterPos().getX() + 0.5 - traveler.getX();
 					axisMomentum = momentum.x();
+					
+					if(Math.abs(momentum.x()) < MIN_SPEED)
+						momentum = new Vec3(reverseIfNeeded(unitDistance < 0, MIN_SPEED), momentum.y(), momentum.z());
 				}
 				else if(orientationDirection.getAxis() == Direction.Axis.Z)
 				{
@@ -113,6 +118,9 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getZ() + 0.5 - previousZ;
 					travelerPos = initialStargate.getCenterPos().getZ() + 0.5 - traveler.getZ();
 					axisMomentum = momentum.z();
+					
+					if(Math.abs(momentum.z()) < MIN_SPEED)
+						momentum = new Vec3(momentum.x(), momentum.y(), reverseIfNeeded(unitDistance < 0, MIN_SPEED));
 				}
 				else
 				{
@@ -120,6 +128,9 @@ public class Wormhole implements ITeleporter
 					previousTravelerPos = initialStargate.getCenterPos().getY() + initialStargate.getGateAddition() - previousY;
 					travelerPos = initialStargate.getCenterPos().getY() + initialStargate.getGateAddition() - traveler.getY();
 					axisMomentum = momentum.y();
+					
+					if(Math.abs(momentum.y()) < MIN_SPEED)
+						momentum = new Vec3(momentum.x(), reverseIfNeeded(unitDistance < 0, MIN_SPEED), momentum.z());
 				}
 				
 				if(shouldWormhole(initialStargate, traveler, unitDistance, previousTravelerPos, travelerPos, axisMomentum))

@@ -11,7 +11,7 @@
 	"key": 
 	{
 		"C": { "item": "sgjourney:advanced_control_crystal" },
-		"N": { "tag": "forge:ingots/naquadah" },
+		"N": { "tag": "sgjourney:naquadah" },
 		"I": { "item": "sgjourney:crystal_interface" },
 		"E": { "item": "sgjourney:advanced_energy_crystal" },
 		"R": { "item": "sgjourney:advanced_communication_crystal" }

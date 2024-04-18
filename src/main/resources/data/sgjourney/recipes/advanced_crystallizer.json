@@ -11,8 +11,8 @@
 	"key": 
 	{
 		"O": { "item": "sgjourney:control_crystal" },
-		"N": { "tag": "forge:ingots/naquadah" },
-		"A": { "tag": "forge:ingots/naquadah_alloy" },
+		"N": { "tag": "sgjourney:naquadah" },
+		"A": { "tag": "sgjourney:naquadah_alloy" },
 		"C": { "item": "sgjourney:crystallizer" },
 		"M": { "item": "sgjourney:materialization_crystal" }
 		
