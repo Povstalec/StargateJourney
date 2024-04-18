@@ -13,7 +13,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Stargate
@@ -207,7 +206,7 @@ public class Stargate
 		return stargateTag;
 	}
 	
-	public static Stargate deserialize(MinecraftServer server, CompoundTag tag, Address.Immutable address)
+	public static Stargate deserialize(MinecraftServer server, CompoundTag tag)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));

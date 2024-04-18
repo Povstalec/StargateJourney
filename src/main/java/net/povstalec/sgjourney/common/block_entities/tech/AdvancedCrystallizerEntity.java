@@ -65,9 +65,10 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 		
 		if(hasIngredients())
 		{
-			useUpItems(recipe.get(), 0);
-			useUpItems(recipe.get(), 1);
-			useUpItems(recipe.get(), 2);
+			if(recipe.get().depletePrimary())
+				useUpItems(recipe.get(), 1);
+			if(recipe.get().depleteSecondary())
+				useUpItems(recipe.get(), 2);
 			itemHandler.setStackInSlot(3, recipe.get().getResultItem(null));
 			
 			this.progress = 0;

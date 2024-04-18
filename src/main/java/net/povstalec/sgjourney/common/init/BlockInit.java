@@ -57,8 +57,8 @@ import net.povstalec.sgjourney.common.blocks.tech.HeavyNaquadahLiquidizerBlock;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahLiquidizerBlock;
 import net.povstalec.sgjourney.common.items.blocks.CartoucheBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.DHDItem;
-import net.povstalec.sgjourney.common.items.blocks.SGJourneyBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.StargateBlockItem;
+import net.povstalec.sgjourney.common.items.blocks.TransporterBlockItem;
 
 public class BlockInit
 {
@@ -123,7 +123,7 @@ public class BlockInit
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
 					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
 	
-	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerEntityBlock("transport_rings", 
+	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerTransporterBlock("transport_rings", 
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	public static final RegistryObject<RingPanelBlock> RING_PANEL = registerBlock("ring_panel", 
@@ -256,11 +256,11 @@ public class BlockInit
 		return toReturn;
 	}
 	
-	private static <T extends Block>RegistryObject<T> registerEntityBlock(String name, Supplier<T> block, Rarity rarity)
+	private static <T extends Block>RegistryObject<T> registerTransporterBlock(String name, Supplier<T> block, Rarity rarity)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
 
-		registerSGJourneyBlockItem(name, toReturn, rarity, 1);
+		registerTransporterBlockItem(name, toReturn, rarity, 1);
 		
 		return toReturn;
 	}
@@ -279,15 +279,6 @@ public class BlockInit
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
 		
 		registerCartoucheBlockItem(name, toReturn, 1);
-		
-		return toReturn;
-	}
-	
-	private static <T extends Block>RegistryObject<T> registerEntityBlock(String name, Supplier<T> block)
-	{
-		RegistryObject<T> toReturn = BLOCKS.register(name, block);
-
-		registerSGJourneyBlockItem(name, toReturn, 1);
 		
 		return toReturn;
 	}
@@ -312,14 +303,9 @@ public class BlockInit
 		return ItemInit.ITEMS.register(name, () -> new StargateBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant()));
 	}
 	
-	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
+	private static <T extends Block>RegistryObject<Item> registerTransporterBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant()));
-	}
-	
-	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, int stacksTo)
-	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+		return ItemInit.ITEMS.register(name, () -> new TransporterBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant()));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerDHDItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)

@@ -12,15 +12,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 
-public class SGJourneyBlockItem extends BlockItem
+public class TransporterBlockItem extends BlockItem
 {
-	private static final String ID = "ID";
 	private static final String ADD_TO_NETWORK = "AddToNetwork";
 	
-	public SGJourneyBlockItem(Block block, Properties properties)
+	public TransporterBlockItem(Block block, Properties properties)
 	{
 		super(block, properties);
 	}
@@ -64,8 +62,8 @@ public class SGJourneyBlockItem extends BlockItem
 		{
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			
-			if(baseEntity instanceof SGJourneyBlockEntity blockEntity)
-				blockEntity.addNewToBlockEntityList();
+			if(baseEntity instanceof AbstractTransporterEntity transporter)
+				transporter.addTransporterToNetwork();
 		}
 		
 		return false;
@@ -73,7 +71,7 @@ public class SGJourneyBlockItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof SGJourneyBlockEntity blockEntity)
+		if(baseEntity instanceof AbstractTransporterEntity transporter)
 		{
 			boolean addToNetwork = true;
 			
@@ -83,10 +81,7 @@ public class SGJourneyBlockItem extends BlockItem
 			if(addToNetwork)
 			{
 				// Registers it as one of the Block Entities in the list
-				if(info.contains(ID) && !info.getString(ID).equals(StargateJourney.EMPTY))
-					blockEntity.addToBlockEntityList();
-				else
-					blockEntity.addNewToBlockEntityList();
+				transporter.addTransporterToNetwork();
 			}
 		}
 		

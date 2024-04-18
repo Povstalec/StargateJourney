@@ -17,7 +17,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -36,6 +35,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.Galaxy.Serializable;
 import net.povstalec.sgjourney.common.stargate.SolarSystem;
+import net.povstalec.sgjourney.common.stargate.Transporter;
 
 public class CommandInit
 {
@@ -122,6 +122,14 @@ public class CommandInit
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
 										.executes(CommandInit::getTransporters))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(TRANSPORTER_NETWORK)
+						.then(Commands.literal("reload")
+								.executes(CommandInit::reloadTransporterNetwork)))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		
 		
 		//Gene commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
@@ -348,23 +356,37 @@ public class CommandInit
 	
 	private static int getTransporters(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
+		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getPlayer().level();
 
 		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_transporters")
-				.append(Component.literal(" " + dimension).withStyle(ChatFormatting.GOLD)));
+				.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)));
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
 		
-		CompoundTag ringsNetwork = TransporterNetwork.get(level).getRings(dimension);
-		System.out.println(ringsNetwork);
-		List<String> ringsNList = ringsNetwork.getAllKeys().stream().toList();
-		for(int i = 0; i < ringsNList.size(); i++)
+		Optional<List<Transporter>> transportersOptional = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
+		
+		if(transportersOptional.isPresent())
 		{
-			int[] coords = ringsNetwork.getCompound(ringsNList.get(i)).getIntArray("Coordinates");
-			context.getSource().getPlayer().sendSystemMessage(Component.literal("X: " + coords[0] + " Y: " + coords[1] + " Z: " + coords[2]).withStyle(ChatFormatting.BLUE));
+			List<Transporter> transporters = transportersOptional.get();
+			
+			for(int i = 0; i < transporters.size(); i++)
+			{
+				BlockPos coords = transporters.get(i).getBlockPos();
+				context.getSource().getPlayer().sendSystemMessage(Component.literal("X: " + coords.getX() + " Y: " + coords.getY() + " Z: " + coords.getZ()).withStyle(ChatFormatting.BLUE));
+			}
 		}
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
 		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int reloadTransporterNetwork(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getPlayer().level();
+		
+		TransporterNetwork.get(level).reloadNetwork(level.getServer(), true);
+		
+		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.transporter_network_reload").withStyle(ChatFormatting.RED));
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -409,13 +431,18 @@ public class CommandInit
 	{
 		Level level = context.getSource().getPlayer().level();
 
+		System.out.println("===============Universe===============");
 		Universe.get(level).printDimensions();
 		Universe.get(level).printSolarSystems();
 		Universe.get(level).printGalaxies();
 		
-		System.out.println("=============================");
+		System.out.println("===============Stargate Network===============");
 		BlockEntityList.get(level).printStargates();
 		StargateNetwork.get(level).printConnections();
+
+		System.out.println("===============Transporter Network===============");
+		BlockEntityList.get(level).printTransporters();
+		TransporterNetwork.get(level).printDimensions();
 
 		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info onto the console"));
 		

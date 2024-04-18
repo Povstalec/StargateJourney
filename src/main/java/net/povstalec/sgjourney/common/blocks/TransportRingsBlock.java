@@ -17,13 +17,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
 
-public class TransportRingsBlock extends SGJourneyBaseEntityBlock
+public class TransportRingsBlock extends AbstractTransporterBlock
 {
 	public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.VERTICAL);
 	public static final BooleanProperty ACTIVATED = BooleanProperty.create("activated");
@@ -62,7 +61,7 @@ public class TransportRingsBlock extends SGJourneyBaseEntityBlock
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if (blockentity instanceof SGJourneyBlockEntity baseBlockEntity)
+		if(blockentity instanceof TransportRingsEntity transportRings)
 		{
 			if (!level.isClientSide() && !player.isCreative())
 			{

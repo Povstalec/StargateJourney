@@ -3,6 +3,7 @@ package net.povstalec.sgjourney;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import net.povstalec.sgjourney.common.init.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -54,23 +55,6 @@ import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.init.AdvancementInit;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.EntityInit;
-import net.povstalec.sgjourney.common.init.FeatureInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.init.FluidTypeInit;
-import net.povstalec.sgjourney.common.init.GalaxyInit;
-import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.init.MiscInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.init.RecipeTypeInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.init.StructureInit;
-import net.povstalec.sgjourney.common.init.TabInit;
-import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
 import net.povstalec.sgjourney.common.stargate.AddressTable;
@@ -113,7 +97,8 @@ public class StargateJourney
         SoundInit.register(eventBus);
         TabInit.register(eventBus);
         RecipeTypeInit.register(eventBus);
-        
+        StatisticsInit.register(eventBus);
+
         GalaxyInit.register(eventBus);
         
         AdvancementInit.register();
@@ -156,7 +141,8 @@ public class StargateJourney
     {
     	event.enqueueWork(() -> 
     	{
-    		PacketHandlerInit.register();
+            StatisticsInit.register();
+            PacketHandlerInit.register();
     		//VillagerInit.registerPOIs();
     	});
     }

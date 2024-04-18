@@ -1,12 +1,14 @@
 package net.povstalec.sgjourney.common.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -15,297 +17,288 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.stargate.Transporter;
 
 /**
  * Dimension - Frequency - Rings
  * @author Povstalec
  *
  */
-public class TransporterNetwork extends SavedData
+public final class TransporterNetwork extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-rings_network";
+	private static final String FILE_NAME = StargateJourney.MODID + "-transporter_network";
 
-	private static final String DIMENSION = "Dimension";
-	private static final String COORDINATES = "Coordinates";
+	/*private static final String COORDINATES = "Coordinates";
 
-	private static final String CONNECTIONS = "Connections";
 	private static final String RINGS_A = "RingsA";
 	private static final String RINGS_B = "RingsB";
-	private static final String CONNECTION_TIME = "ConnectionTime";
-	
-	private CompoundTag ringsNetwork = new CompoundTag();
-	
-	public CompoundTag getRings(String dimension)
-	{
-		return ringsNetwork.copy().getCompound(dimension);
-	}
-	
-	public void addToNetwork(String ringsID, CompoundTag rings)
-	{
-		CompoundTag dimension = getRings(rings.getString(DIMENSION));
-		CompoundTag localRings = new CompoundTag();
-		
-		localRings.putIntArray(COORDINATES, rings.getIntArray(COORDINATES));
-		dimension.put(ringsID, localRings);
-		ringsNetwork.put(rings.getString(DIMENSION), dimension);
-		
-		setDirty();
-		StargateJourney.LOGGER.info("Added Rings " + ringsID + " to Rings Network");
-		//System.out.println(ringsNetwork);
-	}
-	
-	public void removeFromNetwork(Level level, String ringsID)
-	{
-		removeFromNetwork(level.dimension().location().toString(), ringsID);
-	}
-	
-	public void removeFromNetwork(String dimension, String ringsID)
-	{
-		this.ringsNetwork.getCompound(dimension).remove(ringsID);
-		setDirty();
-		StargateJourney.LOGGER.info("Removing from network " + ringsID);
-	}
-	
-	
-	
-	private BlockPos intToPos(int[] coords)
-	{
-		return new BlockPos(coords[0], coords[1], coords[2]);
-	}
-	
-	private double distance(BlockPos pos1, BlockPos pos2)
-	{
-		return Math.sqrt(Math.pow(pos1.getX() - pos2.getX(), 2) + Math.pow(pos1.getY() - pos2.getY(), 2) + Math.pow(pos1.getZ() - pos2.getZ(), 2));
-	}
-	
-	private CompoundTag closestRings(CompoundTag dim, CompoundTag rings, BlockPos pos, double maxDistance)
-	{
-		double distance = maxDistance;
-		CompoundTag close = new CompoundTag();
-		
-		List<String> ids = dim.getAllKeys().stream().collect(Collectors.toList());
-		
-		for(int i = 0; i < ids.size(); i++)
-		{
-			String id = ids.get(i);
-			BlockPos pos2 = intToPos(dim.getCompound(id).getIntArray(COORDINATES));
-			double dist = distance(pos, pos2);
-			
-			if(dist <= distance)
-			{
-				distance = dist;
-				close = new CompoundTag();
-				close.put(id, dim.getCompound(id));
-			}
-		}
-		rings.merge(close);
-		
-		return rings;
-	}
-	
-	public CompoundTag getClosestRingsFromTag(String dimension, BlockPos pos, CompoundTag rings, double maxDistance)
-	{
-		CompoundTag dim = getRings(dimension);
-		
-		return getClosestRingsFromTag(dimension, pos, rings, maxDistance, dim);
-	}
-	
-	public CompoundTag getClosestRingsFromTag(String dimension, BlockPos pos, CompoundTag rings, double maxDistance, String excludedID)
-	{
-		CompoundTag dim = getRings(dimension);
-		dim.remove(excludedID);
-		
-		return getClosestRingsFromTag(dimension, pos, rings, maxDistance, dim);
-	}
-	
-	private CompoundTag getClosestRingsFromTag(String dimension, BlockPos pos, CompoundTag rings, double maxDistance, CompoundTag dim)
-	{
-		//Removes repeating IDs
-		if(!rings.isEmpty())
-			rings.getAllKeys().stream().forEach((id) -> dim.remove(id));
-		
-		rings = closestRings(dim, rings, pos, maxDistance);
-		
-		return rings;
-	}
-	
-	
-	
-	public CompoundTag get6ClosestRingsFromTag(String dimension, BlockPos pos, double maxDistance, String excludedID)
-	{
-		CompoundTag rings = new CompoundTag();
-		
-		if(!ringsNetwork.contains(dimension))
-			return rings;
-		
-		for(int i = 0; i < 6; i++)
-		{
-			rings = getClosestRingsFromTag(dimension, pos, rings, maxDistance, excludedID);
-		}
-		
-		//System.out.println("RINGS " + rings.size() + " " + rings);
-		return rings;
-	}
-	
-	//============================================================================================
-	//****************************************Connections*****************************************
-	//============================================================================================
-	
-	public void handleConnections(MinecraftServer server)
-	{
-		if(!getConnections().isEmpty())
-			getConnections().getAllKeys().forEach(uuid -> handleConnection(server, uuid));
-	}
-	
-	private void handleConnection(MinecraftServer server, String uuid)
-	{
-		CompoundTag connections = getConnections();
-		CompoundTag connection = connections.getCompound(uuid);
-		
-		TransportRingsEntity ringsA = loadRings(server, connection.getCompound(RINGS_A));
-		TransportRingsEntity ringsB = loadRings(server, connection.getCompound(RINGS_B));
-		
-		int connectionTime = connection.getInt(CONNECTION_TIME);
-		connectionTime++;
-		
-		if(ringsA == null || ringsB == null)
-		{
-			terminateConnection(server, uuid);
-			return;
-		}
-		
-		connection.putInt(CONNECTION_TIME, connectionTime);
-		connections.put(uuid, connection);
-		this.ringsNetwork.put(CONNECTIONS, connections);
-		this.setDirty();
-		
-		int heightA = ringsA.getTransportHeight();
-		int heightB = ringsB.getTransportHeight();
-		
-		int greaterHeight = heightA >= heightB ? heightA : heightB;
-		
-		ringsA.setProgress(synchronizeProgress(greaterHeight, heightA, connectionTime));
-		ringsA.setProgress(synchronizeProgress(greaterHeight, heightB, connectionTime));
-	}
-	
-	public CompoundTag getConnections()
-	{
-		return this.ringsNetwork.getCompound(CONNECTIONS).copy();
-	}
-	
-	public CompoundTag getConnection(String uuid)
-	{
-		return getConnections().getCompound(uuid);
-	}
-	
-	public ResourceKey<Level> getDimension(String uuid, String rings)
-	{
-		return Conversion.stringToDimension(getConnection(uuid).getCompound(rings).getString(DIMENSION));
-	}
-	
-	public TransportRingsEntity getRings(MinecraftServer server, String uuid, String rings)
-	{
-		return loadRings(server, getConnection(uuid).getCompound(rings));
-	}
-	
-	public String startConnection(TransportRingsEntity ringsA, TransportRingsEntity ringsB)
-	{
-		if(ringsA.equals(ringsB))
-		{
-			StargateJourney.LOGGER.info("Rings cannot create connection with itself");
-			return "INVALID_SELF";
-		}
+	private static final String CONNECTION_TIME = "ConnectionTime";*/
+	private static final String DIMENSIONS = "Dimensions";
+	private static final String CONNECTIONS = "Connections";
 
-		String uuid = UUID.randomUUID().toString();
-		CompoundTag connections = getConnections();
-		CompoundTag connection = new CompoundTag();
-		CompoundTag ringsAInfo = saveRings(ringsA);
-		CompoundTag ringsBInfo = saveRings(ringsB);
-		
-		connection.put(RINGS_A, ringsAInfo);
-		connection.put(RINGS_B, ringsBInfo);
-		connections.put(uuid, connection);
-		
-		this.ringsNetwork.put(CONNECTIONS, connections);
-		this.setDirty();
-		StargateJourney.LOGGER.info("Created connection " + uuid);
-		
-		return uuid;
+	private static final String VERSION = "Version";
+
+	private static final int updateVersion = 1;
+	
+	private MinecraftServer server;
+
+	private Map<String, TransporterNetwork.Dimension> dimensions = new HashMap<String, TransporterNetwork.Dimension>();
+	private int version = 0;
+	
+	//============================================================================================
+	//******************************************Versions******************************************
+	//============================================================================================
+	
+	public final int getVersion()
+	{
+		return this.version;
 	}
 	
-	private int synchronizeProgress(int greaterHeight, int height, int progress)
+	private final void updateVersion()
 	{
-		int sync = height - greaterHeight + progress;
-		
-		// If the rings have take less time to raise, they won't start progressing until the progress is great enough
-		return sync > 0 ? sync : 0;
+		this.version = updateVersion;
 	}
 	
-	private CompoundTag saveRings(TransportRingsEntity rings)
+	public final void updateNetwork(MinecraftServer server)
 	{
-		CompoundTag ringsInfo = new CompoundTag();
-		
-		ringsInfo.putString(DIMENSION, rings.getLevel().dimension().location().toString());
-		ringsInfo.putIntArray(COORDINATES, new int[] {rings.getBlockPos().getX(), rings.getBlockPos().getY(), rings.getBlockPos().getZ()});
-		
-		return ringsInfo;
-	}
-	
-	private TransportRingsEntity loadRings(MinecraftServer server, CompoundTag ringsInfo)
-	{
-		ResourceKey<Level> dimension = Conversion.stringToDimension(ringsInfo.getString(DIMENSION));
-		BlockPos pos = Conversion.intArrayToBlockPos(ringsInfo.getIntArray(COORDINATES));
-		
-		BlockEntity blockEntity = server.getLevel(dimension).getBlockEntity(pos);
-		
-		if(blockEntity instanceof TransportRingsEntity rings)
-			return rings;
-		
-		return null;
-	}
-	
-	public void terminateConnection(MinecraftServer server, String uuid)
-	{
-		if(!getConnections().contains(uuid))
+		if(getVersion() == updateVersion)
 		{
-			StargateJourney.LOGGER.error("Could not find connection " + uuid);
+			StargateJourney.LOGGER.info("Transporter Network is up to date (Version: " + version + ")");
 			return;
 		}
 		
-		TransportRingsEntity ringsA = loadRings(server, getConnections().getCompound(uuid).getCompound(RINGS_A));
-		TransportRingsEntity ringsB = loadRings(server, getConnections().getCompound(uuid).getCompound(RINGS_B));
+		StargateJourney.LOGGER.info("Detected an incompatible Transporter Network version (Version: " + getVersion() + ") - updating to version " + updateVersion);
 		
-		/*if(dialingStargate != null)
-			dialingStargate.resetStargate(false);
-		if(dialedStargate != null)
-			dialedStargate.resetStargate(false);*/ //TODO Rewrite this to make sense for Rings
+		reloadNetwork(server, false);
+	}
+	
+	public final void reloadNetwork(MinecraftServer server, boolean updateInterfaces)
+	{
+		eraseNetwork();
+		StargateJourney.LOGGER.info("Transporter Network erased");
 		
-		this.ringsNetwork.getCompound(CONNECTIONS).remove(uuid);
+		addTransporters();
+		StargateJourney.LOGGER.info("Transporters added");
+		
+		updateVersion();
+		StargateJourney.LOGGER.info("Version updated");
+		
 		this.setDirty();
-		StargateJourney.LOGGER.info("Ended connection " + uuid);
+	}
+	
+	public final void eraseNetwork()
+	{
+		this.dimensions.clear();
+		
+		this.setDirty();
+	}
+	
+	private final void addTransporters()
+	{
+		HashMap<UUID, Transporter> transporters = BlockEntityList.get(server).getTransporters();
+		
+		transporters.entrySet().stream().forEach((transporterInfo) ->
+		{
+			Transporter transporter = transporterInfo.getValue();
+			
+			BlockEntity blockentity = server.getLevel(transporter.getDimension()).getBlockEntity(transporter.getBlockPos());
+			
+			if(blockentity instanceof AbstractTransporterEntity transporterEntity)
+			{
+				System.out.println(transporterEntity.getID() + " == " + transporter.getID().toString());
+				
+				if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID().toString()))
+				{
+
+					System.out.println("Same");
+					addTransporterToDimension(transporter.getDimension(), transporter);
+				}
+				else
+				{
+					System.out.println("Not same");
+					BlockEntityList.get(server).removeTransporter(transporter.getID());
+					addTransporter(transporterEntity);
+				}
+			}
+			else
+				BlockEntityList.get(server).removeTransporter(transporter.getID());
+			
+		});
+	}
+	
+	//============================================================================================
+	//****************************************Transporters****************************************
+	//============================================================================================
+	
+	public final void addTransporter(AbstractTransporterEntity transporterEntity)
+	{
+		Optional<Transporter> transporterOptional = BlockEntityList.get(server).addTransporter(transporterEntity);
+		
+		if(transporterOptional.isPresent())
+		{
+			Transporter transporter = transporterOptional.get();
+			
+			if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID().toString()))
+				addTransporterToDimension(transporter.getDimension(), transporter);
+		}
+		
+		this.setDirty();
+	}
+	
+	public final void removeTransporter(Level level, String id)
+	{
+		Optional<Transporter> transporter = getTransporter(id);
+		
+		if(transporter.isPresent())
+			removeTransporterFromDimension(level.dimension(), transporter.get());
+
+		BlockEntityList.get(level).removeTransporter(UUID.fromString(id));
+		
+		StargateJourney.LOGGER.info("Removed " + id.toString() + " from Transporter Network");
+		setDirty();
+	}
+	
+	public final Optional<Transporter> getTransporter(String id)
+	{
+		Transporter transporter = BlockEntityList.get(server).getTransporters().get(id);
+		
+		if(transporter != null)
+			return Optional.of(transporter);
+
+		return Optional.empty();
+	}
+	
+	
+	
+	public final void addTransporterToDimension(ResourceKey<Level> dimensionKey, Transporter transporter)
+	{
+		String dimensionString = dimensionKey.location().toString();
+		
+		if(!dimensions.containsKey(dimensionString))
+			dimensions.put(dimensionString, new TransporterNetwork.Dimension(dimensionKey));
+		
+		dimensions.get(dimensionString).addTransporter(transporter);
+	}
+	
+	public final void removeTransporterFromDimension(ResourceKey<Level> dimensionKey, Transporter transporter)
+	{
+		String dimensionString = dimensionKey.location().toString();
+		
+		if(dimensions.containsKey(dimensionString))
+			dimensions.get(dimensionString).removeTransporter(transporter);
+	}
+	
+	public final Optional<List<Transporter>> getTransportersFromDimension(ResourceKey<Level> dimensionKey)
+	{
+		if(dimensions.containsKey(dimensionKey.location().toString()))
+		{
+			Dimension dimension = dimensions.get(dimensionKey.location().toString());
+			
+			return Optional.of(dimension.getTransporters());
+		}
+		
+		return Optional.empty();
+	}
+	
+	public final void printDimensions()
+	{
+		System.out.println("[Dimensions - Transporters]");
+		this.dimensions.entrySet().stream().forEach(dimensionEntry ->
+		{
+			dimensionEntry.getValue().printDimension();
+		});
+	}
+	
+	//============================================================================================
+	//*************************************Saving and Loading*************************************
+	//============================================================================================
+	
+	private final CompoundTag serialize()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		tag.putInt(VERSION, this.version);
+		tag.put(DIMENSIONS, serializeDimensions());
+		tag.put(CONNECTIONS, serializeConnections());
+		
+		return tag;
+	}
+	
+	private final CompoundTag serializeDimensions()
+	{
+		CompoundTag dimensionsTag = new CompoundTag();
+		
+		this.dimensions.forEach((dimensionString, dimension) ->
+		{
+			dimensionsTag.put(dimensionString, dimension.serialize());
+		});
+		
+		return dimensionsTag;
+	}
+	
+	private final CompoundTag serializeConnections()
+	{
+		CompoundTag connectionsTag = new CompoundTag();
+		
+		/*this.connections.forEach((connectionID, connection) ->
+		{
+			connectionsTag.put(connectionID, connection.serialize());
+		});*/
+		
+		return connectionsTag;
+	}
+	
+	private final void deserialize(CompoundTag tag)
+	{
+		this.version = tag.getInt(VERSION);
+
+		deserializeDimensions(tag.getCompound(DIMENSIONS));
+		deserializeConnections(tag.getCompound(CONNECTIONS));
+	}
+	
+	private final void deserializeDimensions(CompoundTag tag)
+	{
+		tag.getAllKeys().forEach(dimensionString ->
+		{
+			this.dimensions.put(dimensionString, TransporterNetwork.Dimension.deserialize(server, tag.getCompound(dimensionString)));
+		});
+	}
+	
+	private final void deserializeConnections(CompoundTag tag)
+	{
+		/*tag.getAllKeys().forEach(connectionID ->
+		{
+			this.connections.put(connectionID, StargateConnection.deserialize(server, connectionID, tag.getCompound(connectionID)));
+		});*/
 	}
 	
 //================================================================================================
-
-	public static TransporterNetwork create()
+	
+	public TransporterNetwork(MinecraftServer server)
 	{
-		return new TransporterNetwork();
+		this.server = server;
+	}
+
+	public static TransporterNetwork create(MinecraftServer server)
+	{
+		return new TransporterNetwork(server);
 	}
 	
-	public static TransporterNetwork load(CompoundTag tag)
+	public static TransporterNetwork load(MinecraftServer server, CompoundTag tag)
 	{
-		TransporterNetwork data = create();
-
-		data.ringsNetwork = tag.copy();
+		TransporterNetwork data = create(server);
+		
+		data.server = server;
+		data.deserialize(tag);
 		
 		return data;
 	}
 
 	public CompoundTag save(CompoundTag tag)
 	{
-		tag = this.ringsNetwork.copy();
+		tag = serialize();
 		
 		return tag;
 	}
@@ -313,7 +306,7 @@ public class TransporterNetwork extends SavedData
 	@Nonnull
 	public static TransporterNetwork get(Level level)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			throw new RuntimeException("Don't access this client-side!");
 		
 		return TransporterNetwork.get(level.getServer());
@@ -324,6 +317,90 @@ public class TransporterNetwork extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent(TransporterNetwork::load, TransporterNetwork::create, FILE_NAME);
+        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+    }
+    
+    
+    
+    private static class Dimension
+    {
+    	private static final String DIMENSION = "Dimension";
+    	private static final String TRANSPORTERS = "Transporters";
+    	
+    	private final ResourceKey<Level> dimension;
+    	private List<Transporter> transporters = new ArrayList<Transporter>();
+    	
+    	private Dimension(ResourceKey<Level> dimension)
+    	{
+    		this.dimension = dimension;
+    	}
+    	
+    	private Dimension(ResourceKey<Level> dimension, List<Transporter> transporters)
+    	{
+    		this.dimension = dimension;
+    		this.transporters = transporters;
+    	}
+    	
+    	public void addTransporter(Transporter transporter)
+    	{
+    		if(transporters.contains(transporter))
+    			return;
+    		
+    		transporters.add(transporter);
+    	}
+    	
+    	public void removeTransporter(Transporter transporter)
+    	{
+    		if(transporters.contains(transporter))
+    			transporters.remove(transporter);
+    	}
+    	
+    	public List<Transporter> getTransporters()
+    	{
+    		return new ArrayList<Transporter>(transporters);
+    	}
+    	
+    	public void printDimension()
+    	{
+			System.out.println("- [" + this.dimension.location().toString() + "]");
+			transporters.stream().forEach(transporter ->
+			{
+				System.out.println("--- " + transporter.toString());;
+			});
+    	}
+    	
+    	
+    	
+    	public CompoundTag serialize()
+		{
+			CompoundTag dimensionTag = new CompoundTag();
+			
+			dimensionTag.putString(DIMENSION, this.dimension.location().toString());
+			
+			CompoundTag transportersTag = new CompoundTag();
+			transporters.stream().forEach(transporter ->
+			{
+				transportersTag.putString(transporter.getID().toString(), transporter.getID().toString());
+			});
+			dimensionTag.put(TRANSPORTERS, transportersTag);
+			
+			return dimensionTag;
+		}
+		
+		public static TransporterNetwork.Dimension deserialize(MinecraftServer server, CompoundTag dimensionTag)
+		{
+			ResourceKey<Level> dimension = Conversion.stringToDimension(dimensionTag.getString(DIMENSION));
+			
+	    	List<Transporter> transporters = new ArrayList<Transporter>();
+			dimensionTag.getCompound(TRANSPORTERS).getAllKeys().forEach(transporterID ->
+			{
+				Optional<Transporter> transporter = BlockEntityList.get(server).getTransporter(UUID.fromString(transporterID));
+				
+				if(transporter.isPresent())
+					transporters.add(transporter.get());
+			});
+			
+			return new TransporterNetwork.Dimension(dimension, transporters);
+		}
     }
 }

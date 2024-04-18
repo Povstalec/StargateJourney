@@ -16,13 +16,13 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.block_entities.SGJourneyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 
-public abstract class SGJourneyBaseEntityBlock extends BaseEntityBlock
+public abstract class AbstractTransporterBlock extends BaseEntityBlock
 {
 	protected String listName;
 	
-	protected SGJourneyBaseEntityBlock(Properties properties, String listName)
+	protected AbstractTransporterBlock(Properties properties, String listName)
 	{
 		super(properties);
 		this.listName = listName;
@@ -40,8 +40,8 @@ public abstract class SGJourneyBaseEntityBlock extends BaseEntityBlock
         {
             BlockEntity entity = level.getBlockEntity(pos);
             
-            if(entity instanceof SGJourneyBlockEntity blockEntity)
-                blockEntity.removeFromBlockEntityList();
+            if(entity instanceof AbstractTransporterEntity transporterEntity)
+            	transporterEntity.removeTransporterFromNetwork();
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }

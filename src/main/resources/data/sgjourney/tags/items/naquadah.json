@@ -1,0 +1,8 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:naquadah",
+		{"id": "#forge:ingots/naquadah", "required": false}
+	]
+}
