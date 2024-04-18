@@ -28,13 +28,17 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 	private final NonNullList<Ingredient> ingredients;
 	private final int[] amounts;
 	private final ItemStack output;
+	private final boolean depletePrimary;
+	private final boolean depleteSecondary;
 	
-	public CrystallizerRecipe(ResourceLocation recipeID, ItemStack output, NonNullList<Ingredient> ingredients, int[] amounts)
+	public CrystallizerRecipe(ResourceLocation recipeID, ItemStack output, NonNullList<Ingredient> ingredients, int[] amounts, boolean depletePrimary, boolean depleteSecondary)
 	{
 		this.recipeID = recipeID;
 		this.ingredients = ingredients;
 		this.amounts = amounts;
 		this.output = output;
+		this.depletePrimary = depletePrimary;
+		this.depleteSecondary = depleteSecondary;
 	}
 	
 	public int getAmountInSlot(int slot)
@@ -43,6 +47,16 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 			return 0;
 		
 		return this.amounts[slot];
+	}
+	
+	public boolean depletePrimary()
+	{
+		return this.depletePrimary;
+	}
+	
+	public boolean depleteSecondary()
+	{
+		return this.depleteSecondary;
 	}
 	
 	public boolean itemStackMatches(SimpleContainer container, int slot)
@@ -138,6 +152,12 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 			Pair<Ingredient, Integer> crystalBase = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "crystal_base").asMap());
 			Pair<Ingredient, Integer> primaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "primary_ingredient").asMap());
 			Pair<Ingredient, Integer> secondaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "secondary_ingredient").asMap());
+			
+			boolean depletePrimary = GsonHelper.isBooleanValue(serializedRecipe, "deplete_primary") ?
+					GsonHelper.getAsBoolean(serializedRecipe, "deplete_primary") : true;
+			
+			boolean depleteSecondary = GsonHelper.isBooleanValue(serializedRecipe, "deplete_secondary") ?
+					GsonHelper.getAsBoolean(serializedRecipe, "deplete_secondary") : true;
 
 			ingredients.set(0, crystalBase.getFirst());
 			amounts[0] = crystalBase.getSecond();
@@ -148,7 +168,7 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 			ingredients.set(2, secondaryIngredient.getFirst());
 			amounts[2] = secondaryIngredient.getSecond();
 			
-			return new CrystallizerRecipe(recipeID, output, ingredients, amounts);
+			return new CrystallizerRecipe(recipeID, output, ingredients, amounts, depletePrimary, depleteSecondary);
 		}
 
 		@Override
@@ -163,7 +183,11 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 			}
 			
 			ItemStack output = friendlyByteBuf.readItem();
-			return new CrystallizerRecipe(recipeID, output, ingredients, amounts);
+			
+			boolean depletePrimary = friendlyByteBuf.readBoolean();
+			boolean depleteSecondary = friendlyByteBuf.readBoolean();
+			
+			return new CrystallizerRecipe(recipeID, output, ingredients, amounts, depletePrimary, depleteSecondary);
 		}
 
 		@Override
@@ -177,6 +201,9 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 				ingredient.toNetwork(friendlyByteBuf);
 			}
 			friendlyByteBuf.writeItemStack(recipe.getResultItem(), false);
+			
+			friendlyByteBuf.writeBoolean(recipe.depletePrimary);
+			friendlyByteBuf.writeBoolean(recipe.depleteSecondary);
 		}
 		
 	}
