@@ -10,8 +10,8 @@
 	"key":
 	{
 		"P": {"item": "sgjourney:plasma_converter"},
-		"R": {"tag": "forge:rods/naquadah_alloy"},
-		"N": {"tag": "forge:ingots/naquadah_alloy"},
+		"R": {"tag": "sgjourney:naquadah_rod"},
+		"N": {"tag": "sgjourney:naquadah_alloy"},
 		"A": {"item": "minecraft:amethyst_shard"}
 	},
 	"result":

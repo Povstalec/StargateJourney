@@ -1,0 +1,8 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:naquadah_rod",
+		{"id": "#forge:rods/naquadah_alloy", "required": false}
+	]
+}
