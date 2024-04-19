@@ -197,7 +197,7 @@ public class Galaxy
 		public CompoundTag serialize()
 		{
 			CompoundTag galaxyTag = new CompoundTag();
-			galaxyTag.putString(GALAXY_KEY, galaxyKey.location().toString());
+			//galaxyTag.putString(GALAXY_KEY, galaxyKey.location().toString());
 
 			//System.out.println("Galaxy: " + galaxyKey.location().toString());
 			CompoundTag solarSystemsTag = new CompoundTag();
@@ -222,9 +222,8 @@ public class Galaxy
 		}
 		
 		public static Galaxy.Serializable deserialize(MinecraftServer server, HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems,
-				Registry<Galaxy> galaxyRegistry, CompoundTag galaxyTag)
+				Registry<Galaxy> galaxyRegistry, ResourceKey<Galaxy> galaxyKey, CompoundTag galaxyTag)
 		{
-			ResourceKey<Galaxy> galaxyKey = Conversion.stringToGalaxyKey(galaxyTag.getString(GALAXY_KEY));
 			Galaxy galaxy = galaxyRegistry.get(galaxyKey);
 			
 			HashMap<Address.Immutable, SolarSystem.Serializable> galaxySolarSystems = new HashMap<Address.Immutable, SolarSystem.Serializable>();
