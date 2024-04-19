@@ -242,10 +242,11 @@ public class BlockEntityList extends SavedData
 		
 		stargates.getAllKeys().stream().forEach(stargate ->
 		{
-			//StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
+			StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
 			Address.Immutable address = new Address(stargate).immutable();
 			this.stargateMap.put(address, Stargate.deserialize(server, stargates.getCompound(stargate)));
 		});
+		StargateJourney.LOGGER.info("Finished deserializing Stargates");
 	}
 	
 	private void deserializeTransporters(CompoundTag blockEntityList)
