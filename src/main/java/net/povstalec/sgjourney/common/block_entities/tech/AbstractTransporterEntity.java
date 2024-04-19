@@ -68,12 +68,12 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 		super.saveAdditional(tag);
 	}
 	
-	protected String generateID()
+	public String generateID()
 	{
 		return UUID.randomUUID().toString();
 	}
 	
-	protected void setID(String id)
+	public void setID(String id)
 	{
     	this.id = id;
 		setChanged();
