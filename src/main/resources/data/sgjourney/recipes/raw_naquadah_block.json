@@ -8,7 +8,7 @@
   ],
   "key": {
     "I": {"item": "sgjourney:raw_naquadah"},
-    "T": {"tag": "forge:raw_materials/naquadah"}
+    "T": {"tag": "sgjourney:raw_naquadah"}
   },
   "result": {
     "item": "sgjourney:raw_naquadah_block"

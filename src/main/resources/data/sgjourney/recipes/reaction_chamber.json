@@ -10,7 +10,7 @@
 	
 	"key": 
 	{
-		"A": {"tag": "forge:ingots/naquadah_alloy"},
+		"A": {"tag": "sgjourney:naquadah_alloy"},
 		"R": { "item": "minecraft:redstone" },
 		"H": { "tag": "sgjourney:reaction_heater" }
 	},

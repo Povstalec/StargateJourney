@@ -686,7 +686,8 @@ public class Universe extends SavedData
 		
 		tag.getAllKeys().forEach(galaxyString ->
 		{
-			Galaxy.Serializable galaxy = Galaxy.Serializable.deserialize(server, this.solarSystems, galaxyRegistry, tag.getCompound(galaxyString));
+			ResourceKey<Galaxy> galaxyKey = Conversion.stringToGalaxyKey(galaxyString);
+			Galaxy.Serializable galaxy = Galaxy.Serializable.deserialize(server, this.solarSystems, galaxyRegistry, galaxyKey, tag.getCompound(galaxyString));
 			
 			this.galaxies.put(galaxy.getKey().location().toString(), galaxy);
 		});
