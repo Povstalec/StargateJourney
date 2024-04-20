@@ -242,15 +242,17 @@ public class BlockEntityList extends SavedData
 		
 		stargates.getAllKeys().stream().forEach(stargate ->
 		{
-			StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
+			//StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
 			Address.Immutable address = new Address(stargate).immutable();
-			this.stargateMap.put(address, Stargate.deserialize(server, stargates.getCompound(stargate)));
+			this.stargateMap.put(address, Stargate.deserialize(server, address, stargates.getCompound(stargate)));
 		});
+		
 		StargateJourney.LOGGER.info("Finished deserializing Stargates");
 	}
 	
 	private void deserializeTransporters(CompoundTag blockEntityList)
 	{
+		StargateJourney.LOGGER.info("Deserializing Transporters");
 		// Transport Rings deserialization for legacy reasons
 		if(blockEntityList.contains(TRANSPORT_RINGS))
 		{
@@ -258,8 +260,9 @@ public class BlockEntityList extends SavedData
 			
 			transportRingsTag.getAllKeys().stream().forEach(transportRings ->
 			{
-				Transporter transporter = Transporter.deserialize(server, transportRingsTag.getCompound(transportRings));
-				
+				//StargateJourney.LOGGER.info("Deserializing Transport Rings " + transportRings);
+				Transporter transporter = Transporter.deserialize(server, transportRings, transportRingsTag.getCompound(transportRings));
+
 				if(!this.transporterMap.containsKey(transporter.getID()))
 					this.transporterMap.put(transporter.getID(), transporter);
 			});
@@ -269,11 +272,14 @@ public class BlockEntityList extends SavedData
 		
 		transportersTag.getAllKeys().stream().forEach(transporterString ->
 		{
-			Transporter transporter = Transporter.deserialize(server, transportersTag.getCompound(transporterString));
+			//StargateJourney.LOGGER.info("Deserializing Transporter " + transporterString);
+			Transporter transporter = Transporter.deserialize(server, transporterString, transportersTag.getCompound(transporterString));
 			
 			if(!this.transporterMap.containsKey(transporter.getID()))
 				this.transporterMap.put(transporter.getID(), transporter);
 		});
+		
+		StargateJourney.LOGGER.info("Finished deserializing Transporters");
 	}
 	
 	//================================================================================================
