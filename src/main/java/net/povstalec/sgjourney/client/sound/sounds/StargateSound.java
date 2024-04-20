@@ -8,13 +8,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public abstract class StargateSound extends AbstractTickableSoundInstance
 {
 	protected AbstractStargateEntity stargate;
 	protected Minecraft minecraft = Minecraft.getInstance();
-	protected double fullDistance;
-	protected double maxDistance;
 	
 	/**
 	 * 
@@ -23,24 +22,15 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 	 * @param fullDistance Distance from which the sound can still be heard at full volume
 	 * @param maxDistance Distance at which the sound can no longer be heard
 	 */
-	protected StargateSound(AbstractStargateEntity stargate, SoundEvent soundEvent, double fullDistance, double maxDistance)
-	{
-		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
-		/*if (soundEvent == SoundInit.EMPTY_SOUND_INSTANCE)
-			this.stop();*/
-		this.stargate = stargate;
-		this.x = stargate.getBlockPos().getX();
-		this.y = stargate.getBlockPos().getY();
-		this.z = stargate.getBlockPos().getZ();
-		this.relative = true;
-		
-		this.fullDistance = fullDistance;
-		this.maxDistance = maxDistance;
-	}
-	
 	protected StargateSound(AbstractStargateEntity stargate, SoundEvent soundEvent)
 	{
-		this(stargate, soundEvent, 32.0, 64.0);
+		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
+		
+		this.stargate = stargate;
+		this.x = stargate.getCenterPos().getX();
+		this.y = stargate.getCenterPos().getY();
+		this.z = stargate.getCenterPos().getZ();
+		this.relative = true;
 	}
 	
 	@Override
@@ -78,10 +68,16 @@ public abstract class StargateSound extends AbstractTickableSoundInstance
 		float localVolume = 0.0F;
 		double distanceFromSource = getDistanceFromSource();
 		
-		if(distanceFromSource <= this.fullDistance)
+		float fullDistance = (float) ClientStargateConfig.stargate_full_sound_distance.get();
+		float maxDistance = (float) ClientStargateConfig.stargate_max_sound_distance.get();
+		
+		if(fullDistance >= maxDistance)
+			maxDistance = fullDistance + 1;
+		
+		if(distanceFromSource <= fullDistance)
 			localVolume = getMaxVolume();
-		else if(distanceFromSource <= this.maxDistance)
-			localVolume = (float) (getMaxVolume() - (distanceFromSource - this.fullDistance) / (this.maxDistance - this.fullDistance));
+		else if(distanceFromSource <= maxDistance)
+			localVolume = (float) (getMaxVolume() - (distanceFromSource - fullDistance) / (maxDistance - fullDistance));
 		else
 			localVolume = getMinVolume();
 		

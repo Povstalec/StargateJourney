@@ -1,5 +1,4 @@
 {
 	"name": "point_of_origin.sgjourney.apophis",
-	"texture": "sgjourney:milky_way/points_of_origin/apophis.png",
-	"generates_randomly": false
+	"texture": "sgjourney:milky_way/points_of_origin/apophis.png"
 }

@@ -1,11 +1,252 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.util.Optional;
+
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Stargate
 {
+	public static final String DIMENSION = "Dimension";
+	public static final String COORDINATES = "Coordinates";
+
+	public static final String HAS_DHD = "HasDHD";
+	public static final String GENERATION = "Generation";
+	public static final String TIMES_OPENED = "TimesOpened";
+	
+	public static final String NETWORK = "Network";
+	
+	private final Address.Immutable address;
+	private final ResourceKey<Level> dimension;
+	private final BlockPos blockPos;
+
+	private boolean hasDHD;
+	private Gen generation;
+	private int timesOpened;
+	
+	//private boolean restrictNetwork;
+	private int network;
+	
+	public Stargate(Address.Immutable address, ResourceKey<Level> dimension, BlockPos blockPos, boolean hasDHD, Gen generation, int timesOpened, int network)
+	{
+		this.address = address;
+		this.dimension = dimension;
+		this.blockPos = blockPos;
+
+		this.hasDHD = hasDHD;
+		this.generation = generation;
+		this.timesOpened = timesOpened;
+		
+		//this.restrictNetwork = stargate.getRestrictNetwork();
+		this.network = network;
+	}
+	
+	public Stargate(AbstractStargateEntity stargate)
+	{
+		this(stargate.get9ChevronAddress().immutable(), stargate.getLevel().dimension(), stargate.getBlockPos(),
+				stargate.hasDHD(), stargate.getGeneration(), stargate.getTimesOpened(), stargate.getNetwork());
+	}
+	
+	public Address.Immutable get9ChevronAddress()
+	{
+		return this.address;
+	}
+	
+	public ResourceKey<Level> getDimension()
+	{
+		return this.dimension;
+	}
+	
+	public BlockPos getBlockPos()
+	{
+		return this.blockPos;
+	}
+	
+	public boolean hasDHD()
+	{
+		return this.hasDHD;
+	}
+	
+	public Gen getGeneration()
+	{
+		return this.generation;
+	}
+	
+	public int getTimesOpened()
+	{
+		return this.timesOpened;
+	}
+	
+	public int getNetwork()
+	{
+		return this.network;
+	}
+	
+	/*public boolean getRestrictNetwork()
+	{
+		return this.restrictNetwork;
+	}*/
+	
+	public Optional<AbstractStargateEntity> getStargateEntity(MinecraftServer server)
+	{
+		ServerLevel level = server.getLevel(dimension);
+		
+		if(level != null && level.getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
+			return Optional.of(stargate);
+		
+		return Optional.empty();
+	}
+	
+	public Stargate.Feedback resetStargate(MinecraftServer server, Stargate.Feedback feedback, boolean updateInterfaces)
+	{
+		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity.isPresent())
+			return stargateEntity.get().resetStargate(feedback, updateInterfaces);
+		
+		return feedback;
+	}
+	
+	public Stargate.Feedback resetStargate(MinecraftServer server, Stargate.Feedback feedback)
+	{
+		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity.isPresent())
+			return stargateEntity.get().resetStargate(feedback);
+		
+		return feedback;
+	}
+	
+	public boolean isConnected(MinecraftServer server)
+	{
+		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity.isPresent())
+			return stargateEntity.get().isConnected();
+		
+		return false;
+	}
+	
+	public boolean isObstructed(MinecraftServer server)
+	{
+		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity.isPresent())
+			return stargateEntity.get().isConnected();
+		
+		return false;
+	}
+	
+	public boolean canExtractEnergy(MinecraftServer server, long energy)
+	{
+		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity.isPresent())
+			return stargateEntity.get().canExtractEnergy(energy);
+		
+		return false;
+	}
+	
+	public void depleteEnergy(MinecraftServer server, long energy, boolean simulate)
+	{
+		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity.isPresent())
+			stargateEntity.get().depleteEnergy(energy, simulate);
+	}
+	
+	
+	
+	public void update(AbstractStargateEntity stargate)
+	{
+		this.hasDHD = stargate.hasDHD();
+		this.generation = stargate.getGeneration();
+		this.timesOpened = stargate.getTimesOpened();
+		this.network = stargate.getNetwork();
+	}
+	
+	
+	
+	@Override
+	public String toString()
+	{
+		return "[ " + this.address.toString() + " | DHD: " + this.hasDHD + " | Generation: " + this.generation + " | Times Opened: " + this.timesOpened + " ]";
+	}
+	
+	public boolean checkStargateEntity(MinecraftServer server)
+	{
+		Optional<AbstractStargateEntity> stargateOptional = getStargateEntity(server);
+		
+		if(stargateOptional.isPresent())
+		{
+			AbstractStargateEntity stargate = stargateOptional.get();
+			
+			if(stargate == null)
+				StargateJourney.LOGGER.error("Stargate does not exist");
+			else
+			{
+				stargate.checkStargate();
+				return true;
+			}
+		}
+		else
+			StargateJourney.LOGGER.error("Stargate not found");
+		
+		return false;
+	}
+	
+	
+	
+	public CompoundTag serialize()
+	{
+		CompoundTag stargateTag = new CompoundTag();
+		ResourceKey<Level> level = this.getDimension();
+		BlockPos pos = this.getBlockPos();
+		
+		stargateTag.putString(DIMENSION, level.location().toString());
+		stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+		
+		stargateTag.putBoolean(HAS_DHD, hasDHD);
+		stargateTag.putInt(GENERATION, generation.getGen());
+		stargateTag.putInt(TIMES_OPENED, timesOpened);
+		stargateTag.putInt(NETWORK, network);
+		
+		return stargateTag;
+	}
+	
+	public static Stargate deserialize(MinecraftServer server, Address.Immutable address, CompoundTag tag)
+	{
+		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
+		
+		if(!tag.contains(HAS_DHD) || !tag.contains(GENERATION) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORK))
+		{
+			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
+				return new Stargate(stargate);
+			else
+				return null;
+		}
+		
+		boolean hasDHD = tag.getBoolean(HAS_DHD);
+		Gen generation = Gen.intToGen(tag.getInt(GENERATION));
+		int timesOpened = tag.getInt(TIMES_OPENED);
+		int network = tag.getInt(NETWORK);
+		
+		return new Stargate(address, dimension, blockPos, hasDHD, generation, timesOpened, network);
+	}
+	
+	
+	
 	public enum Gen
 	{
 		NONE(0),
@@ -23,6 +264,26 @@ public class Stargate
 		public int getGen()
 		{
 			return this.gen;
+		}
+		
+		public boolean isNewer(Gen generation)
+		{
+			return this.gen > generation.gen;
+		}
+		
+		public static Gen intToGen(int gen)
+		{
+			switch(gen)
+			{
+			case 1:
+				return GEN_1;
+			case 2:
+				return GEN_2;
+			case 3:
+				return GEN_3;
+			default:
+				return NONE;
+			}
 		}
 	}
 	
@@ -136,8 +397,6 @@ public class Stargate
 		COULD_NOT_REACH_TARGET_STARGATE(-25, FeedbackType.MAJOR_ERROR, "could_not_reach_target_stargate"),
 		INTERRUPTED_BY_INCOMING_CONNECTION(-26, FeedbackType.ERROR, "interrupted_by_incoming_connection"),
 		
-		// Universe
-		
 		// Milky Way
 		CHEVRON_RAISED(11, FeedbackType.INFO, "chevron_opened"),
 		ROTATING(12, FeedbackType.INFO, "rotating"),
@@ -148,8 +407,6 @@ public class Stargate
 		CHEVRON_ALREADY_CLOSED(-30, FeedbackType.ERROR, "chevron_already_closed"),
 		CHEVRON_NOT_RAISED(-31, FeedbackType.ERROR, "chevron_not_raised"),
 		CANNOT_ENCODE_POINT_OF_ORIGIN(-32, FeedbackType.ERROR, "cannot_encode_point_of_origin");
-		
-		// Pegasus
 		
 		private int code;
 		private final FeedbackType type;

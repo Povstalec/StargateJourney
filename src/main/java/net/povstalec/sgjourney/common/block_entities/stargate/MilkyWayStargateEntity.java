@@ -14,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
@@ -31,8 +30,15 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class MilkyWayStargateEntity extends AbstractStargateEntity
 {
-	public static final int MAX_ROTATION = 312;
-	//private static final double ANGLE = (double) MAX_ROTATION / 39;
+	public static final int MAX_ROTATION = 156;
+	public static final int ROTATION_INCREASE = 1;
+	
+	public static final int SYMBOL_NUMBER = 39;
+	public static final int RING_SEGMENTS = 3;
+	public static final int SYMBOLS_PER_SEGMENT = SYMBOL_NUMBER / RING_SEGMENTS;
+
+	public static final int STEPS_PER_SYMBOL = MAX_ROTATION / SYMBOL_NUMBER;
+	public static final int SYMBOL_ADDITION = STEPS_PER_SYMBOL / 2;
 	
 	private int rotation = 0;
 	public int oldRotation = 0;
@@ -68,17 +74,11 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 
-        if(!isPointOfOriginValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
-        	setPointOfOrigin(this.getLevel());
-        }
+        if(!isPointOfOriginValid(this.getLevel()))
+        	setPointOfOriginFromDimension(this.getLevel().dimension());
 
-        if(!areSymbolsValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
-        	setSymbols(this.getLevel());
-        }
+        if(!areSymbolsValid(this.getLevel()))
+        	setSymbolsFromDimension(this.getLevel().dimension());
     }
 
 	@Override
@@ -217,7 +217,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 				if(!isConnected())
 					openChevron();
 				else
-					disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN);
+					disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN, true);
 			}
 		}
 		else if(this.signalStrength == 0 && this.previousSignalStrength == 15)
@@ -334,20 +334,23 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public int getCurrentSymbol()
 	{
-		/*int currentSymbol;
-		double position = this.rotation / ANGLE;
-		currentSymbol = (int) position;
-		if(position >= currentSymbol + 0.5)
-			currentSymbol++;
+		int symbolPosition = this.rotation + SYMBOL_ADDITION;
 		
-		if(currentSymbol > 38)
-			currentSymbol = currentSymbol - 39;*/
-		
-		int symbolPosition = this.rotation + 4;
-		
-		int currentSymbol = (symbolPosition / 8) % 39;
+		int currentSymbol = (symbolPosition / STEPS_PER_SYMBOL) % SYMBOL_NUMBER;
 		
 		return currentSymbol;
+	}
+	
+	@Override
+	public int getRedstoneSymbolOutput()
+	{
+		return (getCurrentSymbol() % SYMBOLS_PER_SEGMENT) + 1;
+	}
+
+	@Override
+	public int getRedstoneSegmentOutput()
+	{
+		return (getCurrentSymbol() / SYMBOLS_PER_SEGMENT + 1) * 5;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
@@ -390,9 +393,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		this.oldRotation = this.rotation;
 		
 		if(clockwise)
-			this.rotation -= 2;
+			this.rotation -= ROTATION_INCREASE;
 		else
-			this.rotation += 2;
+			this.rotation += ROTATION_INCREASE;
 		
 		if(this.rotation >= MAX_ROTATION)
 		{
@@ -409,14 +412,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
-		/*double position = this.rotation / ANGLE;
-		double lowerBound = (double) (desiredSymbol - 0.12);
-		double upperBound = (double) (desiredSymbol + 0.12);
-		
-		if(position > lowerBound && position < upperBound)
-			return true;*/
-		
-		if(desiredSymbol * 8 == this.rotation)
+		if(desiredSymbol * STEPS_PER_SYMBOL == this.rotation)
 			return true;
 		
 		return false;

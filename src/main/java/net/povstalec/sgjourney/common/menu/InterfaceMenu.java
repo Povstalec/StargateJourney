@@ -37,7 +37,7 @@ public class InterfaceMenu extends AbstractContainerMenu
     
     public long getMaxEnergy()
     {
-    	return this.interfaceEntity.getCapacity();
+    	return this.interfaceEntity.getEnergyCapacity();
     }
 	
 	@Override

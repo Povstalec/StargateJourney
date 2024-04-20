@@ -1,0 +1,8 @@
+{
+	"name": "point_of_origin.sgjourney.aurum",
+	"texture": "sgjourney:milky_way/points_of_origin/submitted/aurum.png",
+	"generated_galaxies":
+	[
+		"sgjourney:milky_way"
+	]
+}

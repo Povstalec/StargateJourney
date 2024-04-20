@@ -24,6 +24,7 @@ public class StargateNetworkSettings extends SavedData
 	//******************************************Versions******************************************
 	//============================================================================================
 	
+	//TODO Change these too
 	public void updateSettings()
 	{
 		CompoundTag network = stargateNetworkSettings.copy();
@@ -56,17 +57,26 @@ public class StargateNetworkSettings extends SavedData
 	
 	public boolean useDatapackAddresses()
 	{
-		return this.stargateNetworkSettings.copy().getBoolean(USE_DATAPACK_ADDRESSES);
+		if(this.stargateNetworkSettings.contains(USE_DATAPACK_ADDRESSES))
+			return this.stargateNetworkSettings.getBoolean(USE_DATAPACK_ADDRESSES);
+		
+		return CommonStargateNetworkConfig.use_datapack_addresses.get();
 	}
 	
 	public boolean generateRandomSolarSystems()
 	{
-		return this.stargateNetworkSettings.copy().getBoolean(GENERATE_RANDOM_SOLAR_SYSTEMS);
+		if(this.stargateNetworkSettings.contains(GENERATE_RANDOM_SOLAR_SYSTEMS))
+			return this.stargateNetworkSettings.getBoolean(GENERATE_RANDOM_SOLAR_SYSTEMS);
+		
+		return CommonStargateNetworkConfig.generate_random_solar_systems.get();
 	}
 	
 	public boolean randomAddressFromSeed()
 	{
-		return this.stargateNetworkSettings.copy().getBoolean(RANDOM_ADDRESS_FROM_SEED);
+		if(this.stargateNetworkSettings.contains(RANDOM_ADDRESS_FROM_SEED))
+			return this.stargateNetworkSettings.getBoolean(RANDOM_ADDRESS_FROM_SEED);
+		
+		return CommonStargateNetworkConfig.random_addresses_from_seed.get();
 	}
 	
 	

@@ -377,7 +377,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 			AbstractStargateEntity stargate = this.stargate.get();
 			
 			if(symbol == 0)
-				level.playSound((Player)null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.25F, 1F);
+				level.playSound((Player)null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
 			else
 				level.playSound((Player)null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.25F, 1F);
 			

@@ -1,5 +1,8 @@
 {
 	"name": "point_of_origin.sgjourney.coatepec",
 	"texture": "sgjourney:milky_way/points_of_origin/coatepec.png",
-	"generates_randomly": true
+	"generated_galaxies":
+	[
+		"sgjourney:milky_way"
+	]
 }

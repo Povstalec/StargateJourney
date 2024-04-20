@@ -57,35 +57,36 @@ import net.povstalec.sgjourney.common.blocks.tech.HeavyNaquadahLiquidizerBlock;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahLiquidizerBlock;
 import net.povstalec.sgjourney.common.items.blocks.CartoucheBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.DHDItem;
-import net.povstalec.sgjourney.common.items.blocks.SGJourneyBlockItem;
+import net.povstalec.sgjourney.common.items.blocks.StargateBlockItem;
+import net.povstalec.sgjourney.common.items.blocks.TransporterBlockItem;
 
 public class BlockInit
 {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, StargateJourney.MODID);
 	
 	//Block Tab
-	public static final RegistryObject<UniverseStargateBlock> UNIVERSE_STARGATE = registerEntityBlock("universe_stargate", 
+	public static final RegistryObject<UniverseStargateBlock> UNIVERSE_STARGATE = registerStargateBlock("universe_stargate", 
 			() -> new UniverseStargateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	public static final RegistryObject<UniverseStargateRingBlock> UNIVERSE_RING = BLOCKS.register("universe_ring", 
 			() -> new UniverseStargateRingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	
-	public static final RegistryObject<MilkyWayStargateBlock> MILKY_WAY_STARGATE = registerEntityBlock("milky_way_stargate", 
+	public static final RegistryObject<MilkyWayStargateBlock> MILKY_WAY_STARGATE = registerStargateBlock("milky_way_stargate", 
 			() -> new MilkyWayStargateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	public static final RegistryObject<MilkyWayStargateRingBlock> MILKY_WAY_RING = BLOCKS.register("milky_way_ring", 
 			() -> new MilkyWayStargateRingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	
-	public static final RegistryObject<PegasusStargateBlock> PEGASUS_STARGATE = registerEntityBlock("pegasus_stargate", 
+	public static final RegistryObject<PegasusStargateBlock> PEGASUS_STARGATE = registerStargateBlock("pegasus_stargate", 
 			() -> new PegasusStargateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	public static final RegistryObject<PegasusStargateRingBlock> PEGASUS_RING = BLOCKS.register("pegasus_ring", 
 			() -> new PegasusStargateRingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	
-	public static final RegistryObject<ClassicStargateBlock> CLASSIC_STARGATE = registerEntityBlock("classic_stargate", 
+	public static final RegistryObject<ClassicStargateBlock> CLASSIC_STARGATE = registerStargateBlock("classic_stargate", 
 			() -> new ClassicStargateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
 	public static final RegistryObject<ClassicStargateRingBlock> CLASSIC_RING = BLOCKS.register("classic_ring", 
@@ -98,7 +99,7 @@ public class BlockInit
 	public static final RegistryObject<Block> CLASSIC_STARGATE_RING_BLOCK = registerBlock("classic_stargate_ring_block", 
 			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
 	
-	public static final RegistryObject<TollanStargateBlock> TOLLAN_STARGATE = registerEntityBlock("tollan_stargate",
+	public static final RegistryObject<TollanStargateBlock> TOLLAN_STARGATE = registerStargateBlock("tollan_stargate",
 			() -> new TollanStargateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
 	public static final RegistryObject<TollanStargateRingBlock> TOLLAN_RING = BLOCKS.register("tollan_ring",
@@ -122,7 +123,7 @@ public class BlockInit
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
 					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
 	
-	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerEntityBlock("transport_rings", 
+	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerTransporterBlock("transport_rings", 
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	public static final RegistryObject<RingPanelBlock> RING_PANEL = registerBlock("ring_panel", 
@@ -246,11 +247,20 @@ public class BlockInit
 		return toReturn;
 	}
 	
-	private static <T extends Block>RegistryObject<T> registerEntityBlock(String name, Supplier<T> block, Rarity rarity)
+	private static <T extends Block>RegistryObject<T> registerStargateBlock(String name, Supplier<T> block, Rarity rarity)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
 
-		registerSGJourneyBlockItem(name, toReturn, rarity, 1);
+		registerStargateBlockItem(name, toReturn, rarity, 1);
+		
+		return toReturn;
+	}
+	
+	private static <T extends Block>RegistryObject<T> registerTransporterBlock(String name, Supplier<T> block, Rarity rarity)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+
+		registerTransporterBlockItem(name, toReturn, rarity, 1);
 		
 		return toReturn;
 	}
@@ -273,15 +283,6 @@ public class BlockInit
 		return toReturn;
 	}
 	
-	private static <T extends Block>RegistryObject<T> registerEntityBlock(String name, Supplier<T> block)
-	{
-		RegistryObject<T> toReturn = BLOCKS.register(name, block);
-
-		registerSGJourneyBlockItem(name, toReturn, 1);
-		
-		return toReturn;
-	}
-	
 	private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block)
 	{
 		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
@@ -297,14 +298,14 @@ public class BlockInit
 		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo)));
 	}
 	
-	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
+	private static <T extends Block>RegistryObject<Item> registerStargateBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant()));
+		return ItemInit.ITEMS.register(name, () -> new StargateBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant()));
 	}
 	
-	private static <T extends Block>RegistryObject<Item> registerSGJourneyBlockItem(String name, RegistryObject<T> block, int stacksTo)
+	private static <T extends Block>RegistryObject<Item> registerTransporterBlockItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
-		return ItemInit.ITEMS.register(name, () -> new SGJourneyBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+		return ItemInit.ITEMS.register(name, () -> new TransporterBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo).fireResistant()));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerDHDItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)

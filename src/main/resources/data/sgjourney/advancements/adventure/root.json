@@ -1,0 +1,42 @@
+{
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:golden_idol"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.adventure.root.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.adventure.root.description"
+		},
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"get_golden_idol": 
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions": 
+			{
+				"items":
+				[
+					{"items":["sgjourney:golden_idol"]}
+        		]
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"get_golden_idol"
+		]
+	]
+}

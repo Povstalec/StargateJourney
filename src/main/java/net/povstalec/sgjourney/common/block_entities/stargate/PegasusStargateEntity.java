@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -45,17 +44,11 @@ public class PegasusStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 
-        if(!isPointOfOriginValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("PoO is not valid " + this.pointOfOrigin);
-        	setPointOfOrigin(this.getLevel());
-        }
+        if(!isPointOfOriginValid(this.getLevel()))
+        	setPointOfOriginFromDimension(this.getLevel().dimension());
 
-        if(!areSymbolsValid(this.level))
-        {
-        	StargateJourney.LOGGER.info("Symbols are not valid " + this.symbols);
-        	setSymbols(this.getLevel());
-        }
+        if(!areSymbolsValid(this.getLevel()))
+        	setSymbolsFromDimension(this.getLevel().dimension());
     }
 	
 	@Override
@@ -99,7 +92,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		if(hasDHD())
 			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
-					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin());
+					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || this.isConnected());
 	}
 	
 	public void dynamicSymbols(boolean dynamicSymbols)
@@ -178,7 +171,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 			else
 				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
 		}
@@ -228,6 +221,11 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			return 0;
 		
 		return 4 * getEngagedChevrons()[chevron];
+	}
+	
+	public int getCurrentSymbol()
+	{
+		return this.currentSymbol;
 	}
 	
 	private void animateSpin()
@@ -290,14 +288,14 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		else if(currentSymbol < 0)
 			currentSymbol = 35;
 	}
-	
+
 	@Override
-	public Stargate.Feedback resetStargate(Stargate.Feedback feedback)
+	protected void resetAddress(boolean updateInterfaces)
 	{
 		currentSymbol = 0;
 		symbolBuffer = 0;
 		addressBuffer.reset();
-		return super.resetStargate(feedback);
+		super.resetAddress(updateInterfaces);
 	}
 
 	@Override

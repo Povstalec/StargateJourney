@@ -98,7 +98,7 @@ public class StargatePeripheral extends InterfacePeripheral
 		{
 			boolean wasConnected = stargate.isConnected();
 			
-			stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+			stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 
 			boolean isConnected = stargate.isConnected();
 					

@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.stargate.Connection;
+import net.povstalec.sgjourney.common.stargate.StargateConnection;
 
 public class WormholeModel
 {
@@ -29,9 +29,6 @@ public class WormholeModel
 	
 	//protected Stargate.RGBA rgba;
 	protected float maxDefaultDistortion;
-	
-	protected static final int FRAMES = 32;
-	protected static final float SCALE = 1F / FRAMES;
 	
 	//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png")
 	private final ResourceLocation eventHorizonTexture;
@@ -51,7 +48,6 @@ public class WormholeModel
 		this.eventHorizonTexture = eventHorizonTexture;
 		this.shinyEventHorizonTexture = shinyEventHorizonTexture;
 		this.maxDefaultDistortion = maxDefaultDistortion;
-		//this.rgba = new Stargate.RGBA(red, green, blue, alpha);
 	}
 	
 	protected float getMaxDistortion()
@@ -70,18 +66,20 @@ public class WormholeModel
 		return eventHorizonTexture;
 	}
 	
-	public void renderEventHorizon(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int combinedLight, int combinedOverlay)
+	public void renderEventHorizon(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, int combinedLight, int combinedOverlay, boolean hasVortex)
 	{
-		this.renderKawoosh(stack, source, texture, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
-		this.renderPuddle(stack, source, texture, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
-		if(ClientStargateConfig.enable_vortex.get())
-			this.renderVortex(stack, source, texture, stargate.getTickCount(), stargate.getKawooshTickCount());
+		float scale = 1F / frames;
+		
+		this.renderKawoosh(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
+		this.renderPuddle(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
+		if(hasVortex)
+			this.renderVortex(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount());
 	}
 	
-	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int ticks, int kawooshProgress, boolean isShieldOn)
+	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, boolean isShieldOn)
 	{
-		float yOffset = ticks * SCALE;
-		float textureTickOffset = (ticks % FRAMES) * SCALE;
+		float yOffset = ticks * scale;
+		float textureTickOffset = (ticks % frames) * scale;
 		
 		if(kawooshProgress <= 0)
 			return;
@@ -157,12 +155,12 @@ public class WormholeModel
 		}
 	}
 	
-	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int ticks, int kawooshProgress, boolean isShieldOn)
+	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, boolean isShieldOn)
 	{
-		float yOffset = ticks * SCALE;
-		float textureTickOffset = (ticks % FRAMES) * SCALE;
+		float yOffset = ticks * scale;
+		float textureTickOffset = (ticks % frames) * scale;
 		
-		if(kawooshProgress <= 0 || kawooshProgress >= Connection.KAWOOSH_TICKS)
+		if(kawooshProgress <= 0 || kawooshProgress >= StargateConnection.KAWOOSH_TICKS)
 			return;
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -204,12 +202,12 @@ public class WormholeModel
 		}
 	}
 	
-	protected void renderVortex(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int ticks, int kawooshProgress)
+	protected void renderVortex(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress)
 	{
-		float yOffset = ticks * SCALE;
-		float textureTickOffset = (ticks % FRAMES) * SCALE;
+		float yOffset = ticks * scale;
+		float textureTickOffset = (ticks % frames) * scale;
 		
-		if(kawooshProgress <= Connection.KAWOOSH_TICKS)
+		if(kawooshProgress <= StargateConnection.KAWOOSH_TICKS)
 			return;
 		
 		Matrix4f matrix4 = stack.last().pose();

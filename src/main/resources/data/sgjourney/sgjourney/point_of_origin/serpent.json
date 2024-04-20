@@ -1,5 +1,4 @@
 {
 	"name": "point_of_origin.sgjourney.serpent",
-	"texture": "sgjourney:milky_way/points_of_origin/serpent.png",
-	"generates_randomly": true
+	"texture": "sgjourney:milky_way/points_of_origin/serpent.png"
 }

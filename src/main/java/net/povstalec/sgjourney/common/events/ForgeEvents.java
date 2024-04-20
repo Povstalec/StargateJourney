@@ -49,6 +49,7 @@ import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
@@ -64,6 +65,9 @@ public class ForgeEvents
 		MinecraftServer server = event.getServer();
 		
 		StargateNetwork.get(server).updateNetwork(server);
+		StargateNetwork.get(server).addStargates(server);
+
+		TransporterNetwork.get(server).updateNetwork(server);
 	}
 	
 	@SubscribeEvent
@@ -131,15 +135,10 @@ public class ForgeEvents
 	{
 		Player player = event.getEntity();
 		
-		if(player.getName().getString().equals("Dev") || player.getName().getString().equals("Woldericz_junior"))
-			AncientGene.addAncient(player);
-		else
-		{
-			long seed = ((ServerLevel) player.level()).getSeed();
-			seed += player.getUUID().hashCode();
-			
-			AncientGene.inheritGene(seed, player, CommonGeneticConfig.player_ata_gene_inheritance_chance.get());
-		}
+		long seed = ((ServerLevel) player.level()).getSeed();
+		seed += player.getUUID().hashCode();
+		
+		AncientGene.inheritGene(seed, player, CommonGeneticConfig.player_ata_gene_inheritance_chance.get());
 	}
 	
 	@SubscribeEvent
