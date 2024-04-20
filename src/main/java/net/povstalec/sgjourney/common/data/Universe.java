@@ -294,7 +294,10 @@ public class Universe extends SavedData
 			Address.Immutable address = generateAddress(galaxyID, defaultGalaxy.getType().getSize(), systemValue);
 			
 			if(galaxy != null)
+			{
 				galaxy.addSolarSystem(address, solarSystem);
+				solarSystem.addToGalaxy(galaxy, address);
+			}
 		}
 	}
 	
