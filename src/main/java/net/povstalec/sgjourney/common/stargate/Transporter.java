@@ -19,11 +19,16 @@ public class Transporter
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
 	
+	public Transporter(UUID id, ResourceKey<Level> dimension, BlockPos blockPos)
+	{
+		this.id = id;
+		this.dimension = dimension;
+		this.blockPos = blockPos;
+	}
+	
 	public Transporter(AbstractTransporterEntity transporterEntity)
 	{
-		this.id = UUID.fromString(transporterEntity.getID());
-		this.dimension = transporterEntity.getLevel().dimension();
-		this.blockPos = transporterEntity.getBlockPos();
+		this(UUID.fromString(transporterEntity.getID()), transporterEntity.getLevel().dimension(), transporterEntity.getBlockPos());
 	}
 	
 	public UUID getID()
@@ -63,14 +68,27 @@ public class Transporter
 		return transporterTag;
 	}
 	
-	public static Transporter deserialize(MinecraftServer server, CompoundTag tag)
+	public static Transporter deserialize(MinecraftServer server, String idString, CompoundTag tag)
 	{
+		UUID id;
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractTransporterEntity transporter)
-			return new Transporter(transporter);
+		try
+		{
+			id = UUID.fromString(idString);
+		}
+		catch(IllegalArgumentException e)
+		{
+			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractTransporterEntity transporter)
+			{
+				transporter.setID(transporter.generateID());
+				return new Transporter(transporter);
+			}
+			else
+				return null;
+		}
 		
-		return null;
+		return new Transporter(id, dimension, blockPos);
 	}
 }
