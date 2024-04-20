@@ -19,32 +19,42 @@ public class Stargate
 {
 	public static final String DIMENSION = "Dimension";
 	public static final String COORDINATES = "Coordinates";
+
+	public static final String HAS_DHD = "HasDHD";
+	public static final String GENERATION = "Generation";
+	public static final String TIMES_OPENED = "TimesOpened";
+	
+	public static final String NETWORK = "Network";
 	
 	private final Address.Immutable address;
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
 
 	private boolean hasDHD;
-	private boolean hasCFD;
-	private int generation;
+	private Gen generation;
 	private int timesOpened;
 	
 	//private boolean restrictNetwork;
 	private int network;
 	
-	public Stargate(AbstractStargateEntity stargate)
+	public Stargate(Address.Immutable address, ResourceKey<Level> dimension, BlockPos blockPos, boolean hasDHD, Gen generation, int timesOpened, int network)
 	{
-		this.address = stargate.get9ChevronAddress().immutable();
-		this.dimension = stargate.getLevel().dimension();
-		this.blockPos = stargate.getBlockPos();
+		this.address = address;
+		this.dimension = dimension;
+		this.blockPos = blockPos;
 
-		this.hasDHD = stargate.hasDHD();
-		this.hasCFD = stargate.getCFD();
-		this.generation = stargate.getGeneration().getGen();
-		this.timesOpened = stargate.getTimesOpened();
+		this.hasDHD = hasDHD;
+		this.generation = generation;
+		this.timesOpened = timesOpened;
 		
 		//this.restrictNetwork = stargate.getRestrictNetwork();
-		this.network = stargate.getNetwork();
+		this.network = network;
+	}
+	
+	public Stargate(AbstractStargateEntity stargate)
+	{
+		this(stargate.get9ChevronAddress().immutable(), stargate.getLevel().dimension(), stargate.getBlockPos(),
+				stargate.hasDHD(), stargate.getGeneration(), stargate.getTimesOpened(), stargate.getNetwork());
 	}
 	
 	public Address.Immutable get9ChevronAddress()
@@ -66,12 +76,8 @@ public class Stargate
 	{
 		return this.hasDHD;
 	}
-
-	public boolean hasCFD(){
-		return this.hasCFD;
-	}
 	
-	public int getGeneration()
+	public Gen getGeneration()
 	{
 		return this.generation;
 	}
@@ -164,8 +170,9 @@ public class Stargate
 	public void update(AbstractStargateEntity stargate)
 	{
 		this.hasDHD = stargate.hasDHD();
-		this.generation = stargate.getGeneration().getGen();
+		this.generation = stargate.getGeneration();
 		this.timesOpened = stargate.getTimesOpened();
+		this.network = stargate.getNetwork();
 	}
 	
 	
@@ -209,18 +216,33 @@ public class Stargate
 		stargateTag.putString(DIMENSION, level.location().toString());
 		stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
 		
+		stargateTag.putBoolean(HAS_DHD, hasDHD);
+		stargateTag.putInt(GENERATION, generation.getGen());
+		stargateTag.putInt(TIMES_OPENED, timesOpened);
+		stargateTag.putInt(NETWORK, network);
+		
 		return stargateTag;
 	}
 	
-	public static Stargate deserialize(MinecraftServer server, CompoundTag tag)
+	public static Stargate deserialize(MinecraftServer server, Address.Immutable address, CompoundTag tag)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
-			return new Stargate(stargate);
+		if(!tag.contains(HAS_DHD) || !tag.contains(GENERATION) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORK))
+		{
+			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
+				return new Stargate(stargate);
+			else
+				return null;
+		}
 		
-		return null;
+		boolean hasDHD = tag.getBoolean(HAS_DHD);
+		Gen generation = Gen.intToGen(tag.getInt(GENERATION));
+		int timesOpened = tag.getInt(TIMES_OPENED);
+		int network = tag.getInt(NETWORK);
+		
+		return new Stargate(address, dimension, blockPos, hasDHD, generation, timesOpened, network);
 	}
 	
 	
@@ -242,6 +264,26 @@ public class Stargate
 		public int getGen()
 		{
 			return this.gen;
+		}
+		
+		public boolean isNewer(Gen generation)
+		{
+			return this.gen > generation.gen;
+		}
+		
+		public static Gen intToGen(int gen)
+		{
+			switch(gen)
+			{
+			case 1:
+				return GEN_1;
+			case 2:
+				return GEN_2;
+			case 3:
+				return GEN_3;
+			default:
+				return NONE;
+			}
 		}
 	}
 	

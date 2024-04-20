@@ -302,7 +302,7 @@ public class SolarSystem
 					else if(!DHD_PREFERENCE || Boolean.compare(addedStargate.hasDHD(), existingStargate.hasDHD()) == 0)
 					{
 						// If the gate is of a newer generation, end right there
-						if(addedStargate.getGeneration() > existingStargate.getGeneration())
+						if(addedStargate.getGeneration().isNewer(existingStargate.getGeneration()))
 							break;
 						// If the gate's generation is the same as the other one's, continue choosing
 						else if(addedStargate.getGeneration() == existingStargate.getGeneration())

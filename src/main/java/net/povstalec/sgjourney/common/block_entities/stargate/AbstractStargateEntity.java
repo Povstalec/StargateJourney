@@ -816,6 +816,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public void setNetwork(int network)
 	{
 		this.network = network;
+		this.updateStargate(false);
 	}
 	
 	public boolean getRestrictNetwork()

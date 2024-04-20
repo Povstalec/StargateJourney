@@ -107,17 +107,12 @@ public final class TransporterNetwork extends SavedData
 			
 			if(blockentity instanceof AbstractTransporterEntity transporterEntity)
 			{
-				System.out.println(transporterEntity.getID() + " == " + transporter.getID().toString());
-				
 				if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID().toString()))
 				{
-
-					System.out.println("Same");
 					addTransporterToDimension(transporter.getDimension(), transporter);
 				}
 				else
 				{
-					System.out.println("Not same");
 					BlockEntityList.get(server).removeTransporter(transporter.getID());
 					addTransporter(transporterEntity);
 				}
@@ -147,20 +142,20 @@ public final class TransporterNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public final void removeTransporter(Level level, String id)
+	public final void removeTransporter(Level level, UUID id)
 	{
 		Optional<Transporter> transporter = getTransporter(id);
 		
 		if(transporter.isPresent())
 			removeTransporterFromDimension(level.dimension(), transporter.get());
 
-		BlockEntityList.get(level).removeTransporter(UUID.fromString(id));
+		BlockEntityList.get(level).removeTransporter(id);
 		
 		StargateJourney.LOGGER.info("Removed " + id.toString() + " from Transporter Network");
 		setDirty();
 	}
 	
-	public final Optional<Transporter> getTransporter(String id)
+	public final Optional<Transporter> getTransporter(UUID id)
 	{
 		Transporter transporter = BlockEntityList.get(server).getTransporters().get(id);
 		
