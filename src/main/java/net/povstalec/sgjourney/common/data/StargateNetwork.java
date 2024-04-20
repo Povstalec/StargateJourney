@@ -314,6 +314,9 @@ public final class StargateNetwork extends SavedData
 					Random random = new Random();
 					Optional<Stargate> reroute_gate = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension()).get().getRandomStargate(random.nextLong());
 					if (reroute_gate.isPresent()) {
+						while(reroute_gate.get().getStargateEntity(server).get().getCFD()){
+							reroute_gate = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension()).get().getRandomStargate(random.nextLong());
+						}
 						incomingStargate = reroute_gate.get().getStargateEntity(server);
 					}
 				} else incomingStargate = StargateNetwork.get(server).getStargate(new Address.Immutable(incomingStargate.get().getCFDTarget())).get().getStargateEntity(server);
