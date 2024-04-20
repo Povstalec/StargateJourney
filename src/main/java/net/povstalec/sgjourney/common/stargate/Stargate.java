@@ -25,6 +25,7 @@ public class Stargate
 	private final BlockPos blockPos;
 
 	private boolean hasDHD;
+	private boolean hasCFD;
 	private int generation;
 	private int timesOpened;
 	
@@ -38,6 +39,7 @@ public class Stargate
 		this.blockPos = stargate.getBlockPos();
 
 		this.hasDHD = stargate.hasDHD();
+		this.hasCFD = stargate.getCFD();
 		this.generation = stargate.getGeneration().getGen();
 		this.timesOpened = stargate.getTimesOpened();
 		
@@ -63,6 +65,10 @@ public class Stargate
 	public boolean hasDHD()
 	{
 		return this.hasDHD;
+	}
+
+	public boolean hasCFD(){
+		return this.hasCFD;
 	}
 	
 	public int getGeneration()
