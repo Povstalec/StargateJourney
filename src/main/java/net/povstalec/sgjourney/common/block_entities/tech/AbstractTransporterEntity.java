@@ -98,7 +98,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 	
 	public void removeTransporterFromNetwork()
 	{
-		TransporterNetwork.get(level).removeTransporter(level, this.id);
+		TransporterNetwork.get(level).removeTransporter(level, UUID.fromString(this.id));
 	}
 	
 	@Override
