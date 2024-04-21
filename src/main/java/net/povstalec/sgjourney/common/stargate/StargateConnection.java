@@ -22,7 +22,7 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
-public class StargateConnection
+public final class StargateConnection
 {
 	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
 	private static final String EVENT_INCOMING_WORMHOLE = "stargate_incoming_wormhole";
@@ -261,7 +261,7 @@ public class StargateConnection
 		BlockPos stargatePos = stargate.getBlockPos();
 		Level stargateLevel = stargate.getLevel();
 		
-		if(stargateLevel.getBlockEntity(stargatePos) instanceof AbstractStargateEntity targetStargate)
+		if(stargateLevel.getBlockEntity(stargatePos) instanceof AbstractStargateEntity)
 		{
 			if(stargate.isConnected())
 				return true;
@@ -427,6 +427,14 @@ public class StargateConnection
 			this.timeSinceLastTraveler = 0;
 		if(wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
 			this.used = true;
+	}
+	
+	public void sendStargateMessage(AbstractStargateEntity sendingStargate, String message)
+	{
+		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
+			this.dialedStargate.receiveStargateMessage(message);
+		else
+			this.dialingStargate.receiveStargateMessage(message);
 	}
 	
 	//============================================================================================

@@ -104,7 +104,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		return Optional.empty();
 	}
 	
-	protected ResourceLocation getPointOfOriginTexture(AbstractStargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	protected Optional<PointOfOrigin> getPointOfOrigin(AbstractStargateEntity stargate, Optional<StargateVariant> stargateVariant)
 	{
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
@@ -112,19 +112,24 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		
 		if(stargateVariant.isPresent() && stargateVariant.get().getPointOfOrigin().isPresent()
 				&& pointOfOriginRegistry.containsKey(stargateVariant.get().getPointOfOrigin().get()))
-			return pointOfOriginRegistry.get(stargateVariant.get().getPointOfOrigin().get()).texture();
+			return Optional.of(pointOfOriginRegistry.get(stargateVariant.get().getPointOfOrigin().get()));
 		else
 		{
 			String pointOfOrigin = stargate.getPointOfOrigin();
 			
 			if(isLocationValid(pointOfOrigin) && pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin)))
-				return pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).texture();
-			
-			else if(pointOfOrigin.equals(EMPTY))
-				return EMPTY_LOCATION;
+				return Optional.of(pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)));
 		}
 		
-		return ERROR_LOCATION;
+		return Optional.empty();
+	}
+	
+	protected ResourceLocation getPointOfOriginTexture(Optional<PointOfOrigin> pointOfOrigin)
+	{
+		if(pointOfOrigin.isPresent())
+			return pointOfOrigin.get().texture();
+		
+		return EMPTY_LOCATION;
 	}
 	
 	protected Optional<Symbols> getSymbols(AbstractStargateEntity stargate, Optional<StargateVariant> stargateVariant)

@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
@@ -130,31 +131,36 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	{
 		int currentSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
 		
-		// Point of Origin
-		if(stargate.isDialingOut() && stargate.isConnected() || stargate.isConnected() && stargate.getKawooshTickCount() > 0)
+		Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
+		
+		if(pointOfOrigin.isPresent())
 		{
-			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(stargate, stargateVariant)));
-			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, true));
-		}
-		else if(stargate.addressBuffer.getLength() > 0 && !stargate.isConnected() && currentSymbol == 0)
-		{
-			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(stargate, stargateVariant)));
+			// Point of Origin
+			if(stargate.isDialingOut() && stargate.isConnected() || stargate.isConnected() && stargate.getKawooshTickCount() > 0)
+			{
+				consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
+				
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, true));
+			}
+			else if(stargate.addressBuffer.getLength() > 0 && !stargate.isConnected() && currentSymbol == 0)
+			{
+				consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
 
-			renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0.5F, 1, rotation);
-		}
-		else if(!stargate.isConnected() && stargate.addressBuffer.getLength() == 0)
-		{
-			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(stargate, stargateVariant)));
-			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, false));
+				renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0.5F, 1, rotation);
+			}
+			else if(!stargate.isConnected() && stargate.addressBuffer.getLength() == 0)
+			{
+				consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
+				
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, false));
+			}
 		}
 		
 		Optional<Symbols> symbols = getSymbols(stargate, stargateVariant);
-		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
 		if(symbols.isEmpty())
 			return;
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
 		// When a Stargate is dialing out or connected after dialing out
 		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.getLength() > 0 && !stargate.isConnected()))
