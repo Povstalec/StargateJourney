@@ -9,7 +9,7 @@
 	"symbol_color": [48, 49, 63, 255],
 	
 	"point_of_origin": "sgjourney:tauri",
-	"symbols": "sgjourney:milky_way",
+	"symbols": "sgjourney:galaxy_milky_way",
 	
 	"model":
 	{

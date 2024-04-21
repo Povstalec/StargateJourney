@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
@@ -284,21 +285,26 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	
 	protected void renderSymbols(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		boolean pointOfOriginEngaged = false;
-		if(engageEncodedSymbols(stargate, stargateVariant) && (!stargate.isConnected() || stargate.isDialingOut()))
-			pointOfOriginEngaged = stargate.isConnected();
-		else if(stargate.isConnected())
-			pointOfOriginEngaged = engageSymbolsOnIncoming(stargate, stargateVariant);
+Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
-		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(stargate, stargateVariant)));
-		
-		renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
+		if(pointOfOrigin.isPresent())
+		{
+			boolean pointOfOriginEngaged = false;
+			if(engageEncodedSymbols(stargate, stargateVariant) && (!stargate.isConnected() || stargate.isDialingOut()))
+				pointOfOriginEngaged = stargate.isConnected();
+			else if(stargate.isConnected())
+				pointOfOriginEngaged = engageSymbolsOnIncoming(stargate, stargateVariant);
+			
+			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
+			
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
+		}
 		
 		Optional<Symbols> symbols = getSymbols(stargate, stargateVariant);
-		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
 		if(symbols.isEmpty())
 			return;
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
 		for(int j = 1; j < this.numberOfSymbols; j++)
 		{

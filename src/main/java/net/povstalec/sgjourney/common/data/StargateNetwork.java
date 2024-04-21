@@ -382,6 +382,17 @@ public final class StargateNetwork extends SavedData
 		});
 	}
 	
+	public final boolean sendStargateMessage(AbstractStargateEntity sendingStargate, String uuid, String messsage)
+	{
+		if(hasConnection(uuid))
+		{
+			this.connections.get(uuid).sendStargateMessage(sendingStargate, messsage);
+			return true;
+		}
+		else
+			return false;
+	}
+	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************
 	//============================================================================================

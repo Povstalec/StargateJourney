@@ -128,7 +128,7 @@ public class WormholeModel
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0), frames);
 			}
 			
-			VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonBack(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, yOffset));
+			VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonBack(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, textureTickOffset));
 			
 			for(int j = 0; j < totalSides; j++)
 			{
