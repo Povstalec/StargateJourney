@@ -12,7 +12,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class StargateMethods
@@ -166,7 +165,7 @@ public class StargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				List<Integer> dialedAddress = Arrays.stream(new Address(stargate.getID()).toArray()).boxed().toList();
+				List<Integer> dialedAddress = Arrays.stream(stargate.get9ChevronAddress().toArray()).boxed().toList();
 				return new Object[] {dialedAddress};
 			});
 			

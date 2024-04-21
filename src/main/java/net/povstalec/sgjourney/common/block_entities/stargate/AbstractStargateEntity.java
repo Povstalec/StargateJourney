@@ -316,12 +316,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return id9ChevronAddress;
 	}
 	
-	//TODO Remove this
-	public String getID()
-	{
-		return get9ChevronAddress().toString();
-	}
-	
 	protected Address generate9ChevronAddress()
 	{
 		Random random = new Random();
