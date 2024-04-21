@@ -206,11 +206,11 @@ public class SoundAccess
         			if(isPrimary)
             		{
             			if(stargateVariant.getPrimaryChevronOpenSound().isPresent())
-            				new SoundEvent(stargateVariant.getPrimaryChevronOpenSound().get());
+            				return new SoundEvent(stargateVariant.getPrimaryChevronOpenSound().get());
             		}
-            		
+        			
         			if(stargateVariant.getChevronOpenSound().isPresent())
-        				new SoundEvent(stargateVariant.getChevronOpenSound().get());
+        				return new SoundEvent(stargateVariant.getChevronOpenSound().get());
         		}
         	}
     	}
