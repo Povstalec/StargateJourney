@@ -12,7 +12,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class StargateMethods
@@ -41,6 +40,31 @@ public class StargateMethods
 			{
 				Stargate.Feedback feedback = stargate.getRecentFeedback();
 				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class SendStargateMessage implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "sendStargateMessage";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				if(!interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && !stargate.isWormholeOpen())
+					return new Object[] {false};
+				
+				String messageString = arguments.getString(0);
+				
+				return new Object[] {stargate.sendStargateMessage(messageString)};
 			});
 			
 			return result;
@@ -166,7 +190,7 @@ public class StargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				List<Integer> dialedAddress = Arrays.stream(new Address(stargate.getID()).toArray()).boxed().toList();
+				List<Integer> dialedAddress = Arrays.stream(stargate.get9ChevronAddress().toArray()).boxed().toList();
 				return new Object[] {dialedAddress};
 			});
 			

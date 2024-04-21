@@ -74,6 +74,12 @@ public class StargatePeripheral extends InterfacePeripheral
 	}
 	
 	@LuaFunction
+	public final boolean isWormholeOpen()
+	{
+		return stargate.isWormholeOpen();
+	}
+	
+	@LuaFunction
 	public final long getStargateEnergy()
 	{
 		return stargate.getEnergyStored();

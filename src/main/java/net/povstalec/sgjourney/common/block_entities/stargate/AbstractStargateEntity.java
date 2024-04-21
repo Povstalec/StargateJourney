@@ -72,6 +72,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
 	private static final String EVENT_RESET = "stargate_reset";
+	private static final String EVENT_MESSAGE_RECEIVED = "stargate_message_received";
 
 	public static final String ADDRESS = "Address";
 	public static final String DHD_POS = "DHDPos";
@@ -314,12 +315,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public Address get9ChevronAddress()
 	{
 		return id9ChevronAddress;
-	}
-	
-	//TODO Remove this
-	public String getID()
-	{
-		return get9ChevronAddress().toString();
 	}
 	
 	protected Address generate9ChevronAddress()
@@ -964,6 +959,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return StargateNetwork.get(this.level).getOpenTime(this.connectionID);
 	}
 	
+	public boolean isWormholeOpen()
+	{
+		return getOpenTime() > 0;
+	}
+	
 	public int getTimeSinceLastTraveler()
 	{
 		if(this.level.isClientSide())
@@ -1435,6 +1435,16 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			if(!StargateNetwork.get(getLevel()).hasConnection(getConnectionID()) || getConnectionID().equals(StargateJourney.EMPTY))
 				resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
 		}
+	}
+	
+	public boolean sendStargateMessage(String message)
+	{
+		return StargateNetwork.get(level).sendStargateMessage(this, connectionID, message);
+	}
+	
+	public void receiveStargateMessage(String message)
+	{
+		updateInterfaceBlocks(EVENT_MESSAGE_RECEIVED, message);
 	}
 	
 	//============================================================================================
