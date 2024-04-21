@@ -46,6 +46,31 @@ public class StargateMethods
 		}
 	}
 	
+	public static class SendStargateMessage implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "sendStargateMessage";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				if(!interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && !stargate.isWormholeOpen())
+					return new Object[] {false};
+				
+				String messageString = arguments.getString(0);
+				
+				return new Object[] {stargate.sendStargateMessage(messageString)};
+			});
+			
+			return result;
+		}
+	}
+	
 	// Crystal Interface
 	public static class EngageSymbol implements InterfaceMethod<AbstractStargateEntity>
 	{
