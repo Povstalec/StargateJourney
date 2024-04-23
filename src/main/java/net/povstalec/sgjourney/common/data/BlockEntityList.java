@@ -72,6 +72,9 @@ public class BlockEntityList extends SavedData
 	
 	public Optional<Transporter> addTransporter(AbstractTransporterEntity transporterEntity)
 	{
+		if(transporterEntity.getID() == null)
+			transporterEntity.setID(transporterEntity.generateID());
+		
 		UUID id = UUID.fromString(transporterEntity.getID());
 		
 		if(this.transporterMap.containsKey(id))
