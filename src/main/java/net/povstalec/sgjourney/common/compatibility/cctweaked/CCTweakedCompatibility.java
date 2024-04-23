@@ -16,6 +16,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -46,14 +47,16 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new MilkyWayStargateMethods.RotateAntiClockwise());
 		peripheral.registerMethod(new MilkyWayStargateMethods.EndRotation());
 
-		peripheral.registerMethod(new MilkyWayStargateMethods.RaiseChevron());
+		peripheral.registerMethod(new MilkyWayStargateMethods.OpenChevron());
 		peripheral.registerMethod(new MilkyWayStargateMethods.EngageChevron());
-		peripheral.registerMethod(new MilkyWayStargateMethods.LowerChevron());
+		peripheral.registerMethod(new MilkyWayStargateMethods.CloseChevron());
+		peripheral.registerMethod(new MilkyWayStargateMethods.IsChevronOpen());
 		
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -81,6 +84,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -112,6 +116,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -139,6 +144,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{

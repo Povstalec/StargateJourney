@@ -13,7 +13,7 @@
 		"A": { "tag": "sgjourney:naquadah_alloy" },
 		"N": { "tag": "sgjourney:naquadah" },
 		"B": { "item": "sgjourney:liquid_naquadah_bucket" },
-		"R": { "tag": "sgjourney:reaction_heater" }
+		"R": { "item": "sgjourney:reaction_chamber" }
 	},
 	
 	"result": { "item": "sgjourney:crystallizer" }

@@ -135,7 +135,7 @@ public class MilkyWayStargateMethods
 		}
 	}
 	
-	public static class RaiseChevron implements InterfaceMethod<MilkyWayStargateEntity>
+	public static class OpenChevron implements InterfaceMethod<MilkyWayStargateEntity>
 	{
 		@Override
 		public String getName()
@@ -177,7 +177,7 @@ public class MilkyWayStargateMethods
 		}
 	}
 	
-	public static class LowerChevron implements InterfaceMethod<MilkyWayStargateEntity>
+	public static class CloseChevron implements InterfaceMethod<MilkyWayStargateEntity>
 	{
 		@Override
 		public String getName()
@@ -192,6 +192,26 @@ public class MilkyWayStargateMethods
 			{
 				Stargate.Feedback feedback = stargate.closeChevron();
 				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class IsChevronOpen implements InterfaceMethod<MilkyWayStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "isChevronOpen";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {stargate.isChevronOpen()};
 			});
 			
 			return result;
