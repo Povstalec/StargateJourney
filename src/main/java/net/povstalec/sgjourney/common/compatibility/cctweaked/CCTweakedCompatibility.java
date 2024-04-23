@@ -16,6 +16,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -54,6 +55,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -81,6 +83,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -112,6 +115,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -139,6 +143,7 @@ public class CCTweakedCompatibility
 
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		
 		if(type.hasCrystalMethods())
 		{
