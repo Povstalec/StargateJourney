@@ -87,7 +87,18 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 	
 	public void addTransporterToNetwork()
 	{
-		if(id == null || BlockEntityList.get(level).getTransporter(UUID.fromString(id)).isPresent())
+		UUID id;
+		try
+		{
+			id = UUID.fromString(this.id);
+		}
+		catch(IllegalArgumentException e)
+		{
+			this.setID(this.generateID());
+			id = UUID.fromString(this.id);
+		}
+		
+		if(id == null || BlockEntityList.get(level).getTransporter(id).isPresent())
 			setID(generateID());
 		
 		TransporterNetwork.get(level).addTransporter(this);
