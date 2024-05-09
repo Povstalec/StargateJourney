@@ -17,6 +17,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 
 public class StargateBlockItem extends BlockItem
@@ -89,6 +90,7 @@ public class StargateBlockItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
+		System.out.println("Use");
 		if(baseEntity instanceof AbstractStargateEntity stargate)
 		{
 			boolean addToNetwork = true;
@@ -104,7 +106,8 @@ public class StargateBlockItem extends BlockItem
 				if(!level.isClientSide())
 					StargateNetwork.get(level).updateStargate((ServerLevel) level, stargate);
 			}
-			
+
+			System.out.println("Stargate");
 			// Sets up symbols on the Milky Way Stargate
 			if(stargate instanceof MilkyWayStargateEntity)
 			{
@@ -115,6 +118,15 @@ public class StargateBlockItem extends BlockItem
 					if(!info.contains(SYMBOLS))
 						stargate.setSymbols(EMPTY);
 				}
+			}
+			
+			// Sets up symbols on the Milky Way Stargate
+			else if(stargate instanceof PegasusStargateEntity)
+			{
+				if(!info.contains(POINT_OF_ORIGIN))
+					stargate.setPointOfOriginFromDimension(level.dimension());
+				if(!info.contains(SYMBOLS))
+					stargate.setSymbolsFromDimension(level.dimension());
 			}
 			
 			// Sets up symbols on the Classic Stargate
