@@ -47,7 +47,7 @@ public class ClassicStargateEntity extends AbstractStargateEntity
         	return;
 
         if(!isPointOfOriginValid(this.getLevel()))
-        	setRandomPointOfOrigin(this.getLevel().dimension());
+        	setPointOfOriginFromDimension(this.getLevel().dimension());
 
         if(!areSymbolsValid(this.getLevel()))
         	setSymbolsFromDimension(this.getLevel().dimension());

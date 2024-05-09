@@ -374,11 +374,13 @@
 	"tooltip.sgjourney.mode": "Mód",
 	"tooltip.sgjourney.upgraded": "Upgradováno",
 	"tooltip.sgjourney.variant": "Varianta",
-	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
 	"tooltip.sgjourney.stargate_type": "Typ brány",
+
+	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
+	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
+	"tooltip.sgjourney.dynamic_symbols": "Dynamické symboly",
 	
 	"tooltip.sgjourney.has_control_crystal": "Má ovládací krystal",
-	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
 	"tooltip.sgjourney.address_table": "Tabulka adres",
 	
 	"tooltip.sgjourney.crystal.none": "-",
