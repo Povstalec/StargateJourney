@@ -269,6 +269,9 @@ public final class StargateConnection
 			StargateJourney.LOGGER.info("Stargate is not connected");
 			return false;
 		}
+		else
+			StargateJourney.LOGGER.info("Stargate not found");
+			
 		
 		return false;
 	}

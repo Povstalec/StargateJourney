@@ -107,7 +107,7 @@ public final class TransporterNetwork extends SavedData
 			
 			if(blockentity instanceof AbstractTransporterEntity transporterEntity)
 			{
-				if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID().toString()))
+				if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
 				{
 					addTransporterToDimension(transporter.getDimension(), transporter);
 				}
@@ -135,7 +135,7 @@ public final class TransporterNetwork extends SavedData
 		{
 			Transporter transporter = transporterOptional.get();
 			
-			if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID().toString()))
+			if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
 				addTransporterToDimension(transporter.getDimension(), transporter);
 		}
 		
