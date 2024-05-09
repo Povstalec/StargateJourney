@@ -87,6 +87,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final String UPGRADED = "Upgraded";
 	public static final String DISPLAY_ID = "DisplayID";
 	public static final String VARIANT = "Variant";
+	
+	public static final String POINT_OF_ORIGIN = "PointOfOrigin";
+	public static final String SYMBOLS = "Symbols";
 
 	public static final float STANDARD_THICKNESS = 9.0F;
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;

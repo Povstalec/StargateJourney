@@ -22,6 +22,12 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class PegasusStargateEntity extends AbstractStargateEntity
 {
+	public static final String ADDRESS_BUFFER = "AddressBuffer";
+	public static final String SYMBOL_BUFFER = "SymbolBuffer";
+	public static final String CURRENT_SYMBOL = "CurrentSymbol";
+	
+	public static final String DYNAMC_SYMBOLS = "DynamicSymbols";
+	
 	public int currentSymbol = 0;
 	public Address addressBuffer = new Address(true);
 	public int symbolBuffer = 0;
@@ -56,16 +62,16 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
         super.load(tag);
         
-        addressBuffer.fromArray(tag.getIntArray("AddressBuffer"));
-        symbolBuffer = tag.getInt("SymbolBuffer");
-        currentSymbol = tag.getInt("CurrentSymbol");
+        addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+        symbolBuffer = tag.getInt(SYMBOL_BUFFER);
+        currentSymbol = tag.getInt(CURRENT_SYMBOL);
         
-        dynamicSymbols = tag.getBoolean("DynamicSymbols");
+        dynamicSymbols = tag.getBoolean(DYNAMC_SYMBOLS);
 
         if(!dynamicSymbols)
         {
-    		pointOfOrigin = tag.getString("PointOfOrigin");
-    		symbols = tag.getString("Symbols");
+    		pointOfOrigin = tag.getString(POINT_OF_ORIGIN);
+    		symbols = tag.getString(SYMBOLS);
         }
     }
 	
@@ -74,16 +80,16 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	{
 		super.saveAdditional(tag);
 		
-		tag.putIntArray("AddressBuffer", addressBuffer.toArray());
-		tag.putInt("SymbolBuffer", symbolBuffer);
-		tag.putInt("CurrentSymbol", currentSymbol);
+		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.toArray());
+		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
+		tag.putInt(CURRENT_SYMBOL, currentSymbol);
 		
-		tag.putBoolean("DynamicSymbols", dynamicSymbols);
+		tag.putBoolean(DYNAMC_SYMBOLS, dynamicSymbols);
 
         if(!dynamicSymbols)
         {
-    		tag.putString("PointOfOrigin", pointOfOrigin);
-    		tag.putString("Symbols", symbols);
+    		tag.putString(POINT_OF_ORIGIN, pointOfOrigin);
+    		tag.putString(SYMBOLS, symbols);
         }
 	}
 	

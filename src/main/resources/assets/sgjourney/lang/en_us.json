@@ -370,11 +370,13 @@
 	"tooltip.sgjourney.mode": "Mode",
 	"tooltip.sgjourney.upgraded": "Upgraded",
 	"tooltip.sgjourney.variant": "Variant",
-	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
 	"tooltip.sgjourney.stargate_type": "Stargate Type",
+
+	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
+	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
+	"tooltip.sgjourney.dynamic_symbols": "Dynamic Symbols",
 	
 	"tooltip.sgjourney.has_control_crystal": "Has Control Crystal",
-	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
 	"tooltip.sgjourney.address_table": "Address Table",
 	
 	"tooltip.sgjourney.crystal.none": "None",
