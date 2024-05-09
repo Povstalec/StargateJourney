@@ -10,6 +10,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -76,32 +78,48 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 			Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 			Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 	    	
-			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
+			if(!stack.hasTag() ||
+					(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(PegasusStargateEntity.DYNAMC_SYMBOLS) &&
+							stack.getTag().getCompound("BlockEntityTag").getBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS)))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
+			else
 			{
 		    	String pointOfOrigin = "";
-				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
-				if(location.toString().equals("sgjourney:empty"))
-					pointOfOrigin = "Empty";
-				else if(pointOfOriginRegistry.containsKey(location))
-					pointOfOrigin = pointOfOriginRegistry.get(location).getName();
-				else
-					pointOfOrigin = "Error";
-		        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-			}
-			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
-			{
+				if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.POINT_OF_ORIGIN))
+				{
+					ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString(AbstractStargateEntity.POINT_OF_ORIGIN));
+					if(location.toString().equals("sgjourney:empty"))
+						pointOfOrigin = "Empty";
+					else if(pointOfOriginRegistry.containsKey(location))
+						pointOfOrigin = pointOfOriginRegistry.get(location).getName();
+					else
+						pointOfOrigin = "Error";
+				}
 				String symbols = "";
-				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
-				if(location.toString().equals("sgjourney:empty"))
-					symbols = "Empty";
-				else if(symbolsRegistry.containsKey(location))
-					symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
-				else
-					symbols = "Error";
+				if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.SYMBOLS))
+				{
+					ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString(AbstractStargateEntity.SYMBOLS));
+					if(location.toString().equals("sgjourney:empty"))
+						symbols = "Empty";
+					else if(symbolsRegistry.containsKey(location))
+						symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
+					else
+						symbols = "Error";
+				}
+		        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
 		        tooltipComponents.add(Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 			}
 		}
 		
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
+	
+	public static ItemStack localSymbols(ItemStack stack)
+	{
+        CompoundTag compoundtag = new CompoundTag();
+        compoundtag.putBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS, false);
+		stack.addTagElement("BlockEntityTag", compoundtag);
+		
+		return stack;
+	}
 }
