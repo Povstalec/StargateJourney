@@ -48,6 +48,7 @@ import net.povstalec.sgjourney.common.stargate.StargateVariant;
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
+	public static final String LOCAL_POINT_OF_ORIGIN = "LocalPointOfOrigin";
 	
 	public AbstractStargateBaseBlock(Properties properties, double width, double horizontalOffset)
 	{
@@ -287,16 +288,16 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         {
             CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
             
-            if(blockEntityTag.contains("Variant"))
+            if(blockEntityTag.contains(AbstractStargateEntity.VARIANT))
             {
-            	String variant = blockEntityTag.getString("Variant");
+            	String variant = blockEntityTag.getString(AbstractStargateEntity.VARIANT);
             	
             	if(!variant.equals(EMPTY))
             		tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
             }
             
-            if(blockEntityTag.contains("Energy"))
-            	energy = blockEntityTag.getLong("Energy");
+            if(blockEntityTag.contains(AbstractStargateEntity.ENERGY))
+            	energy = blockEntityTag.getLong(AbstractStargateEntity.ENERGY);
         }
         
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + " FE")).withStyle(ChatFormatting.DARK_RED));
@@ -322,11 +323,14 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
             	
         	}
         	
-        	if((blockEntityTag.contains("Upgraded") && blockEntityTag.getBoolean("Upgraded")))
+        	if((blockEntityTag.contains(AbstractStargateEntity.UPGRADED) && blockEntityTag.getBoolean(AbstractStargateEntity.UPGRADED)))
             	tooltipComponents.add(Component.translatable("tooltip.sgjourney.upgraded").withStyle(ChatFormatting.DARK_GREEN));
+        	
+        	if((blockEntityTag.contains(LOCAL_POINT_OF_ORIGIN)))
+            	tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
         }
         
-        if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("AddToNetwork") && !stack.getTag().getCompound("BlockEntityTag").getBoolean("AddToNetwork"))
+        if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.ADD_TO_NETWORK) && !stack.getTag().getCompound("BlockEntityTag").getBoolean(AbstractStargateEntity.ADD_TO_NETWORK))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
         
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
@@ -335,7 +339,16 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public static ItemStack excludeFromNetwork(ItemStack stack)
 	{
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putBoolean("AddToNetwork", false);
+        compoundtag.putBoolean(AbstractStargateEntity.ADD_TO_NETWORK, false);
+		stack.addTagElement("BlockEntityTag", compoundtag);
+		
+		return stack;
+	}
+	
+	public static ItemStack localPointOfOrigin(ItemStack stack)
+	{
+        CompoundTag compoundtag = new CompoundTag();
+        compoundtag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
 		stack.addTagElement("BlockEntityTag", compoundtag);
 		
 		return stack;
