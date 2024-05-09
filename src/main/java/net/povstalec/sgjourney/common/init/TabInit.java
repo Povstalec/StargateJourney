@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
@@ -116,10 +117,12 @@ public class TabInit
 		{
 			event.accept(BlockInit.UNIVERSE_STARGATE.get());
 			event.accept(BlockInit.MILKY_WAY_STARGATE.get());
+			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
 			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
 			event.accept(BlockInit.PEGASUS_STARGATE.get());
 			event.accept(PegasusDHDBlock.pegasusCrystalSetup());
 			event.accept(BlockInit.CLASSIC_STARGATE.get());
+			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
 			event.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
