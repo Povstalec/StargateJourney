@@ -28,7 +28,7 @@ public class Transporter
 	
 	public Transporter(AbstractTransporterEntity transporterEntity)
 	{
-		this(UUID.fromString(transporterEntity.getID()), transporterEntity.getLevel().dimension(), transporterEntity.getBlockPos());
+		this(transporterEntity.getID(), transporterEntity.getLevel().dimension(), transporterEntity.getBlockPos());
 	}
 	
 	public UUID getID()

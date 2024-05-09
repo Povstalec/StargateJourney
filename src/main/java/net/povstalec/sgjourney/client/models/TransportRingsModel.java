@@ -77,7 +77,7 @@ public class TransportRingsModel
 		{
 			ring.addOrReplaceChild("ring_" + i, CubeListBuilder.create()
 					.texOffs(0, 0)
-					.addBox(-8.0F, 4.0F, 32.219F, 16.0F, 4.0F, 8.0F),
+					.addBox(-8.0F, -2.0F, 32.219F, 16.0F, 4.0F, 8.0F),
 					PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, (float) Math.toRadians(22.5 * i), 0.0F));
 		}
 	}
