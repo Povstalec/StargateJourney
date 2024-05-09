@@ -374,6 +374,7 @@
 	"tooltip.sgjourney.mode": "Mód",
 	"tooltip.sgjourney.upgraded": "Upgradováno",
 	"tooltip.sgjourney.variant": "Varianta",
+	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
 	"tooltip.sgjourney.stargate_type": "Typ brány",
 	
 	"tooltip.sgjourney.has_control_crystal": "Má ovládací krystal",

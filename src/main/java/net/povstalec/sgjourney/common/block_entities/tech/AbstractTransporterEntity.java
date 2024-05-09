@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
 public abstract class AbstractTransporterEntity extends EnergyBlockEntity
@@ -26,7 +25,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 	
 	protected boolean addToNetwork = true;
 	
-	protected String id;
+	protected UUID id;
 	protected String connectionID = StargateJourney.EMPTY;
 	
 	public AbstractTransporterEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
@@ -53,8 +52,15 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 		
     	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
     	
-    	if(tag.contains(ID))
-    		id = tag.getString(ID);
+    	try
+		{
+    		if(tag.contains(ID))
+        		id = UUID.fromString(tag.getString(ID));
+		}
+		catch(IllegalArgumentException e)
+		{
+			this.setID(this.generateID());
+		}
 	}
 	
 	@Override
@@ -63,24 +69,24 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 		
 		if(id != null)
-			tag.putString(ID, id);
+			tag.putString(ID, id.toString());
 		
 		super.saveAdditional(tag);
 	}
 	
-	public String generateID()
+	public UUID generateID()
 	{
-		return UUID.randomUUID().toString();
+		return UUID.randomUUID();
 	}
 	
-	public void setID(String id)
+	public void setID(UUID id)
 	{
     	this.id = id;
 		setChanged();
 		StargateJourney.LOGGER.info("Set ID to " + id);
 	}
 	
-	public String getID()
+	public UUID getID()
 	{
 		return id;
 	}
@@ -92,15 +98,6 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 			setID(generateID());
 		}
 		
-		try
-		{
-			UUID.fromString(this.id);
-		}
-		catch(IllegalArgumentException e)
-		{
-			this.setID(this.generateID());
-		}
-		
 		TransporterNetwork.get(level).addTransporter(this);
 		
 		addToNetwork = true;
@@ -109,7 +106,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity
 	
 	public void removeTransporterFromNetwork()
 	{
-		TransporterNetwork.get(level).removeTransporter(level, UUID.fromString(this.id));
+		TransporterNetwork.get(level).removeTransporter(level, this.id);
 	}
 	
 	@Override

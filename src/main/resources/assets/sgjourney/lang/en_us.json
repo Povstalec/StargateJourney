@@ -370,6 +370,7 @@
 	"tooltip.sgjourney.mode": "Mode",
 	"tooltip.sgjourney.upgraded": "Upgraded",
 	"tooltip.sgjourney.variant": "Variant",
+	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
 	"tooltip.sgjourney.stargate_type": "Stargate Type",
 	
 	"tooltip.sgjourney.has_control_crystal": "Has Control Crystal",

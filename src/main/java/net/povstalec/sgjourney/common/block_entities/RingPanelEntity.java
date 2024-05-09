@@ -85,6 +85,7 @@ public class RingPanelEntity extends BlockEntity
 	{
 		super.setRemoved();
 		handler.invalidate();
+		drops();
 	}
 	
 	private ItemStackHandler createHandler()
@@ -171,12 +172,17 @@ public class RingPanelEntity extends BlockEntity
 		int size = transporters.size();
 		
 		ringsFound = size;
-		for(int i = 0; i < 6; i++)
+		
+		int j = 0;
+		if(ringsFound > 0 && transporters.get(0).getBlockPos().equals(this.transportRings.getBlockPos()))
+			j += 1;
+		
+		for(int i = 0; i < 6; i++, j++)
 		{
 			
-			if(i + 1 < ringsFound)
+			if(j < ringsFound)
 			{
-				ringsPos[i] = transporters.get(i + 1).getBlockPos();
+				ringsPos[i] = transporters.get(j).getBlockPos();
 			}
 			else
 				ringsPos[i] = new BlockPos(0, 0, 0);
