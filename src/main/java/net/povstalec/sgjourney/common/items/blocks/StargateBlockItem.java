@@ -90,7 +90,6 @@ public class StargateBlockItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		System.out.println("Use");
 		if(baseEntity instanceof AbstractStargateEntity stargate)
 		{
 			boolean addToNetwork = true;
@@ -106,8 +105,7 @@ public class StargateBlockItem extends BlockItem
 				if(!level.isClientSide())
 					StargateNetwork.get(level).updateStargate((ServerLevel) level, stargate);
 			}
-
-			System.out.println("Stargate");
+			
 			// Sets up symbols on the Milky Way Stargate
 			if(stargate instanceof MilkyWayStargateEntity)
 			{
