@@ -75,7 +75,7 @@ public class BlockEntityList extends SavedData
 		if(transporterEntity.getID() == null)
 			transporterEntity.setID(transporterEntity.generateID());
 		
-		UUID id = UUID.fromString(transporterEntity.getID());
+		UUID id = transporterEntity.getID();
 		
 		if(this.transporterMap.containsKey(id))
 			return Optional.of(this.transporterMap.get(id)); // Returns an existing Transporter
