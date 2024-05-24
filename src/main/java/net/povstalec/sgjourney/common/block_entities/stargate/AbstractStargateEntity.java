@@ -1133,7 +1133,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 				this.orientation = gateState.getValue(AbstractStargateBaseBlock.ORIENTATION);
 			else
-				StargateJourney.LOGGER.error("Couldn't find Stargate Orientation");
+				StargateJourney.LOGGER.error("Couldn't find Stargate Orientation " + this.getBlockPos().toString());
 		}
 
 		return this.orientation;
@@ -1148,7 +1148,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 				this.direction = gateState.getValue(AbstractStargateBaseBlock.FACING);
 			else
-				StargateJourney.LOGGER.error("Couldn't find Stargate Direction");
+				StargateJourney.LOGGER.error("Couldn't find Stargate Direction " + this.getBlockPos().toString());
 		}
 		
 		return this.direction;

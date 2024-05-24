@@ -234,7 +234,10 @@ public class Stargate
 			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
 				return new Stargate(stargate);
 			else
+			{
+				StargateJourney.LOGGER.info("Failed to deserialize Stargate " + address.toString());
 				return null;
+			}
 		}
 		
 		boolean hasDHD = tag.getBoolean(HAS_DHD);
