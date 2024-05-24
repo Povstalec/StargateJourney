@@ -49,7 +49,6 @@ public class StellarViewRendering
 		{
 			super(new StellarViewSky(ABYDOS),
 					192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			MILKY_WAY.setStarBuffer(1, 8, 17, 0, 0, 0);
 		}
 		
 		@Override
@@ -83,7 +82,6 @@ public class StellarViewRendering
 		{
 			super(new StellarViewSky(CHULAK),
 					192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			MILKY_WAY.setStarBuffer(6, -2, 8, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
 		}
 		
 		@Override
@@ -111,7 +109,6 @@ public class StellarViewRendering
 		{
 			super(new StellarViewSky(CAVUM_TENBRAE),
 					192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			MILKY_WAY.setStarBuffer(3, 3, 3, 0, (float) (0.3 * Math.PI), (float) (0.8 * Math.PI));
 		}
 		
 		@Override
@@ -146,7 +143,6 @@ public class StellarViewRendering
 		{
 			super(new StellarViewSky(LANTEA),
 					192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			PEGASUS.setStarBuffer(8, 0, 16, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
 		}
 		
 		@Override
@@ -181,7 +177,6 @@ public class StellarViewRendering
 		{
 			super(new StellarViewSky(ATHOS),
 					192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			PEGASUS.setStarBuffer(7, 5, 14, (float) (0.5 * Math.PI), (float) (0.14 * Math.PI), (float) (1.2 * Math.PI));
 		}
 		
 		@Override
@@ -202,4 +197,14 @@ public class StellarViewRendering
 		event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new StellarViewLanteaEffects());
 		event.register(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, new StellarViewAthosEffects());
 	}
+    
+    public static void updateGalaxies()
+    {
+		StellarViewAbydosEffects.MILKY_WAY.setStarBuffer(1, 8, 17, 0, 0, 0);
+		StellarViewChulakEffects.MILKY_WAY.setStarBuffer(6, -2, 8, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
+		StellarViewCavumTenebraeEffects.MILKY_WAY.setStarBuffer(3, 3, 3, 0, (float) (0.3 * Math.PI), (float) (0.8 * Math.PI));
+
+		StellarViewLanteaEffects.PEGASUS.setStarBuffer(8, 0, 16, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
+    	StellarViewAthosEffects.PEGASUS.setStarBuffer(7, 5, 14, (float) (0.5 * Math.PI), (float) (0.14 * Math.PI), (float) (1.2 * Math.PI));
+    }
 }
