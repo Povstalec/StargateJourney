@@ -23,12 +23,7 @@ import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.armor.FalconArmorItem;
 import net.povstalec.sgjourney.common.items.armor.JackalArmorItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyAxeItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyHoeItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyPickaxeItem;
@@ -121,6 +116,8 @@ public class ItemInit
 			() -> new TransferCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	public static final RegistryObject<CommunicationCrystalItem> ADVANCED_COMMUNICATION_CRYSTAL = ITEMS.register("advanced_communication_crystal", 
 			() -> new CommunicationCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	public static final RegistryObject<CFDCrystalItem> CFD_CRYSTAL = ITEMS.register("cfd_crystal",
+			() -> new CFDCrystalItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 
 	public static final RegistryObject<StargateUpgradeItem> STARGATE_UPGRADE_CRYSTAL = ITEMS.register("stargate_upgrade_crystal", 
 			() -> new StargateUpgradeItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));

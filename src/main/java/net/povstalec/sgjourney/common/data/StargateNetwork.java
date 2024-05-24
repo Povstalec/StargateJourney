@@ -1,13 +1,7 @@
 package net.povstalec.sgjourney.common.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -296,7 +290,7 @@ public final class StargateNetwork extends SavedData
 		
 		if(dialingStargate.equals(dialedStargate))
 			return dialingStargate.resetStargate(server, Stargate.Feedback.SELF_DIAL, true);
-		
+
 		if(dialedStargate.isConnected(server))
 			return dialingStargate.resetStargate(server, Stargate.Feedback.ALREADY_CONNECTED, true);
 		else if(dialedStargate.isObstructed(server))
@@ -315,6 +309,19 @@ public final class StargateNetwork extends SavedData
 		
 		if(outgoingStargate.isPresent() && incomingStargate.isPresent())
 		{
+			if(incomingStargate.get().getCFD()) {
+				if (!incomingStargate.get().getCFDTarget().isComplete()) {
+					Random random = new Random();
+					Optional<Stargate> reroute_gate = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension()).get().getRandomStargate(random.nextLong());
+					if (reroute_gate.isPresent()) {
+						while(reroute_gate.get().getStargateEntity(server).get().getCFD()){
+							reroute_gate = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension()).get().getRandomStargate(random.nextLong());
+						}
+						incomingStargate = reroute_gate.get().getStargateEntity(server);
+					}
+				} else incomingStargate = StargateNetwork.get(server).getStargate(new Address.Immutable(incomingStargate.get().getCFDTarget())).get().getStargateEntity(server);
+			}
+
 			StargateConnection connection = StargateConnection.create(connectionType, outgoingStargate.get(), incomingStargate.get(), doKawoosh);
 			if(connection != null)
 			{

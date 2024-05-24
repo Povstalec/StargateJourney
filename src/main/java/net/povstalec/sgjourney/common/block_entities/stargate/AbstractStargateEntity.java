@@ -78,6 +78,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final String DHD_POS = "DHDPos";
 	public static final String ENERGY = "Energy";
 	// Connections
+	public static final String HAS_CFD = "hasCFD";
+	public static final String REROUTE_TO = "cfd_reroute_target";
 	public static final String CONNECTION_ID = "ConnectionID";
 	public static final String NETWORK = "Network";
 	public static final String RESTRICT_NETWORK = "RestrictNetwork";
@@ -122,6 +124,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	// Dialing and memory
 	protected Address address = new Address();
+	protected Address reroute_to = new Address();
+	protected boolean hasCFD = false;
 	protected String connectionID = EMPTY;
 	protected Wormhole wormhole = new Wormhole();
 	
@@ -185,6 +189,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
 		connectionID = tag.getString(CONNECTION_ID);
+		hasCFD = tag.getBoolean(HAS_CFD);
+		reroute_to.fromArray(tag.getIntArray(REROUTE_TO));
 		
 		if(tag.contains(ID)) //TODO For legacy reasons
 			id9ChevronAddress.fromString(tag.getString(ID));
@@ -213,6 +219,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 		
 		connectionID = tag.getString(CONNECTION_ID);
+		hasCFD = tag.getBoolean(HAS_CFD);
+		reroute_to.fromArray(tag.getIntArray(REROUTE_TO));
 		
 		if(tag.contains(ID)) //TODO Keeping this here for the time being for legacy reasons
 			id9ChevronAddress.fromString(tag.getString(ID));
@@ -244,6 +252,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
 		tag.putString(CONNECTION_ID, connectionID);
+		tag.putBoolean(HAS_CFD, hasCFD);
+		tag.putIntArray(REROUTE_TO, reroute_to.toArray());
 		
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
@@ -273,6 +283,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
 		tag.putString(CONNECTION_ID, connectionID);
+		tag.putBoolean(HAS_CFD, hasCFD);
+		tag.putIntArray(REROUTE_TO, reroute_to.toArray());
 		
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
@@ -1324,6 +1336,22 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	{
 		return this.openSoundLead;
 	}
+
+	public boolean getCFD(){
+		return this.hasCFD;
+	}
+
+	public Address getCFDTarget(){
+		return this.reroute_to;
+	}
+
+	public void setCFD(boolean hasCFD){
+		this.hasCFD = hasCFD;
+	}
+
+	public void setCFDTarget(Address target){
+		this.reroute_to = target;
+	}
 	
 	public abstract Stargate.ChevronLockSpeed getChevronLockSpeed();
 	
@@ -1461,7 +1489,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		if(level.isClientSide())
 			return;
-		
+
+		if(level.getGameTime() % 20 == 0) {
+			if (stargate.getDHDPos().isPresent()) {
+				if(level.getBlockEntity(stargate.getDHDPos().get()) instanceof AbstractDHDEntity dhd) {
+					stargate.setCFD(dhd.getCFDState());
+				}
+			}
+		}
+
 		stargate.updateClient();
     }
 }

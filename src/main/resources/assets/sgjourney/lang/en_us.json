@@ -97,6 +97,7 @@
 	"item.sgjourney.memory_crystal": "Memory Crystal",
 
 	"item.sgjourney.advanced_control_crystal": "Advanced Control Crystal",
+	"item.sgjourney.cfd_crystal": "Call Forwarding Crystal",
 	"item.sgjourney.advanced_materialization_crystal": "Advanced Materialization Crystal",
 	"item.sgjourney.advanced_energy_crystal": "Advanced Energy Crystal",
 	"item.sgjourney.advanced_transfer_crystal": "Advanced Transfer Crystal",
@@ -384,6 +385,7 @@
 	"tooltip.sgjourney.crystal.in_ring_panel": "In Ring Panel:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Enables advanced protocols in Stargate",
 	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Enables advanced protocols in Stargate",
+	"tooltip.sgjourney.crystal.in_dhd.cfdState": "Enables Call Forwarding",
 	"tooltip.sgjourney.crystal.in_dhd.energy": "Increases targeted Energy capacity in Stargate by 50000 FE",
 	"tooltip.sgjourney.crystal.in_dhd.energy.advanced": "Increases targeted Energy capacity in Stargate by 100000 FE",
 	"tooltip.sgjourney.crystal.in_dhd.transfer": "Increases the amount of Energy transferred to the Stargate by 2500 FE",
