@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -82,6 +83,7 @@ import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.SymbolSet;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
+import net.povstalec.stellarview.StellarView;
 
 @Mod(StargateJourney.MODID)
 public class StargateJourney
@@ -255,6 +257,17 @@ public class StargateJourney
         		StellarViewRendering.registerStellarViewEffects(event);
         	else
         		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
+        }
+    }
+    
+    @Mod.EventBusSubscriber(modid = StellarView.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+    public static class ClientForgeEvents
+    {
+    	@SubscribeEvent
+        public static void playerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event)
+        {
+    		if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
+    			StellarViewRendering.updateGalaxies();
         }
     }
     
