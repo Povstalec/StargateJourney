@@ -139,7 +139,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		if(gateState.getBlock() instanceof AbstractInterfaceBlock)
 			return gateState.getValue(AbstractInterfaceBlock.FACING);
 
-		StargateJourney.LOGGER.error("Couldn't find Direction");
+		StargateJourney.LOGGER.error("Couldn't find Direction " + this.getBlockPos().toString());
 		return null;
 	}
 

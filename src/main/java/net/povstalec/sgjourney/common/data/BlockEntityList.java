@@ -212,7 +212,10 @@ public class BlockEntityList extends SavedData
 		
 		this.stargateMap.forEach((stargateID, stargate) -> 
 		{
-			stargates.put(stargateID.toString(), stargate.serialize());
+			if(stargate != null)
+				stargates.put(stargateID.toString(), stargate.serialize());
+			else
+				StargateJourney.LOGGER.info("Cannot serialize Stargate " + stargateID + " because it's null");
 		});
 		
 		return stargates;
@@ -243,11 +246,15 @@ public class BlockEntityList extends SavedData
 		StargateJourney.LOGGER.info("Deserializing Stargates");
 		CompoundTag stargates = blockEntityList.getCompound(STARGATES);
 		
-		stargates.getAllKeys().stream().forEach(stargate ->
+		stargates.getAllKeys().stream().forEach(stargateAddress ->
 		{
 			//StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
-			Address.Immutable address = new Address(stargate).immutable();
-			this.stargateMap.put(address, Stargate.deserialize(server, address, stargates.getCompound(stargate)));
+			Address.Immutable address = new Address(stargateAddress).immutable();
+			
+			Stargate stargate = Stargate.deserialize(server, address, stargates.getCompound(stargateAddress));
+			
+			if(stargate != null)
+				this.stargateMap.put(address, stargate);
 		});
 		
 		StargateJourney.LOGGER.info("Finished deserializing Stargates");
