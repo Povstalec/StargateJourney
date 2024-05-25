@@ -55,7 +55,10 @@ public class StellarViewRendering
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_abydos_sky.get())
+			{
+				StellarViewAbydosEffects.MILKY_WAY.setStarBuffer(1, 8, 17, 0, 0, 0);
 				super.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+			}
 			
 	        return ClientSkyConfig.custom_abydos_sky.get();
 	    }
@@ -88,7 +91,10 @@ public class StellarViewRendering
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_chulak_sky.get())
+			{
+				StellarViewChulakEffects.MILKY_WAY.setStarBuffer(6, -2, 8, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
 				super.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+			}
 			
 	        return ClientSkyConfig.custom_chulak_sky.get();
 	    }
@@ -115,7 +121,10 @@ public class StellarViewRendering
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_cavum_tenebrae_sky.get())
+			{
+				StellarViewCavumTenebraeEffects.MILKY_WAY.setStarBuffer(3, 3, 3, 0, (float) (0.3 * Math.PI), (float) (0.8 * Math.PI));
 				super.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+			}
 			
 	        return ClientSkyConfig.custom_cavum_tenebrae_sky.get();
 	    }
@@ -149,7 +158,10 @@ public class StellarViewRendering
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_lantea_sky.get())
+			{
+				StellarViewLanteaEffects.PEGASUS.setStarBuffer(8, 0, 16, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
 				super.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+			}
 			
 	        return ClientSkyConfig.custom_lantea_sky.get();
 	    }
@@ -183,7 +195,10 @@ public class StellarViewRendering
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_athos_sky.get())
+			{
+		    	StellarViewAthosEffects.PEGASUS.setStarBuffer(7, 5, 14, (float) (0.5 * Math.PI), (float) (0.14 * Math.PI), (float) (1.2 * Math.PI));
 				super.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+			}
 			
 	        return ClientSkyConfig.custom_athos_sky.get();
 	    }
@@ -197,14 +212,4 @@ public class StellarViewRendering
 		event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new StellarViewLanteaEffects());
 		event.register(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, new StellarViewAthosEffects());
 	}
-    
-    public static void updateGalaxies()
-    {
-		StellarViewAbydosEffects.MILKY_WAY.setStarBuffer(1, 8, 17, 0, 0, 0);
-		StellarViewChulakEffects.MILKY_WAY.setStarBuffer(6, -2, 8, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
-		StellarViewCavumTenebraeEffects.MILKY_WAY.setStarBuffer(3, 3, 3, 0, (float) (0.3 * Math.PI), (float) (0.8 * Math.PI));
-
-		StellarViewLanteaEffects.PEGASUS.setStarBuffer(8, 0, 16, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
-    	StellarViewAthosEffects.PEGASUS.setStarBuffer(7, 5, 14, (float) (0.5 * Math.PI), (float) (0.14 * Math.PI), (float) (1.2 * Math.PI));
-    }
 }
