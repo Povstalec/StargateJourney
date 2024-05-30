@@ -97,7 +97,6 @@
 	"item.sgjourney.memory_crystal": "Memory Crystal",
 
 	"item.sgjourney.advanced_control_crystal": "Advanced Control Crystal",
-	"item.sgjourney.cfd_crystal": "Call Forwarding Crystal",
 	"item.sgjourney.advanced_materialization_crystal": "Advanced Materialization Crystal",
 	"item.sgjourney.advanced_energy_crystal": "Advanced Energy Crystal",
 	"item.sgjourney.advanced_transfer_crystal": "Advanced Transfer Crystal",
@@ -106,6 +105,8 @@
 	
 	"item.sgjourney.stargate_upgrade_crystal": "Stargate Upgrade Crystal",
 	"item.sgjourney.stargate_variant_crystal": "Stargate Variant Crystal",
+
+	"item.sgjourney.call_forwarding_device": "Call Forwarding Device",
 	
 	"item.sgjourney.naquadah_sword": "Naquadah Sword",
 	"item.sgjourney.naquadah_pickaxe": "Naquadah Pickaxe",
@@ -385,7 +386,6 @@
 	"tooltip.sgjourney.crystal.in_ring_panel": "In Ring Panel:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Enables advanced protocols in Stargate",
 	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Enables advanced protocols in Stargate",
-	"tooltip.sgjourney.crystal.in_dhd.cfdState": "Enables Call Forwarding",
 	"tooltip.sgjourney.crystal.in_dhd.energy": "Increases targeted Energy capacity in Stargate by 50000 FE",
 	"tooltip.sgjourney.crystal.in_dhd.energy.advanced": "Increases targeted Energy capacity in Stargate by 100000 FE",
 	"tooltip.sgjourney.crystal.in_dhd.transfer": "Increases the amount of Energy transferred to the Stargate by 2500 FE",
@@ -395,6 +395,9 @@
 	"tooltip.sgjourney.communication_crystal.frequency": "Frequency",
 	"tooltip.sgjourney.materialization_crystal.increased_range": "Increased Range",
 	"tooltip.sgjourney.materialization_crystal.interdimensional": "Enable Interdimensional Transport",
+
+	"tooltip.sgjourney.call_forwarding_device.in_dhd": "In DHD:",
+	"tooltip.sgjourney.call_forwarding_device.info": "Enables Call Forwarding",
 	
 	"tooltip.sgjourney.stargate_upgrade.description": "Right-click on a Classic Stargate to upgrade it",
 	"tooltip.sgjourney.stargate_variant.description": "Right-click on a Stargate to change its variant",

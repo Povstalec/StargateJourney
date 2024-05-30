@@ -2,6 +2,6 @@
     "parent": "item/generated",
     "textures": 
 	{
-        "layer0": "sgjourney:item/cfd_crystal"
+        "layer0": "sgjourney:item/call_forwarding_device"
     }
 }

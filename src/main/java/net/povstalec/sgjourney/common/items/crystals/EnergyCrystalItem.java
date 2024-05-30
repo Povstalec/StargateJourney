@@ -108,7 +108,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	}
 
 	@Override
-	public Optional<Component> descriptionInDHD()
+	public Optional<Component> descriptionInDHD(ItemStack stack)
 	{
 		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
@@ -149,7 +149,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		}
 
 		@Override
-		public Optional<Component> descriptionInDHD()
+		public Optional<Component> descriptionInDHD(ItemStack stack)
 		{
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}

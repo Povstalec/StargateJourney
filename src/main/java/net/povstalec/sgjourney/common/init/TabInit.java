@@ -103,7 +103,6 @@ public class TabInit
 				items.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
 				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
-				items.accept(ItemInit.CFD_CRYSTAL.get());
 			});
 		});
 		
@@ -134,6 +133,8 @@ public class TabInit
 				items.accept(BlockInit.BASIC_INTERFACE.get());
 				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
 				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+
+				items.accept(ItemInit.CALL_FORWARDING_DEVICE.get());
 
 				if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
 				{

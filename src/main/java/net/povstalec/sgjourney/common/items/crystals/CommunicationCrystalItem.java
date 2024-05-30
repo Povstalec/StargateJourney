@@ -55,7 +55,7 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	}
 
 	@Override
-	public Optional<Component> descriptionInDHD()
+	public Optional<Component> descriptionInDHD(ItemStack stack)
 	{
 		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
@@ -93,7 +93,7 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		}
 
 		@Override
-		public Optional<Component> descriptionInDHD()
+		public Optional<Component> descriptionInDHD(ItemStack stack)
 		{
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}

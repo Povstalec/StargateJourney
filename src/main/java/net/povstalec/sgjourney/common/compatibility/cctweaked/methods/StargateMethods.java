@@ -12,7 +12,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class StargateMethods
@@ -176,7 +175,7 @@ public class StargateMethods
 		}
 	}
 
-	public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
+	/*public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
 	{
 
 		@Override
@@ -263,7 +262,7 @@ public class StargateMethods
 				return new Object[] {address};
 			});
 		}
-	}
+	}*/
 
 	// Advanced Crystal Interface
 	public static class ConnectedAddress implements InterfaceMethod<AbstractStargateEntity>

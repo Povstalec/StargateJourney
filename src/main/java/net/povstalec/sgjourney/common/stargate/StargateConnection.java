@@ -428,10 +428,13 @@ public final class StargateConnection
 		
 		if(wormhole.findCandidates(initialStargate.getLevel(), stargatePos, initialStargate.getDirection()) && this.used)
 			this.timeSinceLastTraveler = 0;
-		if(targetStargate.getCFD()) {
+		if(targetStargate.shouldCallForward())
+		{
 			if (wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel))
 				this.used = true;
-		} else {
+		}
+		else
+		{
 			if (wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
 				this.used = true;
 		}
