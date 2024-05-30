@@ -376,6 +376,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public static int getChevron(AbstractStargateEntity stargate, int chevronNumber)
 	{
+		chevronNumber--;
 		if(chevronNumber < 0 || chevronNumber > 8)
 			return 0;
 		else

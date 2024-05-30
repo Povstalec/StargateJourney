@@ -14,6 +14,7 @@ import net.povstalec.stellarview.api.celestials.CelestialObject;
 import net.povstalec.stellarview.api.celestials.Galaxy;
 import net.povstalec.stellarview.api.celestials.Galaxy.SpiralGalaxy;
 import net.povstalec.stellarview.api.celestials.Supernova;
+import net.povstalec.stellarview.api.celestials.orbiting.Barycenter;
 import net.povstalec.stellarview.api.celestials.orbiting.BlackHole;
 import net.povstalec.stellarview.api.celestials.orbiting.Moon;
 import net.povstalec.stellarview.api.celestials.orbiting.Planet;
@@ -74,12 +75,17 @@ public class StellarViewRendering
 								(MeteorShower) new MeteorShower().setDefaultRarity(10)))
 				.addOrbitingObject(JERBAAS, 384400F, 360F / 8, (float) Math.toRadians(45), (float) Math.toRadians(63), 0);//TODO Add rotation
 		
-		private static final Sun CHULAK_SUN = (Sun) new Sun.VanillaSun()
+		private static final Sun CHAAPORIS = (Sun) new Sun.VanillaSun();
+		private static final Sun DENNAL = (Sun) new Sun.VanillaSun();
+		
+		private static final Barycenter CHULAK_SUN_BARYCENTER = (Barycenter) new Barycenter()
+				.addOrbitingObject(CHAAPORIS, 30000000, 360F / 8, 0, 0, 0)
+				.addOrbitingObject(DENNAL, 30000000, 360F / 8, 0, (float) Math.toRadians(180), 0)
 				.addOrbitingObject(CHULAK, 147280000, 360F / 96, 0, 0, 0);
 		
 		private static final SpiralGalaxy MILKY_WAY = (SpiralGalaxy) new Galaxy.SpiralGalaxy(100, 10842L, (byte) 4, (short) 1500)
 				.addGalacticObject(new Supernova(10.0F, 15 * CelestialObject.TICKS_PER_DAY + 18000, 5 * CelestialObject.TICKS_PER_DAY), 10, -3, 2)
-				.addGalacticObject(CHULAK_SUN, 6, -2, 8, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
+				.addGalacticObject(CHULAK_SUN_BARYCENTER, 6, -2, 8, 0, (float) (0.2 * Math.PI), (float) (0.6 * Math.PI));
 		
 		public StellarViewChulakEffects()
 		{

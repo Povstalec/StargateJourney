@@ -158,18 +158,18 @@ public class StargateMethods
 				int[] configurationArray = ArrayHelper.tableToArray(chevronConfiguration);
 
 				
-				if(configurationArray.length < 9)
-					throw new LuaException("Array is too short (required length: 9)");
-				else if(configurationArray.length > 9)
-					throw new LuaException("Array is too long (required length: 9)");
+				if(configurationArray.length < 8)
+					throw new LuaException("Array is too short (required length: 8)");
+				else if(configurationArray.length > 8)
+					throw new LuaException("Array is too long (required length: 8)");
 				else if(!ArrayHelper.differentNumbers(configurationArray))
 					throw new LuaException("Array contains duplicate numbers");
-				else if(!ArrayHelper.isArrayInBounds(configurationArray, 0, 8))
-					throw new LuaException("Array contains numbers which are out of bounds <0,8>");
+				else if(!ArrayHelper.isArrayInBounds(configurationArray, 1, 8))
+					throw new LuaException("Array contains numbers which are out of bounds <1,8>");
 				
 				stargate.setEngagedChevrons(configurationArray);
 				
-				return  new Object[] {"Chevron configuration set successfully"};
+				return new Object[] {"Chevron configuration set successfully"};
 			});
 			
 			return result;
@@ -181,7 +181,7 @@ public class StargateMethods
 
 		@Override
 		public String getName() {
-			return "setCallForwarding";
+			return "callForward";
 		}
 
 		@Override
@@ -190,7 +190,7 @@ public class StargateMethods
 				boolean input = arguments.getBoolean(0);
 
 				blockEntity.setCFD(input);
-				return new Object[]{"Status changed successfully"};
+				return new Object[]{"Call Forwarding successfully"};
 			});
 		}
 	}
@@ -203,6 +203,7 @@ public class StargateMethods
 			return "setCallForwardingTarget";
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException {
 
@@ -221,12 +222,12 @@ public class StargateMethods
 					throw new LuaException("Array is too long (required length: 8)");
 				else if(!ArrayHelper.differentNumbers(configurationArray))
 					throw new LuaException("Array contains duplicate numbers");
-				else if(!ArrayHelper.isArrayInBounds(configurationArray, 0, 39))
-					throw new LuaException("Array contains numbers which are out of bounds <0,39>");
+				else if(!ArrayHelper.isArrayInBounds(configurationArray, 1, 38))
+					throw new LuaException("Array contains numbers which are out of bounds <1,38>");
 
 				stargate.setCFDTarget(new Address().fromArray(configurationArray));
 
-				return new Object[] {"Target set successfully"};
+				return new Object[] {"Call Forwarding target set successfully"};
 			});
 
 			return result;
@@ -238,7 +239,7 @@ public class StargateMethods
 
 		@Override
 		public String getName() {
-			return "getCallForwarding";
+			return "shouldCallForward";
 		}
 
 		@Override
@@ -338,12 +339,8 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
-			{
-				int network = arguments.getInt(0);
-				stargate.setNetwork(network);
-				return null;
-			});
+			int network = arguments.getInt(0);
+			stargate.setNetwork(network);
 			
 			return MethodResult.of();
 		}
@@ -360,12 +357,8 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
-			{
-				boolean restrictNetwork = arguments.getBoolean(0);
-				stargate.setRestrictNetwork(restrictNetwork);
-				return null;
-			});
+			boolean restrictNetwork = arguments.getBoolean(0);
+			stargate.setRestrictNetwork(restrictNetwork);
 			
 			return MethodResult.of();
 		}
