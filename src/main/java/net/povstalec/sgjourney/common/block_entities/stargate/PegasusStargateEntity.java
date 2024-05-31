@@ -223,10 +223,10 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	
 	public int getChevronPosition(int chevron)
 	{
-		if(chevron < 1 || chevron > 8)
+		if(chevron < 0 || chevron > 8)
 			return 0;
 		
-		return 4 * getEngagedChevrons()[chevron];
+		return 4 * getEngagedChevrons()[chevron - 1];
 	}
 	
 	public int getCurrentSymbol()

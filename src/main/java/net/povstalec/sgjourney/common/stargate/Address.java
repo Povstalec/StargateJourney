@@ -396,6 +396,11 @@ public final class Address
 	{
 		private final int[] addressArray;
 		
+		public Immutable(String addressString)
+		{
+			this.addressArray = new Address(addressString).toArray();
+		}
+		
 		public Immutable(Address address)
 		{
 			this.addressArray = address.toArray();

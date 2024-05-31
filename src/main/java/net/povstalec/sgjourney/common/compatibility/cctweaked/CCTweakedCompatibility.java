@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.compatibility.cctweaked;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.PegasusStargateMethods;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateFilterMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 
@@ -37,6 +38,17 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			
+			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
+			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
 		}
 	}
 	
@@ -83,6 +95,17 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			
+			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
+			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
 		}
 	}
 	
@@ -120,6 +143,17 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			
+			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
+			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
 		}
 	}
 	
@@ -153,6 +187,17 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			
+			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
+			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
 		}
 	}
 	
@@ -177,6 +222,7 @@ public class CCTweakedCompatibility
 		{
 			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
 			peripheral.registerMethod(new StargateMethods.LocalAddress());
+			
 			peripheral.registerMethod(new StargateMethods.GetNetwork());
 			peripheral.registerMethod(new StargateMethods.SetNetwork());
 			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
@@ -186,6 +232,17 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			
+			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
+			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
+			
+			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
+			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
 		}
 	}
 }

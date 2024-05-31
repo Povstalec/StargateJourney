@@ -40,18 +40,25 @@ public class StargateEvent extends Event
 	public static class Dial extends StargateEvent
 	{
 		private final Address.Immutable dialedAddress;
+		private final Address.Immutable dialingAddress;
 		private final boolean doKawoosh;
 		
-		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, boolean doKawoosh)
+		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, Address.Immutable dialingAddress, boolean doKawoosh)
 		{
 			super(server, stargate);
 			this.dialedAddress = dialedAddress.copy();
+			this.dialingAddress = dialingAddress.copy();
 			this.doKawoosh = doKawoosh;
 		}
 		
 		public Address.Immutable getDialedAddress()
 		{
 			return dialedAddress;
+		}
+		
+		public Address.Immutable getDialingAddress()
+		{
+			return dialingAddress;
 		}
 		
 		public boolean doKawoosh()
