@@ -226,9 +226,9 @@ public class StargateJourney
         @SubscribeEvent
         public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
         {
-        	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
+        	/*if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
         		StellarViewRendering.registerStellarViewEffects(event);
-        	else
+        	else*/
         		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
         }
     }

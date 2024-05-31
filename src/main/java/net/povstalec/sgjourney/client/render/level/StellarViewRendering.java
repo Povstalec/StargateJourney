@@ -78,7 +78,7 @@ public class StellarViewRendering
 		private static final Sun CHAAPORIS = (Sun) new Sun.VanillaSun();
 		private static final Sun DENNAL = (Sun) new Sun.VanillaSun();
 		
-		private static final Barycenter CHULAK_SUN_BARYCENTER = (Barycenter) new Barycenter()
+		private static final Barycenter CHULAK_SUN_BARYCENTER = (Barycenter) new Barycenter(Sun.VANILLA_SUN_TEXTURE, 1)
 				.addOrbitingObject(CHAAPORIS, 30000000, 360F / 8, 0, 0, 0)
 				.addOrbitingObject(DENNAL, 30000000, 360F / 8, 0, (float) Math.toRadians(180), 0)
 				.addOrbitingObject(CHULAK, 147280000, 360F / 96, 0, 0, 0);
