@@ -12,11 +12,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.blocks.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
+import net.povstalec.sgjourney.common.blocks.tech.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
@@ -136,6 +136,7 @@ public class TabInit
 			event.accept(BlockInit.BASIC_INTERFACE.get());
 			event.accept(BlockInit.CRYSTAL_INTERFACE.get());
 			event.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+			event.accept(ItemInit.CALL_FORWARDING_DEVICE.get());
 			
 			if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
 			{
