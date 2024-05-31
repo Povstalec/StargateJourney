@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class ControlCrystalItem extends AbstractCrystalItem
 {
@@ -47,7 +48,7 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		}
 
 		@Override
-		public Optional<Component> descriptionInDHD()
+		public Optional<Component> descriptionInDHD(ItemStack stack)
 		{
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.control.large").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}
@@ -67,7 +68,7 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		}
 
 		@Override
-		public Optional<Component> descriptionInDHD()
+		public Optional<Component> descriptionInDHD(ItemStack stack)
 		{
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.control.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}

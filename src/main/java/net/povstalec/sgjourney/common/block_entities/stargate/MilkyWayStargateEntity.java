@@ -3,8 +3,6 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import java.util.Map;
 import java.util.Random;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.google.common.collect.Maps;
 
 import net.minecraft.core.BlockPos;
@@ -82,33 +80,13 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
     }
 
 	@Override
-	public void load(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag)
 	{
-		super.load(tag);
-
-		this.pointOfOrigin = tag.getString("PointOfOrigin");
-		this.symbols = tag.getString("Symbols");
-		this.rotation = tag.getInt("Rotation");
-		this.oldRotation = this.rotation;
-	}
-
-	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
-	{
-		super.saveAdditional(tag);
-
-		tag.putString("PointOfOrigin", pointOfOrigin);
-		tag.putString("Symbols", symbols);
-		tag.putInt("Rotation", rotation);
-	}
-
-	@Override
-	public CompoundTag serializeStargateInfo()
-	{
-		CompoundTag tag = super.serializeStargateInfo();
+		super.serializeStargateInfo(tag);
 		
 		tag.putString("PointOfOrigin", pointOfOrigin);
 		tag.putString("Symbols", symbols);
+		tag.putInt("Rotation", rotation);
 		
 		return tag;
 	}
@@ -118,8 +96,13 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		if(tag.contains("PointOfOrigin"))
 			this.pointOfOrigin = tag.getString("PointOfOrigin");
+		
 		if(tag.contains("Symbols"))
 			this.symbols = tag.getString("Symbols");
+		
+        if(tag.contains("Rotation"))
+        	rotation = tag.getInt("Rotation");
+		this.oldRotation = this.rotation;
     	
     	super.deserializeStargateInfo(tag, isUpgraded);
 	}

@@ -97,7 +97,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 			if(oldEntity instanceof AbstractStargateEntity stargate)
 			{
 				if(!level.isClientSide())
-					tag = stargate.serializeStargateInfo();
+					tag = stargate.serializeStargateInfo(new CompoundTag());
 			}
 			
 			Direction direction = level.getBlockState(pos).getValue(FACING);

@@ -1,10 +1,11 @@
-package net.povstalec.sgjourney.common.block_entities;
+package net.povstalec.sgjourney.common.block_entities.tech;
 
 import java.util.List;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -15,8 +16,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.blocks.TransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -334,6 +334,12 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	public long maxExtract()
 	{
 		return 0;
+	}
+	
+	@Override
+	protected Component getDefaultName()
+	{
+		return Component.translatable("block.sgjourney.transport_rings");
 	}
 	
 }

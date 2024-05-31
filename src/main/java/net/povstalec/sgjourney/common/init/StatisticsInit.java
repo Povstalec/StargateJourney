@@ -1,5 +1,8 @@
 package net.povstalec.sgjourney.common.init;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
@@ -8,9 +11,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StatisticsInit
 {

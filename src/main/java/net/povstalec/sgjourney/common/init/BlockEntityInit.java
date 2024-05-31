@@ -11,7 +11,6 @@ import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIEntit
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIIEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.ZPMHubEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
@@ -28,6 +27,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 public class BlockEntityInit 
 {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, StargateJourney.MODID);

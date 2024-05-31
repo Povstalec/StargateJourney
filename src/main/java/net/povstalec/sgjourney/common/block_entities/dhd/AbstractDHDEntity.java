@@ -36,8 +36,10 @@ import net.povstalec.sgjourney.common.stargate.Address;
 public abstract class AbstractDHDEntity extends EnergyBlockEntity
 {
 	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
-	protected static final String CRYSTAL_MODE = "CrystalMode";
-	protected static final String ENERGY_TRANSFER = "ENERGY_TRANSFER";
+	public static final String CRYSTAL_MODE = "CrystalMode";
+	public static final String ENERGY_TRANSFER = "ENERGY_TRANSFER";
+	
+	public static final String CALL_FORWARDING = "CallForwarding";
 	
 	public static final String STARGATE_POS = "StargatePos";
 	
@@ -54,6 +56,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	protected Address address = new Address(true);
 	
 	protected boolean enableAdvancedProtocols = false;
+	protected boolean enableCallForwarding = false;
 	
 	protected long energyTarget = DEFAULT_ENERGY_TARGET;
 	protected int maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
@@ -153,7 +156,12 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		updateStargate();
 		
 		if(stargate.isPresent())
+		{
+			if(distance(this.getBlockPos(), stargate.get().getBlockPos()) > getMaxDistance())
+				unsetStargate();
+			
 			return;
+		}
 
 		if(stargateRelativePos.isEmpty())
 			stargateRelativePos = findNearestStargate(getMaxDistance());
@@ -267,6 +275,16 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 			stargate.receiveEnergy(energySent, false);
 		}
 	}
+
+	public void setCallForwardingState(boolean enableCallForwarding)
+	{
+		this.enableCallForwarding = enableCallForwarding;
+	}
+
+	public boolean callForwardingEnabled()
+	{
+		return this.enableCallForwarding;
+	}
     
     protected BlockState getState()
     {
@@ -302,7 +320,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 				
 				positions.stream().forEach(pos ->
 				{
-					if(this.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+					if(this.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate &&
+							distance(this.getBlockPos(), stargate.getBlockPos()) <= maxDistance)
 						stargates.add(stargate);
 				});
 			}

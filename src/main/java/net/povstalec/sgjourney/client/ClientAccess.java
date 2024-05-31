@@ -9,7 +9,6 @@ import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
@@ -18,6 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEn
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClientAccess
