@@ -104,6 +104,8 @@
 	
 	"item.sgjourney.stargate_upgrade_crystal": "Krystal pro upgradování hvězdné brány",
 	"item.sgjourney.stargate_variant_crystal": "Krystal varianty hvězdné brány",
+
+	"item.sgjourney.call_forwarding_device": "Zařízení přesměrující spojení",
 	
 	"item.sgjourney.naquadah_sword": "Naquadahový meč",
 	"item.sgjourney.naquadah_pickaxe": "Naquadahový krumpáč",
@@ -396,6 +398,9 @@
 	"tooltip.sgjourney.communication_crystal.frequency": "Frekvence",
 	"tooltip.sgjourney.materialization_crystal.increased_range": "Zvýšený dosah",
 	"tooltip.sgjourney.materialization_crystal.interdimensional": "Transport mezi dimenzemi",
+
+	"tooltip.sgjourney.call_forwarding_device.in_dhd": "V DHD:",
+	"tooltip.sgjourney.call_forwarding_device.info": "Povolí přesměrování spojení",
 	
 	"tooltip.sgjourney.stargate_upgrade.description": "Pravé kliknutí na klasickou hvězdnou bránu ji upgraduje",
 	"tooltip.sgjourney.stargate_variant.description": "Pravé kliknutí na hvězdnou bránu změní její variantu",

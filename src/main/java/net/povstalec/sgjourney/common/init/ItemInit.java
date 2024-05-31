@@ -11,6 +11,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.KaraKeshItem;
 import net.povstalec.sgjourney.common.items.PDAItem;
 import net.povstalec.sgjourney.common.items.RingRemoteItem;
@@ -163,8 +164,10 @@ public class ItemInit
 	public static final RegistryObject<FalconArmorItem> FALCON_HELMET = ITEMS.register("falcon_helmet", 
 			() -> new FalconArmorItem(ArmorMaterialInit.jaffa, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
 	
-	public static final RegistryObject<PersonalShieldItem> PERSONAL_SHIELD_EMITTER = ITEMS.register("personal_shield_emitter", 
+	public static final RegistryObject<PersonalShieldItem> PERSONAL_SHIELD_EMITTER = ITEMS.register("personal_shield_emitter",
 			() -> new PersonalShieldItem(ArmorMaterialInit.personal_shield, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
+	public static final RegistryObject<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device", 
+			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 		
 	
 	public static void register(IEventBus eventBus)

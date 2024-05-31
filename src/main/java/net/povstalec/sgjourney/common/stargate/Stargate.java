@@ -328,9 +328,52 @@ public class Stargate
 	
 	public enum FilterType
 	{
-		NONE,
-		WHITELIST,
-		BLACKLIST;
+		NONE(0),
+		WHITELIST(1),
+		BLACKLIST(-1);
+		// 7-chevron addresses
+		// 8-chevron addresses
+		// 9-chevron addresses
+		
+		private int integerValue;
+		
+		FilterType(int integerValue)
+		{
+			this.integerValue = integerValue;
+		}
+		
+		public int getIntegerValue()
+		{
+			return this.integerValue;
+		}
+		
+		public boolean shouldFilter()
+		{
+			return this != NONE;
+		}
+		
+		public boolean isWhitelist()
+		{
+			return this == WHITELIST;
+		}
+		
+		public boolean isBlacklist()
+		{
+			return this == BLACKLIST;
+		}
+		
+		public static FilterType getFilterType(int integerValue)
+		{
+			switch(integerValue)
+			{
+			case 1:
+				return WHITELIST;
+			case -1:
+				return BLACKLIST;
+			default:
+				return NONE;
+			}
+		}
 	}
 	
 	public enum FeedbackType
@@ -380,6 +423,10 @@ public class Stargate
 		TARGET_RESTRICTED(-16, FeedbackType.MAJOR_ERROR, "target_restricted"),
 		INVALID_8_CHEVRON_ADDRESS(-17, FeedbackType.MAJOR_ERROR, "invalid_8_chevron_address"),
 		INVALID_SYSTEM_WIDE_CONNECTION(-18, FeedbackType.MAJOR_ERROR, "invalid_system_wide_connection"),
+		WHITELISTED_TARGET(-19, FeedbackType.MAJOR_ERROR, "whitelisted_target"),
+		WHITELISTED_SELF(-20, FeedbackType.MAJOR_ERROR, "whitelisted_self"),
+		BLACKLISTED_TARGET(-21, FeedbackType.MAJOR_ERROR, "blacklisted_target"),
+		BLACKLISTED_SELF(-22, FeedbackType.MAJOR_ERROR, "blacklisted_self"),
 
 		// Wormhole TODO
 		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),
@@ -390,26 +437,26 @@ public class Stargate
 		CONNECTION_ENDED_BY_POINT_OF_ORIGIN(8, FeedbackType.INFO, "connection_ended.point_of_origin"),
 		CONNECTION_ENDED_BY_NETWORK(9, FeedbackType.INFO, "connection_ended.stargate_network"),
 		CONNECTION_ENDED_BY_AUTOCLOSE(10, FeedbackType.INFO, "connection_ended.autoclose"),
-		EXCEEDED_CONNECTION_TIME(-19, FeedbackType.ERROR, "exceeded_connection_time"),
-		RAN_OUT_OF_POWER(-20, FeedbackType.ERROR, "ran_out_of_power"),
-		CONNECTION_REROUTED(-21, FeedbackType.ERROR, "connection_rerouted"),
-		WRONG_DISCONNECT_SIDE(-22, FeedbackType.ERROR, "wrong_disconnect_side"),
-		CONNECTION_FORMING(-23, FeedbackType.ERROR, "connection_forming"),
+		EXCEEDED_CONNECTION_TIME(-23, FeedbackType.ERROR, "exceeded_connection_time"),
+		RAN_OUT_OF_POWER(-24, FeedbackType.ERROR, "ran_out_of_power"),
+		CONNECTION_REROUTED(-25, FeedbackType.ERROR, "connection_rerouted"),
+		WRONG_DISCONNECT_SIDE(-26, FeedbackType.ERROR, "wrong_disconnect_side"),
+		CONNECTION_FORMING(-27, FeedbackType.ERROR, "connection_forming"),
 
-		STARGATE_DESTROYED(-24, FeedbackType.ERROR, "stargate_destroyed"),
-		COULD_NOT_REACH_TARGET_STARGATE(-25, FeedbackType.MAJOR_ERROR, "could_not_reach_target_stargate"),
-		INTERRUPTED_BY_INCOMING_CONNECTION(-26, FeedbackType.ERROR, "interrupted_by_incoming_connection"),
+		STARGATE_DESTROYED(-28, FeedbackType.ERROR, "stargate_destroyed"),
+		COULD_NOT_REACH_TARGET_STARGATE(-29, FeedbackType.MAJOR_ERROR, "could_not_reach_target_stargate"),
+		INTERRUPTED_BY_INCOMING_CONNECTION(-30, FeedbackType.ERROR, "interrupted_by_incoming_connection"),
 		
 		// Milky Way
 		CHEVRON_RAISED(11, FeedbackType.INFO, "chevron_opened"),
 		ROTATING(12, FeedbackType.INFO, "rotating"),
-		ROTATION_BLOCKED(-27, FeedbackType.INFO, "rotation_blocked"),
-		NOT_ROTATING(-28, FeedbackType.INFO, "not_rotating"),
+		ROTATION_BLOCKED(-31, FeedbackType.INFO, "rotation_blocked"),
+		NOT_ROTATING(-32, FeedbackType.INFO, "not_rotating"),
 		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"),
-		CHEVRON_ALREADY_OPENED(-29, FeedbackType.ERROR, "chevron_already_opened"),
-		CHEVRON_ALREADY_CLOSED(-30, FeedbackType.ERROR, "chevron_already_closed"),
-		CHEVRON_NOT_RAISED(-31, FeedbackType.ERROR, "chevron_not_raised"),
-		CANNOT_ENCODE_POINT_OF_ORIGIN(-32, FeedbackType.ERROR, "cannot_encode_point_of_origin");
+		CHEVRON_ALREADY_OPENED(-33, FeedbackType.ERROR, "chevron_already_opened"),
+		CHEVRON_ALREADY_CLOSED(-34, FeedbackType.ERROR, "chevron_already_closed"),
+		CHEVRON_NOT_RAISED(-35, FeedbackType.ERROR, "chevron_not_raised"),
+		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin");
 		
 		private int code;
 		private final FeedbackType type;
