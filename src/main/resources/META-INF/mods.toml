@@ -35,6 +35,6 @@ Stargate in Minecraft! And much more.
 [[dependencies.sgjourney]]
     modId="stellarview"
     mandatory=false
-    versionRange="[0.2.1,0.3.0)"
+    versionRange="[0.2.4,0.3.0)"
     ordering="AFTER"
     side="CLIENT"

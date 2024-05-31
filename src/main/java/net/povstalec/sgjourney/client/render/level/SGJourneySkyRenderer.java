@@ -332,6 +332,14 @@ public abstract class SGJourneySkyRenderer
 		RenderSystem.enableBlend();
 	}
 	
+	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size, float theta, float phi)
+	{
+		this.createCelestialObject(bufferbuilder, lastMatrix, SUN_LOCATION, 
+				size, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
+
+		RenderSystem.enableBlend();
+	}
+	
 	protected void renderBlackHole(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size, float theta, float phi)
 	{
 		this.createCelestialObject(bufferbuilder, lastMatrix, BLACK_HOLE_HALO_LOCATION, 

@@ -34,7 +34,8 @@ public class PlanetSkyRenderers
 		
 		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
 		{
-			this.renderSun(bufferbuilder, lastMatrix, 30.0F);
+			this.renderSun(bufferbuilder, lastMatrix, 30.0F, (float) Math.toRadians(90), (float) Math.toRadians(10));
+			this.renderSun(bufferbuilder, lastMatrix, 30.0F, (float) Math.toRadians(15), (float) Math.toRadians(-10));
 	        
 	        this.renderMoon(bufferbuilder, lastMatrix, 45.0F, level.getMoonPhase(), 0.0F, (float) Math.toRadians(180));
 		}
