@@ -57,7 +57,11 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
         
         this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
         
-        //this.shieldModel.renderShield((AbstractStargateEntity) stargate, stack, source, combinedLight, combinedOverlay);
+
+		//stack.mulPose(Axis.ZP.rotationDegrees(90));
+		//stack.translate(2.5, -2.5, 0);
+		
+		//shieldModel.renderShield(stargate, stack, source, combinedLight, combinedOverlay);
 	    
 	    stack.popPose();
 	    

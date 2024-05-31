@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.SolarSystem;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
 
@@ -296,7 +298,7 @@ public final class StargateNetwork extends SavedData
 		
 		if(dialingStargate.equals(dialedStargate))
 			return dialingStargate.resetStargate(server, Stargate.Feedback.SELF_DIAL, true);
-		
+
 		if(dialedStargate.isConnected(server))
 			return dialingStargate.resetStargate(server, Stargate.Feedback.ALREADY_CONNECTED, true);
 		else if(dialedStargate.isObstructed(server))
@@ -315,6 +317,32 @@ public final class StargateNetwork extends SavedData
 		
 		if(outgoingStargate.isPresent() && incomingStargate.isPresent())
 		{
+			// Call Forwarding
+			if(incomingStargate.get().shouldCallForward())
+			{
+				// Chooses a random Stargate to connect to
+				Random random = new Random();
+				
+				Optional<SolarSystem.Serializable> solarSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension());
+				
+				if(solarSystemOptional.isPresent())
+				{
+					SolarSystem.Serializable solarSystem = solarSystemOptional.get();
+					
+					Optional<Stargate> reroutedStargate = solarSystem.getRandomStargate(random.nextLong());
+					
+					if(reroutedStargate.isPresent())
+					{
+						while(reroutedStargate.get().getStargateEntity(server).get().shouldCallForward())
+						{
+							reroutedStargate = solarSystem.getRandomStargate(random.nextLong());
+						}
+						
+						incomingStargate = reroutedStargate.get().getStargateEntity(server);
+					}
+				}
+			}
+
 			StargateConnection connection = StargateConnection.create(connectionType, outgoingStargate.get(), incomingStargate.get(), doKawoosh);
 			if(connection != null)
 			{

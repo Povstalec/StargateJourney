@@ -58,7 +58,7 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	}
 
 	@Override
-	public Optional<Component> descriptionInDHD()
+	public Optional<Component> descriptionInDHD(ItemStack stack)
 	{
 		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.transfer").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
@@ -93,7 +93,7 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		}
 
 		@Override
-		public Optional<Component> descriptionInDHD()
+		public Optional<Component> descriptionInDHD(ItemStack stack)
 		{
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.transfer.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}

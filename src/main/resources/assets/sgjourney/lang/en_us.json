@@ -105,6 +105,8 @@
 	
 	"item.sgjourney.stargate_upgrade_crystal": "Stargate Upgrade Crystal",
 	"item.sgjourney.stargate_variant_crystal": "Stargate Variant Crystal",
+
+	"item.sgjourney.call_forwarding_device": "Call Forwarding Device",
 	
 	"item.sgjourney.naquadah_sword": "Naquadah Sword",
 	"item.sgjourney.naquadah_pickaxe": "Naquadah Pickaxe",
@@ -393,6 +395,9 @@
 	"tooltip.sgjourney.communication_crystal.frequency": "Frequency",
 	"tooltip.sgjourney.materialization_crystal.increased_range": "Increased Range",
 	"tooltip.sgjourney.materialization_crystal.interdimensional": "Enable Interdimensional Transport",
+
+	"tooltip.sgjourney.call_forwarding_device.in_dhd": "In DHD:",
+	"tooltip.sgjourney.call_forwarding_device.info": "Enables Call Forwarding",
 	
 	"tooltip.sgjourney.stargate_upgrade.description": "Right-click on a Classic Stargate to upgrade it",
 	"tooltip.sgjourney.stargate_variant.description": "Right-click on a Stargate to change its variant",
@@ -455,6 +460,10 @@
 	"message.sgjourney.stargate.error.target_restricted": "Dialed Stargate is restricted",
 	"message.sgjourney.stargate.error.invalid_8_chevron_address": "8-chevron address can't dial within the same Galaxy",
 	"message.sgjourney.stargate.error.invalid_system_wide_connection": "Cannot connect within the same Solar System",
+	"message.sgjourney.stargate.error.whitelisted_target": "Target Stargate is not whitelisted",
+	"message.sgjourney.stargate.error.whitelisted_self": "Stargate is not on Target Stargate's whitelist",
+	"message.sgjourney.stargate.error.blacklisted_target": "Target Stargate is blacklisted",
+	"message.sgjourney.stargate.error.blacklisted_self": "Stargate is on Target Stargate's blacklist",
 	
 	"message.sgjourney.stargate.info.connection_ended.disconnect": "Stargate disconnected",
 	"message.sgjourney.stargate.info.connection_ended.point_of_origin": "Stargate disconnected by locking point of origin",

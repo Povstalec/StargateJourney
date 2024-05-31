@@ -1,11 +1,11 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.povstalec.sgjourney.common.init.StatisticsInit;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -50,6 +50,7 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
@@ -83,6 +84,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final String RESTRICT_NETWORK = "RestrictNetwork";
 	public static final String TIMES_OPENED = "TimesOpened";
 	public static final String AUTOCLOSE = "Autoclose";
+	
+	public static final String FILTER_TYPE = "FilterType";
+	public static final String WHITELIST = "Whitelist";
+	public static final String BLACKLIST = "Blacklist";
 	// Upgrading and variants
 	public static final String UPGRADED = "Upgraded";
 	public static final String DISPLAY_ID = "DisplayID";
@@ -96,7 +101,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
 	// Basic Info
-	protected Address id9ChevronAddress = new Address();//TODO
+	protected Address id9ChevronAddress = new Address();
 	protected boolean addToNetwork = true;
 	
 	protected final Stargate.Gen generation;
@@ -140,9 +145,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	protected boolean displayID = false;
 	protected boolean upgraded = false;
 	
-	//private Stargate.FilterType filter = Stargate.FilterType.NONE;
-	//private ListTag whitelist;
-	//private ListTag blacklist;
+	private Stargate.FilterType filter = Stargate.FilterType.NONE;
+	private ArrayList<Address.Immutable> whitelist = new ArrayList<Address.Immutable>();
+	private ArrayList<Address.Immutable> blacklist = new ArrayList<Address.Immutable>();
 
 	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
 			float verticalCenterHeight, float horizontalCenterHeight)
@@ -178,35 +183,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	@Override
 	public void load(CompoundTag tag)
 	{
-		super.load(tag);
-		timesOpened = tag.getInt(TIMES_OPENED);
-		address.fromArray(tag.getIntArray(ADDRESS));
-		network = tag.getInt(NETWORK);
-		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
-		
-		connectionID = tag.getString(CONNECTION_ID);
-		
-		if(tag.contains(ID)) //TODO For legacy reasons
-			id9ChevronAddress.fromString(tag.getString(ID));
-		else
-			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
-    	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
-
-		displayID = tag.getBoolean(DISPLAY_ID);
-		upgraded = tag.getBoolean(UPGRADED);
-		
-		variant = tag.getString(VARIANT);
-		
-		if(tag.contains(DHD_POS))
-		{
-			int[] pos = tag.getIntArray(DHD_POS);
-			dhdRelativePos = Optional.of(new Vec3i(pos[0], pos[1], pos[2]));
-		}
-		autoclose = tag.getInt(AUTOCLOSE);
+		deserializeStargateInfo(tag, false);
 	}
 	
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
+		super.load(tag);
+		
 		timesOpened = tag.getInt(TIMES_OPENED);
 		address.fromArray(tag.getIntArray(ADDRESS));
 		network = tag.getInt(NETWORK);
@@ -219,12 +202,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		else
 			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
     	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
-    	
-		this.setEnergy(tag.getLong(ENERGY));
 		
 		displayID = tag.getBoolean(DISPLAY_ID);
-		upgraded = isUpgraded ? isUpgraded : tag.getBoolean(UPGRADED);
-    	
+		upgraded = isUpgraded ? true : tag.getBoolean(UPGRADED);
+		
+		variant = tag.getString(VARIANT);
+		
 		if(tag.contains(DHD_POS))
 		{
 			int[] pos = tag.getIntArray(DHD_POS);
@@ -232,41 +215,19 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		}
 		autoclose = tag.getInt(AUTOCLOSE);
 		
+		deserializeFilters(tag);
+		
     	this.setChanged();
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		tag.putInt(TIMES_OPENED, timesOpened);
-		tag.putIntArray(ADDRESS, address.toArray());
-		tag.putInt(NETWORK, network);
-		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
-		
-		tag.putString(CONNECTION_ID, connectionID);
-		
-		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
-		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
-		
-		tag.putBoolean(DISPLAY_ID, displayID);
-		tag.putBoolean(UPGRADED, upgraded);
-
-		tag.putString(VARIANT, variant);
-		
-		if(dhdRelativePos.isPresent())
-		{
-			Vec3i pos = dhdRelativePos.get();
-			tag.putIntArray(DHD_POS, new int[] {pos.getX(), pos.getY(), pos.getZ()});
-		}
-		tag.putInt(AUTOCLOSE, autoclose);
-		
-		super.saveAdditional(tag);
+		serializeStargateInfo(tag);
 	}
 	
-	public CompoundTag serializeStargateInfo()
+	public CompoundTag serializeStargateInfo(CompoundTag tag)
 	{
-		CompoundTag tag = new CompoundTag();
-		
 		tag.putInt(TIMES_OPENED, timesOpened);
 		tag.putIntArray(ADDRESS, address.toArray());
 		tag.putInt(NETWORK, network);
@@ -281,6 +242,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 
 		tag.putBoolean(DISPLAY_ID, displayID);
 		tag.putBoolean(UPGRADED, upgraded);
+
+		tag.putString(VARIANT, variant);
 		
 		if(dhdRelativePos.isPresent())
 		{
@@ -289,7 +252,58 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		}
 		tag.putInt(AUTOCLOSE, autoclose);
 		
+		serializeFilters(tag);
+		
+		super.saveAdditional(tag);
+		
 		return tag;
+	}
+	
+	public void deserializeFilters(CompoundTag tag)
+	{
+		if(tag.contains(FILTER_TYPE))
+			this.filter = Stargate.FilterType.getFilterType(tag.getInt(FILTER_TYPE));
+		
+		if(tag.contains(WHITELIST))
+		{
+			CompoundTag whitelistTag = tag.getCompound(WHITELIST);
+			
+			whitelistTag.getAllKeys().forEach(addressString ->
+			{
+				this.whitelist.add(new Address.Immutable(addressString));
+			});
+		}
+		
+		if(tag.contains(BLACKLIST))
+		{
+			CompoundTag blacklistTag = tag.getCompound(BLACKLIST);
+			
+			blacklistTag.getAllKeys().forEach(addressString ->
+			{
+				this.blacklist.add(new Address.Immutable(addressString));
+			});
+		}
+	}
+	
+	public void serializeFilters(CompoundTag tag)
+	{
+		tag.putInt(FILTER_TYPE, this.filter.getIntegerValue());
+		
+		CompoundTag whitelistTag = new CompoundTag();
+		CompoundTag blacklistTag = new CompoundTag();
+		
+		this.whitelist.forEach(address ->
+		{
+			whitelistTag.putBoolean(address.toString(), true);
+		});
+		
+		this.blacklist.forEach(address ->
+		{
+			blacklistTag.putBoolean(address.toString(), true);
+		});
+
+		tag.put(WHITELIST, whitelistTag);
+		tag.put(BLACKLIST, blacklistTag);
 	}
 	
 	public void addStargateToNetwork()
@@ -364,6 +378,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public static int getChevron(AbstractStargateEntity stargate, int chevronNumber)
 	{
+		chevronNumber--;
 		if(chevronNumber < 0 || chevronNumber > 8)
 			return 0;
 		else
@@ -484,10 +499,22 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public Stargate.Feedback engageStargate(Address address, boolean doKawoosh)
 	{
+		Address.Immutable immutableAddress = address.immutable();
+		
+		if(this.getFilterType().shouldFilter())
+		{
+			if(this.getFilterType().isBlacklist() && this.isAddressBlacklisted(immutableAddress))
+				return this.resetStargate(Stargate.Feedback.BLACKLISTED_TARGET);
+			
+			else if(this.getFilterType().isWhitelist() && !this.isAddressWhitelisted(immutableAddress))
+				return this.resetStargate(Stargate.Feedback.WHITELISTED_TARGET);
+		}
+		
+		Address dialingAddress = this.getConnectionAddress(address.getLength());
 		Optional<Stargate> stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress().immutable());
 		
 		if(stargate.isPresent())
-			return Dialing.dialStargate((ServerLevel) this.level, stargate.get(), address.immutable(), doKawoosh);
+			return Dialing.dialStargate((ServerLevel) this.level, stargate.get(), immutableAddress, dialingAddress.immutable(), doKawoosh);
 		
 		return resetStargate(Stargate.Feedback.UNKNOWN_ERROR);
 	}
@@ -955,6 +982,17 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			this.dhd.get().sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), 5);
 	}
 	
+	public boolean shouldCallForward()
+	{
+		if(hasDHD())
+		{
+			if(this.dhd.get().callForwardingEnabled())
+				return true;
+		}
+		
+		return false;
+	}
+	
 	public int getOpenTime()
 	{
 		if(this.level.isClientSide())
@@ -1067,6 +1105,78 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public int getRedstoneSegmentOutput()
 	{
 		return 0;
+	}
+	
+	public Stargate.FilterType setFilterType(int integerValue)
+	{
+		this.filter = Stargate.FilterType.getFilterType(integerValue);
+		
+		return this.filter;
+	}
+	
+	public Stargate.FilterType getFilterType()
+	{
+		return this.filter;
+	}
+	
+	public boolean isAddressWhitelisted(Address.Immutable address)
+	{
+		return this.whitelist.contains(address);
+	}
+	
+	public boolean addToWhitelist(Address.Immutable address)
+	{
+		if(this.whitelist.contains(address))
+			return false;
+		
+		this.whitelist.add(address);
+		
+		return true;
+	}
+	
+	public boolean removeFromWhitelist(Address.Immutable address)
+	{
+		if(!this.whitelist.contains(address))
+			return false;
+		
+		this.whitelist.remove(address);
+		
+		return true;
+	}
+	
+	public void clearWhitelist()
+	{
+		this.whitelist.clear();
+	}
+	
+	public boolean isAddressBlacklisted(Address.Immutable address)
+	{
+		return this.blacklist.contains(address);
+	}
+	
+	public boolean addToBlacklist(Address.Immutable address)
+	{
+		if(this.blacklist.contains(address))
+			return false;
+		
+		this.blacklist.add(address);
+		
+		return true;
+	}
+	
+	public boolean removeFromBlacklist(Address.Immutable address)
+	{
+		if(!this.blacklist.contains(address))
+			return false;
+		
+		this.blacklist.remove(address);
+		
+		return true;
+	}
+	
+	public void clearBlacklist()
+	{
+		this.blacklist.clear();
 	}
 	
 	//============================================================================================
@@ -1215,6 +1325,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		}
 		return obstructingBlocks >= CommonStargateConfig.max_obstructive_blocks.get();
 	}
+	
+	
 	
     public void updateBasicInterfaceBlocks(@Nullable String eventName, Object... objects)
     {
@@ -1461,7 +1573,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		if(level.isClientSide())
 			return;
-		
+
 		stargate.updateClient();
     }
 }

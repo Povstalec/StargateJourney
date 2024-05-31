@@ -157,23 +157,112 @@ public class StargateMethods
 				int[] configurationArray = ArrayHelper.tableToArray(chevronConfiguration);
 
 				
-				if(configurationArray.length < 9)
-					throw new LuaException("Array is too short (required length: 9)");
-				else if(configurationArray.length > 9)
-					throw new LuaException("Array is too long (required length: 9)");
+				if(configurationArray.length < 8)
+					throw new LuaException("Array is too short (required length: 8)");
+				else if(configurationArray.length > 8)
+					throw new LuaException("Array is too long (required length: 8)");
 				else if(!ArrayHelper.differentNumbers(configurationArray))
 					throw new LuaException("Array contains duplicate numbers");
-				else if(!ArrayHelper.isArrayInBounds(configurationArray, 0, 8))
-					throw new LuaException("Array contains numbers which are out of bounds <0,8>");
+				else if(!ArrayHelper.isArrayInBounds(configurationArray, 1, 8))
+					throw new LuaException("Array contains numbers which are out of bounds <1,8>");
 				
 				stargate.setEngagedChevrons(configurationArray);
 				
-				return  new Object[] {"Chevron configuration set successfully"};
+				return new Object[] {"Chevron configuration set successfully"};
 			});
 			
 			return result;
 		}
 	}
+
+	/*public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
+	{
+
+		@Override
+		public String getName() {
+			return "callForward";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
+			return context.executeMainThreadTask(() -> {
+				boolean input = arguments.getBoolean(0);
+
+				blockEntity.setCFD(input);
+				return new Object[]{"Call Forwarding successfully"};
+			});
+		}
+	}
+
+	public static class SetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
+	{
+
+		@Override
+		public String getName() {
+			return "setCallForwardingTarget";
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException {
+
+			MethodResult result = context.executeMainThreadTask(() -> {
+
+				Map<Double, Double> chevronConfiguration = (Map<Double, Double>) arguments.getTable(0);
+
+				int[] configurationArray = ArrayHelper.tableToArray(chevronConfiguration);
+
+
+				if(configurationArray.length == 0)
+					stargate.setCFDTarget(new Address());
+				else if(configurationArray.length < 8)
+					throw new LuaException("Array is too short (required length: 8)");
+				else if(configurationArray.length > 8)
+					throw new LuaException("Array is too long (required length: 8)");
+				else if(!ArrayHelper.differentNumbers(configurationArray))
+					throw new LuaException("Array contains duplicate numbers");
+				else if(!ArrayHelper.isArrayInBounds(configurationArray, 1, 38))
+					throw new LuaException("Array contains numbers which are out of bounds <1,38>");
+
+				stargate.setCFDTarget(new Address().fromArray(configurationArray));
+
+				return new Object[] {"Call Forwarding target set successfully"};
+			});
+
+			return result;
+		}
+	}
+
+	public static class GetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
+	{
+
+		@Override
+		public String getName() {
+			return "shouldCallForward";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
+			return context.executeMainThreadTask(() -> new Object[]{blockEntity.getCFD()});
+		}
+	}
+
+	public static class GetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
+	{
+
+		@Override
+		public String getName() {
+			return "getCallForwardingTarget";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
+			return context.executeMainThreadTask(() -> {
+				List<Integer> address = Arrays.stream(blockEntity.getCFDTarget().toArray()).boxed().toList();
+				return new Object[] {address};
+			});
+		}
+	}*/
 
 	// Advanced Crystal Interface
 	public static class ConnectedAddress implements InterfaceMethod<AbstractStargateEntity>
@@ -249,12 +338,8 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
-			{
-				int network = arguments.getInt(0);
-				stargate.setNetwork(network);
-				return null;
-			});
+			int network = arguments.getInt(0);
+			stargate.setNetwork(network);
 			
 			return MethodResult.of();
 		}
@@ -271,12 +356,8 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
-			{
-				boolean restrictNetwork = arguments.getBoolean(0);
-				stargate.setRestrictNetwork(restrictNetwork);
-				return null;
-			});
+			boolean restrictNetwork = arguments.getBoolean(0);
+			stargate.setRestrictNetwork(restrictNetwork);
 			
 			return MethodResult.of();
 		}
