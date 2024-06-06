@@ -71,20 +71,8 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     @Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) 
 	{
-		BlockPos blockpos = context.getClickedPos();
-		Level level = context.getLevel();
-		Player player = context.getPlayer();
 		Orientation orientation = Orientation.getOrientationFromXRot(context.getPlayer());
 		Direction direction = context.getHorizontalDirection().getOpposite();
-		int maxBuildHeight = level.getMaxBuildHeight();
-		if(orientation != Orientation.REGULAR)
-			maxBuildHeight -= 1;
-		
-		if(blockpos.getY() > maxBuildHeight || !level.getBlockState(blockpos.relative(Orientation.getMultiDirection(direction, Direction.UP, orientation))).canBeReplaced(context))
-		{
-			player.displayClientMessage(Component.translatable("block.sgjourney.cartouche.not_enough_space"), true);
-			return null;
-		}
 		
 		return this.defaultBlockState().setValue(FACING, direction).setValue(HALF, DoubleBlockHalf.LOWER).setValue(ORIENTATION, orientation);
 	}
