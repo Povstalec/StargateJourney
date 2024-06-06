@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -45,6 +46,7 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -100,6 +102,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
+	public static final short MAX_IRIS_TICKS = 58;
+	
 	// Basic Info
 	protected Address id9ChevronAddress = new Address();
 	protected boolean addToNetwork = true;
@@ -124,6 +128,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	protected String symbols = EMPTY;
 	
 	protected String variant = EMPTY;
+
+	protected short oldIrisProgress = 0;
+	protected short irisProgress = 0;
 	
 	// Dialing and memory
 	protected Address address = new Address();
@@ -886,6 +893,31 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return this.animationTick;
 	}
 	
+	//TODO Finish Iris
+	public short getIrisProgress()
+	{
+		return this.irisProgress;
+	}
+	
+	public float getIrisProgress(float partialTick)
+	{
+		return StargateJourneyConfig.disable_smooth_animations.get() ?
+				(float) getIrisProgress() : Mth.lerp(partialTick, this.oldIrisProgress, this.irisProgress);
+	}
+	
+	public short increaseIrisProgress()
+	{
+		//irisProgress = 58;
+		oldIrisProgress = irisProgress;
+		
+		if(irisProgress > 0)
+			irisProgress--;
+		//else
+			//irisProgress++;
+		
+		return irisProgress;
+	}
+	
 	public void setDHD(AbstractDHDEntity dhd, int autoclose)
 	{
 		Direction direction = this.getDirection();
@@ -1570,6 +1602,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
     {
 		if(stargate.isConnected())
 			stargate.increaseTickCount();
+		
+		stargate.increaseIrisProgress();
 		
 		if(level.isClientSide())
 			return;

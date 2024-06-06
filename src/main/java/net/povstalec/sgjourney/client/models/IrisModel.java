@@ -24,11 +24,16 @@ private static final ResourceLocation IRIS_TEXTURE = new ResourceLocation("textu
 	
 	public static final float IRIS_BLADE_LENGTH = 2.5F;
 	
+	public static final float IRIS_CLOSED_DEGREES = 84.0F;
+	public static final float IRIS_ROTATE_DEGREES = 1.0F;
+	
 	public IrisModel(){}
 	
-	public void renderIris(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	public void renderIris(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay, float progress)
 	{
 		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.iris(IRIS_TEXTURE));
+		
+		float closingProgress = (float) progress / AbstractStargateEntity.MAX_IRIS_TICKS;
 		
 		stack.pushPose();
 		
@@ -37,8 +42,8 @@ private static final ResourceLocation IRIS_TEXTURE = new ResourceLocation("textu
 			stack.pushPose();
 			
 			stack.translate(IRIS_BLADE_WIDTH_HALF, IRIS_BLADE_LENGTH, 0);
-			stack.mulPose(Axis.YP.rotationDegrees(-0.2F)); // -1.0F
-			stack.mulPose(Axis.ZP.rotationDegrees(-20.0F)); // -82.0F
+			stack.mulPose(Axis.YP.rotationDegrees(-IRIS_ROTATE_DEGREES * closingProgress)); // -1.0F
+			stack.mulPose(Axis.ZP.rotationDegrees(-IRIS_CLOSED_DEGREES * closingProgress)); // -82.0F
 			
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();
