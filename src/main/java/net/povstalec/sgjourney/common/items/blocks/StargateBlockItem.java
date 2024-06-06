@@ -4,20 +4,27 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 
 public class StargateBlockItem extends BlockItem
@@ -30,6 +37,38 @@ public class StargateBlockItem extends BlockItem
 	public StargateBlockItem(Block block, Properties properties)
 	{
 		super(block, properties);
+	}
+	
+	@Override
+	protected boolean canPlace(BlockPlaceContext context, BlockState state)
+	{
+		BlockPos blockpos = context.getClickedPos();
+		Level level = context.getLevel();
+		
+		Player player = context.getPlayer();
+		CollisionContext collisioncontext = player == null ? CollisionContext.empty() : CollisionContext.of(player);
+		
+		Orientation orientation = Orientation.getOrientationFromXRot(player);
+		
+		if(orientation == Orientation.REGULAR && blockpos.getY() > level.getMaxBuildHeight() - 6)
+			return false;
+		
+		if(state.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
+		{
+			for(StargatePart part : stargateBlock.getParts())
+			{
+				if(!part.equals(StargatePart.BASE) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
+				{
+					if(player != null)
+						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
+					return false;
+				}
+			}
+		}
+		else
+			return false;
+		
+		return (!this.mustSurvive() || state.canSurvive(context.getLevel(), context.getClickedPos())) && context.getLevel().isUnobstructed(state, context.getClickedPos(), collisioncontext);
 	}
 	
 	@Override

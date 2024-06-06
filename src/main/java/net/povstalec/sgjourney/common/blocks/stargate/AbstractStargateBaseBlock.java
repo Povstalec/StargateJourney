@@ -143,23 +143,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
 		FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-		BlockPos blockpos = context.getClickedPos();
-		Level level = context.getLevel();
 		Player player = context.getPlayer();
 		Orientation orientation = Orientation.getOrientationFromXRot(player);
-		
-		if(orientation == Orientation.REGULAR && blockpos.getY() > level.getMaxBuildHeight() - 6)
-			return null;
-		
-		for(StargatePart part : getParts())
-		{
-			if(!part.equals(StargatePart.BASE) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
-			{
-				if(player != null)
-					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
-				return null;
-			}
-		}
 		
 		return this.defaultBlockState()
 				.setValue(FACING, context.getHorizontalDirection().getOpposite())
