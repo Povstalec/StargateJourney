@@ -62,6 +62,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 		//stack.translate(2.5, -2.5, 0);
 		
 		//shieldModel.renderShield(stargate, stack, source, combinedLight, combinedOverlay);
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay);
 	    
 	    stack.popPose();
 	    

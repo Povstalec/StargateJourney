@@ -21,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.client.models.AbstractStargateModel;
+import net.povstalec.sgjourney.client.models.IrisModel;
 import net.povstalec.sgjourney.client.models.ShieldModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -33,16 +34,19 @@ public abstract class AbstractStargateRenderer
 {
 	protected final WormholeModel wormholeModel;
 	protected final ShieldModel shieldModel;
+	protected final IrisModel irisModel;
 	
 	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context, ResourceLocation eventHorizonTexture, ResourceLocation shinyEventHorizonTexture, float maxDefaultDistortion)
 	{
 		this.shieldModel = new ShieldModel();
+		this.irisModel = new IrisModel();
 		this.wormholeModel = new WormholeModel(eventHorizonTexture, Optional.of(shinyEventHorizonTexture), maxDefaultDistortion);
 	}
 	
 	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context, ResourceLocation eventHorizonTexture, float maxDefaultDistortion)
 	{
 		this.shieldModel = new ShieldModel();
+		this.irisModel = new IrisModel();
 		this.wormholeModel = new WormholeModel(eventHorizonTexture, Optional.empty(), maxDefaultDistortion);
 	}
 	

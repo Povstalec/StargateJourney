@@ -73,6 +73,18 @@ public class SGJourneyRenderTypes extends RenderType
 				.createCompositeState(true));
 	}
 
+	public static RenderType iris(ResourceLocation resourceLocation)
+	{
+		return create("iris", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTransparencyState(NO_TRANSPARENCY)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(OVERLAY)
+				.createCompositeState(true));
+	}
+
 	public static RenderType vortex(ResourceLocation resourceLocation, float xOffset, float zOffset)
 	{
 		return create("vortex", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
