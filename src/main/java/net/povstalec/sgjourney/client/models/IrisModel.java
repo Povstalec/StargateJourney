@@ -24,16 +24,26 @@ private static final ResourceLocation IRIS_TEXTURE = new ResourceLocation("textu
 	
 	public static final float IRIS_BLADE_LENGTH = 2.5F;
 	
-	public static final float IRIS_CLOSED_DEGREES = 84.0F;
+	public static final float IRIS_OPEN_DEGREES = 84.0F;
 	public static final float IRIS_ROTATE_DEGREES = 1.0F;
 	
-	public IrisModel(){}
+	private boolean renderWhenOpen;
+	private float maxOpenDegrees;
+	
+	public IrisModel(boolean renderWhenOpen, float maxOpenDegrees)
+	{
+		this.renderWhenOpen = renderWhenOpen;
+		this.maxOpenDegrees = maxOpenDegrees;
+	}
 	
 	public void renderIris(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay, float progress)
 	{
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.iris(IRIS_TEXTURE));
+		float closingProgress = (float) (AbstractStargateEntity.IRIS_MAX_PROGRESS - progress) / AbstractStargateEntity.IRIS_MAX_PROGRESS;
 		
-		float closingProgress = (float) progress / AbstractStargateEntity.MAX_IRIS_TICKS;
+		if(!this.renderWhenOpen && progress == 0)
+			return;
+		
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.iris(IRIS_TEXTURE));
 		
 		stack.pushPose();
 		
@@ -42,8 +52,8 @@ private static final ResourceLocation IRIS_TEXTURE = new ResourceLocation("textu
 			stack.pushPose();
 			
 			stack.translate(IRIS_BLADE_WIDTH_HALF, IRIS_BLADE_LENGTH, 0);
-			stack.mulPose(Axis.YP.rotationDegrees(-IRIS_ROTATE_DEGREES * closingProgress)); // -1.0F
-			stack.mulPose(Axis.ZP.rotationDegrees(-IRIS_CLOSED_DEGREES * closingProgress)); // -82.0F
+			stack.mulPose(Axis.YP.rotationDegrees(-IRIS_ROTATE_DEGREES * closingProgress));
+			stack.mulPose(Axis.ZP.rotationDegrees(-maxOpenDegrees * closingProgress));
 			
 			Matrix4f matrix4 = stack.last().pose();
 			Matrix3f matrix3 = stack.last().normal();

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
@@ -105,5 +106,10 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
 	{
 		CCTweakedCompatibility.registerTollanStargateMethods(wrapper);
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
+	{
+		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 	}
 }

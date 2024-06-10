@@ -30,7 +30,7 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
 	
 	public UniverseStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F);
+		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F, false, 84F);
 		this.stargateModel = new UniverseStargateModel();
 	}
 	
@@ -55,6 +55,11 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer implement
         this.stargateModel.setRotation(stargate.getRotation(partialTick) / UniverseStargateEntity.MAX_ROTATION * 360);
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
         
+        stack.pushPose();
+        stack.mulPose(Axis.ZP.rotationDegrees(stargate.getRotation(partialTick) / UniverseStargateEntity.MAX_ROTATION * 360));
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
+        stack.popPose();
+		
         this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
 	    stack.popPose();
 	    

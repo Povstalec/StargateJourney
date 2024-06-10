@@ -80,6 +80,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final String ADDRESS = "Address";
 	public static final String DHD_POS = "DHDPos";
 	public static final String ENERGY = "Energy";
+	
+	public static final String IRIS_PROGRESS = "IrisProgress";
+	
 	// Connections
 	public static final String CONNECTION_ID = "ConnectionID";
 	public static final String NETWORK = "Network";
@@ -90,6 +93,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final String FILTER_TYPE = "FilterType";
 	public static final String WHITELIST = "Whitelist";
 	public static final String BLACKLIST = "Blacklist";
+	
 	// Upgrading and variants
 	public static final String UPGRADED = "Upgraded";
 	public static final String DISPLAY_ID = "DisplayID";
@@ -102,7 +106,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
-	public static final short MAX_IRIS_TICKS = 58;
+	public static final short IRIS_MAX_PROGRESS = 58;
 	
 	// Basic Info
 	protected Address id9ChevronAddress = new Address();
@@ -222,6 +226,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		}
 		autoclose = tag.getInt(AUTOCLOSE);
 		
+		irisProgress = tag.getShort(IRIS_PROGRESS);
+		
 		deserializeFilters(tag);
 		
     	this.setChanged();
@@ -258,6 +264,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			tag.putIntArray(DHD_POS, new int[] {pos.getX(), pos.getY(), pos.getZ()});
 		}
 		tag.putInt(AUTOCLOSE, autoclose);
+		
+		tag.putShort(IRIS_PROGRESS, irisProgress);
 		
 		serializeFilters(tag);
 		
@@ -547,7 +555,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		setKawooshTickCount(kawooshTime);
 		updateClient();
 		
-		if(kawooshTime > StargateConnection.KAWOOSH_TICKS)
+		if(kawooshTime > StargateConnection.KAWOOSH_TICKS || this.isIrisClosed())
 			return;
 		
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
@@ -892,11 +900,22 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		this.animationTick++;
 		return this.animationTick;
 	}
-	
+
 	//TODO Finish Iris
+	public boolean hasIris()
+	{
+		return true;
+	}
+	
+	public void setIrisProgress(short irisProgress)
+	{
+		this.oldIrisProgress = this.irisProgress;
+		this.irisProgress = irisProgress;
+	}
+	
 	public short getIrisProgress()
 	{
-		return this.irisProgress;
+		return hasIris() ? this.irisProgress : 0;
 	}
 	
 	public float getIrisProgress(float partialTick)
@@ -905,15 +924,37 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 				(float) getIrisProgress() : Mth.lerp(partialTick, this.oldIrisProgress, this.irisProgress);
 	}
 	
+	public boolean isIrisClosed()
+	{
+		return hasIris() && this.irisProgress == IRIS_MAX_PROGRESS;
+	}
+	
 	public short increaseIrisProgress()
 	{
-		//irisProgress = 58;
+		oldIrisProgress = irisProgress;
+
+		if(hasIris())
+		{
+			if(irisProgress < IRIS_MAX_PROGRESS)
+				irisProgress++;
+			else
+				irisProgress = IRIS_MAX_PROGRESS;
+		}
+		
+		return irisProgress;
+	}
+	
+	public short decreaseIrisProgress()
+	{
 		oldIrisProgress = irisProgress;
 		
-		if(irisProgress > 0)
-			irisProgress--;
-		//else
-			//irisProgress++;
+		if(hasIris())
+		{
+			if(irisProgress > 0)
+				irisProgress--;
+			else
+				irisProgress = 0;
+		}
 		
 		return irisProgress;
 	}
@@ -1566,7 +1607,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.irisProgress, this.pointOfOrigin, this.symbols, this.variant));
 	}
 	
 	public String getConnectionID()
@@ -1602,8 +1643,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
     {
 		if(stargate.isConnected())
 			stargate.increaseTickCount();
-		
-		stargate.increaseIrisProgress();
 		
 		if(level.isClientSide())
 			return;

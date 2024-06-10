@@ -37,7 +37,7 @@ public class SGJourneyRenderTypes extends RenderType
 				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
-				.setTransparencyState(NO_TRANSPARENCY)
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)

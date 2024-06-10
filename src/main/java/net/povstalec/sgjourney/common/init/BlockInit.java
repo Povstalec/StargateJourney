@@ -2,10 +2,12 @@ package net.povstalec.sgjourney.common.init;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -200,11 +203,11 @@ public class BlockInit
 			() -> new NaquadahGeneratorMarkIIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	
 	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerBlock("basic_interface", 
-			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), 1);
 	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerBlock("crystal_interface", 
-			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
+			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
 	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerBlock("advanced_crystal_interface", 
-			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
+			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	
 	public static final RegistryObject<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
 			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
@@ -324,5 +327,12 @@ public class BlockInit
 	public static void register(IEventBus eventBus)
 	{
 		BLOCKS.register(eventBus);
+	}
+	
+	
+	
+	private static boolean never(BlockState state, BlockGetter getter, BlockPos pos)
+	{
+		return false;
 	}
 }

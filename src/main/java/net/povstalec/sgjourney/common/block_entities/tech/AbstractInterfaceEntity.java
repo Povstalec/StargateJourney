@@ -17,6 +17,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
@@ -29,6 +30,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 {
 	public static final String ENERGY_TARGET = "EnergyTarget";
 	private static final long DEFAULT_ENERGY_TARGET = 200000;
+
+	public int signalStrength = 0;
 	
 	private int desiredSymbol = 0;
 	private int currentSymbol = 0;
@@ -244,8 +247,13 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			int lastSymbol = interfaceEntity.currentSymbol;
 			interfaceEntity.outputEnergy(interfaceEntity.getDirection());
 			
-			if(interfaceEntity.energyBlockEntity instanceof MilkyWayStargateEntity stargate)
-				interfaceEntity.rotateStargate(stargate);
+			if(interfaceEntity.energyBlockEntity instanceof AbstractStargateEntity stargate)
+			{
+				interfaceEntity.handleIris(stargate);
+				
+				if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
+					interfaceEntity.rotateStargate(milkyWayStargate);
+			}
 
 			if(lastSymbol != interfaceEntity.currentSymbol)
 			{
@@ -275,5 +283,13 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		}
 
 		this.currentSymbol = stargate.getCurrentSymbol();
+	}
+	
+	private void handleIris(AbstractStargateEntity stargate)
+	{
+		if(signalStrength > 0 && signalStrength <= 8)
+			stargate.increaseIrisProgress();
+		else if(signalStrength > 8 && signalStrength <= 15)
+			stargate.decreaseIrisProgress();
 	}
 }

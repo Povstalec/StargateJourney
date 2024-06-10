@@ -30,7 +30,7 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
 	
 	public PegasusStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F);
+		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F, false, 84F);
 		this.stargateModel = new PegasusStargateModel();
 	}
 	
@@ -54,6 +54,8 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
         
         this.stargateModel.setCurrentSymbol(stargate.currentSymbol);
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
+
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
 		
         this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
 		

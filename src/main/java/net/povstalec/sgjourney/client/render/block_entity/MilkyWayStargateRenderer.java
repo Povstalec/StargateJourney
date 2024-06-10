@@ -30,7 +30,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 	
 	public MilkyWayStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F);
+		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F, false, 84F);
 		this.stargateModel = new MilkyWayStargateModel();
 	}
 	
@@ -55,14 +55,14 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
         this.stargateModel.setRotation(stargate.getRotation(partialTick) / (float) MilkyWayStargateEntity.MAX_ROTATION * 360F);
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
         
-        this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
-        
 
 		//stack.mulPose(Axis.ZP.rotationDegrees(90));
 		//stack.translate(2.5, -2.5, 0);
 		
 		//shieldModel.renderShield(stargate, stack, source, combinedLight, combinedOverlay);
 		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
+        
+        this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
 	    
 	    stack.popPose();
 	    

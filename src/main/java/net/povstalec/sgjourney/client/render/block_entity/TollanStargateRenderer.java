@@ -34,7 +34,7 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.125F);
+		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.125F, true, 40F);
 		this.stargateModel = new TollanStargateModel();
 	}
 	
@@ -72,6 +72,8 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
             stack.mulPose(Axis.XP.rotationDegrees(90));
         
         this.stargateModel.renderStargate(stargate, partialTick, stack, source, combinedLight, combinedOverlay);
+
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
 		
         this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
 		
