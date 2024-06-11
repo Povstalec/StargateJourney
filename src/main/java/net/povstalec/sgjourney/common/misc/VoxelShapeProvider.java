@@ -12,6 +12,11 @@ public class VoxelShapeProvider
     //private static final double HORIZONTAL_OFFSET = 1.0D;
 
     public static final VoxelShape FULL_BLOCK = Block.box(MIN, MIN, MIN, MAX, MAX, MAX);
+
+    public static final VoxelShape X_IRIS_TOP_LEFT = Block.box(MIN, MID, MID - 0.5D, MID, MAX, MID + 0.5D);
+    public static final VoxelShape X_IRIS_TOP_RIGHT = Block.box(MID, MID, MID - 0.5D, MAX, MAX, MID + 0.5D);
+    public static final VoxelShape X_IRIS_BOTTOM_LEFT = Block.box(MIN, MIN, MID - 0.5D, MID, MID, MID + 0.5D);
+    public static final VoxelShape X_IRIS_BOTTOM_RIGHT = Block.box(MID, MIN, MID - 0.5D, MAX, MID, MID + 0.5D);
     
     public final VoxelShape HORIZONTAL;
 
@@ -45,7 +50,7 @@ public class VoxelShapeProvider
     public final VoxelShape[][] STAIR_BOTTOM_RIGHT;
     public final VoxelShape[][] STAIR_TOP_RIGHT;
 
-    public VoxelShapeProvider(double width, double horizontalOffset)
+    public VoxelShapeProvider(double width, double horizontalOffset, boolean blocked)
     {
         double horizontalMax = horizontalOffset + width;
         double verticalStart = MID - (width / 2);
@@ -81,10 +86,10 @@ public class VoxelShapeProvider
         VoxelShape xBottomLeft = Block.box(MIN, MIN, verticalStart, MID, MID, verticalEnd);
         VoxelShape xBottomRight = Block.box(MID, MIN, verticalStart, MAX, MID, verticalEnd);
 
-        VoxelShape xStairTopLeft = Shapes.or(xBottomLeft, xBottomRight, xTopRight);
-        VoxelShape xStairTopRight = Shapes.or(xBottomLeft, xBottomRight, xTopLeft);
-        VoxelShape xStairBottomLeft = Shapes.or(xTopLeft, xTopRight, xBottomRight);
-        VoxelShape xStairBottomRight = Shapes.or(xTopLeft, xTopRight, xBottomLeft);
+        VoxelShape xStairTopLeft = blocked ? Shapes.or(xBottomLeft, xBottomRight, xTopRight, X_IRIS_TOP_LEFT) : Shapes.or(xBottomLeft, xBottomRight, xTopRight);
+        VoxelShape xStairTopRight = blocked ? Shapes.or(xBottomLeft, xBottomRight, xTopLeft, X_IRIS_TOP_RIGHT) : Shapes.or(xBottomLeft, xBottomRight, xTopLeft);
+        VoxelShape xStairBottomLeft = blocked ? Shapes.or(xTopLeft, xTopRight, xBottomRight, X_IRIS_BOTTOM_LEFT) : Shapes.or(xTopLeft, xTopRight, xBottomRight);
+        VoxelShape xStairBottomRight = blocked ? Shapes.or(xTopLeft, xTopRight, xBottomLeft, X_IRIS_BOTTOM_RIGHT) : Shapes.or(xTopLeft, xTopRight, xBottomLeft);
 
         Z_FULL = Block.box(verticalStart, MIN, MIN, verticalEnd, MAX, MAX);
         Z_BOTTOM = Block.box(verticalStart, MIN, MIN, verticalEnd, MID, MAX);

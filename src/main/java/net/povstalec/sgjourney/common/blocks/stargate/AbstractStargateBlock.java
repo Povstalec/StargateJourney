@@ -49,7 +49,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTION_STATE, StargateConnection.State.IDLE).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
-		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
+		shapeProvider = new VoxelShapeProvider(width, horizontalOffset, false);//TODO make it decide based on the iris state
 	}
 
 	public ArrayList<StargatePart> getParts()

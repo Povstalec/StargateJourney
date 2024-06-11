@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -25,24 +24,20 @@ import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 
 public class TransportRingsEntity extends AbstractTransporterEntity
 {
-	ItemStack stack0;
-	ItemStack stack1;
-	ItemStack stack2;
+	private BlockPos transportPos;
+	private BlockPos targetPos;
 	
-    private BlockPos transportPos;
-    private BlockPos targetPos;
-
-    public boolean isSender;
+	public boolean isSender;
     
-    public int emptySpace = 0;
-    public int ticks;
-    public int progressOld = 0;
-    public int progress = 0;
-    public int transportHeight = 0;
-    
-    public int transportLight;
-    
-    private TransportRingsEntity target;
+	public int emptySpace = 0;
+	public int ticks;
+	public int progressOld = 0;
+	public int progress = 0;
+	public int transportHeight = 0;
+	
+	public int transportLight;
+	
+	private TransportRingsEntity target;
 	
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
@@ -52,7 +47,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	@Override
 	public AABB getRenderBoundingBox()
     {
-        return INFINITE_EXTENT_AABB;
+        return INFINITE_EXTENT_AABB; //TODO This is stupid, change it to actually only be about as large as the Transport Rings
     }
 	
 	public boolean canTransport()

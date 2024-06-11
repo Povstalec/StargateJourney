@@ -69,8 +69,8 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 			this.setID(this.generateID());
 		}
     	
-    	if(tag.contains("CustomName", 8))
-	         this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
+    	if(tag.contains(CUSTOM_NAME, 8))
+	         this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 	}
 	
 	@Override
@@ -84,7 +84,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		super.saveAdditional(tag);
 		
 		if(this.name != null)
-	         tag.putString("CustomName", Component.Serializer.toJson(this.name));
+	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
 	}
 	
 	public UUID generateID()
@@ -120,6 +120,11 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	public void removeTransporterFromNetwork()
 	{
 		TransporterNetwork.get(level).removeTransporter(level, this.id);
+	}
+	
+	public boolean isConnected()
+	{
+		return false; //TODO
 	}
 	
 	@Override

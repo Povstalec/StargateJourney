@@ -424,6 +424,9 @@ public final class StargateConnection
 	
 	private final void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel wormholeTravel)
 	{
+		if(initialStargate.isIrisClosed())
+			return;
+		
 		Vec3 stargatePos = initialStargate.getCenter();
 		
 		if(wormhole.findCandidates(initialStargate.getLevel(), stargatePos, initialStargate.getDirection()) && this.used)
