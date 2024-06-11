@@ -50,6 +50,12 @@ public class WormholeModel
 	
 	protected float[][][] coordinates = new float[][][] {outerCircle, circle1, circle2, circle3, circle4, circle5};
 	
+	protected static final short BLOCK_PROGRESS_1 = 7;
+	protected static final short BLOCK_PROGRESS_2 = 24;
+	protected static final short BLOCK_PROGRESS_3 = 36;
+	protected static final short BLOCK_PROGRESS_4 = 44;
+	protected static final short BLOCK_PROGRESS_5 = 53;
+	
 	public WormholeModel(ResourceLocation eventHorizonTexture, Optional<ResourceLocation> shinyEventHorizonTexture, float maxDefaultDistortion)
 	{
 		this.eventHorizonTexture = eventHorizonTexture;
@@ -73,6 +79,25 @@ public class WormholeModel
 		return eventHorizonTexture;
 	}
 	
+	protected boolean isBlocked(int blockLayer, short blockProgress)
+	{
+		switch(blockLayer)
+		{
+		case -1:
+			return false;
+		case 0:
+			return blockProgress >= BLOCK_PROGRESS_1;
+		case 1:
+			return blockProgress >= BLOCK_PROGRESS_2;
+		case 2:
+			return blockProgress >= BLOCK_PROGRESS_3;
+		case 3:
+			return blockProgress >= BLOCK_PROGRESS_4;
+		default:
+			return blockProgress >= BLOCK_PROGRESS_5;
+		}
+	}
+	
 	public void renderWormhole(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, int combinedLight, int combinedOverlay, boolean hasVortex)
 	{
 		float scale = 1F / frames;
@@ -80,7 +105,7 @@ public class WormholeModel
 		
 		this.renderKawoosh(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), isBlocked);
 		
-		this.renderEventHorizon(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), isBlocked);
+		this.renderEventHorizon(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), stargate.getIrisProgress());
 		
 		//TODO this.renderDisconnect(stack, source, Optional.of(new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/shield/shield.png")), frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), isBlocked);
 		
@@ -88,21 +113,21 @@ public class WormholeModel
 			this.renderVortex(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount());
 	}
 	
-	protected void renderEventHorizon(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, boolean isBlocked)
+	protected void renderEventHorizon(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, short irisProgress)
 	{
 		float textureTickOffset = (ticks % frames) * scale;
 		
-		renderPuddle(stack, source, texture, frames, scale, ticks, kawooshProgress, isBlocked, textureTickOffset);
+		renderPuddle(stack, source, texture, frames, scale, ticks, kawooshProgress, irisProgress, textureTickOffset);
 	}
 	
-	protected void renderDisconnect(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, boolean isBlocked)
+	protected void renderDisconnect(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, short irisProgress)
 	{
 		float textureTickOffset = 0;//(ticks % frames) * scale;
 		
-		renderPuddle(stack, source, texture, frames, scale, ticks, kawooshProgress, isBlocked, textureTickOffset);
+		renderPuddle(stack, source, texture, frames, scale, ticks, kawooshProgress, irisProgress, textureTickOffset);
 	}
 	
-	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, boolean isBlocked, float textureTickOffset)
+	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, short irisProgress, float textureTickOffset)
 	{
 		float yOffset = ticks * DEFAULT_SCALE;
 		
@@ -114,6 +139,9 @@ public class WormholeModel
 
 		for(int i = 0; i < 5; i++)
 		{
+			boolean isBlocked = isBlocked(i, irisProgress);
+			boolean isBlockedOld = isBlocked(i - 1, irisProgress);
+			
 			VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonFront(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, textureTickOffset));
 			
 			int totalSides = coordinates[0].length;
@@ -123,7 +151,7 @@ public class WormholeModel
 				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i][j % coordinates[i].length][0], 
 						coordinates[i][j % coordinates[i].length][1],
-						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
@@ -131,7 +159,7 @@ public class WormholeModel
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0), frames, 1F);
+						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0), frames, 1F);
 				
 				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
@@ -140,7 +168,7 @@ public class WormholeModel
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1], 
@@ -154,7 +182,7 @@ public class WormholeModel
 				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
@@ -162,7 +190,7 @@ public class WormholeModel
 						
 						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
-						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0), frames, 0.75F);
+						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0), frames, 0.75F);
 				
 				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
@@ -171,7 +199,7 @@ public class WormholeModel
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], 
@@ -350,8 +378,8 @@ public class WormholeModel
 		
 		float totalDistortion = defaultDistortion + kawooshDistortion;
 		
-		if(shielded && totalDistortion > SHIELDING_OFFSET) //TODO
-			totalDistortion = SHIELDING_OFFSET - 0.01F;
+		if(shielded && totalDistortion > SHIELDING_OFFSET - 0.05F) //TODO
+			totalDistortion = SHIELDING_OFFSET - 0.05F;
 		
 		return totalDistortion < -maxDefaultDistortion ? -maxDefaultDistortion : totalDistortion;
 	}
