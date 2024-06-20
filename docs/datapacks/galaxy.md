@@ -1,3 +1,10 @@
+---
+title: Galaxy
+nav_order: 10
+has_children: false
+parent: Datapacks and Resourcepacks
+---
+
 # galaxy
 Galaxies are in the data/sgjourney/galaxy folder and tell sgjourney 
 various properties of a given galaxy as well as what [solar_systems](solar_system.md)

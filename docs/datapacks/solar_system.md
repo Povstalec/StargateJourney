@@ -1,3 +1,10 @@
+---
+title: Solar System
+nav_order: 20
+has_children: false
+parent: Datapacks and Resourcepacks
+---
+
 # solar_system
 Solar systems are in the data/sgjourney/solar_system folder and are used to tell
 sgjourney what dimensions should be in a given solar system.

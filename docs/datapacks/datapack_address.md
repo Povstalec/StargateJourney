@@ -1,3 +1,10 @@
+---
+title: Addresses
+nav_order: 0
+has_children: false
+parent: Datapacks and Resourcepacks
+---
+
 # Datapack Address
 Datapack Addresses are the form of addresses used by [galaxies](galaxy.md) 
 and [solar_systems](solar_system.md) to represent addresses.
