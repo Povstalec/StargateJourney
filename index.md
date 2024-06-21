@@ -32,6 +32,9 @@ If you find a bug, we would appreciate it if you reported it to GitHub issues or
 If you are __new to the topic__ and want to know what that thing is...  
 stargate, they call it - check [What's that Stargate anyway?](/docs/what_is_stargate).
 
+{: .highlight }
+If you are playing All the Mods 9 modpack, check the [ATM9](/docs/atm9) section.
+
 The documentation is divided into a few main parts:
 * [Survival Guide](/docs/survival): A ~~recommended~~ possible way to progress through the mod in survival.
 * [Dimensions](/docs/additions/dimensions), [Items](/docs/additions/items), and [Blocks](/docs/additions/blocks): Detailed explanations on how they work and how to use them.

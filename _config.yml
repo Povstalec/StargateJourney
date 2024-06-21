@@ -69,6 +69,9 @@ callouts:
   warning:
     title: Warning
     color: red
+  future:
+    title: Planned feature
+    color: grey-lt
 
 
 
@@ -100,3 +103,8 @@ exclude:
   - CODE_OF_CONDUCT.md
   - docker-compose.yml
   - Dockerfile
+  - run/
+  - _site/
+  - .gradle/
+  - .bundle/
+  - build/
