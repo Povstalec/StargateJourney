@@ -4,6 +4,7 @@ description: >-
 
 logo: "/img/logo.png"
 favicon_ico: "/img/favicon.ico"
+url: https://povstalec.github.io/StargateJourney/
 
 theme: just-the-docs
 # see https://just-the-docs.com/docs/configuration/
