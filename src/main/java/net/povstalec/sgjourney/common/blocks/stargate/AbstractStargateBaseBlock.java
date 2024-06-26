@@ -36,8 +36,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
+import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -177,7 +180,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		}
 	}
 	
-	public static void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, Direction direction, Orientation orientation)
+	public static void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation)
 	{
 		if(direction == null)
 		{
@@ -190,6 +193,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			StargateJourney.LOGGER.error("Failed to destroy Stargate because orientation is null");
 			return;
 		}
+		
+		IrisBlock.destroyShielding(level, pos, shieldingParts, direction, orientation);
 		
 		for(StargatePart part : parts)
 		{
@@ -233,7 +238,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         			}
     			}
     		}*/
-    		destroyStargate(level, pos, getParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+    		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
     		
             super.onRemove(oldState, level, pos, newState, isMoving);
         }
@@ -241,16 +246,22 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	
 	public void updateStargate(Level level, BlockPos pos, BlockState state, StargateConnection.State connectionState, int chevronsActive)
 	{
+		if(!(state.getBlock() instanceof AbstractStargateBlock))
+			return;
+		
 		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTION_STATE, connectionState).setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
+		
+		Direction direction = state.getValue(FACING);
+		Orientation orientation = state.getValue(ORIENTATION);
 		
 		for(StargatePart part : getParts())
 		{
 			if(!part.equals(StargatePart.BASE))
 			{
-				BlockPos ringPos = part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION));
+				BlockPos ringPos = part.getRingPos(pos,  direction, orientation);
 				if(level.getBlockState(ringPos).getBlock() instanceof AbstractStargateBlock)
 				{
-					level.setBlock(part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION)), 
+					level.setBlock(part.getRingPos(pos,  direction, orientation), 
 							ringState()
 							.setValue(AbstractStargateRingBlock.PART, part)
 							.setValue(AbstractStargateRingBlock.CONNECTION_STATE, level.getBlockState(pos).getValue(CONNECTION_STATE))
@@ -261,6 +272,14 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				}
 			}
 		}
+	}
+	
+	public void updateIris(Level level, BlockPos pos, BlockState state, ShieldingState shieldingState)
+	{
+		Direction direction = state.getValue(FACING);
+		Orientation orientation = state.getValue(ORIENTATION);
+		
+		IrisBlock.setIrisState(BlockInit.MILKY_WAY_IRIS.get(), level, pos, getShieldingParts(), direction, orientation, shieldingState);
 	}
 	
     @Override

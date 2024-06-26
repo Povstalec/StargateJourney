@@ -41,6 +41,7 @@ import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
+import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 
 public abstract class AbstractInterfaceBlock extends BaseEntityBlock
@@ -213,7 +214,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	private int getIrisOutput(EnergyBlockEntity blockEntity)
 	{
 		if(blockEntity instanceof AbstractStargateEntity stargate)
-			return Math.round(15 * (float) stargate.getIrisProgress() / AbstractStargateEntity.IRIS_MAX_PROGRESS);
+			return Math.round(15 * (float) stargate.getIrisProgress() / ShieldingState.MAX_PROGRESS);
 		return 0;
 	}
 	

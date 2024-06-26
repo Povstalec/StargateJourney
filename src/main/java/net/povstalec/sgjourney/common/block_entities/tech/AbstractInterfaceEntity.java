@@ -287,7 +287,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	private void handleIris(AbstractStargateEntity stargate)
 	{
-		if(signalStrength > 0 && signalStrength <= 8)
+		if(signalStrength > 0 && signalStrength <= 7)
 			stargate.increaseIrisProgress();
 		else if(signalStrength > 8 && signalStrength <= 15)
 			stargate.decreaseIrisProgress();

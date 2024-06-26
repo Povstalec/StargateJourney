@@ -10,15 +10,49 @@ public class VoxelShapeProvider
     private static final double MAX = 16.0D;
     private static final double MID = MAX / 2;
     //private static final double HORIZONTAL_OFFSET = 1.0D;
+    
+    private static final double MIN_IRIS_THICKNESS = MID - 0.5D;
+    private static final double MAX_IRIS_THICKNESS = MID + 0.5D;
+
+    public static final VoxelShape X_IRIS_FULL = Block.box(MIN, MIN, MIN_IRIS_THICKNESS, MAX, MAX, MAX_IRIS_THICKNESS);
+
+    public static final VoxelShape X_IRIS_TOP_LEFT = Block.box(MIN, MID, MIN_IRIS_THICKNESS, MID, MAX, MAX_IRIS_THICKNESS);
+    public static final VoxelShape X_IRIS_TOP_RIGHT = Block.box(MID, MID, MIN_IRIS_THICKNESS, MAX, MAX, MAX_IRIS_THICKNESS);
+    public static final VoxelShape X_IRIS_BOTTOM_LEFT = Block.box(MIN, MIN, MIN_IRIS_THICKNESS, MID, MID, MAX_IRIS_THICKNESS);
+    public static final VoxelShape X_IRIS_BOTTOM_RIGHT = Block.box(MID, MIN,MIN_IRIS_THICKNESS, MAX, MID, MAX_IRIS_THICKNESS);
+
+    public static final VoxelShape X_IRIS_TOP = Shapes.or(X_IRIS_TOP_LEFT, X_IRIS_TOP_RIGHT);
+    public static final VoxelShape X_IRIS_LEFT = Shapes.or(X_IRIS_TOP_LEFT, X_IRIS_BOTTOM_LEFT);
+    public static final VoxelShape X_IRIS_RIGHT = Shapes.or(X_IRIS_TOP_RIGHT, X_IRIS_BOTTOM_RIGHT);
+    public static final VoxelShape X_IRIS_BOTTOM = Shapes.or(X_IRIS_BOTTOM_LEFT, X_IRIS_BOTTOM_RIGHT);
+
+    public static final VoxelShape Z_IRIS_FULL = Block.box(MIN_IRIS_THICKNESS, MIN, MIN, MAX_IRIS_THICKNESS, MAX, MAX);
+    
+    public static final VoxelShape Z_IRIS_TOP_LEFT = Block.box(MIN_IRIS_THICKNESS, MID, MIN, MAX_IRIS_THICKNESS, MAX, MID);
+    public static final VoxelShape Z_IRIS_TOP_RIGHT = Block.box(MIN_IRIS_THICKNESS, MID, MID, MAX_IRIS_THICKNESS, MAX, MAX);
+    public static final VoxelShape Z_IRIS_BOTTOM_LEFT = Block.box(MIN_IRIS_THICKNESS, MIN, MIN, MAX_IRIS_THICKNESS, MID, MID);
+    public static final VoxelShape Z_IRIS_BOTTOM_RIGHT = Block.box(MIN_IRIS_THICKNESS, MIN, MID, MAX_IRIS_THICKNESS, MID, MAX);
+
+    public static final VoxelShape Z_IRIS_TOP = Shapes.or(Z_IRIS_TOP_LEFT, Z_IRIS_TOP_RIGHT);
+    public static final VoxelShape Z_IRIS_LEFT = Shapes.or(Z_IRIS_TOP_LEFT, Z_IRIS_BOTTOM_LEFT);
+    public static final VoxelShape Z_IRIS_RIGHT = Shapes.or(Z_IRIS_TOP_RIGHT, Z_IRIS_BOTTOM_RIGHT);
+    public static final VoxelShape Z_IRIS_BOTTOM = Shapes.or(Z_IRIS_BOTTOM_LEFT, Z_IRIS_BOTTOM_RIGHT);
+
+    public final VoxelShape HORIZONTAL_IRIS_FULL;
+    
+    public final VoxelShape HORIZONTAL_IRIS_TOP_LEFT;
+    public final VoxelShape HORIZONTAL_IRIS_TOP_RIGHT;
+    public final VoxelShape HORIZONTAL_IRIS_BOTTOM_LEFT;
+    public final VoxelShape HORIZONTAL_IRIS_BOTTOM_RIGHT;
+    
+    public final VoxelShape HORIZONTAL_IRIS_TOP;
+    public final VoxelShape HORIZONTAL_IRIS_LEFT;
+    public final VoxelShape HORIZONTAL_IRIS_RIGHT;
+    public final VoxelShape HORIZONTAL_IRIS_BOTTOM;
 
     public static final VoxelShape FULL_BLOCK = Block.box(MIN, MIN, MIN, MAX, MAX, MAX);
-
-    public static final VoxelShape X_IRIS_TOP_LEFT = Block.box(MIN, MID, MID - 0.5D, MID, MAX, MID + 0.5D);
-    public static final VoxelShape X_IRIS_TOP_RIGHT = Block.box(MID, MID, MID - 0.5D, MAX, MAX, MID + 0.5D);
-    public static final VoxelShape X_IRIS_BOTTOM_LEFT = Block.box(MIN, MIN, MID - 0.5D, MID, MID, MID + 0.5D);
-    public static final VoxelShape X_IRIS_BOTTOM_RIGHT = Block.box(MID, MIN, MID - 0.5D, MAX, MID, MID + 0.5D);
     
-    public final VoxelShape HORIZONTAL;
+    public final VoxelShape HORIZONTAL_FULL;
 
     public final VoxelShape X_FULL;
     public final VoxelShape X_BOTTOM;
@@ -50,13 +84,38 @@ public class VoxelShapeProvider
     public final VoxelShape[][] STAIR_BOTTOM_RIGHT;
     public final VoxelShape[][] STAIR_TOP_RIGHT;
 
-    public VoxelShapeProvider(double width, double horizontalOffset, boolean blocked)
+    public final VoxelShape[][] STAIR_TOP_LEFT_BLOCKED;
+    public final VoxelShape[][] STAIR_BOTTOM_LEFT_BLOCKED;
+    public final VoxelShape[][] STAIR_BOTTOM_RIGHT_BLOCKED;
+    public final VoxelShape[][] STAIR_TOP_RIGHT_BLOCKED;
+
+    public VoxelShapeProvider(double width, double horizontalOffset)
     {
         double horizontalMax = horizontalOffset + width;
         double verticalStart = MID - (width / 2);
         double verticalEnd = MID + (width / 2);
+        
+        double horizontalIrisMin = horizontalOffset + (width / 2) - 0.5D;
+        double horizontalIrisMax = horizontalOffset + (width / 2) + 0.5D;
+        
+        // Iris setup
+        
+        HORIZONTAL_IRIS_FULL = Block.box(MIN, horizontalIrisMin, MIN, MAX, horizontalIrisMax, MAX);
+        
+        HORIZONTAL_IRIS_TOP_LEFT = Block.box(MIN, horizontalIrisMin, MIN, MAX, horizontalIrisMax, MAX);
+        HORIZONTAL_IRIS_TOP_RIGHT = Block.box(MID, horizontalIrisMin, MID, MAX, horizontalIrisMax, MAX);
+        HORIZONTAL_IRIS_BOTTOM_LEFT = Block.box(MIN, horizontalIrisMin, MIN, MID, horizontalIrisMax, MID);
+        HORIZONTAL_IRIS_BOTTOM_RIGHT = Block.box(MID, horizontalIrisMin, MIN, MAX, horizontalIrisMax, MID);
+        
+        HORIZONTAL_IRIS_TOP = Shapes.or(HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_TOP_RIGHT);
+        HORIZONTAL_IRIS_LEFT = Shapes.or(HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_BOTTOM_LEFT);
+        HORIZONTAL_IRIS_RIGHT = Shapes.or(HORIZONTAL_IRIS_TOP_RIGHT, HORIZONTAL_IRIS_BOTTOM_RIGHT);
+        HORIZONTAL_IRIS_BOTTOM = Shapes.or(HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT);
+        
+        
+        // Stargate setup
 
-        HORIZONTAL = Block.box(MIN, horizontalOffset, MIN, MAX, horizontalMax, MAX);
+        HORIZONTAL_FULL = Block.box(MIN, horizontalOffset, MIN, MAX, horizontalMax, MAX);
 
         VoxelShape horizontalBottom = Block.box(MIN, horizontalOffset, MIN, MAX, horizontalMax, MID);
         VoxelShape horizontalTop = Block.box(MIN, horizontalOffset, MID, MAX, horizontalMax, MAX);
@@ -73,6 +132,11 @@ public class VoxelShapeProvider
         VoxelShape horizontalStairTopLeft = Shapes.or(horizontalBottomLeft, horizontalBottomRight, horizontalTopRight);
         VoxelShape horizontalStairTopRight = Shapes.or(horizontalBottomLeft, horizontalBottomRight, horizontalTopLeft);
 
+        VoxelShape horizontalStairBottomLeftBlocked = Shapes.or(horizontalBottomRight, horizontalTopLeft, horizontalTopRight, HORIZONTAL_IRIS_BOTTOM_LEFT);
+        VoxelShape horizontalStairBottomRightBlocked = Shapes.or(horizontalBottomLeft, horizontalTopLeft, horizontalTopRight, HORIZONTAL_IRIS_BOTTOM_RIGHT);
+        VoxelShape horizontalStairTopLeftBlocked = Shapes.or(horizontalBottomLeft, horizontalBottomRight, horizontalTopRight, HORIZONTAL_IRIS_TOP_LEFT);
+        VoxelShape horizontalStairTopRightBlocked = Shapes.or(horizontalBottomLeft, horizontalBottomRight, horizontalTopLeft, HORIZONTAL_IRIS_TOP_RIGHT);
+
 //        VoxelShape[] HORIZONTAL_SHAPES = new VoxelShape[]{horizontalBottomRight, horizontalBottomLeft, horizontalTopRight, horizontalTopLeft};
 //        VoxelShape[] HORIZONTAL_STAIR_SHAPES = new VoxelShape[]{horizontalStairTopLeft, horizontalStairTopRight, horizontalStairBottomLeft, horizontalStairBottomRight};
 
@@ -86,10 +150,15 @@ public class VoxelShapeProvider
         VoxelShape xBottomLeft = Block.box(MIN, MIN, verticalStart, MID, MID, verticalEnd);
         VoxelShape xBottomRight = Block.box(MID, MIN, verticalStart, MAX, MID, verticalEnd);
 
-        VoxelShape xStairTopLeft = blocked ? Shapes.or(xBottomLeft, xBottomRight, xTopRight, X_IRIS_TOP_LEFT) : Shapes.or(xBottomLeft, xBottomRight, xTopRight);
-        VoxelShape xStairTopRight = blocked ? Shapes.or(xBottomLeft, xBottomRight, xTopLeft, X_IRIS_TOP_RIGHT) : Shapes.or(xBottomLeft, xBottomRight, xTopLeft);
-        VoxelShape xStairBottomLeft = blocked ? Shapes.or(xTopLeft, xTopRight, xBottomRight, X_IRIS_BOTTOM_LEFT) : Shapes.or(xTopLeft, xTopRight, xBottomRight);
-        VoxelShape xStairBottomRight = blocked ? Shapes.or(xTopLeft, xTopRight, xBottomLeft, X_IRIS_BOTTOM_RIGHT) : Shapes.or(xTopLeft, xTopRight, xBottomLeft);
+        VoxelShape xStairTopLeft = Shapes.or(xBottomLeft, xBottomRight, xTopRight);
+        VoxelShape xStairTopRight = Shapes.or(xBottomLeft, xBottomRight, xTopLeft);
+        VoxelShape xStairBottomLeft = Shapes.or(xTopLeft, xTopRight, xBottomRight);
+        VoxelShape xStairBottomRight = Shapes.or(xTopLeft, xTopRight, xBottomLeft);
+
+        VoxelShape xStairTopLeftBlocked = Shapes.or(xBottomLeft, xBottomRight, xTopRight, X_IRIS_TOP_LEFT);
+        VoxelShape xStairTopRightBlocked = Shapes.or(xBottomLeft, xBottomRight, xTopLeft, X_IRIS_TOP_RIGHT);
+        VoxelShape xStairBottomLeftBlocked = Shapes.or(xTopLeft, xTopRight, xBottomRight, X_IRIS_BOTTOM_LEFT);
+        VoxelShape xStairBottomRightBlocked = Shapes.or(xTopLeft, xTopRight, xBottomLeft, X_IRIS_BOTTOM_RIGHT);
 
         Z_FULL = Block.box(verticalStart, MIN, MIN, verticalEnd, MAX, MAX);
         Z_BOTTOM = Block.box(verticalStart, MIN, MIN, verticalEnd, MID, MAX);
@@ -106,7 +175,12 @@ public class VoxelShapeProvider
         VoxelShape zStairBottomLeft = Shapes.or(zTopLeft, zTopRight, zBottomRight);
         VoxelShape zStairBottomRight = Shapes.or(zTopLeft, zTopRight, zBottomLeft);
 
-        FULL = new VoxelShape[][] {{HORIZONTAL}, {X_FULL, Z_FULL}, {HORIZONTAL}};
+        VoxelShape zStairTopLeftBlocked = Shapes.or(zBottomLeft, zBottomRight, zTopRight, Z_IRIS_TOP_LEFT);
+        VoxelShape zStairTopRightBlocked = Shapes.or(zBottomLeft, zBottomRight, zTopLeft, Z_IRIS_TOP_RIGHT);
+        VoxelShape zStairBottomLeftBlocked = Shapes.or(zTopLeft, zTopRight, zBottomRight, Z_IRIS_BOTTOM_LEFT);
+        VoxelShape zStairBottomRightBlocked = Shapes.or(zTopLeft, zTopRight, zBottomLeft, Z_IRIS_BOTTOM_RIGHT);
+
+        FULL = new VoxelShape[][] {{HORIZONTAL_FULL}, {X_FULL, Z_FULL}, {HORIZONTAL_FULL}};
 
         VoxelShape[] defaultHorizontalSlabShapes = {horizontalTop, horizontalLeft, horizontalBottom, horizontalRight};
         VoxelShape[] reverseHorizontalSlabShapes = {horizontalBottom, horizontalRight, horizontalTop, horizontalLeft};
@@ -127,6 +201,11 @@ public class VoxelShapeProvider
         STAIR_BOTTOM_LEFT = new VoxelShape[][] {{horizontalStairTopLeft, horizontalStairBottomLeft, horizontalStairBottomRight, horizontalStairTopRight}, {xStairBottomLeft, zStairBottomLeft, xStairBottomRight, zStairBottomRight}, {horizontalStairBottomLeft, horizontalStairBottomRight, horizontalStairTopRight, horizontalStairTopLeft}};
         STAIR_BOTTOM_RIGHT = new VoxelShape[][] {{horizontalStairTopRight, horizontalStairTopLeft, horizontalStairBottomLeft, horizontalStairBottomRight}, {xStairBottomRight, zStairBottomRight, xStairBottomLeft, zStairBottomLeft}, {horizontalStairBottomRight, horizontalStairTopRight, horizontalStairTopLeft, horizontalStairBottomLeft}};
         STAIR_TOP_RIGHT = new VoxelShape[][] {{horizontalStairBottomRight, horizontalStairTopRight, horizontalStairTopLeft, horizontalStairBottomLeft}, {xStairTopRight, zStairTopRight, xStairTopLeft, zStairTopLeft}, {horizontalStairTopRight, horizontalStairTopLeft, horizontalStairBottomLeft, horizontalStairBottomRight}};
+
+        STAIR_TOP_LEFT_BLOCKED = new VoxelShape[][] {{horizontalStairBottomLeftBlocked, horizontalStairBottomRightBlocked, horizontalStairTopRightBlocked, horizontalStairTopLeftBlocked}, {xStairTopLeftBlocked, zStairTopLeftBlocked, xStairTopRightBlocked, zStairTopRightBlocked}, {horizontalStairTopLeftBlocked, horizontalStairBottomLeftBlocked, horizontalStairBottomRightBlocked, horizontalStairTopRightBlocked}};
+        STAIR_BOTTOM_LEFT_BLOCKED = new VoxelShape[][] {{horizontalStairTopLeftBlocked, horizontalStairBottomLeftBlocked, horizontalStairBottomRightBlocked, horizontalStairTopRightBlocked}, {xStairBottomLeftBlocked, zStairBottomLeftBlocked, xStairBottomRightBlocked, zStairBottomRightBlocked}, {horizontalStairBottomLeftBlocked, horizontalStairBottomRightBlocked, horizontalStairTopRightBlocked, horizontalStairTopLeftBlocked}};
+        STAIR_BOTTOM_RIGHT_BLOCKED = new VoxelShape[][] {{horizontalStairTopRightBlocked, horizontalStairTopLeftBlocked, horizontalStairBottomLeftBlocked, horizontalStairBottomRightBlocked}, {xStairBottomRightBlocked, zStairBottomRightBlocked, xStairBottomLeftBlocked, zStairBottomLeftBlocked}, {horizontalStairBottomRightBlocked, horizontalStairTopRightBlocked, horizontalStairTopLeftBlocked, horizontalStairBottomLeftBlocked}};
+        STAIR_TOP_RIGHT_BLOCKED = new VoxelShape[][] {{horizontalStairBottomRightBlocked, horizontalStairTopRightBlocked, horizontalStairTopLeftBlocked, horizontalStairBottomLeftBlocked}, {xStairTopRightBlocked, zStairTopRightBlocked, xStairTopLeftBlocked, zStairTopLeftBlocked}, {horizontalStairTopRightBlocked, horizontalStairTopLeftBlocked, horizontalStairBottomLeftBlocked, horizontalStairBottomRightBlocked}};
     }
 
 }

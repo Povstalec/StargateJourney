@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 
 public class IrisModel
 {
@@ -38,7 +39,7 @@ private static final ResourceLocation IRIS_TEXTURE = new ResourceLocation("textu
 	
 	public void renderIris(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay, float progress)
 	{
-		float closingProgress = (float) (AbstractStargateEntity.IRIS_MAX_PROGRESS - progress) / AbstractStargateEntity.IRIS_MAX_PROGRESS;
+		float closingProgress = (float) (ShieldingState.MAX_PROGRESS - progress) / ShieldingState.MAX_PROGRESS;
 		
 		if(!this.renderWhenOpen && progress == 0)
 			return;

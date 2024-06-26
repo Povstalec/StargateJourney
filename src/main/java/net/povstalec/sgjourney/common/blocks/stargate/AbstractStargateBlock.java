@@ -28,6 +28,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
@@ -48,8 +49,10 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public AbstractStargateBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTION_STATE, StargateConnection.State.IDLE).setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
-		shapeProvider = new VoxelShapeProvider(width, horizontalOffset, false);//TODO make it decide based on the iris state
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH)
+				.setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTION_STATE, StargateConnection.State.IDLE)
+				.setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
+		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
 	}
 
 	public ArrayList<StargatePart> getParts()
@@ -57,11 +60,16 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return StargatePart.DEFAULT_PARTS;
 	}
 
+	public ArrayList<ShieldingPart> getShieldingParts()
+	{
+		return ShieldingPart.DEFAULT_PARTS;
+	}
+
 	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
 	{
 		int horizontal = direction.get2DDataValue();
 		int vertical = orientation.get2DDataValue();
-
+		//TODO make it decide based on the iris state too
 		return shapes[vertical][horizontal % shapes[vertical].length];
 	}
 
@@ -98,7 +106,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return shapeProvider.HORIZONTAL;
+			return shapeProvider.HORIZONTAL_FULL;
 		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_FULL : shapeProvider.X_FULL;
 	}
 
