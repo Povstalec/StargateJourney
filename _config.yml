@@ -2,8 +2,8 @@ title: Stargate Journey
 description: >- 
   Documentation for minecraft mod Stargate Journey
 
-logo: "/img/logo.png"
-favicon_ico: "/img/favicon.ico"
+logo: "/assets/img/logo.png"
+favicon_ico: "/assets/img/favicon.ico"
 url: https://povstalec.github.io/StargateJourney/
 
 theme: just-the-docs

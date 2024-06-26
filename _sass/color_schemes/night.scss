@@ -31,5 +31,15 @@ $red-200: #922323;
 $red-300: #ad2e2b;
 
 .site-footer {
-  color: #626e7b;
+  color: #626e7b !important;
+}
+
+.main-content {
+  ol, ul {
+    > li {
+      &::before {
+        color: $grey-lt-300 !important;
+      }
+    }
+  }
 }

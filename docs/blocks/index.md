@@ -1,8 +1,9 @@
 ---
-title: Additions
+title: Blocks
 nav_order: 20
 has_children: true
 ---
+# Blocks
 
 some list of blocks and items
 

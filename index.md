@@ -2,7 +2,7 @@
 nav_exclude: true
 ---
 
-![Stargate Journey logo](/img/logo.png)
+![Stargate Journey logo](/assets/img/logo.png)
 
 # Stargate Journey
 
@@ -44,9 +44,11 @@ The documentation is divided into a few main parts:
 * [Datapacks and Resourcepacks](/docs/datapacks): Features available for customization.
 
 {: .highlight }
-Before asking a question or reporting a bug, 
-please check the [F&Q](/faq) section and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord](https://discord.gg/VDSqzdBqRd).
-Someone else may have already asked about that!
+> Feel free to ask on the [Discord server](https://discord.gg/VDSqzdBqRd) if you have a question.
+> 
+> Before asking a question or reporting a bug,
+> please check the [F&Q](/faq) section and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord](https://discord.gg/VDSqzdBqRd).  
+> Someone else may have already asked about that.
 
 ## Compatibility with other mods
 Stargate Journey is compatible with multiple other mods:
