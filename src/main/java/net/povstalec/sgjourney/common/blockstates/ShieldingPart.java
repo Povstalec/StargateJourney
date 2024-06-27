@@ -15,9 +15,9 @@ public enum ShieldingPart implements StringRepresentable
 	
 	LEFT2_ABOVE4("left2_above4", 2, 4, ShieldingState.MOVING_1),
 	
-	LEFT_ABOVE4("left_above4", 1, 4, ShieldingState.MOVING_3),
+	LEFT_ABOVE4("left_above4", 1, 4, ShieldingState.MOVING_2),
 	ABOVE4("above4", 0, 4, ShieldingState.MOVING_3),
-	RIGHT_ABOVE4("right_above4", -1, 4, ShieldingState.MOVING_3),
+	RIGHT_ABOVE4("right_above4", -1, 4, ShieldingState.MOVING_2),
 	
 	RIGHT2_ABOVE4("right2_above4", -2, 4, ShieldingState.MOVING_1),
 	
@@ -31,9 +31,9 @@ public enum ShieldingPart implements StringRepresentable
 	
 	LEFT2_ABOVE2("left2_above2", 2, 2, ShieldingState.MOVING_1),
 	
-	LEFT_ABOVE2("left_above2", 1, 2, ShieldingState.MOVING_3),
+	LEFT_ABOVE2("left_above2", 1, 2, ShieldingState.MOVING_2),
 	ABOVE2("above2", 0, 2, ShieldingState.MOVING_3),
-	RIGHT_ABOVE2("right_above2", -1, 2, ShieldingState.MOVING_3),
+	RIGHT_ABOVE2("right_above2", -1, 2, ShieldingState.MOVING_2),
 	
 	RIGHT2_ABOVE2("right2_above2", -2, 2, ShieldingState.MOVING_1),
 	

@@ -925,6 +925,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public float getIrisProgress(float partialTick)
 	{
+		//if(irisProgress != 0)
+		//	System.out.println("Iris Progress: " + irisProgress);
+		
 		return StargateJourneyConfig.disable_smooth_animations.get() ?
 				(float) getIrisProgress() : Mth.lerp(partialTick, this.oldIrisProgress, this.irisProgress);
 	}

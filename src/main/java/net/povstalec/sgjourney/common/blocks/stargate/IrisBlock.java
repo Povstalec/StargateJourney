@@ -163,6 +163,7 @@ public class IrisBlock extends Block implements SimpleWaterloggedBlock
 				{
 					level.setBlock(part.getIrisPos(baseBlockPos,  direction, orientation), 
 							irisBlock.defaultBlockState()
+							.setValue(IrisBlock.SHIELDING_STATE, shieldingState)
 							.setValue(IrisBlock.PART, part)
 							.setValue(IrisBlock.FACING, direction)
 							.setValue(IrisBlock.ORIENTATION, orientation)
