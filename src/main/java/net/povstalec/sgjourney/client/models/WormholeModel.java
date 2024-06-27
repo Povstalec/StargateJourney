@@ -192,7 +192,7 @@ public class WormholeModel
 						coordinates[i][j % coordinates[i].length][1],
 						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0), frames, 0.75F);
 				
-				createTriangle(frontConsumer, matrix4, matrix3,
+				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
 						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
