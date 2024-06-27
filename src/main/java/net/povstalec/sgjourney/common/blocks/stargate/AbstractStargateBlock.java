@@ -65,14 +65,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return ShieldingPart.DEFAULT_PARTS;
 	}
 
-	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
-	{
-		int horizontal = direction.get2DDataValue();
-		int vertical = orientation.get2DDataValue();
-		//TODO make it decide based on the iris state too
-		return shapes[vertical][horizontal % shapes[vertical].length];
-	}
-
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{

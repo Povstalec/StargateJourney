@@ -1,10 +1,12 @@
 package net.povstalec.sgjourney.common.misc;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 
-public class VoxelShapeProvider
+public final class VoxelShapeProvider
 {
     private static final double MIN = 0.0D;
     private static final double MAX = 16.0D;
@@ -49,6 +51,23 @@ public class VoxelShapeProvider
     public final VoxelShape HORIZONTAL_IRIS_LEFT;
     public final VoxelShape HORIZONTAL_IRIS_RIGHT;
     public final VoxelShape HORIZONTAL_IRIS_BOTTOM;
+    
+    public final VoxelShape[][] IRIS_FULL;
+
+    public final VoxelShape[][] IRIS_BOTTOM;
+    public final VoxelShape[][] IRIS_TOP;
+    public final VoxelShape[][] IRIS_LEFT;
+    public final VoxelShape[][] IRIS_RIGHT;
+
+    public final VoxelShape[][] IRIS_CORNER_TOP_LEFT;
+    public final VoxelShape[][] IRIS_CORNER_BOTTOM_LEFT;
+    public final VoxelShape[][] IRIS_CORNER_BOTTOM_RIGHT;
+    public final VoxelShape[][] IRIS_CORNER_TOP_RIGHT;
+
+    public final VoxelShape[][] IRIS_STAIR_TOP_LEFT;
+    public final VoxelShape[][] IRIS_STAIR_BOTTOM_LEFT;
+    public final VoxelShape[][] IRIS_STAIR_BOTTOM_RIGHT;
+    public final VoxelShape[][] IRIS_STAIR_TOP_RIGHT;
 
     public static final VoxelShape FULL_BLOCK = Block.box(MIN, MIN, MIN, MAX, MAX, MAX);
     
@@ -101,6 +120,8 @@ public class VoxelShapeProvider
         // Iris setup
         
         HORIZONTAL_IRIS_FULL = Block.box(MIN, horizontalIrisMin, MIN, MAX, horizontalIrisMax, MAX);
+
+        IRIS_FULL = new VoxelShape[][] {{HORIZONTAL_IRIS_FULL}, {X_IRIS_FULL, Z_IRIS_FULL}, {HORIZONTAL_IRIS_FULL}};
         
         HORIZONTAL_IRIS_TOP_LEFT = Block.box(MIN, horizontalIrisMin, MIN, MAX, horizontalIrisMax, MAX);
         HORIZONTAL_IRIS_TOP_RIGHT = Block.box(MID, horizontalIrisMin, MID, MAX, horizontalIrisMax, MAX);
@@ -111,6 +132,73 @@ public class VoxelShapeProvider
         HORIZONTAL_IRIS_LEFT = Shapes.or(HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_BOTTOM_LEFT);
         HORIZONTAL_IRIS_RIGHT = Shapes.or(HORIZONTAL_IRIS_TOP_RIGHT, HORIZONTAL_IRIS_BOTTOM_RIGHT);
         HORIZONTAL_IRIS_BOTTOM = Shapes.or(HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT);
+
+        VoxelShape[] defaultHorizontalIrisShapes = {HORIZONTAL_IRIS_TOP, HORIZONTAL_IRIS_LEFT, HORIZONTAL_IRIS_BOTTOM, HORIZONTAL_IRIS_RIGHT};
+        VoxelShape[] reverseHorizontalIrisShapes = {HORIZONTAL_IRIS_BOTTOM, HORIZONTAL_IRIS_RIGHT, HORIZONTAL_IRIS_TOP, HORIZONTAL_IRIS_LEFT};
+        VoxelShape[] leftHorizontalIrisShapes = {HORIZONTAL_IRIS_RIGHT, HORIZONTAL_IRIS_TOP, HORIZONTAL_IRIS_LEFT, HORIZONTAL_IRIS_BOTTOM};
+        VoxelShape[] rightHorizontalIrisShapes = {HORIZONTAL_IRIS_LEFT, HORIZONTAL_IRIS_BOTTOM, HORIZONTAL_IRIS_RIGHT, HORIZONTAL_IRIS_TOP};
+
+        IRIS_BOTTOM = new VoxelShape[][] {defaultHorizontalIrisShapes, {X_IRIS_BOTTOM, Z_IRIS_BOTTOM}, reverseHorizontalIrisShapes};
+        IRIS_TOP = new VoxelShape[][] {reverseHorizontalIrisShapes, {X_IRIS_TOP, Z_IRIS_TOP}, defaultHorizontalIrisShapes};
+        IRIS_LEFT = new VoxelShape[][] {leftHorizontalIrisShapes, {X_IRIS_LEFT, Z_IRIS_LEFT, X_IRIS_RIGHT, Z_IRIS_RIGHT}, leftHorizontalIrisShapes};
+        IRIS_RIGHT = new VoxelShape[][] {rightHorizontalIrisShapes, {X_IRIS_RIGHT, Z_IRIS_RIGHT, X_IRIS_LEFT, Z_IRIS_LEFT}, rightHorizontalIrisShapes};
+
+        IRIS_CORNER_TOP_LEFT = new VoxelShape[][] {
+        	{HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_RIGHT, HORIZONTAL_IRIS_TOP_LEFT},
+        	{X_IRIS_TOP_LEFT, Z_IRIS_TOP_LEFT, X_IRIS_TOP_RIGHT, Z_IRIS_TOP_RIGHT},
+        	{HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_RIGHT}
+        };
+        IRIS_CORNER_BOTTOM_LEFT = new VoxelShape[][] {
+        	{HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_RIGHT},
+        	{X_IRIS_BOTTOM_LEFT, Z_IRIS_BOTTOM_LEFT, X_IRIS_BOTTOM_RIGHT, Z_IRIS_BOTTOM_RIGHT},
+        	{HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_RIGHT, HORIZONTAL_IRIS_TOP_LEFT}
+        };
+        IRIS_CORNER_BOTTOM_RIGHT = new VoxelShape[][] {
+        	{HORIZONTAL_IRIS_TOP_RIGHT, HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT},
+        	{X_IRIS_BOTTOM_RIGHT, Z_IRIS_BOTTOM_RIGHT, X_IRIS_BOTTOM_LEFT, Z_IRIS_BOTTOM_LEFT},
+        	{HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_RIGHT, HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_BOTTOM_LEFT}
+        };
+        IRIS_CORNER_TOP_RIGHT = new VoxelShape[][] {
+        	{HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_RIGHT, HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_BOTTOM_LEFT},
+        	{X_IRIS_TOP_RIGHT, Z_IRIS_TOP_RIGHT, X_IRIS_TOP_LEFT, Z_IRIS_TOP_LEFT},
+        	{HORIZONTAL_IRIS_TOP_RIGHT, HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT}
+        };
+
+        VoxelShape xIrisStairTopLeft = Shapes.or(X_IRIS_BOTTOM_LEFT, X_IRIS_BOTTOM_RIGHT, X_IRIS_TOP_RIGHT);
+        VoxelShape xIrisStairTopRight = Shapes.or(X_IRIS_BOTTOM_LEFT, X_IRIS_BOTTOM_RIGHT, X_IRIS_TOP_LEFT);
+        VoxelShape xIrisStairBottomLeft = Shapes.or(X_IRIS_TOP_LEFT, X_IRIS_TOP_RIGHT, X_IRIS_BOTTOM_RIGHT);
+        VoxelShape xIrisStairBottomRight = Shapes.or(X_IRIS_TOP_LEFT, X_IRIS_TOP_RIGHT, X_IRIS_BOTTOM_LEFT);
+
+        VoxelShape zIrisStairTopLeft = Shapes.or(Z_IRIS_BOTTOM_LEFT, Z_IRIS_BOTTOM_RIGHT, Z_IRIS_TOP_RIGHT);
+        VoxelShape zIrisStairTopRight = Shapes.or(Z_IRIS_BOTTOM_LEFT, Z_IRIS_BOTTOM_RIGHT, Z_IRIS_TOP_LEFT);
+        VoxelShape zIrisStairBottomLeft = Shapes.or(Z_IRIS_TOP_LEFT, Z_IRIS_TOP_RIGHT, Z_IRIS_BOTTOM_RIGHT);
+        VoxelShape zIrisStairBottomRight = Shapes.or(Z_IRIS_TOP_LEFT, Z_IRIS_TOP_RIGHT, Z_IRIS_BOTTOM_LEFT);
+
+        VoxelShape horizontalIrisStairBottomLeft = Shapes.or(HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_TOP_RIGHT);
+        VoxelShape horizontalIrisStairBottomRight = Shapes.or(HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_TOP_LEFT, HORIZONTAL_IRIS_TOP_RIGHT);
+        VoxelShape horizontalIrisStairTopLeft = Shapes.or(HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_RIGHT);
+        VoxelShape horizontalIrisStairTopRight = Shapes.or(HORIZONTAL_IRIS_BOTTOM_LEFT, HORIZONTAL_IRIS_BOTTOM_RIGHT, HORIZONTAL_IRIS_TOP_LEFT);
+
+        IRIS_STAIR_TOP_LEFT = new VoxelShape[][] {
+        	{horizontalIrisStairBottomLeft, horizontalIrisStairBottomRight, horizontalIrisStairTopRight, horizontalIrisStairTopLeft},
+        	{xIrisStairTopLeft, zIrisStairTopLeft, xIrisStairTopRight, zIrisStairTopRight},
+        	{horizontalIrisStairTopLeft, horizontalIrisStairBottomLeft, horizontalIrisStairBottomRight, horizontalIrisStairTopRight}
+        };
+        IRIS_STAIR_BOTTOM_LEFT = new VoxelShape[][] {
+        	{horizontalIrisStairTopLeft, horizontalIrisStairBottomLeft, horizontalIrisStairBottomRight, horizontalIrisStairTopRight},
+        	{xIrisStairBottomLeft, zIrisStairBottomLeft, xIrisStairBottomRight, zIrisStairBottomRight},
+        	{horizontalIrisStairBottomLeft, horizontalIrisStairBottomRight, horizontalIrisStairTopRight, horizontalIrisStairTopLeft}
+        };
+        IRIS_STAIR_BOTTOM_RIGHT = new VoxelShape[][] {
+        	{horizontalIrisStairTopRight, horizontalIrisStairTopLeft, horizontalIrisStairBottomLeft, horizontalIrisStairBottomRight},
+        	{xIrisStairBottomRight, zIrisStairBottomRight, xIrisStairBottomLeft, zIrisStairBottomLeft},
+        	{horizontalIrisStairBottomRight, horizontalIrisStairTopRight, horizontalIrisStairTopLeft, horizontalIrisStairBottomLeft}
+        };
+        IRIS_STAIR_TOP_RIGHT = new VoxelShape[][] {
+        	{horizontalIrisStairBottomRight, horizontalIrisStairTopRight, horizontalIrisStairTopLeft, horizontalIrisStairBottomLeft},
+        	{xIrisStairTopRight, zIrisStairTopRight, xIrisStairTopLeft, zIrisStairTopLeft},
+        	{horizontalIrisStairTopRight, horizontalIrisStairTopLeft, horizontalIrisStairBottomLeft, horizontalIrisStairBottomRight}
+        };
         
         
         // Stargate setup
@@ -208,4 +296,11 @@ public class VoxelShapeProvider
         STAIR_TOP_RIGHT_BLOCKED = new VoxelShape[][] {{horizontalStairBottomRightBlocked, horizontalStairTopRightBlocked, horizontalStairTopLeftBlocked, horizontalStairBottomLeftBlocked}, {xStairTopRightBlocked, zStairTopRightBlocked, xStairTopLeftBlocked, zStairTopLeftBlocked}, {horizontalStairTopRightBlocked, horizontalStairTopLeftBlocked, horizontalStairBottomLeftBlocked, horizontalStairBottomRightBlocked}};
     }
 
+	public static VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
+	{
+		int horizontal = direction.get2DDataValue();
+		int vertical = orientation.get2DDataValue();
+		
+		return shapes[vertical][horizontal % shapes[vertical].length];
+	}
 }

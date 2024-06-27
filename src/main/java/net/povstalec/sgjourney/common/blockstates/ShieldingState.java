@@ -6,14 +6,14 @@ public enum ShieldingState implements StringRepresentable
 {
 	OPEN("open", (short) 0, (short) 0),
 	
-	MOVING_1("moving_1", (short) 1, (short) 24),
-	MOVING_2("moving_2", (short) 2, (short)36),
-	MOVING_3("moving_3", (short) 3, (short) 44),
-	MOVING_4("moving_4", (short) 4, (short) 53),
+	MOVING_1("moving_1", (short) 1, (short) 20),
+	MOVING_2("moving_2", (short) 2, (short)29),
+	MOVING_3("moving_3", (short) 3, (short) 40),
+	MOVING_4("moving_4", (short) 4, (short) 48),
 	
-	CLOSED("closed", (short) 5, (short) 58);
+	CLOSED("closed", (short) 5, (short) 56);
 	
-	public static final short MAX_PROGRESS = CLOSED.getProgress();
+	public static final short MAX_PROGRESS = 58;
 	
 	private final String name;
 	private final short number;

@@ -939,22 +939,52 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	private void setIrisState()
 	{
-		if(irisProgress == ShieldingState.MAX_PROGRESS && oldIrisProgress != ShieldingState.MAX_PROGRESS)
-			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.CLOSED);
+		if(irisProgress == ShieldingState.CLOSED.getProgress())
+		{
+			if(oldIrisProgress > irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_4);
+			else if(oldIrisProgress < irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.CLOSED);
+			return;
+		}
 
-		else if(irisProgress == ShieldingState.MOVING_4.getProgress() && oldIrisProgress != ShieldingState.MOVING_4.getProgress())
-			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_4);
+		if(irisProgress == ShieldingState.MOVING_4.getProgress())
+		{
+			if(oldIrisProgress > irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_3);
+			else if(oldIrisProgress < irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_4);
+			return;
+		}
 
-		else if(irisProgress == ShieldingState.MOVING_3.getProgress() && oldIrisProgress != ShieldingState.MOVING_3.getProgress())
-			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_3);
+		if(irisProgress == ShieldingState.MOVING_3.getProgress())
+		{
+			if(oldIrisProgress > irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_2);
+			else if(oldIrisProgress < irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_3);
+			return;
+		}
 
-		else if(irisProgress == ShieldingState.MOVING_2.getProgress() && oldIrisProgress != ShieldingState.MOVING_2.getProgress())
-			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_2);
+		if(irisProgress == ShieldingState.MOVING_2.getProgress())
+		{
+			if(oldIrisProgress > irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_1);
+			else if(oldIrisProgress < irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_2);
+			return;
+		}
 
-		else if(irisProgress == ShieldingState.MOVING_1.getProgress() && oldIrisProgress != ShieldingState.MOVING_1.getProgress())
-			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_1);
+		if(irisProgress == ShieldingState.MOVING_1.getProgress())
+		{
+			if(oldIrisProgress > irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.OPEN);
+			else if(oldIrisProgress < irisProgress)
+				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.MOVING_1);
+			return;
+		}
 
-		else if(irisProgress == 0 && oldIrisProgress != 0)
+		if(irisProgress == 0 && oldIrisProgress > irisProgress)
 			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.OPEN);
 	}
 	

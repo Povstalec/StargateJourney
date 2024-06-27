@@ -15,6 +15,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
 public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 {
@@ -32,15 +33,15 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		boolean blocked = true;
 
 		return switch (state.getValue(PART)) {
-			case LEFT2, LEFT3_ABOVE -> getShapeFromArray(shapeProvider.CORNER_TOP_RIGHT, direction, orientation);
-			case LEFT2_ABOVE -> getShapeFromArray(blocked ? shapeProvider.STAIR_TOP_RIGHT_BLOCKED : shapeProvider.STAIR_TOP_RIGHT, direction, orientation);
-			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> getShapeFromArray(shapeProvider.CORNER_BOTTOM_RIGHT, direction, orientation);
-			case LEFT2_ABOVE5 -> getShapeFromArray(blocked ? shapeProvider.STAIR_BOTTOM_RIGHT_BLOCKED : shapeProvider.STAIR_BOTTOM_RIGHT, direction, orientation);
-			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> getShapeFromArray(shapeProvider.CORNER_BOTTOM_LEFT, direction, orientation);
-			case RIGHT2_ABOVE5 -> getShapeFromArray(blocked ? shapeProvider.STAIR_BOTTOM_LEFT_BLOCKED : shapeProvider.STAIR_BOTTOM_LEFT, direction, orientation);
-			case RIGHT3_ABOVE, RIGHT2 -> getShapeFromArray(shapeProvider.CORNER_TOP_LEFT, direction, orientation);
-			case RIGHT2_ABOVE -> getShapeFromArray(blocked ? shapeProvider.STAIR_TOP_LEFT_BLOCKED : shapeProvider.STAIR_TOP_LEFT, direction, orientation);
-			default -> getShapeFromArray(shapeProvider.FULL, direction, orientation);
+			case LEFT2, LEFT3_ABOVE -> VoxelShapeProvider.getShapeFromArray(shapeProvider.CORNER_TOP_RIGHT, direction, orientation);
+			case LEFT2_ABOVE -> VoxelShapeProvider.getShapeFromArray(blocked ? shapeProvider.STAIR_TOP_RIGHT_BLOCKED : shapeProvider.STAIR_TOP_RIGHT, direction, orientation);
+			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> VoxelShapeProvider.getShapeFromArray(shapeProvider.CORNER_BOTTOM_RIGHT, direction, orientation);
+			case LEFT2_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(blocked ? shapeProvider.STAIR_BOTTOM_RIGHT_BLOCKED : shapeProvider.STAIR_BOTTOM_RIGHT, direction, orientation);
+			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(shapeProvider.CORNER_BOTTOM_LEFT, direction, orientation);
+			case RIGHT2_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(blocked ? shapeProvider.STAIR_BOTTOM_LEFT_BLOCKED : shapeProvider.STAIR_BOTTOM_LEFT, direction, orientation);
+			case RIGHT3_ABOVE, RIGHT2 -> VoxelShapeProvider.getShapeFromArray(shapeProvider.CORNER_TOP_LEFT, direction, orientation);
+			case RIGHT2_ABOVE -> VoxelShapeProvider.getShapeFromArray(blocked ? shapeProvider.STAIR_TOP_LEFT_BLOCKED : shapeProvider.STAIR_TOP_LEFT, direction, orientation);
+			default -> VoxelShapeProvider.getShapeFromArray(shapeProvider.FULL, direction, orientation);
 		};
 	}
 	

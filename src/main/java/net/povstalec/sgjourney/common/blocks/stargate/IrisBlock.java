@@ -80,25 +80,43 @@ public class IrisBlock extends Block implements SimpleWaterloggedBlock
 	{
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
+		ShieldingState shieldingState = state.getValue(SHIELDING_STATE);
 		
-		/*boolean blocked = true;
+		return switch (state.getValue(PART))
+		{
+			// Outer parts
+			case LEFT_ABOVE5, ABOVE5, RIGHT_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_1) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_TOP, direction, orientation);
+			case LEFT2_ABOVE4, LEFT2_ABOVE3, LEFT2_ABOVE2 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_1) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_LEFT, direction, orientation);
+			case RIGHT2_ABOVE2, RIGHT2_ABOVE3, RIGHT2_ABOVE4 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_1) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_RIGHT, direction, orientation);
+			case LEFT_ABOVE, ABOVE, RIGHT_ABOVE -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_1) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_BOTTOM, direction, orientation);
+			
+			// Inner corner parts
+			case LEFT_ABOVE4 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_2) ? 
+					(shieldingState.isAfter(ShieldingState.MOVING_3) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_STAIR_BOTTOM_RIGHT) : 
+						shapeProvider.IRIS_CORNER_TOP_LEFT, direction, orientation);
+			case RIGHT_ABOVE4 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_2) ? 
+					(shieldingState.isAfter(ShieldingState.MOVING_3) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_STAIR_BOTTOM_LEFT) : 
+						shapeProvider.IRIS_CORNER_TOP_RIGHT, direction, orientation);
+			case LEFT_ABOVE2 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_2) ? 
+					(shieldingState.isAfter(ShieldingState.MOVING_3) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_STAIR_TOP_RIGHT) : 
+						shapeProvider.IRIS_CORNER_BOTTOM_LEFT, direction, orientation);
+			case RIGHT_ABOVE2 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_2) ? 
+					(shieldingState.isAfter(ShieldingState.MOVING_3) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_STAIR_TOP_LEFT) : 
+						shapeProvider.IRIS_CORNER_BOTTOM_RIGHT, direction, orientation);
 
-		return switch (state.getValue(PART)) {
-			case LEFT2, LEFT3_ABOVE -> getShapeFromArray(shapeProvider.CORNER_TOP_RIGHT, direction, orientation);
-			case LEFT2_ABOVE -> getShapeFromArray(blocked ? shapeProvider.STAIR_TOP_RIGHT_BLOCKED : shapeProvider.STAIR_TOP_RIGHT, direction, orientation);
-			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> getShapeFromArray(shapeProvider.CORNER_BOTTOM_RIGHT, direction, orientation);
-			case LEFT2_ABOVE5 -> getShapeFromArray(blocked ? shapeProvider.STAIR_BOTTOM_RIGHT_BLOCKED : shapeProvider.STAIR_BOTTOM_RIGHT, direction, orientation);
-			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> getShapeFromArray(shapeProvider.CORNER_BOTTOM_LEFT, direction, orientation);
-			case RIGHT2_ABOVE5 -> getShapeFromArray(blocked ? shapeProvider.STAIR_BOTTOM_LEFT_BLOCKED : shapeProvider.STAIR_BOTTOM_LEFT, direction, orientation);
-			case RIGHT3_ABOVE, RIGHT2 -> getShapeFromArray(shapeProvider.CORNER_TOP_LEFT, direction, orientation);
-			case RIGHT2_ABOVE -> getShapeFromArray(blocked ? shapeProvider.STAIR_TOP_LEFT_BLOCKED : shapeProvider.STAIR_TOP_LEFT, direction, orientation);
-			default -> getShapeFromArray(shapeProvider.FULL, direction, orientation);
-		};*/
+			// Inner parts
+			case ABOVE4 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_3) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_TOP, direction, orientation);
+			case LEFT_ABOVE3 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_3) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_LEFT, direction, orientation);
+			case RIGHT_ABOVE3 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_3) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_RIGHT, direction, orientation);
+			case ABOVE2 -> VoxelShapeProvider.getShapeFromArray(shieldingState.isAfter(ShieldingState.MOVING_3) ? shapeProvider.IRIS_FULL : shapeProvider.IRIS_BOTTOM, direction, orientation);
+			
+			default -> VoxelShapeProvider.getShapeFromArray(shapeProvider.IRIS_FULL, direction, orientation);
+		};
 		
-		if(orientation == Orientation.REGULAR)
-			return direction.getAxis() == Direction.Axis.X ? shapeProvider.Z_IRIS_FULL : shapeProvider.X_IRIS_FULL;
+		//if(orientation == Orientation.REGULAR)
+		//	return direction.getAxis() == Direction.Axis.X ? shapeProvider.Z_IRIS_FULL : shapeProvider.X_IRIS_FULL;
 		
-		return shapeProvider.HORIZONTAL_IRIS_FULL;
+		//return shapeProvider.HORIZONTAL_IRIS_FULL;
 	}
 	
 	public static void destroyShielding(Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation)

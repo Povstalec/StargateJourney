@@ -19,6 +19,7 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
 public class TollanStargateBlock extends AbstractStargateBaseBlock
 {
@@ -58,7 +59,7 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
-			return getShapeFromArray(shapeProvider.BOTTOM, state.getValue(FACING), state.getValue(ORIENTATION));
+			return VoxelShapeProvider.getShapeFromArray(shapeProvider.BOTTOM, state.getValue(FACING), state.getValue(ORIENTATION));
 		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_BOTTOM : shapeProvider.X_BOTTOM;
 	}
 	
