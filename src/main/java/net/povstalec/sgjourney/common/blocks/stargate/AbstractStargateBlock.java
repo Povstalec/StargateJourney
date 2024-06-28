@@ -28,8 +28,8 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
@@ -51,13 +51,19 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH)
 				.setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTION_STATE, StargateConnection.State.IDLE)
-				.setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)/*.setValue(FULL, Boolean.valueOf(false))*/);
+				.setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)
+				/*.setValue(FULL, Boolean.valueOf(false))*/);
 		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
+	}
+
+	public ArrayList<StargatePart> getParts(boolean shielded)
+	{
+		return shielded ? StargatePart.DEFAULT_SHIELDED_PARTS : StargatePart.DEFAULT_PARTS;
 	}
 
 	public ArrayList<StargatePart> getParts()
 	{
-		return StargatePart.DEFAULT_PARTS;
+		return getParts(false);
 	}
 
 	public ArrayList<ShieldingPart> getShieldingParts()

@@ -29,18 +29,24 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	{
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
-		
-		boolean blocked = true;
 
-		return switch (state.getValue(PART)) {
+		return switch (state.getValue(PART)) 
+		{
 			case LEFT2, LEFT3_ABOVE -> VoxelShapeProvider.getShapeFromArray(shapeProvider.CORNER_TOP_RIGHT, direction, orientation);
-			case LEFT2_ABOVE -> VoxelShapeProvider.getShapeFromArray(blocked ? shapeProvider.STAIR_TOP_RIGHT_BLOCKED : shapeProvider.STAIR_TOP_RIGHT, direction, orientation);
+			case LEFT2_ABOVE -> VoxelShapeProvider.getShapeFromArray(shapeProvider.STAIR_TOP_RIGHT, direction, orientation);
 			case LEFT3_ABOVE5, LEFT2_ABOVE6 -> VoxelShapeProvider.getShapeFromArray(shapeProvider.CORNER_BOTTOM_RIGHT, direction, orientation);
-			case LEFT2_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(blocked ? shapeProvider.STAIR_BOTTOM_RIGHT_BLOCKED : shapeProvider.STAIR_BOTTOM_RIGHT, direction, orientation);
+			case LEFT2_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(shapeProvider.STAIR_BOTTOM_RIGHT, direction, orientation);
 			case RIGHT2_ABOVE6, RIGHT3_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(shapeProvider.CORNER_BOTTOM_LEFT, direction, orientation);
-			case RIGHT2_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(blocked ? shapeProvider.STAIR_BOTTOM_LEFT_BLOCKED : shapeProvider.STAIR_BOTTOM_LEFT, direction, orientation);
+			case RIGHT2_ABOVE5 -> VoxelShapeProvider.getShapeFromArray(shapeProvider.STAIR_BOTTOM_LEFT, direction, orientation);
 			case RIGHT3_ABOVE, RIGHT2 -> VoxelShapeProvider.getShapeFromArray(shapeProvider.CORNER_TOP_LEFT, direction, orientation);
-			case RIGHT2_ABOVE -> VoxelShapeProvider.getShapeFromArray(blocked ? shapeProvider.STAIR_TOP_LEFT_BLOCKED : shapeProvider.STAIR_TOP_LEFT, direction, orientation);
+			case RIGHT2_ABOVE -> VoxelShapeProvider.getShapeFromArray(shapeProvider.STAIR_TOP_LEFT, direction, orientation);
+			
+			// Shielded
+			case LEFT2_ABOVE_SHIELDED -> VoxelShapeProvider.getShapeFromArray(shapeProvider.STAIR_TOP_RIGHT_BLOCKED, direction, orientation);
+			case LEFT2_ABOVE5_SHIELDED -> VoxelShapeProvider.getShapeFromArray(shapeProvider.STAIR_BOTTOM_RIGHT_BLOCKED, direction, orientation);
+			case RIGHT2_ABOVE5_SHIELDED -> VoxelShapeProvider.getShapeFromArray(shapeProvider.STAIR_BOTTOM_LEFT_BLOCKED, direction, orientation);
+			case RIGHT2_ABOVE_SHIELDED -> VoxelShapeProvider.getShapeFromArray(shapeProvider.STAIR_TOP_LEFT_BLOCKED, direction, orientation);
+			
 			default -> VoxelShapeProvider.getShapeFromArray(shapeProvider.FULL, direction, orientation);
 		};
 	}
@@ -52,7 +58,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		{
 			BlockPos baseBlockPos = oldState.getValue(PART).getBaseBlockPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
 			
-			AbstractStargateBaseBlock.destroyStargate(level, baseBlockPos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+			AbstractStargateBaseBlock.destroyStargate(level, baseBlockPos, getParts(false), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
 			//level.setBlock(baseBlockPos, isWaterLogged(baseState, level, baseBlockPos) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 35);
 			
 	        super.onRemove(oldState, level, pos, newState, isMoving);

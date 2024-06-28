@@ -42,7 +42,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.IrisBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.ShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
@@ -937,6 +937,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return hasIris() && this.irisProgress == ShieldingState.MAX_PROGRESS;
 	}
 	
+	public ShieldingState getShieldingState()
+	{
+		return ShieldingState.fromProgress(irisProgress);
+	}
+	
 	private void setIrisState()
 	{
 		if(irisProgress == ShieldingState.CLOSED.getProgress())
@@ -1409,7 +1414,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public void setStargateState(StargateConnection.State connectionState, int chevronsEngaged, boolean updateInterfaces)
 	{
-		setStargateState(connectionState, chevronsEngaged, updateInterfaces, false, ShieldingState.OPEN);
+		setStargateState(connectionState, chevronsEngaged, updateInterfaces, false, getShieldingState());
 		
 	}
 	
@@ -1420,7 +1425,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
 		{
-			stargate.updateStargate(level, gatePos, gateState, connectionState, chevronsEngaged);
+			stargate.updateStargate(level, gatePos, gateState, connectionState, chevronsEngaged, shieldingState);
 			
 			if(updateIris)
 				stargate.updateIris(level, gatePos, gateState, shieldingState);
@@ -1467,7 +1472,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 				BlockPos pos = centerPos.relative(direction, width).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), height);
 				BlockState state = level.getBlockState(pos);
 				
-				if((!state.getMaterial().isReplaceable() && !(state.getBlock() instanceof AbstractStargateBlock) && !(state.getBlock() instanceof IrisBlock)) || state.getMaterial() == Material.LAVA)
+				if((!state.getMaterial().isReplaceable() && !(state.getBlock() instanceof AbstractStargateBlock) && !(state.getBlock() instanceof ShieldingBlock)) || state.getMaterial() == Material.LAVA)
 					obstructingBlocks++;
 			}
 		}

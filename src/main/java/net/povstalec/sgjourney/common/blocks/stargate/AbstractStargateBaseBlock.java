@@ -194,7 +194,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			return;
 		}
 		
-		IrisBlock.destroyShielding(level, pos, shieldingParts, direction, orientation);
+		ShieldingBlock.destroyShielding(level, pos, shieldingParts, direction, orientation);
 		
 		for(StargatePart part : parts)
 		{
@@ -244,17 +244,19 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         }
     }
 	
-	public void updateStargate(Level level, BlockPos pos, BlockState state, StargateConnection.State connectionState, int chevronsActive)
+	public void updateStargate(Level level, BlockPos pos, BlockState state, StargateConnection.State connectionState, int chevronsActive, ShieldingState shieldingState)
 	{
 		if(!(state.getBlock() instanceof AbstractStargateBlock))
 			return;
 		
-		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTION_STATE, connectionState).setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
+		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTION_STATE, connectionState)
+				.setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive)
+				/*.setValue(AbstractStargateRingBlock.SHIELDING_STATE, shieldingState)*/, 2);
 		
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
-		
-		for(StargatePart part : getParts())
+		System.out.println(shieldingState);
+		for(StargatePart part : getParts(shieldingState != ShieldingState.OPEN))
 		{
 			if(!part.equals(StargatePart.BASE))
 			{
@@ -268,7 +270,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 							.setValue(AbstractStargateRingBlock.CHEVRONS_ACTIVE, level.getBlockState(pos).getValue(CHEVRONS_ACTIVE))
 							.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
 							.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
-							.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
+							.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER))
+							/*.setValue(AbstractStargateRingBlock.SHIELDING_STATE, shieldingState)*/, 3);
 				}
 			}
 		}
@@ -279,7 +282,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
 		
-		IrisBlock.setIrisState(BlockInit.MILKY_WAY_IRIS.get(), level, pos, getShieldingParts(), direction, orientation, shieldingState);
+		ShieldingBlock.setIrisState(BlockInit.MILKY_WAY_IRIS.get(), level, pos, getShieldingParts(), direction, orientation, shieldingState);
 	}
 	
     @Override

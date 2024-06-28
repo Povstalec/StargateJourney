@@ -120,7 +120,7 @@ public enum ShieldingPart implements StringRepresentable
 		return pos.relative(newDirection, this.width).relative(centerDirection, -this.height);
 	}
 	
-	public BlockPos getIrisPos(BlockPos pos, Direction direction, Orientation orientation)
+	public BlockPos getShieldingPos(BlockPos pos, Direction direction, Orientation orientation)
 	{
 		Direction newDirection = direction.getClockWise();
 		Direction centerDirection = Orientation.getCenterDirection(direction, orientation);
@@ -130,7 +130,7 @@ public enum ShieldingPart implements StringRepresentable
 	
 	public Vec3 getRelativeRingPos(BlockPos pos, Direction direction, Orientation orientation)
 	{
-		BlockPos ringPos = getIrisPos(pos, direction, orientation);
+		BlockPos ringPos = getShieldingPos(pos, direction, orientation);
 		
 		return new Vec3(ringPos.getX() - pos.getX(), ringPos.getY() - pos.getY(), ringPos.getZ() - pos.getZ());
 	}

@@ -29,7 +29,7 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 	}
 	
 	@Override
-	public ArrayList<StargatePart> getParts()
+	public ArrayList<StargatePart> getParts(boolean shielded)
 	{
 		return StargatePart.TOLLAN_PARTS;
 	}

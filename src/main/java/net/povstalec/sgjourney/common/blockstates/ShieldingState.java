@@ -57,4 +57,20 @@ public enum ShieldingState implements StringRepresentable
 	{
 		return other.number < this.number;
 	}
+	
+	public static ShieldingState fromProgress(short progress)
+	{
+		if(progress < MOVING_1.progress)
+			return OPEN;
+		else if(progress < MOVING_2.progress)
+			return MOVING_1;
+		else if(progress < MOVING_3.progress)
+			return MOVING_2;
+		else if(progress < MOVING_4.progress)
+			return MOVING_3;
+		else if(progress < CLOSED.progress)
+			return MOVING_4;
+		
+		return CLOSED;
+	}
 }

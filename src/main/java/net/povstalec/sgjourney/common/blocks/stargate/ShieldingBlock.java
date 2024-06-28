@@ -27,17 +27,17 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
-public class IrisBlock extends Block implements SimpleWaterloggedBlock
+public class ShieldingBlock extends Block implements SimpleWaterloggedBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	public static final EnumProperty<ShieldingState> SHIELDING_STATE = EnumProperty.create("shielding_state", ShieldingState.class);
-	public static final EnumProperty<ShieldingPart> PART = EnumProperty.create("stargate_part", ShieldingPart.class);
+	public static final EnumProperty<ShieldingPart> PART = EnumProperty.create("shielding_part", ShieldingPart.class);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	
 	protected VoxelShapeProvider shapeProvider;
 
-	public IrisBlock(Properties properties, double width, double horizontalOffset)
+	public ShieldingBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR)
@@ -135,19 +135,19 @@ public class IrisBlock extends Block implements SimpleWaterloggedBlock
 		
 		for(ShieldingPart part : parts)
 		{
-			BlockPos ringPos = part.getIrisPos(baseBlockPos, direction, orientation);
+			BlockPos ringPos = part.getShieldingPos(baseBlockPos, direction, orientation);
 			BlockState state = level.getBlockState(ringPos);
 			
-			if(state.getBlock() instanceof IrisBlock)
+			if(state.getBlock() instanceof ShieldingBlock)
 			{
-				boolean waterlogged = state.getValue(IrisBlock.WATERLOGGED);
+				boolean waterlogged = state.getValue(ShieldingBlock.WATERLOGGED);
 				
 				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
 			}
 		}
 	}
 	
-	public static void setIrisState(IrisBlock irisBlock, Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation, ShieldingState shieldingState)
+	public static void setIrisState(ShieldingBlock irisBlock, Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation, ShieldingState shieldingState)
 	{
 		if(direction == null)
 		{
@@ -163,13 +163,13 @@ public class IrisBlock extends Block implements SimpleWaterloggedBlock
 		
 		for(ShieldingPart part : parts)
 		{
-			BlockPos ringPos = part.getIrisPos(baseBlockPos, direction, orientation);
+			BlockPos ringPos = part.getShieldingPos(baseBlockPos, direction, orientation);
 			BlockState state = level.getBlockState(ringPos);
 			
 			// Remove Shielding Block
-			if(state.getBlock() instanceof IrisBlock && !part.canExist(shieldingState))
+			if(state.getBlock() instanceof ShieldingBlock && !part.canExist(shieldingState))
 			{
-				boolean waterlogged = state.getValue(IrisBlock.WATERLOGGED);
+				boolean waterlogged = state.getValue(ShieldingBlock.WATERLOGGED);
 				
 				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
 				
@@ -177,15 +177,15 @@ public class IrisBlock extends Block implements SimpleWaterloggedBlock
 			// Change or place new Shielding Block
 			else if(part.canExist(shieldingState))
 			{
-				if(state.getBlock() instanceof IrisBlock || state.is(Blocks.AIR) || state.is(Blocks.WATER))
+				if(state.getBlock() instanceof ShieldingBlock || state.is(Blocks.AIR) || state.is(Blocks.WATER))
 				{
-					level.setBlock(part.getIrisPos(baseBlockPos,  direction, orientation), 
+					level.setBlock(part.getShieldingPos(baseBlockPos,  direction, orientation), 
 							irisBlock.defaultBlockState()
-							.setValue(IrisBlock.SHIELDING_STATE, shieldingState)
-							.setValue(IrisBlock.PART, part)
-							.setValue(IrisBlock.FACING, direction)
-							.setValue(IrisBlock.ORIENTATION, orientation)
-							.setValue(IrisBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getIrisPos(baseBlockPos, direction, orientation)).getType() == Fluids.WATER)), 3);
+							.setValue(ShieldingBlock.SHIELDING_STATE, shieldingState)
+							.setValue(ShieldingBlock.PART, part)
+							.setValue(ShieldingBlock.FACING, direction)
+							.setValue(ShieldingBlock.ORIENTATION, orientation)
+							.setValue(ShieldingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getShieldingPos(baseBlockPos, direction, orientation)).getType() == Fluids.WATER)), 3);
 				}
 			}
 			

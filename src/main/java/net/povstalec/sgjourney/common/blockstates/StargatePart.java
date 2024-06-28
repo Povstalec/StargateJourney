@@ -41,7 +41,13 @@ public enum StargatePart implements StringRepresentable
 	RIGHT2("right2", -2, 0),
 	
 	RIGHT("right", -1, 0),
-
+	
+	/** SHIELDED VERSIONS OF SOME PARTS TO BE USED IN THE GATE MORE EFFICIENTLY THAN ADDING A NEW BLOCKSTATE **/
+	
+	LEFT2_ABOVE_SHIELDED("left2_above_shielded", 2, 1),
+	LEFT2_ABOVE5_SHIELDED("left2_above5_shielded", 2, 5),
+	RIGHT2_ABOVE5_SHIELDED("right2_above5_shielded", -2, 5),
+	RIGHT2_ABOVE_SHIELDED("right2_above_shielded", -2, 1),
 
 	/** SPECIFIC FOR VERTICALLY PLACED TOLLAN GATE **/
 	LEFT2_ABOVE4("left2_above4", 2, 4),
@@ -50,8 +56,10 @@ public enum StargatePart implements StringRepresentable
 	RIGHT_ABOVE5("right_above5", -1, 5),
 	RIGHT2_ABOVE4("right2_above4", -2, 4);
 	
-	public static final ArrayList<StargatePart> DEFAULT_PARTS = getParts(false);
-	public static final ArrayList<StargatePart> TOLLAN_PARTS = getParts(true);
+	public static final ArrayList<StargatePart> DEFAULT_PARTS = getParts(false, false);
+	public static final ArrayList<StargatePart> DEFAULT_SHIELDED_PARTS = getParts(false, true);
+	
+	public static final ArrayList<StargatePart> TOLLAN_PARTS = getParts(true, false);
 	
 	private final String name;
 	private final int width;
@@ -64,14 +72,14 @@ public enum StargatePart implements StringRepresentable
 		this.height = height;
 	}
 	
-	private static ArrayList<StargatePart> getParts(boolean smaller)
+	private static ArrayList<StargatePart> getParts(boolean smaller, boolean shielded)
 	{
 		ArrayList<StargatePart> parts = new ArrayList<>();
 		
 		parts.add(BASE);
 		parts.add(LEFT);
 		parts.add(LEFT2);
-		parts.add(LEFT2_ABOVE);
+		parts.add(shielded ? LEFT2_ABOVE_SHIELDED : LEFT2_ABOVE);
 		parts.add(LEFT3_ABOVE);
 		parts.add(LEFT3_ABOVE2);
 		parts.add(LEFT3_ABOVE3);
@@ -89,20 +97,20 @@ public enum StargatePart implements StringRepresentable
 		else
 		{
 			parts.add(LEFT3_ABOVE5);
-			parts.add(LEFT2_ABOVE5);
+			parts.add(shielded ? LEFT2_ABOVE5_SHIELDED : LEFT2_ABOVE5);
 			parts.add(LEFT2_ABOVE6);
 			parts.add(LEFT_ABOVE6);
 			parts.add(ABOVE6);
 			parts.add(RIGHT_ABOVE6);
 			parts.add(RIGHT2_ABOVE6);
-			parts.add(RIGHT2_ABOVE5);
+			parts.add(shielded ? RIGHT2_ABOVE5_SHIELDED : RIGHT2_ABOVE5);
 			parts.add(RIGHT3_ABOVE5);
 		}
 		parts.add(RIGHT3_ABOVE4);
 		parts.add(RIGHT3_ABOVE3);
 		parts.add(RIGHT3_ABOVE2);
 		parts.add(RIGHT3_ABOVE);
-		parts.add(RIGHT2_ABOVE);
+		parts.add(shielded ? RIGHT2_ABOVE_SHIELDED : RIGHT2_ABOVE);
 		parts.add(RIGHT2);
 		parts.add(RIGHT);
 
