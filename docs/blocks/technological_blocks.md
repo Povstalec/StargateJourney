@@ -13,6 +13,8 @@ stargate, they call it - check [What's that Stargate anyway?](/docs/what_is_star
 Each stargate can have different variants which can be also added by [datapacks](/docs/datapacks).
 
 ### Classic
+Initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
+The gate ring cannot move.
 
 ![Classic stargate](/assets/img/blocks/technological/classic_stargate.png)
 
