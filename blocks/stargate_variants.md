@@ -6,7 +6,7 @@ parent: Blocks
 ---
 
 # Stargate Variants
-[Datapacks](/docs/datapacks) are able to add custom stargate variants.  
+[Datapacks](/datapacks) are able to add custom stargate variants.  
 These variants are available in the base mod.
 
 ## Classic stargate
@@ -113,7 +113,7 @@ ___
 
 {: .note }
 Neither the Universe nor Tollan Stargate has an available alternative variant in the base mod.
-However, [datapacks](/docs/datapacks) can add them.
+However, [datapacks](/datapacks) can add them.
 
 ## Universe
 

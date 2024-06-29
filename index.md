@@ -30,24 +30,24 @@ Things may be buggy, unfinished, or unobtainable in survival.
 If you find a bug, we would appreciate it if you reported it to GitHub issues or Discord.
 
 If you are __new to the topic__ and want to know what that thing is...  
-stargate, they call it - check [What's that Stargate anyway?](/docs/what_is_stargate).
+stargate, they call it - check [What's that Stargate anyway?](/what_is_stargate).
 
 {: .highlight }
-If you are playing All the Mods 9 modpack, check the [ATM9](/docs/atm9) section.
+If you are playing All the Mods 9 modpack, check the [ATM 9](/atm9.md) section.
 
 The documentation is divided into a few main parts:
-* [Survival Guide](/docs/survival): A ~~recommended~~ possible way to progress through the mod in survival.
-* [Dimensions](/docs/additions/dimensions), [Items](/docs/additions/items), and [Blocks](/docs/additions/blocks): Detailed explanations on how they work and how to use them.
-* [Mechanics](/docs/mechanics): Descriptions of the stargate network and other mechanics.
-* [All the mods 9](/docs/atm9): Information on modifications and changes made by the modpack.
-* [Computercraft](/docs/computercraft): Integration with the [computercraft](https://tweaked.cc/) mod.
-* [Datapacks and Resourcepacks](/docs/datapacks): Features available for customization.
+* [Survival Guide](/survival): A ~~recommended~~ possible way to progress through the mod in survival.
+* [Dimensions](/additions/dimensions), [Items](/additions/items), and [Blocks](/additions/blocks): Detailed explanations on how they work and how to use them.
+* [Mechanics](/mechanics): Descriptions of the stargate network and other mechanics.
+* [All the mods 9](/atm9.md): Information on modifications and changes made by the modpack.
+* [Computercraft](/computercraft): Integration with the [computercraft](https://tweaked.cc/) mod.
+* [Datapacks and Resourcepacks](/datapacks): Features available for customization.
 
 {: .highlight }
 > Feel free to ask on the [Discord server](https://discord.gg/VDSqzdBqRd) if you have a question.
 > 
 > Before asking a question or reporting a bug,
-> please check the [F&Q](/faq) section and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord](https://discord.gg/VDSqzdBqRd).  
+> please check the [F&Q](/faq.md) section and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord](https://discord.gg/VDSqzdBqRd).  
 > Someone else may have already asked about that.
 
 ## Compatibility with other mods

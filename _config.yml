@@ -58,8 +58,8 @@ callouts_level: quiet # or loud
 callouts:
   highlight:
     color: yellow
-  important:
-    title: Important
+  tip:
+    title: Tip
     color: blue
   new:
     title: New

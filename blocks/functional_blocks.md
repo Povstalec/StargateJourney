@@ -48,3 +48,7 @@ _Stone Cartouche and Sandstone Cartouche_
 Shows an address. Currently, there is no way to customize the address.
 
 ![Cartouche](/assets/img/blocks/functional/cartouche.png)
+
+{: .tip }
+You can right-click on a symbol or cartouche to see the details in the chat.  
+Then you can copy an address in chat by clicking on it.
