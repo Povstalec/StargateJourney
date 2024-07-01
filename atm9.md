@@ -8,6 +8,14 @@ Given the amount of questions regarding [All The Mods 9](https://www.curseforge.
 there are because Stargate Journey works slightly differently with that modpack,
 it seems there is a need for a separate guide that fully explains all differences present.
 
+# Progression
+Stargate Journey progression in ATM9 is the same as normally,
+except with the slight difference that you can find a Stargate Pedestal by just randomly wandering around for long enough.
+You can still find the Buried Stargate through a map you get as a final trade from the Archeologist Villager, but you now have more options.
+
+{: .highlight }
+On older versions of ATM9, the Map that leads to the Buried Stargate could instead lead to one of the many Stargate Pedestals that Common Stargates Datapack generates.
+
 # World Generation
 ## Stargates 
 All The Mods 9 uses the [Common Stargates Datapack](https://www.curseforge.com/minecraft/texture-packs/common-stargates),
@@ -21,15 +29,8 @@ Cartouches with the Abydos Address will generate around the Overworld:
   
 ![Stone cartouche structure](/assets/img/stone_cartouche.png)
 
-# Progression
-Stargate Journey progression in ATM9 is the same as normally, 
-except with the slight difference that you can find a Stargate Pedestal by just randomly wandering around for long enough. 
-You can still find the Buried Stargate through a map you get as a final trade from the Archeologist Villager, but you now have more options.
 
-{: .highlight }
-On older versions of ATM9, the Map that leads to the Buried Stargate could instead lead to one of the many Stargate Pedestals that Common Stargates Datapack generates.
-
-[//]: # (// You know... there is no image :D not even on discord)
+[//]: # (// There is no image :D not even on discord)
 [//]: # (# Troubleshooting)
 
 [//]: # (## Updating from an older ATM9 version crashes, presumably due to problems caused by Stargate Journey)

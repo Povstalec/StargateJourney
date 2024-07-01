@@ -13,7 +13,7 @@ and a __map to Chappa'ai__ on the last (Master) level.
 
 {: .note }
 > __Archeologist map__ leads to a Goa'uld temple.  
-> __Map to Chappa'ai__ leads to a buried stargate.   
+> __Map to Chappa'ai__ leads to a buried Stargate.   
 
 ![Golden idol](/assets/img/blocks/functional/archeology_table_villager.png)
 

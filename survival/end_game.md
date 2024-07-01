@@ -5,7 +5,7 @@ has_children: false
 parent: Survival Guide
 ---
 
-# Creating a stargate
+# Creating a Stargate
 
 
 # Lantea

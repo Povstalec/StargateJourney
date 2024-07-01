@@ -1,11 +1,11 @@
 ---
-title: Finding a stargate
+title: Finding a Stargate
 nav_order: 0
 has_children: false
 parent: Survival Guide
 ---
 
-# Finding a stargate
+# Finding a Stargate
 
 - Overworld structures
 - two gate structures

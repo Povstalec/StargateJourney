@@ -6,6 +6,14 @@ logo: "/assets/img/logo.png"
 favicon_ico: "/assets/img/favicon.ico"
 url: https://povstalec.github.io/StargateJourney/
 
+discord_invite_link: https://discord.gg/VDSqzdBqRd
+
+nav_external_links:
+  - title: GitHub
+    url: https://github.com/Povstalec/StargateJourney
+  - title: Discord
+    url: https://discord.gg/VDSqzdBqRd
+
 theme: just-the-docs
 # see https://just-the-docs.com/docs/configuration/
 permalink: pretty

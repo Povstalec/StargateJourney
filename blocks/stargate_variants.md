@@ -6,10 +6,10 @@ parent: Blocks
 ---
 
 # Stargate Variants
-[Datapacks](/datapacks) are able to add custom stargate variants.  
+[Datapacks](/datapacks) are able to add custom Stargate variants.  
 These variants are available in the base mod.
 
-## Classic stargate
+## Classic Stargate
 
 Initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
 The gate ring cannot move.
@@ -23,7 +23,7 @@ Each chevron lights up and moves when locked.
 ### Milky Way
 `classic_milky_way`
 
-Milky way variant of classic stargate. 
+Milky way variant of classic Stargate. 
 
 <details>
     <summary>Dialing sequence video</summary>
@@ -31,11 +31,11 @@ Milky way variant of classic stargate.
 </details>
 
 
-![Classic stargate Milky Way variant](/assets/img/blocks/technological/variants/classic_milkyway.png)
+![Classic Stargate Milky Way variant](/assets/img/blocks/technological/variants/classic_milkyway.png)
 
 ___
 
-## Milky Way stargate
+## Milky Way Stargate
 
 The gate ring can rotate when the gate is powered with redstone or used with computercraft.  
 The symbol being encoded is always under the top chevron.
@@ -52,7 +52,7 @@ Chevrons do not glow; each chevron opens and closes individually and moves on bo
 The primary chevron is the only one that doesn't move; it has open space under it, so the symbol under it is easier to see.
 <details>
     <summary>The event horizon forms a vortex behind the gate</summary>
-    <p><img src="/assets/img/blocks/technological/variants/vortex.png" alt="Milky Way stargate movie variant"></p>
+    <p><img src="/assets/img/blocks/technological/variants/vortex.png" alt="Milky Way Stargate movie variant"></p>
 </details>
 
 <details>
@@ -60,7 +60,7 @@ The primary chevron is the only one that doesn't move; it has open space under i
     {% include youtubePlayer.html id="ptVJKO5nW20" %}
 </details>
 
-![Milky Way stargate movie variant](/assets/img/blocks/technological/variants/milkyway_movie.png)
+![Milky Way Stargate movie variant](/assets/img/blocks/technological/variants/milkyway_movie.png)
 
 ### Promo
 `milkyway_promo`
@@ -72,7 +72,7 @@ Same as the [Milky Way Movie variant](#movie), but the chevrons are lit and ther
     {% include youtubePlayer.html id="gf6m-AcZwMg" %}
 </details>
 
-![Milky Way stargate promo variant](/assets/img/blocks/technological/variants/milkyway_promo.png)
+![Milky Way Stargate promo variant](/assets/img/blocks/technological/variants/milkyway_promo.png)
 
 ### SG-1
 `milkyway_sg-1`
@@ -85,7 +85,7 @@ Milky Way symbols and the Tau'ri Point of Origin (Giza) is set to be used perman
     {% include youtubePlayer.html id="Fwc8eTm0Ph8" %}
 </details>
 
-![Milky Way stargate SG-1 variant](/assets/img/blocks/technological/variants/milkyway_sg-1.png)
+![Milky Way Stargate SG-1 variant](/assets/img/blocks/technological/variants/milkyway_sg-1.png)
 
 ___
 
@@ -96,10 +96,10 @@ ___
     {% include youtubePlayer.html id="BcUokqncKYI" %}
 </details>
 
-Pegasus stargate with Milky Way symbols  
+Pegasus Stargate with Milky Way symbols  
 (This is not a variant; by default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.):
 
-![Pegasus stargate Milky Way symbols](/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
+![Pegasus Stargate Milky Way symbols](/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
 
 ### Atlantis
 `pegasus_atlantis`
@@ -107,7 +107,7 @@ Pegasus stargate with Milky Way symbols
 Same as the default gate variant.
 Pegasus symbols and the Lantea Point of Origin (Subido) are set to be used permanently.
 
-![Pegasus stargate atlantis_variant](/assets/img/blocks/technological/variants/pegasus_atlantis.png)
+![Pegasus Stargate atlantis_variant](/assets/img/blocks/technological/variants/pegasus_atlantis.png)
 
 ___
 

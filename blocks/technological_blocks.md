@@ -8,31 +8,31 @@ parent: Blocks
 
 ## Stargates
 If you are __new to the topic__ and want to know what that thing is...  
-stargate, they call it - check [What's that Stargate anyway?](/what_is_stargate).
+Stargate, they call it - check [What's that Stargate anyway?](/what_is_stargate).
 
-Each stargate can have different variants which can be also added by [datapacks](/datapacks).
+Each Stargate can have different variants which can be also added by [datapacks](/datapacks).
 
 ### Classic
 Initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
 The gate ring cannot move.
 
-![Classic stargate](/assets/img/blocks/technological/classic_stargate.png)
+![Classic Stargate](/assets/img/blocks/technological/classic_stargate.png)
 
 ### Universe
 
-![Universe stargate](/assets/img/blocks/technological/universe_stargate.png)
+![Universe Stargate](/assets/img/blocks/technological/universe_stargate.png)
 
 ### Milky Way
 
-![Milky Way stargate](/assets/img/blocks/technological/milkyway_stargate.png)
+![Milky Way Stargate](/assets/img/blocks/technological/milkyway_stargate.png)
 
 ### Tollan
 
-![Tollan stargate](/assets/img/blocks/technological/tollan_stargate.png)
+![Tollan Stargate](/assets/img/blocks/technological/tollan_stargate.png)
 
 ### Pegasus
 
-![Pegasus stargate](/assets/img/blocks/technological/pegasus_stargate.png)
+![Pegasus Stargate](/assets/img/blocks/technological/pegasus_stargate.png)
 
 
 ## Dial Home Device (DHD)
