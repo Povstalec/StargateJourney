@@ -7,6 +7,7 @@ nav_exclude: true
 # Stargate Journey
 
 <div style="display: none">
+    <p>// Lets call this an easter egg</p>
     <p>Did you ever hear the tragedy of Darth Plagueis The Wise? I thought not.</p>
     <p>It’s not a story the Jedi would tell you. It’s a Sith legend.</p>
     <p>Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life…</p>
@@ -16,10 +17,10 @@ nav_exclude: true
     <p>Ironic. He could save others from death, but not himself..</p>
 </div>
 
-<a href="https://www.curseforge.com/minecraft/mc-mods/sgjourney"><img src="https://img.shields.io/curseforge/dt/689083?style=for-the-badge&logo=curseforge&color=626e7b" alt="Curseforge"></a>
-<a href="https://modrinth.com/mod/sgjourney"><img src="https://img.shields.io/modrinth/dt/sgjourney?style=for-the-badge&logo=modrinth&color=626e7b" alt="Modrinth"></a>
-<a href="{{ site.discord_invite_link }}"><img alt="Static Badge" src="https://img.shields.io/badge/Join_our_Discord_server-grey?style=for-the-badge&logo=discord" alt="Discord"></a>
-<a href="https://github.com/Povstalec/StargateJourney"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Povstalec/StargateJourney?style=for-the-badge&logo=github&color=626e7b" alt="GitHub"></a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/sgjourney" target="_blank"><img src="https://img.shields.io/curseforge/dt/689083?style=for-the-badge&logo=curseforge&color=626e7b" alt="Curseforge"></a>
+<a href="https://modrinth.com/mod/sgjourney" target="_blank"><img src="https://img.shields.io/modrinth/dt/sgjourney?style=for-the-badge&logo=modrinth&color=626e7b" alt="Modrinth"></a>
+<a href="{{ site.discord_invite_link }}" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/Join_our_Discord_server-grey?style=for-the-badge&logo=discord" alt="Discord"></a>
+<a href="https://github.com/Povstalec/StargateJourney" target="_blank"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Povstalec/StargateJourney?style=for-the-badge&logo=github&color=626e7b" alt="GitHub"></a>
 
 Stargate Journey is a mod for Minecraft with many additions, such as several dimensions, items, and obviously - Stargates.
 
@@ -56,3 +57,28 @@ Stargate Journey is compatible with multiple other mods:
  - [Stellar View](https://www.curseforge.com/minecraft/mc-mods/stellarview) can be used to enhance your experience of different planetary night skies
  - [Ad Astra](https://ad-astra.terrarium.wiki/ad-astra)'s two default Solar Systems are also considered Solar Systems within Stargate Journey
 
+## Community Creations
+ - **New Stargate Variants:**
+   - [More Gates](https://www.curseforge.com/minecraft/mc-mods/more-gates-mod-ver)
+   - [Dimension Gates](https://discord.com/channels/1011344665678708818/1200953359650263100) (discord thread link)
+
+ - **Additional decorative blocks:**
+   - [Stargate Journey: Deco](https://www.curseforge.com/minecraft/mc-mods/stargate-journey-deco)
+   - [Stargate Journey Additions](https://www.curseforge.com/minecraft/mc-mods/stargate-journey-additions)
+
+ - **Computercraft scripts:**
+   - [Ktlo's Pocket Stargate](https://github.com/Ktlo/pocket-stargate)
+   - [Red's EZ Auto-Dialer Script](https://discord.com/channels/1011344665678708818/1217131207532482662) (discord thread link)
+
+## Author
+The author and developer of the mod is **Povstalec** also known as **Wold** (_woldericz_junior_).
+
+> Wold, the mighty and true only Wold.  
+> He is said to be one of the few Ancients who remained hidden on Terra.
+{: .text-grey-dk-000 }
+
+You can also see all the cool people who contributed to the development on GitHub or [helped otherwise](https://github.com/Povstalec/StargateJourney/wiki/Credits)
+
+<a href="https://github.com/Povstalec/StargateJourney/graphs/contributors" target="_blank">
+  <img src="https://contrib.rocks/image?repo=Povstalec/StargateJourney"/>
+</a>

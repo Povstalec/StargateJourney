@@ -14,7 +14,7 @@ parent: Blocks
 If you are __new to the topic__ and want to know what that thing is...  
 Stargate, they call it - check [What's that Stargate anyway?](/what_is_stargate).
 
-Each Stargate can have different variants which can be also added by [datapacks](/datapacks).
+Each Stargate can have different [variants](/blocks/stargate_variants) which can be also added by [datapacks](/datapacks).
 
 ### Classic
 Initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).

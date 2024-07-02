@@ -100,8 +100,9 @@ ___
     {% include youtubePlayer.html id="BcUokqncKYI" %}
 </details>
 
-Pegasus Stargate with Milky Way symbols  
-(This is not a variant; by default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.):
+Pegasus Stargate with Milky Way symbols:  
+> This is not a variant;  
+> by default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.
 
 ![Pegasus Stargate Milky Way symbols](/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
 
