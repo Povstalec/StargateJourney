@@ -111,7 +111,7 @@ Pegasus Stargate with Milky Way symbols
 Same as the default gate variant.
 Pegasus symbols and the Lantea Point of Origin (Subido) are set to be used permanently.
 
-![Pegasus Stargate atlantis_variant](/assets/img/blocks/technological/variants/pegasus_atlantis.png)
+![Pegasus Stargate atlantis_variant](/assets/img/blocks/technological/pegasus_stargate.png)
 
 ___
 
