@@ -5,6 +5,10 @@ has_children: false
 parent: Blocks
 ---
 # Technological blocks
+{: .no_toc }
+
+1. Table of Contents
+{:toc}
 
 ## Stargates
 If you are __new to the topic__ and want to know what that thing is...  

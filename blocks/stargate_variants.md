@@ -6,8 +6,12 @@ parent: Blocks
 ---
 
 # Stargate Variants
+{: .no_toc }
 [Datapacks](/datapacks) are able to add custom Stargate variants.  
 These variants are available in the base mod.
+
+1. Table of Contents
+{:toc}
 
 ## Classic Stargate
 

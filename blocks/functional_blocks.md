@@ -5,6 +5,10 @@ has_children: false
 parent: Blocks
 ---
 # Functional Blocks
+{: .no_toc }
+
+1. Table of Contents
+{:toc}
 
 ## Archeology Table
 Can be crafted with a [golden idol](#golden-idol) and used as a __villager workstation__.  
