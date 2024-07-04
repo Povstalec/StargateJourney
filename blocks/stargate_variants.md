@@ -52,8 +52,10 @@ The symbol being encoded is always under the top chevron.
 ### Movie
 `milkyway_movie`
 
-Chevrons do not glow; each chevron opens and closes individually and moves on both sides of the gate instead of just the front. 
-The primary chevron is the only one that doesn't move; it has open space under it, so the symbol under it is easier to see.
+Chevrons do not glow. 
+Each chevron opens and closes individually and moves on both sides of the gate instead of just the front. 
+The primary chevron is the only one that doesn't move.
+Tt has open space under it, so the symbol under it is easier to see.
 <details>
     <summary>The event horizon forms a vortex behind the gate</summary>
     <p><img src="/assets/img/blocks/technological/variants/vortex.png" alt="Milky Way Stargate movie variant"></p>
@@ -101,8 +103,8 @@ ___
 </details>
 
 Pegasus Stargate with Milky Way symbols:  
-> This is not a variant;  
-> by default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.
+> This is not a variant.  
+> By default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.
 
 ![Pegasus Stargate Milky Way symbols](/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
 

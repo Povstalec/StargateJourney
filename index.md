@@ -28,7 +28,8 @@ Stargate Journey is a mod for Minecraft with many additions, such as several dim
 {: .note }
 This project is in early development, and a lot of stuff has not yet been implemented.
 Things may be buggy, unfinished, or unobtainable in survival.
-If you find a bug, we would appreciate it if you reported it to [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
+If you find a bug, it will be appreciated if you report it to 
+[GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
 
 If you are __new to the topic__ and want to know what that thing is...  
 Stargate, they call it - check [What's that Stargate anyway?](/what_is_stargate).
