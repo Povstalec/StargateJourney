@@ -8,6 +8,17 @@
   flex-grow: 1;
 }
 
+.max-width-512 {
+  max-width: 512px;
+}
+
+.max-width-256 {
+  max-width: 256px;
+}
+
+.max-width-128 {
+  max-width: 128px;
+}
 
 // located in /assets/css
 @import "./youtubePlayer.css";
