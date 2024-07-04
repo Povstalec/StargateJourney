@@ -31,6 +31,8 @@ An Archeologist villager could find a way.
 To employ a villager, you will need an **[Archeology table](/blocks/functional_blocks/#archeology-table)**
 which can be crafted with a golden idol.
 
+___
+
 ## Find a Golden Idol in Goa'uld temple
 
 **[Golden idol](/blocks/functional_blocks/#golden-idol)** is a relic left in this world by older civilizations.
@@ -51,16 +53,20 @@ connected to six other nearby temples and a room with loot and a golden idol.
 `/locate structure #sgjourney:goauld_temple`
 </details>
 
+___
+
 ## Archeologist villager
 With a golden idol, you can now craft an archeology table which can be used as a workstation for a villager.
 
-For crafting, you will need a book, a golden idol, three wooden slabs, and two (wooden) sticks.
+For crafting, you will need a book, a golden idol, 3 wooden slabs, and 2 (wooden) sticks.
 
 ![Archeology table crafting](/assets/img/survival/archeology_table_crafting.png)
 
 Now, you can trade a **Map to Chappa'ai** (Stargate) on the villager's last (**Master**) level.
 
 ![Villager map trade](/assets/img/survival/stargate_map_trade.png)
+
+___
 
 ## The Map to Chappa'ai
 The big red X on the map will lead you to a buried Stargate.
@@ -96,7 +102,7 @@ Both gates are generated and buried underground.
 _[Alpha gate](/structures/stargates/#buried-stargate)_ is generated sealed in a horizontal position.  
 _[Beta gate](/structures/stargates/#terra-gate)_ is generated in a small cave in a vertical position.  
 
-The map should always lead to the sealed alpha gate in the overworld.
+In the overworld the map should always lead to the sealed alpha gate.
 Although there are known cases where it does not (usually when datapacks are involved),
 The problem is that you won't find the Abydos address cartouche.
 </details>

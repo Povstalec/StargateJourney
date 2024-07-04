@@ -58,18 +58,22 @@ Stargate Journey is compatible with multiple other mods:
  - [Stellar View](https://www.curseforge.com/minecraft/mc-mods/stellarview) can be used to enhance your experience of different planetary night skies
  - [Ad Astra](https://ad-astra.terrarium.wiki/ad-astra)'s two default Solar Systems are also considered Solar Systems within Stargate Journey
 
+___
+
 ## Community Creations
- - **New Stargate Variants:**
+### New Stargate Variants:
    - [More Gates](https://www.curseforge.com/minecraft/mc-mods/more-gates-mod-ver)
    - [Dimension Gates](https://discord.com/channels/1011344665678708818/1200953359650263100) (discord thread link)
 
- - **Additional decorative blocks:**
+### Additional decorative blocks:
    - [Stargate Journey: Deco](https://www.curseforge.com/minecraft/mc-mods/stargate-journey-deco)
    - [Stargate Journey Additions](https://www.curseforge.com/minecraft/mc-mods/stargate-journey-additions)
 
- - **Computercraft scripts:**
+### Computercraft scripts:
    - [Ktlo's Pocket Stargate](https://github.com/Ktlo/pocket-stargate)
    - [Red's EZ Auto-Dialer Script](https://discord.com/channels/1011344665678708818/1217131207532482662) (discord thread link)
+
+___
 
 ## Author
 The author and developer of the mod is **Povstalec** also known as **Wold** (_woldericz_junior_).

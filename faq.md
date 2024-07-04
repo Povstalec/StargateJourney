@@ -19,7 +19,7 @@ Check out Troubleshooting for common problems.
 ___
 
 ## I dialed a Milky Way Stargate, why isn't it rotating?
-Milky Way Stargates do not spin if DHD is used, and symbols are instead "encoded directly".
+Milky Way Stargates do not spin if DHD is used, and symbols are instead "encoded directly."
 If you want the gate to spin, use the [interface and computercraft mod](), or dial the gate [manually (with redstone)](). <!-- TODO: add links for dialing -->
 
 {: .future }
