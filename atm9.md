@@ -22,12 +22,12 @@ All The Mods 9 uses the [Common Stargates Datapack](https://www.curseforge.com/m
 which changes the world generation in such a way that Stargates generate approximately 64 chunks apart on average, 
 as opposed to once per Dimension (which is how Stargate Journey does it normally).
 
-![Stargate pedestal](/assets/img/blocks/technological/milkyway_pedestal.png)
+![Stargate pedestal]({{ site.baseurl }}/assets/img/blocks/technological/milkyway_pedestal.png)
 
 ## Cartouches
 Cartouches with the Abydos Address will generate around the Overworld:  
   
-![Stone cartouche structure](/assets/img/stone_cartouche.png)
+![Stone cartouche structure]({{ site.baseurl }}/assets/img/stone_cartouche.png)
 
 
 [//]: # (// There is no image :D not even on discord)

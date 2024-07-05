@@ -8,10 +8,10 @@ parent: Structures
 # Goa'uld temples
 ## Overworld
 ### Badlands Ziggurat
-![Badlands Ziggurat](/assets/img/structures/badlands_ziggurat.png)
+![Badlands Ziggurat]({{ site.baseurl }}/assets/img/structures/badlands_ziggurat.png)
 ### Abandoned desert pyramid
-![Abandoned desert pyramid](/assets/img/structures/desert_pyramid_abandoned.png)
+![Abandoned desert pyramid]({{ site.baseurl }}/assets/img/structures/desert_pyramid_abandoned.png)
 ### Jungle pyramid
-![Jungle pyramid](/assets/img/structures/jungle_pyramid.png)
+![Jungle pyramid]({{ site.baseurl }}/assets/img/structures/jungle_pyramid.png)
 
 ## Abydos

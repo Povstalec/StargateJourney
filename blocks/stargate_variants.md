@@ -7,7 +7,7 @@ parent: Blocks
 
 # Stargate Variants
 {: .no_toc }
-[Datapacks](/datapacks) are able to add custom Stargate variants.  
+[Datapacks]({{ site.baseurl }}/datapacks) are able to add custom Stargate variants.  
 These variants are available in the base mod.
 
 1. Table of Contents
@@ -37,7 +37,7 @@ Milky way variant of classic Stargate.
 </details>
 
 
-![Classic Stargate Milky Way variant](/assets/img/blocks/technological/variants/classic_milkyway.png)
+![Classic Stargate Milky Way variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/classic_milkyway.png)
 {: .max-width-512 }
 
 ___
@@ -63,7 +63,7 @@ The primary chevron is the only one that doesn't move.
 Tt has open space under it, so the symbol under it is easier to see.
 <details markdown="block">
 <summary>The event horizon forms a vortex behind the gate</summary>
-![Milky Way Stargate movie variant](/assets/img/blocks/technological/variants/vortex.png)
+![Milky Way Stargate movie variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/vortex.png)
 {: .max-width-256 }
 </details>
 
@@ -72,7 +72,7 @@ Tt has open space under it, so the symbol under it is easier to see.
     {% include youtubePlayer.html id="ptVJKO5nW20" %}
 </details>
 
-![Milky Way Stargate movie variant](/assets/img/blocks/technological/variants/milkyway_movie.png)
+![Milky Way Stargate movie variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_movie.png)
 {: .max-width-512 }
 
 ___
@@ -87,7 +87,7 @@ Same as the [Milky Way Movie variant](#movie), but the chevrons are lit and ther
     {% include youtubePlayer.html id="gf6m-AcZwMg" %}
 </details>
 
-![Milky Way Stargate promo variant](/assets/img/blocks/technological/variants/milkyway_promo.png)
+![Milky Way Stargate promo variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_promo.png)
 {: .max-width-512 }
 
 ___
@@ -103,7 +103,7 @@ Milky Way symbols and the Tau'ri Point of Origin (Giza) is set to be used perman
     {% include youtubePlayer.html id="Fwc8eTm0Ph8" %}
 </details>
 
-![Milky Way Stargate SG-1 variant](/assets/img/blocks/technological/variants/milkyway_sg-1.png)
+![Milky Way Stargate SG-1 variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_sg-1.png)
 {: .max-width-512 }
 
 ___
@@ -119,7 +119,7 @@ Pegasus Stargate with Milky Way symbols:
 > This is not a variant.  
 > By default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.
 
-![Pegasus Stargate Milky Way symbols](/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
+![Pegasus Stargate Milky Way symbols]({{ site.baseurl }}/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
 {: .max-width-512 }
 
 ___
@@ -130,14 +130,14 @@ ___
 Same as the default gate variant.
 Pegasus symbols and the Lantea Point of Origin (Subido) are set to be used permanently.
 
-![Pegasus Stargate atlantis_variant](/assets/img/blocks/technological/pegasus_stargate.png)
+![Pegasus Stargate atlantis_variant]({{ site.baseurl }}/assets/img/blocks/technological/pegasus_stargate.png)
 {: .max-width-512 }
 
 ___
 
 {: .note }
 Neither the Universe nor Tollan Stargate has an available alternative variant in the base mod.
-However, [datapacks](/datapacks) can add them.
+However, [datapacks]({{ site.baseurl }}/datapacks) can add them.
 
 ## Universe
 

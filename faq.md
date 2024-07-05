@@ -8,7 +8,7 @@ has_children: false
 {: .no_toc }
 
 {: .highlight }
-If you are playing All the Mods 9 modpack, check [its section](/atm9) first. 
+If you are playing All the Mods 9 modpack, check [its section]({{ site.baseurl }}/atm9) first. 
 
 1. Table of Contents
 {:toc}
@@ -43,7 +43,7 @@ which goes through the steps of creating a basic dialing program.
 ___
 
 ## How to find addresses of other dimensions? <br> How to find Cartouches?
-In survival mode, check our [Survival Guide / Finding addresses](/survival/addresses/).
+In survival mode, check our [Survival Guide / Finding addresses]({{ site.baseurl }}/survival/addresses/).
 <details>
     <summary>Creative mode (with command)</summary>
     You can use the command <code>/sgjourney stargateNetwork address &lt;dimension&gt;</code>,
@@ -85,6 +85,6 @@ or the `always_display_stargate_id` config option is enabled (disabled by defaul
 ___
 
 ## How do I make a Stargate?
-Check our [Survival Guide / End game - Creating a Stargate](/survival/end_game#creating-a-stargate).
+Check our [Survival Guide / End game - Creating a Stargate]({{ site.baseurl }}/survival/end_game#creating-a-stargate).
 
 ___

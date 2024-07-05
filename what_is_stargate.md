@@ -35,7 +35,7 @@ To use a Stargate, a traveler must input the correct sequence of symbols using t
 This sequence, known as an address, represents the coordinates of the destination Stargate.
 Six points in space to determine the destination point and the seventh point as the Point of Origin.
 
-![Dr. Daniel Jackson](/assets/img/daniel_address.png)
+![Dr. Daniel Jackson]({{ site.baseurl }}/assets/img/daniel_address.png)
 
 Once the address is entered and the activation button is pressed,
 the Stargate generates a stable wormhole between itself and the destination Stargate.

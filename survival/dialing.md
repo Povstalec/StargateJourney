@@ -25,13 +25,13 @@ or right-click it and see the address as numbers (`-1-2-3-4-5-6-`).
 <details markdown="block">
 <summary><b>I did not found the cartouche</b></summary>
 
-That could happen if you did not find the sealed [Alpha gate](/structures/stargates/#buried-stargate)
-and instead found the [Beta gate](/structures/stargates/#terra-gate-the-beta-gate) 
+That could happen if you did not find the sealed [Alpha gate]({{ site.baseurl }}/structures/stargates/#buried-stargate)
+and instead found the [Beta gate]({{ site.baseurl }}/structures/stargates/#terra-gate-the-beta-gate) 
 or other gate structure (a Stargate pedestal added by a datapack, for example).
 
 In that case, here is an image of a cartouche with the Abydos address.
 
-![Cartouche with the Abydoss address](/assets/img/survival/cartouche_abydos_address.png)
+![Cartouche with the Abydoss address]({{ site.baseurl }}/assets/img/survival/cartouche_abydos_address.png)
 
 Its number representation is `-26-6-14-31-11-29-`.
 
@@ -49,7 +49,7 @@ There are a few options:
 
 ### Dialing using a Dial Home Device (DHD)
 
-![DHD GUI](/assets/img/survival/dhd_gui.png)
+![DHD GUI]({{ site.baseurl }}/assets/img/survival/dhd_gui.png)
 
 First, place down the gate, and then place DHD anywhere near it.
 Currently, the DHD should be able to connect to the gate within the 16-block range.
@@ -88,7 +88,7 @@ resetting the gate (as the encoded address will be invalid).
 
 Once you encode **all symbols** from the address, encode the **Point of Origin**, activating the Stargate.
 
-![Manual redstone dialing setup](/assets/img/survival/redstone_dialing.png)
+![Manual redstone dialing setup]({{ site.baseurl }}/assets/img/survival/redstone_dialing.png)
 
 </details>
 
@@ -102,9 +102,9 @@ For that, there are "Interfaces" that act as computer peripherals (you can use a
 
 You can craft a basic interface, with 4 iron ingots, 2 gold ingots, 2 copper ingots and one redstone.
 
-![Crafting a basic interface](/assets/img/survival/basic_interface_crafting.png)
+![Crafting a basic interface]({{ site.baseurl }}/assets/img/survival/basic_interface_crafting.png)
 
-![Stargate setup with computer and interface](/assets/img/survival/gate_interface_setup.png)
+![Stargate setup with computer and interface]({{ site.baseurl }}/assets/img/survival/gate_interface_setup.png)
 
 Place the interface **facing the gate**,
 ensuring that the **black side** is facing **away** from the gate.
@@ -114,7 +114,7 @@ Then, place the computer next to the interface.
 The last thing you need is a **program** that will dial the gate.
 The minimal example follows.
 You can also check this [repository](https://github.com/Povstalec/StargateJourney-ComputerCraft-Programs) for more examples
-or more complex [scripts created by the community](/#computercraft-scripts).
+or more complex [scripts created by the community]({{ site.baseurl }}/#computercraft-scripts).
 
 Minimal example of a program that will dial the gate with the hardcoded address.  
 To create a script, open the computer and enter the command `eidt dial.lua` and press `Enter`,
@@ -165,7 +165,7 @@ And that's it, save the script, close the editor and run it.
 
 The gate should now start dialing the address from the script.
 
-If you see an error, check the spelling in your script and check the [common errors section](/computercraft/common_errors).
+If you see an error, check the spelling in your script and check the [common errors section]({{ site.baseurl }}/computercraft/common_errors).
 
 </details>
 
@@ -204,8 +204,8 @@ ___
 Welcome to the Abyods, a wonderful planet full of... sand. I hope you packed some snacks.
 
 On this planet, you are looking primarily for two things,
-an ore called [Naquadah](/survival/naquadah/) 
-and your [way back home](/survival/addresses/) to the Earth (the address of the overworld).
+an ore called [Naquadah]({{ site.baseurl }}/survival/naquadah/) 
+and your [way back home]({{ site.baseurl }}/survival/addresses/) to the Earth (the address of the overworld).
 
-## [Next page: Finding addresses](/survival/addresses/)
+## [Next page: Finding addresses]({{ site.baseurl }}/survival/addresses/)
 {: .no_toc }

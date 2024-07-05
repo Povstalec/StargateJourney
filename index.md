@@ -2,7 +2,7 @@
 nav_exclude: true
 ---
 
-![Stargate Journey logo](/assets/img/logo.png)
+![Stargate Journey logo]({{ site.baseurl }}/assets/img/logo.png)
 
 # Stargate Journey
 
@@ -32,24 +32,24 @@ If you find a bug, it will be appreciated if you report it to
 [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
 
 If you are __new to the topic__ and want to know what that thing is...  
-Stargate, they call it - check [What's that Stargate anyway?](/what_is_stargate).
+Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what_is_stargate).
 
 {: .highlight }
-If you are playing All the Mods 9 modpack, check the [ATM 9](/atm9.md) section.
+If you are playing All the Mods 9 modpack, check the [ATM 9]({{ site.baseurl }}/atm9) section.
 
 The documentation is divided into a few main parts:
-* [Survival Guide](/survival): A ~~recommended~~ possible way to progress through the mod in survival.
-* [Dimensions](/additions/dimensions), [Items](/additions/items), and [Blocks](/additions/blocks): Detailed explanations on how they work and how to use them.
-* [Mechanics](/mechanics): Descriptions of the Stargate network and other mechanics.
-* [All the mods 9](/atm9.md): Information on modifications and changes made by the modpack.
-* [Computercraft](/computercraft): Integration with the [computercraft](https://tweaked.cc/) mod.
-* [Datapacks and Resourcepacks](/datapacks): Features available for customization.
+* [Survival Guide]({{ site.baseurl }}/survival): A ~~recommended~~ possible way to progress through the mod in survival.
+* [Dimensions]({{ site.baseurl }}/additions/dimensions), [Items]({{ site.baseurl }}/additions/items), and [Blocks]({{ site.baseurl }}/additions/blocks): Detailed explanations on how they work and how to use them.
+* [Mechanics]({{ site.baseurl }}/mechanics): Descriptions of the Stargate network and other mechanics.
+* [All the mods 9]({{ site.baseurl }}/atm9): Information on modifications and changes made by the modpack.
+* [Computercraft]({{ site.baseurl }}/computercraft): Integration with the [computercraft](https://tweaked.cc/) mod.
+* [Datapacks and Resourcepacks]({{ site.baseurl }}/datapacks): Features available for customization.
 
 {: .highlight }
 > Feel free to ask on the [Discord server]({{ site.discord_invite_link }}) if you have a question.
 > 
 > Before asking a question or reporting a bug,
-> please check the [F&Q](/faq.md) section and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord]({{ site.discord_invite_link }}).  
+> please check the [F&Q]({{ site.baseurl }}/faq) section and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord]({{ site.discord_invite_link }}).  
 > Someone else may have already asked about that.
 
 ## Compatibility with other mods

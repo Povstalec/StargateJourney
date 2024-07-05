@@ -26,11 +26,11 @@ sgjourney what dimensions should be in a given solar system.
 ```
 ## Fields
 - `name`: a translation key corresponding to the display name of the solar system.
-- `symbols`: a [symbol_set](/datapacks/symbol_set.md) which will be used
+- `symbols`: a [symbol_set]({{ site.baseurl }}/datapacks/symbol_set.md) which will be used
 by gates in this solar system for their symbol rings.
 - `symbol_prefix`: the symbol that will be used as the first chevron of the 
 extragalactic address if the address is randomized.
-- `extragalactic_address`: a [datapack address](/datapacks/datapack_address.md)
+- `extragalactic_address`: a [datapack address]({{ site.baseurl }}/datapacks/datapack_address.md)
 corresponding to the address of the solar system as well as whether its address 
 can be randomized.
 - `point_of_origin`: the symbol that will be used as the point of origin for any

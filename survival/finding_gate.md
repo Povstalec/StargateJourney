@@ -28,25 +28,25 @@ You can use the locate command.
 </details>
 
 An Archeologist villager could find a way.
-To employ a villager, you will need an **[Archeology table](/blocks/functional_blocks/#archeology-table)**
+To employ a villager, you will need an **[Archeology table]({{ site.baseurl }}/blocks/functional_blocks/#archeology-table)**
 which can be crafted with a golden idol.
 
 ___
 
 ## Find a Golden Idol in Goa'uld temple
 
-**[Golden idol](/blocks/functional_blocks/#golden-idol)** is a relic left in this world by older civilizations.
+**[Golden idol]({{ site.baseurl }}/blocks/functional_blocks/#golden-idol)** is a relic left in this world by older civilizations.
 To find the idol, you must travel a little bit and find some Goa'uld temple.
 It's slightly spoiler to say it can be generated in deserts, badlands, and jungles.
 
 <details markdown="block">
 <summary><b>[Spoiler]</b> Goa'uld temple overworld generation</summary>
 There are three types of Goa'uld temples according to the biome in which they are generated: 
-[badlands ziggurats](/structures/goauld_temples/#badlands-ziggurat), 
-[desert pyramids](/structures/goauld_temples/#abandoned-desert-pyramid), 
-and [jungle pyramids](/structures/goauld_temples/#jungle-pyramid).
+[badlands ziggurats]({{ site.baseurl }}/structures/goauld_temples/#badlands-ziggurat), 
+[desert pyramids]({{ site.baseurl }}/structures/goauld_temples/#abandoned-desert-pyramid), 
+and [jungle pyramids]({{ site.baseurl }}/structures/goauld_temples/#jungle-pyramid).
 
-Each temple has a room with [transport rings](/blocks/technological_blocks/#transport-rings)
+Each temple has a room with [transport rings]({{ site.baseurl }}/blocks/technological_blocks/#transport-rings)
 connected to six other nearby temples and a room with loot and a golden idol.
 
 **A cheat way:** You can use the locate command to find the coordinates of the closest temple  
@@ -60,11 +60,11 @@ With a golden idol, you can now craft an archeology table which can be used as a
 
 For crafting, you will need a book, a golden idol, 3 wooden slabs, and 2 (wooden) sticks.
 
-![Archeology table crafting](/assets/img/survival/archeology_table_crafting.png)
+![Archeology table crafting]({{ site.baseurl }}/assets/img/survival/archeology_table_crafting.png)
 
 Now, you can trade a **Map to Chappa'ai** (Stargate) on the villager's last (**Master**) level.
 
-![Villager map trade](/assets/img/survival/stargate_map_trade.png)
+![Villager map trade]({{ site.baseurl }}/assets/img/survival/stargate_map_trade.png)
 
 ___
 
@@ -72,7 +72,7 @@ ___
 The big red X on the map will lead you to a buried Stargate.
 Search and dig for the X. The Stargate is somewhere in there.
 
-![Map with red X](/assets/img/survival/map.png)
+![Map with red X]({{ site.baseurl }}/assets/img/survival/map.png)
 
 Gate is usually around 5 blocks under the surface (but not strictly, minecraft generation is _magical_).
 
@@ -82,7 +82,7 @@ The gate is always generated in the corner of the chunk.
 So you can go to the X and press `F3 + G` to show chunk boundaries.  
 Find the chunk corner and dig there.  
 
-![Chunk border with buried stargate](/assets/img/survival/chunk_border_buried_stargate.png)
+![Chunk border with buried stargate]({{ site.baseurl }}/assets/img/survival/chunk_border_buried_stargate.png)
 
 </details>
 
@@ -97,15 +97,15 @@ Find the chunk corner and dig there.
 
 <details markdown="block">
 <summary><b>[Spoiler]</b> Stargate overworld generation</summary>
-By default, **two stargates** are generated in the **overworld** (this can be changed by [datapacks](/datapacks)).  
+By default, **two stargates** are generated in the **overworld** (this can be changed by [datapacks]({{ site.baseurl }}/datapacks)).  
 Both gates are generated and buried underground.  
-_[Alpha gate](/structures/stargates/#buried-stargate)_ is generated sealed in a horizontal position.  
-_[Beta gate](/structures/stargates/#terra-gate)_ is generated in a small cave in a vertical position.  
+_[Alpha gate]({{ site.baseurl }}/structures/stargates/#buried-stargate)_ is generated sealed in a horizontal position.  
+_[Beta gate]({{ site.baseurl }}/structures/stargates/#terra-gate)_ is generated in a small cave in a vertical position.  
 
 In the overworld the map should always lead to the sealed alpha gate.
 Although there are known cases where it does not (usually when datapacks are involved),
 The problem is that you won't find the Abydos address cartouche.
 </details>
 
-## [Next page: Dialing](/survival/dialing)
+## [Next page: Dialing]({{ site.baseurl }}/survival/dialing)
 {: .no_toc }
