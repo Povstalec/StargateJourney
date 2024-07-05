@@ -61,3 +61,16 @@ Shows an address. Currently, there is no way to customize the address.
 {: .tip }
 You can right-click on a symbol or cartouche to see the details in the chat.  
 Then you can copy an address in chat by clicking on it.
+
+## Naquadah ore
+Available in Nether, Stone and Deepslate variants.
+Drops raw naquadah and rarely pure naquadah.
+
+![Naquadah ores](/assets/img/blocks/functional/naquadah_ore.png)
+{: .max-width-256 }
+
+## Universe Stargate Chevron
+It glows when powered with redstone.
+
+![Universe Stargate Chevron](/assets/img/blocks/functional/universe_stargate_chevron.png)
+{: .max-width-256 }
