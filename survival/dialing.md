@@ -39,43 +39,16 @@ Its number representation is `-26-6-14-31-11-29-`.
 
 ___
 
+
+## Dialing
+
 Now, you should decide **how you want to dial** the gate.  
 There are a few options:
-1. Dialing using a Dial Home Device (DHD) [[link](#dialing-using-a-dial-home-device-dhd)]
-2. Manual dialing with redstone [[link](#manual-dialing-with-redstone)]
-3. Dialing using a [Computercraft](https://tweaked.cc/) [link] 
+<details markdown="block">
+<summary>1. Dialing using a Dial Home Device (DHD)</summary>
 
-Dialing with DHD is the easiest way.
-You push seven buttons, and you are ready to go.
+### Dialing using a Dial Home Device (DHD)
 
-Manual dialing with redstone might be time-consuming, 
-but it is currently the only way to get the gate spinning without computers.
-
-Computers are between the manual dialing and the DHD.
-They can spin the gate ring and dial automatically.
-In the later gate phase, they can dial the gate without spinning (as DHD).
-
-___
-
-## Activation
-
-{: .warning }
-Upon activation, the gate will create an unstable burst of energy ("kawoosh")
-that will **destroy blocks** and **kill entities** in front of the gate in a **7-block range**!  
-**Keep the area clear!**
-
-{: .warning }
-> Make sure you have **enough food** with you.  
-> **Wait** for the "kawoosh" to **finish** and enter the gate.
->
-> **DO NOT GO BACK to the gate on the other side!**  
-> By default, that would kill you.
-> Two-way travel can be enabled in the config.
-> It is disabled based on the Stargate franchise.
-
-___
-
-## Dialing using a Dial Home Device (DHD)
 ![DHD GUI](/assets/img/survival/dhd_gui.png)
 
 First, place down the gate, and then place DHD anywhere near it.
@@ -84,12 +57,15 @@ Currently, the DHD should be able to connect to the gate within the 16-block ran
 Right-click the DHD and enter the address (the order of the numbers matters).
 Finally, click the big red button in the middle which will encode the Point of Origin and activate the gate.
 
-___
+</details>
 
-## Manual dialing with redstone
+<details markdown="block">
+<summary>2. Manual dialing with redstone</summary>
+
+### Manual dialing with redstone
 
 Stargate reacts to the redstone signal.  
-When you place the gate, note the symbol that is under the top chevron, that is the Point of Origin (PoO), 
+When you place the gate, note the symbol that is under the top chevron, that is the Point of Origin (PoO),
 you will need it later.
 
 |       Signal strength        |         Action          |
@@ -107,16 +83,19 @@ Once the symbol is in place, use signal strength **15** to **open the chevron** 
 This way, the symbol will be **encoded**, and the next chevron will light up.
 You can proceed to the next symbol.
 
-If you accidentally encoded a **wrong symbol**, you can encode the **Point of Origin** anytime, 
+If you accidentally encoded a **wrong symbol**, you can encode the **Point of Origin** anytime,
 resetting the gate (as the encoded address will be invalid).
 
 Once you encode **all symbols** from the address, encode the **Point of Origin**, activating the Stargate.
 
 ![Manual redstone dialing setup](/assets/img/survival/redstone_dialing.png)
 
-___
+</details>
 
-## Dialing with computercraft
+<details markdown="block">
+<summary>3. Dialing using a <a href="https://tweaked.cc/" target="_blank">Computercraft</a></summary>
+
+### Dialing with computercraft
 
 First, you will need a way to connect the computer to the Stargate.
 For that, there are "Interfaces" that act as computer peripherals (you can use any computer basic/advanced).
@@ -127,18 +106,18 @@ You can craft a basic interface, with 4 iron ingots, 2 gold ingots, 2 copper ing
 
 ![Stargate setup with computer and interface](/assets/img/survival/gate_interface_setup.png)
 
-Place the interface **facing the gate**, 
-ensuring that the **black side** is facing **away** from the gate. 
-The interface can be placed anywhere on the gate. 
+Place the interface **facing the gate**,
+ensuring that the **black side** is facing **away** from the gate.
+The interface can be placed anywhere on the gate.
 Then, place the computer next to the interface.
 
 The last thing you need is a **program** that will dial the gate.
 The minimal example follows.
-You can also check this [repository](https://github.com/Povstalec/StargateJourney-ComputerCraft-Programs) for more examples 
+You can also check this [repository](https://github.com/Povstalec/StargateJourney-ComputerCraft-Programs) for more examples
 or more complex [scripts created by the community](/#computercraft-scripts).
 
 Minimal example of a program that will dial the gate with the hardcoded address.  
-To create a script, open the computer and enter the command `eidt dial.lua` and press `Enter`, 
+To create a script, open the computer and enter the command `eidt dial.lua` and press `Enter`,
 opening the editor where you can write code.  
 Text after `--` is a comment.  
 This example is meant for a **Milky Way stargate** and a **basic interface**.
@@ -180,10 +159,53 @@ for _, symbol in pairs(address) do
 end
 ```
 
-And that's it, save the script, close the editor and run it.  
+And that's it, save the script, close the editor and run it.
 > Press sequentially `Ctrl`, `Enter`, `Ctrl`, `right arrow →`, `Enter`  
 > and enter command `dial`.
 
 The gate should now start dialing the address from the script.
 
 If you see an error, check the spelling in your script and check the [common errors section](/computercraft/common_errors).
+
+</details>
+
+
+Dialing with DHD is the easiest way.
+You push seven buttons, and you are ready to go.
+
+Manual dialing with redstone might be time-consuming,
+but it is currently the only way to get the gate spinning without computers.
+
+Computers are between the manual dialing and the DHD.
+They can spin the gate ring and dial automatically.
+In the later game phase, they can dial the gate without spinning (as DHD).
+
+___
+
+## Activation
+
+{: .warning }
+Upon activation, the gate will create an unstable burst of energy ("kawoosh")
+that will **destroy blocks** and **kill entities** in front of the gate in a **7-block range**!  
+**Keep the area clear!**
+
+{: .warning }
+> Make sure you have **enough food** with you.  
+> **Wait** for the "kawoosh" to **finish** and enter the gate.
+>
+> **DO NOT GO BACK to the gate on the other side!**  
+> By default, that would kill you.
+> Two-way travel can be enabled in the config.
+> It is disabled based on the Stargate franchise.
+
+___
+
+## Abydos
+Welcome to the Abyods, a wonderful planet full of... sand. I hope you packed some snacks.
+
+On this planet, you are looking primarily for two things,
+an ore called [Naquadah](/survival/naquadah/) 
+and your [way back home](/survival/addresses/) to the Earth (the address of the overworld).
+
+## [Next page: Finding addresses](/survival/addresses/)
+{: .no_toc }

@@ -1,5 +1,5 @@
 ---
 title: Computercraft
-nav_order: 50
+nav_order: 90
 has_children: true
 ---

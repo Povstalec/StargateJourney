@@ -1,6 +1,6 @@
 ---
 title: Mechanics
-nav_order: 30
+nav_order: 70
 has_children: true
 ---
 

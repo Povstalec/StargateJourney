@@ -1,6 +1,6 @@
 ---
 title: Datapacks and Resourcepacks
-nav_order: 60
+nav_order: 100
 has_children: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Survival Guide
-nav_order: 10
+nav_order: 30
 has_children: true
 ---
 
@@ -16,4 +16,5 @@ And yet, **not to spoil** how it works under the hood and how the structures loo
 so **it's up to you** if you want to see them or you'll **enjoy the moment** when you find them for the first time in the game.
 
 {: .future }
-There are plans to change the survival progression in the future.  
+This wiki was written with Stargate Journey version `0.6.27`.  
+It is planned that the survival progression will change in the future.  

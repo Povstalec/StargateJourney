@@ -65,6 +65,8 @@ Then you can copy an address in chat by clicking on it.
 ## Naquadah ore
 Available in Nether, Stone and Deepslate variants.
 Drops raw naquadah and rarely pure naquadah.
+Naturally generates on Abydos.
+For more details, check [Survival Guide / Naquadah](/survival/naquadah/).
 
 ![Naquadah ores](/assets/img/blocks/functional/naquadah_ore.png)
 {: .max-width-256 }

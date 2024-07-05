@@ -24,6 +24,8 @@ Each chevron lights up and moves when locked.
     {% include youtubePlayer.html id="8i-3zoKVpp4" %}
 </details>
 
+___
+
 ### Milky Way
 `classic_milky_way`
 
@@ -36,6 +38,7 @@ Milky way variant of classic Stargate.
 
 
 ![Classic Stargate Milky Way variant](/assets/img/blocks/technological/variants/classic_milkyway.png)
+{: .max-width-512 }
 
 ___
 
@@ -49,6 +52,8 @@ The symbol being encoded is always under the top chevron.
     {% include youtubePlayer.html id="bOG_9Q9396E" %}
 </details>
 
+___
+
 ### Movie
 `milkyway_movie`
 
@@ -56,9 +61,10 @@ Chevrons do not glow.
 Each chevron opens and closes individually and moves on both sides of the gate instead of just the front. 
 The primary chevron is the only one that doesn't move.
 Tt has open space under it, so the symbol under it is easier to see.
-<details>
-    <summary>The event horizon forms a vortex behind the gate</summary>
-    <p><img src="/assets/img/blocks/technological/variants/vortex.png" alt="Milky Way Stargate movie variant"></p>
+<details markdown="block">
+<summary>The event horizon forms a vortex behind the gate</summary>
+![Milky Way Stargate movie variant](/assets/img/blocks/technological/variants/vortex.png)
+{: .max-width-256 }
 </details>
 
 <details>
@@ -67,6 +73,9 @@ Tt has open space under it, so the symbol under it is easier to see.
 </details>
 
 ![Milky Way Stargate movie variant](/assets/img/blocks/technological/variants/milkyway_movie.png)
+{: .max-width-512 }
+
+___
 
 ### Promo
 `milkyway_promo`
@@ -79,6 +88,9 @@ Same as the [Milky Way Movie variant](#movie), but the chevrons are lit and ther
 </details>
 
 ![Milky Way Stargate promo variant](/assets/img/blocks/technological/variants/milkyway_promo.png)
+{: .max-width-512 }
+
+___
 
 ### SG-1
 `milkyway_sg-1`
@@ -92,6 +104,7 @@ Milky Way symbols and the Tau'ri Point of Origin (Giza) is set to be used perman
 </details>
 
 ![Milky Way Stargate SG-1 variant](/assets/img/blocks/technological/variants/milkyway_sg-1.png)
+{: .max-width-512 }
 
 ___
 
@@ -107,6 +120,9 @@ Pegasus Stargate with Milky Way symbols:
 > By default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.
 
 ![Pegasus Stargate Milky Way symbols](/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
+{: .max-width-512 }
+
+___
 
 ### Atlantis
 `pegasus_atlantis`
@@ -115,6 +131,7 @@ Same as the default gate variant.
 Pegasus symbols and the Lantea Point of Origin (Subido) are set to be used permanently.
 
 ![Pegasus Stargate atlantis_variant](/assets/img/blocks/technological/pegasus_stargate.png)
+{: .max-width-512 }
 
 ___
 
@@ -128,6 +145,8 @@ However, [datapacks](/datapacks) can add them.
     <summary>Dialing sequence video</summary>
     {% include youtubePlayer.html id="yN7fWUbOnsw" %}
 </details>
+
+___
 
 ## Tollan
 

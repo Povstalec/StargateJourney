@@ -1,6 +1,6 @@
 ---
 title: Frequently Asked Questions
-nav_order: 5
+nav_order: 10
 has_children: false
 ---
 
@@ -50,6 +50,14 @@ In survival mode, check our [Survival Guide / Finding addresses](/survival/addre
     this command will tell you the <b>7-chevron</b> address of the specified dimension.
     Check the <a href="/commands">commands section</a> for details and other available commands.
 </details>
+
+___
+
+## The Stargate "glitch" / lags when spinning
+This is primarily noticeable on the Universe Stargate.
+It is because the Stargate movement is "actually happening."
+And it is not just a client-side animation, so it is more prone to low tps and network lags.
+The movement is synchronized for all players.
 
 ___
 
