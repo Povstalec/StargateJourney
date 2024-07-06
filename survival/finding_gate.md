@@ -14,8 +14,8 @@ parent: Survival Guide
 {: .note }
 This guide will try its best to provide **hints** on how to proceed through the mod.
 And yet not reveal how it works behind the scenes and what the structures look like.
-**Spoilers are here**, but they will be in **collapsible sections**,
-so **it's up to you** if you want to see them
+**Spoilers** will be in **collapsible sections**,
+so **it's up to you** if you want to see them,
 or you'll **enjoy the moment** when you find them for the first time in the game.
 
 To gain the ability to travel to distant planets, you will first need a Stargate.
@@ -83,7 +83,7 @@ The gate is always generated in the corner of the chunk.
 So you can go to the X and press `F3 + G` to show chunk boundaries.  
 Find the chunk corner and dig there.  
 
-![Chunk border with buried stargate]({{ site.baseurl }}/assets/img/survival/chunk_border_buried_stargate.png)
+![Chunk border with buried Stargate]({{ site.baseurl }}/assets/img/survival/chunk_border_buried_stargate.png)
 
 </details>
 

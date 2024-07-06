@@ -40,3 +40,5 @@ Check [Stargate variants]({{ site.baseurl }}/blocks/stargate_variants/) for _spe
 
 ![General Stargate Variant Crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal.png)
 
+{: .future }
+It is planned to distinguish the variant crystals for different Stargates.

@@ -6,10 +6,11 @@ parent: Structures
 ---
 
 # Structures
-## Buried stargate (The Alpha Gate)
+## Buried Stargate (The Alpha Gate)
+The buried Stargate with a seal.
 
-![Buried stargate]({{ site.baseurl }}/assets/img/structures/gate_buried.png)
-![Buried stargate desert]({{ site.baseurl }}/assets/img/structures/gate_buried_desert.png)
+![Buried Stargate]({{ site.baseurl }}/assets/img/structures/gate_buried.png)
+![Buried Stargate desert]({{ site.baseurl }}/assets/img/structures/gate_buried_desert.png)
 
 ## Terra gate (The Beta Gate)
 Based on cannon Beta gate, the first Earth's Stargate which was buried in ice.

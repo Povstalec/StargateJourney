@@ -63,7 +63,7 @@ The story of Stargates on Earth begins in 1928,
 when an archaeological expedition in Giza, Egypt,
 unearthed a massive stone ring buried beneath the sand.
 
-![Buried stargate](https://upload.wikimedia.org/wikipedia/en/3/3c/Buried_gate.jpg)
+![Buried Stargate](https://upload.wikimedia.org/wikipedia/en/3/3c/Buried_gate.jpg)
 
 This artifact, later identified as a Stargate, was transported to the United States for study.
 It wasn't until 1994 that Dr. Daniel Jackson, a brilliant but unconventional archaeologist,

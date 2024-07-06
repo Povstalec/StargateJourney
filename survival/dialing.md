@@ -120,7 +120,7 @@ Let's make a minimal example of a program dialing the gate with the hardcoded ad
 To create a script, open the computer, enter the command `edit dial.lua`, and press `Enter`,
 opening the editor where you can write code.  
 Text after `--` is a comment.  
-This example is meant for a **Milky Way stargate** and a **basic interface**.
+This example is meant for a **Milky Way Stargate** and a **basic interface**.
 ```lua
 -- find the connected peripheral basic_interface
 interface = peripheral.find("basic_interface")

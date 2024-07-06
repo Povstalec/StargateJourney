@@ -11,6 +11,9 @@ parent: Blocks
 These variants are available in the base mod.  
 To change the gate variant, you need a [Stargate variant crystal]({{ site.baseurl }}/items/crystals/#stargate-variant-crystals).
 
+{: .future }
+It is planned to distinguish the variant crystals for different Stargates.
+
 1. Table of Contents
 {:toc}
 

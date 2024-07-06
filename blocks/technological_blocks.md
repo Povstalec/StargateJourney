@@ -17,7 +17,7 @@ Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}
 Each Stargate can have different [variants]({{ site.baseurl }}/blocks/stargate_variants) which can be also added by [datapacks]({{ site.baseurl }}/datapacks).
 
 ### Classic
-Initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
+It was initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
 The gate ring cannot move.
 
 ![Classic Stargate]({{ site.baseurl }}/assets/img/blocks/technological/classic_stargate.png)
@@ -25,7 +25,7 @@ The gate ring cannot move.
 
 ### Universe
 Universe Stargate has only 35 symbols (+ Point of Origin). 
-The gate is incapable of dialing any address with the symbol 36 and above.
+The gate cannot dial any address with the symbol 36 and above.
 The entire Stargate rotates during the dial.
 
 ![Universe Stargate]({{ site.baseurl }}/assets/img/blocks/technological/universe_stargate.png)
