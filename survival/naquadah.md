@@ -21,10 +21,10 @@ Naquadah can be found in two forms - **Raw** and **Pure Naquadah**.
 ## Obtaining Naquadah
 
 [Naquadah ore]({{ site.baseurl }}/blocks/functional_blocks/#naquadah-ore) can generate in the Nether, but mainly on Abydos.
-The ore is generated underground (as a standard ore) in Abydos desert biome
-and is more concentrated in the Abydos spires.
+The ore is generated underground (as a standard ore) in the Abydos desert biome
+or more concentrated amounts in the Abydos spires.
 
-Drops **raw Naquadah** and rarely **pure Naquadah**.
+It drops **raw Naquadah** and rarely **pure Naquadah**.
 This chance can be increased with **Fortune** enchantment.
 
 <details markdown="block">
@@ -39,7 +39,7 @@ Abydos spires biome contains stone pillars (spires) with a decent amount of Naqu
 ## Processing Naquadah
 
 **Raw Naquadah** can be processed into **Naquadah Alloy**,
-**Pure Naquadah**, **Weapons grade Naquadah**, **Liquid Naquadah** and **Heavy liquid Naquadah**.
+**Pure Naquadah**, **Weapons grade Naquadah**, **Liquid Naquadah**, and **Heavy liquid Naquadah**.
 
 Processed Naquadah can then be used to craft crystals and your own Stargate.
 

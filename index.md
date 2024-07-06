@@ -26,7 +26,7 @@ Stargate Journey is a mod for Minecraft with many additions, such as several dim
 
 
 {: .note }
-This project is in early development, and a lot of stuff has not yet been implemented.
+This project is in early development, and much stuff still needs to be implemented.
 Things may be buggy, unfinished, or unobtainable in survival.
 If you find a bug, it will be appreciated if you report it to 
 [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
@@ -76,13 +76,14 @@ ___
 ___
 
 ## Author
-The author and developer of the mod is **Povstalec** also known as **Wold** (_woldericz_junior_).
+The author and developer of the mod is **Povstalec**, also known as **Wold** (_woldericz_junior_).
 
 > Wold, the mighty and true only Wold.  
 > He is said to be one of the few Ancients who remained hidden on Terra.
 {: .text-grey-dk-000 }
 
-You can also see all the cool people who contributed to the development on GitHub or [helped otherwise](https://github.com/Povstalec/StargateJourney/wiki/Credits)
+You can also see all the incredible people who contributed to the development on GitHub 
+or [helped otherwise](https://github.com/Povstalec/StargateJourney/blob/main/CREDITS.txt).
 
 <a href="https://github.com/Povstalec/StargateJourney/graphs/contributors" target="_blank">
   <img src="https://contrib.rocks/image?repo=Povstalec/StargateJourney"/>

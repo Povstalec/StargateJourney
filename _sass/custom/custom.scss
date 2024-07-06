@@ -20,5 +20,14 @@
   max-width: 128px;
 }
 
+details {
+  margin: 10px 0;
+  margin-top: 10px;
+  margin-block-start: 0;
+  margin-inline-start: 0;
+  padding-left: 1rem;
+  border-left: 3px solid #44434d;
+}
+
 // located in /assets/css
 @import "./youtubePlayer.css";

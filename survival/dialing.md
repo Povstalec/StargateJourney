@@ -23,7 +23,7 @@ You can place the cartouche on the ground and see the symbols (from top to botto
 or right-click it and see the address as numbers (`-1-2-3-4-5-6-`).
 
 <details markdown="block">
-<summary><b>I did not found the cartouche</b></summary>
+<summary><b>I did not find the cartouche</b></summary>
 
 That could happen if you did not find the sealed [Alpha gate]({{ site.baseurl }}/structures/stargates/#buried-stargate)
 and instead found the [Beta gate]({{ site.baseurl }}/structures/stargates/#terra-gate-the-beta-gate) 
@@ -52,10 +52,10 @@ There are a few options:
 ![DHD GUI]({{ site.baseurl }}/assets/img/survival/dhd_gui.png)
 
 First, place down the gate, and then place DHD anywhere near it.
-Currently, the DHD should be able to connect to the gate within the 16-block range.
+The DHD should be able to connect to the gate within a 16-block range.
 
 Right-click the DHD and enter the address (the order of the numbers matters).
-Finally, click the big red button in the middle which will encode the Point of Origin and activate the gate.
+Finally, click the big red button in the middle to encode the Point of Origin and activate the gate.
 
 </details>
 
@@ -65,8 +65,8 @@ Finally, click the big red button in the middle which will encode the Point of O
 ### Manual dialing with redstone
 
 Stargate reacts to the redstone signal.  
-When you place the gate, note the symbol that is under the top chevron, that is the Point of Origin (PoO),
-you will need it later.
+When you place the gate, note the symbol under the top chevron, that is, the Point of Origin (PoO).
+You will need it later.
 
 |       Signal strength        |         Action          |
 |:----------------------------:|:-----------------------:|
@@ -98,9 +98,9 @@ Once you encode **all symbols** from the address, encode the **Point of Origin**
 ### Dialing with computercraft
 
 First, you will need a way to connect the computer to the Stargate.
-For that, there are "Interfaces" that act as computer peripherals (you can use any computer basic/advanced).
+"Interfaces" act as computer peripherals (you can use any computer basic/advanced).
 
-You can craft a basic interface, with 4 iron ingots, 2 gold ingots, 2 copper ingots and one redstone.
+You can craft a basic interface with 4 iron ingots, 2 gold ingots, 2 copper ingots, and one redstone.
 
 ![Crafting a basic interface]({{ site.baseurl }}/assets/img/survival/basic_interface_crafting.png)
 
@@ -116,8 +116,8 @@ The minimal example follows.
 You can also check this [repository](https://github.com/Povstalec/StargateJourney-ComputerCraft-Programs) for more examples
 or more complex [scripts created by the community]({{ site.baseurl }}/#computercraft-scripts).
 
-Minimal example of a program that will dial the gate with the hardcoded address.  
-To create a script, open the computer and enter the command `eidt dial.lua` and press `Enter`,
+Let's make a minimal example of a program dialing the gate with the hardcoded address.  
+To create a script, open the computer, enter the command `edit dial.lua`, and press `Enter`,
 opening the editor where you can write code.  
 Text after `--` is a comment.  
 This example is meant for a **Milky Way stargate** and a **basic interface**.
@@ -159,13 +159,13 @@ for _, symbol in pairs(address) do
 end
 ```
 
-And that's it, save the script, close the editor and run it.
-> Press sequentially `Ctrl`, `Enter`, `Ctrl`, `right arrow →`, `Enter`  
-> and enter command `dial`.
+And that's it: save the script, close the editor, and run it.  
+> Press sequentially `Ctrl`, `Enter`, `Ctrl`, `right arrow →`, `Enter`,  
+> and enter the command `dial` (the script's name).
 
 The gate should now start dialing the address from the script.
 
-If you see an error, check the spelling in your script and check the [common errors section]({{ site.baseurl }}/computercraft/common_errors).
+If you see an error, check the spelling of the script and the [common errors section]({{ site.baseurl }}/computercraft/common_errors).
 
 </details>
 
@@ -203,7 +203,7 @@ ___
 ## Abydos
 Welcome to the Abyods, a wonderful planet full of... sand. I hope you packed some snacks.
 
-On this planet, you are looking primarily for two things,
+On this planet, you are looking primarily for two things:
 an ore called [Naquadah]({{ site.baseurl }}/survival/naquadah/) 
 and your [way back home]({{ site.baseurl }}/survival/addresses/) to the Earth (the address of the overworld).
 

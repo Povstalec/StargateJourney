@@ -13,9 +13,10 @@ parent: Survival Guide
 
 {: .note }
 This guide will try its best to provide **hints** on how to proceed through the mod.
-And yet, **not to spoil** how it works under the hood and how the structures look.
-**Spoilers are here**, but they will be in **collapsible sections**, 
-so **it's up to you** if you want to see them or you'll **enjoy the moment** when you find them for the first time in the game.
+And yet not reveal how it works behind the scenes and what the structures look like.
+**Spoilers are here**, but they will be in **collapsible sections**,
+so **it's up to you** if you want to see them
+or you'll **enjoy the moment** when you find them for the first time in the game.
 
 To gain the ability to travel to distant planets, you will first need a Stargate.
 It is an advanced technology, so you **cannot build** it yourself (yet).
@@ -28,7 +29,7 @@ You can use the locate command.
 </details>
 
 An Archeologist villager could find a way.
-To employ a villager, you will need an **[Archeology table]({{ site.baseurl }}/blocks/functional_blocks/#archeology-table)**
+To employ a villager, you will need an **[Archeology table]({{ site.baseurl }}/blocks/functional_blocks/#archeology-table)**,
 which can be crafted with a golden idol.
 
 ___
@@ -56,7 +57,7 @@ connected to six other nearby temples and a room with loot and a golden idol.
 ___
 
 ## Archeologist villager
-With a golden idol, you can now craft an archeology table which can be used as a workstation for a villager.
+With a golden idol, you can now craft an archeology table that can be used as a workstation for a villager.
 
 For crafting, you will need a book, a golden idol, 3 wooden slabs, and 2 (wooden) sticks.
 
@@ -74,7 +75,7 @@ Search and dig for the X. The Stargate is somewhere in there.
 
 ![Map with red X]({{ site.baseurl }}/assets/img/survival/map.png)
 
-Gate is usually around 5 blocks under the surface (but not strictly, minecraft generation is _magical_).
+The gate is usually around 5 blocks under the surface (but not strictly).
 
 <details markdown="block">
 <summary><b>[Spoiler / Hint]</b> If you have trouble finding the Stargate on the X</summary>
@@ -87,22 +88,22 @@ Find the chunk corner and dig there.
 </details>
 
 {: .tip }
-> Once you find it, you want to look for three important things.
+> Once you find it, you want to look for three essential things.
 > - The Stargate
-> - Dial Home Device (DHD) - buried somewhere nearby/next to the gate
-> - The Cartouche - placed in the middle of the seal  
+> - Dial Home Device (DHD) buried somewhere nearby/next to the gate
+> - The cartouche placed in the middle of the seal  
 >
-> The Gate nad the DHD can be broken with any tool (even by hand), but a pickaxe is best for the job.
-> To break the cartouche, use **stone pickaxe** (or better one).
+> The Gate and the DHD can be broken with any tool (even by hand), but a pickaxe is best for the job.
+> Use a **stone pickaxe** (or a better one) to break the cartouche.
 
 <details markdown="block">
 <summary><b>[Spoiler]</b> Stargate overworld generation</summary>
 By default, **two stargates** are generated in the **overworld** (this can be changed by [datapacks]({{ site.baseurl }}/datapacks)).  
 Both gates are generated and buried underground.  
-_[Alpha gate]({{ site.baseurl }}/structures/stargates/#buried-stargate)_ is generated sealed in a horizontal position.  
-_[Beta gate]({{ site.baseurl }}/structures/stargates/#terra-gate)_ is generated in a small cave in a vertical position.  
+The _[Alpha gate]({{ site.baseurl }}/structures/stargates/#buried-stargate)_ is generated in a horizontal position and with a seal.  
+The _[Beta gate]({{ site.baseurl }}/structures/stargates/#terra-gate)_ is generated in vertical position in a small cave.  
 
-In the overworld the map should always lead to the sealed alpha gate.
+In the overworld, the map should always lead to the sealed alpha gate.
 Although there are known cases where it does not (usually when datapacks are involved),
 The problem is that you won't find the Abydos address cartouche.
 </details>

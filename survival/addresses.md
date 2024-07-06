@@ -12,7 +12,7 @@ parent: Survival Guide
 {:toc}
 
 As you already know from your trip to Abydos, you need an address to connect to another Stargate.
-Other world addresses can be found on Abydos.
+Addresses of other worlds can be found on Abydos.
 
 <details markdown="block">
 <summary><b>[Spoiler]</b> What addresses can be found and where</summary>
@@ -33,7 +33,7 @@ Other world addresses can be found on Abydos.
   - Cavum Tenebrae
   - Any other dimension added by other mods
 
-**Lantea**'s address **cannot** yet be found.
+**Lantea**'s address **cannot** be found yet.
 
 </details>
 
@@ -50,11 +50,11 @@ Once inside, the first cartouche holds the Earth's address.
 
 ![Abydos cartouche Earth]({{ site.baseurl }}/assets/img/survival/abydos_cartouche_first.png)
 
-There are four more cartouches behind that blocked-off entrance to the left,
-which hold two random addresses of SGJourney dimensions and two random addresses of non-SGJourney dimensions
+Four more cartouches behind that blocked-off entrance to the left,
+hold two random addresses of SGJourney dimensions and two random addresses of non-SGJourney dimensions
 (Vanilla dimensions or dimensions added by other mods).
-Note that the dimensions chosen are entirely random,
-so the fewer dimensions you have, the more duplicate addresses you will find.
+Note that the dimensions chosen are entirely random.
+Hence, the fewer dimensions you have, the more duplicate addresses you will find.
 
 ![Abydos cartouche Earth]({{ site.baseurl }}/assets/img/survival/abydos_cartouche_second.png)
 

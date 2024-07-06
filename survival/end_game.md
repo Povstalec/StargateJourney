@@ -11,13 +11,13 @@ You have access to the Naquadah sources on Abydos.
 Now, you can create your own Stargate.
 
 ## Creating a Stargate
-First, you need to build a Classic Stargate that can be later upgraded.  
+First, you must build a Classic Stargate that can be later upgraded.  
 To build a Classic Stargate, you will need the following:
 - **&ensp;1x** Classic Stargate Base Block
 - **&ensp;9x** Classic Stargate Chevron Blocks
 - **14x** Classic Stargate Ring Blocks
 
-With mentioned blocks, you need to build this structure:
+With the mentioned blocks, you need to build this structure:
 
 ![Classic Stargate Block Structure]({{ site.baseurl }}/assets/img/survival/classic_stargate_block_structure.png)
 {: .max-width-512 }
@@ -33,9 +33,9 @@ Upgrade crystals are crafted in crystallizers and require 200 mb of liquid Naqua
 You can see all types of Stargates in the [Technological blocks]({{ site.baseurl }}/blocks/technological_blocks/#stargates) and all gate variants in the [Stargate variants]({{ site.baseurl }}/blocks/stargate_variants/) sections.
 
 {: .warning }
-The upgrade is a one-time action and cannot be undone.
-Once you upgrade the gate, you can't change it to another one.
-Only gate variants can be changed.
+The upgrade is a **one-time** action and cannot be undone.
+Once you upgrade the gate, you **can't change it** to another one.
+Only gate **variants** can be changed.
 
 ### Universe Stargate Upgrade Crystal
 ![Universe Stargate Upgrade Crystal recipe]({{ site.baseurl }}/assets/img/survival/universe_stargate_upgrade_crystal.png)
