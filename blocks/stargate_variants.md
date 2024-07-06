@@ -8,7 +8,8 @@ parent: Blocks
 # Stargate Variants
 {: .no_toc }
 [Datapacks]({{ site.baseurl }}/datapacks) are able to add custom Stargate variants.  
-These variants are available in the base mod.
+These variants are available in the base mod.  
+To change the gate variant, you need a [Stargate variant crystal]({{ site.baseurl }}/items/crystals/#stargate-variant-crystals).
 
 1. Table of Contents
 {:toc}
@@ -39,6 +40,8 @@ Milky way variant of classic Stargate.
 
 ![Classic Stargate Milky Way variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/classic_milkyway.png)
 {: .max-width-512 }
+
+![Classic Stargate Milky Way variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_classic_milkyway.png)
 
 ___
 
@@ -75,6 +78,8 @@ Tt has open space under it, so the symbol under it is easier to see.
 ![Milky Way Stargate movie variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_movie.png)
 {: .max-width-512 }
 
+![Milky Way Stargate movie variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_milkyway_movie.png)
+
 ___
 
 ### Promo
@@ -89,6 +94,8 @@ Same as the [Milky Way Movie variant](#movie), but the chevrons are lit and ther
 
 ![Milky Way Stargate promo variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_promo.png)
 {: .max-width-512 }
+
+![Milky Way Stargate promo variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_milkyway_promo.png)
 
 ___
 
@@ -105,6 +112,8 @@ Milky Way symbols and the Tau'ri Point of Origin (Giza) is set to be used perman
 
 ![Milky Way Stargate SG-1 variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_sg-1.png)
 {: .max-width-512 }
+
+![Milky Way Stargate SG-1 variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_milkyway_sg-1.png)
 
 ___
 
@@ -132,6 +141,8 @@ Pegasus symbols and the Lantea Point of Origin (Subido) are set to be used perma
 
 ![Pegasus Stargate atlantis_variant]({{ site.baseurl }}/assets/img/blocks/technological/pegasus_stargate.png)
 {: .max-width-512 }
+
+![Pegasus Stargate Atlantis variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_pegasus_atlantis.png)
 
 ___
 

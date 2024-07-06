@@ -15,7 +15,7 @@ parent: Survival Guide
 
 So you have Stargate, but you need to activate it now.
 
-To dial the Stargate, you need to know the **destination address**, which can be 7-chevron, 8-chevron, or 9-chevron long.
+To dial the Stargate, you need to know the **destination address**, which can be 6-symbol, 7-symbol, or 8-symbol long.
 <!-- TODO: add link to address length explanation -->
 You should have found the **cartouche** with the **Abydos address** along with the buried gate.
 
