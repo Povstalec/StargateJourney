@@ -10,6 +10,8 @@ parent: Blocks
 1. Table of Contents
 {:toc}
 
+___
+
 ## Stargates
 If you are __new to the topic__ and want to know what that thing is...  
 Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what_is_stargate).
@@ -71,15 +73,23 @@ The gate automatically picks up symbols of the galaxy each time it is placed (un
 ![Pegasus DHD]({{ site.baseurl }}/assets/img/blocks/technological/pegasus_dhd.png)
 {: .max-width-256 }
 
+___
+
 ## Transport rings
 ## Ring panel
+
+___
 
 ## Naquadah Generator Mark I
 ## Naquadah Generator Mark II
 ## Ancient Gene Detector
 ## ZPM Hub
 
-## Interface
+___
+
+## Stargate Interface
+See the [Mechanics / Stargate Network / Stargate Interface]({{ site.baseurl }}/mechanics/stargate_network/interface/) section for further details.
+
 ### Basic Interface
 
 ![Basic Interface]({{ site.baseurl }}/assets/img/blocks/technological/basic_interface.png)
@@ -95,6 +105,8 @@ The gate automatically picks up symbols of the galaxy each time it is placed (un
 ![Advanced Crystal Interface]({{ site.baseurl }}/assets/img/blocks/technological/advanced_crystal_interface.png)
 {: .max-width-256 }
 
+___
+
 ## Naquadah Liquidizer
 
 ![Naquadah Liquidizer]({{ site.baseurl }}/assets/img/blocks/technological/naquadah_liquidizer.png)
@@ -108,6 +120,8 @@ The gate automatically picks up symbols of the galaxy each time it is placed (un
 {: .max-width-256 }
 
 ![Heavy Naquadah Liquidizer GUI]({{ site.baseurl }}/assets/img/blocks/technological/heavy_naquadah_liquidizer_gui.png)
+
+___
 
 ## Crystallizer
 

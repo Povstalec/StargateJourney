@@ -45,7 +45,7 @@ ___
 Now, you should decide **how you want to dial** the gate.  
 There are a few options:
 <details markdown="block">
-<summary>1. Dialing using a Dial Home Device (DHD)</summary>
+<summary id="dialing-using-a-dial-home-device-dhd">1. Dialing using a Dial Home Device (DHD)</summary>
 
 ### Dialing using a Dial Home Device (DHD)
 
@@ -60,7 +60,7 @@ Finally, click the big red button in the middle to encode the Point of Origin an
 </details>
 
 <details markdown="block">
-<summary>2. Manual dialing with redstone</summary>
+<summary id="manual-dialing-with-redstone">2. Manual dialing with redstone</summary>
 
 ### Manual dialing with redstone
 
@@ -93,7 +93,7 @@ Once you encode **all symbols** from the address, encode the **Point of Origin**
 </details>
 
 <details markdown="block">
-<summary>3. Dialing using a <a href="https://tweaked.cc/" target="_blank">Computercraft</a></summary>
+<summary id="dialing-with-computercraft">3. Dialing using a <a href="https://tweaked.cc/" target="_blank">Computercraft</a></summary>
 
 ### Dialing with computercraft
 
@@ -201,7 +201,7 @@ that will **destroy blocks** and **kill entities** in front of the gate in a **7
 ___
 
 ## Abydos
-Welcome to the Abyods, a wonderful planet full of... sand. I hope you packed some snacks.
+Welcome to Abydos, a wonderful planet full of... sand. I hope you packed some snacks.
 
 On this planet, you are looking primarily for two things:
 an ore called [Naquadah]({{ site.baseurl }}/survival/naquadah/) 

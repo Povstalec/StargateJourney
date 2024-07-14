@@ -73,6 +73,9 @@ ___
    - [Ktlo's Pocket Stargate](https://github.com/Ktlo/pocket-stargate)
    - [Red's EZ Auto-Dialer Script](https://discord.com/channels/1011344665678708818/1217131207532482662) (discord thread link)
 
+### Resource packs:
+   - [Stargate Journey: Refreshed](https://www.curseforge.com/minecraft/texture-packs/stargate-journey-refreshed)
+
 ___
 
 ## Author
