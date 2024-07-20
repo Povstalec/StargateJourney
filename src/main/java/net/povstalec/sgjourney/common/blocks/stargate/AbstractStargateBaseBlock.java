@@ -255,7 +255,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
-		System.out.println(shieldingState);
+		
 		for(StargatePart part : getParts(shieldingState != ShieldingState.OPEN))
 		{
 			if(!part.equals(StargatePart.BASE))
