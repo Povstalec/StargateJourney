@@ -78,7 +78,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public long getTransfer()
 	{
-		return CommonTechConfig.advanced_energy_crystal_capacity.get();
+		return CommonTechConfig.advanced_energy_crystal_max_transfer.get();
 	}
 	
 	@Override
@@ -132,7 +132,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		@Override
 		public long getCapacity()
 		{
-			return CommonTechConfig.energy_crystal_max_transfer.get();
+			return CommonTechConfig.advanced_energy_crystal_capacity.get();
 		}
 
 		@Override

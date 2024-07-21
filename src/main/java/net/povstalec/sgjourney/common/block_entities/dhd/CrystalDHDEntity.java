@@ -152,44 +152,22 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 				this.memoryCrystals.addCrystal(memoryCrystal.isAdvanced(), i);
 			
 			else if(item instanceof EnergyCrystalItem energyCrystal)
+			{
 				this.energyCrystals.addCrystal(energyCrystal.isAdvanced(), i);
+				this.energyTarget += energyCrystal.getCapacity();
+			}
 			
 			else if(item instanceof TransferCrystalItem transferCrystal)
+			{
 				this.transferCrystals.addCrystal(transferCrystal.isAdvanced(), i);
+				this.maxEnergyTransfer += transferCrystal.getMaxTransfer();
+			}
 			
 			else if(item instanceof CommunicationCrystalItem communicationCrystal)
 				this.communicationCrystals.addCrystal(communicationCrystal.isAdvanced(), i);
 			
 			else if(item instanceof CallForwardingDevice)
 				this.enableCallForwarding = true;
-		}
-		
-		// Set up Energy Crystals
-		for(int i = 0; i < this.energyCrystals.getCrystals().length; i++)
-		{
-			this.energyTarget += ItemInit.ENERGY_CRYSTAL.get().getCapacity();
-		}
-		// Set up Advanced Energy Crystals
-		for(int i = 0; i < this.energyCrystals.getCrystals().length; i++)
-		{
-			this.energyTarget += ItemInit.ADVANCED_ENERGY_CRYSTAL.get().getCapacity();
-		}
-		
-		// Set up Transfer Crystals
-		for(int i = 0; i < this.transferCrystals.getCrystals().length; i++)
-		{
-			ItemStack stack = itemHandler.getStackInSlot(transferCrystals.getCrystals()[i]);
-			
-			if(!stack.isEmpty())
-				this.maxEnergyTransfer += TransferCrystalItem.getMaxTransfer(stack);
-		}
-		// Set up Advanced Transfer Crystals
-		for(int i = 0; i < this.transferCrystals.getAdvancedCrystals().length; i++)
-		{
-			ItemStack stack = itemHandler.getStackInSlot(transferCrystals.getAdvancedCrystals()[i]);
-			
-			if(!stack.isEmpty())
-				this.maxEnergyTransfer += TransferCrystalItem.getMaxTransfer(stack);
 		}
 		
 		setStargate();
