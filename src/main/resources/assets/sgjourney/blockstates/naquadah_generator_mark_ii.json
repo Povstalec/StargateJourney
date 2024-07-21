@@ -1,5 +1,9 @@
 {
-    "variants": {
-        "": { "model": "sgjourney:block/naquadah_generator_mark_i" }
-    }
+	"variants": 
+	{
+		"facing=north": { "model": "sgjourney:block/naquadah_generator_mark_ii"},
+		"facing=south": { "model": "sgjourney:block/naquadah_generator_mark_ii", "y": 180 },
+		"facing=west": { "model": "sgjourney:block/naquadah_generator_mark_ii", "y": 270 },
+		"facing=east": { "model": "sgjourney:block/naquadah_generator_mark_ii", "y": 90 }
+	}
 }

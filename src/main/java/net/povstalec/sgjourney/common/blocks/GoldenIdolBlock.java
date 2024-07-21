@@ -57,7 +57,7 @@ public class GoldenIdolBlock extends HorizontalDirectionalBlock
     {
         Direction direction = state.getValue(FACING);
         return direction.getAxis() == Direction.Axis.X ? ARTIFACT_TURNED : ARTIFACT_STRAIGHT;
-     }
+	}
     
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_206840_1_) {
 	      p_206840_1_.add(FACING);
