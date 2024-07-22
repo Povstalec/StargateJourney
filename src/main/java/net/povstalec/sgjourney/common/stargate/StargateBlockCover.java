@@ -1,16 +1,77 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import net.minecraft.nbt.CompoundTag;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-public class StargateBlockCover
+import com.mojang.serialization.DataResult;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
+
+public class StargateBlockCover implements INBTSerializable<CompoundTag>
 {
-	public CompoundTag serializeNBT()
+	private ArrayList<StargatePart> parts;
+	public HashMap<StargatePart, BlockState> blockStates = new HashMap<StargatePart, BlockState>();
+	
+	public StargateBlockCover(ArrayList<StargatePart> parts)
 	{
-		return null;
+		this.parts = parts;
 	}
 	
-	public void deserializeNBT()
+	public Optional<BlockState> setBlockAt(StargatePart part, BlockState state)
 	{
+		BlockState oldState = blockStates.get(part);
 		
+		blockStates.put(part, state);
+		
+		return Optional.ofNullable(oldState);
+	}
+	
+	public Optional<BlockState> getBlockAt(StargatePart part)
+	{
+		return Optional.ofNullable(blockStates.get(part));
+	}
+	
+	@Override
+	public CompoundTag serializeNBT()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		for(Map.Entry<StargatePart, BlockState> entry : blockStates.entrySet())
+		{
+			DataResult<Tag> blockStateTag = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, entry.getValue());
+			
+			Optional<Tag> result = blockStateTag.result();
+			
+			if(result.isPresent())
+				tag.put(entry.getKey().getSerializedName(), result.get());
+		}
+		
+		return tag;
+	}
+
+	@Override
+	public void deserializeNBT(CompoundTag tag)
+	{
+		for(StargatePart part : parts)
+		{
+			if(tag.contains(part.getSerializedName()))
+			{
+				DataResult<BlockState> stateResult = BlockState.CODEC.parse(NbtOps.INSTANCE, tag.get(part.getSerializedName()));
+				Optional<BlockState> result = stateResult.result();
+				
+				if(result.isPresent())
+				{
+					blockStates.put(part, result.get());
+					System.out.println(result.get().toString());
+				}
+			}
+		}
 	}
 }

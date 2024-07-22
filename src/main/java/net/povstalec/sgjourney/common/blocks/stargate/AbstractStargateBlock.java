@@ -1,11 +1,15 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -25,13 +29,16 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
+import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
@@ -101,11 +108,48 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return true;
 	}
 	
-	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
+	protected VoxelShape shape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
 			return shapeProvider.HORIZONTAL_FULL;
 		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_FULL : shapeProvider.X_FULL;
+	}
+	
+	public Optional<StargateBlockCover> getBlockCover(BlockState state, BlockGetter reader, BlockPos position)
+	{
+		AbstractStargateEntity stargate = getStargate(reader, position, state);
+		if(stargate != null)
+		{
+			return Optional.of(stargate.blockCover);
+		}
+		
+		return Optional.empty();
+	}
+	
+	public Optional<StargateBlockCover> getBlockCover(Level level, BlockState state, BlockPos position)
+	{
+		AbstractStargateEntity stargate = getStargate(level, position, state);
+		if(stargate != null)
+			return Optional.of(stargate.blockCover);
+		
+		return Optional.empty();
+	}
+	
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
+	{
+		Optional<StargateBlockCover> blockCover = getBlockCover(state, reader, position);
+		
+		if(blockCover.isPresent())
+		{
+			StargatePart part = state.getValue(PART);
+			Optional<BlockState> coverState = blockCover.get().getBlockAt(part);
+			
+			if(coverState.isPresent())
+				return Shapes.or(shape(state, reader, position, context), coverState.get().getShape(reader, position));
+		}
+		
+		return shape(state, reader, position, context);
 	}
 
 	@Override
@@ -153,22 +197,21 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	
 	public abstract AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state);
 	
-	/*@Override
+	public abstract AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state);
+	
+	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
-		BlockPlaceContext context = new BlockPlaceContext(player, hand, player.getItemInHand(hand), result);
-		BlockPlaceContext.at(context, pos, context.getNearestLookingDirection());
+		Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
 		
-		if(player.getItemInHand(hand).getItem() instanceof BlockItem blockItem)
+		if(blockCover.isPresent())
 		{
-			Block block = blockItem.getBlock();
+			StargatePart part = state.getValue(PART);
 			
-			BlockState blockState = block.getStateForPlacement(context);
-			
-			if(blockState.isCollisionShapeFullBlock(level, pos) && !(block instanceof EntityBlock))
-				System.out.println("Is full and isn't BlockEntity");
+			if(player.getItemInHand(hand).getItem() instanceof BlockItem blockItem)
+				blockCover.get().setBlockAt(part, blockItem.getBlock().defaultBlockState());
 		}
 		
 		return super.use(state, level, pos, player, hand, result);
-	}*/
+	}
 }

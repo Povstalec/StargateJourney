@@ -25,7 +25,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
+	protected VoxelShape shape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
@@ -69,6 +69,17 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	public AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state)
 	{
 		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
+		
+		if(blockentity instanceof AbstractStargateEntity stargate)
+			return stargate;
+		
+		return null;
+	}
+	
+	@Override
+	public AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		BlockEntity blockentity = reader.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
 		
 		if(blockentity instanceof AbstractStargateEntity stargate)
 			return stargate;

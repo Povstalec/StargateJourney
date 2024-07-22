@@ -59,12 +59,14 @@ import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
+import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Dialing;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
 import net.povstalec.sgjourney.common.stargate.StargateConnection.State;
 import net.povstalec.sgjourney.common.stargate.Symbols;
@@ -105,6 +107,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	
 	public static final String POINT_OF_ORIGIN = "PointOfOrigin";
 	public static final String SYMBOLS = "Symbols";
+	
+	public static final String COVER_BLOCKS = "CoverBlocks";
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 
@@ -160,9 +164,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	protected boolean displayID = false;
 	protected boolean upgraded = false;
 	
+	private boolean initialClientSync = false;
+	
 	private Stargate.FilterType filter = Stargate.FilterType.NONE;
 	private ArrayList<Address.Immutable> whitelist = new ArrayList<Address.Immutable>();
 	private ArrayList<Address.Immutable> blacklist = new ArrayList<Address.Immutable>();
+	
+	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
 
 	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
 			float verticalCenterHeight, float horizontalCenterHeight)
@@ -191,6 +199,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
         
         if(!addToNetwork)
     		addStargateToNetwork();
+        
+        updateClientState();
         
         loadDHD();
 	}
@@ -235,6 +245,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		deserializeFilters(tag);
 		
+		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
+		
     	this.setChanged();
 	}
 	
@@ -273,6 +285,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		tag.putShort(IRIS_PROGRESS, irisProgress);
 		
 		serializeFilters(tag);
+		
+		tag.put(COVER_BLOCKS, blockCover.serializeNBT());
 		
 		super.saveAdditional(tag);
 		
@@ -558,7 +572,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public void doKawoosh(int kawooshTime)
 	{
 		setKawooshTickCount(kawooshTime);
-		updateClient();
+		//updateClient();
 		
 		if(kawooshTime > StargateConnection.KAWOOSH_TICKS || this.isIrisClosed())
 			return;
@@ -655,7 +669,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		this.connectionID = EMPTY;
 		setKawooshTickCount(0);
 		setTickCount(0);
-		updateClient();
+		//updateClient();
 		
 		if(feedback.playFailSound() && !level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
@@ -724,7 +738,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	{
 		this.address.addSymbol(symbol);
 		setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true);
-		updateClient();
+		//updateClient();
 	}
 	
 	protected void resetAddress(boolean updateInterfaces)
@@ -1415,6 +1429,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public void setStargateState(StargateConnection.State connectionState, int chevronsEngaged, boolean updateInterfaces)
 	{
 		setStargateState(connectionState, chevronsEngaged, updateInterfaces, false, getShieldingState());
+		updateClientState(); //TODO
 		
 	}
 	
@@ -1690,6 +1705,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.irisProgress, this.pointOfOrigin, this.symbols, this.variant));
 	}
 	
+	public void updateClientState()
+	{
+		if(level.isClientSide())
+			return;
+		
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateStateUpdatePacket(this.worldPosition, this.blockCover.blockStates));
+	}
+	
 	public String getConnectionID()
 	{
 		return this.connectionID;
@@ -1728,5 +1751,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			return;
 
 		stargate.updateClient();
+		
+		if(!stargate.initialClientSync) // Syncs to client on the first tick
+			stargate.updateClientState();
     }
 }

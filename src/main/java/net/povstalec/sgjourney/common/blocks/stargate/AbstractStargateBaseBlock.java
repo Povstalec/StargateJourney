@@ -372,6 +372,17 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		return null;
 	}
 	
+	@Override
+	public AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		BlockEntity blockentity = reader.getBlockEntity(pos);
+		
+		if(blockentity instanceof AbstractStargateEntity stargate)
+			return stargate;
+		
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Nullable
 	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typeA, BlockEntityType<E> typeB, BlockEntityTicker<? super E> ticker)

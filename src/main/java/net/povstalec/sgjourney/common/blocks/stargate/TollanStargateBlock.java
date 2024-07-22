@@ -56,7 +56,7 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
+	protected VoxelShape shape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
 			return VoxelShapeProvider.getShapeFromArray(shapeProvider.BOTTOM, state.getValue(FACING), state.getValue(ORIENTATION));

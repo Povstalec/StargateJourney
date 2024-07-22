@@ -1,8 +1,11 @@
 package net.povstalec.sgjourney.client;
 
+import java.util.HashMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
@@ -18,6 +21,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEn
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClientAccess
@@ -112,6 +116,16 @@ public class ClientAccess
         	stargate.setPointOfOrigin(pointOfOrigin);
         	stargate.setSymbols(symbols);
         	stargate.setVariant(variant);
+        }
+    }
+    
+    public static void updateStargateState(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if(blockEntity instanceof final AbstractStargateEntity stargate)
+        {
+        	stargate.blockCover.blockStates = blockStates;
         }
     }
     

@@ -34,7 +34,7 @@ public class TollanStargateRingBlock extends AbstractStargateRingBlock
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
+	protected VoxelShape shape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
