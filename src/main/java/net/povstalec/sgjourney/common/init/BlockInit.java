@@ -84,7 +84,7 @@ public class BlockInit
 	public static final RegistryObject<MilkyWayStargateRingBlock> MILKY_WAY_RING = BLOCKS.register("milky_way_ring", 
 			() -> new MilkyWayStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
-	public static final RegistryObject<ShieldingBlock> MILKY_WAY_IRIS = registerBlock("milky_way_iris", 
+	public static final RegistryObject<ShieldingBlock> MILKY_WAY_IRIS =  BLOCKS.register("milky_way_iris", 
 			() -> new ShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	

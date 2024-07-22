@@ -13,6 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.KaraKeshItem;
+import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.items.PDAItem;
 import net.povstalec.sgjourney.common.items.RingRemoteItem;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
@@ -44,6 +45,10 @@ public class ItemInit
 	public static final RegistryObject<Item> RAW_NAQUADAH = ITEMS.register("raw_naquadah", 
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> NAQUADAH_ALLOY = ITEMS.register("naquadah_alloy", 
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> NAQUADAH_NUGGET = ITEMS.register("naquadah_nugget", 
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> REFINED_NAQUADAH = ITEMS.register("refined_naquadah", 
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> PURE_NAQUADAH = ITEMS.register("pure_naquadah", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant()));
@@ -163,6 +168,9 @@ public class ItemInit
 			() -> new JackalArmorItem(ArmorMaterialInit.jaffa, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
 	public static final RegistryObject<FalconArmorItem> FALCON_HELMET = ITEMS.register("falcon_helmet", 
 			() -> new FalconArmorItem(ArmorMaterialInit.jaffa, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+	
+	public static final RegistryObject<NaquadahFuelRodItem> NAQUADAH_FUEL_ROD = ITEMS.register("naquadah_fuel_rod", 
+			() -> new NaquadahFuelRodItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).fireResistant()));
 	
 	public static final RegistryObject<PersonalShieldItem> PERSONAL_SHIELD_EMITTER = ITEMS.register("personal_shield_emitter", 
 			() -> new PersonalShieldItem(ArmorMaterialInit.personal_shield, EquipmentSlot.CHEST, new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));

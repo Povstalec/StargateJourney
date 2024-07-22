@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
@@ -40,6 +41,8 @@ public class TabInit
 			{
 				items.accept(ItemInit.RAW_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH_ALLOY.get());
+				items.accept(ItemInit.NAQUADAH_NUGGET.get());
+				items.accept(ItemInit.REFINED_NAQUADAH.get());
 				items.accept(ItemInit.PURE_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH.get());
 				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
@@ -77,6 +80,8 @@ public class TabInit
 				items.accept(ItemInit.JAFFA_CHESTPLATE.get());
 				items.accept(ItemInit.JAFFA_LEGGINGS.get());
 				items.accept(ItemInit.JAFFA_BOOTS.get());
+
+				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 
 				items.accept(ItemInit.ZPM.get());
 				items.accept(PersonalShieldItem.personalShieldSetup());
