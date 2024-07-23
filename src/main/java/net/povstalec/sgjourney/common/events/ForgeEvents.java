@@ -22,6 +22,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -249,13 +250,15 @@ public class ForgeEvents
 			pos = event.getPos().relative(event.getFace());
 			state = level.getBlockState(pos);
 			
-			if(state.getBlock() instanceof AbstractStargateBlock stargate) //TODO only do this when the itemstack is a BlockItem
+			if(state.getBlock() instanceof AbstractStargateBlock stargate && event.getEntity().getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BlockItem)
 			{
-				stargate.setCover(state, level, pos, event.getEntity(), InteractionHand.MAIN_HAND, event.getHitVec());
-				event.getEntity().swing(InteractionHand.MAIN_HAND);
+				if(stargate.setCover(state, level, pos, event.getEntity(), InteractionHand.MAIN_HAND, event.getHitVec()))
+				{
+					event.getEntity().swing(InteractionHand.MAIN_HAND);
 
-				event.setCanceled(true);
-				return;
+					event.setCanceled(true);
+					return;
+				}
 			}
 		}
 		

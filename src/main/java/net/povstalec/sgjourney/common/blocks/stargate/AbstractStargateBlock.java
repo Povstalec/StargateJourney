@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 
@@ -11,20 +13,23 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -233,16 +238,20 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				if(stack.getItem() instanceof BlockItem blockItem && blockCover.get().getBlockAt(part).isEmpty())
 				{
 					CoverBlockPlaceContext context = new CoverBlockPlaceContext(level, player, InteractionHand.MAIN_HAND, stack, result);
-					
 					BlockState coverState = blockItem.getBlock().getStateForPlacement(context);
 					
-					level.playSound(player, pos, coverState.getBlock().getSoundType(coverState).getPlaceSound(), SoundSource.BLOCKS);
-					blockCover.get().setBlockAt(part, coverState);
-					
-					if(!player.isCreative())
-						stack.shrink(1);
-					
-					return true;
+					if(coverState != null && !(coverState.getBlock() instanceof EntityBlock))
+					{
+						if(blockCover.get().setBlockAt(part, coverState))
+						{
+							level.playSound(player, pos, coverState.getBlock().getSoundType(coverState).getPlaceSound(), SoundSource.BLOCKS);
+							
+							if(!player.isCreative())
+								stack.shrink(1);
+							
+							return true;
+						}
+					}
 				}
 			}
 		}
@@ -290,6 +299,29 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			}
 			
 			return super.getDestroySpeed(reader, pos);
+		}
+		
+		@Override
+		public SoundType getSoundType(LevelReader level, BlockPos pos, @Nullable Entity entity)
+		{
+			BlockState state = level.getBlockState(pos);
+			
+			if(state.getBlock() instanceof AbstractStargateBlock stargate)
+			{
+				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(state, level, pos);
+				
+				if(blockCover.isPresent())
+				{
+					StargatePart part = state.getValue(PART);
+					Optional<BlockState> coverState = blockCover.get().getBlockAt(part);
+					
+					if(coverState.isPresent()) // Destroy speed for the cover block
+						return coverState.get().getSoundType(level, pos, entity);
+				}
+			}
+			
+			return super.getSoundType(level, pos, entity);
+			
 		}
 	}
 }

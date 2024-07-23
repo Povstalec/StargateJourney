@@ -98,39 +98,4 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		
 		return InteractionResult.FAIL;
 	}
-
-	/*@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
-	{
-		BlockPos mainBlockPos = state.getValue(PART).getMainBlockPos(pos, state.getValue(FACING));
-    	
-		BlockEntity blockEntity = level.getBlockEntity(mainBlockPos);
-		
-    	if(blockEntity instanceof AbstractStargateEntity stargate) 
-    	{
-    		
-    	}
-        
-        if(!player.isShiftKeyDown() && !player.getItemInHand(hand).isEmpty() && !state.getValue(FULL))
-		{
-    		if(level.isClientSide)
-    			return InteractionResult.SUCCESS;
-    		
-			//ItemStack stack = player.getItemInHand(hand);
-			//player.sendSystemMessage(stack.getDisplayName());
-        	level.setBlock(pos, state.setValue(FULL, true), 2);
-			
-			return InteractionResult.CONSUME;
-		}
-		else if(!player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty() && state.getValue(FULL))
-		{
-			if(level.isClientSide)
-    			return InteractionResult.SUCCESS;
-			
-        	level.setBlock(pos, state.setValue(FULL, false), 2);
-			return InteractionResult.CONSUME;
-		}
-    	
-        return InteractionResult.FAIL;
-    }*/
 }

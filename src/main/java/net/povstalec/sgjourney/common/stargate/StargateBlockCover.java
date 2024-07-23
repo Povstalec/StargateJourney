@@ -31,13 +31,14 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		this.parts = parts;
 	}
 	
-	public Optional<BlockState> setBlockAt(StargatePart part, BlockState state)
+	public boolean setBlockAt(StargatePart part, BlockState state)
 	{
-		BlockState oldState = blockStates.get(part);
+		if(blockStates.containsKey(part))
+			return false;
 		
 		blockStates.put(part, state);
 		
-		return Optional.ofNullable(oldState);
+		return true;
 	}
 	
 	public Optional<BlockState> getBlockAt(StargatePart part)
