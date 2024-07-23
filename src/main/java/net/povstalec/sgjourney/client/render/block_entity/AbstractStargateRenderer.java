@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -7,19 +8,19 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.client.models.AbstractStargateModel;
 import net.povstalec.sgjourney.client.models.IrisModel;
 import net.povstalec.sgjourney.client.models.ShieldModel;
@@ -35,6 +36,8 @@ public abstract class AbstractStargateRenderer
 	protected final WormholeModel wormholeModel;
 	protected final ShieldModel shieldModel;
 	protected final IrisModel irisModel;
+	
+	private final RandomSource randomsource = RandomSource.create();
 	
 	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context,
 			ResourceLocation eventHorizonTexture, ResourceLocation shinyEventHorizonTexture, float maxDefaultDistortion,
@@ -91,13 +94,10 @@ public abstract class AbstractStargateRenderer
 	
 	protected void renderCover(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("minecraft:red_sand"));
-		
-	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.LEFT2, stack, source, combinedOverlay);
-	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.LEFT, stack, source, combinedOverlay);
-	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.BASE, stack, source, combinedOverlay);
-	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.RIGHT, stack, source, combinedOverlay);
-	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.RIGHT2, stack, source, combinedOverlay);
+	    for(Map.Entry<StargatePart, BlockState> entry : stargate.blockCover.blockStates.entrySet())
+	    {
+	    	renderCoverBlock(stargate, entry.getValue(), entry.getKey(), stack, source, combinedOverlay);
+	    }
 	}
 	
 	protected void renderCoverBlock(AbstractStargateEntity stargate, BlockState state, StargatePart part, PoseStack stack, MultiBufferSource source, int combinedOverlay)
@@ -114,10 +114,22 @@ public abstract class AbstractStargateRenderer
 			stack.pushPose();
 			
 			stack.translate(relativeBlockPos.x(), relativeBlockPos.y(), relativeBlockPos.z());
-			BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
-			dispatcher.renderSingleBlock(state, stack, source, LevelRenderer.getLightColor(level, absolutePos), combinedOverlay, ModelData.EMPTY, null);
+			BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();//Minecraft.getInstance().getBlockColors().
+			//dispatcher.renderSingleBlock(state, stack, source, LevelRenderer.getLightColor(level, absolutePos), combinedOverlay, ModelData.EMPTY, null);
+			
+			
+			BakedModel model = dispatcher.getBlockModel(state);
+			for(RenderType renderType : model.getRenderTypes(state, randomsource, ModelData.EMPTY))
+			{
+				dispatcher.renderBatched(state, absolutePos, level, stack, source.getBuffer(renderType), true, randomsource, model.getModelData(level, absolutePos, state, ModelData.EMPTY), null);
+			}
 			
 			stack.popPose();
 		}
+	}
+	
+	protected boolean canSink(AbstractStargateEntity stargate)
+	{
+	    return stargate.blockCover.canSinkGate;
 	}
 }

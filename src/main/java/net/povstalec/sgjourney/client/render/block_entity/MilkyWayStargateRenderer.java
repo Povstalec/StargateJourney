@@ -42,9 +42,11 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
 		float facing = blockstate.getValue(MilkyWayStargateBlock.FACING).toYRot();
 		Vec3 center = stargate.getRelativeCenter();
 		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
+	    
+	    this.renderCover(stargate, stack, source, combinedLight, combinedOverlay);
 		
         stack.pushPose();
-		stack.translate(center.x(), center.y(), center.z());
+		stack.translate(center.x(), center.y() - (canSink(stargate) ? 0.25 : 0), center.z());
         stack.mulPose(Axis.YP.rotationDegrees(-facing));
         
         if(orientation == Orientation.UPWARD)
@@ -65,8 +67,6 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer implement
         this.renderWormhole(stargate, stack, source, this.stargateModel, combinedLight, combinedOverlay);
 	    
 	    stack.popPose();
-	    
-	    //this.renderCover(stargate, stack, source, combinedLight, combinedOverlay);
 	}
 	
 	@Override

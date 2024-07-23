@@ -46,6 +46,8 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 		Direction facing = blockstate.getValue(TollanStargateBlock.FACING);
 		Vec3 center = stargate.getRelativeCenter();
 		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
+	    
+	    this.renderCover(stargate, stack, source, combinedLight, combinedOverlay);
 		
         stack.pushPose();
         

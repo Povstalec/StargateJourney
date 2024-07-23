@@ -42,6 +42,8 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
 		float facing = blockstate.getValue(PegasusStargateBlock.FACING).toYRot();
 		Vec3 center = stargate.getRelativeCenter();
 		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
+	    
+	    this.renderCover(stargate, stack, source, combinedLight, combinedOverlay);
 		
         stack.pushPose();
 		stack.translate(center.x(), center.y(), center.z());

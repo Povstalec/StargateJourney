@@ -452,7 +452,7 @@
 	"message.sgjourney.stargate.error.incomplete_address": "Neúplná adresa",
 	"message.sgjourney.stargate.error.invalid_address": "Neplatná adresa",
 	"message.sgjourney.stargate.error.not_enough_power": "Nedostatek energie",
-	"message.sgjourney.stargate.error.self_obstructed": "Hvězdná brána je blokována",
+	"message.sgjourney.stargate.error.self_obstructed": "Lokální hvězdná brána je blokována",
 	"message.sgjourney.stargate.error.target_obstructed": "Cílová hvězdná brána je blokována",
 	"message.sgjourney.stargate.error.self_dial": "Hvězdná brána nemůže navázat spojení sama se sebou",
 	"message.sgjourney.stargate.error.same_system_dial": "Hvězdná brána nemůže vytočit svůj vlastní solární systém",

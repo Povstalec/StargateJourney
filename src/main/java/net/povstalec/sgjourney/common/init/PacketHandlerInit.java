@@ -17,6 +17,7 @@ import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdat
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
@@ -79,6 +80,11 @@ public final class PacketHandlerInit
 		.add();
 		
 		// Stargates
+		INSTANCE.messageBuilder(ClientboundStargateParticleSpawnPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundStargateParticleSpawnPacket::encode)
+		.decoder(ClientboundStargateParticleSpawnPacket::new)
+		.consumerMainThread(ClientboundStargateParticleSpawnPacket::handle)
+		.add();
 		INSTANCE.messageBuilder(ClientboundStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundStargateUpdatePacket::encode)
 		.decoder(ClientboundStargateUpdatePacket::new)
