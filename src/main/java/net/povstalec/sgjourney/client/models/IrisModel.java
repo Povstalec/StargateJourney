@@ -15,7 +15,7 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 
 public class IrisModel
 {
-private static final ResourceLocation IRIS_TEXTURE = new ResourceLocation("textures/block/iron_block.png");//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/iron_iris.png");
+	private static final ResourceLocation IRIS_TEXTURE = new ResourceLocation("textures/block/iron_block.png");//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/iron_iris.png");
 	
 	private static final float OFFSET = 1F / 16 / 2;
 	private static final int TOTAL_SIDES = 20;

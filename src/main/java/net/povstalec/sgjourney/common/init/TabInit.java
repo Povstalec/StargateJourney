@@ -139,6 +139,18 @@ public class TabInit
 				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
 				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 
+				items.accept(ItemInit.COPPER_IRIS.get());
+				items.accept(ItemInit.IRON_IRIS.get());
+				items.accept(ItemInit.GOLD_IRIS.get());
+				items.accept(ItemInit.DIAMOND_IRIS.get());
+				items.accept(ItemInit.NETHERITE_IRIS.get());
+
+				items.accept(ItemInit.NAQUADAH_ALLOY_IRIS.get());
+				items.accept(ItemInit.TRINIUM_IRIS.get());
+
+				items.accept(ItemInit.BRONZE_IRIS.get());
+				items.accept(ItemInit.STEEL_IRIS.get());
+
 				items.accept(ItemInit.CALL_FORWARDING_DEVICE.get());
 
 				if(CommonStargateConfig.enable_classic_stargate_upgrades.get())

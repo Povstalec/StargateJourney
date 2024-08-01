@@ -123,7 +123,7 @@ public final class VoxelShapeProvider
 
         IRIS_FULL = new VoxelShape[][] {{HORIZONTAL_IRIS_FULL}, {X_IRIS_FULL, Z_IRIS_FULL}, {HORIZONTAL_IRIS_FULL}};
         
-        HORIZONTAL_IRIS_TOP_LEFT = Block.box(MIN, horizontalIrisMin, MIN, MAX, horizontalIrisMax, MAX);
+        HORIZONTAL_IRIS_TOP_LEFT = Block.box(MIN, horizontalIrisMin, MID, MID, horizontalIrisMax, MAX);
         HORIZONTAL_IRIS_TOP_RIGHT = Block.box(MID, horizontalIrisMin, MID, MAX, horizontalIrisMax, MAX);
         HORIZONTAL_IRIS_BOTTOM_LEFT = Block.box(MIN, horizontalIrisMin, MIN, MID, horizontalIrisMax, MID);
         HORIZONTAL_IRIS_BOTTOM_RIGHT = Block.box(MID, horizontalIrisMin, MIN, MAX, horizontalIrisMax, MID);
@@ -135,8 +135,8 @@ public final class VoxelShapeProvider
 
         VoxelShape[] defaultHorizontalIrisShapes = {HORIZONTAL_IRIS_TOP, HORIZONTAL_IRIS_LEFT, HORIZONTAL_IRIS_BOTTOM, HORIZONTAL_IRIS_RIGHT};
         VoxelShape[] reverseHorizontalIrisShapes = {HORIZONTAL_IRIS_BOTTOM, HORIZONTAL_IRIS_RIGHT, HORIZONTAL_IRIS_TOP, HORIZONTAL_IRIS_LEFT};
-        VoxelShape[] leftHorizontalIrisShapes = {HORIZONTAL_IRIS_RIGHT, HORIZONTAL_IRIS_TOP, HORIZONTAL_IRIS_LEFT, HORIZONTAL_IRIS_BOTTOM};
-        VoxelShape[] rightHorizontalIrisShapes = {HORIZONTAL_IRIS_LEFT, HORIZONTAL_IRIS_BOTTOM, HORIZONTAL_IRIS_RIGHT, HORIZONTAL_IRIS_TOP};
+        VoxelShape[] leftHorizontalIrisShapes = {HORIZONTAL_IRIS_LEFT, HORIZONTAL_IRIS_BOTTOM, HORIZONTAL_IRIS_RIGHT, HORIZONTAL_IRIS_TOP};
+        VoxelShape[] rightHorizontalIrisShapes = {HORIZONTAL_IRIS_RIGHT, HORIZONTAL_IRIS_TOP, HORIZONTAL_IRIS_LEFT, HORIZONTAL_IRIS_BOTTOM};
 
         IRIS_BOTTOM = new VoxelShape[][] {defaultHorizontalIrisShapes, {X_IRIS_BOTTOM, Z_IRIS_BOTTOM}, reverseHorizontalIrisShapes};
         IRIS_TOP = new VoxelShape[][] {reverseHorizontalIrisShapes, {X_IRIS_TOP, Z_IRIS_TOP}, defaultHorizontalIrisShapes};

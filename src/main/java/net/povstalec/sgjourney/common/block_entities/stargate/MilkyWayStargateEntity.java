@@ -395,10 +395,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
-		if(desiredSymbol * STEPS_PER_SYMBOL == this.rotation)
-			return true;
-		
-		return false;
+		return desiredSymbol * STEPS_PER_SYMBOL == this.rotation;
 	}
 	
 	private void synchronizeWithClient(Level level)

@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,6 +43,7 @@ import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRender
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
+import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
 import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
@@ -230,6 +232,12 @@ public class StargateJourney
         		StellarViewRendering.registerStellarViewEffects(event);
         	else
         		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
+        }
+    	
+    	@SubscribeEvent
+        public static void registerClientReloadListener(RegisterClientReloadListenersEvent event)
+        {
+    		ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
         }
     }
     

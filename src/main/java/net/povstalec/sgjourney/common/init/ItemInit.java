@@ -12,6 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
+import net.povstalec.sgjourney.common.items.IrisItem;
 import net.povstalec.sgjourney.common.items.KaraKeshItem;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.items.PDAItem;
@@ -177,6 +178,28 @@ public class ItemInit
 	
 	public static final RegistryObject<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device", 
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
+	
+	// Irises
+	public static final RegistryObject<IrisItem.Copper> COPPER_IRIS = ITEMS.register("copper_iris", 
+			() -> new IrisItem.Copper(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<IrisItem.Iron> IRON_IRIS = ITEMS.register("iron_iris", 
+			() -> new IrisItem.Iron(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<IrisItem.Gold> GOLD_IRIS = ITEMS.register("gold_iris", 
+			() -> new IrisItem.Gold(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<IrisItem.Diamond> DIAMOND_IRIS = ITEMS.register("diamond_iris", 
+			() -> new IrisItem.Diamond(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<IrisItem.Netherite> NETHERITE_IRIS = ITEMS.register("netherite_iris", 
+			() -> new IrisItem.Netherite(new Item.Properties().stacksTo(1).fireResistant()));
+
+	public static final RegistryObject<IrisItem.NaquadahAlloy> NAQUADAH_ALLOY_IRIS = ITEMS.register("naquadah_alloy_iris", 
+			() -> new IrisItem.NaquadahAlloy(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<IrisItem.Trinium> TRINIUM_IRIS = ITEMS.register("trinium_iris", 
+			() -> new IrisItem.Trinium(new Item.Properties().stacksTo(1).fireResistant()));
+
+	public static final RegistryObject<IrisItem.Bronze> BRONZE_IRIS = ITEMS.register("bronze_iris", 
+			() -> new IrisItem.Bronze(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<IrisItem.Steel> STEEL_IRIS = ITEMS.register("steel_iris", 
+			() -> new IrisItem.Steel(new Item.Properties().stacksTo(1)));
 		
 	
 	public static void register(IEventBus eventBus)
