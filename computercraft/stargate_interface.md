@@ -26,6 +26,16 @@ There are three available Stargate Interfaces -
 [Crystal Interface]({{ site.baseurl }}/blocks/technological_blocks/#crystal-interface),
 [Advanced Crystal Interface]({{ site.baseurl }}/blocks/technological_blocks/#advanced-crystal-interface).
 
+<blockquote class="warning"> 
+<p>
+    Unless there is a label with interface name at the function, it can be used by any interface.<br> 
+    If there is a label, the function is only available for the specified interface.
+</p> 
+<span class="label label-green">Crystal Interface</span>
+<span class="label label-purple">Advanced Crystal Interface</span>
+</blockquote>
+
+
 # Functions
 {: .no_toc }
 
@@ -42,10 +52,10 @@ ___
 Converts the array specified by address to a form used elsewhere in the mod (-1-2-3-4-5-6-).
 
 **Parameters**
-1. `address`: `int[]` The array of numbers representing an address
+1. `address`: `number[]` The array of numbers representing an address
 
 **Returns**
-1. `string` The address in text form used elsewhere in the mod
+1. `string`: The address in text form used elsewhere in the mod
 
 **Usage**
 - Converts the abydos address to text `-26-6-14-31-11-29-`
@@ -74,7 +84,7 @@ ___
 </h3>
 
 **Returns**
-1. `number` The energy stored [FE] within the interface.
+1. `number`: The energy stored [FE] within the interface.
 
 ___
 
@@ -84,7 +94,7 @@ ___
 </h3>
 
 **Returns**
-1. `number` The energy capacity [FE] of the interface.
+1. `number`: The energy capacity [FE] of the interface.
 
 ___
 
@@ -94,7 +104,7 @@ ___
 </h3>
 
 **Returns**
-1. `number` The current energy target.
+1. `number`: The current energy target.
 
 ___
 
@@ -122,7 +132,7 @@ If the Stargate is connected, the command disconnects it.
 If it isn't connected, the Stargate will be reset (encoded chevrons will be deactivated).
 
 **Returns**
-1. `boolean` - `true` if the connection was closed, `false` if there was no connection or the Stargate failed to disconnect (e.g. function was called during kawoosh).
+1. `boolean`: `true` if the connection was closed, `false` if there was no connection or the Stargate failed to disconnect (e.g. function was called during kawoosh).
 
 ___
 
@@ -132,7 +142,7 @@ ___
 </h3>
 
 **Returns**
-1. `number` The number of chevrons that have been engaged (`0 - 9`).
+1. `number`: The number of chevrons that have been engaged (`0 - 9`).
 
 ___
 
@@ -142,7 +152,7 @@ ___
 </h3>
 
 **Returns**
-1. `number` The number of Ticks the Stargate has been active for, returns 0 if it's inactive.
+1. `number`: The number of Ticks the Stargate has been active for, returns 0 if it's inactive.
 
 ___
 
@@ -152,8 +162,8 @@ ___
 </h3>
 
 **Returns**
-1. `number` The most recent Stargate Feedback [int].
-2. `string` **Only (Advanced) Crystal interface**: description of the feedback.
+1. `number`: The most recent Stargate Feedback [int].
+2. `string`: **Only (Advanced) Crystal interface**: description of the feedback.
 
 {: .note }
 Because the wiki can quickly become outdated, you can check the feedback codes of the latest version [here](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/stargate/Stargate.java#L396).
@@ -166,7 +176,7 @@ ___
 </h3>
 
 **Returns**
-1. `number` The energy [FE] stored within the Stargate.
+1. `number`: The energy [FE] stored within the Stargate.
 
 ___
 
@@ -176,7 +186,7 @@ ___
 </h3>
 
 **Returns**
-1. `number` The generation [int] of the Stargate.  
+1. `number`: The generation [int] of the Stargate.  
 > `0` - Classic Stargate  
 > `1` - Universe Stargate  
 > `2` - Milky Way Stargate, Tollan Stargate  
@@ -190,7 +200,7 @@ ___
 </h3>
 
 **Returns**
-1. `string` The registry ID (string) of the Stargate (e.g. `sgjourney:milky_way_stargate`).
+1. `string`: The registry ID (string) of the Stargate (e.g. `sgjourney:milky_way_stargate`).
 
 ___
 
@@ -200,7 +210,7 @@ ___
 </h3>
 
 **Returns**
-1. `string` The registry ID (string) of the Stargate variant (e.g. `sgjourney:milky_way_movie`)
+1. `string`: The registry ID (string) of the Stargate variant (e.g. `sgjourney:milky_way_movie`)
 or `sgjourney:empty` for the default Stargate variant.
 
 ___
@@ -211,11 +221,12 @@ ___
 </h3>
 
 **Returns**
-1. `boolean` - `true` if the Stargate is currently connected, otherwise returns `false`.
+1. `boolean`: `true` if the Stargate is currently connected, otherwise returns `false`.
 
 {: .note }
-The Stargate is connected when it establishes a connection once the Point of Origin is successfully encoded.
-The function returns `true` even before kawoosh.
+The function returns `true` even before kawoosh.  
+The Stargate is connected when it establishes a connection.  
+Once the Point of Origin is successfully encoded or the first chevron is being locked for an incoming connection.
 
 ___
 
@@ -225,7 +236,7 @@ ___
 </h3>
 
 **Returns**
-1. `boolean` - `true` if the Stargate is currently connected and the connection is outgoing (this stargate dialed the connection), `false` otherwise (the Stargate is not connected or the connection is incoming).
+1. `boolean`: `true` if the Stargate is currently connected and the connection is outgoing (this stargate dialed the connection), `false` otherwise (the Stargate is not connected or the connection is incoming).
 
 ___
 
@@ -235,7 +246,7 @@ ___
 </h3>
 
 **Returns**
-1. `boolean` - `true` if the wormhole has formed (kawoosh finished), `false` otherwise.
+1. `boolean`: `true` if the wormhole has formed (kawoosh finished), `false` otherwise.
 
 ___
 
@@ -252,8 +263,377 @@ Basic and Crystal interfaces can send messages after the wormhole ha fully forme
 1. `message`: `string` The message to send.
 
 **Returns**
-1. `boolean` - `true` if the message was sent, `false` otherwise
+1. `boolean`: `true` if the message was sent, `false` otherwise
 
 ___
 
+<h3 class="h-function">
+    <code>engageSymbol(symbol)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Crystal Interface
+{: .label .label-green }
+Advanced Crystal Interface
+{: .label .label-purple }
 
+Directly encodes the symbol.
+This method can encode symbols on any Stargate (this method matches dialing using a DHD).
+
+**Parameters**
+1. `symbol`: `number` A symbol to encode. The symbol must be in a supported range by the Stargate type. <!-- TODO: add link to supported symbol range -->
+
+___
+
+<h3 class="h-function">
+    <code>getDialedAddress()</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Crystal Interface
+{: .label .label-green }
+Advanced Crystal Interface
+{: .label .label-purple }
+
+**Returns**
+1. `number[]`: The dialed address. The address this stargate has dialed. 
+If the currently active connection is incoming or there is no active connection, the address will be empty.
+
+___
+
+<h3 class="h-function">
+    <code>setChevronConfiguration(configuration)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Crystal Interface
+{: .label .label-green }
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Causes the chevrons to encode in the order specified by configuration.
+This configuration resets every time a Stargate is reset.
+<!-- TODO: explain when stargate resets -->
+
+**Parameters**
+1. `configuration`: `number[]` An array of length 8 representing the order of chevrons.   
+Possible chevron numbers are `1, 2, 3, 4, 5, 6, 7, 8`.
+The top chevron is always encoded as the last one, this can't be changed.
+<details markdown="block">
+<summary>Chevron numbers</summary>
+![Chevron numbers on the Stargate]({{ site.baseurl }}/assets/img/computercraft/milkyway_stargate_chevron_numbers.png)
+</details>
+
+
+**Usage**
+ - Sets the default chevron order
+```lua
+interface.setChevronConfiguration({1, 2, 3, 6, 7, 8, 4, 5})
+ ```
+ - Sets clockwise chevron order (e.g. when encoding 9-chevron address).
+```lua
+interface.setChevronConfiguration({1, 2, 3, 4, 5, 6, 7, 8})
+```
+
+___
+
+<h3 class="h-function">
+    <code>addToBlacklist(address)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Adds the address to the blacklist.
+When the [filter is set](#setFilterType) to the blacklist type,
+the Stargate will not be able to form a connection with the address on the blacklist.
+That being said, the Stargate can't dial the address or accept a connection from the blacklisted address.
+
+**Parameters**
+1. `address`: `number[]` The 7, 8 or 9-chevron address to be added to the blacklist.
+
+**Returns**
+1. `string` A message describing the result of the action.  
+`"Address blacklisted successfully"` or `"Address is already blacklisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L190)
+
+**Throws**  
+- When the specified address is invalid.
+
+
+___
+
+<h3 class="h-function">
+    <code>addToWhitelist(address)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Adds the address to the whitelist.
+When the [filter is set](#setFilterType) to the whitelist type,
+the Stargate will not be able to form a connection with the address that is not on the whitelist.
+That being said, the Stargate can't dial the address or accept a connection from an address that is not on the whitelist.
+
+**Parameters**
+1. `address`: `number[]` The 7, 8 or 9-chevron address to be added to the whitelist.
+
+**Returns**
+1. `string`: A message describing the result of the action.  
+`"Address whitelisted successfully"` or `"Address is already whitelisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L86)
+
+**Throws**
+- When the specified address is invalid.
+
+___
+
+<h3 class="h-function">
+    <code>clearBlacklist()</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Removes all addresses from the blacklist.
+
+**Returns**
+1. `string`: A message `"Blacklist cleared"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L255C26-L255C45).
+
+___
+
+<h3 class="h-function">
+    <code>clearWhitelist()</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Removes all addresses from the whitelist.
+
+**Returns**
+1. `string`: A message `"Whitelist cleared"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L151).
+
+___
+
+<h3 class="h-function">
+    <code>getConnectedAddress()</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Returns the address to which the Stargate is connected (the address on the other side of the connection).
+
+**Returns**
+1. `number[]`: The remote 7, 8 or 9-chevron address of the connection.
+
+{: .note }
+> The address is partially filled when a connection is forming, 
+> and the Stargate is locking the chevrons for an incoming connection.
+> 
+> To ensure the address has full length, the `isWormholeOpen()` must return true.
+> 
+> For an outgoing connection, the address is always either empty or full-length.
+
+___
+
+<h3 class="h-function">
+    <code>getFilterType()</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Returns a numeric identifier of the filter type.  
+> 0 None  
+> 1 Whitelist  
+> -1 Blacklist  
+
+**Returns**
+1. `number`: The filter type identifier.
+
+___
+
+<h3 class="h-function">
+    <code>getLocalAddress()</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Returns the 9-chevron address of this stargate.
+
+**Returns**
+1. `number[]`: The address
+
+___
+
+<h3 class="h-function">
+    <code>getNetwork()</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Returns the numeric identifier of the Stargate network of which the Stargate is a part.
+<!-- TODO a link to the stargate network explanation -->
+
+**Returns**
+1. `number`: The network ID.
+
+<details markdown="block">
+<summary>Default network IDs</summary>
+0 Classic Stargate
+1 Universe Stargate
+2 Milky Way Stargate and Tollan Stargate
+3 Pegasus Stargate
+</details>
+
+___
+
+<h3 class="h-function">
+    <code>isNetworkRestricted()</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Checks for the network restriction of the Stargate.
+
+**Returns**
+1. `boolean`: Whether the Stargate is network restricted.
+
+<!-- TODO: add see also links to other relevant methods -->
+
+___
+
+<h3 class="h-function">
+    <code>removeFromBlacklist(address)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Removes the specified address from the blacklist.
+
+**Parameters**
+1. `address`: `number[]` The address to remove from blacklist.
+
+**Returns**
+1. `string`: A message describing the result of the action.  
+`"Address removed from blacklist successfully"` or `"Address is not blacklisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L230)
+
+**Throws**
+- When the specified address is invalid.
+
+___
+
+<h3 class="h-function">
+    <code>removeFromWhitelist(address)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Removes the specified address from the whitelist.
+
+**Parameters**
+1. `address`: `number[]` The address to remove from whitelist.
+
+**Returns**
+1. `string`: A message describing the result of the action.  
+   `"Address removed from whitelist successfully"` or `"Address is not whitelisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L127)
+
+**Throws**
+- When the specified address is invalid.
+
+___
+
+<h3 class="h-function">
+    <code>restrictNetwork(enable)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Sets the Stargate to enable or disable declining connections from foreign networks.
+
+When the network restriction is enabled, 
+only Stargates with matching Stargate network will be able to establish a connection to this Stargate.
+
+{: .warning }
+9-chevron address connections bypasses the network restrictions.
+
+**Parameters**
+1. `enable`: `boolean` Whether the network restriction should be enabled.
+
+___
+
+<h3 class="h-function">
+    <code>setFilterType(type)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Sets the filter type for the Stargate.
+
+Only one filter type can be active, either whitelist, or blacklist (or none).
+
+**Parameters**
+1. `type`: `number` The identifier of the filter type.
+> 0 None  
+> 1 Whitelist  
+> -1 Blacklist
+
+**Returns**
+1. `number`: the filter type identifier that was set
+
+___
+
+<h3 class="h-function">
+    <code>setNetwork(network)</code>
+    <a class="source" target="_blank" href="">source</a>
+</h3>
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Sets the network identifier for the Stargate.
+
+**Parameters**
+1. `network`: `number` The identifier of the Stargate network.
+
+<script>
+/**
+ * Adds ids to the head elements and fixes the links to them
+ */
+function functionHeadingLink(h) {
+    const func = h.querySelector("code").innerText;
+    const funcName = func.replaceAll(/[()]+$/g, "");
+    const link = h.querySelector(".anchor-heading");
+    if(link?.attributes) {
+        link.attributes.getNamedItem("href").value = `#${funcName}`;
+        link.attributes.getNamedItem("aria-labelledby").value = funcName;
+    }
+    if(!h.id) {
+        h.id = funcName;
+    }
+}
+
+/**
+ * Moves labels that are right after the function heading into the heading element
+ */
+function headingLabels(h) {
+    const wrapper = document.createElement("span");
+    const funcName = h.querySelector("code");
+    funcName.remove();
+    wrapper.appendChild(funcName);
+    while (h.nextElementSibling && h.nextElementSibling.tagName === "P" && h.nextElementSibling.classList.contains("label")) {
+        const label = h.nextElementSibling;
+        label.remove();
+        wrapper.appendChild(label);
+    }
+    h.prepend(wrapper);
+}
+
+document.querySelectorAll(".h-function")?.forEach(h => {
+    headingLabels(h);
+    functionHeadingLink(h);
+});
+</script>
