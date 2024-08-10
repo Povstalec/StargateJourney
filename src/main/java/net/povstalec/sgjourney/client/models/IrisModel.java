@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.client.models;
 
+import java.util.Optional;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -19,6 +21,7 @@ public class IrisModel
 	
 	private static final float OFFSET = 1F / 16 / 2;
 	private static final int TOTAL_SIDES = 20;
+	private static final float DEGREES = (float) 360 / TOTAL_SIDES;
 	
 	public static final float IRIS_BLADE_WIDTH = 0.792F;
 	public static final float IRIS_BLADE_WIDTH_HALF = IRIS_BLADE_WIDTH / 2;
@@ -41,10 +44,12 @@ public class IrisModel
 	{
 		float closingProgress = (float) (ShieldingState.MAX_PROGRESS - progress) / ShieldingState.MAX_PROGRESS;
 		
-		if(!this.renderWhenOpen && progress == 0)
+		Optional<ResourceLocation> irisTexture = stargate.getIrisTexture();
+		
+		if(!this.renderWhenOpen && progress == 0 || irisTexture.isEmpty())
 			return;
 		
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.iris(IRIS_TEXTURE));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.iris(irisTexture.get()));
 		
 		stack.pushPose();
 		
@@ -98,7 +103,7 @@ public class IrisModel
 			
 			stack.popPose();
 			
-			stack.mulPose(Axis.ZP.rotationDegrees(18));
+			stack.mulPose(Axis.ZP.rotationDegrees(DEGREES));
 		}
 		
 		stack.popPose();

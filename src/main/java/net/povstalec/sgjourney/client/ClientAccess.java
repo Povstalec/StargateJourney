@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
@@ -106,7 +107,7 @@ public class ClientAccess
         }
     }
     
-    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress, String pointOfOrigin, String symbols, String variant)
+    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress, String pointOfOrigin, String symbols, String variant, ItemStack iris)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -120,6 +121,8 @@ public class ClientAccess
         	stargate.setPointOfOrigin(pointOfOrigin);
         	stargate.setSymbols(symbols);
         	stargate.setVariant(variant);
+        	if(!iris.isEmpty())
+        		stargate.setIris(iris);
         }
     }
     

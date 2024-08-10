@@ -23,13 +23,13 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
+import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 
 public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 {
 	public static final String ENERGY_TARGET = "EnergyTarget";
-	private static final long DEFAULT_ENERGY_TARGET = 200000;
 
 	public int signalStrength = 0;
 	
@@ -38,7 +38,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	private boolean rotate = false;
 	private boolean rotateClockwise = true;
 	
-	private long energyTarget = DEFAULT_ENERGY_TARGET;
+	private long energyTarget = CommonInterfaceConfig.default_energy_target.get();
 	
 	public EnergyBlockEntity energyBlockEntity = null;
 	protected InterfacePeripheralWrapper peripheralWrapper;

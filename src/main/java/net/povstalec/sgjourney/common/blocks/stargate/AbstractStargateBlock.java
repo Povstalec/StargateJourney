@@ -49,6 +49,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import net.povstalec.sgjourney.common.items.IrisItem;
 import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
@@ -259,10 +260,29 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return false;
 	}
 	
+	public boolean setIris(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	{
+		ItemStack stack = player.getItemInHand(hand);
+		if(stack.getItem() instanceof IrisItem)
+		{
+			AbstractStargateEntity stargate = getStargate(level, pos, state);
+			if(stargate != null && stargate.setIris(stack))
+			{
+				if(!player.isCreative())
+					player.getItemInHand(hand).shrink(1);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
 		if(setCover(state, level, pos, player, hand, result))
+			return InteractionResult.SUCCESS;
+		else if(setIris(state, level, pos, player, hand, result))
 			return InteractionResult.SUCCESS;
 		
 		return super.use(state, level, pos, player, hand, result);

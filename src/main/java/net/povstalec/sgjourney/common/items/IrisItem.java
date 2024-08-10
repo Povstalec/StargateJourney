@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.items;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -14,7 +16,7 @@ public abstract class IrisItem extends Item
 	public static final ResourceLocation IRON_IRIS = new ResourceLocation("textures/block/iron_block.png");
 	public static final ResourceLocation GOLD_IRIS = new ResourceLocation("textures/block/gold_block.png");
 	public static final ResourceLocation DIAMOND_IRIS = new ResourceLocation("textures/block/diamond_block.png");
-	public static final ResourceLocation NETHERITE_IRIS = new ResourceLocation("textures/block/diamond_block.png");
+	public static final ResourceLocation NETHERITE_IRIS = new ResourceLocation("textures/block/netherite_block.png");
 	// Stargate Journey Materials
 	public static final ResourceLocation NAQUADAH_ALLOY_IRIS = new ResourceLocation("textures/block/diamond_block.png");
 	public static final ResourceLocation TRINIUM_IRIS = new ResourceLocation("textures/block/diamond_block.png");
@@ -22,7 +24,8 @@ public abstract class IrisItem extends Item
 	public static final ResourceLocation BRONZE_IRIS = new ResourceLocation("textures/block/iron_block.png");
 	public static final ResourceLocation STEEL_IRIS = new ResourceLocation("textures/block/diamond_block.png");
 	
-	public static final String DURABILITY = "Durability";
+	public static final String DURABILITY = "durability";
+	public static final String TEXTURE = "texture";
 	
 	private ResourceLocation irisTexture;
 	
@@ -41,6 +44,26 @@ public abstract class IrisItem extends Item
 	public abstract int getMaxDurability();
 	
 	
+	
+	@Nullable
+	public static ResourceLocation getIrisTexture(ItemStack stack)
+	{
+		if(stack.getItem() instanceof IrisItem irisItem)
+		{
+			CompoundTag tag = stack.getOrCreateTag();
+			if(tag.contains(TEXTURE))
+			{
+				String texture = tag.getString(TEXTURE);
+				
+				if(ResourceLocation.isValidResourceLocation(texture))
+					return new ResourceLocation(texture);
+			}
+			else
+				return irisItem.getIrisTexture();
+		}
+		
+		return null;
+	}
 	
 	public static long getDurability(ItemStack stack)
 	{

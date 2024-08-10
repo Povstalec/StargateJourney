@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,7 +33,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.world.ForgeChunkManager;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
@@ -57,6 +62,7 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.items.IrisItem;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
@@ -110,6 +116,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public static final String SYMBOLS = "Symbols";
 	
 	public static final String COVER_BLOCKS = "CoverBlocks";
+	public static final String IRIS_INVENTORY = "IrisInventory";
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 
@@ -172,6 +179,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	private ArrayList<Address.Immutable> blacklist = new ArrayList<Address.Immutable>();
 	
 	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
+	protected final ItemStackHandler itemHandler = createIrisHandler();
 
 	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
 			float verticalCenterHeight, float horizontalCenterHeight)
@@ -241,12 +249,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		}
 		autoclose = tag.getInt(AUTOCLOSE);
 		
+		deserializeFilters(tag);
+		
 		irisProgress = tag.getShort(IRIS_PROGRESS);
 		oldIrisProgress = irisProgress;
 		
-		deserializeFilters(tag);
-		
 		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
+		itemHandler.deserializeNBT(tag.getCompound(IRIS_INVENTORY));
 		
     	this.setChanged();
 	}
@@ -283,11 +292,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		}
 		tag.putInt(AUTOCLOSE, autoclose);
 		
-		tag.putShort(IRIS_PROGRESS, irisProgress);
-		
 		serializeFilters(tag);
 		
+		tag.putShort(IRIS_PROGRESS, irisProgress);
+		
 		tag.put(COVER_BLOCKS, blockCover.serializeNBT());
+		tag.put(IRIS_INVENTORY, itemHandler.serializeNBT());
 		
 		super.saveAdditional(tag);
 		
@@ -924,7 +934,26 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	//TODO Finish Iris
 	public boolean hasIris()
 	{
-		return true;
+		return itemHandler.getStackInSlot(0).getItem() instanceof IrisItem;
+	}
+	
+	public boolean setIris(ItemStack stack)
+	{
+		if(itemHandler.getStackInSlot(0).isEmpty())
+		{
+			itemHandler.setStackInSlot(0, stack.copy());
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public Optional<ResourceLocation> getIrisTexture()
+	{
+		if(!hasIris())
+			return Optional.empty();
+		
+		return Optional.ofNullable(IrisItem.getIrisTexture(itemHandler.getStackInSlot(0)));
 	}
 	
 	public void setIrisProgress(short irisProgress)
@@ -1703,7 +1732,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.irisProgress, this.pointOfOrigin, this.symbols, this.variant));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.irisProgress, this.pointOfOrigin, this.symbols, this.variant, this.itemHandler.getStackInSlot(0)));
 	}
 	
 	public void updateClientState()
@@ -1745,6 +1774,41 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public void receiveStargateMessage(String message)
 	{
 		updateInterfaceBlocks(EVENT_MESSAGE_RECEIVED, message);
+	}
+	
+	protected ItemStackHandler createIrisHandler()
+	{
+		return new ItemStackHandler(1)
+			{
+				@Override
+				protected void onContentsChanged(int slot)
+				{
+					setChanged();
+				}
+				
+				@Override
+				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+				{
+					return stack.getItem() instanceof IrisItem;
+				}
+				
+				// Limits the number of items per slot
+				public int getSlotLimit(int slot)
+				{
+					return 1;
+				}
+				
+				@Nonnull
+				@Override
+				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+				{
+					if(!isItemValid(slot, stack))
+						return stack;
+					
+					return super.insertItem(slot, stack, simulate);
+					
+				}
+			};
 	}
 	
 	//============================================================================================

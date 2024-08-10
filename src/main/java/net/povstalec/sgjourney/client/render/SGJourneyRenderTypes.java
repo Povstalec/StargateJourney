@@ -90,7 +90,7 @@ public class SGJourneyRenderTypes extends RenderType
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTransparencyState(NO_TRANSPARENCY)
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(OVERLAY)
 				.createCompositeState(true));
