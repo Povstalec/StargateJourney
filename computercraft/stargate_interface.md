@@ -49,26 +49,27 @@ ___
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35">source</a>
 </h3>
 
-Converts the array specified by address to a form used elsewhere in the mod (-1-2-3-4-5-6-).
+Converts the array specified by address to a form used elsewhere in the mod (`-1-2-3-4-5-6-`).
 
 **Parameters**
-1. `address`: `number[]` The array of numbers representing an address
+1. `address`: `number[]` The array of numbers representing an address.
 
 **Returns**
-1. `string`: The address in text form used elsewhere in the mod
+1. `string` The address in text form used elsewhere in the mod. Returns `"-"` when the address is empty or has more than 8 symbols.
 
 **Usage**
 - Converts the abydos address to text `-26-6-14-31-11-29-`
 
 ```lua
-interface.addressToString({ 26, 6, 14, 31, 11, 29 })
+local stringAddress = interface.addressToString({ 26, 6, 14, 31, 11, 29 }) 
+print(stringAddress) -- prints -26-6-14-31-11-29-
 ```
 
 <details markdown="block">
 <summary>Lua equivalent</summary>
 ```lua
 function addressToString(address)
-    if #address == 0 then
+    if #address == 0 or #address > 8 then
         return "-"
     end
     return "-" .. table.concat(address, "-") .. "-"
@@ -83,8 +84,18 @@ ___
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L96">source</a>
 </h3>
 
+Returns the current amount of energy [FE (Forge Energy)] stored in the interface.
+
 **Returns**
-1. `number`: The energy stored [FE] within the interface.
+1. `number` The energy [FE] stored within the interface.
+
+**Usage**
+- Acquire the current amount of energy in the interface.
+
+```lua
+local energy = interface.getEnergy()
+print("There is "..energy.." FE in the interface")
+```
 
 ___
 
@@ -93,8 +104,18 @@ ___
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L102">source</a>
 </h3>
 
+Returns the maximal amount of energy [FE] that can be stored in the interface.
+
 **Returns**
-1. `number`: The energy capacity [FE] of the interface.
+1. `number` The interface capacity.
+
+**Usage**
+- Acquire the energy capacity of the interface. 
+
+```lua
+local capacity = interface.getEnergyCapacity()
+print("The interface can store up to "..capacity.." FE")
+```
 
 ___
 
@@ -103,20 +124,45 @@ ___
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L108">source</a>
 </h3>
 
+Returns the current energy target that is set for the interface.
+
 **Returns**
-1. `number`: The current energy target.
+1. `number` The current energy target [FE].
+
+**See also**
+- [Energy Target](/mechanics/stargate_network/interface/#energy-target)
+
+**Usage**
+- Acquire the current energy target.
+
+```lua
+local energyTarget = interface.getEnergyTarget()
+print("The current energy target: "..energyTarget.." FE")
+```
 
 ___
 
 <h3 class="h-function">
     <code>setEnergyTarget(energyTarget)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L26">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L17">source</a>
 </h3>
 
 Sets the energy target to the amount specified by `energyTarget` parameter.
 
 **Parameters**
 1. `energyTarget`: `number` The new energy target.
+
+**See also**
+- [Energy Target](/mechanics/stargate_network/interface/#energy-target)
+
+**Usage**
+- Set a new energy target
+
+```lua
+-- the amount of energy [FE] required to reach another galaxy by default (100 000 000 000)
+local energyTarget = 100000000000 
+interface.setEnergyTarget(energyTarget)
+```
 
 ___
 
@@ -598,42 +644,3 @@ Sets the network identifier for the Stargate.
 
 **Parameters**
 1. `network`: `number` The identifier of the Stargate network.
-
-<script>
-/**
- * Adds ids to the head elements and fixes the links to them
- */
-function functionHeadingLink(h) {
-    const func = h.querySelector("code").innerText;
-    const funcName = func.replaceAll(/[()]+$/g, "");
-    const link = h.querySelector(".anchor-heading");
-    if(link?.attributes) {
-        link.attributes.getNamedItem("href").value = `#${funcName}`;
-        link.attributes.getNamedItem("aria-labelledby").value = funcName;
-    }
-    if(!h.id) {
-        h.id = funcName;
-    }
-}
-
-/**
- * Moves labels that are right after the function heading into the heading element
- */
-function headingLabels(h) {
-    const wrapper = document.createElement("span");
-    const funcName = h.querySelector("code");
-    funcName.remove();
-    wrapper.appendChild(funcName);
-    while (h.nextElementSibling && h.nextElementSibling.tagName === "P" && h.nextElementSibling.classList.contains("label")) {
-        const label = h.nextElementSibling;
-        label.remove();
-        wrapper.appendChild(label);
-    }
-    h.prepend(wrapper);
-}
-
-document.querySelectorAll(".h-function")?.forEach(h => {
-    headingLabels(h);
-    functionHeadingLink(h);
-});
-</script>
