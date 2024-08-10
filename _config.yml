@@ -3,7 +3,7 @@ description: >-
   Documentation for the Minecraft mod Stargate Journey
 
 logo: "/assets/img/logo.png"
-favicon_ico: "/assets/img/favicon.ico"
+favicon_ico: "/favicon.ico"
 url: https://lukaskabc.github.io
 baseurl: /StargateJourney/
 

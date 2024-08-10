@@ -59,7 +59,6 @@ Converts the array specified by address to a form used elsewhere in the mod (`-1
 
 **Usage**
 - Converts the abydos address to text `-26-6-14-31-11-29-`
-
 ```lua
 local stringAddress = interface.addressToString({ 26, 6, 14, 31, 11, 29 }) 
 print(stringAddress) -- prints -26-6-14-31-11-29-
@@ -91,7 +90,6 @@ Returns the current amount of energy [FE (Forge Energy)] stored in the interface
 
 **Usage**
 - Acquire the current amount of energy in the interface.
-
 ```lua
 local energy = interface.getEnergy()
 print("There is "..energy.." FE in the interface")
@@ -110,8 +108,7 @@ Returns the maximal amount of energy [FE] that can be stored in the interface.
 1. `number` The interface capacity.
 
 **Usage**
-- Acquire the energy capacity of the interface. 
-
+- Acquire the energy capacity of the interface.
 ```lua
 local capacity = interface.getEnergyCapacity()
 print("The interface can store up to "..capacity.." FE")
@@ -134,7 +131,6 @@ Returns the current energy target that is set for the interface.
 
 **Usage**
 - Acquire the current energy target.
-
 ```lua
 local energyTarget = interface.getEnergyTarget()
 print("The current energy target: "..energyTarget.." FE")
@@ -157,7 +153,6 @@ Sets the energy target to the amount specified by `energyTarget` parameter.
 
 **Usage**
 - Set a new energy target
-
 ```lua
 -- the amount of energy [FE] required to reach another galaxy by default (100 000 000 000)
 local energyTarget = 100000000000 
@@ -167,155 +162,343 @@ interface.setEnergyTarget(energyTarget)
 ___
 
 ## Stargate functions
-Functions available for any interface connected to a Stargate.
+Functions available for an interface connected to a Stargate.
 
 <h3 class="h-function">
     <code>disconnectStargate()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L101">source</a>
 </h3>
 
-If the Stargate is connected, the command disconnects it. 
-If it isn't connected, the Stargate will be reset (encoded chevrons will be deactivated).
+Disconnects the Stargate if there is an active connection.
+The Stargate will be reset if it isn't connected (encoded chevrons will be deactivated).
+
+The Stargate won't disconnect/reset if the connection is currently forming (before the kawoosh finishes).
 
 **Returns**
 1. `boolean`: `true` if the connection was closed, `false` if there was no connection or the Stargate failed to disconnect (e.g. function was called during kawoosh).
+
+**Usage**
+- Disconnects the Stargate
+```lua
+local result = interface.disconnectStargate()
+if result then
+    print("Stargate disconnected")
+else
+    print("Stargate is not open / Can not disconnect")
+end
+```
 
 ___
 
 <h3 class="h-function">
     <code>getChevronsEngaged()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L89">source</a>
 </h3>
 
+Returns a number from `0` to `9` which represents a number of chevrons that are engaged on the Stargate.
+
 **Returns**
-1. `number`: The number of chevrons that have been engaged (`0 - 9`).
+1. `number` The number of chevrons that have been engaged (`0 - 9`).
+
+**Usage**
+- Prints the number of engaged chevrons
+```lua
+local engaged = interface.getChevronsEngaged()
+print("Stargate has "..engaged.."/9 chevrons engaged")
+```
 
 ___
 
 <h3 class="h-function">
     <code>getOpenTime()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L95">source</a>
 </h3>
 
+Returns a number of ticks for which Stargate has been active.
+
 **Returns**
-1. `number`: The number of Ticks the Stargate has been active for, returns 0 if it's inactive.
+1. `number` The number of ticks the Stargate has been active for returns is 0 if it's inactive.
+
+**See also**
+- [Minecraft tick](https://minecraft.fandom.com/wiki/Tick)
+
+**Usage**
+- Acquire a number of seconds for which the Stargate has been active
+```lua
+local openTimeInTicks = interface.getOpenTime()
+-- each second has 20 ticks
+local openTimeInSeconds = math.floor(openTimeInTicks / 20)
+print("Stargate has been open for "..openTimeInSeconds.." seconds")
+```
 
 ___
 
 <h3 class="h-function">
     <code>getRecentFeedback()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L28">source</a>
 </h3>
 
-**Returns**
-1. `number`: The most recent Stargate Feedback [int].
-2. `string`: **Only (Advanced) Crystal interface**: description of the feedback.
+Returns information about the Stargate state.  
+For Advanced Crystal interface also returns a second string value with a status description.
 
-{: .note }
-Because the wiki can quickly become outdated, you can check the feedback codes of the latest version [here](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/stargate/Stargate.java#L396).
+**Returns**
+1. `number` The most recent Stargate Feedback [int].
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback.
+
+**See also**
+- Because the wiki can quickly become outdated,   
+you can check the [feedback codes in the mod source code](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/stargate/Stargate.java#L396).
+
+**Usage**
+- Prints the recent feedback
+```lua
+local feedbackCode, feedbackMessage = interface.getRecentFeedback()
+print("Feedback code: "..feedbackCode)
+if feedbackMessage then
+    print(feedbackMessage)
+else
+    print("No description - advanced crystal interface required")
+end
+```
 
 ___
 
 <h3 class="h-function">
     <code>getStargateEnergy()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L83">source</a>
 </h3>
 
+Returns the amount of energy currently stored in the Stargate.
+
 **Returns**
-1. `number`: The energy [FE] stored within the Stargate.
+1. `number` The energy [FE] stored within the Stargate.
+
+**Usage**
+- Acquire the current amount of energy in the Stargate
+```lua
+local energy = interface.getEnergy()
+print("There is "..energy.." FE in the Stargate")
+```
 
 ___
 
 <h3 class="h-function">
     <code>getStargateGeneration()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L53">source</a>
 </h3>
 
-**Returns**
-1. `number`: The generation [int] of the Stargate.  
+Returns the Stargate generation identifier.
+
 > `0` - Classic Stargate  
 > `1` - Universe Stargate  
 > `2` - Milky Way Stargate, Tollan Stargate  
-> `3` - Pegasus  
+> `3` - Pegasus
+
+<!-- TODO: link to stargate generations -->
+
+**Returns**
+1. `number` The generation [int] of the Stargate.  
+
+**Usage**
+- Acquire the Stargate generation
+```lua
+local generation = interface.getStargateGeneration()
+print("The Stargate is "..generation.." generation")
+```
 
 ___
 
 <h3 class="h-function">
     <code>getStargateType()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L59">source</a>
 </h3>
 
+Returns the minecraft resource identifier for the Stargate.
+
+> `sgjourney:classic_stargate`  
+> `sgjourney:universe_stargate`  
+> `sgjourney:milky_way_stargate`  
+> `sgjourney:tollan_stargate`  
+> `sgjourney:pegasus_stargate`  
+
 **Returns**
-1. `string`: The registry ID (string) of the Stargate (e.g. `sgjourney:milky_way_stargate`).
+1. `string` The resource identifier of the Stargate.
+
+**See also**
+- [Stargate types]({{ site.baseurl }}/blocks/technological_blocks/#stargates)
+- [Minecraft resource identifier](https://minecraft.fandom.com/wiki/Resource_location)
+
+**Usage**
+- Acquire the Stargate type
+```lua
+local type = interface.getStargateType()
+print("The stargate identifier: "..type)
+```
 
 ___
 
 <h3 class="h-function">
     <code>getStargateVariant()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L74">source</a>
 </h3>
 
+Returns the minecraft resource identifier for the Stargate variant.
+
 **Returns**
-1. `string`: The registry ID (string) of the Stargate variant (e.g. `sgjourney:milky_way_movie`)
+1. `string` The Stargate variant resource identifier (e.g. `sgjourney:milky_way_movie`)  
 or `sgjourney:empty` for the default Stargate variant.
+
+**See also**
+- [Stargate variants]({{ site.baseurl }}/blocks/stargate_variants/)
+- [Minecraft resource identifier](https://minecraft.fandom.com/wiki/Resource_location)
+
+**Usage**
+- Acquire the Stargate variant
+```lua
+local variant = interface.getStargateVariant()
+print("The stargate variant: "..variant)
+```
 
 ___
 
 <h3 class="h-function">
     <code>isStargateConnected()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L65">source</a>
 </h3>
 
-**Returns**
-1. `boolean`: `true` if the Stargate is currently connected, otherwise returns `false`.
+Check whether the Stargate is connected to another gate.
 
 {: .note }
 The function returns `true` even before kawoosh.  
 The Stargate is connected when it establishes a connection.  
 Once the Point of Origin is successfully encoded or the first chevron is being locked for an incoming connection.
 
+**Returns**
+1. `boolean` Whether the Stargate has an active connection.
+
+**Usage**
+- Checks whether the Stargate is connected
+```lua
+local isConnected = interface.isStargateConnected()
+if isConnected then
+    print("Stargate is connected")
+else
+    print("Stargate is not connected")
+end
+```
+
 ___
 
 <h3 class="h-function">
     <code>isStargateDialingOut()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L71">source</a>
 </h3>
 
+Returns `true` when there is an active **outgoing** connection (this Stargate dialed the other gate).
+
 **Returns**
-1. `boolean`: `true` if the Stargate is currently connected and the connection is outgoing (this stargate dialed the connection), `false` otherwise (the Stargate is not connected or the connection is incoming).
+1. `boolean` Whether the Stargate is currently connected and the connection is outgoing. Returns `false` otherwise (the Stargate is not connected or the connection is incoming).
+
+**Usage**
+- Checks whether the active connection is outgoing
+```lua
+local isDialingOut = interface.isStargateDialingOut()
+if isDialingOut then
+    print("Stargate is dialing out")
+else
+    print("The connection is incoming, or the gate is not active")
+end
+```
 
 ___
 
 <h3 class="h-function" id="isWormholeOpen">
     <code>isWormholeOpen()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L77">source</a>
 </h3>
 
+Returns `true` if there is an active wormhole. 
+After the kawoosh finishes and it is safe to enter the wormhole,
+`false` otherwise.
+
 **Returns**
-1. `boolean`: `true` if the wormhole has formed (kawoosh finished), `false` otherwise.
+1. `boolean` Whether the wormhole has formed.
+
+**Usage**
+- Checks whether the wormhole has formed
+```lua
+local isOpen = interface.isWormholeOpen()
+if isOpen then
+    print("Wormhole is open")
+else
+    print("Wormhole is not open")
+end
+```
+
+- Checks whether the wormhole is active and it is safe to enter
+```lua
+-- assuming the config uses default values (the reverse wormhole kills)
+local isConnected = interface.isStargateConnected()
+local isOpen = interface.isWormholeOpen()
+local isOutgoing = interface.isStargateDialingOut()
+if not isConnected then
+    print("The Stargate is not connected")
+elseif not isOpen then
+    -- The Stargate is connected, but the wormhole has not yet formed.
+    print("The wormhole is forming")
+elseif isOutgoing then
+    print("The wormhole is safe to enter")
+else
+    print("The connection is incoming, do not enter the wormhole!")
+end
+```
 
 ___
 
 <h3 class="h-function">
     <code>sendStargateMessage(message)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L49">source</a>
 </h3>
-Sends a `message` through the current Stargate connection, which can be received by a computer on the other side (in `stargate_message_received_event`). 
+Sends the `message` through the current Stargate connection, 
+which can be received by a computer on the other side as event `stargate_message_received`. 
 <!-- TODO: add link to stargate_message_received_event -->
 
-Basic and Crystal interfaces can send messages after the wormhole ha fully formed (`isWormholeOpen` returns true)
+**Basic** and **Crystal interfaces** can only send messages **after the wormhole has fully formed**  
+(`isWormholeOpen` returns `true`).
+
+The Advanced Crystal interface can send message once the Stargate **is connected**  
+(`isStargateConnected` returns `true`).
+Any interface can receive the message.
 
 **Parameters**
 1. `message`: `string` The message to send.
 
 **Returns**
-1. `boolean`: `true` if the message was sent, `false` otherwise
+1. `boolean` Whether the message was sent successfully.
+
+**Usage**
+- Send a message
+```lua
+local message = "Hello from the other side"
+local wasSent = interface.sendStargateMessage(message)
+if wasSent then
+    print("Message sent successfully")
+else
+    print("The message could not be sent")
+end
+```
+- Receive a message from the stargate
+```lua
+local message = os.pullEvent("stargate_message_received")
+print("Received a message from the Stargate:")
+print(message)
+```
 
 ___
 
 <h3 class="h-function">
     <code>engageSymbol(symbol)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L95">source</a>
 </h3>
 Crystal Interface
 {: .label .label-green }
@@ -323,16 +506,38 @@ Advanced Crystal Interface
 {: .label .label-purple }
 
 Directly encodes the symbol.
-This method can encode symbols on any Stargate (this method matches dialing using a DHD).
+This method can encode symbols on any Stargate.
+
+Using this method matches dialing with DHD.  
+For example, the Milky Way Stargate does not need to spin the ring; it just encodes chevrons directly.
 
 **Parameters**
-1. `symbol`: `number` A symbol to encode. The symbol must be in a supported range by the Stargate type. <!-- TODO: add link to supported symbol range -->
+1. `symbol`: `number` A symbol to encode. The symbol must be in a supported range by the Stargate type. 
+<!-- TODO: add link to supported symbol range -->
+
+**Returns**
+1. `number` The recent Stargate Feedback [int].
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback.
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+
+**Usage**
+- Dials the address
+```lua
+local address = { 26, 6, 14, 31, 11, 29, 0 } -- Abydos
+-- don't forgot the zero (Point of Origin) at the end!
+for _, symbol in pairs(address) do
+    interface.engageSymbol(symbol)
+    sleep(1)
+end
+```
 
 ___
 
 <h3 class="h-function">
     <code>getDialedAddress()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L118">source</a>
 </h3>
 Crystal Interface
 {: .label .label-green }
