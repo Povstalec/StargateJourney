@@ -31,6 +31,10 @@ There are three available Stargate Interfaces -
     Unless there is a label with interface name at the function, it can be used by any interface.<br> 
     If there is a label, the function is only available for the specified interface.
 </p> 
+<p>
+    A similar applies to return values. 
+    Some return values might only be available for crystal or advanced crystal interface.
+</p>
 <span class="label label-green">Crystal Interface</span>
 <span class="label label-purple">Advanced Crystal Interface</span>
 </blockquote>
@@ -58,7 +62,7 @@ Converts the array specified by address to a form used elsewhere in the mod (`-1
 1. `string` The address in text form used elsewhere in the mod. Returns `"-"` when the address is empty or has more than 8 symbols.
 
 **Usage**
-- Converts the abydos address to text `-26-6-14-31-11-29-`
+- Convert the abydos address to text `-26-6-14-31-11-29-`
 ```lua
 local stringAddress = interface.addressToString({ 26, 6, 14, 31, 11, 29 }) 
 print(stringAddress) -- prints -26-6-14-31-11-29-
@@ -89,7 +93,7 @@ Returns the current amount of energy [FE (Forge Energy)] stored in the interface
 1. `number` The energy [FE] stored within the interface.
 
 **Usage**
-- Acquire the current amount of energy in the interface.
+- Print the current amount of energy in the interface.
 ```lua
 local energy = interface.getEnergy()
 print("There is "..energy.." FE in the interface")
@@ -108,7 +112,7 @@ Returns the maximal amount of energy [FE] that can be stored in the interface.
 1. `number` The interface capacity.
 
 **Usage**
-- Acquire the energy capacity of the interface.
+- Print the energy capacity of the interface.
 ```lua
 local capacity = interface.getEnergyCapacity()
 print("The interface can store up to "..capacity.." FE")
@@ -130,7 +134,7 @@ Returns the current energy target that is set for the interface.
 - [Energy Target](/mechanics/stargate_network/interface/#energy-target)
 
 **Usage**
-- Acquire the current energy target.
+- Print the current energy target.
 ```lua
 local energyTarget = interface.getEnergyTarget()
 print("The current energy target: "..energyTarget.." FE")
@@ -175,10 +179,10 @@ The Stargate will be reset if it isn't connected (encoded chevrons will be deact
 The Stargate won't disconnect/reset if the connection is currently forming (before the kawoosh finishes).
 
 **Returns**
-1. `boolean`: `true` if the connection was closed, `false` if there was no connection or the Stargate failed to disconnect (e.g. function was called during kawoosh).
+1. `boolean` `true` if the connection was closed, `false` if there was no connection or the Stargate failed to disconnect (e.g. function was called during kawoosh).
 
 **Usage**
-- Disconnects the Stargate
+- Disconnect the Stargate
 ```lua
 local result = interface.disconnectStargate()
 if result then
@@ -201,7 +205,7 @@ Returns a number from `0` to `9` which represents a number of chevrons that are 
 1. `number` The number of chevrons that have been engaged (`0 - 9`).
 
 **Usage**
-- Prints the number of engaged chevrons
+- Print the number of engaged chevrons
 ```lua
 local engaged = interface.getChevronsEngaged()
 print("Stargate has "..engaged.."/9 chevrons engaged")
@@ -223,7 +227,7 @@ Returns a number of ticks for which Stargate has been active.
 - [Minecraft tick](https://minecraft.fandom.com/wiki/Tick)
 
 **Usage**
-- Acquire a number of seconds for which the Stargate has been active
+- Print a number of seconds for which the Stargate has been active
 ```lua
 local openTimeInTicks = interface.getOpenTime()
 -- each second has 20 ticks
@@ -250,7 +254,7 @@ For Advanced Crystal interface also returns a second string value with a status 
 you can check the [feedback codes in the mod source code](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/stargate/Stargate.java#L396).
 
 **Usage**
-- Prints the recent feedback
+- Print the recent feedback
 ```lua
 local feedbackCode, feedbackMessage = interface.getRecentFeedback()
 print("Feedback code: "..feedbackCode)
@@ -274,7 +278,7 @@ Returns the amount of energy currently stored in the Stargate.
 1. `number` The energy [FE] stored within the Stargate.
 
 **Usage**
-- Acquire the current amount of energy in the Stargate
+- Print the current amount of energy in the Stargate
 ```lua
 local energy = interface.getEnergy()
 print("There is "..energy.." FE in the Stargate")
@@ -300,7 +304,7 @@ Returns the Stargate generation identifier.
 1. `number` The generation [int] of the Stargate.  
 
 **Usage**
-- Acquire the Stargate generation
+- Print the Stargate generation
 ```lua
 local generation = interface.getStargateGeneration()
 print("The Stargate is "..generation.." generation")
@@ -329,7 +333,7 @@ Returns the minecraft resource identifier for the Stargate.
 - [Minecraft resource identifier](https://minecraft.fandom.com/wiki/Resource_location)
 
 **Usage**
-- Acquire the Stargate type
+- Print the Stargate type
 ```lua
 local type = interface.getStargateType()
 print("The stargate identifier: "..type)
@@ -353,7 +357,7 @@ or `sgjourney:empty` for the default Stargate variant.
 - [Minecraft resource identifier](https://minecraft.fandom.com/wiki/Resource_location)
 
 **Usage**
-- Acquire the Stargate variant
+- Print the Stargate variant
 ```lua
 local variant = interface.getStargateVariant()
 print("The stargate variant: "..variant)
@@ -377,7 +381,7 @@ Once the Point of Origin is successfully encoded or the first chevron is being l
 1. `boolean` Whether the Stargate has an active connection.
 
 **Usage**
-- Checks whether the Stargate is connected
+- Check whether the Stargate is connected
 ```lua
 local isConnected = interface.isStargateConnected()
 if isConnected then
@@ -400,7 +404,7 @@ Returns `true` when there is an active **outgoing** connection (this Stargate di
 1. `boolean` Whether the Stargate is currently connected and the connection is outgoing. Returns `false` otherwise (the Stargate is not connected or the connection is incoming).
 
 **Usage**
-- Checks whether the active connection is outgoing
+- Check whether the active connection is outgoing
 ```lua
 local isDialingOut = interface.isStargateDialingOut()
 if isDialingOut then
@@ -425,7 +429,7 @@ After the kawoosh finishes and it is safe to enter the wormhole,
 1. `boolean` Whether the wormhole has formed.
 
 **Usage**
-- Checks whether the wormhole has formed
+- Check whether the wormhole has formed
 ```lua
 local isOpen = interface.isWormholeOpen()
 if isOpen then
@@ -435,7 +439,7 @@ else
 end
 ```
 
-- Checks whether the wormhole is active and it is safe to enter
+- Check whether the wormhole is active and it is safe to enter
 ```lua
 -- assuming the config uses default values (the reverse wormhole kills)
 local isConnected = interface.isStargateConnected()
@@ -523,7 +527,7 @@ For example, the Milky Way Stargate does not need to spin the ring; it just enco
 - [getRecentFeedback()](#getRecentFeedback)
 
 **Usage**
-- Dials the address
+- Dial the address
 ```lua
 local address = { 26, 6, 14, 31, 11, 29, 0 } -- Abydos
 -- don't forgot the zero (Point of Origin) at the end!
@@ -544,15 +548,28 @@ Crystal Interface
 Advanced Crystal Interface
 {: .label .label-purple }
 
-**Returns**
-1. `number[]`: The dialed address. The address this stargate has dialed. 
+Returns the address dialed by the gate.  
 If the currently active connection is incoming or there is no active connection, the address will be empty.
+
+**Returns**
+1. `number[]`: The dialed address.
+
+**See also**
+- [getConnectedAddress()](#getConnectedAddress)
+- [getLocalAddress()](#getLocalAddress)
+
+**Usage**
+- Print the dialed address
+```lua
+local address = interface.getDialedAddress()
+print("The dialed address: " .. interface.addressToString(address))
+```
 
 ___
 
 <h3 class="h-function">
     <code>setChevronConfiguration(configuration)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L141">source</a>
 </h3>
 Crystal Interface
 {: .label .label-green }
@@ -572,13 +589,19 @@ The top chevron is always encoded as the last one, this can't be changed.
 ![Chevron numbers on the Stargate]({{ site.baseurl }}/assets/img/computercraft/milkyway_stargate_chevron_numbers.png)
 </details>
 
+**Returns**
+1. `string` The message `"Chevron configuration set successfully"`.
+
+**Throws**
+- When specified configuration is invalid.
+The configuration must be an array of exact length 8 with numbers from 1 to 8 without duplicates.
 
 **Usage**
- - Sets the default chevron order
+ - Set the default chevron order
 ```lua
 interface.setChevronConfiguration({1, 2, 3, 6, 7, 8, 4, 5})
- ```
- - Sets clockwise chevron order (e.g. when encoding 9-chevron address).
+```
+ - Set clockwise chevron order (e.g. when encoding 9-chevron address).
 ```lua
 interface.setChevronConfiguration({1, 2, 3, 4, 5, 6, 7, 8})
 ```
@@ -587,7 +610,7 @@ ___
 
 <h3 class="h-function">
     <code>addToBlacklist(address)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L160">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -597,22 +620,42 @@ When the [filter is set](#setFilterType) to the blacklist type,
 the Stargate will not be able to form a connection with the address on the blacklist.
 That being said, the Stargate can't dial the address or accept a connection from the blacklisted address.
 
+{: .note }
+Blacklisting a 9-chevron address will block all 9-chevron address connections from/to that specific Stargate.
+However, a connection using a 7/8-chevron address
+could still be made from/to the Stargate with a blacklisted 9-chevron address.
+Similarly, blacklisting a 7/8-chevron address
+will block all 7/8-chevron connections from/to the Stargate.
+However, it will not block 9-chevron connections from/to such Stargates.
+
+<!-- TODO: move this to mechanics and provide a link -->
+
 **Parameters**
-1. `address`: `number[]` The 7, 8 or 9-chevron address to be added to the blacklist.
+1. `address`: `number[]` The 7, 8 or 9-chevron address to be added to the blacklist (without the trailing zero - Point of Origin).
 
 **Returns**
 1. `string` A message describing the result of the action.  
 `"Address blacklisted successfully"` or `"Address is already blacklisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L190)
 
 **Throws**  
-- When the specified address is invalid.
+- When the specified address is invalid (the only allowed lengths are 6, 7 and 8).
 
+**Usage**
+- Blacklist a 9-chevron address
+```lua
+local address = { 16, 25, 4, 21, 6, 19, 33, 22 }
+interface.clearBlacklist()
+interface.setFilterType(-1) -- set filter to blacklist mode
+interface.addToBlacklist(address)
+-- now the Stargate will not be able to dial the specified address 
+-- or accept a 9-chevron connection from the other gate.
+```
 
 ___
 
 <h3 class="h-function">
     <code>addToWhitelist(address)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L56">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -622,6 +665,11 @@ When the [filter is set](#setFilterType) to the whitelist type,
 the Stargate will not be able to form a connection with the address that is not on the whitelist.
 That being said, the Stargate can't dial the address or accept a connection from an address that is not on the whitelist.
 
+{: .note }
+Whitelisting a 9-chevron address will allow all 9-chevron address connections from/to that specific Stargate. 
+However, connections using a 7/8-chevron address would not be possible from/to the Stargate with a whitelisted 9-chevron address 
+unless those addresses are also specifically whitelisted.
+
 **Parameters**
 1. `address`: `number[]` The 7, 8 or 9-chevron address to be added to the whitelist.
 
@@ -630,13 +678,24 @@ That being said, the Stargate can't dial the address or accept a connection from
 `"Address whitelisted successfully"` or `"Address is already whitelisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L86)
 
 **Throws**
-- When the specified address is invalid.
+- When the specified address is invalid (the only allowed lengths are 6, 7 and 8).
+
+**Usage**
+- Whitelist the Abydos 7-chevron address
+```lua
+local address = { 26, 6, 14, 31, 11, 29 }
+interface.clearWhitelist()
+interface.setFilterType(1) -- set filter to whitelist mode
+interface.addToWhitelist(address)
+-- now the Stargate can only estabilish a connection with a Stargate 
+-- on Abydos using the 7-chevron address
+```
 
 ___
 
 <h3 class="h-function">
     <code>clearBlacklist()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L240">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -646,11 +705,18 @@ Removes all addresses from the blacklist.
 **Returns**
 1. `string`: A message `"Blacklist cleared"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L255C26-L255C45).
 
+**Usage**
+- Remove all addresses from the blacklist
+```lua
+interface.clearBlacklist()
+-- blacklist is now empty
+```
+
 ___
 
 <h3 class="h-function">
     <code>clearWhitelist()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L136">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -660,11 +726,17 @@ Removes all addresses from the whitelist.
 **Returns**
 1. `string`: A message `"Whitelist cleared"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L151).
 
+**Usage**
+- Remove all addresses from the blacklist
+```lua
+interface.clearWhitelist()
+-- whitelist is now empty
+```
 ___
 
 <h3 class="h-function">
     <code>getConnectedAddress()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L268">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -675,23 +747,34 @@ Returns the address to which the Stargate is connected (the address on the other
 1. `number[]`: The remote 7, 8 or 9-chevron address of the connection.
 
 {: .note }
-> The address is partially filled when a connection is forming, 
+> The address is partially filled when a connection is forming 
 > and the Stargate is locking the chevrons for an incoming connection.
 > 
 > To ensure the address has full length, the `isWormholeOpen()` must return true.
 > 
 > For an outgoing connection, the address is always either empty or full-length.
 
+**Usage**
+- Print the remote address
+```lua
+if interface.isWormholeOpen() then
+    local address = interface.getConnectedAddress()
+    print("The remote address is "..interface.addressToString(address))
+else
+    print("Wormhole not formed")
+end
+```
+
 ___
 
 <h3 class="h-function">
     <code>getFilterType()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L17">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
 
-Returns a numeric identifier of the filter type.  
+Returns the numeric identifier of the filter type.  
 > 0 None  
 > 1 Whitelist  
 > -1 Blacklist  
@@ -699,11 +782,24 @@ Returns a numeric identifier of the filter type.
 **Returns**
 1. `number`: The filter type identifier.
 
+**Usage**
+- Print the current filter type
+```lua
+local type = interface.getFilterType()
+if type == 0 then
+    print("Filter is disabled")
+elif type == 1 then
+    print("Filter is in whitelist mode")
+elif type == -1 then
+    print("Filter is in blacklist mode")
+end 
+```
+
 ___
 
 <h3 class="h-function">
     <code>getLocalAddress()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L289">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -713,11 +809,18 @@ Returns the 9-chevron address of this stargate.
 **Returns**
 1. `number[]`: The address
 
+**Usage**
+- Print the local address
+```lua
+local localAddress = interface.getLocalAddress()
+print(interface.addressToString(localAddress))
+```
+
 ___
 
 <h3 class="h-function">
     <code>getNetwork()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L310">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -726,21 +829,27 @@ Returns the numeric identifier of the Stargate network of which the Stargate is 
 <!-- TODO a link to the stargate network explanation -->
 
 **Returns**
-1. `number`: The network ID.
+1. `number`: The network ID
 
 <details markdown="block">
 <summary>Default network IDs</summary>
-0 Classic Stargate
-1 Universe Stargate
-2 Milky Way Stargate and Tollan Stargate
-3 Pegasus Stargate
+0 Classic Stargate  
+1 Universe Stargate  
+2 Milky Way Stargate and Tollan Stargate  
+3 Pegasus Stargate  
 </details>
 
+**Usage**
+- Print the network ID
+```lua
+local network = interface.getNetwork()
+print("The network ID is: "..network)
+```
 ___
 
 <h3 class="h-function">
     <code>isNetworkRestricted()</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L366">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -752,11 +861,22 @@ Checks for the network restriction of the Stargate.
 
 <!-- TODO: add see also links to other relevant methods -->
 
+**Usage**
+- Print whether the Stargate is network restricted
+```lua
+local isRestricted = interface.isNetworkRestricted()
+if isRestricted then
+    print("Network restriction is active")
+else
+    print("Network restriction is not active")
+end
+```
+
 ___
 
 <h3 class="h-function">
     <code>removeFromBlacklist(address)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L200">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -773,11 +893,21 @@ Removes the specified address from the blacklist.
 **Throws**
 - When the specified address is invalid.
 
+**See also**
+- [addToBlacklist(address)](#addToBlacklist)
+
+**Usage**
+- Remove the address from the blacklist
+```lua
+local address = { 16, 25, 4, 21, 6, 19, 33, 22 }
+interface.removeFromBlacklist(address)
+```
+
 ___
 
 <h3 class="h-function">
     <code>removeFromWhitelist(address)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L96">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -794,11 +924,21 @@ Removes the specified address from the whitelist.
 **Throws**
 - When the specified address is invalid.
 
+**See also**
+- [addToWhitelist(address)](#addToWhitelist)
+
+**Usage**
+- Remove the address from the whitelist
+```lua
+local address = { 26, 6, 14, 31, 11, 29 }
+interface.removeFromWhitelist(address)
+```
+
 ___
 
 <h3 class="h-function">
     <code>restrictNetwork(enable)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L348">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -807,12 +947,22 @@ Sets the Stargate to enable or disable declining connections from foreign networ
 
 When the network restriction is enabled, 
 only Stargates with matching Stargate network will be able to establish a connection to this Stargate.
+Outgoing connections are not affected.
 
 {: .warning }
 9-chevron address connections bypasses the network restrictions.
 
 **Parameters**
 1. `enable`: `boolean` Whether the network restriction should be enabled.
+
+**See also**
+- [getNetwork()](#getNetwork)
+
+**Usage**
+- Enable network restriction
+```lua
+interface.restrictNetwork(true)
+```
 
 ___
 
@@ -825,7 +975,7 @@ Advanced Crystal Interface
 
 Sets the filter type for the Stargate.
 
-Only one filter type can be active, either whitelist, or blacklist (or none).
+Only one filter type can be active, either whitelist, or blacklist (or none to disable the filter).
 
 **Parameters**
 1. `type`: `number` The identifier of the filter type.
@@ -836,11 +986,22 @@ Only one filter type can be active, either whitelist, or blacklist (or none).
 **Returns**
 1. `number`: the filter type identifier that was set
 
+**Usage**
+- Set the filter type to blacklist
+```lua
+local FilterType = { 
+    None = 0,
+    Whitelist = 1,
+    Blacklist = -1
+}
+interface.setFilterType(FilterType.Blacklist)
+```
+
 ___
 
 <h3 class="h-function">
     <code>setNetwork(network)</code>
-    <a class="source" target="_blank" href="">source</a>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L330">source</a>
 </h3>
 Advanced Crystal Interface
 {: .label .label-purple }
@@ -848,4 +1009,11 @@ Advanced Crystal Interface
 Sets the network identifier for the Stargate.
 
 **Parameters**
-1. `network`: `number` The identifier of the Stargate network.
+1. `network`: `number` The identifier of the Stargate network (any number).
+
+**Usage**
+- Set the network of the Stargate
+```lua
+local network = 415252 -- could be any number
+interface.setNetwork(network) 
+```
