@@ -39,6 +39,32 @@ There are three available Stargate Interfaces -
 <span class="label label-purple">Advanced Crystal Interface</span>
 </blockquote>
 
+# Connecting the interface
+{: .no_toc }
+The interface needs to face the stargate (the blank black side must face **away from the gate**).
+
+The computer needs to be either placed right next to the interface, the side does not matter.
+Or you need to connect the interface using a cable modem. 
+Note that the cable modems on both sides need to be activated by right-clicking, lighting them red.
+
+![Connecting the interface to the computer]({{ site.baseurl }}/assets/img/computercraft/connecting_interface_to_computer.png)
+
+In the program, interface can be acquired using the find function.
+```lua
+local interface = peripheral.find("basic_interface")
+if interface == nil then
+    printError("The interface is not connected")
+    return
+end
+```
+You can also instruct the program to use any available interface type,
+but keep in mind that not all features are available for all interface types.
+```lua
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+```
 
 # Functions
 {: .no_toc }
@@ -132,6 +158,7 @@ Returns the current energy target that is set for the interface.
 
 **See also**
 - [Energy Target](/mechanics/stargate_network/interface/#energy-target)
+- [setEnergyTarget(energyTarget)](#setEnergyTarget)
 
 **Usage**
 - Print the current energy target.
@@ -154,6 +181,7 @@ Sets the energy target to the amount specified by `energyTarget` parameter.
 
 **See also**
 - [Energy Target](/mechanics/stargate_network/interface/#energy-target)
+- [getEnergyTarget()](#getEnergyTarget)
 
 **Usage**
 - Set a new energy target

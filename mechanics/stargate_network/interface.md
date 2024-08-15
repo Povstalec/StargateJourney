@@ -43,35 +43,51 @@ The default mode does **not** provide any redstone signal through a [redstone co
 
 ___
 
-### Ring segment
+### Segment
 ![Interface default mode]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/interface_mode_ring_segment.png)
 
-The interface in the ring segment mode provides rough information about a **Milky Way Stargate** ring rotation.
+The interface in the segment mode provides rough information about a Stargate rotation.
+For the Milky Way Stargate, it gives details about the inner ring rotation. 
+For the Pegasus and Universe Stargates, it provides information about the last encoded symbol.
+
 The Milky Way Stargate ring is divided into **three segments**, each with **13 symbols**.
 The interface provides a redstone signal based on the **segment** to which a symbol **under the top chevron** belongs.
+
+The Universe Stargate has only 36 symbols
+and is also divided into **three segments**, each with **12 symbols**.
+The interface provides a redstone signal based on the **segment** to which the last encoded symbol belongs.
 
 Signal strength: **5** for the first (green), **10** for the second (red), and **15** for the third (blue) ring segment.
 
 <details markdown="block">
-<summary>Ring segments</summary>
+<summary>Stargate segments</summary>
 ![Milky Way Stargate ring segments]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/milkyway_stargate_ring_segments.png)
+![Universe Stargate segments]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/universe_stargate_segments.png)
 </details>
 
 ___
 
-### Ring rotation
+### Rotation
 ![Interface default mode]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/interface_mode_ring_rotation.png)
 
-The interface in the ring rotation mode provides more precise information about a Milky Way Stargate ring rotation in the current segment.
-Each ring segment has 13 symbols.
-Based on the symbol under the top chevron, the interface provides a redstone signal with strength from **1** to **13**.
+The interface in the rotation mode provides more precise information about a rotation/symbol in the current segment.
+
+Each segment of the Milky Way Stargate ring has 13 symbols.
+Based on the symbol under the top chevron, the interface provides the redstone signal.
+
+Each segment of the Universe Stargate has 12 symbols,
+the signal strength is currently from **0** to **12** always skipping the strength **1** (0, 2, 3...12).
+<!-- TODO: fix based on the response from Wold -->
+<!-- TODO: describe pegasus once it works in game -->
+
+Signal strength: **1** for the first symbol in the segment, and **13** for the last one.
 
 <details markdown="block">
 <summary>Stargate ring rotation</summary>
 The numbers indicate redstone signal strength for a specific symbol.
 
 ![Milky Way Stargate ring segments]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/milkyway_stargate_ring_rotation.png)
-
+<!-- TODO: image for universe -->
 </details>
 
 ___
