@@ -116,10 +116,13 @@ ___
 Returns the current amount of energy [FE (Forge Energy)] stored in the interface.
 
 **Returns**
-1. `number` The energy [FE] stored within the interface.
+1. `number` The energy [FE] stored within the interface
+
+**See also**
+- [getStargateEnergy()](#getStargateEnergy)
 
 **Usage**
-- Print the current amount of energy in the interface.
+- Print the current amount of energy in the interface
 ```lua
 local energy = interface.getEnergy()
 print("There is "..energy.." FE in the interface")
@@ -135,10 +138,10 @@ ___
 Returns the maximal amount of energy [FE] that can be stored in the interface.
 
 **Returns**
-1. `number` The interface capacity.
+1. `number` The interface capacity
 
 **Usage**
-- Print the energy capacity of the interface.
+- Print the energy capacity of the interface
 ```lua
 local capacity = interface.getEnergyCapacity()
 print("The interface can store up to "..capacity.." FE")
@@ -154,14 +157,14 @@ ___
 Returns the current energy target that is set for the interface.
 
 **Returns**
-1. `number` The current energy target [FE].
+1. `number` The current energy target [FE]
 
 **See also**
 - [Energy Target](/mechanics/stargate_network/interface/#energy-target)
 - [setEnergyTarget(energyTarget)](#setEnergyTarget)
 
 **Usage**
-- Print the current energy target.
+- Print the current energy target
 ```lua
 local energyTarget = interface.getEnergyTarget()
 print("The current energy target: "..energyTarget.." FE")
@@ -177,7 +180,7 @@ ___
 Sets the energy target to the amount specified by `energyTarget` parameter.
 
 **Parameters**
-1. `energyTarget`: `number` The new energy target.
+1. `energyTarget`: `number` The new energy target
 
 **See also**
 - [Energy Target](/mechanics/stargate_network/interface/#energy-target)
@@ -193,8 +196,316 @@ interface.setEnergyTarget(energyTarget)
 
 ___
 
+## Milky Way Stargate functions
+Functions available for an interface connected to the **Milky Way Stargate**.
+
+___
+
+<h3 class="h-function">
+    <code>closeChevron()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L180">source</a>
+</h3>
+
+Closes the upper chevron if it is open, encoding the current symbol.  
+If the symbol is already encoded, returns `-2` (`symbol_in_address`).
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [openChevron()](#openChevron)
+- [encodeChevron()](#encodeChevron)
+- [isChevronOpen()](#isChevronOpen)
+
+**Usage**
+- Close chevron
+```lua
+local feedback = interface.closeChevron()
+print(feedback) 
+```
+
+___
+
+<h3 class="h-function">
+    <code>encodeChevron()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L159">source</a>
+</h3>
+
+Encodes the current symbol under the top chevron.
+Requires the chevron to be **open**, otherwise returns `-35` (`chevron_not_raised`).
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [openChevron()](#openChevron)
+- [closeChevron()](#closeChevron)
+- [isChevronOpen()](#isChevronOpen)
+
+**Usage**
+- Encode chevron
+```lua
+local feedback = interface.encodeChevron()
+print(feedback) 
+```
+
+___
+
+<h3 class="h-function">
+    <code>endRotation()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L117">source</a>
+</h3>
+
+Stops the inner ring rotation if it was started by a computer.  
+Does nothing if the ring rotates due to a redstone signal.
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [getRotation()](#getRotation)
+- [rotateAntiClockwise()](#rotateAntiClockwise)
+- [rotateClockwise()](#rotateClockwise)
+
+**Usage**
+- End the ring rotation
+```lua
+local feedback = interface.endRotation()
+print(feedback) 
+```
+
+___
+
+<h3 class="h-function">
+    <code>getCurrentSymbol()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L14">source</a>
+</h3>
+
+Returns the current symbol under the top chevron.
+
+**Returns**
+1. `number` The symbol under the top chevron
+
+**Usage**
+- Print the current symbol
+```lua
+local symbol = interface.getCurrentSymbol()
+print(symbol) 
+```
+
+___
+
+<h3 class="h-function">
+    <code>getRotation()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L46">source</a>
+</h3>
+
+Returns the current inner ring rotation from `0` up to `155` (inclusive).  
+> `0` when the Point of Origin is centered under the top chevron  
+> plus `4` for each symbol to the right centered under the top chevron  
+> `152` for the last symbol (`38`) centered under the top chevron.
+
+**Returns**
+1. `number` The current ring rotation from `0` to `155`
+
+**See also**
+- [endRotation()](#endRotation)
+- [rotateAntiClockwise()](#rotateAntiClockwise)
+- [rotateClockwise()](#rotateClockwise)
+
+**Usage**
+- Check current ring rotation
+```lua
+while true do
+    local rotation = interface.getRotation()
+    print(rotation) 
+    sleep(0)
+end
+```
+
+___
+
+<h3 class="h-function">
+    <code>isChevronOpen()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L201">source</a>
+</h3>
+
+Returns `true` when the top chevron is open, `false` otherwise.
+
+**Returns**
+1. `boolean` Whether the top chevron is open
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [encodeChevron()](#encodeChevron)
+- [openChevron()](#openChevron)
+- [closeChevron()](#closeChevron)
+
+**Usage**
+- Check whether the top chevron is open
+```lua
+local isOpen = interface.isChevronOpen()
+if isOpen then
+    print("The chevron is open")
+else
+    print("The chevron is closed")
+end 
+```
+
+___
+
+<h3 class="h-function">
+    <code>isCurrentSymbol(symbol)</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29">source</a>
+</h3>
+
+Returns `true` when the current symbol is **centered** under the top chevron, 
+and it is the desired symbol specified as parameter.
+Returns `false` otherwise.
+
+**Parameters**
+1. `symbol`: `number` The desired symbol
+
+**Returns**
+1. `boolean` Whether the current symbol is centered under the top chevron and matches the desired symbol.
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [rotateAntiClockwise()](#rotateAntiClockwise)
+- [rotateClockwise()](#rotateClockwise)
+
+**Usage**
+- Await the rotation completion
+```lua
+local symbol = 15
+interface.rotateClockwise(symbol)
+while not interface.isCurrentSymbol(symbol) do
+    sleep(0)
+end
+-- rotation complete
+print("The current symbol is "..symbol)
+```
+
+___
+
+<h3 class="h-function">
+    <code>openChevron()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L138">source</a>
+</h3>
+
+Opens the top chevron in preparation for encoding the current symbol.
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [closeChevron()](#closeChevron)
+- [encodeChevron()](#encodeChevron)
+- [isChevronOpen()](#isChevronOpen)
+
+**Usage**
+- Open the top chevron
+```lua
+local feedback interface.openChevron()
+print(feedback)
+```
+
+___
+
+<h3 class="h-function">
+    <code>rotateAntiClockwise(symbol)</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89">source</a>
+</h3>
+
+Rotates the inner ring anticlockwise, positioning the specified symbol centered under the top chevron.  
+The method does not block the execution for the whole rotation.  
+The rotation is stopped when the interface is destroyed.
+
+**Parameters**
+1. `symbol`: `number` The desired symbol (from `0` to `38` inclusive), or `-1` for infinite rotation.
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+
+**Throws**
+- When the chevron is open or the symbol is out of range (lower than `-1` or higher than `38`).
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [endRotation()](#endRotation)
+- [isChevronOpen()](#isChevronOpen)
+- [rotateClockwise()](#rotateClockwise)
+
+**Usage**
+- Rotate the ring anticlockwise to the symbol
+```lua
+local symbol = 15
+-- start the rotation
+interface.rotateAntiClockwise(symbol)
+-- await the completion
+while not interface.isCurrentSymbol(symbol) do
+    sleep(0)
+end
+-- rotation complete
+print("The current symbol is "..symbol)
+```
+
+___
+
+<h3 class="h-function">
+    <code>rotateClockwise(symbol)</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61">source</a>
+</h3>
+
+Rotates the inner ring clockwise, positioning the specified symbol centered under the top chevron.  
+The method does not block the execution for the whole rotation.  
+The rotation is stopped when the interface is destroyed.
+
+**Parameters**
+1. `symbol`: `number` The desired symbol (from `0` to `38` inclusive), or `-1` for infinite rotation
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+
+**Throws**
+- When the chevron is open or the symbol is out of range (lower than `-1` or higher than `38`).
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [endRotation()](#endRotation)
+- [isChevronOpen()](#isChevronOpen)
+- [rotateAntiClockwise()](#rotateAntiClockwise)
+
+**Usage**
+- Rotate the ring clockwise to the symbol
+```lua
+local symbol = 15
+-- start the rotation
+interface.rotateClockwise(symbol)
+-- await the completion
+while not interface.isCurrentSymbol(symbol) do
+    sleep(0)
+end
+-- rotation complete
+print("The current symbol is "..symbol)
+```
+
+___
+
 ## Stargate functions
 Functions available for an interface connected to a Stargate.
+
+___
 
 <h3 class="h-function">
     <code>disconnectStargate()</code>
@@ -249,7 +560,7 @@ ___
 Returns a number of ticks for which Stargate has been active.
 
 **Returns**
-1. `number` The number of ticks the Stargate has been active for returns is 0 if it's inactive.
+1. `number` The number of ticks the Stargate has been active for, returns `0` if it's inactive.
 
 **See also**
 - [Minecraft tick](https://minecraft.fandom.com/wiki/Tick)
@@ -274,8 +585,8 @@ Returns information about the Stargate state.
 For Advanced Crystal interface also returns a second string value with a status description.
 
 **Returns**
-1. `number` The most recent Stargate Feedback [int].
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback.
+1. `number` The most recent Stargate Feedback `[int]`
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
 
 **See also**
 - Because the wiki can quickly become outdated,   
@@ -303,7 +614,11 @@ ___
 Returns the amount of energy currently stored in the Stargate.
 
 **Returns**
-1. `number` The energy [FE] stored within the Stargate.
+1. `number` The energy [FE] stored within the Stargate
+
+**See also**
+- [getEnergy()](#getEnergy)
+- [setEnergyTarget()](#setEnergyTarget)
 
 **Usage**
 - Print the current amount of energy in the Stargate
@@ -329,7 +644,11 @@ Returns the Stargate generation identifier.
 <!-- TODO: link to stargate generations -->
 
 **Returns**
-1. `number` The generation [int] of the Stargate.  
+1. `number` The generation `[int]` of the Stargate
+
+**See also**
+- [getStargateType()](#getStargateType)
+- [getStargateVariant()](#getStargateVariant)
 
 **Usage**
 - Print the Stargate generation
@@ -354,11 +673,13 @@ Returns the minecraft resource identifier for the Stargate.
 > `sgjourney:pegasus_stargate`  
 
 **Returns**
-1. `string` The resource identifier of the Stargate.
+1. `string` The resource identifier of the Stargate
 
 **See also**
 - [Stargate types]({{ site.baseurl }}/blocks/technological_blocks/#stargates)
 - [Minecraft resource identifier](https://minecraft.fandom.com/wiki/Resource_location)
+- [getStargateGeneration()](#getStargateGeneration)
+- [getStargateVariant()](#getStargateVariant)
 
 **Usage**
 - Print the Stargate type
@@ -378,11 +699,13 @@ Returns the minecraft resource identifier for the Stargate variant.
 
 **Returns**
 1. `string` The Stargate variant resource identifier (e.g. `sgjourney:milky_way_movie`)  
-or `sgjourney:empty` for the default Stargate variant.
+or `sgjourney:empty` for the default Stargate variant
 
 **See also**
 - [Stargate variants]({{ site.baseurl }}/blocks/stargate_variants/)
 - [Minecraft resource identifier](https://minecraft.fandom.com/wiki/Resource_location)
+- [getStargateGeneration()](#getStargateGeneration)
+- [getStargateType()](#getStargateType)
 
 **Usage**
 - Print the Stargate variant
@@ -406,7 +729,11 @@ The Stargate is connected when it establishes a connection.
 Once the Point of Origin is successfully encoded or the first chevron is being locked for an incoming connection.
 
 **Returns**
-1. `boolean` Whether the Stargate has an active connection.
+1. `boolean` Whether the Stargate has an active connection
+
+**See also**
+- [isWormholeOpen()](#isWormholeOpen)
+- [isStargateDialingOut()](#isStargateDialingOut)
 
 **Usage**
 - Check whether the Stargate is connected
@@ -431,6 +758,10 @@ Returns `true` when there is an active **outgoing** connection (this Stargate di
 **Returns**
 1. `boolean` Whether the Stargate is currently connected and the connection is outgoing. Returns `false` otherwise (the Stargate is not connected or the connection is incoming).
 
+**See also**
+- [isWormholeOpen()](#isWormholeOpen)
+- [isStargateConnected()](#isStargateConnected)
+
 **Usage**
 - Check whether the active connection is outgoing
 ```lua
@@ -450,11 +781,15 @@ ___
 </h3>
 
 Returns `true` if there is an active wormhole. 
-After the kawoosh finishes and it is safe to enter the wormhole,
+After the kawoosh finishes, and it is safe to enter the wormhole,
 `false` otherwise.
 
 **Returns**
-1. `boolean` Whether the wormhole has formed.
+1. `boolean` Whether the wormhole has formed
+
+**See also**
+- [isStargateConnected()](#isStargateConnected)
+- [isStargateDialingOut()](#isStargateDialingOut)
 
 **Usage**
 - Check whether the wormhole has formed
@@ -498,15 +833,15 @@ which can be received by a computer on the other side as event `stargate_message
 **Basic** and **Crystal interfaces** can only send messages **after the wormhole has fully formed**  
 (`isWormholeOpen` returns `true`).
 
-The Advanced Crystal interface can send message once the Stargate **is connected**  
+The Advanced Crystal interface can send a message once the Stargate **is connected**  
 (`isStargateConnected` returns `true`).
 Any interface can receive the message.
 
 **Parameters**
-1. `message`: `string` The message to send.
+1. `message`: `string` The message to send
 
 **Returns**
-1. `boolean` Whether the message was sent successfully.
+1. `boolean` Whether the message was sent successfully
 
 **Usage**
 - Send a message
@@ -548,11 +883,13 @@ For example, the Milky Way Stargate does not need to spin the ring; it just enco
 <!-- TODO: add link to supported symbol range -->
 
 **Returns**
-1. `number` The recent Stargate Feedback [int].
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback.
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
+- [openChevron()](#openChevron)
+- [closeChevron()](#closeChevron)
 
 **Usage**
 - Dial the address
@@ -580,7 +917,7 @@ Returns the address dialed by the gate.
 If the currently active connection is incoming or there is no active connection, the address will be empty.
 
 **Returns**
-1. `number[]`: The dialed address.
+1. `number[]`: The dialed address
 
 **See also**
 - [getConnectedAddress()](#getConnectedAddress)
@@ -618,11 +955,14 @@ The top chevron is always encoded as the last one, this can't be changed.
 </details>
 
 **Returns**
-1. `string` The message `"Chevron configuration set successfully"`.
+1. `string` The message `"Chevron configuration set successfully"`
 
 **Throws**
 - When specified configuration is invalid.
 The configuration must be an array of exact length 8 with numbers from 1 to 8 without duplicates.
+
+**See also**
+- [disconnectStargate()](#disconnectStargate) Resets the Stargate
 
 **Usage**
  - Set the default chevron order
@@ -662,11 +1002,16 @@ However, it will not block 9-chevron connections from/to such Stargates.
 1. `address`: `number[]` The 7, 8 or 9-chevron address to be added to the blacklist (without the trailing zero - Point of Origin).
 
 **Returns**
-1. `string` A message describing the result of the action.  
+1. `string` A message describing the result of the action  
 `"Address blacklisted successfully"` or `"Address is already blacklisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L190)
 
 **Throws**  
 - When the specified address is invalid (the only allowed lengths are 6, 7 and 8).
+
+**See also**
+- [clearBlacklist()](#clearBlacklist)
+- [removeFromBlacklist(address)](#removeFromBlacklist)
+- [setFilterType(type)](#setFilterType)
 
 **Usage**
 - Blacklist a 9-chevron address
@@ -702,11 +1047,16 @@ unless those addresses are also specifically whitelisted.
 1. `address`: `number[]` The 7, 8 or 9-chevron address to be added to the whitelist.
 
 **Returns**
-1. `string`: A message describing the result of the action.  
+1. `string`: A message describing the result of the action  
 `"Address whitelisted successfully"` or `"Address is already whitelisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L86)
 
 **Throws**
 - When the specified address is invalid (the only allowed lengths are 6, 7 and 8).
+
+**See also**
+- [clearWhitelist()](#clearWhitelist)
+- [removeFromWhitelist(address)](#removeFromWhitelist)
+- [setFilterType(type)](#setFilterType)
 
 **Usage**
 - Whitelist the Abydos 7-chevron address
@@ -731,7 +1081,12 @@ Advanced Crystal Interface
 Removes all addresses from the blacklist.
 
 **Returns**
-1. `string`: A message `"Blacklist cleared"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L255C26-L255C45).
+1. `string`: A message `"Blacklist cleared"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L255C26-L255C45)
+
+**See also**
+- [addToBlacklist()](#addToBlacklist)
+- [removeFromBlacklist(address)](#removeFromBlacklist)
+- [setFilterType(type)](#setFilterType)
 
 **Usage**
 - Remove all addresses from the blacklist
@@ -754,8 +1109,13 @@ Removes all addresses from the whitelist.
 **Returns**
 1. `string`: A message `"Whitelist cleared"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L151).
 
+**See also**
+- [addToWhitelist()](#addToWhitelist)
+- [removeFromWhitelist(address)](#removeFromWhitelist)
+- [setFilterType(type)](#setFilterType)
+
 **Usage**
-- Remove all addresses from the blacklist
+- Remove all addresses from the whitelist
 ```lua
 interface.clearWhitelist()
 -- whitelist is now empty
@@ -772,7 +1132,7 @@ Advanced Crystal Interface
 Returns the address to which the Stargate is connected (the address on the other side of the connection).
 
 **Returns**
-1. `number[]`: The remote 7, 8 or 9-chevron address of the connection.
+1. `number[]`: The remote 7, 8 or 9-chevron address of the connection
 
 {: .note }
 > The address is partially filled when a connection is forming 
@@ -781,6 +1141,10 @@ Returns the address to which the Stargate is connected (the address on the other
 > To ensure the address has full length, the `isWormholeOpen()` must return true.
 > 
 > For an outgoing connection, the address is always either empty or full-length.
+
+**See also**
+- [getDialedAddress()](#getDialedAddress)
+- [getLocalAddress()](#getLocalAddress)
 
 **Usage**
 - Print the remote address
@@ -808,7 +1172,11 @@ Returns the numeric identifier of the filter type.
 > -1 Blacklist  
 
 **Returns**
-1. `number`: The filter type identifier.
+1. `number`: The filter type identifier
+
+**See also**
+- [addToBlacklist(address)](#addToBlacklist)
+- [addToWhitelist(address)](#addToWhitelist)
 
 **Usage**
 - Print the current filter type
@@ -836,6 +1204,10 @@ Returns the 9-chevron address of this stargate.
 
 **Returns**
 1. `number[]`: The address
+
+**See also**
+- [getConnectedAddress()](#getConnectedAddress)
+- [getDialedAddress()](#getDialedAddress)
 
 **Usage**
 - Print the local address
@@ -867,6 +1239,11 @@ Returns the numeric identifier of the Stargate network of which the Stargate is 
 3 Pegasus Stargate  
 </details>
 
+**See also**
+- [isNetworkRestricted()](#isNetworkRestricted)
+- [setNetwork(network)](#setNetwork)
+- [restrictNetwork(network)](#restrictNetwork)
+
 **Usage**
 - Print the network ID
 ```lua
@@ -885,9 +1262,14 @@ Advanced Crystal Interface
 Checks for the network restriction of the Stargate.
 
 **Returns**
-1. `boolean`: Whether the Stargate is network restricted.
+1. `boolean`: Whether the Stargate is network restricted
 
 <!-- TODO: add see also links to other relevant methods -->
+
+**See also**
+- [getNetwork()](#getNetwork)
+- [setNetwork(network)](#setNetwork)
+- [restrictNetwork(network)](#restrictNetwork)
 
 **Usage**
 - Print whether the Stargate is network restricted
@@ -912,10 +1294,10 @@ Advanced Crystal Interface
 Removes the specified address from the blacklist.
 
 **Parameters**
-1. `address`: `number[]` The address to remove from blacklist.
+1. `address`: `number[]` The address to remove from blacklist
 
 **Returns**
-1. `string`: A message describing the result of the action.  
+1. `string`: A message describing the result of the action  
 `"Address removed from blacklist successfully"` or `"Address is not blacklisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L230)
 
 **Throws**
@@ -943,10 +1325,10 @@ Advanced Crystal Interface
 Removes the specified address from the whitelist.
 
 **Parameters**
-1. `address`: `number[]` The address to remove from whitelist.
+1. `address`: `number[]` The address to remove from whitelist
 
 **Returns**
-1. `string`: A message describing the result of the action.  
+1. `string`: A message describing the result of the action  
    `"Address removed from whitelist successfully"` or `"Address is not whitelisted"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L127)
 
 **Throws**
@@ -984,6 +1366,8 @@ Outgoing connections are not affected.
 1. `enable`: `boolean` Whether the network restriction should be enabled.
 
 **See also**
+- [isNetworkRestricted()](#isNetworkRestricted)
+- [setNetwork(network)](#setNetwork)
 - [getNetwork()](#getNetwork)
 
 **Usage**
@@ -1006,13 +1390,19 @@ Sets the filter type for the Stargate.
 Only one filter type can be active, either whitelist, or blacklist (or none to disable the filter).
 
 **Parameters**
-1. `type`: `number` The identifier of the filter type.
+1. `type`: `number` The identifier of the filter type
 > 0 None  
 > 1 Whitelist  
 > -1 Blacklist
 
 **Returns**
 1. `number`: the filter type identifier that was set
+
+**See also**
+- [getFilterType()](#getFilterType)
+- [addToBlacklist(address)](#addToBlacklist)
+- [addToWhitelist(address)](#addToWhitelist)
+
 
 **Usage**
 - Set the filter type to blacklist
@@ -1037,7 +1427,12 @@ Advanced Crystal Interface
 Sets the network identifier for the Stargate.
 
 **Parameters**
-1. `network`: `number` The identifier of the Stargate network (any number).
+1. `network`: `number` The identifier of the Stargate network (any number)
+
+**See also**
+- [isNetworkRestricted()](#isNetworkRestricted)
+- [restrictNetwork(network)](#restrictNetwork)
+- [getNetwork()](#getNetwork)
 
 **Usage**
 - Set the network of the Stargate
