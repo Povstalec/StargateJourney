@@ -211,7 +211,7 @@ If the symbol is already encoded, returns `-2` (`symbol_in_address`).
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -238,7 +238,7 @@ Requires the chevron to be **open**, otherwise returns `-35` (`chevron_not_raise
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -265,7 +265,7 @@ Does nothing if the ring rotates due to a redstone signal.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -403,7 +403,7 @@ Opens the top chevron in preparation for encoding the current symbol.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -434,7 +434,7 @@ The rotation is stopped when the interface is destroyed.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 **Throws**
 - When the chevron is open or the symbol is out of range (lower than `-1` or higher than `38`).
@@ -475,7 +475,7 @@ The rotation is stopped when the interface is destroyed.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 **Throws**
 - When the chevron is open or the symbol is out of range (lower than `-1` or higher than `38`).
@@ -586,7 +586,7 @@ For Advanced Crystal interface also returns a second string value with a status 
 
 **Returns**
 1. `number` The most recent Stargate Feedback `[int]`
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 **See also**
 - Because the wiki can quickly become outdated,   
@@ -827,8 +827,7 @@ ___
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L49">source</a>
 </h3>
 Sends the `message` through the current Stargate connection, 
-which can be received by a computer on the other side as event `stargate_message_received`. 
-<!-- TODO: add link to stargate_message_received_event -->
+which can be received by a computer on the other side as event `stargate_message_received`.
 
 **Basic** and **Crystal interfaces** can only send messages **after the wormhole has fully formed**  
 (`isWormholeOpen` returns `true`).
@@ -842,6 +841,9 @@ Any interface can receive the message.
 
 **Returns**
 1. `boolean` Whether the message was sent successfully
+
+**See also**
+- [`stargate_message_received` event]({{ site.baseurl }}/computercraft/events/#stargate_message_received)
 
 **Usage**
 - Send a message
@@ -884,7 +886,7 @@ For example, the Milky Way Stargate does not need to spin the ring; it just enco
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-purple">Advanced Crystal Interface</span>A description of the feedback
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
