@@ -7,6 +7,8 @@ parent: Computercraft
 
 {% include computercraft_doc.html %}
 
+# Events
+
 <details markdown="block">
 <summary>How to listen to events</summary>
 You can listen to any event by calling a function `os.pullEvent()`,
@@ -59,7 +61,7 @@ end
 ```
 </details>
 
-# Stargate interface
+## Stargate interface
 You will receive these events whenever an interface is connected to the Stargate and the computer.
 
 <h3 class="h-function">
