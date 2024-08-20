@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIEntit
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIIEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
 import net.povstalec.sgjourney.common.block_entities.ZPMHubEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
@@ -92,6 +93,9 @@ public class BlockEntityInit
             () -> BlockEntityType.Builder.of(CrystallizerEntity::new, BlockInit.CRYSTALLIZER.get()).build(null));
 	public static final RegistryObject<BlockEntityType<AdvancedCrystallizerEntity>> ADVANCED_CRYSTALLIZER = BLOCK_ENTITIES.register("advanced_crystallizer",
             () -> BlockEntityType.Builder.of(AdvancedCrystallizerEntity::new, BlockInit.ADVANCED_CRYSTALLIZER.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<TransceiverEntity>> TRANSCEIVER = BLOCK_ENTITIES.register("transciever",
+            () -> BlockEntityType.Builder.of(TransceiverEntity::new, BlockInit.TRANSCEIVER.get()).build(null));
 	
 	public static void register(IEventBus eventBus)
 	{

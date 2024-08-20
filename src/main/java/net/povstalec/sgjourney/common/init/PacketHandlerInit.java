@@ -9,7 +9,8 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundDialerUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundDialerOpenScreenPacket;
+import net.povstalec.sgjourney.common.packets.ClientboundGDOOpenScreenPacket;
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
@@ -42,13 +43,20 @@ public final class PacketHandlerInit
 		//****************************************Client-bound****************************************
 		//============================================================================================
 		
-		// Alien Tech
-		INSTANCE.messageBuilder(ClientboundDialerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundDialerUpdatePacket::encode)
-		.decoder(ClientboundDialerUpdatePacket::new)
-		.consumerMainThread(ClientboundDialerUpdatePacket::handle)
+		// Screen opening
+		INSTANCE.messageBuilder(ClientboundDialerOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundDialerOpenScreenPacket::encode)
+		.decoder(ClientboundDialerOpenScreenPacket::new)
+		.consumerMainThread(ClientboundDialerOpenScreenPacket::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ClientboundGDOOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundGDOOpenScreenPacket::encode)
+		.decoder(ClientboundGDOOpenScreenPacket::new)
+		.consumerMainThread(ClientboundGDOOpenScreenPacket::handle)
+		.add();
+		
+		// Alien Tech
 		INSTANCE.messageBuilder(ClientboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundInterfaceUpdatePacket::encode)
 		.decoder(ClientboundInterfaceUpdatePacket::new)

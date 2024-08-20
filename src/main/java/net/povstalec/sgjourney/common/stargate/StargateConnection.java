@@ -451,6 +451,14 @@ public final class StargateConnection
 			this.dialingStargate.receiveStargateMessage(message);
 	}
 	
+	public void sendStargateTransmission(AbstractStargateEntity sendingStargate, int transmissionJumps, int frequency, String transmission)
+	{
+		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
+			this.dialedStargate.forwardTransmission(transmissionJumps, frequency, transmission);
+		else
+			this.dialingStargate.forwardTransmission(transmissionJumps, frequency, transmission);
+	}
+	
 	//============================================================================================
 	//************************************Getters and setters*************************************
 	//============================================================================================

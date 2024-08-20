@@ -7,16 +7,16 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundDialerUpdatePacket
+public class ClientboundDialerOpenScreenPacket
 {
     public final BlockPos pos;
 
-    public ClientboundDialerUpdatePacket(BlockPos pos)
+    public ClientboundDialerOpenScreenPacket(BlockPos pos)
     {
         this.pos = pos;
     }
 
-    public ClientboundDialerUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundDialerOpenScreenPacket(FriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos());
     }

@@ -182,7 +182,7 @@ public class ForgeEvents
 	}
 	
 	@SubscribeEvent
-	public static void onLivingHurt(LivingAttackEvent event)
+	public static void onLivingAttack(LivingAttackEvent event)
 	{
 		Entity entity = event.getEntity();
 		Entity attacker = event.getSource().getDirectEntity();
@@ -206,13 +206,15 @@ public class ForgeEvents
 		if(entity instanceof Player player)
 		{
 			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
-			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getEnergy(stack) > 0)
+			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getFluidAmount(stack) > 0)
 			{
-				int energyDepleted = (int) damage * 500;
+				int naquadahDepleted = (int) damage;
 
-				PersonalShieldItem.depleteEnergy(stack, energyDepleted);
+				PersonalShieldItem.drainNaquadah(stack, naquadahDepleted);
+				
 				if(attacker instanceof LivingEntity livingAttacker)
 					livingAttacker.knockback(0.5D, player.getX() - attacker.getX(), player.getZ() - attacker.getZ());
+				
 				return true;
 			}
 		}
@@ -225,14 +227,16 @@ public class ForgeEvents
 		if(event.getRayTraceResult() instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof Player player)
 		{
 			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
-			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getEnergy(stack) > 0)
+			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getFluidAmount(stack) > 0)
 			{
 				Projectile projectile = event.getProjectile();
 				
-				int energyDepleted = (int) projectile.getDeltaMovement().length() * 500;
+				int naquadahDepleted = (int) projectile.getDeltaMovement().length();
 				
-				PersonalShieldItem.depleteEnergy(stack, energyDepleted);
+				PersonalShieldItem.drainNaquadah(stack, naquadahDepleted);
+				
 				projectile.setDeltaMovement(projectile.getDeltaMovement().reverse().scale(0.2));
+				
 				event.setCanceled(true);
 			}
 		}
@@ -281,7 +285,8 @@ public class ForgeEvents
 				
 				if(blockCover.get().getBlockAt(part).isEmpty())
 				{
-					if(stargate.getStargate(level, event.getPos(), state) instanceof AbstractStargateEntity stargateEntity)
+					AbstractStargateEntity stargateEntity = stargate.getStargate(level, pos, state);
+					if(stargateEntity != null)
 						stargateEntity.spawnCoverParticles();
 					
 					event.getEntity().displayClientMessage(Component.translatable("block.sgjourney.stargate.break_cover_blocks"), true);

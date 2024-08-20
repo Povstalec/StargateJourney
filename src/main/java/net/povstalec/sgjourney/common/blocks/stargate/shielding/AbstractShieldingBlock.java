@@ -1,9 +1,12 @@
-package net.povstalec.sgjourney.common.blocks.stargate;
+package net.povstalec.sgjourney.common.blocks.stargate.shielding;
 
 import java.util.ArrayList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -22,12 +25,15 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
-public class ShieldingBlock extends Block implements SimpleWaterloggedBlock
+public abstract class AbstractShieldingBlock extends Block implements SimpleWaterloggedBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
@@ -37,7 +43,7 @@ public class ShieldingBlock extends Block implements SimpleWaterloggedBlock
 	
 	protected VoxelShapeProvider shapeProvider;
 
-	public ShieldingBlock(Properties properties, double width, double horizontalOffset)
+	public AbstractShieldingBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR)
@@ -112,12 +118,59 @@ public class ShieldingBlock extends Block implements SimpleWaterloggedBlock
 			
 			default -> VoxelShapeProvider.getShapeFromArray(shapeProvider.IRIS_FULL, direction, orientation);
 		};
-		
-		//if(orientation == Orientation.REGULAR)
-		//	return direction.getAxis() == Direction.Axis.X ? shapeProvider.Z_IRIS_FULL : shapeProvider.X_IRIS_FULL;
-		
-		//return shapeProvider.HORIZONTAL_IRIS_FULL;
 	}
+
+	@Override
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	{
+		BlockPos baseBlockPos = state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
+		
+		BlockState stargateState = level.getBlockState(baseBlockPos);
+		
+		if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
+		{
+			AbstractStargateEntity stargate = stargateBlock.getStargate(level, baseBlockPos, state);
+			if(stargate != null)
+			{
+				ItemStack irisStack = stargate.getIris();
+				
+				if(!level.isClientSide() && !player.isCreative() && !irisStack.equals(ItemStack.EMPTY))
+				{
+					ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, irisStack);
+					itementity.setDefaultPickUpDelay();
+					itementity.setUnlimitedLifetime();
+					level.addFreshEntity(itementity);
+				}
+			}
+		}
+		
+		AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), state.getValue(FACING), state.getValue(ORIENTATION));
+		
+		if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
+				stargate.unsetIris(stargateState, level, baseBlockPos);
+
+		super.playerWillDestroy(level, pos, state, player);
+	}
+	
+	@Override
+    public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+	{
+		if(oldState.getBlock() != newState.getBlock())
+		{
+			/*BlockPos baseBlockPos = oldState.getValue(PART).getBaseBlockPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+			
+			AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+			
+			BlockState stargateState = level.getBlockState(baseBlockPos);
+			
+			if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
+					stargate.unsetIris(stargateState, level, baseBlockPos);*/
+			
+	        super.onRemove(oldState, level, pos, newState, isMoving);
+		}
+    }
+	
+	public abstract ArrayList<ShieldingPart> getShieldingParts();
 	
 	public static void destroyShielding(Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation)
 	{
@@ -138,16 +191,16 @@ public class ShieldingBlock extends Block implements SimpleWaterloggedBlock
 			BlockPos ringPos = part.getShieldingPos(baseBlockPos, direction, orientation);
 			BlockState state = level.getBlockState(ringPos);
 			
-			if(state.getBlock() instanceof ShieldingBlock)
+			if(state.getBlock() instanceof AbstractShieldingBlock)
 			{
-				boolean waterlogged = state.getValue(ShieldingBlock.WATERLOGGED);
+				boolean waterlogged = state.getValue(AbstractShieldingBlock.WATERLOGGED);
 				
 				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
 			}
 		}
 	}
 	
-	public static void setIrisState(ShieldingBlock irisBlock, Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation, ShieldingState shieldingState)
+	public static void setIrisState(AbstractShieldingBlock irisBlock, Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation, ShieldingState shieldingState)
 	{
 		if(direction == null)
 		{
@@ -167,9 +220,9 @@ public class ShieldingBlock extends Block implements SimpleWaterloggedBlock
 			BlockState state = level.getBlockState(ringPos);
 			
 			// Remove Shielding Block
-			if(state.getBlock() instanceof ShieldingBlock && !part.canExist(shieldingState))
+			if(state.getBlock() instanceof AbstractShieldingBlock && !part.canExist(shieldingState))
 			{
-				boolean waterlogged = state.getValue(ShieldingBlock.WATERLOGGED);
+				boolean waterlogged = state.getValue(AbstractShieldingBlock.WATERLOGGED);
 				
 				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
 				
@@ -177,15 +230,15 @@ public class ShieldingBlock extends Block implements SimpleWaterloggedBlock
 			// Change or place new Shielding Block
 			else if(part.canExist(shieldingState))
 			{
-				if(state.getBlock() instanceof ShieldingBlock || state.is(Blocks.AIR) || state.is(Blocks.WATER))
+				if(state.getBlock() instanceof AbstractShieldingBlock || state.is(Blocks.AIR) || state.is(Blocks.WATER))
 				{
 					level.setBlock(part.getShieldingPos(baseBlockPos,  direction, orientation), 
 							irisBlock.defaultBlockState()
-							.setValue(ShieldingBlock.SHIELDING_STATE, shieldingState)
-							.setValue(ShieldingBlock.PART, part)
-							.setValue(ShieldingBlock.FACING, direction)
-							.setValue(ShieldingBlock.ORIENTATION, orientation)
-							.setValue(ShieldingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getShieldingPos(baseBlockPos, direction, orientation)).getType() == Fluids.WATER)), 3);
+							.setValue(AbstractShieldingBlock.SHIELDING_STATE, shieldingState)
+							.setValue(AbstractShieldingBlock.PART, part)
+							.setValue(AbstractShieldingBlock.FACING, direction)
+							.setValue(AbstractShieldingBlock.ORIENTATION, orientation)
+							.setValue(AbstractShieldingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getShieldingPos(baseBlockPos, direction, orientation)).getType() == Fluids.WATER)), 3);
 				}
 			}
 			

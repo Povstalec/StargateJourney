@@ -48,6 +48,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
+import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.items.IrisItem;
 import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
@@ -221,8 +222,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return RenderShape.MODEL;
 	}
 	
-	public abstract AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state);
-	
 	public abstract AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state);
 	
 	public boolean setCover(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
@@ -266,7 +265,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		if(stack.getItem() instanceof IrisItem)
 		{
 			AbstractStargateEntity stargate = getStargate(level, pos, state);
-			if(stargate != null && stargate.setIris(stack))
+			if(stargate != null && stargate.addIris(stack))
 			{
 				if(!player.isCreative())
 					player.getItemInHand(hand).shrink(1);

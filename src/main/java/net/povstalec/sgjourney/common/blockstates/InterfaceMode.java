@@ -9,7 +9,7 @@ public enum InterfaceMode implements StringRepresentable
 	RING_ROTATION("ring_rotation"),
 	CHEVRONS_ACTIVE("chevrons_active"),
 	WORMHOLE_ACTIVE("wormhole_active"),
-	IRIS("iris");
+	SHIELDING("shielding");
 	
 	private final String id;
 	

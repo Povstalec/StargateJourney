@@ -69,12 +69,16 @@
 	"block.sgjourney.zpm_hub": "ZPM Hub",
 	"block.sgjourney.zpm_port": "ZPM Port",
 	"block.sgjourney.zpm_plug": "ZPM Plug",
+
+	"block.sgjourney.transceiver": "Transceiver",
 	
 	"fluid_type.sgjourney.liquid_naquadah": "Liquid Naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Heavy Liquid Naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Raw Naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadah Alloy",
+	"item.sgjourney.naquadah_alloy_nugget": "Naquadah Nugget",
+	"item.sgjourney.refined_naquadah": "Refined Naquadah",
 	"item.sgjourney.pure_naquadah": "Pure Naquadah",
 	"item.sgjourney.naquadah": "Weapons Grade Naquadah",
 	"item.sgjourney.liquid_naquadah_bucket": "Liquid Naquadah Bucket",
@@ -123,6 +127,8 @@
 	"item.sgjourney.zero_point_module": "ZPM",
 	"item.sgjourney.personal_shield_emitter": "Personal Shield Emitter",
 	
+	"item.sgjourney.naquadah_fuel_rod": "Naquadah Fuel Rod",
+	
 	"item.sgjourney.syringe": "Syringe",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadah Helmet",
@@ -139,6 +145,20 @@
 	
 	"item.sgjourney.anubis_helmet": "Anubis Helmet",
 	"item.sgjourney.horus_helmet": "Horus Helmet",
+
+	"item.sgjourney.gdo": "GDO",
+
+	"item.sgjourney.stargate_shielding_ring": "Stargate Shielding Ring",
+
+	"item.sgjourney.copper_iris": "Copper Iris",
+	"item.sgjourney.iron_iris": "Iron Iris",
+	"item.sgjourney.golden_iris": "Golden Iris",
+	"item.sgjourney.diamond_iris": "Diamond Iris",
+	"item.sgjourney.netherite_iris": "Netherite Iris",
+	"item.sgjourney.naquadah_alloy_iris": "Naquadah Alloy Iris",
+	"item.sgjourney.trinium_iris": "Trinium Iris",
+	"item.sgjourney.bronze_iris": "Bronze Iris",
+	"item.sgjourney.steel_iris": "Steel Iris",
 	
 	"sounds.sgjourney.dial_start" : "Stargate starts dialing",
 	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",

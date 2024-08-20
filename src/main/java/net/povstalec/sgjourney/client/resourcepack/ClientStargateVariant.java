@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.resourcepack;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -9,12 +8,7 @@ import javax.annotation.Nullable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.common.misc.ColorUtil;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
-import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.stellarview.StellarView;
 
 public class ClientStargateVariant
@@ -53,9 +47,16 @@ public class ClientStargateVariant
 
 	public static final String SYMBOLS = "symbols";
 	
-	public static final String CHEVRON_SOUNDS = "chevron_sounds";
+	public static final String CHEVRON_ENGAGED_SOUNDS = "chevron_engaged_sounds";
+	public static final String CHEVRON_INCOMING_SOUNDS = "chevron_incoming_sounds";
+	
 	public static final String ROTATION_SOUNDS = "rotation_sounds";
 	public static final String WORMHOLE_SOUNDS = "wormhole_sounds";
+	// TODO Fail sound
+	
+	// TODO Add a way to decide if there is a vortex
+	// TODO Add a way to specify how much distortion there will be on each event horizon
+	// TODO Add a way to specify the model that will be used
 	
 	// Textures
 	private final ResourceLocation texture;
@@ -73,7 +74,10 @@ public class ClientStargateVariant
 	
 	// Sound stuff
 	@Nullable
-	private ResourcepackSounds.Chevron chevronSounds;
+	private ResourcepackSounds.Chevron chevronEngagedSounds;
+	@Nullable
+	private ResourcepackSounds.Chevron chevronIncomingSounds;
+	
 	@Nullable
 	private ResourcepackSounds.Rotation rotationSounds;
 	@Nullable
@@ -90,14 +94,17 @@ public class ClientStargateVariant
 			// Symbols
 			ResourcepackModel.SymbolsModel.CODEC.optionalFieldOf(SYMBOLS).forGetter(ClientStargateVariant::symbols),
 			// Sounds
-			ResourcepackSounds.Chevron.CODEC.optionalFieldOf(CHEVRON_SOUNDS).forGetter(ClientStargateVariant::chevronSounds),
+			ResourcepackSounds.Chevron.CODEC.optionalFieldOf(CHEVRON_ENGAGED_SOUNDS).forGetter(ClientStargateVariant::chevronEngagedSounds),
+			ResourcepackSounds.Chevron.CODEC.optionalFieldOf(CHEVRON_INCOMING_SOUNDS).forGetter(ClientStargateVariant::chevronIncomingSounds),
+			
 			ResourcepackSounds.Rotation.CODEC.optionalFieldOf(ROTATION_SOUNDS).forGetter(ClientStargateVariant::rotationSounds),
 			ResourcepackSounds.Wormhole.CODEC.optionalFieldOf(WORMHOLE_SOUNDS).forGetter(ClientStargateVariant::wormholeSounds)
 			).apply(instance, ClientStargateVariant::new));
 	
 	public ClientStargateVariant(ResourceLocation texture, Optional<ResourceLocation> encodedTexture, ResourceLocation engagedTexture,
 			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole,
-			Optional<ResourcepackModel.SymbolsModel> symbols, Optional<ResourcepackSounds.Chevron> chevronSounds,
+			Optional<ResourcepackModel.SymbolsModel> symbols,
+			Optional<ResourcepackSounds.Chevron> chevronEngagedSounds, Optional<ResourcepackSounds.Chevron> chevronIncomingSounds,
 			Optional<ResourcepackSounds.Rotation> rotationSounds, Optional<ResourcepackSounds.Wormhole> wormholeSounds)
 	{
 		this.texture = texture;
@@ -117,8 +124,8 @@ public class ClientStargateVariant
 		if(symbols.isPresent())
 			this.symbols = symbols.get();
 		
-		if(chevronSounds.isPresent())
-			this.chevronSounds = chevronSounds.get();
+		if(chevronEngagedSounds.isPresent())
+			this.chevronEngagedSounds = chevronEngagedSounds.get();
 		
 		if(rotationSounds.isPresent())
 			this.rotationSounds = rotationSounds.get();
@@ -157,9 +164,14 @@ public class ClientStargateVariant
 		return Optional.ofNullable(symbols);
 	}
 	
-	public Optional<ResourcepackSounds.Chevron> chevronSounds()
+	public Optional<ResourcepackSounds.Chevron> chevronEngagedSounds()
 	{
-		return Optional.ofNullable(chevronSounds);
+		return Optional.ofNullable(chevronEngagedSounds);
+	}
+	
+	public Optional<ResourcepackSounds.Chevron> chevronIncomingSounds()
+	{
+		return Optional.ofNullable(chevronIncomingSounds);
 	}
 	
 	public Optional<ResourcepackSounds.Rotation> rotationSounds()

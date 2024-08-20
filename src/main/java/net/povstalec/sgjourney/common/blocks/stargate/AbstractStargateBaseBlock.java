@@ -35,6 +35,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
@@ -178,6 +179,11 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 						.setValue(WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
 			}
 		}
+		
+		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		
+		if(stargate != null)
+			updateIris(level, pos, state, stargate.getShieldingState());
 	}
 	
 	public static void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation)
@@ -194,7 +200,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			return;
 		}
 		
-		ShieldingBlock.destroyShielding(level, pos, shieldingParts, direction, orientation);
+		AbstractShieldingBlock.destroyShielding(level, pos, shieldingParts, direction, orientation);
 		
 		for(StargatePart part : parts)
 		{
@@ -223,21 +229,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     			stargate.removeStargateFromNetwork();
     		}
     		
-    		/*for(StargatePart part : getParts())
-    		{
-    			if(!part.equals(StargatePart.BASE))
-    			{
-    				BlockPos ringPos = part.getRingPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
-        			BlockState state = level.getBlockState(ringPos);
-        			
-        			if(state.getBlock() instanceof AbstractStargateBlock)
-        			{
-        				boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
-        				
-        				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
-        			}
-    			}
-    		}*/
     		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
     		
             super.onRemove(oldState, level, pos, newState, isMoving);
@@ -250,8 +241,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			return;
 		
 		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTION_STATE, connectionState)
-				.setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive)
-				/*.setValue(AbstractStargateRingBlock.SHIELDING_STATE, shieldingState)*/, 2);
+				.setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
 		
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
@@ -277,12 +267,22 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		}
 	}
 	
+	public void unsetIris(BlockState state, Level level, BlockPos pos)
+	{
+		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		
+		if(stargate != null)
+			stargate.removeIris();
+		
+		updateStargate(level, pos, state, state.getValue(AbstractStargateBlock.CONNECTION_STATE), state.getValue(AbstractStargateBlock.CHEVRONS_ACTIVE), ShieldingState.OPEN);
+	}
+	
 	public void updateIris(Level level, BlockPos pos, BlockState state, ShieldingState shieldingState)
 	{
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
 		
-		ShieldingBlock.setIrisState(BlockInit.MILKY_WAY_IRIS.get(), level, pos, getShieldingParts(), direction, orientation, shieldingState);
+		AbstractShieldingBlock.setIrisState(BlockInit.MILKY_WAY_IRIS.get(), level, pos, getShieldingParts(), direction, orientation, shieldingState);
 	}
 	
     @Override
@@ -359,17 +359,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		stack.addTagElement("BlockEntityTag", compoundtag);
 		
 		return stack;
-	}
-	
-	@Override
-	public AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state)
-	{
-		BlockEntity blockentity = level.getBlockEntity(pos);
-		
-		if(blockentity instanceof AbstractStargateEntity stargate)
-			return stargate;
-		
-		return null;
 	}
 	
 	@Override

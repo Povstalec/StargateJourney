@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientboundDialerUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundDialerOpenScreenPacket;
 
 public class DialerItem extends Item
 {
@@ -24,7 +24,7 @@ public class DialerItem extends Item
 		if(level.isClientSide())
 			return super.use(level, player, usedHand);
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new ClientboundDialerUpdatePacket(player.blockPosition()));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new ClientboundDialerOpenScreenPacket(player.blockPosition()));
 		
         return super.use(level, player, usedHand);
     }

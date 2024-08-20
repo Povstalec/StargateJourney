@@ -43,6 +43,10 @@ public class StargateJourneyConfig
 		CommonIrisConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
 		
+		COMMON_BUILDER.push("Transmission Config");
+		CommonTransmissionConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
 		COMMON_BUILDER.push("Naquadah Generator Config");
 		CommonNaquadahGeneratorConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();

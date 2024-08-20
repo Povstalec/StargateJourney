@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,14 +29,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
@@ -47,13 +48,14 @@ import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.ShieldingBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
@@ -71,6 +73,7 @@ import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Dialing;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
+import net.povstalec.sgjourney.common.stargate.ITransmissionReceiver;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
@@ -79,7 +82,7 @@ import net.povstalec.sgjourney.common.stargate.StargateConnection.State;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.Wormhole;
 
-public abstract class AbstractStargateEntity extends EnergyBlockEntity
+public abstract class AbstractStargateEntity extends EnergyBlockEntity implements ITransmissionReceiver
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
 	public static final String ADD_TO_NETWORK = "AddToNetwork";
@@ -948,6 +951,27 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return false;
 	}
 	
+	@Nonnull
+	public ItemStack getIris()
+	{
+		return itemHandler.getStackInSlot(0).copy();
+	}
+	
+	/**
+	 * Removes iris from the Stargate
+	 * @return true if the Iris has been removed, false if there was no Iris to remove
+	 */
+	public boolean unsetIris()
+	{
+		if(!itemHandler.getStackInSlot(0).isEmpty())
+		{
+			itemHandler.setStackInSlot(0, ItemStack.EMPTY);
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public Optional<ResourceLocation> getIrisTexture()
 	{
 		if(!hasIris())
@@ -1035,6 +1059,34 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 
 		if(irisProgress == 0 && oldIrisProgress > irisProgress)
 			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.OPEN);
+	}
+	
+	public boolean addIris(ItemStack stack)
+	{
+		if(setIris(stack))
+		{
+			irisProgress = ShieldingState.MAX_PROGRESS;
+			oldIrisProgress = ShieldingState.MAX_PROGRESS;
+			
+			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.CLOSED);
+			
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public void removeIris()
+	{
+		if(unsetIris())
+		{
+			ShieldingState shieldingState = ShieldingState.OPEN;
+			
+			irisProgress = shieldingState.getProgress();
+			oldIrisProgress = shieldingState.getProgress();
+			
+			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), false, true, ShieldingState.OPEN);
+		}
 	}
 	
 	public short increaseIrisProgress()
@@ -1517,7 +1569,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 				BlockPos pos = centerPos.relative(direction, width).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), height);
 				BlockState state = level.getBlockState(pos);
 				
-				if((!state.getMaterial().isReplaceable() && !(state.getBlock() instanceof AbstractStargateBlock) && !(state.getBlock() instanceof ShieldingBlock)) || state.getMaterial() == Material.LAVA)
+				if((!state.getMaterial().isReplaceable() && !(state.getBlock() instanceof AbstractStargateBlock) && !(state.getBlock() instanceof AbstractShieldingBlock)) || state.getMaterial() == Material.LAVA)
 					obstructingBlocks++;
 			}
 		}
@@ -1774,6 +1826,40 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public void receiveStargateMessage(String message)
 	{
 		updateInterfaceBlocks(EVENT_MESSAGE_RECEIVED, message);
+	}
+	
+	public float transmissionRadius()
+	{
+		return CommonTransmissionConfig.max_stargate_transmission_distance.get();
+	}
+	
+	@Override
+	public void receiveTransmission(int transmissionJumps, int frequency, String transmission)
+	{
+		if(transmissionJumps < CommonTransmissionConfig.max_transmission_jumps.get())
+			StargateNetwork.get(level).sendStargateTransmission(this, connectionID, transmissionJumps + 1, frequency, transmission);
+	}
+	
+	public void forwardTransmission(int transmissionJumps, int frequency, String transmission)
+	{
+		int roundedRadius = (int) Math.ceil(transmissionRadius() / 16);
+		
+		for(int x = -roundedRadius; x <= roundedRadius; x++)
+		{
+			for(int z = -roundedRadius; z <= roundedRadius; z++)
+			{
+				ChunkAccess chunk = level.getChunk(getBlockPos().east(16 * x).south(16 * z));
+				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
+				
+				positions.stream().forEach(pos ->
+				{
+					BlockEntity blockEntity = level.getBlockEntity(pos);
+					
+					if(blockEntity instanceof ITransmissionReceiver receiver)
+						receiver.receiveTransmission(transmissionJumps, frequency, transmission);
+				});
+			}
+		}
 	}
 	
 	protected ItemStackHandler createIrisHandler()

@@ -1,3 +1,4 @@
+{
 	"block.sgjourney.naquadah_ore": "Naquadahová ruda",
 	"block.sgjourney.nether_naquadah_ore": "Netherová naquadahová ruda",
 	"block.sgjourney.deepslate_naquadah_ore": "Hlubinná Naquadahová ruda",
@@ -68,12 +69,16 @@
 	"block.sgjourney.zpm_hub": "ZPM Hub",
 	"block.sgjourney.zpm_port": "ZPM Port",
 	"block.sgjourney.zpm_plug": "ZPM zástrčka",
+
+	"block.sgjourney.transceiver": "Vysílač",
 	
 	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Vytěžený naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadahová slitina",
+	"item.sgjourney.naquadah_alloy_nugget": "Naquadahový nuget",
+	"item.sgjourney.refined_naquadah": "Rafinovaný naquadah",
 	"item.sgjourney.pure_naquadah": "Čistý naquadah",
 	"item.sgjourney.naquadah": "Naquadah vojenské úrovně",
 	"item.sgjourney.liquid_naquadah_bucket": "Kbelík tekutého naquadahu",
@@ -93,7 +98,7 @@
 	"item.sgjourney.energy_crystal": "Energetický krystal",
 	"item.sgjourney.transfer_crystal": "Přenosový krystal",
 	"item.sgjourney.communication_crystal": "Komunikační krystal",
-	"item.sgjourney.memory_crystal": "Pamťový krystal",
+	"item.sgjourney.memory_crystal": "Paměťový krystal",
 
 	"item.sgjourney.advanced_control_crystal": "Pokročilý ovládací krystal",
 	"item.sgjourney.advanced_materialization_crystal": "Pokročilý materializační krystal",
@@ -120,7 +125,9 @@
 	
 	"item.sgjourney.pda": "PDA",
 	"item.sgjourney.zero_point_module": "ZPM",
-	"item.sgjourney.personal_shield_emitter": "Generá osobního štítu",
+	"item.sgjourney.personal_shield_emitter": "Generátor osobního štítu",
+	
+	"item.sgjourney.naquadah_fuel_rod": "Naquadahová palivová tyč",
 	
 	"item.sgjourney.syringe": "Injekce",
 	
@@ -138,6 +145,20 @@
 	
 	"item.sgjourney.anubis_helmet": "Anubisova helma",
 	"item.sgjourney.horus_helmet": "Horova helma",
+
+	"item.sgjourney.gdo": "GDO",
+
+	"item.sgjourney.stargate_shielding_ring": "Ochranný kruh pro bránu",
+
+	"item.sgjourney.copper_iris": "Měděná iris",
+	"item.sgjourney.iron_iris": "Železná iris",
+	"item.sgjourney.golden_iris": "Zlatá iris",
+	"item.sgjourney.diamond_iris": "Diamantová iris",
+	"item.sgjourney.netherite_iris": "Netherititová iris",
+	"item.sgjourney.naquadah_alloy_iris": "Iris z naquadahové slitiny",
+	"item.sgjourney.trinium_iris": "Triniová iris",
+	"item.sgjourney.bronze_iris": "Bronzová iris",
+	"item.sgjourney.steel_iris": "Ocelová iris",
 	
 	"sounds.sgjourney.dial_start" : "vytáčení začalo",
 	"sounds.sgjourney.ring_spin_start" : "otáčení začalo",

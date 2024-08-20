@@ -123,7 +123,8 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 					if(!player.isCreative())
 						stack.shrink(1);
 				}
-				
+
+				stargate.setRandomPointOfOrigin(level.dimension());
 				stargate.addStargateToNetwork();
 			}
 			

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
+import net.povstalec.sgjourney.client.screens.GDOScreen;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
@@ -36,6 +38,11 @@ public class ClientAccess
     public static void updateDialer(BlockPos pos)
     {
     	minecraft.setScreen(new DialerScreen());
+    }
+    
+    public static void openGDOScreen(UUID playerId)
+    {
+    	minecraft.setScreen(new GDOScreen(playerId));
     }
 	
     public static void updateSymbol(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)
@@ -121,8 +128,11 @@ public class ClientAccess
         	stargate.setPointOfOrigin(pointOfOrigin);
         	stargate.setSymbols(symbols);
         	stargate.setVariant(variant);
+        	
         	if(!iris.isEmpty())
         		stargate.setIris(iris);
+        	else
+        		stargate.unsetIris();
         }
     }
     

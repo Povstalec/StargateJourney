@@ -5,6 +5,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class CommonTechConfig
 {
 	public static ForgeConfigSpec.BooleanValue disable_kara_kesh_requirements;
+	public static ForgeConfigSpec.IntValue personal_shield_capacity;
 	
 	public static ForgeConfigSpec.LongValue energy_crystal_capacity;
 	public static ForgeConfigSpec.LongValue advanced_energy_crystal_capacity;
@@ -19,6 +20,10 @@ public class CommonTechConfig
 		disable_kara_kesh_requirements = server
 				.comment("If true Kara Kesh won't require its user to have Naquadah in their bloodstream")
 				.define("server.disable_kara_kesh_requirements", true);
+		
+		personal_shield_capacity = server
+				.comment("The amount of Heavy Liquid Naquadah a Personal Shield can hold")
+				.defineInRange("server.personal_shield_capacity", 300, 1, 10000);
 		
 		
 		

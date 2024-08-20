@@ -3,14 +3,14 @@
 	"category": "misc",
 	"pattern":
 	[
-		"GIG",
+		"GNG",
 		"G G",
 		" G "
 	],
 	
 	"key": 
 	{
-		"I": { "item": "minecraft:iron_nugget" },
+		"N": { "tag": "sgjourney:naquadah_alloy_nugget" },
 		"G": { "item": "minecraft:glass_pane" }
 		
 	},

@@ -421,6 +421,12 @@ public final class StargateNetwork extends SavedData
 			return false;
 	}
 	
+	public final void sendStargateTransmission(AbstractStargateEntity sendingStargate, String uuid, int transmissionJumps, int frequency, String transmission)
+	{
+		if(hasConnection(uuid))
+			this.connections.get(uuid).sendStargateTransmission(sendingStargate, transmissionJumps, frequency, transmission);
+	}
+	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************
 	//============================================================================================

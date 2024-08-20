@@ -36,6 +36,7 @@ public class ResourcepackReloadListener
 		protected void apply(Map<ResourceLocation, JsonElement> jsonMap, ResourceManager manager, ProfilerFiller filler)
 		{
     		ClientStargateVariant.clear();
+			System.out.println("---------- Loading Stargate Variants ----------");
     		
 			for(Map.Entry<ResourceLocation, JsonElement> jsonEntry : jsonMap.entrySet())
 			{
@@ -51,10 +52,11 @@ public class ResourcepackReloadListener
 		{
 			try
 			{
-				JsonObject json = GsonHelper.convertToJsonObject(element, "stargate_variant");
+				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
 				ClientStargateVariant stargateVariant = ClientStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariant.addStargateVariant(location, stargateVariant);
+				System.out.println("-------------------- Loaded " + location);
 			}
 			catch(RuntimeException e)
 			{

@@ -230,7 +230,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			return getChevronOutput(blockEntity);
 		case WORMHOLE_ACTIVE:
 			return getConnectionOutput(blockEntity);
-		case IRIS:
+		case SHIELDING:
 			return getIrisOutput(blockEntity);
 		default:
 			return 0;
