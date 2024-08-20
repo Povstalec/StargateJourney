@@ -12,11 +12,12 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
-public class TollanStargateModel extends AbstractStargateModel<TollanStargateEntity>
+public class TollanStargateModel extends AbstractStargateModel<TollanStargateEntity, TollanStargateVariant>
 {
 	protected static final float TOLLAN_RADIUS = 3F;
 	protected static final float TOLLAN_RING_HEIGHT = 8F / 16;

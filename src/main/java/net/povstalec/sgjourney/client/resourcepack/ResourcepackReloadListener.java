@@ -16,6 +16,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
 import net.povstalec.stellarview.StellarView;
 
 public class ResourcepackReloadListener
@@ -24,7 +26,7 @@ public class ResourcepackReloadListener
 	
 	public static final String STARGATE_VARIANT = "stargate_variant";
 	
-	@Mod.EventBusSubscriber(modid = StellarView.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+	@Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ReloadListener extends SimpleJsonResourceReloadListener
 	{
 		public ReloadListener()
@@ -35,8 +37,8 @@ public class ResourcepackReloadListener
 		@Override
 		protected void apply(Map<ResourceLocation, JsonElement> jsonMap, ResourceManager manager, ProfilerFiller filler)
 		{
-    		ClientStargateVariant.clear();
-			System.out.println("---------- Loading Stargate Variants ----------");
+    		ClientStargateVariants.clear();
+			System.out.println("---------- Loading Stargate Variants ----------"); // TODO Remove this
     		
 			for(Map.Entry<ResourceLocation, JsonElement> jsonEntry : jsonMap.entrySet())
 			{
@@ -44,23 +46,23 @@ public class ResourcepackReloadListener
 				JsonElement element = jsonEntry.getValue();
 				
 				if(canShortenPath(location, STARGATE_VARIANT))
-					addStargateVariant(shortenPath(location, STARGATE_VARIANT), element);
+					addMilkyWayStargateVariant(shortenPath(location, STARGATE_VARIANT), element);
 			}
 		}
 		
-		private static void addStargateVariant(ResourceLocation location, JsonElement element)
+		private static void addMilkyWayStargateVariant(ResourceLocation location, JsonElement element)
 		{
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				ClientStargateVariant stargateVariant = ClientStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
-				ClientStargateVariant.addStargateVariant(location, stargateVariant);
-				System.out.println("-------------------- Loaded " + location);
+				ClientStargateVariants.addMilkyWayStargateVariant(location, stargateVariant);
+				System.out.println("-------------------- Loaded " + location); // TODO Remove this
 			}
 			catch(RuntimeException e)
 			{
-				StellarView.LOGGER.error("Could not load " + location.toString());
+				StargateJourney.LOGGER.error("Could not load " + location.toString());
 			}
 		}
 		

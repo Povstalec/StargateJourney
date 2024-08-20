@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
@@ -20,7 +21,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity>
+public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity, ClassicStargateVariant>
 {
 	protected static final int SPINNING_SIDES = 39;
 	private static final float ANGLE = 360F / SPINNING_SIDES;

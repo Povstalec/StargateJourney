@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
@@ -16,7 +17,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEntity>
+public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEntity, PegasusStargateVariant>
 {
 	private static final int RED = 0;
 	private static final int GREEN = 100;

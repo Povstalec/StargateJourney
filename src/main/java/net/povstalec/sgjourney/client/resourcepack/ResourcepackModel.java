@@ -117,6 +117,14 @@ public class ResourcepackModel
 		{
 			return eventHorizon;
 		}
+		
+		public WormholeTexture getWromholeTexture(boolean front)
+		{
+			if(eventHorizon.left().isPresent())
+				return front ? eventHorizon.left().get().front() : eventHorizon.left().get().back();
+			
+			return eventHorizon.right().get();
+		}
 	}
 	
 	public static class SymbolsModel
@@ -134,12 +142,16 @@ public class ResourcepackModel
 		
 		//Symbol stuff
 		private final ColorUtil.IntRGBA symbolColor;
-		private ColorUtil.IntRGBA encodedSymbolColor;
-		private ColorUtil.IntRGBA engagedSymbolColor;
+		@Nullable
+		private final ColorUtil.IntRGBA encodedSymbolColor;
+		@Nullable
+		private final ColorUtil.IntRGBA engagedSymbolColor;
 		
 		@Nullable
 		private Boolean symbolsGlow;
+		@Nullable
 		private Boolean encodedSymbolsGlow;
+		@Nullable
 		private Boolean engagedSymbolsGlow;
 		
 		@Nullable
@@ -153,9 +165,10 @@ public class ResourcepackModel
 				ColorUtil.IntRGBA.CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.of(symbols.encodedSymbolColor)),
 				ColorUtil.IntRGBA.CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.of(symbols.engagedSymbolColor)),
 				// Symbol glow
-				Codec.BOOL.optionalFieldOf(SYMBOLS_GLOW).forGetter(SymbolsModel::symbolsGlow),
-				Codec.BOOL.optionalFieldOf(ENCODED_SYMBOLS_GLOW).forGetter(SymbolsModel::encodedSymbolsGlow),
-				Codec.BOOL.optionalFieldOf(ENGAGED_SYMBOLS_GLOW).forGetter(SymbolsModel::engagedSymbolsGlow),
+				Codec.BOOL.optionalFieldOf(SYMBOLS_GLOW).forGetter(symbols -> Optional.of(symbols.symbolsGlow)),
+				Codec.BOOL.optionalFieldOf(ENCODED_SYMBOLS_GLOW).forGetter(symbols -> Optional.of(symbols.encodedSymbolsGlow)),
+				Codec.BOOL.optionalFieldOf(ENGAGED_SYMBOLS_GLOW).forGetter(symbols -> Optional.of(symbols.engagedSymbolsGlow)),
+				//TODO Split incoming and outgoing
 				// Permanent Symbols
 				ResourceKey.codec(PointOfOrigin.REGISTRY_KEY).optionalFieldOf(PERMANENT_POINT_OF_ORIGIN).forGetter(SymbolsModel::permanentPointOfOrigin),
 				ResourceKey.codec(Symbols.REGISTRY_KEY).optionalFieldOf(PERMANENT_SYMBOLS).forGetter(SymbolsModel::permanentSymbols)
@@ -183,6 +196,11 @@ public class ResourcepackModel
 				this.permanentSymbols = permanentSymbols.get();
 		}
 		
+		public SymbolsModel(ColorUtil.IntRGBA symbolColor)
+		{
+			this(symbolColor, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+		}
+		
 		public ColorUtil.IntRGBA symbolColor()
 		{
 			return symbolColor;
@@ -200,19 +218,19 @@ public class ResourcepackModel
 		
 		
 		
-		public Optional<Boolean> symbolsGlow()
+		public boolean symbolsGlow()
 		{
-			return Optional.ofNullable(symbolsGlow);
+			return symbolsGlow;
 		}
 
-		public Optional<Boolean> encodedSymbolsGlow()
+		public boolean encodedSymbolsGlow()
 		{
-			return Optional.ofNullable(encodedSymbolsGlow);
+			return encodedSymbolsGlow;
 		}
 
-		public Optional<Boolean> engagedSymbolsGlow()
+		public boolean engagedSymbolsGlow()
 		{
-			return Optional.ofNullable(engagedSymbolsGlow);
+			return engagedSymbolsGlow;
 		}
 		
 		

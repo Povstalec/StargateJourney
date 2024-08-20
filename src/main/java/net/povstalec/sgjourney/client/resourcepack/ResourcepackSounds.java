@@ -94,6 +94,15 @@ public class ResourcepackSounds
 				this.chevron8 = chevron8.isPresent() ? chevron8.get() : this.defaultSound;
 		}
 		
+		public Chevron(ResourceLocation defaultSound)
+		{
+			this(defaultSound, Optional.empty(),
+					Optional.empty(), Optional.empty(),
+					Optional.empty(), Optional.empty(),
+					Optional.empty(), Optional.empty(),
+					Optional.empty(), Optional.empty());
+		}
+		
 		public ResourceLocation getSound(short chevron)
 		{
 			return switch(chevron)
@@ -120,42 +129,32 @@ public class ResourcepackSounds
 		public static final String ROTATION_STOP_SOUND = "rotation_stop_sound";
 		
 		@Nullable
-		private ResourceLocation startupSound;
-		@Nullable
-		private ResourceLocation rotationBuildupSound;
+		private ResourceLocation rotationStartupSound;
 		@Nullable
 		private ResourceLocation rotationSound;
 		@Nullable
 		private ResourceLocation rotationStopSound;
 		
 		public static final Codec<ResourcepackSounds.Rotation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				ResourceLocation.CODEC.optionalFieldOf(ROTATION_STARTUP_SOUND).forGetter(ResourcepackSounds.Rotation::startupSound),
-				ResourceLocation.CODEC.optionalFieldOf(ROTATION_BUILDUP_SOUND).forGetter(ResourcepackSounds.Rotation::rotationBuildupSound),
+				ResourceLocation.CODEC.optionalFieldOf(ROTATION_STARTUP_SOUND).forGetter(ResourcepackSounds.Rotation::rotationStartupSound),
 				ResourceLocation.CODEC.optionalFieldOf(ROTATION_SOUND).forGetter(ResourcepackSounds.Rotation::rotationSound),
 				ResourceLocation.CODEC.optionalFieldOf(ROTATION_STOP_SOUND).forGetter(ResourcepackSounds.Rotation::rotationStopSound)
 				).apply(instance, ResourcepackSounds.Rotation::new));
 		
-		public Rotation(Optional<ResourceLocation> startupSound, Optional<ResourceLocation> rotationBuildupSound,
+		public Rotation(Optional<ResourceLocation> rotationStartupSound,
 				Optional<ResourceLocation> rotationSound, Optional<ResourceLocation> rotationStopSound)
 		{
-			if(startupSound.isPresent())
-				this.startupSound = startupSound.get();
-			if(rotationBuildupSound.isPresent())
-				this.rotationBuildupSound = rotationBuildupSound.get();
+			if(rotationStartupSound.isPresent())
+				this.rotationStartupSound = rotationStartupSound.get();
 			if(rotationSound.isPresent())
 				this.rotationSound = rotationSound.get();
 			if(rotationStopSound.isPresent())
 				this.rotationStopSound = rotationStopSound.get();
 		}
 		
-		public Optional<ResourceLocation> startupSound()
+		public Optional<ResourceLocation> rotationStartupSound()
 		{
-			return Optional.ofNullable(this.startupSound);
-		}
-		
-		public Optional<ResourceLocation> rotationBuildupSound()
-		{
-			return Optional.ofNullable(this.rotationBuildupSound);
+			return Optional.ofNullable(this.rotationStartupSound);
 		}
 		
 		public Optional<ResourceLocation> rotationSound()
@@ -206,44 +205,38 @@ public class ResourcepackSounds
 		public static final String CLOSE_SOUND = "close";
 		
 		public static final Codec<ResourcepackSounds.Wormhole> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).optionalFieldOf(OPEN_SOUND).forGetter(ResourcepackSounds.Wormhole::openSound),
-				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).optionalFieldOf(IDLE_SOUND).forGetter(ResourcepackSounds.Wormhole::idleSound),
-				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).optionalFieldOf(CLOSE_SOUND).forGetter(ResourcepackSounds.Wormhole::closeSound)
+				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).fieldOf(OPEN_SOUND).forGetter(ResourcepackSounds.Wormhole::openSound),
+				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).fieldOf(IDLE_SOUND).forGetter(ResourcepackSounds.Wormhole::idleSound),
+				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).fieldOf(CLOSE_SOUND).forGetter(ResourcepackSounds.Wormhole::closeSound)
 				// TODO probably add some unstable connection sounds in the future
 				).apply(instance, ResourcepackSounds.Wormhole::new));
 		
-		@Nullable
-		private Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> openSound;
-		@Nullable
-		private Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> idleSound;
-		@Nullable
-		private Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> closeSound;
+		private final Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> openSound;
+		private final Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> idleSound;
+		private final Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> closeSound;
 		
-		public Wormhole(Optional<Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation>> openSound,
-				Optional<Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation>> idleSound,
-				Optional<Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation>> closeSound)
+		public Wormhole(Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> openSound,
+				Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> idleSound,
+				Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> closeSound)
 		{
-			if(openSound.isPresent())
-				this.openSound = openSound.get();
-			if(idleSound.isPresent())
-				this.idleSound = idleSound.get();
-			if(closeSound.isPresent())
-				this.closeSound = closeSound.get();
+			this.openSound = openSound;
+			this.idleSound = idleSound;
+			this.closeSound = closeSound;
 		}
 		
-		public Optional<Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation>> openSound()
+		public Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> openSound()
 		{
-			return Optional.ofNullable(openSound);
+			return openSound;
 		}
 		
-		public Optional<Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation>> idleSound()
+		public Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> idleSound()
 		{
-			return Optional.ofNullable(idleSound);
+			return idleSound;
 		}
 		
-		public Optional<Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation>> closeSound()
+		public Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> closeSound()
 		{
-			return Optional.ofNullable(closeSound);
+			return closeSound;
 		}
 		
 		public Optional<ResourceLocation> getOpenSound(boolean incoming)

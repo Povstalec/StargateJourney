@@ -12,13 +12,14 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public abstract class GenericStargateModel<StargateEntity extends AbstractStargateEntity> extends AbstractStargateModel<StargateEntity>
+public abstract class GenericStargateModel<StargateEntity extends AbstractStargateEntity, Variant extends ClientStargateVariant> extends AbstractStargateModel<StargateEntity, Variant>
 {
 	// Ring
 	protected static final float STARGATE_RING_THICKNESS = 7F;

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
@@ -16,7 +17,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
-public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity>
+public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity, MilkyWayStargateVariant>
 {
 	protected final ResourceLocation alternateStargateTexture;
 	protected final ResourceLocation alternateEngagedTexture;

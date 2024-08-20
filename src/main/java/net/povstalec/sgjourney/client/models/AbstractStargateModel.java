@@ -13,14 +13,16 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity>
+public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity, Variant extends ClientStargateVariant>
 {
 	protected static final float DEFAULT_RADIUS = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
@@ -305,6 +307,14 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	//******************************************Symbols*******************************************
 	//============================================================================================
 	
+	/*protected boolean symbolsGlow(StargateEntity stargate, ClientStargateVariant stargateVariant, boolean isEngaged)
+	{
+		if(isEngaged)
+			return stargate.isConnected() ? stargateVariant.symbols().engagedSymbolsGlow() : stargateVariant.symbols().encodedSymbolsGlow();
+		else
+			return stargateVariant.symbols().symbolsGlow();
+	}*/
+	
 	protected boolean symbolsGlow(StargateEntity stargate, Optional<StargateVariant> stargateVariant, boolean isEngaged)
 	{
 		if(stargateVariant.isPresent())
@@ -346,6 +356,14 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		
 		return false;
 	}
+	
+	/*protected ColorUtil.IntRGBA getSymbolColor(StargateEntity stargate, ClientStargateVariant stargateVariant, boolean isEngaged)
+	{
+		if(isEngaged)
+			return stargate.isConnected() ? stargateVariant.symbols().engagedSymbolColor() : stargateVariant.symbols().encodedSymbolColor();
+		else
+			return stargateVariant.symbols().symbolColor();
+	}*/
 	
 	protected Stargate.RGBA getSymbolColor(StargateEntity stargate, Optional<StargateVariant> stargateVariant, boolean isEngaged)
 	{
