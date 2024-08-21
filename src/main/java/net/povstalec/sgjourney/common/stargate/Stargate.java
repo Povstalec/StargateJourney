@@ -550,4 +550,41 @@ public class Stargate
 			return alpha;
 		}
 	}
+	
+	public static class IncomingOutgoing<Thing extends Object>
+	{
+		public static final String OUTGOING = "outgoing";
+		public static final String INCOMING = "incoming";
+		
+		private Thing outgoing;
+		private Thing incoming;
+		
+		public IncomingOutgoing(Thing outgoing, Thing incoming)
+		{
+			this.outgoing = outgoing;
+			this.incoming = incoming;
+		}
+		
+		public Thing outgoing()
+		{
+			return outgoing;
+		}
+		
+		public Thing incoming()
+		{
+			return incoming;
+		}
+		
+		public Thing get(boolean incoming)
+		{
+			return incoming ? this.incoming : this.outgoing;
+		}
+	}
+	
+	public enum ChevronSymbolState
+	{
+		OFF,
+		ENCODED,
+		ENGAGED
+	}
 }

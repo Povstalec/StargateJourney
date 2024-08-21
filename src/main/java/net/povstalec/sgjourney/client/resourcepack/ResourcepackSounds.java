@@ -9,6 +9,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.stargate.Stargate.IncomingOutgoing;
 
 public class ResourcepackSounds
 {
@@ -168,35 +170,10 @@ public class ResourcepackSounds
 		}
 	}
 	
-	public static class IncomingOutgoing
-	{
-		public static final String OUTGOING = "outgoing";
-		public static final String INCOMING = "incoming";
-		
-		public static final Codec<ResourcepackSounds.IncomingOutgoing> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				ResourceLocation.CODEC.fieldOf(OUTGOING).forGetter(ResourcepackSounds.IncomingOutgoing::outgoing),
-				ResourceLocation.CODEC.fieldOf(INCOMING).forGetter(ResourcepackSounds.IncomingOutgoing::incoming)
-				).apply(instance, ResourcepackSounds.IncomingOutgoing::new));
-		
-		private ResourceLocation outgoing;
-		private ResourceLocation incoming;
-		
-		public IncomingOutgoing(ResourceLocation outgoing, ResourceLocation incoming)
-		{
-			this.outgoing = outgoing;
-			this.incoming = incoming;
-		}
-		
-		public ResourceLocation outgoing()
-		{
-			return outgoing;
-		}
-		
-		public ResourceLocation incoming()
-		{
-			return incoming;
-		}
-	}
+	public static final Codec<IncomingOutgoing<ResourceLocation>> INCOMING_OUTGOING_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			ResourceLocation.CODEC.fieldOf(IncomingOutgoing.OUTGOING).forGetter(IncomingOutgoing::outgoing),
+			ResourceLocation.CODEC.fieldOf(IncomingOutgoing.INCOMING).forGetter(IncomingOutgoing::incoming)
+			).apply(instance, IncomingOutgoing::new));
 	
 	public static class Wormhole
 	{
@@ -205,36 +182,36 @@ public class ResourcepackSounds
 		public static final String CLOSE_SOUND = "close";
 		
 		public static final Codec<ResourcepackSounds.Wormhole> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).fieldOf(OPEN_SOUND).forGetter(ResourcepackSounds.Wormhole::openSound),
-				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).fieldOf(IDLE_SOUND).forGetter(ResourcepackSounds.Wormhole::idleSound),
-				Codec.either(ResourcepackSounds.IncomingOutgoing.CODEC, ResourceLocation.CODEC).fieldOf(CLOSE_SOUND).forGetter(ResourcepackSounds.Wormhole::closeSound)
+				Codec.either(INCOMING_OUTGOING_CODEC, ResourceLocation.CODEC).fieldOf(OPEN_SOUND).forGetter(ResourcepackSounds.Wormhole::openSound),
+				Codec.either(INCOMING_OUTGOING_CODEC, ResourceLocation.CODEC).fieldOf(IDLE_SOUND).forGetter(ResourcepackSounds.Wormhole::idleSound),
+				Codec.either(INCOMING_OUTGOING_CODEC, ResourceLocation.CODEC).fieldOf(CLOSE_SOUND).forGetter(ResourcepackSounds.Wormhole::closeSound)
 				// TODO probably add some unstable connection sounds in the future
 				).apply(instance, ResourcepackSounds.Wormhole::new));
 		
-		private final Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> openSound;
-		private final Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> idleSound;
-		private final Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> closeSound;
+		private final Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound;
+		private final Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound;
+		private final Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound;
 		
-		public Wormhole(Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> openSound,
-				Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> idleSound,
-				Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> closeSound)
+		public Wormhole(Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound,
+				Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound,
+				Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound)
 		{
 			this.openSound = openSound;
 			this.idleSound = idleSound;
 			this.closeSound = closeSound;
 		}
 		
-		public Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> openSound()
+		public Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound()
 		{
 			return openSound;
 		}
 		
-		public Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> idleSound()
+		public Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound()
 		{
 			return idleSound;
 		}
 		
-		public Either<ResourcepackSounds.IncomingOutgoing, ResourceLocation> closeSound()
+		public Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound()
 		{
 			return closeSound;
 		}
@@ -270,6 +247,31 @@ public class ResourcepackSounds
 				return Optional.of(incoming ? closeSound.left().get().incoming() : closeSound.left().get().outgoing());
 			
 			return Optional.of(closeSound.right().get());
+		}
+	}
+	
+	public static class Fail
+	{
+		public static final String DEFAULT = "default";
+		
+		public final ResourceLocation defaultSound;
+		//TODO Variations of fail sound for different feedback
+		
+		public static final Codec<ResourcepackSounds.Fail> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				ResourceLocation.CODEC.fieldOf(DEFAULT).forGetter(chevrons -> chevrons.defaultSound)
+				).apply(instance, ResourcepackSounds.Fail::new));
+		
+		public Fail(ResourceLocation defaultSound)
+		{
+			this.defaultSound = defaultSound;
+		}
+		
+		public ResourceLocation getSound(Stargate.Feedback feedback)
+		{
+			return switch(feedback)
+			{
+			default -> defaultSound;
+			};
 		}
 	}
 }

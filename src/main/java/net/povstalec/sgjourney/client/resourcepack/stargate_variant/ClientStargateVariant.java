@@ -4,16 +4,9 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
-import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel.SymbolsModel;
-import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel.Wormhole;
-import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds.Chevron;
-import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds.Rotation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
 public abstract class ClientStargateVariant
@@ -30,9 +23,8 @@ public abstract class ClientStargateVariant
 	public static final String CHEVRON_ENGAGED_SOUNDS = "chevron_engaged_sounds";
 	public static final String CHEVRON_INCOMING_SOUNDS = "chevron_incoming_sounds";
 	
-	public static final String ROTATION_SOUNDS = "rotation_sounds";
 	public static final String WORMHOLE_SOUNDS = "wormhole_sounds";
-	// TODO Fail sound
+	public static final String FAIL_SOUNDS = "fail_sounds";
 	
 	// TODO Add a way to decide if there is a vortex
 	// TODO Add a way to specify how much distortion there will be on each event horizon
@@ -56,11 +48,13 @@ public abstract class ClientStargateVariant
 	protected ResourcepackSounds.Chevron chevronIncomingSounds;
 	
 	protected ResourcepackSounds.Wormhole wormholeSounds;
+
+	protected ResourcepackSounds.Fail failSounds;
 	
 	public ClientStargateVariant(ResourceLocation texture, Optional<ResourceLocation> encodedTexture, ResourceLocation engagedTexture,
 			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole, ResourcepackModel.SymbolsModel symbols,
 			ResourcepackSounds.Chevron chevronEngagedSounds, ResourcepackSounds.Chevron chevronIncomingSounds,
-			ResourcepackSounds.Wormhole wormholeSounds)
+			ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds)
 	{
 		this.texture = texture;
 		
@@ -81,6 +75,7 @@ public abstract class ClientStargateVariant
 		this.chevronEngagedSounds = chevronEngagedSounds;
 		this.chevronIncomingSounds = chevronIncomingSounds;
 		this.wormholeSounds = wormholeSounds;
+		this.failSounds = failSounds;
 	}
 	
 	public ResourceLocation texture()
@@ -138,5 +133,10 @@ public abstract class ClientStargateVariant
 	public ResourcepackSounds.Wormhole wormholeSounds()
 	{
 		return wormholeSounds;
+	}
+	
+	public ResourcepackSounds.Fail failSounds()
+	{
+		return failSounds;
 	}
 }
