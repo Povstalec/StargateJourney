@@ -126,7 +126,6 @@ public class ResourcepackSounds
 	public static class Rotation
 	{
 		public static final String ROTATION_STARTUP_SOUND = "rotation_startup_sound";
-		public static final String ROTATION_BUILDUP_SOUND = "rotation_buildup_sound";
 		public static final String ROTATION_SOUND = "rotation_sound";
 		public static final String ROTATION_STOP_SOUND = "rotation_stop_sound";
 		

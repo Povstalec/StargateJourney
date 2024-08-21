@@ -20,6 +20,8 @@ public class StargateVariant
 	
 	public static final Codec<StargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ResourceLocation.CODEC.fieldOf("base_stargate").forGetter(StargateVariant::getBaseStargate),
+
+			ResourceLocation.CODEC.fieldOf("client_variant").forGetter(StargateVariant::clientVariant),
 			// Textures and colors
 			ResourceLocation.CODEC.fieldOf("texture").forGetter(StargateVariant::getTexture),
 			ResourceLocation.CODEC.fieldOf("engaged_texture").forGetter(StargateVariant::getEngagedTexture),
@@ -40,6 +42,8 @@ public class StargateVariant
 			.apply(instance, StargateVariant::new));
 	
 	private final ResourceLocation baseStargate;
+
+	private final ResourceLocation clientVariant;
 	
 	private final ResourceLocation texture;
 	private final ResourceLocation engagedTexture;
@@ -90,6 +94,8 @@ public class StargateVariant
 	
 	public StargateVariant(ResourceLocation baseStargate,
 			
+			ResourceLocation clientVariant,
+			
 			ResourceLocation texture,
 			ResourceLocation engagedTexture,
 			ResourceLocation eventHorizonTexture,
@@ -108,6 +114,8 @@ public class StargateVariant
 			Optional<Map<String, ResourceLocation>> sounds)
 	{
 		this.baseStargate = baseStargate;
+		
+		this.clientVariant = clientVariant;
 		
 		this.texture = texture;
 		this.engagedTexture = engagedTexture;
@@ -224,6 +232,11 @@ public class StargateVariant
 	public ResourceLocation getBaseStargate()
 	{
 		return this.baseStargate;
+	}
+	
+	public ResourceLocation clientVariant()
+	{
+		return this.clientVariant;
 	}
 	
 	

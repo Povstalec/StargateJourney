@@ -1,5 +1,8 @@
 {
 	"base_stargate": "sgjourney:milky_way_stargate",
+	
+	"client_variant": "sgjourney:milky_way_sg-1",
+
 	"texture": "sgjourney:textures/entity/stargate/milky_way/sg-1/sg-1_stargate.png",
 	"engaged_texture": "sgjourney:textures/entity/stargate/milky_way/sg-1/sg-1_stargate_engaged.png",
 	"event_horizon_texture": "sgjourney:textures/entity/stargate/milky_way/sg-1/sg-1_event_horizon.png",

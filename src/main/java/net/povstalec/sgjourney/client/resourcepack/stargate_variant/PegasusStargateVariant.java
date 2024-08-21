@@ -10,12 +10,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
-public class PegasusStargateVariant extends RotatingStargateVariant
+public class PegasusStargateVariant extends GenericStargateVariant
 {
 	public static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_stargate.png");
+	public static final ResourceLocation STARGATE_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_stargate_back_chevron.png");
 	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_stargate_engaged.png");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_stargate_back_chevron_engaged.png");
 
 	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon.png");
 	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon_shiny.png");
@@ -37,8 +40,9 @@ public class PegasusStargateVariant extends RotatingStargateVariant
 			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 190))));
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-			new ColorUtil.IntRGBA(0, 100, 200, 255), Optional.of(new ColorUtil.IntRGBA(0, 200, 255, 255)), Optional.of(new ColorUtil.IntRGBA(0, 200, 255, 255)),
-			Optional.of(true), Optional.of(true), Optional.of(true),
+			new ColorUtil.RGBA(0, 100, 200, 255), Optional.of(new ColorUtil.RGBA(0, 200, 255, 255)), Optional.of(new ColorUtil.RGBA(0, 200, 255, 255)),
+			true, true, true,
+			true, true,
 			Optional.empty(), Optional.empty());
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
@@ -50,7 +54,24 @@ public class PegasusStargateVariant extends RotatingStargateVariant
 	
 	public static final PegasusStargateVariant DEFAULT_VARIANT = new PegasusStargateVariant(STARGATE_TEXTURE, Optional.empty(),
 			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
-			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
+			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS)
+	{
+		
+		public ResourceLocation texture()
+		{
+				return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? STARGATE_TEXTURE_BACK : STARGATE_TEXTURE;
+		}
+
+		public ResourceLocation encodedTexture()
+		{
+			return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? STARGATE_ENGAGED_TEXTURE_BACK : STARGATE_ENGAGED_TEXTURE;
+		}
+		
+		public ResourceLocation engagedTexture()
+		{
+			return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? STARGATE_ENGAGED_TEXTURE_BACK : STARGATE_ENGAGED_TEXTURE;
+		}
+	};;
 	
 	public static final Codec<PegasusStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			// Gate and chevron textures
@@ -78,6 +99,19 @@ public class PegasusStargateVariant extends RotatingStargateVariant
 	{
 		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, chevronEngagedSounds,
 				chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
+	}
+	
+	
+	@Override
+	public boolean useMovieStargateModel()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean raiseBackChevrons()
+	{
+		return false;
 	}
 	
 }

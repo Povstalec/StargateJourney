@@ -1,5 +1,8 @@
 {
 	"base_stargate": "sgjourney:pegasus_stargate",
+	
+	"client_variant": "sgjourney:pegasus_atlantis",
+	
 	"texture": "sgjourney:textures/entity/stargate/pegasus/atlantis/atlantis_stargate.png",
 	"engaged_texture": "sgjourney:textures/entity/stargate/pegasus/atlantis/atlantis_stargate_engaged.png",
 	"event_horizon_texture": "sgjourney:textures/entity/stargate/pegasus/atlantis/atlantis_event_horizon.png",

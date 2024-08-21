@@ -70,7 +70,7 @@ public abstract class AbstractStargateRenderer
 			if(variantOptional.isPresent())
 			{
 				StargateVariant variant = variantOptional.get();
-				if(model.canUseVariant(variant))
+				if(/*model.canUseVariant(variant)*/true)
 				{
 					if(ClientStargateConfig.shiny_event_horizons.get() && variant.getShinyEventHorizonTexture().isPresent())
 						eventHorizonTexture = variant.getShinyEventHorizonTexture();

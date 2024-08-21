@@ -5,113 +5,73 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class ColorUtil
 {
-	public static final int MAX_VALUE = 255;
-	public static final int MIN_VALUE = 0;
+	public static final int MAX_INT_VALUE = 255;
+	public static final int MIN_INT_VALUE = 0;
+	
+	public static final float MAX_FLOAT_VALUE = 1F;
+	public static final float MIN_FLOAT_VALUE = 0F;
 	
 	public static final String RED = "red";
 	public static final String GREEN = "green";
 	public static final String BLUE = "blue";
 	public static final String ALPHA = "alpha";
 	
-	private static void checkValue(int value)
+	public static class RGBA
 	{
-		if(value > MAX_VALUE)
-			throw(new IllegalArgumentException("Value may not be higher than 255"));
-		else if(value < MIN_VALUE)
-			throw(new IllegalArgumentException("Value may not be lower than 0"));
-	}
-	
-	public static class IntRGB
-	{
-		protected int red;
-		protected int green;
-		protected int blue;
+		protected float red;
+		protected float green;
+		protected float blue;
+	    protected float alpha;
 		
-		public IntRGB(int red, int green, int blue)
+		public static final Codec<RGBA> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(RED).forGetter(RGBA::red),
+				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(GREEN).forGetter(RGBA::green),
+				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(BLUE).forGetter(RGBA::blue),
+				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(ALPHA).forGetter(RGBA::alpha)
+				).apply(instance, RGBA::new));
+		
+		public RGBA(float red, float green, float blue, float alpha)
 		{
-			if(red > MAX_VALUE || green > MAX_VALUE || blue > MAX_VALUE)
-				throw(new IllegalArgumentException("No value may be higher than 255"));
-			else if(red < MIN_VALUE || green < MIN_VALUE || blue < MIN_VALUE)
-				throw(new IllegalArgumentException("No value may be lower than 0"));
+			if(red > MAX_FLOAT_VALUE || green > MAX_FLOAT_VALUE || blue > MAX_FLOAT_VALUE || alpha > MAX_FLOAT_VALUE)
+				throw(new IllegalArgumentException("No value may be higher than 1.0"));
+			else if(red < MIN_FLOAT_VALUE || green < MIN_FLOAT_VALUE || blue < MIN_FLOAT_VALUE || alpha < MIN_FLOAT_VALUE)
+				throw(new IllegalArgumentException("No value may be lower than 0.0"));
 			
 			this.red = red;
 			this.green = green;
 			this.blue = blue;
+			this.alpha = alpha;
 		}
 		
-		public void setRed(int red)
+		public RGBA(int red, int green, int blue, int alpha)
 		{
-			checkValue(red);
+			if(red > MAX_INT_VALUE || green > MAX_INT_VALUE || blue > MAX_INT_VALUE || alpha > MAX_INT_VALUE)
+				throw(new IllegalArgumentException("No value may be higher than 255"));
+			else if(red < MIN_INT_VALUE || green < MIN_INT_VALUE || blue < MIN_INT_VALUE || alpha < MIN_INT_VALUE)
+				throw(new IllegalArgumentException("No value may be lower than 0"));
 			
-			this.red = red;
+			this.red = red / 255F;
+			this.green = green / 255F;
+			this.blue = blue / 255F;
+			this.alpha = alpha / 255F;
 		}
 		
-		public int red()
+		public float red()
 		{
 			return red;
 		}
 		
-		public void setGreen(int green)
-		{
-			checkValue(green);
-			
-			this.green = green;
-		}
-		
-		public int green()
+		public float green()
 		{
 			return green;
 		}
 		
-		public void setBlue(int blue)
-		{
-			checkValue(blue);
-			
-			this.blue = blue;
-		}
-		
-		public int blue()
+		public float blue()
 		{
 			return blue;
 		}
-	}
-	
-	public static class IntRGBA extends IntRGB
-	{
-	    public static final Codec<ColorUtil.IntRGBA> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.intRange(MIN_VALUE, MAX_VALUE).fieldOf(RED).forGetter(ColorUtil.IntRGBA::red),
-				Codec.intRange(MIN_VALUE, MAX_VALUE).fieldOf(GREEN).forGetter(ColorUtil.IntRGBA::green),
-				Codec.intRange(MIN_VALUE, MAX_VALUE).fieldOf(BLUE).forGetter(ColorUtil.IntRGBA::blue),
-				Codec.intRange(MIN_VALUE, MAX_VALUE).optionalFieldOf(ALPHA, MAX_VALUE).forGetter(ColorUtil.IntRGBA::alpha)
-				).apply(instance, ColorUtil.IntRGBA::new));
-	    
-	    protected int alpha;
 		
-		public IntRGBA(int red, int green, int blue, int alpha)
-		{
-			super(red, green, blue);
-			
-			if(alpha > MAX_VALUE)
-				throw(new IllegalArgumentException("No value may be higher than 255"));
-			else if(alpha < MIN_VALUE)
-				throw(new IllegalArgumentException("No value may be lower than 0"));
-			
-			this.alpha = alpha;
-		}
-		
-		public IntRGBA(int red, int green, int blue)
-		{
-			this(red, green, blue, 255);
-		}
-		
-		public void setAlpha(int alpha)
-		{
-			checkValue(alpha);
-			
-			this.alpha = alpha;
-		}
-		
-		public int alpha()
+		public float alpha()
 		{
 			return alpha;
 		}

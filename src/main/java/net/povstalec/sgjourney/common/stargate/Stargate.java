@@ -513,44 +513,6 @@ public class Stargate
 		return majorError ? component.withStyle(ChatFormatting.DARK_RED) : component.withStyle(ChatFormatting.RED);
 	}
 	
-	public static class RGBA
-	{
-		private float red;
-		private float green;
-		private float blue;
-		private float alpha;
-		
-		public static final RGBA DEFAULT_RGBA = new RGBA(255, 255, 255, 255);
-		
-		public RGBA(int red, int green, int blue, int alpha)
-		{
-			this.red = (float) red / 255;
-			this.green = (float) green / 255;
-			this.blue = (float) blue / 255;
-			this.alpha = (float) alpha / 255;
-		}
-		
-		public float getRed()
-		{
-			return red;
-		}
-		
-		public float getGreen()
-		{
-			return green;
-		}
-		
-		public float getBlue()
-		{
-			return blue;
-		}
-		
-		public float getAlpha()
-		{
-			return alpha;
-		}
-	}
-	
 	public static class IncomingOutgoing<Thing extends Object>
 	{
 		public static final String OUTGOING = "outgoing";

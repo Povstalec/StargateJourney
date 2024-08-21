@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 public class UniverseStargateVariant extends RotatingStargateVariant
@@ -37,8 +38,9 @@ public class UniverseStargateVariant extends RotatingStargateVariant
 			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 190))));
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-			new ColorUtil.IntRGBA(21, 9, 0, 255), Optional.of(new ColorUtil.IntRGBA(200, 220, 255, 255)), Optional.of(new ColorUtil.IntRGBA(200, 220, 255, 255)),
-			Optional.of(false), Optional.of(true), Optional.of(true),
+			new ColorUtil.RGBA(21, 9, 0, 255), Optional.of(new ColorUtil.RGBA(200, 220, 255, 255)), Optional.of(new ColorUtil.RGBA(200, 220, 255, 255)),
+			false, true, true,
+			true, false,
 			Optional.empty(), Optional.empty());
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
@@ -80,4 +82,9 @@ public class UniverseStargateVariant extends RotatingStargateVariant
 				chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
 	}
 	
+	// TODO A temporary way to handle this
+	public boolean onlyFrontRotates()
+	{
+		return ClientStargateConfig.universe_front_rotates.get();
+	}
 }

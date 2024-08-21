@@ -137,22 +137,23 @@ public class ResourcepackModel
 		public static final String ENCODED_SYMBOLS_GLOW = "encoded_symbols_glow";
 		public static final String ENGAGED_SYMBOLS_GLOW = "engaged_symbols_glow";
 
+		public static final String ENGAGE_ENCODED_SYMBOLS = "engage_encoded_symbols";
+		public static final String ENGAGE_SYMBOLS_ON_INCOMING = "engage_symbols_on_incoming";
+
 		public static final String PERMANENT_POINT_OF_ORIGIN = "permanent_point_of_origin";
 		public static final String PERMANENT_SYMBOLS = "permanent_symbols";
 		
 		//Symbol stuff
-		private final ColorUtil.IntRGBA symbolColor;
-		@Nullable
-		private final ColorUtil.IntRGBA encodedSymbolColor;
-		@Nullable
-		private final ColorUtil.IntRGBA engagedSymbolColor;
+		private final ColorUtil.RGBA symbolColor;
+		private final ColorUtil.RGBA encodedSymbolColor;
+		private final ColorUtil.RGBA engagedSymbolColor;
 		
-		@Nullable
-		private Boolean symbolsGlow;
-		@Nullable
-		private Boolean encodedSymbolsGlow;
-		@Nullable
-		private Boolean engagedSymbolsGlow;
+		private final boolean symbolsGlow;
+		private final boolean encodedSymbolsGlow;
+		private final boolean engagedSymbolsGlow;
+		
+		private final boolean engageEncodedSymbols; //TODO Is this needed?
+		private final boolean engageSymbolsOnIncoming; //TODO Is this needed?
 		
 		@Nullable
 		private ResourceKey<PointOfOrigin> permanentPointOfOrigin;
@@ -161,34 +162,45 @@ public class ResourcepackModel
 		
 		public static final Codec<SymbolsModel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				// Symbol Colors
-				ColorUtil.IntRGBA.CODEC.fieldOf(SYMBOL_COLOR).forGetter(SymbolsModel::symbolColor),
-				ColorUtil.IntRGBA.CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.of(symbols.encodedSymbolColor)),
-				ColorUtil.IntRGBA.CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.of(symbols.engagedSymbolColor)),
+				ColorUtil.RGBA.CODEC.fieldOf(SYMBOL_COLOR).forGetter(SymbolsModel::symbolColor),
+				ColorUtil.RGBA.CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.of(symbols.encodedSymbolColor)),
+				ColorUtil.RGBA.CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.of(symbols.engagedSymbolColor)),
 				// Symbol glow
-				Codec.BOOL.optionalFieldOf(SYMBOLS_GLOW).forGetter(symbols -> Optional.of(symbols.symbolsGlow)),
-				Codec.BOOL.optionalFieldOf(ENCODED_SYMBOLS_GLOW).forGetter(symbols -> Optional.of(symbols.encodedSymbolsGlow)),
-				Codec.BOOL.optionalFieldOf(ENGAGED_SYMBOLS_GLOW).forGetter(symbols -> Optional.of(symbols.engagedSymbolsGlow)),
-				//TODO Split incoming and outgoing
+				Codec.BOOL.optionalFieldOf(SYMBOLS_GLOW, false).forGetter(symbols -> symbols.symbolsGlow),
+				Codec.BOOL.optionalFieldOf(ENCODED_SYMBOLS_GLOW, false).forGetter(symbols -> symbols.encodedSymbolsGlow),
+				Codec.BOOL.optionalFieldOf(ENGAGED_SYMBOLS_GLOW, false).forGetter(symbols -> symbols.engagedSymbolsGlow),
+				//TODO Split incoming and outgoing glows and colors
+				Codec.BOOL.optionalFieldOf(ENGAGE_ENCODED_SYMBOLS, false).forGetter(symbols -> symbols.engageEncodedSymbols),
+				Codec.BOOL.optionalFieldOf(ENGAGE_SYMBOLS_ON_INCOMING, false).forGetter(symbols -> symbols.engageSymbolsOnIncoming),
 				// Permanent Symbols
 				ResourceKey.codec(PointOfOrigin.REGISTRY_KEY).optionalFieldOf(PERMANENT_POINT_OF_ORIGIN).forGetter(SymbolsModel::permanentPointOfOrigin),
 				ResourceKey.codec(Symbols.REGISTRY_KEY).optionalFieldOf(PERMANENT_SYMBOLS).forGetter(SymbolsModel::permanentSymbols)
 				).apply(instance, SymbolsModel::new));
 		
-		public SymbolsModel(ColorUtil.IntRGBA symbolColor, Optional<ColorUtil.IntRGBA> encodedSymbolColor, Optional<ColorUtil.IntRGBA> engagedSymbolColor,
-				Optional<Boolean> symbolsGlow, Optional<Boolean> encodedSymbolsGlow, Optional<Boolean> engagedSymbolsGlow,
+		public SymbolsModel(ColorUtil.RGBA symbolColor, Optional<ColorUtil.RGBA> encodedSymbolColor, Optional<ColorUtil.RGBA> engagedSymbolColor,
+				boolean symbolsGlow, boolean encodedSymbolsGlow, boolean engagedSymbolsGlow,
+				boolean engageEncodedSymbols, boolean engageSymbolsOnIncoming,
 				Optional<ResourceKey<PointOfOrigin>> permanentPointOfOrigin, Optional<ResourceKey<Symbols>> permanentSymbols)
 		{
 			this.symbolColor = symbolColor;
-			
-			if(encodedSymbolColor.isPresent())
-				this.encodedSymbolColor = encodedSymbolColor.get();
-			else
-				this.encodedSymbolColor = symbolColor;
 			
 			if(engagedSymbolColor.isPresent())
 				this.engagedSymbolColor = engagedSymbolColor.get();
 			else
 				this.engagedSymbolColor = symbolColor;
+			
+			// Encoded symbol color, if not specified, will be the same as engaged symbol color
+			if(encodedSymbolColor.isPresent())
+				this.encodedSymbolColor = encodedSymbolColor.get();
+			else
+				this.encodedSymbolColor = this.engagedSymbolColor;
+			
+			this.symbolsGlow = symbolsGlow;
+			this.encodedSymbolsGlow = encodedSymbolsGlow;
+			this.engagedSymbolsGlow = engagedSymbolsGlow;
+			
+			this.engageEncodedSymbols = engageEncodedSymbols;
+			this.engageSymbolsOnIncoming = engageSymbolsOnIncoming;
 
 			if(permanentPointOfOrigin.isPresent())
 				this.permanentPointOfOrigin = permanentPointOfOrigin.get();
@@ -196,22 +208,22 @@ public class ResourcepackModel
 				this.permanentSymbols = permanentSymbols.get();
 		}
 		
-		public SymbolsModel(ColorUtil.IntRGBA symbolColor)
+		public SymbolsModel(ColorUtil.RGBA symbolColor)
 		{
-			this(symbolColor, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+			this(symbolColor, Optional.empty(), Optional.empty(), false, false, false, false, false, Optional.empty(), Optional.empty());
 		}
 		
-		public ColorUtil.IntRGBA symbolColor()
+		public ColorUtil.RGBA symbolColor()
 		{
 			return symbolColor;
 		}
 		
-		public ColorUtil.IntRGBA encodedSymbolColor()
+		public ColorUtil.RGBA encodedSymbolColor()
 		{
 			return encodedSymbolColor;
 		}
 		
-		public ColorUtil.IntRGBA engagedSymbolColor()
+		public ColorUtil.RGBA engagedSymbolColor()
 		{
 			return engagedSymbolColor;
 		}
@@ -231,6 +243,18 @@ public class ResourcepackModel
 		public boolean engagedSymbolsGlow()
 		{
 			return engagedSymbolsGlow;
+		}
+		
+		
+		
+		public boolean engageEncodedSymbols()
+		{
+			return engageEncodedSymbols;
+		}
+		
+		public boolean engageSymbolsOnIncoming()
+		{
+			return engageSymbolsOnIncoming;
 		}
 		
 		

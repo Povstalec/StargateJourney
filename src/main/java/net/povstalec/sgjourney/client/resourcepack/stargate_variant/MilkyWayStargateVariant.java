@@ -10,12 +10,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
-public class MilkyWayStargateVariant extends RotatingStargateVariant
+public class MilkyWayStargateVariant extends GenericStargateVariant
 {
 	public static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate.png");
+	public static final ResourceLocation STARGATE_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate_back_chevron.png");
 	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate_engaged.png");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate_back_chevron_engaged.png");
 
 	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_event_horizon.png");
 	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_event_horizon_shiny.png");
@@ -37,7 +40,7 @@ public class MilkyWayStargateVariant extends RotatingStargateVariant
 	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 255),
 			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 190))));
 	
-	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ColorUtil.IntRGBA(48, 49, 63, 255));
+	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ColorUtil.RGBA(48, 49, 63, 255));
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
@@ -50,7 +53,24 @@ public class MilkyWayStargateVariant extends RotatingStargateVariant
 	
 	public static final MilkyWayStargateVariant DEFAULT_VARIANT = new MilkyWayStargateVariant(STARGATE_TEXTURE, Optional.empty(),
 			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
-			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
+			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS)
+			{
+				
+				public ResourceLocation texture()
+				{
+						return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? STARGATE_TEXTURE_BACK : STARGATE_TEXTURE;
+				}
+		
+				public ResourceLocation encodedTexture()
+				{
+					return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? STARGATE_ENGAGED_TEXTURE_BACK : STARGATE_ENGAGED_TEXTURE;
+				}
+				
+				public ResourceLocation engagedTexture()
+				{
+					return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? STARGATE_ENGAGED_TEXTURE_BACK : STARGATE_ENGAGED_TEXTURE;
+				}
+			};
 	
 	public static final Codec<MilkyWayStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			// Gate and chevron textures
@@ -80,4 +100,17 @@ public class MilkyWayStargateVariant extends RotatingStargateVariant
 				chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
 	}
 	
+	
+
+	@Override
+	public boolean useMovieStargateModel()
+	{
+		return ClientStargateConfig.use_movie_stargate_model.get();
+	}
+
+	@Override
+	public boolean raiseBackChevrons()
+	{
+		return ClientStargateConfig.milky_way_stargate_back_lights_up.get();
+	}
 }

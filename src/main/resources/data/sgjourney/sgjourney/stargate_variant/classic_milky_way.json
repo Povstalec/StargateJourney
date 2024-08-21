@@ -1,6 +1,8 @@
 {
 	"base_stargate": "sgjourney:classic_stargate",
 	
+	"client_variant": "sgjourney:classic_milky_way",
+	
 	"texture": "sgjourney:textures/entity/stargate/classic/classic_milky_way/classic_milky_way_stargate.png",
 	"engaged_texture": "sgjourney:textures/entity/stargate/classic/classic_milky_way/classic_milky_way_stargate_engaged.png",
 	"event_horizon_texture": "sgjourney:textures/entity/stargate/classic/classic_milky_way/classic_milky_way_event_horizon.png",

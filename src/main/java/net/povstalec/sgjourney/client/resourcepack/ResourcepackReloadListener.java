@@ -63,6 +63,7 @@ public class ResourcepackReloadListener
 			catch(RuntimeException e)
 			{
 				StargateJourney.LOGGER.error("Could not load " + location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}
 		

@@ -41,5 +41,47 @@
 				"alpa": 190
 			}
 		}
+	},
+	
+	"symbols":
+	{
+		"symbol_color": { "red": 0.188, "green": 0.192, "blue": 0.247, "alpha": 1.0 }
+	},
+	
+	"chevron_engaged_sounds":
+	{
+		"default": "sgjourney:milky_way_chevron_engage",
+		"primary_chevron": "sgjourney:empty"
+	},
+	
+	"chevron_open_sounds":
+	{
+		"default": "sgjourney:milky_way_chevron_open",
+		"primary_chevron": "sgjourney:movie_chevron_open"
+	},
+	
+	"chevron_incoming_sounds":
+	{
+		"default": "sgjourney:milky_way_chevron_engage",
+		"primary_chevron": "sgjourney:empty"
+	},
+	
+	"rotation_sounds":
+	{
+		"rotation_startup_sound": "sgjourney:milky_way_ring_spin_start",
+		"rotation_sound": "sgjourney:milky_way_ring_spin",
+		"rotation_stop_sound": "sgjourney:milky_way_ring_spin_stop"
+	},
+	
+	"wormhole_sounds":
+	{
+		"open": "sgjourney:milky_way_wormhole_open",
+		"idle": "sgjourney:milky_way_wormhole_idle",
+		"close": "sgjourney:milky_way_wormhole_close"
+	},
+	
+	"fail_sounds":
+	{
+		"default": "sgjourney:milky_way_dial_fail"
 	}
 }
