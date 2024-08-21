@@ -1,46 +1,27 @@
 package net.povstalec.sgjourney.client.models;
 
-import java.util.Optional;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity, MilkyWayStargateVariant>
 {
 	public MilkyWayStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), (short) 39);
+		super((short) 39);
 	}
 	
 	@Override
-	protected MilkyWayStargateVariant getClientVariant(MilkyWayStargateEntity stargate)
-	{
-		Optional<StargateVariant> stargateVariant = getVariant(stargate);
-		
-		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.get().clientVariant());
-		
-		return ClientStargateVariants.getMilkyWayStargateVariant(getResourceLocation());
-	}
-	
-	@Override
-	public void renderStargate(MilkyWayStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
+	public void renderStargate(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		MilkyWayStargateVariant stargateVariant = getClientVariant(stargate);
-		
 		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(stargateVariant.texture()));
 		this.renderOuterRing(stack, consumer, source, combinedLight);
 		

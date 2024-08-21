@@ -10,16 +10,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity, ClassicStargateVariant>
@@ -88,18 +84,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	
 	public ClassicStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "classic/classic"), (short) 39);
-	}
-
-	@Override
-	protected ClassicStargateVariant getClientVariant(ClassicStargateEntity stargate)
-	{
-		Optional<StargateVariant> stargateVariant = getVariant(stargate);
-		
-		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getClassicStargateVariant(stargateVariant.get().clientVariant());
-		
-		return ClientStargateVariants.getClassicStargateVariant(getResourceLocation());
+		super((short) 39);
 	}
 	
 	@Override

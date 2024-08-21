@@ -24,7 +24,7 @@ public class SoundAccess
 	
 	protected static Minecraft minecraft = Minecraft.getInstance();
 	
-    public static void playWormholeOpenSound(BlockPos pos)
+    /*public static void playWormholeOpenSound(BlockPos pos)
     {
     	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
     	{
@@ -428,5 +428,5 @@ public class SoundAccess
     	}
     	
     	return stargate.getWormholeCloseSound();
-    }
+    }*/
 }

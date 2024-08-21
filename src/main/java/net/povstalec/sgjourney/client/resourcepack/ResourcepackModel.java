@@ -25,17 +25,17 @@ public class ResourcepackModel
 		
 		public static final Codec<WormholeTexture> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				ResourceLocation.CODEC.fieldOf(TEXTURE).forGetter(WormholeTexture::texture),
-				Codec.INT.fieldOf(ROWS).forGetter(WormholeTexture::rows),
-				Codec.INT.fieldOf(COLUMNS).forGetter(WormholeTexture::columns),
-				Codec.intRange(0, 255).optionalFieldOf(ALPHA, 255).forGetter(WormholeTexture::alpha)
+				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(ROWS).forGetter(WormholeTexture::rows),
+				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(COLUMNS).forGetter(WormholeTexture::columns),
+				Codec.floatRange(0F, 1F).optionalFieldOf(ALPHA, 1F).forGetter(WormholeTexture::alpha)
 				).apply(instance, WormholeTexture::new));
 		
 		private final ResourceLocation texture;
 		private final int rows;
 		private final int columns;
-		private final int alpha;
+		private final float alpha;
 		
-		public WormholeTexture(ResourceLocation texture, int rows, int columns, int alpha)
+		public WormholeTexture(ResourceLocation texture, int rows, int columns, float alpha)
 		{
 			this.texture = texture;
 			this.rows = rows;
@@ -58,7 +58,7 @@ public class ResourcepackModel
 			return columns;
 		}
 		
-		public int alpha()
+		public float alpha()
 		{
 			return alpha;
 		}
@@ -118,7 +118,7 @@ public class ResourcepackModel
 			return eventHorizon;
 		}
 		
-		public WormholeTexture getWromholeTexture(boolean front)
+		public WormholeTexture getWormholeTexture(boolean front)
 		{
 			if(eventHorizon.left().isPresent())
 				return front ? eventHorizon.left().get().front() : eventHorizon.left().get().back();

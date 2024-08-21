@@ -49,7 +49,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playWormholeOpenSound(pos);
+            	//SoundAccess.playWormholeOpenSound(pos);
             });
             return true;
         }
@@ -71,7 +71,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playWormholeIdleSound(pos);
+            	//SoundAccess.playWormholeIdleSound(pos);
             });
             return true;
         }
@@ -93,7 +93,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playWormholeCloseSound(pos);
+            	//SoundAccess.playWormholeCloseSound(pos);
             });
             return true;
         }
@@ -133,7 +133,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playChevronSound(pos, primary, incoming, open, encode);
+            	//SoundAccess.playChevronSound(pos, primary, incoming, open, encode);
             });
             return true;
         }
@@ -155,7 +155,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playFailSound(pos);
+            	//SoundAccess.playFailSound(pos);
             });
             return true;
         }
@@ -177,7 +177,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playRotationSound(pos, stop);
+            	//SoundAccess.playRotationSound(pos, stop);
             });
             return true;
         }
@@ -199,7 +199,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playUniverseStartSound(pos);
+            	//SoundAccess.playUniverseStartSound(pos);
             });
             return true;
         }
@@ -221,7 +221,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playMilkyWayBuildupSound(pos);
+            	//SoundAccess.playMilkyWayBuildupSound(pos);
             });
             return true;
         }
@@ -243,7 +243,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playMilkyWayStopSound(pos);
+            	//SoundAccess.playMilkyWayStopSound(pos);
             });
             return true;
         }

@@ -10,16 +10,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class UniverseStargateModel extends AbstractStargateModel<UniverseStargateEntity, UniverseStargateVariant>
@@ -85,18 +81,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	
 	public UniverseStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "universe/universe"), (short) 36);
-	}
-
-	@Override
-	protected UniverseStargateVariant getClientVariant(UniverseStargateEntity stargate)
-	{
-		Optional<StargateVariant> stargateVariant = getVariant(stargate);
-		
-		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getUniverseStargateVariant(stargateVariant.get().clientVariant());
-		
-		return ClientStargateVariants.getUniverseStargateVariant(getResourceLocation());
+		super((short) 36);
 	}
 	
 	public float getRotation(boolean shouldRotate)

@@ -60,7 +60,7 @@ public abstract class StargateSoundWrapper extends SoundWrapper
 	
 	
 
-	public static class WormholeIdle extends StargateSoundWrapper
+	/*public static class WormholeIdle extends StargateSoundWrapper
 	{
 		public WormholeIdle(AbstractStargateEntity stargate)
 		{
@@ -139,5 +139,5 @@ public abstract class StargateSoundWrapper extends SoundWrapper
 			this.sound.stopSound();
 			this.playingSound = false;
 		}
-	}
+	}*/
 }

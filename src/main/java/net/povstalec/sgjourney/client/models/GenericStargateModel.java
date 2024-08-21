@@ -10,7 +10,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.GenericStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -65,9 +64,9 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 	
 	protected float rotation = 0;
 	
-	public GenericStargateModel(ResourceLocation stargateLocation, short numberOfSymbols)
+	public GenericStargateModel(short numberOfSymbols)
 	{
-		super(stargateLocation, numberOfSymbols);
+		super(numberOfSymbols);
 		this.symbolAngle = 360F / numberOfSymbols;
 		
 		this.stargateSymbolRingOuterLength = SGJourneyModel.getUsedWidth(numberOfSymbols, STARGATE_SYMBOL_RING_OUTER_HEIGHT, DEFAULT_RADIUS);

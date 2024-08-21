@@ -11,14 +11,14 @@
 				"texture": "sgjourney:textures/entity/stargate/milky_way/milky_way_event_horizon.png",
 				"rows": 1,
 				"columns": 32,
-				"alpa": 255
+				"alpha": 1.0
 			},
 			"back":
 			{
 				"texture": "sgjourney:textures/entity/stargate/milky_way/milky_way_event_horizon.png",
 				"rows": 1,
 				"columns": 32,
-				"alpa": 190
+				"alpha": 0.75
 			}
 		}
 	},
@@ -31,14 +31,14 @@
 				"texture": "sgjourney:textures/entity/stargate/milky_way/milky_way_event_horizon_shiny.png",
 				"rows": 1,
 				"columns": 32,
-				"alpa": 255
+				"alpha": 1.0
 			},
 			"back":
 			{
 				"texture": "sgjourney:textures/entity/stargate/milky_way/milky_way_event_horizon_shiny.png",
 				"rows": 1,
 				"columns": 32,
-				"alpa": 190
+				"alpha": 0.75
 			}
 		}
 	},

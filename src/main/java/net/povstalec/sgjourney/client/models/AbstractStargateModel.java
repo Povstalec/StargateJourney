@@ -15,11 +15,9 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity, Variant extends ClientStargateVariant>
@@ -43,62 +41,12 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	private static Minecraft minecraft = Minecraft.getInstance();
 	
-	private ResourceLocation stargateLocation;
 	protected final short numberOfSymbols;
 	
-	public AbstractStargateModel(ResourceLocation stargateLocation, short numberOfSymbols)
+	public AbstractStargateModel(short numberOfSymbols)
 	{
-		this.stargateLocation = stargateLocation;
 		this.numberOfSymbols = numberOfSymbols;
 	}
-	
-	public ResourceLocation getResourceLocation()
-	{
-		return stargateLocation;
-	}
-	
-	/*public boolean canUseVariant(StargateVariant variant)
-	{
-		return variant.getBaseStargate().equals(getResourceLocation());
-	}*/
-	
-	public static Optional<StargateVariant> getVariant(AbstractStargateEntity stargate)
-	{
-		Optional<StargateVariant> optional = Optional.empty();
-		
-		if(!ClientStargateConfig.stargate_variants.get())
-			return optional;
-		
-		String variantString = stargate.getVariant();
-		
-		if(variantString.equals(EMPTY))
-			return optional;
-		
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
-		
-		optional = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variantString)));
-		
-		return optional;
-	}
-	
-	/**
-	 * Method for getting the client variant of the Stargate
-	 * @param stargate
-	 * @return
-	 */
-	protected abstract Variant getClientVariant(StargateEntity stargate);
-	
-	/*protected Optional<StargateVariant> getStargateVariant(StargateEntity stargate)
-	{
-		Optional<StargateVariant> stargateVariant = AbstractStargateModel.getVariant(stargate);
-		
-		if(stargateVariant.isPresent() && this.canUseVariant(stargateVariant.get()))
-			return stargateVariant;
-		
-		return Optional.empty();
-	}*/
 	
 	protected Optional<PointOfOrigin> getPointOfOrigin(AbstractStargateEntity stargate, Variant stargateVariant)
 	{
@@ -180,11 +128,9 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	 * @param combinedLight Combined Light
 	 * @param combinedOverlay Combined Overlay
 	 */
-	public void renderStargate(StargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
+	public void renderStargate(StargateEntity stargate, Variant stargateVariant, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		Variant stargateVariant = getClientVariant(stargate);
-		
 		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(stargateVariant.texture()));
 		this.renderRing(stargate, stargateVariant, partialTick, stack, consumer, source, combinedLight, combinedOverlay);
 

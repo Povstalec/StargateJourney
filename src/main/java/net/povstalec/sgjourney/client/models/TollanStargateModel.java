@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.models;
 
-import java.util.Optional;
-
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -10,13 +8,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public class TollanStargateModel extends AbstractStargateModel<TollanStargateEntity, TollanStargateVariant>
 {
@@ -42,18 +36,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 
 	public TollanStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), (short) 0);
-	}
-
-	@Override
-	protected TollanStargateVariant getClientVariant(TollanStargateEntity stargate)
-	{
-		Optional<StargateVariant> stargateVariant = getVariant(stargate);
-		
-		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getTollanStargateVariant(stargateVariant.get().clientVariant());
-		
-		return ClientStargateVariants.getTollanStargateVariant(getResourceLocation());
+		super((short) 0);
 	}
 	
 	@Override

@@ -3,93 +3,107 @@ package net.povstalec.sgjourney.client.render.block_entity;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
-import net.povstalec.sgjourney.client.models.AbstractStargateModel;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.IrisModel;
 import net.povstalec.sgjourney.client.models.ShieldModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
-public abstract class AbstractStargateRenderer
+public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity, Variant extends ClientStargateVariant> implements BlockEntityRenderer<StargateEntity>
 {
+	private static Minecraft minecraft = Minecraft.getInstance();
+	
+	private final ResourceLocation stargateLocation;
+	
 	protected final WormholeModel wormholeModel;
 	protected final ShieldModel shieldModel;
 	protected final IrisModel irisModel;
 	
 	private final RandomSource randomsource = RandomSource.create();
 	
-	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context,
-			ResourceLocation eventHorizonTexture, ResourceLocation shinyEventHorizonTexture, float maxDefaultDistortion,
-			boolean renderWhenOpen, float maxOpenIrisDegrees)
+	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context, ResourceLocation stargateLocation,
+			float maxDefaultDistortion, boolean renderWhenOpen, float maxOpenIrisDegrees)
 	{
+		this.stargateLocation = stargateLocation;
+		
 		this.shieldModel = new ShieldModel();
 		this.irisModel = new IrisModel(renderWhenOpen, maxOpenIrisDegrees);
-		this.wormholeModel = new WormholeModel(eventHorizonTexture, Optional.of(shinyEventHorizonTexture), maxDefaultDistortion);
+		this.wormholeModel = new WormholeModel(maxDefaultDistortion);
 	}
 	
-	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context,
-			ResourceLocation eventHorizonTexture, float maxDefaultDistortion,
-			boolean renderWhenOpen, float maxOpenIrisDegrees)
+	public ResourceLocation getResourceLocation()
 	{
-		this.shieldModel = new ShieldModel();
-		this.irisModel = new IrisModel(renderWhenOpen, maxOpenIrisDegrees);
-		this.wormholeModel = new WormholeModel(eventHorizonTexture, Optional.empty(), maxDefaultDistortion);
+		return stargateLocation;
 	}
 	
-	protected void renderWormhole(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, @SuppressWarnings("rawtypes") @Nullable AbstractStargateModel model, int combinedLight, int combinedOverlay)
+	@Override
+	public int getViewDistance()
 	{
-		Optional<ResourceLocation> eventHorizonTexture = Optional.empty();
-		int frames = 32;
-		boolean hasVortex = ClientStargateConfig.enable_vortex.get();
+		return 128;
+	}
+	
+	/**
+	 * Method for getting the common variant of the Stargate
+	 * @param stargate
+	 * @return
+	 */
+	public static Optional<StargateVariant> getVariant(AbstractStargateEntity stargate)
+	{
+		Optional<StargateVariant> optional = Optional.empty();
 		
-		if(model != null)
-		{
-			Optional<StargateVariant> variantOptional = AbstractStargateModel.getVariant(stargate);
-
-			if(variantOptional.isPresent())
-			{
-				StargateVariant variant = variantOptional.get();
-				if(/*model.canUseVariant(variant)*/true)
-				{
-					if(ClientStargateConfig.shiny_event_horizons.get() && variant.getShinyEventHorizonTexture().isPresent())
-						eventHorizonTexture = variant.getShinyEventHorizonTexture();
-					else
-						eventHorizonTexture = Optional.of(variant.getEventHorizonTexture());
-					
-					frames = variant.getEventHorizonFrames();
-					if(frames <= 0)
-						frames = 1;
-					
-					Optional<Boolean> variantHasVortex = variant.hasVortex();
-					if(variantHasVortex.isPresent())
-						hasVortex = variantHasVortex.get();
-				}
-			}
-		}
+		if(!ClientStargateConfig.stargate_variants.get())
+			return optional;
 		
+		String variantString = stargate.getVariant();
+		
+		if(variantString.equals(StargateJourney.EMPTY))
+			return optional;
+		
+		ClientPacketListener clientPacketListener = minecraft.getConnection();
+		RegistryAccess registries = clientPacketListener.registryAccess();
+		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
+		
+		optional = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variantString)));
+		
+		return optional;
+	}
+	
+	/**
+	 * Method for getting the client variant of the Stargate
+	 * @param stargate
+	 * @return
+	 */
+	protected abstract Variant getClientVariant(StargateEntity stargate);
+	
+	protected void renderWormhole(AbstractStargateEntity stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	{
 		if(stargate.isConnected())
-	    	this.wormholeModel.renderWormhole(stargate, stack, source, eventHorizonTexture, frames, combinedLight, combinedOverlay, hasVortex);
+	    	this.wormholeModel.renderWormhole(stargate, stack, source, stargateVariant.getWormhole(), combinedLight, combinedOverlay);
 	}
 	
 	protected void renderCover(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
