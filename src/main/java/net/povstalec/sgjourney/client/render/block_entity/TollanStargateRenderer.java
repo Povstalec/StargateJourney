@@ -8,12 +8,10 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.TollanStargateModel;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
@@ -35,19 +33,19 @@ public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStarg
 	
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), 0.125F, true, 38F);
+		super(context, 0.125F, true, 38F);
 		this.stargateModel = new TollanStargateModel();
 	}
 
 	@Override
 	protected TollanStargateVariant getClientVariant(TollanStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = getVariant(stargate);
+		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
 			return ClientStargateVariants.getTollanStargateVariant(stargateVariant.get().clientVariant());
 		
-		return ClientStargateVariants.getTollanStargateVariant(getResourceLocation());
+		return ClientStargateVariants.getTollanStargateVariant(stargate.defaultVariant());
 	}
 	
 	@Override

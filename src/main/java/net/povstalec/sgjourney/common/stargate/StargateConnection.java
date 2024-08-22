@@ -298,8 +298,8 @@ public final class StargateConnection
 		{
 			if(doKawoosh())
 			{
-				playStargateOpenSound(this.dialingStargate, kawooshStartTicks, this.openTime);
-				playStargateOpenSound(this.dialedStargate, kawooshStartTicks, this.openTime);
+				playStargateOpenSound(this.dialingStargate, kawooshStartTicks, this.openTime, false);
+				playStargateOpenSound(this.dialedStargate, kawooshStartTicks, this.openTime, true);
 			}
 			
 			int addressLength = this.dialingStargate.getAddress().getLength();
@@ -326,7 +326,7 @@ public final class StargateConnection
 				}
 				else
 				{
-					this.dialedStargate.chevronSound(true, true, false, false);
+					this.dialedStargate.chevronSound((short) 0, true, false, false);
 					this.dialedStargate.updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.dialedStargate.getAddress().getLength() + 1, AbstractStargateEntity.getChevron(this.dialedStargate, this.dialedStargate.getAddress().getLength()), true, 0);
 				}
 			}
@@ -364,8 +364,8 @@ public final class StargateConnection
 		if(doKawoosh() && this.openTime < maxKawooshTicks)
 			return;
 
-		this.dialingStargate.idleWormholeSound();
-		this.dialedStargate.idleWormholeSound();
+		this.dialingStargate.idleWormholeSound(false);
+		this.dialedStargate.idleWormholeSound(true);
 		
 		if(this.connectionTime >= maxOpenTime && !energyBypassEnabled)
 		{
@@ -405,10 +405,10 @@ public final class StargateConnection
 			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 	}
 	
-	private final void playStargateOpenSound(AbstractStargateEntity stargate, int kawooshStartTicks, int ticks)
+	private final void playStargateOpenSound(AbstractStargateEntity stargate, int kawooshStartTicks, int ticks, boolean incoming)
 	{
 		if(ticks == kawooshStartTicks - stargate.getOpenSoundLead())
-			stargate.openWormholeSound();
+			stargate.openWormholeSound(incoming);
 	}
 	
 	private final void increaseTicks(int kawooshStartTicks, int maxKawooshTicks, int maxOpenTicks)

@@ -1,6 +1,6 @@
 {
-	"texture": "sgjourney:textures/entity/stargate/milky_way/milky_way_stargate.png",
-	"engaged_texture": "sgjourney:textures/entity/stargate/milky_way/milky_way_stargate_engaged.png",
+	"texture": "sgjourney:textures/entity/stargate/milky_way/milky_way_stargate_back_chevron.png",
+	"engaged_texture": "sgjourney:textures/entity/stargate/milky_way/milky_way_stargate_back_chevron_engaged.png",
 	
 	"wormhole":
 	{

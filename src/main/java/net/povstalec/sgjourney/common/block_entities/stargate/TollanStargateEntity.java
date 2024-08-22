@@ -1,14 +1,14 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
@@ -20,7 +20,7 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2,
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state, Stargate.Gen.GEN_2, 2,
 				VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 		this.symbolBounds = 47;
 	}
@@ -35,60 +35,6 @@ public class TollanStargateEntity extends AbstractStargateEntity
         
         super.onLoad();
     }
-
-	@Override
-	public SoundEvent getRotationSound()
-	{
-		return SoundInit.MILKY_WAY_RING_SPIN.get();
-	}
-
-	@Override
-	public SoundEvent getChevronEngageSound()
-	{
-		return SoundInit.TOLLAN_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronEngageSound()
-	{
-		return SoundInit.TOLLAN_PRIMARY_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getChevronIncomingSound()
-	{
-		return SoundInit.TOLLAN_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronIncomingSound()
-	{
-		return SoundInit.TOLLAN_PRIMARY_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeOpenSound()
-	{
-		return SoundInit.TOLLAN_WORMHOLE_OPEN.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeIdleSound()
-	{
-		return SoundInit.TOLLAN_WORMHOLE_IDLE.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeCloseSound()
-	{
-		return SoundInit.TOLLAN_WORMHOLE_CLOSE.get();
-	}
-
-	@Override
-	public SoundEvent getFailSound()
-	{
-		return SoundInit.TOLLAN_DIAL_FAIL.get();
-	}
 
 	@Override
 	public void playRotationSound(){}

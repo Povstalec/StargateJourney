@@ -1,12 +1,28 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
 import java.util.HashMap;
+import java.util.Optional;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.stellarview.StellarView;
 
 public class ClientStargateVariants
 {
+	private static Minecraft minecraft = Minecraft.getInstance();
+	
 	private static final HashMap<ResourceLocation, UniverseStargateVariant> UNIVERSE_STARGATE_VARIANTS = new HashMap<>();
 	private static final HashMap<ResourceLocation, MilkyWayStargateVariant> MILKY_WAY_STARGATE_VARIANTS = new HashMap<>();
 	private static final HashMap<ResourceLocation, PegasusStargateVariant> PEGASUS_STARGATE_VARIANTS = new HashMap<>();
@@ -51,7 +67,7 @@ public class ClientStargateVariants
 		if(MILKY_WAY_STARGATE_VARIANTS.containsKey(location))
 			return MILKY_WAY_STARGATE_VARIANTS.get(location);
 		
-		return MilkyWayStargateVariant.DEFAULT_VARIANT;
+		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? MilkyWayStargateVariant.DEFAULT_BACK_VARIANT : MilkyWayStargateVariant.DEFAULT_VARIANT;
 	}
 	
 	public static void addMilkyWayStargateVariant(ResourceLocation location, MilkyWayStargateVariant stargateVariant)
@@ -69,7 +85,7 @@ public class ClientStargateVariants
 		if(PEGASUS_STARGATE_VARIANTS.containsKey(location))
 			return PEGASUS_STARGATE_VARIANTS.get(location);
 		
-		return PegasusStargateVariant.DEFAULT_VARIANT;
+		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? PegasusStargateVariant.DEFAULT_BACK_VARIANT : PegasusStargateVariant.DEFAULT_VARIANT;
 	}
 	
 	public static void addPegasusStargateVariant(ResourceLocation location, PegasusStargateVariant stargateVariant)
@@ -77,7 +93,7 @@ public class ClientStargateVariants
 		if(!PEGASUS_STARGATE_VARIANTS.containsKey(location))
 			PEGASUS_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
-			StellarView.LOGGER.error("Milky Way Stargate Variant " + location.toString() + " already exists");
+			StellarView.LOGGER.error("Pegasus Stargate Variant " + location.toString() + " already exists");
 	}
 	
 	
@@ -113,6 +129,71 @@ public class ClientStargateVariants
 		if(!CLASSIC_STARGATE_VARIANTS.containsKey(location))
 			CLASSIC_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
-			StellarView.LOGGER.error("Milky Way Stargate Variant " + location.toString() + " already exists");
+			StellarView.LOGGER.error("Classic Stargate Variant " + location.toString() + " already exists");
+	}
+	
+	
+	
+	public static ClientStargateVariant getClientStargateVariant(ResourceLocation location, AbstractStargateEntity stargate)
+	{
+		if(stargate instanceof UniverseStargateEntity)
+			return getUniverseStargateVariant(location);
+		else if(stargate instanceof MilkyWayStargateEntity)
+			return getMilkyWayStargateVariant(location);
+		else if(stargate instanceof PegasusStargateEntity)
+			return getPegasusStargateVariant(location);
+
+		else if(stargate instanceof TollanStargateEntity)
+			return getTollanStargateVariant(location);
+
+		else if(stargate instanceof ClassicStargateEntity)
+			return getClassicStargateVariant(location);
+		
+		// Milky Way Stargate Variant will be the defaultest of defaults
+		return MilkyWayStargateVariant.DEFAULT_VARIANT;
+	}
+	
+	
+	
+	public static RotatingStargateVariant getRotatingStargateVariant(ResourceLocation location, AbstractStargateEntity stargate)
+	{
+		if(stargate instanceof UniverseStargateEntity)
+			return getUniverseStargateVariant(location);
+		else if(stargate instanceof MilkyWayStargateEntity)
+			return getMilkyWayStargateVariant(location);
+		else if(stargate instanceof PegasusStargateEntity)
+			return getPegasusStargateVariant(location);
+
+		//else if(stargate instanceof ClassicStargateEntity)
+		//	return getClassicStargateVariant(location);
+		
+		// Milky Way Stargate Variant will be the defaultest of defaults
+		return MilkyWayStargateVariant.DEFAULT_VARIANT;
+	}
+	
+	/**
+	 * Method for getting the common variant of the Stargate
+	 * @param stargate
+	 * @return
+	 */
+	public static Optional<StargateVariant> getVariant(AbstractStargateEntity stargate)
+	{
+		Optional<StargateVariant> optional = Optional.empty();
+		
+		if(!ClientStargateConfig.stargate_variants.get())
+			return optional;
+		
+		String variantString = stargate.getVariant();
+		
+		if(variantString.equals(StargateJourney.EMPTY))
+			return optional;
+		
+		ClientPacketListener clientPacketListener = minecraft.getConnection();
+		RegistryAccess registries = clientPacketListener.registryAccess();
+		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
+		
+		optional = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variantString)));
+		
+		return optional;
 	}
 }

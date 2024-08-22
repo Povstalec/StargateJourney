@@ -89,7 +89,8 @@ import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 public class StargateJourney
 {
     public static final String MODID = "sgjourney";
-    public static final String EMPTY = MODID + ":empty";
+    public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(MODID, "empty");
+    public static final String EMPTY = EMPTY_LOCATION.toString();
     
     public static final String STELLAR_VIEW_MODID = "stellarview";
     public static final String OCULUS_MODID = "oculus";

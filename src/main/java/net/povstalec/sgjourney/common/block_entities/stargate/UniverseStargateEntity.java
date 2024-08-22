@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +16,6 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -50,7 +49,7 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.UNIVERSE_STARGATE.get(), pos, state, Stargate.Gen.GEN_1, 1);
+		super(BlockEntityInit.UNIVERSE_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state, Stargate.Gen.GEN_1, 1);
 		this.setOpenSoundLead(8);
 		this.symbolBounds = 35;
 	}
@@ -86,66 +85,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		tag.putInt("Rotation", rotation);
 		tag.putIntArray("AddressBuffer", addressBuffer.toArray());
 		tag.putInt("SymbolBuffer", symbolBuffer);
-	}
-
-	@Override
-	public SoundEvent getRotationSound()
-	{
-		return SoundInit.UNIVERSE_RING_SPIN.get();
-	}
-
-	@Override
-	public SoundEvent getChevronEngageSound()
-	{
-		return SoundInit.UNIVERSE_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronEngageSound()
-	{
-		return SoundInit.UNIVERSE_PRIMARY_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getChevronIncomingSound()
-	{
-		return SoundInit.UNIVERSE_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronIncomingSound()
-	{
-		return SoundInit.UNIVERSE_PRIMARY_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeOpenSound()
-	{
-		return SoundInit.UNIVERSE_WORMHOLE_OPEN.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeIdleSound()
-	{
-		return SoundInit.UNIVERSE_WORMHOLE_IDLE.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeCloseSound()
-	{
-		return SoundInit.UNIVERSE_WORMHOLE_CLOSE.get();
-	}
-
-	@Override
-	public SoundEvent getFailSound()
-	{
-		return SoundInit.UNIVERSE_DIAL_FAIL.get();
-	}
-	
-	@Override
-	public SoundEvent getStartupSound()
-	{
-		return SoundInit.UNIVERSE_DIAL_START.get();
 	}
 	
 	@Override

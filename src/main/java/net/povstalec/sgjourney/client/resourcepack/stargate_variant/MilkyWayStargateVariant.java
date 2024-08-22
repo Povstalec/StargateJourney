@@ -15,6 +15,9 @@ import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 public class MilkyWayStargateVariant extends GenericStargateVariant
 {
+	public static final String CHEVRON_OPEN_SOUNDS = "chevron_open_sounds";
+	public static final String CHEVRON_ENCODE_SOUNDS = "chevron_encode_sounds";
+	
 	public static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate.png");
 	public static final ResourceLocation STARGATE_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate_back_chevron.png");
 	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate_engaged.png");
@@ -24,6 +27,8 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_event_horizon_shiny.png");
 
 	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = new ResourceLocation(StargateJourney.MODID, "milky_way_chevron_engage");
+	public static final ResourceLocation STARGATE_CHEVRON_OPEN = new ResourceLocation(StargateJourney.MODID, "milky_way_chevron_open");
+	public static final ResourceLocation STARGATE_CHEVRON_ENCODE = new ResourceLocation(StargateJourney.MODID, "milky_way_chevron_encode");
 
 	public static final ResourceLocation STARGATE_RING_SPIN_START = new ResourceLocation(StargateJourney.MODID, "milky_way_ring_spin_start");
 	public static final ResourceLocation STARGATE_RING_SPIN = new ResourceLocation(StargateJourney.MODID, "milky_way_ring_spin");
@@ -35,42 +40,32 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 
 	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "milky_way_dial_fail");
 	
-	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 1, 32, 255),
-			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 1, 32, 190))));
-	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 255),
-			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 190))));
+	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 1, 32, 1F),
+			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 1, 32, 0.75F))));
+	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 1F),
+			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 0.75F))));
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ColorUtil.RGBA(48, 49, 63, 255));
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
-	// TODO Chevron open sound
-	// TODO Chevron encode sound
+	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_OPEN_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_OPEN);
+	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENCODE_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENCODE);
+	
+	protected ResourcepackSounds.Chevron chevronOpenSounds;
+	protected ResourcepackSounds.Chevron chevronEncodeSounds;
 
-	public static final ResourcepackSounds.Rotation STARGATE_ROTATION_SOUNDS = new ResourcepackSounds.Rotation(Optional.of(STARGATE_RING_SPIN_START), Optional.of(STARGATE_RING_SPIN), Optional.of(STARGATE_RING_SPIN_STOP));
+	public static final ResourcepackSounds.Rotation STARGATE_ROTATION_SOUNDS = new ResourcepackSounds.Rotation(STARGATE_RING_SPIN_START, STARGATE_RING_SPIN, STARGATE_RING_SPIN_STOP);
 	public static final ResourcepackSounds.Wormhole STARGATE_WROMHOLE_SOUNDS = new ResourcepackSounds.Wormhole(Either.right(STARGATE_WORMHOLE_OPEN), Either.right(STARGATE_WORMHOLE_IDLE), Either.right(STARGATE_WORMHOLE_CLOSE));
 	public static final ResourcepackSounds.Fail STARGATE_FAIL_SOUNDS = new ResourcepackSounds.Fail(STARGATE_FAIL);
 	
 	public static final MilkyWayStargateVariant DEFAULT_VARIANT = new MilkyWayStargateVariant(STARGATE_TEXTURE, Optional.empty(),
 			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
-			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS)
-			{
-				
-				public ResourceLocation texture()
-				{
-						return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? STARGATE_TEXTURE_BACK : STARGATE_TEXTURE;
-				}
-		
-				public ResourceLocation encodedTexture()
-				{
-					return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? STARGATE_ENGAGED_TEXTURE_BACK : STARGATE_ENGAGED_TEXTURE;
-				}
-				
-				public ResourceLocation engagedTexture()
-				{
-					return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? STARGATE_ENGAGED_TEXTURE_BACK : STARGATE_ENGAGED_TEXTURE;
-				}
-			};
+			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_CHEVRON_OPEN_SOUNDS, STARGATE_CHEVRON_ENCODE_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
+			
+	public static final MilkyWayStargateVariant DEFAULT_BACK_VARIANT = new MilkyWayStargateVariant(STARGATE_TEXTURE_BACK, Optional.empty(),
+			STARGATE_ENGAGED_TEXTURE_BACK, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
+			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_CHEVRON_OPEN_SOUNDS, STARGATE_CHEVRON_ENCODE_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
 	
 	public static final Codec<MilkyWayStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			// Gate and chevron textures
@@ -85,6 +80,8 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 			// Sounds
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_ENGAGED_SOUNDS).forGetter(MilkyWayStargateVariant::chevronEngagedSounds),
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_INCOMING_SOUNDS).forGetter(MilkyWayStargateVariant::chevronIncomingSounds),
+			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_OPEN_SOUNDS).forGetter(MilkyWayStargateVariant::chevronOpenSounds),
+			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_ENCODE_SOUNDS).forGetter(MilkyWayStargateVariant::chevronEncodeSounds),
 			
 			ResourcepackSounds.Rotation.CODEC.fieldOf(ROTATION_SOUNDS).forGetter(MilkyWayStargateVariant::rotationSounds),
 			ResourcepackSounds.Wormhole.CODEC.fieldOf(WORMHOLE_SOUNDS).forGetter(MilkyWayStargateVariant::wormholeSounds),
@@ -94,10 +91,24 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 	public MilkyWayStargateVariant(ResourceLocation texture, Optional<ResourceLocation> encodedTexture, ResourceLocation engagedTexture,
 			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole, ResourcepackModel.SymbolsModel symbols,
 			ResourcepackSounds.Chevron chevronEngagedSounds, ResourcepackSounds.Chevron chevronIncomingSounds,
+			ResourcepackSounds.Chevron chevronOpenSounds, ResourcepackSounds.Chevron chevronEncodeSounds,
 			ResourcepackSounds.Rotation rotationSounds, ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds)
 	{
 		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, chevronEngagedSounds,
 				chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
+		
+		this.chevronOpenSounds = chevronOpenSounds;
+		this.chevronEncodeSounds = chevronEncodeSounds;
+	}
+	
+	public ResourcepackSounds.Chevron chevronOpenSounds()
+	{
+		return chevronOpenSounds;
+	}
+	
+	public ResourcepackSounds.Chevron chevronEncodeSounds()
+	{
+		return chevronEncodeSounds;
 	}
 	
 	

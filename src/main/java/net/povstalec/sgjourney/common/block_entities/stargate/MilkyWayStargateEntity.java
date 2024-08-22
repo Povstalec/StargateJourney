@@ -7,20 +7,21 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -37,6 +38,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 
 	public static final int STEPS_PER_SYMBOL = MAX_ROTATION / SYMBOL_NUMBER;
 	public static final int SYMBOL_ADDITION = STEPS_PER_SYMBOL / 2;
+
+	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way_back_chevron");
 	
 	private int rotation = 0;
 	public int oldRotation = 0;
@@ -54,7 +57,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), pos, state, Stargate.Gen.GEN_2, 2);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state, Stargate.Gen.GEN_2, 2);
 	}
 
 	@Override
@@ -107,88 +110,15 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
     	super.deserializeStargateInfo(tag, isUpgraded);
 	}
 	
+	@Override
+	public ResourceLocation defaultVariant()
+	{
+		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();//TODO I hope this thing doesn't crash on servers
+	}
+	
 	public boolean isChevronOpen()
 	{
 		return this.isChevronOpen;
-	}
-	
-	public SoundEvent getRingRotationBuildupSound()
-	{
-		return SoundInit.MILKY_WAY_RING_SPIN_START.get();
-	}
-	
-	@Override
-	public SoundEvent getRotationSound()
-	{
-		return SoundInit.MILKY_WAY_RING_SPIN.get();
-	}
-	
-	public SoundEvent getRingRotationStopSound()
-	{
-		return SoundInit.MILKY_WAY_RING_SPIN_STOP.get();
-	}
-
-	@Override
-	public SoundEvent getChevronEngageSound()
-	{
-		return SoundInit.MILKY_WAY_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronEngageSound()
-	{
-		return SoundInit.MILKY_WAY_PRIMARY_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getChevronIncomingSound()
-	{
-		return SoundInit.MILKY_WAY_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronIncomingSound()
-	{
-		return SoundInit.MILKY_WAY_PRIMARY_CHEVRON_INCOMING.get();
-	}
-	
-	public SoundEvent getChevronOpenSound()
-	{
-		return SoundInit.MILKY_WAY_CHEVRON_OPEN.get();
-	}
-	
-	public SoundEvent getPrimaryChevronOpenSound()
-	{
-		return SoundInit.MILKY_WAY_PRIMARY_CHEVRON_OPEN.get();
-	}
-	
-	public SoundEvent getChevronEncodeSound()
-	{
-		return SoundInit.MILKY_WAY_CHEVRON_ENCODE.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeOpenSound()
-	{
-		return SoundInit.MILKY_WAY_WORMHOLE_OPEN.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeIdleSound()
-	{
-		return SoundInit.MILKY_WAY_WORMHOLE_IDLE.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeCloseSound()
-	{
-		return SoundInit.MILKY_WAY_WORMHOLE_CLOSE.get();
-	}
-
-	@Override
-	public SoundEvent getFailSound()
-	{
-		return SoundInit.MILKY_WAY_DIAL_FAIL.get();
 	}
 
 	private void manualDialing()
@@ -257,6 +187,19 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return this.rotation != this.oldRotation;
 	}
 	
+	private short getCurrentChevron()
+	{
+		if(getCurrentSymbol() == 0)
+			return 0;
+		
+		// If the current symbol under the primary chevron is the same one as the last encoded in the address, we want the current chevron
+		if(getAddress().getLength() > 0 && getCurrentSymbol() == getAddress().getSymbol(getAddress().getLength() - 1))
+			return (short) getAddress().getLength();
+		
+		// Otherwise we want the next chevron
+		return (short) (getAddress().getLength() + 1);
+	}
+	
 	public Stargate.Feedback openChevron()
 	{
 		if(!this.isChevronOpen)
@@ -264,7 +207,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			if(!getAddress().containsSymbol(getCurrentSymbol()))
 			{
 				if(!level.isClientSide())
-					PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentSymbol() == 0, false, true, false));
+					PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
 				this.isChevronOpen = true;
 				
 				if(!level.isClientSide())
@@ -304,7 +247,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			
 			// This is a dumb way to make sure the sound plays even after the chevron is engaged 
 			if(feedback == Stargate.Feedback.SYMBOL_IN_ADDRESS)
-				chevronSound(getCurrentSymbol() == 0, false, false, false);
+				chevronSound(getCurrentChevron(), false, false, false);
 			
 			return setRecentFeedback(feedback);
 		}

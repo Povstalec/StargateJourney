@@ -54,16 +54,21 @@
 		"primary_chevron": "sgjourney:empty"
 	},
 	
+	"chevron_incoming_sounds":
+	{
+		"default": "sgjourney:movie_chevron_engage",
+		"primary_chevron": "sgjourney:empty"
+	},
+	
 	"chevron_open_sounds":
 	{
 		"default": "sgjourney:movie_chevron_open",
 		"primary_chevron": "sgjourney:movie_chevron_open"
 	},
 	
-	"chevron_incoming_sounds":
+	"chevron_encode_sounds":
 	{
-		"default": "sgjourney:movie_chevron_engage",
-		"primary_chevron": "sgjourney:empty"
+		"default": "sgjourney:milky_way_chevron_encode"
 	},
 	
 	"rotation_sounds":

@@ -38,7 +38,7 @@ public class ResourcepackReloadListener
 		protected void apply(Map<ResourceLocation, JsonElement> jsonMap, ResourceManager manager, ProfilerFiller filler)
 		{
     		ClientStargateVariants.clear();
-			System.out.println("---------- Loading Stargate Variants ----------"); // TODO Remove this
+    		StargateJourney.LOGGER.info("---------- Loading Stargate Variants ----------");
     		
 			for(Map.Entry<ResourceLocation, JsonElement> jsonEntry : jsonMap.entrySet())
 			{
@@ -58,11 +58,11 @@ public class ResourcepackReloadListener
 				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addMilkyWayStargateVariant(location, stargateVariant);
-				System.out.println("-------------------- Loaded " + location); // TODO Remove this
+				StargateJourney.LOGGER.info("Loaded Milky Way Stargate Variant: " + location.toString());
 			}
 			catch(RuntimeException e)
 			{
-				StargateJourney.LOGGER.error("Could not load " + location.toString());
+				StargateJourney.LOGGER.error("Could not load Milky Way Stargate Variant: " + location.toString());
 				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}

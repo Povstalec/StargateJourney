@@ -7,10 +7,8 @@ import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.MilkyWayStargateModel;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
@@ -31,19 +29,19 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayS
 	
 	public MilkyWayStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), 0.25F, false, 84F);
+		super(context, 0.25F, false, 84F);
 		this.stargateModel = new MilkyWayStargateModel();
 	}
 	
 	@Override
 	protected MilkyWayStargateVariant getClientVariant(MilkyWayStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = getVariant(stargate);
+		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
 			return ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.get().clientVariant());
 		
-		return ClientStargateVariants.getMilkyWayStargateVariant(getResourceLocation());
+		return ClientStargateVariants.getMilkyWayStargateVariant(stargate.defaultVariant());
 	}
 	
 	@Override

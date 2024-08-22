@@ -7,10 +7,8 @@ import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.ClassicStargateModel;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
@@ -31,19 +29,19 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicSta
 	
 	public ClassicStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, new ResourceLocation(StargateJourney.MODID, "classic/classic"), 0.25F, true, 55F);
+		super(context, 0.25F, true, 55F);
 		this.stargateModel = new ClassicStargateModel();
 	}
 
 	@Override
 	protected ClassicStargateVariant getClientVariant(ClassicStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = getVariant(stargate);
+		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
 			return ClientStargateVariants.getClassicStargateVariant(stargateVariant.get().clientVariant());
 		
-		return ClientStargateVariants.getClassicStargateVariant(getResourceLocation());
+		return ClientStargateVariants.getClassicStargateVariant(stargate.defaultVariant());
 	}
 	
 	@Override

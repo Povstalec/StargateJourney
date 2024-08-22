@@ -21,7 +21,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -61,7 +60,6 @@ import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.items.IrisItem;
@@ -151,7 +149,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected String symbols = EMPTY;
 	
 	protected String variant = EMPTY;
-
+	private final ResourceLocation defaultVariant;
+	
 	protected short oldIrisProgress = 0;
 	protected short irisProgress = 0;
 	
@@ -184,21 +183,23 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
 	protected final ItemStackHandler itemHandler = createIrisHandler();
 
-	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
 			float verticalCenterHeight, float horizontalCenterHeight)
 	{
 		super(blockEntity, pos, state);
 		
-		generation = gen;
+		this.defaultVariant = defaultVariant;
+		
+		this.generation = gen;
 		this.network = defaultNetwork;
 		
 		this.verticalCenterHeight = verticalCenterHeight;
 		this.horizontalCenterHeight = horizontalCenterHeight;
 	}
 
-	public AbstractStargateEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
 	{
-		this(blockEntity, pos, state, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
+		this(blockEntity, defaultVariant, pos, state, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
 	@Override
@@ -464,7 +465,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			return resetStargate(Stargate.Feedback.INVALID_ADDRESS);
 		growAddress(symbol);
 		
-		chevronSound(false, incoming, false, encodeSound);
+		chevronSound((short) getAddress().getLength(), incoming, false, encodeSound); //TODO Is this address length thing right?
 		
 		if(!incoming)
 		{
@@ -489,14 +490,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		if(!address.isComplete())
 		{
-			chevronSound(true, false, false, false);
+			chevronSound((short) 0, false, false, false);
 			return resetStargate(Stargate.Feedback.INCOMPLETE_ADDRESS);
 		}
 		else if(!isConnected())
 		{
 			if(!isObstructed())
 			{
-				chevronSound(true, false, false, false);
+				chevronSound((short) 0, false, false, false);
 				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, 0, false, 0);
 				return setRecentFeedback(engageStargate(this.getAddress(), true));
 			}
@@ -508,32 +509,32 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 	}
 	
-	public void chevronSound(boolean primary, boolean incoming, boolean open, boolean encode)
+	public void chevronSound(short chevron, boolean incoming, boolean open, boolean encode)
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, primary, incoming, open, encode));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, chevron, incoming, open, encode));
 	}
 	
-	public void openWormholeSound()
+	public void openWormholeSound(boolean incoming)
 	{
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.OpenWormhole(this.worldPosition));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.OpenWormhole(this.worldPosition, incoming));
 	}
 	
-	public void idleWormholeSound()
+	public void idleWormholeSound(boolean incoming)
 	{
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.IdleWormhole(this.worldPosition));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.IdleWormhole(this.worldPosition, incoming));
 	}
 	
-	public void closeWormholeSound()
+	public void closeWormholeSound(boolean incoming)
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.CloseWormhole(this.worldPosition));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.CloseWormhole(this.worldPosition, incoming));
 	}
 	
 	public abstract void playRotationSound();
@@ -675,7 +676,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		if(isConnected())
 		{
-			closeWormholeSound();
+			closeWormholeSound(!isDialingOut());
 			setConnected(StargateConnection.State.IDLE);
 		}
 
@@ -1281,6 +1282,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.variant;
 	}
 	
+	public ResourceLocation defaultVariant()
+	{
+		return this.defaultVariant;
+	}
+	
 	public void setAddress(Address address)
 	{
 		this.address = address;
@@ -1688,30 +1694,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	}
 	
 	public abstract Stargate.ChevronLockSpeed getChevronLockSpeed();
-	
-	public abstract SoundEvent getRotationSound();
-	
-	public abstract SoundEvent getChevronEngageSound();
-	
-	public abstract SoundEvent getPrimaryChevronEngageSound();
-	
-	public abstract SoundEvent getChevronIncomingSound();
-	
-	public abstract SoundEvent getPrimaryChevronIncomingSound();
-	
-	public abstract SoundEvent getWormholeOpenSound();
-	
-	public abstract SoundEvent getWormholeIdleSound();
-	
-	public abstract SoundEvent getWormholeCloseSound();
-
-	public abstract SoundEvent getFailSound();
-
-	//TODO Add it to Stargates other than Universe Stargate
-	public SoundEvent getStartupSound()
-	{
-		return SoundInit.EMPTY.get();
-	}
 	
 	@Override
 	public void getStatus(Player player)

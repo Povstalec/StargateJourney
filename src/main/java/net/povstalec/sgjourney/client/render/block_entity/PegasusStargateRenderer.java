@@ -7,10 +7,8 @@ import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.PegasusStargateModel;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
@@ -31,19 +29,19 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusSta
 	
 	public PegasusStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), 0.25F, false, 84F);
+		super(context, 0.25F, false, 84F);
 		this.stargateModel = new PegasusStargateModel();
 	}
 	
 	@Override
 	protected PegasusStargateVariant getClientVariant(PegasusStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = getVariant(stargate);
+		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
 			return ClientStargateVariants.getPegasusStargateVariant(stargateVariant.get().clientVariant());
 		
-		return ClientStargateVariants.getPegasusStargateVariant(getResourceLocation());
+		return ClientStargateVariants.getPegasusStargateVariant(stargate.defaultVariant());
 	}
 	
 	@Override

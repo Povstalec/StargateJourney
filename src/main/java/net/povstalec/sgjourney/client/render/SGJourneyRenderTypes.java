@@ -79,7 +79,7 @@ public class SGJourneyRenderTypes extends RenderType
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
-				.setWriteMaskState(COLOR_WRITE)
+				.setWriteMaskState(COLOR_WRITE) //TODO Maybe remove this
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(true));
