@@ -18,7 +18,7 @@ public class SGJourneyRenderTypes extends RenderType
 
 	public static RenderType symbol(ResourceLocation resourceLocation)
 	{
-		return create("symbol", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
+		return create("symbol", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ITEM_ENTITY_TRANSLUCENT_CULL_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
@@ -26,7 +26,6 @@ public class SGJourneyRenderTypes extends RenderType
 				.setOutputState(ITEM_ENTITY_TARGET)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(OVERLAY)
-				.setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
 				.createCompositeState(true));
 	}
 
@@ -38,7 +37,6 @@ public class SGJourneyRenderTypes extends RenderType
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
-				.setWriteMaskState(COLOR_WRITE) //TODO Maybe remove this
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(false));
@@ -52,7 +50,6 @@ public class SGJourneyRenderTypes extends RenderType
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
-				.setWriteMaskState(COLOR_WRITE) //TODO Maybe remove this
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(true));
@@ -79,7 +76,6 @@ public class SGJourneyRenderTypes extends RenderType
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
-				.setWriteMaskState(COLOR_WRITE) //TODO Maybe remove this
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(true));
@@ -99,7 +95,7 @@ public class SGJourneyRenderTypes extends RenderType
 	
 	public static RenderType stargate(ResourceLocation resourceLocation)
 	{
-		return create("stargate", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
+		return create("stargate", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
@@ -123,7 +119,7 @@ public class SGJourneyRenderTypes extends RenderType
 	
 	public static RenderType chevron(ResourceLocation resourceLocation)
 	{
-		return create("chevron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
+		return create("chevron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))

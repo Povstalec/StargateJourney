@@ -142,7 +142,7 @@ public class WormholeModel
 			for(int j = 0; j < totalSides; j++)
 			{
 				createTriangle(frontConsumer, matrix4, matrix3,
-						coordinates[i][j % coordinates[i].length][0], 
+						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
 						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
 						
@@ -155,7 +155,7 @@ public class WormholeModel
 						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0), frames, frontTexture.alpha(), textureTickOffset);
 				
 				createTriangle(frontConsumer, matrix4, matrix3,
-						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
+						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0],
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1],
 						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
@@ -163,8 +163,8 @@ public class WormholeModel
 						coordinates[i][(j + 1) % coordinates[i].length][1],
 						distortionMaker(isBlockedOld, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
-						coordinates[i + 1][j % coordinates[i + 1].length][0], 
-						coordinates[i + 1][j % coordinates[i + 1].length][1], 
+						coordinates[i + 1][j % coordinates[i + 1].length][0],
+						coordinates[i + 1][j % coordinates[i + 1].length][1],
 						distortionMaker(isBlocked, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0), frames, frontTexture.alpha(), textureTickOffset);
 			}
 			
@@ -402,7 +402,6 @@ public class WormholeModel
 			float x3, float y3, float z3,
 			int frames, float alpha, float textureTickOffset)
 	{
-		
 		consumer.vertex(matrix4, x1, y1, z1).color(1F, 1F, 1F, alpha).uv(x1 * MULTIPLY_STATIC + 0.5F, (y1 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames) + textureTickOffset)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
 		

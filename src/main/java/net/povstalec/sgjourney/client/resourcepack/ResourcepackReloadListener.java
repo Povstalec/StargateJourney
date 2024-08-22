@@ -16,8 +16,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
 import net.povstalec.stellarview.StellarView;
 
 public class ResourcepackReloadListener
@@ -25,6 +29,12 @@ public class ResourcepackReloadListener
 	public static final String PATH = StargateJourney.MODID;
 	
 	public static final String STARGATE_VARIANT = "stargate_variant";
+
+	public static final String UNIVERSE = "universe";
+	public static final String MILKY_WAY = "milky_way";
+	public static final String PEGASUS = "pegasus";
+	public static final String TOLLAN = "tollan";
+	public static final String CLASSIC = "classic";
 	
 	@Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ReloadListener extends SimpleJsonResourceReloadListener
@@ -46,7 +56,41 @@ public class ResourcepackReloadListener
 				JsonElement element = jsonEntry.getValue();
 				
 				if(canShortenPath(location, STARGATE_VARIANT))
-					addMilkyWayStargateVariant(shortenPath(location, STARGATE_VARIANT), element);
+				{
+					location = shortenPath(location, STARGATE_VARIANT);
+					
+					if(canShortenPath(location, UNIVERSE))
+						addUniverseStargateVariant(location, element);
+					
+					else if(canShortenPath(location, MILKY_WAY))
+						addMilkyWayStargateVariant(location, element);
+					
+					else if(canShortenPath(location, PEGASUS))
+						addPegasusStargateVariant(location, element);
+					
+					else if(canShortenPath(location, TOLLAN))
+						addTollanStargateVariant(location, element);
+					
+					else if(canShortenPath(location, CLASSIC))
+						addClassicStargateVariant(location, element);
+				}
+			}
+		}
+		
+		private static void addUniverseStargateVariant(ResourceLocation location, JsonElement element)
+		{
+			try
+			{
+				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
+				UniverseStargateVariant stargateVariant = UniverseStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				
+				ClientStargateVariants.addUniverseStargateVariant(location, stargateVariant);
+				StargateJourney.LOGGER.info("Loaded Universe Stargate Variant: " + location.toString());
+			}
+			catch(RuntimeException e)
+			{
+				StargateJourney.LOGGER.error("Could not load Universe Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}
 		
@@ -63,6 +107,57 @@ public class ResourcepackReloadListener
 			catch(RuntimeException e)
 			{
 				StargateJourney.LOGGER.error("Could not load Milky Way Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
+			}
+		}
+		
+		private static void addPegasusStargateVariant(ResourceLocation location, JsonElement element)
+		{
+			try
+			{
+				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
+				PegasusStargateVariant stargateVariant = PegasusStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				
+				ClientStargateVariants.addPegasusStargateVariant(location, stargateVariant);
+				StargateJourney.LOGGER.info("Loaded Pegasus Stargate Variant: " + location.toString());
+			}
+			catch(RuntimeException e)
+			{
+				StargateJourney.LOGGER.error("Could not load Pegasus Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
+			}
+		}
+		
+		private static void addTollanStargateVariant(ResourceLocation location, JsonElement element)
+		{
+			try
+			{
+				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
+				TollanStargateVariant stargateVariant = TollanStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				
+				ClientStargateVariants.addTollanStargateVariant(location, stargateVariant);
+				StargateJourney.LOGGER.info("Loaded Tollan Stargate Variant: " + location.toString());
+			}
+			catch(RuntimeException e)
+			{
+				StargateJourney.LOGGER.error("Could not load Tollan Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
+			}
+		}
+		
+		private static void addClassicStargateVariant(ResourceLocation location, JsonElement element)
+		{
+			try
+			{
+				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
+				ClassicStargateVariant stargateVariant = ClassicStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				
+				ClientStargateVariants.addClassicStargateVariant(location, stargateVariant);
+				StargateJourney.LOGGER.info("Loaded Classic Stargate Variant: " + location.toString());
+			}
+			catch(RuntimeException e)
+			{
+				StargateJourney.LOGGER.error("Could not load Classic Stargate Variant: " + location.toString());
 				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}

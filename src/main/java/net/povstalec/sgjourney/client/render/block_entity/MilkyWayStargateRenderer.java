@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.render.block_entity;
 
 import java.util.Optional;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -65,7 +66,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayS
             stack.mulPose(Axis.XP.rotationDegrees(-90));
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Axis.XP.rotationDegrees(90));
-		
+        
         this.stargateModel.setRotation(stargate.getRotation(partialTick) / (float) MilkyWayStargateEntity.MAX_ROTATION * 360F);
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
         

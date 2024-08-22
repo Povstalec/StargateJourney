@@ -1,0 +1,72 @@
+{
+	"texture": "sgjourney:textures/entity/stargate/tollan/tollan_stargate.png",
+	"engaged_texture": "sgjourney:textures/entity/stargate/tollan/tollan_stargate_engaged.png",
+	
+	"wormhole":
+	{
+		"event_horizon":
+		{
+			"front":
+			{
+				"texture": "sgjourney:textures/entity/stargate/tollan/tollan_event_horizon.png",
+				"rows": 1,
+				"columns": 32,
+				"alpha": 0.75
+			},
+			"back":
+			{
+				"texture": "sgjourney:textures/entity/stargate/tollan/tollan_event_horizon.png",
+				"rows": 1,
+				"columns": 32,
+				"alpha": 0.75
+			}
+		}
+	},
+	"shiny_wormhole":
+	{
+		"event_horizon":
+		{
+			"front":
+			{
+				"texture": "sgjourney:textures/entity/stargate/tollan/tollan_event_horizon_shiny.png",
+				"rows": 1,
+				"columns": 32,
+				"alpha": 0.75
+			},
+			"back":
+			{
+				"texture": "sgjourney:textures/entity/stargate/tollan/tollan_event_horizon_shiny.png",
+				"rows": 1,
+				"columns": 32,
+				"alpha": 0.75
+			}
+		}
+	},
+	
+	"symbols":
+	{
+		"symbol_color": { "red": 1.0, "green": 1.0, "blue": 1.0, "alpha": 1.0 }
+	},
+	
+	"chevron_engaged_sounds":
+	{
+		"default": "sgjourney:tollan_chevron_engage"
+	},
+	
+	"chevron_incoming_sounds":
+	{
+		"default": "sgjourney:tollan_chevron_engage"
+	},
+	
+	"wormhole_sounds":
+	{
+		"open": "sgjourney:tollan_wormhole_open",
+		"idle": "sgjourney:tollan_wormhole_idle",
+		"close": "sgjourney:tollan_wormhole_close"
+	},
+	
+	"fail_sounds":
+	{
+		"default": "sgjourney:tollan_dial_fail"
+	}
+}
