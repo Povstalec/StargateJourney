@@ -51,6 +51,13 @@
 		"permanent_symbols": "sgjourney:galaxy_milky_way"
 	},
 	
+	"stargate_model":
+	{
+		"movie_chevron_locking": false,
+		"movie_primary_chevron": false,
+		"raise_back_chevrons": false
+	},
+	
 	"chevron_engaged_sounds":
 	{
 		"default": "sgjourney:milky_way_chevron_engage"

@@ -48,6 +48,11 @@
 		"symbol_color": { "red": 0.188, "green": 0.192, "blue": 0.247, "alpha": 1.0 }
 	},
 	
+	"stargate_model":
+	{
+		"raise_back_chevrons": true
+	},
+	
 	"chevron_engaged_sounds":
 	{
 		"default": "sgjourney:milky_way_chevron_engage"

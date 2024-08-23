@@ -38,7 +38,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isPrimaryChevronRaised(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
 	{
-		if(stargateVariant.useMovieStargateModel())
+		if(stargateVariant.stargateModel().movieChevronLocking())
 		{
 			if(ClientStargateConfig.movie_primary_chevron_opens.get())
 				return stargate.isConnected();
@@ -55,7 +55,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isPrimaryChevronBackRaised(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
 	{
-		if(!stargateVariant.raiseBackChevrons())
+		if(!stargateVariant.stargateModel().raiseBackChevrons())
 			return false;
 		
 		return isPrimaryChevronRaised(stargate, stargateVariant);
@@ -70,7 +70,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isPrimaryChevronEngaged(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
 	{
-		if(!stargateVariant.useMovieStargateModel() && stargate.isChevronOpen())
+		if(!stargateVariant.stargateModel().movieChevronLocking() && stargate.isChevronOpen())
 			return true;
 			
 		if(stargate.isConnected())
@@ -82,7 +82,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isChevronRaised(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int chevronNumber)
 	{
-		if(!stargateVariant.useMovieStargateModel())
+		if(!stargateVariant.stargateModel().movieChevronLocking())
 			return false;
 		
 		int chevronsRendered = stargate.chevronsRendered();
@@ -116,7 +116,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isChevronBackRaised(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int chevronNumber)
 	{
-		if(!stargateVariant.raiseBackChevrons())
+		if(!stargateVariant.stargateModel().raiseBackChevrons())
 			return false;
 		
 		return isChevronRaised(stargate, stargateVariant, chevronNumber);
@@ -125,7 +125,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	protected boolean isChevronLowered(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int chevronNumber)
 	{
-		if(!stargateVariant.useMovieStargateModel())
+		if(!stargateVariant.stargateModel().movieChevronLocking())
 			return false;
 
 		int chevronsRendered = stargate.chevronsRendered();

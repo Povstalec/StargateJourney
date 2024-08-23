@@ -7,7 +7,7 @@ public enum ShieldingState implements StringRepresentable
 	OPEN("open", (short) 0, (short) 0),
 	
 	MOVING_1("moving_1", (short) 1, (short) 20),
-	MOVING_2("moving_2", (short) 2, (short)29),
+	MOVING_2("moving_2", (short) 2, (short) 29),
 	MOVING_3("moving_3", (short) 3, (short) 40),
 	MOVING_4("moving_4", (short) 4, (short) 48),
 	

@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,6 +17,8 @@ import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 public class UniverseStargateVariant extends RotatingStargateVariant
 {
+	public static final String ONLY_FRONT_ROTATES = "only_front_rotates";
+	
 	public static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_stargate.png");
 	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_stargate_engaged.png");
 
@@ -52,7 +56,10 @@ public class UniverseStargateVariant extends RotatingStargateVariant
 	
 	public static final UniverseStargateVariant DEFAULT_VARIANT = new UniverseStargateVariant(STARGATE_TEXTURE, Optional.empty(),
 			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
-			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
+			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS, Optional.empty());
+	
+	@Nullable
+	private Boolean onlyFrontRotates;
 	
 	public static final Codec<UniverseStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			// Gate and chevron textures
@@ -70,21 +77,29 @@ public class UniverseStargateVariant extends RotatingStargateVariant
 			
 			ResourcepackSounds.Rotation.CODEC.fieldOf(ROTATION_SOUNDS).forGetter(UniverseStargateVariant::rotationSounds),
 			ResourcepackSounds.Wormhole.CODEC.fieldOf(WORMHOLE_SOUNDS).forGetter(UniverseStargateVariant::wormholeSounds),
-			ResourcepackSounds.Fail.CODEC.fieldOf(FAIL_SOUNDS).forGetter(UniverseStargateVariant::failSounds)
+			ResourcepackSounds.Fail.CODEC.fieldOf(FAIL_SOUNDS).forGetter(UniverseStargateVariant::failSounds),
+			
+			Codec.BOOL.optionalFieldOf(ONLY_FRONT_ROTATES).forGetter(variant -> Optional.ofNullable(variant.onlyFrontRotates))
 			).apply(instance, UniverseStargateVariant::new));
 	
 	public UniverseStargateVariant(ResourceLocation texture, Optional<ResourceLocation> encodedTexture, ResourceLocation engagedTexture,
 			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole, ResourcepackModel.SymbolsModel symbols,
 			ResourcepackSounds.Chevron chevronEngagedSounds, ResourcepackSounds.Chevron chevronIncomingSounds,
-			ResourcepackSounds.Rotation rotationSounds, ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds)
+			ResourcepackSounds.Rotation rotationSounds, ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds,
+			Optional<Boolean> onlyFrontRotates)
 	{
 		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, chevronEngagedSounds,
 				chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
+		
+		if(onlyFrontRotates.isPresent())
+			this.onlyFrontRotates = onlyFrontRotates.get();
 	}
 	
-	// TODO A temporary way to handle this
 	public boolean onlyFrontRotates()
 	{
+		if(onlyFrontRotates != null)
+			return onlyFrontRotates;
+		
 		return ClientStargateConfig.universe_front_rotates.get();
 	}
 }

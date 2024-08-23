@@ -66,6 +66,8 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusSta
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Axis.XP.rotationDegrees(90));
         
+		//stack.translate(0, -0.15, 0);
+        
         this.stargateModel.setCurrentSymbol(stargate.currentSymbol);
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
 

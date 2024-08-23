@@ -109,7 +109,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		stack.translate(0, DEFAULT_RADIUS - 2.5F/16, 0);
 		
 		GenericChevronModel.renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate, stargateVariant), isPrimaryChevronBackRaised(stargate, stargateVariant));
-		if(stargateVariant.useMovieStargateModel())
+		if(stargateVariant.stargateModel().useMovieStargatePrimaryChevron())
 			MovieChevronModel.renderMovieChevronFront(stack, consumer, source, light);
 		else
 			GenericChevronModel.renderOuterChevronFront(stack, consumer, source, light, isPrimaryChevronLowered(stargate, stargateVariant));

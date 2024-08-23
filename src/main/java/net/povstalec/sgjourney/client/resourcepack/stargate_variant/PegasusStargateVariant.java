@@ -44,6 +44,8 @@ public class PegasusStargateVariant extends GenericStargateVariant
 			true, true,
 			Optional.empty(), Optional.empty());
 	
+	public static final GenericStargateVariant.GenericStargateModel GENERIC_MODEL = new GenericStargateVariant.GenericStargateModel(Optional.of(false), Optional.of(false), Optional.of(false));
+	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_INCOMING);
 
@@ -52,11 +54,11 @@ public class PegasusStargateVariant extends GenericStargateVariant
 	public static final ResourcepackSounds.Fail STARGATE_FAIL_SOUNDS = new ResourcepackSounds.Fail(STARGATE_FAIL);
 	
 	public static final PegasusStargateVariant DEFAULT_VARIANT = new PegasusStargateVariant(STARGATE_TEXTURE, Optional.empty(),
-			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
+			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS, GENERIC_MODEL,
 			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
 			
 	public static final PegasusStargateVariant DEFAULT_BACK_VARIANT = new PegasusStargateVariant(STARGATE_TEXTURE_BACK, Optional.empty(),
-			STARGATE_ENGAGED_TEXTURE_BACK, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
+			STARGATE_ENGAGED_TEXTURE_BACK, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS, GENERIC_MODEL,
 			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
 	
 	public static final Codec<PegasusStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -69,6 +71,8 @@ public class PegasusStargateVariant extends GenericStargateVariant
 			ResourcepackModel.Wormhole.CODEC.optionalFieldOf(SHINY_WORMHOLE).forGetter(PegasusStargateVariant::shinyWormhole),
 			// Symbols
 			ResourcepackModel.SymbolsModel.CODEC.fieldOf(SYMBOLS).forGetter(PegasusStargateVariant::symbols),
+			// Model
+			GenericStargateVariant.GenericStargateModel.CODEC.optionalFieldOf(STARGATE_MODEL, GENERIC_MODEL).forGetter(PegasusStargateVariant::stargateModel),
 			// Sounds
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_ENGAGED_SOUNDS).forGetter(PegasusStargateVariant::chevronEngagedSounds),
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_INCOMING_SOUNDS).forGetter(PegasusStargateVariant::chevronIncomingSounds),
@@ -80,24 +84,12 @@ public class PegasusStargateVariant extends GenericStargateVariant
 	
 	public PegasusStargateVariant(ResourceLocation texture, Optional<ResourceLocation> encodedTexture, ResourceLocation engagedTexture,
 			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole, ResourcepackModel.SymbolsModel symbols,
+			GenericStargateModel stargateModel,
 			ResourcepackSounds.Chevron chevronEngagedSounds, ResourcepackSounds.Chevron chevronIncomingSounds,
 			ResourcepackSounds.Rotation rotationSounds, ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds)
 	{
-		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, chevronEngagedSounds,
-				chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
-	}
-	
-	
-	@Override
-	public boolean useMovieStargateModel()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean raiseBackChevrons()
-	{
-		return false;
+		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, stargateModel,
+				chevronEngagedSounds, chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
 	}
 	
 }

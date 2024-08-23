@@ -47,6 +47,47 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ColorUtil.RGBA(48, 49, 63, 255));
 	
+	public static final GenericStargateVariant.GenericStargateModel GENERIC_MODEL = new GenericStargateVariant.GenericStargateModel(Optional.empty(), Optional.empty(), Optional.of(false))
+	{
+		@Override
+		public boolean movieChevronLocking()
+		{
+			if(movieChevronLocking != null)
+				return movieChevronLocking;
+			
+			return ClientStargateConfig.use_movie_stargate_model.get();
+		}
+
+		@Override
+		public boolean useMovieStargatePrimaryChevron()
+		{
+			if(useMovieStargatePrimaryChevron != null)
+				return useMovieStargatePrimaryChevron;
+			
+			return ClientStargateConfig.use_movie_stargate_model.get();
+		}
+	};
+	public static final GenericStargateVariant.GenericStargateModel GENERIC_MODEL_BACK_CHEVRON = new GenericStargateVariant.GenericStargateModel(Optional.empty(), Optional.empty(), Optional.of(true))
+	{
+		@Override
+		public boolean movieChevronLocking()
+		{
+			if(movieChevronLocking != null)
+				return movieChevronLocking;
+			
+			return ClientStargateConfig.use_movie_stargate_model.get();
+		}
+
+		@Override
+		public boolean useMovieStargatePrimaryChevron()
+		{
+			if(useMovieStargatePrimaryChevron != null)
+				return useMovieStargatePrimaryChevron;
+			
+			return ClientStargateConfig.use_movie_stargate_model.get();
+		}
+	};
+	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_OPEN_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_OPEN);
@@ -60,11 +101,11 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 	public static final ResourcepackSounds.Fail STARGATE_FAIL_SOUNDS = new ResourcepackSounds.Fail(STARGATE_FAIL);
 	
 	public static final MilkyWayStargateVariant DEFAULT_VARIANT = new MilkyWayStargateVariant(STARGATE_TEXTURE, Optional.empty(),
-			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
+			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS, GENERIC_MODEL,
 			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_CHEVRON_OPEN_SOUNDS, STARGATE_CHEVRON_ENCODE_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
 			
 	public static final MilkyWayStargateVariant DEFAULT_BACK_VARIANT = new MilkyWayStargateVariant(STARGATE_TEXTURE_BACK, Optional.empty(),
-			STARGATE_ENGAGED_TEXTURE_BACK, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
+			STARGATE_ENGAGED_TEXTURE_BACK, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS, GENERIC_MODEL_BACK_CHEVRON,
 			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_CHEVRON_OPEN_SOUNDS, STARGATE_CHEVRON_ENCODE_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
 	
 	public static final Codec<MilkyWayStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -77,6 +118,8 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 			ResourcepackModel.Wormhole.CODEC.optionalFieldOf(SHINY_WORMHOLE).forGetter(MilkyWayStargateVariant::shinyWormhole),
 			// Symbols
 			ResourcepackModel.SymbolsModel.CODEC.fieldOf(SYMBOLS).forGetter(MilkyWayStargateVariant::symbols),
+			// Model
+			GenericStargateVariant.GenericStargateModel.CODEC.fieldOf(STARGATE_MODEL).forGetter(MilkyWayStargateVariant::stargateModel),
 			// Sounds
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_ENGAGED_SOUNDS).forGetter(MilkyWayStargateVariant::chevronEngagedSounds),
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_INCOMING_SOUNDS).forGetter(MilkyWayStargateVariant::chevronIncomingSounds),
@@ -90,12 +133,13 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 	
 	public MilkyWayStargateVariant(ResourceLocation texture, Optional<ResourceLocation> encodedTexture, ResourceLocation engagedTexture,
 			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole, ResourcepackModel.SymbolsModel symbols,
+			GenericStargateModel stargateModel,
 			ResourcepackSounds.Chevron chevronEngagedSounds, ResourcepackSounds.Chevron chevronIncomingSounds,
 			ResourcepackSounds.Chevron chevronOpenSounds, ResourcepackSounds.Chevron chevronEncodeSounds,
 			ResourcepackSounds.Rotation rotationSounds, ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds)
 	{
-		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, chevronEngagedSounds,
-				chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
+		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, stargateModel,
+				chevronEngagedSounds, chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
 		
 		this.chevronOpenSounds = chevronOpenSounds;
 		this.chevronEncodeSounds = chevronEncodeSounds;
@@ -109,19 +153,5 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 	public ResourcepackSounds.Chevron chevronEncodeSounds()
 	{
 		return chevronEncodeSounds;
-	}
-	
-	
-
-	@Override
-	public boolean useMovieStargateModel()
-	{
-		return ClientStargateConfig.use_movie_stargate_model.get();
-	}
-
-	@Override
-	public boolean raiseBackChevrons()
-	{
-		return ClientStargateConfig.milky_way_stargate_back_lights_up.get();
 	}
 }

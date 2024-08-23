@@ -83,5 +83,7 @@
 	"fail_sounds":
 	{
 		"default": "sgjourney:universe_dial_fail"
-	}
+	},
+	
+	"only_front_rotates": true
 }

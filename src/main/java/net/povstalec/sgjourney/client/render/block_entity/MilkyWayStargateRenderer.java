@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.client.render.block_entity;
 
 import java.util.Optional;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -74,10 +73,11 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayS
 		//stack.mulPose(Axis.ZP.rotationDegrees(90));
 		//stack.translate(2.5, -2.5, 0);
 		
-		//shieldModel.renderShield(stargate, stack, source, combinedLight, combinedOverlay);
 		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
         
         this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+		
+        //shieldModel.renderShield(stargate, stack, source, combinedLight, combinedOverlay); //TODO Check if these things render correctly with Oculus
 	    
 	    stack.popPose();
 	}
