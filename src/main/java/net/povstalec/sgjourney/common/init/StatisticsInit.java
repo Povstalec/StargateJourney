@@ -20,6 +20,7 @@ public class StatisticsInit
 	public static final RegistryObject<ResourceLocation> TIMES_USED_WORMHOLE = STATISTICS.register("times_used_wormhole", () -> registerDefaultStatistic("times_used_wormhole"));
 	public static final RegistryObject<ResourceLocation> TIMES_KILLED_BY_KAWOOSH = STATISTICS.register("times_killed_by_kawoosh", () -> registerDefaultStatistic("times_killed_by_kawoosh"));
 	public static final RegistryObject<ResourceLocation> TIMES_KILLED_BY_WORMHOLE = STATISTICS.register("times_killed_by_wormhole", () -> registerDefaultStatistic("times_killed_by_wormhole"));
+	public static final RegistryObject<ResourceLocation> TIMES_SMASHED_AGAINST_IRIS = STATISTICS.register("times_smashed_against_iris", () -> registerDefaultStatistic("times_smashed_against_iris"));
 	public static final RegistryObject<ResourceLocation> DISTANCE_TRAVELED_BY_STARGATE = STATISTICS.register("distance_traveled_by_stargate", () -> registerDistanceStatistic("distance_traveled_by_stargate"));
 	
 	
