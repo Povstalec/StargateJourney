@@ -28,7 +28,6 @@ public abstract class ClientStargateVariant
 	
 	// TODO Add a way to decide if there is a vortex
 	// TODO Add a way to specify how much distortion there will be on each event horizon
-	// TODO Add a way to specify the model that will be used
 	
 	// Textures
 	protected final ResourceLocation texture;

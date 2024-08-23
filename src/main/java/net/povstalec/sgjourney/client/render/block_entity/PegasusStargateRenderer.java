@@ -75,6 +75,8 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusSta
 		
         this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
 		
+        //shieldModel.renderShield(stargate, stack, source, combinedLight, combinedOverlay); //TODO Check if these things render correctly with Oculus
+		
 	    stack.popPose();
 	}
 	

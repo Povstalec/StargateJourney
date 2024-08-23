@@ -80,7 +80,8 @@
 	
 	"rotation_sounds":
 	{
-		"rotation_startup_sound": "sgjourney:empty"
+		"rotation_startup_sound": "sgjourney:empty",
+		"rotation_sound": "sgjourney:milky_way_ring_spin"
 	},
 	
 	"wormhole_sounds":
