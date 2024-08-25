@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.menu;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -51,15 +52,13 @@ public class RingPanelMenu extends AbstractContainerMenu
     {
     	if(i < blockEntity.ringsPos.size())
     	{
-    		System.out.println(i);
-    		
-        	BlockPos coords = blockEntity.ringsPos.get(i);
+    		BlockPos coords = blockEntity.ringsPos.get(i);
     		
     		Component name = blockEntity.ringsName.get(i);
-    		//if(name.getString().length() == 0)
-    		//	return Component.literal("[" + coords.getX() + " " + coords.getY() + " " + coords.getZ() + "]");
-    		//else
-    			return Component.literal("[" + coords.getX() + " " + coords.getY() + " " + coords.getZ() + "] ").append(name);
+    		if(name.getString().length() == 0)
+    			return Component.literal("[" + coords.getX() + " " + coords.getY() + " " + coords.getZ() + "]").withStyle(ChatFormatting.DARK_GREEN);
+    		else
+    			return Component.empty().append(name).withStyle(ChatFormatting.AQUA).append(Component.literal(" [" + coords.getX() + " " + coords.getY() + " " + coords.getZ() + "] ").withStyle(ChatFormatting.DARK_GREEN));
     	}
     	else
     		return Component.literal("-");

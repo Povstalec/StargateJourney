@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
@@ -31,18 +32,19 @@ import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
 
 public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 {
+	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	public static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;
 	
 	public NaquadahGeneratorBlock(Properties properties)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(ORIENTATION, FrontAndTop.NORTH_UP));
+		this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false).setValue(ORIENTATION, FrontAndTop.NORTH_UP));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(ORIENTATION);
+		state.add(ACTIVE).add(ORIENTATION);
 	}
 	
 	@Override
@@ -88,29 +90,37 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 	{
         if(!level.isClientSide()) 
         {
-        	BlockEntity blockEntity = level.getBlockEntity(pos);
-			
-        	if (blockEntity instanceof NaquadahGeneratorEntity) 
+        	if(player.isShiftKeyDown())
         	{
-        		MenuProvider containerProvider = new MenuProvider() 
-        		{
-        			@Override
-        			public Component getDisplayName() 
-        			{
-        				return Component.translatable("screen.sgjourney.naquadah_generator");
-        			}
-        			
-        			@Override
-        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-        			{
-        				return new NaquadahGeneratorMenu(windowId, playerInventory, blockEntity);
-        			}
-        		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        		if(state.getValue(ACTIVE))
+        			level.setBlock(pos, state.setValue(ACTIVE, false), 3);
+        		else
+        			level.setBlock(pos, state.setValue(ACTIVE, true), 3);
         	}
         	else
         	{
-        		throw new IllegalStateException("Our named container provider is missing!");
+        		BlockEntity blockEntity = level.getBlockEntity(pos);
+    			
+            	if(blockEntity instanceof NaquadahGeneratorEntity) 
+            	{
+            		MenuProvider containerProvider = new MenuProvider() 
+            		{
+            			@Override
+            			public Component getDisplayName() 
+            			{
+            				return Component.translatable("screen.sgjourney.naquadah_generator");
+            			}
+            			
+            			@Override
+            			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
+            			{
+            				return new NaquadahGeneratorMenu(windowId, playerInventory, blockEntity);
+            			}
+            		};
+            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+            	}
+            	else
+            		throw new IllegalStateException("Our named container provider is missing!");
         	}
         }
         return InteractionResult.SUCCESS;

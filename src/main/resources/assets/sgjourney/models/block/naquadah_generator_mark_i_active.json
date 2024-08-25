@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "sgjourney:block/naquadah_generator_mark_i",
-		"particle": "sgjourney:item/naquadah_generator_mark_i"
+		"0": "sgjourney:block/naquadah_generator_mark_i_active",
+		"particle": "sgjourney:block/naquadah_generator_mark_i_active"
 	},
 	"elements": [
 		{
