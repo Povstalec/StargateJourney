@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -7,6 +8,7 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -90,14 +92,14 @@ public class ClientAccess
         }
     }
     
-    public static void updateRingPanel(BlockPos pos, int ringsFound, BlockPos[] ringsPos)
+    public static void updateRingPanel(BlockPos pos, ArrayList<BlockPos> ringsPos, ArrayList<Component> ringsName)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final RingPanelEntity panel)
         {
-        	panel.ringsFound = ringsFound;
         	panel.ringsPos = ringsPos;
+        	panel.ringsName = ringsName;
         }
     }
     

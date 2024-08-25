@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.stargate;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -24,9 +26,10 @@ public class Transporter
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
 	
-	private final Optional<Component> name;
+	@Nullable
+	private final Component name;
 	
-	public Transporter(UUID id, ResourceKey<Level> dimension, BlockPos blockPos, Optional<Component> name)
+	public Transporter(UUID id, ResourceKey<Level> dimension, BlockPos blockPos, Component name)
 	{
 		this.id = id;
 		this.dimension = dimension;
@@ -37,8 +40,7 @@ public class Transporter
 	
 	public Transporter(AbstractTransporterEntity transporterEntity)
 	{
-		this(transporterEntity.getID(), transporterEntity.getLevel().dimension(), transporterEntity.getBlockPos(),transporterEntity.getCustomName() == null ?
-				Optional.empty() : Optional.of(transporterEntity.getCustomName()));
+		this(transporterEntity.getID(), transporterEntity.getLevel().dimension(), transporterEntity.getBlockPos(), transporterEntity.getCustomName());
 	}
 	
 	public UUID getID()
@@ -56,6 +58,11 @@ public class Transporter
 		return blockPos;
 	}
 	
+	public Component getName()
+	{
+		return name != null ? name : Component.empty();
+	}
+	
 	public Optional<AbstractTransporterEntity> getTransporterEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
@@ -71,7 +78,9 @@ public class Transporter
 	@Override
 	public String toString()
 	{
-		return "[ " + id + " | Pos: " + blockPos.toString() + " ]";
+		String nameString = name != null ? name.getString() : id.toString();
+		
+		return "[ " + nameString + " | Pos: " + blockPos.toString() + " ]";
 	}
 	
 	
@@ -85,8 +94,8 @@ public class Transporter
 		transporterTag.putString(DIMENSION, level.location().toString());
 		transporterTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
 		
-		if(this.name.isPresent())
-			transporterTag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name.get()));
+		if(this.name != null)
+			transporterTag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
 		
 		return transporterTag;
 	}
@@ -97,10 +106,10 @@ public class Transporter
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		BlockPos blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		Optional<Component> name = Optional.empty();
+		Component name = null;
 		
 		if(tag.contains(CUSTOM_NAME, 8))
-	         name = Optional.of(Component.Serializer.fromJson(tag.getString(CUSTOM_NAME)));
+	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
 		try
 		{

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -19,7 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorBlock;
+import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
@@ -92,7 +93,14 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		BlockState gateState = this.level.getBlockState(gatePos);
 		
 		if(gateState.getBlock() instanceof NaquadahGeneratorBlock)
-			return gateState.getValue(NaquadahGeneratorBlock.FACING);
+		{
+			FrontAndTop orientation = gateState.getValue(NaquadahGeneratorBlock.ORIENTATION);
+			
+			if(orientation.top() == Direction.UP)
+				return orientation.front();
+			else
+				return orientation.top();
+		}
 
 		StargateJourney.LOGGER.error("Couldn't find Direction " + this.getBlockPos().toString());
 		return null;

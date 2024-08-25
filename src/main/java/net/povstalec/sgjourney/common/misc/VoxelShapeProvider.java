@@ -1,6 +1,15 @@
 package net.povstalec.sgjourney.common.misc;
 
+import java.util.ArrayList;
+
+import org.joml.Matrix3d;
+import org.joml.Vector3d;
+
+import com.mojang.math.Axis;
+
 import net.minecraft.core.Direction;
+import net.minecraft.core.FrontAndTop;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -302,5 +311,114 @@ public final class VoxelShapeProvider
 		int vertical = orientation.get2DDataValue();
 		
 		return shapes[vertical][horizontal % shapes[vertical].length];
+	}
+	
+	public static VoxelShape getOrientedShape(Vector3d minVec, Vector3d maxVec, Matrix3d xMatrix, Matrix3d yMatrix)
+	{
+		minVec.x -= 8;
+		minVec.y -= 8;
+		minVec.z -= 8;
+
+		maxVec.x -= 8;
+		maxVec.y -= 8;
+		maxVec.z -= 8;
+		
+		xMatrix.transform(minVec);
+		xMatrix.transform(maxVec);
+
+		yMatrix.transform(minVec);
+		yMatrix.transform(maxVec);
+
+		minVec.x += 8;
+		minVec.y += 8;
+		minVec.z += 8;
+
+		maxVec.x += 8;
+		maxVec.y += 8;
+		maxVec.z += 8;
+		
+		double minX, minY, minZ, maxX, maxY, maxZ;
+		
+		if(minVec.x <= maxVec.x)
+		{
+			minX = minVec.x;
+			maxX = maxVec.x;
+		}
+		else
+		{
+			minX = maxVec.x;
+			maxX = minVec.x;
+		}
+		
+		if(minVec.y <= maxVec.y)
+		{
+			minY = minVec.y;
+			maxY = maxVec.y;
+		}
+		else
+		{
+			minY = maxVec.y;
+			maxY = minVec.y;
+		}
+		
+		if(minVec.z <= maxVec.z)
+		{
+			minZ = minVec.z;
+			maxZ = maxVec.z;
+		}
+		else
+		{
+			minZ = maxVec.z;
+			maxZ = minVec.z;
+		}
+		
+		return Block.box(minX, minY, minZ, maxX, maxY, maxZ);
+	}
+	
+	public static Tuple<Matrix3d, Matrix3d> xyRotationFromOrientation(FrontAndTop orientation)
+	{
+		return switch(orientation)
+		{
+		case NORTH_UP -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d(), new Matrix3d());
+		case EAST_UP -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d(), new Matrix3d().rotate(Axis.YP.rotationDegrees(270)));
+		case SOUTH_UP -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d(), new Matrix3d().rotate(Axis.YP.rotationDegrees(180)));
+		case WEST_UP -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d(), new Matrix3d().rotate(Axis.YP.rotationDegrees(90)));
+
+		case UP_NORTH -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d().rotate(Axis.XP.rotationDegrees(90)), new Matrix3d());
+		case UP_EAST -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d().rotate(Axis.XP.rotationDegrees(90)), new Matrix3d().rotate(Axis.YP.rotationDegrees(270)));
+		case UP_SOUTH -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d().rotate(Axis.XP.rotationDegrees(90)), new Matrix3d().rotate(Axis.YP.rotationDegrees(180)));
+		case UP_WEST -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d().rotate(Axis.XP.rotationDegrees(90)), new Matrix3d().rotate(Axis.YP.rotationDegrees(90)));
+
+		case DOWN_NORTH -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d().rotate(Axis.XP.rotationDegrees(-90)), new Matrix3d());
+		case DOWN_EAST -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d().rotate(Axis.XP.rotationDegrees(-90)), new Matrix3d().rotate(Axis.YP.rotationDegrees(270)));
+		case DOWN_SOUTH -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d().rotate(Axis.XP.rotationDegrees(-90)), new Matrix3d().rotate(Axis.YP.rotationDegrees(180)));
+		case DOWN_WEST -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d().rotate(Axis.XP.rotationDegrees(-90)), new Matrix3d().rotate(Axis.YP.rotationDegrees(90)));
+		
+		default -> new Tuple<Matrix3d, Matrix3d>(new Matrix3d(), new Matrix3d());
+		};
+	}
+	
+	public static VoxelShape getOrientedShapes(ArrayList<Tuple<Vector3d, Vector3d>> minMax, FrontAndTop orientation)
+	{
+		if(minMax.size() == 0)
+			return Shapes.empty();
+		
+		Tuple<Matrix3d, Matrix3d> xyRotation = xyRotationFromOrientation(orientation);
+		
+		VoxelShape firstShape = getOrientedShape(new Vector3d(minMax.get(0).getA()), new Vector3d(minMax.get(0).getB()), xyRotation.getA(), xyRotation.getB());
+		
+		if(minMax.size() > 1)
+		{
+			VoxelShape[] shapes = new VoxelShape[minMax.size() - 1];
+			
+			for(int i = 1; i < minMax.size(); i++)
+			{
+				shapes[i - 1] = getOrientedShape(new Vector3d(minMax.get(i).getA()), new Vector3d(minMax.get(i).getB()), xyRotation.getA(), xyRotation.getB());
+			}
+			
+			return Shapes.or(firstShape, shapes);
+		}
+		
+		return firstShape;
 	}
 }

@@ -392,6 +392,7 @@
 	"tooltip.sgjourney.mode": "Mode",
 	"tooltip.sgjourney.upgraded": "Upgraded",
 	"tooltip.sgjourney.variant": "Variant",
+	"tooltip.sgjourney.requires": "Requires",
 	"tooltip.sgjourney.stargate_type": "Stargate Type",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",

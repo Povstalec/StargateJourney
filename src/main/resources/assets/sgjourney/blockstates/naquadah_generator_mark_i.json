@@ -1,9 +1,57 @@
 {
-	"variants": 
-	{
-		"facing=north": { "model": "sgjourney:block/naquadah_generator_mark_i"},
-		"facing=south": { "model": "sgjourney:block/naquadah_generator_mark_i", "y": 180 },
-		"facing=west": { "model": "sgjourney:block/naquadah_generator_mark_i", "y": 270 },
-		"facing=east": { "model": "sgjourney:block/naquadah_generator_mark_i", "y": 90 }
-	}
+  "variants": {
+    "orientation=down_east": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "x": 180,
+      "y": 90
+    },
+    "orientation=down_north": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "x": 180
+    },
+    "orientation=down_south": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "x": 180,
+      "y": 180
+    },
+    "orientation=down_west": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "x": 180,
+      "y": 270
+    },
+    "orientation=east_up": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "x": 270,
+      "y": 270
+    },
+    "orientation=north_up": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "x": 270,
+      "y": 180
+    },
+    "orientation=south_up": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "x": 270
+    },
+    "orientation=up_east": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "y": 90
+    },
+    "orientation=up_north": {
+      "model": "sgjourney:block/naquadah_generator_mark_i"
+    },
+    "orientation=up_south": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "y": 180
+    },
+    "orientation=up_west": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "y": 270
+    },
+    "orientation=west_up": {
+      "model": "sgjourney:block/naquadah_generator_mark_i",
+      "x": 270,
+      "y": 90
+    }
+  }
 }

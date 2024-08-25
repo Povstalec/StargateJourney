@@ -397,6 +397,7 @@
 	"tooltip.sgjourney.mode": "Mód",
 	"tooltip.sgjourney.upgraded": "Upgradováno",
 	"tooltip.sgjourney.variant": "Varianta",
+	"tooltip.sgjourney.requires": "Vyžaduje",
 	"tooltip.sgjourney.stargate_type": "Typ brány",
 
 	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
