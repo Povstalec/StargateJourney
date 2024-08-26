@@ -80,7 +80,7 @@ public class ClientAccess
         }
     }
     
-    public static void updateRings(BlockPos pos, int emptySpace, int transportHeight, int transportLight)
+    public static void updateRings(BlockPos pos, int emptySpace, int transportHeight)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -88,7 +88,6 @@ public class ClientAccess
         {
         	rings.emptySpace = emptySpace;
         	rings.transportHeight = transportHeight;
-        	rings.transportLight = transportLight;
         }
     }
     

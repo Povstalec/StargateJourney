@@ -73,6 +73,16 @@ public class Transporter
 		return Optional.empty();
 	}
 	
+	public int getTimeOffset(MinecraftServer server)
+	{
+		Optional<AbstractTransporterEntity> transporter = getTransporterEntity(server);
+		
+		if(transporter.isPresent())
+			return transporter.get().getTimeOffset();
+		
+		return 0;
+	}
+	
 	
 	
 	@Override

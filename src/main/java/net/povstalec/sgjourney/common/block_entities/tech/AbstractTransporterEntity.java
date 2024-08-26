@@ -122,11 +122,6 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		TransporterNetwork.get(level).removeTransporter(level, this.id);
 	}
 	
-	public boolean isConnected()
-	{
-		return false; //TODO
-	}
-	
 	@Override
 	public void getStatus(Player player)
 	{
@@ -161,4 +156,13 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	}
 	
 	protected abstract Component getDefaultName();
+	
+	
+	
+	public abstract boolean isConnected();
+	
+	public int getTimeOffset()
+	{
+		return 0;
+	}
 }

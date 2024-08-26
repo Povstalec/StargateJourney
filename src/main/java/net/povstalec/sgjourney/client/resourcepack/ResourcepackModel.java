@@ -10,6 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
@@ -21,25 +22,29 @@ public class ResourcepackModel
 		public static final String TEXTURE = "texture";
 		public static final String ROWS = "rows";
 		public static final String COLUMNS = "columns";
+		public static final String FRAMES = "frames";
 		public static final String ALPHA = "alpha";
 		
 		public static final Codec<WormholeTexture> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				ResourceLocation.CODEC.fieldOf(TEXTURE).forGetter(WormholeTexture::texture),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(ROWS).forGetter(WormholeTexture::rows),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(COLUMNS).forGetter(WormholeTexture::columns),
+				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(FRAMES).forGetter(WormholeTexture::columns),
 				Codec.floatRange(0F, 1F).optionalFieldOf(ALPHA, 1F).forGetter(WormholeTexture::alpha)
 				).apply(instance, WormholeTexture::new));
 		
 		private final ResourceLocation texture;
 		private final int rows;
 		private final int columns;
+		private final int frames;
 		private final float alpha;
 		
-		public WormholeTexture(ResourceLocation texture, int rows, int columns, float alpha)
+		public WormholeTexture(ResourceLocation texture, int rows, int columns, int frames, float alpha)
 		{
 			this.texture = texture;
 			this.rows = rows;
 			this.columns = columns;
+			this.frames = frames;
 			this.alpha = alpha;
 		}
 		
@@ -58,9 +63,33 @@ public class ResourcepackModel
 			return columns;
 		}
 		
+		public int frames()
+		{
+			return frames;
+		}
+		
 		public float alpha()
 		{
 			return alpha;
+		}
+		
+		private int frame(int tick)
+		{
+			return tick % frames;
+		}
+		
+		public float uOffset(int tick)
+		{
+			int frame = frame(tick);
+			
+			int xOffset = frame / rows;
+			
+			return (float) (xOffset % columns) / columns;
+		}
+		
+		public float vOffset(int tick)
+		{
+			return (float) (frame(tick) % rows) / rows;
 		}
 	}
 	
@@ -96,8 +125,11 @@ public class ResourcepackModel
 	
 	public static class Wormhole
 	{
+		public static final String DISTORTION = "distortion";
 		public static final String EVENT_HORIZON = "event_horizon";
 		
+		@Nullable
+		private final Integer distortion;
 		private Either<FrontBack, WormholeTexture> eventHorizon;
 		
 		//private Either<FrontBack, WormholeTexture> kawoosh; //TODO Add separate kawoosh texture
@@ -105,12 +137,31 @@ public class ResourcepackModel
 		//private Either<FrontBack, WormholeTexture> strudel; //TODO Add separate strudel texture
 		
 		public static final Codec<Wormhole> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.intRange(0, 25).optionalFieldOf(DISTORTION).forGetter(wormhole -> Optional.of(wormhole.distortion)),
 				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).fieldOf(EVENT_HORIZON).forGetter(Wormhole::eventHorizon)
 				).apply(instance, Wormhole::new));
 		
+		public Wormhole(Optional<Integer> distortion, Either<FrontBack, WormholeTexture> eventHorizon)
+		{
+			if(distortion.isPresent())
+				this.distortion = distortion.get();
+			else
+				this.distortion = null;
+			
+			this.eventHorizon = eventHorizon;
+		}
+		
 		public Wormhole(Either<FrontBack, WormholeTexture> eventHorizon)
 		{
-			this.eventHorizon = eventHorizon;
+			this(Optional.empty(), eventHorizon);
+		}
+		
+		public int distortion()
+		{
+			if(distortion != null)
+				return distortion;
+			
+			return ClientStargateConfig.event_horizon_distortion.get();
 		}
 		
 		public Either<FrontBack, WormholeTexture> eventHorizon()

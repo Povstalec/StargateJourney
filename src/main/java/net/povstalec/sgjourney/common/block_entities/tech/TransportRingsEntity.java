@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -24,18 +23,21 @@ import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 
 public class TransportRingsEntity extends AbstractTransporterEntity
 {
+	public static final int MAX_TRANSPORT_HEIGHT = 16;
+	
 	private BlockPos transportPos;
 	private BlockPos targetPos;
 	
-	public boolean isSender;
+	public boolean isSender = false;
     
 	public int emptySpace = 0;
-	public int ticks;
+	public int ticks = 0;
+	
+	
+	
 	public int progressOld = 0;
 	public int progress = 0;
 	public int transportHeight = 0;
-	
-	public int transportLight;
 	
 	private TransportRingsEntity target;
 	
@@ -47,72 +49,81 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	@Override
 	public AABB getRenderBoundingBox()
     {
-        return INFINITE_EXTENT_AABB; //TODO This is stupid, change it to actually only be about as large as the Transport Rings
+        return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
     }
 	
 	public boolean canTransport()
 	{
-		if(this.isActivated())
+		if(this.isConnected())
 			return false;
 		
 		return true;
 	}
+	
+	@Override
+	public int getTimeOffset()
+	{
+		return getTransportHeight();
+	}
 
-//========================================================================================================
-//**********************************************Transporting**********************************************
-//========================================================================================================
+	//========================================================================================================
+	//**********************************************Transporting**********************************************
+	//========================================================================================================
 	
 	private void activate(BlockPos targetPos, boolean isSender)
 	{
-		target = (TransportRingsEntity) level.getBlockEntity(targetPos);
-		
-		if(!targetPos.equals(this.getBlockPos()) && !this.isActivated() && !target.isActivated())
+		if(level.getBlockEntity(targetPos) instanceof TransportRingsEntity transportRings)
 		{
-			if(isSender)
+			target = transportRings;
+			
+			// If Rings aren't targeting themselves and neither end is active yet
+			if(!targetPos.equals(this.getBlockPos()) && !this.isConnected() && !target.isConnected())
 			{
-				target.activate(getBlockPos(), false);
-				this.isSender = true;
+				if(isSender)
+				{
+					target.activate(getBlockPos(), false);
+					this.isSender = true;
+				}
+				else
+					target.isSender = false;
+				
+				setActivated(true);
+				
+				emptySpace = getEmptySpace();
+				
+				transportPos = new BlockPos(getBlockPos().getX(), (getBlockPos().getY() + emptySpace), getBlockPos().getZ());
+				
+				int difference = Math.abs(this.getTransportHeight() - target.getTransportHeight());
+				
+				if(this.transportHeight >= target.transportHeight)
+					ticks = 0;
+				else
+					ticks = -difference;
+				
+				progress = 0;
+
+				this.targetPos = targetPos;
+				
+				target = (TransportRingsEntity) level.getBlockEntity(targetPos);
+				
+				loadChunk(true);
 			}
 			else
-				target.isSender = false;
+				target = null;
 			
-			setActivated(true);
-			
-			emptySpace = getEmptySpace();
-			
-			transportPos = new BlockPos(getBlockPos().getX(), (getBlockPos().getY() + emptySpace), getBlockPos().getZ());
-			
-			int difference = Math.abs(this.getTransportHeight() - target.getTransportHeight());
-			
-			if(this.transportHeight >= target.transportHeight)
-				ticks = 0;
-			else
-				ticks = -difference;
-			
-			progress = 0;
-
-			this.targetPos = targetPos;
-			
-			target = (TransportRingsEntity) level.getBlockEntity(targetPos);
-			
-			if(level.isClientSide())
-				transportLight = LevelRenderer.getLightColor(level, this.transportPos);
-			
-			loadChunk(true);
+			//TODO sync difference with client
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight));
 		}
-		else
-			target = null;
-		
-		//TODO sync difference with client
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight, this.transportLight));
 	}
 	
 	public int getTransportHeight()
 	{
-		if(getEmptySpace() > 0) 
-			transportHeight = Math.abs(getEmptySpace() * 4) + 8;
+		int emptySpace = getEmptySpace();
+		
+		if(emptySpace > 0) 
+			transportHeight = Math.abs(emptySpace * 4) + 8;
 		else 
-			transportHeight = Math.abs(getEmptySpace() * 4) - 2;
+			transportHeight = Math.abs(emptySpace * 4) - 2;
 		return transportHeight;
 	}
 	
@@ -142,7 +153,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TransportRingsEntity rings)
 	{
-		if(rings.isActivated())
+		if(rings.isConnected())
 			rings.ticks++;
 		
 		rings.doProgress();
@@ -182,7 +193,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 				(float) this.progress : Mth.lerp(partialTick, this.progressOld, this.progress);
 	}
 	
-	public void getStatus()
+	/*public void getStatus()
 	{
 	    System.out.println("ID: " + getID());
 	    if(this.getBlockPos() != null)
@@ -193,7 +204,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	    	System.out.println("Transport: " + transportPos.getX() + " "  + transportPos.getY() + " " + transportPos.getZ());
 	    System.out.println("Sending: " + isSender);
 	    System.out.println("Ticks: " + ticks);
-	}
+	}*/
 	
 	/*public void emergencyDeactivate()
 	{
@@ -203,7 +214,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		}
 	}*/
 	
-// Actual Transporting
+	// Actual Transporting
 	
 	private void startTransporting()
 	{
@@ -234,8 +245,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 			player.teleportTo((target.transportPos.getX() + x_offset), (target.transportPos.getY() + y_offset), (target.transportPos.getZ() + z_offset));
 		else
 			entity.teleportTo((target.transportPos.getX() + x_offset), (target.transportPos.getY() + y_offset), (target.transportPos.getZ() + z_offset));
-		
-		System.out.println("Transporting to target: " + entity.toString());
 	}
 	
 	private void transportFromTarget(Entity entity)
@@ -249,14 +258,12 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 			player.teleportTo((transportPos.getX() + x_offset), (transportPos.getY() + y_offset), (transportPos.getZ() + z_offset));
 		else
 			entity.teleportTo((transportPos.getX() + x_offset), (transportPos.getY() + y_offset), (transportPos.getZ() + z_offset));
-		
-		
-		System.out.println("Transporting from target: " + entity.toString());
 	}
 	
-// Activation
+	// Activation
 	
-	public boolean isActivated()
+	@Override
+	public boolean isConnected()
 	{
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
@@ -271,10 +278,9 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
+		
 		if(state.is(BlockInit.TRANSPORT_RINGS.get()))
-		{
 			level.setBlock(pos, state.setValue(TransportRingsBlock.ACTIVATED, active), 2);
-		}
 	}
 	
 	private int getEmptySpace()
@@ -312,7 +318,9 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		}
 		return 0;
 	}
-
+	
+	
+	
 	@Override
 	public long capacity()
 	{

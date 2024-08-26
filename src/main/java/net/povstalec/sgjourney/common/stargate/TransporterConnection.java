@@ -9,24 +9,30 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class TransporterConnection
 {
-	protected final UUID uuid;
-	protected final Transporter transporterA;
-	protected final Transporter transporterB;
+	private final UUID uuid;
+	private final Transporter transporterA;
+	private final Transporter transporterB;
 	
-	private TransporterConnection(UUID uuid, Transporter transporterA, Transporter transporterB)
+	private final int timeOffsetA; // Time it takes before A can activate
+	private final int timeOffsetB ; // Time it takes before B can activate
+	
+	private TransporterConnection(MinecraftServer server, UUID uuid, Transporter transporterA, Transporter transporterB)
 	{
 		this.uuid = uuid;
 		this.transporterA = transporterA;
 		this.transporterB = transporterB;
+		
+		this.timeOffsetA = transporterA.getTimeOffset(server);
+		this.timeOffsetB = transporterB.getTimeOffset(server);
 	}
 	
 	@Nullable
-	public static final TransporterConnection create(Transporter transporterA, Transporter transporterB)
+	public static final TransporterConnection create(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
 		UUID uuid = UUID.randomUUID();
 		
 		if(transporterA != null && transporterB != null)
-			return new TransporterConnection(uuid, transporterA, transporterB);
+			return new TransporterConnection(server, uuid, transporterA, transporterB);
 		
 		return null;
 	}
