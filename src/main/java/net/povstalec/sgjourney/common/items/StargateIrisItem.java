@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 
-public abstract class IrisItem extends Item
+public abstract class StargateIrisItem extends Item
 {
 	// Vanilla Materials
 	public static final ResourceLocation COPPER_IRIS = new ResourceLocation("textures/block/copper_block.png");
@@ -29,7 +29,7 @@ public abstract class IrisItem extends Item
 	
 	private ResourceLocation irisTexture;
 	
-	public IrisItem(Properties properties, ResourceLocation irisTexture)
+	public StargateIrisItem(Properties properties, ResourceLocation irisTexture)
 	{
 		super(properties);
 		
@@ -48,7 +48,7 @@ public abstract class IrisItem extends Item
 	@Nullable
 	public static ResourceLocation getIrisTexture(ItemStack stack)
 	{
-		if(stack.getItem() instanceof IrisItem irisItem)
+		if(stack.getItem() instanceof StargateIrisItem irisItem)
 		{
 			CompoundTag tag = stack.getOrCreateTag();
 			if(tag.contains(TEXTURE))
@@ -67,7 +67,7 @@ public abstract class IrisItem extends Item
 	
 	public static long getDurability(ItemStack stack)
 	{
-		if(stack.getItem() instanceof IrisItem irisItem)
+		if(stack.getItem() instanceof StargateIrisItem irisItem)
 		{
 			int durability;
 			
@@ -86,7 +86,7 @@ public abstract class IrisItem extends Item
 	
 	public static void decreaseDurability(ItemStack stack)
 	{
-		if(stack.getItem() instanceof IrisItem irisItem)
+		if(stack.getItem() instanceof StargateIrisItem irisItem)
 		{
 			int durability;
 			CompoundTag tag = stack.getOrCreateTag();
@@ -123,7 +123,7 @@ public abstract class IrisItem extends Item
 	
 	
 	
-	public static class Copper extends IrisItem
+	public static class Copper extends StargateIrisItem
 	{
 		public Copper(Properties properties)
 		{
@@ -136,7 +136,7 @@ public abstract class IrisItem extends Item
 		}
 	}
 	
-	public static class Iron extends IrisItem
+	public static class Iron extends StargateIrisItem
 	{
 		public Iron(Properties properties)
 		{
@@ -149,7 +149,7 @@ public abstract class IrisItem extends Item
 		}
 	}
 
-	public static class Gold extends IrisItem
+	public static class Gold extends StargateIrisItem
 	{
 		public Gold(Properties properties)
 		{
@@ -162,7 +162,7 @@ public abstract class IrisItem extends Item
 		}
 	}
 
-	public static class Diamond extends IrisItem
+	public static class Diamond extends StargateIrisItem
 	{
 		public Diamond(Properties properties)
 		{
@@ -175,7 +175,7 @@ public abstract class IrisItem extends Item
 		}
 	}
 
-	public static class Netherite extends IrisItem
+	public static class Netherite extends StargateIrisItem
 	{
 		public Netherite(Properties properties)
 		{
@@ -188,7 +188,7 @@ public abstract class IrisItem extends Item
 		}
 	}
 
-	public static class NaquadahAlloy extends IrisItem
+	public static class NaquadahAlloy extends StargateIrisItem
 	{
 		public NaquadahAlloy(Properties properties)
 		{
@@ -201,7 +201,7 @@ public abstract class IrisItem extends Item
 		}
 	}
 
-	public static class Trinium extends IrisItem
+	public static class Trinium extends StargateIrisItem
 	{
 		public Trinium(Properties properties)
 		{
@@ -214,7 +214,7 @@ public abstract class IrisItem extends Item
 		}
 	}
 
-	public static class Bronze extends IrisItem
+	public static class Bronze extends StargateIrisItem
 	{
 		public Bronze(Properties properties)
 		{
@@ -227,7 +227,7 @@ public abstract class IrisItem extends Item
 		}
 	}
 
-	public static class Steel extends IrisItem
+	public static class Steel extends StargateIrisItem
 	{
 		public Steel(Properties properties)
 		{

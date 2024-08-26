@@ -1,0 +1,38 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "sgjourney:block/transceiver",
+		"particle": "sgjourney:block/transceiver"
+	},
+	"elements": [
+		{
+			"name": "body",
+			"from": [3, 0, 3],
+			"to": [13, 4, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 1, 8]},
+			"faces": {
+				"north": {"uv": [3.25, 3.25, 5.75, 4.25], "texture": "#0"},
+				"east": {"uv": [0, 3.25, 3.25, 4.25], "texture": "#0"},
+				"south": {"uv": [9, 3.25, 11.5, 4.25], "texture": "#0"},
+				"west": {"uv": [5.75, 3.25, 9, 4.25], "texture": "#0"},
+				"up": {"uv": [3.25, 0, 5.75, 3.25], "texture": "#0"},
+				"down": {"uv": [5.75, 0, 8.25, 3.25], "texture": "#0"}
+			}
+		},
+		{
+			"name": "antenna",
+			"from": [2, 2, 13],
+			"to": [3, 12, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 2, 12]},
+			"faces": {
+				"north": {"uv": [11.75, 0.25, 12, 2.75], "texture": "#0"},
+				"east": {"uv": [11.5, 0.25, 11.75, 2.75], "texture": "#0"},
+				"south": {"uv": [12.25, 0.25, 12.5, 2.75], "texture": "#0"},
+				"west": {"uv": [12, 0.25, 12.25, 2.75], "texture": "#0"},
+				"up": {"uv": [11.75, 0, 12, 0.25], "texture": "#0"},
+				"down": {"uv": [12, 0, 12.25, 0.25], "texture": "#0"}
+			}
+		}
+	]
+}

@@ -62,7 +62,8 @@ import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
-import net.povstalec.sgjourney.common.items.IrisItem;
+import net.povstalec.sgjourney.common.items.StargateIrisItem;
+import net.povstalec.sgjourney.common.items.StargateShieldItem;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
@@ -96,6 +97,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String ENERGY = "Energy";
 	
 	public static final String IRIS_PROGRESS = "IrisProgress";
+	public static final String SHIELD_PROGRESS = "ShieldProgress";
 	
 	// Connections
 	public static final String CONNECTION_ID = "ConnectionID";
@@ -118,6 +120,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public static final String COVER_BLOCKS = "CoverBlocks";
 	public static final String IRIS_INVENTORY = "IrisInventory";
+	public static final String SHIELD_INVENTORY = "ShieldInventory";
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 
@@ -151,9 +154,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected String variant = EMPTY;
 	private final ResourceLocation defaultVariant;
 	
-	protected short oldIrisProgress = 0;
-	protected short irisProgress = 0;
-	
 	// Dialing and memory
 	protected Address address = new Address();
 	protected String connectionID = EMPTY;
@@ -181,7 +181,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	private ArrayList<Address.Immutable> blacklist = new ArrayList<Address.Immutable>();
 	
 	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
-	protected final ItemStackHandler itemHandler = createIrisHandler();
+	
+	// Shielding
+	protected short irisProgress = 0;
+	protected short oldIrisProgress = 0;
+	protected final ItemStackHandler irisItemHandler = createIrisHandler();
+	
+	/*protected short shieldProgress = 0;
+	protected short oldShieldProgress = 0;
+	protected final ItemStackHandler shieldItemHandler = createStargateShieldHandler();*/
 
 	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
 			float verticalCenterHeight, float horizontalCenterHeight)
@@ -255,11 +263,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		deserializeFilters(tag);
 		
+		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
+		
 		irisProgress = tag.getShort(IRIS_PROGRESS);
 		oldIrisProgress = irisProgress;
+		irisItemHandler.deserializeNBT(tag.getCompound(IRIS_INVENTORY));
 		
-		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
-		itemHandler.deserializeNBT(tag.getCompound(IRIS_INVENTORY));
+		/*shieldProgress = tag.getShort(SHIELD_PROGRESS);
+		oldShieldProgress = shieldProgress;
+		shieldItemHandler.deserializeNBT(tag.getCompound(SHIELD_INVENTORY));*/
 		
     	this.setChanged();
 	}
@@ -298,10 +310,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		serializeFilters(tag);
 		
-		tag.putShort(IRIS_PROGRESS, irisProgress);
-		
 		tag.put(COVER_BLOCKS, blockCover.serializeNBT());
-		tag.put(IRIS_INVENTORY, itemHandler.serializeNBT());
+		
+		tag.putShort(IRIS_PROGRESS, irisProgress);
+		tag.put(IRIS_INVENTORY, irisItemHandler.serializeNBT());
+		
+		/*tag.putShort(SHIELD_PROGRESS, shieldProgress);
+		tag.put(SHIELD_INVENTORY, shieldItemHandler.serializeNBT());*/
 		
 		super.saveAdditional(tag);
 		
@@ -938,14 +953,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	//TODO Finish Iris
 	public boolean hasIris()
 	{
-		return itemHandler.getStackInSlot(0).getItem() instanceof IrisItem;
+		return irisItemHandler.getStackInSlot(0).getItem() instanceof StargateIrisItem;
 	}
 	
 	public boolean setIris(ItemStack stack)
 	{
-		if(itemHandler.getStackInSlot(0).isEmpty())
+		if(irisItemHandler.getStackInSlot(0).isEmpty())
 		{
-			itemHandler.setStackInSlot(0, stack.copy());
+			irisItemHandler.setStackInSlot(0, stack.copy());
 			return true;
 		}
 		
@@ -955,7 +970,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	@Nonnull
 	public ItemStack getIris()
 	{
-		return itemHandler.getStackInSlot(0).copy();
+		return irisItemHandler.getStackInSlot(0).copy();
 	}
 	
 	/**
@@ -964,9 +979,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	 */
 	public boolean unsetIris()
 	{
-		if(!itemHandler.getStackInSlot(0).isEmpty())
+		if(!irisItemHandler.getStackInSlot(0).isEmpty())
 		{
-			itemHandler.setStackInSlot(0, ItemStack.EMPTY);
+			irisItemHandler.setStackInSlot(0, ItemStack.EMPTY);
 			return true;
 		}
 		
@@ -978,7 +993,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(!hasIris())
 			return Optional.empty();
 		
-		return Optional.ofNullable(IrisItem.getIrisTexture(itemHandler.getStackInSlot(0)));
+		return Optional.ofNullable(StargateIrisItem.getIrisTexture(irisItemHandler.getStackInSlot(0)));
 	}
 	
 	public void setIrisProgress(short irisProgress)
@@ -1766,7 +1781,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.irisProgress, this.pointOfOrigin, this.symbols, this.variant, this.itemHandler.getStackInSlot(0)));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.irisProgress, this.pointOfOrigin, this.symbols, this.variant, this.irisItemHandler.getStackInSlot(0)));
 	}
 	
 	public void updateClientState()
@@ -1857,7 +1872,42 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 				@Override
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
-					return stack.getItem() instanceof IrisItem;
+					return stack.getItem() instanceof StargateIrisItem;
+				}
+				
+				// Limits the number of items per slot
+				public int getSlotLimit(int slot)
+				{
+					return 1;
+				}
+				
+				@Nonnull
+				@Override
+				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+				{
+					if(!isItemValid(slot, stack))
+						return stack;
+					
+					return super.insertItem(slot, stack, simulate);
+					
+				}
+			};
+	}
+	
+	protected ItemStackHandler createStargateShieldHandler()
+	{
+		return new ItemStackHandler(1)
+			{
+				@Override
+				protected void onContentsChanged(int slot)
+				{
+					setChanged();
+				}
+				
+				@Override
+				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+				{
+					return stack.getItem() instanceof StargateShieldItem;
 				}
 				
 				// Limits the number of items per slot

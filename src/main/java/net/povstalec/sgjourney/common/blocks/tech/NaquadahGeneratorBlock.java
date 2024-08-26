@@ -65,7 +65,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 		Direction clickedDirection = context.getClickedFace();
 		Direction lookingDirection;
 		
-		if (clickedDirection.getAxis() == Direction.Axis.Y)
+		if(clickedDirection.getAxis() == Direction.Axis.Y)
 			lookingDirection = context.getHorizontalDirection().getOpposite();
 		else
 			lookingDirection = Direction.UP;

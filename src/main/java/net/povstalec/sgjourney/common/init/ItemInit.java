@@ -18,7 +18,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.GDOItem;
-import net.povstalec.sgjourney.common.items.IrisItem;
+import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.items.KaraKeshItem;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.items.PDAItem;
@@ -188,26 +188,26 @@ public class ItemInit
 			() -> new Item(new Item.Properties().stacksTo(1)));
 	
 	// Irises
-	public static final RegistryObject<IrisItem.Copper> COPPER_IRIS = ITEMS.register("copper_iris", 
-			() -> new IrisItem.Copper(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<IrisItem.Iron> IRON_IRIS = ITEMS.register("iron_iris", 
-			() -> new IrisItem.Iron(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<IrisItem.Gold> GOLDEN_IRIS = ITEMS.register("golden_iris", 
-			() -> new IrisItem.Gold(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<IrisItem.Diamond> DIAMOND_IRIS = ITEMS.register("diamond_iris", 
-			() -> new IrisItem.Diamond(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<IrisItem.Netherite> NETHERITE_IRIS = ITEMS.register("netherite_iris", 
-			() -> new IrisItem.Netherite(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<StargateIrisItem.Copper> COPPER_IRIS = ITEMS.register("copper_iris", 
+			() -> new StargateIrisItem.Copper(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem.Iron> IRON_IRIS = ITEMS.register("iron_iris", 
+			() -> new StargateIrisItem.Iron(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem.Gold> GOLDEN_IRIS = ITEMS.register("golden_iris", 
+			() -> new StargateIrisItem.Gold(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem.Diamond> DIAMOND_IRIS = ITEMS.register("diamond_iris", 
+			() -> new StargateIrisItem.Diamond(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem.Netherite> NETHERITE_IRIS = ITEMS.register("netherite_iris", 
+			() -> new StargateIrisItem.Netherite(new Item.Properties().stacksTo(1).fireResistant()));
 
-	public static final RegistryObject<IrisItem.NaquadahAlloy> NAQUADAH_ALLOY_IRIS = ITEMS.register("naquadah_alloy_iris", 
-			() -> new IrisItem.NaquadahAlloy(new Item.Properties().stacksTo(1).fireResistant()));
-	public static final RegistryObject<IrisItem.Trinium> TRINIUM_IRIS = ITEMS.register("trinium_iris", 
-			() -> new IrisItem.Trinium(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem.NaquadahAlloy> NAQUADAH_ALLOY_IRIS = ITEMS.register("naquadah_alloy_iris", 
+			() -> new StargateIrisItem.NaquadahAlloy(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<StargateIrisItem.Trinium> TRINIUM_IRIS = ITEMS.register("trinium_iris", 
+			() -> new StargateIrisItem.Trinium(new Item.Properties().stacksTo(1)));
 
-	public static final RegistryObject<IrisItem.Bronze> BRONZE_IRIS = ITEMS.register("bronze_iris", 
-			() -> new IrisItem.Bronze(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<IrisItem.Steel> STEEL_IRIS = ITEMS.register("steel_iris", 
-			() -> new IrisItem.Steel(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem.Bronze> BRONZE_IRIS = ITEMS.register("bronze_iris", 
+			() -> new StargateIrisItem.Bronze(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem.Steel> STEEL_IRIS = ITEMS.register("steel_iris", 
+			() -> new StargateIrisItem.Steel(new Item.Properties().stacksTo(1)));
 		
 	
 	public static void register(IEventBus eventBus)

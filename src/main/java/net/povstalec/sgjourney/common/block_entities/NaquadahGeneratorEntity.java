@@ -106,6 +106,22 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		return null;
 	}
 	
+	public Direction getBottomDirection()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof NaquadahGeneratorBlock)
+		{
+			FrontAndTop orientation = gateState.getValue(NaquadahGeneratorBlock.ORIENTATION);
+			
+			return orientation.front();
+		}
+
+		StargateJourney.LOGGER.error("Couldn't find Direction " + this.getBlockPos().toString());
+		return null;
+	}
+	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
@@ -173,8 +189,12 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	protected boolean isCorrectEnergySide(Direction side)
 	{
 		Direction direction = getDirection();
+		Direction bottom = getBottomDirection();
 		
-		return side == Direction.UP || side == direction.getClockWise() || side == direction.getCounterClockWise();
+		if(direction != null && bottom != null)
+			return side == bottom || side == direction.getClockWise() || side == direction.getCounterClockWise();
+		
+		return false;
 	}
 	
 	protected boolean receivesEnergy()
