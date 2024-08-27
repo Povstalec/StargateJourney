@@ -9,18 +9,18 @@
 			"front":
 			{
 				"texture": "sgjourney:textures/entity/stargate/classic/classic_event_horizon.png",
-				"rows": 1,
-				"columns": 32,
+				"rows": 32,
+				"columns": 1,
 				"frames": 32,
-				"alpha": 0.75
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			},
 			"back":
 			{
 				"texture": "sgjourney:textures/entity/stargate/classic/classic_event_horizon.png",
-				"rows": 1,
-				"columns": 32,
+				"rows": 32,
+				"columns": 1,
 				"frames": 32,
-				"alpha": 0.75
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			}
 		}
 	},
@@ -31,18 +31,18 @@
 			"front":
 			{
 				"texture": "sgjourney:textures/entity/stargate/classic/classic_event_horizon_shiny.png",
-				"rows": 1,
-				"columns": 32,
+				"rows": 32,
+				"columns": 1,
 				"frames": 32,
-				"alpha": 0.75
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			},
 			"back":
 			{
 				"texture": "sgjourney:textures/entity/stargate/classic/classic_event_horizon_shiny.png",
-				"rows": 1,
-				"columns": 32,
+				"rows": 32,
+				"columns": 1,
 				"frames": 32,
-				"alpha": 0.75
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			}
 		}
 	},

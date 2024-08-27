@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
+import net.povstalec.sgjourney.common.misc.ColorUtil.RGBA;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
@@ -23,29 +24,37 @@ public class ResourcepackModel
 		public static final String ROWS = "rows";
 		public static final String COLUMNS = "columns";
 		public static final String FRAMES = "frames";
-		public static final String ALPHA = "alpha";
+		public static final String RGBA = "rgba";
+
+		public static final RGBA DEFAULT_OPAQUE_RGBA = new RGBA(1F, 1F, 1F, 1F);
 		
 		public static final Codec<WormholeTexture> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				ResourceLocation.CODEC.fieldOf(TEXTURE).forGetter(WormholeTexture::texture),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(ROWS).forGetter(WormholeTexture::rows),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(COLUMNS).forGetter(WormholeTexture::columns),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(FRAMES).forGetter(WormholeTexture::columns),
-				Codec.floatRange(0F, 1F).optionalFieldOf(ALPHA, 1F).forGetter(WormholeTexture::alpha)
+				ColorUtil.RGBA.CODEC.optionalFieldOf(RGBA, DEFAULT_OPAQUE_RGBA).forGetter(WormholeTexture::rgba)
 				).apply(instance, WormholeTexture::new));
 		
 		private final ResourceLocation texture;
 		private final int rows;
 		private final int columns;
 		private final int frames;
-		private final float alpha;
+		private final ColorUtil.RGBA rgba;
 		
-		public WormholeTexture(ResourceLocation texture, int rows, int columns, int frames, float alpha)
+		private final float uScale;
+		private final float vScale;
+		
+		public WormholeTexture(ResourceLocation texture, int rows, int columns, int frames, ColorUtil.RGBA rgba)
 		{
 			this.texture = texture;
 			this.rows = rows;
 			this.columns = columns;
 			this.frames = frames;
-			this.alpha = alpha;
+			this.rgba = rgba;
+			
+			this.uScale = 1F / columns;
+			this.vScale = 1F / rows;
 		}
 		
 		public ResourceLocation texture()
@@ -68,28 +77,38 @@ public class ResourcepackModel
 			return frames;
 		}
 		
-		public float alpha()
+		public ColorUtil.RGBA rgba()
 		{
-			return alpha;
+			return rgba;
 		}
 		
-		private int frame(int tick)
+		
+		
+		public float uScale()
+		{
+			return uScale;
+		}
+		
+		public float vScale()
+		{
+			return vScale;
+		}
+		
+		public int frame(int tick)
 		{
 			return tick % frames;
 		}
 		
-		public float uOffset(int tick)
+		public float uOffset(int frame)
 		{
-			int frame = frame(tick);
-			
 			int xOffset = frame / rows;
 			
 			return (float) (xOffset % columns) / columns;
 		}
 		
-		public float vOffset(int tick)
+		public float vOffset(int frame)
 		{
-			return (float) (frame(tick) % rows) / rows;
+			return (float) (frame % rows) / rows;
 		}
 	}
 	
@@ -125,35 +144,62 @@ public class ResourcepackModel
 	
 	public static class Wormhole
 	{
+		
 		public static final String DISTORTION = "distortion";
+		public static final String HAS_STRUDEL = "has_strudel";
 		public static final String EVENT_HORIZON = "event_horizon";
+		public static final String KAWOOSH = "kawoosh";
+		public static final String STRUDEL = "strudel";
 		
 		@Nullable
 		private final Integer distortion;
-		private Either<FrontBack, WormholeTexture> eventHorizon;
-		
-		//private Either<FrontBack, WormholeTexture> kawoosh; //TODO Add separate kawoosh texture
-		
-		//private Either<FrontBack, WormholeTexture> strudel; //TODO Add separate strudel texture
+		@Nullable
+		private final Boolean hasStrudel;
+		private final Either<FrontBack, WormholeTexture> eventHorizon;
+		@Nullable
+		private final Either<FrontBack, WormholeTexture> kawoosh;
+		@Nullable
+		private final Either<FrontBack, WormholeTexture> strudel;
 		
 		public static final Codec<Wormhole> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.intRange(0, 25).optionalFieldOf(DISTORTION).forGetter(wormhole -> Optional.of(wormhole.distortion)),
-				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).fieldOf(EVENT_HORIZON).forGetter(Wormhole::eventHorizon)
+				Codec.intRange(0, 25).optionalFieldOf(DISTORTION).forGetter(wormhole -> Optional.ofNullable(wormhole.distortion)),
+				Codec.BOOL.optionalFieldOf(HAS_STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.hasStrudel)),
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).fieldOf(EVENT_HORIZON).forGetter(Wormhole::eventHorizon),
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(KAWOOSH).forGetter(wormhole -> Optional.ofNullable(wormhole.kawoosh)),
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.strudel))
 				).apply(instance, Wormhole::new));
 		
-		public Wormhole(Optional<Integer> distortion, Either<FrontBack, WormholeTexture> eventHorizon)
+		public Wormhole(Optional<Integer> distortion, Optional<Boolean> hasStrudel,
+				Either<FrontBack, WormholeTexture> eventHorizon,
+				Optional<Either<FrontBack, WormholeTexture>> kawoosh,
+				Optional<Either<FrontBack, WormholeTexture>> strudel)
 		{
 			if(distortion.isPresent())
 				this.distortion = distortion.get();
 			else
 				this.distortion = null;
 			
+			if(hasStrudel.isPresent())
+				this.hasStrudel = hasStrudel.get();
+			else
+				this.hasStrudel = null;
+			
 			this.eventHorizon = eventHorizon;
+
+			if(kawoosh.isPresent())
+				this.kawoosh = kawoosh.get();
+			else
+				this.kawoosh = null;
+
+			if(strudel.isPresent())
+				this.strudel = strudel.get();
+			else
+				this.strudel = null;
 		}
 		
 		public Wormhole(Either<FrontBack, WormholeTexture> eventHorizon)
 		{
-			this(Optional.empty(), eventHorizon);
+			this(Optional.empty(), Optional.empty(), eventHorizon, Optional.empty(), Optional.empty());
 		}
 		
 		public int distortion()
@@ -164,17 +210,50 @@ public class ResourcepackModel
 			return ClientStargateConfig.event_horizon_distortion.get();
 		}
 		
+		public boolean hasStrudel()
+		{
+			if(hasStrudel != null)
+				return hasStrudel;
+			
+			return ClientStargateConfig.enable_vortex.get();
+		}
+		
 		public Either<FrontBack, WormholeTexture> eventHorizon()
 		{
 			return eventHorizon;
 		}
 		
-		public WormholeTexture getWormholeTexture(boolean front)
+		public Either<FrontBack, WormholeTexture> kawoosh()
+		{
+			return kawoosh != null ? kawoosh : eventHorizon;
+		}
+		
+		public Either<FrontBack, WormholeTexture> strudel()
+		{
+			return strudel != null ? strudel : eventHorizon;
+		}
+		
+		private static WormholeTexture getWormholeTexture(Either<FrontBack, WormholeTexture> eventHorizon, boolean front)
 		{
 			if(eventHorizon.left().isPresent())
 				return front ? eventHorizon.left().get().front() : eventHorizon.left().get().back();
 			
 			return eventHorizon.right().get();
+		}
+		
+		public WormholeTexture eventHorizonTexture(boolean front)
+		{
+			return getWormholeTexture(eventHorizon(), front);
+		}
+		
+		public WormholeTexture kawooshTexture(boolean front)
+		{
+			return getWormholeTexture(kawoosh(), front);
+		}
+		
+		public WormholeTexture strudelTexture(boolean front)
+		{
+			return getWormholeTexture(strudel(), front);
 		}
 	}
 	
@@ -214,8 +293,8 @@ public class ResourcepackModel
 		public static final Codec<SymbolsModel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				// Symbol Colors
 				ColorUtil.RGBA.CODEC.fieldOf(SYMBOL_COLOR).forGetter(SymbolsModel::symbolColor),
-				ColorUtil.RGBA.CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.of(symbols.encodedSymbolColor)),
-				ColorUtil.RGBA.CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.of(symbols.engagedSymbolColor)),
+				ColorUtil.RGBA.CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbolColor)),
+				ColorUtil.RGBA.CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbolColor)),
 				// Symbol glow
 				Codec.BOOL.optionalFieldOf(SYMBOLS_GLOW, false).forGetter(symbols -> symbols.symbolsGlow),
 				Codec.BOOL.optionalFieldOf(ENCODED_SYMBOLS_GLOW, false).forGetter(symbols -> symbols.encodedSymbolsGlow),

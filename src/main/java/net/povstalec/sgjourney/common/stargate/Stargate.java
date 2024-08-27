@@ -2,6 +2,11 @@ package net.povstalec.sgjourney.common.stargate;
 
 import java.util.Optional;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.EitherCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -513,7 +518,7 @@ public class Stargate
 		return majorError ? component.withStyle(ChatFormatting.DARK_RED) : component.withStyle(ChatFormatting.RED);
 	}
 	
-	public static class IncomingOutgoing<Thing extends Object>
+	public static class IncomingOutgoing<Thing>
 	{
 		public static final String OUTGOING = "outgoing";
 		public static final String INCOMING = "incoming";
@@ -525,6 +530,12 @@ public class Stargate
 		{
 			this.outgoing = outgoing;
 			this.incoming = incoming;
+		}
+		
+		public IncomingOutgoing(Thing thing)
+		{
+			this.outgoing = thing;
+			this.incoming = thing;
 		}
 		
 		public Thing outgoing()
@@ -540,6 +551,19 @@ public class Stargate
 		public Thing get(boolean incoming)
 		{
 			return incoming ? this.incoming : this.outgoing;
+		}
+		
+		public static <Thing> Codec<IncomingOutgoing<Thing>> ioCodec(final Codec<Thing> thing)
+		{
+			return RecordCodecBuilder.create(instance -> instance.group(
+					thing.fieldOf(OUTGOING).forGetter(io -> io.outgoing),
+					thing.fieldOf(INCOMING).forGetter(io -> io.incoming)
+					).apply(instance, IncomingOutgoing::new));
+		}
+		
+		public static <Thing> Codec<Either<IncomingOutgoing<Thing>, Thing>> bothCodec(final Codec<Thing> thing)
+		{
+			return new EitherCodec<>(ioCodec(thing), thing);
 		}
 	}
 	

@@ -4,45 +4,85 @@
 	
 	"wormhole":
 	{
+		"has_strudel": true,
 		"event_horizon":
 		{
 			"front":
 			{
 				"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon.png",
-				"rows": 1,
-				"columns": 32,
+				"rows": 32,
+				"columns": 1,
 				"frames": 32,
-				"alpha": 1.0
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 1.0 }
 			},
 			"back":
 			{
 				"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon.png",
-				"rows": 1,
-				"columns": 32,
+				"rows": 32,
+				"columns": 1,
 				"frames": 32,
-				"alpha": 0.75
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
+			},
+		"strudel":
+		{
+			"front":
+			{
+				"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon.png",
+				"rows": 32,
+				"columns": 1,
+				"frames": 32,
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 1.0 }
+			},
+			"back":
+			{
+				"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon.png",
+				"rows": 32,
+				"columns": 1,
+				"frames": 32,
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			}
+		}
 		}
 	},
 	"shiny_wormhole":
 	{
+		"has_strudel": true,
 		"event_horizon":
 		{
 			"front":
 			{
 				"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon_shiny.png",
-				"rows": 1,
-				"columns": 32,
+				"rows": 32,
+				"columns": 1,
 				"frames": 32,
-				"alpha": 1.0
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 1.0 }
 			},
 			"back":
 			{
 				"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon_shiny.png",
-				"rows": 1,
-				"columns": 32,
+				"rows": 32,
+				"columns": 1,
 				"frames": 32,
-				"alpha": 0.75
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
+			}
+		},
+		"strudel":
+		{
+			"front":
+			{
+				"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon_shiny.png",
+				"rows": 32,
+				"columns": 1,
+				"frames": 32,
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 1.0 }
+			},
+			"back":
+			{
+				"texture": "sgjourney:textures/entity/stargate/milky_way/movie/movie_event_horizon_shiny.png",
+				"rows": 32,
+				"columns": 1,
+				"frames": 32,
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			}
 		}
 	},

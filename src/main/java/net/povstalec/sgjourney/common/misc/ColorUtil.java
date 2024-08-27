@@ -18,10 +18,10 @@ public class ColorUtil
 	
 	public static class RGBA
 	{
-		protected float red;
-		protected float green;
-		protected float blue;
-	    protected float alpha;
+		protected final float red;
+		protected final float green;
+		protected final float blue;
+	    protected final float alpha;
 		
 		public static final Codec<RGBA> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(RED).forGetter(RGBA::red),

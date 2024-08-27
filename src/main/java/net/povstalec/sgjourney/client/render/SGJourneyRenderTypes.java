@@ -29,22 +29,9 @@ public class SGJourneyRenderTypes extends RenderType
 				.createCompositeState(true));
 	}
 
-	public static RenderType eventHorizonFront(ResourceLocation resourceLocation)
+	public static RenderType eventHorizon(ResourceLocation resourceLocation)
 	{
-		return create("event_horizon_front", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
-				RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
-				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(CULL)
-				.setLightmapState(LIGHTMAP)
-				.setOverlayState(NO_OVERLAY)
-				.createCompositeState(false));
-	}
-
-	public static RenderType eventHorizonBack(ResourceLocation resourceLocation)
-	{
-		return create("event_horizon_back", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+		return create("event_horizon", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
@@ -62,7 +49,7 @@ public class SGJourneyRenderTypes extends RenderType
 				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTransparencyState(NO_TRANSPARENCY)
-				.setCullState(NO_CULL)
+				.setCullState(CULL)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(false));

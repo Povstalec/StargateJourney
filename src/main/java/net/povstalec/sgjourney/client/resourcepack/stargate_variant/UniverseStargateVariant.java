@@ -36,10 +36,10 @@ public class UniverseStargateVariant extends RotatingStargateVariant
 
 	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "universe_dial_fail");
 	
-	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 1, 32, 32, 1F),
-			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 1, 32, 32, 0.75F))));
-	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 32, 1F),
-			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 32, 0.75F))));
+	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
+			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
+	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
+			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
 			new ColorUtil.RGBA(21, 9, 0, 255), Optional.of(new ColorUtil.RGBA(200, 220, 255, 255)), Optional.of(new ColorUtil.RGBA(200, 220, 255, 255)),
@@ -64,7 +64,7 @@ public class UniverseStargateVariant extends RotatingStargateVariant
 	public static final Codec<UniverseStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			// Gate and chevron textures
 			ResourceLocation.CODEC.fieldOf(TEXTURE).forGetter(UniverseStargateVariant::texture),
-			ResourceLocation.CODEC.optionalFieldOf(ENCODED_TEXTURE).forGetter(variant -> Optional.of(variant.encodedTexture)),
+			ResourceLocation.CODEC.optionalFieldOf(ENCODED_TEXTURE).forGetter(variant -> Optional.ofNullable(variant.encodedTexture)),
 			ResourceLocation.CODEC.fieldOf(ENGAGED_TEXTURE).forGetter(UniverseStargateVariant::engagedTexture),
 			// Wormholes
 			ResourcepackModel.Wormhole.CODEC.fieldOf(WORMHOLE).forGetter(UniverseStargateVariant::wormhole),

@@ -9,7 +9,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.Stargate.IncomingOutgoing;
 
 public class ResourcepackSounds
 {
@@ -40,15 +39,15 @@ public class ResourcepackSounds
 		
 		public static final Codec<ResourcepackSounds.Chevron> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				ResourceLocation.CODEC.fieldOf(DEFAULT).forGetter(chevrons -> chevrons.defaultSound),
-				ResourceLocation.CODEC.optionalFieldOf(PRIMARY).forGetter(chevrons -> Optional.of(chevrons.primaryChevron)),
-				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_1).forGetter(chevrons -> Optional.of(chevrons.chevron1)),
-				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_2).forGetter(chevrons -> Optional.of(chevrons.chevron2)),
-				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_3).forGetter(chevrons -> Optional.of(chevrons.chevron3)),
-				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_4).forGetter(chevrons -> Optional.of(chevrons.chevron4)),
-				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_5).forGetter(chevrons -> Optional.of(chevrons.chevron5)),
-				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_6).forGetter(chevrons -> Optional.of(chevrons.chevron6)),
-				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_7).forGetter(chevrons -> Optional.of(chevrons.chevron7)),
-				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_8).forGetter(chevrons -> Optional.of(chevrons.chevron8))
+				ResourceLocation.CODEC.optionalFieldOf(PRIMARY).forGetter(chevrons -> Optional.ofNullable(chevrons.primaryChevron)),
+				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_1).forGetter(chevrons -> Optional.ofNullable(chevrons.chevron1)),
+				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_2).forGetter(chevrons -> Optional.ofNullable(chevrons.chevron2)),
+				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_3).forGetter(chevrons -> Optional.ofNullable(chevrons.chevron3)),
+				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_4).forGetter(chevrons -> Optional.ofNullable(chevrons.chevron4)),
+				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_5).forGetter(chevrons -> Optional.ofNullable(chevrons.chevron5)),
+				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_6).forGetter(chevrons -> Optional.ofNullable(chevrons.chevron6)),
+				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_7).forGetter(chevrons -> Optional.ofNullable(chevrons.chevron7)),
+				ResourceLocation.CODEC.optionalFieldOf(CHEVRON_8).forGetter(chevrons -> Optional.ofNullable(chevrons.chevron8))
 				).apply(instance, ResourcepackSounds.Chevron::new));
 		
 		public Chevron(ResourceLocation defaultSound, Optional<ResourceLocation> primaryChevron,
@@ -138,11 +137,6 @@ public class ResourcepackSounds
 		}
 	}
 	
-	public static final Codec<IncomingOutgoing<ResourceLocation>> INCOMING_OUTGOING_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			ResourceLocation.CODEC.fieldOf(IncomingOutgoing.OUTGOING).forGetter(IncomingOutgoing::outgoing),
-			ResourceLocation.CODEC.fieldOf(IncomingOutgoing.INCOMING).forGetter(IncomingOutgoing::incoming)
-			).apply(instance, IncomingOutgoing::new));
-	
 	public static class Wormhole
 	{
 		public static final String OPEN_SOUND = "open";
@@ -150,9 +144,9 @@ public class ResourcepackSounds
 		public static final String CLOSE_SOUND = "close";
 		
 		public static final Codec<ResourcepackSounds.Wormhole> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.either(INCOMING_OUTGOING_CODEC, ResourceLocation.CODEC).fieldOf(OPEN_SOUND).forGetter(ResourcepackSounds.Wormhole::openSound),
-				Codec.either(INCOMING_OUTGOING_CODEC, ResourceLocation.CODEC).fieldOf(IDLE_SOUND).forGetter(ResourcepackSounds.Wormhole::idleSound),
-				Codec.either(INCOMING_OUTGOING_CODEC, ResourceLocation.CODEC).fieldOf(CLOSE_SOUND).forGetter(ResourcepackSounds.Wormhole::closeSound)
+				Stargate.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(OPEN_SOUND).forGetter(ResourcepackSounds.Wormhole::openSound),
+				Stargate.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(IDLE_SOUND).forGetter(ResourcepackSounds.Wormhole::idleSound),
+				Stargate.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(CLOSE_SOUND).forGetter(ResourcepackSounds.Wormhole::closeSound)
 				// TODO probably add some unstable connection sounds in the future
 				).apply(instance, ResourcepackSounds.Wormhole::new));
 		

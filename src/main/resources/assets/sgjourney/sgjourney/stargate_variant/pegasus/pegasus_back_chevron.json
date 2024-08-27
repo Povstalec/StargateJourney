@@ -12,7 +12,7 @@
 				"rows": 1,
 				"columns": 32,
 				"frames": 32,
-				"alpha": 1.0
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 1.0 }
 			},
 			"back":
 			{
@@ -20,7 +20,7 @@
 				"rows": 1,
 				"columns": 32,
 				"frames": 32,
-				"alpha": 0.75
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			}
 		}
 	},
@@ -34,7 +34,7 @@
 				"rows": 1,
 				"columns": 32,
 				"frames": 32,
-				"alpha": 1.0
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 1.0 }
 			},
 			"back":
 			{
@@ -42,7 +42,7 @@
 				"rows": 1,
 				"columns": 32,
 				"frames": 32,
-				"alpha": 0.75
+				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			}
 		}
 	},

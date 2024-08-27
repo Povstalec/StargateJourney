@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 public class MilkyWayStargateVariant extends GenericStargateVariant
@@ -40,53 +39,15 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 
 	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "milky_way_dial_fail");
 	
-	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 1, 32, 32, 1F),
-			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 1, 32, 32, 0.75F))));
-	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 32, 1F),
-			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 1, 32, 32, 0.75F))));
+	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
+			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
+	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
+			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ColorUtil.RGBA(48, 49, 63, 255));
 	
-	public static final GenericStargateVariant.GenericStargateModel GENERIC_MODEL = new GenericStargateVariant.GenericStargateModel(Optional.empty(), Optional.empty(), Optional.of(false))
-	{
-		@Override
-		public boolean movieChevronLocking()
-		{
-			if(movieChevronLocking != null)
-				return movieChevronLocking;
-			
-			return ClientStargateConfig.use_movie_stargate_model.get();
-		}
-
-		@Override
-		public boolean useMovieStargatePrimaryChevron()
-		{
-			if(useMovieStargatePrimaryChevron != null)
-				return useMovieStargatePrimaryChevron;
-			
-			return ClientStargateConfig.use_movie_stargate_model.get();
-		}
-	};
-	public static final GenericStargateVariant.GenericStargateModel GENERIC_MODEL_BACK_CHEVRON = new GenericStargateVariant.GenericStargateModel(Optional.empty(), Optional.empty(), Optional.of(true))
-	{
-		@Override
-		public boolean movieChevronLocking()
-		{
-			if(movieChevronLocking != null)
-				return movieChevronLocking;
-			
-			return ClientStargateConfig.use_movie_stargate_model.get();
-		}
-
-		@Override
-		public boolean useMovieStargatePrimaryChevron()
-		{
-			if(useMovieStargatePrimaryChevron != null)
-				return useMovieStargatePrimaryChevron;
-			
-			return ClientStargateConfig.use_movie_stargate_model.get();
-		}
-	};
+	public static final GenericStargateVariant.GenericStargateModel.MilkyWay GENERIC_MODEL = new GenericStargateVariant.GenericStargateModel.MilkyWay(Optional.empty(), Optional.empty(), Optional.of(false));
+	public static final GenericStargateVariant.GenericStargateModel.MilkyWay GENERIC_MODEL_BACK_CHEVRON = new GenericStargateVariant.GenericStargateModel.MilkyWay(Optional.empty(), Optional.empty(), Optional.of(true));
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
@@ -111,7 +72,7 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 	public static final Codec<MilkyWayStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			// Gate and chevron textures
 			ResourceLocation.CODEC.fieldOf(TEXTURE).forGetter(MilkyWayStargateVariant::texture),
-			ResourceLocation.CODEC.optionalFieldOf(ENCODED_TEXTURE).forGetter(variant -> Optional.of(variant.encodedTexture)),
+			ResourceLocation.CODEC.optionalFieldOf(ENCODED_TEXTURE).forGetter(variant -> Optional.ofNullable(variant.encodedTexture)),
 			ResourceLocation.CODEC.fieldOf(ENGAGED_TEXTURE).forGetter(MilkyWayStargateVariant::engagedTexture),
 			// Wormholes
 			ResourcepackModel.Wormhole.CODEC.fieldOf(WORMHOLE).forGetter(MilkyWayStargateVariant::wormhole),
@@ -119,7 +80,7 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 			// Symbols
 			ResourcepackModel.SymbolsModel.CODEC.fieldOf(SYMBOLS).forGetter(MilkyWayStargateVariant::symbols),
 			// Model
-			GenericStargateVariant.GenericStargateModel.CODEC.fieldOf(STARGATE_MODEL).forGetter(MilkyWayStargateVariant::stargateModel),
+			GenericStargateVariant.GenericStargateModel.MilkyWay.CODEC.fieldOf(STARGATE_MODEL).forGetter(variant -> (GenericStargateVariant.GenericStargateModel.MilkyWay) variant.stargateModel),
 			// Sounds
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_ENGAGED_SOUNDS).forGetter(MilkyWayStargateVariant::chevronEngagedSounds),
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_INCOMING_SOUNDS).forGetter(MilkyWayStargateVariant::chevronIncomingSounds),

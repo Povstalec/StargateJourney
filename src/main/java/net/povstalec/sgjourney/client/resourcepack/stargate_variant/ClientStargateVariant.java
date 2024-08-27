@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.misc.ColorUtil.RGBA;
 
 public abstract class ClientStargateVariant
 {
@@ -25,6 +26,9 @@ public abstract class ClientStargateVariant
 	
 	public static final String WORMHOLE_SOUNDS = "wormhole_sounds";
 	public static final String FAIL_SOUNDS = "fail_sounds";
+	
+	public static final RGBA DEFAULT_OPAQUE_RGBA = new RGBA(1F, 1F, 1F, 1F);
+	public static final RGBA DEFAULT_TRANSLUCENT_RGBA = new RGBA(1F, 1F, 1F, 0.75F);
 	
 	// TODO Add a way to decide if there is a vortex
 	// TODO Add a way to specify how much distortion there will be on each event horizon
