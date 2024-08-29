@@ -61,6 +61,11 @@ public enum ShieldingPart implements StringRepresentable
 		return shieldingState == this.requiredShieldingState || shieldingState.isAfter(this.requiredShieldingState);
 	}
 	
+	public ShieldingState shieldingState()
+	{
+		return this.requiredShieldingState;
+	}
+	
 	private static ArrayList<ShieldingPart> getParts()
 	{
 		ArrayList<ShieldingPart> parts = new ArrayList<>();

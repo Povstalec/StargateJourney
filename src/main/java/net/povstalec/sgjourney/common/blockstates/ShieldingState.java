@@ -4,25 +4,23 @@ import net.minecraft.util.StringRepresentable;
 
 public enum ShieldingState implements StringRepresentable
 {
-	OPEN("open", (short) 0, (short) 0),
+	OPEN("open", (short) 0),
 	
-	MOVING_1("moving_1", (short) 1, (short) 20),
-	MOVING_2("moving_2", (short) 2, (short) 29),
-	MOVING_3("moving_3", (short) 3, (short) 40),
-	MOVING_4("moving_4", (short) 4, (short) 48),
+	MOVING_1("moving_1", (short) 20),
+	MOVING_2("moving_2", (short) 29),
+	MOVING_3("moving_3", (short) 40),
+	MOVING_4("moving_4", (short) 48),
 	
-	CLOSED("closed", (short) 5, (short) 56);
+	CLOSED("closed", (short) 56);
 	
 	public static final short MAX_PROGRESS = 58;
 	
 	private final String name;
-	private final short number;
 	private final short progress;
 	
-	private ShieldingState(String name, short number, short progress)
+	private ShieldingState(String name, short progress)
 	{
 		this.name = name;
-		this.number = number;
 		this.progress = progress;
 	}
 
@@ -50,12 +48,22 @@ public enum ShieldingState implements StringRepresentable
 	
 	public boolean isBefore(ShieldingState other)
 	{
-		return this.number < other.number;
+		return this.progress < other.progress;
+	}
+	
+	public boolean isBefore(short otherProgress)
+	{
+		return this.progress < otherProgress;
 	}
 	
 	public boolean isAfter(ShieldingState other)
 	{
-		return other.number < this.number;
+		return this.progress > other.progress;
+	}
+	
+	public boolean isAfter(short otherProgress)
+	{
+		return this.progress > otherProgress;
 	}
 	
 	public static ShieldingState fromProgress(short progress)

@@ -27,7 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
@@ -144,10 +143,10 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 			}
 		}
 		
-		AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), state.getValue(FACING), state.getValue(ORIENTATION));
+		/*AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), state.getValue(FACING), state.getValue(ORIENTATION));
 		
 		if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
-				stargate.unsetIris(stargateState, level, baseBlockPos);
+				stargate.unsetIris(stargateState, level, baseBlockPos);*/
 
 		super.playerWillDestroy(level, pos, state, player);
 	}
@@ -157,14 +156,23 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 	{
 		if(oldState.getBlock() != newState.getBlock())
 		{
-			/*BlockPos baseBlockPos = oldState.getValue(PART).getBaseBlockPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
-			
-			AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+			ShieldingPart shieldingPart = oldState.getValue(PART);
+			BlockPos baseBlockPos = shieldingPart.getBaseBlockPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
 			
 			BlockState stargateState = level.getBlockState(baseBlockPos);
 			
-			if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
-					stargate.unsetIris(stargateState, level, baseBlockPos);*/
+			if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
+			{
+				AbstractStargateEntity stargate = stargateBlock.getStargate(level, baseBlockPos, stargateState);
+				if(stargate != null)
+				{
+					if(shieldingPart.shieldingState().isBefore(stargate.getIrisProgress()))
+					{
+						AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+						stargateBlock.unsetIris(stargateState, level, baseBlockPos);
+					}
+				}
+			}
 			
 	        super.onRemove(oldState, level, pos, newState, isMoving);
 		}

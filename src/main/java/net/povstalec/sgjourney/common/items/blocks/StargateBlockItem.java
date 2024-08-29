@@ -23,14 +23,17 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
+import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 
 public class StargateBlockItem extends BlockItem
 {
-	private static final String ADD_TO_NETWORK = "AddToNetwork";
-	private static final String POINT_OF_ORIGIN = "PointOfOrigin";
-	private static final String SYMBOLS = "Symbols";
+	private static final String ADD_TO_NETWORK = AbstractStargateEntity.ADD_TO_NETWORK;
+	private static final String POINT_OF_ORIGIN = AbstractStargateEntity.POINT_OF_ORIGIN;
+	private static final String SYMBOLS = AbstractStargateEntity.SYMBOLS;
+	private static final String IRIS_PROGRESS = AbstractStargateEntity.IRIS_PROGRESS;
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
 	public StargateBlockItem(Block block, Properties properties)
@@ -61,6 +64,33 @@ public class StargateBlockItem extends BlockItem
 					if(player != null)
 						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
 					return false;
+				}
+			}
+			
+			ItemStack stack = context.getItemInHand();
+			
+			if(stack.getTag() != null)
+			{
+				CompoundTag itemTag = stack.getTag();
+				
+				if(itemTag.contains(BLOCK_ENTITY_TAG))
+				{
+					CompoundTag blockEntityTag = itemTag.getCompound(BLOCK_ENTITY_TAG);
+					
+					if(blockEntityTag.contains(IRIS_PROGRESS))
+					{
+						short irisProgress = blockEntityTag.getShort(IRIS_PROGRESS);
+						
+						for(ShieldingPart part : stargateBlock.getShieldingParts())
+						{
+							if(part.canExist(ShieldingState.fromProgress(irisProgress)) && !level.getBlockState(part.getShieldingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
+							{
+								if(player != null)
+									player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
+								return false;
+							}
+						}
+					}
 				}
 			}
 		}

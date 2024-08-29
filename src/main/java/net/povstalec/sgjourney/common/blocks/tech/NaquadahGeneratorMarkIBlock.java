@@ -71,6 +71,7 @@ public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
 		return new NaquadahGeneratorMarkIEntity(pos, state);
 	}
 	
+	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision) 
 	{
 		return switch(state.getValue(ORIENTATION))
