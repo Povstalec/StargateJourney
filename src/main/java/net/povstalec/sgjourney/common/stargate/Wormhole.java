@@ -24,14 +24,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
@@ -191,15 +192,22 @@ public class Wormhole implements ITeleporter
 		Vec3 toVec = travelerCenter.add(motionVec); //TODO This might cause trouble on 1.19.2 because vectors are different there
 		
 		Level targetLevel = targetStargate.getLevel();
-		BlockPos pos = new BlockPos(travelerCenter);
+		BlockPos pos = targetStargate.getBlockPos();
+		BlockState state = targetLevel.getBlockState(targetStargate.getBlockPos());
 		
-		BlockState state = targetLevel.getBlockState(pos);
-		
-		if(state.getBlock() instanceof AbstractShieldingBlock)
+		if(state.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
-			BlockHitResult result = state.getCollisionShape(targetLevel, pos).clip(fromVec, toVec, pos);
-			
-			return result != null;
+			for(ShieldingPart part : stargateBlock.getShieldingParts())
+			{
+				BlockPos shieldingPos = part.getShieldingPos(pos, state.getValue(AbstractStargateBlock.FACING), state.getValue(AbstractStargateBlock.ORIENTATION));
+				BlockState shieldingState = targetLevel.getBlockState(shieldingPos);
+				
+				if(shieldingState.getBlock() instanceof AbstractShieldingBlock)
+				{
+					if(shieldingState.getCollisionShape(targetLevel, shieldingPos).clip(fromVec, toVec, shieldingPos) != null)
+						return false;
+				}
+			}
 		}
 		
 		return true;
