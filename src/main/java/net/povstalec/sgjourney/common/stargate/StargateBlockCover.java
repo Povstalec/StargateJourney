@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -63,8 +64,15 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		Optional<BlockState> removed = removeBlockAt(part);
 		if(removed.isPresent())
 		{
-			if(!level.isClientSide() && !player.isCreative() && player.hasCorrectToolForDrops(removed.get()))
-				Block.dropResources(removed.get(), level, pos);
+			if(!level.isClientSide())
+			{
+				BlockState state = removed.get();
+				
+				if(!player.isCreative() && player.hasCorrectToolForDrops(removed.get()))
+					Block.dropResources(state, level, pos);
+				
+				level.levelEvent((Player) null, 2001, pos, Block.getId(state)); // Spawns breaking particles and makes a breaking sound
+			}
 			
 			return true;
 		}

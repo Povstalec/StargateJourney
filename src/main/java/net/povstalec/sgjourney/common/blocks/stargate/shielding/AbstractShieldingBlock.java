@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -224,22 +225,33 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 		
 		for(ShieldingPart part : parts)
 		{
-			BlockPos ringPos = part.getShieldingPos(baseBlockPos, direction, orientation);
-			BlockState state = level.getBlockState(ringPos);
+			BlockPos shieldingPos = part.getShieldingPos(baseBlockPos, direction, orientation);
+			BlockState state = level.getBlockState(shieldingPos);
 			
 			// Remove Shielding Block
 			if(state.getBlock() instanceof AbstractShieldingBlock && !part.canExist(shieldingState))
 			{
 				boolean waterlogged = state.getValue(AbstractShieldingBlock.WATERLOGGED);
 				
-				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
-				
+				level.setBlock(shieldingPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
 			}
 			// Change or place new Shielding Block
 			else if(part.canExist(shieldingState))
 			{
 				if(state.getBlock() instanceof AbstractShieldingBlock || state.is(Blocks.AIR) || state.is(Blocks.WATER))
 				{
+					level.setBlock(part.getShieldingPos(baseBlockPos,  direction, orientation), 
+							irisBlock.defaultBlockState()
+							.setValue(AbstractShieldingBlock.SHIELDING_STATE, shieldingState)
+							.setValue(AbstractShieldingBlock.PART, part)
+							.setValue(AbstractShieldingBlock.FACING, direction)
+							.setValue(AbstractShieldingBlock.ORIENTATION, orientation)
+							.setValue(AbstractShieldingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getShieldingPos(baseBlockPos, direction, orientation)).getType() == Fluids.WATER)), 3);
+				}
+				else if(state.getDestroySpeed(level, shieldingPos) < 0.5F) //TODO Maybe make this configurable?
+				{
+					level.levelEvent((Player) null, 2001, shieldingPos, getId(state)); // Spawns breaking particles
+					
 					level.setBlock(part.getShieldingPos(baseBlockPos,  direction, orientation), 
 							irisBlock.defaultBlockState()
 							.setValue(AbstractShieldingBlock.SHIELDING_STATE, shieldingState)

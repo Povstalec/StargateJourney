@@ -19,6 +19,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -186,12 +187,13 @@ public class StaffWeaponItem extends Item
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
 	}
 	
-	/*@Override
+	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity player)
 	{
-		player.getLevel().playSound(player, player.blockPosition(), SoundInit.MATOK_ATTACK.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+		//TODO Find a good file for the attack sound
+		player.getLevel().playSound((Player) null, player.blockPosition(), SoundInit.MATOK_ATTACK.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 		return super.hurtEnemy(stack, target, player);
-	}*/
+	}
 	
 	@Override
 	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player)

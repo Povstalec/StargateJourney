@@ -17,8 +17,6 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 
 public class IrisModel
 {
-	private static final ResourceLocation IRIS_TEXTURE = new ResourceLocation("textures/block/iron_block.png");//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/iron_iris.png");
-	
 	private static final float OFFSET = 1F / 16 / 2;
 	private static final int TOTAL_SIDES = 20;
 	private static final float DEGREES = (float) 360 / TOTAL_SIDES;
@@ -30,6 +28,15 @@ public class IrisModel
 	
 	public static final float IRIS_OPEN_DEGREES = 84.0F;
 	public static final float IRIS_ROTATE_DEGREES = 1.0F;
+	
+	public static final float TEXTURE_CENTER_U = 13F / 2 / 128;
+	public static final float TEXTURE_TOP_V = 0;
+	
+	public static final float TEXTURE_LEFT_U = TEXTURE_CENTER_U - IRIS_BLADE_WIDTH * 16 / 2 / 128;
+	public static final float TEXTURE_LEFT_V = IRIS_BLADE_LENGTH * 16 / 128;
+	
+	public static final float TEXTURE_RIGHT_U = TEXTURE_CENTER_U + IRIS_BLADE_WIDTH * 16 / 2 / 128;
+	public static final float TEXTURE_RIGHT_V = IRIS_BLADE_LENGTH * 16 / 128;
 	
 	private boolean renderWhenOpen;
 	private float maxOpenDegrees;
@@ -71,17 +78,17 @@ public class IrisModel
 					-IRIS_BLADE_WIDTH,
 					0,
 					OFFSET,
-					1, 0,
+					TEXTURE_RIGHT_U, TEXTURE_RIGHT_V,
 					
 					-IRIS_BLADE_WIDTH_HALF,
 					-IRIS_BLADE_LENGTH,
 					OFFSET,
-					1, 1,
+					TEXTURE_CENTER_U, TEXTURE_TOP_V,
 					
 					0,
 					0,
 					OFFSET,
-					0, 0);
+					TEXTURE_LEFT_U, TEXTURE_LEFT_V);
 			
 			// Back
 			SGJourneyModel.createTriangle(consumer, matrix4, matrix3, combinedLight, 
@@ -89,17 +96,17 @@ public class IrisModel
 					-IRIS_BLADE_WIDTH_HALF,
 					-IRIS_BLADE_LENGTH,
 					OFFSET,
-					1, 1,
+					TEXTURE_CENTER_U, TEXTURE_TOP_V,
 					
 					-IRIS_BLADE_WIDTH,
 					0,
 					OFFSET,
-					1, 0,
+					TEXTURE_RIGHT_U, TEXTURE_RIGHT_V,
 					
 					0,
 					0,
 					OFFSET,
-					0, 0);
+					TEXTURE_LEFT_U, TEXTURE_LEFT_V);
 			
 			stack.popPose();
 			

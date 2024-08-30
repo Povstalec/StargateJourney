@@ -10,6 +10,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -286,6 +287,22 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return super.use(state, level, pos, player, hand, result);
 	}
 	
+	@Override
+	public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
+    {
+		Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
+		
+		if(blockCover.isPresent() && !blockCover.get().blockStates.isEmpty())
+		{
+			StargatePart part = state.getValue(AbstractStargateBlock.PART);
+			
+			if(blockCover.get().mineBlockAt(level, player, part, pos))
+				return false;
+		}
+		
+        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+    }
+	
 	public static class StargateBlockState extends BlockState
 	{
 
@@ -311,8 +328,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 					
 					if(coverState.isPresent()) // Destroy speed for the cover block
 						return coverState.get().getDestroySpeed(reader, pos);
-					else if(!blockCover.get().blockStates.isEmpty()) // If there are cover blocks on the gate, the gate is unmineable
-						return Blocks.BEDROCK.defaultBlockState().getDestroySpeed(reader, pos);
+					//else if(!blockCover.get().blockStates.isEmpty()) // If there are cover blocks on the gate, the gate is unmineable
+					//	return Blocks.BEDROCK.defaultBlockState().getDestroySpeed(reader, pos);
 				}
 			}
 			

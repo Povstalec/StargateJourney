@@ -184,6 +184,9 @@ public class Wormhole implements ITeleporter
 	 */
 	public boolean handleShielding(AbstractStargateEntity targetStargate, Vec3 destinationPos, Vec3 motionVec, Entity traveler)
 	{
+		if(targetStargate.isIrisClosed()) // No need to check, we know it's closed
+			return false;
+		
 		EntityDimensions dimension = traveler.getDimensions(traveler.getPose());
 		// Creates a bounding box at the destination and takes its center
 		Vec3 travelerCenter = dimension.makeBoundingBox(destinationPos).getCenter();

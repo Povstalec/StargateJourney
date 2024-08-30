@@ -434,7 +434,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(symbol < 0)
 			return true;
 		
-		if(symbol >  getSymbolBounds())
+		if(symbol > getSymbolBounds())
 			return true;
 		
 		return false;

@@ -7,13 +7,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 
 public abstract class StargateIrisItem extends Item
 {
 	// Vanilla Materials
 	public static final ResourceLocation COPPER_IRIS = new ResourceLocation("textures/block/copper_block.png");
-	public static final ResourceLocation IRON_IRIS = new ResourceLocation("textures/block/iron_block.png");
+	public static final ResourceLocation IRON_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/iron_iris.png");
 	public static final ResourceLocation GOLD_IRIS = new ResourceLocation("textures/block/gold_block.png");
 	public static final ResourceLocation DIAMOND_IRIS = new ResourceLocation("textures/block/diamond_block.png");
 	public static final ResourceLocation NETHERITE_IRIS = new ResourceLocation("textures/block/netherite_block.png");

@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"RIR",
+		"I I",
+		"RIR"
+	],
+	"key":
+	{
+		"I": { "item": "minecraft:iron_ingot" },
+		"R": { "item": "minecraft:redstone" }
+	},
+	"result":
+	{
+		"item": "sgjourney:stargate_shielding_ring"
+	}
+}
