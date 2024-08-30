@@ -42,6 +42,7 @@
 	"block.sgjourney.classic_dhd": "Klasický ovládací panel",
 	
 	"block.sgjourney.stargate.not_enough_space": "Hvězdná brána nemá dost místa",
+	"block.sgjourney.stargate.break_cover_blocks": "Nejprve znič krycí bloky",
 	"block.sgjourney.stargate.same_variant": "Stejná varianta",
 	"block.sgjourney.stargate.classic.incorrect_setup": "Špatně sestaveno",
 	"block.sgjourney.stargate.classic.invalid_address": "Nesprávná adresa",

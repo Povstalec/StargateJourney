@@ -22,14 +22,15 @@ public class TagInit
             return ItemTags.create(new ResourceLocation(StargateJourney.MODID, name));
         }
 
-        private static TagKey<Item> forgeTag(String name)
+        /*private static TagKey<Item> forgeTag(String name)
         {
             return ItemTags.create(new ResourceLocation("forge", name));
-        }
+        }*/
 	}
 	
 	public class Blocks
 	{
+		public static final TagKey<Block> IRIS_RESISTANT = tag("iris_resistant");
 		public static final TagKey<Block> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<Block> PLASMA_FLAMMABLE = tag("plasma_flammable");
 		public static final TagKey<Block> STONE_SPIRE_PROTRUDES_THROUGH = tag("stone_spire_protrudes_through");
@@ -39,10 +40,10 @@ public class TagInit
             return BlockTags.create(new ResourceLocation(StargateJourney.MODID, name));
         }
 
-        private static TagKey<Block> forgeTag(String name)
+        /*private static TagKey<Block> forgeTag(String name)
         {
             return BlockTags.create(new ResourceLocation("forge", name));
-        }
+        }*/
 	}
 	
 	public class Entities
@@ -56,10 +57,10 @@ public class TagInit
             return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(StargateJourney.MODID, name));
         }
 
-        private static TagKey<EntityType<?>> forgeTag(String name)
+        /*private static TagKey<EntityType<?>> forgeTag(String name)
         {
             return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("forge", name));
-        }
+        }*/
 	}
 	
 	public class Structures

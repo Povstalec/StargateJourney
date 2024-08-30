@@ -4,6 +4,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonIrisConfig
 {
+	public static ForgeConfigSpec.DoubleValue iris_breaking_strength;
+	
 	public static ForgeConfigSpec.IntValue copper_iris_durability;
 	public static ForgeConfigSpec.IntValue iron_iris_durability;
 	public static ForgeConfigSpec.IntValue gold_iris_durability;
@@ -18,6 +20,12 @@ public class CommonIrisConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		iris_breaking_strength = server
+				.comment("The Iris can break any Blocks with Block Strength below the Iris Strength")
+				.defineInRange("server.copper_iris_durability", 0.5, 0, Double.MAX_VALUE);
+		
+		//TODO Maybe different iris strengths?
+		
 		copper_iris_durability = server
 				.comment("Durability of the Copper Iris")
 				.defineInRange("server.copper_iris_durability", 1024, 1, Integer.MAX_VALUE);

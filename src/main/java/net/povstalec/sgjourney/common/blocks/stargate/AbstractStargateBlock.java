@@ -10,7 +10,6 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
@@ -46,6 +44,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ForgeHooks;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
@@ -315,25 +314,49 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		@Override
 		public float getDestroySpeed(BlockGetter reader, BlockPos pos)
 		{
-			BlockState state = reader.getBlockState(pos);
-			
-			if(state.getBlock() instanceof AbstractStargateBlock stargate)
+			if(this.getBlock() instanceof AbstractStargateBlock stargate)
 			{
-				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(state, reader, pos);
+				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(this, reader, pos);
 				
 				if(blockCover.isPresent())
 				{
-					StargatePart part = state.getValue(PART);
+					StargatePart part = this.getValue(PART);
 					Optional<BlockState> coverState = blockCover.get().getBlockAt(part);
 					
 					if(coverState.isPresent()) // Destroy speed for the cover block
 						return coverState.get().getDestroySpeed(reader, pos);
-					//else if(!blockCover.get().blockStates.isEmpty()) // If there are cover blocks on the gate, the gate is unmineable
-					//	return Blocks.BEDROCK.defaultBlockState().getDestroySpeed(reader, pos);
 				}
 			}
 			
 			return super.getDestroySpeed(reader, pos);
+		}
+		
+		@Override
+		public float getDestroyProgress(Player player, BlockGetter reader, BlockPos pos)
+		{
+			float destroySpeed = getDestroySpeed(reader, pos);
+			if(destroySpeed == -1.0F)
+				return 0.0F;
+			
+			if(this.getBlock() instanceof AbstractStargateBlock stargate)
+			{
+				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(this, reader, pos);
+				
+				if(blockCover.isPresent())
+				{
+					StargatePart part = this.getValue(PART);
+					Optional<BlockState> coverState = blockCover.get().getBlockAt(part);
+					
+					if(coverState.isPresent())
+					{
+						float multiplier = ForgeHooks.isCorrectToolForDrops(coverState.get(), player) ? 30F : 100F;
+						
+						return player.getDigSpeed(coverState.get(), pos) / destroySpeed / multiplier;
+					}
+				}
+			}
+			
+			return super.getDestroyProgress(player, reader, pos);
 		}
 		
 		@Override

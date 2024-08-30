@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +30,8 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
+import net.povstalec.sgjourney.common.config.CommonIrisConfig;
+import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
 public abstract class AbstractShieldingBlock extends Block implements SimpleWaterloggedBlock
@@ -238,6 +239,7 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 			// Change or place new Shielding Block
 			else if(part.canExist(shieldingState))
 			{
+				float destroySpeed = state.getDestroySpeed(level, shieldingPos);
 				if(state.getBlock() instanceof AbstractShieldingBlock || state.is(Blocks.AIR) || state.is(Blocks.WATER))
 				{
 					level.setBlock(part.getShieldingPos(baseBlockPos,  direction, orientation), 
@@ -248,9 +250,9 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 							.setValue(AbstractShieldingBlock.ORIENTATION, orientation)
 							.setValue(AbstractShieldingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getShieldingPos(baseBlockPos, direction, orientation)).getType() == Fluids.WATER)), 3);
 				}
-				else if(state.getDestroySpeed(level, shieldingPos) < 0.5F) //TODO Maybe make this configurable?
+				else if(destroySpeed > 0 && destroySpeed < CommonIrisConfig.iris_breaking_strength.get() && !state.is(TagInit.Blocks.IRIS_RESISTANT))
 				{
-					level.levelEvent((Player) null, 2001, shieldingPos, getId(state)); // Spawns breaking particles
+					level.levelEvent((Player) null, 2001, shieldingPos, getId(state)); // Spawns breaking particles and makes a breaking sound
 					
 					level.setBlock(part.getShieldingPos(baseBlockPos,  direction, orientation), 
 							irisBlock.defaultBlockState()

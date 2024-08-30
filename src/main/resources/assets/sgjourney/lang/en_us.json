@@ -42,6 +42,7 @@
 	"block.sgjourney.classic_dhd": "Classic DHD",
 	
 	"block.sgjourney.stargate.not_enough_space": "Stargate does not have enough space",
+	"block.sgjourney.stargate.break_cover_blocks": "Must destroy Cover Blocks first",
 	"block.sgjourney.stargate.same_variant": "Same variant",
 	"block.sgjourney.stargate.classic.incorrect_setup": "Incorrect setup",
 	"block.sgjourney.stargate.classic.invalid_address": "Invalid Address",
