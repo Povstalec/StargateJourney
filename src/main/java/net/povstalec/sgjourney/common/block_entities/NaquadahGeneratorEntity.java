@@ -86,7 +86,8 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	public abstract long getReactionTime();
 
 	public abstract long getEnergyPerTick();
-	
+
+	@Nullable
 	public Direction getDirection()
 	{
 		BlockPos gatePos = this.getBlockPos();
@@ -106,6 +107,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		return null;
 	}
 	
+	@Nullable
 	public Direction getBottomDirection()
 	{
 		BlockPos gatePos = this.getBlockPos();
@@ -120,6 +122,18 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 
 		StargateJourney.LOGGER.error("Couldn't find Direction " + this.getBlockPos().toString());
 		return null;
+	}
+	
+	public boolean isActive()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof NaquadahGeneratorBlock)
+			return gateState.getValue(NaquadahGeneratorBlock.ACTIVE);
+
+		StargateJourney.LOGGER.error("Couldn't find Active state" + this.getBlockPos().toString());
+		return false;
 	}
 	
 	//============================================================================================
@@ -208,22 +222,27 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	
 	private void doReaction()
 	{
-		if(this.hasNaquadah() && this.reactionProgress == 0)
+		if(!isActive())
+			return;
+		
+		if(this.hasNaquadah() && reactionProgress == 0)
 		{
 			NaquadahFuelRodItem.depleteFuel(this.itemHandler.getStackInSlot(0));
 			
 			//this.itemHandler.extractItem(0, 1, false);
 			this.progressReaction();
 		}
-		else if(this.reactionProgress > 0 && this.reactionProgress < this.getReactionTime() && this.getEnergyStored() < this.capacity())
+		
+		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && getEnergyStored() < capacity() && canReceive(getEnergyPerTick()))
 			this.progressReaction();
-		else if(this.reactionProgress >= this.getReactionTime())
-			this.reactionProgress = 0;
+		
+		else if(reactionProgress >= getReactionTime())
+			reactionProgress = 0;
 	}
 	
 	private void progressReaction()
 	{
-		this.generateEnergy(this.getEnergyPerTick());
+		this.generateEnergy(getEnergyPerTick());
 		this.reactionProgress++;
 	}
 	

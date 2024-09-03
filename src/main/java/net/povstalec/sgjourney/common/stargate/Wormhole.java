@@ -260,6 +260,9 @@ public class Wormhole implements ITeleporter
 						if(traveler instanceof ServerPlayer player)
 							player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
 						traveler.kill();
+						
+						targetStargate.playIrisThudSound();
+						targetStargate.decreaseIrisDurability();
 	    			}
 	    			
 	    			return;

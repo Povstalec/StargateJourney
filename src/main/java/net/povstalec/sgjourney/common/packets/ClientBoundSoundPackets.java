@@ -122,6 +122,34 @@ public abstract class ClientBoundSoundPackets
             return true;
         }
     }
+    
+    public static class IrisThud extends ClientBoundSoundPackets
+    {
+    	public IrisThud(BlockPos pos)
+    	{
+    		super(pos, false);
+    	}
+    	public IrisThud(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    	}
+    	
+    	@Override
+        public void encode(FriendlyByteBuf buffer)
+        {
+            super.encode(buffer);
+        }
+    	
+    	@Override
+    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playIrisThudSound(pos);
+            });
+            return true;
+        }
+    }
 
     public static class Chevron
     {

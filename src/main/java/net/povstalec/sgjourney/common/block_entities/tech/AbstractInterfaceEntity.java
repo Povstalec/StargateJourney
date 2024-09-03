@@ -80,7 +80,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		
 		this.interfaceType = interfaceType;
 		
-		if(ModList.get().isLoaded("computercraft"))
+		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID))
 			peripheralWrapper = new InterfacePeripheralWrapper(this);
 	}
 	

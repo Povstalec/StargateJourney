@@ -1,6 +1,24 @@
 {
 	"variants":
 	{
-		"": { "model": "sgjourney:block/transceiver" }
+		"facing=north,receiving=false,transmitting=false": { "model": "sgjourney:block/transceiver" },
+		"facing=south,receiving=false,transmitting=false": { "model": "sgjourney:block/transceiver", "y": 180 },
+		"facing=west,receiving=false,transmitting=false": { "model": "sgjourney:block/transceiver", "y": 270 },
+		"facing=east,receiving=false,transmitting=false": { "model": "sgjourney:block/transceiver", "y": 90 },
+		
+		"facing=north,receiving=true,transmitting=false": { "model": "sgjourney:block/transceiver_receiving" },
+		"facing=south,receiving=true,transmitting=false": { "model": "sgjourney:block/transceiver_receiving", "y": 180 },
+		"facing=west,receiving=true,transmitting=false": { "model": "sgjourney:block/transceiver_receiving", "y": 270 },
+		"facing=east,receiving=true,transmitting=false": { "model": "sgjourney:block/transceiver_receiving", "y": 90 },
+		
+		"facing=north,receiving=false,transmitting=true": { "model": "sgjourney:block/transceiver_transmitting" },
+		"facing=south,receiving=false,transmitting=true": { "model": "sgjourney:block/transceiver_transmitting", "y": 180 },
+		"facing=west,receiving=false,transmitting=true": { "model": "sgjourney:block/transceiver_transmitting", "y": 270 },
+		"facing=east,receiving=false,transmitting=true": { "model": "sgjourney:block/transceiver_transmitting", "y": 90 },
+		
+		"facing=north,receiving=true,transmitting=true": { "model": "sgjourney:block/transceiver_transmitting_receiving" },
+		"facing=south,receiving=true,transmitting=true": { "model": "sgjourney:block/transceiver_transmitting_receiving", "y": 180 },
+		"facing=west,receiving=true,transmitting=true": { "model": "sgjourney:block/transceiver_transmitting_receiving", "y": 270 },
+		"facing=east,receiving=true,transmitting=true": { "model": "sgjourney:block/transceiver_transmitting_receiving", "y": 90 }
 	}
 }

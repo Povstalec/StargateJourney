@@ -35,12 +35,39 @@ public class TollanStargateEntity extends AbstractStargateEntity
         
         super.onLoad();
     }
+	
+	@Override
+	public boolean hasIris()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean isIrisClosed()
+	{
+		return false;
+	}
+	
+	@Override
+	public short getIrisProgress()
+	{
+		return 0;
+	}
+	
+	@Override
+	public float getIrisProgress(float partialTick)
+	{
+		return 0;
+	}
+	
+	@Override
+	protected void setIrisState() {}
 
 	@Override
-	public void playRotationSound(){}
+	public void playRotationSound() {}
 
 	@Override
-	public void stopRotationSound(){}
+	public void stopRotationSound() {}
 
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed()

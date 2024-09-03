@@ -240,6 +240,7 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 			else if(part.canExist(shieldingState))
 			{
 				float destroySpeed = state.getDestroySpeed(level, shieldingPos);
+				
 				if(state.getBlock() instanceof AbstractShieldingBlock || state.is(Blocks.AIR) || state.is(Blocks.WATER))
 				{
 					level.setBlock(part.getShieldingPos(baseBlockPos,  direction, orientation), 

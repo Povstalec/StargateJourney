@@ -552,6 +552,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.CloseWormhole(this.worldPosition, incoming));
 	}
 	
+	public void playIrisThudSound()
+	{
+		if(!level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.IrisThud(this.worldPosition));
+	}
+	
 	public abstract void playRotationSound();
 	
 	public abstract void stopRotationSound();
@@ -721,7 +727,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		}
 		
 		setChanged();
-		StargateJourney.LOGGER.info("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " " + feedback.getMessage());
+		if(feedback == Stargate.Feedback.UNKNOWN_ERROR)
+			StargateJourney.LOGGER.error("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " " + Stargate.Feedback.UNKNOWN_ERROR.getMessage());
+		else
+
+			StargateJourney.LOGGER.debug("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " " + feedback.getMessage());
 		return setRecentFeedback(feedback);
 	}
 	
@@ -988,6 +998,20 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return false;
 	}
 	
+	public void decreaseIrisDurability()
+	{
+		if(irisItemHandler.getStackInSlot(0).isEmpty())
+			return;
+		
+		if(getBlockState().getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
+		{
+			boolean shouldDestroyIris = !StargateIrisItem.decreaseDurability(irisItemHandler.getStackInSlot(0));
+			
+			if(shouldDestroyIris)
+				AbstractShieldingBlock.destroyShielding(level, this.getBlockPos(), stargateBlock.getShieldingParts(), getDirection(), getOrientation());
+		}
+	}
+	
 	public Optional<ResourceLocation> getIrisTexture()
 	{
 		if(!hasIris())
@@ -1009,9 +1033,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public float getIrisProgress(float partialTick)
 	{
-		//if(irisProgress != 0)
-		//	System.out.println("Iris Progress: " + irisProgress);
-		
 		return StargateJourneyConfig.disable_smooth_animations.get() ?
 				(float) getIrisProgress() : Mth.lerp(partialTick, this.oldIrisProgress, this.irisProgress);
 	}
@@ -1026,7 +1047,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return ShieldingState.fromProgress(irisProgress);
 	}
 	
-	private void setIrisState()
+	protected void setIrisState()
 	{
 		if(irisProgress == ShieldingState.CLOSED.getProgress())
 		{
@@ -1621,7 +1642,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		    			if(eventName != null)
 		    				interfaceEntity.queueEvent(eventName, objects);
 		    			level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
-		    			System.out.println("Updating");
 		    			interfaceEntity.setChanged();
 		    		}
 		    	}
@@ -1858,6 +1878,16 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 				});
 			}
 		}
+	}
+	
+	public float checkConnectionShieldingState()
+	{
+		return StargateNetwork.get(level).checkStargateShieldingState(this, connectionID);
+	}
+	
+	public float checkShieldingState()
+	{
+		return irisProgress * 100F / ShieldingState.MAX_PROGRESS;
 	}
 	
 	protected ItemStackHandler createIrisHandler()

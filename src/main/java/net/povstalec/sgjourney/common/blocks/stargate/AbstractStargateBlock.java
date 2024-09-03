@@ -10,6 +10,7 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
@@ -45,7 +47,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ForgeHooks;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -63,7 +67,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final EnumProperty<StargateConnection.State> CONNECTION_STATE = EnumProperty.create("connection_state", StargateConnection.State.class);
 	public static final IntegerProperty CHEVRONS_ACTIVE = IntegerProperty.create("chevrons_active", 0, 9);
-	//TODO public static final BooleanProperty FULL = BooleanProperty.create("full");
 
 	protected VoxelShapeProvider shapeProvider;
 	protected StateDefinition<Block, BlockState> stargateStateDefinition;
@@ -79,8 +82,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		
 		this.registerDefaultState(this.stargateStateDefinition.any().setValue(FACING, Direction.NORTH)
 				.setValue(ORIENTATION, Orientation.REGULAR).setValue(CONNECTION_STATE, StargateConnection.State.IDLE)
-				.setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE)
-				/*.setValue(FULL, Boolean.valueOf(false))*/);
+				.setValue(CHEVRONS_ACTIVE, 0).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE));
 		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
 	}
 
@@ -208,6 +210,39 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 
 		super.playerWillDestroy(level, pos, state, player);
 	}
+	
+	public void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation, StargatePart stargatePart)
+	{
+		if(direction == null)
+		{
+			StargateJourney.LOGGER.error("Failed to destroy Stargate because direction is null");
+			return;
+		}
+		
+		if(orientation == null)
+		{
+			StargateJourney.LOGGER.error("Failed to destroy Stargate because orientation is null");
+			return;
+		}
+		
+		AbstractShieldingBlock.destroyShielding(level, pos, shieldingParts, direction, orientation);
+		
+		for(StargatePart part : parts)
+		{
+			if(!stargatePart.equals(part))
+			{
+				BlockPos ringPos = part.getRingPos(pos, direction, orientation);
+				BlockState state = level.getBlockState(ringPos);
+				
+				if(state.getBlock() instanceof AbstractStargateBlock)
+				{
+					boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
+					
+					level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
+				}
+			}
+		}
+	}
 
 	@Override
 	public PushReaction getPistonPushReaction(BlockState state)
@@ -261,14 +296,19 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public boolean setIris(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
 		ItemStack stack = player.getItemInHand(hand);
-		if(stack.getItem() instanceof StargateIrisItem)
+		if(stack.getItem() instanceof StargateIrisItem && !level.isClientSide())
 		{
 			AbstractStargateEntity stargate = getStargate(level, pos, state);
-			if(stargate != null && stargate.addIris(stack))
+			if(stargate != null )
 			{
-				if(!player.isCreative())
-					player.getItemInHand(hand).shrink(1);
-				return true;
+				if(stargate.addIris(stack))
+				{
+					if(!player.isCreative())
+						player.getItemInHand(hand).shrink(1);
+					return true;
+				}
+				else
+					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.already_has_iris"), true);;
 			}
 		}
 		

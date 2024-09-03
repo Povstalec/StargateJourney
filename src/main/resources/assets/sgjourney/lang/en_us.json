@@ -175,6 +175,8 @@
 	"sounds.sgjourney.wormhole_close" : "Wormhole closes",
 	"sounds.sgjourney.wormhole_enter" : "Wormhole entered",
 	"sounds.sgjourney.wormhole_idle" : "Wormhole idle",
+
+	"sounds.sgjourney.iris_thud" : "Iris thud",
 	
 	"sounds.sgjourney.dhd_enter" : "DHD enter",
 	"sounds.sgjourney.dhd_press" : "DHD pressed",
@@ -443,6 +445,8 @@
 	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototype Ancient Gene Therapy",
 	"tooltip.sgjourney.syringe.ata_gene": "Ancient Gene Therapy",
 	
+	"tooltip.sgjourney.iris.durability": "Durability",
+	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Error: Transport Rings Busy",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Error: No Transport Rings Nearby",
 	"message.sgjourney.ring_remote.error.no_coordinates": "Error: No Coordinates",
@@ -455,6 +459,8 @@
 	"message.sgjourney.dhd.error.not_connected_to_stargate": "DHD is not connected to a Stargate",
 	
 	"message.sgjourney.stargate.error.one_way_wormhole": "Can't travel through wormhole in this direction",
+	"message.sgjourney.stargate.error.iris": "Travel blocked by Iris",
+	"message.sgjourney.stargate.error.already_has_iris": "Stargate already has an Iris",
 	
 	"message.sgjourney.stargate.info.none": "None",
 	"message.sgjourney.stargate.error.unknown": "Unknown Error",
@@ -524,6 +530,10 @@
 	"message.sgjourney.command.get_transporters": "Transporters in dimension",
 	"message.sgjourney.command.transporter_network_reload": "Transporter Network reloaded",
 	"message.sgjourney.command.click_to_copy.address": "Click to copy Address",
+
+	"message.sgjourney.gdo.shielded": "Shielded",
+	"message.sgjourney.gdo.error.no_nearby_stargate": "No nearby Stargate",
+	"message.sgjourney.gdo.error.stargate_not_connected": "Stargate is not connected",
 	
 	"gui.sgjourney.config": "Stargate Journey Config",
 	"gui.sgjourney.client": "Client",

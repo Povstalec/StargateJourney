@@ -41,7 +41,6 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -60,6 +59,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
 	public abstract AbstractStargateRingBlock getRing();
+	
+	public abstract AbstractShieldingBlock getIris();
 	
 	public boolean setVariant(Level level, BlockPos pos, Player player, InteractionHand hand)
 	{
@@ -186,36 +187,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			updateIris(level, pos, state, stargate.getShieldingState());
 	}
 	
-	public static void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation)
-	{
-		if(direction == null)
-		{
-			StargateJourney.LOGGER.error("Failed to destroy Stargate because direction is null");
-			return;
-		}
-		
-		if(orientation == null)
-		{
-			StargateJourney.LOGGER.error("Failed to destroy Stargate because orientation is null");
-			return;
-		}
-		
-		AbstractShieldingBlock.destroyShielding(level, pos, shieldingParts, direction, orientation);
-		
-		for(StargatePart part : parts)
-		{
-			BlockPos ringPos = part.getRingPos(pos, direction, orientation);
-			BlockState state = level.getBlockState(ringPos);
-			
-			if(state.getBlock() instanceof AbstractStargateBlock)
-			{
-				boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
-				
-				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
-			}
-		}
-	}
-	
 	@Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
 	{
@@ -229,7 +200,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     			stargate.removeStargateFromNetwork();
     		}
     		
-    		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+    		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
     		
             super.onRemove(oldState, level, pos, newState, isMoving);
         }
@@ -260,8 +231,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 							.setValue(AbstractStargateRingBlock.CHEVRONS_ACTIVE, level.getBlockState(pos).getValue(CHEVRONS_ACTIVE))
 							.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
 							.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
-							.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER))
-							/*.setValue(AbstractStargateRingBlock.SHIELDING_STATE, shieldingState)*/, 3);
+							.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
 				}
 			}
 		}
@@ -279,10 +249,13 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	
 	public void updateIris(Level level, BlockPos pos, BlockState state, ShieldingState shieldingState)
 	{
+		if(getIris() == null)
+			return;
+			
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
 		
-		AbstractShieldingBlock.setIrisState(BlockInit.MILKY_WAY_IRIS.get(), level, pos, getShieldingParts(), direction, orientation, shieldingState);
+		AbstractShieldingBlock.setIrisState(getIris(), level, pos, getShieldingParts(), direction, orientation, shieldingState);
 	}
 	
     @Override

@@ -1,34 +1,61 @@
 package net.povstalec.sgjourney.common.blocks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.annotation.Nullable;
 
+import org.joml.Vector3d;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
 public class TransceiverBlock extends Block implements EntityBlock
 {
-	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+	public static final BooleanProperty RECEIVING = BooleanProperty.create("receiving");
+	public static final BooleanProperty TRANSMITTING = BooleanProperty.create("transmitting");
 	
 	private static final int TICKS_ACTIVE = 20;
+	
+	private static final ArrayList<Tuple<Vector3d, Vector3d>> MIN_MAX = new ArrayList<Tuple<Vector3d, Vector3d>>(Arrays.asList(
+			new Tuple<Vector3d, Vector3d>(new Vector3d(2.0D, 0.0D, 3.0D), new Vector3d(14.0D, 4.0D, 16.0D)) // Base
+			));
+	
+	private static final VoxelShape SHAPE_NORTH = VoxelShapeProvider.getDirectionalShapes(MIN_MAX, Direction.NORTH);
+	private static final VoxelShape SHAPE_EAST = VoxelShapeProvider.getDirectionalShapes(MIN_MAX, Direction.EAST);
+	private static final VoxelShape SHAPE_SOUTH = VoxelShapeProvider.getDirectionalShapes(MIN_MAX, Direction.SOUTH);
+	private static final VoxelShape SHAPE_WEST = VoxelShapeProvider.getDirectionalShapes(MIN_MAX, Direction.WEST);
 	   
 	public TransceiverBlock(Properties properties)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH)
+				.setValue(RECEIVING, false).setValue(TRANSMITTING, false));
 	}
 	
 	@Nullable
@@ -39,9 +66,41 @@ public class TransceiverBlock extends Block implements EntityBlock
 	}
 	
 	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision) 
+	{
+		return switch(state.getValue(FACING))
+		{
+		case NORTH -> SHAPE_NORTH;
+		case EAST -> SHAPE_EAST;
+		case SOUTH -> SHAPE_SOUTH;
+		case WEST -> SHAPE_WEST;
+		
+		default -> SHAPE_NORTH;
+		};
+	}
+	
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(POWERED);
+		state.add(FACING).add(RECEIVING).add(TRANSMITTING);
+	}
+	
+	@Override
+	public BlockState rotate(BlockState state, Rotation rotation)
+	{
+		return state.setValue(FACING, rotation.rotation().rotate(state.getValue(FACING)));
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirror)
+	{
+		return state.setValue(FACING, mirror.rotation().rotate(state.getValue(FACING)));
+	}
+
+    @Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) 
+	{
+		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
 	
 	@Override
@@ -59,39 +118,39 @@ public class TransceiverBlock extends Block implements EntityBlock
 	@Override
 	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
 	{
-		level.setBlock(pos, state.setValue(POWERED, false), 3);
+		level.setBlock(pos, state.setValue(RECEIVING, false), 3);
 	}
 	
 	@Override
 	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)
 	{
-		return state.getValue(POWERED) ? 15 : 0;
+		return state.getValue(RECEIVING) ? 15 : 0;
 	}
 	
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
 	{
-		/*if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
-		int newSignalStrength = level.getBestNeighborSignal(pos);
-		
-		if(newSignalStrength > signalStrength || newSignalStrength == 0)
-			signalStrength = newSignalStrength;
-		
-		if(level.hasNeighborSignal(pos) && signalStrength == newSignalStrength)
+		if(level.hasNeighborSignal(pos))
 		{
-			int measured = detectATAGene(state, level, pos, (double) signalStrength * 2);
+			BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-			if(state.getValue(MEASURED_GENE) != measured)
-				level.setBlock(pos, state.setValue(MEASURED_GENE, measured), 3);
-		}*/
+			if(blockEntity instanceof TransceiverEntity transceiver)
+				transceiver.sendTransmission();
+			
+			level.setBlock(pos, state.setValue(TRANSMITTING, true), 2);
+		}
+		else
+			level.setBlock(pos, state.setValue(TRANSMITTING, false), 2);
+		
 		super.neighborChanged(state, level, pos, block, pos2, bool);
 	}
 	
 	public void receiveTransmission(BlockState state, Level level, BlockPos pos)
 	{
-		level.setBlock(pos, state.setValue(POWERED, true), 3);
+		level.setBlock(pos, state.setValue(RECEIVING, true), 3);
 		level.scheduleTick(pos, this, TICKS_ACTIVE);
 	}
 }

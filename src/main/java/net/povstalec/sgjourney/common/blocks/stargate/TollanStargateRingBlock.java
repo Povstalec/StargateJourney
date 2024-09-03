@@ -4,9 +4,13 @@ import java.util.ArrayList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
@@ -56,5 +60,11 @@ public class TollanStargateRingBlock extends AbstractStargateRingBlock
 
 			default -> VoxelShapeProvider.getShapeFromArray(shapeProvider.BOTTOM, direction, orientation);
 		};
+	}
+	
+	@Override
+	public boolean setIris(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	{
+		return false;
 	}
 }

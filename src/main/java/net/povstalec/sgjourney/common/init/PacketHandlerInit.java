@@ -175,6 +175,12 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientBoundSoundPackets.CloseWormhole::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.IrisThud.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.IrisThud::encode)
+		.decoder(ClientBoundSoundPackets.IrisThud::new)
+		.consumerMainThread(ClientBoundSoundPackets.IrisThud::handle)
+		.add();
+		
 		INSTANCE.messageBuilder(ClientBoundSoundPackets.Chevron.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientBoundSoundPackets.Chevron::encode)
 		.decoder(ClientBoundSoundPackets.Chevron::new)

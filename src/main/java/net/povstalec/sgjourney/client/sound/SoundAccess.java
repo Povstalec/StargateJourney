@@ -12,6 +12,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
@@ -46,6 +47,15 @@ public class SoundAccess
     	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
     	{
     		GenericStargateSound sound = new GenericStargateSound(stargate, getWormholeCloseSound(stargate, incoming), 0.75F);
+    		minecraft.getSoundManager().play(sound);
+    	}
+    }
+	
+    public static void playIrisThudSound(BlockPos pos)
+    {
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	{
+    		GenericStargateSound sound = new GenericStargateSound(stargate, SoundInit.IRIS_THUD.get(), 0.75F);
     		minecraft.getSoundManager().play(sound);
     	}
     }

@@ -1,29 +1,34 @@
 package net.povstalec.sgjourney.common.items;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 
 public abstract class StargateIrisItem extends Item
 {
 	// Vanilla Materials
-	public static final ResourceLocation COPPER_IRIS = new ResourceLocation("textures/block/copper_block.png");
+	public static final ResourceLocation COPPER_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/copper_iris.png");
 	public static final ResourceLocation IRON_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/iron_iris.png");
-	public static final ResourceLocation GOLD_IRIS = new ResourceLocation("textures/block/gold_block.png");
-	public static final ResourceLocation DIAMOND_IRIS = new ResourceLocation("textures/block/diamond_block.png");
-	public static final ResourceLocation NETHERITE_IRIS = new ResourceLocation("textures/block/netherite_block.png");
+	public static final ResourceLocation GOLD_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/golden_iris.png");
+	public static final ResourceLocation DIAMOND_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/diamond_iris.png");
+	public static final ResourceLocation NETHERITE_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/netherite_iris.png");
 	// Stargate Journey Materials
-	public static final ResourceLocation NAQUADAH_ALLOY_IRIS = new ResourceLocation("textures/block/diamond_block.png");
-	public static final ResourceLocation TRINIUM_IRIS = new ResourceLocation("textures/block/diamond_block.png");
+	public static final ResourceLocation NAQUADAH_ALLOY_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/naquadah_alloy_iris.png");
+	public static final ResourceLocation TRINIUM_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/trinium_iris.png");
 	// Modded Materials
-	public static final ResourceLocation BRONZE_IRIS = new ResourceLocation("textures/block/iron_block.png");
-	public static final ResourceLocation STEEL_IRIS = new ResourceLocation("textures/block/diamond_block.png");
+	public static final ResourceLocation BRONZE_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/bronze_iris.png");
+	public static final ResourceLocation STEEL_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/steel_iris.png");
 	
 	public static final String DURABILITY = "durability";
 	public static final String TEXTURE = "texture";
@@ -66,7 +71,7 @@ public abstract class StargateIrisItem extends Item
 		return null;
 	}
 	
-	public static long getDurability(ItemStack stack)
+	public static int getDurability(ItemStack stack)
 	{
 		if(stack.getItem() instanceof StargateIrisItem irisItem)
 		{
@@ -85,7 +90,12 @@ public abstract class StargateIrisItem extends Item
 			return 0;
 	}
 	
-	public static void decreaseDurability(ItemStack stack)
+	/**
+	 * If durability goes below 1, returns false
+	 * @param stack
+	 * @return
+	 */
+	public static boolean decreaseDurability(ItemStack stack)
 	{
 		if(stack.getItem() instanceof StargateIrisItem irisItem)
 		{
@@ -100,7 +110,12 @@ public abstract class StargateIrisItem extends Item
 			durability--;
 			
 			tag.putInt(DURABILITY, durability);
+			
+			if(durability >= 1)
+				return true;
 		}
+		
+		return false;
 	}
 	
 	@Override
@@ -120,6 +135,19 @@ public abstract class StargateIrisItem extends Item
 	{
 		float f = Math.max(0.0F, (float) getDurability(stack) / getMaxDurability());
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		if(stack.hasTag() && isAdvanced.isAdvanced())
+		{
+			int durability = getDurability(stack);
+			
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.iris.durability").append(Component.literal(": " + durability + " / " + getMaxDurability())));
+		}
+		
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 	
 	

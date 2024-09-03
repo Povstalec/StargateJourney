@@ -459,6 +459,14 @@ public final class StargateConnection
 			this.dialingStargate.forwardTransmission(transmissionJumps, frequency, transmission);
 	}
 	
+	public float checkStargateShieldingState(AbstractStargateEntity sendingStargate)
+	{
+		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
+			return this.dialedStargate.checkShieldingState();
+		else
+			return this.dialingStargate.checkShieldingState();
+	}
+	
 	//============================================================================================
 	//************************************Getters and setters*************************************
 	//============================================================================================

@@ -151,5 +151,16 @@ public enum StargatePart implements StringRepresentable
 		
 		return new Vec3(ringPos.getX() - pos.getX(), ringPos.getY() - pos.getY(), ringPos.getZ() - pos.getZ());
 	}
+	
+	public boolean equals(StargatePart other)
+	{
+		if(this == other)
+			return true;
+		
+		else if(this.height == other.height && this.width == other.width)
+			return true;
+		
+		return false;
+	}
 
 }

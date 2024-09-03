@@ -78,6 +78,9 @@ public class BlockInit
 	public static final RegistryObject<UniverseStargateRingBlock> UNIVERSE_RING = BLOCKS.register("universe_ring", 
 			() -> new UniverseStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<GenericShieldingBlock> UNIVERSE_SHIELDING =  BLOCKS.register("universe_shielding", 
+			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	
 	public static final RegistryObject<MilkyWayStargateBlock> MILKY_WAY_STARGATE = registerStargateBlock("milky_way_stargate", 
 			() -> new MilkyWayStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
@@ -85,8 +88,8 @@ public class BlockInit
 	public static final RegistryObject<MilkyWayStargateRingBlock> MILKY_WAY_RING = BLOCKS.register("milky_way_ring", 
 			() -> new MilkyWayStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
-	public static final RegistryObject<GenericShieldingBlock> MILKY_WAY_IRIS =  BLOCKS.register("milky_way_iris", 
-			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
+	public static final RegistryObject<GenericShieldingBlock> MILKY_WAY_SHIELDING =  BLOCKS.register("milky_way_shielding", 
+			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	
 	public static final RegistryObject<PegasusStargateBlock> PEGASUS_STARGATE = registerStargateBlock("pegasus_stargate", 
@@ -95,6 +98,9 @@ public class BlockInit
 	public static final RegistryObject<PegasusStargateRingBlock> PEGASUS_RING = BLOCKS.register("pegasus_ring", 
 			() -> new PegasusStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<GenericShieldingBlock> PEGASUS_SHIELDING =  BLOCKS.register("pegasus_shielding", 
+			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	
 	public static final RegistryObject<ClassicStargateBlock> CLASSIC_STARGATE = registerStargateBlock("classic_stargate", 
 			() -> new ClassicStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
@@ -102,6 +108,9 @@ public class BlockInit
 	public static final RegistryObject<ClassicStargateRingBlock> CLASSIC_RING = BLOCKS.register("classic_ring", 
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<GenericShieldingBlock> CLASSIC_SHIELDING =  BLOCKS.register("classic_shielding", 
+			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	public static final RegistryObject<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerBlock("classic_stargate_base_block", 
 			() -> new ClassicStargateBaseBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
 	public static final RegistryObject<Block> CLASSIC_STARGATE_CHEVRON_BLOCK = registerBlock("classic_stargate_chevron_block", 

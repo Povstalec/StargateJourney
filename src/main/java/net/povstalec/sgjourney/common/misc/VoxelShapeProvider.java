@@ -375,6 +375,19 @@ public final class VoxelShapeProvider
 		return Block.box(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
+	public static Matrix3d yRotationFromDirection(Direction direction)
+	{
+		return switch(direction)
+		{
+		case NORTH -> new Matrix3d();
+		case EAST -> new Matrix3d().rotate(Axis.YP.rotationDegrees(270));
+		case SOUTH -> new Matrix3d().rotate(Axis.YP.rotationDegrees(180));
+		case WEST -> new Matrix3d().rotate(Axis.YP.rotationDegrees(90));
+		
+		default -> new Matrix3d();
+		};
+	}
+	
 	public static Tuple<Matrix3d, Matrix3d> xyRotationFromOrientation(FrontAndTop orientation)
 	{
 		return switch(orientation)
@@ -414,6 +427,31 @@ public final class VoxelShapeProvider
 			for(int i = 1; i < minMax.size(); i++)
 			{
 				shapes[i - 1] = getOrientedShape(new Vector3d(minMax.get(i).getA()), new Vector3d(minMax.get(i).getB()), xyRotation.getA(), xyRotation.getB());
+			}
+			
+			return Shapes.or(firstShape, shapes);
+		}
+		
+		return firstShape;
+	}
+	
+	public static VoxelShape getDirectionalShapes(ArrayList<Tuple<Vector3d, Vector3d>> minMax, Direction direction)
+	{
+		if(minMax.size() == 0)
+			return Shapes.empty();
+		
+		Matrix3d yRotation = yRotationFromDirection(direction);
+		Matrix3d noRotation = new Matrix3d();
+		
+		VoxelShape firstShape = getOrientedShape(new Vector3d(minMax.get(0).getA()), new Vector3d(minMax.get(0).getB()), noRotation, yRotation);
+		
+		if(minMax.size() > 1)
+		{
+			VoxelShape[] shapes = new VoxelShape[minMax.size() - 1];
+			
+			for(int i = 1; i < minMax.size(); i++)
+			{
+				shapes[i - 1] = getOrientedShape(new Vector3d(minMax.get(i).getA()), new Vector3d(minMax.get(i).getB()), noRotation, yRotation);
 			}
 			
 			return Shapes.or(firstShape, shapes);

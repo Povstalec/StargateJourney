@@ -176,6 +176,8 @@
 	"sounds.sgjourney.wormhole_enter" : "červí díra použita",
 	"sounds.sgjourney.wormhole_idle" : "červí díra vyčkává",
 	
+	"sounds.sgjourney.iris_thud" : "čnáraz do iris",
+	
 	"sounds.sgjourney.dhd_enter" : "DHD zadáno",
 	"sounds.sgjourney.dhd_press" : "DHD zmáčknuto",
 	
@@ -446,6 +448,8 @@
 	"tooltip.sgjourney.syringe.blood": "Krev",
 	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototyp antické genové terapie",
 	"tooltip.sgjourney.syringe.ata_gene": "Antická genová terapie",
+
+	"tooltip.sgjourney.iris.durability": "Výdrž",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Chyba: Transportní kruhy již v provozu",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Chyba: Žádné transportní kruhy poblíž",
@@ -459,6 +463,8 @@
 	"message.sgjourney.dhd.error.not_connected_to_stargate": "Ovládací panel není připojen k hvězdné bráně",
 	
 	"message.sgjourney.stargate.one_way_wormhole": "Není možné projít červí dírou tímto směrem",
+	"message.sgjourney.stargate.error.iris": "Cesta blokována iris",
+	"message.sgjourney.stargate.error.already_has_iris": "Hvězdná brána již má iris",
 	
 	"message.sgjourney.stargate.info.none": "Nic",
 	"message.sgjourney.stargate.error.unknown": "Neznámá chyba",
@@ -523,5 +529,9 @@
 	"message.sgjourney.command.get_stargates": "Hvězdné brány v dimenzi",
 	"message.sgjourney.command.get_transporters": "Transportéry v dimenzi",
 	"message.sgjourney.command.transporter_network_reload": "Transportéry načteny",
-	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy"
+	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy",
+
+	"message.sgjourney.gdo.shielded": "Chráněno",
+	"message.sgjourney.gdo.error.no_nearby_stargate": "Žádná hvězdná brána poblíž",
+	"message.sgjourney.gdo.error.stargate_not_connected": "Hvězdná brána není připojena"
 }

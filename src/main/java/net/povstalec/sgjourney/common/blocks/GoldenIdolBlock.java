@@ -6,7 +6,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -33,33 +32,33 @@ public class GoldenIdolBlock extends HorizontalDirectionalBlock
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 	
-	public BlockState rotate(BlockState state, Rotation rotation)
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-	      return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+		state.add(FACING);
 	}
 	
+	public BlockState rotate(BlockState state, Rotation rotation)
+	{
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	}
+	
+	@Override
 	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) 
 	{
 		return true;
 	}
-	
+
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) 
 	{
-	      return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
 	
-    public RenderShape getRenderType(BlockState state) 
-    {
-        return RenderShape.MODEL;
-    }
-    
-    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision) 
-    {
-        Direction direction = state.getValue(FACING);
-        return direction.getAxis() == Direction.Axis.X ? ARTIFACT_TURNED : ARTIFACT_STRAIGHT;
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision) 
+	{
+		Direction direction = state.getValue(FACING);
+		return direction.getAxis() == Direction.Axis.X ? ARTIFACT_TURNED : ARTIFACT_STRAIGHT;
 	}
-    
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_206840_1_) {
-	      p_206840_1_.add(FACING);
-	   }
 }

@@ -34,7 +34,7 @@ public class CommonNaquadahGeneratorConfig
 		
 		naquadah_generator_mark_i_capacity = server
 				.comment("The amount of energy a Mark I Naquadah Generator can hold")
-				.defineInRange("server.naquadah_generator_mark_i_capacity", 10000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_i_capacity", 100000L, 1L, Long.MAX_VALUE);
 		
 		naquadah_generator_mark_i_max_transfer = server
 				.comment("The maximum amount of energy a Mark I Naquadah Generator can transfer at once")
@@ -52,7 +52,7 @@ public class CommonNaquadahGeneratorConfig
 		
 		naquadah_generator_mark_ii_capacity = server
 				.comment("The amount of energy a Mark II Naquadah Generator can hold")
-				.defineInRange("server.naquadah_generator_mark_ii_capacity", 100000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_ii_capacity", 1000000L, 1L, Long.MAX_VALUE);
 		
 		naquadah_generator_mark_ii_max_transfer = server
 				.comment("The maximum amount of energy a Mark II Naquadah Generator can transfer at once")

@@ -6,15 +6,19 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -48,6 +52,12 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 	{
 		return BlockInit.TOLLAN_RING.get();
 	}
+	
+	@Override
+	public AbstractShieldingBlock getIris()
+	{
+		return null;
+	}
 
 	@Override
 	public BlockState ringState()
@@ -61,6 +71,12 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
 			return VoxelShapeProvider.getShapeFromArray(shapeProvider.BOTTOM, state.getValue(FACING), state.getValue(ORIENTATION));
 		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_BOTTOM : shapeProvider.X_BOTTOM;
+	}
+	
+	@Override
+	public boolean setIris(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	{
+		return false;
 	}
 	
 	@Nullable

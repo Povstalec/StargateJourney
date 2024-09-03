@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -49,6 +50,12 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	public AbstractStargateRingBlock getRing()
 	{
 		return BlockInit.MILKY_WAY_RING.get();
+	}
+	
+	@Override
+	public AbstractShieldingBlock getIris()
+	{
+		return BlockInit.MILKY_WAY_SHIELDING.get();
 	}
 
 	@Override
