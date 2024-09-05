@@ -4,7 +4,7 @@ description: >-
 
 logo: "/assets/img/logo.png"
 favicon_ico: "/favicon.ico"
-url: https://lukaskabc.github.io
+url: https://lukaskabc.github.io # without leading slash
 baseurl: /StargateJourney/
 
 discord_invite_link: https://discord.gg/VDSqzdBqRd
