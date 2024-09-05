@@ -58,6 +58,15 @@ Stargate Journey is compatible with multiple other mods:
  - [Stellar View](https://www.curseforge.com/minecraft/mc-mods/stellarview) can be used to enhance your experience of different planetary night skies
  - [Ad Astra](https://ad-astra.terrarium.wiki/ad-astra)'s two default Solar Systems are also considered Solar Systems within Stargate Journey
 
+## Known incompatibilities
+- [Dimensional Threading](https://www.curseforge.com/minecraft/mc-mods/dimensional-threads) and similar mods, 
+when installed, Stargates won't be able to dial.
+- [Sparse Structures](https://modrinth.com/mod/sparsestructures) and similar mods, 
+Stargates might not generate, 
+you might not be able to find a Stargate and to reach other dimensions (Stargate will be missing there).
+However, 
+it is possible to disable spreading for specific structures with config ([example config]({{ site.baseurl }}/others/sparse_structures)).
+
 ___
 
 ## Community Creations
@@ -81,9 +90,11 @@ ___
 ## Author
 The author and developer of the mod is **Povstalec**, also known as **Wold** (_woldericz_junior_).
 
+<div markdown="block" style="opacity: 0.1">
 > Wold, the mighty and true only Wold.  
+> *Hallowed is the Wold*  
 > He is said to be one of the few Ancients who remained hidden on Terra.
-{: .text-grey-dk-000 }
+</div>
 
 You can also see all the incredible people who contributed to the development on GitHub 
 or [helped otherwise](https://github.com/Povstalec/StargateJourney/blob/main/CREDITS.txt).

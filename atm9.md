@@ -30,7 +30,7 @@ Cartouches with the Abydos Address will generate around the Overworld:
 ![Stone cartouche structure]({{ site.baseurl }}/assets/img/stone_cartouche.png)
 
 
-[//]: # (// There is no image :D not even on discord)
+
 [//]: # (# Troubleshooting)
 
 [//]: # (## Updating from an older ATM9 version crashes, presumably due to problems caused by Stargate Journey)
