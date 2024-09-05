@@ -53,6 +53,7 @@ import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
+import net.povstalec.sgjourney.client.screens.TransceiverScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -209,6 +210,8 @@ public class StargateJourney
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
+
+        	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
         	
         	//EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
         	

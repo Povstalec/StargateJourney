@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +16,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -25,12 +29,15 @@ import net.povstalec.sgjourney.common.stargate.ITransmissionReceiver;
 
 public class GDOItem extends Item
 {
+	public static final String IDC = "idc";
+	public static final String FREQUENCY = "frequency";
+	
 	public GDOItem(Properties properties)
 	{
 		super(properties);
 	}
 	
-	private static void sendTransmission(Level level, Player player, ItemStack stack)
+	public static void sendTransmission(Level level, Player player, ItemStack stack)
 	{
 		int roundedRadius = (int) Math.ceil(transmissionRadius() / 16);
 		
@@ -46,7 +53,7 @@ public class GDOItem extends Item
 					BlockEntity blockEntity = level.getBlockEntity(pos);
 					
 					if(blockEntity instanceof ITransmissionReceiver receiver)
-						receiver.receiveTransmission(0, 0, getTransmissionMessage(stack));
+						receiver.receiveTransmission(0, getFrequency(stack), getTransmissionMessage(stack));
 				});
 			}
 		}
@@ -134,9 +141,7 @@ public class GDOItem extends Item
 		// Open the GDO screen / Send IDC transmission
 		if(player.isShiftKeyDown())
 		{
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new ClientboundGDOOpenScreenPacket(player.getUUID()));
-			
-			sendTransmission(level, player, stack);
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new ClientboundGDOOpenScreenPacket(player.getUUID(), usedHand == InteractionHand.MAIN_HAND, getTransmissionMessage(stack), getFrequency(stack)));
 			
 	        return super.use(level, player, usedHand);
 		}
@@ -148,6 +153,27 @@ public class GDOItem extends Item
 			return InteractionResultHolder.success(stack);
 		}
     }
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		int frequency = 0;
+		String idc = "";
+		
+		if(stack.hasTag() && isAdvanced.isAdvanced())
+		{
+			frequency = getFrequency(stack);
+			idc = getTransmissionMessage(stack);
+		}
+
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.frequency").append(Component.literal(": " + frequency)).withStyle(ChatFormatting.YELLOW));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.idc").append(Component.literal(": " + idc)).withStyle(ChatFormatting.AQUA));
+		
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.description.check").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.description.gui").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+	}
 	
 	public static float transmissionRadius()
 	{
@@ -163,8 +189,33 @@ public class GDOItem extends Item
 	
 	public static String getTransmissionMessage(ItemStack stack)
 	{
+		if(stack.getItem() instanceof GDOItem)
+		{
+			if(stack.getTag() != null && stack.getTag().contains(IDC))
+				return stack.getTag().getString(IDC);
+		}
 		
+		return "";
+	}
+	
+	public static int getFrequency(ItemStack stack)
+	{
+		if(stack.getItem() instanceof GDOItem)
+		{
+			if(stack.getTag() != null && stack.getTag().contains(FREQUENCY))
+				return stack.getTag().getInt(FREQUENCY);
+		}
 		
-		return "1234";
+		return 0;
+	}
+	
+	public static void setFrequencyAndIDC(ItemStack stack, int frequency, String idc)
+	{
+		if(stack.getItem() instanceof GDOItem)
+		{
+			CompoundTag tag = stack.getOrCreateTag();
+			tag.putInt(FREQUENCY, frequency);
+			tag.putString(IDC, idc);
+		}
 	}
 }

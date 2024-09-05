@@ -9,15 +9,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.TransceiverMenu;
 
-public class DHDCrystalScreen extends AbstractContainerScreen<DHDCrystalMenu>
+public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_crystal_gui.png");
-	
-	public DHDCrystalScreen(DHDCrystalMenu pMenu, Inventory pPlayerInventory, Component pTitle)
-	{
-        super(pMenu, pPlayerInventory, pTitle);
+	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/transceiver.png");
+
+    public TransceiverScreen(TransceiverMenu menu, Inventory playerInventory, Component title)
+    {
+        super(menu, playerInventory, title);
     }
 
     @Override
@@ -29,21 +29,21 @@ public class DHDCrystalScreen extends AbstractContainerScreen<DHDCrystalMenu>
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight + 1);
+        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float delta)
+    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta)
     {
-        renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, delta);
-        renderTooltip(matrixStack, mouseX, mouseY);
+        renderBackground(pPoseStack);
+        super.render(pPoseStack, mouseX, mouseY, delta);
+        renderTooltip(pPoseStack, mouseX, mouseY);
     }
     
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) 
 	{
-    	this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+		this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
 	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
 }

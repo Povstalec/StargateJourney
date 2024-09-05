@@ -24,6 +24,7 @@ import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ServerboundGDOUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
 
 public final class PacketHandlerInit
@@ -231,6 +232,12 @@ public final class PacketHandlerInit
 		.encoder(ServerboundRingPanelUpdatePacket::encode)
 		.decoder(ServerboundRingPanelUpdatePacket::new)
 		.consumerMainThread(ServerboundRingPanelUpdatePacket::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ServerboundGDOUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+		.encoder(ServerboundGDOUpdatePacket::encode)
+		.decoder(ServerboundGDOUpdatePacket::new)
+		.consumerMainThread(ServerboundGDOUpdatePacket::handle)
 		.add();
 	}
 }

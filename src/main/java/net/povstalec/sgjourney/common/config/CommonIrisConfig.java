@@ -4,6 +4,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonIrisConfig
 {
+	public static ForgeConfigSpec.BooleanValue creative_ignores_iris;
+	
 	public static ForgeConfigSpec.DoubleValue iris_breaking_strength;
 	
 	public static ForgeConfigSpec.IntValue copper_iris_durability;
@@ -20,6 +22,12 @@ public class CommonIrisConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		creative_ignores_iris = server
+				.comment("If true, players in Creative Mode will be able to pass through the Stargate even when the Iris is closed on the other side")
+				.define("server.creative_ignores_iris", false);
+		
+		
+		
 		iris_breaking_strength = server
 				.comment("The Iris can break any Blocks with Block Strength below the Iris Strength")
 				.defineInRange("server.copper_iris_durability", 0.5, 0, Double.MAX_VALUE);

@@ -4,7 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonNaquadahGeneratorConfig
 {
-	public static ForgeConfigSpec.LongValue naquadah_rod_max_fuel;
+	public static ForgeConfigSpec.IntValue naquadah_rod_max_fuel;
 	
 	public static ForgeConfigSpec.LongValue naquadah_generator_mark_i_reaction_time;
 	public static ForgeConfigSpec.LongValue naquadah_generator_mark_i_energy_per_tick;
@@ -20,7 +20,7 @@ public class CommonNaquadahGeneratorConfig
 	{
 		naquadah_rod_max_fuel = server
 				.comment("The maximum amount of fuel stored in a single Naquadah Fuel Rod")
-				.defineInRange("server.naquadah_rod_max_fuel", 256L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_rod_max_fuel", 256, 1, Integer.MAX_VALUE);
 		
 		
 		
@@ -30,7 +30,7 @@ public class CommonNaquadahGeneratorConfig
 		
 		naquadah_generator_mark_i_energy_per_tick = server
 				.comment("The amount of FE generated per one tick of reaction by the Mark I Naquadah Generator")
-				.defineInRange("server.naquadah_generator_mark_i_energy_per_tick", 1000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_i_energy_per_tick", 100L, 1L, Long.MAX_VALUE);
 		
 		naquadah_generator_mark_i_capacity = server
 				.comment("The amount of energy a Mark I Naquadah Generator can hold")
@@ -48,7 +48,7 @@ public class CommonNaquadahGeneratorConfig
 		
 		naquadah_generator_mark_ii_energy_per_tick = server
 				.comment("The amount of FE generated per one tick of reaction by the Mark II Naquadah Generator")
-				.defineInRange("server.naquadah_generator_mark_ii_energy_per_tick", 1200L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_ii_energy_per_tick", 120L, 1L, Long.MAX_VALUE);
 		
 		naquadah_generator_mark_ii_capacity = server
 				.comment("The amount of energy a Mark II Naquadah Generator can hold")

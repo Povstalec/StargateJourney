@@ -220,6 +220,8 @@
 	"screen.sgjourney.advanced_crystallizer": "Advanced Crystallizer",
 	"screen.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
+
+	"screen.sgjourney.gdo.frequency": "FREQUENCY",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
 	"biome.sgjourney.abydos_oasis": "Abydos Oasis",
@@ -444,8 +446,15 @@
 	"tooltip.sgjourney.syringe.blood": "Blood",
 	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototype Ancient Gene Therapy",
 	"tooltip.sgjourney.syringe.ata_gene": "Ancient Gene Therapy",
+
+	"tooltip.sgjourney.gdo.idc": "IDC",
+	"tooltip.sgjourney.gdo.frequency": "Frequency",
+	"tooltip.sgjourney.gdo.description.check": "Right-Click to check Iris state",
+	"tooltip.sgjourney.gdo.description.gui": "Shift + Right-Click to open GDO interface",
 	
 	"tooltip.sgjourney.iris.durability": "Durability",
+
+	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Fuel",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Error: Transport Rings Busy",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Error: No Transport Rings Nearby",

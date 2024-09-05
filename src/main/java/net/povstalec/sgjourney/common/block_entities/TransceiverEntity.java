@@ -53,6 +53,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	@Override
 	public void receiveTransmission(int transmissionJumps, int frequency, String transmission)
 	{
+		if(frequency != 0) // TODO FREQUENCY
+			return;
+		
 		if(!getCurrentCode().equals(transmission))
 			return;
 		

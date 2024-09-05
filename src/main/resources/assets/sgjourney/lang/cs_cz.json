@@ -220,6 +220,8 @@
 	"screen.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
 	"screen.sgjourney.naquadah_liquidizer": "Zkapalňovač naquadahu",
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
+
+	"screen.sgjourney.gdo.frequency": "FREKVENCE",
 	
 	"biome.sgjourney.abydos_desert": "Abydoská poušť",
 	"biome.sgjourney.abydos_oasis": "Abydoská oáza",
@@ -449,7 +451,14 @@
 	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototyp antické genové terapie",
 	"tooltip.sgjourney.syringe.ata_gene": "Antická genová terapie",
 
+	"tooltip.sgjourney.gdo.idc": "IDC",
+	"tooltip.sgjourney.gdo.frequency": "Frekvence",
+	"tooltip.sgjourney.gdo.description.check": "Pravé kliknutí zkontroluje stav iris",
+	"tooltip.sgjourney.gdo.description.gui": "Shift + pravé kliknutí otevře rozhraní pro GDO",
+
 	"tooltip.sgjourney.iris.durability": "Výdrž",
+
+	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Palivo",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Chyba: Transportní kruhy již v provozu",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Chyba: Žádné transportní kruhy poblíž",

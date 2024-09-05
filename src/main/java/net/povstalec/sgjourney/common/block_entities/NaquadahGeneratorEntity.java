@@ -227,10 +227,10 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		
 		if(this.hasNaquadah() && reactionProgress == 0)
 		{
-			NaquadahFuelRodItem.depleteFuel(this.itemHandler.getStackInSlot(0));
-			
-			//this.itemHandler.extractItem(0, 1, false);
-			this.progressReaction();
+			if(NaquadahFuelRodItem.depleteFuel(this.itemHandler.getStackInSlot(0)))
+				this.progressReaction();
+			else
+				this.itemHandler.extractItem(0, 1, false); //TODO Maybe make fuel rods reusable?
 		}
 		
 		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && getEnergyStored() < capacity() && canReceive(getEnergyPerTick()))

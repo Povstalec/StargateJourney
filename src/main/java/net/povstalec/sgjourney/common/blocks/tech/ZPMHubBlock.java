@@ -49,7 +49,7 @@ public class ZPMHubBlock extends BaseEntityBlock
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if (blockEntity instanceof ZPMHubEntity hub) 
+        	if(blockEntity instanceof ZPMHubEntity) 
         	{
         		MenuProvider containerProvider = new MenuProvider() 
         		{

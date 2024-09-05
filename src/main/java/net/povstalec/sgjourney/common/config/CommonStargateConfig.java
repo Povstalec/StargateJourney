@@ -11,7 +11,6 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.IntValue max_wormhole_open_time;
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
-	public static ForgeConfigSpec.BooleanValue creative_ignores_iris;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
 	
 	public static ForgeConfigSpec.BooleanValue kawoosh_destroys_blocks;
@@ -71,10 +70,6 @@ public class CommonStargateConfig
 		two_way_wormholes = server
 				.comment("ENABLED - Two way travel possible; CREATIVE_ONLY - Two way travel limited to Players in Creative Mode; DISABLED - Two way travel impossible")
 				.defineEnum("server.two_way_wormholes", WormholeTravel.CREATIVE_ONLY);
-		//TODO Use this
-		creative_ignores_iris = server
-				.comment("If true, players in Creative Mode will be able to pass through the Stargate even when the Iris is closed on the other side")
-				.define("server.creative_ignores_iris", true);
 		
 		reverse_wormhole_kills = server
 				.comment("If true, going through the wrong side of the wormhole will result in death")

@@ -33,6 +33,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
+import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
@@ -254,18 +255,24 @@ public class Wormhole implements ITeleporter
 	    		if(blocked)
 	    		{
 	    			if(traveler instanceof ServerPlayer player && player.isCreative())
-						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.iris").withStyle(ChatFormatting.DARK_RED), true);
+	    			{
+	    				if(!CommonIrisConfig.creative_ignores_iris.get())
+	    				{
+							player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.iris").withStyle(ChatFormatting.DARK_RED), true);
+							return;
+	    				}
+	    			}
 	    			else
 	    			{
-						if(traveler instanceof ServerPlayer player)
+	    				if(traveler instanceof ServerPlayer player)
 							player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
 						traveler.kill();
 						
 						targetStargate.playIrisThudSound();
 						targetStargate.decreaseIrisDurability();
+		    			
+		    			return;
 	    			}
-	    			
-	    			return;
 	    		}
 	    		
 	    		if(traveler instanceof ServerPlayer player)

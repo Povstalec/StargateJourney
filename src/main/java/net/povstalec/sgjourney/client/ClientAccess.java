@@ -42,9 +42,9 @@ public class ClientAccess
     	minecraft.setScreen(new DialerScreen());
     }
     
-    public static void openGDOScreen(UUID playerId)
+    public static void openGDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
     {
-    	minecraft.setScreen(new GDOScreen(playerId));
+    	minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
     }
 	
     public static void updateSymbol(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)

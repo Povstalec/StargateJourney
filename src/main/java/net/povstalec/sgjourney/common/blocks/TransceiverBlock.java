@@ -9,12 +9,17 @@ import org.joml.Vector3d;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -31,7 +36,9 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.menu.TransceiverMenu;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
 public class TransceiverBlock extends Block implements EntityBlock
@@ -106,6 +113,34 @@ public class TransceiverBlock extends Block implements EntityBlock
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
+		if(!level.isClientSide())
+        {
+        	BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+        	if(blockEntity instanceof TransceiverEntity) 
+        	{
+        		MenuProvider containerProvider = new MenuProvider() 
+        		{
+        			@Override
+        			public Component getDisplayName() 
+        			{
+        				return Component.translatable("screen.sgjourney.transceiver");
+        			}
+        			
+        			@Override
+        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
+        			{
+        				return new TransceiverMenu(windowId, playerInventory, blockEntity);
+        			}
+        		};
+        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        	}
+        	else
+        	{
+        		throw new IllegalStateException("Our named container provider is missing!");
+        	}
+        }
+		
 		return InteractionResult.SUCCESS;
 	}
 	
