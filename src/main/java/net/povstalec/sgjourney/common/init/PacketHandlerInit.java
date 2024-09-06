@@ -22,10 +22,12 @@ import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPa
 import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundTransceiverUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundGDOUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ServerboundTransceiverUpdatePacket;
 
 public final class PacketHandlerInit
 {
@@ -55,6 +57,12 @@ public final class PacketHandlerInit
 		.encoder(ClientboundGDOOpenScreenPacket::encode)
 		.decoder(ClientboundGDOOpenScreenPacket::new)
 		.consumerMainThread(ClientboundGDOOpenScreenPacket::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ClientboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundTransceiverUpdatePacket::encode)
+		.decoder(ClientboundTransceiverUpdatePacket::new)
+		.consumerMainThread(ClientboundTransceiverUpdatePacket::handle)
 		.add();
 		
 		// Alien Tech
@@ -238,6 +246,12 @@ public final class PacketHandlerInit
 		.encoder(ServerboundGDOUpdatePacket::encode)
 		.decoder(ServerboundGDOUpdatePacket::new)
 		.consumerMainThread(ServerboundGDOUpdatePacket::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ServerboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+		.encoder(ServerboundTransceiverUpdatePacket::encode)
+		.decoder(ServerboundTransceiverUpdatePacket::new)
+		.consumerMainThread(ServerboundTransceiverUpdatePacket::handle)
 		.add();
 	}
 }

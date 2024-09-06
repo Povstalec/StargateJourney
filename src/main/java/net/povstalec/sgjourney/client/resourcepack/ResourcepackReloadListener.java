@@ -48,7 +48,7 @@ public class ResourcepackReloadListener
 		protected void apply(Map<ResourceLocation, JsonElement> jsonMap, ResourceManager manager, ProfilerFiller filler)
 		{
     		ClientStargateVariants.clear();
-    		StargateJourney.LOGGER.info("---------- Loading Stargate Variants ----------");
+    		StargateJourney.LOGGER.debug("---------- Loading Stargate Variants ----------");
     		
 			for(Map.Entry<ResourceLocation, JsonElement> jsonEntry : jsonMap.entrySet())
 			{
@@ -85,7 +85,7 @@ public class ResourcepackReloadListener
 				UniverseStargateVariant stargateVariant = UniverseStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addUniverseStargateVariant(location, stargateVariant);
-				StargateJourney.LOGGER.info("Loaded Universe Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.debug("Loaded Universe Stargate Variant: " + location.toString());
 			}
 			catch(RuntimeException e)
 			{
@@ -102,7 +102,7 @@ public class ResourcepackReloadListener
 				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addMilkyWayStargateVariant(location, stargateVariant);
-				StargateJourney.LOGGER.info("Loaded Milky Way Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.debug("Loaded Milky Way Stargate Variant: " + location.toString());
 			}
 			catch(RuntimeException e)
 			{
@@ -119,7 +119,7 @@ public class ResourcepackReloadListener
 				PegasusStargateVariant stargateVariant = PegasusStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addPegasusStargateVariant(location, stargateVariant);
-				StargateJourney.LOGGER.info("Loaded Pegasus Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.debug("Loaded Pegasus Stargate Variant: " + location.toString());
 			}
 			catch(RuntimeException e)
 			{
@@ -136,7 +136,7 @@ public class ResourcepackReloadListener
 				TollanStargateVariant stargateVariant = TollanStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addTollanStargateVariant(location, stargateVariant);
-				StargateJourney.LOGGER.info("Loaded Tollan Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.debug("Loaded Tollan Stargate Variant: " + location.toString());
 			}
 			catch(RuntimeException e)
 			{
@@ -153,7 +153,7 @@ public class ResourcepackReloadListener
 				ClassicStargateVariant stargateVariant = ClassicStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addClassicStargateVariant(location, stargateVariant);
-				StargateJourney.LOGGER.info("Loaded Classic Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.debug("Loaded Classic Stargate Variant: " + location.toString());
 			}
 			catch(RuntimeException e)
 			{

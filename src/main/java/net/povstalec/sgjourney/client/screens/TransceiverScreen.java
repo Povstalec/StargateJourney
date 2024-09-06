@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client.screens;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -9,16 +10,44 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.widgets.TransceiverButton;
 import net.povstalec.sgjourney.common.menu.TransceiverMenu;
 
 public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/transceiver.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/transceiver/transceiver_gui.png");
 
-    public TransceiverScreen(TransceiverMenu menu, Inventory playerInventory, Component title)
+	public TransceiverScreen(TransceiverMenu menu, Inventory playerInventory, Component title)
     {
         super(menu, playerInventory, title);
+        
+        this.imageWidth = 176;
+        this.imageHeight = 88;
     }
+	
+	@Override
+    public void init()
+    {
+    	int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+		super.init();
+		
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 21, Component.literal("7"), (button) -> addToCode(7)));
+		this.addRenderableWidget(new TransceiverButton(x + 61, y + 21, Component.literal("8"), (button) -> addToCode(8)));
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 21, Component.literal("9"), (button) -> addToCode(9)));
+
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 33, Component.literal("4"), (button) -> addToCode(4)));
+		this.addRenderableWidget(new TransceiverButton(x + 61, y + 33, Component.literal("5"), (button) -> addToCode(5)));
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 33, Component.literal("6"), (button) -> addToCode(6)));
+
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 45, Component.literal("1"), (button) -> addToCode(1)));
+		this.addRenderableWidget(new TransceiverButton(x + 61, y + 45, Component.literal("2"), (button) -> addToCode(2)));
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 45, Component.literal("3"), (button) -> addToCode(3)));
+		
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 57, Component.literal("*"), (button) -> removeFromCode()));
+		this.addRenderableWidget(new TransceiverButton(x + 61, y + 57, Component.literal("0"), (button) -> addToCode(0)));
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 57, Component.literal("F"), (button) -> toggleFrequency()));
+	}
 
     @Override
     protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY)
@@ -33,17 +62,107 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta)
+    public void render(PoseStack stack, int mouseX, int mouseY, float delta)
     {
-        renderBackground(pPoseStack);
-        super.render(pPoseStack, mouseX, mouseY, delta);
-        renderTooltip(pPoseStack, mouseX, mouseY);
+    	int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        renderBackground(stack);
+        super.render(stack, mouseX, mouseY, delta);
+        renderTooltip(stack, mouseX, mouseY);
+        
+        stack.pushPose();
+        stack.scale(0.5F, 0.5F, 0.5F);
+        stack.translate((float)x, (float)y, 0.0F);
+        
+    	renderLabels(stack, mouseX, mouseY, x, y);
+		
+    	stack.popPose();
     }
     
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) 
 	{
-		this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
+		this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 0x191e2a);
+    }
+    
+    protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y) 
+	{
+    	this.font.draw(stack, Component.literal(menu.getCurrentCode()), x + 218F, y + 70F, 0x009393);
+		this.font.draw(stack, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(editingFrequency() ? ": #" : ":")), x + 218F, y + 86F, 0x009393); // TODO Translate
+		this.font.draw(stack, Component.literal(String.valueOf(menu.getFrequency())), x + 218F, y + 98F, 0x009393);
+    }
+    
+    @Override
+	public boolean keyPressed(int p_96552_, int p_96553_, int p_96554_)
+	{
+    	switch(p_96552_)
+    	{
+    	case InputConstants.KEY_NUMPAD0, InputConstants.KEY_0:
+    		addToCode(0);
+    		break;
+    	case InputConstants.KEY_NUMPAD1, InputConstants.KEY_1:
+    		addToCode(1);
+    		break;
+    	case InputConstants.KEY_NUMPAD2, InputConstants.KEY_2:
+    		addToCode(2);
+    		break;
+    	case InputConstants.KEY_NUMPAD3, InputConstants.KEY_3:
+    		addToCode(3);
+    		break;
+    	case InputConstants.KEY_NUMPAD4, InputConstants.KEY_4:
+    		addToCode(4);
+    		break;
+    	case InputConstants.KEY_NUMPAD5, InputConstants.KEY_5:
+    		addToCode(5);
+    		break;
+    	case InputConstants.KEY_NUMPAD6, InputConstants.KEY_6:
+    		addToCode(6);
+    		break;
+    	case InputConstants.KEY_NUMPAD7, InputConstants.KEY_7:
+    		addToCode(7);
+    		break;
+    	case InputConstants.KEY_NUMPAD8, InputConstants.KEY_8:
+    		addToCode(8);
+    		break;
+    	case InputConstants.KEY_NUMPAD9, InputConstants.KEY_9:
+    		addToCode(9);
+    		break;
+    	case InputConstants.KEY_BACKSPACE, InputConstants.KEY_DELETE:
+    		removeFromCode();
+    		break;
+    	case InputConstants.KEY_NUMPADENTER, InputConstants.KEY_RETURN:
+    		sendTransmission();
+    		break;
+    	case InputConstants.KEY_LCONTROL, InputConstants.KEY_RCONTROL:
+    		toggleFrequency();
+    		break;
+    		
+    	}
+    	return super.keyPressed(p_96552_, p_96553_, p_96554_);
+	}
+    
+    private boolean editingFrequency()
+    {
+    	return menu.editingFrequency();
+    }
+    
+    private void toggleFrequency()
+    {
+    	menu.toggleFrequency();
+    }
+    
+    private void sendTransmission()
+    {
+    	menu.sendTransmission();
+    }
+    
+    private void addToCode(int number)
+    {
+    	menu.addToCode(false, number);
+    }
+    
+    private void removeFromCode()
+    {
+    	menu.removeFromCode(false);
     }
 }

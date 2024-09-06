@@ -19,6 +19,7 @@ import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
@@ -77,6 +78,18 @@ public class ClientAccess
         if(blockEntity instanceof final AbstractInterfaceEntity interfaceEntity)
         {
         	interfaceEntity.setEnergy(energy);
+        }
+    }
+    
+    public static void updateTransceiver(BlockPos pos, boolean editingFrequency, int frequency, String idc)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if(blockEntity instanceof final TransceiverEntity transceiver)
+        {
+        	transceiver.setEditingFrequency(editingFrequency);
+        	transceiver.setFrequency(frequency);
+        	transceiver.setCurrentCode(idc);
         }
     }
     

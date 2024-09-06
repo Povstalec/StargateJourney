@@ -28,6 +28,8 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -38,6 +40,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.menu.TransceiverMenu;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
@@ -188,4 +191,18 @@ public class TransceiverBlock extends Block implements EntityBlock
 		level.setBlock(pos, state.setValue(RECEIVING, true), 3);
 		level.scheduleTick(pos, this, TICKS_ACTIVE);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Nullable
+	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typeA, BlockEntityType<E> typeB, BlockEntityTicker<? super E> ticker)
+	{
+		return typeB == typeA ? (BlockEntityTicker<A>)ticker : null;
+	}
+	
+	@Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
+	{
+		return createTickerHelper(type, BlockEntityInit.TRANSCEIVER.get(), TransceiverEntity::tick);
+    }
 }
