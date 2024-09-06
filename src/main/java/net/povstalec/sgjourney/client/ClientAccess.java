@@ -1,14 +1,25 @@
 package net.povstalec.sgjourney.client;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
+import net.povstalec.sgjourney.client.screens.GDOScreen;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
@@ -18,6 +29,9 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEn
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClientAccess
@@ -27,6 +41,11 @@ public class ClientAccess
     public static void updateDialer(BlockPos pos)
     {
     	minecraft.setScreen(new DialerScreen());
+    }
+    
+    public static void openGDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
+    {
+    	minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
     }
 	
     public static void updateSymbol(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)
@@ -62,7 +81,19 @@ public class ClientAccess
         }
     }
     
-    public static void updateRings(BlockPos pos, int emptySpace, int transportHeight, int transportLight)
+    public static void updateTransceiver(BlockPos pos, boolean editingFrequency, int frequency, String idc)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if(blockEntity instanceof final TransceiverEntity transceiver)
+        {
+        	transceiver.setEditingFrequency(editingFrequency);
+        	transceiver.setFrequency(frequency);
+        	transceiver.setCurrentCode(idc);
+        }
+    }
+    
+    public static void updateRings(BlockPos pos, int emptySpace, int transportHeight)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -70,18 +101,17 @@ public class ClientAccess
         {
         	rings.emptySpace = emptySpace;
         	rings.transportHeight = transportHeight;
-        	rings.transportLight = transportLight;
         }
     }
     
-    public static void updateRingPanel(BlockPos pos, int ringsFound, BlockPos[] ringsPos)
+    public static void updateRingPanel(BlockPos pos, ArrayList<BlockPos> ringsPos, ArrayList<Component> ringsName)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final RingPanelEntity panel)
         {
-        	panel.ringsFound = ringsFound;
         	panel.ringsPos = ringsPos;
+        	panel.ringsName = ringsName;
         }
     }
     
@@ -98,7 +128,7 @@ public class ClientAccess
         }
     }
     
-    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, String pointOfOrigin, String symbols, String variant)
+    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress, String pointOfOrigin, String symbols, String variant, ItemStack iris)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -108,9 +138,50 @@ public class ClientAccess
         	stargate.setEngagedChevrons(engagedChevrons);
         	stargate.setKawooshTickCount(kawooshTick);
         	stargate.setTickCount(tick);
+        	stargate.setIrisProgress(irisProgress);
         	stargate.setPointOfOrigin(pointOfOrigin);
         	stargate.setSymbols(symbols);
         	stargate.setVariant(variant);
+        	
+        	if(!iris.isEmpty())
+        		stargate.setIris(iris);
+        	else
+        		stargate.unsetIris();
+        }
+    }
+    
+    public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
+    {
+    	final BlockState state = minecraft.level.getBlockState(pos);
+        
+        if(state.getBlock() instanceof final AbstractStargateBlock stargateBlock)
+        {
+        	StargatePart part = state.getValue(AbstractStargateBlock.PART);
+        	Direction direction = state.getValue(AbstractStargateBlock.FACING);
+        	Orientation orientation = state.getValue(AbstractStargateBlock.ORIENTATION);
+        	
+        	if(part == null || direction == null || orientation == null)
+        		return;
+        	
+        	BlockPos basePos = part.getBaseBlockPos(pos, direction, orientation);
+        	
+        	for(Map.Entry<StargatePart, BlockState> entry : blockStates.entrySet())
+        	{
+        		BlockPos coverPos = entry.getKey().getRingPos(basePos, direction, orientation);
+        		
+            	minecraft.particleEngine.destroy(coverPos, stargateBlock.defaultBlockState());
+        	}
+        }
+    }
+    
+    public static void updateStargateState(BlockPos pos, boolean canSinkGate, HashMap<StargatePart, BlockState> blockStates)
+    {
+    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+        
+        if(blockEntity instanceof final AbstractStargateEntity stargate)
+        {
+        	stargate.blockCover.blockStates = blockStates;
+        	stargate.blockCover.canSinkGate = canSinkGate;
         }
     }
     

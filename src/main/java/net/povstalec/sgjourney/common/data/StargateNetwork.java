@@ -44,7 +44,7 @@ public final class StargateNetwork extends SavedData
 	private static final String CONNECTIONS = "Connections";
 
 	//Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int updateVersion = 8;
+	private static final int updateVersion = 9;
 	
 	private MinecraftServer server;
 	
@@ -419,6 +419,20 @@ public final class StargateNetwork extends SavedData
 		}
 		else
 			return false;
+	}
+	
+	public final void sendStargateTransmission(AbstractStargateEntity sendingStargate, String uuid, int transmissionJumps, int frequency, String transmission)
+	{
+		if(hasConnection(uuid))
+			this.connections.get(uuid).sendStargateTransmission(sendingStargate, transmissionJumps, frequency, transmission);
+	}
+	
+	public final float checkStargateShieldingState(AbstractStargateEntity sendingStargate, String uuid)
+	{
+		if(hasConnection(uuid))
+			return this.connections.get(uuid).checkStargateShieldingState(sendingStargate);
+		
+		return 0;
 	}
 	
 	//============================================================================================

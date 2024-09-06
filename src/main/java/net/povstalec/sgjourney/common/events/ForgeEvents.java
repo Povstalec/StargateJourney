@@ -3,14 +3,17 @@ package net.povstalec.sgjourney.common.events;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
@@ -19,6 +22,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -36,6 +40,8 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -43,6 +49,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
@@ -56,6 +63,7 @@ import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
+import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
 {
@@ -174,7 +182,7 @@ public class ForgeEvents
 	}
 	
 	@SubscribeEvent
-	public static void onLivingHurt(LivingAttackEvent event)
+	public static void onLivingAttack(LivingAttackEvent event)
 	{
 		Entity entity = event.getEntity();
 		Entity attacker = event.getSource().getDirectEntity();
@@ -198,13 +206,15 @@ public class ForgeEvents
 		if(entity instanceof Player player)
 		{
 			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
-			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getEnergy(stack) > 0)
+			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getFluidAmount(stack) > 0)
 			{
-				int energyDepleted = (int) damage * 500;
+				int naquadahDepleted = (int) damage;
 
-				PersonalShieldItem.depleteEnergy(stack, energyDepleted);
+				PersonalShieldItem.drainNaquadah(stack, naquadahDepleted);
+				
 				if(attacker instanceof LivingEntity livingAttacker)
 					livingAttacker.knockback(0.5D, player.getX() - attacker.getX(), player.getZ() - attacker.getZ());
+				
 				return true;
 			}
 		}
@@ -217,15 +227,92 @@ public class ForgeEvents
 		if(event.getRayTraceResult() instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof Player player)
 		{
 			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
-			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getEnergy(stack) > 0)
+			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getFluidAmount(stack) > 0)
 			{
 				Projectile projectile = event.getProjectile();
 				
-				int energyDepleted = (int) projectile.getDeltaMovement().length() * 500;
+				int naquadahDepleted = (int) projectile.getDeltaMovement().length();
 				
-				PersonalShieldItem.depleteEnergy(stack, energyDepleted);
+				PersonalShieldItem.drainNaquadah(stack, naquadahDepleted);
+				
 				projectile.setDeltaMovement(projectile.getDeltaMovement().reverse().scale(0.2));
+				
 				event.setCanceled(true);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) // Add cover block to Stargate when player is clicking on a face of another block
+	{
+		Level level = event.getLevel();
+		BlockPos pos = event.getPos();
+		BlockState state = level.getBlockState(pos);
+		
+		if(!state.getMaterial().isReplaceable())
+		{
+			pos = event.getPos().relative(event.getFace());
+			state = level.getBlockState(pos);
+			
+			if(state.getBlock() instanceof AbstractStargateBlock stargate && event.getEntity().getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BlockItem)
+			{
+				if(stargate.setCover(state, level, pos, event.getEntity(), InteractionHand.MAIN_HAND, event.getHitVec()))
+				{
+					event.getEntity().swing(InteractionHand.MAIN_HAND);
+
+					event.setCanceled(true);
+					return;
+				}
+			}
+		}
+		
+	}
+	
+	@SubscribeEvent
+	public static void onBlockLeftClick(PlayerInteractEvent.LeftClickBlock event) // Prevent player from breaking the Stargate when it has cover blocks
+	{
+		Level level = event.getLevel();
+		BlockPos pos = event.getPos();
+		BlockState state = level.getBlockState(pos);
+		
+		if(state.getBlock() instanceof AbstractStargateBlock stargate)
+		{
+			Optional<StargateBlockCover> blockCover = stargate.getBlockCover(level, state, event.getPos());
+			
+			if(blockCover.isPresent() && !blockCover.get().blockStates.isEmpty())
+			{
+				StargatePart part = state.getValue(AbstractStargateBlock.PART);
+				
+				if(blockCover.get().getBlockAt(part).isEmpty())
+				{
+					AbstractStargateEntity stargateEntity = stargate.getStargate(level, pos, state);
+					if(stargateEntity != null)
+						stargateEntity.spawnCoverParticles();
+					
+					event.getEntity().displayClientMessage(Component.translatable("block.sgjourney.stargate.break_cover_blocks"), true);
+					event.setCanceled(true);
+				}
+			}
+		}
+		
+	}
+	
+	@SubscribeEvent
+	public static void onBlockBreak(BlockEvent.BreakEvent event) // Break individual blocks covering the Stargate
+	{
+		if(event.getState().getBlock() instanceof AbstractStargateBlock stargate)
+		{
+			Player player = event.getPlayer();
+			Level level = player.getLevel();
+			
+			Optional<StargateBlockCover> blockCover = stargate.getBlockCover(level, event.getState(), event.getPos());
+			
+			if(blockCover.isPresent() && !blockCover.get().blockStates.isEmpty())
+			{
+				StargatePart part = event.getState().getValue(AbstractStargateBlock.PART);
+				
+				if(blockCover.get().mineBlockAt(level, player, part, event.getPos()))
+					event.setCanceled(true);
 			}
 		}
 	}

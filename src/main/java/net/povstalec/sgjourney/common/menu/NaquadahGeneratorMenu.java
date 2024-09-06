@@ -43,7 +43,7 @@ public class NaquadahGeneratorMenu extends AbstractContainerMenu
     	return this.blockEntity.getReactionProgress();
     }
     
-    public int getReactionTime()
+    public long getReactionTime()
     {
     	return this.blockEntity.getReactionTime();
     }

@@ -18,7 +18,7 @@ public class SGJourneyRenderTypes extends RenderType
 
 	public static RenderType symbol(ResourceLocation resourceLocation)
 	{
-		return create("symbol", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
+		return create("symbol", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ITEM_ENTITY_TRANSLUCENT_CULL_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
@@ -26,70 +26,63 @@ public class SGJourneyRenderTypes extends RenderType
 				.setOutputState(ITEM_ENTITY_TARGET)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(OVERLAY)
-				.setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
 				.createCompositeState(true));
 	}
 
-	public static RenderType eventHorizonFront(ResourceLocation resourceLocation, float xOffset, float zOffset)
+	public static RenderType eventHorizon(ResourceLocation resourceLocation)
 	{
-		return create("event_horizon_front", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+		return create("event_horizon", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
+				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setCullState(CULL)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(NO_OVERLAY)
+				.createCompositeState(true));
+	}
+
+	public static RenderType vortex(ResourceLocation resourceLocation)
+	{
+		return create("vortex", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTransparencyState(NO_TRANSPARENCY)
 				.setCullState(CULL)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(false));
-	}
-
-	public static RenderType eventHorizonBack(ResourceLocation resourceLocation, float xOffset, float zOffset)
-	{
-		return create("event_horizon_back", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
-				RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
-				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(CULL)
-				.setWriteMaskState(COLOR_WRITE)
-				.setLightmapState(LIGHTMAP)
-				.setOverlayState(NO_OVERLAY)
-				.createCompositeState(true));
 	}
 
 	public static RenderType shield(ResourceLocation resourceLocation)
 	{
-		return create("shield", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+		return create("shield", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
+				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
-				.setWriteMaskState(COLOR_WRITE)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
 				.createCompositeState(true));
 	}
 
-	public static RenderType vortex(ResourceLocation resourceLocation, float xOffset, float zOffset)
+	public static RenderType iris(ResourceLocation resourceLocation)
 	{
-		return create("vortex", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+		return create("iris", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
+				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
-				.setTransparencyState(NO_TRANSPARENCY)
-				.setCullState(NO_CULL)
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setLightmapState(LIGHTMAP)
-				.setOverlayState(NO_OVERLAY)
-				.createCompositeState(false));
+				.setOverlayState(OVERLAY)
+				.createCompositeState(true));
 	}
 	
 	public static RenderType stargate(ResourceLocation resourceLocation)
 	{
-		return create("stargate", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
+		return create("stargate", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
@@ -113,7 +106,7 @@ public class SGJourneyRenderTypes extends RenderType
 	
 	public static RenderType chevron(ResourceLocation resourceLocation)
 	{
-		return create("chevron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, 
+		return create("chevron", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))

@@ -108,7 +108,7 @@ public class ATAGeneDetectorBlock extends Block implements AncientTech
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
 		int newSignalStrength = level.getBestNeighborSignal(pos);

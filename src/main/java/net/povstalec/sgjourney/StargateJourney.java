@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,6 +43,7 @@ import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRender
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
+import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
 import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
@@ -51,6 +53,7 @@ import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
+import net.povstalec.sgjourney.client.screens.TransceiverScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -87,10 +90,12 @@ import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 public class StargateJourney
 {
     public static final String MODID = "sgjourney";
-    public static final String EMPTY = MODID + ":empty";
+    public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(MODID, "empty");
+    public static final String EMPTY = EMPTY_LOCATION.toString();
     
     public static final String STELLAR_VIEW_MODID = "stellarview";
     public static final String OCULUS_MODID = "oculus";
+    public static final String COMPUTERCRAFT_MODID = "computercraft";
     
     private static Optional<Boolean> isOculusLoaded = Optional.empty();
     
@@ -205,6 +210,8 @@ public class StargateJourney
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
+
+        	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
         	
         	//EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
         	
@@ -230,6 +237,12 @@ public class StargateJourney
         		StellarViewRendering.registerStellarViewEffects(event);
         	else
         		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
+        }
+    	
+    	@SubscribeEvent
+        public static void registerClientReloadListener(RegisterClientReloadListenersEvent event)
+        {
+    		ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
         }
     }
     

@@ -1,83 +1,33 @@
 package net.povstalec.sgjourney.client.models;
 
-import java.util.Optional;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
-public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity>
+public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity, MilkyWayStargateVariant>
 {
-	protected final ResourceLocation alternateStargateTexture;
-	protected final ResourceLocation alternateEngagedTexture;
-	
 	public MilkyWayStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "milky_way"), (short) 39, new Stargate.RGBA(48, 49, 63, 255));
-		
-		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
-		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
+		super((short) 39);
 	}
 	
 	@Override
-	public void renderStargate(MilkyWayStargateEntity stargate, float partialTick, PoseStack stack, MultiBufferSource source, 
+	public void renderStargate(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
 	{
-		Optional<StargateVariant> stargateVariant = getStargateVariant(stargate);
-		
-		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(getStargateTexture(stargate, stargateVariant)));
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(stargateVariant.texture()));
 		this.renderOuterRing(stack, consumer, source, combinedLight);
 		
 		this.renderSymbolRing(stargate, stargateVariant, stack, consumer, source, combinedLight, this.rotation);
 
 		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
-	}
-	
-	@Override
-	protected ResourceLocation getStargateTexture(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
-	{
-		if(stargateVariant.isPresent())
-			return stargateVariant.get().getTexture();
-		
-		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ?
-				this.alternateStargateTexture : this.stargateTexture;
-	}
-
-	@Override
-	protected ResourceLocation getEngagedTexture(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
-	{
-		if(stargateVariant.isPresent())
-			return stargateVariant.get().getEngagedTexture();
-		
-		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ?
-				this.alternateEngagedTexture : this.engagedTexture;
-	}
-	
-	@Override
-	protected boolean useMovieStargateModel(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
-	{
-		if(stargateVariant.isPresent() && stargateVariant.get().useAlternateModel().isPresent())
-			return stargateVariant.get().useAlternateModel().get();
-		
-		return ClientStargateConfig.use_movie_stargate_model.get();
-	}
-	
-	protected boolean raiseBackChevrons(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
-	{
-		if(stargateVariant.isPresent() && stargateVariant.get().backChevrons().isPresent())
-			return stargateVariant.get().backChevrons().get();
-		
-		return ClientStargateConfig.milky_way_stargate_back_lights_up.get();
 	}
 	
 	public void setRotation(float rotation)
@@ -86,9 +36,9 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	}
 
 	@Override
-	protected boolean isPrimaryChevronRaised(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	protected boolean isPrimaryChevronRaised(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
 	{
-		if(useMovieStargateModel(stargate, stargateVariant))
+		if(stargateVariant.stargateModel().movieChevronLocking())
 		{
 			if(ClientStargateConfig.movie_primary_chevron_opens.get())
 				return stargate.isConnected();
@@ -103,24 +53,24 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	}
 
 	@Override
-	protected boolean isPrimaryChevronBackRaised(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	protected boolean isPrimaryChevronBackRaised(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
 	{
-		if(!raiseBackChevrons(stargate, stargateVariant))
+		if(!stargateVariant.stargateModel().raiseBackChevrons())
 			return false;
 		
 		return isPrimaryChevronRaised(stargate, stargateVariant);
 	}
 
 	@Override
-	protected boolean isPrimaryChevronLowered(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	protected boolean isPrimaryChevronLowered(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
 	{
 		return isPrimaryChevronRaised(stargate, stargateVariant);
 	}
 
 	@Override
-	protected boolean isPrimaryChevronEngaged(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	protected boolean isPrimaryChevronEngaged(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
 	{
-		if(!useMovieStargateModel(stargate, stargateVariant) && stargate.isChevronOpen())
+		if(!stargateVariant.stargateModel().movieChevronLocking() && stargate.isChevronOpen())
 			return true;
 			
 		if(stargate.isConnected())
@@ -130,9 +80,9 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	}
 	
 	@Override
-	protected boolean isChevronRaised(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant, int chevronNumber)
+	protected boolean isChevronRaised(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int chevronNumber)
 	{
-		if(!useMovieStargateModel(stargate, stargateVariant))
+		if(!stargateVariant.stargateModel().movieChevronLocking())
 			return false;
 		
 		int chevronsRendered = stargate.chevronsRendered();
@@ -164,18 +114,18 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	}
 
 	@Override
-	protected boolean isChevronBackRaised(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant, int chevronNumber)
+	protected boolean isChevronBackRaised(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int chevronNumber)
 	{
-		if(!raiseBackChevrons(stargate, stargateVariant))
+		if(!stargateVariant.stargateModel().raiseBackChevrons())
 			return false;
 		
 		return isChevronRaised(stargate, stargateVariant, chevronNumber);
 	}
 
 	@Override
-	protected boolean isChevronLowered(MilkyWayStargateEntity stargate, Optional<StargateVariant> stargateVariant, int chevronNumber)
+	protected boolean isChevronLowered(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int chevronNumber)
 	{
-		if(!useMovieStargateModel(stargate, stargateVariant))
+		if(!stargateVariant.stargateModel().movieChevronLocking())
 			return false;
 
 		int chevronsRendered = stargate.chevronsRendered();

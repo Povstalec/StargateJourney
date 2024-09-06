@@ -18,6 +18,8 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
+		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
+		peripheral.registerMethod(new StargateMethods.GetSymbols());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -74,6 +76,8 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
+		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
+		peripheral.registerMethod(new StargateMethods.GetSymbols());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -118,6 +122,8 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
+		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
+		peripheral.registerMethod(new StargateMethods.GetSymbols());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -166,6 +172,8 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
+		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
+		peripheral.registerMethod(new StargateMethods.GetSymbols());
 		
 		if(type.hasCrystalMethods())
 		{
@@ -210,6 +218,8 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
+		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
+		peripheral.registerMethod(new StargateMethods.GetSymbols());
 		
 		if(type.hasCrystalMethods())
 		{

@@ -34,6 +34,13 @@
 		"facing=north,mode=wormhole_active": { "model": "sgjourney:block/basic_interface_wormhole" },
 		"facing=south,mode=wormhole_active": { "model": "sgjourney:block/basic_interface_wormhole", "y": 180 },
 		"facing=west,mode=wormhole_active": { "model": "sgjourney:block/basic_interface_wormhole", "y": 270 },
-		"facing=east,mode=wormhole_active": { "model": "sgjourney:block/basic_interface_wormhole", "y": 90 }
+		"facing=east,mode=wormhole_active": { "model": "sgjourney:block/basic_interface_wormhole", "y": 90 },
+		
+		"facing=down,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "x": 90 },
+		"facing=up,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "x": 270 },
+		"facing=north,mode=shielding": { "model": "sgjourney:block/basic_interface_shieldinge" },
+		"facing=south,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "y": 180 },
+		"facing=west,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "y": 270 },
+		"facing=east,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "y": 90 }
 	}
 }

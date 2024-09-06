@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.models;
 
-import java.util.Optional;
-
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -10,13 +8,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
-public class TollanStargateModel extends AbstractStargateModel<TollanStargateEntity>
+public class TollanStargateModel extends AbstractStargateModel<TollanStargateEntity, TollanStargateVariant>
 {
 	protected static final float TOLLAN_RADIUS = 3F;
 	protected static final float TOLLAN_RING_HEIGHT = 8F / 16;
@@ -40,11 +36,11 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 
 	public TollanStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "tollan"), (short) 0);
+		super((short) 0);
 	}
 	
 	@Override
-	public void renderRing(TollanStargateEntity stargate, Optional<StargateVariant> stargateVariant, float partialTick, PoseStack stack, VertexConsumer consumer,
+	public void renderRing(TollanStargateEntity stargate, TollanStargateVariant stargateVariant, float partialTick, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		renderOuterRing(stack, consumer, source, combinedLight);
@@ -55,7 +51,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 	//============================================================================================
 	
 	@Override
-	protected void renderPrimaryChevron(TollanStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged)
+	protected void renderPrimaryChevron(TollanStargateEntity stargate, TollanStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean chevronEngaged)
 	{
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
 		
@@ -68,7 +64,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 	}
 	
 	@Override
-	protected void renderChevron(TollanStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
+	protected void renderChevron(TollanStargateEntity stargate, TollanStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
 		int chevron = AbstractStargateEntity.getChevron(stargate, chevronNumber);
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;

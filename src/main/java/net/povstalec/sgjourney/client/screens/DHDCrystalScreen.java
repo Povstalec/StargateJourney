@@ -39,13 +39,4 @@ public class DHDCrystalScreen extends AbstractContainerScreen<DHDCrystalMenu>
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
     }
-    
-    /*@Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) 
-	{
-    	this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
-    }*/
-    
-    
 }

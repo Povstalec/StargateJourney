@@ -4,6 +4,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonInterfaceConfig
 {
+	public static ForgeConfigSpec.LongValue default_energy_target;
+	
 	public static ForgeConfigSpec.LongValue basic_interface_capacity;
 	public static ForgeConfigSpec.LongValue basic_interface_max_transfer;
 	
@@ -15,6 +17,12 @@ public class CommonInterfaceConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		default_energy_target = server
+				.comment("The default amount of energy the Interface will try to provide until it stops")
+				.defineInRange("server.default_energy_target", 200000L, 1L, 2147483647L);
+		
+		
+		
 		basic_interface_capacity = server
 				.comment("The amount of energy a Basic Interface can hold")
 				.defineInRange("server.basic_interface_capacity", 10000000L, 1L, 2147483647L);

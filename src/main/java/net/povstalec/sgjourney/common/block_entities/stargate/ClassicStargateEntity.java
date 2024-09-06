@@ -2,15 +2,15 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
@@ -30,7 +30,7 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.CLASSIC_STARGATE.get(), pos, state, Stargate.Gen.NONE, 0,
+		super(BlockEntityInit.CLASSIC_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "classic/classic"), pos, state, Stargate.Gen.NONE, 0,
 				VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT);
 		
 		displayID = true;
@@ -76,60 +76,6 @@ public class ClassicStargateEntity extends AbstractStargateEntity
         	rotation = tag.getShort("Rotation");
     	
     	super.deserializeStargateInfo(tag, isUpgraded);
-	}
-
-	@Override
-	public SoundEvent getRotationSound()
-	{
-		return SoundInit.MILKY_WAY_RING_SPIN.get();
-	}
-
-	@Override
-	public SoundEvent getChevronEngageSound()
-	{
-		return SoundInit.CLASSIC_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronEngageSound()
-	{
-		return SoundInit.CLASSIC_PRIMARY_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getChevronIncomingSound()
-	{
-		return SoundInit.CLASSIC_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronIncomingSound()
-	{
-		return SoundInit.CLASSIC_PRIMARY_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeOpenSound()
-	{
-		return SoundInit.CLASSIC_WORMHOLE_OPEN.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeIdleSound()
-	{
-		return SoundInit.CLASSIC_WORMHOLE_IDLE.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeCloseSound()
-	{
-		return SoundInit.CLASSIC_WORMHOLE_CLOSE.get();
-	}
-
-	@Override
-	public SoundEvent getFailSound()
-	{
-		return SoundInit.CLASSIC_DIAL_FAIL.get();
 	}
 	
 	public double angle()

@@ -153,8 +153,8 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 					};
 				}
 				
-				@Nonnull
 				@Override
+				@NotNull
 				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 				{
 					if(!isItemValid(slot, stack))

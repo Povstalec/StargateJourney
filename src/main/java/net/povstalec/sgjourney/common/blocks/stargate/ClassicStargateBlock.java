@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
@@ -62,6 +63,12 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 	public AbstractStargateRingBlock getRing()
 	{
 		return BlockInit.CLASSIC_RING.get();
+	}
+	
+	@Override
+	public AbstractShieldingBlock getIris()
+	{
+		return BlockInit.CLASSIC_SHIELDING.get();
 	}
 
 	@Override

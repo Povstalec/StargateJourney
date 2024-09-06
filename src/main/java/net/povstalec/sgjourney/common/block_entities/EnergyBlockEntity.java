@@ -213,6 +213,11 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			this.ENERGY_STORAGE.setEnergy(moreEnergy);
 	}
 	
+	public boolean canReceive(long receivedEnergy)
+	{
+		return ENERGY_STORAGE.canReceive(receivedEnergy);
+	}
+	
 	protected void outputEnergy(Direction outputDirection)
 	{
 		if(outputDirection == null)

@@ -33,11 +33,35 @@ public abstract class ClientBoundSoundPackets
     
     
     
-    public static class OpenWormhole extends ClientBoundSoundPackets
+    public abstract static class WormholeSound extends ClientBoundSoundPackets
     {
-    	public OpenWormhole(BlockPos pos)
+    	public final boolean incoming;
+    	
+    	public WormholeSound(BlockPos pos, boolean stop, boolean incoming)
     	{
     		super(pos, false);
+    		
+    		this.incoming = incoming;
+    	}
+    	public WormholeSound(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    		this.incoming = buffer.readBoolean();
+    	}
+    	
+    	@Override
+        public void encode(FriendlyByteBuf buffer)
+        {
+            super.encode(buffer);
+            buffer.writeBoolean(this.incoming);
+        }
+    }
+    
+    public static class OpenWormhole extends WormholeSound
+    {
+    	public OpenWormhole(BlockPos pos, boolean incoming)
+    	{
+    		super(pos, false, incoming);
     	}
     	public OpenWormhole(FriendlyByteBuf buffer)
     	{
@@ -49,17 +73,17 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playWormholeOpenSound(pos);
+            	SoundAccess.playWormholeOpenSound(pos, incoming);
             });
             return true;
         }
     }
     
-    public static class IdleWormhole extends ClientBoundSoundPackets
+    public static class IdleWormhole extends WormholeSound
     {
-    	public IdleWormhole(BlockPos pos)
+    	public IdleWormhole(BlockPos pos, boolean incoming)
     	{
-    		super(pos, false);
+    		super(pos, false, incoming);
     	}
     	public IdleWormhole(FriendlyByteBuf buffer)
     	{
@@ -71,17 +95,17 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playWormholeIdleSound(pos);
+            	SoundAccess.playWormholeIdleSound(pos, incoming);
             });
             return true;
         }
     }
     
-    public static class CloseWormhole extends ClientBoundSoundPackets
+    public static class CloseWormhole extends WormholeSound
     {
-    	public CloseWormhole(BlockPos pos)
+    	public CloseWormhole(BlockPos pos, boolean incoming)
     	{
-    		super(pos, false);
+    		super(pos, false, incoming);
     	}
     	public CloseWormhole(FriendlyByteBuf buffer)
     	{
@@ -93,7 +117,35 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playWormholeCloseSound(pos);
+            	SoundAccess.playWormholeCloseSound(pos, incoming);
+            });
+            return true;
+        }
+    }
+    
+    public static class IrisThud extends ClientBoundSoundPackets
+    {
+    	public IrisThud(BlockPos pos)
+    	{
+    		super(pos, false);
+    	}
+    	public IrisThud(FriendlyByteBuf buffer)
+    	{
+    		super(buffer);
+    	}
+    	
+    	@Override
+        public void encode(FriendlyByteBuf buffer)
+        {
+            super.encode(buffer);
+        }
+    	
+    	@Override
+    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+            	SoundAccess.playIrisThudSound(pos);
             });
             return true;
         }
@@ -102,28 +154,28 @@ public abstract class ClientBoundSoundPackets
     public static class Chevron
     {
 	    public final BlockPos pos;
-    	public final boolean primary;
+    	public final short chevron;
     	public final boolean incoming;
     	public final boolean open;
     	public final boolean encode;
     	
-    	public Chevron(BlockPos pos, boolean primary, boolean incoming, boolean open, boolean encode)
+    	public Chevron(BlockPos pos, short chevron, boolean incoming, boolean open, boolean encode)
     	{
     		this.pos = pos;
-    		this.primary = primary;
+    		this.chevron = chevron;
     		this.incoming = incoming;
     		this.open = open;
     		this.encode = encode;
     	}
     	public Chevron(FriendlyByteBuf buffer)
     	{
-    		 this(buffer.readBlockPos(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean());
+    		 this(buffer.readBlockPos(), buffer.readShort(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean());
     	}
 
         public void encode(FriendlyByteBuf buffer)
         {
             buffer.writeBlockPos(this.pos);
-            buffer.writeBoolean(this.primary);
+            buffer.writeShort(this.chevron);
             buffer.writeBoolean(this.incoming);
             buffer.writeBoolean(this.open);
             buffer.writeBoolean(this.encode);
@@ -133,7 +185,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playChevronSound(pos, primary, incoming, open, encode);
+            	SoundAccess.playChevronSound(pos, chevron, incoming, open, encode);
             });
             return true;
         }

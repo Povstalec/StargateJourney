@@ -1,3 +1,4 @@
+{
 	"block.sgjourney.naquadah_ore": "Naquadahová ruda",
 	"block.sgjourney.nether_naquadah_ore": "Netherová naquadahová ruda",
 	"block.sgjourney.deepslate_naquadah_ore": "Hlubinná Naquadahová ruda",
@@ -41,6 +42,7 @@
 	"block.sgjourney.classic_dhd": "Klasický ovládací panel",
 	
 	"block.sgjourney.stargate.not_enough_space": "Hvězdná brána nemá dost místa",
+	"block.sgjourney.stargate.break_cover_blocks": "Nejprve znič krycí bloky",
 	"block.sgjourney.stargate.same_variant": "Stejná varianta",
 	"block.sgjourney.stargate.classic.incorrect_setup": "Špatně sestaveno",
 	"block.sgjourney.stargate.classic.invalid_address": "Nesprávná adresa",
@@ -68,12 +70,16 @@
 	"block.sgjourney.zpm_hub": "ZPM Hub",
 	"block.sgjourney.zpm_port": "ZPM Port",
 	"block.sgjourney.zpm_plug": "ZPM zástrčka",
+
+	"block.sgjourney.transceiver": "Vysílač",
 	
 	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Vytěžený naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadahová slitina",
+	"item.sgjourney.naquadah_alloy_nugget": "Naquadahový nuget",
+	"item.sgjourney.refined_naquadah": "Rafinovaný naquadah",
 	"item.sgjourney.pure_naquadah": "Čistý naquadah",
 	"item.sgjourney.naquadah": "Naquadah vojenské úrovně",
 	"item.sgjourney.liquid_naquadah_bucket": "Kbelík tekutého naquadahu",
@@ -93,7 +99,7 @@
 	"item.sgjourney.energy_crystal": "Energetický krystal",
 	"item.sgjourney.transfer_crystal": "Přenosový krystal",
 	"item.sgjourney.communication_crystal": "Komunikační krystal",
-	"item.sgjourney.memory_crystal": "Pamťový krystal",
+	"item.sgjourney.memory_crystal": "Paměťový krystal",
 
 	"item.sgjourney.advanced_control_crystal": "Pokročilý ovládací krystal",
 	"item.sgjourney.advanced_materialization_crystal": "Pokročilý materializační krystal",
@@ -120,7 +126,9 @@
 	
 	"item.sgjourney.pda": "PDA",
 	"item.sgjourney.zero_point_module": "ZPM",
-	"item.sgjourney.personal_shield_emitter": "Generá osobního štítu",
+	"item.sgjourney.personal_shield_emitter": "Generátor osobního štítu",
+	
+	"item.sgjourney.naquadah_fuel_rod": "Naquadahová palivová tyč",
 	
 	"item.sgjourney.syringe": "Injekce",
 	
@@ -138,6 +146,20 @@
 	
 	"item.sgjourney.anubis_helmet": "Anubisova helma",
 	"item.sgjourney.horus_helmet": "Horova helma",
+
+	"item.sgjourney.gdo": "GDO",
+
+	"item.sgjourney.stargate_shielding_ring": "Ochranný kruh pro bránu",
+
+	"item.sgjourney.copper_iris": "Měděná iris",
+	"item.sgjourney.iron_iris": "Železná iris",
+	"item.sgjourney.golden_iris": "Zlatá iris",
+	"item.sgjourney.diamond_iris": "Diamantová iris",
+	"item.sgjourney.netherite_iris": "Netherititová iris",
+	"item.sgjourney.naquadah_alloy_iris": "Iris z naquadahové slitiny",
+	"item.sgjourney.trinium_iris": "Triniová iris",
+	"item.sgjourney.bronze_iris": "Bronzová iris",
+	"item.sgjourney.steel_iris": "Ocelová iris",
 	
 	"sounds.sgjourney.dial_start" : "vytáčení začalo",
 	"sounds.sgjourney.ring_spin_start" : "otáčení začalo",
@@ -153,6 +175,8 @@
 	"sounds.sgjourney.wormhole_close" : "červí díra se orevírá",
 	"sounds.sgjourney.wormhole_enter" : "červí díra použita",
 	"sounds.sgjourney.wormhole_idle" : "červí díra vyčkává",
+	
+	"sounds.sgjourney.iris_thud" : "čnáraz do iris",
 	
 	"sounds.sgjourney.dhd_enter" : "DHD zadáno",
 	"sounds.sgjourney.dhd_press" : "DHD zmáčknuto",
@@ -196,6 +220,9 @@
 	"screen.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
 	"screen.sgjourney.naquadah_liquidizer": "Zkapalňovač naquadahu",
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
+
+	"screen.sgjourney.transceiver": "Vysílač",
+	"screen.sgjourney.gdo.frequency": "FREKVENCE",
 	
 	"biome.sgjourney.abydos_desert": "Abydoská poušť",
 	"biome.sgjourney.abydos_oasis": "Abydoská oáza",
@@ -376,6 +403,7 @@
 	"tooltip.sgjourney.mode": "Mód",
 	"tooltip.sgjourney.upgraded": "Upgradováno",
 	"tooltip.sgjourney.variant": "Varianta",
+	"tooltip.sgjourney.requires": "Vyžaduje",
 	"tooltip.sgjourney.stargate_type": "Typ brány",
 
 	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
@@ -423,6 +451,15 @@
 	"tooltip.sgjourney.syringe.blood": "Krev",
 	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototyp antické genové terapie",
 	"tooltip.sgjourney.syringe.ata_gene": "Antická genová terapie",
+
+	"tooltip.sgjourney.gdo.idc": "IDC",
+	"tooltip.sgjourney.gdo.frequency": "Frekvence",
+	"tooltip.sgjourney.gdo.description.check": "Pravé kliknutí zkontroluje stav iris",
+	"tooltip.sgjourney.gdo.description.gui": "Shift + pravé kliknutí otevře rozhraní pro GDO",
+
+	"tooltip.sgjourney.iris.durability": "Výdrž",
+
+	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Palivo",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Chyba: Transportní kruhy již v provozu",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Chyba: Žádné transportní kruhy poblíž",
@@ -436,6 +473,8 @@
 	"message.sgjourney.dhd.error.not_connected_to_stargate": "Ovládací panel není připojen k hvězdné bráně",
 	
 	"message.sgjourney.stargate.one_way_wormhole": "Není možné projít červí dírou tímto směrem",
+	"message.sgjourney.stargate.error.iris": "Cesta blokována iris",
+	"message.sgjourney.stargate.error.already_has_iris": "Hvězdná brána již má iris",
 	
 	"message.sgjourney.stargate.info.none": "Nic",
 	"message.sgjourney.stargate.error.unknown": "Neznámá chyba",
@@ -452,7 +491,7 @@
 	"message.sgjourney.stargate.error.incomplete_address": "Neúplná adresa",
 	"message.sgjourney.stargate.error.invalid_address": "Neplatná adresa",
 	"message.sgjourney.stargate.error.not_enough_power": "Nedostatek energie",
-	"message.sgjourney.stargate.error.self_obstructed": "Hvězdná brána je blokována",
+	"message.sgjourney.stargate.error.self_obstructed": "Lokální hvězdná brána je blokována",
 	"message.sgjourney.stargate.error.target_obstructed": "Cílová hvězdná brána je blokována",
 	"message.sgjourney.stargate.error.self_dial": "Hvězdná brána nemůže navázat spojení sama se sebou",
 	"message.sgjourney.stargate.error.same_system_dial": "Hvězdná brána nemůže vytočit svůj vlastní solární systém",
@@ -500,5 +539,9 @@
 	"message.sgjourney.command.get_stargates": "Hvězdné brány v dimenzi",
 	"message.sgjourney.command.get_transporters": "Transportéry v dimenzi",
 	"message.sgjourney.command.transporter_network_reload": "Transportéry načteny",
-	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy"
+	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy",
+
+	"message.sgjourney.gdo.shielded": "Chráněno",
+	"message.sgjourney.gdo.error.no_nearby_stargate": "Žádná hvězdná brána poblíž",
+	"message.sgjourney.gdo.error.stargate_not_connected": "Hvězdná brána není připojena"
 }

@@ -8,7 +8,8 @@ public enum InterfaceMode implements StringRepresentable
 	RING_SEGMENT("ring_segment"),
 	RING_ROTATION("ring_rotation"),
 	CHEVRONS_ACTIVE("chevrons_active"),
-	WORMHOLE_ACTIVE("wormhole_active");
+	WORMHOLE_ACTIVE("wormhole_active"),
+	SHIELDING("shielding");
 	
 	private final String id;
 	
