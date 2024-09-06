@@ -91,6 +91,46 @@ public class StargateMethods
 		}
 	}
 	
+	public static class GetPointOfOrigin implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getPointOfOrigin";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {stargate.getPointOfOrigin()};
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class GetSymbols implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getSymbols";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {stargate.getSymbols()};
+			});
+			
+			return result;
+		}
+	}
+	
 	// Crystal Interface
 	public static class EngageSymbol implements InterfaceMethod<AbstractStargateEntity>
 	{

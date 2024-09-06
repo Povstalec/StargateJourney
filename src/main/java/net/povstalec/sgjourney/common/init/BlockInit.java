@@ -2,10 +2,12 @@ package net.povstalec.sgjourney.common.init;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -28,12 +31,10 @@ import net.povstalec.sgjourney.common.blocks.ClassicStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.ExplosiveBlock;
 import net.povstalec.sgjourney.common.blocks.FirePitBlock;
 import net.povstalec.sgjourney.common.blocks.GoldenIdolBlock;
-import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorMarkIBlock;
-import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorMarkIIBlock;
 import net.povstalec.sgjourney.common.blocks.RingPanelBlock;
 import net.povstalec.sgjourney.common.blocks.SecretSwitchBlock;
 import net.povstalec.sgjourney.common.blocks.SymbolBlock;
-import net.povstalec.sgjourney.common.blocks.ZPMHubBlock;
+import net.povstalec.sgjourney.common.blocks.TransceiverBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
@@ -48,14 +49,18 @@ import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AdvancedCrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AdvancedCrystallizerBlock;
 import net.povstalec.sgjourney.common.blocks.tech.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech.CrystallizerBlock;
 import net.povstalec.sgjourney.common.blocks.tech.HeavyNaquadahLiquidizerBlock;
+import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorMarkIBlock;
+import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorMarkIIBlock;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahLiquidizerBlock;
 import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.tech.ZPMHubBlock;
 import net.povstalec.sgjourney.common.items.blocks.CartoucheBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.DHDItem;
 import net.povstalec.sgjourney.common.items.blocks.StargateBlockItem;
@@ -73,6 +78,9 @@ public class BlockInit
 	public static final RegistryObject<UniverseStargateRingBlock> UNIVERSE_RING = BLOCKS.register("universe_ring", 
 			() -> new UniverseStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<GenericShieldingBlock> UNIVERSE_SHIELDING =  BLOCKS.register("universe_shielding", 
+			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	
 	public static final RegistryObject<MilkyWayStargateBlock> MILKY_WAY_STARGATE = registerStargateBlock("milky_way_stargate", 
 			() -> new MilkyWayStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
@@ -80,6 +88,9 @@ public class BlockInit
 	public static final RegistryObject<MilkyWayStargateRingBlock> MILKY_WAY_RING = BLOCKS.register("milky_way_ring", 
 			() -> new MilkyWayStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<GenericShieldingBlock> MILKY_WAY_SHIELDING =  BLOCKS.register("milky_way_shielding", 
+			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	
 	public static final RegistryObject<PegasusStargateBlock> PEGASUS_STARGATE = registerStargateBlock("pegasus_stargate", 
 			() -> new PegasusStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
@@ -87,6 +98,9 @@ public class BlockInit
 	public static final RegistryObject<PegasusStargateRingBlock> PEGASUS_RING = BLOCKS.register("pegasus_ring", 
 			() -> new PegasusStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<GenericShieldingBlock> PEGASUS_SHIELDING =  BLOCKS.register("pegasus_shielding", 
+			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	
 	public static final RegistryObject<ClassicStargateBlock> CLASSIC_STARGATE = registerStargateBlock("classic_stargate", 
 			() -> new ClassicStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
@@ -94,6 +108,9 @@ public class BlockInit
 	public static final RegistryObject<ClassicStargateRingBlock> CLASSIC_RING = BLOCKS.register("classic_ring", 
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<GenericShieldingBlock> CLASSIC_SHIELDING =  BLOCKS.register("classic_shielding", 
+			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
+					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	public static final RegistryObject<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerBlock("classic_stargate_base_block", 
 			() -> new ClassicStargateBaseBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
 	public static final RegistryObject<Block> CLASSIC_STARGATE_CHEVRON_BLOCK = registerBlock("classic_stargate_chevron_block", 
@@ -200,11 +217,11 @@ public class BlockInit
 			() -> new NaquadahGeneratorMarkIIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	
 	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerBlock("basic_interface", 
-			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), 1);
 	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerBlock("crystal_interface", 
-			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
+			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
 	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerBlock("advanced_crystal_interface", 
-			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
+			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	
 	public static final RegistryObject<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
 			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
@@ -223,6 +240,9 @@ public class BlockInit
 			() -> new CrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
 	public static final RegistryObject<AdvancedCrystallizerBlock> ADVANCED_CRYSTALLIZER = registerBlock("advanced_crystallizer", 
 			() -> new AdvancedCrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
+
+	public static final RegistryObject<TransceiverBlock> TRANSCEIVER = registerBlock("transceiver", 
+			() -> new TransceiverBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)
@@ -324,5 +344,12 @@ public class BlockInit
 	public static void register(IEventBus eventBus)
 	{
 		BLOCKS.register(eventBus);
+	}
+	
+	
+	
+	private static boolean never(BlockState state, BlockGetter getter, BlockPos pos)
+	{
+		return false;
 	}
 }

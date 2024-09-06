@@ -1,0 +1,10 @@
+{
+	"parent": "sgjourney:block/interface_template",
+	"textures":
+	{
+		"bottom": "sgjourney:block/advanced_crystal_interface_back_shielding",
+		"side": "sgjourney:block/advanced_crystal_interface_side_shielding",
+		"top": "sgjourney:block/advanced_crystal_interface_top",
+		"front": "sgjourney:block/advanced_crystal_interface_front"
+	}
+}

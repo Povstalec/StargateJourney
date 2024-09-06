@@ -9,7 +9,8 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundDialerUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundDialerOpenScreenPacket;
+import net.povstalec.sgjourney.common.packets.ClientboundGDOOpenScreenPacket;
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
@@ -17,11 +18,16 @@ import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdat
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
+import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ClientboundTransceiverUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ServerboundGDOUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ServerboundTransceiverUpdatePacket;
 
 public final class PacketHandlerInit
 {
@@ -40,13 +46,26 @@ public final class PacketHandlerInit
 		//****************************************Client-bound****************************************
 		//============================================================================================
 		
-		// Alien Tech
-		INSTANCE.messageBuilder(ClientboundDialerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundDialerUpdatePacket::encode)
-		.decoder(ClientboundDialerUpdatePacket::new)
-		.consumerMainThread(ClientboundDialerUpdatePacket::handle)
+		// Screen opening
+		INSTANCE.messageBuilder(ClientboundDialerOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundDialerOpenScreenPacket::encode)
+		.decoder(ClientboundDialerOpenScreenPacket::new)
+		.consumerMainThread(ClientboundDialerOpenScreenPacket::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ClientboundGDOOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundGDOOpenScreenPacket::encode)
+		.decoder(ClientboundGDOOpenScreenPacket::new)
+		.consumerMainThread(ClientboundGDOOpenScreenPacket::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ClientboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundTransceiverUpdatePacket::encode)
+		.decoder(ClientboundTransceiverUpdatePacket::new)
+		.consumerMainThread(ClientboundTransceiverUpdatePacket::handle)
+		.add();
+		
+		// Alien Tech
 		INSTANCE.messageBuilder(ClientboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundInterfaceUpdatePacket::encode)
 		.decoder(ClientboundInterfaceUpdatePacket::new)
@@ -78,10 +97,20 @@ public final class PacketHandlerInit
 		.add();
 		
 		// Stargates
+		INSTANCE.messageBuilder(ClientboundStargateParticleSpawnPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundStargateParticleSpawnPacket::encode)
+		.decoder(ClientboundStargateParticleSpawnPacket::new)
+		.consumerMainThread(ClientboundStargateParticleSpawnPacket::handle)
+		.add();
 		INSTANCE.messageBuilder(ClientboundStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundStargateUpdatePacket::encode)
 		.decoder(ClientboundStargateUpdatePacket::new)
 		.consumerMainThread(ClientboundStargateUpdatePacket::handle)
+		.add();
+		INSTANCE.messageBuilder(ClientboundStargateStateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundStargateStateUpdatePacket::encode)
+		.decoder(ClientboundStargateStateUpdatePacket::new)
+		.consumerMainThread(ClientboundStargateStateUpdatePacket::handle)
 		.add();
 		
 		INSTANCE.messageBuilder(ClientboundUniverseStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
@@ -155,6 +184,12 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientBoundSoundPackets.CloseWormhole::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.IrisThud.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.IrisThud::encode)
+		.decoder(ClientBoundSoundPackets.IrisThud::new)
+		.consumerMainThread(ClientBoundSoundPackets.IrisThud::handle)
+		.add();
+		
 		INSTANCE.messageBuilder(ClientBoundSoundPackets.Chevron.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientBoundSoundPackets.Chevron::encode)
 		.decoder(ClientBoundSoundPackets.Chevron::new)
@@ -205,6 +240,18 @@ public final class PacketHandlerInit
 		.encoder(ServerboundRingPanelUpdatePacket::encode)
 		.decoder(ServerboundRingPanelUpdatePacket::new)
 		.consumerMainThread(ServerboundRingPanelUpdatePacket::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ServerboundGDOUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+		.encoder(ServerboundGDOUpdatePacket::encode)
+		.decoder(ServerboundGDOUpdatePacket::new)
+		.consumerMainThread(ServerboundGDOUpdatePacket::handle)
+		.add();
+		
+		INSTANCE.messageBuilder(ServerboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+		.encoder(ServerboundTransceiverUpdatePacket::encode)
+		.decoder(ServerboundTransceiverUpdatePacket::new)
+		.consumerMainThread(ServerboundTransceiverUpdatePacket::handle)
 		.add();
 	}
 }

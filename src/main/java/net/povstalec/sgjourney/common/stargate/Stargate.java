@@ -2,6 +2,11 @@ package net.povstalec.sgjourney.common.stargate;
 
 import java.util.Optional;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.EitherCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -513,41 +518,59 @@ public class Stargate
 		return majorError ? component.withStyle(ChatFormatting.DARK_RED) : component.withStyle(ChatFormatting.RED);
 	}
 	
-	public static class RGBA
+	public static class IncomingOutgoing<Thing>
 	{
-		private float red;
-		private float green;
-		private float blue;
-		private float alpha;
+		public static final String OUTGOING = "outgoing";
+		public static final String INCOMING = "incoming";
 		
-		public static final RGBA DEFAULT_RGBA = new RGBA(255, 255, 255, 255);
+		private Thing outgoing;
+		private Thing incoming;
 		
-		public RGBA(int red, int green, int blue, int alpha)
+		public IncomingOutgoing(Thing outgoing, Thing incoming)
 		{
-			this.red = (float) red / 255;
-			this.green = (float) green / 255;
-			this.blue = (float) blue / 255;
-			this.alpha = (float) alpha / 255;
+			this.outgoing = outgoing;
+			this.incoming = incoming;
 		}
 		
-		public float getRed()
+		public IncomingOutgoing(Thing thing)
 		{
-			return red;
+			this.outgoing = thing;
+			this.incoming = thing;
 		}
 		
-		public float getGreen()
+		public Thing outgoing()
 		{
-			return green;
+			return outgoing;
 		}
 		
-		public float getBlue()
+		public Thing incoming()
 		{
-			return blue;
+			return incoming;
 		}
 		
-		public float getAlpha()
+		public Thing get(boolean incoming)
 		{
-			return alpha;
+			return incoming ? this.incoming : this.outgoing;
 		}
+		
+		public static <Thing> Codec<IncomingOutgoing<Thing>> ioCodec(final Codec<Thing> thing)
+		{
+			return RecordCodecBuilder.create(instance -> instance.group(
+					thing.fieldOf(OUTGOING).forGetter(io -> io.outgoing),
+					thing.fieldOf(INCOMING).forGetter(io -> io.incoming)
+					).apply(instance, IncomingOutgoing::new));
+		}
+		
+		public static <Thing> Codec<Either<IncomingOutgoing<Thing>, Thing>> bothCodec(final Codec<Thing> thing)
+		{
+			return new EitherCodec<>(ioCodec(thing), thing);
+		}
+	}
+	
+	public enum ChevronSymbolState
+	{
+		OFF,
+		ENCODED,
+		ENGAGED
 	}
 }

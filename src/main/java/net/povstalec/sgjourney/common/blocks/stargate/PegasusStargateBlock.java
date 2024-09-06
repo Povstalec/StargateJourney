@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -49,6 +50,12 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 	public AbstractStargateRingBlock getRing()
 	{
 		return BlockInit.PEGASUS_RING.get();
+	}
+	
+	@Override
+	public AbstractShieldingBlock getIris()
+	{
+		return BlockInit.PEGASUS_SHIELDING.get();
 	}
 
 	@Override

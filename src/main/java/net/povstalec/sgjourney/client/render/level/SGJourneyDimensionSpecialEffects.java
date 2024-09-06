@@ -104,7 +104,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	{
 		public CavumTenebrae()
 		{
-			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			super(Float.NaN, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
 			skyRenderer = new PlanetSkyRenderers.CavumTenebraeSkyRenderer();
 		}
 		

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -14,15 +15,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 
 public class EnergyCrystalItem extends AbstractCrystalItem
 {
-	public static final int DEFAULT_CAPACITY = 50000;
-	public static final int DEFAULT_ENERGY_TRANSFER = 1500;
-
-	public static final int ADVANCED_CAPACITY = 100000;
-	public static final int ADVANCED_ENERGY_TRANSFER = 3000;
-	
 	public static final String ENERGY_LIMIT = "EnergyLimit";
 	public static final String ENERGY = "Energy";
 	
@@ -59,27 +55,30 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		return tag;
 	}
 	
-	public static int getEnergy(ItemStack stack)
+	public static long getEnergy(ItemStack stack)
 	{
-		int energy;
+		long energy;
 		CompoundTag tag = stack.getOrCreateTag();
 		
 		if(!tag.contains(ENERGY))
 			tag.putInt(ENERGY, 0);
 		
-		energy = tag.getInt(ENERGY);
+		if(tag.getTagType(ENERGY) == Tag.TAG_INT) // TODO This is here for legacy reasons because it was originally an int
+			energy = tag.getInt(ENERGY);
+		else
+			energy = tag.getLong(ENERGY);
 		
 		return energy;
 	}
 	
-	public int getCapacity()
+	public long getCapacity()
 	{
-		return DEFAULT_CAPACITY;
+		return CommonTechConfig.energy_crystal_capacity.get();
 	}
 	
-	public int getTransfer()
+	public long getTransfer()
 	{
-		return DEFAULT_ENERGY_TRANSFER;
+		return CommonTechConfig.advanced_energy_crystal_max_transfer.get();
 	}
 	
 	@Override
@@ -116,7 +115,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		int energy = getEnergy(stack);
+		long energy = getEnergy(stack);
 		
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy +  "/" + getCapacity() + " FE")).withStyle(ChatFormatting.DARK_RED));
 		
@@ -131,15 +130,15 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		}
 		
 		@Override
-		public int getCapacity()
+		public long getCapacity()
 		{
-			return ADVANCED_CAPACITY;
+			return CommonTechConfig.advanced_energy_crystal_capacity.get();
 		}
 
 		@Override
-		public int getTransfer()
+		public long getTransfer()
 		{
-			return ADVANCED_ENERGY_TRANSFER;
+			return CommonTechConfig.advanced_energy_crystal_max_transfer.get();
 		}
 		
 		@Override

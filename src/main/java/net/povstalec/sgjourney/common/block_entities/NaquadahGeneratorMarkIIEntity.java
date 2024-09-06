@@ -7,44 +7,39 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public class NaquadahGeneratorMarkIIEntity extends NaquadahGeneratorEntity
 {
-	private static final int reactionTime = CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_reaction_time.get();
-	private static final int energyPerTick = CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
-	private static final int capacity = CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
-	private static final int maxTransfer = CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_max_transfer.get();
-	
 	public NaquadahGeneratorMarkIIEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), pos, state);
 	}
 
 	@Override
-	public int getReactionTime()
+	public long getReactionTime()
 	{
-		return reactionTime;
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_reaction_time.get();
 	}
 
 	@Override
-	public int getEnergyPerTick()
+	public long getEnergyPerTick()
 	{
-		return energyPerTick;
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
 	}
 
 	@Override
 	public long capacity()
 	{
-		return capacity;
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
 	}
 
 	@Override
 	public long maxReceive()
 	{
-		return maxTransfer;
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_max_transfer.get();
 	}
 
 	@Override
 	public long maxExtract()
 	{
-		return maxTransfer;
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_max_transfer.get();
 	}
 	
 }

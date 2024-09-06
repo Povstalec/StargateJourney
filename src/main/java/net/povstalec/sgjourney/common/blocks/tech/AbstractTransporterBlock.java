@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock
@@ -34,6 +34,13 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	public RenderShape getRenderShape(BlockState state)
 	{
 		return RenderShape.MODEL;
+	}
+	
+	@Override
+	public final void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
+	{
+		if(stack.hasCustomHoverName() && world.getBlockEntity(pos) instanceof AbstractTransporterEntity transporter)
+			transporter.setCustomName(stack.getHoverName());
 	}
 	
 	@Override
@@ -53,15 +60,16 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if(blockentity instanceof TransportRingsEntity transportRings)
+		if(blockentity instanceof AbstractTransporterEntity transporter)
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
 				ItemStack itemstack = new ItemStack(BlockInit.TRANSPORT_RINGS.get());
 				
 				blockentity.saveToItem(itemstack);
-				if (transportRings.hasCustomName())
-					itemstack.setHoverName(transportRings.getCustomName());
+				if(transporter.hasCustomName())
+					itemstack.setHoverName(transporter.getCustomName());
+					
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();

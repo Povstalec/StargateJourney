@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.client.models;
 
-import java.util.Optional;
 import java.util.Random;
 
 import org.joml.Matrix3f;
@@ -11,10 +10,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
+import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel.WormholeTexture;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
 
@@ -38,8 +38,6 @@ public class WormholeModel
 	protected float maxDefaultDistortion;
 	
 	//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png")
-	private final ResourceLocation eventHorizonTexture;
-	private final Optional<ResourceLocation> shinyEventHorizonTexture;
 	
 	protected float[][] outerCircle = coordinates(DEFAULT_SIDES, 2.5F, 5, 0);
 	protected float[][] circle1 = coordinates(DEFAULT_SIDES, 2.0F, 0, 98);
@@ -50,209 +48,389 @@ public class WormholeModel
 	
 	protected float[][][] coordinates = new float[][][] {outerCircle, circle1, circle2, circle3, circle4, circle5};
 	
-	public WormholeModel(ResourceLocation eventHorizonTexture, Optional<ResourceLocation> shinyEventHorizonTexture, float maxDefaultDistortion)
+	protected static final short BLOCK_PROGRESS_1 = 7;
+	protected static final short BLOCK_PROGRESS_2 = 24;
+	protected static final short BLOCK_PROGRESS_3 = 36;
+	protected static final short BLOCK_PROGRESS_4 = 44;
+	protected static final short BLOCK_PROGRESS_5 = 53;
+	
+	public WormholeModel(float maxDefaultDistortion)
 	{
-		this.eventHorizonTexture = eventHorizonTexture;
-		this.shinyEventHorizonTexture = shinyEventHorizonTexture;
 		this.maxDefaultDistortion = maxDefaultDistortion;
 	}
 	
-	protected float getMaxDistortion()
+	protected float getMaxDistortion(int wormholeDistortion)
 	{
-		float configDistortion = (float) ClientStargateConfig.event_horizon_distortion.get() / 100;
-		return configDistortion > maxDefaultDistortion ? maxDefaultDistortion : configDistortion;
+		float distortion = wormholeDistortion / 100F;
+		return distortion > maxDefaultDistortion ? maxDefaultDistortion : distortion;
 	}
 	
-	protected ResourceLocation getEventHorizonTexture()
+	protected boolean isBlocked(int blockLayer, short blockProgress)
 	{
-		if(ClientStargateConfig.shiny_event_horizons.get())
+		switch(blockLayer)
 		{
-			if(shinyEventHorizonTexture.isPresent())
-				return shinyEventHorizonTexture.get();
+		case -1:
+			return false;
+		case 0:
+			return blockProgress >= BLOCK_PROGRESS_1;
+		case 1:
+			return blockProgress >= BLOCK_PROGRESS_2;
+		case 2:
+			return blockProgress >= BLOCK_PROGRESS_3;
+		case 3:
+			return blockProgress >= BLOCK_PROGRESS_4;
+		default:
+			return blockProgress >= BLOCK_PROGRESS_5;
 		}
-		return eventHorizonTexture;
 	}
 	
-	public void renderEventHorizon(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, int combinedLight, int combinedOverlay, boolean hasVortex)
+	public void renderWormhole(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, int combinedLight, int combinedOverlay)
 	{
-		float scale = 1F / frames;
+		float wormholeDistortion = getMaxDistortion(wormhole.distortion());
 		
-		this.renderKawoosh(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
-		this.renderPuddle(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
-		if(hasVortex)
-			this.renderVortex(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount());
+		this.renderKawoosh(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), stargate.getIrisProgress());
+		
+		this.renderEventHorizon(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), stargate.getIrisProgress());
+		
+		//TODO this.renderDisconnect(stack, source, Optional.of(new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/shield/shield.png")), stargate.getTickCount(), stargate.getKawooshTickCount(), isBlocked);
+		
+		if(wormhole.hasStrudel())
+			this.renderStrudel(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), stargate.getIrisProgress());
 	}
 	
-	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, boolean isShieldOn)
+	protected void renderEventHorizon(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int ticks, int kawooshProgress, short irisProgress)
 	{
-		float yOffset = ticks * DEFAULT_SCALE;
-		float textureTickOffset = (ticks % frames) * scale;
-		
+		renderPuddle(stack, source, wormhole, wormholeDistortion, ticks, kawooshProgress, irisProgress);
+	}
+	
+	protected void renderDisconnect(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int ticks, int kawooshProgress, short irisProgress)
+	{
+		renderPuddle(stack, source, wormhole, wormholeDistortion, ticks, kawooshProgress, irisProgress);
+	}
+	
+	protected void renderPuddle(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int ticks, int kawooshProgress, short irisProgress)
+	{
 		if(kawooshProgress <= 0)
 			return;
 		
+		float yOffset = ticks * DEFAULT_SCALE;
+		
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
+		
+		int totalSides = coordinates[0].length;
+		
+		// Front
+		WormholeTexture frontTexture = wormhole.eventHorizonTexture(true);
+		int frontFrame = frontTexture.frame(ticks);
+		float uFrontScale = frontTexture.uScale();
+		float vFrontScale = frontTexture.vScale();
+		
+		float uFrontOffset = frontTexture.uOffset(frontFrame);
+		float vFrontOffset = frontTexture.vOffset(frontFrame);
+		
+		ColorUtil.RGBA frontRGBA = frontTexture.rgba();
+		
+		VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizon(frontTexture.texture()));
 
 		for(int i = 0; i < 5; i++)
 		{
-			VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonFront(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, textureTickOffset));
-			
-			int totalSides = coordinates[0].length;
+			boolean isBlocked = isBlocked(i, irisProgress);
+			boolean isBlockedOld = isBlocked(i - 1, irisProgress);
 			
 			for(int j = 0; j < totalSides; j++)
 			{
 				createTriangle(frontConsumer, matrix4, matrix3,
-						coordinates[i][j % coordinates[i].length][0], 
+						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0), frames);
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 				
 				createTriangle(frontConsumer, matrix4, matrix3,
-						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
+						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0],
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1],
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
-						coordinates[i + 1][j % coordinates[i + 1].length][0], 
-						coordinates[i + 1][j % coordinates[i + 1].length][1], 
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0), frames);
+						coordinates[i + 1][j % coordinates[i + 1].length][0],
+						coordinates[i + 1][j % coordinates[i + 1].length][1],
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 			}
+		}
 			
-			VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonBack(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, textureTickOffset));
+		// Back
+		ResourcepackModel.WormholeTexture backTexture = wormhole.eventHorizonTexture(false);
+		int backFrame = backTexture.frame(ticks);
+		float uBackScale = backTexture.uScale();
+		float vBackScale = backTexture.vScale();
+		
+		float uBackOffset = backTexture.uOffset(backFrame);
+		float vBackOffset = backTexture.vOffset(backFrame);
+		
+		ColorUtil.RGBA backRGBA = backTexture.rgba();
+		
+		VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizon(backTexture.texture()));
+		
+		for(int i = 0; i < 5; i++)
+		{
+			boolean isBlocked = isBlocked(i, irisProgress);
+			boolean isBlockedOld = isBlocked(i - 1, irisProgress);
 			
 			for(int j = 0; j < totalSides; j++)
 			{
 				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
 						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0), frames);
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, 0), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
 				
-				createTriangle(frontConsumer, matrix4, matrix3,
+				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
 						
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], 
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0), frames);
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
 			}
 		}
 	}
 	
-	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, boolean isShieldOn)
+	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int ticks, int kawooshProgress, short irisProgress)
 	{
-		float yOffset = ticks * DEFAULT_SCALE;
-		float textureTickOffset = (ticks % frames) * scale;
-		
 		if(kawooshProgress <= 0 || kawooshProgress >= StargateConnection.KAWOOSH_TICKS)
 			return;
+		
+		float yOffset = ticks * DEFAULT_SCALE;
+		
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
-		VertexConsumer kawooshConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0, textureTickOffset));
-		
 		int totalSides = coordinates[0].length;
+		
+		// Front
+		WormholeTexture frontTexture = wormhole.kawooshTexture(true);
+		int frontFrame = frontTexture.frame(ticks);
+		float uFrontScale = frontTexture.uScale();
+		float vFrontScale = frontTexture.vScale();
+		
+		float uFrontOffset = frontTexture.uOffset(frontFrame);
+		float vFrontOffset = frontTexture.vOffset(frontFrame);
+		
+		ColorUtil.RGBA frontRGBA = frontTexture.rgba();
+		
+		VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(frontTexture.texture()));
 		
 		for(int i = 0; i < 5; i++)
 		{
+			boolean isBlocked = isBlocked(i, irisProgress);
+			boolean isBlockedOld = isBlocked(i - 1, irisProgress);
+			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(kawooshConsumer, matrix4, matrix3,
+				createTriangle(frontConsumer, matrix4, matrix3,
 						bubbleX(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress),
 						
 						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
 						
 						bubbleX(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress), frames);
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 				
-				createTriangle(kawooshConsumer, matrix4, matrix3,
+				createTriangle(frontConsumer, matrix4, matrix3,
 						bubbleX(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
 
 						bubbleX(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
 
 						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
-						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), frames);
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
+			}
+		}
+		
+		// Back
+		ResourcepackModel.WormholeTexture backTexture = wormhole.kawooshTexture(false);
+		int backFrame = backTexture.frame(ticks);
+		float uBackScale = backTexture.uScale();
+		float vBackScale = backTexture.vScale();
+		
+		float uBackOffset = backTexture.uOffset(backFrame);
+		float vBackOffset = backTexture.vOffset(backFrame);
+		
+		ColorUtil.RGBA backRGBA = backTexture.rgba();
+		
+		VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(backTexture.texture()));
+		
+		for(int i = 0; i < 5; i++)
+		{
+			boolean isBlocked = isBlocked(i, irisProgress);
+			boolean isBlockedOld = isBlocked(i - 1, irisProgress);
+			
+			for(int j = 0; j < totalSides; j++)
+			{
+				createTriangle(backConsumer, matrix4, matrix3,
+						bubbleX(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
+						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						
+						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
+						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						
+						bubbleX(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
+						bubbleY(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
+				
+				createTriangle(backConsumer, matrix4, matrix3,
+						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
+						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						
+						bubbleX(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
+						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
+						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						
+						bubbleX(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
+						bubbleY(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
+						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
 			}
 		}
 	}
 	
-	protected void renderVortex(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress)
+	protected void renderStrudel(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int ticks, int kawooshProgress, short irisProgress)
 	{
-		float yOffset = ticks * DEFAULT_SCALE;
-		float textureTickOffset = (ticks % frames) * scale;
-		
 		if(kawooshProgress <= StargateConnection.KAWOOSH_TICKS)
 			return;
 		
+		float yOffset = ticks * DEFAULT_SCALE;
+		
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
-		VertexConsumer vortexConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0, textureTickOffset));
-		
 		int totalSides = coordinates[0].length;
+		
+		// Front
+		WormholeTexture frontTexture = wormhole.kawooshTexture(true);
+		int frontFrame = frontTexture.frame(ticks);
+		float uFrontScale = frontTexture.uScale();
+		float vFrontScale = frontTexture.vScale();
+		
+		float uFrontOffset = frontTexture.uOffset(frontFrame);
+		float vFrontOffset = frontTexture.vOffset(frontFrame);
+		
+		ColorUtil.RGBA frontRGBA = frontTexture.rgba();
+		
+		VertexConsumer frontConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(frontTexture.texture()));
 		
 		for(int i = 0; i < 5; i++)
 		{
+			boolean isBlocked = isBlocked(i, irisProgress);
+			boolean isBlockedOld = isBlocked(i - 1, irisProgress);
+			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(vortexConsumer, matrix4, matrix3,
-						coordinates[i][(j + 1) % coordinates[i].length][0], 
-						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						vortexMaker(getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+				createTriangle(frontConsumer, matrix4, matrix3,
+						coordinates[i][j % coordinates[i].length][0],
+						coordinates[i][j % coordinates[i].length][1],
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						vortexMaker(getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
 						
-						coordinates[i][j % coordinates[i].length][0],
-						coordinates[i][j % coordinates[i].length][1],
-						vortexMaker(getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress), frames);
+						coordinates[i][(j + 1) % coordinates[i].length][0], 
+						coordinates[i][(j + 1) % coordinates[i].length][1], 
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 				
-				createTriangle(vortexConsumer, matrix4, matrix3,
-						coordinates[i + 1][j % coordinates[i + 1].length][0], 
-						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						vortexMaker(getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+				createTriangle(frontConsumer, matrix4, matrix3,
+						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0],
+						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1],
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						vortexMaker(getMaxDistortion(), coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						
+						coordinates[i + 1][j % coordinates[i + 1].length][0],
+						coordinates[i + 1][j % coordinates[i + 1].length][1],
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
+			}
+		}
+		
+		// Back
+		WormholeTexture backTexture = wormhole.strudelTexture(false);
+		int backFrame = backTexture.frame(ticks);
+		float uBackScale = backTexture.uScale();
+		float vBackScale = backTexture.vScale();
+		
+		float uBackOffset = backTexture.uOffset(backFrame);
+		float vBackOffset = backTexture.vOffset(backFrame);
+		
+		ColorUtil.RGBA backRGBA = backTexture.rgba();
+		
+		VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(backTexture.texture()));
+		
+		for(int i = 0; i < 5; i++)
+		{
+			boolean isBlocked = isBlocked(i, irisProgress);
+			boolean isBlockedOld = isBlocked(i - 1, irisProgress);
+			
+			for(int j = 0; j < totalSides; j++)
+			{
+				createTriangle(backConsumer, matrix4, matrix3,
+						coordinates[i][(j + 1) % coordinates[i].length][0], 
+						coordinates[i][(j + 1) % coordinates[i].length][1], 
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						
+						coordinates[i + 1][j % coordinates[i + 1].length][0],
+						coordinates[i + 1][j % coordinates[i + 1].length][1],
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						
+						coordinates[i][j % coordinates[i].length][0],
+						coordinates[i][j % coordinates[i].length][1],
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
+				
+				createTriangle(backConsumer, matrix4, matrix3,
+						coordinates[i + 1][j % coordinates[i + 1].length][0], 
+						coordinates[i + 1][j % coordinates[i + 1].length][1],
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						
+						coordinates[i][(j + 1) % coordinates[i].length][0],
+						coordinates[i][(j + 1) % coordinates[i].length][1],
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
 						
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], 
-						vortexMaker(getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), frames);
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
 			}
 		}
 	}
@@ -332,13 +510,13 @@ public class WormholeModel
 		
 		float totalDistortion = defaultDistortion + kawooshDistortion;
 		
-		if(shielded && totalDistortion > SHIELDING_OFFSET) //TODO
-			totalDistortion = SHIELDING_OFFSET - 0.001F;
+		if(shielded && totalDistortion > SHIELDING_OFFSET - 0.05F) //TODO
+			totalDistortion = SHIELDING_OFFSET - 0.05F;
 		
 		return totalDistortion < -maxDefaultDistortion ? -maxDefaultDistortion : totalDistortion;
 	}
 	
-	protected static float vortexMaker(float maxDefaultDistortion, float defaultOffset, float distortionOffset, int multiplier, int progress)
+	protected static float vortexMaker(boolean shielded, float maxDefaultDistortion, float defaultOffset, float distortionOffset, int multiplier, int progress)
 	{
 		defaultOffset *= maxDefaultDistortion;
 		float defaultDistortion = (float) Math.sin(defaultOffset * distortionOffset * 8) * maxDefaultDistortion;
@@ -349,6 +527,9 @@ public class WormholeModel
 		
 		float totalDistortion = actualDistortion + kawooshDistortion;
 		
+		if(shielded && totalDistortion > SHIELDING_OFFSET - 0.05F) //TODO
+			totalDistortion = SHIELDING_OFFSET - 0.05F;
+		
 		return totalDistortion;
 	}
 	
@@ -356,16 +537,20 @@ public class WormholeModel
 			float x1, float y1, float z1,
 			float x2, float y2, float z2,
 			float x3, float y3, float z3,
-			int frames)
+			ColorUtil.RGBA rgba,
+			float uScale, float vScale,
+			float uOffset, float vOffset)
 	{
+		float uHalfOffset = 0.5F * uScale;
+		float vHalfOffset = 0.5F * vScale;
 		
-		consumer.vertex(matrix4, x1, y1, z1).color(1F, 1F, 1F, 0.75F).uv(x1 * MULTIPLY_STATIC + 0.5F, (y1 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
+		consumer.vertex(matrix4, x1, y1, z1).color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).uv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
 		
-		consumer.vertex(matrix4, x2, y2, z2).color(1F, 1F, 1F, 0.75F).uv(x2 * MULTIPLY_STATIC + 0.5F, (y2 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
+		consumer.vertex(matrix4, x2, y2, z2).color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).uv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
 		
-		consumer.vertex(matrix4, x3, y3, z3).color(1F, 1F, 1F, 0.75F).uv(x3 * MULTIPLY_STATIC + 0.5F, (y3 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
+		consumer.vertex(matrix4, x3, y3, z3).color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).uv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
+		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
 	}
 }

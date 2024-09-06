@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
@@ -40,6 +41,8 @@ public class TabInit
 			{
 				items.accept(ItemInit.RAW_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH_ALLOY.get());
+				items.accept(ItemInit.NAQUADAH_ALLOY_NUGGET.get());
+				items.accept(ItemInit.REFINED_NAQUADAH.get());
 				items.accept(ItemInit.PURE_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH.get());
 				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
@@ -54,6 +57,8 @@ public class TabInit
 				
 				items.accept(ItemInit.PDA.get());
 				//items.accept(ItemInit.UNIVERSE_DIALER.get());
+
+				items.accept(ItemInit.GDO.get());
 				
 				items.accept(ItemInit.NAQUADAH_SWORD.get());
 				items.accept(ItemInit.NAQUADAH_PICKAXE.get());
@@ -77,6 +82,8 @@ public class TabInit
 				items.accept(ItemInit.JAFFA_CHESTPLATE.get());
 				items.accept(ItemInit.JAFFA_LEGGINGS.get());
 				items.accept(ItemInit.JAFFA_BOOTS.get());
+
+				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 
 				items.accept(ItemInit.ZPM.get());
 				items.accept(PersonalShieldItem.personalShieldSetup());
@@ -133,6 +140,20 @@ public class TabInit
 				items.accept(BlockInit.BASIC_INTERFACE.get());
 				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
 				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+
+				items.accept(ItemInit.STARGATE_SHIELDING_RING.get());
+				
+				items.accept(ItemInit.COPPER_IRIS.get());
+				items.accept(ItemInit.IRON_IRIS.get());
+				items.accept(ItemInit.GOLDEN_IRIS.get());
+				items.accept(ItemInit.DIAMOND_IRIS.get());
+				items.accept(ItemInit.NETHERITE_IRIS.get());
+
+				items.accept(ItemInit.NAQUADAH_ALLOY_IRIS.get());
+				//items.accept(ItemInit.TRINIUM_IRIS.get());
+
+				items.accept(ItemInit.BRONZE_IRIS.get());
+				items.accept(ItemInit.STEEL_IRIS.get());
 
 				items.accept(ItemInit.CALL_FORWARDING_DEVICE.get());
 
@@ -205,6 +226,8 @@ public class TabInit
 				items.accept(BlockInit.BASIC_INTERFACE.get());
 				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
 				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+
+				items.accept(BlockInit.TRANSCEIVER.get());
 
 				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				

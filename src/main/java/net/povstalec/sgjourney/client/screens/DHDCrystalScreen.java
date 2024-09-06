@@ -46,6 +46,4 @@ public class DHDCrystalScreen extends AbstractContainerScreen<DHDCrystalMenu>
     	this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
 	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }
-    
-    
 }

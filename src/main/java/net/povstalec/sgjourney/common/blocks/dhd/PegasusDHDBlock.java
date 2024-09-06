@@ -38,6 +38,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -164,7 +165,7 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryHelper.addItem(6, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(TransferCrystalItem.ADVANCED_MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(CommonTechConfig.advanced_transfer_crystal_max_transfer.get())));
 		
 		return nbtTagList;
 	}

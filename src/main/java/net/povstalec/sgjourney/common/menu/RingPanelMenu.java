@@ -1,7 +1,9 @@
 package net.povstalec.sgjourney.common.menu;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -46,41 +48,20 @@ public class RingPanelMenu extends AbstractContainerMenu
         });
     }
     
-    public String getRingsPos(int i)
+    public Component getRingsPos(int i)
     {
-    	BlockPos coords = null;
-    	
-    	switch(i)
+    	if(i < blockEntity.ringsPos.size())
     	{
-    	case 1:
-    		coords = blockEntity.ringsPos[0];
-    		break;
-    	case 2:
-    		coords = blockEntity.ringsPos[1];
-    		break;
-    	case 3:
-    		coords = blockEntity.ringsPos[2];
-    		break;
-    	case 4:
-    		coords = blockEntity.ringsPos[3];
-    		break;
-    	case 5:
-    		coords = blockEntity.ringsPos[4];
-    		break;
-    	case 6:
-    		coords = blockEntity.ringsPos[5];
-    		break;
+    		BlockPos coords = blockEntity.ringsPos.get(i);
+    		
+    		Component name = blockEntity.ringsName.get(i);
+    		if(name.getString().length() == 0)
+    			return Component.literal("[" + coords.getX() + " " + coords.getY() + " " + coords.getZ() + "]").withStyle(ChatFormatting.DARK_GREEN);
+    		else
+    			return Component.empty().append(name).withStyle(ChatFormatting.AQUA).append(Component.literal(" [" + coords.getX() + " " + coords.getY() + " " + coords.getZ() + "] ").withStyle(ChatFormatting.DARK_GREEN));
     	}
-    	
-    	if(coords == null)
-    		return "-";
-    	
-    	return coords.getX() + " " + coords.getY() + " " + coords.getZ();
-    }
-    
-    public int getRingsFound()
-    {
-    	return blockEntity.ringsPos.length;
+    	else
+    		return Component.literal("-");
     }
     
     public void activateRings(int number)
