@@ -88,7 +88,7 @@ ___
 ___
 
 ## Stargate Interface
-See the [Mechanics / Stargate Network / Stargate Interface]({{ site.baseurl }}/mechanics/stargate_network/interface/) section for further details.
+See the [Stargate Network / Stargate Interface]({{ site.baseurl }}/stargate_network/interface/) section for further details.
 
 ### Basic Interface
 

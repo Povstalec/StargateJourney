@@ -1,8 +1,7 @@
 ---
 title: Stargate Network
-nav_order: 0
+nav_order: 70
 has_children: true
-parent: Mechanics
 ---
 
 {: .note }

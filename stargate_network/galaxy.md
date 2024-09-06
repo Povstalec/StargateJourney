@@ -1,9 +1,8 @@
 ---
 title: Galaxy
-nav_order: 0
+nav_order: 1
 has_children: false
 parent: Stargate Network
-grand_parent: Mechanics
 ---
 
 {: .note }
@@ -30,34 +29,34 @@ Galaxy Size dictates the Size of the Galaxy and by extension, the maximum number
 ***
 
 # Milky Way
-* [Type: ](https://github.com/Povstalec/StargateJourney/wiki/Galaxy#galaxy-size) `Medium Galaxy`
+* [Type: ]({{ site.baseurl }}/stargate_network/galaxy/#galaxy-size) `Medium Galaxy`
 * Milky Way is the default Galaxy, meaning that if there are Dimensions added by mods and random address generation is enabled, all of the Dimensions will be assigned to a randomly generated Solar System inside the Milky Way Galaxy.
 ## Solar Systems
 
-### [Terra](https://github.com/Povstalec/StargateJourney/wiki/Solar-System#terra)
+### [Terra]({{ site.baseurl }}/stargate_network/solar_system/#terra)
 * Address: -27-25-4-35-10-28-
 
-### [Nether](https://github.com/Povstalec/StargateJourney/wiki/Solar-System#nether)
+### [Nether]({{ site.baseurl }}/stargate_network/solar_system/#nether)
 * Address: -27-23-4-34-12-28-
 
-### [End](https://github.com/Povstalec/StargateJourney/wiki/Solar-System#end)
+### [End]({{ site.baseurl }}/stargate_network/solar_system/#end)
 * Address: -13-24-2-19-3-30-
 
-### [Abydos](https://github.com/Povstalec/StargateJourney/wiki/Solar-System#abydos)
+### [Abydos]({{ site.baseurl }}/stargate_network/solar_system/#abydos)
 * Address: -26-6-14-31-11-29-
 
-### [Chulak](https://github.com/Povstalec/StargateJourney/wiki/Solar-System#chulak)
+### [Chulak]({{ site.baseurl }}/stargate_network/solar_system/#chulak)
 * Address: -8-1-22-14-36-19-
 
-### [Cavum Tenebrae](https://github.com/Povstalec/StargateJourney/wiki/Solar-System#cavum-tenebrae)
+### [Cavum Tenebrae]({{ site.baseurl }}/stargate_network/solar_system/#cavum-tenebrae)
 * Address: -18-7-3-36-25-15-
 
 # Pegasus
-* [Type: ](https://github.com/Povstalec/StargateJourney/wiki/Galaxy#galaxy-size) `Dwarf Galaxy`
+* [Type: ]({{ site.baseurl }}/stargate_network/galaxy/#galaxy-size) `Dwarf Galaxy`
 ## Solar Systems
 
-### [Lantea](https://github.com/Povstalec/StargateJourney/wiki/Solar-System#lantea)
+### [Lantea]({{ site.baseurl }}/stargate_network/solar_system/#lantea)
 * Address: -29-5-17-34-6-12-
 
-### [End](https://github.com/Povstalec/StargateJourney/wiki/Solar-System#end)
+### [End]({{ site.baseurl }}/stargate_network/solar_system/#end)
 * Address: -14-30-6-13-17-23-

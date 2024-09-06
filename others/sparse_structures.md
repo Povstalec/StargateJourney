@@ -1,6 +1,10 @@
+---
+nav_exclude: true
+---
+
 # Sparse structures
 Update your configuration file `sparsestructures.json5` according to the `customSpreadFactors` category in the example below:
-```
+```json-doc
 // ### THE MOD REQUIRES A RESTART OF THE GAME TO APPLY CHANGES ###
 {
     // this is the main spread factor (default is 2)

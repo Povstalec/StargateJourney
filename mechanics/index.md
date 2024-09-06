@@ -2,10 +2,11 @@
 title: Mechanics
 nav_order: 70
 has_children: true
+nav_exclude: true # TODO: mechanics
 ---
 
-Description of Stargate network, addresses, solar systems, galaxies and this kind of stuff
+[//]: # (Description of Stargate network, addresses, solar systems, galaxies and this kind of stuff)
 
-yea and also about the ancient gene
 
-also this is probably place to describe guald factions I guess?
+[//]: # ()
+[//]: # (also this is probably place to describe guald factions I guess?)

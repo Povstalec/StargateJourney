@@ -64,9 +64,8 @@ ___
 ## I dialed the Address of Nether/The End/Other Dimension. Why is the game telling me "Dialed Solar System has no Stargates"?
 Stargates only generate in the Overworld and Dimensions added by Stargate Journey. 
 Other Dimensions have their Addresses and can house Stargates.
-However, unless you use a Datapack, they won't generate Stargates by default. 
-If you want to make a Dimension generate Stargates, follow this [Guide](https://github.com/Povstalec/StargateJourney/wiki/Guides/#adding-a-dimension-to-stargate-network).
-<!-- TODO: Guide link is dead -->
+However, unless you use a Datapack, they won't generate Stargates by default.
+If you want to make a Dimension generate Stargates, follow this [Guide]({{ site.baseurl }}/datapacks/datapacks_outdated/#adding-a-dimension-to-stargate-network).
 
 ___
 

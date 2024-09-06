@@ -3,6 +3,7 @@ title: Common errors
 nav_order: 50
 has_children: false
 parent: Computercraft
+nav_exclude: true # TODO: Computercraft common errors
 ---
 
 # Common errors

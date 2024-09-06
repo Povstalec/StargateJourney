@@ -3,7 +3,6 @@ title: Stargate
 nav_order: 10
 has_children: false
 parent: Stargate Network
-grand_parent: Mechanics
 ---
 
 {: .note }
@@ -39,7 +38,7 @@ Only one Stargate will generate per dimension by default(the only exception to t
 ### Milky Way Stargate
 * Generation: 2
 * Only has 39 Symbols (Can't dial Symbols above 38)
-* Can be dialed Manually: [Manual Dialing Tutorial](https://github.com/Povstalec/StargateJourney/wiki/Tutorials#manual-dialing)
+* Can be dialed Manually: [Manual Dialing Tutorial]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone)
 * When first placed, the Stargate will adapt the set of Symbols belonging to the Solar System it was placed in uses. It will remember those Symbols when broken.
 
 ### Pegasus Stargate

@@ -14,9 +14,9 @@ This content was migrated from the old wiki and is awaiting an update.
 One of the core features of Stargate Journey is its reliance on [Datapacks](https://minecraft.wiki/w/Data_pack). When used well, Datapacks can serve as powerful tools to customize your gameplay experience. Along with features from Vanilla Minecraft that can be customized through the use of Datapacks, Stargate Journey allows the following to be added:
 
 * Address Tables
-* [Symbols / Symbol Sets / Points of Origin](https://github.com/Povstalec/StargateJourney/wiki/Stargate#symbols)
-* [Solar Systems](https://github.com/Povstalec/StargateJourney/wiki/Solar-System)
-* [Galaxies](https://github.com/Povstalec/StargateJourney/wiki/Galaxy)
+* [Symbols / Symbol Sets / Points of Origin]({{ site.baseurl }}/stargate_network/stargate/#symbols)
+* [Solar Systems]({{ site.baseurl }}/stargate_network/solar_system/)
+* [Galaxies]({{ site.baseurl }}/stargate_network/galaxy/)
 * Stargate Variants (v0.6.9+)
 
 # Installing an existing Datapack
@@ -38,19 +38,19 @@ Please note that Datapacks alone CAN'T load textures. If at any point you are ad
 
 ## Guides
 
-* [Adding a custom Point of Origin](https://github.com/Povstalec/StargateJourney/wiki/Datapacks/#creating-custom-points-of-origin-poo)
-* [Adding custom Symbols](https://github.com/Povstalec/StargateJourney/wiki/Datapacks#creating-custom-symbols)
-* [Adding custom Symbol Sets](https://github.com/Povstalec/StargateJourney/wiki/Datapacks#creating-custom-symbol-sets)
-* [Adding a Dimension to the Stargate Network](https://github.com/Povstalec/StargateJourney/wiki/Datapacks/#adding-a-dimension-to-stargate-network)
-    * [Making Stargate Pedestals generate inside a Dimension](https://github.com/Povstalec/StargateJourney/wiki/Datapacks/#making-stargate-pedestals-generate-inside-a-dimension)
-    * [Creating a custom Solar System for your Dimension(s)](https://github.com/Povstalec/StargateJourney/wiki/Datapacks/#creating-a-custom-solar-system-for-your-dimensions)
-    * [Creating a custom Galaxy](https://github.com/Povstalec/StargateJourney/wiki/Datapacks/#creating-a-custom-galaxy)
+* [Adding a custom Point of Origin](#creating-custom-points-of-origin-poo)
+* [Adding custom Symbols](#creating-custom-symbols)
+* [Adding custom Symbol Sets](#creating-custom-symbol-sets)
+* [Adding a Dimension to the Stargate Network](#adding-a-dimension-to-stargate-network)
+    * [Making Stargate Pedestals generate inside a Dimension](#making-stargate-pedestals-generate-inside-a-dimension)
+    * [Creating a custom Solar System for your Dimension(s)](#creating-a-custom-solar-system-for-your-dimensions)
+    * [Creating a custom Galaxy](#creating-a-custom-galaxy)
 
 ## Creating custom Points of Origin (PoO)
 1. Create a new folder called **point_of_origin** in `/data/<namespace>/sgjourney`
 2. Create a new .json file with the name of your PoO (e.g. **giza.json**)
 3. The contents of your .json file should look like this:
-```
+```json
 {
 	"name": "point_of_origin.sgjourney.giza",
 	"texture": "sgjourney:milky_way/points_of_origin/giza.png",
@@ -68,7 +68,7 @@ Please note that Datapacks alone CAN'T load textures. If at any point you are ad
 1. Create a new folder called **symbol_sets** in `/data/<namespace>/sgjourney`
 2. Create a new .json file with the name of your Symbols (e.g. **galaxy_milky_way.json**)
 3. The contents of your .json file should look like this:
-```
+```json
 {
 	"name": "symbol_set.sgjourney.galaxy_milky_way",
 	"texture": "sgjourney:milky_way/galaxy_milky_way.png",
@@ -83,7 +83,7 @@ Please note that Datapacks alone CAN'T load textures. If at any point you are ad
 1. Create a new folder called **symbols** in `/data/<namespace>/sgjourney`
 2. Create a new .json file with the name of your Symbols (e.g. **tauri.json**)
 3. The contents of your .json file should look like this:
-```
+```json
 {
 	"name": "symbols.sgjourney.tauri",
 	"symbol_set": "sgjourney:galaxy_milky_way",
@@ -112,7 +112,7 @@ To make a Stargate Pedestal generate inside your chosen Dimension, you must add 
 * `stargate_pedestal_chulak_biomes.json` - Stargate Pedestal variation seen on Chulak
 
 The structure inside each of the files should look like this:
-```
+```json
 {
 	"replace": false,
 	"values":
@@ -127,7 +127,7 @@ The structure inside each of the files should look like this:
 1. Create a new folder called **solar_system** in `/data/<namespace>/sgjourney`
 2. Create a new .json file with the name of your Solar System (e.g. **terra.json**)
 3. The contents of your .json file should look like this:
-```
+```json
 {
 	"name": "solar_system.sgjourney.terra",
 	"symbols": "sgjourney:terra",
@@ -159,6 +159,7 @@ The structure inside each of the files should look like this:
 	]
 }
 ```
+
 * `name` is the name of the Solar System. The name is translatable, so add it to whichever languages you want your Datapack to support file inside the assets folder.
 * `symbols` refers to the Symbols used by this Solar System.
 * `symbol_prefix` is the first Symbol used when generating an Extragalactic Address in the case that the config is set to generating randomized Addresses. A Prefix Symbol is usually same for the entire Galaxy. (Milky Way Prefix = 1, Pegasus Prefix = 18)
@@ -172,7 +173,7 @@ The structure inside each of the files should look like this:
 1. Create a new folder called **galaxy** in `/data/<namespace>/sgjourney`
 2. Create a new .json file with the name of your Galaxy (e.g. **milky_way.json**)
 3. The contents of your .json file should look like this:
-```
+```json
 {
 	"name": "galaxy.sgjourney.milky_way",
 	"type": "sgjourney:medium_galaxy",
@@ -180,5 +181,5 @@ The structure inside each of the files should look like this:
 }
 ```
 * `name` is the name of the Galaxy. The name is translatable, so add it to whichever languages you want your Datapack to support file inside the assets folder.
-* `type` currently specifies the [size of the Galaxy](https://github.com/Povstalec/StargateJourney/wiki/Galaxy#galaxy-size).
+* `type` currently specifies the [size of the Galaxy]({{ site.baseurl }}/stargate_network/galaxy/#galaxy-size).
 * `default_symbols` refers to the Symbols which are used by randomly generated Solar Systems inside this galaxy.

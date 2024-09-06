@@ -1,10 +1,11 @@
 ---
 title: Stargate Interface
-nav_order: 20
+nav_order: 0
 has_children: false
 parent: Stargate Network
-grand_parent: Mechanics
 ---
+
+[//]: # (Probably temporary placement, before mechanics category is done or something)
 
 1. Table of Contents
 {:toc}

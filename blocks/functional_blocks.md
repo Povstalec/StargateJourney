@@ -4,6 +4,7 @@ nav_order: 0
 has_children: false
 parent: Blocks
 ---
+
 # Functional Blocks
 {: .no_toc }
 

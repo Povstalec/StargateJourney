@@ -40,7 +40,7 @@ If you are playing All the Mods 9 modpack, check the [ATM 9]({{ site.baseurl }}/
 The documentation is divided into a few main parts:
 * [Survival Guide]({{ site.baseurl }}/survival): A ~~recommended~~ possible way to progress through the mod in survival.
 * [Dimensions]({{ site.baseurl }}/additions/dimensions), [Items]({{ site.baseurl }}/additions/items), and [Blocks]({{ site.baseurl }}/additions/blocks): Detailed explanations on how they work and how to use them.
-* [Mechanics]({{ site.baseurl }}/mechanics): Descriptions of the Stargate network and other mechanics.
+* [Stargate network]({{ site.baseurl }}/stargate_network): Descriptions of the Stargate network.
 * [All the mods 9]({{ site.baseurl }}/atm9): Information on modifications and changes made by the modpack.
 * [Computercraft]({{ site.baseurl }}/computercraft): Integration with the [computercraft](https://tweaked.cc/) mod.
 * [Datapacks and Resourcepacks]({{ site.baseurl }}/datapacks): Features available for customization.
