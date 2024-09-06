@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
@@ -170,7 +171,17 @@ public class CommandInit
 	private static int getAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		Level level = context.getSource().getPlayer().getLevel();
+		
+		ServerPlayer player = context.getSource().getPlayer();
+		
+		if(player == null || dimension == null)
+		{
+			//TODO For each galaxy
+			
+			return Command.SINGLE_SUCCESS;
+		}
+		
+		Level level = player.getLevel();
 		
 		ResourceKey<Level> currentDimension = level.dimension();
 		
@@ -232,13 +243,13 @@ public class CommandInit
 			Style style = Style.EMPTY;
 			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
 			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
-			context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.address")
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.address")
 					.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN))
-					.append(Component.translatable("message.sgjourney.command.get_extragalactic_address.is")));
-			context.getSource().getPlayer().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.LIGHT_PURPLE)));
+					.append(Component.translatable("message.sgjourney.command.get_extragalactic_address.is")), false);
+			context.getSource().sendSuccess(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.LIGHT_PURPLE)), false);
 		}
 		else
-			context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.none").withStyle(ChatFormatting.DARK_RED));
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.none").withStyle(ChatFormatting.DARK_RED), false);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -254,9 +265,9 @@ public class CommandInit
 			SolarSystem.Serializable solarSystem = solarSystemOptional.get();
 			if(!solarSystem.getStargates().isEmpty())
 			{
-				context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_stargates")
-						.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)));
-				context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_stargates")
+						.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
+				context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 				
 				solarSystem.getStargates().stream().forEach(stargate ->
 				{
@@ -268,11 +279,11 @@ public class CommandInit
 						Style style = Style.EMPTY;
 						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
 						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.get9ChevronAddress().toString()));
-						context.getSource().getPlayer().sendSystemMessage(Component.literal(stargate.get9ChevronAddress().toString()).setStyle(style.applyFormat(ChatFormatting.AQUA))
-								.append(Component.literal(" X: " + stargatePos.getX() + " Y: " + stargatePos.getY() + " Z: " + stargatePos.getZ()).withStyle(ChatFormatting.BLUE)));
+						context.getSource().sendSuccess(Component.literal(stargate.get9ChevronAddress().toString()).setStyle(style.applyFormat(ChatFormatting.AQUA))
+								.append(Component.literal(" X: " + stargatePos.getX() + " Y: " + stargatePos.getY() + " Z: " + stargatePos.getZ()).withStyle(ChatFormatting.BLUE)), false);
 					}
 				});
-				context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+				context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 				
 				return Command.SINGLE_SUCCESS;
 			}
@@ -289,7 +300,7 @@ public class CommandInit
 		
 		int version = StargateNetwork.get(level).getVersion();
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.stargate_network_version").append(Component.literal(": " + version)).withStyle(ChatFormatting.GREEN));
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_version").append(Component.literal(": " + version)).withStyle(ChatFormatting.GREEN), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -299,7 +310,7 @@ public class CommandInit
 		
 		StargateNetwork.get(level).stellarUpdate(level.getServer(), true);
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.stellar_update").withStyle(ChatFormatting.RED));
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stellar_update").withStyle(ChatFormatting.RED), true);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -313,9 +324,9 @@ public class CommandInit
 		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomSolarSystems();
 		boolean randomAddressFromSeed = StargateNetworkSettings.get(level).randomAddressFromSeed();
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.stargate_network_settings.use_datapack_addresses").append(Component.literal(": " + useDatapackAddresses)).withStyle(ChatFormatting.GOLD));
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.stargate_network_settings.generate_random_solar_systems").append(Component.literal(": " + generateRandomSolarSystems)).withStyle(ChatFormatting.GOLD));
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.stargate_network_settings.random_addresses_from_seed").append(Component.literal(": " + randomAddressFromSeed)).withStyle(ChatFormatting.GOLD));
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.use_datapack_addresses").append(Component.literal(": " + useDatapackAddresses)).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.generate_random_solar_systems").append(Component.literal(": " + generateRandomSolarSystems)).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.random_addresses_from_seed").append(Component.literal(": " + randomAddressFromSeed)).withStyle(ChatFormatting.GOLD), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -326,7 +337,7 @@ public class CommandInit
 		
 		StargateNetworkSettings.get(level).setUseDatapackAddresses(setting);
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW));
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -337,7 +348,7 @@ public class CommandInit
 		
 		StargateNetworkSettings.get(level).setGenerateRandomSolarSystems(setting);
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW));
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -348,7 +359,7 @@ public class CommandInit
 		
 		StargateNetworkSettings.get(level).setRandomAddressFromSeed(setting);
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW));
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -359,9 +370,9 @@ public class CommandInit
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getPlayer().getLevel();
 
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_transporters")
-				.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)));
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_transporters")
+				.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
+		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		
 		Optional<List<Transporter>> transportersOptional = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
 		
@@ -372,10 +383,10 @@ public class CommandInit
 			for(int i = 0; i < transporters.size(); i++)
 			{
 				BlockPos coords = transporters.get(i).getBlockPos();
-				context.getSource().getPlayer().sendSystemMessage(Component.literal("X: " + coords.getX() + " Y: " + coords.getY() + " Z: " + coords.getZ()).withStyle(ChatFormatting.BLUE));
+				context.getSource().sendSuccess(Component.literal("X: " + coords.getX() + " Y: " + coords.getY() + " Z: " + coords.getZ()).withStyle(ChatFormatting.BLUE), false);
 			}
 		}
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("-------------------------"));
+		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -386,7 +397,7 @@ public class CommandInit
 		
 		TransporterNetwork.get(level).reloadNetwork(level.getServer(), true);
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.transporter_network_reload").withStyle(ChatFormatting.RED));
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.transporter_network_reload").withStyle(ChatFormatting.RED), true);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -444,7 +455,7 @@ public class CommandInit
 		BlockEntityList.get(level).printTransporters();
 		TransporterNetwork.get(level).printDimensions();
 
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("Printed info onto the console"));
+		context.getSource().sendSuccess(Component.literal("Printed info onto the console"), false);
 		
 		return Command.SINGLE_SUCCESS;
 	}

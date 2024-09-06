@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -42,9 +43,8 @@ public class RingPanelEntity extends BlockEntity
 	private BlockPos targetPos;
 	
 	// Used for Client syncing
-	public int ringsFound;
-	private String[] rings;
-	public BlockPos ringsPos[] = new BlockPos[6];
+	public ArrayList<BlockPos> ringsPos = new ArrayList<BlockPos>();
+    public ArrayList<Component> ringsName = new ArrayList<Component>();
 	
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
@@ -170,26 +170,23 @@ public class RingPanelEntity extends BlockEntity
 		Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()))
 		.compareTo(Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos()))));
 		
-		int size = transporters.size();
-		
-		ringsFound = size;
+		ringsPos.clear();
+		ringsName.clear();
+		int ringsFound = transporters.size();
 		
 		int j = 0;
 		if(ringsFound > 0 && transporters.get(0).getBlockPos().equals(this.transportRings.getBlockPos()))
 			j += 1;
 		
-		for(int i = 0; i < 6; i++, j++)
+		for(int i = 0; i < 6 && j < ringsFound; i++, j++)
 		{
+			Transporter transporter = transporters.get(j);
 			
-			if(j < ringsFound)
-			{
-				ringsPos[i] = transporters.get(j).getBlockPos();
-			}
-			else
-				ringsPos[i] = new BlockPos(0, 0, 0);
+			ringsPos.add(transporter.getBlockPos());
+			ringsName.add(transporter.getName());
 		}
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientboundRingPanelUpdatePacket(worldPosition, ringsFound, ringsPos[0], ringsPos[1], ringsPos[2], ringsPos[3], ringsPos[4], ringsPos[5]));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientboundRingPanelUpdatePacket(worldPosition, ringsPos, ringsName));
 		return;
 	}
 	
@@ -262,10 +259,8 @@ public class RingPanelEntity extends BlockEntity
 			int[] coordinates = this.itemHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
 			targetPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
 		}
-		else
-		{
-			targetPos = ringsPos[chosenNumber];
-		}
+		else if(chosenNumber < ringsPos.size())
+			targetPos = ringsPos.get(chosenNumber);
 
 		if(targetPos == null)
 			return;

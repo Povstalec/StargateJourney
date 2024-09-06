@@ -416,6 +416,20 @@
 	
 	
 	
+	"iris_thud":
+	{
+		"subtitle": "sounds.sgjourney.iris_thud",
+		"sounds":
+		[
+			"sgjourney:iris_thud_1",
+			"sgjourney:iris_thud_2",
+			"sgjourney:iris_thud_3",
+			"sgjourney:iris_thud_4"
+		]
+	},
+	
+	
+	
 	
 	"milky_way_dhd_enter":
 	{

@@ -9,17 +9,15 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity>
+public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity, ClassicStargateVariant>
 {
 	protected static final int SPINNING_SIDES = 39;
 	private static final float ANGLE = 360F / SPINNING_SIDES;
@@ -85,12 +83,11 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	
 	public ClassicStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "classic"), (short) 39);
-		this.symbolColor = new Stargate.RGBA(0, 109, 121, 255);
+		super((short) 39);
 	}
 	
 	@Override
-	public void renderRing(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, float partialTick, PoseStack stack, VertexConsumer consumer,
+	public void renderRing(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, float partialTick, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		renderOuterRing(stack, consumer, source, combinedLight);
@@ -203,7 +200,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		}
 	}
 	
-	protected void renderSpinnyRing(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
+	protected void renderSpinnyRing(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -283,17 +280,17 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		this.renderSymbols(stargate, stargateVariant, stack, consumer, source, combinedLight, rotation);
 	}
 	
-	protected void renderSymbols(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
+	protected void renderSymbols(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
+		Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
 		if(pointOfOrigin.isPresent())
 		{
 			boolean pointOfOriginEngaged = false;
-			if(engageEncodedSymbols(stargate, stargateVariant) && (!stargate.isConnected() || stargate.isDialingOut()))
+			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
 				pointOfOriginEngaged = stargate.isConnected();
 			else if(stargate.isConnected())
-				pointOfOriginEngaged = engageSymbolsOnIncoming(stargate, stargateVariant);
+				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
 			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
 			
@@ -309,7 +306,7 @@ Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVaria
 		for(int j = 1; j < this.numberOfSymbols; j++)
 		{
 			boolean symbolEngaged = false;
-			if(engageEncodedSymbols(stargate, stargateVariant) && (!stargate.isConnected() || stargate.isDialingOut()))
+			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
 			{
 				for(int i = 0; i < stargate.getAddress().getLength(); i++)
 				{
@@ -319,15 +316,15 @@ Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVaria
 				}
 			}
 			else if(stargate.isConnected())
-				symbolEngaged = engageSymbolsOnIncoming(stargate, stargateVariant);
+				symbolEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
 			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
 					MAX_LIGHT : combinedLight, j, symbols.get().getTextureOffset(j), symbols.get().getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
 		}
 	}
 	
-	protected void renderSymbol(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
-			int symbolNumber, float symbolOffset, int textureXSize, float rotation, Stargate.RGBA symbolColor)
+	protected void renderSymbol(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
+			int symbolNumber, float symbolOffset, int textureXSize, float rotation, ColorUtil.RGBA symbolColor)
 	{
 		if(symbolNumber >= this.numberOfSymbols)
 			return;
@@ -338,7 +335,7 @@ Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVaria
 		Matrix3f matrix3 = stack.last().normal();
 		
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
-				symbolColor.getRed(), symbolColor.getGreen(), symbolColor.getBlue(), symbolColor.getAlpha(), 
+				symbolColor.red(), symbolColor.green(), symbolColor.blue(), symbolColor.alpha(), 
 				-SPINNY_RING_OUTER_CENTER,
 				SPINNY_RING_INNER_RADIUS + 8.5F/16,
 				SYMBOL_OFFSET,
@@ -363,19 +360,19 @@ Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVaria
 	}
 	
 	@Override
-	protected boolean isPrimaryChevronLowered(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant)
+	protected boolean isPrimaryChevronLowered(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant)
 	{
 		return isPrimaryChevronEngaged(stargate, stargateVariant);
 	}
 	
 	@Override
-	protected boolean isChevronLowered(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, int chevronNumber)
+	protected boolean isChevronLowered(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, int chevronNumber)
 	{
 		return isChevronEngaged(stargate, stargateVariant, chevronNumber);
 	}
 	
 	@Override
-	protected void renderPrimaryChevron(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,
+	protected void renderPrimaryChevron(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, boolean chevronEngaged)
 	{
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
@@ -391,7 +388,7 @@ Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVaria
 	}
 
 	@Override
-	protected void renderChevron(ClassicStargateEntity stargate, Optional<StargateVariant> stargateVariant, PoseStack stack, VertexConsumer consumer,
+	protected void renderChevron(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
 		int chevron = AbstractStargateEntity.getChevron(stargate, chevronNumber);

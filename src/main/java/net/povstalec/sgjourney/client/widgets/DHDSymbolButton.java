@@ -63,9 +63,8 @@ public abstract class DHDSymbolButton extends DHDButton
 	
     private static Component symbol(String symbolsType, int i)
     {
-    	MutableComponent symbols = Component.literal("" + i); //Symbols.unicode(i)
-		//Style style = symbols.getStyle().withFont(new ResourceLocation(symbolsType));
-		//symbols = symbols.withStyle(style);
+    	MutableComponent symbols = Component.literal(String.valueOf(i));
+    	
 		return symbols;
     }
     

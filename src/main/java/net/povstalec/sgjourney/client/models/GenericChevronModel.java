@@ -332,7 +332,7 @@ public class GenericChevronModel
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				-CHEVRON_LIGHT_Z_OFFSET,
-				48F/64, 5F/64,
+				48F/64, 4F/64,
 				
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
@@ -347,7 +347,7 @@ public class GenericChevronModel
 				-CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				-CHEVRON_LIGHT_Z_OFFSET,
-				54F/64, 5F/64);
+				54F/64, 4F/64);
 		
 		if(isRaised)
 		{

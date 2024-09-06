@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -18,8 +19,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
 
 public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
@@ -61,7 +65,12 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	
 	public boolean hasNaquadah()
 	{
-		return this.itemHandler.getStackInSlot(0).getItem() == ItemInit.NAQUADAH.get();
+		ItemStack stack = this.itemHandler.getStackInSlot(0);
+		
+		if(stack.getItem() instanceof NaquadahFuelRodItem)
+			return NaquadahFuelRodItem.getFuel(stack) > 0;
+		
+		return false;
 	}
 	
 	public void setReactionProgress(int reactionProgress)
@@ -74,9 +83,58 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		return this.reactionProgress;
 	}
 	
-	public abstract int getReactionTime();
+	public abstract long getReactionTime();
 
-	public abstract int getEnergyPerTick();
+	public abstract long getEnergyPerTick();
+
+	@Nullable
+	public Direction getDirection()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof NaquadahGeneratorBlock)
+		{
+			FrontAndTop orientation = gateState.getValue(NaquadahGeneratorBlock.ORIENTATION);
+			
+			if(orientation.top() == Direction.UP)
+				return orientation.front();
+			else
+				return orientation.top();
+		}
+
+		StargateJourney.LOGGER.error("Couldn't find Direction " + this.getBlockPos().toString());
+		return null;
+	}
+	
+	@Nullable
+	public Direction getBottomDirection()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof NaquadahGeneratorBlock)
+		{
+			FrontAndTop orientation = gateState.getValue(NaquadahGeneratorBlock.ORIENTATION);
+			
+			return orientation.front();
+		}
+
+		StargateJourney.LOGGER.error("Couldn't find Direction " + this.getBlockPos().toString());
+		return null;
+	}
+	
+	public boolean isActive()
+	{
+		BlockPos gatePos = this.getBlockPos();
+		BlockState gateState = this.level.getBlockState(gatePos);
+		
+		if(gateState.getBlock() instanceof NaquadahGeneratorBlock)
+			return gateState.getValue(NaquadahGeneratorBlock.ACTIVE);
+
+		StargateJourney.LOGGER.error("Couldn't find Active state" + this.getBlockPos().toString());
+		return false;
+	}
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
@@ -111,7 +169,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 					switch(slot)
 					{
 					case 0:
-						return stack.getItem() == ItemInit.NAQUADAH.get();
+						return stack.getItem() == ItemInit.NAQUADAH_FUEL_ROD.get();
 					default: 
 						return false;
 					}
@@ -120,7 +178,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 				// Limits the number of items per slot
 				public int getSlotLimit(int slot)
 				{
-					return 16;
+					return 1;
 				}
 				
 				@Nonnull
@@ -142,6 +200,17 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
+	protected boolean isCorrectEnergySide(Direction side)
+	{
+		Direction direction = getDirection();
+		Direction bottom = getBottomDirection();
+		
+		if(direction != null && bottom != null)
+			return side == bottom || side == direction.getClockWise() || side == direction.getCounterClockWise();
+		
+		return false;
+	}
+	
 	protected boolean receivesEnergy()
 	{
 		return false;
@@ -153,20 +222,27 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	
 	private void doReaction()
 	{
-		if(this.hasNaquadah() && this.reactionProgress == 0)
+		if(!isActive())
+			return;
+		
+		if(this.hasNaquadah() && reactionProgress == 0)
 		{
-			this.itemHandler.extractItem(0, 1, false);
-			this.progressReaction();
+			if(NaquadahFuelRodItem.depleteFuel(this.itemHandler.getStackInSlot(0)))
+				this.progressReaction();
+			else
+				this.itemHandler.extractItem(0, 1, false); //TODO Maybe make fuel rods reusable?
 		}
-		else if(this.reactionProgress > 0 && this.reactionProgress < this.getReactionTime() && this.getEnergyStored() < this.capacity())
+		
+		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && getEnergyStored() < capacity() && canReceive(getEnergyPerTick()))
 			this.progressReaction();
-		else if(this.reactionProgress >= this.getReactionTime())
-			this.reactionProgress = 0;
+		
+		else if(reactionProgress >= getReactionTime())
+			reactionProgress = 0;
 	}
 	
 	private void progressReaction()
 	{
-		this.generateEnergy(this.getEnergyPerTick());
+		this.generateEnergy(getEnergyPerTick());
 		this.reactionProgress++;
 	}
 	
@@ -177,6 +253,14 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		
 		generator.doReaction();
 		generator.outputEnergy(Direction.DOWN);
+		
+		Direction direction = generator.getDirection();
+		if(direction != null)
+		{
+			generator.outputEnergy(direction.getClockWise());
+			generator.outputEnergy(direction.getCounterClockWise());
+		}
+		
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(generator.worldPosition)), new ClientboundNaquadahGeneratorUpdatePacket(generator.worldPosition, generator.getReactionProgress(), generator.getEnergyStored()));
 	}

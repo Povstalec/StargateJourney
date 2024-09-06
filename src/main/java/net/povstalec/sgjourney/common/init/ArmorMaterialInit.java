@@ -9,9 +9,9 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public enum ArmorMaterialInit implements ArmorMaterial
 {
-	naquadah("naquadah", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 3.0F, 0.2F),
-	jaffa("jaffa", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0F, 0.0F),
-	personal_shield("personal_shield", 0, new int[] {0, 0, 0, 0}, 0, ItemInit.NAQUADAH.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 0.0F, 0.0F);
+	NAQUADAH("naquadah", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 3.0F, 0.2F),
+	JAFFA("jaffa", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0F, 0.0F),
+	PERSONAL_SHIELD("personal_shield", 0, new int[] {0, 0, 0, 0}, 0, ItemInit.NAQUADAH.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 0.0F, 0.0F);
 	
 	private static final int[] max_damage_array = new int[]{13, 15, 16, 11};
 	private String name;

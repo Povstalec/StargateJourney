@@ -6,6 +6,8 @@ import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
 public class CommonStargateConfig
 {
+	public static ForgeConfigSpec.BooleanValue stargate_loads_chunk_when_connected;
+	
 	public static ForgeConfigSpec.IntValue max_wormhole_open_time;
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
@@ -51,6 +53,12 @@ public class CommonStargateConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		stargate_loads_chunk_when_connected = server
+				.comment("If true, Stargate will load the chunk it's in while it's connected to another Stargate")
+				.define("server.stargate_loads_chunk_when_connected", true);
+		
+		
+		
 		max_wormhole_open_time = server
 				.comment("The maximum amount of time the Stargate will be open for in seconds")
 				.defineInRange("server.max_wormhole_open_time", 228, 10, 2280);

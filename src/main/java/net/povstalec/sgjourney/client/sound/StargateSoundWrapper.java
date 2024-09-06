@@ -61,9 +61,9 @@ public abstract class StargateSoundWrapper extends SoundWrapper
 
 	public static class WormholeIdle extends StargateSoundWrapper
 	{
-		public WormholeIdle(AbstractStargateEntity stargate)
+		public WormholeIdle(AbstractStargateEntity stargate, boolean incoming)
 		{
-			super(stargate, new WormholeIdleSound(stargate, SoundAccess.getWormholeIdleSound(stargate)));
+			super(stargate, new WormholeIdleSound(stargate, SoundAccess.getWormholeIdleSound(stargate, incoming)));
 		}
 	}
 	
@@ -94,7 +94,7 @@ public abstract class StargateSoundWrapper extends SoundWrapper
 	{
 		public MilkyWayRingBuildup(MilkyWayStargateEntity stargate)
 		{
-			super(stargate, new MilkyWayStargateRingBuildupSound(stargate, SoundAccess.getRotationBuildupSound(stargate)));
+			super(stargate, new MilkyWayStargateRingBuildupSound(stargate, SoundAccess.getRotationStartupSound(stargate)));
 		}
 		
 		@Override
@@ -102,7 +102,7 @@ public abstract class StargateSoundWrapper extends SoundWrapper
 		{
 			if(!this.playingSound)
 			{
-				this.sound = new MilkyWayStargateRingBuildupSound((MilkyWayStargateEntity) stargate, SoundAccess.getRotationBuildupSound((MilkyWayStargateEntity) stargate));
+				this.sound = new MilkyWayStargateRingBuildupSound((MilkyWayStargateEntity) stargate, SoundAccess.getRotationStartupSound((MilkyWayStargateEntity) stargate));
 				minecraft.getSoundManager().play(sound);
 				this.playingSound = true;
 			}

@@ -42,6 +42,7 @@
 	"block.sgjourney.classic_dhd": "Classic DHD",
 	
 	"block.sgjourney.stargate.not_enough_space": "Stargate does not have enough space",
+	"block.sgjourney.stargate.break_cover_blocks": "Must destroy Cover Blocks first",
 	"block.sgjourney.stargate.same_variant": "Same variant",
 	"block.sgjourney.stargate.classic.incorrect_setup": "Incorrect setup",
 	"block.sgjourney.stargate.classic.invalid_address": "Invalid Address",
@@ -69,12 +70,16 @@
 	"block.sgjourney.zpm_hub": "ZPM Hub",
 	"block.sgjourney.zpm_port": "ZPM Port",
 	"block.sgjourney.zpm_plug": "ZPM Plug",
+
+	"block.sgjourney.transceiver": "Transceiver",
 	
 	"fluid_type.sgjourney.liquid_naquadah": "Liquid Naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Heavy Liquid Naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Raw Naquadah",
 	"item.sgjourney.naquadah_alloy": "Naquadah Alloy",
+	"item.sgjourney.naquadah_alloy_nugget": "Naquadah Nugget",
+	"item.sgjourney.refined_naquadah": "Refined Naquadah",
 	"item.sgjourney.pure_naquadah": "Pure Naquadah",
 	"item.sgjourney.naquadah": "Weapons Grade Naquadah",
 	"item.sgjourney.liquid_naquadah_bucket": "Liquid Naquadah Bucket",
@@ -123,6 +128,8 @@
 	"item.sgjourney.zero_point_module": "ZPM",
 	"item.sgjourney.personal_shield_emitter": "Personal Shield Emitter",
 	
+	"item.sgjourney.naquadah_fuel_rod": "Naquadah Fuel Rod",
+	
 	"item.sgjourney.syringe": "Syringe",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadah Helmet",
@@ -139,6 +146,20 @@
 	
 	"item.sgjourney.anubis_helmet": "Anubis Helmet",
 	"item.sgjourney.horus_helmet": "Horus Helmet",
+
+	"item.sgjourney.gdo": "GDO",
+
+	"item.sgjourney.stargate_shielding_ring": "Stargate Shielding Ring",
+
+	"item.sgjourney.copper_iris": "Copper Iris",
+	"item.sgjourney.iron_iris": "Iron Iris",
+	"item.sgjourney.golden_iris": "Golden Iris",
+	"item.sgjourney.diamond_iris": "Diamond Iris",
+	"item.sgjourney.netherite_iris": "Netherite Iris",
+	"item.sgjourney.naquadah_alloy_iris": "Naquadah Alloy Iris",
+	"item.sgjourney.trinium_iris": "Trinium Iris",
+	"item.sgjourney.bronze_iris": "Bronze Iris",
+	"item.sgjourney.steel_iris": "Steel Iris",
 	
 	"sounds.sgjourney.dial_start" : "Stargate starts dialing",
 	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",
@@ -154,6 +175,8 @@
 	"sounds.sgjourney.wormhole_close" : "Wormhole closes",
 	"sounds.sgjourney.wormhole_enter" : "Wormhole entered",
 	"sounds.sgjourney.wormhole_idle" : "Wormhole idle",
+
+	"sounds.sgjourney.iris_thud" : "Iris thud",
 	
 	"sounds.sgjourney.dhd_enter" : "DHD enter",
 	"sounds.sgjourney.dhd_press" : "DHD pressed",
@@ -197,6 +220,10 @@
 	"screen.sgjourney.advanced_crystallizer": "Advanced Crystallizer",
 	"screen.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
+
+
+	"screen.sgjourney.transceiver": "Transceiver",
+	"screen.sgjourney.gdo.frequency": "FREQUENCY",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
 	"biome.sgjourney.abydos_oasis": "Abydos Oasis",
@@ -372,6 +399,7 @@
 	"tooltip.sgjourney.mode": "Mode",
 	"tooltip.sgjourney.upgraded": "Upgraded",
 	"tooltip.sgjourney.variant": "Variant",
+	"tooltip.sgjourney.requires": "Requires",
 	"tooltip.sgjourney.stargate_type": "Stargate Type",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
@@ -420,6 +448,15 @@
 	"tooltip.sgjourney.syringe.blood": "Blood",
 	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototype Ancient Gene Therapy",
 	"tooltip.sgjourney.syringe.ata_gene": "Ancient Gene Therapy",
+
+	"tooltip.sgjourney.gdo.idc": "IDC",
+	"tooltip.sgjourney.gdo.frequency": "Frequency",
+	"tooltip.sgjourney.gdo.description.check": "Right-Click to check Iris state",
+	"tooltip.sgjourney.gdo.description.gui": "Shift + Right-Click to open GDO interface",
+	
+	"tooltip.sgjourney.iris.durability": "Durability",
+
+	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Fuel",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Error: Transport Rings Busy",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Error: No Transport Rings Nearby",
@@ -433,6 +470,8 @@
 	"message.sgjourney.dhd.error.not_connected_to_stargate": "DHD is not connected to a Stargate",
 	
 	"message.sgjourney.stargate.error.one_way_wormhole": "Can't travel through wormhole in this direction",
+	"message.sgjourney.stargate.error.iris": "Travel blocked by Iris",
+	"message.sgjourney.stargate.error.already_has_iris": "Stargate already has an Iris",
 	
 	"message.sgjourney.stargate.info.none": "None",
 	"message.sgjourney.stargate.error.unknown": "Unknown Error",
@@ -449,7 +488,7 @@
 	"message.sgjourney.stargate.error.incomplete_address": "Incomplete Address",
 	"message.sgjourney.stargate.error.invalid_address": "Invalid Address",
 	"message.sgjourney.stargate.error.not_enough_power": "Not enough power",
-	"message.sgjourney.stargate.error.self_obstructed": "Stargate is obstructed",
+	"message.sgjourney.stargate.error.self_obstructed": "Local Stargate is obstructed",
 	"message.sgjourney.stargate.error.target_obstructed": "Target Stargate is obstructed",
 	"message.sgjourney.stargate.error.self_dial": "Stargate cannot dial itself",
 	"message.sgjourney.stargate.error.same_system_dial": "Cannot dial the same Solar System",
@@ -502,6 +541,10 @@
 	"message.sgjourney.command.get_transporters": "Transporters in dimension",
 	"message.sgjourney.command.transporter_network_reload": "Transporter Network reloaded",
 	"message.sgjourney.command.click_to_copy.address": "Click to copy Address",
+
+	"message.sgjourney.gdo.shielded": "Shielded",
+	"message.sgjourney.gdo.error.no_nearby_stargate": "No nearby Stargate",
+	"message.sgjourney.gdo.error.stargate_not_connected": "Stargate is not connected",
 	
 	"gui.sgjourney.config": "Stargate Journey Config",
 	"gui.sgjourney.client": "Client",

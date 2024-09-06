@@ -41,6 +41,7 @@ import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
+import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 
 public abstract class AbstractInterfaceBlock extends BaseEntityBlock
@@ -165,6 +166,17 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		
 		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof AbstractInterfaceEntity interfaceEntity && interfaceEntity.updateInterface(level, targetPos, block, state))
 			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
+		
+		boolean hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
+		BlockEntity blockentity = level.getBlockEntity(pos);
+		
+		if(blockentity instanceof AbstractInterfaceEntity interfaceEntity)
+		{
+			if(hasSignal)
+				interfaceEntity.signalStrength = level.getBestNeighborSignal(pos);
+			else
+				interfaceEntity.signalStrength = 0;
+		}
 	}
 	
 	private int getRingSegmentOutput(EnergyBlockEntity blockEntity)
@@ -199,6 +211,13 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		return 0;
 	}
 	
+	private int getIrisOutput(EnergyBlockEntity blockEntity)
+	{
+		if(blockEntity instanceof AbstractStargateEntity stargate)
+			return Math.round(15 * (float) stargate.getIrisProgress() / ShieldingState.MAX_PROGRESS);
+		return 0;
+	}
+	
 	public int comparatorOutput(BlockState state, EnergyBlockEntity blockEntity)
 	{
 		switch(state.getValue(MODE))
@@ -211,6 +230,8 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			return getChevronOutput(blockEntity);
 		case WORMHOLE_ACTIVE:
 			return getConnectionOutput(blockEntity);
+		case SHIELDING:
+			return getIrisOutput(blockEntity);
 		default:
 			return 0;
 		}

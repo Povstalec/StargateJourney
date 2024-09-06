@@ -95,6 +95,11 @@ public abstract class SGJourneyEnergy extends EnergyStorage
         return this.maxReceive > 0 && this.energy < this.capacity;
     }
     
+    public boolean canReceive(long receivedEnergy)
+	{
+		return energy + receivedEnergy <= capacity;
+	}
+    
     
 	
 	public long setEnergy(long energy)

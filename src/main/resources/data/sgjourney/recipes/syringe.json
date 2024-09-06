@@ -3,13 +3,13 @@
 	"category": "misc",
 	"pattern":
 	[
-		"I",
+		"N",
 		"B"
 	],
 	
 	"key": 
 	{
-		"I": { "item": "minecraft:iron_nugget" },
+		"N": { "tag": "sgjourney:naquadah_alloy_nugget" },
 		"B": [{ "item": "minecraft:glass_bottle" }]
 		
 	},

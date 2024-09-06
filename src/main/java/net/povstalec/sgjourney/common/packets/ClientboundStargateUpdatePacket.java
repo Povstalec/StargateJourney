@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
 
@@ -14,25 +15,30 @@ public class ClientboundStargateUpdatePacket
     public final int[] engagedChevrons;
     public final int kawooshTick;
     public final int tick;
+    public final short irisProgress;
     public final String pointOfOrigin;
     public final String symbols;
     public final String variant;
+    public final ItemStack iris;
 
-    public ClientboundStargateUpdatePacket(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, String pointOfOrigin, String symbols, String variant)
+    public ClientboundStargateUpdatePacket(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
+    		String pointOfOrigin, String symbols, String variant, ItemStack iris)
     {
         this.pos = pos;
         this.address = address;
         this.engagedChevrons = engagedChevrons;
         this.kawooshTick = kawooshTick;
         this.tick = tick;
+        this.irisProgress = irisProgress;
         this.pointOfOrigin = pointOfOrigin;
         this.symbols = symbols;
         this.variant = variant;
+        this.iris = iris;
     }
 
     public ClientboundStargateUpdatePacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos(), buffer.readVarIntArray(), buffer.readVarIntArray(), buffer.readInt(), buffer.readInt(), buffer.readUtf(), buffer.readUtf(), buffer.readUtf());
+        this(buffer.readBlockPos(), buffer.readVarIntArray(), buffer.readVarIntArray(), buffer.readInt(), buffer.readInt(), buffer.readShort(), buffer.readUtf(), buffer.readUtf(), buffer.readUtf(), buffer.readItem());
     }
 
     public void encode(FriendlyByteBuf buffer)
@@ -42,15 +48,17 @@ public class ClientboundStargateUpdatePacket
         buffer.writeVarIntArray(this.engagedChevrons);
         buffer.writeInt(this.kawooshTick);
         buffer.writeInt(this.tick);
+        buffer.writeShort(this.irisProgress);
         buffer.writeUtf(this.pointOfOrigin);
         buffer.writeUtf(this.symbols);
         buffer.writeUtf(this.variant);
+        buffer.writeItem(this.iris);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateStargate(this.pos, this.address, this.engagedChevrons, this.kawooshTick, this.tick, this.pointOfOrigin, this.symbols, this.variant);
+        	ClientAccess.updateStargate(this.pos, this.address, this.engagedChevrons, this.kawooshTick, this.tick, this.irisProgress, this.pointOfOrigin, this.symbols, this.variant, this.iris);
         });
         return true;
     }

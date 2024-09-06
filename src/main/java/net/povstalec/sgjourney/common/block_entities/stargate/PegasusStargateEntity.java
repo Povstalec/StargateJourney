@@ -4,16 +4,17 @@ import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -27,6 +28,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public static final String CURRENT_SYMBOL = "CurrentSymbol";
 	
 	public static final String DYNAMC_SYMBOLS = "DynamicSymbols";
+
+	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus_back_chevron");
 	
 	public int currentSymbol = 0;
 	public Address addressBuffer = new Address(true);
@@ -37,7 +40,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), pos, state, Stargate.Gen.GEN_3, 3);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state, Stargate.Gen.GEN_3, 3);
 		this.setOpenSoundLead(13);
 		this.symbolBounds = 47;
 	}
@@ -94,6 +97,12 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
+	public ResourceLocation defaultVariant()
+	{
+		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();//TODO I hope this thing doesn't crash on servers
+	}
+	
+	@Override
 	public void updateDHD()
 	{
 		if(hasDHD())
@@ -110,59 +119,6 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	public boolean useDynamicSymbols()
 	{
 		return this.dynamicSymbols;
-	}
-	
-	@Override
-	public SoundEvent getRotationSound()
-	{
-		return SoundInit.PEGASUS_RING_SPIN.get();
-	}
-
-	@Override
-	public SoundEvent getChevronEngageSound()
-	{
-		return SoundInit.PEGASUS_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronEngageSound()
-	{
-		return SoundInit.PEGASUS_PRIMARY_CHEVRON_ENGAGE.get();
-	}
-
-	@Override
-	public SoundEvent getChevronIncomingSound()
-	{
-		return SoundInit.PEGASUS_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getPrimaryChevronIncomingSound()
-	{
-		return SoundInit.PEGASUS_PRIMARY_CHEVRON_INCOMING.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeOpenSound()
-	{
-		return SoundInit.PEGASUS_WORMHOLE_OPEN.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeIdleSound()
-	{
-		return SoundInit.PEGASUS_WORMHOLE_IDLE.get();
-	}
-
-	@Override
-	public SoundEvent getWormholeCloseSound()
-	{
-		return SoundInit.PEGASUS_WORMHOLE_CLOSE.get();
-	}
-	
-	public SoundEvent getFailSound()
-	{
-		return SoundInit.PEGASUS_DIAL_FAIL.get();
 	}
 	
 	@Override

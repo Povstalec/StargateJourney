@@ -1,11 +1,5 @@
 {
 	"base_stargate": "sgjourney:pegasus_stargate",
-	"texture": "sgjourney:textures/entity/stargate/pegasus/atlantis/atlantis_stargate.png",
-	"engaged_texture": "sgjourney:textures/entity/stargate/pegasus/atlantis/atlantis_stargate_engaged.png",
-	"event_horizon_texture": "sgjourney:textures/entity/stargate/pegasus/atlantis/atlantis_event_horizon.png",
-	"shiny_event_horizon_texture": "sgjourney:textures/entity/stargate/pegasus/atlantis/atlantis_event_horizon_shiny.png",
-	"event_horizon_frames": 32,
 	
-	"point_of_origin": "sgjourney:subido",
-	"symbols": "sgjourney:galaxy_pegasus"
+	"client_variant": "sgjourney:pegasus/atlantis"
 }

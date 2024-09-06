@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -16,9 +17,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -26,7 +29,11 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
+import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
@@ -45,10 +52,7 @@ public class Wormhole implements ITeleporter
 	protected List<Entity> localEntities = new ArrayList<Entity>();
 	protected boolean used = false;
 	
-	public Wormhole()
-    {
-		
-    }
+	public Wormhole() {}
 	
 	public boolean hasCandidates()
 	{
@@ -84,7 +88,8 @@ public class Wormhole implements ITeleporter
 		Direction direction = initialStargate.getDirection();
 		Direction orientationDirection = Orientation.getEffectiveDirection(direction, initialStargate.getOrientation());
 		Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
-		localEntities.stream().forEach((traveler) ->
+		
+		for(Entity traveler : localEntities)
 		{
 			if(!traveler.getType().is(TagInit.Entities.WORMHOLE_CANNOT_TELEPORT) && this.entityLocations.containsKey(traveler.getId()))
 			{
@@ -100,7 +105,7 @@ public class Wormhole implements ITeleporter
 				double axisMomentum;
 				
 				if(orientationDirection == null)
-					return;
+					return this.used;
 				
 				if(orientationDirection.getAxis() == Direction.Axis.X)
 				{
@@ -141,7 +146,7 @@ public class Wormhole implements ITeleporter
 			}
 			else
 				entityLocations.put(traveler.getId(), new Vec3(traveler.getX(), traveler.getY(), traveler.getZ()));
-		});
+		}
 		
 		this.entityLocations = entityLocations;
 		
@@ -169,6 +174,48 @@ public class Wormhole implements ITeleporter
 	{
 		return shouldReverse ? -number : number;
 	}
+	
+	/**
+	 * 
+	 * @param targetStargate
+	 * @param destinationPos
+	 * @param motionVec
+	 * @param traveler
+	 * @return true if there were no issues, false if the traveler hit the shielding
+	 */
+	public boolean handleShielding(AbstractStargateEntity targetStargate, Vec3 destinationPos, Vec3 motionVec, Entity traveler)
+	{
+		if(targetStargate.isIrisClosed()) // No need to check, we know it's closed
+			return false;
+		
+		EntityDimensions dimension = traveler.getDimensions(traveler.getPose());
+		// Creates a bounding box at the destination and takes its center
+		Vec3 travelerCenter = dimension.makeBoundingBox(destinationPos).getCenter();
+
+		Vec3 fromVec = travelerCenter.subtract(motionVec); //TODO This might cause trouble on 1.19.2 because vectors are different there
+		Vec3 toVec = travelerCenter.add(motionVec); //TODO This might cause trouble on 1.19.2 because vectors are different there
+		
+		Level targetLevel = targetStargate.getLevel();
+		BlockPos pos = targetStargate.getBlockPos();
+		BlockState state = targetLevel.getBlockState(targetStargate.getBlockPos());
+		
+		if(state.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		{
+			for(ShieldingPart part : stargateBlock.getShieldingParts())
+			{
+				BlockPos shieldingPos = part.getShieldingPos(pos, state.getValue(AbstractStargateBlock.FACING), state.getValue(AbstractStargateBlock.ORIENTATION));
+				BlockState shieldingState = targetLevel.getBlockState(shieldingPos);
+				
+				if(shieldingState.getBlock() instanceof AbstractShieldingBlock)
+				{
+					if(shieldingState.getCollisionShape(targetLevel, shieldingPos).clip(fromVec, toVec, shieldingPos) != null)
+						return false;
+				}
+			}
+		}
+		
+		return true;
+	}
     
     public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, Stargate.WormholeTravel twoWayWormhole)
     {
@@ -184,7 +231,7 @@ public class Wormhole implements ITeleporter
 	        
 	        if(destinationlevel == null)
 	        {
-	        	StargateJourney.LOGGER.info("Can't teleport Entity because Dimension is null");
+	        	StargateJourney.LOGGER.error("Can't teleport Entity because Dimension is null");
 	            return;
 	        }
 	        
@@ -197,12 +244,41 @@ public class Wormhole implements ITeleporter
 		        double initialYAddition = initialStargate.getGateAddition();
 		        double destinationYAddition = targetStargate.getGateAddition();
 		        
-	    		Vec3 position = CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + 0.5), traveler.getY() - (initialStargate.getCenterPos().getY() + initialYAddition), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
+	    		Vec3 relativePos = CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + 0.5), traveler.getY() - (initialStargate.getCenterPos().getY() + initialYAddition), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
+	    		
+	    		Vec3 destinationPos = new Vec3(targetStargate.getCenterPos().getX() + 0.5 + relativePos.x(), targetStargate.getCenterPos().getY() + destinationYAddition + relativePos.y(), targetStargate.getCenterPos().getZ() + 0.5 + relativePos.z());
+	    		
+	    		Vec3 motionVec = CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum);
+	    		
+	    		boolean blocked = !handleShielding(targetStargate, destinationPos, motionVec, traveler);
+	    		
+	    		if(blocked)
+	    		{
+	    			if(traveler instanceof ServerPlayer player && player.isCreative())
+	    			{
+	    				if(!CommonIrisConfig.creative_ignores_iris.get())
+	    				{
+							player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.iris").withStyle(ChatFormatting.DARK_RED), true);
+							return;
+	    				}
+	    			}
+	    			else
+	    			{
+	    				if(traveler instanceof ServerPlayer player)
+							player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
+						traveler.kill();
+						
+						targetStargate.playIrisThudSound();
+						targetStargate.decreaseIrisDurability();
+		    			
+		    			return;
+	    			}
+	    		}
 	    		
 	    		if(traveler instanceof ServerPlayer player)
 		    	{
 		    		deconstructEvent(initialStargate, player, false);
-		        	player.teleportTo(destinationlevel, targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
+		        	player.teleportTo(destinationlevel, destinationPos.x(), destinationPos.y(), destinationPos.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, player.getYRot()), player.getXRot());
 		        	player.setDeltaMovement(CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		        	player.connection.send(new ClientboundSetEntityMotionPacket(traveler));
 		    		playWormholeSound(level, player);
@@ -216,7 +292,7 @@ public class Wormhole implements ITeleporter
 		    		long distanceTraveled = (int) Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), targetLevel.dimensionType()) * Math.sqrt(initialStargate.getCenterPos().distSqr(targetStargate.getCenterPos())));
 
 					player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
-					player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled*100);
+					player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled * 100);
 		    		WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
 		    	}
 		    	else
@@ -226,7 +302,7 @@ public class Wormhole implements ITeleporter
 		    		if((ServerLevel) level != destinationlevel)
 		    			newTraveler = traveler.changeDimension(destinationlevel, this);
 
-		    		newTraveler.moveTo(targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
+		    		newTraveler.moveTo(destinationPos.x(), destinationPos.y(), destinationPos.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
 		    		newTraveler.setDeltaMovement(CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
 		    		playWormholeSound(level, newTraveler);
 		    		reconstructEvent(targetStargate, newTraveler);

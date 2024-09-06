@@ -119,7 +119,7 @@ public class StellarViewRendering
 		public StellarViewCavumTenebraeEffects()
 		{
 			super(new StellarViewSky(CAVUM_TENBRAE),
-					192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+					Float.NaN, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
 		}
 		
 		@Override
