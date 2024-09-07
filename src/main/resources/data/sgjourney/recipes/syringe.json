@@ -4,13 +4,13 @@
 	"pattern":
 	[
 		"N",
-		"B"
+		"V"
 	],
 	
 	"key": 
 	{
 		"N": { "tag": "sgjourney:naquadah_alloy_nugget" },
-		"B": [{ "item": "minecraft:glass_bottle" }]
+		"V": { "item": "sgjourney:vial" }
 		
 	},
 	

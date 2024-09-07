@@ -1,3 +1,7 @@
 {
-    "parent": "sgjourney:block/transceiver"
+	"parent": "item/generated",
+	"textures": 
+	{
+		"layer0": "sgjourney:item/transceiver"
+	}
 }
