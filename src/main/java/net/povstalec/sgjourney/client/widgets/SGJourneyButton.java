@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -52,21 +53,22 @@ public abstract class SGJourneyButton extends Button
 	}
 	
 	@Override
-    public void renderButton(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+		this.isHovered = isHovered(mouseX, mouseY);
+		
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-        int i = this.getYImage(this.isHoveredOrFocused());
+        int i = this.getYImage(this.isHovered);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(stack, this.getX(), this.getY(), xOffset, yOffset + i * this.height, this.width, this.height);
-        this.blit(stack, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
-        this.renderBg(stack, minecraft, mouseX, mouseY);
+        graphics.blit(texture, this.getX(), this.getY(), xOffset, yOffset + i * height, this.width, this.height);
+        graphics.blit(texture, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         int j = getFGColor();
-        drawCenteredString(stack, font, this.getMessage(), this.getX() + this.width / 2 , this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        graphics.drawString(font, this.getMessage(), this.getX() + this.width / 2 - 3, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24); // Magical -3 cuz I have no idea why it doesn't work on 1.20.1
      }
 }
