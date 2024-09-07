@@ -38,7 +38,7 @@
 		
 		"facing=down,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "x": 90 },
 		"facing=up,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "x": 270 },
-		"facing=north,mode=shielding": { "model": "sgjourney:block/basic_interface_shieldinge" },
+		"facing=north,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding" },
 		"facing=south,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "y": 180 },
 		"facing=west,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "y": 270 },
 		"facing=east,mode=shielding": { "model": "sgjourney:block/basic_interface_shielding", "y": 90 }
