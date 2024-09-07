@@ -1,6 +1,6 @@
 ---
 title: Events
-nav_order: 5
+nav_order: 50
 has_children: false
 parent: Computercraft
 ---
@@ -8,6 +8,10 @@ parent: Computercraft
 {% include computercraft_doc.html %}
 
 # Events
+{: .no_toc }
+
+1. Table of Contents
+{:toc}
 
 <details markdown="block">
 <summary>How to listen to events</summary>
@@ -62,7 +66,7 @@ end
 </details>
 
 ## Stargate interface
-You will receive these events whenever an interface is connected to the Stargate and the computer.
+The computer will receive these events whenever an interface is connected to a Stargate and the computer.
 
 <h3 class="h-function">
     <code>stargate_chevron_engaged</code>
@@ -72,11 +76,12 @@ Fired whenever a **chevron** is engaged.
 
 **Return values**
 1. `string` The event name (`stargate_chevron_engaged`)
-2. `number` Count of engaged symbols (from `1` to `9`)
-3. `number` Engaged chevron (chevron identifier from `0` to `8`)
-4. `boolean` `true` if the chevron was engaged for incoming connection, 
+2. `string` The peripheral name
+3. `number` Count of engaged symbols (from `1` to `9`)
+4. `number` Engaged chevron (chevron identifier from `0` to `8`)
+5. `boolean` `true` if the chevron was engaged for incoming connection, 
 `false` if the chevron was locked by dialing this gate
-5. `number` Encoded symbol (from `0` to `38` - or `35` for the Universe gate)  
+6. `number` Encoded symbol (from `0` to `38` - or `35` for the Universe gate)  
 
 <span class="label label-blue ml-0">Basic Interface</span><span class="label label-green ml-0">Crystal Interface</span>The symbol is present only when engaged for outgoing connection.  
 <span class="label label-purple ml-0">Advanced Crystal Interface</span> The symbol is present even for incoming connection.
@@ -92,7 +97,8 @@ The event is fired right **after** the kawoosh end.
 
 **Return values**
 1. `string` The event name (`stargate_incoming_wormhole`)
-2. `number[]`<span class="label label-purple">Advanced Crystal Interface</span> The connected address
+2. `string` The peripheral name
+3. `number[]`<span class="label label-purple">Advanced Crystal Interface</span> The connected address
 
 ___
 
@@ -105,7 +111,8 @@ The event is fired right **before** the kawoosh start.
 
 **Return values**
 1. `string` The event name (`stargate_outgoing_wormhole`)
-2. `number[]` The dialed address
+2. `string` The peripheral name
+3. `number[]` The dialed address
 
 ___
 
@@ -117,8 +124,9 @@ Fired whenever a connection is ended.
 
 **Return values**
 1. `string` The event name (`stargate_disconnected`)
-2. `number` The recent feedback code <!-- TODO: add feedback code link -->
-3. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` The peripheral name
+3. `number` The recent feedback code <!-- TODO: add feedback code link -->
+4. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 ___
 
@@ -131,8 +139,9 @@ Fired whenever a Stargate resets.
 
 **Return values**
 1. `string` The event name (`stargate_reset`)
-2. `number` The recent feedback code <!-- TODO: add feedback code link -->
-3. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` The peripheral name
+3. `number` The recent feedback code <!-- TODO: add feedback code link -->
+4. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
 
 ___
 
@@ -144,10 +153,11 @@ Fired whenever an entity enters the wormhole.
 
 **Return values**
 1. `string` The event name (`stargate_deconstructing_entity`)
-2. `string` The type of the entity (e.g. `minecraft:pig`)
-3. `string` The display name of the entity (e.g. player's name, name set by a nametag or a default mob name)
-4. `string` UUID of the entity
-5. `boolean` `true` when the entity was destroyed by stepping through the wrong end of the wormhole, `false` otherwise.
+2. `string` The peripheral name
+3. `string` The type of the entity (e.g. `minecraft:pig`)
+4. `string` The display name of the entity (e.g. player's name, name set by a nametag or a default mob name)
+5. `string` UUID of the entity
+6. `boolean` `true` when the entity was destroyed by stepping through the wrong end of the wormhole, `false` otherwise.
 
 ___
 
@@ -159,9 +169,10 @@ Fired whenever an entity exits the wormhole.
 
 **Return values**
 1. `string` The event name (`stargate_reconstructing_entity`)
-2. `string` The type of the entity (e.g. `minecraft:pig`)
-3. `string` The display name of the entity (e.g. player's name, name set by a nametag or a default mob name)
-4. `string` UUID of the entity
+2. `string` The peripheral name
+3. `string` The type of the entity (e.g. `minecraft:pig`)
+4. `string` The display name of the entity (e.g. player's name, name set by a nametag or a default mob name)
+5. `string` UUID of the entity
 
 ___
 
@@ -173,7 +184,28 @@ Fired whenever a Stargate receives a message sent by the `sendStargateMessage(me
 
 **Return values**
 1. `string` The event name (`stargate_message_received`)
-2. `string` The message that was sent from an interface connected to the Stargate on the other end of the connection.
+2. `string` The peripheral name
+3. `string` The message that was sent from an interface connected to the Stargate on the other end of the connection.
 
 **See also**
 - [sendStargateMessage(message)]({{ site.baseurl }}/computercraft/stargate_interface/#sendStargateMessage)
+
+___
+
+## Transceiver
+The computer will receiver these events whenever a [transceiver]({{ site.baseurl }}/computercraft/transceiver/) is connected as a peripheral.
+
+___
+
+<h3 class="h-function">
+    <code>transceiver_transmission_received</code>
+</h3>
+
+Fired whenever the [transceiver]({{ site.baseurl }}/computercraft/transceiver/) receives a transmission on the configured frequency.
+
+**Return values**
+1. `string` The event name (`transceiver_transmission_received`)
+2. `string` The peripheral name
+3. `number` The configured frequency
+4. `number` The received identification code (IDC)
+5. `boolean` Whether the code matches the configured IDC on the transceiver

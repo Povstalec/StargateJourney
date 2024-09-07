@@ -1442,3 +1442,254 @@ Sets the network identifier for the Stargate.
 local network = 415252 -- could be any number
 interface.setNetwork(network) 
 ```
+
+___
+
+### Iris control
+Iris related methods are available even when the Stargate does not have an iris installed.
+However, they are not available for the Tollan Stargate which can't have an iris.
+
+___
+
+<h3 class="h-function">
+    <code>getIris()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L16">source</a>
+</h3>
+Retrieves the identifier of the currently installed iris on the Stargate.
+
+**Returns**
+1. `string`: The identifier of the iris (e.g. `sgjourney:naquadah_alloy_iris`)<br>
+   Returns `nil` if there is no iris installed
+
+**See also**
+- [`closeIris()`](#closeIris)
+- [`openIris()`](#openIris)
+- [`stopIris()`](#stopIris)
+- [`getIrisProgress()`](#getIrisProgress)
+- [`getIrisProgressPercentage()`](#getIrisProgressPercentage)
+- [`getIrisDurability()`](#getIrisDurability)
+- [`getIrisMaxDurability()`](#getIrisMaxDurability)
+
+**Usage**
+- Check the installed iris
+```lua
+local iris = interface.getIris()
+if iris then
+    print("The Stargate has an iris installed: "..iris)
+else
+    print("The Stargate does not have an iris installed")
+end
+```
+
+___
+
+<h3 class="h-function">
+    <code>closeIris()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L39">source</a>
+</h3>
+Instruct the Iris to start closing.
+The function does not wait for the iris to close.
+
+**Returns**
+1. `boolean`: `false` when the iris is already being closed (in motion) by a computer, `true` otherwise.
+Can return `true` even when there is no iris installed.
+
+**See also**
+- [`getIris()`](#getIris)
+- [`openIris()`](#openIris)
+- [`stopIris()`](#stopIris)
+- [`getIrisProgress()`](#getIrisProgress)
+- [`getIrisProgressPercentage()`](#getIrisProgressPercentage)
+- [`getIrisDurability()`](#getIrisDurability)
+- [`getIrisMaxDurability()`](#getIrisMaxDurability)
+
+**Usage**
+- Close the iris
+```lua
+local closing = interface.closeIris()
+if closing then
+    print("Closing the iris...")
+else
+    print("The iris is already being closed by a computer...")
+end
+```
+
+___
+
+<h3 class="h-function">
+    <code>openIris()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L59">source</a>
+</h3>
+Instruct the Iris to start opening.
+The function does not wait for the iris to open.
+
+**Returns**
+1. `boolean`: `false` when the iris is already being opened (in motion) by a computer, `true` otherwise.
+Can return `true` even when there is no iris installed.
+
+**See also**
+- [`getIris()`](#getIris)
+- [`closeIris()`](#closeIris)
+- [`stopIris()`](#stopIris)
+- [`getIrisProgress()`](#getIrisProgress)
+- [`getIrisProgressPercentage()`](#getIrisProgressPercentage)
+- [`getIrisDurability()`](#getIrisDurability)
+- [`getIrisMaxDurability()`](#getIrisMaxDurability)
+
+**Usage**
+- Open the iris
+```lua
+local opening = interface.openIris()
+if opening then
+    print("Opening the iris...")
+else
+    print("The iris is already being opened by a computer...")
+end
+```
+
+___
+
+<h3 class="h-function">
+    <code>stopIris()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L79">source</a>
+</h3>
+Instruct the Iris to stop.
+The function does not wait for the iris to stop.
+
+**Returns**
+1. `boolean`: `false` when the iris is already being stopped by a computer, `true` otherwise.
+Can return `true` even when there is no iris installed.
+
+**See also**
+- [`getIris()`](#getIris)
+- [`closeIris()`](#closeIris)
+- [`openIris()`](#openIris)
+- [`getIrisProgress()`](#getIrisProgress)
+- [`getIrisProgressPercentage()`](#getIrisProgressPercentage)
+- [`getIrisDurability()`](#getIrisDurability)
+- [`getIrisMaxDurability()`](#getIrisMaxDurability)
+
+**Usage**
+- Stop the iris
+```lua
+local stopped = interface.stopIris()
+if stopped then
+    print("Stopped the iris...")
+else
+    print("The iris is already being stopped by a computer...")
+end
+```
+
+___
+
+<h3 class="h-function">
+    <code>getIrisProgress()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L99">source</a>
+</h3>
+Retrieves the internal progress of the iris state.
+
+**Returns**
+1. `number`: The internal progress of the iris state<br>
+> `0` when the iris is fully opened or not installed on the gate<br> 
+> `58` when the iris is fully closed.
+
+**See also**
+- [`getIrisProgressPercentage()`](#getIrisProgressPercentage)
+- [`getIris()`](#getIris)
+- [`closeIris()`](#closeIris)
+- [`openIris()`](#openIris)
+- [`stopIris()`](#stopIris)
+- [`getIrisDurability()`](#getIrisDurability)
+- [`getIrisMaxDurability()`](#getIrisMaxDurability)
+
+___
+
+<h3 class="h-function">
+    <code>getIrisProgressPercentage()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L119">source</a>
+</h3>
+Retrieves the percentage of the iris closing progress.
+
+**Returns**
+1. `number`: The percentage (decimal) of the iris closing progress<br>
+> `0` when the iris is fully opened or not installed on the gate<br>
+> `100` when the iris is fully closed
+
+**See also**
+- [`getIris()`](#getIris)
+- [`closeIris()`](#closeIris)
+- [`openIris()`](#openIris)
+- [`stopIris()`](#stopIris)
+- [`getIrisProgress()`](#getIrisProgress)
+- [`getIrisDurability()`](#getIrisDurability)
+- [`getIrisMaxDurability()`](#getIrisMaxDurability)
+
+**Usage**
+- Get the iris closing percentage
+```lua
+local progress = interface.getIrisProgressPercentage()
+if progress == 0 then
+    print("Iris is open")
+elif progress == 100 then
+    print("The iris is fully closed")
+else
+    print("The iris is "..math.floor(progress).."% closed")
+end
+```
+
+___
+
+<h3 class="h-function">
+    <code>getIrisDurability()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L139">source</a>
+</h3>
+Retrieves the iris remaining durability.
+
+**Returns**
+1. `number`: The remaining durability of the iris
+
+**See also**
+- [`getIrisMaxDurability()`](#getIrisMaxDurability)
+- [`getIris()`](#getIris)
+- [`closeIris()`](#closeIris)
+- [`openIris()`](#openIris)
+- [`stopIris()`](#stopIris)
+- [`getIrisProgress()`](#getIrisProgress)
+- [`getIrisProgressPercentage()`](#getIrisProgressPercentage)
+
+**Usage**
+- Get the iris durability
+```lua
+local durability = interface.getIrisDurability()
+local maxDurability = interface.getIrisMaxDurability()
+print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(durability/maxDurability*100).."%")
+```
+
+___
+
+<h3 class="h-function">
+    <code>getIrisMaxDurability()</code>
+    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L159">source</a>
+</h3>
+Retrieves the iris maximum durability.
+
+**Returns**
+1. `number`: The maximum iris durability
+
+**See also**
+- [`getIris()`](#getIris)
+- [`closeIris()`](#closeIris)
+- [`openIris()`](#openIris)
+- [`stopIris()`](#stopIris)
+- [`getIrisProgress()`](#getIrisProgress)
+- [`getIrisProgressPercentage()`](#getIrisProgressPercentage)
+- [`getIrisDurability()`](#getIrisDurability)
+
+**Usage**
+- Get the iris durability
+```lua
+local durability = interface.getIrisDurability()
+local maxDurability = interface.getIrisMaxDurability()
+print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(durability/maxDurability*100).."%")
+```
+

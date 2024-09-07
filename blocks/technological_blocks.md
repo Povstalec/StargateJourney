@@ -75,6 +75,30 @@ The gate automatically picks up symbols of the galaxy each time it is placed (un
 
 ___
 
+## Transceiver
+The transceiver is capable of receiving an IDC (IDentification code) from the 
+[Garage Door Opener (GDO)]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo).
+It will provide a redstone signal pulse through a comparator when a correct IDC is received
+and will notify connected computers with an event.
+Transceiver is also able to transmit the IDC.
+
+See [Stargate Network / Stargate Iris / Controlling / Remote iris control]({{ site.baseurl }}/stargate_network/stargate_iris/#remote-iris-control) 
+for redstone example. 
+
+**GUI usage**
+- The **code** is displayed on the first line of the display.
+- The **editing mode** is displayed as **#** when you are modifying the frequency.  
+  When the **#** is absent, you are modifying the identification code.  
+  The editing mode can be switched with the **f** button.
+- The **transmit button** on the left sends the entered IDC (IDentification Code) on the specified frequency.
+
+<div class="d-flex flex-justify-between flex-align-items-center" markdown="block">
+![Transceiver]({{ site.baseurl }}/assets/img/blocks/technological/transceiver.png)
+{: .max-width-256 }
+![Transceiver GUI]({{ site.baseurl }}/assets/img/blocks/technological/transceiver_gui.png)
+</div>
+___
+
 ## Transport rings
 ## Ring panel
 
