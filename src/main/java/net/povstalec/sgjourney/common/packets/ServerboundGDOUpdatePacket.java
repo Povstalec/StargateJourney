@@ -52,7 +52,7 @@ public class ServerboundGDOUpdatePacket
     			GDOItem.setFrequencyAndIDC(stack, frequency, idc);
     			
     			if(transmit)
-    				GDOItem.sendTransmission(player.getLevel(), player, stack);
+    				GDOItem.sendTransmission(player.level(), player, stack);
     		}
     	});
         return true;

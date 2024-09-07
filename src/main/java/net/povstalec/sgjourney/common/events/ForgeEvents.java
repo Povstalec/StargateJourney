@@ -249,7 +249,7 @@ public class ForgeEvents
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 		
-		if(!state.getMaterial().isReplaceable())
+		if(!state.canBeReplaced())
 		{
 			pos = event.getPos().relative(event.getFace());
 			state = level.getBlockState(pos);
@@ -303,7 +303,7 @@ public class ForgeEvents
 		if(event.getState().getBlock() instanceof AbstractStargateBlock stargate)
 		{
 			Player player = event.getPlayer();
-			Level level = player.getLevel();
+			Level level = player.level();
 			
 			Optional<StargateBlockCover> blockCover = stargate.getBlockCover(level, event.getState(), event.getPos());
 			

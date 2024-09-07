@@ -21,7 +21,7 @@ public class TransceiverMenu extends AbstractContainerMenu
 	
 	public TransceiverMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
 	{
-		this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+		this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
 	}
 	
 	public TransceiverMenu(int containerId, Inventory inv, BlockEntity blockEntity)
@@ -29,7 +29,7 @@ public class TransceiverMenu extends AbstractContainerMenu
 		super(MenuInit.TRANSCEIVER.get(), containerId);
 		
 		transceiverEntity = ((TransceiverEntity) blockEntity);
-		this.level = inv.player.level;
+		this.level = inv.player.level();
 	}
 	
 	@Override

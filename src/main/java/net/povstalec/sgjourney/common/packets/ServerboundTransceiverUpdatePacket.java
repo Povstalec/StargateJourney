@@ -48,7 +48,7 @@ public class ServerboundTransceiverUpdatePacket
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
     {
     	ctx.get().enqueueWork(() -> {
-    		final BlockEntity blockEntity = ctx.get().getSender().level.getBlockEntity(pos);
+    		final BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(pos);
     		
     		if(blockEntity instanceof TransceiverEntity transceiver)
     		{

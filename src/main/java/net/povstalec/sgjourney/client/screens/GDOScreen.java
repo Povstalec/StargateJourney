@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -73,33 +74,34 @@ public class GDOScreen extends Screen
 	}
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
     	RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-    	this.renderBackground(poseStack);
+    	this.renderBackground(graphics);
     	int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
+        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
-    	super.render(poseStack, mouseX, mouseY, delta);
-    	
-    	poseStack.pushPose();
-    	poseStack.scale(0.5F, 0.5F, 0.5F);
-    	poseStack.translate((float)x, (float)y, 0.0F);
+    	super.render(graphics, mouseX, mouseY, delta);
+
+        PoseStack stack = graphics.pose();
+        stack.pushPose();
+        stack.scale(0.5F, 0.5F, 0.5F);
+        stack.translate((float)x, (float)y, 0.0F);
         
-    	renderLabels(poseStack, mouseX, mouseY, x, y);
+    	renderLabels(graphics, mouseX, mouseY, x, y);
 		
-		poseStack.popPose();
+    	stack.popPose();
     }
     
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y) 
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) 
 	{
-    	this.font.draw(stack, Component.literal(idc), x + 202F, y + 40F, 0x2a2927);
-		this.font.draw(stack, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 202F, y + 56F, 0x2a2927); // TODO Translate
-		this.font.draw(stack, Component.literal(String.valueOf(frequency)), x + 202F, y + 68F, 0x2a2927);
+    	graphics.drawString(this.font, Component.literal(idc), x + 202, y + 40, 0x2a2927, false);
+    	graphics.drawString(this.font, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 202, y + 56, 0x2a2927, false);
+    	graphics.drawString(this.font, Component.literal(String.valueOf(frequency)), x + 202, y + 68, 0x2a2927, false);
     }
     
     @Override

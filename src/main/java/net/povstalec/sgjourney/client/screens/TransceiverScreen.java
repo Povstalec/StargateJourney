@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -50,7 +51,7 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
 	}
 
     @Override
-    protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY)
+    protected void renderBg(GuiGraphics graphics, float pPartialTick, int pMouseX, int pMouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -58,38 +59,39 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
+        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float delta)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
     	int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
-        renderBackground(stack);
-        super.render(stack, mouseX, mouseY, delta);
-        renderTooltip(stack, mouseX, mouseY);
+        renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, delta);
+        renderTooltip(graphics, mouseX, mouseY);
         
+        PoseStack stack = graphics.pose();
         stack.pushPose();
         stack.scale(0.5F, 0.5F, 0.5F);
         stack.translate((float)x, (float)y, 0.0F);
         
-    	renderLabels(stack, mouseX, mouseY, x, y);
+    	renderLabels(graphics, mouseX, mouseY, x, y);
 		
     	stack.popPose();
     }
     
     @Override
-    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) 
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) 
 	{
-		this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 0x191e2a);
+    	graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0x191e2a, false);
     }
     
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y) 
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) 
 	{
-    	this.font.draw(stack, Component.literal(menu.getCurrentCode()), x + 218F, y + 70F, 0x009393);
-		this.font.draw(stack, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(editingFrequency() ? ": #" : ":")), x + 218F, y + 86F, 0x009393); // TODO Translate
-		this.font.draw(stack, Component.literal(String.valueOf(menu.getFrequency())), x + 218F, y + 98F, 0x009393);
+    	graphics.drawString(this.font, Component.literal(menu.getCurrentCode()), x + 218, y + 70, 0x009393, false);
+    	graphics.drawString(this.font, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(editingFrequency() ? ": #" : ":")), x + 218, y + 86, 0x009393, false); // TODO Translate
+    	graphics.drawString(this.font, Component.literal(String.valueOf(menu.getFrequency())), x + 218, y + 98, 0x009393, false);
     }
     
     @Override

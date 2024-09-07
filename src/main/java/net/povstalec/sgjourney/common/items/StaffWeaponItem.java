@@ -191,7 +191,7 @@ public class StaffWeaponItem extends Item
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity player)
 	{
 		//TODO Find a good file for the attack sound
-		player.getLevel().playSound((Player) null, player.blockPosition(), SoundInit.MATOK_ATTACK.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+		player.level().playSound((Player) null, player.blockPosition(), SoundInit.MATOK_ATTACK.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 		return super.hurtEnemy(stack, target, player);
 	}
 	
