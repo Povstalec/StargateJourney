@@ -28,7 +28,7 @@ public class GDOScreen extends Screen
 	private String idc;
 	private int frequency;
 	
-	private boolean toggledFrequency = true;
+	private boolean toggledFrequency = false;
 	
 	public GDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
 	{
