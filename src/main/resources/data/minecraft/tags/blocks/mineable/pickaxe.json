@@ -4,20 +4,23 @@
 	[
 		"sgjourney:universe_stargate",
 		"sgjourney:universe_ring",
+		"sgjourney:universe_shielding",
 		
 		"sgjourney:universe_stargate_chevron",
 		
 		"sgjourney:milky_way_stargate",
 		"sgjourney:milky_way_ring",
-		"sgjourney:milky_way_iris",
+		"sgjourney:milky_way_shielding",
 		"sgjourney:milky_way_dhd",
 		
 		"sgjourney:pegasus_stargate",
 		"sgjourney:pegasus_ring",
+		"sgjourney:pegasus_shielding",
 		"sgjourney:pegasus_dhd",
 		
 		"sgjourney:classic_stargate",
 		"sgjourney:classic_ring",
+		"sgjourney:classic_shielding",
 		"sgjourney:classic_stargate_base_block",
 		"sgjourney:classic_stargate_chevron_block",
 		"sgjourney:classic_stargate_ring_block",
