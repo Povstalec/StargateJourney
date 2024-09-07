@@ -8,6 +8,9 @@
     "sgjourney:sandstone_symbol",
     "sgjourney:stone_symbol",
     "sgjourney:sandstone_cartouche",
-    "sgjourney:stone_cartouche"
+    "sgjourney:stone_cartouche",
+	
+	"sgjourney:transceiver"
+		
   ]
 }

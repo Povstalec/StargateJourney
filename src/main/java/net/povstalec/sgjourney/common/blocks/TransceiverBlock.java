@@ -2,11 +2,13 @@ package net.povstalec.sgjourney.common.blocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
 import org.joml.Vector3d;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -20,6 +22,8 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -191,6 +195,12 @@ public class TransceiverBlock extends Block implements EntityBlock
 		level.setBlock(pos, state.setValue(RECEIVING, true), 3);
 		level.scheduleTick(pos, this, TICKS_ACTIVE);
 	}
+	
+	@Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    {
+		tooltipComponents.add(Component.translatable("block.sgjourney.transceiver.description").withStyle(ChatFormatting.GRAY));
+    }
 	
 	@SuppressWarnings("unchecked")
 	@Nullable
