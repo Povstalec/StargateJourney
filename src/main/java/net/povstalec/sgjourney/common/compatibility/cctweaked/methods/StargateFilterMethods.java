@@ -65,7 +65,6 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
@@ -106,7 +105,6 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
@@ -171,7 +169,6 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
@@ -212,7 +209,6 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
