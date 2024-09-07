@@ -249,7 +249,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			
 			if(interfaceEntity.energyBlockEntity instanceof AbstractStargateEntity stargate)
 			{
-				interfaceEntity.handleIris(stargate);
+				interfaceEntity.handleShielding(state, stargate);
 				
 				if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
 					interfaceEntity.rotateStargate(milkyWayStargate);
@@ -285,11 +285,5 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		this.currentSymbol = stargate.getCurrentSymbol();
 	}
 	
-	private void handleIris(AbstractStargateEntity stargate)
-	{
-		if(signalStrength > 0 && signalStrength <= 7)
-			stargate.increaseIrisProgress();
-		else if(signalStrength > 8 && signalStrength <= 15)
-			stargate.decreaseIrisProgress();
-	}
+	protected void handleShielding(BlockState state, AbstractStargateEntity stargate) {}
 }

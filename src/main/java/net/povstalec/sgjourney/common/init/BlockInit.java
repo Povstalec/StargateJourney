@@ -244,7 +244,7 @@ public class BlockInit
 			() -> new AdvancedCrystallizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 
 	public static final RegistryObject<TransceiverBlock> TRANSCEIVER = registerBlock("transceiver", 
-			() -> new TransceiverBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);
+			() -> new TransceiverBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F)), 1);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)

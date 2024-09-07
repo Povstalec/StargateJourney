@@ -21,6 +21,7 @@
 	"block.sgjourney.stone_symbol": "Kamenný symbol",
 	"block.sgjourney.sandstone_cartouche": "Pískovcová kartuše",
 	"block.sgjourney.stone_cartouche": "Kamenná kartuše",
+	"block.sgjourney.cartouche.not_enough_space": "Kartuše nemá dost místa",
 	
 	"block.sgjourney.universe_stargate": "Hvězdná brána 1. generace",
 	"block.sgjourney.universe_ring": "Hvězdná brána 1. generace",
@@ -48,7 +49,6 @@
 	"block.sgjourney.stargate.classic.invalid_address": "Nesprávná adresa",
 	"block.sgjourney.stargate.classic.address_exists": "Addresa již existujes",
 	"block.sgjourney.stargate.incorrect_stargate_type": "Špatný druh brány",
-	"block.sgjourney.cartouche.not_enough_space": "Kartuše nemá dost místa",
 	
 	"block.sgjourney.transport_rings": "Transportní kruhy",
 	"block.sgjourney.ring_panel": "Ovládání kruhů",
@@ -57,8 +57,11 @@
 	"block.sgjourney.naquadah_generator_mark_ii": "Naquadahový Generátor Mark II",
 	
 	"block.sgjourney.basic_interface": "Základní rozhraní",
+	"block.sgjourney.basic_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
 	"block.sgjourney.crystal_interface": "Krystalové rozhraní",
+	"block.sgjourney.crystal_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
 	"block.sgjourney.advanced_crystal_interface": "Pokročilé krystalové rozhraní",
+	"block.sgjourney.advanced_crystal_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
 
 	"block.sgjourney.crystallizer": "Krystalizér",
 	"block.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
@@ -72,6 +75,7 @@
 	"block.sgjourney.zpm_plug": "ZPM zástrčka",
 
 	"block.sgjourney.transceiver": "Vysílač",
+	"block.sgjourney.transceiver.description": "Zařízení pro vysílání a zachycování signálů z jiných vysílačů a GDO",
 	
 	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",

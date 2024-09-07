@@ -68,6 +68,8 @@
 		
 		"sgjourney:ancient_gene_detector",
 		
-		"sgjourney:zpm_hub"
+		"sgjourney:zpm_hub",
+		
+		"sgjourney:transceiver"
 	]
 }
