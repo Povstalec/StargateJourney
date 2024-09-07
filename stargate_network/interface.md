@@ -22,11 +22,11 @@ ___
 
 ## Redstone
 
-{: .future }
-The interface will be able to react to a redstone signal controlling an iris.
-
 The interface does not provide a redstone signal directly but **through a [redstone comparator](https://minecraft.fandom.com/wiki/Redstone_Comparator)** (like a hopper or lectern).
 The provided redstone signal differs based on selected interface mode.
+
+The current mode can be changed by `shift-right-clicking` the interface with an **empty hand**.
+Some interface mods are also able to react to a redstone signal as an input (e.g. the [iris mode](#iris-mode)).
 
 ![Interface setup with Stargate and comparator]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/interface_setup.png)
 
