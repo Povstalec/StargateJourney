@@ -1,0 +1,40 @@
+@import "./color_schemes/dark";
+// yes its intended that dark theme uses their default colors and that is modified here afterwards
+// mostly for callouts
+// dont touch it
+
+$grey-dk-000: #959396;
+$grey-dk-100: #5c5962;
+$grey-dk-200: #44434d;
+$grey-dk-250: #302d36;
+$grey-dk-300: #27262b;
+
+$grey-lt-000: #f5f6fa;
+$grey-lt-100: #eeebee;
+$grey-lt-200: #ecebed;
+$grey-lt-300: #e6e1e8;
+
+$purple-000: #362160;
+$purple-100: #472c82;
+$purple-200: #5936a2;
+$purple-300: #6b44bc;
+
+$blue-000: #102d5c;
+$blue-100: #143d79;
+$blue-200: #1b4a91;
+$blue-300: #255ab2;
+
+$green-000: #103417;
+$green-100: #1b4721;
+$green-200: #245829;
+$green-300: #2c6a30;
+
+$yellow-000: #452700;
+$yellow-100: #593600;
+$yellow-200: #6c4400;
+$yellow-300: #825303;
+
+$red-000: #5d1012;
+$red-100: #78191b;
+$red-200: #922323;
+$red-300: #ad2e2b;

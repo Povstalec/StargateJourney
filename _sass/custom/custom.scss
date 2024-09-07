@@ -1,0 +1,33 @@
+.site-title {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.site-title .site-logo {
+  width: auto;
+  flex-grow: 1;
+}
+
+.max-width-512 {
+  max-width: 512px;
+}
+
+.max-width-256 {
+  max-width: 256px;
+}
+
+.max-width-128 {
+  max-width: 128px;
+}
+
+details {
+  margin: 10px 0;
+  margin-top: 10px;
+  margin-block-start: 0;
+  margin-inline-start: 0;
+  padding-left: 1rem;
+  border-left: 3px solid #44434d;
+}
+
+// located in /assets/css
+@import "./youtubePlayer.css";
