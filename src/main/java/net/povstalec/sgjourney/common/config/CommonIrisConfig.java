@@ -30,7 +30,7 @@ public class CommonIrisConfig
 		
 		iris_breaking_strength = server
 				.comment("The Iris can break any Blocks with Block Strength below the Iris Strength")
-				.defineInRange("server.copper_iris_durability", 0.5, 0, Double.MAX_VALUE);
+				.defineInRange("server.iris_breaking_strength", 0.5, 0, Double.MAX_VALUE);
 		
 		//TODO Maybe different iris strengths?
 		
