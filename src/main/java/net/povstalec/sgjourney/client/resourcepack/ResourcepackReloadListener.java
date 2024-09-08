@@ -71,9 +71,7 @@ public class ResourcepackReloadListener
 			
 			if(clientPacketListener != null)
 			{
-	    		StargateJourney.LOGGER.debug("---------- Checking Datapack Registry ----------");
-				
-				RegistryAccess registries = clientPacketListener.registryAccess();
+	    		RegistryAccess registries = clientPacketListener.registryAccess();
 				Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 				
 				for(Entry<ResourceKey<StargateVariant>, StargateVariant> stargateVariantEntry : variantRegistry.entrySet())

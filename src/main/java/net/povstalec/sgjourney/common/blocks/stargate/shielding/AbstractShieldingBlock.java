@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
@@ -80,6 +81,12 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos)
 	{
 		return true;
+	}
+
+	@Override
+	public PushReaction getPistonPushReaction(BlockState state)
+	{
+		return PushReaction.BLOCK;
 	}
 
 	@Override
