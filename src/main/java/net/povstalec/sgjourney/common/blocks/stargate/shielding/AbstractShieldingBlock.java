@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -87,6 +89,13 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 	public PushReaction getPistonPushReaction(BlockState state)
 	{
 		return PushReaction.BLOCK;
+	}
+
+	@Override
+	protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state)
+	{
+		SoundType soundtype = state.getSoundType(level, pos, null);
+		level.playLocalSound(pos, soundtype.getBreakSound(), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F, false);
 	}
 
 	@Override
