@@ -1,12 +1,20 @@
 package net.povstalec.sgjourney.client.resourcepack;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -22,6 +30,7 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStar
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 import net.povstalec.stellarview.StellarView;
 
 public class ResourcepackReloadListener
@@ -35,6 +44,14 @@ public class ResourcepackReloadListener
 	public static final String PEGASUS = "pegasus";
 	public static final String TOLLAN = "tollan";
 	public static final String CLASSIC = "classic";
+
+	public static final ResourceLocation UNIVERSE_STARGATE = new ResourceLocation(PATH, UNIVERSE + "_stargate");
+	public static final ResourceLocation MILKY_WAY_STARGATE = new ResourceLocation(PATH, MILKY_WAY + "_stargate");
+	public static final ResourceLocation PEGASUS_STARGATE = new ResourceLocation(PATH, PEGASUS + "_stargate");
+	public static final ResourceLocation TOLLAN_STARGATE = new ResourceLocation(PATH, TOLLAN + "_stargate");
+	public static final ResourceLocation CLASSIC_STARGATE = new ResourceLocation(PATH, CLASSIC + "_stargate");
+	
+	private static Minecraft minecraft = Minecraft.getInstance();
 	
 	@Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ReloadListener extends SimpleJsonResourceReloadListener
@@ -47,8 +64,23 @@ public class ResourcepackReloadListener
 		@Override
 		protected void apply(Map<ResourceLocation, JsonElement> jsonMap, ResourceManager manager, ProfilerFiller filler)
 		{
-    		ClientStargateVariants.clear();
     		StargateJourney.LOGGER.debug("---------- Loading Stargate Variants ----------");
+    		ClientStargateVariants.clear();
+    		
+			ClientPacketListener clientPacketListener = minecraft.getConnection();
+			
+			if(clientPacketListener != null)
+			{
+	    		StargateJourney.LOGGER.debug("---------- Checking Datapack Registry ----------");
+				
+				RegistryAccess registries = clientPacketListener.registryAccess();
+				Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
+				
+				for(Entry<ResourceKey<StargateVariant>, StargateVariant> stargateVariantEntry : variantRegistry.entrySet())
+				{
+					stargateVariantEntry.getValue().resetMissing();
+				}
+			}
     		
 			for(Map.Entry<ResourceLocation, JsonElement> jsonEntry : jsonMap.entrySet())
 			{
@@ -60,19 +92,19 @@ public class ResourcepackReloadListener
 					location = shortenPath(location, STARGATE_VARIANT);
 					
 					if(canShortenPath(location, UNIVERSE))
-						addUniverseStargateVariant(location, element);
+						addUniverseStargateVariant(shortenPath(location, UNIVERSE), element);
 					
 					else if(canShortenPath(location, MILKY_WAY))
-						addMilkyWayStargateVariant(location, element);
+						addMilkyWayStargateVariant(shortenPath(location, MILKY_WAY), element);
 					
 					else if(canShortenPath(location, PEGASUS))
-						addPegasusStargateVariant(location, element);
+						addPegasusStargateVariant(shortenPath(location, PEGASUS), element);
 					
 					else if(canShortenPath(location, TOLLAN))
-						addTollanStargateVariant(location, element);
+						addTollanStargateVariant(shortenPath(location, TOLLAN), element);
 					
 					else if(canShortenPath(location, CLASSIC))
-						addClassicStargateVariant(location, element);
+						addClassicStargateVariant(shortenPath(location, CLASSIC), element);
 				}
 			}
 		}
