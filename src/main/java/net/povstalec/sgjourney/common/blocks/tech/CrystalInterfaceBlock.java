@@ -54,7 +54,7 @@ public class CrystalInterfaceBlock extends AbstractInterfaceBlock
 	@Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-		tooltipComponents.add(Component.translatable("block.sgjourney.crystal_interface.description").withStyle(ChatFormatting.GRAY));
+		tooltipComponents.add(Component.translatable("block.sgjourney.crystal_interface.description").withStyle(ChatFormatting.DARK_GRAY));
 		tooltipComponents.add(Component.translatable("block.sgjourney.crystal_interface.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }
 }

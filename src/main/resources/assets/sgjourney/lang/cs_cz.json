@@ -407,6 +407,10 @@
 	"point_of_origin.sgjourney.ankh": "Anch",
 	"point_of_origin.sgjourney.reflection": "Odraz",
 	"point_of_origin.sgjourney.wheel": "Kolo",
+	"point_of_origin.sgjourney.ursa_major": "Velký vůz",
+	"point_of_origin.sgjourney.ursa_minor": "Malý vůz",
+
+	"point_of_origin.sgjourney.ursa": "Ursa",
 	
 	
 	"info.sgjourney.add_to_network": "Přidat do sítě",

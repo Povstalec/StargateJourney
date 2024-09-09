@@ -372,6 +372,7 @@
 	"symbols.sgjourney.nether": "Nether",
 	"symbols.sgjourney.end": "End",
 	
+	
 	"point_of_origin.sgjourney.terra": "Terra",
 	"point_of_origin.sgjourney.tauri": "Tau'ri",
 	"point_of_origin.sgjourney.giza": "Giza",
@@ -404,6 +405,11 @@
 	"point_of_origin.sgjourney.ankh": "Ankh",
 	"point_of_origin.sgjourney.reflection": "Reflection",
 	"point_of_origin.sgjourney.wheel": "Wheel",
+	"point_of_origin.sgjourney.ursa_major": "Ursa Major",
+	"point_of_origin.sgjourney.ursa_minor": "Ursa Minor",
+
+	"point_of_origin.sgjourney.ursa": "Ursa",
+	
 	
 	"info.sgjourney.add_to_network": "Add To Network",
 	"info.sgjourney.point_of_origin": "Point of Origin",
