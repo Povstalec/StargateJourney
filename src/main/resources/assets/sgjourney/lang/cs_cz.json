@@ -63,10 +63,21 @@
 	
 	"block.sgjourney.basic_interface": "Základní rozhraní",
 	"block.sgjourney.basic_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
+	"block.sgjourney.basic_interface.description.mode": "Shift + pravé kliknutí na blok pro změnu módů",
 	"block.sgjourney.crystal_interface": "Krystalové rozhraní",
 	"block.sgjourney.crystal_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
+	"block.sgjourney.crystal_interface.description.mode": "Shift + pravé kliknutí na blok pro změnu módů",
 	"block.sgjourney.advanced_crystal_interface": "Pokročilé krystalové rozhraní",
 	"block.sgjourney.advanced_crystal_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
+	"block.sgjourney.advanced_crystal_interface.description.mode": "Shift + pravé kliknutí na blok pro změnu módů",
+	
+	"block.sgjourney.interface.mode": "Mód",
+	"block.sgjourney.interface.mode.off": "Žádný",
+	"block.sgjourney.interface.mode.ring_segment": "Segment kruhu",
+	"block.sgjourney.interface.mode.ring_rotation": "Rotace kruhu",
+	"block.sgjourney.interface.mode.chevrons_active": "zadané symboly",
+	"block.sgjourney.interface.mode.wormhole_active": "Aktivní spojení",
+	"block.sgjourney.interface.mode.shielding": "Ochrana",
 
 	"block.sgjourney.crystallizer": "Krystalizér",
 	"block.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
@@ -131,7 +142,7 @@
 	"item.sgjourney.kara_kesh": "Ozbrojená ruka",
 	"item.sgjourney.ring_remote": "Ovládání kruhů",
 	
-	"item.sgjourney.matok": "Tyčová zbraň",
+	"item.sgjourney.matok": "Tyčová zbraň Ma'Tok",
 	
 	"item.sgjourney.pda": "PDA",
 	"item.sgjourney.zero_point_module": "ZPM",
@@ -231,7 +242,20 @@
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
 
 	"screen.sgjourney.transceiver": "Vysílač",
+	"screen.sgjourney.transceiver.symbol.frequency": "f",
+	"screen.sgjourney.transceiver.frequency": "FREKVENCE",
+	"screen.sgjourney.transceiver.send_transmission": "Odeslat kód",
+	"screen.sgjourney.transceiver.symbol.send_transmission": "#",
+	"screen.sgjourney.transceiver.delete": "Smazat",
+	"screen.sgjourney.transceiver.symbol.delete": "*",
+	"screen.sgjourney.transceiver.toggle_frequency": "Přepnout mezi úpravou frekvence / IDC",
+	
 	"screen.sgjourney.gdo.frequency": "FREKVENCE",
+	"screen.sgjourney.gdo.send_transmission": "Odeslat kód",
+	"screen.sgjourney.gdo.symbol.send_transmission": "#",
+	"screen.sgjourney.gdo.delete": "Smazat",
+	"screen.sgjourney.gdo.symbol.delete": "*",
+	"screen.sgjourney.gdo.toggle_frequency": "Přepnout mezi úpravou frekvence / IDC",
 	
 	"biome.sgjourney.abydos_desert": "Abydoská poušť",
 	"biome.sgjourney.abydos_oasis": "Abydoská oáza",

@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,19 +19,21 @@ public abstract class SGJourneyButton extends Button
 	protected final int xOffset;
 	protected final int yOffset;
 	
-	public SGJourneyButton(ResourceLocation texture, int x, int y, int xSize, int ySize, int xOffset, int yOffset, Component component, OnPress press)
+	public SGJourneyButton(ResourceLocation texture, int x, int y, int xSize, int ySize, int xOffset, int yOffset, Component message, Component tooltip, OnPress press)
 	{
-		super(x, y, xSize, ySize, component, press, Button.DEFAULT_NARRATION);
+		super(x, y, xSize, ySize, message, press, Button.DEFAULT_NARRATION);
 		
 		this.texture = texture;
+		
+		this.setTooltip(Tooltip.create(tooltip));
 		
 		this.xOffset = xOffset;
 		this.yOffset = yOffset;
 	}
 	
-	public SGJourneyButton(ResourceLocation texture, int x, int y, int xSize, int ySize, Component component, OnPress press)
+	public SGJourneyButton(ResourceLocation texture, int x, int y, int xSize, int ySize, Component message, Component tooltip, OnPress press)
 	{
-		this(texture, x, y, xSize, ySize, 0, 0, component, press);
+		this(texture, x, y, xSize, ySize, 0, 0, message, tooltip, press);
 	}
 	
 	protected int getYImage(boolean isHovered)

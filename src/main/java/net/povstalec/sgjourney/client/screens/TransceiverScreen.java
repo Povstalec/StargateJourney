@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.TransceiverButton;
+import net.povstalec.sgjourney.client.widgets.TransceiverLargeButton;
 import net.povstalec.sgjourney.common.menu.TransceiverMenu;
 
 public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
@@ -44,9 +45,14 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
 		this.addRenderableWidget(new TransceiverButton(x + 61, y + 45, Component.literal("2"), (button) -> addToCode(2)));
 		this.addRenderableWidget(new TransceiverButton(x + 79, y + 45, Component.literal("3"), (button) -> addToCode(3)));
 		
-		this.addRenderableWidget(new TransceiverButton(x + 43, y + 57, Component.literal("*"), (button) -> removeFromCode()));
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 57, Component.translatable("screen.sgjourney.transceiver.symbol.delete"), Component.translatable("screen.sgjourney.transceiver.delete"), (button) -> removeFromCode()));
 		this.addRenderableWidget(new TransceiverButton(x + 61, y + 57, Component.literal("0"), (button) -> addToCode(0)));
-		this.addRenderableWidget(new TransceiverButton(x + 79, y + 57, Component.literal("F"), (button) -> toggleFrequency()));
+		TransceiverButton transceiverButton = new TransceiverButton(x + 79, y + 57, Component.translatable("screen.sgjourney.transceiver.symbol.send_transmission"), Component.translatable("screen.sgjourney.transceiver.send_transmission"),
+				(button) -> sendTransmission());
+		transceiverButton.active = false; //TODO Make this button usable
+		this.addRenderableWidget(transceiverButton);
+
+		this.addRenderableWidget(new TransceiverLargeButton(x + 14, y + 34, Component.translatable("screen.sgjourney.transceiver.symbol.frequency"), Component.translatable("screen.sgjourney.transceiver.toggle_frequency"), (button) -> toggleFrequency()));
 	}
 
     @Override
@@ -153,7 +159,7 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
     
     private void sendTransmission()
     {
-    	menu.sendTransmission();
+    	//menu.sendTransmission(); //TODO Add this
     }
     
     private void addToCode(int number)

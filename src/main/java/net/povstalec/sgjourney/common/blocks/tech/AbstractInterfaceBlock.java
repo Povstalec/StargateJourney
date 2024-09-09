@@ -103,7 +103,14 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
             		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         		}
         		else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
-        			level.setBlock(pos, state.cycle(MODE), 3);
+        		{
+        			BlockState newModeState = state.cycle(MODE);
+        			
+        			level.setBlock(pos, newModeState, 3);
+        			
+        			if(newModeState.getValue(MODE) != null)
+        				player.displayClientMessage(Component.translatable("block.sgjourney.interface.mode").append(Component.literal(": ").append(newModeState.getValue(MODE).getModeTranslation())), true);
+        		}
         	}
         	else
         	{
