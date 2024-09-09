@@ -98,7 +98,7 @@ public class GDOScreen extends Screen
     protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y) 
 	{
     	this.font.draw(stack, Component.literal(idc), x + 266F, y + 104F, 0x2a2927);
-		this.font.draw(stack, Component.translatable("screen.sgjourney.transceiver.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 266F, y + 120F, 0x2a2927); // TODO Translate
+		this.font.draw(stack, Component.translatable("screen.sgjourney.transceiver.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 266F, y + 120F, 0x2a2927);
 		this.font.draw(stack, Component.literal(String.valueOf(frequency)), x + 266F, y + 132F, 0x2a2927);
     }
     
