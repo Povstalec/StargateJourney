@@ -192,8 +192,8 @@ public class Wormhole implements ITeleporter
 		// Creates a bounding box at the destination and takes its center
 		Vec3 travelerCenter = dimension.makeBoundingBox(destinationPos).getCenter();
 
-		Vec3 fromVec = travelerCenter.subtract(motionVec); //TODO This might cause trouble on 1.19.2 because vectors are different there
-		Vec3 toVec = travelerCenter.add(motionVec); //TODO This might cause trouble on 1.19.2 because vectors are different there
+		Vec3 fromVec = travelerCenter.subtract(motionVec);
+		Vec3 toVec = travelerCenter.add(motionVec);
 		
 		Level targetLevel = targetStargate.getLevel();
 		BlockPos pos = targetStargate.getBlockPos();
