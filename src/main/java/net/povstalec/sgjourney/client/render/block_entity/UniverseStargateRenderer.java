@@ -39,7 +39,12 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer<UniverseS
 		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getUniverseStargateVariant(stargateVariant.get().clientVariant());
+		{
+			if(stargateVariant.get().isFound())
+				return ClientStargateVariants.getUniverseStargateVariant(stargateVariant.get().clientVariant());
+			else if(!stargateVariant.get().isMissing())
+				stargateVariant.get().handleLocation(ClientStargateVariants.hasUniverseStargateVariant(stargateVariant.get().clientVariant()));
+		}
 		
 		return ClientStargateVariants.getUniverseStargateVariant(stargate.defaultVariant());
 	}

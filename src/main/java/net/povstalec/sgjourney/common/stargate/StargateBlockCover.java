@@ -12,9 +12,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -77,6 +80,19 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		}
 		
 		return false;
+	}
+	
+	public ItemStack getStackAt(HitResult target, BlockGetter level, Player player, StargatePart part, BlockPos pos)
+	{
+		Optional<BlockState> removed = removeBlockAt(part);
+		if(removed.isPresent())
+		{
+			BlockState state = removed.get();
+			
+			return state.getCloneItemStack(target, level, pos, player);
+		}
+		
+		return ItemStack.EMPTY;
 	}
 	
 	@Override

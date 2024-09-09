@@ -28,12 +28,12 @@ public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
         int y = (height - imageHeight) / 2;
 		super.init();
 		
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 48, Component.empty(), (n) -> {menu.activateRings(0);}));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 48, Component.empty(), (n) -> {menu.activateRings(1);}));
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 66, Component.empty(), (n) -> {menu.activateRings(2);}));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 66, Component.empty(), (n) -> {menu.activateRings(3);}));
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 84, Component.empty(), (n) -> {menu.activateRings(4);}));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 84, Component.empty(), (n) -> {menu.activateRings(5);}));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 48, Component.empty(), menu.getRingsPos(0), (n) -> {menu.activateRings(0);}));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 48, Component.empty(), menu.getRingsPos(1), (n) -> {menu.activateRings(1);}));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 66, Component.empty(), menu.getRingsPos(2), (n) -> {menu.activateRings(2);}));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 66, Component.empty(), menu.getRingsPos(3), (n) -> {menu.activateRings(3);}));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 84, Component.empty(), menu.getRingsPos(4), (n) -> {menu.activateRings(4);}));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 84, Component.empty(), menu.getRingsPos(5), (n) -> {menu.activateRings(5);}));
 	}
 
     @Override
@@ -53,13 +53,6 @@ public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
         renderBackground(pPoseStack);
         super.render(pPoseStack, mouseX, mouseY, delta);
         renderTooltip(pPoseStack, mouseX, mouseY);
-        
-	    renderButtonTooltip(pPoseStack, 0, 51, 48, mouseX, mouseY);
-	    renderButtonTooltip(pPoseStack, 1, 93, 48, mouseX, mouseY);
-	    renderButtonTooltip(pPoseStack, 2, 51, 66, mouseX, mouseY);
-	    renderButtonTooltip(pPoseStack, 3, 93, 66, mouseX, mouseY);
-	    renderButtonTooltip(pPoseStack, 4, 51, 84, mouseX, mouseY);
-	    renderButtonTooltip(pPoseStack, 5, 93, 84, mouseX, mouseY);
     }
     
     @Override
@@ -68,12 +61,4 @@ public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
 	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, 128.0F, 4210752);
 	    
     }
-    
-    private void renderButtonTooltip(PoseStack matrixStack, int ringNumber, int xStart, int yStart, int mouseX, int mouseY)
-    {
-    	if(this.isHovering(xStart, yStart, 32, 16, (double) mouseX, (double) mouseY))
-	    	renderTooltip(matrixStack, menu.getRingsPos(ringNumber), mouseX, mouseY);
-    }
-    
-    
 }

@@ -39,7 +39,12 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicSta
 		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getClassicStargateVariant(stargateVariant.get().clientVariant());
+		{
+			if(stargateVariant.get().isFound())
+				return ClientStargateVariants.getClassicStargateVariant(stargateVariant.get().clientVariant());
+			else if(!stargateVariant.get().isMissing())
+				stargateVariant.get().handleLocation(ClientStargateVariants.hasClassicStargateVariant(stargateVariant.get().clientVariant()));
+		}
 		
 		return ClientStargateVariants.getClassicStargateVariant(stargate.defaultVariant());
 	}
