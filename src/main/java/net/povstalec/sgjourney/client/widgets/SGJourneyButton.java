@@ -58,7 +58,8 @@ public abstract class SGJourneyButton extends Button
 	@Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-		this.isHovered = isHovered(mouseX, mouseY);
+		super.render(graphics, mouseX, mouseY, partialTick);
+		/*this.isHovered = isHovered(mouseX, mouseY);
 		
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
@@ -72,6 +73,24 @@ public abstract class SGJourneyButton extends Button
         graphics.blit(texture, this.getX(), this.getY(), xOffset, yOffset + i * height, this.width, this.height);
         graphics.blit(texture, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         int j = getFGColor();
-        graphics.drawString(font, this.getMessage(), this.getX() + this.width / 2 - 3, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24); // Magical -3 cuz I have no idea why it doesn't work on 1.20.1
+        graphics.drawString(font, this.getMessage(), this.getX() + this.width / 2 - 3, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24); // Magical -3 cuz I have no idea why it doesn't work on 1.20.1*/
      }
+	
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick)
+	{
+		this.isHovered = isHovered(mouseX, mouseY);
+		
+        Minecraft minecraft = Minecraft.getInstance();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, texture);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        int i = this.getYImage(this.isHovered);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        graphics.blit(texture, this.getX(), this.getY(), xOffset, yOffset + i * height, this.width, this.height);
+        graphics.blit(texture, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+		int j = getFGColor();
+		this.renderString(graphics, minecraft.font, j | Mth.ceil(this.alpha * 255.0F) << 24);
+	}
 }
