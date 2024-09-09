@@ -1,0 +1,8 @@
+{
+	"name": "point_of_origin.sgjourney.ursa",
+	"texture": "sgjourney:pegasus/points_of_origin/ursa.png",
+	"generated_galaxies":
+	[
+		"sgjourney:pegasus"
+	]
+}

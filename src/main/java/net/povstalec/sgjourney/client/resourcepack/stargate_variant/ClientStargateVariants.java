@@ -44,9 +44,14 @@ public class ClientStargateVariants
 	
 	
 	
+	public static boolean hasUniverseStargateVariant(ResourceLocation location)
+	{
+		return UNIVERSE_STARGATE_VARIANTS.containsKey(location);
+	}
+	
 	public static UniverseStargateVariant getUniverseStargateVariant(ResourceLocation location)
 	{
-		if(UNIVERSE_STARGATE_VARIANTS.containsKey(location))
+		if(hasUniverseStargateVariant(location))
 			return UNIVERSE_STARGATE_VARIANTS.get(location);
 		
 		return UniverseStargateVariant.DEFAULT_VARIANT;
@@ -54,7 +59,7 @@ public class ClientStargateVariants
 	
 	public static void addUniverseStargateVariant(ResourceLocation location, UniverseStargateVariant stargateVariant)
 	{
-		if(!UNIVERSE_STARGATE_VARIANTS.containsKey(location))
+		if(!hasUniverseStargateVariant(location))
 			UNIVERSE_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
 			StellarView.LOGGER.error("Universe Stargate Variant " + location.toString() + " already exists");
@@ -62,9 +67,14 @@ public class ClientStargateVariants
 	
 	
 	
+	public static boolean hasMilkyWayStargateVariant(ResourceLocation location)
+	{
+		return MILKY_WAY_STARGATE_VARIANTS.containsKey(location);
+	}
+	
 	public static MilkyWayStargateVariant getMilkyWayStargateVariant(ResourceLocation location)
 	{
-		if(MILKY_WAY_STARGATE_VARIANTS.containsKey(location))
+		if(hasMilkyWayStargateVariant(location))
 			return MILKY_WAY_STARGATE_VARIANTS.get(location);
 		
 		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? MilkyWayStargateVariant.DEFAULT_BACK_VARIANT : MilkyWayStargateVariant.DEFAULT_VARIANT;
@@ -72,7 +82,7 @@ public class ClientStargateVariants
 	
 	public static void addMilkyWayStargateVariant(ResourceLocation location, MilkyWayStargateVariant stargateVariant)
 	{
-		if(!MILKY_WAY_STARGATE_VARIANTS.containsKey(location))
+		if(!hasMilkyWayStargateVariant(location))
 			MILKY_WAY_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
 			StellarView.LOGGER.error("Milky Way Stargate Variant " + location.toString() + " already exists");
@@ -80,9 +90,14 @@ public class ClientStargateVariants
 	
 	
 	
+	public static boolean hasPegasusStargateVariant(ResourceLocation location)
+	{
+		return PEGASUS_STARGATE_VARIANTS.containsKey(location);
+	}
+	
 	public static PegasusStargateVariant getPegasusStargateVariant(ResourceLocation location)
 	{
-		if(PEGASUS_STARGATE_VARIANTS.containsKey(location))
+		if(hasPegasusStargateVariant(location))
 			return PEGASUS_STARGATE_VARIANTS.get(location);
 		
 		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? PegasusStargateVariant.DEFAULT_BACK_VARIANT : PegasusStargateVariant.DEFAULT_VARIANT;
@@ -90,7 +105,7 @@ public class ClientStargateVariants
 	
 	public static void addPegasusStargateVariant(ResourceLocation location, PegasusStargateVariant stargateVariant)
 	{
-		if(!PEGASUS_STARGATE_VARIANTS.containsKey(location))
+		if(!hasPegasusStargateVariant(location))
 			PEGASUS_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
 			StellarView.LOGGER.error("Pegasus Stargate Variant " + location.toString() + " already exists");
@@ -98,9 +113,14 @@ public class ClientStargateVariants
 	
 	
 	
+	public static boolean hasTollanStargateVariant(ResourceLocation location)
+	{
+		return TOLLAN_STARGATE_VARIANTS.containsKey(location);
+	}
+	
 	public static TollanStargateVariant getTollanStargateVariant(ResourceLocation location)
 	{
-		if(TOLLAN_STARGATE_VARIANTS.containsKey(location))
+		if(hasTollanStargateVariant(location))
 			return TOLLAN_STARGATE_VARIANTS.get(location);
 		
 		return TollanStargateVariant.DEFAULT_VARIANT;
@@ -108,7 +128,7 @@ public class ClientStargateVariants
 	
 	public static void addTollanStargateVariant(ResourceLocation location, TollanStargateVariant stargateVariant)
 	{
-		if(!TOLLAN_STARGATE_VARIANTS.containsKey(location))
+		if(!hasTollanStargateVariant(location))
 			TOLLAN_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
 			StellarView.LOGGER.error("Tollan Stargate Variant " + location.toString() + " already exists");
@@ -116,9 +136,14 @@ public class ClientStargateVariants
 	
 	
 	
+	public static boolean hasClassicStargateVariant(ResourceLocation location)
+	{
+		return CLASSIC_STARGATE_VARIANTS.containsKey(location);
+	}
+	
 	public static ClassicStargateVariant getClassicStargateVariant(ResourceLocation location)
 	{
-		if(CLASSIC_STARGATE_VARIANTS.containsKey(location))
+		if(hasClassicStargateVariant(location))
 			return CLASSIC_STARGATE_VARIANTS.get(location);
 		
 		return ClassicStargateVariant.DEFAULT_VARIANT;
@@ -126,7 +151,7 @@ public class ClientStargateVariants
 	
 	public static void addClassicStargateVariant(ResourceLocation location, ClassicStargateVariant stargateVariant)
 	{
-		if(!CLASSIC_STARGATE_VARIANTS.containsKey(location))
+		if(!hasClassicStargateVariant(location))
 			CLASSIC_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
 			StellarView.LOGGER.error("Classic Stargate Variant " + location.toString() + " already exists");

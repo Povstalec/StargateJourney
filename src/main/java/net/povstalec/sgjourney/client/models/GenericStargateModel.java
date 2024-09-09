@@ -237,44 +237,44 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					STARGATE_RING_STOP_CENTER,
 					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
-					(10F * (j % 4) + 5 - STARGATE_RING_INNER_CENTER * 16) / 64, 14F / 64,
+					(10F * (j % 4) + 5 + STARGATE_RING_STOP_CENTER * 16) / 64, 14F / 64,
 					
 					STARGATE_RING_STOP_CENTER, 
 					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET,
-					(10F * (j % 4) + 5 - STARGATE_RING_INNER_CENTER * 16) / 64, 15F / 64,
+					(10F * (j % 4) + 5 + STARGATE_RING_STOP_CENTER * 16) / 64, 15F / 64,
 					
 					-STARGATE_RING_STOP_CENTER,
 					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET,
-					(10F * (j % 4) + 5 + STARGATE_RING_INNER_CENTER * 16) / 64, 15F / 64,
+					(10F * (j % 4) + 5 - STARGATE_RING_STOP_CENTER * 16) / 64, 15F / 64,
 					
 					-STARGATE_RING_STOP_CENTER,
 					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
-					(10F * (j % 4) + 5 + STARGATE_RING_INNER_CENTER * 16) / 64, 14F / 64);
+					(10F * (j % 4) + 5 - STARGATE_RING_STOP_CENTER * 16) / 64, 14F / 64);
 			
 			//Inside Start - This will essentially be just one pixel thick
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
 					-STARGATE_RING_START_CENTER,
 					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
-					(10F * (j % 4) + 5 - STARGATE_RING_INNER_CENTER * 16) / 64, 31F / 64,
+					(10F * (j % 4) + 5 - STARGATE_RING_START_CENTER * 16) / 64, 31F / 64,
 					
 					-STARGATE_RING_START_CENTER, 
 					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET,
-					(10F * (j % 4) + 5 - STARGATE_RING_INNER_CENTER * 16) / 64, 32F / 64,
+					(10F * (j % 4) + 5 - STARGATE_RING_START_CENTER * 16) / 64, 32F / 64,
 					
 					STARGATE_RING_START_CENTER,
 					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET,
-					(10F * (j % 4) + 5 + STARGATE_RING_INNER_CENTER * 16) / 64, 32F / 64,
+					(10F * (j % 4) + 5 + STARGATE_RING_START_CENTER * 16) / 64, 32F / 64,
 					
 					STARGATE_RING_START_CENTER,
 					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
-					(10F * (j % 4) + 5 + STARGATE_RING_INNER_CENTER * 16) / 64, 31F / 64);
+					(10F * (j % 4) + 5 + STARGATE_RING_START_CENTER * 16) / 64, 31F / 64);
 			
 			//Inside
 			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,

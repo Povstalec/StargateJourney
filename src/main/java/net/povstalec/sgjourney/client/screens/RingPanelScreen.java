@@ -28,12 +28,12 @@ public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
         int y = (height - imageHeight) / 2;
 		super.init();
 		
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 48, Component.empty(), (n) -> {menu.activateRings(0);}));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 48, Component.empty(), (n) -> {menu.activateRings(1);}));
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 66, Component.empty(), (n) -> {menu.activateRings(2);}));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 66, Component.empty(), (n) -> {menu.activateRings(3);}));
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 84, Component.empty(), (n) -> {menu.activateRings(4);}));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 84, Component.empty(), (n) -> {menu.activateRings(5);}));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 48, Component.empty(), menu.getRingsPos(0), (n) -> {menu.activateRings(0);}));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 48, Component.empty(), menu.getRingsPos(1), (n) -> {menu.activateRings(1);}));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 66, Component.empty(), menu.getRingsPos(2), (n) -> {menu.activateRings(2);}));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 66, Component.empty(), menu.getRingsPos(3), (n) -> {menu.activateRings(3);}));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 84, Component.empty(), menu.getRingsPos(4), (n) -> {menu.activateRings(4);}));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 84, Component.empty(), menu.getRingsPos(5), (n) -> {menu.activateRings(5);}));
 	}
 
     @Override
@@ -53,27 +53,11 @@ public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
-        
-	    renderButtonTooltip(graphics, 1, 51, 48, mouseX, mouseY);
-	    renderButtonTooltip(graphics, 2, 93, 48, mouseX, mouseY);
-	    renderButtonTooltip(graphics, 3, 51, 66, mouseX, mouseY);
-	    renderButtonTooltip(graphics, 4, 93, 66, mouseX, mouseY);
-	    renderButtonTooltip(graphics, 5, 51, 84, mouseX, mouseY);
-	    renderButtonTooltip(graphics, 6, 93, 84, mouseX, mouseY);
     }
     
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) 
 	{
     	graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, 128, 4210752, false);
-	    
     }
-    
-    private void renderButtonTooltip(GuiGraphics graphics, int ringNumber, int xStart, int yStart, int mouseX, int mouseY)
-    {
-    	if(this.isHovering(xStart, yStart, 32, 16, (double) mouseX, (double) mouseY))
-    		graphics.renderTooltip(this.font, menu.getRingsPos(ringNumber), mouseX, mouseY);
-    }
-    
-    
 }

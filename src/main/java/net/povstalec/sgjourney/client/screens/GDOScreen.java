@@ -21,8 +21,8 @@ public class GDOScreen extends Screen
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/gdo/gdo_background.png");
 
-	private int imageWidth = 176;
-	private int imageHeight = 56;
+	private int imageWidth = 240;
+	private int imageHeight = 120;
 	
 	private final UUID playerId;
 	private final boolean mainHand;
@@ -48,23 +48,23 @@ public class GDOScreen extends Screen
         int y = (height - imageHeight) / 2;
 		super.init();
 		
-		this.addRenderableWidget(new GDOButton(x + 43, y + 5, Component.literal("7"), (button) -> addToCode(7)));
-		this.addRenderableWidget(new GDOButton(x + 61, y + 5, Component.literal("8"), (button) -> addToCode(8)));
-		this.addRenderableWidget(new GDOButton(x + 79, y + 5, Component.literal("9"), (button) -> addToCode(9)));
+		this.addRenderableWidget(new GDOButton(x + 75, y + 37, Component.literal("7"), (button) -> addToCode(7)));
+		this.addRenderableWidget(new GDOButton(x + 93, y + 37, Component.literal("8"), (button) -> addToCode(8)));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 37, Component.literal("9"), (button) -> addToCode(9)));
 
-		this.addRenderableWidget(new GDOButton(x + 43, y + 17, Component.literal("4"), (button) -> addToCode(4)));
-		this.addRenderableWidget(new GDOButton(x + 61, y + 17, Component.literal("5"), (button) -> addToCode(5)));
-		this.addRenderableWidget(new GDOButton(x + 79, y + 17, Component.literal("6"), (button) -> addToCode(6)));
+		this.addRenderableWidget(new GDOButton(x + 75, y + 49, Component.literal("4"), (button) -> addToCode(4)));
+		this.addRenderableWidget(new GDOButton(x + 93, y + 49, Component.literal("5"), (button) -> addToCode(5)));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 49, Component.literal("6"), (button) -> addToCode(6)));
 
-		this.addRenderableWidget(new GDOButton(x + 43, y + 29, Component.literal("1"), (button) -> addToCode(1)));
-		this.addRenderableWidget(new GDOButton(x + 61, y + 29, Component.literal("2"), (button) -> addToCode(2)));
-		this.addRenderableWidget(new GDOButton(x + 79, y + 29, Component.literal("3"), (button) -> addToCode(3)));
+		this.addRenderableWidget(new GDOButton(x + 75, y + 61, Component.literal("1"), (button) -> addToCode(1)));
+		this.addRenderableWidget(new GDOButton(x + 93, y + 61, Component.literal("2"), (button) -> addToCode(2)));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 61, Component.literal("3"), (button) -> addToCode(3)));
 		
-		this.addRenderableWidget(new GDOButton(x + 43, y + 41, Component.literal("*"), (button) -> removeFromCode()));
-		this.addRenderableWidget(new GDOButton(x + 61, y + 41, Component.literal("0"), (button) -> addToCode(0)));
-		this.addRenderableWidget(new GDOButton(x + 79, y + 41, Component.literal("#"), (button) -> sendTransmission()));
+		this.addRenderableWidget(new GDOButton(x + 75, y + 73, Component.translatable("screen.sgjourney.gdo.symbol.delete"), Component.translatable("screen.sgjourney.gdo.delete"), (button) -> removeFromCode()));
+		this.addRenderableWidget(new GDOButton(x + 93, y + 73, Component.literal("0"), (button) -> addToCode(0)));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 73, Component.translatable("screen.sgjourney.gdo.symbol.send_transmission"), Component.translatable("screen.sgjourney.gdo.send_transmission"), (button) -> sendTransmission()));
 		
-		this.addRenderableWidget(new GDOLargeButton(x + 0, y + 14, Component.empty(), (button) -> toggleFrequency()));
+		this.addRenderableWidget(new GDOLargeButton(x + 32, y + 46, Component.empty(), Component.translatable("screen.sgjourney.gdo.toggle_frequency"), (button) -> toggleFrequency()));
 	}
 	
 	@Override
@@ -99,9 +99,9 @@ public class GDOScreen extends Screen
     
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) 
 	{
-    	graphics.drawString(this.font, Component.literal(idc), x + 202, y + 40, 0x2a2927, false);
-    	graphics.drawString(this.font, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 202, y + 56, 0x2a2927, false);
-    	graphics.drawString(this.font, Component.literal(String.valueOf(frequency)), x + 202, y + 68, 0x2a2927, false);
+    	graphics.drawString(this.font, Component.literal(idc), x + 266, y + 104, 0x2a2927, false);
+    	graphics.drawString(this.font, Component.translatable("screen.sgjourney.transceiver.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 266, y + 120, 0x2a2927, false);
+    	graphics.drawString(this.font, Component.literal(String.valueOf(frequency)), x + 266, y + 132, 0x2a2927, false);
     }
     
     @Override
