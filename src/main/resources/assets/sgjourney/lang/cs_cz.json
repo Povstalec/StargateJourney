@@ -25,15 +25,20 @@
 	
 	"block.sgjourney.universe_stargate": "Hvězdná brána 1. generace",
 	"block.sgjourney.universe_ring": "Hvězdná brána 1. generace",
+	"block.sgjourney.universe_shielding": "Ochrana hvězdné brány",
 	"block.sgjourney.universe_stargate_chevron": "Chevron brány 1. generace",
 	"block.sgjourney.milky_way_stargate": "Hvězdná brána 2. generace",
 	"block.sgjourney.milky_way_ring": "Hvězdná brána 2. generace",
+	"block.sgjourney.milky_way_shielding": "Ochrana hvězdné brány",
 	"block.sgjourney.pegasus_stargate": "Hvězdná brána 3. generace",
 	"block.sgjourney.pegasus_ring": "Hvězdná brána 3. generace",
+	"block.sgjourney.pegasus_shielding": "Ochrana hvězdné brány",
 	"block.sgjourney.tollan_stargate": "Tollanská hvězdná brána",
 	"block.sgjourney.tollan_ring": "Tollanská hvězdná brána",
+	"block.sgjourney.tollan_shielding": "Ochrana hvězdné brány",
 	"block.sgjourney.classic_stargate": "Klasická hvězdná brána",
 	"block.sgjourney.classic_ring": "Klasická hvězdná brána",
+	"block.sgjourney.classic_shielding": "Ochrana hvězdné brány",
 	"block.sgjourney.classic_stargate_base_block": "Klasický základní blok brány",
 	"block.sgjourney.classic_stargate_chevron_block": "Klasický chevronový blok brány",
 	"block.sgjourney.classic_stargate_ring_block": "Klasický blok brány",
@@ -58,10 +63,21 @@
 	
 	"block.sgjourney.basic_interface": "Základní rozhraní",
 	"block.sgjourney.basic_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
+	"block.sgjourney.basic_interface.description.mode": "Shift + pravé kliknutí na blok pro změnu módů",
 	"block.sgjourney.crystal_interface": "Krystalové rozhraní",
 	"block.sgjourney.crystal_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
+	"block.sgjourney.crystal_interface.description.mode": "Shift + pravé kliknutí na blok pro změnu módů",
 	"block.sgjourney.advanced_crystal_interface": "Pokročilé krystalové rozhraní",
 	"block.sgjourney.advanced_crystal_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
+	"block.sgjourney.advanced_crystal_interface.description.mode": "Shift + pravé kliknutí na blok pro změnu módů",
+	
+	"block.sgjourney.interface.mode": "Mód",
+	"block.sgjourney.interface.mode.off": "Žádný",
+	"block.sgjourney.interface.mode.ring_segment": "Segment kruhu",
+	"block.sgjourney.interface.mode.ring_rotation": "Rotace kruhu",
+	"block.sgjourney.interface.mode.chevrons_active": "zadané symboly",
+	"block.sgjourney.interface.mode.wormhole_active": "Aktivní spojení",
+	"block.sgjourney.interface.mode.shielding": "Ochrana",
 
 	"block.sgjourney.crystallizer": "Krystalizér",
 	"block.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
@@ -126,7 +142,7 @@
 	"item.sgjourney.kara_kesh": "Ozbrojená ruka",
 	"item.sgjourney.ring_remote": "Ovládání kruhů",
 	
-	"item.sgjourney.matok": "Tyčová zbraň",
+	"item.sgjourney.matok": "Tyčová zbraň Ma'Tok",
 	
 	"item.sgjourney.pda": "PDA",
 	"item.sgjourney.zero_point_module": "ZPM",
@@ -226,7 +242,20 @@
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
 
 	"screen.sgjourney.transceiver": "Vysílač",
+	"screen.sgjourney.transceiver.symbol.frequency": "f",
+	"screen.sgjourney.transceiver.frequency": "FREKVENCE",
+	"screen.sgjourney.transceiver.send_transmission": "Odeslat kód",
+	"screen.sgjourney.transceiver.symbol.send_transmission": "#",
+	"screen.sgjourney.transceiver.delete": "Smazat",
+	"screen.sgjourney.transceiver.symbol.delete": "*",
+	"screen.sgjourney.transceiver.toggle_frequency": "Přepnout mezi úpravou frekvence / IDC",
+	
 	"screen.sgjourney.gdo.frequency": "FREKVENCE",
+	"screen.sgjourney.gdo.send_transmission": "Odeslat kód",
+	"screen.sgjourney.gdo.symbol.send_transmission": "#",
+	"screen.sgjourney.gdo.delete": "Smazat",
+	"screen.sgjourney.gdo.symbol.delete": "*",
+	"screen.sgjourney.gdo.toggle_frequency": "Přepnout mezi úpravou frekvence / IDC",
 	
 	"biome.sgjourney.abydos_desert": "Abydoská poušť",
 	"biome.sgjourney.abydos_oasis": "Abydoská oáza",
@@ -378,6 +407,10 @@
 	"point_of_origin.sgjourney.ankh": "Anch",
 	"point_of_origin.sgjourney.reflection": "Odraz",
 	"point_of_origin.sgjourney.wheel": "Kolo",
+	"point_of_origin.sgjourney.ursa_major": "Velký vůz",
+	"point_of_origin.sgjourney.ursa_minor": "Malý vůz",
+
+	"point_of_origin.sgjourney.ursa": "Ursa",
 	
 	
 	"info.sgjourney.add_to_network": "Přidat do sítě",

@@ -39,7 +39,12 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusSta
 		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getPegasusStargateVariant(stargateVariant.get().clientVariant());
+		{
+			if(stargateVariant.get().isFound())
+				return ClientStargateVariants.getPegasusStargateVariant(stargateVariant.get().clientVariant());
+			else if(!stargateVariant.get().isMissing())
+				stargateVariant.get().handleLocation(ClientStargateVariants.hasPegasusStargateVariant(stargateVariant.get().clientVariant()));
+		}
 		
 		return ClientStargateVariants.getPegasusStargateVariant(stargate.defaultVariant());
 	}

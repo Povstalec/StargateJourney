@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -13,24 +14,29 @@ import net.minecraft.util.Mth;
 
 public abstract class SGJourneyButton extends Button
 {
+	private Minecraft minecraft = Minecraft.getInstance();
 	protected final ResourceLocation texture;
+	
+	protected final Component tooltip;
 	
 	protected final int xOffset;
 	protected final int yOffset;
 	
-	public SGJourneyButton(ResourceLocation texture, int x, int y, int xSize, int ySize, int xOffset, int yOffset, Component component, OnPress press)
+	public SGJourneyButton(ResourceLocation texture, int x, int y, int xSize, int ySize, int xOffset, int yOffset, Component message, Component tooltip, OnPress press)
 	{
-		super(x, y, xSize, ySize, component, press, Button.NO_TOOLTIP);
+		super(x, y, xSize, ySize, message, press, Button.NO_TOOLTIP);
 		
 		this.texture = texture;
+		
+		this.tooltip = tooltip;
 		
 		this.xOffset = xOffset;
 		this.yOffset = yOffset;
 	}
 	
-	public SGJourneyButton(ResourceLocation texture, int x, int y, int xSize, int ySize, Component component, OnPress press)
+	public SGJourneyButton(ResourceLocation texture, int x, int y, int xSize, int ySize, Component message, Component tooltip, OnPress press)
 	{
-		this(texture, x, y, xSize, ySize, 0, 0, component, press);
+		this(texture, x, y, xSize, ySize, 0, 0, message, tooltip, press);
 	}
 	
 	protected int getYImage(boolean isHovered)
@@ -54,7 +60,6 @@ public abstract class SGJourneyButton extends Button
 	@Override
     public void renderButton(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
-        Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, texture);
@@ -68,5 +73,9 @@ public abstract class SGJourneyButton extends Button
         this.renderBg(stack, minecraft, mouseX, mouseY);
         int j = getFGColor();
         drawCenteredString(stack, font, this.getMessage(), this.x + this.width / 2 , this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        
+        Screen screen = minecraft.screen;
+        if(screen != null && isHovered(mouseX, mouseY))
+        	screen.renderTooltip(stack, tooltip, mouseX, mouseY);
      }
 }

@@ -43,7 +43,12 @@ public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStarg
 		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getTollanStargateVariant(stargateVariant.get().clientVariant());
+		{
+			if(stargateVariant.get().isFound())
+				return ClientStargateVariants.getTollanStargateVariant(stargateVariant.get().clientVariant());
+			else if(!stargateVariant.get().isMissing())
+				stargateVariant.get().handleLocation(ClientStargateVariants.hasTollanStargateVariant(stargateVariant.get().clientVariant()));
+		}
 		
 		return ClientStargateVariants.getTollanStargateVariant(stargate.defaultVariant());
 	}

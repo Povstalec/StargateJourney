@@ -43,6 +43,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -143,7 +144,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_FULL : shapeProvider.X_FULL;
 	}
 	
-	public Optional<StargateBlockCover> getBlockCover(BlockState state, BlockGetter reader, BlockPos position)
+	public Optional<StargateBlockCover> getBlockCover(BlockGetter reader, BlockState state, BlockPos position)
 	{
 		AbstractStargateEntity stargate = getStargate(reader, position, state);
 		if(stargate != null)
@@ -154,19 +155,19 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return Optional.empty();
 	}
 	
-	public Optional<StargateBlockCover> getBlockCover(Level level, BlockState state, BlockPos position)
+	/*public Optional<StargateBlockCover> getBlockCover(Level level, BlockState state, BlockPos position)
 	{
 		AbstractStargateEntity stargate = getStargate(level, position, state);
 		if(stargate != null)
 			return Optional.of(stargate.blockCover);
 		
 		return Optional.empty();
-	}
+	}*/
 	
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context)
 	{
-		Optional<StargateBlockCover> blockCover = getBlockCover(state, reader, pos);
+		Optional<StargateBlockCover> blockCover = getBlockCover(reader, state, pos);
 		
 		if(blockCover.isPresent())
 		{
@@ -342,6 +343,24 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 	
+	@Override
+	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)
+	{
+		Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
+		
+		if(blockCover.isPresent() && !blockCover.get().blockStates.isEmpty())
+		{
+			StargatePart part = state.getValue(AbstractStargateBlock.PART);
+			
+			ItemStack stack = blockCover.get().getStackAt(target, level, player, part, pos);
+			
+			if(!stack.isEmpty())
+				return stack;
+		}
+		
+        return super.getCloneItemStack(state, target, level, pos, player);
+	}
+	
 	public static class StargateBlockState extends BlockState
 	{
 
@@ -356,7 +375,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		{
 			if(this.getBlock() instanceof AbstractStargateBlock stargate)
 			{
-				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(this, reader, pos);
+				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(reader, this, pos);
 				
 				if(blockCover.isPresent())
 				{
@@ -380,7 +399,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			
 			if(this.getBlock() instanceof AbstractStargateBlock stargate)
 			{
-				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(this, reader, pos);
+				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(reader, this, pos);
 				
 				if(blockCover.isPresent())
 				{
@@ -406,7 +425,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			
 			if(state.getBlock() instanceof AbstractStargateBlock stargate)
 			{
-				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(state, level, pos);
+				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(level, state, pos);
 				
 				if(blockCover.isPresent())
 				{

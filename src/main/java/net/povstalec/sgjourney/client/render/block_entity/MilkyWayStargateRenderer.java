@@ -39,7 +39,12 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayS
 		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
-			return ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.get().clientVariant());
+		{
+			if(stargateVariant.get().isFound())
+				return ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.get().clientVariant());
+			else if(!stargateVariant.get().isMissing())
+				stargateVariant.get().handleLocation(ClientStargateVariants.hasMilkyWayStargateVariant(stargateVariant.get().clientVariant()));
+		}
 		
 		return ClientStargateVariants.getMilkyWayStargateVariant(stargate.defaultVariant());
 	}

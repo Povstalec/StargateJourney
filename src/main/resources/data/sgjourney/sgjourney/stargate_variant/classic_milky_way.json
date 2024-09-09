@@ -1,5 +1,5 @@
 {
 	"base_stargate": "sgjourney:classic_stargate",
 	
-	"client_variant": "sgjourney:classic/milky_way"
+	"client_variant": "sgjourney:classic_milky_way"
 }
