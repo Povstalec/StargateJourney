@@ -57,7 +57,7 @@ public class BasicInterfaceEntity extends AbstractInterfaceEntity
 		
 		if(signalStrength > 0 && signalStrength <= 7)
 			stargate.increaseIrisProgress();
-		else if(signalStrength > 8 && signalStrength <= 15)
+		else if(signalStrength >= 8 && signalStrength <= 15)
 			stargate.decreaseIrisProgress();
 	}
 }
