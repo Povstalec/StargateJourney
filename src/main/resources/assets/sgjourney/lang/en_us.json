@@ -77,6 +77,7 @@
 	"block.sgjourney.interface.mode.ring_rotation": "Ring Rotation",
 	"block.sgjourney.interface.mode.chevrons_active": "Chevrons Active",
 	"block.sgjourney.interface.mode.wormhole_active": "Wormhole Active",
+	"block.sgjourney.interface.mode.iris": "Iris",
 	"block.sgjourney.interface.mode.shielding": "Shielding",
 	
 	"block.sgjourney.crystallizer": "Crystallizer",
@@ -241,21 +242,19 @@
 	"screen.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 
-
 	"screen.sgjourney.transceiver": "Transceiver",
-	"screen.sgjourney.transceiver.symbol.frequency": "f",
+	"screen.sgjourney.transceiver.symbol.toggle_frequency": "f",
 	"screen.sgjourney.transceiver.frequency": "FREQUENCY",
 	"screen.sgjourney.transceiver.send_transmission": "Send Transmission",
-	"screen.sgjourney.transceiver.symbol.send_transmission": "#",
 	"screen.sgjourney.transceiver.delete": "Delete",
-	"screen.sgjourney.transceiver.symbol.delete": "*",
+	"screen.sgjourney.transceiver.symbol.delete": "←",
 	"screen.sgjourney.transceiver.toggle_frequency": "Toggle Frequency editing / IDC editing",
-	
+
+	"screen.sgjourney.gdo.symbol.toggle_frequency": "f",
 	"screen.sgjourney.gdo.frequency": "FREQUENCY",
 	"screen.sgjourney.gdo.send_transmission": "Send Transmission",
-	"screen.sgjourney.gdo.symbol.send_transmission": "#",
 	"screen.sgjourney.gdo.delete": "Delete",
-	"screen.sgjourney.gdo.symbol.delete": "*",
+	"screen.sgjourney.gdo.symbol.delete": "←",
 	"screen.sgjourney.gdo.toggle_frequency": "Toggle Frequency editing / IDC editing",
 	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
