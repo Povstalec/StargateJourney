@@ -61,9 +61,9 @@ public class GDOScreen extends Screen
 		
 		this.addRenderableWidget(new GDOButton(x + 75, y + 73, Component.translatable("screen.sgjourney.gdo.symbol.delete"), Component.translatable("screen.sgjourney.gdo.delete"), (button) -> removeFromCode()));
 		this.addRenderableWidget(new GDOButton(x + 93, y + 73, Component.literal("0"), (button) -> addToCode(0)));
-		this.addRenderableWidget(new GDOButton(x + 111, y + 73, Component.translatable("screen.sgjourney.gdo.symbol.send_transmission"), Component.translatable("screen.sgjourney.gdo.send_transmission"), (button) -> sendTransmission()));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 73, Component.translatable("screen.sgjourney.gdo.symbol.toggle_frequency"), Component.translatable("screen.sgjourney.gdo.toggle_frequency"), (button) -> toggleFrequency()));
 		
-		this.addRenderableWidget(new GDOLargeButton(x + 32, y + 46, Component.empty(), Component.translatable("screen.sgjourney.gdo.toggle_frequency"), (button) -> toggleFrequency()));
+		this.addRenderableWidget(new GDOLargeButton(x + 32, y + 46, Component.empty(), Component.translatable("screen.sgjourney.gdo.send_transmission"), (button) -> sendTransmission()));
 	}
 	
 	@Override

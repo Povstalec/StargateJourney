@@ -2,8 +2,8 @@
 	"parent": "sgjourney:block/interface_template",
 	"textures":
 	{
-		"bottom": "sgjourney:block/basic_interface_back_shielding",
-		"side": "sgjourney:block/basic_interface_side_shielding",
+		"bottom": "sgjourney:block/basic_interface_back_iris",
+		"side": "sgjourney:block/basic_interface_side_iris",
 		"top": "sgjourney:block/basic_interface_top",
 		"front": "sgjourney:block/basic_interface_front"
 	}

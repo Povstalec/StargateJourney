@@ -40,6 +40,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
@@ -104,7 +105,8 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
         		}
         		else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
         		{
-        			BlockState newModeState = state.cycle(MODE);
+        			InterfaceMode nextMode = state.getValue(MODE).next(interfaceEntity instanceof AdvancedCrystalInterfaceEntity);
+        			BlockState newModeState = state.setValue(MODE, nextMode);
         			
         			level.setBlock(pos, newModeState, 3);
         			
@@ -158,7 +160,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	
 	public void updateInterface(BlockState state, Level level, BlockPos pos)
 	{
-		level.setBlock(pos, state.setValue(BasicInterfaceBlock.UPDATE, true), 3);
+		level.setBlock(pos, state.setValue(AbstractInterfaceBlock.UPDATE, true), 3);
 		level.scheduleTick(pos, this, 2);
 	}
 	
@@ -237,8 +239,10 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			return getChevronOutput(blockEntity);
 		case WORMHOLE_ACTIVE:
 			return getConnectionOutput(blockEntity);
-		case SHIELDING:
+		case IRIS:
 			return getIrisOutput(blockEntity);
+		//case SHIELDING:
+		//	return getIrisOutput(blockEntity);
 		default:
 			return 0;
 		}

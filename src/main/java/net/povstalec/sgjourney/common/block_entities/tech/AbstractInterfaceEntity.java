@@ -21,6 +21,8 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech.BasicInterfaceBlock;
+import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
@@ -285,5 +287,21 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		this.currentSymbol = stargate.getCurrentSymbol();
 	}
 	
-	protected void handleShielding(BlockState state, AbstractStargateEntity stargate) {}
+	protected void handleShielding(BlockState state, AbstractStargateEntity stargate)
+	{
+		handleIris(state, stargate);
+	}
+	
+	protected void handleIris(BlockState state, AbstractStargateEntity stargate)
+	{
+		InterfaceMode mode = state.getValue(BasicInterfaceBlock.MODE);
+		
+		if(mode != InterfaceMode.IRIS)
+			return;
+		
+		if(signalStrength > 0 && signalStrength <= 7)
+			stargate.increaseIrisProgress();
+		else if(signalStrength >= 8 && signalStrength <= 15)
+			stargate.decreaseIrisProgress();
+	}
 }
