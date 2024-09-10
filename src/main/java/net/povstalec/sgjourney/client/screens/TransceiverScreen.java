@@ -48,12 +48,12 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
 		
 		this.addRenderableWidget(new TransceiverButton(x + 43, y + 57, Component.translatable("screen.sgjourney.transceiver.symbol.delete"), Component.translatable("screen.sgjourney.transceiver.delete"), (button) -> removeFromCode()));
 		this.addRenderableWidget(new TransceiverButton(x + 61, y + 57, Component.literal("0"), (button) -> addToCode(0)));
-		TransceiverButton transceiverButton = new TransceiverButton(x + 79, y + 57, Component.translatable("screen.sgjourney.transceiver.symbol.send_transmission"), Component.translatable("screen.sgjourney.transceiver.send_transmission"),
-				(button) -> sendTransmission());
-		transceiverButton.active = false; //TODO Make this button usable
-		this.addRenderableWidget(transceiverButton);
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 57, Component.translatable("screen.sgjourney.transceiver.symbol.toggle_frequency"), Component.translatable("screen.sgjourney.transceiver.toggle_frequency"),
+				(button) -> toggleFrequency()));
 
-		this.addRenderableWidget(new TransceiverLargeButton(x + 14, y + 34, Component.translatable("screen.sgjourney.transceiver.symbol.frequency"), Component.translatable("screen.sgjourney.transceiver.toggle_frequency"), (button) -> toggleFrequency()));
+		TransceiverLargeButton transceiverLargeButton = new TransceiverLargeButton(x + 14, y + 34, Component.empty(), Component.translatable("screen.sgjourney.transceiver.send_transmission"), (button) -> toggleFrequency());
+		transceiverLargeButton.active = false; //TODO Make this button usable
+		this.addRenderableWidget(transceiverLargeButton);
 	}
 
     @Override
@@ -96,7 +96,7 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) 
 	{
     	graphics.drawString(this.font, Component.literal(menu.getCurrentCode()), x + 218, y + 70, 0x009393, false);
-    	graphics.drawString(this.font, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(editingFrequency() ? ": #" : ":")), x + 218, y + 86, 0x009393, false); // TODO Translate
+    	graphics.drawString(this.font, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(editingFrequency() ? ": #" : ":")), x + 218, y + 86, 0x009393, false);
     	graphics.drawString(this.font, Component.literal(String.valueOf(menu.getFrequency())), x + 218, y + 98, 0x009393, false);
     }
     

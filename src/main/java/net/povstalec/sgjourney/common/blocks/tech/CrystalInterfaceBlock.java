@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -42,6 +43,16 @@ public class CrystalInterfaceBlock extends AbstractInterfaceBlock
 	public long getCapacity()
 	{
 		return CommonInterfaceConfig.crystal_interface_capacity.get();
+	}
+	
+	@Override
+	public void updateInterface(BlockState state, Level level, BlockPos pos) //TODO Remove these eventually
+	{
+		if(state.getValue(MODE) == InterfaceMode.SHIELDING)
+			level.setBlock(pos, state.setValue(AbstractInterfaceBlock.UPDATE, true).setValue(AbstractInterfaceBlock.MODE, InterfaceMode.IRIS), 3);
+		else
+			level.setBlock(pos, state.setValue(AbstractInterfaceBlock.UPDATE, true), 3);
+		level.scheduleTick(pos, this, 2);
 	}
 	
 	@Nullable

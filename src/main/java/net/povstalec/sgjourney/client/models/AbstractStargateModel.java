@@ -81,7 +81,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
-		if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
+		if(stargateVariant.symbols().permanentSymbols().isPresent())
 			return Optional.ofNullable(symbolRegistry.get(stargateVariant.symbols().permanentSymbols().get()));
 		else
 		{
