@@ -11,7 +11,8 @@ public enum InterfaceMode implements StringRepresentable
 	RING_ROTATION("ring_rotation", Component.translatable("block.sgjourney.interface.mode.ring_rotation").withStyle(ChatFormatting.DARK_GREEN)),
 	CHEVRONS_ACTIVE("chevrons_active", Component.translatable("block.sgjourney.interface.mode.chevrons_active").withStyle(ChatFormatting.RED)),
 	WORMHOLE_ACTIVE("wormhole_active", Component.translatable("block.sgjourney.interface.mode.wormhole_active").withStyle(ChatFormatting.AQUA)),
-	SHIELDING("shielding", Component.translatable("block.sgjourney.interface.mode.shielding").withStyle(ChatFormatting.YELLOW));
+	IRIS("iris", Component.translatable("block.sgjourney.interface.mode.iris").withStyle(ChatFormatting.YELLOW)),
+	SHIELDING("shielding", Component.translatable("block.sgjourney.interface.mode.shielding").withStyle(ChatFormatting.BLUE));
 	
 	private final String id;
 	private final Component translationName;
@@ -31,5 +32,20 @@ public enum InterfaceMode implements StringRepresentable
 	public Component getModeTranslation()
 	{
 		return translationName;
+	}
+	
+	public InterfaceMode next(boolean isAdvanced)
+	{
+		return switch(this)
+		{
+		case OFF -> RING_SEGMENT;
+		case RING_SEGMENT -> RING_ROTATION;
+		case RING_ROTATION -> CHEVRONS_ACTIVE;
+		case CHEVRONS_ACTIVE -> WORMHOLE_ACTIVE;
+		case WORMHOLE_ACTIVE -> IRIS;
+		case IRIS -> isAdvanced ? SHIELDING : OFF;
+		
+		default -> OFF;
+		};
 	}
 }

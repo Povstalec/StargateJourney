@@ -77,7 +77,8 @@
 	"block.sgjourney.interface.mode.ring_rotation": "Rotace kruhu",
 	"block.sgjourney.interface.mode.chevrons_active": "zadané symboly",
 	"block.sgjourney.interface.mode.wormhole_active": "Aktivní spojení",
-	"block.sgjourney.interface.mode.shielding": "Ochrana",
+	"block.sgjourney.interface.mode.iris": "Iris",
+	"block.sgjourney.interface.mode.shielding": "Štít",
 
 	"block.sgjourney.crystallizer": "Krystalizér",
 	"block.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
@@ -242,19 +243,18 @@
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
 
 	"screen.sgjourney.transceiver": "Vysílač",
-	"screen.sgjourney.transceiver.symbol.frequency": "f",
+	"screen.sgjourney.transceiver.symbol.toggle_frequency": "f",
 	"screen.sgjourney.transceiver.frequency": "FREKVENCE",
 	"screen.sgjourney.transceiver.send_transmission": "Odeslat kód",
-	"screen.sgjourney.transceiver.symbol.send_transmission": "#",
 	"screen.sgjourney.transceiver.delete": "Smazat",
-	"screen.sgjourney.transceiver.symbol.delete": "*",
+	"screen.sgjourney.transceiver.symbol.delete": "←",
 	"screen.sgjourney.transceiver.toggle_frequency": "Přepnout mezi úpravou frekvence / IDC",
-	
+
+	"screen.sgjourney.gdo.symbol.toggle_frequency": "f",
 	"screen.sgjourney.gdo.frequency": "FREKVENCE",
 	"screen.sgjourney.gdo.send_transmission": "Odeslat kód",
-	"screen.sgjourney.gdo.symbol.send_transmission": "#",
 	"screen.sgjourney.gdo.delete": "Smazat",
-	"screen.sgjourney.gdo.symbol.delete": "*",
+	"screen.sgjourney.gdo.symbol.delete": "←",
 	"screen.sgjourney.gdo.toggle_frequency": "Přepnout mezi úpravou frekvence / IDC",
 	
 	"biome.sgjourney.abydos_desert": "Abydoská poušť",
