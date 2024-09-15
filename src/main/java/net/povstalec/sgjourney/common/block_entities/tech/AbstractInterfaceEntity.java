@@ -312,27 +312,27 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	{
 		InterfaceMode mode = state.getValue(BasicInterfaceBlock.MODE);
 		
-		if(mode != InterfaceMode.IRIS)
+		if(mode != InterfaceMode.IRIS || !irisMotion.isRedstone())
 			return;
 		
 		if(signalStrength == 0 && irisMotion != Stargate.IrisMotion.IDLE)
 			setIrisMotion(Stargate.IrisMotion.IDLE);
-		else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != Stargate.IrisMotion.CLOSING && belowMaxProgress(stargate))
-			setIrisMotion(Stargate.IrisMotion.CLOSING);
-		else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != Stargate.IrisMotion.OPENING && aboveMinProgress(stargate))
-			setIrisMotion(Stargate.IrisMotion.OPENING);
+		else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != Stargate.IrisMotion.CLOSING_REDSTONE && belowMaxProgress(stargate))
+			setIrisMotion(Stargate.IrisMotion.CLOSING_REDSTONE);
+		else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != Stargate.IrisMotion.OPENING_REDSTONE && aboveMinProgress(stargate))
+			setIrisMotion(Stargate.IrisMotion.OPENING_REDSTONE);
 	}
 	
 	protected void handleIris(AbstractStargateEntity stargate)
 	{
-		if(irisMotion == Stargate.IrisMotion.CLOSING)
+		if(irisMotion.isClosing())
 		{
 			if(belowMaxProgress(stargate))
 				stargate.increaseIrisProgress();
 			else
 				irisMotion = Stargate.IrisMotion.IDLE;
 		}
-		else if(irisMotion == Stargate.IrisMotion.OPENING)
+		else if(irisMotion.isOpening())
 		{
 			if(aboveMinProgress(stargate))
 				stargate.decreaseIrisProgress();
