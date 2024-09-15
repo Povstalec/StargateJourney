@@ -576,8 +576,32 @@ public class Stargate
 	
 	public enum IrisMotion
 	{
-		IDLE,
-		OPENING,
-		CLOSING
+		IDLE(true),
+		OPENING_REDSTONE(true),
+		CLOSING_REDSTONE(true),
+		OPENING_COMPUTER(false),
+		CLOSING_COMPUTER(false);
+		
+		private boolean isRedstone;
+		
+		private IrisMotion(boolean isRedstone)
+		{
+			this.isRedstone = isRedstone;
+		}
+		
+		public boolean isRedstone()
+		{
+			return isRedstone;
+		}
+		
+		public boolean isOpening()
+		{
+			return this == OPENING_REDSTONE || this == OPENING_COMPUTER;
+		}
+		
+		public boolean isClosing()
+		{
+			return this == CLOSING_REDSTONE || this == CLOSING_COMPUTER;
+		}
 	}
 }

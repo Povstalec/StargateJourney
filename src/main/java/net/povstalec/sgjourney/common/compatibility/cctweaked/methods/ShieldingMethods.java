@@ -24,7 +24,7 @@ public class ShieldingMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				return new Object[] {interfaceEntity.setIrisMotion(Stargate.IrisMotion.CLOSING)};
+				return new Object[] {interfaceEntity.setIrisMotion(Stargate.IrisMotion.CLOSING_COMPUTER)};
 			});
 			
 			return result;
@@ -44,7 +44,7 @@ public class ShieldingMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				return new Object[] {interfaceEntity.setIrisMotion(Stargate.IrisMotion.OPENING)};
+				return new Object[] {interfaceEntity.setIrisMotion(Stargate.IrisMotion.OPENING_COMPUTER)};
 			});
 			
 			return result;
