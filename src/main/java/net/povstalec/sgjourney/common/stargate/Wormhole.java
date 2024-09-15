@@ -45,6 +45,7 @@ public class Wormhole implements ITeleporter
 {
 	private static final String EVENT_DECONSTRUCTING_ENTITY = "stargate_deconstructing_entity";
 	private static final String EVENT_RECONSTRUCTING_ENTITY = "stargate_reconstructing_entity";
+	private static final String EVENT_IRIS_THUD = "iris_thud";
 	
 	public static final double MIN_SPEED = 0.4;
 	
@@ -270,6 +271,8 @@ public class Wormhole implements ITeleporter
 						
 						targetStargate.playIrisThudSound();
 						targetStargate.decreaseIrisDurability();
+				    	
+						irisThudEvent(targetStargate, traveler);
 		    			
 		    			return;
 	    			}
@@ -332,6 +335,15 @@ public class Wormhole implements ITeleporter
 					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 			}
 		}
+    }
+    
+    private void irisThudEvent(AbstractStargateEntity targetStargate, Entity traveler)
+    {
+    	String travelerType = EntityType.getKey(traveler.getType()).toString();
+    	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+    	String uuid = traveler.getUUID().toString();
+    	
+    	targetStargate.updateInterfaceBlocks(EVENT_IRIS_THUD, travelerType, displayName, uuid);
     }
     
     private void deconstructEvent(AbstractStargateEntity initialStargate, Entity traveler, boolean disintegrated)

@@ -573,4 +573,11 @@ public class Stargate
 		ENCODED,
 		ENGAGED
 	}
+	
+	public enum IrisMotion
+	{
+		IDLE,
+		OPENING,
+		CLOSING
+	}
 }

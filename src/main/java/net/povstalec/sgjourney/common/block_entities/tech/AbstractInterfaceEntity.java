@@ -23,11 +23,13 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
+import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
+import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 {
@@ -39,6 +41,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	private int currentSymbol = 0;
 	private boolean rotate = false;
 	private boolean rotateClockwise = true;
+	
+	private Stargate.IrisMotion irisMotion = Stargate.IrisMotion.IDLE;
 	
 	private long energyTarget = CommonInterfaceConfig.default_energy_target.get();
 	
@@ -119,7 +123,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
-		if(ModList.get().isLoaded("computercraft") && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
+		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID) && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
 			return peripheralWrapper.newPeripheral().cast();
 			
 		return super.getCapability(cap, side);
@@ -222,7 +226,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public InterfacePeripheralWrapper getPeripheralWrapper()
 	{
-		if(!ModList.get().isLoaded("computercraft"))
+		if(!ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID))
 			return null;
 		
 		return this.peripheralWrapper;
@@ -230,7 +234,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public void queueEvent(String eventName, Object... objects)
 	{
-		if(!ModList.get().isLoaded("computercraft"))
+		if(!ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID))
 			return;
 		if(this.peripheralWrapper != null)
 			this.peripheralWrapper.queueEvent(eventName, objects);
@@ -289,19 +293,60 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	protected void handleShielding(BlockState state, AbstractStargateEntity stargate)
 	{
-		handleIris(state, stargate);
+		handleRedstone(state, stargate);
+		
+		handleIris(stargate);
 	}
 	
-	protected void handleIris(BlockState state, AbstractStargateEntity stargate)
+	private boolean belowMaxProgress(AbstractStargateEntity stargate)
+	{
+		return stargate.getIrisProgress() < ShieldingState.MAX_PROGRESS;
+	}
+	
+	private boolean aboveMinProgress(AbstractStargateEntity stargate)
+	{
+		return stargate.getIrisProgress() > 0;
+	}
+	
+	protected void handleRedstone(BlockState state, AbstractStargateEntity stargate)
 	{
 		InterfaceMode mode = state.getValue(BasicInterfaceBlock.MODE);
 		
 		if(mode != InterfaceMode.IRIS)
 			return;
 		
-		if(signalStrength > 0 && signalStrength <= 7)
-			stargate.increaseIrisProgress();
-		else if(signalStrength >= 8 && signalStrength <= 15)
-			stargate.decreaseIrisProgress();
+		if(signalStrength == 0 && irisMotion != Stargate.IrisMotion.IDLE)
+			setIrisMotion(Stargate.IrisMotion.IDLE);
+		else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != Stargate.IrisMotion.CLOSING && belowMaxProgress(stargate))
+			setIrisMotion(Stargate.IrisMotion.CLOSING);
+		else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != Stargate.IrisMotion.OPENING && aboveMinProgress(stargate))
+			setIrisMotion(Stargate.IrisMotion.OPENING);
+	}
+	
+	protected void handleIris(AbstractStargateEntity stargate)
+	{
+		if(irisMotion == Stargate.IrisMotion.CLOSING)
+		{
+			if(belowMaxProgress(stargate))
+				stargate.increaseIrisProgress();
+			else
+				irisMotion = Stargate.IrisMotion.IDLE;
+		}
+		else if(irisMotion == Stargate.IrisMotion.OPENING)
+		{
+			if(aboveMinProgress(stargate))
+				stargate.decreaseIrisProgress();
+			else
+				irisMotion = Stargate.IrisMotion.IDLE;
+		}
+	}
+	
+	public boolean setIrisMotion(Stargate.IrisMotion irisMotion)
+	{
+		if(this.irisMotion == irisMotion)
+			return false;
+		
+		this.irisMotion = irisMotion;
+		return true;
 	}
 }

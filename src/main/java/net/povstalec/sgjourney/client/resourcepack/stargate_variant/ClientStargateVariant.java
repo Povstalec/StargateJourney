@@ -30,9 +30,6 @@ public abstract class ClientStargateVariant
 	public static final RGBA DEFAULT_OPAQUE_RGBA = new RGBA(1F, 1F, 1F, 1F);
 	public static final RGBA DEFAULT_TRANSLUCENT_RGBA = new RGBA(1F, 1F, 1F, 0.75F);
 	
-	// TODO Add a way to decide if there is a vortex
-	// TODO Add a way to specify how much distortion there will be on each event horizon
-	
 	// Textures
 	protected final ResourceLocation texture;
 	protected final ResourceLocation encodedTexture;

@@ -54,7 +54,7 @@ public class ServerboundTransceiverUpdatePacket
     		{
     			if(transmit)
     				transceiver.sendTransmission();
-    			if(toggleFrequency)
+    			else if(toggleFrequency)
     				transceiver.toggleFrequency();
     			else if(remove)
     				transceiver.removeFromCode();

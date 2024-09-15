@@ -2,16 +2,25 @@ package net.povstalec.sgjourney.common.block_entities;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.TransceiverBlock;
+import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransceiverPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -24,13 +33,24 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	public static final String FREQUENCY = "frequency";
 	public static final String EDIT_FREQUENCY = "edit_frequency";
 	
+	private static final String EVENT_TRANSMISSION_RECEIVED = "transceiver_transmission_received";
+	
+	private static final short MAX_TRANSMISSION_TICKS = 20;
+	
 	private boolean editingFrequency = false;
 	private int frequency = 0;
 	private String idc = "";
 	
+	private short transmissionTicks = 0;
+	
+	protected TransceiverPeripheralWrapper peripheralWrapper;
+	
 	public TransceiverEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.TRANSCEIVER.get(), pos, state);
+		
+		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID))
+			peripheralWrapper = new TransceiverPeripheralWrapper(this);
 	}
 	
 	@Override
@@ -105,18 +125,19 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	@Override
 	public void receiveTransmission(int transmissionJumps, int frequency, String transmission)
 	{
-		if(frequency != getFrequency())
+		if(level.isClientSide() || frequency != getFrequency())
 			return;
 		
-		if(!getCurrentCode().equals(transmission))
-			return;
-		
+		boolean codeIsCorrect = getCurrentCode().equals(transmission);
+
+		queueEvent(EVENT_TRANSMISSION_RECEIVED, frequency, transmission, codeIsCorrect);
+
 		Level level = getLevel();
 		BlockPos pos = getBlockPos();
 		BlockState state = getBlockState();
 		
 		if(state.getBlock() instanceof TransceiverBlock transceiver)
-			transceiver.receiveTransmission(state, level, pos);
+			transceiver.receiveTransmission(state, level, pos, codeIsCorrect);
 	}
 	
 	public void sendTransmission()
@@ -139,6 +160,13 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 				});
 			}
 		}
+		
+		Level level = getLevel();
+		BlockPos pos = getBlockPos();
+		BlockState state = getBlockState();
+		
+		level.setBlock(pos, state.setValue(TransceiverBlock.TRANSMITTING, true), 2);
+		this.transmissionTicks = MAX_TRANSMISSION_TICKS;
 	}
     
     public void addToCode(int number)
@@ -191,11 +219,65 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	//============================================================================================
+	//*****************************************CC: Tweaked****************************************
+	//============================================================================================
+	
+	public TransceiverPeripheralWrapper getPeripheralWrapper()
+	{
+		if(!ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID))
+			return null;
+		
+		return this.peripheralWrapper;
+	}
+	
+	public void queueEvent(String eventName, Object... objects)
+	{
+		if(!ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID))
+			return;
+		
+		if(this.peripheralWrapper != null)
+			this.peripheralWrapper.queueEvent(eventName, objects);
+	}
+	
+	//============================================================================================
+	//****************************************Capabilities****************************************
+	//============================================================================================
+	
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
+	{
+		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID) && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
+			return peripheralWrapper.newPeripheral().cast();
+			
+		return super.getCapability(cap, side);
+	}
+	
+	//============================================================================================
 	//******************************************Ticking*******************************************
 	//============================================================================================
 	
+	private void handleTransmissionTicks()
+	{
+		if(transmissionTicks > 0)
+		{
+			transmissionTicks--;
+			
+			if(transmissionTicks == 0)
+			{
+				Level level = getLevel();
+				BlockPos pos = getBlockPos();
+				BlockState state = getBlockState();
+				
+				if(state.getBlock() instanceof TransceiverBlock transceiver)
+					transceiver.stopTransmitting(state, level, pos);
+			}
+		}
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, TransceiverEntity transceiver)
     {
+		transceiver.handleTransmissionTicks();
+		
 		transceiver.updateClient();
     }
 }

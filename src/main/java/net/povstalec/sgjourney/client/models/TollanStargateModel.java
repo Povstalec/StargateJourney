@@ -155,22 +155,22 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 				CHEVRON_WIDTH / 2,
 				CHEVRON_HEIGHT,
 				CHEVRON_THICKNESS / 2,
-				44F / 64, 5F / 64,
+				54F / 64, 5F / 64,
 				
 				CHEVRON_WIDTH / 2,
 				0,
 				CHEVRON_THICKNESS / 2,
-				44F / 64, 14F / 64,
+				54F / 64, 14F / 64,
 				
 				CHEVRON_WIDTH / 2, 
 				0,
 				-CHEVRON_THICKNESS / 2,
-				49F / 64, 14F / 64,
+				59F / 64, 14F / 64,
 				
 				CHEVRON_WIDTH / 2,
 				CHEVRON_HEIGHT,
 				-CHEVRON_THICKNESS / 2,
-				49F / 64, 5F / 64);
+				59F / 64, 5F / 64);
 		
 		// Back
 		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
