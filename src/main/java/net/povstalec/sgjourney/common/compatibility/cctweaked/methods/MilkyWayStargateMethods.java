@@ -58,6 +58,21 @@ public class MilkyWayStargateMethods
 		}
 	}
 	
+	public static class GetRotationDegrees implements InterfaceMethod<MilkyWayStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getRotationDegrees";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			return MethodResult.of(stargate.getRotationDegrees());
+		}
+	}
+	
 	public static class RotateClockwise implements InterfaceMethod<MilkyWayStargateEntity>
 	{
 		@Override

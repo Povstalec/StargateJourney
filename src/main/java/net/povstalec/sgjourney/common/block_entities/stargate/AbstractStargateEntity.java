@@ -1885,7 +1885,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return StargateNetwork.get(level).checkStargateShieldingState(this, connectionID);
 	}
 	
-	public float checkShieldingState()
+	public float checkIrisState()
 	{
 		return irisProgress * 100F / ShieldingState.MAX_PROGRESS;
 	}

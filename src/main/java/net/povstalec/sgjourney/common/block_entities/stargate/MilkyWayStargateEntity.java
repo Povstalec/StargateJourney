@@ -171,6 +171,11 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		return this.rotation;
 	}
 	
+	public double getRotationDegrees()
+	{
+		return (double) getRotation() / MAX_ROTATION * 360F;
+	}
+	
 	public float getRotation(float partialTick)
 	{
 		return StargateJourneyConfig.disable_smooth_animations.get() ?
