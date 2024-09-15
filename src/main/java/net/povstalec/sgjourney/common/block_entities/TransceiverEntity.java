@@ -35,9 +35,13 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	
 	private static final String EVENT_TRANSMISSION_RECEIVED = "transceiver_transmission_received";
 	
+	private static final short MAX_TRANSMISSION_TICKS = 20;
+	
 	private boolean editingFrequency = false;
 	private int frequency = 0;
 	private String idc = "";
+	
+	private short transmissionTicks = 0;
 	
 	protected TransceiverPeripheralWrapper peripheralWrapper;
 	
@@ -127,16 +131,13 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		boolean codeIsCorrect = getCurrentCode().equals(transmission);
 
 		queueEvent(EVENT_TRANSMISSION_RECEIVED, frequency, transmission, codeIsCorrect);
-		
-		if(!codeIsCorrect)
-			return;
 
 		Level level = getLevel();
 		BlockPos pos = getBlockPos();
 		BlockState state = getBlockState();
 		
 		if(state.getBlock() instanceof TransceiverBlock transceiver)
-			transceiver.receiveTransmission(state, level, pos);
+			transceiver.receiveTransmission(state, level, pos, codeIsCorrect);
 	}
 	
 	public void sendTransmission()
@@ -159,6 +160,13 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 				});
 			}
 		}
+		
+		Level level = getLevel();
+		BlockPos pos = getBlockPos();
+		BlockState state = getBlockState();
+		
+		level.setBlock(pos, state.setValue(TransceiverBlock.TRANSMITTING, true), 2);
+		this.transmissionTicks = MAX_TRANSMISSION_TICKS;
 	}
     
     public void addToCode(int number)
@@ -248,8 +256,28 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	//******************************************Ticking*******************************************
 	//============================================================================================
 	
+	private void handleTransmissionTicks()
+	{
+		if(transmissionTicks > 0)
+		{
+			transmissionTicks--;
+			
+			if(transmissionTicks == 0)
+			{
+				Level level = getLevel();
+				BlockPos pos = getBlockPos();
+				BlockState state = getBlockState();
+				
+				if(state.getBlock() instanceof TransceiverBlock transceiver)
+					transceiver.stopTransmitting(state, level, pos);
+			}
+		}
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, TransceiverEntity transceiver)
     {
+		transceiver.handleTransmissionTicks();
+		
 		transceiver.updateClient();
     }
 }

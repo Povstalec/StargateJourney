@@ -44,4 +44,26 @@ public class TransceiverMethods
 			return MethodResult.of();
 		}
 	}
+	
+	public static class SendTransmission implements TransceiverMethod
+	{
+		@Override
+		public String getName()
+		{
+			return "sendTransmission";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
+		{
+			context.executeMainThreadTask(() ->
+			{
+				transceiver.sendTransmission();
+				
+				return new Object[] {};
+			});
+			
+			return MethodResult.of();
+		}
+	}
 }

@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.compatibility.cctweaked;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.PegasusStargateMethods;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.ShieldingMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateFilterMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
@@ -16,9 +17,11 @@ public class CCTweakedCompatibility
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 		
 		// Iris methods
-		peripheral.registerMethod(new StargateMethods.CloseIris());
-		peripheral.registerMethod(new StargateMethods.OpenIris());
-		peripheral.registerMethod(new StargateMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.CloseIris());
+		peripheral.registerMethod(new ShieldingMethods.OpenIris());
+		peripheral.registerMethod(new ShieldingMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
 		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
@@ -64,9 +67,11 @@ public class CCTweakedCompatibility
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 
 		// Iris methods
-		peripheral.registerMethod(new StargateMethods.CloseIris());
-		peripheral.registerMethod(new StargateMethods.OpenIris());
-		peripheral.registerMethod(new StargateMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.CloseIris());
+		peripheral.registerMethod(new ShieldingMethods.OpenIris());
+		peripheral.registerMethod(new ShieldingMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
 		// Misc Methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.GetCurrentSymbol());
 		peripheral.registerMethod(new MilkyWayStargateMethods.IsCurrentSymbol());
@@ -131,9 +136,11 @@ public class CCTweakedCompatibility
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 
 		// Iris methods
-		peripheral.registerMethod(new StargateMethods.CloseIris());
-		peripheral.registerMethod(new StargateMethods.OpenIris());
-		peripheral.registerMethod(new StargateMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.CloseIris());
+		peripheral.registerMethod(new ShieldingMethods.OpenIris());
+		peripheral.registerMethod(new ShieldingMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
 		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
@@ -232,9 +239,11 @@ public class CCTweakedCompatibility
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 
 		// Iris methods
-		peripheral.registerMethod(new StargateMethods.CloseIris());
-		peripheral.registerMethod(new StargateMethods.OpenIris());
-		peripheral.registerMethod(new StargateMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.CloseIris());
+		peripheral.registerMethod(new ShieldingMethods.OpenIris());
+		peripheral.registerMethod(new ShieldingMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
 		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());

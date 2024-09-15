@@ -28,6 +28,7 @@ public class TransceiverPeripheral implements IPeripheral, IDynamicPeripheral
 		
 		this.registerMethod(new TransceiverMethods.SetCurrentCode());
 		this.registerMethod(new TransceiverMethods.SetFrequency());
+		this.registerMethod(new TransceiverMethods.SendTransmission());
 	}
 	
 	@Override

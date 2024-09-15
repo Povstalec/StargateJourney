@@ -462,9 +462,9 @@ public final class StargateConnection
 	public float checkStargateShieldingState(AbstractStargateEntity sendingStargate)
 	{
 		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
-			return this.dialedStargate.checkShieldingState();
+			return this.dialedStargate.checkIrisState();
 		else
-			return this.dialingStargate.checkShieldingState();
+			return this.dialingStargate.checkIrisState();
 	}
 	
 	//============================================================================================
