@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntit
 public class InterfacePeripheralWrapper
 {
 	private AbstractInterfaceEntity interfaceEntity;
-	private InterfacePeripheral basicInterfacePeripheral;
+	private InterfacePeripheral interfacePeripheral;
 	private LazyOptional<IPeripheral> peripheral;
     protected final List<IComputerAccess> computerList = new LinkedList<>();
 	
@@ -33,14 +33,14 @@ public class InterfacePeripheralWrapper
 	public boolean resetInterface()
 	{
 		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-		if(basicInterfacePeripheral != null && basicInterfacePeripheral.equals(newPeripheral))
+		if(interfacePeripheral != null && interfacePeripheral.equals(newPeripheral))
 		{
 			// Peripheral is same as before, no changes needed.
 			return false;
 		}
 
 		// Peripheral has changed, invalidate the capability and trigger a block update.
-		basicInterfacePeripheral = newPeripheral;
+		interfacePeripheral = newPeripheral;
 		if(peripheral != null)
 		{
 			peripheral.invalidate();
@@ -51,20 +51,20 @@ public class InterfacePeripheralWrapper
 	
 	public LazyOptional<IPeripheral> newPeripheral()
 	{
-		basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-		peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
+		interfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
+		peripheral = LazyOptional.of(() -> interfacePeripheral);
 		
 		if(peripheral == null)
 		{
-			basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-			peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
+			interfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
+			peripheral = LazyOptional.of(() -> interfacePeripheral);
 		}
 		return peripheral;
 	}
 	
 	public void queueEvent(String eventName, Object... objects)
 	{
-		if(this.basicInterfacePeripheral instanceof StargatePeripheral stargatePeripheral)
+		if(this.interfacePeripheral instanceof StargatePeripheral stargatePeripheral)
 		{
 			stargatePeripheral.queueEvent(eventName, objects);
 		}
@@ -72,6 +72,6 @@ public class InterfacePeripheralWrapper
 	
 	public InterfacePeripheral getPeripheral()
 	{
-		return this.basicInterfacePeripheral;
+		return this.interfacePeripheral;
 	}
 }

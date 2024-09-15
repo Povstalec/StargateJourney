@@ -14,7 +14,12 @@ public class CCTweakedCompatibility
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
-
+		
+		// Iris methods
+		peripheral.registerMethod(new StargateMethods.CloseIris());
+		peripheral.registerMethod(new StargateMethods.OpenIris());
+		peripheral.registerMethod(new StargateMethods.StopIris());
+		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
@@ -57,15 +62,21 @@ public class CCTweakedCompatibility
 	public static void registerMilkyWayStargateMethods(StargatePeripheralWrapper wrapper)
 	{
 		StargatePeripheral peripheral = wrapper.getPeripheral();
-		
+
+		// Iris methods
+		peripheral.registerMethod(new StargateMethods.CloseIris());
+		peripheral.registerMethod(new StargateMethods.OpenIris());
+		peripheral.registerMethod(new StargateMethods.StopIris());
+		// Misc Methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.GetCurrentSymbol());
 		peripheral.registerMethod(new MilkyWayStargateMethods.IsCurrentSymbol());
-		
+		// Rotation methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.GetRotation());
+		peripheral.registerMethod(new MilkyWayStargateMethods.GetRotationDegrees());
 		peripheral.registerMethod(new MilkyWayStargateMethods.RotateClockwise());
 		peripheral.registerMethod(new MilkyWayStargateMethods.RotateAntiClockwise());
 		peripheral.registerMethod(new MilkyWayStargateMethods.EndRotation());
-
+		// Dialing methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.OpenChevron());
 		peripheral.registerMethod(new MilkyWayStargateMethods.EngageChevron());
 		peripheral.registerMethod(new MilkyWayStargateMethods.CloseChevron());
@@ -119,6 +130,11 @@ public class CCTweakedCompatibility
 		
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 
+		// Iris methods
+		peripheral.registerMethod(new StargateMethods.CloseIris());
+		peripheral.registerMethod(new StargateMethods.OpenIris());
+		peripheral.registerMethod(new StargateMethods.StopIris());
+		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
@@ -215,6 +231,11 @@ public class CCTweakedCompatibility
 		
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 
+		// Iris methods
+		peripheral.registerMethod(new StargateMethods.CloseIris());
+		peripheral.registerMethod(new StargateMethods.OpenIris());
+		peripheral.registerMethod(new StargateMethods.StopIris());
+		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());

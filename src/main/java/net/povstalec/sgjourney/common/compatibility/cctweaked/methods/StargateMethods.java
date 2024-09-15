@@ -131,6 +131,66 @@ public class StargateMethods
 		}
 	}
 	
+	public static class CloseIris implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "closeIris";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {interfaceEntity.setIrisMotion(Stargate.IrisMotion.CLOSING)};
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class OpenIris implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "openIris";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {interfaceEntity.setIrisMotion(Stargate.IrisMotion.OPENING)};
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class StopIris implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "stopIris";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {interfaceEntity.setIrisMotion(Stargate.IrisMotion.IDLE)};
+			});
+			
+			return result;
+		}
+	}
+	
 	// Crystal Interface
 	public static class EngageSymbol implements InterfaceMethod<AbstractStargateEntity>
 	{

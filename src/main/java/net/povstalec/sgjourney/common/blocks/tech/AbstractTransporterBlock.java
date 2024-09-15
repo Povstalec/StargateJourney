@@ -8,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -34,13 +33,6 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	public RenderShape getRenderShape(BlockState state)
 	{
 		return RenderShape.MODEL;
-	}
-	
-	@Override
-	public final void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
-	{
-		if(stack.hasCustomHoverName() && world.getBlockEntity(pos) instanceof AbstractTransporterEntity transporter)
-			transporter.setCustomName(stack.getHoverName());
 	}
 	
 	@Override

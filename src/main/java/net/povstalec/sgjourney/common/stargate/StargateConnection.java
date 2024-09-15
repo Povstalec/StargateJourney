@@ -284,6 +284,18 @@ public final class StargateConnection
 			return;
 		}
 		
+		// Updates Interfaces when incoming connection is detected
+		if(this.openTime == 0)
+		{
+			List<Integer> emptyAddress = Arrays.stream(new int[] {}).boxed().toList();
+			List<Integer> dialedAddress = Arrays.stream(dialedStargate.getAddress().toArray()).boxed().toList();
+			dialedStargate.updateInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddress);
+			dialedStargate.updateCrystalInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddress);
+			dialedStargate.updateAdvancedCrystalInterfaceBlocks(EVENT_INCOMING_WORMHOLE, dialedAddress);
+			List<Integer> dialingAddress = Arrays.stream(dialingStargate.getAddress().toArray()).boxed().toList();
+			dialingStargate.updateInterfaceBlocks(EVENT_OUTGOING_WORMHOLE, dialingAddress);
+		}
+		
 		Stargate.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? Stargate.ChevronLockSpeed.FAST : this.dialedStargate.getChevronLockSpeed();
 		int chevronWaitTicks = chevronLockSpeed.getChevronWaitTicks();
 		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
@@ -332,18 +344,6 @@ public final class StargateConnection
 			}
 			
 			return;
-		}
-		
-		// Updates Interfaces when wormhole starts forming
-		if(this.openTime == kawooshStartTicks)
-		{
-			List<Integer> emptyAddress = Arrays.stream(new int[] {}).boxed().toList();
-			List<Integer> dialedAddress = Arrays.stream(dialedStargate.getAddress().toArray()).boxed().toList();
-			dialedStargate.updateBasicInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddress);
-			dialedStargate.updateCrystalInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddress);
-			dialedStargate.updateAdvancedCrystalInterfaceBlocks(EVENT_INCOMING_WORMHOLE, dialedAddress);
-			List<Integer> dialingAddress = Arrays.stream(dialingStargate.getAddress().toArray()).boxed().toList();
-			dialingStargate.updateInterfaceBlocks(EVENT_OUTGOING_WORMHOLE, dialingAddress);
 		}
 		
 		// Handles kawoosh progress
