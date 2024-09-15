@@ -50,8 +50,7 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
 		this.addRenderableWidget(new TransceiverButton(x + 79, y + 57, Component.translatable("screen.sgjourney.transceiver.symbol.toggle_frequency"), Component.translatable("screen.sgjourney.transceiver.toggle_frequency"),
 				(button) -> toggleFrequency()));
 
-		TransceiverLargeButton transceiverLargeButton = new TransceiverLargeButton(x + 14, y + 34, Component.empty(), Component.translatable("screen.sgjourney.transceiver.send_transmission"), (button) -> toggleFrequency());
-		transceiverLargeButton.active = false; //TODO Make this button usable
+		TransceiverLargeButton transceiverLargeButton = new TransceiverLargeButton(x + 14, y + 34, Component.empty(), Component.translatable("screen.sgjourney.transceiver.send_transmission"), (button) -> sendTransmission());
 		this.addRenderableWidget(transceiverLargeButton);
 	}
 
@@ -159,7 +158,7 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
     
     private void sendTransmission()
     {
-    	//menu.sendTransmission(); //TODO Add this
+    	menu.sendTransmission();
     }
     
     private void addToCode(int number)

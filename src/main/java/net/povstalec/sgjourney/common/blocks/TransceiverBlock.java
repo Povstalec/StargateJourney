@@ -39,11 +39,13 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.blockstates.Receiving;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.menu.TransceiverMenu;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
@@ -51,7 +53,8 @@ import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 public class TransceiverBlock extends Block implements EntityBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-	public static final BooleanProperty RECEIVING = BooleanProperty.create("receiving");
+	
+	public static final EnumProperty<Receiving> RECEIVING = EnumProperty.create("receiving", Receiving.class);
 	public static final BooleanProperty TRANSMITTING = BooleanProperty.create("transmitting");
 	
 	private static final int TICKS_ACTIVE = 20;
@@ -69,7 +72,7 @@ public class TransceiverBlock extends Block implements EntityBlock
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH)
-				.setValue(RECEIVING, false).setValue(TRANSMITTING, false));
+				.setValue(RECEIVING, Receiving.FALSE).setValue(TRANSMITTING, false));
 	}
 	
 	@Nullable
@@ -160,13 +163,17 @@ public class TransceiverBlock extends Block implements EntityBlock
 	@Override
 	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
 	{
-		level.setBlock(pos, state.setValue(RECEIVING, false), 3);
+		level.setBlock(pos, state.setValue(RECEIVING, Receiving.FALSE), 3);
 	}
 	
 	@Override
 	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)
 	{
-		return state.getValue(RECEIVING) ? 15 : 0;
+		Receiving receiving = state.getValue(RECEIVING);
+		if(receiving != null)
+			return receiving.getRedstonePower();
+		
+		return 0;
 	}
 	
 	@Override
@@ -181,19 +188,23 @@ public class TransceiverBlock extends Block implements EntityBlock
 			
 			if(blockEntity instanceof TransceiverEntity transceiver)
 				transceiver.sendTransmission();
-			
-			level.setBlock(pos, state.setValue(TRANSMITTING, true), 2);
 		}
-		else
-			level.setBlock(pos, state.setValue(TRANSMITTING, false), 2);
 		
 		super.neighborChanged(state, level, pos, block, pos2, bool);
 	}
 	
-	public void receiveTransmission(BlockState state, Level level, BlockPos pos)
+	public void receiveTransmission(BlockState state, Level level, BlockPos pos, boolean codeIsCorrect)
 	{
-		level.setBlock(pos, state.setValue(RECEIVING, true), 3);
+		if(codeIsCorrect)
+			level.setBlock(pos, state.setValue(RECEIVING, Receiving.RECEIVING_CORRECT), 3);
+		else
+			level.setBlock(pos, state.setValue(RECEIVING, Receiving.RECEIVING_INCORRECT), 3);
 		level.scheduleTick(pos, this, TICKS_ACTIVE);
+	}
+	
+	public void stopTransmitting(BlockState state, Level level, BlockPos pos)
+	{
+		level.setBlock(pos, state.setValue(TRANSMITTING, false), 2);
 	}
 	
 	@Override

@@ -84,7 +84,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 	
 	public ItemStack getStackAt(HitResult target, BlockGetter level, Player player, StargatePart part, BlockPos pos)
 	{
-		Optional<BlockState> removed = removeBlockAt(part);
+		Optional<BlockState> removed = getBlockAt(part);
 		if(removed.isPresent())
 		{
 			BlockState state = removed.get();
