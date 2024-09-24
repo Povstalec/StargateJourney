@@ -110,4 +110,24 @@ public class ShieldingMethods
 			return result;
 		}
 	}
+
+	public static class HasIris implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "hasIris";
+		}
+
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				return new Object[] {stargate.hasIris()};
+			});
+
+			return result;
+		}
+	}
 }
