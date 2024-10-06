@@ -1,0 +1,28 @@
+{
+	"parent": "stellarview:star_field/spiral_galaxy/milky_way/milky_way",
+	"coords": { "x": {"ly": -18943}, "y": {"ly": -14861}, "z": {"ly": 26050} },
+	"axis_rotation": { "x_axis": 94, "y_axis": 26, "z_axis": 13 },
+	"texture_layers":
+	[
+		{
+			"texture": "sgjourney:textures/environment/black_hole/cavum_tenebrae_halo.png",
+			"rgba": {"red": 100, "green": 200, "blue": 255, "alpha": 255},
+			"blend": true,
+			"size": 4488626469,
+			"min_size": 0.7,
+			"clamp_at_min_size": true,
+			"rotation": 0,
+			"uv": { "flip_uv": false }
+		},
+		{
+			"texture": "sgjourney:textures/environment/black_hole/cavum_tenebrae.png",
+			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+			"blend": false,
+			"size": 4488626469,
+			"min_size": 0.7,
+			"clamp_at_min_size": true,
+			"rotation": 0,
+			"uv": { "flip_uv": false }
+		}
+	]
+}
