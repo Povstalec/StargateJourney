@@ -1,0 +1,38 @@
+{
+	"parent": "sgjourney:star/milky_way/chulak_system/chulak_system_barycenter",
+	"coords": { "x": {"ly": 0}, "y": {"ly": 0}, "z": {"ly": 0} },
+	"axis_rotation": { "x_axis": 0, "y_axis": 0, "z_axis": 0 },
+	"orbit_info":
+	{
+		"apoapsis": 100000000,
+		"periapsis": 75000000,
+		"orbital_period": { "ticks": 182016000 },
+		"argument_of_periapsis": 252.3,
+		"inclination": 107.6,
+		"longtitude_of_ascending_node": 231.519,
+		"epoch_mean_anomaly": 0
+	},
+	"texture_layers":
+	[
+		{
+			"texture": "stellarview:textures/environment/halo_template.png",
+			"rgba": {"red": 255, "green": 192, "blue": 128, "alpha": 255},
+			"blend": true,
+			"size": 3856178999.5,
+			"min_size": 0.4,
+			"clamp_at_min_size": true,
+			"rotation": 12,
+			"uv": { "flip_uv": false }
+		},
+		{
+			"texture": "stellarview:textures/environment/star/orange_star.png",
+			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+			"blend": true,
+			"size": 3856178999.5,
+			"min_size": 0.4,
+			"clamp_at_min_size": true,
+			"rotation": 12,
+			"uv": { "flip_uv": false }
+		}
+	]
+}

@@ -1,0 +1,64 @@
+{
+	"parent": "sgjourney:planet/milky_way/abydos_system/abydos",
+	"coords": { "x": {"ly": 0}, "y": {"ly": 0}, "z": {"ly": 0} },
+	"axis_rotation": { "x_axis": 0, "y_axis": 0, "z_axis": 0 },
+	"orbit_info":
+	{
+		"apoapsis": 350000,
+		"periapsis": 350000,
+		"orbit_clamp_distance": 100000000,
+		"orbital_period": { "ticks": 1536000, "orbits": 25 },
+		"argument_of_periapsis": 0,
+		"inclination": 25.145,
+		"longtitude_of_ascending_node": 0,
+		"epoch_mean_anomaly": 140
+	},
+	"texture_layers":
+	[
+		{
+			"texture": "stellarview:textures/environment/moon_halo_phases.png",
+			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+			"blend": true,
+			"size": 9000000,
+			"min_size": 0.2,
+			"clamp_at_min_size": true,
+			"rotation": -110,
+			"uv":
+			{
+				"phase_handler":
+				{
+					"ticks_per_phase": 24000,
+					"phase_tick_offset": 0,
+					"columns": 4,
+					"rows": 2
+				},
+				"flip_uv": true
+			}
+		},
+		{
+			"texture": "stellarview:textures/environment/moon_phases.png",
+			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+			"blend": false,
+			"size": 9000000,
+			"min_size": 0.2,
+			"clamp_at_min_size": true,
+			"rotation": -110,
+			"uv":
+			{
+				"phase_handler":
+				{
+					"ticks_per_phase": 24000,
+					"phase_tick_offset": 0,
+					"columns": 4,
+					"rows": 2
+				},
+				"flip_uv": true
+			}
+		}
+	],
+	
+	"compatibility":
+	{
+		"enhanced_celestials_moon_dimension": "sgjourney:chulak"
+	}
+}
