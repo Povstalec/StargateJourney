@@ -1,0 +1,17 @@
+{
+	"coords": { "x": {"ly": -121}, "y": {"ly": -4067}, "z": {"ly": 3158} },
+	"axis_rotation": { "x_axis": 69, "y_axis": 81, "z_axis": 183 },
+	"texture_layers":
+	[
+		{
+			"texture": "sgjourney:textures/environment/abydos_sun.png",
+			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+			"blend": true,
+			"size": 5000000000,
+			"min_size": 0.55,
+			"clamp_at_min_size": true,
+			"rotation": 0,
+			"uv": { "flip_uv": false }
+		}
+	]
+}
