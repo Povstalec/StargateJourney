@@ -22,6 +22,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new ShieldingMethods.StopIris());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		peripheral.registerMethod(new ShieldingMethods.HasIris());
 		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
@@ -72,6 +73,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new ShieldingMethods.StopIris());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		peripheral.registerMethod(new ShieldingMethods.HasIris());
 		// Misc Methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.GetCurrentSymbol());
 		peripheral.registerMethod(new MilkyWayStargateMethods.IsCurrentSymbol());
@@ -141,6 +143,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new ShieldingMethods.StopIris());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		peripheral.registerMethod(new ShieldingMethods.HasIris());
 		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
@@ -244,6 +247,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new ShieldingMethods.StopIris());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		peripheral.registerMethod(new ShieldingMethods.HasIris());
 		// Misc Methods
 		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
 		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
