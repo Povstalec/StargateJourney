@@ -1,0 +1,20 @@
+{
+	"variants":
+	{
+		"axis=x":
+		{
+			"model": "sgjourney:block/red_sandstone_with_gold",
+			"x": 90,
+			"y": 90
+		},
+		"axis=y":
+		{
+			"model": "sgjourney:block/red_sandstone_with_gold"
+		},
+		"axis=z":
+		{
+			"model": "sgjourney:block/red_sandstone_with_gold",
+			"x": 90
+		}
+	}
+}

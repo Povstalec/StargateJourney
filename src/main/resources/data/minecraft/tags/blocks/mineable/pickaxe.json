@@ -36,6 +36,7 @@
 		"sgjourney:nether_naquadah_ore",
 		"sgjourney:deepslate_naquadah_ore",
 		"sgjourney:raw_naquadah_block",
+		"sgjourney:pure_naquadah_block",
 		
 		"sgjourney:naquadah_block",
 		"sgjourney:naquadah_stairs",
@@ -48,10 +49,16 @@
 		"sgjourney:sandstone_with_gold",
 		"sgjourney:sandstone_hieroglyphs",
 		"sgjourney:sandstone_switch",
-		
 		"sgjourney:sandstone_cartouche",
-		"sgjourney:stone_cartouche",
 		"sgjourney:sandstone_symbol",
+
+		"sgjourney:red_sandstone_glyphs",
+		"sgjourney:red_sandstone_with_lapis",
+		"sgjourney:red_sandstone_with_gold",
+		"sgjourney:red_sandstone_cartouche",
+		"sgjourney:red_sandstone_symbol",
+
+		"sgjourney:stone_cartouche",
 		"sgjourney:stone_symbol",
 		
 		"sgjourney:golden_idol",

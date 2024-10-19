@@ -29,6 +29,7 @@ public class TransceiverPeripheral implements IPeripheral, IDynamicPeripheral
 		this.registerMethod(new TransceiverMethods.SetCurrentCode());
 		this.registerMethod(new TransceiverMethods.SetFrequency());
 		this.registerMethod(new TransceiverMethods.SendTransmission());
+		this.registerMethod(new TransceiverMethods.CheckConnectedShielding());
 	}
 	
 	@Override
@@ -86,7 +87,7 @@ public class TransceiverPeripheral implements IPeripheral, IDynamicPeripheral
 	{
 		for(IComputerAccess computer : transceiverEntity.getPeripheralWrapper().computerList)
 		{
-			computer.queueEvent(eventName, objects);
+			computer.queueEvent(eventName, computer.getAttachmentName(), objects);
 		}
 	}
 	

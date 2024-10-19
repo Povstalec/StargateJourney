@@ -459,6 +459,14 @@ public class ForgeEvents
 		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
 		{
 			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+			int villagerLevel = 4;
+			
+			trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
+					new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.RED_SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
+		}
+		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
+		{
+			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 		    int villagerLevel = 4;
 
 		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(

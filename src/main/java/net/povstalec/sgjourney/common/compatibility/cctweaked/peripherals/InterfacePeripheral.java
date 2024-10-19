@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntit
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethod;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethods;
 
-public class InterfacePeripheral implements IPeripheral, IDynamicPeripheral
+public class InterfacePeripheral implements IDynamicPeripheral
 {
 	protected AbstractInterfaceEntity interfaceEntity;
 	protected HashMap<String, InterfaceMethod<BlockEntity>> methods = new HashMap<String,InterfaceMethod<BlockEntity>>();

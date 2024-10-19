@@ -104,33 +104,38 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     @Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if(!level.isClientSide()) 
-        {
-        	Direction direction = state.getValue(FACING);
-        	Orientation orientation = state.getValue(ORIENTATION);
-        	
-        	if(level.getBlockState(pos).getValue(HALF) == DoubleBlockHalf.UPPER)
-        		pos = pos.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation));
-        		
-        	BlockEntity blockEntity = level.getBlockEntity(pos);
-			
-        	if(blockEntity instanceof CartoucheEntity cartouche) 
-        	{
-        		Address address = cartouche.getAddress();
-        		
-        		if(address.getDimension().isPresent())
-        			player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(address.getDimension().get()).withStyle(ChatFormatting.GREEN));
-        		player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
-
-        		if(cartouche.getSymbols() != null)
-        		{
-        			MutableComponent symbolsText = Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols())).withStyle(ChatFormatting.LIGHT_PURPLE);
-
-            		player.sendSystemMessage(symbolsText);
-        		}
-        	}
-        }
-        return InteractionResult.SUCCESS;
+		if(player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
+		{
+			if(!level.isClientSide())
+			{
+				Direction direction = state.getValue(FACING);
+				Orientation orientation = state.getValue(ORIENTATION);
+				
+				if(level.getBlockState(pos).getValue(HALF) == DoubleBlockHalf.UPPER)
+					pos = pos.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation));
+				
+				BlockEntity blockEntity = level.getBlockEntity(pos);
+				
+				if(blockEntity instanceof CartoucheEntity cartouche)
+				{
+					Address address = cartouche.getAddress();
+					
+					if(address.getDimension().isPresent())
+						player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(address.getDimension().get()).withStyle(ChatFormatting.GREEN));
+					player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
+					
+					if(cartouche.getSymbols() != null)
+					{
+						MutableComponent symbolsText = Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols())).withStyle(ChatFormatting.LIGHT_PURPLE);
+						
+						player.sendSystemMessage(symbolsText);
+					}
+				}
+			}
+			return InteractionResult.SUCCESS;
+		}
+        else
+			return InteractionResult.FAIL;
     }
 	
 	public abstract ItemLike getItem();
@@ -297,4 +302,30 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		}
     	
     }
+	
+	public static class RedSandstone extends CartoucheBlock
+	{
+		public RedSandstone(Properties properties)
+		{
+			super(properties);
+		}
+		
+		@Override
+		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+		{
+			return new CartoucheEntity.RedSandstone(pos, state);
+		}
+		
+		public Block getBlock()
+		{
+			return BlockInit.RED_SANDSTONE_CARTOUCHE.get();
+		}
+		
+		@Override
+		public ItemLike getItem()
+		{
+			return BlockInit.RED_SANDSTONE_CARTOUCHE.get();
+		}
+		
+	}
 }
