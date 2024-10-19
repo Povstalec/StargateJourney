@@ -1,9 +1,16 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -82,6 +89,11 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	public float transmissionRadius()
 	{
 		return CommonTransmissionConfig.max_transceiver_transmission_distance.get();
+	}
+	
+	public float transmissionRadius2()
+	{
+		return transmissionRadius() * transmissionRadius();
 	}
 	
 	public void setFrequency(int frequency)
@@ -168,6 +180,45 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		level.setBlock(pos, state.setValue(TransceiverBlock.TRANSMITTING, true), 2);
 		this.transmissionTicks = MAX_TRANSMISSION_TICKS;
 	}
+	
+	public int checkShieldingState()
+	{
+		int roundedRadius = (int) Math.ceil(transmissionRadius() / 16);
+		List<AbstractStargateEntity> stargates = new ArrayList<AbstractStargateEntity>();
+		
+		for(int x = -roundedRadius; x <= roundedRadius; x++)
+		{
+			for(int z = -roundedRadius; z <= roundedRadius; z++)
+			{
+				ChunkAccess chunk = level.getChunk(getBlockPos().east(16 * x).south(16 * z));
+				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
+				
+				positions.stream().forEach(pos ->
+				{
+					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && distance2(getBlockPos(), stargate.getBlockPos()) <= transmissionRadius2())
+					{
+						stargates.add(stargate);
+					}
+				});
+			}
+		}
+		System.out.println("Check 1");
+		if(stargates.size() == 0)
+			return -1; // No Stargates nearby
+		System.out.println("Check 2");
+		
+		stargates.sort((stargateA, stargateB) ->
+				Double.valueOf(distance2(getBlockPos(), stargateA.getBlockPos()))
+						.compareTo(Double.valueOf(distance2(getBlockPos(), stargateB.getBlockPos()))));
+		
+		AbstractStargateEntity stargate = stargates.get(0);
+		
+		if(!stargate.isConnected())
+			return -2; // Stargate is not connected
+		System.out.println("State " + stargate.checkConnectionShieldingState());
+		
+		return (int) Math.round(stargate.checkConnectionShieldingState());
+	}
     
     public void addToCode(int number)
     {
@@ -216,6 +267,15 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 			return;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundTransceiverUpdatePacket(this.worldPosition, this.editingFrequency, this.frequency, this.idc));
+	}
+	
+	private static double distance2(BlockPos pos, BlockPos targetPos)
+	{
+		int x = Math.abs(targetPos.getX() - pos.getX());
+		int y = Math.abs(targetPos.getY() - pos.getY());
+		int z = Math.abs(targetPos.getZ() - pos.getZ());
+		
+		return x*x + y*y + z*z;
 	}
 	
 	//============================================================================================

@@ -95,32 +95,37 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     @Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if(!level.isClientSide()) 
-        {
-        	BlockEntity blockEntity = level.getBlockEntity(pos);
-			
-        	if(blockEntity instanceof SymbolBlockEntity symbolBlock) 
-        	{
-        		int symbolNumber = symbolBlock.getSymbolNumber();
-        		MutableComponent text;
-
-        		player.sendSystemMessage(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": " + symbolNumber)).withStyle(ChatFormatting.YELLOW));
-        		
-        		if(symbolNumber == 0)
-        		{
-        			MutableComponent pointOfOrigin = Component.literal(symbolBlock.getPointOfOrigin().toString());
-    				text = Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": ")).append(pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE);
-        		}
-        		else
-        		{
-        			MutableComponent symbols = Component.literal(symbolBlock.getSymbols().toString());
-    				text = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
-        		}
-        		
-        		player.sendSystemMessage(text);
-        	}
-        }
-        return InteractionResult.SUCCESS;
+		if(player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
+		{
+			if(!level.isClientSide())
+			{
+				BlockEntity blockEntity = level.getBlockEntity(pos);
+				
+				if(blockEntity instanceof SymbolBlockEntity symbolBlock)
+				{
+					int symbolNumber = symbolBlock.getSymbolNumber();
+					MutableComponent text;
+					
+					player.sendSystemMessage(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": " + symbolNumber)).withStyle(ChatFormatting.YELLOW));
+					
+					if(symbolNumber == 0)
+					{
+						MutableComponent pointOfOrigin = Component.literal(symbolBlock.getPointOfOrigin().toString());
+						text = Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": ")).append(pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE);
+					}
+					else
+					{
+						MutableComponent symbols = Component.literal(symbolBlock.getSymbols().toString());
+						text = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
+					}
+					
+					player.sendSystemMessage(text);
+				}
+			}
+			return InteractionResult.SUCCESS;
+		}
+        else
+			return InteractionResult.FAIL;
     }
 	
 	public abstract ItemLike getItem();
@@ -249,4 +254,25 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		}
     	
     }
+	
+	public static class RedSandstone extends SymbolBlock
+	{
+		public RedSandstone(Properties properties)
+		{
+			super(properties);
+		}
+		
+		@Override
+		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+		{
+			return new SymbolBlockEntity.RedSandstone(pos, state);
+		}
+		
+		@Override
+		public ItemLike getItem()
+		{
+			return BlockInit.RED_SANDSTONE_SYMBOL.get();
+		}
+		
+	}
 }

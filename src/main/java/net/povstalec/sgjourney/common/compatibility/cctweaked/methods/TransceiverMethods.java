@@ -66,4 +66,29 @@ public class TransceiverMethods
 			return MethodResult.of();
 		}
 	}
+	
+	public static class CheckConnectedShielding implements TransceiverMethod
+	{
+		@Override
+		public String getName()
+		{
+			return "checkConnectedShielding";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				int state = transceiver.checkShieldingState();
+				
+				if(state < 0)
+					return new Object[] {null};
+				
+				return new Object[] {state};
+			});
+			
+			return result;
+		}
+	}
 }

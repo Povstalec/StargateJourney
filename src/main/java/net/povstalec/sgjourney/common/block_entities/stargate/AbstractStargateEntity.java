@@ -1042,6 +1042,19 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return hasIris() && this.irisProgress == ShieldingState.MAX_PROGRESS;
 	}
 	
+	public int getIrisDurability()
+	{
+		return hasIris() ? StargateIrisItem.getDurability(getIris()) : 0;
+	}
+	
+	public int getIrisMaxDurability()
+	{
+		if(getIris().getItem() instanceof StargateIrisItem iris)
+			return iris.getMaxDurability();
+		
+		return 0;
+	}
+	
 	public ShieldingState getShieldingState()
 	{
 		return ShieldingState.fromProgress(irisProgress);
@@ -1746,6 +1759,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.encoded_address").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.GREEN));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
+		
+		player.sendSystemMessage(Component.translatable("info.sgjourney.iris").append(Component.literal(": ").append((!getIris().isEmpty() ? getIris().getDisplayName() : Component.literal("-")))).withStyle(ChatFormatting.GRAY));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.iris_durability").append(Component.literal(": " + (!getIris().isEmpty() ? StargateIrisItem.getDurability(getIris()) : "-"))).withStyle(ChatFormatting.GRAY));
+		if(!getIris().isEmpty() && StargateIrisItem.hasCustomTexture(getIris()))
+			player.sendSystemMessage(Component.translatable("info.sgjourney.iris_texture").append(Component.literal(": " + StargateIrisItem.getIrisTexture(getIris()))).withStyle(ChatFormatting.DARK_PURPLE));
 
 		player.sendSystemMessage(Component.translatable("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));

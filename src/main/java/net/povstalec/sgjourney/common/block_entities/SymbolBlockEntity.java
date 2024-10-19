@@ -132,5 +132,14 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		}
 		
 	}
+	
+	public static class RedSandstone extends SymbolBlockEntity
+	{
+		public RedSandstone(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.RED_SANDSTONE_SYMBOL.get(), pos, state);
+		}
+		
+	}
 
 }

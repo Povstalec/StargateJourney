@@ -198,6 +198,7 @@ public class TabInit
 			event.accept(BlockInit.DEEPSLATE_NAQUADAH_ORE.get());
 			event.accept(BlockInit.NETHER_NAQUADAH_ORE.get());
 			event.accept(BlockInit.RAW_NAQUADAH_BLOCK.get());
+			event.accept(BlockInit.PURE_NAQUADAH_BLOCK.get());
 			
 			event.accept(BlockInit.NAQUADAH_BLOCK.get());
 			event.accept(BlockInit.NAQUADAH_STAIRS.get());
@@ -211,9 +212,15 @@ public class TabInit
 			event.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
 			event.accept(BlockInit.SANDSTONE_WITH_GOLD.get());
 			event.accept(BlockInit.SANDSTONE_SYMBOL.get());
-			event.accept(BlockInit.STONE_SYMBOL.get());
-			
 			event.accept(BlockInit.SANDSTONE_CARTOUCHE.get());
+			
+			event.accept(BlockInit.RED_SANDSTONE_GLYPHS.get());
+			event.accept(BlockInit.RED_SANDSTONE_WITH_LAPIS.get());
+			event.accept(BlockInit.RED_SANDSTONE_WITH_GOLD.get());
+			event.accept(BlockInit.RED_SANDSTONE_SYMBOL.get());
+			event.accept(BlockInit.RED_SANDSTONE_CARTOUCHE.get());
+			
+			event.accept(BlockInit.STONE_SYMBOL.get());
 			event.accept(BlockInit.STONE_CARTOUCHE.get());
 			
 			event.accept(BlockInit.FIRE_PIT.get());
