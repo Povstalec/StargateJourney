@@ -41,7 +41,7 @@ public class StargatePeripheral extends InterfacePeripheral
 	{
 		for(IComputerAccess computer : interfaceEntity.getPeripheralWrapper().computerList)
 		{
-			computer.queueEvent(eventName, objects);
+			computer.queueEvent(eventName, computer.getAttachmentName(), objects);
 		}
 	}
 	

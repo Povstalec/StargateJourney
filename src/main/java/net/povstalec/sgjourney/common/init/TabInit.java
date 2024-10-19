@@ -194,6 +194,7 @@ public class TabInit
 				items.accept(BlockInit.DEEPSLATE_NAQUADAH_ORE.get());
 				items.accept(BlockInit.NETHER_NAQUADAH_ORE.get());
 				items.accept(BlockInit.RAW_NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.PURE_NAQUADAH_BLOCK.get());
 				
 				items.accept(BlockInit.NAQUADAH_BLOCK.get());
 				items.accept(BlockInit.NAQUADAH_STAIRS.get());
@@ -207,9 +208,15 @@ public class TabInit
 				items.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
 				items.accept(BlockInit.SANDSTONE_WITH_GOLD.get());
 				items.accept(BlockInit.SANDSTONE_SYMBOL.get());
-				items.accept(BlockInit.STONE_SYMBOL.get());
-				
 				items.accept(BlockInit.SANDSTONE_CARTOUCHE.get());
+				
+				items.accept(BlockInit.RED_SANDSTONE_GLYPHS.get());
+				items.accept(BlockInit.RED_SANDSTONE_WITH_LAPIS.get());
+				items.accept(BlockInit.RED_SANDSTONE_WITH_GOLD.get());
+				items.accept(BlockInit.RED_SANDSTONE_SYMBOL.get());
+				items.accept(BlockInit.RED_SANDSTONE_CARTOUCHE.get());
+				
+				items.accept(BlockInit.STONE_SYMBOL.get());
 				items.accept(BlockInit.STONE_CARTOUCHE.get());
 				
 				items.accept(BlockInit.FIRE_PIT.get());

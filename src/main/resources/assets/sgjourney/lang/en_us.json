@@ -3,6 +3,7 @@
 	"block.sgjourney.nether_naquadah_ore": "Nether Naquadah Ore",
 	"block.sgjourney.deepslate_naquadah_ore": "Deepslate Naquadah Ore",
 	"block.sgjourney.raw_naquadah_block": "Block of Raw Naquadah",
+	"block.sgjourney.pure_naquadah_block": "Block of Pure Naquadah",
 	"block.sgjourney.naquadah_block": "Block of Naquadah",
 	"block.sgjourney.naquadah_stairs": "Naquadah Stairs",
 	"block.sgjourney.naquadah_slab": "Naquadah Slab",
@@ -13,15 +14,24 @@
 	"block.sgjourney.archeology_table": "Archeology Table",
 	"block.sgjourney.golden_idol": "Golden Idol",
 
+	"block.sgjourney.sandstone_hieroglyphs": "Sandstone with Hieroglyphs",
 	"block.sgjourney.sandstone_with_lapis": "Sandstone with Lapis",
 	"block.sgjourney.sandstone_with_gold": "Sandstone with Gold",
-	"block.sgjourney.sandstone_hieroglyphs": "Sandstone with Hieroglyphs",
 	"block.sgjourney.sandstone_switch": "Sandstone Switch",
 	"block.sgjourney.sandstone_symbol": "Sandstone Symbol",
-	"block.sgjourney.stone_symbol": "Stone Symbol",
 	"block.sgjourney.sandstone_cartouche": "Sandstone Cartouche",
+
+	"block.sgjourney.red_sandstone_glyphs": "Red Sandstone with Glyphs",
+	"block.sgjourney.red_sandstone_with_lapis": "Red Sandstone with Lapis",
+	"block.sgjourney.red_sandstone_with_gold": "Red Sandstone with Gold",
+	"block.sgjourney.red_sandstone_symbol": "Red Sandstone Symbol",
+	"block.sgjourney.red_sandstone_cartouche": "Red Sandstone Cartouche",
+
+	"block.sgjourney.stone_symbol": "Stone Symbol",
 	"block.sgjourney.stone_cartouche": "Stone Cartouche",
+
 	"block.sgjourney.cartouche.not_enough_space": "Cartouche does not have enough space",
+
 	
 	"block.sgjourney.universe_stargate": "Universe Stargate",
 	"block.sgjourney.universe_ring": "Universe Stargate",
@@ -209,6 +219,7 @@
 	
 	"sounds.sgjourney.nothing" : "Nothing",
 
+	"stat.sgjourney.times_smashed_against_iris": "Times smashed against Iris",
 	"stat.sgjourney.times_killed_by_kawoosh": "Times killed by Kawoosh",
 	"stat.sgjourney.times_killed_by_wormhole": "Times killed by Wormhole",
 	"stat.sgjourney.times_used_wormhole": "Times travelled by Wormhole",
@@ -426,6 +437,9 @@
 	"info.sgjourney.9_chevron_address": "9-Chevron Address",
 	"info.sgjourney.dimension": "Dimension",
 	"info.sgjourney.recent_feedback": "Recent Feedback",
+	"info.sgjourney.iris": "Iris",
+	"info.sgjourney.iris_texture": "Iris Texture",
+	"info.sgjourney.iris_durability": "Iris Durability",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symbols",

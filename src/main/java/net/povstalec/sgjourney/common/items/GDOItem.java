@@ -68,7 +68,7 @@ public class GDOItem extends Item
 		return x*x + y*y + z*z;
 	}
 	
-	private static void checkShieldingState(Level level, Player player, ItemStack stack)
+	private static void checkShieldingState(Level level, Player player)
 	{
 		int roundedRadius = (int) Math.ceil(transmissionRadius() / 16);
 		BlockPos playerPos = player.getOnPos().above();
@@ -148,7 +148,7 @@ public class GDOItem extends Item
 		// Check Iris / Shield state
 		else
 		{
-			checkShieldingState(level, player, stack);
+			checkShieldingState(level, player);
 			
 			return InteractionResultHolder.success(stack);
 		}

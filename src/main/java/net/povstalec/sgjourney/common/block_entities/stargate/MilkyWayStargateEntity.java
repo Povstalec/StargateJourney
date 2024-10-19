@@ -113,7 +113,19 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	@Override
 	public ResourceLocation defaultVariant()
 	{
-		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();//TODO I hope this thing doesn't crash on servers
+		return ClientStargateConfig.milky_way_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();
+	}
+	
+	@Override
+	public Stargate.Feedback resetStargate(Stargate.Feedback feedback, boolean updateInterfaces)
+	{
+		if(this.isChevronOpen)
+		{
+			this.isChevronOpen = false;
+			chevronSound(getCurrentChevron(), false, false, false);
+		}
+		
+		return super.resetStargate(feedback, updateInterfaces);
 	}
 	
 	public boolean isChevronOpen()
