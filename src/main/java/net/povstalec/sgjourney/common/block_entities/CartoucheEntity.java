@@ -203,5 +203,14 @@ public abstract class CartoucheEntity extends BlockEntity
 		}
 		
 	}
+	
+	public static class RedSandstone extends CartoucheEntity
+	{
+		public RedSandstone(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), pos, state);
+		}
+		
+	}
 
 }

@@ -10,6 +10,64 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Starga
 
 public class CCTweakedCompatibility
 {
+	private static void irisMethods(StargatePeripheral peripheral)
+	{
+		peripheral.registerMethod(new ShieldingMethods.GetIris());
+		peripheral.registerMethod(new ShieldingMethods.CloseIris());
+		peripheral.registerMethod(new ShieldingMethods.OpenIris());
+		peripheral.registerMethod(new ShieldingMethods.StopIris());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisDurability());
+		peripheral.registerMethod(new ShieldingMethods.GetIrisMaxDurability());
+	}
+	
+	private static void genericBasicMethods(StargatePeripheral peripheral)
+	{
+		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
+		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
+		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
+		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
+		peripheral.registerMethod(new StargateMethods.GetSymbols());
+	}
+	
+	private static void genericCrystalMethods(StargatePeripheral peripheral)
+	{
+		peripheral.registerMethod(new StargateMethods.EngageSymbol());
+		peripheral.registerMethod(new StargateMethods.DialedAddress());
+	}
+	
+	private static void genericAdvancedCrystalMethods(StargatePeripheral peripheral)
+	{
+		peripheral.registerMethod(new StargateMethods.ConnectedAddress());
+		peripheral.registerMethod(new StargateMethods.LocalAddress());
+		peripheral.registerMethod(new StargateMethods.GetNetwork());
+		peripheral.registerMethod(new StargateMethods.SetNetwork());
+		peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
+		peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
+		
+		/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
+		peripheral.registerMethod(new StargateMethods.SetCFDTarget());
+		peripheral.registerMethod(new StargateMethods.GetCFDTarget());
+		peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+	}
+	
+	private static void filterMethods(StargatePeripheral peripheral)
+	{
+		peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
+		peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
+		
+		peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
+		peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
+		peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
+		
+		peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
+		peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
+		peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
+	}
+	
+	
+	
 	public static void registerUniverseStargateMethods(StargatePeripheralWrapper wrapper)
 	{
 		StargatePeripheral peripheral = wrapper.getPeripheral();
@@ -17,48 +75,20 @@ public class CCTweakedCompatibility
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 		
 		// Iris methods
-		peripheral.registerMethod(new ShieldingMethods.CloseIris());
-		peripheral.registerMethod(new ShieldingMethods.OpenIris());
-		peripheral.registerMethod(new ShieldingMethods.StopIris());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		irisMethods(peripheral);
 		// Misc Methods
-		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
-		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
-		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
-		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
-		peripheral.registerMethod(new StargateMethods.GetSymbols());
+		genericBasicMethods(peripheral);
 		
 		if(type.hasCrystalMethods())
 		{
-			peripheral.registerMethod(new StargateMethods.EngageSymbol());
-			peripheral.registerMethod(new StargateMethods.DialedAddress());
+			genericCrystalMethods(peripheral);
 		}
 		
 		if(type.hasAdvancedCrystalMethods())
 		{
-			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
-			peripheral.registerMethod(new StargateMethods.LocalAddress());
-			peripheral.registerMethod(new StargateMethods.GetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
-			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
+			genericAdvancedCrystalMethods(peripheral);
 			
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
-			
-			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
-			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
+			filterMethods(peripheral);
 		}
 	}
 	
@@ -67,11 +97,7 @@ public class CCTweakedCompatibility
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 
 		// Iris methods
-		peripheral.registerMethod(new ShieldingMethods.CloseIris());
-		peripheral.registerMethod(new ShieldingMethods.OpenIris());
-		peripheral.registerMethod(new ShieldingMethods.StopIris());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		irisMethods(peripheral);
 		// Misc Methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.GetCurrentSymbol());
 		peripheral.registerMethod(new MilkyWayStargateMethods.IsCurrentSymbol());
@@ -88,44 +114,20 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new MilkyWayStargateMethods.IsChevronOpen());
 		
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
-
-		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
-		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
-		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
-		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
-		peripheral.registerMethod(new StargateMethods.GetSymbols());
+		
+		genericBasicMethods(peripheral);
 		
 		if(type.hasCrystalMethods())
 		{
 			peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
-			peripheral.registerMethod(new StargateMethods.EngageSymbol());
-			peripheral.registerMethod(new StargateMethods.DialedAddress());
+			genericCrystalMethods(peripheral);
 		}
 		
 		if(type.hasAdvancedCrystalMethods())
 		{
-			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
-			peripheral.registerMethod(new StargateMethods.LocalAddress());
-			peripheral.registerMethod(new StargateMethods.GetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
-			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
+			genericAdvancedCrystalMethods(peripheral);
 			
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
-			
-			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
-			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
+			filterMethods(peripheral);
 		}
 	}
 	
@@ -136,53 +138,26 @@ public class CCTweakedCompatibility
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 
 		// Iris methods
-		peripheral.registerMethod(new ShieldingMethods.CloseIris());
-		peripheral.registerMethod(new ShieldingMethods.OpenIris());
-		peripheral.registerMethod(new ShieldingMethods.StopIris());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		irisMethods(peripheral);
 		// Misc Methods
-		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
-		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
-		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
-		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
-		peripheral.registerMethod(new StargateMethods.GetSymbols());
+		genericBasicMethods(peripheral);
 		
 		if(type.hasCrystalMethods())
 		{
 			peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
-			peripheral.registerMethod(new StargateMethods.EngageSymbol());
-			peripheral.registerMethod(new StargateMethods.DialedAddress());
+			genericCrystalMethods(peripheral);
 		}
 		
 		if(type.hasAdvancedCrystalMethods())
 		{
-			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
-			peripheral.registerMethod(new StargateMethods.LocalAddress());
-			peripheral.registerMethod(new StargateMethods.GetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
+			genericAdvancedCrystalMethods(peripheral);
 			
 			peripheral.registerMethod(new PegasusStargateMethods.DynamicSymbols());
 			peripheral.registerMethod(new PegasusStargateMethods.OverrideSymbols());
 			peripheral.registerMethod(new PegasusStargateMethods.OverridePointOfOrigin());
 			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
-
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
 			
-			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
-			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
+			filterMethods(peripheral);
 		}
 	}
 	
@@ -191,44 +166,20 @@ public class CCTweakedCompatibility
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
-
-		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
-		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
-		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
-		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
-		peripheral.registerMethod(new StargateMethods.GetSymbols());
+		
+		genericBasicMethods(peripheral);
 		
 		if(type.hasCrystalMethods())
 		{
 			peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
-			peripheral.registerMethod(new StargateMethods.EngageSymbol());
-			peripheral.registerMethod(new StargateMethods.DialedAddress());
+			genericCrystalMethods(peripheral);
 		}
 		
 		if(type.hasAdvancedCrystalMethods())
 		{
-			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
-			peripheral.registerMethod(new StargateMethods.LocalAddress());
-			peripheral.registerMethod(new StargateMethods.GetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
-			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
-
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			genericAdvancedCrystalMethods(peripheral);
 			
-			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
-			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
+			filterMethods(peripheral);
 		}
 	}
 	
@@ -239,50 +190,21 @@ public class CCTweakedCompatibility
 		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
 
 		// Iris methods
-		peripheral.registerMethod(new ShieldingMethods.CloseIris());
-		peripheral.registerMethod(new ShieldingMethods.OpenIris());
-		peripheral.registerMethod(new ShieldingMethods.StopIris());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
+		irisMethods(peripheral);
 		// Misc Methods
-		peripheral.registerMethod(new StargateMethods.GetRecentFeedback());
-		peripheral.registerMethod(new StargateMethods.SendStargateMessage());
-		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
-		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
-		peripheral.registerMethod(new StargateMethods.GetSymbols());
+		genericBasicMethods(peripheral);
 		
 		if(type.hasCrystalMethods())
 		{
 			peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
-			peripheral.registerMethod(new StargateMethods.EngageSymbol());
-			peripheral.registerMethod(new StargateMethods.DialedAddress());
+			genericCrystalMethods(peripheral);
 		}
 		
 		if(type.hasAdvancedCrystalMethods())
 		{
-			peripheral.registerMethod(new StargateMethods.ConnectedAddress());
-			peripheral.registerMethod(new StargateMethods.LocalAddress());
+			genericAdvancedCrystalMethods(peripheral);
 			
-			peripheral.registerMethod(new StargateMethods.GetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetNetwork());
-			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
-			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
-
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
-			
-			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
-			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
-			
-			peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
-			peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
+			filterMethods(peripheral);
 		}
 	}
 }

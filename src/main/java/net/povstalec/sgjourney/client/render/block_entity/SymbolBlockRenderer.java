@@ -154,4 +154,22 @@ public abstract class SymbolBlockRenderer
 		}
 		
 	}
+	
+	public static class RedSandstone extends SymbolBlockRenderer implements BlockEntityRenderer<SymbolBlockEntity.RedSandstone>
+	{
+		public RedSandstone(Context context)
+		{
+			super(context);
+			this.red = 159;
+			this.green = 78;
+			this.blue = 11;
+		}
+		
+		@Override
+		public void render(SymbolBlockEntity.RedSandstone symbol, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+		{
+			renderSymbolBlock(symbol, stack, source, combinedLight);
+		}
+		
+	}
 }

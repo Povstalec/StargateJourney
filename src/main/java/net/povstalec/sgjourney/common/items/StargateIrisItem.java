@@ -51,6 +51,11 @@ public abstract class StargateIrisItem extends Item
 	
 	
 	
+	public static boolean hasCustomTexture(ItemStack stack)
+	{
+		return stack.hasTag() && stack.getTag().contains(TEXTURE);
+	}
+	
 	@Nullable
 	public static ResourceLocation getIrisTexture(ItemStack stack)
 	{

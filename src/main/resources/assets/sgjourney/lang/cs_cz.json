@@ -3,24 +3,33 @@
 	"block.sgjourney.nether_naquadah_ore": "Netherová naquadahová ruda",
 	"block.sgjourney.deepslate_naquadah_ore": "Hlubinná Naquadahová ruda",
 	"block.sgjourney.raw_naquadah_block": "Blok vytěženého naquadahu",
+	"block.sgjourney.pure_naquadah_block": "Blok čistého naquadahu",
 	"block.sgjourney.naquadah_block": "Blok naquadahu",
 	"block.sgjourney.naquadah_stairs": "Naquadahové schody",
 	"block.sgjourney.naquadah_slab": "Naquadahový půblok",
 	"block.sgjourney.cut_naquadah_block": "Tepaný blok naquadahu",
 	"block.sgjourney.cut_naquadah_stairs": "Tepaný naquadahové schody",
-	"block.sgjourney.cut_naquadah_slab": "Tepaný naquadahový p\u016flblok",
+	"block.sgjourney.cut_naquadah_slab": "Tepaný naquadahový půlblok",
 	"block.sgjourney.fire_pit": "Ohniště",
 	"block.sgjourney.archeology_table": "Arheologický stůl",
 	"block.sgjourney.golden_idol": "Zlatá soška",
 
+	"block.sgjourney.sandstone_hieroglyphs": "Pískovec s hieroglyfy",
 	"block.sgjourney.sandstone_with_lapis": "Pískovec s lapisem",
 	"block.sgjourney.sandstone_with_gold": "Pískovec se zlatem",
-	"block.sgjourney.sandstone_hieroglyphs": "Pískovec s hieroglyfy",
-	"block.sgjourney.sandstone_switch": "Tajný pískovcový spínač",
+	"block.sgjourney.sandstone_switch": "Skrytý pískovcový spínač",
 	"block.sgjourney.sandstone_symbol": "Pískovcový symbol",
-	"block.sgjourney.stone_symbol": "Kamenný symbol",
 	"block.sgjourney.sandstone_cartouche": "Pískovcová kartuše",
+
+	"block.sgjourney.red_sandstone_glyphs": "Rudý pískovec s glyfy",
+	"block.sgjourney.red_sandstone_with_lapis": "Rudý pískovec s lapisem",
+	"block.sgjourney.red_sandstone_with_gold": "Rudý pískovec se zlatem",
+	"block.sgjourney.red_sandstone_symbol": "Symbol z rudého pískovce",
+	"block.sgjourney.red_sandstone_cartouche": "Kartuše z rudého pískovce",
+
+	"block.sgjourney.stone_symbol": "Kamenný symbol",
 	"block.sgjourney.stone_cartouche": "Kamenná kartuše",
+
 	"block.sgjourney.cartouche.not_enough_space": "Kartuše nemá dost místa",
 	
 	"block.sgjourney.universe_stargate": "Hvězdná brána 1. generace",
@@ -218,7 +227,7 @@
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
 	
 	"filled_map.sgjourney.archeologist": "Archeologova mapa",
-	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu boh\u016f",
+	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu bohů",
 	"filled_map.sgjourney.chappa_ai": "Mapa k Chappa'ai",
 	
 	"itemGroup.stargate_blocks": "Stargate Journey - Bloky",
@@ -429,6 +438,9 @@
 	"info.sgjourney.9_chevron_address": "9-chevronová adresa",
 	"info.sgjourney.dimension": "Dimenze",
 	"info.sgjourney.recent_feedback": "Poslední zpětná vazba",
+	"info.sgjourney.iris": "Iris",
+	"info.sgjourney.iris_texture": "Textura iris",
+	"info.sgjourney.iris_durability": "Výdrž iris",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symboly",

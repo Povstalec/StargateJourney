@@ -37,9 +37,9 @@ public abstract class CartoucheRenderer
 	
 	public CartoucheRenderer(BlockEntityRendererProvider.Context context) {}
 	
-	protected Symbols getSymbols(CartoucheEntity symbolBlock)
+	protected Symbols getSymbols(CartoucheEntity cartouche)
 	{
-		return ClientUtil.getSymbols(symbolBlock.getSymbols());
+		return ClientUtil.getSymbols(cartouche.getSymbols());
 	}
 	
 	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light,
@@ -133,9 +133,9 @@ public abstract class CartoucheRenderer
 		}
 
 		@Override
-		public void render(CartoucheEntity.Stone symbol, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+		public void render(CartoucheEntity.Stone cartouche, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 		{
-			renderCartoucheBlock(symbol, stack, source, combinedLight);
+			renderCartoucheBlock(cartouche, stack, source, combinedLight);
 		}
 		
 	}
@@ -151,9 +151,27 @@ public abstract class CartoucheRenderer
 		}
 
 		@Override
-		public void render(CartoucheEntity.Sandstone symbol, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+		public void render(CartoucheEntity.Sandstone cartouche, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 		{
-			renderCartoucheBlock(symbol, stack, source, combinedLight);
+			renderCartoucheBlock(cartouche, stack, source, combinedLight);
+		}
+		
+	}
+	
+	public static class RedSandstone extends CartoucheRenderer implements BlockEntityRenderer<CartoucheEntity.RedSandstone>
+	{
+		public RedSandstone(Context context)
+		{
+			super(context);
+			this.red = 159;
+			this.green = 78;
+			this.blue = 11;
+		}
+		
+		@Override
+		public void render(CartoucheEntity.RedSandstone cartouche, float partialTick, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+		{
+			renderCartoucheBlock(cartouche, stack, source, combinedLight);
 		}
 		
 	}

@@ -29,7 +29,7 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicSta
 	
 	public ClassicStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, 0.25F, true, 55F);
+		super(context, 0.25F, true, 84F);
 		this.stargateModel = new ClassicStargateModel();
 	}
 
