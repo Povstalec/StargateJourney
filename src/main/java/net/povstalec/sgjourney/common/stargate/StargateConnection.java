@@ -341,7 +341,7 @@ public final class StargateConnection
 			{
 				List<Integer> emptyAddressList = Arrays.stream(new int[] {}).boxed().toList();
 				List<Integer> dialedAddressList = Arrays.stream(dialedStargate.getAddress().toArray()).boxed().toList();
-				dialedStargate.updateInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddressList);
+				dialedStargate.updateBasicInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddressList);
 				dialedStargate.updateCrystalInterfaceBlocks(EVENT_INCOMING_WORMHOLE, emptyAddressList);
 				dialedStargate.updateAdvancedCrystalInterfaceBlocks(EVENT_INCOMING_WORMHOLE, dialedAddressList);
 				List<Integer> dialingAddressList = Arrays.stream(dialingStargate.getAddress().toArray()).boxed().toList();
