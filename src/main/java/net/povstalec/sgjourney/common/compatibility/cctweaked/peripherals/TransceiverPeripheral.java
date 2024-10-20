@@ -87,7 +87,17 @@ public class TransceiverPeripheral implements IPeripheral, IDynamicPeripheral
 	{
 		for(IComputerAccess computer : transceiverEntity.getPeripheralWrapper().computerList)
 		{
-			computer.queueEvent(eventName, computer.getAttachmentName(), objects);
+			int length = objects.length + 1;
+			Object[] attachmentObjects = new Object[length];
+			
+			attachmentObjects[0] = computer.getAttachmentName();
+			
+			for(int i = 1; i < length; i++)
+			{
+				attachmentObjects[i] = objects[i - 1];
+			}
+			
+			computer.queueEvent(eventName, attachmentObjects);
 		}
 	}
 	

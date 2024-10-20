@@ -88,9 +88,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String ID = "ID"; //TODO For legacy reasons
 	public static final String ID_9_CHEVRON_ADDRESS = "9ChevronAddress";
 	
-	private static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
-	private static final String EVENT_RESET = "stargate_reset";
-	private static final String EVENT_MESSAGE_RECEIVED = "stargate_message_received";
+	public static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
+	public static final String EVENT_RESET = "stargate_reset";
+	public static final String EVENT_MESSAGE_RECEIVED = "stargate_message_received";
 
 	public static final String ADDRESS = "Address";
 	public static final String DHD_POS = "DHDPos";
