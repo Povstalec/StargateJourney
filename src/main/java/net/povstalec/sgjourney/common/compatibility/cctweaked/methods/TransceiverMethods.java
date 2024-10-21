@@ -20,6 +20,7 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
+			arguments.escapes();
 			int frequency = arguments.getInt(0);
 			transceiver.setFrequency(frequency);
 			
@@ -38,6 +39,7 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
+			arguments.escapes();
 			String message = arguments.getString(0);
 			transceiver.setCurrentCode(message);
 			
@@ -56,6 +58,7 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
+			arguments.escapes();
 			context.executeMainThreadTask(() ->
 			{
 				transceiver.sendTransmission();
