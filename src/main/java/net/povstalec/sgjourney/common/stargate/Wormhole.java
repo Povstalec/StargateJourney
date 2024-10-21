@@ -326,6 +326,7 @@ public class Wormhole implements ITeleporter
 						if(traveler instanceof ServerPlayer player)
 							player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
 						traveler.kill();
+						deconstructEvent(initialStargate, traveler, true);
 					}
 				}
 			}
