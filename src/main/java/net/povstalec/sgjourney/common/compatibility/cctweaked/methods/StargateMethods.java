@@ -57,6 +57,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			arguments.escapes();
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				if(!interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && !stargate.isWormholeOpen())
@@ -379,6 +380,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			arguments.escapes();
 			int network = arguments.getInt(0);
 			stargate.setNetwork(network);
 			
@@ -397,6 +399,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			arguments.escapes();
 			boolean restrictNetwork = arguments.getBoolean(0);
 			stargate.setRestrictNetwork(restrictNetwork);
 			
