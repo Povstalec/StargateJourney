@@ -4,7 +4,7 @@
 	
 	"ingredient":
 	{
-		"item": "minecraft:smooth_sandstone"
+		"item": "minecraft:smooth_red_sandstone"
 	},
 	"result": "sgjourney:red_sandstone_glyphs"
 }
