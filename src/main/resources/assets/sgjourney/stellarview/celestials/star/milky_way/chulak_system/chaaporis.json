@@ -15,17 +15,7 @@
 	"texture_layers":
 	[
 		{
-			"texture": "stellarview:textures/environment/halo_template.png",
-			"rgba": {"red": 255, "green": 255, "blue": 0, "alpha": 255},
-			"blend": true,
-			"size": 5464902726,
-			"min_size": 0.6,
-			"clamp_at_min_size": true,
-			"rotation": 252,
-			"uv": { "flip_uv": false }
-		},
-		{
-			"texture": "stellarview:textures/environment/star/yellow_star.png",
+			"texture": "sgjourney:textures/environment/star/chaaporis.png",
 			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
 			"blend": true,
 			"size": 5464902726,

@@ -5,17 +5,7 @@
 	"texture_layers":
 	[
 		{
-			"texture": "stellarview:textures/environment/halo_template.png",
-			"rgba": {"red": 255, "green": 192, "blue": 128, "alpha": 255},
-			"blend": true,
-			"size": 3800000000,
-			"min_size": 0.4,
-			"clamp_at_min_size": true,
-			"rotation": -6,
-			"uv": { "flip_uv": false }
-		},
-		{
-			"texture": "stellarview:textures/environment/star/orange_star.png",
+			"texture": "sgjourney:textures/environment/star/lantea_star.png",
 			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
 			"blend": true,
 			"size": 3800000000,
