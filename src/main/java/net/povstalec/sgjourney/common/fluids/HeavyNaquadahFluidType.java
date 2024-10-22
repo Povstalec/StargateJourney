@@ -4,6 +4,8 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -14,14 +16,12 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidType;
 
 public class HeavyNaquadahFluidType extends FluidType
 {
-	private static final ResourceLocation STILL_TEXTURE = new ResourceLocation("block/water_still");
-	private static final ResourceLocation FLOWING_TEXTURE = new ResourceLocation("block/water_flow");
-	private static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation("misc/underwater");
+	private static final ResourceLocation STILL_TEXTURE = ResourceLocation.withDefaultNamespace("block/water_still");
+	private static final ResourceLocation FLOWING_TEXTURE = ResourceLocation.withDefaultNamespace("block/water_flow");
+	private static final ResourceLocation OVERLAY_TEXTURE = ResourceLocation.withDefaultNamespace("misc/underwater");
 	
 	public HeavyNaquadahFluidType(Properties properties)
 	{

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;

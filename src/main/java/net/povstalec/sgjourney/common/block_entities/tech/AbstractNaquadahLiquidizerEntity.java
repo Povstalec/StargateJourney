@@ -2,6 +2,12 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -13,15 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdatePacket;
 
@@ -189,7 +186,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 					return switch(slot)
 					{
 						case 0 -> true;
-						default -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+						default -> stack.getCapability(Capabilities.FluidHandler.ITEM).isPresent();
 					};
 				}
 				
@@ -231,7 +228,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	public void drainFluidFromItem()
 	{
-		itemHandler.getStackInSlot(1).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
+		itemHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM).ifPresent(handler ->
 		{
 			int drainAmount = Math.min(fluidTank1.getSpace(), 1000);
 			FluidStack fluidStack = handler.getFluidInTank(0);
@@ -248,7 +245,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	{
 		ItemStack stack = itemHandler.getStackInSlot(2);
 		
-		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
+		stack.getCapability(Capabilities.FluidHandler.ITEM).ifPresent(handler ->
 		{
 			if(!handler.isFluidValid(0, getFluid2()))
 				return;
