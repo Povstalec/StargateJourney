@@ -13,19 +13,14 @@ out
 *.iml
 .idea
 
-# vscode
-.vscode
-
 # gradle
 build
 .gradle
 
 # other
 eclipse
-run*
+run
+runs
+run-data
 
-# Files from Forge MDK
-forge*changelog.txt
-
-# Log files
-logs
+repo

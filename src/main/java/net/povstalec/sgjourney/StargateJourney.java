@@ -1,251 +1,136 @@
 package net.povstalec.sgjourney;
 
-import java.util.Optional;
-import java.util.function.BiFunction;
-
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DataPackRegistryEvent;
-import net.povstalec.sgjourney.client.Layers;
-import net.povstalec.sgjourney.client.render.block_entity.CartoucheRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.PegasusStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
-import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
-import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
-import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
-import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
-import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
-import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
-import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
-import net.povstalec.sgjourney.client.screens.InterfaceScreen;
-import net.povstalec.sgjourney.client.screens.LiquidizerScreen;
-import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
-import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
-import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
-import net.povstalec.sgjourney.client.screens.RingPanelScreen;
-import net.povstalec.sgjourney.client.screens.TransceiverScreen;
-import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
-import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.init.AdvancementInit;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.EntityInit;
-import net.povstalec.sgjourney.common.init.FeatureInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.init.FluidTypeInit;
-import net.povstalec.sgjourney.common.init.GalaxyInit;
-import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.init.MiscInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.init.RecipeTypeInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.init.StatisticsInit;
-import net.povstalec.sgjourney.common.init.StructureInit;
-import net.povstalec.sgjourney.common.init.TabInit;
-import net.povstalec.sgjourney.common.init.VillagerInit;
-import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
-import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
-import net.povstalec.sgjourney.common.stargate.AddressTable;
-import net.povstalec.sgjourney.common.stargate.Galaxy;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.SolarSystem;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
-import net.povstalec.sgjourney.common.stargate.SymbolSet;
-import net.povstalec.sgjourney.common.stargate.Symbols;
-import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
+// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(StargateJourney.MODID)
 public class StargateJourney
 {
+    // Define mod id in a common place for everything to reference
     public static final String MODID = "sgjourney";
-    public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(MODID, "empty");
-    public static final String EMPTY = EMPTY_LOCATION.toString();
-    
-    public static final String STELLAR_VIEW_MODID = "stellarview";
-    public static final String OCULUS_MODID = "oculus";
-    public static final String COMPUTERCRAFT_MODID = "computercraft";
-    
-    private static Optional<Boolean> isOculusLoaded = Optional.empty();
-    
-    public static final Logger LOGGER = LogUtils.getLogger();
+    // Directly reference a slf4j logger
+    private static final Logger LOGGER = LogUtils.getLogger();
+    // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+    // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    public StargateJourney()
+    // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
+    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
+    // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
+    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
+
+    // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
+    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
+            .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
+
+    // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.examplemod")) //The language key for the title of your CreativeModeTab
+            .withTabsBefore(CreativeModeTabs.COMBAT)
+            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
+            .displayItems((parameters, output) -> {
+                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
+            }).build());
+
+    // The constructor for the mod class is the first code that is run when your mod is loaded.
+    // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
+    public StargateJourney(IEventBus modEventBus, ModContainer modContainer)
     {
-    	IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-    	
-    	ItemInit.register(eventBus);
-        BlockInit.register(eventBus);
-        FluidInit.register(eventBus);
-        FluidTypeInit.register(eventBus);
-        BlockEntityInit.register(eventBus);
-        MenuInit.register(eventBus);
-        VillagerInit.register(eventBus);
-        FeatureInit.register(eventBus);
-        StructureInit.register(eventBus);
-        BiomeModifiers.register(eventBus);
-        EntityInit.register(eventBus);
-        SoundInit.register(eventBus);
-        TabInit.register(eventBus);
-        RecipeTypeInit.register(eventBus);
-        StatisticsInit.register(eventBus);
+        // Register the commonSetup method for modloading
+        modEventBus.addListener(this::commonSetup);
 
-        GalaxyInit.register(eventBus);
-        
-        AdvancementInit.register();
-        
-        eventBus.addListener((DataPackRegistryEvent.NewRegistry event) -> 
-        {
-        	//TODO Move Galaxy above Point of Origin
-        	// DON'T DELETE THIS COMMENT UNTIL I APPLY THE CHANGE TO OTHER VERSIONS OR I MIGHT FORGET
-            event.dataPackRegistry(SymbolSet.REGISTRY_KEY, SymbolSet.CODEC, SymbolSet.CODEC);
-            event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
-            event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
-            event.dataPackRegistry(PointOfOrigin.REGISTRY_KEY, PointOfOrigin.CODEC, PointOfOrigin.CODEC);
-            event.dataPackRegistry(SolarSystem.REGISTRY_KEY, SolarSystem.CODEC, SolarSystem.CODEC);
-            event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
-            event.dataPackRegistry(StargateVariant.REGISTRY_KEY, StargateVariant.CODEC, StargateVariant.CODEC);
-        });
-        
-        eventBus.addListener(this::commonSetup);
-        eventBus.addListener(Layers::registerLayers);
-        eventBus.addListener(TabInit::addCreative);
-		
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
-		
-		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, 
-				() -> new ConfigScreenHandler.ConfigScreenFactory(new BiFunction<Minecraft, Screen, Screen>()
-				{
-					@Override
-					public Screen apply(Minecraft mc, Screen screen)
-					{
-						return new ConfigScreen(screen);
-					}
-				}));
-        
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.addListener(MiscInit::registerCommands);
+        // Register the Deferred Register to the mod event bus so blocks get registered
+        BLOCKS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so items get registered
+        ITEMS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so tabs get registered
+        CREATIVE_MODE_TABS.register(modEventBus);
+
+        // Register ourselves for server and other game events we are interested in.
+        // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
+        // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
+        NeoForge.EVENT_BUS.register(this);
+
+        // Register the item to a creative tab
+        modEventBus.addListener(this::addCreative);
+
+        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
-    
+
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-    	event.enqueueWork(() -> 
-    	{
-            StatisticsInit.register();
-            PacketHandlerInit.register();
-    		//VillagerInit.registerPOIs();
-    	});
-    }
-    
-    // BECAUSE OCULUS MESSES WITH RENDERING TOO MUCH
-    public static boolean isOculusLoaded()
-    {
-    	if(isOculusLoaded.isEmpty())
-    		isOculusLoaded = Optional.of(ModList.get().isLoaded(OCULUS_MODID));
-    	
-    	return isOculusLoaded.get();	
+        // Some common setup code
+        LOGGER.info("HELLO FROM COMMON SETUP");
+
+        if (Config.logDirtBlock)
+            LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
+
+        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
+
+        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
 
-    @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    // Add the example block item to the building blocks tab
+    private void addCreative(BuildCreativeModeTabContentsEvent event)
+    {
+        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
+            event.accept(EXAMPLE_BLOCK_ITEM);
+    }
+
+    // You can use SubscribeEvent and let the Event Bus discover methods to call
+    @SubscribeEvent
+    public void onServerStarting(ServerStartingEvent event)
+    {
+        // Do something when the server starts
+        LOGGER.info("HELLO from server starting");
+    }
+
+    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
     {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-        	ItemProperties.register(ItemInit.VIAL.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new LiquidNaquadahPropertyFunction());
-        	ItemProperties.register(ItemInit.MATOK.get(), new ResourceLocation(StargateJourney.MODID, "open"), new WeaponStatePropertyFunction());
-        	
-            ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
-            ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
-            ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
-            ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
-
-        	MenuScreens.register(MenuInit.INTERFACE.get(), InterfaceScreen::new);
-            
-        	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
-
-        	MenuScreens.register(MenuInit.DHD_CRYSTAL.get(), DHDCrystalScreen::new);
-        	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);
-        	MenuScreens.register(MenuInit.PEGASUS_DHD.get(), PegasusDHDScreen::new);
-        	MenuScreens.register(MenuInit.CLASSIC_DHD.get(), ClassicDHDScreen::new);
-
-        	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
-
-        	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
-
-        	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
-        	MenuScreens.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
-        	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
-        	
-        	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
-
-        	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
-        	
-        	//EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
-			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.RedSandstone::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_CARTOUCHE.get(), CartoucheRenderer.Stone::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.Sandstone::new);
-			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.RedSandstone::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), SymbolBlockRenderer.Stone::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
-
-        	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
-        }
-        
-        @SubscribeEvent
-        public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
-        {
-        	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
-        		StellarViewRendering.registerStellarViewEffects(event);
-        	else
-        		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
-        }
-    	
-    	@SubscribeEvent
-        public static void registerClientReloadListener(RegisterClientReloadListenersEvent event)
-        {
-    		ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
+            // Some client setup code
+            LOGGER.info("HELLO FROM CLIENT SETUP");
+            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
     }
-    
 }
