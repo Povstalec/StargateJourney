@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ClientStargateConfig
 {
@@ -20,7 +20,7 @@ public class ClientStargateConfig
 	public static SGJourneyConfigValue.IntValue stargate_full_sound_distance;
 	public static SGJourneyConfigValue.IntValue stargate_max_sound_distance;
 	
-	public static void init(ForgeConfigSpec.Builder client)
+	public static void init(ModConfigSpec.Builder client)
 	{
 		stargate_variants = new SGJourneyConfigValue.BooleanValue(client, "client.stargate_variants", 
 				true, 

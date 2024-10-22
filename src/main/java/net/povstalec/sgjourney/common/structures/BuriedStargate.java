@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Holder;
@@ -19,7 +20,7 @@ import net.povstalec.sgjourney.common.init.StructureInit;
 
 public class BuriedStargate extends SGJourneyStructure
 {
-    public static final Codec<BuriedStargate> CODEC = RecordCodecBuilder.<BuriedStargate>mapCodec(instance ->
+    public static final MapCodec<BuriedStargate> CODEC = RecordCodecBuilder.<BuriedStargate>mapCodec(instance ->
             instance.group(BuriedStargate.settingsCodec(instance),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
                     ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
@@ -27,7 +28,7 @@ public class BuriedStargate extends SGJourneyStructure
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
                     Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
-            ).apply(instance, BuriedStargate::new)).codec();
+            ).apply(instance, BuriedStargate::new));
 
     private static Optional<Long> currentSeed = Optional.empty();
     private static Optional<Integer> x = Optional.empty();

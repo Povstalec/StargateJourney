@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.init.StructureInit;
 
 public class StargateOutpost extends StargateStructure
 {
-    public static final Codec<StargateOutpost> CODEC = RecordCodecBuilder.<StargateOutpost>mapCodec(instance ->
+    public static final MapCodec<StargateOutpost> CODEC = RecordCodecBuilder.<StargateOutpost>mapCodec(instance ->
             instance.group(StargateOutpost.settingsCodec(instance),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
                     ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
@@ -24,7 +24,7 @@ public class StargateOutpost extends StargateStructure
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
                     Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
-            ).apply(instance, StargateOutpost::new)).codec();
+            ).apply(instance, StargateOutpost::new));
 
     public StargateOutpost(Structure.StructureSettings config,
                          Holder<StructureTemplatePool> startPool,

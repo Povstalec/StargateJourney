@@ -1,16 +1,16 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonTransmissionConfig
 {
-	public static ForgeConfigSpec.IntValue max_transmission_jumps;
+	public static ModConfigSpec.IntValue max_transmission_jumps;
 
-	public static ForgeConfigSpec.IntValue max_gdo_transmission_distance;
-	public static ForgeConfigSpec.IntValue max_transceiver_transmission_distance;
-	public static ForgeConfigSpec.IntValue max_stargate_transmission_distance;
+	public static ModConfigSpec.IntValue max_gdo_transmission_distance;
+	public static ModConfigSpec.IntValue max_transceiver_transmission_distance;
+	public static ModConfigSpec.IntValue max_stargate_transmission_distance;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		max_transmission_jumps = server
 				.comment("Max number of times a transmission can be forwarded before it disappears")

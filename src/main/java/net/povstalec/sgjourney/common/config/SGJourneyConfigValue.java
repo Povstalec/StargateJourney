@@ -1,14 +1,14 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public abstract class SGJourneyConfigValue
 {
 	public static class BooleanValue
 	{
-		public ForgeConfigSpec.BooleanValue boolean_value;
+		public ModConfigSpec.BooleanValue boolean_value;
 		
-		public BooleanValue(ForgeConfigSpec.Builder builder, String path, boolean defaultValue, String comment)
+		public BooleanValue(ModConfigSpec.Builder builder, String path, boolean defaultValue, String comment)
 		{
 			this.boolean_value = builder
 					.comment(comment)
@@ -35,11 +35,11 @@ public abstract class SGJourneyConfigValue
 	
 	public static class IntValue
 	{
-		public ForgeConfigSpec.IntValue int_value;
+		public ModConfigSpec.IntValue int_value;
 		protected int min;
 		protected int max;
 		
-		public IntValue(ForgeConfigSpec.Builder builder, String path, int defaultValue, int min, int max, String comment)
+		public IntValue(ModConfigSpec.Builder builder, String path, int defaultValue, int min, int max, String comment)
 		{
 			this.int_value = builder
 					.comment(comment)
@@ -77,9 +77,9 @@ public abstract class SGJourneyConfigValue
 	
 	public static class LongValue
 	{
-		public ForgeConfigSpec.LongValue long_value;
+		public ModConfigSpec.LongValue long_value;
 		
-		public LongValue(ForgeConfigSpec.Builder builder, String path, long defaultValue, long min, long max, String comment)
+		public LongValue(ModConfigSpec.Builder builder, String path, long defaultValue, long min, long max, String comment)
 		{
 			this.long_value = builder
 					.comment(comment)
@@ -105,12 +105,12 @@ public abstract class SGJourneyConfigValue
 	
 	public static class RGBAValue
 	{
-		public ForgeConfigSpec.IntValue red_value;
-		public ForgeConfigSpec.IntValue green_value;
-		public ForgeConfigSpec.IntValue blue_value;
-		public ForgeConfigSpec.IntValue alpha_value;
+		public ModConfigSpec.IntValue red_value;
+		public ModConfigSpec.IntValue green_value;
+		public ModConfigSpec.IntValue blue_value;
+		public ModConfigSpec.IntValue alpha_value;
 		
-		public RGBAValue(ForgeConfigSpec.Builder builder, String path, int red, int blue, int green, int alpha, String comment)
+		public RGBAValue(ModConfigSpec.Builder builder, String path, int red, int blue, int green, int alpha, String comment)
 		{
 			builder.comment(comment);
 			this.red_value = builder
@@ -190,9 +190,9 @@ public abstract class SGJourneyConfigValue
 	
 	public static class EnumValue<T extends Enum<T>>
 	{
-		public ForgeConfigSpec.EnumValue<T> enum_value;
+		public ModConfigSpec.EnumValue<T> enum_value;
 		
-		public EnumValue(ForgeConfigSpec.Builder builder, String path, T defaultValue, String comment)
+		public EnumValue(ModConfigSpec.Builder builder, String path, T defaultValue, String comment)
 		{
 			this.enum_value = builder
 					.comment(comment)

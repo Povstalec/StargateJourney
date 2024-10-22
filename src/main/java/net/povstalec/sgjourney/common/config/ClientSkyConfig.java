@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ClientSkyConfig
 {
@@ -11,7 +11,7 @@ public class ClientSkyConfig
 	public static SGJourneyConfigValue.BooleanValue custom_lantea_sky;
 	public static SGJourneyConfigValue.BooleanValue custom_athos_sky;
 	
-	public static void init(ForgeConfigSpec.Builder client)
+	public static void init(ModConfigSpec.Builder client)
 	{
 		custom_abydos_sky = new SGJourneyConfigValue.BooleanValue(client, "client.custom_abydos_sky", 
 				true, 

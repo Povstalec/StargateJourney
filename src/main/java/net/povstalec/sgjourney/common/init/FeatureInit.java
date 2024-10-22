@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.init;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -9,8 +9,8 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.world.features.SpireFeature;
 import net.povstalec.sgjourney.common.world.features.configuration.SpireConfiguration;
@@ -49,7 +49,7 @@ public class FeatureInit
 	
     
     
-	public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context)
+	public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context)
 	{
 		register(context, STONE_NAQUADAH_SPIRE_KEY, ORE_SPIRE_FEATURE, new SpireConfiguration.SpireConfigurationBuilder(BlockStateProvider.simple(Blocks.STONE), BlockStateProvider.simple(BlockInit.NAQUADAH_ORE.get()), TagInit.Blocks.STONE_SPIRE_PROTRUDES_THROUGH).build());
 		register(context, BLACKSTONE_NAQUADAH_SPIRE_KEY, ORE_SPIRE_FEATURE, new SpireConfiguration.SpireConfigurationBuilder(BlockStateProvider.simple(Blocks.BLACKSTONE), BlockStateProvider.simple(BlockInit.NAQUADAH_ORE.get()), TagInit.Blocks.STONE_SPIRE_PROTRUDES_THROUGH).build());//TODO Change to Blackstone Naquadah
@@ -59,10 +59,10 @@ public class FeatureInit
 	
 	public static ResourceKey<ConfiguredFeature<?, ?>> createKey(String name)
     {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(StargateJourney.MODID, name));
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, StargateJourney.sgjourneyLocation(name));
     }
 	
-	private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(BootstapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureKey, F feature, FC configuration)
+	private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(BootstrapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureKey, F feature, FC configuration)
     {
         context.register(configuredFeatureKey, new ConfiguredFeature<>(feature, configuration));
     }

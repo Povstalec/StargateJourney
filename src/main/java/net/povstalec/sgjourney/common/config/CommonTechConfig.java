@@ -1,21 +1,21 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonTechConfig
 {
-	public static ForgeConfigSpec.BooleanValue disable_kara_kesh_requirements;
-	public static ForgeConfigSpec.IntValue personal_shield_capacity;
+	public static ModConfigSpec.BooleanValue disable_kara_kesh_requirements;
+	public static ModConfigSpec.IntValue personal_shield_capacity;
 	
-	public static ForgeConfigSpec.LongValue energy_crystal_capacity;
-	public static ForgeConfigSpec.LongValue advanced_energy_crystal_capacity;
-	public static ForgeConfigSpec.LongValue energy_crystal_max_transfer;
-	public static ForgeConfigSpec.LongValue advanced_energy_crystal_max_transfer;
+	public static ModConfigSpec.LongValue energy_crystal_capacity;
+	public static ModConfigSpec.LongValue advanced_energy_crystal_capacity;
+	public static ModConfigSpec.LongValue energy_crystal_max_transfer;
+	public static ModConfigSpec.LongValue advanced_energy_crystal_max_transfer;
 	
-	public static ForgeConfigSpec.LongValue transfer_crystal_max_transfer;
-	public static ForgeConfigSpec.LongValue advanced_transfer_crystal_max_transfer;
+	public static ModConfigSpec.LongValue transfer_crystal_max_transfer;
+	public static ModConfigSpec.LongValue advanced_transfer_crystal_max_transfer;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		disable_kara_kesh_requirements = server
 				.comment("If true Kara Kesh won't require its user to have Naquadah in their bloodstream")

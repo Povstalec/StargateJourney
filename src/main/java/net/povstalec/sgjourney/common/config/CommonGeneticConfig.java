@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonGeneticConfig
 {
@@ -10,7 +10,7 @@ public class CommonGeneticConfig
 	public static SGJourneyConfigValue.IntValue prototype_ata_gene_therapy_success_rate;
 	public static SGJourneyConfigValue.IntValue ata_gene_therapy_success_rate;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		player_ata_gene_inheritance_chance = new SGJourneyConfigValue.IntValue(server, "server.player_ata_gene_inheritance_chance", 
 				30, 0, 100, 

@@ -1,26 +1,26 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonIrisConfig
 {
-	public static ForgeConfigSpec.BooleanValue creative_ignores_iris;
+	public static ModConfigSpec.BooleanValue creative_ignores_iris;
 	
-	public static ForgeConfigSpec.DoubleValue iris_breaking_strength;
-	
-	public static ForgeConfigSpec.IntValue copper_iris_durability;
-	public static ForgeConfigSpec.IntValue iron_iris_durability;
-	public static ForgeConfigSpec.IntValue gold_iris_durability;
-	public static ForgeConfigSpec.IntValue diamond_iris_durability;
-	public static ForgeConfigSpec.IntValue netherite_iris_durability;
+	public static ModConfigSpec.DoubleValue iris_breaking_strength;
 
-	public static ForgeConfigSpec.IntValue naquadah_alloy_iris_durability;
-	public static ForgeConfigSpec.IntValue trinium_iris_durability;
+	public static ModConfigSpec.IntValue copper_iris_durability;
+	public static ModConfigSpec.IntValue iron_iris_durability;
+	public static ModConfigSpec.IntValue gold_iris_durability;
+	public static ModConfigSpec.IntValue diamond_iris_durability;
+	public static ModConfigSpec.IntValue netherite_iris_durability;
 
-	public static ForgeConfigSpec.IntValue bronze_iris_durability;
-	public static ForgeConfigSpec.IntValue steel_iris_durability;
+	public static ModConfigSpec.IntValue naquadah_alloy_iris_durability;
+	public static ModConfigSpec.IntValue trinium_iris_durability;
+
+	public static ModConfigSpec.IntValue bronze_iris_durability;
+	public static ModConfigSpec.IntValue steel_iris_durability;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		creative_ignores_iris = server
 				.comment("If true, players in Creative Mode will be able to pass through the Stargate even when the Iris is closed on the other side")
