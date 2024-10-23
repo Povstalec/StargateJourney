@@ -15,6 +15,8 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
@@ -95,7 +97,10 @@ public class StargateVoidStructure extends Structure
                         blockPos,
                         false,
                         this.projectStartToHeightmap,
-                        this.maxDistanceFromCenter);
+                        this.maxDistanceFromCenter,
+                        PoolAliasLookup.EMPTY,
+                        JigsawStructure.DEFAULT_DIMENSION_PADDING,
+                        JigsawStructure.DEFAULT_LIQUID_SETTINGS);
         
         return structurePiecesGenerator;
     }

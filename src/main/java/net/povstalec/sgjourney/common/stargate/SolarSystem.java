@@ -24,7 +24,7 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class SolarSystem
 {
-	public static final ResourceKey<Registry<SolarSystem>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "solar_system"));
+	public static final ResourceKey<Registry<SolarSystem>> REGISTRY_KEY = ResourceKey.createRegistryKey(StargateJourney.sgjourneyLocation("solar_system"));
 	public static final Codec<ResourceKey<SolarSystem>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
 	private static final Codec<Pair<List<Integer>, Boolean>> ADDRESS = Codec.pair(Codec.INT.listOf().fieldOf("address").codec(), Codec.BOOL.fieldOf("randomizable").codec());
@@ -109,7 +109,7 @@ public class SolarSystem
 	
 	public static SolarSystem getSolarSystem(Level level, String part1, String part2)
 	{
-        return getSolarSystem(level, new ResourceLocation(part1, part2));
+        return getSolarSystem(level, StargateJourney.location(part1, part2));
 	}
 	
 	public static SolarSystem getSolarSystem(Level level, ResourceLocation solarSystem)

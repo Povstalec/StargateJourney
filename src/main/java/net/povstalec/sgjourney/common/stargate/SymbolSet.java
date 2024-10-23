@@ -14,9 +14,9 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class SymbolSet
 {
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	public static final ResourceLocation ERROR_LOCATION = StargateJourney.sgjourneyLocation("textures/symbols/error.png");
 	
-	public static final ResourceLocation SYMBOL_SET_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbol_set");
+	public static final ResourceLocation SYMBOL_SET_LOCATION = StargateJourney.sgjourneyLocation("symbol_set");
 	public static final ResourceKey<Registry<SymbolSet>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOL_SET_LOCATION);
 	public static final Codec<ResourceKey<SymbolSet>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
@@ -54,7 +54,7 @@ public class SymbolSet
 	
 	public ResourceLocation getSymbolTexture()
 	{
-		ResourceLocation texture = new ResourceLocation(this.texture.getNamespace(), "textures/symbols/" + this.texture.getPath());
+		ResourceLocation texture = StargateJourney.location(this.texture.getNamespace(), "textures/symbols/" + this.texture.getPath());
 		return texture;
 	}
 	
@@ -92,7 +92,7 @@ public class SymbolSet
 		RegistryAccess registries = level.getServer().registryAccess();
 		Registry<SymbolSet> registry = registries.registryOrThrow(SymbolSet.REGISTRY_KEY);
 		
-		return registry.get(new ResourceLocation(split[0], split[1]));
+		return registry.get(StargateJourney.location(split[0], split[1]));
 	}
 	
 }

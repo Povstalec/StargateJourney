@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.SolarSystem;
@@ -16,7 +17,7 @@ public class Conversion
 		String[] split = dimensionString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("minecraft", "dimension")), new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(ResourceKey.createRegistryKey(StargateJourney.location("minecraft", "dimension")), StargateJourney.location(split[0], split[1]));
 		
 		return null;
 	}
@@ -26,7 +27,7 @@ public class Conversion
 		String[] split = pointOfOriginString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, StargateJourney.location(split[0], split[1]));
 		
 		return null;
 	}
@@ -36,7 +37,7 @@ public class Conversion
 		String[] split = symbolsString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(Symbols.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(Symbols.REGISTRY_KEY, StargateJourney.location(split[0], split[1]));
 		
 		return null;
 	}
@@ -46,7 +47,7 @@ public class Conversion
 		String[] split = galaxyString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(Galaxy.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(Galaxy.REGISTRY_KEY, StargateJourney.location(split[0], split[1]));
 		
 		return null;
 	}
@@ -56,7 +57,7 @@ public class Conversion
 		String[] split = solarSystemString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(SolarSystem.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(SolarSystem.REGISTRY_KEY, StargateJourney.location(split[0], split[1]));
 		
 		return null;
 	}

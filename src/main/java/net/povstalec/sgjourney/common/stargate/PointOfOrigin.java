@@ -17,9 +17,9 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class PointOfOrigin
 {
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	public static final ResourceLocation ERROR_LOCATION = StargateJourney.sgjourneyLocation("textures/symbols/error.png");
 	
-	public static final ResourceLocation POINT_OF_ORIGIN_LOCATION = new ResourceLocation(StargateJourney.MODID, "point_of_origin");
+	public static final ResourceLocation POINT_OF_ORIGIN_LOCATION = StargateJourney.sgjourneyLocation("point_of_origin");
 	public static final ResourceKey<Registry<PointOfOrigin>> REGISTRY_KEY = ResourceKey.createRegistryKey(POINT_OF_ORIGIN_LOCATION);
 	public static final Codec<ResourceKey<PointOfOrigin>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
@@ -53,7 +53,7 @@ public class PointOfOrigin
 	public ResourceLocation texture()
 	{
 		ResourceLocation path = getTexture();
-		ResourceLocation texture = new ResourceLocation(path.getNamespace(), "textures/symbols/" + path.getPath());
+		ResourceLocation texture = StargateJourney.location(path.getNamespace(), "textures/symbols/" + path.getPath());
 		
 		if(Minecraft.getInstance().getResourceManager().getResource(texture).isPresent())
 			return texture;
@@ -71,7 +71,7 @@ public class PointOfOrigin
 		RegistryAccess registries = level.getServer().registryAccess();
 		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
-		return registry.get(new ResourceLocation(split[0], split[1]));
+		return registry.get(StargateJourney.location(split[0], split[1]));
 	}
 	
 	public static ResourceKey<PointOfOrigin> defaultPointOfOrigin()

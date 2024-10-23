@@ -12,6 +12,8 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
 public abstract class SGJourneyStructure extends Structure
@@ -66,7 +68,10 @@ public abstract class SGJourneyStructure extends Structure
                         blockPos,
                         false,
                         this.projectStartToHeightmap,
-                        this.maxDistanceFromCenter);
+                        this.maxDistanceFromCenter,
+                        PoolAliasLookup.EMPTY,
+                        JigsawStructure.DEFAULT_DIMENSION_PADDING,
+                        JigsawStructure.DEFAULT_LIQUID_SETTINGS);
         
         return structurePiecesGenerator;
     }

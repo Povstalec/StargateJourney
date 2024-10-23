@@ -9,7 +9,7 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class GalaxyType
 {
-	public static final ResourceLocation GALAXY_TYPE_LOCATION = new ResourceLocation(StargateJourney.MODID, "galaxy_type");
+	public static final ResourceLocation GALAXY_TYPE_LOCATION = StargateJourney.sgjourneyLocation("galaxy_type");
 	public static final ResourceKey<Registry<GalaxyType>> REGISTRY_KEY = ResourceKey.createRegistryKey(GALAXY_TYPE_LOCATION);
 	public static final Codec<ResourceKey<GalaxyType>> RESOURCE_KEY_CODEC = ResourceKey.codec(ResourceKey.createRegistryKey(GALAXY_TYPE_LOCATION));
 	

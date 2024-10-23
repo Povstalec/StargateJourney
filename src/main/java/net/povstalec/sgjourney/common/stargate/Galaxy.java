@@ -23,7 +23,7 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Galaxy
 {
-	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "galaxy"));
+	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(StargateJourney.sgjourneyLocation("galaxy"));
 	public static final Codec<ResourceKey<Galaxy>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
     public static final Codec<Galaxy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -60,7 +60,7 @@ public class Galaxy
 	
 	public static Galaxy getGalaxy(Level level, String part1, String part2)
 	{
-        return getGalaxy(level, new ResourceLocation(part1, part2));
+        return getGalaxy(level, StargateJourney.location(part1, part2));
 	}
 	
 	public static Galaxy getGalaxy(Level level, ResourceLocation galaxy)

@@ -16,9 +16,9 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Symbols
 {
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	public static final ResourceLocation ERROR_LOCATION = StargateJourney.sgjourneyLocation("textures/symbols/error.png");
 	
-	public static final ResourceLocation SYMBOLS_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbols");
+	public static final ResourceLocation SYMBOLS_LOCATION = StargateJourney.sgjourneyLocation("symbols");
 	public static final ResourceKey<Registry<Symbols>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOLS_LOCATION);
 	public static final Codec<ResourceKey<Symbols>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
@@ -97,7 +97,7 @@ public class Symbols
 				return symbolSet.getSymbolTexture();
 		}
 		
-		ResourceLocation texture = new ResourceLocation(this.texture.getNamespace(), "textures/symbols/" + this.texture.getPath());
+		ResourceLocation texture = StargateJourney.location(this.texture.getNamespace(), "textures/symbols/" + this.texture.getPath());
 		return texture;
 	}
 	
@@ -138,7 +138,7 @@ public class Symbols
 		RegistryAccess registries = level.getServer().registryAccess();
 		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
-		return registry.get(new ResourceLocation(split[0], split[1]));
+		return registry.get(StargateJourney.location(split[0], split[1]));
 	}
 	
 	public static ResourceKey<Symbols> defaultSymbols()

@@ -10,15 +10,15 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class StargateVariant
 {
-	public static final ResourceLocation STARGATE_VARIANT_LOCATION = new ResourceLocation(StargateJourney.MODID, "stargate_variant");
+	public static final ResourceLocation STARGATE_VARIANT_LOCATION = StargateJourney.sgjourneyLocation("stargate_variant");
 	public static final ResourceKey<Registry<StargateVariant>> REGISTRY_KEY = ResourceKey.createRegistryKey(STARGATE_VARIANT_LOCATION);
 	public static final Codec<ResourceKey<StargateVariant>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 
-	public static final ResourceLocation UNIVERSE_STARGATE = new ResourceLocation(StargateJourney.MODID, "universe_stargate");
-	public static final ResourceLocation MILKY_WAY_STARGATE = new ResourceLocation(StargateJourney.MODID, "milky_way_stargate");
-	public static final ResourceLocation PEGASUS_STARGATE = new ResourceLocation(StargateJourney.MODID, "pegasus_stargate");
-	public static final ResourceLocation TOLLAN_STARGATE = new ResourceLocation(StargateJourney.MODID, "tollan_stargate");
-	public static final ResourceLocation CLASSIC_STARGATE = new ResourceLocation(StargateJourney.MODID, "classic_stargate");
+	public static final ResourceLocation UNIVERSE_STARGATE = StargateJourney.sgjourneyLocation("universe_stargate");
+	public static final ResourceLocation MILKY_WAY_STARGATE = StargateJourney.sgjourneyLocation("milky_way_stargate");
+	public static final ResourceLocation PEGASUS_STARGATE = StargateJourney.sgjourneyLocation("pegasus_stargate");
+	public static final ResourceLocation TOLLAN_STARGATE = StargateJourney.sgjourneyLocation("tollan_stargate");
+	public static final ResourceLocation CLASSIC_STARGATE = StargateJourney.sgjourneyLocation("classic_stargate");
 	
 	public static final Codec<StargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ResourceLocation.CODEC.fieldOf("base_stargate").forGetter(StargateVariant::getBaseStargate),
