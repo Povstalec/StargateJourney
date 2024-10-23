@@ -18,11 +18,8 @@ public class BiomeModifiers
 	public static final DeferredRegister<MapCodec<? extends BiomeModifier>> BIOME_MODIFIERS =
             DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, StargateJourney.MODID);
 	
-	public static DeferredHolder<MapCodec<OreBiomeModifier>, MapCodec<OreBiomeModifier>> ORE_MODIFIER = BIOME_MODIFIERS.register("ores", () ->
-    RecordCodecBuilder.mapCodec(builder -> builder.group(
-            Biome.LIST_CODEC.fieldOf("biomes").forGetter(OreBiomeModifier::biomes),
-            PlacedFeature.CODEC.fieldOf("feature").forGetter(OreBiomeModifier::feature)
-    ).apply(builder, OreBiomeModifier::new)));
+	public static DeferredHolder<MapCodec<? extends BiomeModifier>, MapCodec<OreBiomeModifier>> ORE_MODIFIER =
+			BIOME_MODIFIERS.register("ores", () -> OreBiomeModifier.CODEC);
 	
 	public static void register(IEventBus eventBus)
 	{
