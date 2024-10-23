@@ -107,7 +107,7 @@ public class VialItem extends Item
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		FluidStack fluidStack = getFluidStack(stack);
 		if(!getFluidStack(stack).equals(FluidStack.EMPTY))
@@ -117,6 +117,6 @@ public class VialItem extends Item
 	    	tooltipComponents.add(liquidNaquadah);
 		}
     	
-    	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    	super.appendHoverText(stack, context, tooltipComponents, tooltipFlat);
 	}
 }

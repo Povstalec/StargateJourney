@@ -106,7 +106,7 @@ public class ZeroPointModule extends Item
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		int entropy = getEntropy(stack);
 		long remainingEnergy = getEnergy(stack);
@@ -116,6 +116,6 @@ public class ZeroPointModule extends Item
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.entropy").append(Component.literal(": " + currentEntropy + "%")).withStyle(ChatFormatting.GOLD));
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.energy_in_level").append(Component.literal(": " + remainingEnergy + " FE")).withStyle(ChatFormatting.DARK_RED));
     	
-    	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    	super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 }

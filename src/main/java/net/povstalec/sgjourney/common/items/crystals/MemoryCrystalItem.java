@@ -190,7 +190,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	}*/
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		for(int i = 0; i < getMemoryListSize(stack); i++)
 		{
@@ -213,7 +213,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 
 		}
 
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 
 	public static class Advanced extends MemoryCrystalItem

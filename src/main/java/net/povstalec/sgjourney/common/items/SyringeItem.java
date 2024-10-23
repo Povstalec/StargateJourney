@@ -71,7 +71,7 @@ public class SyringeItem extends Item
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe.contents").append(Component.literal(": ")).withStyle(ChatFormatting.GRAY));
     	
@@ -85,7 +85,7 @@ public class SyringeItem extends Item
         else
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe.empty").withStyle(ChatFormatting.GRAY));
 
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlat);
     }
     
     private boolean tryToApplyEffects(Entity target, ItemStack stack)

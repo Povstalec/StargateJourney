@@ -155,12 +155,12 @@ public class GDOItem extends Item
     }
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		int frequency = 0;
 		String idc = "";
 		
-		if(stack.hasTag() && isAdvanced.isAdvanced())
+		if(stack.hasTag() && tooltipFlag.isAdvanced())
 		{
 			frequency = getFrequency(stack);
 			idc = getTransmissionMessage(stack);
@@ -172,7 +172,7 @@ public class GDOItem extends Item
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.description.check").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.description.gui").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 	
 	public static float transmissionRadius()

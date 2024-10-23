@@ -18,17 +18,17 @@ import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 public abstract class StargateIrisItem extends Item
 {
 	// Vanilla Materials
-	public static final ResourceLocation COPPER_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/copper_iris.png");
-	public static final ResourceLocation IRON_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/iron_iris.png");
-	public static final ResourceLocation GOLD_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/golden_iris.png");
-	public static final ResourceLocation DIAMOND_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/diamond_iris.png");
-	public static final ResourceLocation NETHERITE_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/netherite_iris.png");
+	public static final ResourceLocation COPPER_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/copper_iris.png");
+	public static final ResourceLocation IRON_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/iron_iris.png");
+	public static final ResourceLocation GOLD_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/golden_iris.png");
+	public static final ResourceLocation DIAMOND_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/diamond_iris.png");
+	public static final ResourceLocation NETHERITE_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/netherite_iris.png");
 	// Stargate Journey Materials
-	public static final ResourceLocation NAQUADAH_ALLOY_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/naquadah_alloy_iris.png");
-	public static final ResourceLocation TRINIUM_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/trinium_iris.png");
+	public static final ResourceLocation NAQUADAH_ALLOY_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/naquadah_alloy_iris.png");
+	public static final ResourceLocation TRINIUM_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/trinium_iris.png");
 	// Modded Materials
-	public static final ResourceLocation BRONZE_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/bronze_iris.png");
-	public static final ResourceLocation STEEL_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/steel_iris.png");
+	public static final ResourceLocation BRONZE_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/bronze_iris.png");
+	public static final ResourceLocation STEEL_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/steel_iris.png");
 	
 	public static final String DURABILITY = "durability";
 	public static final String TEXTURE = "texture";
@@ -143,16 +143,16 @@ public abstract class StargateIrisItem extends Item
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		if(stack.hasTag() && isAdvanced.isAdvanced())
+		if(stack.hasTag() && tooltipFlag.isAdvanced())
 		{
 			int durability = getDurability(stack);
 			
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.iris.durability").append(Component.literal(": " + durability + " / " + getMaxDurability())));
 		}
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 	
 	

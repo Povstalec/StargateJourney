@@ -204,7 +204,7 @@ public class RingRemoteItem extends Item
 	}
 	
 	@Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
         stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
         {
@@ -223,7 +223,7 @@ public class RingRemoteItem extends Item
         	}
         });
 
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
 	/*public BlockPos getNearestRings(CompoundTag nbtTag, BlockPos center, int maxDistance)

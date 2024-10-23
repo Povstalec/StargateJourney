@@ -61,7 +61,7 @@ public class StargateUpgradeItem extends Item
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
         if(stack.hasTag())
         {
@@ -75,7 +75,7 @@ public class StargateUpgradeItem extends Item
         
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.stargate_upgrade.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
 	public static <StargateBlock extends AbstractStargateBlock> ItemStack stargateType(StargateBlock stargate)

@@ -314,7 +314,7 @@ public class StaffWeaponItem extends Item
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		MutableComponent isOpen = isOpen(stack) ? 
 				Component.translatable("tooltip.sgjourney.matok.open").withStyle(ChatFormatting.YELLOW) :
@@ -332,6 +332,6 @@ public class StaffWeaponItem extends Item
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.open_close").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     	
-    	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    	super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 }

@@ -57,7 +57,7 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
         CrystalMode mode = getCrystalMode(stack);
         String text = "";
@@ -73,7 +73,7 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
         
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.mode").append(Component.literal(": ")).append(Component.translatable(text)).withStyle(ChatFormatting.DARK_AQUA));
 
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
     
     public static class Advanced extends MaterializationCrystalItem

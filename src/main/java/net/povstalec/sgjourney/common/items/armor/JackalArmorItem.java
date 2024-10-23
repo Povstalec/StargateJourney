@@ -9,7 +9,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.JackalArmorRenderProperties;
 
@@ -23,7 +23,7 @@ public class JackalArmorItem extends ArmorItem
 	    }
 	 
 	 @Override
-	 public void initializeClient(Consumer<IClientItemExtensions> consumer) 
+	 public void initializeClient(Consumer<IClientItemExtensions> consumer)
 	 {
 		 consumer.accept(JackalArmorRenderProperties.INSTANCE);
 	 }
