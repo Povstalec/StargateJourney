@@ -49,7 +49,7 @@ public abstract class AbstractCrystallizerBlock extends HorizontalDirectionalBlo
 	public abstract Block getDroppedBlock();
 	
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof AbstractCrystallizerEntity)
@@ -58,7 +58,7 @@ public abstract class AbstractCrystallizerBlock extends HorizontalDirectionalBlo
 			{
 				ItemStack itemstack = new ItemStack(getDroppedBlock());
 				
-				blockentity.saveToItem(itemstack);
+				blockentity.saveToItem(itemstack, level.registryAccess());
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -66,6 +66,6 @@ public abstract class AbstractCrystallizerBlock extends HorizontalDirectionalBlo
 			}
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 }

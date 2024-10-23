@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.blocks.tech;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,10 +24,16 @@ public class TransportRingsBlock extends AbstractTransporterBlock
 	public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.VERTICAL);
 	public static final BooleanProperty ACTIVATED = BooleanProperty.create("activated");
 
+	public static final MapCodec<TransportRingsBlock> CODEC = simpleCodec(TransportRingsBlock::new);
+
 	public TransportRingsBlock(Properties properties) 
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.UP).setValue(ACTIVATED, false));
+	}
+
+	protected MapCodec<TransportRingsBlock> codec() {
+		return CODEC;
 	}
 
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)

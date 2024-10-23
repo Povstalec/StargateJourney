@@ -45,9 +45,9 @@ public class ATAGeneDetectorBlock extends Block implements AncientTech
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
-		if(!level.isClientSide)
+		if(!level.isClientSide())
 		{
 			int measured;
 			

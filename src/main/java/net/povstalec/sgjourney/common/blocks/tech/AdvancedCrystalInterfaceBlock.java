@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -24,9 +25,17 @@ import net.povstalec.sgjourney.common.init.BlockInit;
 
 public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
 {
+	public static final MapCodec<AdvancedCrystalInterfaceBlock> CODEC = simpleCodec(AdvancedCrystalInterfaceBlock::new);
+
 	public AdvancedCrystalInterfaceBlock(Properties properties)
 	{
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<AdvancedCrystalInterfaceBlock> codec()
+	{
+		return CODEC;
 	}
 
 	@Override

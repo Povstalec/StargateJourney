@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import org.joml.Vector3d;
 
 import net.minecraft.ChatFormatting;
@@ -55,12 +58,20 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 	private static final VoxelShape SHAPE_DOWN_EAST = VoxelShapeProvider.getOrientedShapes(MIN_MAX, FrontAndTop.DOWN_EAST);
 	private static final VoxelShape SHAPE_DOWN_SOUTH = VoxelShapeProvider.getOrientedShapes(MIN_MAX, FrontAndTop.DOWN_SOUTH);
 	private static final VoxelShape SHAPE_DOWN_WEST = VoxelShapeProvider.getOrientedShapes(MIN_MAX, FrontAndTop.DOWN_WEST);
-	
+
+	public static final MapCodec<NaquadahGeneratorMarkIIBlock> CODEC = simpleCodec(NaquadahGeneratorMarkIIBlock::new);
+
 	public NaquadahGeneratorMarkIIBlock(Properties properties)
 	{
 		super(properties);
 	}
-	
+
+	@Override
+	protected MapCodec<NaquadahGeneratorMarkIIBlock> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision) 
 	{
@@ -92,7 +103,7 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 	}
 	
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if (blockentity instanceof NaquadahGeneratorEntity)
@@ -101,7 +112,7 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 			{
 				ItemStack itemstack = new ItemStack(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 				
-				blockentity.saveToItem(itemstack);
+				blockentity.saveToItem(itemstack, level.registryAccess());
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -109,7 +120,7 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 			}
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	@Nullable
@@ -120,7 +131,7 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
     }
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
     	long capacity = CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
     	
@@ -133,6 +144,6 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + capacity +" FE")).withStyle(ChatFormatting.DARK_RED));
         tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }

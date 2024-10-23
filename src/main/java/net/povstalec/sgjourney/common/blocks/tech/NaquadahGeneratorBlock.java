@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,7 +25,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
 
@@ -86,7 +84,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
         if(!level.isClientSide()) 
         {
@@ -117,7 +115,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
             				return new NaquadahGeneratorMenu(windowId, playerInventory, blockEntity);
             			}
             		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+					((ServerPlayer) player).openMenu(containerProvider);
             	}
             	else
             		throw new IllegalStateException("Our named container provider is missing!");

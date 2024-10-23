@@ -22,6 +22,7 @@ import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.registries.*;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.render.block_entity.*;
@@ -45,7 +46,6 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -58,9 +58,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(StargateJourney.MODID)
 public class StargateJourney
 {
@@ -118,15 +116,8 @@ public class StargateJourney
         modContainer.registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
     
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory(new BiFunction<Minecraft, Screen, Screen>()
-                {
-                    @Override
-                    public Screen apply(Minecraft mc, Screen screen)
-                    {
-                        return new ConfigScreen(screen);
-                    }
-                }));
+        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class,
+                () -> (mc, screen) -> new ConfigScreen(screen));
 
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(MiscInit::registerCommands);

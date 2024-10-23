@@ -1,10 +1,12 @@
 package net.povstalec.sgjourney.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -30,10 +32,16 @@ import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 {
+	public static final MapCodec<ClassicStargateBaseBlock> CODEC = simpleCodec(ClassicStargateBaseBlock::new);
+
 	public ClassicStargateBaseBlock(Properties properties)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+	}
+
+	protected MapCodec<ClassicStargateBaseBlock> codec() {
+		return CODEC;
 	}
 	
 	@Override
@@ -61,11 +69,10 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
 	{
 		if(!level.isClientSide())
 		{
-			ItemStack stack = player.getItemInHand(hand);
 			Address address = new Address();
 			
 			if(CommonStargateConfig.enable_address_choice.get() && stack.is(ItemInit.CONTROL_CRYSTAL.get()))
@@ -76,13 +83,13 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 				if(address.getLength() != 8)
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.invalid_address"), true);
-					return InteractionResult.FAIL;
+					return ItemInteractionResult.FAIL;
 				}
 				
 				if(BlockEntityList.get(level).getStargate(address.immutable()).isPresent())
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.address_exists"), true);
-					return InteractionResult.FAIL;
+					return ItemInteractionResult.FAIL;
 				}
 			}
 			
@@ -92,7 +99,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 			if(orientation == null)
 			{
 				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.incorrect_setup"), true);
-				return InteractionResult.FAIL;
+				return ItemInteractionResult.FAIL;
 			}
 			
 			ClassicStargateBlock block = BlockInit.CLASSIC_STARGATE.get();
@@ -128,10 +135,10 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 				stargate.addStargateToNetwork();
 			}
 			
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 	
 	private static Block getClassicStargateBlock(StargatePart part)

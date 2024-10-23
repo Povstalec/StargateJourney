@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,13 +26,21 @@ public class GoldenIdolBlock extends HorizontalDirectionalBlock
 	
 	private static final VoxelShape ARTIFACT_STRAIGHT = Shapes.or(ARTIFACT_HEAD, ARTIFACT_BODY_1, RIGHT_HAND_1, LEFT_HAND_1);
 	private static final VoxelShape ARTIFACT_TURNED = Shapes.or(ARTIFACT_HEAD, ARTIFACT_BODY_2, RIGHT_HAND_2, LEFT_HAND_2);
-	
+
+	public static final MapCodec<GoldenIdolBlock> CODEC = simpleCodec(GoldenIdolBlock::new);
+
 	public GoldenIdolBlock(Properties properties)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
-	
+
+	@Override
+	protected MapCodec<GoldenIdolBlock> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{

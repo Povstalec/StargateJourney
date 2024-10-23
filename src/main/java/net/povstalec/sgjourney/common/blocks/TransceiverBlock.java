@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.item.Item;
 import org.joml.Vector3d;
 
 import net.minecraft.ChatFormatting;
@@ -43,7 +45,6 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
 import net.povstalec.sgjourney.common.blockstates.Receiving;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -119,9 +120,8 @@ public class TransceiverBlock extends Block implements EntityBlock
 	{
 		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
-	
-	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+
+	public void use(Level level, BlockPos pos, Player player)
 	{
 		if(!level.isClientSide())
         {
@@ -143,15 +143,29 @@ public class TransceiverBlock extends Block implements EntityBlock
         				return new TransceiverMenu(windowId, playerInventory, blockEntity);
         			}
         		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				((ServerPlayer) player).openMenu(containerProvider);
         	}
         	else
         	{
         		throw new IllegalStateException("Our named container provider is missing!");
         	}
         }
-		
+	}
+
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+	{
+		use(level, pos, player);
+
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	{
+		use(level, pos, player);
+
+		return ItemInteractionResult.SUCCESS;
 	}
 	
 	@Override
@@ -208,7 +222,7 @@ public class TransceiverBlock extends Block implements EntityBlock
 	}
 	
 	@Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
 		tooltipComponents.add(Component.translatable("block.sgjourney.transceiver.description").withStyle(ChatFormatting.GRAY));
     }

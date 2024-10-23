@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -49,7 +50,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
     }
 	
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof AbstractTransporterEntity transporter)
@@ -58,7 +59,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 			{
 				ItemStack itemstack = new ItemStack(BlockInit.TRANSPORT_RINGS.get());
 				
-				blockentity.saveToItem(itemstack);
+				blockentity.saveToItem(itemstack, level.registryAccess());
 				if(transporter.hasCustomName())
 					itemstack.setHoverName(transporter.getCustomName());
 					
@@ -69,11 +70,11 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 			}
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	@Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
 		String id;
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("ID"))
@@ -86,7 +87,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
         if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("AddToNetwork") && !stack.getTag().getCompound("BlockEntityTag").getBoolean("AddToNetwork"))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
 
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
 	public static ItemStack excludeFromNetwork(ItemStack stack)

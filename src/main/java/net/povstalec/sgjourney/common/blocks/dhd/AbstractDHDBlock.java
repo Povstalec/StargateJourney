@@ -6,6 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,7 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 
@@ -77,20 +80,38 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		
 		super.onRemove(oldState, level, pos, newState, isMoving);
 	}
+
+	protected abstract void use(Level level, BlockPos pos, Player player);
+
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+	{
+		use(level, pos, player);
+
+		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	{
+		use(level, pos, player);
+
+		return ItemInteractionResult.SUCCESS;
+	}
     
     public abstract Block getDHD();
 	
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof AbstractDHDEntity)
 		{
-			if(!level.isClientSide && !player.isCreative())
+			if(!level.isClientSide() && !player.isCreative())
 			{
 				ItemStack itemstack = new ItemStack(getDHD());
 				
-				blockentity.saveToItem(itemstack);
+				blockentity.saveToItem(itemstack, level.registryAccess());
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -98,7 +119,7 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 			}
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	protected void openCrystalMenu(Player player, BlockEntity blockEntity)
@@ -117,7 +138,7 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 				return new DHDCrystalMenu(windowId, playerInventory, blockEntity);
 			}
 		};
-		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+		((ServerPlayer) player).openMenu(containerProvider);
 	}
 	
 	@SuppressWarnings("unchecked")

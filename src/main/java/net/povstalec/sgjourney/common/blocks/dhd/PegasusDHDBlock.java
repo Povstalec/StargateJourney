@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -11,13 +12,12 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -35,7 +35,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -53,10 +52,16 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
+	public static final MapCodec<PegasusDHDBlock> CODEC = simpleCodec(PegasusDHDBlock::new);
+
 	public PegasusDHDBlock(Properties properties)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
+	}
+
+	protected MapCodec<PegasusDHDBlock> codec() {
+		return CODEC;
 	}
 	
 	@Override
@@ -86,43 +91,42 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	public void use(Level level, BlockPos pos, Player player)
 	{
-        if(!level.isClientSide()) 
-        {
-        	BlockEntity blockEntity = level.getBlockEntity(pos);
-			
-        	if(blockEntity instanceof AbstractDHDEntity dhd) 
-        	{
-        		dhd.setStargate();
-        		
-        		if(player.isShiftKeyDown())
-        			this.openCrystalMenu(player, blockEntity);
-        		else
-        		{
-        			MenuProvider containerProvider = new MenuProvider() 
-            		{
-            			@Override
-            			public Component getDisplayName() 
-            			{
-            				return Component.translatable("screen.sgjourney.dhd");
-            			}
-            			
-            			@Override
-            			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-            			{
-            				return new PegasusDHDMenu(windowId, playerInventory, blockEntity);
-            			}
-            		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-        		}
-        	}
-        	else
-        	{
-        		throw new IllegalStateException("Our named container provider is missing!");
-        	}
-        }
-        return InteractionResult.SUCCESS;
+        if(level.isClientSide())
+			return;
+
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+
+		if(blockEntity instanceof AbstractDHDEntity dhd)
+		{
+			dhd.setStargate();
+
+			if(player.isShiftKeyDown())
+				this.openCrystalMenu(player, blockEntity);
+			else
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public Component getDisplayName()
+					{
+						return Component.translatable("screen.sgjourney.dhd");
+					}
+
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+					{
+						return new PegasusDHDMenu(windowId, playerInventory, blockEntity);
+					}
+				};
+				((ServerPlayer) player).openMenu(containerProvider);
+			}
+		}
+		else
+		{
+			throw new IllegalStateException("Our named container provider is missing!");
+		}
     }
 
 	@Override
@@ -171,7 +175,7 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 	}
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
 		if(stack.hasTag())
 		{
@@ -187,6 +191,6 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 			}
 		}
 		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }

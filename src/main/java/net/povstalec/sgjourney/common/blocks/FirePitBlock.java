@@ -9,7 +9,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -34,38 +37,38 @@ public class FirePitBlock extends Block
 		super(properties);
 		this.flameParticle = particle;
 	}
-	
+
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
-		if(!level.isClientSide())
+		if(!level.isClientSide() && state.getValue(LIT) == true)
+			level.setBlock(pos, state.setValue(LIT, false), 3);
+
+		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	{
+		if(state.getValue(LIT) == false && player.getItemInHand(hand).getItem() == Items.FLINT_AND_STEEL)
 		{
-			if(state.getValue(LIT) == true && player.getItemInHand(hand).isEmpty())
-			{
-				level.setBlock(pos, state.setValue(LIT, false), 3);
-				
-				return InteractionResult.SUCCESS;
-			}
-			else if(state.getValue(LIT) == false && player.getItemInHand(hand).getItem() == Items.FLINT_AND_STEEL)
-			{
-				level.playSound((Player)null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
-				level.setBlock(pos, state.setValue(LIT, true), 3);
-				player.getItemInHand(hand).hurtAndBreak(1, player, (consumer) -> {consumer.broadcastBreakEvent(hand);});
-				
-				return InteractionResult.SUCCESS;
-			}
-			else if(state.getValue(LIT) == false && player.getItemInHand(hand).getItem() == Items.FIRE_CHARGE)
-			{
-				level.playSound((Player)null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
-				level.setBlock(pos, state.setValue(LIT, true), 3);
-				if(!player.isCreative())
-					player.getItemInHand(hand).shrink(1);
-				
-				return InteractionResult.SUCCESS;
-			}
+			level.playSound((Player)null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+			level.setBlock(pos, state.setValue(LIT, true), 3);
+			player.getItemInHand(hand).hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+
+			return ItemInteractionResult.SUCCESS;
 		}
-		
-		return InteractionResult.FAIL;
+		else if(state.getValue(LIT) == false && player.getItemInHand(hand).getItem() == Items.FIRE_CHARGE)
+		{
+			level.playSound((Player)null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+			level.setBlock(pos, state.setValue(LIT, true), 3);
+			if(!player.isCreative())
+				player.getItemInHand(hand).shrink(1);
+
+			return ItemInteractionResult.SUCCESS;
+		}
+
+		return ItemInteractionResult.FAIL;
 	}
 
 	@Override
