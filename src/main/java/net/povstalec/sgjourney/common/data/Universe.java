@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -52,7 +53,7 @@ public class Universe extends SavedData
 	 * 
 	 */
 
-	private static final ResourceLocation MILKY_WAY = new ResourceLocation(StargateJourney.MODID, "milky_way");
+	private static final ResourceLocation MILKY_WAY = StargateJourney.sgjourneyLocation("milky_way");
 	
 	private static final String FILE_NAME = StargateJourney.MODID + "-universe";
 	
@@ -721,12 +722,17 @@ public class Universe extends SavedData
 		return data;
 	}
 	
-	public CompoundTag save(CompoundTag tag)
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider)
 	{
 		//tag = this.universe.copy();
 		tag = serialize();
 		
 		return tag;
+	}
+
+	public static SavedData.Factory<Universe> dataFactory(MinecraftServer server)
+	{
+		return new SavedData.Factory<>(() -> create(server), (tag, provider) -> load(server, tag));
 	}
 	
 	@Nonnull
@@ -743,6 +749,6 @@ public class Universe extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
     }
 }
