@@ -17,7 +17,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEnti
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
-import net.povstalec.stellarview.StellarView;
 
 public class ClientStargateVariants
 {
@@ -62,7 +61,7 @@ public class ClientStargateVariants
 		if(!hasUniverseStargateVariant(location))
 			UNIVERSE_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
-			StellarView.LOGGER.error("Universe Stargate Variant " + location.toString() + " already exists");
+			StargateJourney.LOGGER.error("Universe Stargate Variant " + location.toString() + " already exists");
 	}
 	
 	
@@ -85,7 +84,7 @@ public class ClientStargateVariants
 		if(!hasMilkyWayStargateVariant(location))
 			MILKY_WAY_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
-			StellarView.LOGGER.error("Milky Way Stargate Variant " + location.toString() + " already exists");
+			StargateJourney.LOGGER.error("Milky Way Stargate Variant " + location.toString() + " already exists");
 	}
 	
 	
@@ -108,7 +107,7 @@ public class ClientStargateVariants
 		if(!hasPegasusStargateVariant(location))
 			PEGASUS_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
-			StellarView.LOGGER.error("Pegasus Stargate Variant " + location.toString() + " already exists");
+			StargateJourney.LOGGER.error("Pegasus Stargate Variant " + location.toString() + " already exists");
 	}
 	
 	
@@ -131,7 +130,7 @@ public class ClientStargateVariants
 		if(!hasTollanStargateVariant(location))
 			TOLLAN_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
-			StellarView.LOGGER.error("Tollan Stargate Variant " + location.toString() + " already exists");
+			StargateJourney.LOGGER.error("Tollan Stargate Variant " + location.toString() + " already exists");
 	}
 	
 	
@@ -154,7 +153,7 @@ public class ClientStargateVariants
 		if(!hasClassicStargateVariant(location))
 			CLASSIC_STARGATE_VARIANTS.put(location, stargateVariant);
 		else
-			StellarView.LOGGER.error("Classic Stargate Variant " + location.toString() + " already exists");
+			StargateJourney.LOGGER.error("Classic Stargate Variant " + location.toString() + " already exists");
 	}
 	
 	
@@ -217,7 +216,7 @@ public class ClientStargateVariants
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 		
-		optional = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variantString)));
+		optional = Optional.ofNullable(variantRegistry.get(ResourceLocation.parse(variantString)));
 		
 		return optional;
 	}

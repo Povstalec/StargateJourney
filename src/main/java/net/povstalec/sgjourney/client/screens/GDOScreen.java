@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.packets.ServerboundGDOUpdatePacket;
 
 public class GDOScreen extends Screen
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/gdo/gdo_background.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/gdo/gdo_background.png");
 
 	private int imageWidth = 240;
 	private int imageHeight = 120;

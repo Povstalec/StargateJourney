@@ -10,7 +10,7 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
 public class ClassicDHDScreen extends AbstractDHDScreen
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/classic/classic_dhd_background.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/dhd/classic/classic_dhd_background.png");
 	
 	public ClassicDHDScreen(AbstractDHDMenu menu, Inventory playerInventory, Component title)
 	{

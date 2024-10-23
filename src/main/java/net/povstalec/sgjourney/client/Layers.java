@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.client;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.FalconArmorModel;
 import net.povstalec.sgjourney.client.models.JackalArmorModel;
@@ -11,11 +11,11 @@ import net.povstalec.sgjourney.client.models.TransportRingsModel;
 public class Layers
 {
 	// Transport Rings
-	public static final ModelLayerLocation TRANSPORT_RING_LAYER = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "transport_ring"), "main");
+	public static final ModelLayerLocation TRANSPORT_RING_LAYER = new ModelLayerLocation(StargateJourney.sgjourneyLocation("transport_ring"), "main");
 	
 	// Armor
-	public static final ModelLayerLocation FALCON_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "falcon_head"), "main");
-	public static final ModelLayerLocation JACKAL_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "jackal_head"), "main");
+	public static final ModelLayerLocation FALCON_HEAD = new ModelLayerLocation(StargateJourney.sgjourneyLocation("falcon_head"), "main");
+	public static final ModelLayerLocation JACKAL_HEAD = new ModelLayerLocation(StargateJourney.sgjourneyLocation("jackal_head"), "main");
 	
 	public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
 	{

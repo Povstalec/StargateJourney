@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
 
 public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/crystallizer_gui.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/crystallizer_gui.png");
 	private FluidTankRenderer renderer;
 	
     public CrystallizerScreen(CrystallizerMenu menu, Inventory inventory, Component component)

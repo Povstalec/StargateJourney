@@ -8,6 +8,6 @@ public class RingPanelButton extends SGJourneyButton
 {
 	public RingPanelButton(int x, int y, Component message, Component tooltip, OnPress press)
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "textures/gui/widgets.png"), x, y, 32, 16, message, tooltip, press);
+		super(StargateJourney.sgjourneyLocation("textures/gui/widgets.png"), x, y, 32, 16, message, tooltip, press);
 	}
 }

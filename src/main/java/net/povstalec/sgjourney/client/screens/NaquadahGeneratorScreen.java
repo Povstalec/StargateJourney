@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
 
 public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGeneratorMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/naquadah_generator_gui.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/naquadah_generator_gui.png");
 
     public NaquadahGeneratorScreen(NaquadahGeneratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);

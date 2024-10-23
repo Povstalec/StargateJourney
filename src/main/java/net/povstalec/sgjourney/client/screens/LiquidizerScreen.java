@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
@@ -119,7 +119,7 @@ public abstract class LiquidizerScreen extends AbstractContainerScreen<Liquidize
     {
 		public LiquidNaquadah(LiquidizerMenu menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/naquadah_liquidizer_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/naquadah_liquidizer_gui.png"), inventory, component);
 		}
     }
     
@@ -127,7 +127,7 @@ public abstract class LiquidizerScreen extends AbstractContainerScreen<Liquidize
     {
 		public HeavyLiquidNaquadah(LiquidizerMenu menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/heavy_naquadah_liquidizer_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/heavy_naquadah_liquidizer_gui.png"), inventory, component);
 		}
     }
 }

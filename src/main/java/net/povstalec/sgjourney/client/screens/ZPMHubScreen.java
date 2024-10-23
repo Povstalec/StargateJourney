@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.common.menu.ZPMHubMenu;
 
 public class ZPMHubScreen extends AbstractContainerScreen<ZPMHubMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/zpm_hub_gui.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/zpm_hub_gui.png");
 
     public ZPMHubScreen(ZPMHubMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);

@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.menu.TransceiverMenu;
 
 public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/transceiver/transceiver_gui.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/transceiver/transceiver_gui.png");
 
 	public TransceiverScreen(TransceiverMenu menu, Inventory playerInventory, Component title)
     {

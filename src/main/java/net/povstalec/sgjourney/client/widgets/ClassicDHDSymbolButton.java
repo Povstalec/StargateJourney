@@ -6,9 +6,9 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
 public class ClassicDHDSymbolButton extends GenericDHDSymbolButton
 {
-	public static final ResourceLocation CLASSIC_OUTER_BUTTONS_1 = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/classic/classic_dhd_outer_buttons_1.png");
-	public static final ResourceLocation CLASSIC_OUTER_BUTTONS_2 = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/classic/classic_dhd_outer_buttons_2.png");
-	public static final ResourceLocation CLASSIC_INNER_BUTTONS = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/classic/classic_dhd_inner_buttons.png");
+	public static final ResourceLocation CLASSIC_OUTER_BUTTONS_1 = StargateJourney.sgjourneyLocation("textures/gui/dhd/classic/classic_dhd_outer_buttons_1.png");
+	public static final ResourceLocation CLASSIC_OUTER_BUTTONS_2 = StargateJourney.sgjourneyLocation("textures/gui/dhd/classic/classic_dhd_outer_buttons_2.png");
+	public static final ResourceLocation CLASSIC_INNER_BUTTONS = StargateJourney.sgjourneyLocation("textures/gui/dhd/classic/classic_dhd_inner_buttons.png");
 	
 	public enum ClassicButton
     {

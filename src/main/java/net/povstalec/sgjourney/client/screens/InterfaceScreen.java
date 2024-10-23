@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 
 public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/interface_gui.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/interface_gui.png");
 
     public InterfaceScreen(InterfaceMenu pMenu, Inventory pPlayerInventory, Component pTitle)
     {

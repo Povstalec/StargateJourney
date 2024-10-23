@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 public class DHDButton extends Button
 {
 	
-	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/milky_way_dhd_widgets.png");
+	public static final ResourceLocation WIDGETS_LOCATION = StargateJourney.sgjourneyLocation("textures/gui/milky_way_dhd_widgets.png");
 	
     public DHDButton(int x, int y, AbstractDHDMenu menu, int i)
 	{

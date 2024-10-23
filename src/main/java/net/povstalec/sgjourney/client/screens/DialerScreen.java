@@ -11,7 +11,7 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class DialerScreen extends Screen
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/dhd_background.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/dhd/dhd_background.png");
 
 	protected int imageWidth = 192;
 	protected int imageHeight = 192;

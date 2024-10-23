@@ -10,7 +10,7 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
 public class MilkyWayDHDScreen extends AbstractDHDScreen
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way/milky_way_dhd_background.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/dhd/milky_way/milky_way_dhd_background.png");
 	
 	public MilkyWayDHDScreen(AbstractDHDMenu menu, Inventory playerInventory, Component title)
 	{

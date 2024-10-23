@@ -8,6 +8,6 @@ public class TransceiverLargeButton extends SGJourneyButton
 {
 	public TransceiverLargeButton(int x, int y, Component component, Component tooltip, OnPress press)
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "textures/gui/transceiver/transceiver_widgets.png"), x, y, 20, 20, 16, 0, component, tooltip, press);
+		super(StargateJourney.sgjourneyLocation("textures/gui/transceiver/transceiver_widgets.png"), x, y, 20, 20, 16, 0, component, tooltip, press);
 	}
 }

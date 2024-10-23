@@ -17,27 +17,27 @@ public class MilkyWayStargateVariant extends GenericStargateVariant
 	public static final String CHEVRON_OPEN_SOUNDS = "chevron_open_sounds";
 	public static final String CHEVRON_ENCODE_SOUNDS = "chevron_encode_sounds";
 	
-	public static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate.png");
-	public static final ResourceLocation STARGATE_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate_back_chevron.png");
-	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate_engaged.png");
-	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_stargate_back_chevron_engaged.png");
+	public static final ResourceLocation STARGATE_TEXTURE = StargateJourney.sgjourneyLocation("textures/entity/stargate/milky_way/milky_way_stargate.png");
+	public static final ResourceLocation STARGATE_TEXTURE_BACK = StargateJourney.sgjourneyLocation("textures/entity/stargate/milky_way/milky_way_stargate_back_chevron.png");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = StargateJourney.sgjourneyLocation("textures/entity/stargate/milky_way/milky_way_stargate_engaged.png");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE_BACK = StargateJourney.sgjourneyLocation("textures/entity/stargate/milky_way/milky_way_stargate_back_chevron_engaged.png");
 
-	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_event_horizon.png");
-	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/milky_way/milky_way_event_horizon_shiny.png");
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/stargate/milky_way/milky_way_event_horizon.png");
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/stargate/milky_way/milky_way_event_horizon_shiny.png");
 
-	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = new ResourceLocation(StargateJourney.MODID, "milky_way_chevron_engage");
-	public static final ResourceLocation STARGATE_CHEVRON_OPEN = new ResourceLocation(StargateJourney.MODID, "milky_way_chevron_open");
-	public static final ResourceLocation STARGATE_CHEVRON_ENCODE = new ResourceLocation(StargateJourney.MODID, "milky_way_chevron_encode");
+	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = StargateJourney.sgjourneyLocation("milky_way_chevron_engage");
+	public static final ResourceLocation STARGATE_CHEVRON_OPEN = StargateJourney.sgjourneyLocation("milky_way_chevron_open");
+	public static final ResourceLocation STARGATE_CHEVRON_ENCODE = StargateJourney.sgjourneyLocation("milky_way_chevron_encode");
 
-	public static final ResourceLocation STARGATE_RING_SPIN_START = new ResourceLocation(StargateJourney.MODID, "milky_way_ring_spin_start");
-	public static final ResourceLocation STARGATE_RING_SPIN = new ResourceLocation(StargateJourney.MODID, "milky_way_ring_spin");
-	public static final ResourceLocation STARGATE_RING_SPIN_STOP = new ResourceLocation(StargateJourney.MODID, "milky_way_ring_spin_stop");
+	public static final ResourceLocation STARGATE_RING_SPIN_START = StargateJourney.sgjourneyLocation("milky_way_ring_spin_start");
+	public static final ResourceLocation STARGATE_RING_SPIN = StargateJourney.sgjourneyLocation("milky_way_ring_spin");
+	public static final ResourceLocation STARGATE_RING_SPIN_STOP = StargateJourney.sgjourneyLocation("milky_way_ring_spin_stop");
 
-	public static final ResourceLocation STARGATE_WORMHOLE_OPEN = new ResourceLocation(StargateJourney.MODID, "milky_way_wormhole_open");
-	public static final ResourceLocation STARGATE_WORMHOLE_IDLE = new ResourceLocation(StargateJourney.MODID, "milky_way_wormhole_idle");
-	public static final ResourceLocation STARGATE_WORMHOLE_CLOSE = new ResourceLocation(StargateJourney.MODID, "milky_way_wormhole_close");
+	public static final ResourceLocation STARGATE_WORMHOLE_OPEN = StargateJourney.sgjourneyLocation("milky_way_wormhole_open");
+	public static final ResourceLocation STARGATE_WORMHOLE_IDLE = StargateJourney.sgjourneyLocation("milky_way_wormhole_idle");
+	public static final ResourceLocation STARGATE_WORMHOLE_CLOSE = StargateJourney.sgjourneyLocation("milky_way_wormhole_close");
 
-	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "milky_way_dial_fail");
+	public static final ResourceLocation STARGATE_FAIL = StargateJourney.sgjourneyLocation("milky_way_dial_fail");
 	
 	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
 			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));

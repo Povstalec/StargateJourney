@@ -7,9 +7,9 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 
 public class PegasusDHDSymbolButton extends GenericDHDSymbolButton
 {
-	public static final ResourceLocation PEGASUS_OUTER_BUTTONS_1 = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/pegasus/pegasus_dhd_outer_buttons_1.png");
-	public static final ResourceLocation PEGASUS_OUTER_BUTTONS_2 = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/pegasus/pegasus_dhd_outer_buttons_2.png");
-	public static final ResourceLocation PEGASUS_INNER_BUTTONS = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/pegasus/pegasus_dhd_inner_buttons.png");
+	public static final ResourceLocation PEGASUS_OUTER_BUTTONS_1 = StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_outer_buttons_1.png");
+	public static final ResourceLocation PEGASUS_OUTER_BUTTONS_2 = StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_outer_buttons_2.png");
+	public static final ResourceLocation PEGASUS_INNER_BUTTONS = StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_inner_buttons.png");
 	
 	public enum PegasusButton
     {
