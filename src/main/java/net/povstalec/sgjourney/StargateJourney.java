@@ -1,19 +1,27 @@
 package net.povstalec.sgjourney;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Camera;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.Event;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.registries.*;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.render.block_entity.*;
@@ -24,11 +32,15 @@ import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.fluids.NaquadahFluidType;
+import net.povstalec.sgjourney.common.fluids.HeavyNaquadahFluidType;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
 import net.povstalec.sgjourney.common.stargate.*;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -44,6 +56,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -193,6 +206,90 @@ public class StargateJourney
             event.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
 
             event.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
+        }
+
+        @SubscribeEvent
+        public static void registerClientExtensions(RegisterClientExtensionsEvent event)
+        {
+            event.registerFluidType(new IClientFluidTypeExtensions()
+            {
+                @Override
+                public ResourceLocation getStillTexture()
+                {
+                    return NaquadahFluidType.STILL_TEXTURE;
+                }
+
+                @Override
+                public ResourceLocation getFlowingTexture()
+                {
+                    return NaquadahFluidType.FLOWING_TEXTURE;
+                }
+
+                @Override
+                public @Nullable ResourceLocation getOverlayTexture()
+                {
+                    return NaquadahFluidType.OVERLAY_TEXTURE;
+                }
+
+                @Override
+                public int getTintColor()
+                {
+                    return 0xffb0f329;
+                }
+
+                @Override
+                public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor)
+                {
+                    return new Vector3f(115.0F / 255.0F, 197.0F / 255.0F, 34.0F / 255.0F);
+                }
+
+                @Override
+                public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape)
+                {
+                    RenderSystem.setShaderFogStart(1f);
+                    RenderSystem.setShaderFogEnd(6f);
+                }
+            }, FluidTypeInit.LIQUID_NAQUADAH_FLUID_TYPE.get());
+
+            event.registerFluidType(new IClientFluidTypeExtensions()
+            {
+                @Override
+                public ResourceLocation getStillTexture()
+                {
+                    return HeavyNaquadahFluidType.STILL_TEXTURE;
+                }
+
+                @Override
+                public ResourceLocation getFlowingTexture()
+                {
+                    return HeavyNaquadahFluidType.FLOWING_TEXTURE;
+                }
+
+                @Override
+                public @Nullable ResourceLocation getOverlayTexture()
+                {
+                    return HeavyNaquadahFluidType.OVERLAY_TEXTURE;
+                }
+
+                @Override
+                public int getTintColor()
+                {
+                    return 0xff096c00;
+                }
+
+                @Override
+                public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor)
+                {
+                    return new Vector3f(115.0F / 255.0F, 197.0F / 255.0F, 34.0F / 255.0F);
+                }
+
+                @Override
+                public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape)
+                {
+                    RenderSystem.setShaderFogStart(1f);
+                    RenderSystem.setShaderFogEnd(6f);
+                }
+            }, FluidTypeInit.HEAVY_LIQUID_NAQUADAH_FLUID_TYPE.get());
         }
         
         @SubscribeEvent
