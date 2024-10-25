@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -173,10 +174,10 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     	int symbolNumber = 0;
 		String symbol = "";
     	String symbols = "";
-		
-    	if(stack.hasTag() && stack.getTag().contains("BlockEntityTag"))
-    	{
-        	CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
+
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
+		{
+			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
         	
         	if(blockEntityTag.contains(SymbolBlockEntity.SYMBOL_NUMBER))
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);

@@ -6,10 +6,8 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.HolderLookup;
+import net.neoforged.fml.ModList;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,10 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.TransceiverBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
@@ -67,9 +61,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
     {
-    	super.load(tag);
+    	super.loadAdditional(tag, registries);
 
     	editingFrequency = tag.getBoolean(EDIT_FREQUENCY);
     	frequency = tag.getInt(FREQUENCY);
@@ -77,9 +71,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	@Override
-    protected void saveAdditional(@NotNull CompoundTag tag)
+    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 
 		tag.putBoolean(EDIT_FREQUENCY, editingFrequency);
 		tag.putInt(FREQUENCY, frequency);
@@ -202,10 +196,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 				});
 			}
 		}
-		System.out.println("Check 1");
+
 		if(stargates.size() == 0)
 			return -1; // No Stargates nearby
-		System.out.println("Check 2");
 		
 		stargates.sort((stargateA, stargateB) ->
 				Double.valueOf(distance2(getBlockPos(), stargateA.getBlockPos()))
@@ -215,7 +208,6 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		
 		if(!stargate.isConnected())
 			return -2; // Stargate is not connected
-		System.out.println("State " + stargate.checkConnectionShieldingState());
 		
 		return (int) Math.round(stargate.checkConnectionShieldingState());
 	}

@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -199,10 +200,10 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	String dimension = "";
     	String symbols = "";
     	String addressTable = "";
-    	
-    	if(stack.hasTag() && stack.getTag().contains("BlockEntityTag"))
-    	{
-    		CompoundTag tag = stack.getTag().getCompound("BlockEntityTag");
+
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
+		{
+			CompoundTag tag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
     		
     		if(tag.contains(CartoucheEntity.ADDRESS))
     		{

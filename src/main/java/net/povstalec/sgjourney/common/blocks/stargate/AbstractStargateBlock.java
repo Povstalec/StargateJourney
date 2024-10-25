@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import net.minecraft.world.ItemInteractionResult;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableMap;
@@ -258,7 +260,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	
 	public abstract AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state);
 	
-	public boolean setCover(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public boolean setCover(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
 		if(!player.isShiftKeyDown())
 		{
@@ -267,7 +269,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			if(blockCover.isPresent())
 			{
 				StargatePart part = state.getValue(PART);
-				ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 				
 				if(stack.getItem() instanceof BlockItem blockItem && blockCover.get().getBlockAt(part).isEmpty())
 				{
@@ -278,7 +279,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 					{
 						if(blockCover.get().setBlockAt(part, coverState))
 						{
-							level.playSound(player, pos, coverState.getBlock().getSoundType(coverState).getPlaceSound(), SoundSource.BLOCKS);
+							level.playSound(player, pos, coverState.getSoundType(level, pos, player).getPlaceSound(), SoundSource.BLOCKS);
 							
 							if(!player.isCreative())
 								stack.shrink(1);
@@ -293,9 +294,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return false;
 	}
 	
-	public boolean setIris(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public boolean setIris(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
-		ItemStack stack = player.getItemInHand(hand);
 		if(stack.getItem() instanceof StargateIrisItem && !level.isClientSide())
 		{
 			AbstractStargateEntity stargate = getStargate(level, pos, state);
@@ -316,14 +316,14 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
 	{
-		if(setCover(state, level, pos, player, hand, result))
-			return InteractionResult.SUCCESS;
-		else if(setIris(state, level, pos, player, hand, result))
-			return InteractionResult.SUCCESS;
+		if(setCover(stack, state, level, pos, player, hand, hitResult))
+			return ItemInteractionResult.SUCCESS;
+		else if(setIris(stack, state, level, pos, player, hand, hitResult))
+			return ItemInteractionResult.SUCCESS;
 		
-		return super.use(state, level, pos, player, hand, result);
+		return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 	}
 	
 	@Override
@@ -363,8 +363,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public static class StargateBlockState extends BlockState
 	{
 
-		public StargateBlockState(Block block, ImmutableMap<Property<?>, Comparable<?>> properties,
-				MapCodec<BlockState> states)
+		public StargateBlockState(Block block, Reference2ObjectArrayMap<Property<?>, Comparable<?>> properties, MapCodec<BlockState> states)
 		{
 			super(block, properties, states);
 		}
@@ -407,7 +406,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 					
 					if(coverState.isPresent())
 					{
-						float multiplier = ForgeHooks.isCorrectToolForDrops(coverState.get(), player) ? 30F : 100F;
+						float multiplier = player.hasCorrectToolForDrops(coverState.get()) ? 30F : 100F;
 						
 						return player.getDigSpeed(coverState.get(), pos) / destroySpeed / multiplier;
 					}

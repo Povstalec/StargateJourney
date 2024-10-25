@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
+import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -11,10 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -103,17 +101,17 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.load(tag);
+		super.loadAdditional(tag, registries);
 		energyTarget = tag.getLong(ENERGY_TARGET);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		tag.putLong(ENERGY_TARGET, energyTarget);
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 	}
 	
 	//============================================================================================

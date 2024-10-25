@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities;
 
 import java.util.Optional;
 
+import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -68,9 +69,9 @@ public abstract class CartoucheEntity extends BlockEntity
 	}
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
     {
-    	super.load(tag);
+    	super.loadAdditional(tag, registries);
     	if(tag.contains(ADDRESS_TABLE))
     		addressTable = tag.getString(ADDRESS_TABLE);
     	if(tag.contains(DIMENSION))
@@ -84,7 +85,7 @@ public abstract class CartoucheEntity extends BlockEntity
 	}
 	
 	@Override
-    protected void saveAdditional(@NotNull CompoundTag tag)
+    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		if(addressTable != null)
 			tag.putString(ADDRESS_TABLE, addressTable);
@@ -96,7 +97,7 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(!address.isFromDimension())
 			tag.putIntArray(ADDRESS, address.toArray());
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 	}
 	
 	@Override

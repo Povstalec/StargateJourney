@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -53,9 +54,9 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.load(tag);
+		super.loadAdditional(tag, registries);
 		
     	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
     	
@@ -70,21 +71,21 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		}
     	
     	if(tag.contains(CUSTOM_NAME, 8))
-	         this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
+	         this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), registries);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 		
 		if(id != null)
 			tag.putString(ID, id.toString());
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 		
 		if(this.name != null)
-	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
+	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name, registries));
 	}
 	
 	public UUID generateID()

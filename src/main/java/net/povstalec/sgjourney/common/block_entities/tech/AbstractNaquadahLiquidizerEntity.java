@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -59,18 +60,18 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
-		fluidTank1.readFromNBT(nbt.getCompound("FluidTank1"));
-		fluidTank2.readFromNBT(nbt.getCompound("FluidTank2"));
+		super.loadAdditional(tag, registries);
+		itemHandler.deserializeNBT(tag.getCompound("Inventory"));
+		fluidTank1.readFromNBT(tag.getCompound("FluidTank1"));
+		fluidTank2.readFromNBT(tag.getCompound("FluidTank2"));
 		
-		progress = nbt.getInt(PROGRESS);
+		progress = tag.getInt(PROGRESS);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		CompoundTag tag1 = new CompoundTag();
 		CompoundTag tag2 = new CompoundTag();
@@ -82,7 +83,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		nbt.put("FluidTank2", tag2);
 		
 		nbt.putInt(PROGRESS, progress);
-		super.saveAdditional(nbt);
+		super.saveAdditional(tag, registries);
 	}
 	
 	//============================================================================================

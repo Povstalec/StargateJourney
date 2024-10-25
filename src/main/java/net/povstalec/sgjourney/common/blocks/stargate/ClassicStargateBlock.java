@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -181,7 +182,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
     }
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
     	Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
@@ -193,9 +194,10 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 			Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 	    	
 	    	String pointOfOrigin = "";
-			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
+			boolean hasData = stack.has(DataComponents.BLOCK_ENTITY_DATA);
+			if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("PointOfOrigin"))
 			{
-				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
+				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString("PointOfOrigin"));
 				if(location.toString().equals("sgjourney:empty"))
 					pointOfOrigin = "Empty";
 				else if(pointOfOriginRegistry.containsKey(location))
@@ -204,9 +206,9 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 					pointOfOrigin = "Error";
 			}
 			String symbols = "";
-			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
+			if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("Symbols"))
 			{
-				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
+				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString("Symbols"));
 				if(location.toString().equals("sgjourney:empty"))
 					symbols = "Empty";
 				else if(symbolsRegistry.containsKey(location))
@@ -219,6 +221,6 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 	        tooltipComponents.add(Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }

@@ -30,7 +30,7 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.CLASSIC_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "classic/classic"), pos, state, Stargate.Gen.NONE, 0,
+		super(BlockEntityInit.CLASSIC_STARGATE.get(), StargateJourney.sgjourneyLocation("classic/classic"), pos, state, Stargate.Gen.NONE, 0,
 				VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT);
 		
 		displayID = true;

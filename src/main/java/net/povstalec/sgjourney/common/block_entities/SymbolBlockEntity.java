@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -47,9 +48,9 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	}
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
     {
-    	super.load(tag);
+    	super.loadAdditional(tag, registries);
     	
     	if(tag.contains(SYMBOL_NUMBER))
     		symbolNumber = tag.getInt(SYMBOL_NUMBER);
@@ -62,7 +63,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	}
 	
 	@Override
-    protected void saveAdditional(@NotNull CompoundTag tag)
+    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		tag.putInt(SYMBOL_NUMBER, symbolNumber);
 		
@@ -72,7 +73,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols);
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 	}
 	
 	public int getSymbolNumber()

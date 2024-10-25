@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -61,7 +63,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 				
 				blockentity.saveToItem(itemstack, level.registryAccess());
 				if(transporter.hasCustomName())
-					itemstack.setHoverName(transporter.getCustomName());
+					itemstack.set(DataComponents.ITEM_NAME, transporter.getCustomName());
 					
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
@@ -76,15 +78,15 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	@Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-		String id;
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("ID"))
-			id = stack.getTag().getCompound("BlockEntityTag").getString("ID");
-		else
-			id = "";
+		String id = "";
+		boolean hasData = stack.has(DataComponents.BLOCK_ENTITY_DATA);
+
+		if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("ID"))
+			id = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString("ID");
 		
         tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
 
-        if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("AddToNetwork") && !stack.getTag().getCompound("BlockEntityTag").getBoolean("AddToNetwork"))
+        if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("AddToNetwork") && !stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getBoolean("AddToNetwork"))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
@@ -94,7 +96,8 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean("AddToNetwork", false);
-		stack.addTagElement("BlockEntityTag", compoundtag);
+
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;
 	}

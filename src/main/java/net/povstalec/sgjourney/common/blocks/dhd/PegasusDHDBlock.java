@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -155,7 +157,7 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
         inventory.put("Items", setupPegasusInventory());
         
         blockEntityTag.put("Inventory", inventory);
-		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		
 		return stack;
 	}
@@ -177,9 +179,9 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-		if(stack.hasTag())
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
 		{
-			CompoundTag blockEntityTag = BlockItem.getBlockEntityData(stack);
+			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
 			ListTag tagList = blockEntityTag.getCompound("Inventory").getList("Items", Tag.TAG_COMPOUND);
 			
 			if(tagList.size() > 0)

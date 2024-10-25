@@ -39,7 +39,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public static final int STEPS_PER_SYMBOL = MAX_ROTATION / SYMBOL_NUMBER;
 	public static final int SYMBOL_ADDITION = STEPS_PER_SYMBOL / 2;
 
-	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way_back_chevron");
+	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("milky_way/milky_way_back_chevron");
 	
 	private int rotation = 0;
 	public int oldRotation = 0;
@@ -57,7 +57,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state, Stargate.Gen.GEN_2, 2);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), StargateJourney.sgjourneyLocation("milky_way/milky_way"), pos, state, Stargate.Gen.GEN_2, 2);
 	}
 
 	@Override

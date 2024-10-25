@@ -29,7 +29,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	
 	public static final String DYNAMC_SYMBOLS = "DynamicSymbols";
 
-	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus_back_chevron");
+	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("pegasus/pegasus_back_chevron");
 	
 	public int currentSymbol = 0;
 	public Address addressBuffer = new Address(true);
@@ -40,7 +40,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state, Stargate.Gen.GEN_3, 3);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateJourney.sgjourneyLocation("pegasus/pegasus"), pos, state, Stargate.Gen.GEN_3, 3);
 		this.setOpenSoundLead(13);
 		this.symbolBounds = 47;
 	}

@@ -11,16 +11,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -41,6 +44,7 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -69,7 +73,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		
 		if(item instanceof StargateVariantItem)
 		{
-			if(!stack.hasTag())
+			if(!stack.has(DataComponentInit.STARGATE_VARIANT))
 			{
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				if(blockEntity instanceof AbstractStargateEntity stargate)
@@ -109,7 +113,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 					RegistryAccess registries = level.getServer().registryAccess();
 			        Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 			        
-			        Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variant.get())));
+			        Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(ResourceLocation.parse(variant.get())));
 					
 					if(stargateVariant.isPresent() && !stargateVariant.get().getBaseStargate().equals(BlockEntityType.getKey(stargate.getType())))
 					{
@@ -136,12 +140,12 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
 	{
-		if(player.getItemInHand(hand).is(ItemInit.STARGATE_VARIANT_CRYSTAL.get()))
-			return setVariant(level, pos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+		if(stack.is(ItemInit.STARGATE_VARIANT_CRYSTAL.get()))
+			return setVariant(level, pos, player, hand) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
 		
-		return super.use(state, level, pos, player, hand, result);
+		return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 	}
 
 	@Override
@@ -259,15 +263,15 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
     	long energy = 0;
         String id = "";
+		boolean hasData = stack.has(DataComponents.BLOCK_ENTITY_DATA);
+		CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
     	
-        if(stack.hasTag())
+        if(hasData)
         {
-            CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
-            
             if(blockEntityTag.contains(AbstractStargateEntity.VARIANT))
             {
             	String variant = blockEntityTag.getString(AbstractStargateEntity.VARIANT);
@@ -283,10 +287,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + " FE")).withStyle(ChatFormatting.DARK_RED));
 		
         
-        if(stack.hasTag())
+        if(hasData)
         {
-        	CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
-        	
         	if((blockEntityTag.contains(AbstractStargateEntity.DISPLAY_ID) && blockEntityTag.getBoolean(AbstractStargateEntity.DISPLAY_ID)) || CommonStargateConfig.always_display_stargate_id.get())
         	{
         		if(blockEntityTag.contains(AbstractStargateEntity.ID))
@@ -310,17 +312,17 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
             	tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
         }
         
-        if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.ADD_TO_NETWORK) && !stack.getTag().getCompound("BlockEntityTag").getBoolean(AbstractStargateEntity.ADD_TO_NETWORK))
+        if(hasData && blockEntityTag.contains(AbstractStargateEntity.ADD_TO_NETWORK) && !blockEntityTag.getBoolean(AbstractStargateEntity.ADD_TO_NETWORK))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
         
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
 	public static ItemStack excludeFromNetwork(ItemStack stack)
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(AbstractStargateEntity.ADD_TO_NETWORK, false);
-		stack.addTagElement("BlockEntityTag", compoundtag);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;
 	}
@@ -329,7 +331,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
-		stack.addTagElement("BlockEntityTag", compoundtag);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;
 	}

@@ -8,14 +8,10 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -227,14 +223,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		deserializeStargateInfo(tag, false);
+		deserializeStargateInfo(tag, registries, false);
 	}
 	
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
-		super.load(tag);
+		super.loadAdditional(tag, registries);
 		
 		timesOpened = tag.getInt(TIMES_OPENED);
 		address.fromArray(tag.getIntArray(ADDRESS));
@@ -277,12 +273,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		serializeStargateInfo(tag);
+		serializeStargateInfo(tag, registries);
 	}
 	
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		tag.putInt(TIMES_OPENED, timesOpened);
 		tag.putIntArray(ADDRESS, address.toArray());
@@ -318,7 +314,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		/*tag.putShort(SHIELD_PROGRESS, shieldProgress);
 		tag.put(SHIELD_INVENTORY, shieldItemHandler.serializeNBT());*/
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 		
 		return tag;
 	}
@@ -858,7 +854,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(!isLocationValid(pointOfOrigin))
 			return false;
 		
-		return pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin));
+		return pointOfOriginRegistry.containsKey(ResourceLocation.parse(pointOfOrigin));
 	}
 	
 	public void setSymbolsFromDimension(ResourceKey<Level> dimension)
@@ -875,7 +871,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(!isLocationValid(symbols))
 			return false;
 		
-		return symbolRegistry.containsKey(new ResourceLocation(symbols));
+		return symbolRegistry.containsKey(ResourceLocation.parse(symbols));
 	}
 	
 	private boolean isLocationValid(String location)

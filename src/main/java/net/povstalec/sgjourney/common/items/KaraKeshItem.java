@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.items;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.core.component.DataComponents;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -44,19 +46,18 @@ public class KaraKeshItem extends Item implements GoauldTech
 		
 		if(canUseGoauldTech(CommonTechConfig.disable_kara_kesh_requirements.get(), player) && player.isShiftKeyDown())
 		{
-			if(!player.getItemInHand(usedHand).getOrCreateTag().getBoolean("TerrorModeOn"))
+			ItemStack stack = player.getItemInHand(usedHand);
+
+			if(stack.get(DataComponentInit.TERROR_MODE) != null || !stack.get(DataComponentInit.TERROR_MODE))
 			{
-				terrorModeOn = true;
+				stack.set(DataComponentInit.TERROR_MODE, true);
 				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED), true);
 			}
 			else
 			{
-				terrorModeOn = false;
+				stack.set(DataComponentInit.TERROR_MODE, false);
 				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD), true);
 			}
-			
-			itemTag.putBoolean("TerrorModeOn", terrorModeOn);
-			player.getItemInHand(usedHand).setTag(itemTag);
 		}
         return super.use(level, player, usedHand);
     }
@@ -65,7 +66,7 @@ public class KaraKeshItem extends Item implements GoauldTech
 	{
 		if(!player.getCooldowns().isOnCooldown(this) && !player.isShiftKeyDown())
 		{
-			if(!stack.getOrCreateTag().getBoolean("TerrorModeOn"))
+			if(stack.get(DataComponentInit.TERROR_MODE) != null || !stack.get(DataComponentInit.TERROR_MODE))
 			{
 				target.knockback(2.0F, player.getX() - target.getX(), player.getZ() - target.getZ());
 				player.getCooldowns().addCooldown(this, 50);
@@ -92,13 +93,10 @@ public class KaraKeshItem extends Item implements GoauldTech
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-        if(stack.hasTag())
-        {
-            if(stack.getTag().getBoolean("TerrorModeOn"))
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED));
-			else
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD));
-        }
+		if(stack.get(DataComponentInit.TERROR_MODE) != null && stack.get(DataComponentInit.TERROR_MODE))
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED));
+		else
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD));
     	
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.terror_knockback").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.use").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));

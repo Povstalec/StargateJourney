@@ -20,7 +20,7 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state, Stargate.Gen.GEN_2, 2,
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), StargateJourney.sgjourneyLocation("tollan/tollan"), pos, state, Stargate.Gen.GEN_2, 2,
 				VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 		this.symbolBounds = 47;
 	}
