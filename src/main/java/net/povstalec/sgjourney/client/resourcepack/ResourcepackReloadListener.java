@@ -112,7 +112,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				UniverseStargateVariant stargateVariant = UniverseStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				UniverseStargateVariant stargateVariant = UniverseStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addUniverseStargateVariant(location, stargateVariant);
 				StargateJourney.LOGGER.debug("Loaded Universe Stargate Variant: " + location.toString());
@@ -129,7 +129,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addMilkyWayStargateVariant(location, stargateVariant);
 				StargateJourney.LOGGER.debug("Loaded Milky Way Stargate Variant: " + location.toString());
@@ -146,7 +146,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				PegasusStargateVariant stargateVariant = PegasusStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				PegasusStargateVariant stargateVariant = PegasusStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addPegasusStargateVariant(location, stargateVariant);
 				StargateJourney.LOGGER.debug("Loaded Pegasus Stargate Variant: " + location.toString());
@@ -163,7 +163,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				TollanStargateVariant stargateVariant = TollanStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				TollanStargateVariant stargateVariant = TollanStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addTollanStargateVariant(location, stargateVariant);
 				StargateJourney.LOGGER.debug("Loaded Tollan Stargate Variant: " + location.toString());
@@ -180,7 +180,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				ClassicStargateVariant stargateVariant = ClassicStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StellarView.LOGGER.error("Failed to parse Stargate Variant", msg));
+				ClassicStargateVariant stargateVariant = ClassicStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
 				
 				ClientStargateVariants.addClassicStargateVariant(location, stargateVariant);
 				StargateJourney.LOGGER.debug("Loaded Classic Stargate Variant: " + location.toString());

@@ -202,10 +202,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 				});
 			}
 		}
-		System.out.println("Check 1");
+
 		if(stargates.size() == 0)
 			return -1; // No Stargates nearby
-		System.out.println("Check 2");
 		
 		stargates.sort((stargateA, stargateB) ->
 				Double.valueOf(distance2(getBlockPos(), stargateA.getBlockPos()))
@@ -215,7 +214,6 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		
 		if(!stargate.isConnected())
 			return -2; // Stargate is not connected
-		System.out.println("State " + stargate.checkConnectionShieldingState());
 		
 		return (int) Math.round(stargate.checkConnectionShieldingState());
 	}
