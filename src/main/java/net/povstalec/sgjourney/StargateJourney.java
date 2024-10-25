@@ -247,5 +247,4 @@ public class StargateJourney
     		ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
         }
     }
-    
 }
