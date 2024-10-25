@@ -15,7 +15,7 @@
 	"texture_layers":
 	[
 		{
-			"texture": "stellarview:textures/environment/star/dennal.png",
+			"texture": "sgjourney:textures/environment/star/dennal.png",
 			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
 			"blend": true,
 			"size": 3856178999.5,
