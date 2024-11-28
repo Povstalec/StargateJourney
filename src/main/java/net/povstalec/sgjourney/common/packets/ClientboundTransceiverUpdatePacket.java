@@ -1,46 +1,38 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundTransceiverUpdatePacket
+public record ClientboundTransceiverUpdatePacket(BlockPos blockPos, boolean editingFrequency, String idc, int frequency) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final boolean editingFrequency;
-    public final int frequency;
-    public final String idc;
-
-    public ClientboundTransceiverUpdatePacket(BlockPos pos, boolean editingFrequency, int frequency, String idc)
+    public static final CustomPacketPayload.Type<ClientboundTransceiverUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_transceiver_update"));
+    
+    public static final StreamCodec<ByteBuf, ClientboundTransceiverUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundTransceiverUpdatePacket::blockPos,
+            ByteBufCodecs.BOOL, ClientboundTransceiverUpdatePacket::editingFrequency,
+            ByteBufCodecs.STRING_UTF8, ClientboundTransceiverUpdatePacket::idc,
+            ByteBufCodecs.VAR_INT, ClientboundTransceiverUpdatePacket::frequency,
+            ClientboundTransceiverUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.editingFrequency = editingFrequency;
-        this.frequency = frequency;
-        this.idc = idc;
+        return TYPE;
     }
 
-    public ClientboundTransceiverUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundTransceiverUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readBoolean(), buffer.readInt(), buffer.readUtf());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(pos);
-        buffer.writeBoolean(editingFrequency);
-        buffer.writeInt(frequency);
-        buffer.writeUtf(idc);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateTransceiver(pos, editingFrequency, frequency, idc);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateTransceiver(packet.blockPos, packet.editingFrequency, packet.frequency, packet.idc);
         });
-        return true;
     }
 }
 

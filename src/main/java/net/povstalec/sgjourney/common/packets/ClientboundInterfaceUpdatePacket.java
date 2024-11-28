@@ -1,40 +1,36 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundInterfaceUpdatePacket
+public record ClientboundInterfaceUpdatePacket(BlockPos blockPos, long energy) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final long energy;
-
-    public ClientboundInterfaceUpdatePacket(BlockPos pos, long energy)
+    public static final CustomPacketPayload.Type<ClientboundInterfaceUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_interface_update"));
+    
+    public static final StreamCodec<ByteBuf, ClientboundInterfaceUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundInterfaceUpdatePacket::blockPos,
+            ByteBufCodecs.VAR_LONG, ClientboundInterfaceUpdatePacket::energy,
+            ClientboundInterfaceUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.energy = energy;
+        return TYPE;
     }
 
-    public ClientboundInterfaceUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundInterfaceUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readLong());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeLong(this.energy);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateInterface(this.pos, this.energy);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateInterface(packet.blockPos, packet.energy);
         });
-        return true;
     }
 }
 

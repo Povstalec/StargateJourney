@@ -1,47 +1,39 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundNaquadahLiquidizerUpdatePacket
+public record ClientboundNaquadahLiquidizerUpdatePacket(BlockPos blockPos, FluidStack fluidStack1, FluidStack fluidStack2, int progress) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    private final FluidStack fluidStack1;
-    private final FluidStack fluidStack2;
-    public final int progress;
-
-    public ClientboundNaquadahLiquidizerUpdatePacket(BlockPos pos, FluidStack fluidStack1, FluidStack fluidStack2, int progress)
+    public static final CustomPacketPayload.Type<ClientboundNaquadahLiquidizerUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_naquadah_liquidizer_update"));
+    
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundNaquadahLiquidizerUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundNaquadahLiquidizerUpdatePacket::blockPos,
+            FluidStack.STREAM_CODEC, ClientboundNaquadahLiquidizerUpdatePacket::fluidStack1,
+            FluidStack.STREAM_CODEC, ClientboundNaquadahLiquidizerUpdatePacket::fluidStack2,
+            ByteBufCodecs.VAR_INT, ClientboundNaquadahLiquidizerUpdatePacket::progress,
+            ClientboundNaquadahLiquidizerUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.fluidStack1 = fluidStack1;
-        this.fluidStack2 = fluidStack2;
-        this.progress = progress;
+        return TYPE;
     }
 
-    public ClientboundNaquadahLiquidizerUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundNaquadahLiquidizerUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readFluidStack(), buffer.readFluidStack(), buffer.readInt());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeFluidStack(this.fluidStack1);
-        buffer.writeFluidStack(this.fluidStack2);
-        buffer.writeInt(this.progress);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateNaquadahLiquidizer(pos, fluidStack1, fluidStack2, progress);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateNaquadahLiquidizer(packet.blockPos, packet.fluidStack1, packet.fluidStack2, packet.progress);
         });
-        return true;
     }
 }
 

@@ -1,44 +1,38 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundCrystallizerUpdatePacket
+public record ClientboundCrystallizerUpdatePacket(BlockPos blockPos, FluidStack fluidStack, int progress) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    private final FluidStack fluidStack;
-    public final int progress;
-
-    public ClientboundCrystallizerUpdatePacket(BlockPos pos, FluidStack fluidStack, int progress)
+    public static final CustomPacketPayload.Type<ClientboundCrystallizerUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_crystallizer_update"));
+    
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundCrystallizerUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundCrystallizerUpdatePacket::blockPos,
+            FluidStack.STREAM_CODEC, ClientboundCrystallizerUpdatePacket::fluidStack,
+            ByteBufCodecs.VAR_INT, ClientboundCrystallizerUpdatePacket::progress,
+            ClientboundCrystallizerUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.fluidStack = fluidStack;
-        this.progress = progress;
+        return TYPE;
     }
 
-    public ClientboundCrystallizerUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundCrystallizerUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readFluidStack(), buffer.readInt());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeFluidStack(this.fluidStack);
-        buffer.writeInt(this.progress);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateCrystallizer(this.pos, this.fluidStack, this.progress);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateCrystallizer(packet.blockPos, packet.fluidStack, packet.progress);
         });
-        return true;
     }
 }
 

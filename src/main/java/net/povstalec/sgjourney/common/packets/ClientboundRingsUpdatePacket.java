@@ -1,43 +1,37 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundRingsUpdatePacket
+public record ClientboundRingsUpdatePacket(BlockPos blockPos, int emptySpace, int transportHeight) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final int emptySpace;
-    public final int transportHeight;
-
-    public ClientboundRingsUpdatePacket(BlockPos pos, int emptySpace, int transportHeight)
+    public static final CustomPacketPayload.Type<ClientboundRingsUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_transport_rings_update"));
+    
+    public static final StreamCodec<ByteBuf, ClientboundRingsUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundRingsUpdatePacket::blockPos,
+            ByteBufCodecs.VAR_INT, ClientboundRingsUpdatePacket::emptySpace,
+            ByteBufCodecs.VAR_INT, ClientboundRingsUpdatePacket::transportHeight,
+            ClientboundRingsUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.emptySpace = emptySpace;
-        this.transportHeight = transportHeight;
+        return TYPE;
     }
 
-    public ClientboundRingsUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundRingsUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readInt(), buffer.readInt());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(pos);
-        buffer.writeInt(emptySpace);
-        buffer.writeInt(transportHeight);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateRings(pos, emptySpace, transportHeight);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateRings(packet.blockPos, packet.emptySpace, packet.transportHeight);
         });
-        return true;
     }
 }
 

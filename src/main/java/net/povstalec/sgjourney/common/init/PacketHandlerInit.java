@@ -1,10 +1,8 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
-import net.povstalec.sgjourney.StargateJourney;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
@@ -31,227 +29,195 @@ import net.povstalec.sgjourney.common.packets.ServerboundTransceiverUpdatePacket
 
 public final class PacketHandlerInit
 {
-	private static final String PROTOCOL_VERSION = "1";
+	//============================================================================================
+	//****************************************Registering*****************************************
+	//============================================================================================
 	
-	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(StargateJourney.MODID, "main_network"), 
-			() -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
-	
-	private PacketHandlerInit(){}
-	
-	public static void register()
+	@SubscribeEvent
+	public static void register(final RegisterPayloadHandlersEvent event)
 	{
-		int index = 0;
+		// Sets the current network version
+		final PayloadRegistrar registrar = event.registrar("1");
 		
 		//============================================================================================
 		//****************************************Client-bound****************************************
 		//============================================================================================
 		
 		// Screen opening
-		INSTANCE.messageBuilder(ClientboundDialerOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundDialerOpenScreenPacket::encode)
-		.decoder(ClientboundDialerOpenScreenPacket::new)
-		.consumerMainThread(ClientboundDialerOpenScreenPacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundDialerOpenScreenPacket.TYPE,
+				ClientboundDialerOpenScreenPacket.STREAM_CODEC,
+				(packet, context) -> ClientboundDialerOpenScreenPacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundGDOOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundGDOOpenScreenPacket::encode)
-		.decoder(ClientboundGDOOpenScreenPacket::new)
-		.consumerMainThread(ClientboundGDOOpenScreenPacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundGDOOpenScreenPacket.TYPE,
+				ClientboundGDOOpenScreenPacket.STREAM_CODEC,
+				(packet, context) -> ClientboundGDOOpenScreenPacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundTransceiverUpdatePacket::encode)
-		.decoder(ClientboundTransceiverUpdatePacket::new)
-		.consumerMainThread(ClientboundTransceiverUpdatePacket::handle)
-		.add();
 		
-		// Alien Tech
-		INSTANCE.messageBuilder(ClientboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundInterfaceUpdatePacket::encode)
-		.decoder(ClientboundInterfaceUpdatePacket::new)
-		.consumerMainThread(ClientboundInterfaceUpdatePacket::handle)
-		.add();
+		// Tech
+		registrar.playToClient(
+				ClientboundTransceiverUpdatePacket.TYPE,
+				ClientboundTransceiverUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundTransceiverUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRingsUpdatePacket::encode)
-		.decoder(ClientboundRingsUpdatePacket::new)
-		.consumerMainThread(ClientboundRingsUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundInterfaceUpdatePacket.TYPE,
+				ClientboundInterfaceUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundInterfaceUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRingsUpdatePacket::encode)
-		.decoder(ClientboundRingsUpdatePacket::new)
-		.consumerMainThread(ClientboundRingsUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundRingsUpdatePacket.TYPE,
+				ClientboundRingsUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundRingsUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundRingPanelUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRingPanelUpdatePacket::encode)
-		.decoder(ClientboundRingPanelUpdatePacket::new)
-		.consumerMainThread(ClientboundRingPanelUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundRingPanelUpdatePacket.TYPE,
+				ClientboundRingPanelUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundRingPanelUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundDHDUpdatePacket::encode)
-		.decoder(ClientboundDHDUpdatePacket::new)
-		.consumerMainThread(ClientboundDHDUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundDHDUpdatePacket.TYPE,
+				ClientboundDHDUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundDHDUpdatePacket.handle(packet, context));
 		
-		// Stargates
-		INSTANCE.messageBuilder(ClientboundStargateParticleSpawnPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundStargateParticleSpawnPacket::encode)
-		.decoder(ClientboundStargateParticleSpawnPacket::new)
-		.consumerMainThread(ClientboundStargateParticleSpawnPacket::handle)
-		.add();
-		INSTANCE.messageBuilder(ClientboundStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundStargateUpdatePacket::encode)
-		.decoder(ClientboundStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundStargateUpdatePacket::handle)
-		.add();
-		INSTANCE.messageBuilder(ClientboundStargateStateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundStargateStateUpdatePacket::encode)
-		.decoder(ClientboundStargateStateUpdatePacket::new)
-		.consumerMainThread(ClientboundStargateStateUpdatePacket::handle)
-		.add();
 		
-		INSTANCE.messageBuilder(ClientboundUniverseStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundUniverseStargateUpdatePacket::encode)
-		.decoder(ClientboundUniverseStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundUniverseStargateUpdatePacket::handle)
-		.add();
+		//Stargate Info
+		registrar.playToClient(
+				ClientboundStargateParticleSpawnPacket.TYPE,
+				ClientboundStargateParticleSpawnPacket.STREAM_CODEC,
+				(packet, context) -> ClientboundStargateParticleSpawnPacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundMilkyWayStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundMilkyWayStargateUpdatePacket::encode)
-		.decoder(ClientboundMilkyWayStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundMilkyWayStargateUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundStargateUpdatePacket.TYPE,
+				ClientboundStargateUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundStargateUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundPegasusStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundPegasusStargateUpdatePacket::encode)
-		.decoder(ClientboundPegasusStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundPegasusStargateUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundStargateStateUpdatePacket.TYPE,
+				ClientboundStargateStateUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundStargateStateUpdatePacket.handle(packet, context));
+		
+		
+		// Stargate Type Info
+		registrar.playToClient(
+				ClientboundUniverseStargateUpdatePacket.TYPE,
+				ClientboundUniverseStargateUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundUniverseStargateUpdatePacket.handle(packet, context));
+		
+		registrar.playToClient(
+				ClientboundMilkyWayStargateUpdatePacket.TYPE,
+				ClientboundMilkyWayStargateUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundMilkyWayStargateUpdatePacket.handle(packet, context));
+		
+		registrar.playToClient(
+				ClientboundPegasusStargateUpdatePacket.TYPE,
+				ClientboundPegasusStargateUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundPegasusStargateUpdatePacket.handle(packet, context));
+		
 		
 		// Misc
-		INSTANCE.messageBuilder(ClientboundNaquadahGeneratorUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundNaquadahGeneratorUpdatePacket::encode)
-		.decoder(ClientboundNaquadahGeneratorUpdatePacket::new)
-		.consumerMainThread(ClientboundNaquadahGeneratorUpdatePacket::handle)
-		.add();
-
-		INSTANCE.messageBuilder(ClientboundNaquadahLiquidizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundNaquadahLiquidizerUpdatePacket::encode)
-		.decoder(ClientboundNaquadahLiquidizerUpdatePacket::new)
-		.consumerMainThread(ClientboundNaquadahLiquidizerUpdatePacket::handle)
-		.add();
-
-		INSTANCE.messageBuilder(ClientboundCrystallizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundCrystallizerUpdatePacket::encode)
-		.decoder(ClientboundCrystallizerUpdatePacket::new)
-		.consumerMainThread(ClientboundCrystallizerUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundNaquadahGeneratorUpdatePacket.TYPE,
+				ClientboundNaquadahGeneratorUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundNaquadahGeneratorUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundSymbolUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundSymbolUpdatePacket::encode)
-		.decoder(ClientboundSymbolUpdatePacket::new)
-		.consumerMainThread(ClientboundSymbolUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundNaquadahLiquidizerUpdatePacket.TYPE,
+				ClientboundNaquadahLiquidizerUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundNaquadahLiquidizerUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientboundCartoucheUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundCartoucheUpdatePacket::encode)
-		.decoder(ClientboundCartoucheUpdatePacket::new)
-		.consumerMainThread(ClientboundCartoucheUpdatePacket::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundCrystallizerUpdatePacket.TYPE,
+				ClientboundCrystallizerUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundCrystallizerUpdatePacket.handle(packet, context));
 		
-		//============================================================================================
-		//*******************************************Sounds*******************************************
-		//============================================================================================
+		registrar.playToClient(
+				ClientboundSymbolUpdatePacket.TYPE,
+				ClientboundSymbolUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundSymbolUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.OpenWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.OpenWormhole::encode)
-		.decoder(ClientBoundSoundPackets.OpenWormhole::new)
-		.consumerMainThread(ClientBoundSoundPackets.OpenWormhole::handle)
-		.add();
+		registrar.playToClient(
+				ClientboundCartoucheUpdatePacket.TYPE,
+				ClientboundCartoucheUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundCartoucheUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.IdleWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.IdleWormhole::encode)
-		.decoder(ClientBoundSoundPackets.IdleWormhole::new)
-		.consumerMainThread(ClientBoundSoundPackets.IdleWormhole::handle)
-		.add();
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.CloseWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.CloseWormhole::encode)
-		.decoder(ClientBoundSoundPackets.CloseWormhole::new)
-		.consumerMainThread(ClientBoundSoundPackets.CloseWormhole::handle)
-		.add();
+		// Sounds
+		registrar.playToClient(
+				ClientBoundSoundPackets.OpenWormhole.TYPE,
+				ClientBoundSoundPackets.OpenWormhole.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.OpenWormhole.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.IrisThud.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.IrisThud::encode)
-		.decoder(ClientBoundSoundPackets.IrisThud::new)
-		.consumerMainThread(ClientBoundSoundPackets.IrisThud::handle)
-		.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.IdleWormhole.TYPE,
+				ClientBoundSoundPackets.IdleWormhole.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.IdleWormhole.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.Chevron.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.Chevron::encode)
-		.decoder(ClientBoundSoundPackets.Chevron::new)
-		.consumerMainThread(ClientBoundSoundPackets.Chevron::handle)
-		.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.CloseWormhole.TYPE,
+				ClientBoundSoundPackets.CloseWormhole.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.CloseWormhole.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.Fail.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.Fail::encode)
-		.decoder(ClientBoundSoundPackets.Fail::new)
-		.consumerMainThread(ClientBoundSoundPackets.Fail::handle)
-		.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.IrisThud.TYPE,
+				ClientBoundSoundPackets.IrisThud.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.IrisThud.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.StargateRotation.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.StargateRotation::encode)
-		.decoder(ClientBoundSoundPackets.StargateRotation::new)
-		.consumerMainThread(ClientBoundSoundPackets.StargateRotation::handle)
-		.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.Chevron.TYPE,
+				ClientBoundSoundPackets.Chevron.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.Chevron.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.UniverseStart.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.UniverseStart::encode)
-		.decoder(ClientBoundSoundPackets.UniverseStart::new)
-		.consumerMainThread(ClientBoundSoundPackets.UniverseStart::handle)
-		.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.Fail.TYPE,
+				ClientBoundSoundPackets.Fail.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.Fail.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.MilkyWayBuildup.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.MilkyWayBuildup::encode)
-		.decoder(ClientBoundSoundPackets.MilkyWayBuildup::new)
-		.consumerMainThread(ClientBoundSoundPackets.MilkyWayBuildup::handle)
-		.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.StargateRotation.TYPE,
+				ClientBoundSoundPackets.StargateRotation.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.StargateRotation.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.MilkyWayStop.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.MilkyWayStop::encode)
-		.decoder(ClientBoundSoundPackets.MilkyWayStop::new)
-		.consumerMainThread(ClientBoundSoundPackets.MilkyWayStop::handle)
-		.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.UniverseStart.TYPE,
+				ClientBoundSoundPackets.UniverseStart.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.UniverseStart.handle(packet, context));
+		
+		registrar.playToClient(
+				ClientBoundSoundPackets.MilkyWayBuildup.TYPE,
+				ClientBoundSoundPackets.MilkyWayBuildup.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.MilkyWayBuildup.handle(packet, context));
+		
+		registrar.playToClient(
+				ClientBoundSoundPackets.MilkyWayStop.TYPE,
+				ClientBoundSoundPackets.MilkyWayStop.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.MilkyWayStop.handle(packet, context));
+		
+		
 		
 		//============================================================================================
 		//****************************************Server-bound****************************************
 		//============================================================================================
 		
-		INSTANCE.messageBuilder(ServerboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-		.encoder(ServerboundDHDUpdatePacket::encode)
-		.decoder(ServerboundDHDUpdatePacket::new)
-		.consumerMainThread(ServerboundDHDUpdatePacket::handle)
-		.add();
+		registrar.playToServer(
+				ServerboundDHDUpdatePacket.TYPE,
+				ServerboundDHDUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ServerboundDHDUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ServerboundRingPanelUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-		.encoder(ServerboundRingPanelUpdatePacket::encode)
-		.decoder(ServerboundRingPanelUpdatePacket::new)
-		.consumerMainThread(ServerboundRingPanelUpdatePacket::handle)
-		.add();
+		registrar.playToServer(
+				ServerboundRingPanelUpdatePacket.TYPE,
+				ServerboundRingPanelUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ServerboundRingPanelUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ServerboundGDOUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-		.encoder(ServerboundGDOUpdatePacket::encode)
-		.decoder(ServerboundGDOUpdatePacket::new)
-		.consumerMainThread(ServerboundGDOUpdatePacket::handle)
-		.add();
+		registrar.playToServer(
+				ServerboundGDOUpdatePacket.TYPE,
+				ServerboundGDOUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ServerboundGDOUpdatePacket.handle(packet, context));
 		
-		INSTANCE.messageBuilder(ServerboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-		.encoder(ServerboundTransceiverUpdatePacket::encode)
-		.decoder(ServerboundTransceiverUpdatePacket::new)
-		.consumerMainThread(ServerboundTransceiverUpdatePacket::handle)
-		.add();
+		registrar.playToServer(
+				ServerboundTransceiverUpdatePacket.TYPE,
+				ServerboundTransceiverUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ServerboundTransceiverUpdatePacket.handle(packet, context));
 	}
 }

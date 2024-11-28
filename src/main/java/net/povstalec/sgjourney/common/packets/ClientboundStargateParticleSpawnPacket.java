@@ -1,49 +1,52 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
-public class ClientboundStargateParticleSpawnPacket
+public record ClientboundStargateParticleSpawnPacket(BlockPos blockPos, Map<StargatePart, BlockState> blockStates) implements CustomPacketPayload
 {
+    public static final CustomPacketPayload.Type<ClientboundStargateParticleSpawnPacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_particle_spawn"));
+    
+    public static final StreamCodec<FriendlyByteBuf, ClientboundStargateParticleSpawnPacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundStargateParticleSpawnPacket::blockPos,
+            ByteBufCodecs.map(Object2ObjectOpenHashMap::new,
+                    NeoForgeStreamCodecs.enumCodec(StargatePart.class),
+                    ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY)), ClientboundStargateParticleSpawnPacket::blockStates,
+            ClientboundStargateParticleSpawnPacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
+    }
+    
 	private static final RegistryOps<Tag> BUILTIN_CONTEXT_OPS = RegistryOps.create(NbtOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
-	
-    public final BlockPos pos;
-    public final HashMap<StargatePart, BlockState> blockStates;
 
-    public ClientboundStargateParticleSpawnPacket(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
+    public static void handle(ClientboundStargateParticleSpawnPacket packet, IPayloadContext ctx)
     {
-        this.pos = pos;
-        this.blockStates = blockStates;
-    }
-
-    public ClientboundStargateParticleSpawnPacket(FriendlyByteBuf buffer)
-    {
-        this(buffer.readBlockPos(), new HashMap<StargatePart, BlockState>(buffer.readMap((buf) -> buf.readEnum(StargatePart.class), buf -> buf.readWithCodec(BUILTIN_CONTEXT_OPS, BlockState.CODEC))));
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeMap(this.blockStates, FriendlyByteBuf::writeEnum, (buf, state) -> buf.writeWithCodec(BUILTIN_CONTEXT_OPS, BlockState.CODEC, state));
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.spawnStargateParticles(this.pos, this.blockStates);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.spawnStargateParticles(packet.blockPos, packet.blockStates);
         });
-        return true;
     }
 }

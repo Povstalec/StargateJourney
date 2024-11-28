@@ -1,59 +1,53 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundMilkyWayStargateUpdatePacket
+public record ClientboundMilkyWayStargateUpdatePacket(BlockPos blockPos, int rotation, int oldRotation, boolean isChevronRaised, int signalStrength,
+                                                      boolean computerRotation, boolean rotateClockwise, int desiredSymbol) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final int rotation;
-    public final int oldRotation;
-    public final boolean isChevronRaised;
-    public final int signalStrength;
-    public final boolean computerRotation;
-    public final boolean rotateClockwise;
-    public final int desiredSymbol;
-
-    public ClientboundMilkyWayStargateUpdatePacket(BlockPos pos, int rotation, int oldRotation, boolean isChevronRaised, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredSymbol)
+    public static final CustomPacketPayload.Type<ClientboundMilkyWayStargateUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_milky_way_stargate_update"));
+    
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundMilkyWayStargateUpdatePacket> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, ClientboundMilkyWayStargateUpdatePacket>()
     {
-        this.pos = pos;
-        this.rotation = rotation;
-        this.oldRotation = oldRotation;
-        this.isChevronRaised = isChevronRaised;
-        this.signalStrength = signalStrength;
-        this.computerRotation = computerRotation;
-        this.rotateClockwise = rotateClockwise;
-        this.desiredSymbol = desiredSymbol;
-    }
-
-    public ClientboundMilkyWayStargateUpdatePacket(FriendlyByteBuf buffer)
-    {
-        this(buffer.readBlockPos(), buffer.readInt(), buffer.readInt(), buffer.readBoolean(), buffer.readInt(), buffer.readBoolean(), buffer.readBoolean(), buffer.readInt());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeInt(this.rotation);
-        buffer.writeInt(this.oldRotation);
-        buffer.writeBoolean(this.isChevronRaised);
-        buffer.writeInt(this.signalStrength);
-        buffer.writeBoolean(this.computerRotation);
-        buffer.writeBoolean(this.rotateClockwise);
-        buffer.writeInt(this.desiredSymbol);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() ->
+        public ClientboundMilkyWayStargateUpdatePacket decode(RegistryFriendlyByteBuf buf)
         {
-        	ClientAccess.updateMilkyWayStargate(this.pos, this.rotation, this.oldRotation, this.isChevronRaised, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol);
+            return new ClientboundMilkyWayStargateUpdatePacket(FriendlyByteBuf.readBlockPos(buf), buf.readInt(), buf.readInt(), buf.readBoolean(), buf.readInt(),
+                    buf.readBoolean(), buf.readBoolean(), buf.readInt());
+        }
+        
+        public void encode(RegistryFriendlyByteBuf buf, ClientboundMilkyWayStargateUpdatePacket packet)
+        {
+            FriendlyByteBuf.writeBlockPos(buf, packet.blockPos);
+            buf.writeInt(packet.oldRotation);
+            buf.writeBoolean(packet.isChevronRaised);
+            buf.writeInt(packet.signalStrength);
+            buf.writeBoolean(packet.computerRotation);
+            buf.writeBoolean(packet.rotateClockwise);
+            buf.writeInt(packet.desiredSymbol);
+            
+        }
+    };
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
+    }
+
+    public static void handle(ClientboundMilkyWayStargateUpdatePacket packet, IPayloadContext ctx)
+    {
+        ctx.enqueueWork(() ->
+        {
+        	ClientAccess.updateMilkyWayStargate(packet.blockPos, packet.rotation, packet.oldRotation, packet.isChevronRaised, packet.signalStrength, packet.computerRotation, packet.rotateClockwise, packet.desiredSymbol);
         });
-        return true;
     }
 }
 

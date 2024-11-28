@@ -4,49 +4,48 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundUniverseStargateUpdatePacket
+public record ClientboundUniverseStargateUpdatePacket(BlockPos blockPos, int symbolBuffer, int[] addressBuffer, int animationTicks, int rotation, int oldRotation) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final int symbolBuffer;
-    public final int[] addressBuffer;
-    public final int animationTicks;
-    public final int rotation;
-    public final int oldRotation;
-
-    public ClientboundUniverseStargateUpdatePacket(BlockPos pos, int symbolBuffer, int[] addressBuffer, int animationTicks, int rotation, int oldRotation)
+    public static final CustomPacketPayload.Type<ClientboundUniverseStargateUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_universe_stargate_update"));
+    
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUniverseStargateUpdatePacket> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, ClientboundUniverseStargateUpdatePacket>()
     {
-        this.pos = pos;
-        this.symbolBuffer = symbolBuffer;
-        this.addressBuffer = addressBuffer;
-        this.animationTicks = animationTicks;
-        this.rotation = rotation;
-        this.oldRotation = oldRotation;
+        public ClientboundUniverseStargateUpdatePacket decode(RegistryFriendlyByteBuf buf)
+        {
+            return new ClientboundUniverseStargateUpdatePacket(FriendlyByteBuf.readBlockPos(buf), buf.readInt(), buf.readVarIntArray(), buf.readInt(), buf.readInt(), buf.readInt());
+        }
+        
+        public void encode(RegistryFriendlyByteBuf buf, ClientboundUniverseStargateUpdatePacket packet)
+        {
+            FriendlyByteBuf.writeBlockPos(buf, packet.blockPos);
+            buf.writeInt(packet.symbolBuffer);
+            buf.writeVarIntArray(packet.addressBuffer);
+            buf.writeInt(packet.animationTicks);
+            buf.writeInt(packet.rotation);
+            buf.writeInt(packet.oldRotation);
+            
+        }
+    };
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
     }
 
-    public ClientboundUniverseStargateUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundUniverseStargateUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readInt(), buffer.readVarIntArray(), buffer.readInt(), buffer.readInt(), buffer.readInt());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeInt(this.symbolBuffer);
-        buffer.writeVarIntArray(this.addressBuffer);
-        buffer.writeInt(this.animationTicks);
-        buffer.writeInt(this.rotation);
-        buffer.writeInt(this.oldRotation);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateUniverseStargate(this.pos, this.symbolBuffer, this.addressBuffer, this.animationTicks, this.rotation, this.oldRotation);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateUniverseStargate(packet.blockPos, packet.symbolBuffer, packet.addressBuffer, packet.animationTicks, packet.rotation, packet.oldRotation);
         });
-        return true;
     }
 }
 

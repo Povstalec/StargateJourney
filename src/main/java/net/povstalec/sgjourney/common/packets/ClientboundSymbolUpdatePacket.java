@@ -1,46 +1,38 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundSymbolUpdatePacket
+public record ClientboundSymbolUpdatePacket(BlockPos blockPos, int symbolNumber, String pointOfOrigin, String symbols) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final int symbolNumber;
-    public final String pointOfOrigin;
-    public final String symbols;
-
-    public ClientboundSymbolUpdatePacket(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)
+    public static final CustomPacketPayload.Type<ClientboundSymbolUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_symbol_update"));
+    
+    public static final StreamCodec<ByteBuf, ClientboundSymbolUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundSymbolUpdatePacket::blockPos,
+            ByteBufCodecs.VAR_INT, ClientboundSymbolUpdatePacket::symbolNumber,
+            ByteBufCodecs.STRING_UTF8, ClientboundSymbolUpdatePacket::pointOfOrigin,
+            ByteBufCodecs.STRING_UTF8, ClientboundSymbolUpdatePacket::symbols,
+            ClientboundSymbolUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.symbolNumber = symbolNumber;
-        this.pointOfOrigin = pointOfOrigin;
-        this.symbols = symbols;
+        return TYPE;
     }
-
-    public ClientboundSymbolUpdatePacket(FriendlyByteBuf buffer)
+    
+    public static void handle(ClientboundSymbolUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readInt(), buffer.readUtf(), buffer.readUtf());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeInt(this.symbolNumber);
-        buffer.writeUtf(this.pointOfOrigin);
-        buffer.writeUtf(this.symbols);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateSymbol(this.pos, this.symbolNumber, this.pointOfOrigin, this.symbols);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateSymbol(packet.blockPos, packet.symbolNumber, packet.pointOfOrigin, packet.symbols);
         });
-        return true;
     }
 }
 

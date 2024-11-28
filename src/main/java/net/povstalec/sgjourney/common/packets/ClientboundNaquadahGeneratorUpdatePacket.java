@@ -1,43 +1,37 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundNaquadahGeneratorUpdatePacket
+public record ClientboundNaquadahGeneratorUpdatePacket(BlockPos blockPos, int reactionProgress, long energy) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final int reactionProgress;
-    public final long energy;
-
-    public ClientboundNaquadahGeneratorUpdatePacket(BlockPos pos, int reactionProgress, long energy)
+    public static final CustomPacketPayload.Type<ClientboundNaquadahGeneratorUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_naquadah_generator_update"));
+    
+    public static final StreamCodec<ByteBuf, ClientboundNaquadahGeneratorUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundNaquadahGeneratorUpdatePacket::blockPos,
+            ByteBufCodecs.VAR_INT, ClientboundNaquadahGeneratorUpdatePacket::reactionProgress,
+            ByteBufCodecs.VAR_LONG, ClientboundNaquadahGeneratorUpdatePacket::energy,
+            ClientboundNaquadahGeneratorUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.reactionProgress = reactionProgress;
-        this.energy = energy;
+        return TYPE;
     }
 
-    public ClientboundNaquadahGeneratorUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundNaquadahGeneratorUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readInt(), buffer.readLong());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeInt(this.reactionProgress);
-        buffer.writeLong(this.energy);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateNaquadahGenerator(this.pos, this.reactionProgress, this.energy);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateNaquadahGenerator(packet.blockPos, packet.reactionProgress, packet.energy);
         });
-        return true;
     }
 }
 

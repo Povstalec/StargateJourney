@@ -1,53 +1,46 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.HashMap;
-import java.util.function.Supplier;
+import java.util.Map;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.RegistryOps;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
-public class ClientboundStargateStateUpdatePacket
+public record ClientboundStargateStateUpdatePacket(BlockPos blockPos, boolean canSinkGate, Map<StargatePart, BlockState> blockStates) implements CustomPacketPayload
 {
-	private static final RegistryOps<Tag> BUILTIN_CONTEXT_OPS = RegistryOps.create(NbtOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
-	
-    public final BlockPos pos;
-    public final boolean canSinkGate;
-    public final HashMap<StargatePart, BlockState> blockStates;
-
-    public ClientboundStargateStateUpdatePacket(BlockPos pos, boolean canSinkGate, HashMap<StargatePart, BlockState> blockStates)
+    public static final CustomPacketPayload.Type<ClientboundStargateStateUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_state_update"));
+    
+    public static final StreamCodec<FriendlyByteBuf, ClientboundStargateStateUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundStargateStateUpdatePacket::blockPos,
+            ByteBufCodecs.BOOL, ClientboundStargateStateUpdatePacket::canSinkGate,
+            ByteBufCodecs.map(Object2ObjectOpenHashMap::new,
+                    NeoForgeStreamCodecs.enumCodec(StargatePart.class),
+                    ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY)), ClientboundStargateStateUpdatePacket::blockStates,
+            ClientboundStargateStateUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.canSinkGate = canSinkGate;
-        this.blockStates = blockStates;
+        return TYPE;
     }
 
-    public ClientboundStargateStateUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundStargateStateUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readBoolean(), new HashMap<StargatePart, BlockState>(buffer.readMap((buf) -> buf.readEnum(StargatePart.class), buf -> buf.readWithCodec(BUILTIN_CONTEXT_OPS, BlockState.CODEC))));
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeBoolean(this.canSinkGate);
-        buffer.writeMap(this.blockStates, FriendlyByteBuf::writeEnum, (buf, state) -> buf.writeWithCodec(BUILTIN_CONTEXT_OPS, BlockState.CODEC, state));
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateStargateState(this.pos, this.canSinkGate, this.blockStates);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updateStargateState(packet.blockPos, packet.canSinkGate, packet.blockStates);
         });
-        return true;
     }
 }
 

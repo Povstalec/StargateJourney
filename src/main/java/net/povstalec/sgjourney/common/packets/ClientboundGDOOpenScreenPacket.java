@@ -1,49 +1,40 @@
 package net.povstalec.sgjourney.common.packets;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundGDOOpenScreenPacket
+public record ClientboundGDOOpenScreenPacket(UUID playerId, boolean mainHand, String idc, int frequency) implements CustomPacketPayload
 {
-    public final UUID playerId;
-    public final boolean mainHand;
+    public static final CustomPacketPayload.Type<ClientboundGDOOpenScreenPacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_gdo_open_screen"));
     
-    public final String idc;
-    public final int frequency;
-
-    public ClientboundGDOOpenScreenPacket(UUID playerId, boolean mainHand, String idc, int frequency)
+    public static final StreamCodec<ByteBuf, ClientboundGDOOpenScreenPacket> STREAM_CODEC = StreamCodec.composite(
+            UUIDUtil.STREAM_CODEC, ClientboundGDOOpenScreenPacket::playerId,
+            ByteBufCodecs.BOOL, ClientboundGDOOpenScreenPacket::mainHand,
+            ByteBufCodecs.STRING_UTF8, ClientboundGDOOpenScreenPacket::idc,
+            ByteBufCodecs.VAR_INT, ClientboundGDOOpenScreenPacket::frequency,
+            ClientboundGDOOpenScreenPacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.playerId = playerId;
-        this.mainHand = mainHand;
-        
-        this.idc = idc;
-        this.frequency = frequency;
+        return TYPE;
     }
 
-    public ClientboundGDOOpenScreenPacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundGDOOpenScreenPacket packet, IPayloadContext ctx)
     {
-        this(buffer.readUUID(), buffer.readBoolean(), buffer.readUtf(), buffer.readInt());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeUUID(playerId);
-        buffer.writeBoolean(mainHand);
-        
-        buffer.writeUtf(idc);
-        buffer.writeInt(frequency);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.openGDOScreen(playerId, mainHand, idc, frequency);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.openGDOScreen(packet.playerId, packet.mainHand, packet.idc, packet.frequency);
         });
-        return true;
     }
 }
 

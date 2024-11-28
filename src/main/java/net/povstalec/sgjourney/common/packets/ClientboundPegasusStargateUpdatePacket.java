@@ -4,43 +4,46 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public class ClientboundPegasusStargateUpdatePacket
+public record ClientboundPegasusStargateUpdatePacket(BlockPos blockPos, int symbolBuffer, int[] addressBuffer, int currentSymbol) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final int symbolBuffer;
-    public final int[] addressBuffer;
-    public final int currentSymbol;
-
-    public ClientboundPegasusStargateUpdatePacket(BlockPos pos, int symbolBuffer, int[] addressBuffer, int currentSymbol)
+    public static final CustomPacketPayload.Type<ClientboundPegasusStargateUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_pegasus_stargate_update"));
+    
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundPegasusStargateUpdatePacket> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, ClientboundPegasusStargateUpdatePacket>()
     {
-        this.pos = pos;
-        this.symbolBuffer = symbolBuffer;
-        this.addressBuffer = addressBuffer;
-        this.currentSymbol = currentSymbol;
+        public ClientboundPegasusStargateUpdatePacket decode(RegistryFriendlyByteBuf buf)
+        {
+            return new ClientboundPegasusStargateUpdatePacket(buf.readBlockPos(), buf.readInt(), buf.readVarIntArray(), buf.readInt());
+        }
+        
+        public void encode(RegistryFriendlyByteBuf buf, ClientboundPegasusStargateUpdatePacket packet)
+        {
+            buf.writeBlockPos(packet.blockPos);
+            buf.writeInt(packet.symbolBuffer);
+            buf.writeVarIntArray(packet.addressBuffer);
+            buf.writeInt(packet.currentSymbol);
+            
+        }
+    };
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+    {
+        return TYPE;
     }
 
-    public ClientboundPegasusStargateUpdatePacket(FriendlyByteBuf buffer)
+    public static void handle(ClientboundPegasusStargateUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readInt(), buffer.readVarIntArray(), buffer.readInt());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeInt(this.symbolBuffer);
-        buffer.writeVarIntArray(this.addressBuffer);
-        buffer.writeInt(this.currentSymbol);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updatePegasusStargate(this.pos, this.symbolBuffer, this.addressBuffer, this.currentSymbol);
+        ctx.enqueueWork(() -> {
+        	ClientAccess.updatePegasusStargate(packet.blockPos, packet.symbolBuffer, packet.addressBuffer, packet.currentSymbol);
         });
-        return true;
     }
 }
 

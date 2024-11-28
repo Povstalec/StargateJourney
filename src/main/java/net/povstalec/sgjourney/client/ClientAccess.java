@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -104,14 +101,14 @@ public class ClientAccess
         }
     }
     
-    public static void updateRingPanel(BlockPos pos, ArrayList<BlockPos> ringsPos, ArrayList<Component> ringsName)
+    public static void updateRingPanel(BlockPos pos, List<BlockPos> ringsPos, List<Component> ringsName)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final RingPanelEntity panel)
         {
-        	panel.ringsPos = ringsPos;
-        	panel.ringsName = ringsName;
+        	panel.ringsPos = new ArrayList<BlockPos>(ringsPos);
+        	panel.ringsName = new ArrayList<Component>(ringsName);
         }
     }
     
@@ -150,7 +147,7 @@ public class ClientAccess
         }
     }
     
-    public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
+    public static void spawnStargateParticles(BlockPos pos, Map<StargatePart, BlockState> blockStates)
     {
     	final BlockState state = minecraft.level.getBlockState(pos);
         
@@ -174,13 +171,13 @@ public class ClientAccess
         }
     }
     
-    public static void updateStargateState(BlockPos pos, boolean canSinkGate, HashMap<StargatePart, BlockState> blockStates)
+    public static void updateStargateState(BlockPos pos, boolean canSinkGate, Map<StargatePart, BlockState> blockStates)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final AbstractStargateEntity stargate)
         {
-        	stargate.blockCover.blockStates = blockStates;
+        	stargate.blockCover.blockStates = new HashMap<StargatePart, BlockState>(blockStates);
         	stargate.blockCover.canSinkGate = canSinkGate;
         }
     }

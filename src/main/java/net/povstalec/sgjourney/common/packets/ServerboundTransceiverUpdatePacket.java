@@ -1,68 +1,52 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
 
-public class ServerboundTransceiverUpdatePacket
+public record ServerboundTransceiverUpdatePacket(BlockPos blockPos, boolean remove, boolean toggleFrequency, int number, boolean transmit) implements CustomPacketPayload
 {
-	public final BlockPos pos;
-	public final boolean remove;
+	public static final CustomPacketPayload.Type<ServerboundTransceiverUpdatePacket> TYPE =
+			new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("c2s_transceiver_update"));
 	
-	public final boolean toggleFrequency;
+	public static final StreamCodec<ByteBuf, ServerboundTransceiverUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, ServerboundTransceiverUpdatePacket::blockPos,
+			ByteBufCodecs.BOOL, ServerboundTransceiverUpdatePacket::remove,
+			ByteBufCodecs.BOOL, ServerboundTransceiverUpdatePacket::toggleFrequency,
+			ByteBufCodecs.VAR_INT, ServerboundTransceiverUpdatePacket::number,
+			ByteBufCodecs.BOOL, ServerboundTransceiverUpdatePacket::transmit,
+			ServerboundTransceiverUpdatePacket::new
+	);
 	
-    public final int number;
-    public final boolean transmit;
-
-    public ServerboundTransceiverUpdatePacket(BlockPos pos, boolean remove, boolean toggleFrequency, int number, boolean transmit)
+	@Override
+	public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+	{
+		return TYPE;
+	}
+	
+	public static void handle(ServerboundTransceiverUpdatePacket packet, IPayloadContext ctx)
     {
-    	this.pos = pos;
-    	this.remove = remove;
-    	
-    	this.toggleFrequency = toggleFrequency;
-    	
-        this.number = number;
-        this.transmit = transmit;
-    }
-
-    public ServerboundTransceiverUpdatePacket(FriendlyByteBuf buffer)
-    {
-    	this(buffer.readBlockPos(), buffer.readBoolean(), buffer.readBoolean(), buffer.readInt(), buffer.readBoolean());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-    	buffer.writeBlockPos(pos);
-    	buffer.writeBoolean(remove);
-    	
-    	buffer.writeBoolean(toggleFrequency);
-    	
-        buffer.writeInt(number);
-        buffer.writeBoolean(transmit);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-    	ctx.get().enqueueWork(() -> {
-    		final BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(pos);
+    	ctx.enqueueWork(() -> {
+    		final BlockEntity blockEntity = ctx.player().level().getBlockEntity(packet.blockPos);
     		
     		if(blockEntity instanceof TransceiverEntity transceiver)
     		{
-    			if(transmit)
+    			if(packet.transmit)
     				transceiver.sendTransmission();
-    			else if(toggleFrequency)
+    			else if(packet.toggleFrequency)
     				transceiver.toggleFrequency();
-    			else if(remove)
+    			else if(packet.remove)
     				transceiver.removeFromCode();
     			else
-    				transceiver.addToCode(number);
+    				transceiver.addToCode(packet.number);
     		}
     	});
-        return true;
     }
 }
 
