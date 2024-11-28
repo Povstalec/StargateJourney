@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.block_entities;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -262,6 +264,6 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		}
 		
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(generator.worldPosition)), new ClientboundNaquadahGeneratorUpdatePacket(generator.worldPosition, generator.getReactionProgress(), generator.getEnergyStored()));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(generator.worldPosition).getPos(), new ClientboundNaquadahGeneratorUpdatePacket(generator.worldPosition, generator.getReactionProgress(), generator.getEnergyStored()));
 	}
 }

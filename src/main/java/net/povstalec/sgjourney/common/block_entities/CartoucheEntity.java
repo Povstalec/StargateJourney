@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities;
 import java.util.Optional;
 
 import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -173,7 +174,7 @@ public abstract class CartoucheEntity extends BlockEntity
 			return;
 		
 		int[] address = addressTable.equals(EMPTY) ? this.address.toArray() : new int[0];
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundCartoucheUpdatePacket(worldPosition, symbols, address));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundCartoucheUpdatePacket(worldPosition, symbols, address));
 	}
 	
 	public void tick(Level level, BlockPos pos, BlockState state)

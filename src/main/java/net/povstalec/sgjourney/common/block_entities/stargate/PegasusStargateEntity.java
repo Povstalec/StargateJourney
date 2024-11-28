@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -144,7 +146,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(addressBuffer.getLength() == getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
+				PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		addressBuffer.addSymbol(symbol);
 		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
@@ -154,7 +156,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	protected Stargate.Feedback lockPrimaryChevron()
 	{
 		if(!this.level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
 		return super.lockPrimaryChevron();
 	}
 	
@@ -165,13 +167,13 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
 		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming, encode);
 		
 		if(addressBuffer.getLength() > getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
+				PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		
 		return setRecentFeedback(feedback);
@@ -235,7 +237,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		
 		if(this.level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.currentSymbol));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.currentSymbol));
 	}
 	
 	private void symbolWork()

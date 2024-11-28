@@ -3,7 +3,9 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -271,7 +273,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(interfaceEntity.worldPosition)),
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(interfaceEntity.worldPosition).getPos(),
 				new ClientboundInterfaceUpdatePacket(interfaceEntity.worldPosition, interfaceEntity.getEnergyStored()));
 			
 	}

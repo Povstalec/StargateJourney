@@ -7,7 +7,9 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -258,7 +260,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundTransceiverUpdatePacket(this.worldPosition, this.editingFrequency, this.frequency, this.idc));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundTransceiverUpdatePacket(this.worldPosition, this.editingFrequency, this.frequency, this.idc));
 	}
 	
 	private static double distance2(BlockPos pos, BlockPos targetPos)

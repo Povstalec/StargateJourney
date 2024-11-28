@@ -2,7 +2,9 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -251,8 +253,8 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 	    	crystallizer.progress = 0;
 	    	setChanged(level, pos, state);
 	    }
-	    
-	    PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(crystallizer.worldPosition)), new ClientboundCrystallizerUpdatePacket(crystallizer.worldPosition, crystallizer.getFluid(), crystallizer.progress));
+		
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(crystallizer.worldPosition).getPos(), new ClientboundCrystallizerUpdatePacket(crystallizer.worldPosition, crystallizer.getFluid(), crystallizer.progress));
 	}
 	
 }

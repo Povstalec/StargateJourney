@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -424,6 +426,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, StargateJourney.EMPTY, this.address.toArray(), this.isCenterButtonEngaged));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundDHDUpdatePacket(this.worldPosition, StargateJourney.EMPTY, this.address.toArray(), this.isCenterButtonEngaged));
 	}
 }

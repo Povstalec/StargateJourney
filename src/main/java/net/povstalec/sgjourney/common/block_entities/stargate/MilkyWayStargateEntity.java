@@ -8,10 +8,11 @@ import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -224,7 +225,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			if(!getAddress().containsSymbol(getCurrentSymbol()))
 			{
 				if(!level.isClientSide())
-					PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
+					net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
 				this.isChevronOpen = true;
 				
 				if(!level.isClientSide())
@@ -300,7 +301,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		stargate.rotate();
 		if(stargate.isRotating() && !level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(stargate.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
 		
 		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
 	}
@@ -362,7 +363,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundMilkyWayStargateUpdatePacket(this.worldPosition, this.rotation, this.oldRotation, this.isChevronOpen, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundMilkyWayStargateUpdatePacket(this.worldPosition, this.rotation, this.oldRotation, this.isChevronOpen, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol));
 	}
 	
 	private void syncRotation()
@@ -381,7 +382,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		this.desiredSymbol = desiredSymbol;
 		this.rotateClockwise = rotateClockwise;
 		if(!this.level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.MilkyWayBuildup(worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.MilkyWayBuildup(worldPosition));
 		
 		synchronizeWithClient(this.level);
 		
@@ -392,7 +393,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		
 		if(!this.level.isClientSide() && playSound)
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.MilkyWayStop(worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.MilkyWayStop(worldPosition));
 		
 		if(!this.computerRotation)
 			return Stargate.Feedback.NOT_ROTATING;
