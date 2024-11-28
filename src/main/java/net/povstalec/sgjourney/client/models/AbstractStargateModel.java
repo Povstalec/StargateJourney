@@ -35,8 +35,8 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected static final int DEFAULT_TEXTURE_SIZE = 64;
 	
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
-	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
+	public static final ResourceLocation ERROR_LOCATION = StargateJourney.sgjourneyLocation("textures/symbols/error.png");
+	public static final ResourceLocation EMPTY_LOCATION = StargateJourney.sgjourneyLocation("textures/symbols/empty.png");
 	public static final String EMPTY = StargateJourney.EMPTY;
 	
 	private static Minecraft minecraft = Minecraft.getInstance();
@@ -61,7 +61,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			String pointOfOrigin = stargate.getPointOfOrigin();
 			
 			if(isLocationValid(pointOfOrigin))
-				return Optional.ofNullable(pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)));
+				return Optional.ofNullable(pointOfOriginRegistry.get(StargateJourney.location(pointOfOrigin)));
 		}
 		
 		return Optional.empty();
@@ -88,7 +88,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			String symbols = stargate.getSymbols();
 			
 			if(isLocationValid(symbols))
-				return Optional.ofNullable(symbolRegistry.get(new ResourceLocation(symbols)));
+				return Optional.ofNullable(symbolRegistry.get(StargateJourney.location(symbols)));
 		}
 		
 		return Optional.empty();

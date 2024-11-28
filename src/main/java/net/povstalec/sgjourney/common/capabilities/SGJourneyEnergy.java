@@ -1,8 +1,9 @@
 package net.povstalec.sgjourney.common.capabilities;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
-import net.minecraftforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.EnergyStorage;
 
 public abstract class SGJourneyEnergy extends EnergyStorage
 {
@@ -122,13 +123,13 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	}
 
     @Override
-    public Tag serializeNBT()
+    public Tag serializeNBT(HolderLookup.Provider provider)
     {
         return LongTag.valueOf(this.energy);
     }
 
     @Override
-    public void deserializeNBT(Tag nbt)
+    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt)
     {
     	if(!(nbt instanceof LongTag longTag))
     		throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");

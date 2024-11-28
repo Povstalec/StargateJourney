@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.client.models.TollanStargateModel;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
@@ -21,7 +19,6 @@ import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
-@OnlyIn(Dist.CLIENT)
 public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStargateEntity, TollanStargateVariant>
 {
 	protected final TollanStargateModel stargateModel;

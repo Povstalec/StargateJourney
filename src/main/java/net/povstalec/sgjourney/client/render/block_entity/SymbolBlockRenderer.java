@@ -28,7 +28,7 @@ import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class SymbolBlockRenderer
 {
-	private static final ResourceLocation ERROR = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	private static final ResourceLocation ERROR = StargateJourney.sgjourneyLocation("textures/symbols/error.png");
 
 	protected static final float SYMBOL_OFFSET = 0.51F;
 	protected static final float SYMBOL_SIZE = 1;

@@ -20,7 +20,7 @@ public class PlasmaProjectileRenderer extends EntityRenderer<PlasmaProjectile>
 {
 	protected static final int MAX_LIGHT = 15728864;
 	
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/jaffa_staff_weapon_plasma.png");
+	private static final ResourceLocation TEXTURE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/jaffa_staff_weapon_plasma.png");
 	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE_LOCATION);
 	
 	public PlasmaProjectileRenderer(EntityRendererProvider.Context context)

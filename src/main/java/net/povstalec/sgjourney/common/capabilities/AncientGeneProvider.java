@@ -1,16 +1,13 @@
 package net.povstalec.sgjourney.common.capabilities;
 
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class AncientGeneProvider implements ICapabilityProvider, INBTSerializable<CompoundTag>
 {
@@ -19,7 +16,7 @@ public class AncientGeneProvider implements ICapabilityProvider, INBTSerializabl
 	private final LazyOptional<AncientGene> optional = LazyOptional.of(this::getOrCreateAncientGene);
 	
 	@Override
-	public CompoundTag serializeNBT()
+	public CompoundTag serializeNBT(HolderLookup.Provider provider)
 	{
 		CompoundTag tag = new CompoundTag();
 		getOrCreateAncientGene().saveData(tag);
@@ -28,7 +25,7 @@ public class AncientGeneProvider implements ICapabilityProvider, INBTSerializabl
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag)
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag)
 	{
 		getOrCreateAncientGene().loadData(tag);
 	}

@@ -7,6 +7,9 @@ import net.minecraft.world.entity.Entity;
 
 public class AncientGene
 {
+	public static final String FIRST_JOIN = "first_join";
+	public static final String ANCIENT_GENE = "ancient_gene";
+	
 	public enum ATAGene
 	{
 		ANCIENT(true),
@@ -82,7 +85,9 @@ public class AncientGene
 	
 	public static void addAncient(Entity entity)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
+		AncientGene cap = entity.getCapability(AncientGeneProvider.ANCIENT_GENE);
+		if(cap != null)
+			cap.giveGene();
 	}
 	
 	public static void inheritGene(long seed, Entity entity, int inheritanceChance)
@@ -103,7 +108,8 @@ public class AncientGene
 	
 	private static void inheritGene(Entity entity, int inheritanceChance, int chance)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> 
+		AncientGene cap = entity.getCapability(AncientGeneProvider.ANCIENT_GENE);
+		if(cap != null)
 		{
 			if(cap.firstJoin())
 			{
@@ -112,7 +118,7 @@ public class AncientGene
 				
 				cap.markJoined();
 			}
-		});
+		}
 	}
 	
 	
@@ -133,13 +139,13 @@ public class AncientGene
 	
 	public void saveData(CompoundTag tag)
 	{
-		tag.putBoolean("FirstJoin", firstJoin);
-		tag.putString("AncientGene", this.gene.toString().toUpperCase());
+		tag.putBoolean(FIRST_JOIN, firstJoin);
+		tag.putString(ANCIENT_GENE, this.gene.toString().toUpperCase());
 	}
 	
 	public void loadData(CompoundTag tag)
 	{
-		this.firstJoin = tag.getBoolean("FirstJoin");
-		this.gene = ATAGene.valueOf(tag.getString("AncientGene"));
+		this.firstJoin = tag.getBoolean(FIRST_JOIN);
+		this.gene = ATAGene.valueOf(tag.getString(ANCIENT_GENE));
 	}
 }

@@ -1,16 +1,13 @@
 package net.povstalec.sgjourney.common.capabilities;
 
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class BloodstreamNaquadahProvider implements ICapabilityProvider, INBTSerializable<CompoundTag>
 {
@@ -19,7 +16,7 @@ public class BloodstreamNaquadahProvider implements ICapabilityProvider, INBTSer
 	private final LazyOptional<BloodstreamNaquadah> optional = LazyOptional.of(this::getOrCreateNaquadahBloodstream);
 	
 	@Override
-	public CompoundTag serializeNBT()
+	public CompoundTag serializeNBT(HolderLookup.Provider provider)
 	{
 		CompoundTag tag = new CompoundTag();
 		getOrCreateNaquadahBloodstream().saveData(tag);
@@ -28,7 +25,7 @@ public class BloodstreamNaquadahProvider implements ICapabilityProvider, INBTSer
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag)
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag)
 	{
 		getOrCreateNaquadahBloodstream().loadData(tag);
 	}

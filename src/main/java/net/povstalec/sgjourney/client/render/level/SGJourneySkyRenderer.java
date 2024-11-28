@@ -33,12 +33,11 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public abstract class SGJourneySkyRenderer
 {
-	protected static final ResourceLocation MOON_HALO_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/blue_halo.png");
-	protected static final ResourceLocation MOON_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/moon_phases.png");
-	protected static final ResourceLocation SUN_LOCATION = new ResourceLocation("textures/environment/sun.png");
-	protected static final ResourceLocation BLACK_HOLE_HALO_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/black_hole_halo.png");
-	protected static final ResourceLocation BLACK_HOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/black_hole.png");
-	protected static final ResourceLocation GALAXY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/galaxy.png");
+	protected static final ResourceLocation MOON_HALO_LOCATION = StargateJourney.sgjourneyLocation("textures/environment/blue_halo.png");
+	protected static final ResourceLocation MOON_LOCATION = StargateJourney.sgjourneyLocation("textures/environment/moon_phases.png");
+	protected static final ResourceLocation SUN_LOCATION = StargateJourney.location("textures/environment/sun.png");
+	protected static final ResourceLocation BLACK_HOLE_HALO_LOCATION = StargateJourney.sgjourneyLocation("textures/environment/black_hole_halo.png");
+	protected static final ResourceLocation BLACK_HOLE_LOCATION = StargateJourney.sgjourneyLocation("textures/environment/black_hole.png");
 	
 	protected Minecraft minecraft = Minecraft.getInstance();
 	@Nullable

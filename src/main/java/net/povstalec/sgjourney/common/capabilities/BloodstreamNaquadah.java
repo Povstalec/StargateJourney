@@ -4,6 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 
 public class BloodstreamNaquadah
 {
+	public static final String HAS_NAQUADAH = "has_naquadah";
+	
 	private boolean hasNaquadah;
 	
 	public boolean hasNaquadahInBloodstream()
@@ -28,11 +30,11 @@ public class BloodstreamNaquadah
 	
 	public void saveData(CompoundTag tag)
 	{
-		tag.putBoolean("HasNaquadah", hasNaquadah);
+		tag.putBoolean(HAS_NAQUADAH, hasNaquadah);
 	}
 	
 	public void loadData(CompoundTag tag)
 	{
-		this.hasNaquadah = tag.getBoolean("HasNaquadah");
+		this.hasNaquadah = tag.getBoolean(HAS_NAQUADAH);
 	}
 }
