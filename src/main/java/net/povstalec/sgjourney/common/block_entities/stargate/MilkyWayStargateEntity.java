@@ -6,6 +6,7 @@ import java.util.Random;
 import com.google.common.collect.Maps;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -84,9 +85,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
     }
 
 	@Override
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.serializeStargateInfo(tag);
+		super.serializeStargateInfo(tag, registries);
 		
 		tag.putString("PointOfOrigin", pointOfOrigin);
 		tag.putString("Symbols", symbols);
@@ -96,7 +97,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
 		if(tag.contains("PointOfOrigin"))
 			this.pointOfOrigin = tag.getString("PointOfOrigin");
@@ -108,7 +109,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
         	rotation = tag.getInt("Rotation");
 		this.oldRotation = this.rotation;
     	
-    	super.deserializeStargateInfo(tag, isUpgraded);
+    	super.deserializeStargateInfo(tag, registries, isUpgraded);
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.phys.AABB;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.TransportRingsModel;
 import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
@@ -58,5 +59,11 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 		this.transportRings.setRingHeight(5, getHeight(rings, 5, partialTick));
 		this.transportRings.renderTransportRings(rings, partialTick, stack, source, combinedLight, combinedOverlay);
 	    stack.popPose();
+	}
+	
+	@Override
+	public AABB getRenderBoundingBox(TransportRingsEntity transportRings)
+	{
+		return new AABB(transportRings.getBlockPos().getX() - 3, transportRings.getBlockPos().getY() - (3 + TransportRingsEntity.MAX_TRANSPORT_HEIGHT), transportRings.getBlockPos().getZ() - 3, transportRings.getBlockPos().getX() + 4, transportRings.getBlockPos().getY() + (4 + TransportRingsEntity.MAX_TRANSPORT_HEIGHT), transportRings.getBlockPos().getZ() + 4);
 	}
 }

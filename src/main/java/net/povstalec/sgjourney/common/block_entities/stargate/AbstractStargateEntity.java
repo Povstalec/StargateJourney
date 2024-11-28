@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.*;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,9 +33,6 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
@@ -56,7 +54,6 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
@@ -260,11 +257,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		deserializeFilters(tag);
 		
-		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
+		blockCover.deserializeNBT(registries, tag.getCompound(COVER_BLOCKS));
 		
 		irisProgress = tag.getShort(IRIS_PROGRESS);
 		oldIrisProgress = irisProgress;
-		irisItemHandler.deserializeNBT(tag.getCompound(IRIS_INVENTORY));
+		irisItemHandler.deserializeNBT(registries, tag.getCompound(IRIS_INVENTORY));
 		
 		/*shieldProgress = tag.getShort(SHIELD_PROGRESS);
 		oldShieldProgress = shieldProgress;
@@ -307,10 +304,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		serializeFilters(tag);
 		
-		tag.put(COVER_BLOCKS, blockCover.serializeNBT());
+		tag.put(COVER_BLOCKS, blockCover.serializeNBT(registries));
 		
 		tag.putShort(IRIS_PROGRESS, irisProgress);
-		tag.put(IRIS_INVENTORY, irisItemHandler.serializeNBT());
+		tag.put(IRIS_INVENTORY, irisItemHandler.serializeNBT(registries));
 		
 		/*tag.putShort(SHIELD_PROGRESS, shieldProgress);
 		tag.put(SHIELD_INVENTORY, shieldItemHandler.serializeNBT());*/
@@ -409,13 +406,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		return address;
 	}
-
-	
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return new AABB(getCenterPos().getX() - 3, getCenterPos().getY() - 3, getCenterPos().getZ() - 3, getCenterPos().getX() + 4, getCenterPos().getY() + 4, getCenterPos().getZ() + 4);
-    }
 	
 	//============================================================================================
 	//******************************************Dialing*******************************************
@@ -1552,11 +1542,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		setStargateState(connectionState, this.getChevronsEngaged(), true);
 		
 		if(FORCE_LOAD_CHUNK)
-		{
-			if(connectionState != State.IDLE)
+		{//TODO Handle chunkloading
+			/*if(connectionState != State.IDLE)
 				ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, true, true);
 			else
-				ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, false, true);
+				ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, false, true);*/
 		}
 	}
 	

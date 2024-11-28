@@ -16,8 +16,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.client.models.IrisModel;
 import net.povstalec.sgjourney.client.models.ShieldModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
@@ -100,5 +101,11 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 	protected boolean canSink(AbstractStargateEntity stargate)
 	{
 	    return stargate.blockCover.canSinkGate;
+	}
+	
+	@Override
+	public AABB getRenderBoundingBox(AbstractStargateEntity stargate)
+	{
+		return new AABB(stargate.getCenterPos().getX() - 3, stargate.getCenterPos().getY() - 3, stargate.getCenterPos().getZ() - 3, stargate.getCenterPos().getX() + 4, stargate.getCenterPos().getY() + 4, stargate.getCenterPos().getZ() + 4);
 	}
 }

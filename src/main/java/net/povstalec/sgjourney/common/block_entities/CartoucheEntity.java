@@ -16,13 +16,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -100,13 +97,6 @@ public abstract class CartoucheEntity extends BlockEntity
 		
 		super.saveAdditional(tag, registries);
 	}
-	
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return new AABB(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ() - 1,
-        		getBlockPos().getX() + 2, getBlockPos().getY() + 2, getBlockPos().getZ() + 2);
-    }
 	
 	public void setDimensionFromLevel(Level level)
 	{

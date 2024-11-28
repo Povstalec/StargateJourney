@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -9,14 +10,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -63,9 +62,9 @@ public class PegasusStargateEntity extends AbstractStargateEntity
     }
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-        super.load(tag);
+        super.loadAdditional(tag, registries);
         
         addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
@@ -81,9 +80,9 @@ public class PegasusStargateEntity extends AbstractStargateEntity
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 		
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.toArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);

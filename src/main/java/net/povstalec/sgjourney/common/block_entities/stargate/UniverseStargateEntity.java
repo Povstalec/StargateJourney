@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -66,9 +67,9 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-        super.load(tag);
+        super.loadAdditional(tag, registries);
         
         rotation = tag.getInt("Rotation");
         oldRotation = rotation;
@@ -77,9 +78,9 @@ public class UniverseStargateEntity extends AbstractStargateEntity
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 		
 		tag.putInt("Rotation", rotation);
 		tag.putIntArray("AddressBuffer", addressBuffer.toArray());

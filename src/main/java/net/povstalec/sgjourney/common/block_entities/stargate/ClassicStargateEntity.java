@@ -1,8 +1,8 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,9 +52,9 @@ public class ClassicStargateEntity extends AbstractStargateEntity
     }
 
 	@Override
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.serializeStargateInfo(tag);
+		super.serializeStargateInfo(tag, registries);
 		
 		tag.putString("PointOfOrigin", pointOfOrigin);
 		tag.putString("Symbols", symbols);
@@ -64,7 +64,7 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
 		if(tag.contains("PointOfOrigin"))
 			this.pointOfOrigin = tag.getString("PointOfOrigin");
@@ -75,7 +75,7 @@ public class ClassicStargateEntity extends AbstractStargateEntity
         if(tag.contains("Rotation"))
         	rotation = tag.getShort("Rotation");
     	
-    	super.deserializeStargateInfo(tag, isUpgraded);
+    	super.deserializeStargateInfo(tag, registries, isUpgraded);
 	}
 	
 	public double angle()

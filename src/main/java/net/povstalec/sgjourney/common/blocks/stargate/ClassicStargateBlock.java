@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -105,7 +106,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 			if(oldEntity instanceof AbstractStargateEntity stargate)
 			{
 				if(!level.isClientSide())
-					tag = stargate.serializeStargateInfo(new CompoundTag());
+					tag = stargate.serializeStargateInfo(new CompoundTag(), level.getServer().registryAccess());
 			}
 			
 			Direction direction = level.getBlockState(pos).getValue(FACING);
@@ -150,7 +151,7 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 				{
 					if(!level.isClientSide())
 					{
-						stargate.deserializeStargateInfo(tag, true);
+						stargate.deserializeStargateInfo(tag, level.getServer().registryAccess(), true);
 						stargate.addStargateToNetwork();
 					}
 				}
@@ -166,12 +167,12 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
 	{
 		if(player.getItemInHand(hand).is(ItemInit.STARGATE_UPGRADE_CRYSTAL.get()))
-			return upgradeStargate(level, pos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+			return upgradeStargate(level, pos, player, hand) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
 		
-		return super.use(state, level, pos, player, hand, result);
+		return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 	}
 	
 	@Nullable

@@ -12,15 +12,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 
 public class TransportRingsEntity extends AbstractTransporterEntity
@@ -47,12 +43,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state);
 	}
-
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
-    }
 	
 	public boolean canTransport()
 	{
@@ -149,8 +139,8 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		if(level.isClientSide())
 			return;
-		
-		ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+		//TODO Handle chunkloading
+		//ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TransportRingsEntity rings)
