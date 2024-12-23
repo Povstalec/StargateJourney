@@ -29,11 +29,11 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 	protected boolean hasIngredients()
 	{
 		Level level = this.getLevel();
-		SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
+		SimpleContainer inventory = new SimpleContainer(itemStackHandler.getSlots());
 		
-		for(int i = 0; i < itemHandler.getSlots(); i++)
+		for(int i = 0; i < itemStackHandler.getSlots(); i++)
 		{
-			inventory.setItem(i, itemHandler.getStackInSlot(i));
+			inventory.setItem(i, itemStackHandler.getStackInSlot(i));
 		}
 		
 		Optional<CrystallizerRecipe> recipe = level.getRecipeManager()
@@ -53,11 +53,11 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 	protected void crystallize()
 	{
 		Level level = this.getLevel();
-		SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
+		SimpleContainer inventory = new SimpleContainer(itemStackHandler.getSlots());
 		
-		for (int i = 0; i < itemHandler.getSlots(); i++)
+		for (int i = 0; i < itemStackHandler.getSlots(); i++)
 		{
-			inventory.setItem(i, itemHandler.getStackInSlot(i));
+			inventory.setItem(i, itemStackHandler.getStackInSlot(i));
 		}
 		
 		Optional<CrystallizerRecipe> recipe = level.getRecipeManager()
@@ -70,7 +70,7 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 				useUpItems(recipe.get(), 1);
 			if(recipe.get().depleteSecondary())
 				useUpItems(recipe.get(), 2);
-			itemHandler.setStackInSlot(3, recipe.get().getResultItem(null));
+			itemStackHandler.setStackInSlot(3, recipe.get().getResultItem(null));
 			
 			this.progress = 0;
 		}
@@ -78,6 +78,6 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 	
 	protected void useUpItems(CrystallizerRecipe recipe, int slot)
 	{
-		itemHandler.extractItem(slot, recipe.getAmountInSlot(slot), false);
+		itemStackHandler.extractItem(slot, recipe.getAmountInSlot(slot), false);
 	}
 }

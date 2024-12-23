@@ -3,7 +3,11 @@ package net.povstalec.sgjourney.common.block_entities;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,16 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
 
@@ -32,8 +29,8 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 {
 	private int reactionProgress = 0;
 	
-	private final ItemStackHandler itemHandler = createHandler();
-	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
+	private final ItemStackHandler itemStackHandler = createHandler();
+	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemStackHandler);
 	
 	public NaquadahGeneratorEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
@@ -41,24 +38,24 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	}
 	
 	@Override
-	public void invalidateCaps()
+	public void invalidateCapabilities()
 	{
-		super.invalidateCaps();
+		super.invalidateCapabilities();
 		lazyItemHandler.invalidate();
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		super.loadAdditional(nbt, registries);
+		itemStackHandler.deserializeNBT(registries, nbt.getCompound("Inventory"));
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
-		nbt.put("Inventory", itemHandler.serializeNBT());
+		super.saveAdditional(nbt, registries);
+		nbt.put("Inventory", itemStackHandler.serializeNBT(registries));
 	}
 	
 	//============================================================================================
@@ -67,7 +64,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	
 	public boolean hasNaquadah()
 	{
-		ItemStack stack = this.itemHandler.getStackInSlot(0);
+		ItemStack stack = this.itemStackHandler.getStackInSlot(0);
 		
 		if(stack.getItem() instanceof NaquadahFuelRodItem)
 			return NaquadahFuelRodItem.getFuel(stack) > 0;
@@ -142,13 +139,9 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
+	public IItemHandler getItemHandler(Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
-			return lazyItemHandler.cast();
-		
-		return super.getCapability(capability, side);
+		return lazyItemHandler.get();
 	}
 	
 	//============================================================================================
@@ -229,10 +222,10 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		
 		if(this.hasNaquadah() && reactionProgress == 0)
 		{
-			if(NaquadahFuelRodItem.depleteFuel(this.itemHandler.getStackInSlot(0)))
+			if(NaquadahFuelRodItem.depleteFuel(this.itemStackHandler.getStackInSlot(0)))
 				this.progressReaction();
 			else
-				this.itemHandler.extractItem(0, 1, false); //TODO Maybe make fuel rods reusable?
+				this.itemStackHandler.extractItem(0, 1, false); //TODO Maybe make fuel rods reusable?
 		}
 		
 		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && getEnergyStored() < capacity() && canReceive(getEnergyPerTick()))

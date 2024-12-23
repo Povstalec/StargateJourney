@@ -1,6 +1,10 @@
 package net.povstalec.sgjourney.common.block_entities;
 
 import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -14,10 +18,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 
+import javax.annotation.Nonnull;
+
 public abstract class EnergyBlockEntity extends BlockEntity
 {
 	private boolean canGenerateEnergy;
-	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
+	protected SGJourneyEnergy ENERGY_STORAGE = createEnergyStorage();
+	private Lazy<IEnergyStorage> lazyEnergyHandler = Lazy.of(() -> ENERGY_STORAGE);
 	
 	public EnergyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, boolean canGenerateEnergy)
 	{
@@ -33,15 +40,15 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	@Override
 	public void onLoad()
 	{
+		lazyEnergyHandler = Lazy.of(() -> ENERGY_STORAGE);
 		super.onLoad();
-		lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
 	}
 	
 	@Override
-	public void invalidateCaps()
+	public void invalidateCapabilities()
 	{
 		lazyEnergyHandler.invalidate();
-		super.invalidateCaps();
+		super.invalidateCapabilities();
 	}
 	
 	@Override
@@ -62,13 +69,39 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
+	public SGJourneyEnergy getEnergyStorage()
 	{
-		if(capability == ForgeCapabilities.ENERGY && isCorrectEnergySide(side))
-			return lazyEnergyHandler.cast();
-		
-		return super.getCapability(capability, side);
+		return ENERGY_STORAGE;
+	}
+	
+	public IEnergyStorage getEnergyHandler(Direction side)
+	{
+		return lazyEnergyHandler.get();
+	}
+	
+	@Nonnull
+	protected SGJourneyEnergy createEnergyStorage()
+	{
+		return new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
+		{
+			@Override
+			public boolean canExtract()
+			{
+				return outputsEnergy();
+			}
+			
+			@Override
+			public boolean canReceive()
+			{
+				return receivesEnergy();
+			}
+			
+			@Override
+			public void onEnergyChanged(long difference, boolean simulate)
+			{
+				changeEnergy(difference, simulate);
+			}
+		};
 	}
 	
 	//============================================================================================
@@ -95,27 +128,6 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	protected abstract long maxReceive();
 	
 	protected abstract long maxExtract();
-	
-	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
-	{
-		@Override
-		public boolean canExtract()
-		{
-			return outputsEnergy();
-		}
-		
-		@Override
-		public boolean canReceive()
-		{
-			return receivesEnergy();
-		}
-		
-		@Override
-		public void onEnergyChanged(long difference, boolean simulate)
-		{
-			changeEnergy(difference, simulate);
-		}
-	};
 	
 	protected void changeEnergy(long difference, boolean simulate)
 	{
@@ -236,14 +248,15 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			}
 			else
 			{
-				blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) ->
+				IEnergyStorage energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection.getOpposite()), null);
+				if(energy != null)
 				{
 					int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.getRegularEnergy(ENERGY_STORAGE.maxExtract()), true);
-					int simulatedReceiveAmount = energyStorage.receiveEnergy(simulatedOutputAmount, true);
+					int simulatedReceiveAmount = energy.receiveEnergy(simulatedOutputAmount, true);
 					
 					ENERGY_STORAGE.extractEnergy(simulatedReceiveAmount, false);
-					energyStorage.receiveEnergy(simulatedReceiveAmount, false);
-				});
+					energy.receiveEnergy(simulatedReceiveAmount, false);
+				}
 			}
 		}
 	}

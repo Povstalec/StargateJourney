@@ -65,10 +65,10 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	}
 	
 	@Override
-	public void invalidateCaps()
+	public void invalidateCapabilities()
 	{
 		handler.invalidate();
-		super.invalidateCaps();
+		super.invalidateCapabilities();
 	}
 	
 	@Nonnull

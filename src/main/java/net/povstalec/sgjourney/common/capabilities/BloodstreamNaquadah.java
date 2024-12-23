@@ -1,10 +1,16 @@
 package net.povstalec.sgjourney.common.capabilities;
 
 import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
 
 public class BloodstreamNaquadah
 {
 	public static final String HAS_NAQUADAH = "has_naquadah";
+	public static final String BLOODSTREAM_NAQUADAH = "bloodstream_naquadah";
+	
+	public static final EntityCapability<BloodstreamNaquadah, Void> BLOODSTREAM_NAQUADAH_CAPABILITY = EntityCapability.createVoid(
+			StargateJourney.sgjourneyLocation(BLOODSTREAM_NAQUADAH), BloodstreamNaquadah.class);
 	
 	private boolean hasNaquadah;
 	

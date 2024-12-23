@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import net.minecraft.world.entity.Entity;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
-import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 
 public interface AncientTech
 {

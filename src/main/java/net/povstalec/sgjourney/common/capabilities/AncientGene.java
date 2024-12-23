@@ -4,11 +4,17 @@ import java.util.Random;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
 
 public class AncientGene
 {
+	
 	public static final String FIRST_JOIN = "first_join";
 	public static final String ANCIENT_GENE = "ancient_gene";
+	
+	public static final EntityCapability<AncientGene, Void> ANCIENT_GENE_CAPABILITY = EntityCapability.createVoid(
+			StargateJourney.sgjourneyLocation(ANCIENT_GENE), AncientGene.class);
 	
 	public enum ATAGene
 	{
@@ -85,7 +91,7 @@ public class AncientGene
 	
 	public static void addAncient(Entity entity)
 	{
-		AncientGene cap = entity.getCapability(AncientGeneProvider.ANCIENT_GENE);
+		AncientGene cap = entity.getCapability(ANCIENT_GENE_CAPABILITY);
 		if(cap != null)
 			cap.giveGene();
 	}
@@ -108,7 +114,7 @@ public class AncientGene
 	
 	private static void inheritGene(Entity entity, int inheritanceChance, int chance)
 	{
-		AncientGene cap = entity.getCapability(AncientGeneProvider.ANCIENT_GENE);
+		AncientGene cap = entity.getCapability(ANCIENT_GENE_CAPABILITY);
 		if(cap != null)
 		{
 			if(cap.firstJoin())

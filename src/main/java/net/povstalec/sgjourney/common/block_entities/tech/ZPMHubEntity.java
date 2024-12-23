@@ -3,6 +3,13 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -14,12 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
@@ -33,8 +34,7 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	private static final long maxEnergyDisplayed = CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	
 	private final ItemStackHandler itemHandler = createHandler();
-	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
-	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
+	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemHandler);
 	
 	public ZPMHubEntity(BlockPos pos, BlockState state)
 	{
@@ -42,37 +42,33 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	}
 	
 	@Override
-	public void invalidateCaps()
+	public void invalidateCapabilities()
 	{
-		super.invalidateCaps();
-		lazyEnergyHandler.invalidate();
+		super.invalidateCapabilities();
+		lazyItemHandler.invalidate();
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		super.loadAdditional(nbt, registries);
+		itemHandler.deserializeNBT(registries, nbt.getCompound("Inventory"));
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
-		nbt.put("Inventory", itemHandler.serializeNBT());
+		super.saveAdditional(nbt, registries);
+		nbt.put("Inventory", itemHandler.serializeNBT(registries));
 	}
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
+	public IItemHandler getItemHandler(Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
-			return lazyItemHandler.cast();
-		
-		return super.getCapability(capability, side);
+		return lazyItemHandler.get();
 	}
 	
 	//============================================================================================
@@ -173,18 +169,20 @@ public class ZPMHubEntity extends EnergyBlockEntity
 		
 		if(stack.is(ItemInit.ZPM.get()))
 		{
-			stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
+			IEnergyStorage cap = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+			if(cap != null)
 			{
-				if(energy instanceof ZeroPointEnergy zpmEnergy)
+				if(cap instanceof ZeroPointEnergy zpmEnergy)
 				{
 					BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(outputDirection));
 					
 					if(blockEntity == null)
 						return;
 					
-					blockEntity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(blockEntityEnergy ->
+					IEnergyStorage cap2 = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection.getOpposite()), null);
+					if(cap2 != null)
 					{
-						if(blockEntityEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
+						if(cap2 instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.maxExtract(), true);
 							long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
@@ -194,14 +192,14 @@ public class ZPMHubEntity extends EnergyBlockEntity
 						else
 						{
 							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.getRegularEnergy(this.maxExtract()), true);
-							int simulatedReceiveAmount = blockEntityEnergy.receiveEnergy(simulatedOutputAmount, true);
+							int simulatedReceiveAmount = cap2.receiveEnergy(simulatedOutputAmount, true);
 							
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
-							blockEntityEnergy.receiveEnergy(simulatedReceiveAmount, false);
+							cap2.receiveEnergy(simulatedReceiveAmount, false);
 						}
-					});
+					}
 				}
-			});
+			}
 		}
 		
 		/*if(ZeroPointModule.hasEnergy(stack))

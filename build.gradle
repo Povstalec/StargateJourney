@@ -18,6 +18,39 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+    maven {
+        url "https://maven.squiddev.cc/"
+        content {
+            includeGroup("cc.tweaked")
+            includeModule("org.squiddev", "Cobalt")
+            includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
+        }
+    }
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        name "tterrag maven"
+        url "https://maven.tterrag.com/"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 base {
@@ -133,6 +166,16 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    compileOnly ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly ("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    runtimeOnly ("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+
+    implementation ("maven.modrinth:stellarview:JaqNbgF1")
+
+    compileOnly ("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cct_version}")
+    compileOnly ("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}")
+    runtimeOnly ("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

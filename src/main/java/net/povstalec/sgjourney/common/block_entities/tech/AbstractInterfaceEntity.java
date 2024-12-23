@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nullable;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
@@ -120,13 +121,9 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
+	public IPeripheral getPeripheral(Direction side)
 	{
-		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID) && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
-			return peripheralWrapper.newPeripheral().cast();
-			
-		return super.getCapability(cap, side);
+		return peripheralWrapper.getPeripheral();
 	}
 	
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
@@ -205,9 +202,9 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			return;
 		
 		long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(this.maxExtract(), true);
-		long simulatedReceiveAmount = energyBlockEntity.ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
+		long simulatedReceiveAmount = getEnergyStorage().receiveLongEnergy(simulatedOutputAmount, true);
 		ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
-		energyBlockEntity.ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
+		getEnergyStorage().receiveLongEnergy(simulatedReceiveAmount, false);
 	}
 	
 	public long getEnergyTarget()

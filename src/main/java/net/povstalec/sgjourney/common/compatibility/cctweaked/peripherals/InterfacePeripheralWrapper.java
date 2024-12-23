@@ -5,7 +5,7 @@ import java.util.List;
 
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
@@ -14,7 +14,7 @@ public class InterfacePeripheralWrapper
 {
 	private AbstractInterfaceEntity interfaceEntity;
 	private InterfacePeripheral interfacePeripheral;
-	private LazyOptional<IPeripheral> peripheral;
+	private Lazy<IPeripheral> peripheral;
     protected final List<IComputerAccess> computerList = new LinkedList<>();
 	
 	public InterfacePeripheralWrapper(AbstractInterfaceEntity interfaceEntity)
@@ -44,20 +44,20 @@ public class InterfacePeripheralWrapper
 		if(peripheral != null)
 		{
 			peripheral.invalidate();
-			peripheral = LazyOptional.of(() -> newPeripheral);
+			peripheral = Lazy.of(() -> newPeripheral);
 		}
 		return true;
 	}
 	
-	public LazyOptional<IPeripheral> newPeripheral()
+	public Lazy<IPeripheral> newPeripheral()
 	{
 		interfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-		peripheral = LazyOptional.of(() -> interfacePeripheral);
+		peripheral = Lazy.of(() -> interfacePeripheral);
 		
 		if(peripheral == null)
 		{
 			interfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-			peripheral = LazyOptional.of(() -> interfacePeripheral);
+			peripheral = Lazy.of(() -> interfacePeripheral);
 		}
 		return peripheral;
 	}

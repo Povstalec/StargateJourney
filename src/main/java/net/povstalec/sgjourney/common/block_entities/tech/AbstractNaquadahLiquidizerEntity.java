@@ -5,8 +5,10 @@ import javax.annotation.Nonnull;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -22,7 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdatePacket;
 
 public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
@@ -32,10 +33,13 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	public static final int TANK_CAPACITY = 4000;
 	public static final int MAX_PROGRESS = 100;
 	
-	protected final ItemStackHandler itemHandler = createHandler();
-	protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-	protected LazyOptional<IFluidHandler> lazyFluidHandler1 = LazyOptional.empty();
-	protected LazyOptional<IFluidHandler> lazyFluidHandler2 = LazyOptional.empty();
+	protected final ItemStackHandler itemStackHandler = createHandler();
+	protected final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemStackHandler);
+	
+	protected final FluidTank fluidTank1 = createFluidTank1();
+	protected Lazy<IFluidHandler> lazyFluidHandler1 = Lazy.of(() -> fluidTank1);
+	protected final FluidTank fluidTank2 = createFluidTank2();
+	protected Lazy<IFluidHandler> lazyFluidHandler2 = Lazy.of(() -> fluidTank2);
 	
 	public int progress = 0;
 	
@@ -45,29 +49,21 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	}
 	
 	@Override
-	public void onLoad()
+	public void invalidateCapabilities()
 	{
-		super.onLoad();
-		lazyFluidHandler1 = LazyOptional.of(() -> fluidTank1);
-		lazyFluidHandler2 = LazyOptional.of(() -> fluidTank2);
-	}
-	
-	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
+		super.invalidateCapabilities();
 		lazyFluidHandler1.invalidate();
 		lazyFluidHandler2.invalidate();
-		handler.invalidate();
+		lazyItemHandler.invalidate();
 	}
 	
 	@Override
 	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(tag, registries);
-		itemHandler.deserializeNBT(tag.getCompound("Inventory"));
-		fluidTank1.readFromNBT(tag.getCompound("FluidTank1"));
-		fluidTank2.readFromNBT(tag.getCompound("FluidTank2"));
+		itemStackHandler.deserializeNBT(registries, tag.getCompound("Inventory"));
+		fluidTank1.readFromNBT(registries, tag.getCompound("FluidTank1"));
+		fluidTank2.readFromNBT(registries, tag.getCompound("FluidTank2"));
 		
 		progress = tag.getInt(PROGRESS);
 	}
@@ -77,14 +73,14 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	{
 		CompoundTag tag1 = new CompoundTag();
 		CompoundTag tag2 = new CompoundTag();
-		nbt.put("Inventory", itemHandler.serializeNBT());
+		tag.put("Inventory", itemStackHandler.serializeNBT(registries));
 		
-		fluidTank1.writeToNBT(tag1);
-		nbt.put("FluidTank1", tag1);
-		fluidTank2.writeToNBT(tag2);
-		nbt.put("FluidTank2", tag2);
+		fluidTank1.writeToNBT(registries, tag1);
+		tag.put("FluidTank1", tag1);
+		fluidTank2.writeToNBT(registries, tag2);
+		tag.put("FluidTank2", tag2);
 		
-		nbt.putInt(PROGRESS, progress);
+		tag.putInt(PROGRESS, progress);
 		super.saveAdditional(tag, registries);
 	}
 	
@@ -92,56 +88,60 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
+	private FluidTank createFluidTank1()
 	{
-		if(capability == ForgeCapabilities.FLUID_HANDLER)
+		return new FluidTank(TANK_CAPACITY)
 		{
-			if(side == Direction.UP)
-				return lazyFluidHandler1.cast();
-			else if(side == Direction.DOWN)
-				return lazyFluidHandler2.cast();
-		}
+			@Override
+			protected void onContentsChanged()
+			{
+				setChanged();
+			}
+			
+			@Override
+			public boolean isFluidValid(FluidStack stack)
+			{
+				return stack.getFluid() == getDesiredFluid1();
+			}
+		};
+	}
+	
+	private FluidTank createFluidTank2()
+	{
+		return new FluidTank(TANK_CAPACITY)
+		{
+			@Override
+			protected void onContentsChanged()
+			{
+				setChanged();
+			}
+			
+			@Override
+			public boolean isFluidValid(FluidStack stack)
+			{
+				return stack.getFluid() == getDesiredFluid2();
+			}
+		};
+	}
+	
+	public IFluidHandler getFluidHandler(Direction side)
+	{
+		if(side == Direction.UP)
+			return lazyFluidHandler1.get();
+		else if(side == Direction.DOWN)
+			return lazyFluidHandler1.get();
 		
-		else if(capability == ForgeCapabilities.ITEM_HANDLER)
-			return handler.cast();
-		
-		return super.getCapability(capability, side);
+		return null;
+	}
+	
+	public IItemHandler getItemHandler(Direction side)
+	{
+		return lazyItemHandler.get();
 	}
 	
 	public abstract Fluid getDesiredFluid1();
 	
 	public abstract Fluid getDesiredFluid2();
-	
-	protected final FluidTank fluidTank1 = new FluidTank(TANK_CAPACITY)
-	{
-		@Override
-		protected void onContentsChanged()
-		{
-			setChanged();
-	    }
-		
-		@Override
-	    public boolean isFluidValid(FluidStack stack)
-	    {
-			return stack.getFluid() == getDesiredFluid1();
-	    }
-	};
-	
-	protected final FluidTank fluidTank2 = new FluidTank(TANK_CAPACITY)
-	{
-		@Override
-		protected void onContentsChanged()
-		{
-			setChanged();
-	    }
-		
-		@Override
-	    public boolean isFluidValid(FluidStack stack)
-	    {
-			return stack.getFluid() == getDesiredFluid2();
-	    }
-	};
 	
 	public void setFluid1(FluidStack fluidStack)
 	{
@@ -189,7 +189,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 					return switch(slot)
 					{
 						case 0 -> true;
-						default -> stack.getCapability(Capabilities.FluidHandler.ITEM).isPresent();
+						default -> stack.getCapability(Capabilities.FluidHandler.ITEM) != null;
 					};
 				}
 				
@@ -208,20 +208,20 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 
 	public boolean hasFluidItem1()
 	{
-    	return itemHandler.getStackInSlot(1).getCount() > 0;
+    	return itemStackHandler.getStackInSlot(1).getCount() > 0;
 	}
 
 	public boolean hasFluidItem2()
 	{
-    	return itemHandler.getStackInSlot(2).getCount() > 0;
+    	return itemStackHandler.getStackInSlot(2).getCount() > 0;
 	}
 	
 	public void fillTank1(FluidStack stack, ItemStack container)
 	{
 		fluidTank1.fill(stack, IFluidHandler.FluidAction.EXECUTE);
-
-        itemHandler.extractItem(1, 1, false);
-        itemHandler.insertItem(1, container, false);
+		
+		itemStackHandler.extractItem(1, 1, false);
+		itemStackHandler.insertItem(1, container, false);
     }
 	
 	public void fillTank2(FluidStack stack, ItemStack container)
@@ -231,34 +231,36 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	public void drainFluidFromItem()
 	{
-		itemHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM).ifPresent(handler ->
+		IFluidHandlerItem cap = itemStackHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM);
+		if(cap != null)
 		{
 			int drainAmount = Math.min(fluidTank1.getSpace(), 1000);
-			FluidStack fluidStack = handler.getFluidInTank(0);
+			FluidStack fluidStack = cap.getFluidInTank(0);
 			
 			if(fluidTank1.isFluidValid(fluidStack))
 			{
-				fluidStack = handler.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-				fillTank1(fluidStack, handler.getContainer());
+				fluidStack = cap.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+				fillTank1(fluidStack, cap.getContainer());
 			}
-		});
+		}
 	}
 	
 	public void putFluidInsideItem()
 	{
-		ItemStack stack = itemHandler.getStackInSlot(2);
+		ItemStack stack = itemStackHandler.getStackInSlot(2);
 		
-		stack.getCapability(Capabilities.FluidHandler.ITEM).ifPresent(handler ->
+		IFluidHandlerItem cap = stack.getCapability(Capabilities.FluidHandler.ITEM);
+		if(cap != null)
 		{
-			if(!handler.isFluidValid(0, getFluid2()))
+			if(!cap.isFluidValid(0, getFluid2()))
 				return;
 			
-			int fillAmount = handler.fill(getFluid2(), IFluidHandler.FluidAction.EXECUTE);
+			int fillAmount = cap.fill(getFluid2(), IFluidHandler.FluidAction.EXECUTE);
 			
-			itemHandler.setStackInSlot(2, handler.getContainer());
+			itemStackHandler.setStackInSlot(2, cap.getContainer());
 			
 			fluidTank2.drain(fillAmount, IFluidHandler.FluidAction.EXECUTE);
-		});
+		}
 	}
 	
 	protected abstract boolean hasMaterial();
@@ -267,7 +269,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	protected void useUpItems(int amount)
 	{
-		itemHandler.extractItem(0, amount, false);
+		itemStackHandler.extractItem(0, amount, false);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractNaquadahLiquidizerEntity naquadahLiquidizer)

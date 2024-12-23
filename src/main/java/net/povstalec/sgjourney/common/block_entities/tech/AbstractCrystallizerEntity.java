@@ -2,8 +2,16 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,17 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
 
 public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
@@ -36,9 +34,11 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 	public static final int LIQUID_NAQUADAH_CAPACITY = 4000;
 	public static final int MAX_PROGRESS = 200;
     
-	protected final ItemStackHandler itemHandler = createHandler();
-	protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-	protected LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
+	protected final ItemStackHandler itemStackHandler = createItemStackHandler();
+	protected final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemStackHandler);
+	
+	protected final FluidTank fluidTank = createFluidTank();
+	protected Lazy<IFluidHandler> lazyFluidHandler = Lazy.of(() -> fluidTank);
 	
 	public int progress = 0;
 	
@@ -48,38 +48,31 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 	}
 	
 	@Override
-	public void onLoad()
+	public void invalidateCapabilities()
 	{
-		super.onLoad();
-		lazyFluidHandler = LazyOptional.of(() -> fluidTank);
-	}
-	
-	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
+		super.invalidateCapabilities();
 		lazyFluidHandler.invalidate();
-		handler.invalidate();
+		lazyItemHandler.invalidate();
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
-		fluidTank.readFromNBT(nbt);
+		super.loadAdditional(nbt, registries);
+		itemStackHandler.deserializeNBT(registries, nbt.getCompound("Inventory"));
+		fluidTank.readFromNBT(registries, nbt);
 		
 		progress = nbt.getInt(PROGRESS);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		nbt.put("Inventory", itemHandler.serializeNBT());
-		nbt = fluidTank.writeToNBT(nbt);
+		nbt.put("Inventory", itemStackHandler.serializeNBT(registries));
+		nbt = fluidTank.writeToNBT(registries, nbt);
 		
 		nbt.putInt(PROGRESS, progress);
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 	}
 	
 	public abstract Fluid getDesiredFluid();
@@ -88,32 +81,33 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
+	public IFluidHandler getFluidHandler(Direction side)
 	{
-		if(capability == ForgeCapabilities.FLUID_HANDLER)
-			return lazyFluidHandler.cast();
-		
-		else if(capability == ForgeCapabilities.ITEM_HANDLER)
-			return handler.cast();
-		
-		return super.getCapability(capability, side);
+		return lazyFluidHandler.get();
 	}
 	
-	private final FluidTank fluidTank = new FluidTank(LIQUID_NAQUADAH_CAPACITY)
+	public IItemHandler getItemHandler(Direction side)
 	{
-		@Override
-		protected void onContentsChanged()
+		return lazyItemHandler.get();
+	}
+	
+	private FluidTank createFluidTank()
+	{
+		return new FluidTank(LIQUID_NAQUADAH_CAPACITY)
 		{
-			setChanged();
-	    }
-		
-		@Override
-	    public boolean isFluidValid(FluidStack stack)
-	    {
-			return stack.getFluid() == getDesiredFluid();
-	    }
-	};
+			@Override
+			protected void onContentsChanged()
+			{
+				setChanged();
+			}
+			
+			@Override
+			public boolean isFluidValid(FluidStack stack)
+			{
+				return stack.getFluid() == getDesiredFluid();
+			}
+		};
+	}
 	
 	public void setFluid(FluidStack fluidStack)
 	{
@@ -125,7 +119,7 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 		return this.fluidTank.getFluid();
 	}
 	
-	private ItemStackHandler createHandler()
+	private ItemStackHandler createItemStackHandler()
 	{
 		return new ItemStackHandler(5)
 			{
@@ -151,7 +145,7 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 					return switch(slot)
 					{
 						case 3 -> false;
-						case 4 -> stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+						case 4 -> stack.getCapability(Capabilities.FluidHandler.ITEM) != null;
 						default -> true;
 					};
 				}
@@ -171,30 +165,31 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 
 	public boolean hasFluidItem()
 	{
-    	return itemHandler.getStackInSlot(4).getCount() > 0;
+    	return itemStackHandler.getStackInSlot(4).getCount() > 0;
 	}
 	
 	public void fillFluidTank(FluidStack stack, ItemStack container)
 	{
 		fluidTank.fill(stack, IFluidHandler.FluidAction.EXECUTE);
 
-        itemHandler.extractItem(4, 1, false);
-        itemHandler.insertItem(4, container, false);
+        itemStackHandler.extractItem(4, 1, false);
+		itemStackHandler.insertItem(4, container, false);
     }
 	
 	public void drainFluidFromItem()
 	{
-		itemHandler.getStackInSlot(4).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
+		IFluidHandlerItem cap = itemStackHandler.getStackInSlot(4).getCapability(Capabilities.FluidHandler.ITEM);
+		if(cap != null)
 		{
 			int drainAmount = Math.min(fluidTank.getSpace(), 1000);
-			FluidStack stack = handler.getFluidInTank(0);
+			FluidStack stack = cap.getFluidInTank(0);
 			
 			if(fluidTank.isFluidValid(stack))
 			{
-				stack = handler.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-				fillFluidTank(stack, handler.getContainer());
+				stack = cap.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+				fillFluidTank(stack, cap.getContainer());
 			}
-		});
+		}
 	}
 	
 	//============================================================================================

@@ -9,7 +9,11 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,17 +28,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Transporter;
 
@@ -48,8 +45,8 @@ public class RingPanelEntity extends BlockEntity
 	public ArrayList<BlockPos> ringsPos = new ArrayList<BlockPos>();
     public ArrayList<Component> ringsName = new ArrayList<Component>();
 	
-	private final ItemStackHandler itemHandler = createHandler();
-	private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+	private final ItemStackHandler itemStackHandler = createHandler();
+	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemStackHandler);
 	
 	private TransportRingsEntity transportRings;
 	
@@ -59,25 +56,25 @@ public class RingPanelEntity extends BlockEntity
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound(INVENTORY));
+		super.loadAdditional(nbt, registries);
+		itemStackHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		nbt.put(INVENTORY, itemHandler.serializeNBT());
-		super.saveAdditional(nbt);
+		nbt.put(INVENTORY, itemStackHandler.serializeNBT(registries));
+		super.saveAdditional(nbt, registries);
 	}
 	
 	private void drops()
 	{
-		SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-		for (int i = 0; i < itemHandler.getSlots(); i++)
+		SimpleContainer inventory = new SimpleContainer(itemStackHandler.getSlots());
+		for (int i = 0; i < itemStackHandler.getSlots(); i++)
 		{
-			inventory.setItem(i, itemHandler.getStackInSlot(i));
+			inventory.setItem(i, itemStackHandler.getStackInSlot(i));
 		}
 		
 		Containers.dropContents(this.level, this.worldPosition, inventory);
@@ -87,9 +84,22 @@ public class RingPanelEntity extends BlockEntity
 	public void setRemoved() 
 	{
 		super.setRemoved();
-		handler.invalidate();
+		lazyItemHandler.invalidate();
 		drops();
 	}
+	
+	//============================================================================================
+	//****************************************Capabilities****************************************
+	//============================================================================================
+	
+	public IItemHandler getItemHandler(Direction side)
+	{
+		return lazyItemHandler.get();
+	}
+	
+	//============================================================================================
+	//******************************************Storage*******************************************
+	//============================================================================================
 	
 	private ItemStackHandler createHandler()
 	{
@@ -142,16 +152,6 @@ public class RingPanelEntity extends BlockEntity
 					
 				}
 			};
-	}
-	
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side)
-	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
-			return handler.cast();
-		
-		return super.getCapability(capability, side);
 	}
 	
 	
@@ -254,11 +254,11 @@ public class RingPanelEntity extends BlockEntity
 	
 	public void activateRings(int chosenNumber)
 	{
-		ItemStack stack = this.itemHandler.getStackInSlot(chosenNumber);
+		ItemStack stack = this.itemStackHandler.getStackInSlot(chosenNumber);
 		
 		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
 		{
-			int[] coordinates = this.itemHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
+			int[] coordinates = this.itemStackHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
 			targetPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
 		}
 		else if(chosenNumber < ringsPos.size())
@@ -283,10 +283,10 @@ public class RingPanelEntity extends BlockEntity
 	
 	public int[] getTargetCoords(int chosenNumber)
 	{
-		ItemStack stack = this.itemHandler.getStackInSlot(chosenNumber);
+		ItemStack stack = this.itemStackHandler.getStackInSlot(chosenNumber);
 		
 		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
-			return this.itemHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
+			return this.itemStackHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
 		
 		//TODO FIX THIS
 		//CompoundTag ringsTag = BlockEntityList.get(level).getBlockEntities("TransportRings");

@@ -3,16 +3,17 @@ package net.povstalec.sgjourney.common.tech;
 import java.util.Optional;
 
 import net.minecraft.world.entity.Entity;
-import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
+import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 
 public interface GoauldTech
 {
 	default boolean canUseGoauldTech(Entity user)
 	{
-		Optional<Boolean> canUse = user.getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).map(cap -> cap.hasNaquadahInBloodstream());
+		BloodstreamNaquadah cap = user.getCapability(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH_CAPABILITY);
 		
-		if(canUse.isPresent())
-			return canUse.get();
+		if(cap != null && cap.hasNaquadahInBloodstream())
+			return true;
+		
 		return false;
 	}
 	

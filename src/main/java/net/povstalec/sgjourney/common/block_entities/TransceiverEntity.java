@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
@@ -260,7 +261,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		if(level.isClientSide())
 			return;
 		
-		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundTransceiverUpdatePacket(this.worldPosition, this.editingFrequency, this.frequency, this.idc));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundTransceiverUpdatePacket(this.worldPosition, this.editingFrequency, this.idc, this.frequency));
 	}
 	
 	private static double distance2(BlockPos pos, BlockPos targetPos)
@@ -297,13 +298,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
+	public IPeripheral getPeripheral(Direction side)
 	{
-		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID) && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
-			return peripheralWrapper.newPeripheral().cast();
-			
-		return super.getCapability(cap, side);
+		return peripheralWrapper.getPeripheral();
 	}
 	
 	//============================================================================================
