@@ -29,5 +29,9 @@ details {
   border-left: 3px solid #44434d;
 }
 
+.flex-align-items-center {
+  align-items: center;
+}
+
 // located in /assets/css
 @import "./youtubePlayer.css";

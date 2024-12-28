@@ -96,6 +96,8 @@ Find the chunk corner and dig there.
 > The Gate and the DHD can be broken with any tool (even by hand), but a pickaxe is best for the job.
 > Use a **stone pickaxe** (or a better one) to break the cartouche.
 
+[//]: # (add some spoiler with structure screenshot, probably with erased address https://discord.com/channels/1011344665678708818/1061413949440020561/1287358192136884267)
+
 <details markdown="block">
 <summary><b>[Spoiler]</b> Stargate overworld generation</summary>
 By default, **two stargates** are generated in the **overworld** (this can be changed by [datapacks]({{ site.baseurl }}/datapacks)).  

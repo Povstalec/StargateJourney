@@ -68,8 +68,8 @@ Each chevron opens and closes individually and moves on both sides of the gate i
 The primary chevron is the only one that doesn't move.
 Tt has open space under it, so the symbol under it is easier to see.
 <details markdown="block">
-<summary>The event horizon forms a vortex behind the gate</summary>
-![Milky Way Stargate movie variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/vortex.png)
+<summary>The event horizon forms a strudel behind the gate</summary>
+![Milky Way Stargate movie variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/strudel.png)
 {: .max-width-256 }
 </details>
 
