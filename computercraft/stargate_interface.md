@@ -1586,10 +1586,11 @@ ___
     <code>getIrisProgress()</code>
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L99">source</a>
 </h3>
-Retrieves the internal progress of the iris state.
+Retrieves the internal iris closing progress.  
+This progress is internally used for [blocking the gate by the iris](https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/client/models/WormholeModel.java#L51).
 
 **Returns**
-1. `number`: The internal progress of the iris state<br>
+1. `number`: The internal iris closing progress<br>
 > `0` when the iris is fully opened or not installed on the gate<br> 
 > `58` when the iris is fully closed.
 
