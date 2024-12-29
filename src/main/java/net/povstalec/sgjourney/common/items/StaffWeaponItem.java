@@ -3,13 +3,12 @@ package net.povstalec.sgjourney.common.items;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,13 +26,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
+import net.neoforged.neoforge.common.MutableDataComponentHolder;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
@@ -92,25 +91,6 @@ public class StaffWeaponItem extends Item
 		float f = Math.max(0.0F, (float) getNaquadahAmount(stack) / VialItem.getMaxCapacity());
 		
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
-	}
-	
-	@Override
-    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-	{
-		return new ItemInventoryProvider(stack)
-				{
-					@Override
-					public int getNumberOfSlots()
-					{
-						return 1;
-					}
-
-					@Override
-					public boolean isValid(int slot, ItemStack stack)
-					{
-						return stack.is(ItemInit.VIAL.get());
-					}
-				};
 	}
 
 	@Override
@@ -333,5 +313,21 @@ public class StaffWeaponItem extends Item
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     	
     	super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+	}
+	
+	
+	
+	public static class ItemHandler extends ComponentItemHandler
+	{
+		public ItemHandler(MutableDataComponentHolder parent, DataComponentType<ItemContainerContents> component)
+		{
+			super(parent, component, 1);
+		}
+		
+		@Override
+		public boolean isItemValid(int slot, ItemStack stack)
+		{
+			return stack.is(ItemInit.VIAL.get());
+		}
 	}
 }

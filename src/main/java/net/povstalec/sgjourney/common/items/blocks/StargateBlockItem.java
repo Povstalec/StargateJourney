@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.items.blocks;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -21,6 +22,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
@@ -69,26 +71,21 @@ public class StargateBlockItem extends BlockItem
 			
 			ItemStack stack = context.getItemInHand();
 			
-			if(stack.getTag() != null)
+			if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
 			{
-				CompoundTag itemTag = stack.getTag();
+				CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
 				
-				if(itemTag.contains(BLOCK_ENTITY_TAG))
+				if(blockEntityTag.contains(IRIS_PROGRESS))
 				{
-					CompoundTag blockEntityTag = itemTag.getCompound(BLOCK_ENTITY_TAG);
+					short irisProgress = blockEntityTag.getShort(IRIS_PROGRESS);
 					
-					if(blockEntityTag.contains(IRIS_PROGRESS))
+					for(ShieldingPart part : stargateBlock.getShieldingParts())
 					{
-						short irisProgress = blockEntityTag.getShort(IRIS_PROGRESS);
-						
-						for(ShieldingPart part : stargateBlock.getShieldingParts())
+						if(part.canExist(ShieldingState.fromProgress(irisProgress)) && !level.getBlockState(part.getShieldingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
 						{
-							if(part.canExist(ShieldingState.fromProgress(irisProgress)) && !level.getBlockState(part.getShieldingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
-							{
-								if(player != null)
-									player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
-								return false;
-							}
+							if(player != null)
+								player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
+							return false;
 						}
 					}
 				}
@@ -112,28 +109,28 @@ public class StargateBlockItem extends BlockItem
 		if(minecraftserver == null)
 			return false;
 		
-		CompoundTag compoundtag = getBlockEntityData(stack);
-		if(compoundtag != null)
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
 		{
+			CompoundTag compoundtag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
 			BlockEntity blockentity = level.getBlockEntity(pos);
-            if(blockentity != null)
-            {
-            	if(!level.isClientSide() && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
-            		return false;
-            	
-            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata();
-            	CompoundTag compoundtag2 = compoundtag1.copy();
-            	
-            	compoundtag1.merge(compoundtag);
-            	
-            	if(!compoundtag1.equals(compoundtag2))
-            	{
-            		blockentity.load(compoundtag1);
-            		blockentity.setChanged();
-            		
-            		return setupBlockEntity(level, blockentity, compoundtag);
-            	}
-            }
+			if(blockentity != null)
+			{
+				if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
+					return false;
+				
+				CompoundTag compoundtag1 = blockentity.saveWithoutMetadata(minecraftserver.registryAccess());
+				CompoundTag compoundtag2 = compoundtag1.copy();
+				
+				compoundtag1.merge(compoundtag);
+				
+				if(!compoundtag1.equals(compoundtag2))
+				{
+					blockentity.loadCustomOnly(compoundtag1, minecraftserver.registryAccess());
+					blockentity.setChanged();
+					
+					return setupBlockEntity(level, blockentity, compoundtag);
+				}
+			}
 		}
 		else
 		{
@@ -146,8 +143,8 @@ public class StargateBlockItem extends BlockItem
 				// Sets up symbols on the Milky Way Stargate
 				if(stargate instanceof MilkyWayStargateEntity)
 					stargate.setRandomPointOfOrigin(level.dimension());
-				
-				// Sets up symbols on the Classic Stargate
+					
+					// Sets up symbols on the Classic Stargate
 				else if(stargate instanceof ClassicStargateEntity)
 					stargate.setRandomPointOfOrigin(level.dimension());
 			}

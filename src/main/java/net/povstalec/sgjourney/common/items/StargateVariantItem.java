@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.common.items;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
+import net.povstalec.sgjourney.StargateJourney;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -17,9 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
@@ -55,7 +53,7 @@ public class StargateVariantItem extends Item
         		{
         			RegistryAccess registries = clientPacketListener.registryAccess();
         			Registry<StargateVariant> stargateVariantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
-        	    	ResourceLocation variantLocation = new ResourceLocation(variant);
+        	    	ResourceLocation variantLocation = StargateJourney.location(variant);
         			
         			if(stargateVariantRegistry.containsKey(variantLocation))
         			{

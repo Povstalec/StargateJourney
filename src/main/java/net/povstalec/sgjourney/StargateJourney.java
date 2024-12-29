@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -13,6 +14,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
@@ -21,10 +25,13 @@ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.registries.*;
 import net.povstalec.sgjourney.client.Layers;
+import net.povstalec.sgjourney.client.render.FalconArmorRenderProperties;
+import net.povstalec.sgjourney.client.render.JackalArmorRenderProperties;
 import net.povstalec.sgjourney.client.render.block_entity.*;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
@@ -201,6 +208,26 @@ public class StargateJourney
         @SubscribeEvent
         public static void registerClientExtensions(RegisterClientExtensionsEvent event)
         {
+            // Items
+            event.registerItem(new IClientItemExtensions()
+            {
+                public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original)
+                {
+                    return JackalArmorRenderProperties.INSTANCE.getHumanoidArmorModel(livingEntity, itemStack, equipmentSlot, original);
+                }
+            }, ItemInit.JACKAL_HELMET);
+            
+            event.registerItem(new IClientItemExtensions()
+            {
+                public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original)
+                {
+                    return FalconArmorRenderProperties.INSTANCE.getHumanoidArmorModel(livingEntity, itemStack, equipmentSlot, original);
+                }
+            }, ItemInit.FALCON_HELMET);
+            
+            
+            
+            // Fluids
             event.registerFluidType(new IClientFluidTypeExtensions()
             {
                 @Override

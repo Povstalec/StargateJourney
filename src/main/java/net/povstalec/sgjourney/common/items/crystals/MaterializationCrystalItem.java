@@ -2,53 +2,53 @@ package net.povstalec.sgjourney.common.items.crystals;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
+import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
+
+import javax.annotation.Nullable;
 
 public class MaterializationCrystalItem extends AbstractCrystalItem
 {
 	public static final int DEFAULT_RANGE_INCREMENT = 2;
 	public static final int ADVANCED_RANGE_INCREMENT = 4;
 	
-	private static final String CRYSTAL_MODE = "CrystalMode";
+	public static final Codec CRYSTAL_MODE_CODEC = StringRepresentable.fromValues(() -> new CrystalMode[]{CrystalMode.INCREASE_RANGE, CrystalMode.DIMENSION_TRANSPORT});
 	
 	public MaterializationCrystalItem(Properties properties)
 	{
 		super(properties);
 	}
 	
-	public enum CrystalMode
+	public enum CrystalMode implements StringRepresentable
 	{
-		INCREASE_RANGE,
-		ENABLE_INTERDIMENSIONAL_TRANSPORT;
+		INCREASE_RANGE("increase_range"),
+		DIMENSION_TRANSPORT("dimension_transport");
+		
+		private final String name;
+		
+		private CrystalMode(String name)
+		{
+			this.name = name;
+		}
+		
+		@Override
+		public String getSerializedName()
+		{
+			return this.name;
+		}
 	}
 	
-	public static CompoundTag tagSetup(CrystalMode crystalMode)
-	{
-		CompoundTag tag = new CompoundTag();
-		
-		tag.putString(CRYSTAL_MODE, crystalMode.toString().toUpperCase());
-		
-		return tag;
-	}
-	
+	@Nullable
 	public static CrystalMode getCrystalMode(ItemStack stack)
 	{
-		CrystalMode mode;
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(!tag.contains(CRYSTAL_MODE))
-			tag.putString(CRYSTAL_MODE, CrystalMode.INCREASE_RANGE.toString().toUpperCase());
-		
-		mode = CrystalMode.valueOf(tag.getString(CRYSTAL_MODE));
-		
-		return mode;
+		return stack.getOrDefault(DataComponentInit.MATERIALIZATION_CRYSTAL_MODE, CrystalMode.INCREASE_RANGE);
 	}
 	
 	public int getRangeIncrement()
@@ -60,13 +60,14 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
         CrystalMode mode = getCrystalMode(stack);
+		
         String text = "";
         switch(mode)
         {
         case INCREASE_RANGE:
         	text = "tooltip.sgjourney.materialization_crystal.increased_range";
         	break;
-        case ENABLE_INTERDIMENSIONAL_TRANSPORT:
+        case DIMENSION_TRANSPORT:
         	text = "tooltip.sgjourney.materialization_crystal.interdimensional";
         	break;
         }

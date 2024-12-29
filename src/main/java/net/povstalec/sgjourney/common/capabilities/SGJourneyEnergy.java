@@ -3,7 +3,9 @@ package net.povstalec.sgjourney.common.capabilities;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.energy.EnergyStorage;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 
 public abstract class SGJourneyEnergy extends EnergyStorage
 {
@@ -32,7 +34,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     {
         if(!canReceive())
             return 0;
-        long energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+        long energyReceived = Math.min(getTrueMaxEnergyStored() - energy, Math.min(maxReceive(), maxReceive));
         if(!simulate)
         	energy += energyReceived;
 
@@ -87,18 +89,18 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     @Override
     public boolean canExtract()
     {
-        return this.maxExtract > 0;
+        return maxExtract() > 0;
     }
 
     @Override
     public boolean canReceive()
     {
-        return this.maxReceive > 0 && this.energy < this.capacity;
+        return maxReceive() > 0 && this.energy < getTrueMaxEnergyStored();
     }
     
     public boolean canReceive(long receivedEnergy)
 	{
-		return energy + receivedEnergy <= capacity;
+		return energy + receivedEnergy <= getTrueMaxEnergyStored();
 	}
     
     
@@ -141,4 +143,25 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     {
     	return energy > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) energy;
     }
+	
+	
+	
+	public static class Item extends SGJourneyEnergy
+	{
+		protected ItemStack stack;
+		
+		public Item(ItemStack stack, long capacity, long maxReceive, long maxExtract)
+		{
+			super(capacity, maxReceive, maxExtract);
+			
+			this.stack = stack;
+			this.energy = stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+		}
+		
+		@Override
+		public void onEnergyChanged(long difference, boolean simulate)
+		{
+			stack.set(DataComponentInit.ENERGY, this.energy);
+		}
+	}
 }

@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class NaquadahFuelRodItem extends Item
@@ -27,9 +28,7 @@ public class NaquadahFuelRodItem extends Item
 	public static ItemStack fuelRodSetup()
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_FUEL_ROD.get());
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		tag.putLong(FUEL, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get());
+		stack.set(DataComponentInit.NAQUADAH_FUEL, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get());
 		
 		return stack;
 	}
@@ -55,15 +54,7 @@ public class NaquadahFuelRodItem extends Item
 	
 	public static int getFuel(ItemStack stack)
 	{
-		int fuel;
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(!tag.contains(FUEL))
-			tag.putInt(FUEL, getMaxFuel());
-		
-		fuel = tag.getInt(FUEL);
-		
-		return fuel;
+		return stack.getOrDefault(DataComponentInit.NAQUADAH_FUEL, 0);
 	}
 	
 	/**
@@ -73,20 +64,15 @@ public class NaquadahFuelRodItem extends Item
 	 */
 	public static boolean depleteFuel(ItemStack stack)
 	{
-		int fuel;
-		CompoundTag tag = stack.getOrCreateTag();
+		int fuel = stack.getOrDefault(DataComponentInit.NAQUADAH_FUEL, 0);
 		
-		if(!tag.contains(FUEL))
-			tag.putInt(FUEL, 0);
-		
-		fuel = tag.getInt(FUEL);
-		
-		fuel--;
-		
-		tag.putInt(FUEL, fuel);
-		
-		if(fuel <= 0)
-			return false;
+		if(fuel > 0)
+		{
+			fuel--;
+			
+			stack.set(DataComponentInit.NAQUADAH_FUEL, fuel);
+			return true;
+		}
 		
 		return true;
 	}
@@ -99,7 +85,7 @@ public class NaquadahFuelRodItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		if(stack.hasTag() && tooltipFlag.isAdvanced())
+		if(tooltipFlag.isAdvanced())
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_fuel_rod.fuel").append(Component.literal(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.GREEN));
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);

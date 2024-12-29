@@ -5,51 +5,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.MutableDataComponentHolder;
+import net.neoforged.neoforge.items.ComponentItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
-import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 
 public class RingRemoteItem extends Item
 {
 	public RingRemoteItem(Properties properties)
 	{
 		super(properties);
-	}
-	
-	@Override
-    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-	{
-		return new ItemInventoryProvider(stack)
-				{
-					@Override
-					public int getNumberOfSlots()
-					{
-						return 1;
-					}
-
-					@Override
-					public boolean isValid(int slot, ItemStack stack)
-					{
-						return stack.is(ItemInit.MEMORY_CRYSTAL.get());
-					}
-				};
 	}
 	
 	protected List<TransportRingsEntity> getNearbyTransportRings(Level level, BlockPos blockPos, int maxDistance)
@@ -109,31 +87,33 @@ public class RingRemoteItem extends Item
 			
 			if(offHandStack.is(ItemInit.RING_REMOTE.get()))
 			{
-				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+				IItemHandler cap = offHandStack.getCapability(Capabilities.ItemHandler.ITEM);
+				if(cap != null)
 				{
 					ItemStack returnStack;
 					if(!mainHandStack.isEmpty())
-						returnStack = itemHandler.insertItem(0, mainHandStack, false);
+						returnStack = cap.insertItem(0, mainHandStack, false);
 					else
-						returnStack = itemHandler.extractItem(0, 1, false);
+						returnStack = cap.extractItem(0, 1, false);
 					
 					player.setItemInHand(InteractionHand.MAIN_HAND, returnStack);
-				});
+				}
 				
 			}
 		}
 		else if(!player.isShiftKeyDown())
 		{
-			ItemStack stack = player.getItemInHand(hand);
+			/*ItemStack stack = player.getItemInHand(hand);
 			if(!canActivate(stack))
 				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_memory_crystal").withStyle(ChatFormatting.BLUE), true);
 			else
 			{
 				if(!level.isClientSide())
 				{
-					stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+					IItemHandler cap = stack.getCapability(Capabilities.ItemHandler.ITEM);
+					if(cap != null)
 					{
-						ItemStack crystalStack = itemHandler.getStackInSlot(0);	
+						ItemStack crystalStack = cap.getStackInSlot(0);
 						
 						int[] coordinates = null;
 						
@@ -167,18 +147,18 @@ public class RingRemoteItem extends Item
 						}
 						else
 							player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_coordinates").withStyle(ChatFormatting.BLUE), true);
-					});
+					};
 					
 					
 				}
-			}
+			}*/
 		}
 		
 		
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
     }
 	
-	public static boolean canActivate(ItemStack stack)
+	/*public static boolean canActivate(ItemStack stack)
 	{
 		if(stack.is(ItemInit.RING_REMOTE.get()))
 		{
@@ -224,7 +204,7 @@ public class RingRemoteItem extends Item
         });
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-    }
+    }*/
 	
 	/*public BlockPos getNearestRings(CompoundTag nbtTag, BlockPos center, int maxDistance)
 	{
@@ -261,4 +241,20 @@ public class RingRemoteItem extends Item
 			this.target = new BlockPos(targetX, targetY, targetZ);
 		}
 	}*/
+	
+	
+	
+	public static class ItemHandler extends ComponentItemHandler
+	{
+		public ItemHandler(MutableDataComponentHolder parent, DataComponentType<ItemContainerContents> component)
+		{
+			super(parent, component, 1);
+		}
+		
+		@Override
+		public boolean isItemValid(int slot, ItemStack stack)
+		{
+			return stack.is(ItemInit.MEMORY_CRYSTAL.get());
+		}
+	}
 }

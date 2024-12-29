@@ -2,7 +2,8 @@ package net.povstalec.sgjourney.common.items.crystals;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import com.mojang.serialization.Codec;
+import net.minecraft.util.StringRepresentable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -11,7 +12,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -20,8 +20,10 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 {
 	public static final int DEFAULT_MEMORY_CAPACITY = 4;
 	public static final int ADVANCED_MEMORY_CAPACITY = 6;
+	
+	public static final Codec CRYSTAL_MODE_CODEC = StringRepresentable.fromValues(() -> new MemoryType[]{MemoryType.ID, MemoryType.COORDINATES, MemoryType.ADDRESS});
 
-	private static final String MEMORY_TYPE = "MemoryType";
+	//private static final String MEMORY_TYPE = "MemoryType";
 	private static final String MEMORY_LIST = "MemoryList";
 
 	private static final String ID = "ID";
@@ -32,12 +34,25 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		super(properties);
 	}
-
-	public enum MemoryType
+	
+	public enum MemoryType implements StringRepresentable
 	{
-		ID,
-		COORDINATES,
-		ADDRESS
+		ID("id"),
+		COORDINATES("coordinates"),
+		ADDRESS("address");
+		
+		private final String name;
+		
+		private MemoryType(String name)
+		{
+			this.name = name;
+		}
+		
+		@Override
+		public String getSerializedName()
+		{
+			return this.name;
+		}
 	}
 
 	public int getMemoryCapacity()
@@ -45,7 +60,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return DEFAULT_MEMORY_CAPACITY;
 	}
 
-	public static ItemStack atlantisAddress()
+	/*public static ItemStack atlantisAddress()
 	{
 		ItemStack stack = new ItemStack(ItemInit.MEMORY_CRYSTAL.get());
 
@@ -169,12 +184,12 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		memory.putIntArray(ADDRESS, address);
 
 		return saveMemory(stack, memory);
-	}
+	}*/
 
 	@Override
 	public boolean isFoil(ItemStack stack)
 	{
-		return stack.hasTag();
+		return /*stack.hasTag();*/ false;
 	}
 	
 	/*@Override
@@ -192,7 +207,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		for(int i = 0; i < getMemoryListSize(stack); i++)
+		/*for(int i = 0; i < getMemoryListSize(stack); i++)
 		{
 			Address address = new Address(getAddressAt(stack, i));
 
@@ -211,7 +226,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 					break;
 			}
 
-		}
+		}*/
 
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}

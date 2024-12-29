@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.items.blocks;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -34,28 +35,28 @@ public class DHDItem extends BlockItem
 		if(minecraftserver == null)
 			return false;
 		
-		CompoundTag compoundtag = getBlockEntityData(stack);
-		if(compoundtag != null)
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
 		{
+			CompoundTag compoundtag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
 			BlockEntity blockentity = level.getBlockEntity(pos);
-            if(blockentity != null)
-            {
-            	if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
-            		return false;
-            	
-            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata();
-            	CompoundTag compoundtag2 = compoundtag1.copy();
-            	
-            	compoundtag1.merge(compoundtag);
-            	
-            	if(!compoundtag1.equals(compoundtag2))
-            	{
-            		blockentity.load(compoundtag1);
-            		blockentity.setChanged();
-            		
-            		return setupBlockEntity(level, blockentity, compoundtag);
-            	}
-            }
+			if(blockentity != null)
+			{
+				if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
+					return false;
+				
+				CompoundTag compoundtag1 = blockentity.saveWithoutMetadata(minecraftserver.registryAccess());
+				CompoundTag compoundtag2 = compoundtag1.copy();
+				
+				compoundtag1.merge(compoundtag);
+				
+				if(!compoundtag1.equals(compoundtag2))
+				{
+					blockentity.loadCustomOnly(compoundtag1, minecraftserver.registryAccess());
+					blockentity.setChanged();
+					
+					return setupBlockEntity(level, blockentity, compoundtag);
+				}
+			}
 		}
 		
 		return false;

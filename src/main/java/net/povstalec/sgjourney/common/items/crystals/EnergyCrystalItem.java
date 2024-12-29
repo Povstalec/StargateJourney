@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.items.crystals;
 import java.util.List;
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -13,15 +15,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 
 public class EnergyCrystalItem extends AbstractCrystalItem
 {
-	public static final String ENERGY_LIMIT = "EnergyLimit";
-	public static final String ENERGY = "Energy";
-	
 	public EnergyCrystalItem(Properties properties)
 	{
 		super(properties);
@@ -46,29 +44,9 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
-	public static CompoundTag tagSetup(int energy)
-	{
-		CompoundTag tag = new CompoundTag();
-		
-		tag.putInt(ENERGY, energy);
-		
-		return tag;
-	}
-	
 	public static long getEnergy(ItemStack stack)
 	{
-		long energy;
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(!tag.contains(ENERGY))
-			tag.putInt(ENERGY, 0);
-		
-		if(tag.getTagType(ENERGY) == Tag.TAG_INT) // TODO This is here for legacy reasons because it was originally an int
-			energy = tag.getInt(ENERGY);
-		else
-			energy = tag.getLong(ENERGY);
-		
-		return energy;
+		return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
 	}
 	
 	public long getCapacity()
@@ -80,31 +58,6 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	{
 		return CommonTechConfig.advanced_energy_crystal_max_transfer.get();
 	}
-	
-	@Override
-	public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-	{
-		return new ItemEnergyProvider(stack)
-		{
-			@Override
-			public long capacity()
-			{
-				return getCapacity();
-			}
-			
-			@Override
-			public long maxReceive()
-			{
-				return getTransfer();
-			}
-
-			@Override
-			public long maxExtract()
-			{
-				return getTransfer();
-			}
-		};
-	}
 
 	@Override
 	public Optional<Component> descriptionInDHD(ItemStack stack)
@@ -113,13 +66,13 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		long energy = getEnergy(stack);
 		
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy +  "/" + getCapacity() + " FE")).withStyle(ChatFormatting.DARK_RED));
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 	
 	public static final class Advanced extends EnergyCrystalItem
@@ -151,6 +104,38 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		public Optional<Component> descriptionInDHD(ItemStack stack)
 		{
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		}
+	}
+	
+	public static class Energy extends SGJourneyEnergy.Item
+	{
+		public Energy(ItemStack stack)
+		{
+			super(stack, 0, 0, 0);
+		}
+		
+		public long maxReceive()
+		{
+			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
+				return energyCrystal.getTransfer();
+			
+			return 0;
+		}
+		
+		public long maxExtract()
+		{
+			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
+				return energyCrystal.getTransfer();
+			
+			return 0;
+		}
+		
+		public long getTrueMaxEnergyStored()
+		{
+			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
+				return energyCrystal.getCapacity();
+			
+			return 0;
 		}
 	}
 }

@@ -156,9 +156,9 @@ public class ItemInit
 			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.BOOTS, new Item.Properties().fireResistant()));
 	
 	public static final DeferredItem<JackalArmorItem> JACKAL_HELMET = ITEMS.register("jackal_helmet",
-			() -> new JackalArmorItem(ArmorMaterialInit.JAFFA.value(), ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
+			() -> new JackalArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
 	public static final DeferredItem<FalconArmorItem> FALCON_HELMET = ITEMS.register("falcon_helmet",
-			() -> new FalconArmorItem(ArmorMaterialInit.JAFFA.value(), ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
+			() -> new FalconArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
 	
 	public static final DeferredItem<NaquadahFuelRodItem> NAQUADAH_FUEL_ROD = ITEMS.register("naquadah_fuel_rod",
 			() -> new NaquadahFuelRodItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).fireResistant()));

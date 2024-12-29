@@ -10,6 +10,7 @@ import dan200.computercraft.api.peripheral.PeripheralCapability;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -53,7 +54,10 @@ import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.*;
+import net.povstalec.sgjourney.common.items.RingRemoteItem;
+import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
+import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
 import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
 
@@ -332,6 +336,20 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onRegisterCapabilities(RegisterCapabilitiesEvent event)
 	{
+		// Item Capabilities
+		
+		// Energy
+		event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new EnergyCrystalItem.Energy(stack), ItemInit.ENERGY_CRYSTAL, ItemInit.ADVANCED_ENERGY_CRYSTAL);
+		
+		// Items
+		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new RingRemoteItem.ItemHandler(stack, DataComponents.CONTAINER), ItemInit.RING_REMOTE);
+		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new StaffWeaponItem.ItemHandler(stack, DataComponents.CONTAINER), ItemInit.MATOK);
+		
+		// Fluids
+		
+		
+		
+		
 		// Block Entity Capabilities
 		
 		// Energy
@@ -370,7 +388,7 @@ public class ForgeEvents
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_I.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
 		
-		// Liquids
+		// Fluids
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getFluidHandler(direction));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getFluidHandler(direction));
 		
