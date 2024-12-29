@@ -1307,9 +1307,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.symbols;
 	}
 	
-	public void setVariant(String variant)
+	public void setVariant(ResourceLocation variant)
 	{
-		this.variant = variant;
+		this.variant = variant.toString(); //TODO Change this to ResourceLocation
 		this.setChanged();
 	}
 	

@@ -2,6 +2,9 @@ package net.povstalec.sgjourney.common.capabilities;
 
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
+import net.povstalec.sgjourney.common.items.ZeroPointModule;
 
 public abstract class ZeroPointEnergy extends SGJourneyEnergy
 {
@@ -97,4 +100,26 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
     	
     	this.setEntropy(intTag.getAsInt());
     }
+	
+	public static class Item extends ZeroPointEnergy
+	{
+		protected ItemStack stack;
+		
+		public Item(ItemStack stack, int maxEntropy, long capacity, long maxReceive, long maxExtract)
+		{
+			super(maxEntropy, capacity, maxReceive, maxExtract);
+			
+			this.stack = stack;
+			
+			this.entropy = stack.getOrDefault(DataComponentInit.ENTROPY, ZeroPointModule.MAX_ENTROPY);
+			this.energy = stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+		}
+		
+		@Override
+		public void onEnergyChanged(long difference, boolean simulate)
+		{
+			stack.set(DataComponentInit.ENTROPY, this.entropy);
+			stack.set(DataComponentInit.ENERGY, this.energy);
+		}
+	}
 }

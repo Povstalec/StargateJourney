@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 
 public abstract class StargateShieldItem extends Item
 {
@@ -34,19 +35,12 @@ public abstract class StargateShieldItem extends Item
 	@Nullable
 	public static ResourceLocation getShieldTexture(ItemStack stack)
 	{
-		if(stack.getItem() instanceof StargateShieldItem irisItem)
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			if(tag.contains(TEXTURE))
-			{
-				String texture = tag.getString(TEXTURE);
-				
-				if(ResourceLocation.isValidResourceLocation(texture))
-					return ResourceLocation.parse(texture);
-			}
-			else
-				return irisItem.getShieldTexture();
-		}
+		ResourceLocation location = stack.get(DataComponentInit.IRIS_TEXTURE);
+		
+		if(location != null)
+			return location;
+		else if(stack.getItem() instanceof StargateIrisItem irisItem)
+			return irisItem.getIrisTexture();
 		
 		return null;
 	}

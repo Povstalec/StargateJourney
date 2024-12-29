@@ -34,7 +34,7 @@ public final class PacketHandlerInit
 	//============================================================================================
 	
 	@SubscribeEvent
-	public static void register(final RegisterPayloadHandlersEvent event)
+	public static void registerPackets(final RegisterPayloadHandlersEvent event)
 	{
 		// Sets the current network version
 		final PayloadRegistrar registrar = event.registrar("1");

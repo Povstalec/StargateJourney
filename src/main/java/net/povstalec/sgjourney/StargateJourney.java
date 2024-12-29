@@ -28,6 +28,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.*;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.render.FalconArmorRenderProperties;
@@ -116,6 +117,7 @@ public class StargateJourney
         });
     
         eventBus.addListener(this::commonSetup);
+        eventBus.addListener(PacketHandlerInit::registerPackets);
         eventBus.addListener(Layers::registerLayers);
         eventBus.addListener(TabInit::addCreative);
 
@@ -134,7 +136,6 @@ public class StargateJourney
         event.enqueueWork(() ->
         {
             StatisticsInit.register();
-            PacketHandlerInit.register();
             //VillagerInit.registerPOIs();
         });
     }

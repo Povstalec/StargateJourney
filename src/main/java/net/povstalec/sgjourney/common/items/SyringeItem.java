@@ -3,9 +3,11 @@ package net.povstalec.sgjourney.common.items;
 import java.util.List;
 import java.util.Random;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -14,31 +16,42 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class SyringeItem extends Item
 {
-
+	public static final Codec CONTENTS_CODEC = StringRepresentable.fromValues(() -> new Contents[]{Contents.EMPTY, Contents.BLOOD, Contents.PROTOTYPE_ATA, Contents.ATA});
+	
 	public SyringeItem(Properties properties)
 	{
 		super(properties);
 	}
 	
-	public enum Contents
+	public enum Contents implements StringRepresentable
 	{
-		EMPTY("tooltip.sgjourney.syringe.empty", ChatFormatting.GRAY),
-		BLOOD("tooltip.sgjourney.syringe.blood", ChatFormatting.DARK_RED),
-		PROTOTYPE_ATA("tooltip.sgjourney.syringe.prototype_ata_gene", ChatFormatting.AQUA),
-		ATA("tooltip.sgjourney.syringe.ata_gene", ChatFormatting.AQUA);
+		EMPTY("empty", "tooltip.sgjourney.syringe.empty", ChatFormatting.GRAY),
+		BLOOD("blood", "tooltip.sgjourney.syringe.blood", ChatFormatting.DARK_RED),
+		PROTOTYPE_ATA("prototype_ata", "tooltip.sgjourney.syringe.prototype_ata_gene", ChatFormatting.AQUA),
+		ATA("ata", "tooltip.sgjourney.syringe.ata_gene", ChatFormatting.AQUA);
 		
+		private String name;
 		private String text;
 		private ChatFormatting formatting;
 		
-		Contents(String text, ChatFormatting formatting)
+		Contents(String name, String text, ChatFormatting formatting)
 		{
+			this.name = name;
 			this.text = text;
 			this.formatting = formatting;
+		}
+		
+		@Override
+		public String getSerializedName()
+		{
+			return this.name;
 		}
 		
 		public String getText()
@@ -60,7 +73,7 @@ public class SyringeItem extends Item
 			if(player.isShiftKeyDown())
 			{
 				if(this.tryToApplyEffects(player, player.getItemInHand(hand)))
-					player.getItemInHand(hand).getTag().putString("Contents", Contents.EMPTY.name());
+					player.getItemInHand(hand).set(DataComponentInit.SYRINGE_CONTENTS, Contents.EMPTY);
 			}
 		}
 		
@@ -71,68 +84,59 @@ public class SyringeItem extends Item
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe.contents").append(Component.literal(": ")).withStyle(ChatFormatting.GRAY));
-    	
-        if(stack.hasTag() && stack.getTag().contains("Contents"))
-        {
-        	Contents contents = Contents.valueOf(stack.getTag().getString("Contents"));
-        	String text = contents.getText();
-            
-            tooltipComponents.add(Component.translatable(text).withStyle(contents.getFormatting()));
-        }
-        else
-            tooltipComponents.add(Component.translatable("tooltip.sgjourney.syringe.empty").withStyle(ChatFormatting.GRAY));
+		
+		Contents contents = stack.getOrDefault(DataComponentInit.SYRINGE_CONTENTS, Contents.EMPTY);
+		String text = contents.getText();
+		
+		tooltipComponents.add(Component.translatable(text).withStyle(contents.getFormatting()));
 
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlat);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
     
     private boolean tryToApplyEffects(Entity target, ItemStack stack)
     {
-    	if(stack.hasTag())
-    	{
-    		Contents contents = Contents.valueOf(stack.getTag().getString("Contents"));
-    		
-    		switch(contents)
-    		{
-    		case EMPTY:
-    			return false;
-    		case BLOOD:
-    			return false;
-    		case PROTOTYPE_ATA:
-    			return applyAncientGene(target, CommonGeneticConfig.prototype_ata_gene_therapy_success_rate.get());
-    		case ATA:
-    			return applyAncientGene(target, CommonGeneticConfig.ata_gene_therapy_success_rate.get());
-    		}
-    	}
+		Contents contents = stack.getOrDefault(DataComponentInit.SYRINGE_CONTENTS, Contents.EMPTY);
+		
+		switch(contents)
+		{
+			case EMPTY:
+				return false;
+			case BLOOD:
+				return false;
+			case PROTOTYPE_ATA:
+				return applyAncientGene(target, CommonGeneticConfig.prototype_ata_gene_therapy_success_rate.get());
+			case ATA:
+				return applyAncientGene(target, CommonGeneticConfig.ata_gene_therapy_success_rate.get());
+		}
     	
     	return false;
     }
     
     private boolean applyAncientGene(Entity target, int probability)
     {
-    	if(!target.getCapability(AncientGeneProvider.ANCIENT_GENE).isPresent())
+		AncientGene cap = target.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		
+    	if(cap == null)
     		return false;
-    	
-		target.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> 
+		
+		if(cap.isLacking())
 		{
-			if(cap.isLacking())
+			Random random = new Random();
+			int chance = random.nextInt(1, 101);
+			
+			if(chance <= probability)
 			{
-				Random random = new Random();
-				int chance = random.nextInt(1, 101);
+				cap.implantGene();
 				
-				if(chance <= probability)
-				{
-					cap.implantGene();
-					
-					if(target instanceof Player player)
-						player.sendSystemMessage(Component.translatable("message.sgjourney.syringe.got_ancient_gene").withStyle(ChatFormatting.AQUA));
-				}
-			}
-			else
-			{
 				if(target instanceof Player player)
-					player.sendSystemMessage(Component.translatable("message.sgjourney.syringe.has_ancient_gene").withStyle(ChatFormatting.AQUA));
+					player.sendSystemMessage(Component.translatable("message.sgjourney.syringe.got_ancient_gene").withStyle(ChatFormatting.AQUA));
 			}
-		});
+		}
+		else
+		{
+			if(target instanceof Player player)
+				player.sendSystemMessage(Component.translatable("message.sgjourney.syringe.has_ancient_gene").withStyle(ChatFormatting.AQUA));
+		}
 		
 		return true;
     }
@@ -140,9 +144,8 @@ public class SyringeItem extends Item
 	public static ItemStack addContents(Contents contents)
 	{
 		ItemStack stack = new ItemStack(ItemInit.SYRINGE.get());
-        CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putString("Contents", contents.name());
-		stack.setTag(compoundtag);
+		stack.set(DataComponentInit.SYRINGE_CONTENTS, contents);
+		
 		return stack;
 	}
 }

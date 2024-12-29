@@ -57,6 +57,7 @@ import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.RingRemoteItem;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 import net.povstalec.sgjourney.common.items.VialItem;
+import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
@@ -341,14 +342,15 @@ public class ForgeEvents
 		
 		// Energy
 		event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new EnergyCrystalItem.Energy(stack), ItemInit.ENERGY_CRYSTAL, ItemInit.ADVANCED_ENERGY_CRYSTAL);
+		event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new ZeroPointModule.Energy(stack), ItemInit.ENERGY_CRYSTAL, ItemInit.ZPM);
 		
 		// Items
 		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new RingRemoteItem.ItemHandler(stack, DataComponents.CONTAINER), ItemInit.RING_REMOTE);
 		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new StaffWeaponItem.ItemHandler(stack, DataComponents.CONTAINER), ItemInit.MATOK);
 		
 		// Fluids
-		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new VialItem.FluidHandler(() -> DataComponentInit.LIQUID_NAQUADAH.get(), stack), ItemInit.VIAL);
-		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new PersonalShieldItem.FluidHandler(() -> DataComponentInit.LIQUID_NAQUADAH.get(), stack), ItemInit.PERSONAL_SHIELD_EMITTER);
+		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new VialItem.FluidHandler(() -> DataComponentInit.FLUID.get(), stack), ItemInit.VIAL);
+		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new PersonalShieldItem.FluidHandler(() -> DataComponentInit.FLUID.get(), stack), ItemInit.PERSONAL_SHIELD_EMITTER);
 		
 		
 		

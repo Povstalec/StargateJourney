@@ -14,6 +14,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 
 public abstract class StargateIrisItem extends Item
 {
@@ -29,9 +30,6 @@ public abstract class StargateIrisItem extends Item
 	// Modded Materials
 	public static final ResourceLocation BRONZE_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/bronze_iris.png");
 	public static final ResourceLocation STEEL_IRIS = StargateJourney.sgjourneyLocation("textures/entity/stargate/iris/steel_iris.png");
-	
-	public static final String DURABILITY = "durability";
-	public static final String TEXTURE = "texture";
 	
 	private ResourceLocation irisTexture;
 	
@@ -53,46 +51,25 @@ public abstract class StargateIrisItem extends Item
 	
 	public static boolean hasCustomTexture(ItemStack stack)
 	{
-		return stack.hasTag() && stack.getTag().contains(TEXTURE);
+		return stack.has(DataComponentInit.IRIS_TEXTURE);
 	}
 	
 	@Nullable
 	public static ResourceLocation getIrisTexture(ItemStack stack)
 	{
-		if(stack.getItem() instanceof StargateIrisItem irisItem)
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			if(tag.contains(TEXTURE))
-			{
-				String texture = tag.getString(TEXTURE);
-				
-				if(ResourceLocation.isValidResourceLocation(texture))
-					return new ResourceLocation(texture);
-			}
-			else
-				return irisItem.getIrisTexture();
-		}
+		ResourceLocation location = stack.get(DataComponentInit.IRIS_TEXTURE);
+		
+		if(location != null)
+			return location;
+		else if(stack.getItem() instanceof StargateIrisItem irisItem)
+			return irisItem.getIrisTexture();
 		
 		return null;
 	}
 	
 	public static int getDurability(ItemStack stack)
 	{
-		if(stack.getItem() instanceof StargateIrisItem irisItem)
-		{
-			int durability;
-			
-			CompoundTag tag = stack.getOrCreateTag();
-			
-			if(!tag.contains(DURABILITY))
-				tag.putInt(DURABILITY, irisItem.getMaxDurability());
-			
-			durability = tag.getInt(DURABILITY);
-			
-			return durability;
-		}
-		else
-			return 0;
+		return stack.getOrDefault(DataComponentInit.IRIS_DURABILITY, 0);
 	}
 	
 	/**
@@ -102,19 +79,12 @@ public abstract class StargateIrisItem extends Item
 	 */
 	public static boolean decreaseDurability(ItemStack stack)
 	{
-		if(stack.getItem() instanceof StargateIrisItem irisItem)
+		if(stack.has(DataComponentInit.IRIS_DURABILITY))
 		{
-			int durability;
-			CompoundTag tag = stack.getOrCreateTag();
-			
-			if(!tag.contains(DURABILITY))
-				tag.putInt(DURABILITY, irisItem.getMaxDurability());
-			
-			durability = tag.getInt(DURABILITY);
-			
+			int durability = getDurability(stack);
 			durability--;
 			
-			tag.putInt(DURABILITY, durability);
+			stack.set(DataComponentInit.IRIS_DURABILITY, durability);
 			
 			if(durability >= 1)
 				return true;
@@ -145,7 +115,7 @@ public abstract class StargateIrisItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		if(stack.hasTag() && tooltipFlag.isAdvanced())
+		if(tooltipFlag.isAdvanced())
 		{
 			int durability = getDurability(stack);
 			
