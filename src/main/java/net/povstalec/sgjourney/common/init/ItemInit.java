@@ -164,7 +164,7 @@ public class ItemInit
 			() -> new NaquadahFuelRodItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).fireResistant()));
 	
 	public static final DeferredItem<PersonalShieldItem> PERSONAL_SHIELD_EMITTER = ITEMS.register("personal_shield_emitter",
-			() -> new PersonalShieldItem(ArmorMaterialInit.PERSONAL_SHIELD.value(), ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
+			() -> new PersonalShieldItem(ArmorMaterialInit.PERSONAL_SHIELD, ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 	
 	public static final DeferredItem<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device",
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));

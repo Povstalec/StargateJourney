@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.items;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -26,22 +28,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.MutableDataComponentHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ComponentItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
-import net.povstalec.sgjourney.common.init.EntityInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.*;
 
 public class StaffWeaponItem extends Item
 {
-	public static final String IS_OPEN = "IsOpen";
+	public static final String IS_OPEN = "is_open";
 	
 	private static final float OPEN_ATTACK_DAMAGE = 3.0F;
 	private static final float CLOSED_ATTACK_DAMAGE = 6.0F;
@@ -55,22 +57,22 @@ public class StaffWeaponItem extends Item
 	private static final int LIQUID_NAQUADAH_DEPLETION = 1;
 	private static final int HEAVY_LIQUID_NAQUADAH_DEPLETION = 5;
 	
-	private final Multimap<Attribute, AttributeModifier> openModifiers;
-	private final Multimap<Attribute, AttributeModifier> closedModifiers;
+	private final ItemAttributeModifiers openModifiers;
+	private final ItemAttributeModifiers closedModifiers;
 	
 	public StaffWeaponItem(Properties properties)
 	{
 		super(properties);
 		
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> openBuilder = ImmutableMultimap.builder();
-		openBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", OPEN_ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION));
-		openBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", OPEN_ATTACK_SPEED, AttributeModifier.Operation.ADDITION));
-		this.openModifiers = openBuilder.build();
+		ItemAttributeModifiers.Entry damageEntry = new ItemAttributeModifiers.Entry(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, OPEN_ATTACK_DAMAGE, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+		ItemAttributeModifiers.Entry speedEntry = new ItemAttributeModifiers.Entry(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, OPEN_ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
 		
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> closedBuilder = ImmutableMultimap.builder();
-		closedBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", CLOSED_ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION));
-		closedBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", CLOSED_ATTACK_SPEED, AttributeModifier.Operation.ADDITION));
-		this.closedModifiers = closedBuilder.build();
+		openModifiers = new ItemAttributeModifiers(Arrays.asList(damageEntry, speedEntry), true);
+		
+		damageEntry = new ItemAttributeModifiers.Entry(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, CLOSED_ATTACK_DAMAGE, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+		speedEntry = new ItemAttributeModifiers.Entry(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, CLOSED_ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+		
+		closedModifiers = new ItemAttributeModifiers(Arrays.asList(damageEntry, speedEntry), true);
 	}
 	
 	@Override
@@ -106,22 +108,22 @@ public class StaffWeaponItem extends Item
 			// Reloading
 			if(offHandStack.is(ItemInit.MATOK.get()) && !level.isClientSide())
 			{
-				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+				IItemHandler cap = offHandStack.getCapability(Capabilities.ItemHandler.ITEM);
+				if(cap != null)
 				{
 					ItemStack returnStack;
 					if(mainHandStack.isEmpty())
-						returnStack = itemHandler.extractItem(0, 1, false);
+						returnStack = cap.extractItem(0, 1, false);
 					else if(mainHandStack.is(ItemInit.VIAL.get()))
 					{
-						returnStack = itemHandler.extractItem(0, 1, false);
-						itemHandler.insertItem(0, mainHandStack, false);
+						returnStack = cap.extractItem(0, 1, false);
+						cap.insertItem(0, mainHandStack, false);
 					}
 					else
-						returnStack = itemHandler.insertItem(0, mainHandStack, false);
+						returnStack = cap.insertItem(0, mainHandStack, false);
 					
 					player.setItemInHand(InteractionHand.MAIN_HAND, returnStack);
-				});
-				
+				}
 			}
 			// Opening and closing
 			else if(mainHandStack.is(ItemInit.MATOK.get()))
@@ -183,17 +185,15 @@ public class StaffWeaponItem extends Item
 	
 	public FluidStack getFluidStack(ItemStack staffWeaponItemStack)
 	{
-		Optional<FluidStack> optional = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
+		IItemHandler cap = staffWeaponItemStack.getCapability(Capabilities.ItemHandler.ITEM);
+		if(cap != null)
 		{
-			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
+			ItemStack inventoryStack = cap.getStackInSlot(0);
 			if(inventoryStack.is(ItemInit.VIAL.get()))
 				return VialItem.getFluidStack(inventoryStack);
 			else
 				return FluidStack.EMPTY;
-		});
-		
-		if(optional.isPresent())
-			return optional.get();
+		}
 		
 		return FluidStack.EMPTY;
 	}
@@ -218,14 +218,15 @@ public class StaffWeaponItem extends Item
 	
 	/**
 	 * Returns true if it depletes naquadah, otherwise false
-	 * @param stack
+	 * @param staffWeaponItemStack
 	 * @return
 	 */
 	public boolean depleteLiquidNaquadah(ItemStack staffWeaponItemStack)
 	{
-		Optional<Boolean> drained = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
+		IItemHandler cap = staffWeaponItemStack.getCapability(Capabilities.ItemHandler.ITEM);
+		if(cap != null)
 		{
-			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
+			ItemStack inventoryStack = cap.getStackInSlot(0);
 			if(inventoryStack.is(ItemInit.VIAL.get()))
 			{
 				FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
@@ -242,11 +243,9 @@ public class StaffWeaponItem extends Item
 					return true;
 				}
 			}
-			
-			return false;
-		});
+		}
 		
-		return drained.isPresent() ? drained.get() : false;
+		return false;
 	}
 	
 	/*public boolean canShoot(Player player, ItemStack stack)
@@ -256,41 +255,21 @@ public class StaffWeaponItem extends Item
 	
 	public static boolean isOpen(ItemStack stack)
 	{
-		if(stack.is(ItemInit.MATOK.get()))
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			
-			if(!tag.contains(IS_OPEN))
-			{
-				tag.putBoolean(IS_OPEN, false);
-				stack.setTag(tag);
-			}
-			
-			return tag.getBoolean(IS_OPEN);
-		}
-		
-		return false;
+		return stack.getOrDefault(DataComponentInit.IS_OPEN, false);
 	}
 	
 	public static void setOpen(Level level, Player player, ItemStack stack, boolean isOpen)
 	{
-		if(stack.is(ItemInit.MATOK.get()))
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			tag.putBoolean(IS_OPEN, isOpen);
-			stack.setTag(tag);
-			
-			level.playSound(player, player.blockPosition(), isOpen ? SoundInit.MATOK_OPEN.get() : SoundInit.MATOK_CLOSE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
-		}
+		isOpen = !isOpen;
+		stack.set(DataComponentInit.IS_OPEN, isOpen);
+		
+		level.playSound(player, player.blockPosition(), isOpen ? SoundInit.MATOK_OPEN.get() : SoundInit.MATOK_CLOSE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 	}
 	
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack)
 	{
-		if(slot == EquipmentSlot.MAINHAND)
-			return isOpen(stack) ? this.openModifiers : this.closedModifiers;
-		
-		return super.getAttributeModifiers(slot, stack);
+		return isOpen(stack) ? this.openModifiers : this.closedModifiers;
 	}
 	
 	@Override
@@ -304,7 +283,7 @@ public class StaffWeaponItem extends Item
 		FluidStack fluidStack = getFluidStack(stack);
 		if(!getFluidStack(stack).equals(FluidStack.EMPTY))
 		{
-			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getTranslationKey()).withStyle(ChatFormatting.GREEN);
+			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getFluidType().getDescriptionId(fluidStack)).withStyle(ChatFormatting.GREEN);
 			liquidNaquadah.append(Component.literal(" " + fluidStack.getAmount() + "mB").withStyle(ChatFormatting.GREEN));
 	    	tooltipComponents.add(liquidNaquadah);
 		}

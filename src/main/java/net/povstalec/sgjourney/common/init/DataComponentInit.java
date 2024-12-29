@@ -7,6 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
@@ -24,12 +25,16 @@ public class DataComponentInit
 
     // Items
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY = register("energy", builder -> builder.persistent(Codec.LONG));
+    
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> TERROR_MODE = register("terror_mode", builder -> builder.persistent(Codec.BOOL));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_OPEN = register("is_open", builder -> builder.persistent(Codec.BOOL));
+    
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> IDC = register("idc", builder -> builder.persistent(Codec.STRING));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> FREQUENCY = register("frequency", builder -> builder.persistent(Codec.INT));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MaterializationCrystalItem.CrystalMode>> MATERIALIZATION_CRYSTAL_MODE = register("materialization_crystal_mode", builder -> builder.persistent(MaterializationCrystalItem.CRYSTAL_MODE_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MemoryCrystalItem.MemoryType>> MEMORY_CRYSTAL_MODE = register("memory_crystal_mode", builder -> builder.persistent(MemoryCrystalItem.CRYSTAL_MODE_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> NAQUADAH_FUEL = register("naquadah_fuel", builder -> builder.persistent(Codec.INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> LIQUID_NAQUADAH = register("liquid_naquadah", builder -> builder.persistent(SimpleFluidContent.CODEC));
 
 
 
