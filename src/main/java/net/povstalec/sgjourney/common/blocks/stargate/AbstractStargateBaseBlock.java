@@ -268,7 +268,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     	long energy = 0;
         String id = "";
 		boolean hasData = stack.has(DataComponents.BLOCK_ENTITY_DATA);
-		CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
+		CompoundTag blockEntityTag = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).getUnsafe();
     	
         if(hasData)
         {

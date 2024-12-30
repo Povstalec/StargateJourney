@@ -26,6 +26,7 @@ public record ClientboundMilkyWayStargateUpdatePacket(BlockPos blockPos, int rot
         public void encode(RegistryFriendlyByteBuf buf, ClientboundMilkyWayStargateUpdatePacket packet)
         {
             FriendlyByteBuf.writeBlockPos(buf, packet.blockPos);
+            buf.writeInt(packet.rotation);
             buf.writeInt(packet.oldRotation);
             buf.writeBoolean(packet.isChevronRaised);
             buf.writeInt(packet.signalStrength);

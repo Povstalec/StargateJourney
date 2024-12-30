@@ -60,8 +60,9 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		{
 			String pointOfOrigin = stargate.getPointOfOrigin();
 			
-			if(isLocationValid(pointOfOrigin))
-				return Optional.ofNullable(pointOfOriginRegistry.get(StargateJourney.location(pointOfOrigin)));
+			ResourceLocation location = ResourceLocation.tryParse(pointOfOrigin);
+			if(location != null)
+				return Optional.ofNullable(pointOfOriginRegistry.get(location));
 		}
 		
 		return Optional.empty();
@@ -87,8 +88,9 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		{
 			String symbols = stargate.getSymbols();
 			
-			if(isLocationValid(symbols))
-				return Optional.ofNullable(symbolRegistry.get(StargateJourney.location(symbols)));
+			ResourceLocation location = ResourceLocation.tryParse(symbols);
+			if(location != null)
+				return Optional.ofNullable(symbolRegistry.get(location));
 		}
 		
 		return Optional.empty();

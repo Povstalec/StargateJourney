@@ -70,7 +70,10 @@ public abstract class SGJourneySkyRenderer
 	
 	protected void createDarkSky()
 	{
-		VertexBuffer darkBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+		if(darkBuffer != null)
+			darkBuffer.close();
+		
+		darkBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
 		
@@ -82,7 +85,10 @@ public abstract class SGJourneySkyRenderer
 
 	protected void createLightSky()
 	{
-		VertexBuffer skyBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+		if(skyBuffer != null)
+			skyBuffer.close();
+		
+		skyBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
 		

@@ -28,7 +28,7 @@ public record ClientboundStargateUpdatePacket(BlockPos blockPos, int[] address, 
         public ClientboundStargateUpdatePacket decode(RegistryFriendlyByteBuf buf)
         {
             return new ClientboundStargateUpdatePacket(FriendlyByteBuf.readBlockPos(buf), buf.readVarIntArray(), buf.readVarIntArray(), buf.readInt(), buf.readInt(),
-                    buf.readShort(), buf.readUtf(), buf.readUtf(), buf.readResourceLocation(), ItemStack.STREAM_CODEC.decode(buf));
+                    buf.readShort(), buf.readUtf(), buf.readUtf(), buf.readResourceLocation(), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
         }
         
         public void encode(RegistryFriendlyByteBuf buf, ClientboundStargateUpdatePacket packet)
@@ -42,7 +42,7 @@ public record ClientboundStargateUpdatePacket(BlockPos blockPos, int[] address, 
             buf.writeUtf(packet.pointOfOrigin);
             buf.writeUtf(packet.symbols);
             buf.writeResourceLocation(packet.variant);
-            ItemStack.STREAM_CODEC.encode(buf, packet.iris);
+            ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, packet.iris);
             
         }
     };

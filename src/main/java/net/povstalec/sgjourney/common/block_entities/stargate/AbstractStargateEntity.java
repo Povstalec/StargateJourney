@@ -145,7 +145,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected String pointOfOrigin = EMPTY;
 	protected String symbols = EMPTY;
 	
-	protected ResourceLocation variant = null;
+	protected ResourceLocation variant = StargateJourney.EMPTY_LOCATION;
 	private final ResourceLocation defaultVariant;
 	
 	// Dialing and memory
@@ -294,7 +294,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		tag.putBoolean(DISPLAY_ID, displayID);
 		tag.putBoolean(UPGRADED, upgraded);
 
-		tag.putString(VARIANT, variant.toString());
+		if(variant != null)
+			tag.putString(VARIANT, variant.toString());
 		
 		if(dhdRelativePos.isPresent())
 		{

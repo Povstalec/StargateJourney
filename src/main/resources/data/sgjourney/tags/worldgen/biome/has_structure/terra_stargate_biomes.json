@@ -6,29 +6,6 @@
 	[
 		"#minecraft:is_overworld",
 		
-		"#forge:is_cave",
-		"#forge:is_cold/overworld",
-		"#forge:is_coniferous",
-		"#forge:is_dense/overworld",
-		"#forge:is_dry/overworld",
-		"#forge:is_hot/overworld",
-		"#forge:is_lush",
-		"#forge:is_mountain",
-		"#forge:is_mushroom",
-		"#forge:is_peak",
-		"#forge:is_plains",
-		"#forge:is_plateau",
-		"#forge:is_sandy",
-		"#forge:is_slope",
-		"#forge:is_snowy",
-		"#forge:is_sparse/overworld",
-		"#forge:is_spooky",
-		"#forge:is_swamp",
-		"#forge:is_underground",
-		"#forge:is_wasteland",
-		"#forge:is_water",
-		"#forge:is_wet/overworld",
-		
 		{id: "ars_nouveau:archwood_forest", required: false}
 	]
 }

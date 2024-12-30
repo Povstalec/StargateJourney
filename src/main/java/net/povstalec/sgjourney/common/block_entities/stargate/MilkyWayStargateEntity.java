@@ -226,7 +226,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			if(!getAddress().containsSymbol(getCurrentSymbol()))
 			{
 				if(!level.isClientSide())
-					net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
+					PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
 				this.isChevronOpen = true;
 				
 				if(!level.isClientSide())
