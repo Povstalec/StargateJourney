@@ -2,12 +2,13 @@ package net.povstalec.sgjourney.common.events.custom;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
 
-public class StargateEvent extends Event
+public class StargateEvent extends Event implements ICancellableEvent
 {
 	//TODO Add these events to the mod
 
@@ -37,7 +38,7 @@ public class StargateEvent extends Event
 	 * @author Povstalec
 	 *
 	 */
-	public static class Dial extends StargateEvent
+	public static class Dial extends StargateEvent implements ICancellableEvent
 	{
 		private final Address.Immutable dialedAddress;
 		private final Address.Immutable dialingAddress;
@@ -74,7 +75,7 @@ public class StargateEvent extends Event
 	 * @author Povstalec
 	 *
 	 */
-	public static class Connect extends StargateEvent
+	public static class Connect extends StargateEvent implements ICancellableEvent
 	{
 		private final StargateConnection.Type connectionType;
 		private final Stargate connectedStargate;
@@ -119,7 +120,7 @@ public class StargateEvent extends Event
 	 * @author Povstalec
 	 *
 	 */
-	public static class WormholeTravel extends StargateEvent
+	public static class WormholeTravel extends StargateEvent implements ICancellableEvent
 	{
 		private final Stargate connectedStargate;
 		private final StargateConnection.Type connectionType;

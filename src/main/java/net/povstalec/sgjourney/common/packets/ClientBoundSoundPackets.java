@@ -175,7 +175,7 @@ public abstract class ClientBoundSoundPackets
     public static record StargateRotation(BlockPos blockPos, boolean stop) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<StargateRotation> TYPE =
-				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_fail_sound"));
+				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_rotation"));
 		
 		public static final StreamCodec<RegistryFriendlyByteBuf, StargateRotation> STREAM_CODEC = StreamCodec.composite(
 				BlockPos.STREAM_CODEC, StargateRotation::blockPos,

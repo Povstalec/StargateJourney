@@ -143,9 +143,9 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 			stack.pushPose();
 			stack.mulPose(Axis.ZP.rotationDegrees(j * -DEFAULT_ANGLE));
 			Matrix4f matrix4 = stack.last().pose();
-			Matrix3f matrix3 = stack.last().normal();
+			PoseStack.Pose pose = stack.last();
 			//Front
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 					-STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
@@ -167,7 +167,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					(10F * (j % 4) + 5 + STARGATE_RING_OUTER_CENTER * 16) / 64, (10.5F - STARGATE_EDGE_TO_CUTOUT_HEIGHT/2 * 16) / 64);
 			
 			//Front 2
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 					-STARGATE_RING_START_CENTER,
 					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET,
@@ -189,7 +189,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					(10F * (j % 4) + 5 + STARGATE_RING_START_CENTER * 16) / 64, (33.5F - STARGATE_CUTOUT_TO_INNER_HEIGHT/2 * 16) / 64);
 			
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
@@ -211,7 +211,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					(10F * (j % 4) + 5 - STARGATE_RING_OUTER_CENTER * 16) / 64, (23 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Outside
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 					-STARGATE_RING_OUTER_CENTER, 
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
@@ -233,7 +233,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					(10F * (j % 4) + 5 + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
 			
 			//Inside Stop - This will essentially be just one pixel thick
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 					STARGATE_RING_STOP_CENTER,
 					STARGATE_RING_STOP_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
@@ -255,7 +255,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					(10F * (j % 4) + 5 - STARGATE_RING_STOP_CENTER * 16) / 64, 14F / 64);
 			
 			//Inside Start - This will essentially be just one pixel thick
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 					-STARGATE_RING_START_CENTER,
 					STARGATE_RING_START_RADIUS,
 					STARGATE_RING_OFFSET - 1F / 16,
@@ -277,7 +277,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					(10F * (j % 4) + 5 + STARGATE_RING_START_CENTER * 16) / 64, 31F / 64);
 			
 			//Inside
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 					STARGATE_RING_INNER_CENTER,
 					STARGATE_RING_INNER_HEIGHT,
 					-STARGATE_RING_OFFSET,
@@ -312,9 +312,9 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 			stack.pushPose();
 			stack.mulPose(Axis.ZP.rotationDegrees(j * -this.symbolAngle + rotation));
 			Matrix4f matrix4 = stack.last().pose();
-			Matrix3f matrix3 = stack.last().normal();
+			PoseStack.Pose pose = stack.last();
 			//Front
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 					-stargateSymbolRingOuterCenter,
 					STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 					STARGATE_RING_OFFSET - 1F/16,
@@ -344,10 +344,10 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 			stack.pushPose();
 			stack.mulPose(Axis.ZP.rotationDegrees(j * -this.symbolAngle - this.symbolAngle/2 + rotation));
 			Matrix4f matrix4 = stack.last().pose();
-			Matrix3f matrix3 = stack.last().normal();
+			PoseStack.Pose pose = stack.last();
 			
 			//Divider Front
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 					-DIVIDER_CENTER,
 					DIVIDER_Y_CENTER + DIVIDER_HEIGHT/2,
 					STARGATE_RING_OFFSET - 1F/16 + DIVIDER_OFFSET,
@@ -369,7 +369,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					(9.5F + DIVIDER_CENTER * 16) / 64, (46 - DIVIDER_HEIGHT/2 * 16) / 64);
 			
 			//Divider Left
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, 0, 0,
 					-DIVIDER_CENTER,
 					DIVIDER_Y_CENTER + DIVIDER_HEIGHT/2,
 					STARGATE_RING_OFFSET - 1F/16,
@@ -391,7 +391,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 					9F / 64, (46 - DIVIDER_HEIGHT/2 * 16) / 64);
 			
 			//Divider Right
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, 0, 0,
 					DIVIDER_CENTER,
 					DIVIDER_Y_CENTER + DIVIDER_HEIGHT/2,
 					STARGATE_RING_OFFSET - 1F/16 + DIVIDER_OFFSET,
@@ -474,9 +474,9 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		stack.pushPose();
 		stack.mulPose(Axis.ZP.rotationDegrees(symbolNumber * -this.symbolAngle + rotation));
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				symbolColor.red(), symbolColor.green(), symbolColor.blue(), symbolColor.alpha(), 
 				-stargateSymbolRingOuterCenter,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,

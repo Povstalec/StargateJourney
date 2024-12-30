@@ -72,7 +72,7 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
     {
     	int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, delta);
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
         

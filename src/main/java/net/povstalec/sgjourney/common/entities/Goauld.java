@@ -11,7 +11,6 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ForgeMod;
 
 public class Goauld extends PathfinderMob
 {
@@ -33,7 +32,7 @@ public class Goauld extends PathfinderMob
 	public static AttributeSupplier.Builder createAttributes()
 	{
 		return PathfinderMob.createMobAttributes()
-				.add(ForgeMod.ENTITY_GRAVITY.get(), 0.5f)
+				.add(Attributes.GRAVITY, 0.5f)
 				.add(Attributes.MAX_HEALTH, 5.0D)
 				.add(Attributes.MOVEMENT_SPEED, 0.75D);
 	}

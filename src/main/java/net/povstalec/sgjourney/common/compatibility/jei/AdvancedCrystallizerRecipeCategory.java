@@ -3,11 +3,13 @@ package net.povstalec.sgjourney.common.compatibility.jei;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -17,8 +19,8 @@ import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
 
 public class AdvancedCrystallizerRecipeCategory implements IRecipeCategory<AdvancedCrystallizerRecipe>
 {
-	public static final ResourceLocation RECIPE_ID = new ResourceLocation(StargateJourney.MODID, "advanced_crystallizing");
-	public static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/crystallizer_gui.png");
+	public static final ResourceLocation RECIPE_ID = StargateJourney.sgjourneyLocation("advanced_crystallizing");
+	public static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/jei/crystallizer_gui.png");
 	
 	public static final RecipeType<AdvancedCrystallizerRecipe> ADVANCED_CRYSTALLIZING_TYPE = new RecipeType<>(RECIPE_ID, AdvancedCrystallizerRecipe.class);
 	
@@ -42,11 +44,11 @@ public class AdvancedCrystallizerRecipeCategory implements IRecipeCategory<Advan
 	{
 		return Component.translatable("block.sgjourney.advanced_crystallizer");
 	}
-
+	
 	@Override
-	public IDrawable getBackground()
+	public void draw(AdvancedCrystallizerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY)
 	{
-		return this.background;
+		background.draw(guiGraphics, 0, 1);
 	}
 
 	@Override

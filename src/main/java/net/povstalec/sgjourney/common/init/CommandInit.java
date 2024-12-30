@@ -26,6 +26,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
@@ -408,7 +409,9 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
+		AncientGene cap = entity.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			cap.giveGene();
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -417,7 +420,9 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.inheritGene());
+		AncientGene cap = entity.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			cap.inheritGene();
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -426,7 +431,9 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.implantGene());
+		AncientGene cap = entity.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			cap.implantGene();
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -435,7 +442,9 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.removeGene());
+		AncientGene cap = entity.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			cap.removeGene();
 		
 		return Command.SINGLE_SUCCESS;
 	}

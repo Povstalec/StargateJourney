@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.GDOButton;
 import net.povstalec.sgjourney.client.widgets.GDOLargeButton;
@@ -79,7 +80,7 @@ public class GDOScreen extends Screen
     	RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-    	this.renderBackground(graphics);
+    	this.renderBackground(graphics, mouseX, mouseY, delta);
     	int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
@@ -154,12 +155,12 @@ public class GDOScreen extends Screen
     
     private void sendTransmission()
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundGDOUpdatePacket(mainHand, frequency, idc, true));
+		PacketDistributor.sendToServer(new ServerboundGDOUpdatePacket(mainHand, idc, frequency, true));
     }
     
     private void updateServer()
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundGDOUpdatePacket(mainHand, frequency, idc, false));
+		PacketDistributor.sendToServer(new ServerboundGDOUpdatePacket(mainHand, idc, frequency, false));
     }
     
     private void toggleFrequency()

@@ -37,7 +37,7 @@ public class DHDBigButton extends Button
 	}
     
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float partialTick)
+    public void renderWidget(GuiGraphics graphics, int x, int y, float partialTick)
     {
     	this.isHovered = x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
         Minecraft minecraft = Minecraft.getInstance();

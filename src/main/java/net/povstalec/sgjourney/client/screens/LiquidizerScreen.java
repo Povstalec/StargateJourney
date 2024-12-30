@@ -59,7 +59,7 @@ public abstract class LiquidizerScreen extends AbstractContainerScreen<Liquidize
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, delta);
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
         
@@ -94,7 +94,7 @@ public abstract class LiquidizerScreen extends AbstractContainerScreen<Liquidize
     	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
 	    {
     		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid1(), 1);
-    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid1().getAmount() + "/" + AbstractNaquadahLiquidizerEntity.TANK_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
+    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getFluidType().getDescriptionId(fluidStack)).append(Component.literal(": " + this.menu.getFluid1().getAmount() + "/" + AbstractNaquadahLiquidizerEntity.TANK_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
 	    }
     }
     
@@ -103,7 +103,7 @@ public abstract class LiquidizerScreen extends AbstractContainerScreen<Liquidize
     	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
 	    {
     		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid2(), 1);
-    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid2().getAmount() + "/" + AbstractNaquadahLiquidizerEntity.TANK_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
+    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getFluidType().getDescriptionId(fluidStack)).append(Component.literal(": " + this.menu.getFluid2().getAmount() + "/" + AbstractNaquadahLiquidizerEntity.TANK_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
 	    }
     }
     

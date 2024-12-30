@@ -230,7 +230,7 @@ public class BlockEntityList extends SavedData
 		
 		this.transporterMap.forEach((ringsID, transporter) -> 
 		{
-			transportersTag.put(ringsID.toString(), transporter.serialize());
+			transportersTag.put(ringsID.toString(), transporter.serialize(server));
 		});
 		
 		return transportersTag;

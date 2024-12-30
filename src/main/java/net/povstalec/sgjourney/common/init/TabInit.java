@@ -177,7 +177,7 @@ public class TabInit
 										.forEach(variantId ->
 												event.accept(
 														StargateVariantItem.stargateVariant(
-																variantId.location().toString()
+																variantId.location()
 														)
 												)
 										)

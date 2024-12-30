@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraftforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public class MiscInit
 {

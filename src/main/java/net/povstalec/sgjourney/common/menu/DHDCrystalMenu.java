@@ -9,8 +9,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
@@ -35,18 +36,20 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
         
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 80, 35));
+        IItemHandler cap = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), null);
+        if(cap != null)
+        {
+            this.addSlot(new SlotItemHandler(cap, 0, 80, 35));
             
-            this.addSlot(new SlotItemHandler(handler, 1, 80, 17));
-            this.addSlot(new SlotItemHandler(handler, 2, 98, 17));
-            this.addSlot(new SlotItemHandler(handler, 3, 98, 35));
-            this.addSlot(new SlotItemHandler(handler, 4, 98, 53));
-            this.addSlot(new SlotItemHandler(handler, 5, 80, 53));
-            this.addSlot(new SlotItemHandler(handler, 6, 62, 53));
-            this.addSlot(new SlotItemHandler(handler, 7, 62, 35));
-            this.addSlot(new SlotItemHandler(handler, 8, 62, 17));
-        });
+            this.addSlot(new SlotItemHandler(cap, 1, 80, 17));
+            this.addSlot(new SlotItemHandler(cap, 2, 98, 17));
+            this.addSlot(new SlotItemHandler(cap, 3, 98, 35));
+            this.addSlot(new SlotItemHandler(cap, 4, 98, 53));
+            this.addSlot(new SlotItemHandler(cap, 5, 80, 53));
+            this.addSlot(new SlotItemHandler(cap, 6, 62, 53));
+            this.addSlot(new SlotItemHandler(cap, 7, 62, 35));
+            this.addSlot(new SlotItemHandler(cap, 8, 62, 17));
+        }
     }
 	
     @Override

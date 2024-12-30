@@ -20,6 +20,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
@@ -193,6 +194,7 @@ public class ResourcepackReloadListener
 		
 		
 		
+		@SubscribeEvent
 		public static void registerReloadListener(RegisterClientReloadListenersEvent event)
 		{
 			event.registerReloadListener(new ReloadListener());

@@ -16,7 +16,10 @@ import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pools.DimensionPadding;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 
@@ -66,7 +69,10 @@ public class StargateTemple extends StargateStructure
                         false,
                         this.projectStartToHeightmap,
                         this.maxDistanceFromCenter,
-                        Rotation.COUNTERCLOCKWISE_90);
+                        Rotation.COUNTERCLOCKWISE_90,
+						PoolAliasLookup.EMPTY,
+						DimensionPadding.ZERO,
+						LiquidSettings.APPLY_WATERLOGGING);
         
         return structurePiecesGenerator;
     }

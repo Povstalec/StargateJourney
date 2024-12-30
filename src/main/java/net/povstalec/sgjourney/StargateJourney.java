@@ -115,7 +115,8 @@ public class StargateJourney
             event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
             event.dataPackRegistry(StargateVariant.REGISTRY_KEY, StargateVariant.CODEC, StargateVariant.CODEC);
         });
-    
+        
+        eventBus.addListener(GalaxyInit::registerRegistries);
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(PacketHandlerInit::registerPackets);
         eventBus.addListener(Layers::registerLayers);
@@ -127,7 +128,7 @@ public class StargateJourney
         ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class,
                 () -> (mc, screen) -> new ConfigScreen(screen));
 
-        NeoForge.EVENT_BUS.register(this);
+        //NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(MiscInit::registerCommands);
     }
     

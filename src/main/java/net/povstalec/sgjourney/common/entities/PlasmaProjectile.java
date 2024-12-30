@@ -1,38 +1,40 @@
 package net.povstalec.sgjourney.common.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 import net.povstalec.sgjourney.common.init.TagInit;
 
-public class PlasmaProjectile extends ThrowableProjectile
+public class PlasmaProjectile extends Projectile
 {
 	private float explosionPower = 0;
 	
-	public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, Level level)
+	public PlasmaProjectile(EntityType<? extends Projectile> type, Level level)
 	{
 		super(type, level);
 	}
 	
- 	public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, double x, double y, double z, Level level, float explosionPower)
+	public PlasmaProjectile(EntityType<? extends Projectile> type, LivingEntity shooter, Level level, float explosionPower)
 	{
- 		super(type, x, y, z, level);
- 		this.explosionPower = explosionPower;
-	}
- 	
-	public PlasmaProjectile(EntityType<? extends ThrowableProjectile> type, LivingEntity livingEntityIn, Level level, float explosionPower)
-	{
-		super(type, livingEntityIn, level);
+		super(type, level);
+		
 		this.explosionPower = explosionPower;
+		this.setOwner(shooter);
 	}
 	
 	protected void onHit(HitResult hitResult)
@@ -40,7 +42,7 @@ public class PlasmaProjectile extends ThrowableProjectile
 		super.onHit(hitResult);
 		if(!this.level().isClientSide())
 		{
-			boolean canDestroy = ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
+			boolean canDestroy = EventHooks.canEntityGrief(this.level(), this.getOwner());
 			this.level().explode((Entity)this.getOwner(), this.getX(), this.getY(), this.getZ(), this.explosionPower, canDestroy,
 					canDestroy ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
 			this.discard();
@@ -56,10 +58,11 @@ public class PlasmaProjectile extends ThrowableProjectile
 			Entity entity = hitResult.getEntity();
 			Entity attacker = this.getOwner();
 			
-			entity.hurt(level().damageSources().explosion(entity, attacker), 14.0F);
+			DamageSource source = level().damageSources().explosion(entity, attacker);
+			entity.hurt(source, 14.0F);
 			
 			if(attacker instanceof LivingEntity)
-				this.doEnchantDamageEffects((LivingEntity)attacker, entity);
+				EnchantmentHelper.doPostAttackEffects((ServerLevel) this.level(), entity, source);
 		}
 	}
 	
@@ -70,7 +73,7 @@ public class PlasmaProjectile extends ThrowableProjectile
 		if(!this.level().isClientSide())
 		{
 			Entity entity = this.getOwner();
-			if(!(entity instanceof Mob) || ForgeEventFactory.getMobGriefingEvent(this.level(), entity))
+			if(!(entity instanceof Mob) || EventHooks.canEntityGrief(this.level(), entity))
 			{
 				BlockPos blockpos = result.getBlockPos().relative(result.getDirection());
 				
@@ -97,8 +100,8 @@ public class PlasmaProjectile extends ThrowableProjectile
 	}
 	
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(SynchedEntityData.Builder builder)
 	{
-		
+	
 	}
 }

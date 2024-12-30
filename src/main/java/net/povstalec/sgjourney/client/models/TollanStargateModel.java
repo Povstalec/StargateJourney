@@ -82,10 +82,10 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 			int combinedLight, boolean isEngaged)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		// Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				-CHEVRON_WIDTH / 2,
 				CHEVRON_HEIGHT,
 				-CHEVRON_THICKNESS / 2,
@@ -107,7 +107,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 				54F / 64, 0F / 64);
 		
 		// Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				-CHEVRON_WIDTH / 2,
 				CHEVRON_HEIGHT,
 				CHEVRON_THICKNESS / 2,
@@ -129,7 +129,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 				54F / 64, 5F / 64);
 		
 		// Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, 0, 0,
 				-CHEVRON_WIDTH / 2,
 				CHEVRON_HEIGHT,
 				-CHEVRON_THICKNESS / 2,
@@ -151,7 +151,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 				49F / 64, 5F / 64);
 		
 		// Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, 0, 0,
 				CHEVRON_WIDTH / 2,
 				CHEVRON_HEIGHT,
 				CHEVRON_THICKNESS / 2,
@@ -173,7 +173,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 				59F / 64, 5F / 64);
 		
 		// Back
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 				CHEVRON_WIDTH / 2,
 				CHEVRON_HEIGHT,
 				-CHEVRON_THICKNESS / 2,
@@ -195,7 +195,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 				64F / 64, 5F / 64);
 		
 		// Bottom 1
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 				-CHEVRON_WIDTH / 2,
 				0,
 				CHEVRON_THICKNESS / 2,
@@ -217,7 +217,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 				59F / 64, 0F / 64);
 		
 		// Bottom 2
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 				-CHEVRON_WIDTH / 2,
 				0,
 				-CHEVRON_THICKNESS / 2 + CHEVRON_OFFSET,
@@ -246,12 +246,12 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 	protected void renderOuterRing(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		for(int j = 0; j < DEFAULT_SIDES; j++)
 		{
 			stack.mulPose(Axis.ZP.rotationDegrees(10));
 			//Front
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 					-STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
@@ -273,7 +273,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
@@ -295,7 +295,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 					(12.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, (7 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Outside
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 					-STARGATE_RING_OUTER_CENTER, 
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
@@ -317,7 +317,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 					(4.5F + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
 			
 			//Inside
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 					STARGATE_RING_INNER_CENTER,
 					STARGATE_RING_INNER_RADIUS,
 					-STARGATE_RING_OFFSET,

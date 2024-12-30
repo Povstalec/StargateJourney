@@ -10,9 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
@@ -40,13 +41,15 @@ public class CrystallizerMenu extends AbstractContainerMenu
         addPlayerInventory(inventory);
         addPlayerHotbar(inventory);
         
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 80, 20));
-            this.addSlot(new SlotItemHandler(handler, 1, 67, 50));
-            this.addSlot(new SlotItemHandler(handler, 2, 93, 50));
-            this.addSlot(new SlotItemHandler(handler, 3, 130, 36));
-            this.addSlot(new SlotItemHandler(handler, 4, 34, 20));
-        });
+        IItemHandler cap = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), null);
+        if(cap != null)
+        {
+            this.addSlot(new SlotItemHandler(cap, 0, 80, 20));
+            this.addSlot(new SlotItemHandler(cap, 1, 67, 50));
+            this.addSlot(new SlotItemHandler(cap, 2, 93, 50));
+            this.addSlot(new SlotItemHandler(cap, 3, 130, 36));
+            this.addSlot(new SlotItemHandler(cap, 4, 34, 20));
+        }
     }
     
     public void setFluid(FluidStack fluidStack)

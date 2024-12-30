@@ -9,7 +9,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.povstalec.sgjourney.StargateJourney;
 
-@EventBusSubscriber
 public class StargateJourneyConfig
 {
 	private static final ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();

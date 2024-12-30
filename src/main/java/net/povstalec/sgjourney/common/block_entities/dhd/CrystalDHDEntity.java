@@ -2,6 +2,10 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -11,11 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
@@ -34,7 +33,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	protected AbstractCrystalItem.Storage communicationCrystals = new AbstractCrystalItem.Storage();
 	
 	protected final ItemStackHandler itemHandler = createHandler();
-	protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+	protected final Lazy<IItemHandler> handler = Lazy.of(() -> itemHandler);
 	
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
@@ -42,17 +41,17 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		super.loadAdditional(nbt, registries);
+		itemHandler.deserializeNBT(registries, nbt.getCompound("Inventory"));
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		nbt.put("Inventory", itemHandler.serializeNBT());
-		super.saveAdditional(nbt);
+		nbt.put("Inventory", itemHandler.serializeNBT(registries));
+		super.saveAdditional(nbt, registries);
 	}
 	
 	@Override
@@ -71,16 +70,9 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		super.invalidateCapabilities();
 	}
 	
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
+	public IItemHandler getItemHandler(Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
-		{
-			return handler.cast();
-		}
-		
-		return super.getCapability(capability, side);
+		return handler.get();
 	}
 	
 	protected ItemStackHandler createHandler()

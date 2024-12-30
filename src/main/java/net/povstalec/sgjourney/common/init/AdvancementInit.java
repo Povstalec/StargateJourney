@@ -8,6 +8,6 @@ public class AdvancementInit
 {
 	public static void register()
 	{
-		CriteriaTriggers.register(StargateJourney.MODID + ":stargate_wormhole_travel", WormholeTravelCriterion.INSTANCE);
+		//CriteriaTriggers.register(StargateJourney.MODID + ":stargate_wormhole_travel", WormholeTravelCriterion.INSTANCE);
 	}
 }

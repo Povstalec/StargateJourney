@@ -11,13 +11,14 @@ import net.minecraft.network.Utf8String;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
 public record ClientboundStargateUpdatePacket(BlockPos blockPos, int[] address, int[] engagedChevrons, int kawooshTick, int tick,
-                                              short irisProgress, String pointOfOrigin, String symbols, String variant, ItemStack iris) implements CustomPacketPayload
+                                              short irisProgress, String pointOfOrigin, String symbols, ResourceLocation variant, ItemStack iris) implements CustomPacketPayload
 {
     public static final CustomPacketPayload.Type<ClientboundStargateUpdatePacket> TYPE =
             new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_update"));
@@ -27,7 +28,7 @@ public record ClientboundStargateUpdatePacket(BlockPos blockPos, int[] address, 
         public ClientboundStargateUpdatePacket decode(RegistryFriendlyByteBuf buf)
         {
             return new ClientboundStargateUpdatePacket(FriendlyByteBuf.readBlockPos(buf), buf.readVarIntArray(), buf.readVarIntArray(), buf.readInt(), buf.readInt(),
-                    buf.readShort(), buf.readUtf(), buf.readUtf(), buf.readUtf(), ItemStack.STREAM_CODEC.decode(buf));
+                    buf.readShort(), buf.readUtf(), buf.readUtf(), buf.readResourceLocation(), ItemStack.STREAM_CODEC.decode(buf));
         }
         
         public void encode(RegistryFriendlyByteBuf buf, ClientboundStargateUpdatePacket packet)
@@ -40,7 +41,7 @@ public record ClientboundStargateUpdatePacket(BlockPos blockPos, int[] address, 
             buf.writeShort(packet.irisProgress);
             buf.writeUtf(packet.pointOfOrigin);
             buf.writeUtf(packet.symbols);
-            buf.writeUtf(packet.variant);
+            buf.writeResourceLocation(packet.variant);
             ItemStack.STREAM_CODEC.encode(buf, packet.iris);
             
         }

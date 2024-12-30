@@ -44,23 +44,23 @@ public abstract class CartoucheRenderer
 		return ClientUtil.getSymbols(cartouche.getSymbols());
 	}
 	
-	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light,
+	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, PoseStack.Pose pose, int light,
 			float size, float x, float y, float z, float textureSize, float textureOffset)
 	{
 		float halfsize = size / 2;
 		float textureHalf = 1F / textureSize / 2;
 		//TOP LEFT
-		consumer.vertex(matrix4, x - halfsize, y + halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 0)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x - halfsize, y + halfsize, z).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset - textureHalf, 0)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light >> 16).setNormal(pose, 0.0F, 0.0F, 1.0F);
 		//BOTTOM LEFT
-		consumer.vertex(matrix4, x - halfsize, y - halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x - halfsize, y - halfsize, z).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset - textureHalf, 1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light >> 16).setNormal(pose, 0.0F, 0.0F, 1.0F);
 		//BOTTOM RIGHT
-		consumer.vertex(matrix4, x + halfsize, y - halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x + halfsize, y - halfsize, z).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset + textureHalf, 1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light >> 16).setNormal(pose, 0.0F, 0.0F, 1.0F);
 		//TOP RIGHT
-		consumer.vertex(matrix4, x + halfsize, y + halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 0)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x + halfsize, y + halfsize, z).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset + textureHalf, 0)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light >> 16).setNormal(pose, 0.0F, 0.0F, 1.0F);
 	}
 	
 	protected void renderCartoucheBlock(CartoucheEntity cartouche, PoseStack stack, MultiBufferSource source, int light)
@@ -87,7 +87,7 @@ public abstract class CartoucheRenderer
         if(cartouche != null)
         {
     		Matrix4f matrix4 = stack.last().pose();
-    		Matrix3f matrix3 = stack.last().normal();
+			PoseStack.Pose pose = stack.last();
         	Symbols symbols = getSymbols(cartouche);
             light = LevelRenderer.getLightColor(cartouche.getLevel(), pos);
         	
@@ -113,7 +113,7 @@ public abstract class CartoucheRenderer
                     	
                     	float yPos = yStart - symbolSize / 2 - symbolSize * i;
                     	
-                        renderSymbol(consumer, matrix4, matrix3, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.getSymbol(i)));
+                        renderSymbol(consumer, matrix4, pose, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.getSymbol(i)));
                     }
             	}
             }

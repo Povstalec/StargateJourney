@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -9,7 +8,6 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;

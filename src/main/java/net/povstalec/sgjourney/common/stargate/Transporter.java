@@ -95,7 +95,7 @@ public class Transporter
 	
 	
 	
-	public CompoundTag serialize()
+	public CompoundTag serialize(MinecraftServer server)
 	{
 		CompoundTag transporterTag = new CompoundTag();
 		ResourceKey<Level> level = this.getDimension();
@@ -105,7 +105,7 @@ public class Transporter
 		transporterTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
 		
 		if(this.name != null)
-			transporterTag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
+			transporterTag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name, server.registryAccess()));
 		
 		return transporterTag;
 	}
@@ -119,7 +119,7 @@ public class Transporter
 		Component name = null;
 		
 		if(tag.contains(CUSTOM_NAME, 8))
-	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
+			name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), server.registryAccess());
 		
 		try
 		{

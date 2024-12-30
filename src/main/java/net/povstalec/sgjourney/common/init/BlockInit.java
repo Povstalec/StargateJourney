@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.init;
 
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -138,7 +140,7 @@ public class BlockInit
 	public static final DeferredBlock<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerBlock("universe_stargate_chevron",
 			() -> new ChevronBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F)
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
-					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
+					.lightLevel(litBlockEmission(7))), Rarity.UNCOMMON, 16);
 	
 	public static final DeferredBlock<TransportRingsBlock> TRANSPORT_RINGS = registerTransporterBlock("transport_rings",
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
@@ -254,6 +256,14 @@ public class BlockInit
 	public static final DeferredBlock<TransceiverBlock> TRANSCEIVER = registerBlock("transceiver",
 			() -> new TransceiverBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F)), 1);
 	
+	
+	private static ToIntFunction<BlockState> litBlockEmission(int lightValue)
+	{
+		return (state) ->
+		{
+			return (Boolean) state.getValue(BlockStateProperties.LIT) ? lightValue : 0;
+		};
+	}
 	
 	private static <T extends Block>DeferredBlock<T> registerBlock(String name, Supplier<T> block)
 	{

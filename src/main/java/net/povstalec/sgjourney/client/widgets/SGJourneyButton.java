@@ -55,12 +55,6 @@ public abstract class SGJourneyButton extends Button
 		return x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
 	}
 	
-	@Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
-    {
-		super.render(graphics, mouseX, mouseY, partialTick);
-     }
-	
 	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick)
 	{
 		this.isHovered = isHovered(mouseX, mouseY);

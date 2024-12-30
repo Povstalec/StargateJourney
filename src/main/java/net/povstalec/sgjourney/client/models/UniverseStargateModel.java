@@ -107,10 +107,10 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			stack.pushPose();
 			stack.mulPose(Axis.ZP.rotationDegrees(j * UNIVERSE_ANGLE - UNIVERSE_ANGLE/2 + getRotation(true)));
 			Matrix4f matrix4 = stack.last().pose();
-			Matrix3f matrix3 = stack.last().normal();
+			PoseStack.Pose pose = stack.last();
 			
 			//Outside
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 					-STARGATE_RING_OUTER_CENTER, 
 					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_DIVIDE_OFFSET,
@@ -132,7 +132,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, 4F / 64);
 			
 			//Front
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 					-STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					STARGATE_RING_OFFSET,
@@ -154,7 +154,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, (15 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Inside
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 					-STARGATE_RING_INNER_CENTER, 
 					STARGATE_RING_INNER_HEIGHT,
 					STARGATE_RING_OFFSET,
@@ -178,7 +178,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			if(stargateVariant.onlyFrontRotates())
 			{
 				//Back
-				SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+				SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 						STARGATE_RING_OUTER_CENTER,
 						STARGATE_RING_OUTER_RADIUS,
 						STARGATE_RING_DIVIDE_OFFSET,
@@ -212,10 +212,10 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			stack.pushPose();
 			stack.mulPose(Axis.ZP.rotationDegrees(j * -UNIVERSE_ANGLE + UNIVERSE_ANGLE/2 + getRotation(!stargateVariant.onlyFrontRotates())));
 			Matrix4f matrix4 = stack.last().pose();
-			Matrix3f matrix3 = stack.last().normal();
+			PoseStack.Pose pose = stack.last();
 			
 			//Outside
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 					-STARGATE_RING_OUTER_CENTER, 
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
@@ -237,7 +237,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					(8F * (j % 6) + 4 + STARGATE_RING_OUTER_CENTER * 16) / 64, 0);
 			
 			//Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 					STARGATE_RING_OUTER_CENTER,
 					STARGATE_RING_OUTER_RADIUS,
 					-STARGATE_RING_OFFSET,
@@ -259,7 +259,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 					(8F * (j % 6) + 4 - STARGATE_RING_OUTER_CENTER * 16) / 64, (32 - STARGATE_RING_HEIGHT/2 * 16) / 64);
 			
 			//Inside
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 					STARGATE_RING_INNER_CENTER, 
 					STARGATE_RING_INNER_HEIGHT,
 					-STARGATE_RING_OFFSET,
@@ -283,7 +283,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			if(stargateVariant.onlyFrontRotates())
 			{
 				//Front
-				SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+				SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 						-STARGATE_RING_OUTER_CENTER,
 						STARGATE_RING_OUTER_RADIUS,
 						STARGATE_RING_DIVIDE_OFFSET,
@@ -361,9 +361,9 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		int symbolInRow = symbolNumber % 4;
 		stack.mulPose(Axis.ZP.rotationDegrees(-UNIVERSE_ANGLE * 3 / 2 + symbolRow * -CHEVRON_ANGLE + symbolInRow * -UNIVERSE_ANGLE + rotation));
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				symbolColor.red(), symbolColor.green(), symbolColor.blue(), symbolColor.alpha(), 
 				-STARGATE_SYMBOL_RING_OUTER_CENTER,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
@@ -443,10 +443,10 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		//Light Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				-CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_TOP_HEIGHT,
 				STARGATE_RING_OFFSET,
@@ -468,7 +468,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				17F/64, 47F/64);
 		
 		//Light Front 1
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				-CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_TOP_HEIGHT,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -490,7 +490,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				17F/64, 48F/64);
 		
 		//Light Left 1
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, 1, 0,
 				-CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_TOP_HEIGHT,
 				STARGATE_RING_OFFSET,
@@ -512,7 +512,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				12F/64, 48F/64);
 		
 		//Light Right 1
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, 1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_TOP_HEIGHT,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -534,7 +534,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				19F/64, 48F/64);
 		
 		//Light Front 2
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				-CHEVRON_LIGHT_MID1_CENTER,
 				CHEVRON_LIGHT_MID1_HEIGHT,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -556,7 +556,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				18F/64, 49F/64);
 		
 		//Light Left 2
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, -1, 0,
 				-CHEVRON_LIGHT_MID1_CENTER,
 				CHEVRON_LIGHT_MID1_HEIGHT,
 				STARGATE_RING_OFFSET,
@@ -578,7 +578,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				12F/64, 49F/64);
 		
 		//Light Right 2
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, -1, 0,
 				CHEVRON_LIGHT_MID1_CENTER,
 				CHEVRON_LIGHT_MID1_HEIGHT,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -600,7 +600,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				19F/64, 49F/64);
 		
 		//Light Front 3
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				-CHEVRON_LIGHT_MID2_CENTER,
 				CHEVRON_LIGHT_MID2_HEIGHT,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -622,7 +622,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				16.5F/64, 51F/64);
 		
 		//Light Left 3
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, -1, 0,
 				-CHEVRON_LIGHT_MID2_CENTER,
 				CHEVRON_LIGHT_MID2_HEIGHT,
 				STARGATE_RING_OFFSET,
@@ -644,7 +644,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				12F/64, 51F/64);
 		
 		//Light Right 3
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, -1, 0,
 				CHEVRON_LIGHT_MID2_CENTER,
 				CHEVRON_LIGHT_MID2_HEIGHT,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -666,7 +666,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				19F/64, 51F/64);
 		
 		//Light Bottom
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 				-CHEVRON_LIGHT_BOTTOM_CENTER,
 				CHEVRON_LIGHT_BOTTOM_HEIGHT,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -736,7 +736,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	{
 		stack.pushPose();
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		float halfX = xSize / 2;
 		float halfY = ySize / 2;
@@ -762,7 +762,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		float y4 = yPos + CoordinateHelper.CoordinateSystems.polarToCartesianY(r4, phi4 + rotation);
 		
 		//Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				x1,
 				y1,
 				STARGATE_RING_OFFSET,
@@ -784,7 +784,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				(textureX + xSize * 16) / 64, (textureY - zSize * 16) / 64);
 		
 		//Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				x1,
 				y1,
 				zPos,
@@ -806,7 +806,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				(textureX + xSize * 16) / 64, textureY / 64);
 		
 		//Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, -1, 0,
 				x1,
 				y1,
 				STARGATE_RING_OFFSET,
@@ -828,7 +828,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				textureX / 64, textureY / 64);
 		
 		//Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, -1, 0,
 				x4,
 				y4,
 				zPos,
@@ -850,7 +850,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				(textureX + xSize * 16 + zSize * 16) / 64, textureY / 64);
 		
 		//Bottom
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 				x2,
 				y2,
 				zPos,

@@ -8,6 +8,10 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.povstalec.sgjourney.common.config.ClientSkyConfig;
+import net.povstalec.stellarview.StellarView;
+import net.povstalec.stellarview.client.render.level.util.StellarViewLightmapEffects;
+import net.povstalec.stellarview.client.resourcepack.ViewCenters;
+import net.povstalec.stellarview.compatibility.enhancedcelestials.EnhancedCelestialsCompatibility;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -61,7 +65,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_abydos_sky.get())
-				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return false;
 	    }
@@ -90,7 +94,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_chulak_sky.get())
-				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return false;
 	    }
@@ -119,7 +123,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_cavum_tenebrae_sky.get())
-				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return false;
 	    }
@@ -148,7 +152,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_lantea_sky.get())
-				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return false;
 	    }

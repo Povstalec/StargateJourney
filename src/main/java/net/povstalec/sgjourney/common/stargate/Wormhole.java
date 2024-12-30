@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
@@ -40,7 +41,7 @@ import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
-public class Wormhole implements ITeleporter
+public class Wormhole
 {
 	private static final String EVENT_DECONSTRUCTING_ENTITY = "stargate_deconstructing_entity";
 	private static final String EVENT_RECONSTRUCTING_ENTITY = "stargate_reconstructing_entity";
@@ -301,11 +302,17 @@ public class Wormhole implements ITeleporter
 		    	{
 		    		deconstructEvent(initialStargate, traveler, false);
 		    		Entity newTraveler = traveler;
-		    		if((ServerLevel) level != destinationlevel)
-		    			newTraveler = traveler.changeDimension(destinationlevel, this);
-
-		    		newTraveler.moveTo(destinationPos.x(), destinationPos.y(), destinationPos.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
-		    		newTraveler.setDeltaMovement(CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
+					
+		    		if(level != destinationlevel)
+		    			newTraveler = traveler.changeDimension(new DimensionTransition(destinationlevel, destinationPos,
+								CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum),
+								CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot(), false, DimensionTransition.DO_NOTHING));
+					else
+					{
+						newTraveler.moveTo(destinationPos.x(), destinationPos.y(), destinationPos.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
+						newTraveler.setDeltaMovement(CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));
+					}
+					
 		    		playWormholeSound(level, newTraveler);
 		    		reconstructEvent(targetStargate, newTraveler);
 		    	}

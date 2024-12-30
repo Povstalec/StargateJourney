@@ -40,7 +40,7 @@ public class DHDButton extends Button
 	}
     
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float p_93679_)
+    public void renderWidget(GuiGraphics graphics, int x, int y, float p_93679_)
     {
     	this.isHovered = x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
     	Minecraft minecraft = Minecraft.getInstance();

@@ -12,9 +12,13 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.client.Layers;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class FalconArmorModel extends HumanoidModel<LivingEntity>
 {
 	public static FalconArmorModel INSTANCE;
@@ -83,7 +87,7 @@ public class FalconArmorModel extends HumanoidModel<LivingEntity>
     }
 
     @SubscribeEvent
-    public static void bakeModelLayers(EntityRenderersEvent.AddLayers event) 
+    public static void bakeModelLayers(EntityRenderersEvent.AddLayers event)
     {
         EntityModelSet entityModelSet = event.getEntityModels();
         INSTANCE = new FalconArmorModel(entityModelSet.bakeLayer(Layers.FALCON_HEAD));

@@ -7,6 +7,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import org.joml.Vector3d;
@@ -143,8 +145,12 @@ public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
     	
     	int energy = 0;
     	
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
-			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
+		{
+			CompoundTag tag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
+			if(tag.contains("Energy"))
+				energy = tag.getInt("Energy");
+		}
 		
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + capacity +" FE")).withStyle(ChatFormatting.DARK_RED));
         tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));

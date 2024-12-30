@@ -181,7 +181,7 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	}
 	
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		if(this.visible)
 		{

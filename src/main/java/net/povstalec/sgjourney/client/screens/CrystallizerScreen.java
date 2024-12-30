@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
@@ -57,7 +57,7 @@ public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, delta);
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
         
@@ -91,7 +91,7 @@ public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu
     	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
 	    {
     		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid(), 1);
-    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid().getAmount() + "/" + AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
+    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getFluidType().getDescriptionId(fluidStack)).append(Component.literal(": " + this.menu.getFluid().getAmount() + "/" + AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
 	    }
     }
     

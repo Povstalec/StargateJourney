@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 
 public class ShieldModel
 {
-	private static final ResourceLocation SHIELD_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/shield/shield.png");
+	private static final ResourceLocation SHIELD_TEXTURE = StargateJourney.sgjourneyLocation("textures/entity/stargate/shield/shield.png");
 	
 	private static final float OFFSET = 1F / 16 / 2;
 	private static final int TOTAL_SIDES = 36;
@@ -26,13 +26,13 @@ public class ShieldModel
 	public void renderShield(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 
 		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.shield(SHIELD_TEXTURE));
 		
 		for(int j = 0; j < TOTAL_SIDES; j++)
 		{
-			SGJourneyModel.createCircleTriangle(consumer, matrix4, matrix3, combinedLight, 
+			SGJourneyModel.createCircleTriangle(consumer, matrix4, pose, combinedLight,
 					outerCircle[j % outerCircle.length][0], 
 					outerCircle[j % outerCircle.length][1],
 					OFFSET,
@@ -45,7 +45,7 @@ public class ShieldModel
 					outerCircle[(j + 1) % outerCircle.length][1], 
 					OFFSET);
 			
-			SGJourneyModel.createCircleTriangle(consumer, matrix4, matrix3, combinedLight, 
+			SGJourneyModel.createCircleTriangle(consumer, matrix4, pose, combinedLight,
 					outerCircle[(j + 1) % outerCircle.length][0], 
 					outerCircle[(j + 1) % outerCircle.length][1], 
 					OFFSET,

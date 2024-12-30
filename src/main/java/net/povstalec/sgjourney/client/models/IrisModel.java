@@ -73,13 +73,13 @@ public class IrisModel
 			stack.mulPose(Axis.ZP.rotationDegrees(-maxOpenDegrees * closingProgress));
 			
 			Matrix4f matrix4 = stack.last().pose();
-			Matrix3f matrix3 = stack.last().normal();
+			PoseStack.Pose pose = stack.last();
 			
 			float uAddition = 13 * (j % 10) / IRIS_TEXTURE_WIDTH;
 			float vAddition = 40 * (j / 10) / IRIS_TEXTURE_WIDTH;
 			
 			// Front
-			SGJourneyModel.createTriangle(consumer, matrix4, matrix3, combinedLight,
+			SGJourneyModel.createTriangle(consumer, matrix4, pose, combinedLight,
 					0, 0, 1,
 					
 					-IRIS_BLADE_WIDTH,
@@ -98,7 +98,7 @@ public class IrisModel
 					TEXTURE_LEFT_U + uAddition, TEXTURE_LEFT_V + vAddition);
 			
 			// Back
-			SGJourneyModel.createTriangle(consumer, matrix4, matrix3, combinedLight, 
+			SGJourneyModel.createTriangle(consumer, matrix4, pose, combinedLight,
 					0, 0, -1,
 					-IRIS_BLADE_WIDTH_HALF,
 					-IRIS_BLADE_LENGTH,

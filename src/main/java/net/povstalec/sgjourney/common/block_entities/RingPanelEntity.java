@@ -256,12 +256,12 @@ public class RingPanelEntity extends BlockEntity
 	{
 		ItemStack stack = this.itemStackHandler.getStackInSlot(chosenNumber);
 		
-		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
+		/*if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
 		{
 			int[] coordinates = this.itemStackHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
 			targetPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
 		}
-		else if(chosenNumber < ringsPos.size())
+		else */if(chosenNumber < ringsPos.size())
 			targetPos = ringsPos.get(chosenNumber);
 
 		if(targetPos == null)
@@ -285,8 +285,8 @@ public class RingPanelEntity extends BlockEntity
 	{
 		ItemStack stack = this.itemStackHandler.getStackInSlot(chosenNumber);
 		
-		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
-			return this.itemStackHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
+		/*if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
+			return this.itemStackHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");*/
 		
 		//TODO FIX THIS
 		//CompoundTag ringsTag = BlockEntityList.get(level).getBlockEntities("TransportRings");

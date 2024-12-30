@@ -51,21 +51,21 @@ public abstract class SymbolBlockRenderer
 		return ClientUtil.getSymbols(symbolBlock.symbols);
 	}
 	
-	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light, float textureSize, float textureOffset)
+	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, PoseStack.Pose pose, int light, float textureSize, float textureOffset)
 	{
 		float textureHalf = 1F / textureSize / 2;
 		//TOP LEFT
-		consumer.vertex(matrix4, SYMBOL_START, SYMBOL_END, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 0)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, SYMBOL_START, SYMBOL_END, SYMBOL_OFFSET).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset - textureHalf, 0)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light >> 16).setNormal(pose, 0.0F, 0.0F, 1.0F);
 		//BOTTOM LEFT
-		consumer.vertex(matrix4, SYMBOL_START, SYMBOL_START, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, SYMBOL_START, SYMBOL_START, SYMBOL_OFFSET).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset - textureHalf, 1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light >> 16).setNormal(pose, 0.0F, 0.0F, 1.0F);
 		//BOTTOM RIGHT
-		consumer.vertex(matrix4, SYMBOL_END, SYMBOL_START, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, SYMBOL_END, SYMBOL_START, SYMBOL_OFFSET).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset + textureHalf, 1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light >> 16).setNormal(pose, 0.0F, 0.0F, 1.0F);
 		//TOP RIGHT
-		consumer.vertex(matrix4, SYMBOL_END, SYMBOL_END, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 0)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, SYMBOL_END, SYMBOL_END, SYMBOL_OFFSET).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset + textureHalf, 0)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(light, light >> 16).setNormal(pose, 0.0F, 0.0F, 1.0F);
 	}
 	
 	protected void renderSymbolBlock(SymbolBlockEntity symbolBlock, PoseStack stack, MultiBufferSource source, int light)
@@ -89,7 +89,7 @@ public abstract class SymbolBlockRenderer
         {
         	VertexConsumer consumer;
     		Matrix4f matrix4 = stack.last().pose();
-    		Matrix3f matrix3 = stack.last().normal();
+			PoseStack.Pose pose = stack.last();
             light = LevelRenderer.getLightColor(symbolBlock.getLevel(), pos);
     		
         	if(symbolBlock.symbolNumber == 0)
@@ -98,7 +98,7 @@ public abstract class SymbolBlockRenderer
             	ResourceLocation texture = pointOfOrigin != null ? pointOfOrigin.texture() : ERROR;
             	
                 consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
-                renderSymbol(consumer, matrix4, matrix3, light, 1, 0.5F);
+                renderSymbol(consumer, matrix4, pose, light, 1, 0.5F);
         	}
         	else
         	{
@@ -109,7 +109,7 @@ public abstract class SymbolBlockRenderer
         			ResourceLocation texture = symbols.getSymbolTexture();
                 	
                     consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
-                    renderSymbol(consumer, matrix4, matrix3, light, symbols.getSize(), symbols.getTextureOffset(symbolBlock.symbolNumber));
+                    renderSymbol(consumer, matrix4, pose, light, symbols.getSize(), symbols.getTextureOffset(symbolBlock.symbolNumber));
                     
             	}
         	}

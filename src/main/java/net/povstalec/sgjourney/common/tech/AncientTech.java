@@ -9,10 +9,10 @@ public interface AncientTech
 {
 	default boolean canUseAncientTech(Entity user)
 	{
-		Optional<Boolean> canUse = user.getCapability(AncientGeneProvider.ANCIENT_GENE).map(cap -> cap.canUseAncientTechnology());
+		AncientGene cap = user.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			return cap.canUseAncientTechnology();
 		
-		if(canUse.isPresent())
-			return canUse.get();
 		return false;
 	}
 	
@@ -29,10 +29,10 @@ public interface AncientTech
 	
 	default AncientGene.ATAGene getGeneType(Entity user)
 	{
-		Optional<AncientGene.ATAGene> geneType = user.getCapability(AncientGeneProvider.ANCIENT_GENE).map(cap -> cap.getGeneType());
+		AncientGene cap = user.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			return cap.getGeneType();
 		
-		if(geneType.isPresent())
-			return geneType.get();
 		return AncientGene.ATAGene.NONE;
 	}
 	
