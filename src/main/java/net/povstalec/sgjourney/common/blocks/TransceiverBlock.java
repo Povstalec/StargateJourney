@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.Item;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 import org.joml.Vector3d;
 
 import net.minecraft.ChatFormatting;
@@ -143,7 +144,7 @@ public class TransceiverBlock extends Block implements EntityBlock
         				return new TransceiverMenu(windowId, playerInventory, blockEntity);
         			}
         		};
-				((ServerPlayer) player).openMenu(containerProvider);
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{

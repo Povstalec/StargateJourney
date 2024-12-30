@@ -58,8 +58,8 @@ public class TabInit
 			event.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
 			event.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
 			event.accept(ItemInit.VIAL.get());
-			event.accept(VialItem.liquidNaquadahSetup());
-			event.accept(VialItem.heavyLiquidNaquadahSetup());
+			//event.accept(VialItem.liquidNaquadahSetup());
+			//event.accept(VialItem.heavyLiquidNaquadahSetup());
 
 			event.accept(ItemInit.NAQUADAH_ROD.get());
 			event.accept(ItemInit.REACTION_CHAMBER.get());
@@ -125,13 +125,13 @@ public class TabInit
 		{
 			event.accept(BlockInit.UNIVERSE_STARGATE.get());
 			event.accept(BlockInit.MILKY_WAY_STARGATE.get());
-			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
+			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), BlockEntityInit.MILKY_WAY_STARGATE.get()));
 			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
 			event.accept(BlockInit.PEGASUS_STARGATE.get());
-			event.accept(PegasusStargateBlock.localSymbols(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
+			event.accept(PegasusStargateBlock.localSymbols(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), BlockEntityInit.PEGASUS_STARGATE.get()));
 			event.accept(PegasusDHDBlock.pegasusCrystalSetup());
 			event.accept(BlockInit.CLASSIC_STARGATE.get());
-			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
+			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), BlockEntityInit.CLASSIC_STARGATE.get()));
 			event.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
@@ -246,12 +246,12 @@ public class TabInit
 		}
 		else if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
 		{
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get())));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), BlockEntityInit.UNIVERSE_STARGATE.get()));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), BlockEntityInit.MILKY_WAY_STARGATE.get()));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), BlockEntityInit.PEGASUS_STARGATE.get()));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), BlockEntityInit.CLASSIC_STARGATE.get()));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), BlockEntityInit.TOLLAN_STARGATE.get()));
+			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get()), BlockEntityInit.TRANSPORT_RINGS.get()));
 		}
 	}
 	

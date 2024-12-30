@@ -24,6 +24,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidize
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 public class HeavyNaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
 {
@@ -69,7 +70,7 @@ public class HeavyNaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBloc
         				return new LiquidizerMenu.HeavyLiquidNaquadah(windowId, playerInventory, blockEntity);
         			}
         		};
-				((ServerPlayer) player).openMenu(containerProvider);
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{

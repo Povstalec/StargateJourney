@@ -49,6 +49,7 @@ import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterloggedBlock
 {
@@ -122,7 +123,7 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 						return new PegasusDHDMenu(windowId, playerInventory, blockEntity);
 					}
 				};
-				((ServerPlayer) player).openMenu(containerProvider);
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 			}
 		}
 		else

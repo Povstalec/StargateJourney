@@ -30,6 +30,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 
 public class RingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -82,7 +83,7 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
         				return new RingPanelMenu(windowId, playerInventory, blockEntity);
         			}
         		};
-				((ServerPlayer) player).openMenu(containerProvider);
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{

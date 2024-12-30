@@ -23,6 +23,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 public class CrystallizerBlock extends AbstractCrystallizerBlock
 {
@@ -68,7 +69,7 @@ public class CrystallizerBlock extends AbstractCrystallizerBlock
         				return new CrystallizerMenu(windowId, playerInventory, blockEntity);
         			}
         		};
-				((ServerPlayer) player).openMenu(containerProvider);
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{

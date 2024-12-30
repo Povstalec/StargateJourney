@@ -42,6 +42,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfa
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 {
@@ -99,7 +100,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
             				return new InterfaceMenu(windowId, playerInventory, blockEntity);
             			}
             		};
-					((ServerPlayer) player).openMenu(containerProvider);
+					NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         		}
         		else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
         		{

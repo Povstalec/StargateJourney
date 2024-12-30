@@ -17,8 +17,8 @@ public record ClientboundNaquadahLiquidizerUpdatePacket(BlockPos blockPos, Fluid
     
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundNaquadahLiquidizerUpdatePacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, ClientboundNaquadahLiquidizerUpdatePacket::blockPos,
-            FluidStack.STREAM_CODEC, ClientboundNaquadahLiquidizerUpdatePacket::fluidStack1,
-            FluidStack.STREAM_CODEC, ClientboundNaquadahLiquidizerUpdatePacket::fluidStack2,
+            FluidStack.OPTIONAL_STREAM_CODEC, ClientboundNaquadahLiquidizerUpdatePacket::fluidStack1,
+            FluidStack.OPTIONAL_STREAM_CODEC, ClientboundNaquadahLiquidizerUpdatePacket::fluidStack2,
             ByteBufCodecs.VAR_INT, ClientboundNaquadahLiquidizerUpdatePacket::progress,
             ClientboundNaquadahLiquidizerUpdatePacket::new
     );

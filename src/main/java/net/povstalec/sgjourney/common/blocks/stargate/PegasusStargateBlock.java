@@ -124,10 +124,11 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
-	public static ItemStack localSymbols(ItemStack stack)
+	public static ItemStack localSymbols(ItemStack stack, BlockEntityType<?> blockEntityType)
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS, false);
+		BlockEntity.addEntityType(compoundtag, blockEntityType);
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;

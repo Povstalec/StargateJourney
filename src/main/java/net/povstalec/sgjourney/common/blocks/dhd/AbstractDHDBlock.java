@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 
 public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -138,7 +139,7 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 				return new DHDCrystalMenu(windowId, playerInventory, blockEntity);
 			}
 		};
-		((ServerPlayer) player).openMenu(containerProvider);
+		NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 	}
 	
 	@SuppressWarnings("unchecked")

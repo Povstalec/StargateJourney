@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -327,10 +328,11 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		return stack;
 	}
 	
-	public static ItemStack localPointOfOrigin(ItemStack stack)
+	public static ItemStack localPointOfOrigin(ItemStack stack, BlockEntityType<?> blockEntityType)
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
+		BlockEntity.addEntityType(compoundtag, blockEntityType);
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;

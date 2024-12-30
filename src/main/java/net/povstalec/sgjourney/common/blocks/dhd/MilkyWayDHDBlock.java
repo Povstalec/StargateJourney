@@ -49,6 +49,7 @@ import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterloggedBlock
 {
@@ -122,7 +123,7 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
 						return new MilkyWayDHDMenu(windowId, playerInventory, blockEntity);
 					}
 				};
-				((ServerPlayer) player).openMenu(containerProvider);
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 			}
 		}
 		else

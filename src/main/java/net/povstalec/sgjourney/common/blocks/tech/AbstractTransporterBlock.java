@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -92,10 +93,11 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
-	public static ItemStack excludeFromNetwork(ItemStack stack)
+	public static ItemStack excludeFromNetwork(ItemStack stack, BlockEntityType<?> blockEntityType)
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean("AddToNetwork", false);
+		BlockEntity.addEntityType(compoundtag, blockEntityType);
 
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		

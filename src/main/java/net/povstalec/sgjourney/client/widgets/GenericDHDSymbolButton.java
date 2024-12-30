@@ -196,7 +196,7 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 			else
 				this.isHovered = false;	
 			
-			this.renderWidget(graphics, mouseX, mouseY, partialTick);
+			super.renderWidget(graphics, mouseX, mouseY, partialTick);
 			//this.updateTooltip();
 		}
 	}

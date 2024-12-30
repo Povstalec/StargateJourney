@@ -17,7 +17,7 @@ public record ClientboundCrystallizerUpdatePacket(BlockPos blockPos, FluidStack 
     
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundCrystallizerUpdatePacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, ClientboundCrystallizerUpdatePacket::blockPos,
-            FluidStack.STREAM_CODEC, ClientboundCrystallizerUpdatePacket::fluidStack,
+            FluidStack.OPTIONAL_STREAM_CODEC, ClientboundCrystallizerUpdatePacket::fluidStack,
             ByteBufCodecs.VAR_INT, ClientboundCrystallizerUpdatePacket::progress,
             ClientboundCrystallizerUpdatePacket::new
     );

@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 {
@@ -115,7 +116,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
             				return new NaquadahGeneratorMenu(windowId, playerInventory, blockEntity);
             			}
             		};
-					((ServerPlayer) player).openMenu(containerProvider);
+					NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
             	}
             	else
             		throw new IllegalStateException("Our named container provider is missing!");
