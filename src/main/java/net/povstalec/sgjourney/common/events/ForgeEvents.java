@@ -318,22 +318,28 @@ public class ForgeEvents
 		}
 	}
 	
-	//TODO Test how capabilities work now
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public static void onPlayerCloned(PlayerEvent.Clone event)
 	{
 		Player original = event.getOriginal();
 		Player clone = event.getEntity();
-		original.reviveCaps();
 		
-		original.getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).ifPresent(oldCap ->
-			clone.getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).ifPresent(newCap -> newCap.copyFrom(oldCap)));
+		BloodstreamNaquadah bloodstreamNaquadah = original.getCapability(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH_CAPABILITY);
+		if(bloodstreamNaquadah != null)
+		{
+			BloodstreamNaquadah newBloodstreamNaquadah = clone.getCapability(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH_CAPABILITY);
+			if(newBloodstreamNaquadah != null)
+				newBloodstreamNaquadah.copyFrom(bloodstreamNaquadah);
+		}
 		
-		original.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(oldCap ->
-			clone.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(newCap -> newCap.copyFrom(oldCap)));
-		
-		original.invalidateCaps();
-	}*/
+		AncientGene ataGene = original.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(ataGene != null)
+		{
+			AncientGene newAtaGene = clone.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+			if(newAtaGene != null)
+				newAtaGene.copyFrom(ataGene);
+		}
+	}
 	
 	@SubscribeEvent
 	public static void addCustomTrades(VillagerTradesEvent event)

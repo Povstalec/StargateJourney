@@ -2,32 +2,54 @@ package net.povstalec.sgjourney.common.capabilities;
 
 import java.util.Random;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.init.AttachmentTypeInit;
 
 public class AncientGene
 {
-	
-	public static final String FIRST_JOIN = "first_join";
 	public static final String ANCIENT_GENE = "ancient_gene";
+	
+	public static final Codec CODEC = StringRepresentable.fromValues(() -> new ATAGene[]{ATAGene.ANCIENT, ATAGene.INHERITED, ATAGene.ARTIFICIAL, ATAGene.NONE, ATAGene.UNDECIDED});
 	
 	public static final EntityCapability<AncientGene, Void> ANCIENT_GENE_CAPABILITY = EntityCapability.createVoid(
 			StargateJourney.sgjourneyLocation(ANCIENT_GENE), AncientGene.class);
 	
-	public enum ATAGene
+	private LivingEntity entity;
+	private ATAGene gene;
+	
+	public AncientGene(LivingEntity entity)
 	{
-		ANCIENT(true),
-		INHERITED(true),
-		ARTIFICIAL(true),
-		NONE(false);
+		this.entity = entity;
+		this.gene = this.entity.getData(AttachmentTypeInit.ATA_GENE);
+	}
+	
+	public enum ATAGene implements StringRepresentable
+	{
+		ANCIENT("ancient", true),
+		INHERITED("inherited", true),
+		ARTIFICIAL("artificial", true),
+		NONE("none", false),
+		UNDECIDED("undecided", false);
 		
+		private final String name;
 		private boolean canActivate;
 		
-		private ATAGene(boolean canActivate)
+		private ATAGene(String name, boolean canActivate)
 		{
+			this.name = name;
 			this.canActivate = canActivate;
+		}
+		
+		@Override
+		public String getSerializedName()
+		{
+			return this.name;
 		}
 		
 		private boolean canActivate()
@@ -35,9 +57,6 @@ public class AncientGene
 			return this.canActivate;
 		}
 	}
-	
-	private boolean firstJoin = true;
-	private ATAGene gene = ATAGene.NONE;
 	
 	public ATAGene getGeneType()
 	{
@@ -69,31 +88,31 @@ public class AncientGene
 		return this.gene.equals(ATAGene.NONE);
 	}
 	
+	public void setGene(ATAGene gene)
+	{
+		this.gene = gene;
+		this.entity.setData(AttachmentTypeInit.ATA_GENE, this.gene);
+		
+	}
+	
 	public void giveGene()
 	{
-		this.gene = ATAGene.ANCIENT;
+		setGene(ATAGene.ANCIENT);
 	}
 	
 	public void inheritGene()
 	{
-		this.gene = ATAGene.INHERITED;
+		setGene(ATAGene.INHERITED);
 	}
 	
 	public void implantGene()
 	{
-		this.gene = ATAGene.ARTIFICIAL;
+		setGene(ATAGene.ARTIFICIAL);
 	}
 	
 	public void removeGene()
 	{
-		this.gene = ATAGene.NONE;
-	}
-	
-	public static void addAncient(Entity entity)
-	{
-		AncientGene cap = entity.getCapability(ANCIENT_GENE_CAPABILITY);
-		if(cap != null)
-			cap.giveGene();
+		setGene(ATAGene.NONE);
 	}
 	
 	public static void inheritGene(long seed, Entity entity, int inheritanceChance)
@@ -121,8 +140,8 @@ public class AncientGene
 			{
 				if(chance <= inheritanceChance)
 					cap.inheritGene();
-				
-				cap.markJoined();
+				else
+					cap.setGene(ATAGene.NONE);
 			}
 		}
 	}
@@ -130,28 +149,11 @@ public class AncientGene
 	
 	public boolean firstJoin()
 	{
-		return this.firstJoin;
-	}
-	
-	public void markJoined()
-	{
-		this.firstJoin = false;
+		return this.getGeneType() == ATAGene.UNDECIDED;
 	}
 	
 	public void copyFrom(AncientGene source)
 	{
-		this.gene = source.gene;
-	}
-	
-	public void saveData(CompoundTag tag)
-	{
-		tag.putBoolean(FIRST_JOIN, firstJoin);
-		tag.putString(ANCIENT_GENE, this.gene.toString().toUpperCase());
-	}
-	
-	public void loadData(CompoundTag tag)
-	{
-		this.firstJoin = tag.getBoolean(FIRST_JOIN);
-		this.gene = ATAGene.valueOf(tag.getString(ANCIENT_GENE));
+		setGene(source.gene);
 	}
 }

@@ -69,7 +69,10 @@ public abstract class StargateIrisItem extends Item
 	
 	public static int getDurability(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.IRIS_DURABILITY, 0);
+		if(stack.getItem() instanceof StargateIrisItem iris)
+			return stack.getOrDefault(DataComponentInit.IRIS_DURABILITY, iris.getMaxDurability());
+		
+		return 0;
 	}
 	
 	/**
