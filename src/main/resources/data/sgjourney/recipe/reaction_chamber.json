@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"RAR",
+		"AHA",
+		"RAR"
+	],
+	
+	"key": 
+	{
+		"A": {"tag": "sgjourney:naquadah_alloy"},
+		"R": { "item": "minecraft:redstone" },
+		"H": { "tag": "sgjourney:reaction_heater" }
+	},
+	
+	"result": { "id": "sgjourney:reaction_chamber", "count": 1 }
+}

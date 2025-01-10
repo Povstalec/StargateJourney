@@ -1,9 +1,0 @@
-{
-	"type": "minecraft:crafting_shapeless",
-	"category": "misc",
-	"ingredients": 
-	[
-		{ "item": "sgjourney:pure_naquadah_block" }
-	],
-	"result": { "item": "sgjourney:pure_naquadah", "count": 9 }
-}

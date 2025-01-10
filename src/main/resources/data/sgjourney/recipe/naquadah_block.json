@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"II",
+		"II"
+	],
+	"key":
+	{
+		"I":
+		{
+			"item": "sgjourney:naquadah_alloy"
+		}
+	},
+	"result":
+	{
+		"id": "sgjourney:naquadah_block"
+	}
+}

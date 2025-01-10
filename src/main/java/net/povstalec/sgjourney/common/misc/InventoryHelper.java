@@ -12,7 +12,7 @@ public class InventoryHelper
 
 		itemTag.putInt("Slot", slot);
 		itemTag.putString("id", id);
-		itemTag.putByte("Count", (byte) count);
+		itemTag.putInt("count", count);
 		
 		if(tag != null)
 			itemTag.put("tag", tag);

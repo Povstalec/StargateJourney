@@ -115,7 +115,7 @@ public class StargateBlockItem extends BlockItem
 			BlockEntity blockentity = level.getBlockEntity(pos);
 			if(blockentity != null)
 			{
-				if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
+				if(!level.isClientSide() && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
 					return false;
 				
 				CompoundTag compoundtag1 = blockentity.saveWithoutMetadata(minecraftserver.registryAccess());

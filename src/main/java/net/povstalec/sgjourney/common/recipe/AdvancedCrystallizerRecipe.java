@@ -4,8 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.*;
@@ -133,20 +131,9 @@ public class AdvancedCrystallizerRecipe implements Recipe<CrystalRecipeInput>
 		return nonnulllist;
 	}
 	
-	public static class Type
+	public static class Type implements RecipeType<AdvancedCrystallizerRecipe>
 	{
-		public static final RecipeType<AdvancedCrystallizerRecipe> ADVANCED_CRYSTALLIZING = register("advanced_crystallizing");
-		
-		private static <T extends Recipe<CrystalRecipeInput>> RecipeType<T> register(final String identifier)
-		{
-			return (RecipeType) Registry.register(BuiltInRegistries.RECIPE_TYPE, ResourceLocation.withDefaultNamespace(identifier), new RecipeType<T>()
-			{
-				public String toString()
-				{
-					return identifier;
-				}
-			});
-		}
+		public static final Type ADVANCED_CRYSTALLIZING = new Type();
 	}
 	
 	public static class Serializer implements RecipeSerializer<AdvancedCrystallizerRecipe>

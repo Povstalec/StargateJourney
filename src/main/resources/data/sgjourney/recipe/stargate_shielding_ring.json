@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"NIN",
+		"IRI",
+		"NIN"
+	],
+	"key":
+	{
+		"I": { "item": "minecraft:iron_ingot" }	,
+		"N": { "tag": "sgjourney:naquadah_alloy_nugget" },
+		"R": { "item": "minecraft:redstone" }
+	},
+	"result":
+	{
+		"id": "sgjourney:stargate_shielding_ring"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:smithing_transform",
+	"addition":
+	{
+		"item": "sgjourney:naquadah"
+	},
+	"base":
+	{
+		"item": "minecraft:netherite_sword"
+	},
+	"result":
+	{
+		"id": "sgjourney:naquadah_sword"
+	},
+	"template":
+	{
+		"item": "minecraft:netherite_upgrade_smithing_template"
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"NNN",
+		"CGC",
+		"AAA"
+	],
+	
+	"key": 
+	{
+		"G": { "item": "sgjourney:naquadah_generator_mark_i" },
+		"C": { "item": "sgjourney:reaction_chamber" },
+		"N": { "item": "sgjourney:naquadah" },
+		"A": { "tag": "sgjourney:naquadah_alloy" }
+		
+	},
+	
+	"result": { "id": "sgjourney:naquadah_generator_mark_ii" }
+}
