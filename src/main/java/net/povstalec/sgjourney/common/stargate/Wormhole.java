@@ -35,6 +35,7 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.init.AdvancementInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
@@ -296,7 +297,7 @@ public class Wormhole
 
 					player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
 					player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled * 100);
-		    		WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
+					AdvancementInit.WORMHOLE_CRITERION_TRIGGER.get().trigger(player, initialDimension, targetDimension, distanceTraveled);
 		    	}
 		    	else
 		    	{

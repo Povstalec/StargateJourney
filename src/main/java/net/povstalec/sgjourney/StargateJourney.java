@@ -116,7 +116,7 @@ public class StargateJourney
     
         GalaxyInit.register(eventBus);
     
-        AdvancementInit.register();
+        AdvancementInit.register(eventBus);
         
         AttachmentTypeInit.register(eventBus);
     

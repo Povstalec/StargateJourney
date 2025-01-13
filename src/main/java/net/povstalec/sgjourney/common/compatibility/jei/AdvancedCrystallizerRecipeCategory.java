@@ -38,6 +38,18 @@ public class AdvancedCrystallizerRecipeCategory implements IRecipeCategory<Advan
 	{
 		return ADVANCED_CRYSTALLIZING_TYPE;
 	}
+	
+	@Override
+	public int getWidth()
+	{
+		return 176;
+	}
+	
+	@Override
+	public int getHeight()
+	{
+		return 85;
+	}
 
 	@Override
 	public Component getTitle()

@@ -1,14 +1,11 @@
 package net.povstalec.sgjourney.common.recipe;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.*;
-
-import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -20,42 +17,38 @@ import javax.annotation.Nullable;
 
 public class CrystallizerRecipe implements Recipe<CrystalRecipeInput>
 {
-	protected final Pair<Ingredient, Integer> ingredient1;
-	protected final Pair<Ingredient, Integer> ingredient2;
-	protected final Pair<Ingredient, Integer> ingredient3;
+	protected final CrystallizingIngredient crystalBase;
+	protected final CrystallizingIngredient primaryIngredient;
+	protected final CrystallizingIngredient secondaryIngredient;
 	private final ItemStack output;
-	private final boolean depletePrimary;
-	private final boolean depleteSecondary;
 	
-	public CrystallizerRecipe(ItemStack output, Pair<Ingredient, Integer> ingredient1, Pair<Ingredient, Integer> ingredient2, Pair<Ingredient, Integer> ingredient3, boolean depletePrimary, boolean depleteSecondary)
+	public CrystallizerRecipe(ItemStack output, CrystallizingIngredient crystalBase, CrystallizingIngredient primaryIngredient, CrystallizingIngredient secondaryIngredient)
 	{
-		this.ingredient1 = ingredient1;
-		this.ingredient2 = ingredient2;
-		this.ingredient3 = ingredient3;
+		this.crystalBase = crystalBase;
+		this.primaryIngredient = primaryIngredient;
+		this.secondaryIngredient = secondaryIngredient;
 		this.output = output;
-		this.depletePrimary = depletePrimary;
-		this.depleteSecondary = depleteSecondary;
 	}
 	
 	public int getAmountInSlot(int slot)
 	{
 		return switch(slot)
 		{
-			case 0 -> this.ingredient1.getSecond();
-			case 1 -> this.ingredient2.getSecond();
-			case 2 -> this.ingredient3.getSecond();
+			case 0 -> this.crystalBase.amount();
+			case 1 -> this.primaryIngredient.amount();
+			case 2 -> this.secondaryIngredient.amount();
 			default -> 0;
 		};
 	}
 	
 	public boolean depletePrimary()
 	{
-		return this.depletePrimary;
+		return primaryIngredient.deplete();
 	}
 	
 	public boolean depleteSecondary()
 	{
-		return this.depleteSecondary;
+		return secondaryIngredient.deplete();
 	}
 	
 	@Nullable
@@ -63,9 +56,9 @@ public class CrystallizerRecipe implements Recipe<CrystalRecipeInput>
 	{
 		return switch(slot)
 		{
-			case 0 -> this.ingredient1.getFirst();
-			case 1 -> this.ingredient2.getFirst();
-			case 2 -> this.ingredient3.getFirst();
+			case 0 -> this.crystalBase.ingredient();
+			case 1 -> this.primaryIngredient.ingredient();
+			case 2 -> this.secondaryIngredient.ingredient();
 			default -> null;
 		};
 	}
@@ -124,9 +117,9 @@ public class CrystallizerRecipe implements Recipe<CrystalRecipeInput>
 	public NonNullList<Ingredient> getIngredients()
 	{
 		NonNullList<Ingredient> nonnulllist = NonNullList.create();
-		nonnulllist.add(this.ingredient1.getFirst());
-		nonnulllist.add(this.ingredient2.getFirst());
-		nonnulllist.add(this.ingredient3.getFirst());
+		nonnulllist.add(this.crystalBase.ingredient());
+		nonnulllist.add(this.primaryIngredient.ingredient());
+		nonnulllist.add(this.secondaryIngredient.ingredient());
 		
 		return nonnulllist;
 	}
@@ -147,21 +140,15 @@ public class CrystallizerRecipe implements Recipe<CrystalRecipeInput>
 				ItemStack.STRICT_CODEC.fieldOf("output").forGetter((recipe) ->
 			{
 						return recipe.output;
-			}), Codec.pair(Ingredient.CODEC, Codec.INT).fieldOf("crystal_base").forGetter((recipe) ->
+			}), CrystallizingIngredient.CODEC.fieldOf("crystal_base").forGetter((recipe) ->
 			{
-				return recipe.ingredient1;
-			}), Codec.pair(Ingredient.CODEC, Codec.INT).fieldOf("primary_ingredient").forGetter((recipe) ->
+				return recipe.crystalBase;
+			}), CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("primary_ingredient").forGetter((recipe) ->
 			{
-				return recipe.ingredient2;
-			}), Codec.pair(Ingredient.CODEC, Codec.INT).fieldOf("secondary_ingredient").forGetter((recipe) ->
+				return recipe.primaryIngredient;
+			}), CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("secondary_ingredient").forGetter((recipe) ->
 			{
-				return recipe.ingredient3;
-			}), Codec.BOOL.optionalFieldOf("deplete_primary", true).forGetter((recipe) ->
-			{
-				return recipe.depletePrimary;
-			}), Codec.BOOL.optionalFieldOf("deplete_secondary", true).forGetter((recipe) ->
-			{
-				return recipe.depleteSecondary;
+				return recipe.secondaryIngredient;
 			})).apply(recipeBuilder, CrystallizerRecipe::new);
 		});
 		
@@ -175,43 +162,33 @@ public class CrystallizerRecipe implements Recipe<CrystalRecipeInput>
 			int amount1 = friendlyByteBuf.readInt();
 			Ingredient ingredient2 = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
 			int amount2 = friendlyByteBuf.readInt();
+			boolean depletePrimary = friendlyByteBuf.readBoolean();
 			Ingredient ingredient3 = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
 			int amount3 = friendlyByteBuf.readInt();
+			boolean depleteSecondary = friendlyByteBuf.readBoolean();
 			
 			ItemStack output = ItemStack.STREAM_CODEC.decode(friendlyByteBuf);
 			
-			boolean depletePrimary = friendlyByteBuf.readBoolean();
-			boolean depleteSecondary = friendlyByteBuf.readBoolean();
 			
-			return new CrystallizerRecipe(output, Pair.of(ingredient1, amount1), Pair.of(ingredient2, amount2), Pair.of(ingredient3, amount3), depletePrimary, depleteSecondary);
+			return new CrystallizerRecipe(output, new CrystallizingIngredient(ingredient1, amount1), new CrystallizingIngredient(ingredient2, amount2, depletePrimary), new CrystallizingIngredient(ingredient3, amount3, depleteSecondary));
 		}
 		
 		private static void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, CrystallizerRecipe recipe)
 		{
-			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.ingredient1.getFirst());
-			friendlyByteBuf.writeInt(recipe.ingredient1.getSecond());
-			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.ingredient2.getFirst());
-			friendlyByteBuf.writeInt(recipe.ingredient2.getSecond());
-			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.ingredient3.getFirst());
-			friendlyByteBuf.writeInt(recipe.ingredient3.getSecond());
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.crystalBase.ingredient());
+			friendlyByteBuf.writeInt(recipe.crystalBase.amount());
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.primaryIngredient.ingredient());
+			friendlyByteBuf.writeInt(recipe.primaryIngredient.amount());
+			friendlyByteBuf.writeBoolean(recipe.primaryIngredient.deplete());
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.secondaryIngredient.ingredient());
+			friendlyByteBuf.writeInt(recipe.secondaryIngredient.amount());
+			friendlyByteBuf.writeBoolean(recipe.secondaryIngredient.deplete());
 			
 			ItemStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.getResultItem(null));
 			
-			friendlyByteBuf.writeBoolean(recipe.depletePrimary);
-			friendlyByteBuf.writeBoolean(recipe.depleteSecondary);
 		}
-		
-		/*public static Pair<Ingredient, Integer> getIngredient(Map<String, JsonElement> pair)
-		{
-			JsonElement item = pair.get("item");
-			JsonObject json = new JsonObject();
-			json.add("item", item);
-
-			Ingredient ingredient = Ingredient.fromJson(json);
-			int amount = pair.get("amount").getAsInt();
-			
-			return new Pair<Ingredient, Integer>(ingredient, amount);
-		}*/
 		
 		@Override
 		public MapCodec<CrystallizerRecipe> codec()

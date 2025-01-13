@@ -1,10 +1,8 @@
 {
 	"type": "sgjourney:crystallizing",
-	"crystal_base": {"item": "sgjourney:crystal_base", "amount": 1},
-	"primary_ingredient": {"item": "minecraft:redstone", "amount": 3},
-	"secondary_ingredient": {"item": "minecraft:glowstone_dust", "amount": 3},
-	"deplete_primary": true,
-	"deplete_secondary": true,
+	"crystal_base": {"ingredient": {"item": "sgjourney:crystal_base"}, "amount": 1},
+	"primary_ingredient": {"ingredient": {"item": "minecraft:redstone"}, "amount": 3, "deplete": true},
+	"secondary_ingredient": {"ingredient": {"item": "minecraft:glowstone_dust"}, "amount": 3, "deplete": true},
 	"output":
 	{
 		"id": "sgjourney:transfer_crystal"

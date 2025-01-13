@@ -1,10 +1,8 @@
 {
 	"type": "sgjourney:crystallizing",
-	"crystal_base": {"item": "sgjourney:stargate_variant_crystal", "amount": 1},
-	"primary_ingredient": {"item": "sgjourney:naquadah", "amount": 1},
-	"secondary_ingredient": {"item": "minecraft:redstone", "amount": 1},
-	"deplete_primary": true,
-	"deplete_secondary": true,
+	"crystal_base": {"ingredient": {"item": "sgjourney:stargate_variant_crystal"}, "amount": 1},
+	"primary_ingredient": {"ingredient": {"item": "sgjourney:naquadah"}, "amount": 1, "deplete": true},
+	"secondary_ingredient": {"ingredient": {"item": "minecraft:redstone"}, "amount": 1, "deplete": true},
 	"output":
 	{
 		"id": "sgjourney:stargate_variant_crystal",

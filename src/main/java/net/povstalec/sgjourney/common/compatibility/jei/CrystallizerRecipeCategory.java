@@ -39,6 +39,18 @@ public class CrystallizerRecipeCategory implements IRecipeCategory<CrystallizerR
 	{
 		return CRYSTALLIZING_TYPE;
 	}
+	
+	@Override
+	public int getWidth()
+	{
+		return 176;
+	}
+	
+	@Override
+	public int getHeight()
+	{
+		return 85;
+	}
 
 	@Override
 	public Component getTitle()

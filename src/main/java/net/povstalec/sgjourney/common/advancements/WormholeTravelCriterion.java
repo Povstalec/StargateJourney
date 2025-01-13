@@ -13,8 +13,6 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class WormholeTravelCriterion extends SimpleCriterionTrigger<WormholeTravelCriterion.WormholeTravelTriggerInstance>
 {
-	public static final WormholeTravelCriterion INSTANCE = new WormholeTravelCriterion();
-	
 	public Codec<WormholeTravelTriggerInstance> codec() {
 		return WormholeTravelTriggerInstance.CODEC;
 	}

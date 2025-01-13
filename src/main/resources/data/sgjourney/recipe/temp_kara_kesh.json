@@ -14,5 +14,5 @@
 		"B": {"item": "minecraft:blaze_rod"},
 		"N": {"tag": "sgjourney:naquadah"}
 	},
-	"result": { "item": "sgjourney:kara_kesh" }
+	"result": { "id": "sgjourney:kara_kesh" }
 }

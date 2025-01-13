@@ -10,10 +10,10 @@
 	},
 	"result":
 	{
-		"item": "sgjourney:naquadah_axe"
+		"id": "sgjourney:naquadah_axe"
 	},
 	"template":
 	{
-		"id": "minecraft:netherite_upgrade_smithing_template"
+		"item": "minecraft:netherite_upgrade_smithing_template"
 	}
 }

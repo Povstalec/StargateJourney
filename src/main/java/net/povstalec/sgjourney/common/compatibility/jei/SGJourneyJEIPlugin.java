@@ -37,8 +37,7 @@ public class SGJourneyJEIPlugin implements IModPlugin
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registration)
 	{
-		registration.addRecipeCategories(new CrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-		registration.addRecipeCategories(new AdvancedCrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new CrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()), new AdvancedCrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 	
 	@Override
@@ -47,7 +46,7 @@ public class SGJourneyJEIPlugin implements IModPlugin
 		RecipeManager recipeManager = Objects.requireNonNull(minecraft.level).getRecipeManager();
 		
 		List<RecipeHolder<CrystallizerRecipe>> crystallizerRecipes = recipeManager.getAllRecipesFor(CrystallizerRecipe.Type.CRYSTALLIZING);
-		RecipeType<RecipeHolder<CrystallizerRecipe>> crystallizingType = RecipeType.createRecipeHolderType(CrystallizerRecipeCategory.RECIPE_ID);//new RecipeType<>(CrystallizerRecipeCategory.RECIPE_ID, CrystallizerRecipe.class);
+		RecipeType<RecipeHolder<CrystallizerRecipe>> crystallizingType = RecipeType.createRecipeHolderType(CrystallizerRecipeCategory.RECIPE_ID);
 		registration.addRecipes(crystallizingType, crystallizerRecipes);
 
 		List<RecipeHolder<AdvancedCrystallizerRecipe>> advancedCrystallizerRecipes = recipeManager.getAllRecipesFor(AdvancedCrystallizerRecipe.Type.ADVANCED_CRYSTALLIZING);

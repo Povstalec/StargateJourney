@@ -1,10 +1,8 @@
 {
 	"type": "sgjourney:advanced_crystallizing",
-	"crystal_base": {"item": "sgjourney:advanced_crystal_base", "amount": 1},
-	"primary_ingredient": {"item": "sgjourney:energy_crystal", "amount": 1},
-	"secondary_ingredient": {"item": "sgjourney:energy_crystal", "amount": 1},
-	"deplete_primary": true,
-	"deplete_secondary": true,
+	"crystal_base": {"ingredient": {"item": "sgjourney:advanced_crystal_base"}, "amount": 1},
+	"primary_ingredient": {"ingredient": {"item": "sgjourney:energy_crystal"}, "amount": 1, "deplete": true},
+	"secondary_ingredient": {"ingredient": {"item": "sgjourney:energy_crystal"}, "amount": 1, "deplete": true},
 	"output":
 	{
 		"id": "sgjourney:advanced_energy_crystal"

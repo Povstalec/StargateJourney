@@ -10,10 +10,10 @@
 	},
 	"result":
 	{
-		"item": "sgjourney:naquadah_boots"
+		"id": "sgjourney:naquadah_boots"
 	},
 	"template":
 	{
-		"id": "minecraft:netherite_upgrade_smithing_template"
+		"item": "minecraft:netherite_upgrade_smithing_template"
 	}
 }

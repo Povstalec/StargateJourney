@@ -12,5 +12,5 @@
 		"I": {"item": "sgjourney:pure_naquadah"},
 		"T": {"tag": "sgjourney:pure_naquadah"}
 	},
-	"result": { "item": "sgjourney:pure_naquadah_block" }
+	"result": { "id": "sgjourney:pure_naquadah_block" }
 }
