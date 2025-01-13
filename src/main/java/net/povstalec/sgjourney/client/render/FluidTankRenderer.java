@@ -4,19 +4,16 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.vertex.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.povstalec.stellarview.client.render.shader.StellarViewShaders;
 import org.joml.Matrix4f;
 import org.slf4j.Logger;
 
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.ChatFormatting;
@@ -51,9 +48,9 @@ public class FluidTankRenderer
     
     enum TooltipMode
     {
-    SHOW_AMOUNT,
-    SHOW_AMOUNT_AND_CAPACITY,
-    ITEM_LIST
+        SHOW_AMOUNT,
+        SHOW_AMOUNT_AND_CAPACITY,
+        ITEM_LIST
     }
     
     public FluidTankRenderer(long capacity, boolean showCapacity, int width, int height)
@@ -186,7 +183,8 @@ public class FluidTankRenderer
         bufferBuilder.addVertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).setUv(uMax, vMax);
         bufferBuilder.addVertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).setUv(uMax, vMin);
         bufferBuilder.addVertex(matrix, xCoord, yCoord + maskTop, zLevel).setUv(uMin, vMin);
-        bufferBuilder.build();
+        
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
     
     public List<Component> getTooltip(FluidStack fluidStack, TooltipFlag tooltipFlag)
