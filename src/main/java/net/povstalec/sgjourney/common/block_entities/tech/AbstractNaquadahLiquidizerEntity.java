@@ -29,6 +29,9 @@ import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdat
 public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 {
 	private static final String PROGRESS = "Progress";
+	public static final String INVENTORY = "inventory";
+	public static final String FLUID_TANK_1 = "fluid_tank_1";
+	public static final String FLUID_TANK_2 = "fluid_tank_2";
 
 	public static final int TANK_CAPACITY = 4000;
 	public static final int MAX_PROGRESS = 100;
@@ -61,9 +64,9 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(tag, registries);
-		itemStackHandler.deserializeNBT(registries, tag.getCompound("Inventory"));
-		fluidTank1.readFromNBT(registries, tag.getCompound("FluidTank1"));
-		fluidTank2.readFromNBT(registries, tag.getCompound("FluidTank2"));
+		itemStackHandler.deserializeNBT(registries, tag.getCompound(INVENTORY));
+		fluidTank1.readFromNBT(registries, tag.getCompound(FLUID_TANK_1));
+		fluidTank2.readFromNBT(registries, tag.getCompound(FLUID_TANK_2));
 		
 		progress = tag.getInt(PROGRESS);
 	}
@@ -73,12 +76,12 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	{
 		CompoundTag tag1 = new CompoundTag();
 		CompoundTag tag2 = new CompoundTag();
-		tag.put("Inventory", itemStackHandler.serializeNBT(registries));
+		tag.put(INVENTORY, itemStackHandler.serializeNBT(registries));
 		
 		fluidTank1.writeToNBT(registries, tag1);
-		tag.put("FluidTank1", tag1);
+		tag.put(FLUID_TANK_1, tag1);
 		fluidTank2.writeToNBT(registries, tag2);
-		tag.put("FluidTank2", tag2);
+		tag.put(FLUID_TANK_2, tag2);
 		
 		tag.putInt(PROGRESS, progress);
 		super.saveAdditional(tag, registries);

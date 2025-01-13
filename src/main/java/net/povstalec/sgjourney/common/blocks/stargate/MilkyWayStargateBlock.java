@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -106,9 +107,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	    	
 	    	String pointOfOrigin = "";
 			boolean hasData = stack.has(DataComponents.BLOCK_ENTITY_DATA);
-			if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("PointOfOrigin"))
+			if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractStargateEntity.POINT_OF_ORIGIN))
 			{
-				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString("PointOfOrigin"));
+				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString(AbstractStargateEntity.POINT_OF_ORIGIN));
 				if(location.toString().equals("sgjourney:empty"))
 					pointOfOrigin = "Empty";
 				else if(pointOfOriginRegistry.containsKey(location))
@@ -117,9 +118,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 					pointOfOrigin = "Error";
 			}
 			String symbols = "";
-			if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("Symbols"))
+			if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractStargateEntity.SYMBOLS))
 			{
-				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString("Symbols"));
+				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString(AbstractStargateEntity.SYMBOLS));
 				if(location.toString().equals("sgjourney:empty"))
 					symbols = "Empty";
 				else if(symbolsRegistry.containsKey(location))

@@ -30,11 +30,9 @@ import net.povstalec.sgjourney.common.stargate.Transporter;
 public class BlockEntityList extends SavedData
 {
 	private static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
-	private static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties"; //I wish there was a way to replace this
 	
-	public static final String STARGATES = "Stargates";
-	public static final String TRANSPORT_RINGS = "TransportRings";
-	public static final String TRANSPORTERS = "Transporters"; //TODO Replace TransportRings with this
+	public static final String STARGATES = "stargates";
+	public static final String TRANSPORTERS = "transporters";
 	
 	private MinecraftServer server;
 	
@@ -266,20 +264,6 @@ public class BlockEntityList extends SavedData
 	private void deserializeTransporters(CompoundTag blockEntityList)
 	{
 		StargateJourney.LOGGER.info("Deserializing Transporters");
-		// Transport Rings deserialization for legacy reasons
-		if(blockEntityList.contains(TRANSPORT_RINGS))
-		{
-			CompoundTag transportRingsTag = blockEntityList.getCompound(TRANSPORT_RINGS);
-			
-			transportRingsTag.getAllKeys().stream().forEach(transportRings ->
-			{
-				//StargateJourney.LOGGER.info("Deserializing Transport Rings " + transportRings);
-				Transporter transporter = Transporter.deserialize(server, transportRings, transportRingsTag.getCompound(transportRings));
-
-				if(!this.transporterMap.containsKey(transporter.getID()))
-					this.transporterMap.put(transporter.getID(), transporter);
-			});
-		}
 		
 		CompoundTag transportersTag = blockEntityList.getCompound(TRANSPORTERS);
 		
@@ -344,6 +328,6 @@ public class BlockEntityList extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent(dataFactory(server), INCORRECT_FILE_NAME);
+        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
     }
 }

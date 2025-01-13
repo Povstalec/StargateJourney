@@ -24,6 +24,10 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class UniverseStargateEntity extends AbstractStargateEntity
 {
+	public static final String ADDRESS_BUFFER = "address_buffer";
+	public static final String SYMBOL_BUFFER = "symbol_buffer";
+	public static final String ROTATION = "rotation";
+	
 	public static final boolean FAST_ROTATION = CommonStargateConfig.universe_fast_rotation.get();
 	
 	public static final int MAX_ROTATION = 54 * (FAST_ROTATION ? 2 : 3); // 108 : 162
@@ -71,10 +75,10 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
         super.loadAdditional(tag, registries);
         
-        rotation = tag.getInt("Rotation");
+        rotation = tag.getInt(ROTATION);
         oldRotation = rotation;
-        addressBuffer.fromArray(tag.getIntArray("AddressBuffer"));
-        symbolBuffer = tag.getInt("SymbolBuffer");
+        addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+        symbolBuffer = tag.getInt(SYMBOL_BUFFER);
     }
 	
 	@Override
@@ -82,9 +86,9 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	{
 		super.saveAdditional(tag, registries);
 		
-		tag.putInt("Rotation", rotation);
-		tag.putIntArray("AddressBuffer", addressBuffer.toArray());
-		tag.putInt("SymbolBuffer", symbolBuffer);
+		tag.putInt(ROTATION, rotation);
+		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.toArray());
+		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 	}
 	
 	@Override

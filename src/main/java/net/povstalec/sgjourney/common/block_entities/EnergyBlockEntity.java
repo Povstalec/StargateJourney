@@ -22,6 +22,8 @@ import javax.annotation.Nonnull;
 
 public abstract class EnergyBlockEntity extends BlockEntity
 {
+	public static final String ENERGY = "energy";
+	
 	private boolean canGenerateEnergy;
 	protected SGJourneyEnergy ENERGY_STORAGE = createEnergyStorage();
 	private Lazy<IEnergyStorage> lazyEnergyHandler = Lazy.of(() -> ENERGY_STORAGE);
@@ -55,14 +57,14 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(tag, registries);
-		ENERGY_STORAGE.setEnergy(tag.getLong("Energy"));
+		ENERGY_STORAGE.setEnergy(tag.getLong(ENERGY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		super.saveAdditional(tag, registries);
-		tag.putLong("Energy", ENERGY_STORAGE.getTrueEnergyStored());
+		tag.putLong(ENERGY, ENERGY_STORAGE.getTrueEnergyStored());
 	}
 	
 	//============================================================================================

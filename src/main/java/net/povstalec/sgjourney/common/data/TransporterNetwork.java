@@ -36,10 +36,10 @@ public final class TransporterNetwork extends SavedData
 	private static final String RINGS_A = "RingsA";
 	private static final String RINGS_B = "RingsB";
 	private static final String CONNECTION_TIME = "ConnectionTime";*/
-	private static final String DIMENSIONS = "Dimensions";
-	private static final String CONNECTIONS = "Connections";
+	private static final String DIMENSIONS = "dimensions";
+	private static final String CONNECTIONS = "connections";
 
-	private static final String VERSION = "Version";
+	private static final String VERSION = "version";
 
 	private static final int updateVersion = 1;
 	

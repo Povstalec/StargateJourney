@@ -56,7 +56,7 @@ import net.povstalec.sgjourney.common.stargate.StargateVariant;
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
-	public static final String LOCAL_POINT_OF_ORIGIN = "LocalPointOfOrigin";
+	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
 	
 	public AbstractStargateBaseBlock(Properties properties, double width, double horizontalOffset)
 	{
@@ -292,14 +292,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         {
         	if((blockEntityTag.contains(AbstractStargateEntity.DISPLAY_ID) && blockEntityTag.getBoolean(AbstractStargateEntity.DISPLAY_ID)) || CommonStargateConfig.always_display_stargate_id.get())
         	{
-        		if(blockEntityTag.contains(AbstractStargateEntity.ID))
+        		if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
         		{
-        			id = blockEntityTag.getString(AbstractStargateEntity.ID);
-                	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
-        		}
-        		else if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
-        		{
-
         			id = new Address(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS)).toString();
                 	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
         		}

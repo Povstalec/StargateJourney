@@ -29,7 +29,8 @@ import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacke
 
 public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 {
-	private static final String PROGRESS = "Progress";
+	private static final String PROGRESS = "progress";
+	public static final String INVENTORY = "inventory";
 	
 	public static final int LIQUID_NAQUADAH_CAPACITY = 4000;
 	public static final int MAX_PROGRESS = 200;
@@ -59,7 +60,7 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(nbt, registries);
-		itemStackHandler.deserializeNBT(registries, nbt.getCompound("Inventory"));
+		itemStackHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
 		fluidTank.readFromNBT(registries, nbt);
 		
 		progress = nbt.getInt(PROGRESS);
@@ -68,7 +69,7 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		nbt.put("Inventory", itemStackHandler.serializeNBT(registries));
+		nbt.put(INVENTORY, itemStackHandler.serializeNBT(registries));
 		nbt = fluidTank.writeToNBT(registries, nbt);
 		
 		nbt.putInt(PROGRESS, progress);

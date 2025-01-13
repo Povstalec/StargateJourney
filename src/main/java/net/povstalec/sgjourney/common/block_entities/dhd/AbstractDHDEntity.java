@@ -37,13 +37,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity
 {
-	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
-	public static final String CRYSTAL_MODE = "CrystalMode";
-	public static final String ENERGY_TRANSFER = "ENERGY_TRANSFER";
-	
-	public static final String CALL_FORWARDING = "CallForwarding";
-	
-	public static final String STARGATE_POS = "StargatePos";
+	public static final String STARGATE_POS = "stargate_pos";
 	
 	public static final int DEFAULT_ENERGY_TARGET = 150000;
 	public static final int DEFAULT_ENERGY_TRANSFER = 2500;

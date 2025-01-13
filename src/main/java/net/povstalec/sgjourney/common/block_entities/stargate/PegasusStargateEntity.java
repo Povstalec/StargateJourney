@@ -24,11 +24,11 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class PegasusStargateEntity extends AbstractStargateEntity
 {
-	public static final String ADDRESS_BUFFER = "AddressBuffer";
-	public static final String SYMBOL_BUFFER = "SymbolBuffer";
-	public static final String CURRENT_SYMBOL = "CurrentSymbol";
+	public static final String ADDRESS_BUFFER = "address_buffer";
+	public static final String SYMBOL_BUFFER = "symbol_buffer";
+	public static final String CURRENT_SYMBOL = "current_symbol";
 	
-	public static final String DYNAMC_SYMBOLS = "DynamicSymbols";
+	public static final String DYNAMC_SYMBOLS = "dynamic_symbols";
 
 	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("pegasus/pegasus_back_chevron");
 	

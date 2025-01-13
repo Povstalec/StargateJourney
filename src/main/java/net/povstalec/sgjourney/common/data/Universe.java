@@ -57,9 +57,9 @@ public class Universe extends SavedData
 	
 	private static final String FILE_NAME = StargateJourney.MODID + "-universe";
 	
-	private static final String DIMENSIONS = "Dimensions";
-	private static final String SOLAR_SYSTEMS = "SolarSystems";
-	private static final String GALAXIES = "Galaxies";
+	private static final String DIMENSIONS = "dimensions";
+	private static final String SOLAR_SYSTEMS = "solar_systems";
+	private static final String GALAXIES = "galaxies";
 	
 	private static final String NUMBERS_AND_LETTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

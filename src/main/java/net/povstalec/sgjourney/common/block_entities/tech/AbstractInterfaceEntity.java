@@ -32,7 +32,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 {
-	public static final String ENERGY_TARGET = "EnergyTarget";
+	public static final String ENERGY_TARGET = "energy_target";
 
 	public int signalStrength = 0;
 	

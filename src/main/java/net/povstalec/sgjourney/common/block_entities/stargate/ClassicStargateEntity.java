@@ -16,6 +16,8 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class ClassicStargateEntity extends AbstractStargateEntity
 {
+	public static final String ROTATION = "rotation";
+	
 	public static final float CLASSIC_THICKNESS = 8.0F;
 	public static final float HORIZONTAL_CENTER_CLASSIC_HEIGHT = (CLASSIC_THICKNESS / 2) / 16;
 	
@@ -56,9 +58,9 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	{
 		super.serializeStargateInfo(tag, registries);
 		
-		tag.putString("PointOfOrigin", pointOfOrigin);
-		tag.putString("Symbols", symbols);
-		tag.putShort("Rotation", rotation);
+		tag.putString(POINT_OF_ORIGIN, pointOfOrigin);
+		tag.putString(SYMBOLS, symbols);
+		tag.putShort(ROTATION, rotation);
 		
 		return tag;
 	}
@@ -66,14 +68,14 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	@Override
 	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
-		if(tag.contains("PointOfOrigin"))
-			this.pointOfOrigin = tag.getString("PointOfOrigin");
+		if(tag.contains(POINT_OF_ORIGIN))
+			this.pointOfOrigin = tag.getString(POINT_OF_ORIGIN);
 		
-		if(tag.contains("Symbols"))
-			this.symbols = tag.getString("Symbols");
+		if(tag.contains(SYMBOLS))
+			this.symbols = tag.getString(SYMBOLS);
 		
-        if(tag.contains("Rotation"))
-        	rotation = tag.getShort("Rotation");
+        if(tag.contains(ROTATION))
+        	rotation = tag.getShort(ROTATION);
     	
     	super.deserializeStargateInfo(tag, registries, isUpgraded);
 	}

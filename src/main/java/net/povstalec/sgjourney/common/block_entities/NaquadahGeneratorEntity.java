@@ -27,6 +27,8 @@ import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdate
 
 public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 {
+	public static final String INVENTORY = "inventory";
+	
 	private int reactionProgress = 0;
 	
 	private final ItemStackHandler itemStackHandler = createHandler();
@@ -48,14 +50,14 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(nbt, registries);
-		itemStackHandler.deserializeNBT(registries, nbt.getCompound("Inventory"));
+		itemStackHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
-		nbt.put("Inventory", itemStackHandler.serializeNBT(registries));
+		nbt.put(INVENTORY, itemStackHandler.serializeNBT(registries));
 	}
 	
 	//============================================================================================

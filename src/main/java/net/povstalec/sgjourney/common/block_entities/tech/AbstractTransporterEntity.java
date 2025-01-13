@@ -24,9 +24,9 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 {
 	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
-	public static final String ADD_TO_NETWORK = "AddToNetwork";
-	public static final String ID = "ID";
-	public static final String CUSTOM_NAME = "CustomName";
+	public static final String ADD_TO_NETWORK = "add_to_network";
+	public static final String ID = "id";
+	public static final String CUSTOM_NAME = "custom_name";
 	
 	protected boolean addToNetwork = true;
 	

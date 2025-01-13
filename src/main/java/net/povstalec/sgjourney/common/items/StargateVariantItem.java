@@ -26,8 +26,6 @@ import javax.annotation.Nullable;
 
 public class StargateVariantItem extends Item
 {
-	public static final String VARIANT = "Variant";
-	
 	public StargateVariantItem(Properties properties)
 	{
 		super(properties);

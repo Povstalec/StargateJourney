@@ -37,7 +37,7 @@ import net.povstalec.sgjourney.common.stargate.Transporter;
 
 public class RingPanelEntity extends BlockEntity
 {
-	public static final String INVENTORY = "Inventory";
+	public static final String INVENTORY = "inventory";
 	
 	private BlockPos targetPos;
 	

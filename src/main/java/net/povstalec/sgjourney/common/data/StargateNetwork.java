@@ -40,9 +40,9 @@ public final class StargateNetwork extends SavedData
 	private static boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
 	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network";
-	private static final String VERSION = "Version";
+	private static final String VERSION = "version";
 
-	private static final String CONNECTIONS = "Connections";
+	private static final String CONNECTIONS = "connections";
 
 	//Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
 	private static final int updateVersion = 9;

@@ -78,43 +78,42 @@ import net.povstalec.sgjourney.common.stargate.Wormhole;
 public abstract class AbstractStargateEntity extends EnergyBlockEntity implements ITransmissionReceiver
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
-	public static final String ADD_TO_NETWORK = "AddToNetwork";
-	public static final String ID = "ID"; //TODO For legacy reasons
-	public static final String ID_9_CHEVRON_ADDRESS = "9ChevronAddress";
+	public static final String ADD_TO_NETWORK = "add_to_network";
+	public static final String ID_9_CHEVRON_ADDRESS = "9_hevron_address";
 	
 	public static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
 	public static final String EVENT_RESET = "stargate_reset";
 	public static final String EVENT_MESSAGE_RECEIVED = "stargate_message_received";
 
-	public static final String ADDRESS = "Address";
-	public static final String DHD_POS = "DHDPos";
-	public static final String ENERGY = "Energy";
+	public static final String ADDRESS = "address";
+	public static final String DHD_POS = "dhd_pos";
+	public static final String ENERGY = "energy";
 	
-	public static final String IRIS_PROGRESS = "IrisProgress";
-	public static final String SHIELD_PROGRESS = "ShieldProgress";
+	public static final String IRIS_PROGRESS = "iris_progress";
+	public static final String SHIELD_PROGRESS = "shield_progress";
 	
 	// Connections
-	public static final String CONNECTION_ID = "ConnectionID";
-	public static final String NETWORK = "Network";
-	public static final String RESTRICT_NETWORK = "RestrictNetwork";
-	public static final String TIMES_OPENED = "TimesOpened";
-	public static final String AUTOCLOSE = "Autoclose";
+	public static final String CONNECTION_ID = "connection_id";
+	public static final String NETWORK = "network";
+	public static final String RESTRICT_NETWORK = "restrict_network";
+	public static final String TIMES_OPENED = "times_opened";
+	public static final String AUTOCLOSE = "autoclose";
 	
-	public static final String FILTER_TYPE = "FilterType";
-	public static final String WHITELIST = "Whitelist";
-	public static final String BLACKLIST = "Blacklist";
+	public static final String FILTER_TYPE = "filter_type";
+	public static final String WHITELIST = "whitelist";
+	public static final String BLACKLIST = "blacklist";
 	
 	// Upgrading and variants
-	public static final String UPGRADED = "Upgraded";
-	public static final String DISPLAY_ID = "DisplayID";
-	public static final String VARIANT = "Variant";
+	public static final String UPGRADED = "upgraded";
+	public static final String DISPLAY_ID = "display_id";
+	public static final String VARIANT = "variant";
 	
-	public static final String POINT_OF_ORIGIN = "PointOfOrigin";
-	public static final String SYMBOLS = "Symbols";
+	public static final String POINT_OF_ORIGIN = "point_of_origin";
+	public static final String SYMBOLS = "symbols";
 	
-	public static final String COVER_BLOCKS = "CoverBlocks";
-	public static final String IRIS_INVENTORY = "IrisInventory";
-	public static final String SHIELD_INVENTORY = "ShieldInventory";
+	public static final String COVER_BLOCKS = "cover_blocks";
+	public static final String IRIS_INVENTORY = "iris_inventory";
+	public static final String SHIELD_INVENTORY = "shield_inventory";
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 
@@ -237,10 +236,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		connectionID = tag.getString(CONNECTION_ID);
 		
-		if(tag.contains(ID)) //TODO Keeping this here for the time being for legacy reasons
-			id9ChevronAddress.fromString(tag.getString(ID));
-		else
-			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
+		id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
     	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
 		
 		displayID = tag.getBoolean(DISPLAY_ID);

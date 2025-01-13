@@ -18,9 +18,9 @@ import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
 
 public abstract class SymbolBlockEntity extends BlockEntity
 {
-	public static final String SYMBOL = "Symbol";
-	public static final String SYMBOLS = "Symbols";
-	public static final String SYMBOL_NUMBER = "SymbolNumber";
+	public static final String SYMBOL = "symbol";
+	public static final String SYMBOLS = "symbols";
+	public static final String SYMBOL_NUMBER = "symbol_number";
 	public static final String EMPTY = StargateJourney.EMPTY;
 	
 	public int symbolNumber = 0;

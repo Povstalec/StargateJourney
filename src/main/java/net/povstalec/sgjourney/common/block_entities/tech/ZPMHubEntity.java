@@ -28,6 +28,8 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class ZPMHubEntity extends EnergyBlockEntity
 {
+	public static final String INVENTORY = "inventory";
+	
 	private static final long maxTransfer = CommonZPMConfig.zpm_hub_max_transfer.get();
 	private static final long maxEnergyDisplayed = CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	
@@ -50,14 +52,14 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(nbt, registries);
-		itemHandler.deserializeNBT(registries, nbt.getCompound("Inventory"));
+		itemHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
-		nbt.put("Inventory", itemHandler.serializeNBT(registries));
+		nbt.put(INVENTORY, itemHandler.serializeNBT(registries));
 	}
 	
 	//============================================================================================

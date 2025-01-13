@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEnt
 
 public class TransporterBlockItem extends BlockItem
 {
-	private static final String ADD_TO_NETWORK = "AddToNetwork";
+	private static final String ADD_TO_NETWORK = AbstractTransporterEntity.ADD_TO_NETWORK;
 	
 	public TransporterBlockItem(Block block, Properties properties)
 	{

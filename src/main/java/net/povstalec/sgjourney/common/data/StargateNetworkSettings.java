@@ -15,9 +15,9 @@ public class StargateNetworkSettings extends SavedData
 {
 	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network_settings";
 	
-	private static final String USE_DATAPACK_ADDRESSES = "UseDatapackAddresses";
-	private static final String GENERATE_RANDOM_SOLAR_SYSTEMS = "GenerateRandomSolarSystems";
-	private static final String RANDOM_ADDRESS_FROM_SEED = "RandomAddressFromSeed";
+	private static final String USE_DATAPACK_ADDRESSES = "use_datapack_addresses";
+	private static final String GENERATE_RANDOM_SOLAR_SYSTEMS = "generate_random_solarSystems";
+	private static final String RANDOM_ADDRESS_FROM_SEED = "random_address_from_seed";
 	
 	private CompoundTag stargateNetworkSettings = new CompoundTag();
 	

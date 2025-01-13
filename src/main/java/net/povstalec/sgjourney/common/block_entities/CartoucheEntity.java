@@ -29,10 +29,10 @@ public abstract class CartoucheEntity extends BlockEntity
 {
 	private static final String EMPTY = StargateJourney.EMPTY;
 	
-	public static final String ADDRESS_TABLE = "AddressTable";
-	public static final String DIMENSION = "Dimension";
-	public static final String SYMBOLS = "Symbols";
-	public static final String ADDRESS = "Address";
+	public static final String ADDRESS_TABLE = "address_table";
+	public static final String DIMENSION = "dimension";
+	public static final String SYMBOLS = "symbols";
+	public static final String ADDRESS = "address";
 
 	private String addressTable = EMPTY;
 	private String dimension;
