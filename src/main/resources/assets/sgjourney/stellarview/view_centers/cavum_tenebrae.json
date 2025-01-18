@@ -8,6 +8,8 @@
 	"day_min_visible_size": 10,
 	"day_max_visible_size": 30,
 	
+	"stars_always_visible": true,
+	
 	"shooting_star":
 	{
 		"meteor_types":
