@@ -43,7 +43,7 @@ import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer
 import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
-import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
+import net.povstalec.sgjourney.client.render.level.StellarViewCompatibility;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
@@ -261,7 +261,7 @@ public class StargateJourney
         public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
         {
         	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
-        		StellarViewRendering.registerStellarViewEffects(event);
+        		StellarViewCompatibility.registerStellarViewEffects(event);
         	else
         		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
         }
