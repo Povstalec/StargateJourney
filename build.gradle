@@ -180,8 +180,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
-    compileOnly fg.deobf("maven.modrinth:stellarview:vR1ufUf7")
-    runtimeOnly fg.deobf("maven.modrinth:stellarview:vR1ufUf7")
+    compileOnly fg.deobf("maven.modrinth:stellarview:aMZoe3qQ")
+    runtimeOnly fg.deobf("maven.modrinth:stellarview:aMZoe3qQ")
     
     // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
