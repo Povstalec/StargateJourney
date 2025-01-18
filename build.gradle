@@ -117,8 +117,8 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
-    compileOnly fg.deobf("maven.modrinth:stellarview:fHmO0u5r")
-	runtimeOnly fg.deobf("maven.modrinth:stellarview:fHmO0u5r")
+    compileOnly fg.deobf("maven.modrinth:stellarview:rA6tyxqG")
+	runtimeOnly fg.deobf("maven.modrinth:stellarview:rA6tyxqG")
     
 	compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cct_version}")
 	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}"))
