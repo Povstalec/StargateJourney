@@ -66,6 +66,8 @@ Stargates might not generate,
 you might not be able to find a Stargate and to reach other dimensions (Stargate will be missing there).
 However, 
 it is possible to disable spreading for specific structures with config ([example config]({{ site.baseurl }}/others/sparse_structures)).
+- [Structure Essentials](https://www.curseforge.com/minecraft/mc-mods/structure-essentials-forge-fabric)
+Stargates might not generate, you might not be able to find a Stargate and to reach other dimension (Stargate will be missing there).
 
 ___
 
