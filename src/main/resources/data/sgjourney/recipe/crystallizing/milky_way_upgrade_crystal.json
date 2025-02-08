@@ -6,6 +6,9 @@
 	"output":
 	{
 		"id": "sgjourney:stargate_upgrade_crystal",
-		"nbt": {"Type":"sgjourney:milky_way_stargate"}
+		"components":
+		{
+			"sgjourney:stargate_upgrade": "sgjourney:milky_way_stargate"
+		}
 	}
 }

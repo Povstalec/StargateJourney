@@ -58,8 +58,8 @@ public class TabInit
 			event.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
 			event.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
 			event.accept(ItemInit.VIAL.get());
-			//event.accept(VialItem.liquidNaquadahSetup());
-			//event.accept(VialItem.heavyLiquidNaquadahSetup());
+			event.accept(VialItem.liquidNaquadahSetup());
+			event.accept(VialItem.heavyLiquidNaquadahSetup());
 
 			event.accept(ItemInit.NAQUADAH_ROD.get());
 			event.accept(ItemInit.REACTION_CHAMBER.get());

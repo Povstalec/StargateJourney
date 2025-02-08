@@ -6,9 +6,9 @@
 	"output":
 	{
 		"id": "sgjourney:stargate_upgrade_crystal",
-		"nbt":
+		"components":
 		{
-			"Type":"sgjourney:pegasus_stargate"
+			"sgjourney:stargate_upgrade": "sgjourney:pegasus_stargate"
 		}
 	}
 }

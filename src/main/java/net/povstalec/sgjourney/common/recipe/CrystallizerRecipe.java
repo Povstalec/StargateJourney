@@ -137,19 +137,11 @@ public class CrystallizerRecipe implements Recipe<CrystalRecipeInput>
 		public static final MapCodec<CrystallizerRecipe> CODEC = RecordCodecBuilder.mapCodec((recipeBuilder) ->
 		{
 			return recipeBuilder.group(
-				ItemStack.STRICT_CODEC.fieldOf("output").forGetter((recipe) ->
-			{
-						return recipe.output;
-			}), CrystallizingIngredient.CODEC.fieldOf("crystal_base").forGetter((recipe) ->
-			{
-				return recipe.crystalBase;
-			}), CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("primary_ingredient").forGetter((recipe) ->
-			{
-				return recipe.primaryIngredient;
-			}), CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("secondary_ingredient").forGetter((recipe) ->
-			{
-				return recipe.secondaryIngredient;
-			})).apply(recipeBuilder, CrystallizerRecipe::new);
+					ItemStack.STRICT_CODEC.fieldOf("output").forGetter((recipe) -> recipe.output),
+					CrystallizingIngredient.CODEC.fieldOf("crystal_base").forGetter((recipe) -> recipe.crystalBase),
+					CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("primary_ingredient").forGetter((recipe) -> recipe.primaryIngredient),
+					CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("secondary_ingredient").forGetter((recipe) -> recipe.secondaryIngredient))
+					.apply(recipeBuilder, CrystallizerRecipe::new);
 		});
 		
 		public static final StreamCodec<RegistryFriendlyByteBuf, CrystallizerRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);

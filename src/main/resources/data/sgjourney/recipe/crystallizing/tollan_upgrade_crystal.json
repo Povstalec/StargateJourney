@@ -6,6 +6,9 @@
 	"output":
 	{
 		"id": "sgjourney:stargate_upgrade_crystal",
-		"nbt": {"Type":"sgjourney:tollan_stargate"}
+		"components":
+		{
+			"sgjourney:stargate_upgrade": "sgjourney:tollan_stargate"
+		}
 	}
 }

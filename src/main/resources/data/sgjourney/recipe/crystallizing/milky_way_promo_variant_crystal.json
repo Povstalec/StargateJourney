@@ -6,6 +6,9 @@
 	"output":
 	{
 		"id": "sgjourney:stargate_variant_crystal",
-		"nbt": {"Variant":"sgjourney:milky_way_promo"}
+		"components":
+		{
+			"sgjourney:stargate_variant": "sgjourney:milky_way_promo"
+		}
 	}
 }
