@@ -41,7 +41,7 @@ import net.povstalec.sgjourney.client.render.JackalArmorRenderProperties;
 import net.povstalec.sgjourney.client.render.block_entity.*;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
-import net.povstalec.sgjourney.client.render.level.StellarViewRendering;
+import net.povstalec.sgjourney.client.render.level.StellarViewCompatibility;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
@@ -416,10 +416,10 @@ public class StargateJourney
         @SubscribeEvent
         public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
         {
-            if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
-                StellarViewRendering.registerStellarViewEffects(event);
-            else
-                SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
+        	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
+        		StellarViewCompatibility.registerStellarViewEffects(event);
+        	else
+        		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
         }
         
         @SubscribeEvent

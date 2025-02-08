@@ -2,5 +2,12 @@
 	"parent": "stellarview:star_field/spiral_galaxy/milky_way/milky_way",
 	"coords": { "x": {"ly": -12653}, "y": {"ly": 12567}, "z": {"ly": 4826} },
 	"axis_rotation": { "x_axis": 14, "y_axis": 38, "z_axis": 241 },
-	"texture_layers": []
+	"texture_layers": [],
+	
+	"fade_out_handler":
+	{
+		"fade_out_start_distance": { "ly": 3000000 },
+		"fade_out_end_distance": { "ly": 5000000 },
+		"max_child_render_distance": { "ly": 5000000 }
+	}
 }

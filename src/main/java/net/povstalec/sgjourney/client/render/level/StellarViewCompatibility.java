@@ -9,16 +9,16 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.povstalec.sgjourney.common.config.ClientSkyConfig;
 import net.povstalec.stellarview.StellarView;
+import net.povstalec.stellarview.api.client.StellarViewRendering;
 import net.povstalec.stellarview.client.render.level.util.StellarViewLightmapEffects;
-import net.povstalec.stellarview.client.resourcepack.ViewCenters;
 import net.povstalec.stellarview.compatibility.enhancedcelestials.EnhancedCelestialsCompatibility;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public abstract class StellarViewRendering extends DimensionSpecialEffects
+public class StellarViewCompatibility extends DimensionSpecialEffects
 {
-	public StellarViewRendering(float cloudLevel, boolean hasGround, SkyType skyType,
-								boolean forceBrightLightmap, boolean constantAmbientLight)
+	public StellarViewCompatibility(float cloudLevel, boolean hasGround, SkyType skyType,
+									boolean forceBrightLightmap, boolean constantAmbientLight)
 	{
 		super(cloudLevel, hasGround, skyType, forceBrightLightmap, constantAmbientLight);
 	}
@@ -52,9 +52,10 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 	{
 		return false;
 	}
-
-
-	public static class StellarViewAbydosEffects extends StellarViewRendering
+	
+	
+	
+	public static class StellarViewAbydosEffects extends StellarViewCompatibility
 	{
 		public StellarViewAbydosEffects()
 		{
@@ -65,7 +66,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_abydos_sky.get())
-				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
+				return StellarViewRendering.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return false;
 	    }
@@ -83,7 +84,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		}
 	}
 	
-	public static class StellarViewChulakEffects extends StellarViewRendering
+	public static class StellarViewChulakEffects extends StellarViewCompatibility
 	{
 		public StellarViewChulakEffects()
 		{
@@ -94,7 +95,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_chulak_sky.get())
-				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
+				return StellarViewRendering.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return false;
 	    }
@@ -112,7 +113,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		}
 	}
 	
-	public static class StellarViewCavumTenebraeEffects extends StellarViewRendering
+	public static class StellarViewCavumTenebraeEffects extends StellarViewCompatibility
 	{
 		public StellarViewCavumTenebraeEffects()
 		{
@@ -123,7 +124,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_cavum_tenebrae_sky.get())
-				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
+				return StellarViewRendering.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return false;
 	    }
@@ -141,7 +142,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		}
 	}
 	
-	public static class StellarViewLanteaEffects extends StellarViewRendering
+	public static class StellarViewLanteaEffects extends StellarViewCompatibility
 	{
 		public StellarViewLanteaEffects()
 		{
@@ -152,7 +153,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_lantea_sky.get())
-				return ViewCenters.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
+				return StellarViewRendering.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return false;
 	    }
@@ -170,7 +171,7 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		}
 	}
 	
-	public static class StellarViewAthosEffects extends StellarViewRendering
+	public static class StellarViewAthosEffects extends StellarViewCompatibility
 	{
 		public StellarViewAthosEffects()
 		{
@@ -180,8 +181,23 @@ public abstract class StellarViewRendering extends DimensionSpecialEffects
 		@Override
 		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
+			if(ClientSkyConfig.custom_athos_sky.get())
+				return StellarViewRendering.renderViewCenterSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
+			
 			return false;
-	    }
+		}
+		
+		@Override
+		public void adjustLightmapColors(ClientLevel level, float partialTicks, float skyDarken, float skyLight, float blockLight, int pixelX, int pixelY, Vector3f colors)
+		{
+			if(ClientSkyConfig.custom_athos_sky.get())
+			{
+				StellarViewLightmapEffects.defaultLightmapColors(level, partialTicks, skyDarken, skyLight, blockLight, pixelX, pixelY, colors);
+				
+				if(StellarView.isEnhancedCelestialsLoaded())
+					EnhancedCelestialsCompatibility.adjustLightmapColors(level, partialTicks, skyDarken, skyLight, blockLight, pixelX, pixelY, colors);
+			}
+		}
 	}
 	
 	public static void registerStellarViewEffects(RegisterDimensionSpecialEffectsEvent event)
