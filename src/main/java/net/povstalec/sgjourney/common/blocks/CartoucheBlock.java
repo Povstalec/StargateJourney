@@ -52,10 +52,6 @@ import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
 {
-	public static final String ADDRESS_TABLE = "AddressTable";
-	public static final String DIMENSION = "Dimension";
-	public static final String ADDRESS = "Address";
-	
 	public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	

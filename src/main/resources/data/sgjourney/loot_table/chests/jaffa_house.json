@@ -22,8 +22,11 @@
               "add": false
             },
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{Inventory: {Size: 1, Items: [{Slot: 0, id: \"sgjourney:vial\", Count: 1, tag: {Fluid:{FluidName: \"sgjourney:liquid_naquadah\",  Amount: 50}}}]}, IsOpen: false}"
+              "function": "minecraft:set_components",
+              "components": {
+                "sgjourney:is_open": false,
+                "minecraft:container": [{"item": {"id": "sgjourney:vial", "count": 1, "components": { "sgjourney:fluid": {"amount": 50, "id": "sgjourney:liquid_naquadah"} }}, "slot": 0}]
+              }
             }
           ]
         },

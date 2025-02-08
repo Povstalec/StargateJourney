@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:pure_naquadah",
-		{"id": "#forge:purified_ores/naquadah", "required": false}
+		{"id": "#neoforge:purified_ores/naquadah", "required": false}
 	]
 }

@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -11,19 +9,20 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 
-public class CartoucheBlockItem extends BlockItem
+import javax.annotation.Nullable;
+
+public class SymbolBlockItem extends BlockItem
 {
-	public CartoucheBlockItem(Block block, Properties properties)
+	public SymbolBlockItem(Block block, Properties properties)
 	{
 		super(block, properties);
 	}
@@ -94,15 +93,9 @@ public class CartoucheBlockItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof CartoucheEntity cartouche)
+		if(baseEntity instanceof SymbolBlockEntity cartouche)
 		{
 			cartouche.setNew();
-			System.out.println("Setting new");
-			if(info.contains(CartoucheEntity.DIMENSION) && !info.contains(CartoucheEntity.ADDRESS))
-			{
-				cartouche.setDimension(info.getString(CartoucheEntity.DIMENSION));
-				cartouche.setAddressFromDimension();
-			}
 			return true;
 		}
 		

@@ -23,6 +23,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public static final String SYMBOL_NUMBER = "symbol_number";
 	public static final String EMPTY = StargateJourney.EMPTY;
 	
+	private boolean isNew = false;
 	public int symbolNumber = 0;
 	public String pointOfOrigin = EMPTY;
 	public String symbols = EMPTY;
@@ -40,11 +41,14 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		if(pointOfOrigin.equals(EMPTY))
-			setPointOfOrigin(level);
-		
-		if(symbols.equals(EMPTY))
-			setSymbols(level);
+		if(!isNew)
+		{
+			if(pointOfOrigin.equals(EMPTY))
+				setPointOfOrigin(level);
+			
+			if(symbols.equals(EMPTY))
+				setSymbols(level);
+		}
 	}
 	
 	@Override
@@ -74,6 +78,11 @@ public abstract class SymbolBlockEntity extends BlockEntity
 			tag.putString(SYMBOLS, symbols);
 		
 		super.saveAdditional(tag, registries);
+	}
+	
+	public void setNew()
+	{
+		this.isNew = true;
 	}
 	
 	public int getSymbolNumber()

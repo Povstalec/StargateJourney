@@ -34,6 +34,7 @@ public abstract class CartoucheEntity extends BlockEntity
 	public static final String SYMBOLS = "symbols";
 	public static final String ADDRESS = "address";
 
+	private boolean isNew = false;
 	private String addressTable = EMPTY;
 	private String dimension;
 	
@@ -53,17 +54,19 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		if(addressTable != null && !addressTable.equals(EMPTY))
-			setDimensionFromAddressTable();
-		else if(dimension == null)
-			setDimensionFromLevel(level);
-		
-		if(symbols == null)
-			setSymbols(level);
-
-    	
-		if(address.isEmpty())
-			setAddressFromDimension();
+		if(!isNew)
+		{
+			if(addressTable != null && !addressTable.equals(EMPTY))
+				setDimensionFromAddressTable();
+			else if(dimension == null)
+				setDimensionFromLevel(level);
+			
+			if(symbols == null)
+				setSymbols(level);
+			
+			if(address.isEmpty())
+				setAddressFromDimension();
+		}
 	}
 	
 	@Override
@@ -96,6 +99,11 @@ public abstract class CartoucheEntity extends BlockEntity
 			tag.putIntArray(ADDRESS, address.toArray());
 		
 		super.saveAdditional(tag, registries);
+	}
+	
+	public void setNew()
+	{
+		this.isNew = true;
 	}
 	
 	public void setDimensionFromLevel(Level level)
@@ -164,7 +172,7 @@ public abstract class CartoucheEntity extends BlockEntity
 			return;
 		
 		int[] address = addressTable.equals(EMPTY) ? this.address.toArray() : new int[0];
-		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundCartoucheUpdatePacket(worldPosition, symbols, address));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundCartoucheUpdatePacket(worldPosition, symbols == null ? "" : symbols, address));
 	}
 	
 	public void tick(Level level, BlockPos pos, BlockState state)

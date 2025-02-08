@@ -9,7 +9,7 @@
 	],
 	"key":
 	{
-		"I": { "tag": "forge:ingots/steel" },
+		"I": { "tag": "neoforge:ingots/steel" },
 		"S": { "item": "sgjourney:stargate_shielding_ring" }
 	},
 	"result":
