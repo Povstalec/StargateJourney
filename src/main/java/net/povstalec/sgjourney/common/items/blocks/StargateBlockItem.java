@@ -157,6 +157,7 @@ public class StargateBlockItem extends BlockItem
 	{
 		if(baseEntity instanceof AbstractStargateEntity stargate)
 		{
+			stargate.setNew();
 			boolean addToNetwork = true;
 			
 			if(info.contains(ADD_TO_NETWORK))

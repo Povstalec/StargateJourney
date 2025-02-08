@@ -79,6 +79,7 @@ public class TransporterBlockItem extends BlockItem
 	{
 		if(baseEntity instanceof AbstractTransporterEntity transporter)
 		{
+			transporter.setNew();
 			boolean addToNetwork = true;
 			
 			if(info.contains(ADD_TO_NETWORK))

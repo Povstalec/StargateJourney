@@ -68,7 +68,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
     public void onLoad()
 	{
         //Rotate the ring randomly
-        if(!this.level.isClientSide() && !addToNetwork)
+        if(!this.level.isClientSide() && !isNew && !addToNetwork)
         {
         	Random random = new Random();
         	setRotation(2 * random.nextInt(0, MAX_ROTATION / 2 + 1));
@@ -79,10 +79,10 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 
-        if(!isPointOfOriginValid(this.getLevel()))
+        if(!isNew && !isPointOfOriginValid(this.getLevel()))
         	setPointOfOriginFromDimension(this.getLevel().dimension());
 
-        if(!areSymbolsValid(this.getLevel()))
+        if(!isNew && !areSymbolsValid(this.getLevel()))
         	setSymbolsFromDimension(this.getLevel().dimension());
     }
 

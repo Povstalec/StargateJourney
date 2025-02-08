@@ -122,8 +122,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
 	// Basic Info
-	protected Address id9ChevronAddress = new Address();
+	protected boolean isNew = false;
 	protected boolean addToNetwork = true;
+	
+	protected Address id9ChevronAddress = new Address();
 	
 	protected final Stargate.Gen generation;
 	protected int symbolBounds = 38;
@@ -210,9 +212,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
         if(level.isClientSide())
 	        return;
-        
-        if(!addToNetwork)
-    		addStargateToNetwork();
+		
+        if(!isNew && !addToNetwork)
+			addStargateToNetwork();
         
         updateClientState();
         
@@ -403,6 +405,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		}
 		
 		return address;
+	}
+	
+	public void setNew()
+	{
+		this.isNew = true;
 	}
 	
 	//============================================================================================

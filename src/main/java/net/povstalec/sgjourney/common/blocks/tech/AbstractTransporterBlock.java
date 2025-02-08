@@ -82,12 +82,12 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 		String id = "";
 		boolean hasData = stack.has(DataComponents.BLOCK_ENTITY_DATA);
 
-		if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("ID"))
-			id = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString("ID");
+		if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractTransporterEntity.ID))
+			id = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString(AbstractTransporterEntity.ID);
 		
         tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
 
-        if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("AddToNetwork") && !stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getBoolean("AddToNetwork"))
+        if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractTransporterEntity.ADD_TO_NETWORK) && !stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getBoolean(AbstractTransporterEntity.ADD_TO_NETWORK))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
@@ -96,7 +96,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	public static ItemStack excludeFromNetwork(ItemStack stack, BlockEntityType<?> blockEntityType)
 	{
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putBoolean("AddToNetwork", false);
+        compoundtag.putBoolean(AbstractTransporterEntity.ADD_TO_NETWORK, false);
 		BlockEntity.addEntityType(compoundtag, blockEntityType);
 
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));

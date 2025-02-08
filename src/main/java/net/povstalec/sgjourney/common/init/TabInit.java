@@ -246,11 +246,12 @@ public class TabInit
 		}
 		else if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
 		{
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), BlockEntityInit.UNIVERSE_STARGATE.get()));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), BlockEntityInit.MILKY_WAY_STARGATE.get()));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), BlockEntityInit.PEGASUS_STARGATE.get()));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), BlockEntityInit.CLASSIC_STARGATE.get()));
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), BlockEntityInit.TOLLAN_STARGATE.get()));
+			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), BlockEntityInit.UNIVERSE_STARGATE.get()));
+			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), BlockEntityInit.MILKY_WAY_STARGATE.get()));
+			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), BlockEntityInit.PEGASUS_STARGATE.get()));
+			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), BlockEntityInit.CLASSIC_STARGATE.get()));
+			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), BlockEntityInit.TOLLAN_STARGATE.get()));
+			
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get()), BlockEntityInit.TRANSPORT_RINGS.get()));
 		}
 	}

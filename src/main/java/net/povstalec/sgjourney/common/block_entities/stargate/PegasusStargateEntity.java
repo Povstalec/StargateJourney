@@ -54,10 +54,10 @@ public class PegasusStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 
-        if(!isPointOfOriginValid(this.getLevel()))
+        if(!isNew && !isPointOfOriginValid(this.getLevel()))
         	setPointOfOriginFromDimension(this.getLevel().dimension());
 
-        if(!areSymbolsValid(this.getLevel()))
+        if(!isNew && !areSymbolsValid(this.getLevel()))
         	setSymbolsFromDimension(this.getLevel().dimension());
     }
 	

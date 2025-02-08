@@ -313,10 +313,12 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
-	public static ItemStack excludeFromNetwork(ItemStack stack)
+	public static ItemStack excludeFromNetwork(ItemStack stack, BlockEntityType<?> blockEntityType)
 	{
-        CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putBoolean(AbstractStargateEntity.ADD_TO_NETWORK, false);
+		CompoundTag compoundtag = new CompoundTag();
+		compoundtag.putBoolean(AbstractStargateEntity.ADD_TO_NETWORK, false);
+		BlockEntity.addEntityType(compoundtag, blockEntityType);
+		
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;

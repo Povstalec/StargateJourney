@@ -25,9 +25,10 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
 	public static final String ADD_TO_NETWORK = "add_to_network";
-	public static final String ID = "id";
+	public static final String ID = "transporter_id";
 	public static final String CUSTOM_NAME = "custom_name";
 	
+	protected boolean isNew = false;
 	protected boolean addToNetwork = true;
 	
 	protected UUID id;
@@ -49,7 +50,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
         if(level.isClientSide())
 	        return;
         
-        if(!addToNetwork)
+        if(!isNew && !addToNetwork)
     		addTransporterToNetwork();
 	}
 	
@@ -121,6 +122,11 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	public void removeTransporterFromNetwork()
 	{
 		TransporterNetwork.get(level).removeTransporter(level, this.id);
+	}
+	
+	public void setNew()
+	{
+		this.isNew = true;
 	}
 	
 	@Override
