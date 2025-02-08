@@ -1548,11 +1548,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		setStargateState(connectionState, this.getChevronsEngaged(), true);
 		
 		if(FORCE_LOAD_CHUNK)
-		{//TODO Handle chunkloading
-			/*if(connectionState != State.IDLE)
-				ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, true, true);
+		{
+			if(connectionState != State.IDLE)
+				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), true);
 			else
-				ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, false, true);*/
+				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), false);
 		}
 	}
 	

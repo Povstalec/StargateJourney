@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -104,7 +106,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 				target = null;
 			
 			//TODO sync difference with client
-			net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight));
 		}
 	}
 	
@@ -139,8 +141,8 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		if(level.isClientSide())
 			return;
-		//TODO Handle chunkloading
-		//ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+		
+		level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), load);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TransportRingsEntity rings)

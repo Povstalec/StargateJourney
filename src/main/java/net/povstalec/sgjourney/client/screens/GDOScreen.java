@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client.screens;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -7,6 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -85,8 +87,13 @@ public class GDOScreen extends Screen
         int y = (height - imageHeight) / 2;
 
         graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
-
-    	super.render(graphics, mouseX, mouseY, delta);
+		
+		Iterator var5 = this.renderables.iterator();
+		
+		while(var5.hasNext()) {
+			Renderable renderable = (Renderable)var5.next();
+			renderable.render(graphics, mouseX, mouseY, delta);
+		}
 
         PoseStack stack = graphics.pose();
         stack.pushPose();
