@@ -23,7 +23,7 @@ public class CrystallizerRecipeCategory implements IRecipeCategory<CrystallizerR
 	public static final ResourceLocation RECIPE_ID = StargateJourney.sgjourneyLocation("crystallizing");
 	public static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/jei/crystallizer_gui.png");
 	
-	public static final RecipeType<CrystallizerRecipe> CRYSTALLIZING_TYPE = new RecipeType<>(RECIPE_ID, CrystallizerRecipe.class);
+	public static final RecipeType<CrystallizerRecipe> CRYSTALLIZING_TYPE = RecipeType.create(RECIPE_ID.getNamespace(), RECIPE_ID.getPath(), CrystallizerRecipe.class);
 	
 	private final IDrawable background;
 	private final IDrawable icon;

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.compatibility.jei;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,22 +38,10 @@ public class SGJourneyJEIPlugin implements IModPlugin
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registration)
 	{
-		registration.addRecipeCategories(new CrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()), new AdvancedCrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new CrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new AdvancedCrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 	
-	@Override
-	public void registerRecipes(IRecipeRegistration registration)
-	{
-		RecipeManager recipeManager = Objects.requireNonNull(minecraft.level).getRecipeManager();
-		
-		List<RecipeHolder<CrystallizerRecipe>> crystallizerRecipes = recipeManager.getAllRecipesFor(CrystallizerRecipe.Type.CRYSTALLIZING);
-		RecipeType<RecipeHolder<CrystallizerRecipe>> crystallizingType = RecipeType.createRecipeHolderType(CrystallizerRecipeCategory.RECIPE_ID);
-		registration.addRecipes(crystallizingType, crystallizerRecipes);
-
-		List<RecipeHolder<AdvancedCrystallizerRecipe>> advancedCrystallizerRecipes = recipeManager.getAllRecipesFor(AdvancedCrystallizerRecipe.Type.ADVANCED_CRYSTALLIZING);
-		RecipeType<RecipeHolder<AdvancedCrystallizerRecipe>> advancedCrystallizingType = RecipeType.createRecipeHolderType(AdvancedCrystallizerRecipeCategory.RECIPE_ID);
-		registration.addRecipes(advancedCrystallizingType, advancedCrystallizerRecipes);
-	}
 	@Override
 	public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registration)
 	{
@@ -64,5 +53,29 @@ public class SGJourneyJEIPlugin implements IModPlugin
 		var item2 = BlockInit.ADVANCED_CRYSTALLIZER.asItem();
 		if(item2 != null)
 			registration.addRecipeCatalyst(new ItemStack(item2), AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE);
+	}
+	
+	@Override
+	public void registerRecipes(IRecipeRegistration registration)
+	{
+		RecipeManager recipeManager = Objects.requireNonNull(minecraft.level).getRecipeManager();
+		
+		List<RecipeHolder<CrystallizerRecipe>> crystallizerHolders = recipeManager.getAllRecipesFor(CrystallizerRecipe.Type.CRYSTALLIZING);
+		ArrayList<CrystallizerRecipe> crystallizerRecipes = new ArrayList<>();
+		for(RecipeHolder<CrystallizerRecipe> holder : crystallizerHolders)
+		{
+			crystallizerRecipes.add(holder.value());
+		}
+		
+		registration.addRecipes(CrystallizerRecipeCategory.CRYSTALLIZING_TYPE, crystallizerRecipes);
+
+		List<RecipeHolder<AdvancedCrystallizerRecipe>> advancedCrystallizerHolders = recipeManager.getAllRecipesFor(AdvancedCrystallizerRecipe.Type.ADVANCED_CRYSTALLIZING);
+		ArrayList<AdvancedCrystallizerRecipe> advancedCrystallizerRecipes = new ArrayList<>();
+		for(RecipeHolder<AdvancedCrystallizerRecipe> holder : advancedCrystallizerHolders)
+		{
+			advancedCrystallizerRecipes.add(holder.value());
+		}
+		
+		registration.addRecipes(AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE, advancedCrystallizerRecipes);
 	}
 }

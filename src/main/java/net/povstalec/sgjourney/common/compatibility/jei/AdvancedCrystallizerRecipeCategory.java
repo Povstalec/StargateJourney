@@ -22,7 +22,7 @@ public class AdvancedCrystallizerRecipeCategory implements IRecipeCategory<Advan
 	public static final ResourceLocation RECIPE_ID = StargateJourney.sgjourneyLocation("advanced_crystallizing");
 	public static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/jei/crystallizer_gui.png");
 	
-	public static final RecipeType<AdvancedCrystallizerRecipe> ADVANCED_CRYSTALLIZING_TYPE = new RecipeType<>(RECIPE_ID, AdvancedCrystallizerRecipe.class);
+	public static final RecipeType<AdvancedCrystallizerRecipe> ADVANCED_CRYSTALLIZING_TYPE = RecipeType.create(RECIPE_ID.getNamespace(), RECIPE_ID.getPath(), AdvancedCrystallizerRecipe.class);
 	
 	private final IDrawable background;
 	private final IDrawable icon;
