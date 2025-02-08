@@ -226,8 +226,7 @@ public class StaffWeaponItem extends Item
 		IItemHandler cap = staffWeaponItemStack.getCapability(Capabilities.ItemHandler.ITEM);
 		if(cap != null)
 		{
-			ItemStack inventoryStack = cap.getStackInSlot(0);
-			if(inventoryStack.is(ItemInit.VIAL.get()))
+			if(cap.getStackInSlot(0).is(ItemInit.VIAL.get()))
 			{
 				FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
 				
@@ -239,7 +238,9 @@ public class StaffWeaponItem extends Item
 				
 				if(getNaquadahAmount(staffWeaponItemStack) >= drainAmount)
 				{
+					ItemStack inventoryStack = cap.extractItem(0, 1, false);
 					VialItem.drainNaquadah(inventoryStack, drainAmount);
+					cap.insertItem(0, inventoryStack, false);
 					return true;
 				}
 			}
@@ -260,7 +261,6 @@ public class StaffWeaponItem extends Item
 	
 	public static void setOpen(Level level, Player player, ItemStack stack, boolean isOpen)
 	{
-		isOpen = !isOpen;
 		stack.set(DataComponentInit.IS_OPEN, isOpen);
 		
 		level.playSound(player, player.blockPosition(), isOpen ? SoundInit.MATOK_OPEN.get() : SoundInit.MATOK_CLOSE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
