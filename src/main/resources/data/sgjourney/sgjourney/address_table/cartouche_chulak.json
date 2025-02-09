@@ -1,9 +1,9 @@
 {
 	"include_generated_addresses": true,
-	"dimensions":
+	"addresses":
 	[
-		{"dimension": "minecraft:overworld", "weight": 2},
-		{"dimension": "sgjourney:abydos", "weight": 1},
-		{"dimension": "sgjourney:cavum_tenebrae", "weight": 2}
+		{"address": "minecraft:overworld", "weight": 2},
+		{"address": "sgjourney:abydos", "weight": 1},
+		{"address": "sgjourney:cavum_tenebrae", "weight": 2}
 	]
 }

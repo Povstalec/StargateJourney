@@ -55,16 +55,15 @@ public abstract class CartoucheEntity extends BlockEntity
 			return;
 		
 		if(addressTable != null && !addressTable.equals(EMPTY))
-			setDimensionFromAddressTable();
+			setAddressFromAddressTable();
 		else if(dimension == null)
+		{
 			setDimensionFromLevel(level);
+			setAddressFromDimension();
+		}
 		
 		if(symbols == null)
 			setSymbols(level);
-
-    	
-		if(address.isEmpty())
-			setAddressFromDimension();
 	}
 	
 	@Override
@@ -119,7 +118,22 @@ public abstract class CartoucheEntity extends BlockEntity
 		this.dimension = dimension;
 	}
 	
-	public void setDimensionFromAddressTable()
+	public void setAddressFromAddressTable()
+	{
+		AddressTable addressTable = AddressTable.getAddressTable(level, ResourceLocation.tryParse(this.addressTable));
+		Address address = AddressTable.randomAddress(level.getServer(), addressTable);
+		
+		if(address != null)
+		{
+			this.address = address;
+			if(address.isFromDimension())
+				this.dimension = address.getDimension().location().toString();
+		}
+		
+		this.addressTable = EMPTY;
+	}
+	
+	/*public void setDimensionFromAddressTable()
 	{
 		if(level.isClientSide())
 			return;
@@ -131,11 +145,11 @@ public abstract class CartoucheEntity extends BlockEntity
 			this.dimension = dimension.get().location().toString();
 		
 		this.addressTable = EMPTY;
-	}
+	}*/
 	
 	public void setAddressFromDimension()
 	{
-		this.address.fromDimension((ServerLevel) level, Conversion.stringToDimension(this.dimension));
+		this.address.fromDimension(level.getServer(), Conversion.stringToDimension(this.dimension));
 	}
 	
 	public void setSymbols(Level level)
@@ -178,12 +192,7 @@ public abstract class CartoucheEntity extends BlockEntity
 	public void tick(Level level, BlockPos pos, BlockState state)
 	{
 		if(state.getValue(CartoucheBlock.HALF) == DoubleBlockHalf.LOWER)
-		{
-			/*if(this.address.getLength() == 0)
-				this.address.fromDimension((ServerLevel) level, this.dimension);*/
-			
 			updateClient();
-		}
 	}
 	
 	public static class Stone extends CartoucheEntity

@@ -1,22 +1,23 @@
 package net.povstalec.sgjourney.common.stargate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
+
+import javax.annotation.Nullable;
 
 public final class Address
 {
@@ -26,7 +27,12 @@ public final class Address
 	
 	private int[] addressArray = new int[0];
 	private boolean isBuffer = false;
-	private Optional<String> dimension = Optional.empty();//TODO Maybe replace this with ResourceKey<Level> ?
+	@Nullable
+	private ResourceKey<Level> dimension;
+	
+	public static final Codec<Address> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.INT.listOf().fieldOf("symbols").forGetter(address -> Arrays.stream(address.addressArray).boxed().collect(Collectors.toList()))
+	).apply(instance, Address::new));
 	
 	public Address(boolean isBuffer)
 	{
@@ -51,6 +57,16 @@ public final class Address
 	public Address(Map<Double, Double> addressTable)
 	{
 		fromTable(addressTable);
+	}
+	
+	public Address(List<Integer> addressList)
+	{
+		fromIntegerList(addressList);
+	}
+	
+	public Address(MinecraftServer server, ResourceKey<Level> dimension)
+	{
+		fromDimension(server, dimension);
 	}
 	
 	public enum Type
@@ -98,7 +114,7 @@ public final class Address
 	
 	public Address fromArray(int[] addressArray)
 	{
-		this.dimension = Optional.empty();
+		this.dimension = null;
 		
 		if(addressArray.length < getMaxAddressLength() &&
 				ArrayHelper.differentNumbers(addressArray) &&
@@ -110,7 +126,7 @@ public final class Address
 	
 	public Address fromString(String addressString)
 	{
-		this.dimension = Optional.empty();
+		this.dimension = null;
 		
 		int[] addressArray = addressStringToIntArray(addressString);
 		
@@ -122,7 +138,7 @@ public final class Address
 	
 	public Address fromTable(Map<Double, Double> addressTable)
 	{
-		this.dimension = Optional.empty();
+		this.dimension = null;
 		
 		int[] addressArray = ArrayHelper.tableToArray(addressTable);
 		
@@ -134,6 +150,8 @@ public final class Address
 	
 	public Address fromIntegerList(List<Integer> integerList)
 	{
+		this.dimension = null;
+		
 		int[] addressArray = integerListToArray(integerList);
 		
 		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
@@ -142,19 +160,19 @@ public final class Address
 		return this;
 	}
 	
-	public Address fromDimension(ServerLevel level, ResourceKey<Level> dimension)
+	public Address fromDimension(MinecraftServer server, ResourceKey<Level> dimension)
 	{
-		Optional<Galaxy.Serializable> galaxy = Universe.get(level).getGalaxyFromDimension(dimension);
+		Optional<Galaxy.Serializable> galaxy = Universe.get(server).getGalaxyFromDimension(dimension);
 		
 		if(galaxy.isPresent())
 		{
-			Optional<Address.Immutable> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
+			Optional<Address.Immutable> address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
 			
 			if(address.isPresent())
 			{
 				//TODO Would be nice to use copy here
 				fromArray(address.get().toArray());
-				this.dimension = Optional.of(dimension.location().toString());
+				this.dimension = dimension;
 			}
 		}
 		
@@ -211,10 +229,11 @@ public final class Address
 	
 	public boolean isFromDimension()
 	{
-		return this.dimension.isPresent();
+		return this.dimension != null;
 	}
 	
-	public Optional<String> getDimension()
+	@Nullable
+	public ResourceKey<Level> getDimension()
 	{
 		return this.dimension;
 	}
