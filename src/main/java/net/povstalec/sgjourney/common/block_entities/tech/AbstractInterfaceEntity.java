@@ -121,7 +121,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public IPeripheral getPeripheral(Direction side)
 	{
-		return peripheralWrapper.getPeripheral();
+		return peripheralWrapper.newPeripheral().get();
 	}
 	
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
