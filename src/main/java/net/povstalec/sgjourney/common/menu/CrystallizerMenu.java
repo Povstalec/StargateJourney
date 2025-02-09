@@ -39,12 +39,20 @@ public class CrystallizerMenu extends AbstractContainerMenu
         addPlayerInventory(inventory);
         addPlayerHotbar(inventory);
         
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
+        this.blockEntity.getItemHandler(0).ifPresent(handler -> {
             this.addSlot(new SlotItemHandler(handler, 0, 80, 20));
-            this.addSlot(new SlotItemHandler(handler, 1, 67, 50));
-            this.addSlot(new SlotItemHandler(handler, 2, 93, 50));
-            this.addSlot(new SlotItemHandler(handler, 3, 130, 36));
-            this.addSlot(new SlotItemHandler(handler, 4, 34, 20));
+        });
+        this.blockEntity.getItemHandler(1).ifPresent(handler -> {
+            this.addSlot(new SlotItemHandler(handler, 0, 67, 50));
+        });
+        this.blockEntity.getItemHandler(2).ifPresent(handler -> {
+            this.addSlot(new SlotItemHandler(handler, 0, 93, 50));
+        });
+        this.blockEntity.getItemHandler(3).ifPresent(handler -> {
+            this.addSlot(new SlotItemHandler(handler, 0, 130, 36));
+        });
+        this.blockEntity.getItemHandler(4).ifPresent(handler -> {
+            this.addSlot(new SlotItemHandler(handler, 0, 34, 20));
         });
     }
     
