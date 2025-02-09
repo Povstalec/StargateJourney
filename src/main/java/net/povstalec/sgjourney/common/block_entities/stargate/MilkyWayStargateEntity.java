@@ -241,7 +241,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	public Stargate.Feedback encodeChevron()
 	{
 		if(!this.isChevronOpen)
-			return setRecentFeedback(Stargate.Feedback.CHEVRON_NOT_RAISED);
+			return setRecentFeedback(Stargate.Feedback.CHEVRON_NOT_OPEN);
 		
 		if(!level.isClientSide())
 			synchronizeWithClient(level);
