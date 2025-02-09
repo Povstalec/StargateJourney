@@ -520,6 +520,7 @@
 	
 	"message.sgjourney.stargate.info.chevron_opened": "Chevron opened",
 	"message.sgjourney.stargate.info.chevron_closed": "Chevron closed",
+	"message.sgjourney.stargate.info.chevron_not_open": "Chevron not open",
 	"message.sgjourney.stargate.error.chevron_already_opened": "Chevron is already opened",
 	"message.sgjourney.stargate.error.chevron_already_closed": "Chevron is already closed",
 	"message.sgjourney.stargate.error.cannot_encode_point_of_origin": "Cannot encode Point of Origin",

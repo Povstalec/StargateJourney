@@ -460,7 +460,7 @@ public class Stargate
 		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"),
 		CHEVRON_ALREADY_OPENED(-33, FeedbackType.ERROR, "chevron_already_opened"),
 		CHEVRON_ALREADY_CLOSED(-34, FeedbackType.ERROR, "chevron_already_closed"),
-		CHEVRON_NOT_RAISED(-35, FeedbackType.ERROR, "chevron_not_raised"),
+		CHEVRON_NOT_OPEN(-35, FeedbackType.ERROR, "chevron_not_open"),
 		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin");
 		
 		private int code;
