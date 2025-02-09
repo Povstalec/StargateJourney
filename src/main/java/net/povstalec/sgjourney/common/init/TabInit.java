@@ -84,7 +84,8 @@ public class TabInit
 				items.accept(ItemInit.JAFFA_BOOTS.get());
 
 				items.accept(NaquadahFuelRodItem.fuelRodSetup());
-
+				
+				items.accept(ItemInit.FUSION_CORE.get());
 				items.accept(ItemInit.ZPM.get());
 				items.accept(PersonalShieldItem.personalShieldSetup());
 

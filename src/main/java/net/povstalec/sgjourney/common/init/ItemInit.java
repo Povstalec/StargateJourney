@@ -16,19 +16,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.items.CallForwardingDevice;
-import net.povstalec.sgjourney.common.items.GDOItem;
-import net.povstalec.sgjourney.common.items.KaraKeshItem;
-import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
-import net.povstalec.sgjourney.common.items.PDAItem;
-import net.povstalec.sgjourney.common.items.RingRemoteItem;
-import net.povstalec.sgjourney.common.items.StaffWeaponItem;
-import net.povstalec.sgjourney.common.items.StargateIrisItem;
-import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
-import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.items.SyringeItem;
-import net.povstalec.sgjourney.common.items.VialItem;
-import net.povstalec.sgjourney.common.items.ZeroPointModule;
+import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.FalconArmorItem;
 import net.povstalec.sgjourney.common.items.armor.JackalArmorItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
@@ -94,6 +82,9 @@ public class ItemInit
 	
 	/*public static final RegistryObject<Item> UNIVERSE_DIALER = ITEMS.register("universe_dialer", 
 			() -> new DialerItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));*/
+	
+	public static final RegistryObject<Item> FUSION_CORE = ITEMS.register("fusion_core",
+			() -> new FusionCoreItem(new FusionCoreItem.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 	
 	public static final RegistryObject<Item> ZPM = ITEMS.register("zero_point_module", 
 			() -> new ZeroPointModule(new ZeroPointModule.Properties().stacksTo(1).rarity(Rarity.EPIC)));
