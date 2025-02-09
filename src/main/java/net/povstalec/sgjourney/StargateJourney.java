@@ -47,6 +47,7 @@ import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.fluids.NaquadahFluidType;
 import net.povstalec.sgjourney.common.fluids.HeavyNaquadahFluidType;
@@ -88,10 +89,10 @@ public class StargateJourney
     public static final String EMPTY = EMPTY_LOCATION.toString();
 
     public static final String STELLAR_VIEW_MODID = "stellarview";
-    public static final String OCULUS_MODID = "oculus";
+    public static final String IRIS_MODID = "iris";
     public static final String COMPUTERCRAFT_MODID = "computercraft";
 
-    private static Optional<Boolean> isOculusLoaded = Optional.empty();
+    private static Optional<Boolean> isIrisLoaded = Optional.empty();
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -224,14 +225,9 @@ public class StargateJourney
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getFluidHandler(direction));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getFluidHandler(direction));
         
-        
-        
         // ComputerCraft
-        event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.BASIC_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheral(direction));
-        event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheral(direction));
-        event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheral(direction));
-        
-        event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.TRANSCEIVER.get(), (blockEntity, direction) -> blockEntity.getPeripheral(direction));
+        if(ModList.get().isLoaded(COMPUTERCRAFT_MODID))
+            CCTweakedCompatibility.registerPeripherals(event);
         
         
         
@@ -244,12 +240,12 @@ public class StargateJourney
     }
     
     // BECAUSE OCULUS MESSES WITH RENDERING TOO MUCH
-    public static boolean isOculusLoaded()
+    public static boolean isIrisLoaded()
     {
-        if(isOculusLoaded.isEmpty())
-            isOculusLoaded = Optional.of(ModList.get().isLoaded(OCULUS_MODID));
+        if(isIrisLoaded.isEmpty())
+            isIrisLoaded = Optional.of(ModList.get().isLoaded(IRIS_MODID));
         
-        return isOculusLoaded.get();
+        return isIrisLoaded.get();
     }
     
     @EventBusSubscriber(modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

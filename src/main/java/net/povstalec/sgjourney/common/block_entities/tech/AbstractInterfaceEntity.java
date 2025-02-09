@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nullable;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
@@ -118,11 +117,6 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
-	
-	public IPeripheral getPeripheral(Direction side)
-	{
-		return peripheralWrapper.newPeripheral().get();
-	}
 	
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{

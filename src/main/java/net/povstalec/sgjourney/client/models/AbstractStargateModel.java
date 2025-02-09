@@ -192,7 +192,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 
 		//TODO Encoded texture
 		
-		if(StargateJourney.isOculusLoaded())
+		if(StargateJourney.isIrisLoaded())
 		{
 			// Renders lit up parts of Chevrons
 			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.engagedTexture()));
@@ -214,7 +214,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			renderChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, chevronNumber, false);
 		}
 		
-		if(!StargateJourney.isOculusLoaded())
+		if(!StargateJourney.isIrisLoaded())
 		{
 			// Renders lit up parts of Chevrons
 			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.engagedTexture()));

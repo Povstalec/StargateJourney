@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
@@ -288,15 +287,6 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		
 		if(this.peripheralWrapper != null)
 			this.peripheralWrapper.queueEvent(eventName, objects);
-	}
-	
-	//============================================================================================
-	//****************************************Capabilities****************************************
-	//============================================================================================
-	
-	public IPeripheral getPeripheral(Direction side)
-	{
-		return peripheralWrapper.getPeripheral();
 	}
 	
 	//============================================================================================

@@ -182,6 +182,11 @@ public class StargateBlockItem extends BlockItem
 					if(!info.contains(SYMBOLS))
 						stargate.setSymbols(EMPTY);
 				}
+				else
+				{
+					stargate.setPointOfOriginFromDimension(level.dimension());
+					stargate.setSymbolsFromDimension(level.dimension());
+				}
 			}
 			
 			// Sets up symbols on the Milky Way Stargate
@@ -202,6 +207,11 @@ public class StargateBlockItem extends BlockItem
 						stargate.setPointOfOrigin(EMPTY);
 					if(!info.contains(SYMBOLS))
 						stargate.setSymbols(EMPTY);
+				}
+				else
+				{
+					stargate.setPointOfOriginFromDimension(level.dimension());
+					stargate.setSymbolsFromDimension(level.dimension());
 				}
 			}
 		}

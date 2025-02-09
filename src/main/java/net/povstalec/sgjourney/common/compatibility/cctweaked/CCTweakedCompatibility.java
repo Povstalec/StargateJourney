@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked;
 
+import dan200.computercraft.api.peripheral.PeripheralCapability;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.PegasusStargateMethods;
@@ -7,9 +9,19 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.ShieldingM
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateFilterMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public class CCTweakedCompatibility
 {
+	public static void registerPeripherals(RegisterCapabilitiesEvent event)
+	{
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.BASIC_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral() : null);
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral() : null);
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral() : null);
+		
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.TRANSCEIVER.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral() : null);
+	}
+	
 	private static void irisMethods(StargatePeripheral peripheral)
 	{
 		peripheral.registerMethod(new ShieldingMethods.GetIris());
