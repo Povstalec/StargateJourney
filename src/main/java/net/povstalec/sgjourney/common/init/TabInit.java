@@ -53,6 +53,8 @@ public class TabInit
 
 				items.accept(ItemInit.NAQUADAH_ROD.get());
 				items.accept(ItemInit.REACTION_CHAMBER.get());
+				items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
+				items.accept(ItemInit.FUSION_CORE.get());
 				items.accept(ItemInit.PLASMA_CONVERTER.get());
 				
 				items.accept(ItemInit.PDA.get());
@@ -85,7 +87,6 @@ public class TabInit
 
 				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 				
-				items.accept(ItemInit.FUSION_CORE.get());
 				items.accept(ItemInit.ZPM.get());
 				items.accept(PersonalShieldItem.personalShieldSetup());
 

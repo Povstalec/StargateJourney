@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"RAR",
+		"AHA",
+		"RAR"
+	],
+	
+	"key": 
+	{
+		"A": {"tag": "sgjourney:naquadah_alloy"},
+		"R": { "item": "minecraft:redstone" },
+		"C": { "item": "sgjourney:reaction_chamber" }
+	},
+	
+	"result": { "item": "sgjourney:naquadah_generator_core", "count": 1 }
+}

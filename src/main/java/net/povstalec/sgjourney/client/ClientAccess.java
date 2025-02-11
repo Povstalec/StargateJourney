@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -115,13 +116,14 @@ public class ClientAccess
         }
     }
     
-    public static void updateDHD(BlockPos pos, String symbols, int[] address, boolean isCenterButtonEngaged)
+    public static void updateDHD(BlockPos pos, long energy, ResourceLocation pointOfOrigin, ResourceLocation symbols, int[] address, boolean isCenterButtonEngaged)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final AbstractDHDEntity dhd)
         {
         	//TODO Make DHD use symbols
+			dhd.setEnergy(energy);
         	//dhd.setSymbols(symbols);
         	dhd.setAddress(new Address(true).fromArray(address));
         	dhd.setCenterButtonEngaged(isCenterButtonEngaged);

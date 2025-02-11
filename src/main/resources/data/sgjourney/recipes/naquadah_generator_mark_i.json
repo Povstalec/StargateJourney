@@ -10,7 +10,7 @@
 	
 	"key": 
 	{
-		"C": { "item": "sgjourney:reaction_chamber" },
+		"C": { "item": "sgjourney:naquadah_generator_core" },
 		"S": { "item": "sgjourney:naquadah_slab" },
 		"A": { "tag": "sgjourney:naquadah_alloy" },
 		"P": { "item": "sgjourney:plasma_converter" }

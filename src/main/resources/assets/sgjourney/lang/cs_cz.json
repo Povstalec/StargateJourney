@@ -155,6 +155,8 @@
 	"item.sgjourney.matok": "Tyčová zbraň Ma'Tok",
 	
 	"item.sgjourney.pda": "PDA",
+	"item.sgjourney.liquid_naquadah_reactor_core": "Jádro tekutého naquadahového reaktoru",
+	"item.sgjourney.naquadah_generator_core": "Jádro naquadahového generátoru",
 	"item.sgjourney.fusion_core": "Fúzní jádro",
 	"item.sgjourney.zero_point_module": "ZPM",
 	"item.sgjourney.personal_shield_emitter": "Generátor osobního štítu",
@@ -480,6 +482,12 @@
 	"tooltip.sgjourney.call_forwarding_device.in_dhd": "V DHD:",
 	"tooltip.sgjourney.call_forwarding_device.info": "Povolí přesměrování spojení",
 	
+	"tooltip.sgjourney.dhd.advanced_protocols": "Pokročilé nastavení",
+	"tooltip.sgjourney.dhd.energy_target": "Cílená energetická kapacita",
+	"tooltip.sgjourney.dhd.energy_transfer": "Přenost energie",
+	"tooltip.sgjourney.dhd.communication_range_1": "Komunikační vzdálenost",
+	"tooltip.sgjourney.dhd.communication_range_2": "bloků",
+	
 	"tooltip.sgjourney.stargate_upgrade.description": "Pravé kliknutí na klasickou hvězdnou bránu ji upgraduje",
 	"tooltip.sgjourney.stargate_variant.description": "Pravé kliknutí na hvězdnou bránu změní její variantu",
 	
@@ -508,8 +516,11 @@
 	"tooltip.sgjourney.gdo.description.gui": "Shift + pravé kliknutí otevře rozhraní pro GDO",
 
 	"tooltip.sgjourney.iris.durability": "Výdrž",
-
+	
 	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Palivo",
+	"tooltip.sgjourney.naquadah_generator_core.reaction_progress": "Průběh reakce",
+	"tooltip.sgjourney.fusion_core.fuel": "Palivo",
+	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Chyba: Transportní kruhy již v provozu",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Chyba: Žádné transportní kruhy poblíž",
@@ -520,6 +531,7 @@
 	"message.sgjourney.pda.has_ancient_gene": "Má antický gen",
 	"message.sgjourney.pda.has_naquadah_in_bloodstream": "Má v krvi naquadah",
 	
+	"message.sgjourney.dhd.error.not_enough_energy": "Ovládací panel nemá dost energie",
 	"message.sgjourney.dhd.error.not_connected_to_stargate": "Ovládací panel není připojen k hvězdné bráně",
 	
 	"message.sgjourney.stargate.one_way_wormhole": "Není možné projít červí dírou tímto směrem",

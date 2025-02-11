@@ -390,7 +390,7 @@ public final class StargateConnection
 				return;
 			}
 			
-			if(this.dialedStargate.getEnergyStored() > this.dialingStargate.getEnergyStored())
+			if(CommonStargateConfig.can_draw_power_from_both_ends.get() && this.dialedStargate.getEnergyStored() > this.dialingStargate.getEnergyStored())
 				this.dialedStargate.depleteEnergy(energyDraw, false);
 			else
 				this.dialingStargate.depleteEnergy(energyDraw, false);

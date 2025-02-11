@@ -7,9 +7,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.items.CallForwardingDevice;
+import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+
+import javax.annotation.Nonnull;
 
 public class PegasusDHDEntity extends CrystalDHDEntity
 {
@@ -24,6 +29,29 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		super.load(nbt);
 		addTransferCrystals(itemHandler);
 	}
+	
+	protected long buttonPressEnergyCost()
+	{
+		return CommonDHDConfig.pegasus_dhd_button_press_energy_cost.get();
+	}
+	
+	@Override
+	protected long capacity()
+	{
+		return CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get();
+	}
+	
+	@Override
+	protected long maxReceive()
+	{
+		return CommonDHDConfig.pegasus_dhd_max_energy_receive.get();
+	}
+	
+	@Override
+	public long maxEnergyDeplete()
+	{
+		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.milky_way_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
+	}
 
 	@Override
 	protected SoundEvent getEnterSound()
@@ -35,6 +63,15 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	protected SoundEvent getPressSound()
 	{
 		return SoundInit.PEGASUS_DHD_PRESS.get();
+	}
+	
+	@Override
+	protected boolean isValidCrystal(int slot, ItemStack stack)
+	{
+		if(slot == 0)
+			return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
+		
+		return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isAdvanced() || stack.getItem() instanceof CallForwardingDevice;
 	}
 	
 

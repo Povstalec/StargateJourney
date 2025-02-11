@@ -31,7 +31,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
-		return !StargateJourneyConfig.disable_energy_use.get();
+		return !StargateJourneyConfig.disable_energy_use.get() && getEnergy(stack) > 0;
 	}
 
 	@Override

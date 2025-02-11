@@ -1,7 +1,7 @@
 {
-    "parent": "item/generated",
-    "textures": 
+	"parent": "item/generated",
+	"textures": 
 	{
-        "layer0": "sgjourney:item/fusion_core"
-    }
+		"layer0": "sgjourney:item/fusion_core"
+	}
 }

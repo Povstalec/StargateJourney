@@ -10,8 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
@@ -47,6 +50,59 @@ public class DHDCrystalMenu extends AbstractContainerMenu
             this.addSlot(new SlotItemHandler(handler, 7, 62, 35));
             this.addSlot(new SlotItemHandler(handler, 8, 62, 17));
         });
+        
+        this.blockEntity.getEnergyItemHandler().ifPresent(handler -> {
+            this.addSlot(new SlotItemHandler(handler, 0, 134, 27));
+            this.addSlot(new SlotItemHandler(handler, 1, 134, 53));
+        });
+    }
+    
+    public boolean advancedCrystals()
+    {
+        return this.blockEntity instanceof PegasusDHDEntity;
+    }
+    
+    public long getEnergy()
+    {
+        return this.blockEntity.getEnergyStored();
+    }
+    
+    public long getMaxEnergy()
+    {
+        return this.blockEntity.getEnergyCapacity();
+    }
+    
+    public boolean enableAdvancedProtocols()
+    {
+        return this.blockEntity.enableAdvancedProtocols();
+    }
+    
+    public long getEnergyTarget()
+    {
+        return this.blockEntity.getEnergyTarget();
+    }
+    
+    public long maxEnergyDeplete()
+    {
+        return this.blockEntity.maxEnergyDeplete();
+    }
+    
+    public int getMaxDistance()
+    {
+        return this.blockEntity.getMaxDistance();
+    }
+    
+    public boolean hasItem(int slot)
+    {
+        if(slot < 0 || slot > 8)
+            return false;
+        
+        IItemHandler cap = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
+        
+        if(cap != null && cap.getStackInSlot(slot) != null)
+            return !cap.getStackInSlot(slot).isEmpty();
+        
+        return false;
     }
 	
     @Override
@@ -92,7 +148,7 @@ public class DHDCrystalMenu extends AbstractContainerMenu
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 9;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
+    private static final int TE_INVENTORY_SLOT_COUNT = 10;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) 

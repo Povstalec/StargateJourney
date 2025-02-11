@@ -31,6 +31,10 @@ public class StargateJourneyConfig
 		CommonZPMConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
 		
+		COMMON_BUILDER.push("DHD Config");
+		CommonDHDConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
 		COMMON_BUILDER.push("Interface Config");
 		CommonInterfaceConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
