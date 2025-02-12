@@ -331,56 +331,6 @@ public class Stargate
 		DISABLED;
 	}
 	
-	public enum FilterType
-	{
-		NONE(0),
-		WHITELIST(1),
-		BLACKLIST(-1);
-		// 7-chevron addresses
-		// 8-chevron addresses
-		// 9-chevron addresses
-		
-		private int integerValue;
-		
-		FilterType(int integerValue)
-		{
-			this.integerValue = integerValue;
-		}
-		
-		public int getIntegerValue()
-		{
-			return this.integerValue;
-		}
-		
-		public boolean shouldFilter()
-		{
-			return this != NONE;
-		}
-		
-		public boolean isWhitelist()
-		{
-			return this == WHITELIST;
-		}
-		
-		public boolean isBlacklist()
-		{
-			return this == BLACKLIST;
-		}
-		
-		public static FilterType getFilterType(int integerValue)
-		{
-			switch(integerValue)
-			{
-			case 1:
-				return WHITELIST;
-			case -1:
-				return BLACKLIST;
-			default:
-				return NONE;
-			}
-		}
-	}
-	
 	public enum FeedbackType
 	{
 		INFO,

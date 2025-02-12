@@ -59,10 +59,12 @@ public class CCTweakedCompatibility
 		
 		peripheral.registerMethod(new StargateFilterMethods.AddToWhitelist());
 		peripheral.registerMethod(new StargateFilterMethods.RemoveFromWhitelist());
+		peripheral.registerMethod(new StargateFilterMethods.GetWhitelist());
 		peripheral.registerMethod(new StargateFilterMethods.ClearWhitelist());
 		
 		peripheral.registerMethod(new StargateFilterMethods.AddToBlacklist());
 		peripheral.registerMethod(new StargateFilterMethods.RemoveFromBlacklist());
+		peripheral.registerMethod(new StargateFilterMethods.GetBlacklist());
 		peripheral.registerMethod(new StargateFilterMethods.ClearBlacklist());
 	}
 	

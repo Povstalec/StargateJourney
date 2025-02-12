@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
 import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
 import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
@@ -84,7 +85,7 @@ import net.povstalec.sgjourney.common.stargate.StargateConnection.State;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.Wormhole;
 
-public abstract class AbstractStargateEntity extends EnergyBlockEntity implements SymbolInfo.Interface, DHDInfo.Interface, ITransmissionReceiver
+public abstract class AbstractStargateEntity extends EnergyBlockEntity implements SymbolInfo.Interface, DHDInfo.Interface, AddressFilterInfo.Interface, ITransmissionReceiver
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
 	public static final String ADD_TO_NETWORK = "AddToNetwork";
@@ -104,10 +105,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String RESTRICT_NETWORK = "RestrictNetwork";
 	public static final String TIMES_OPENED = "TimesOpened";
 	public static final String AUTOCLOSE = "Autoclose";
-	
-	public static final String FILTER_TYPE = "FilterType";
-	public static final String WHITELIST = "Whitelist";
-	public static final String BLACKLIST = "Blacklist";
 	
 	// Upgrading and variants
 	public static final String UPGRADED = "Upgraded";
@@ -164,14 +161,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	private boolean initialClientSync = false;
 	
-	private Stargate.FilterType filter = Stargate.FilterType.NONE;
-	private ArrayList<Address.Immutable> whitelist = new ArrayList<Address.Immutable>();
-	private ArrayList<Address.Immutable> blacklist = new ArrayList<Address.Immutable>();
-	
 	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
 	
 	protected SymbolInfo symbolInfo;
 	protected DHDInfo dhdInfo;
+	protected AddressFilterInfo addressFilterInfo;
 	//protected ShieldInfo shieldInfo;
 
 	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
@@ -189,6 +183,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		this.symbolInfo = new SymbolInfo();
 		this.dhdInfo = new DHDInfo(this);
+		this.addressFilterInfo = new AddressFilterInfo();
 	}
 
 	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
@@ -247,7 +242,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		}
 		dhdInfo().setAutoclose(tag.getInt(AUTOCLOSE));
 		
-		deserializeFilters(tag);
+		addressFilterInfo().deserializeFilters(tag);
 		
 		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
 		
@@ -290,7 +285,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		}
 		tag.putInt(AUTOCLOSE, dhdInfo().autoclose());
 		
-		serializeFilters(tag);
+		addressFilterInfo().serializeFilters(tag);
 		
 		tag.put(COVER_BLOCKS, blockCover.serializeNBT());
 		
@@ -300,53 +295,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		super.saveAdditional(tag);
 		
 		return tag;
-	}
-	
-	public void deserializeFilters(CompoundTag tag)
-	{
-		if(tag.contains(FILTER_TYPE))
-			this.filter = Stargate.FilterType.getFilterType(tag.getInt(FILTER_TYPE));
-		
-		if(tag.contains(WHITELIST))
-		{
-			CompoundTag whitelistTag = tag.getCompound(WHITELIST);
-			
-			whitelistTag.getAllKeys().forEach(addressString ->
-			{
-				this.whitelist.add(new Address.Immutable(addressString));
-			});
-		}
-		
-		if(tag.contains(BLACKLIST))
-		{
-			CompoundTag blacklistTag = tag.getCompound(BLACKLIST);
-			
-			blacklistTag.getAllKeys().forEach(addressString ->
-			{
-				this.blacklist.add(new Address.Immutable(addressString));
-			});
-		}
-	}
-	
-	public void serializeFilters(CompoundTag tag)
-	{
-		tag.putInt(FILTER_TYPE, this.filter.getIntegerValue());
-		
-		CompoundTag whitelistTag = new CompoundTag();
-		CompoundTag blacklistTag = new CompoundTag();
-		
-		this.whitelist.forEach(address ->
-		{
-			whitelistTag.putBoolean(address.toString(), true);
-		});
-		
-		this.blacklist.forEach(address ->
-		{
-			blacklistTag.putBoolean(address.toString(), true);
-		});
-
-		tag.put(WHITELIST, whitelistTag);
-		tag.put(BLACKLIST, blacklistTag);
 	}
 	
 	public void addStargateToNetwork()
@@ -544,12 +492,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		Address.Immutable immutableAddress = address.immutable();
 		
-		if(this.getFilterType().shouldFilter())
+		if(addressFilterInfo().getFilterType().shouldFilter())
 		{
-			if(this.getFilterType().isBlacklist() && this.isAddressBlacklisted(immutableAddress))
+			if(addressFilterInfo().getFilterType().isBlacklist() && addressFilterInfo().isAddressBlacklisted(immutableAddress))
 				return this.resetStargate(Stargate.Feedback.BLACKLISTED_TARGET);
 			
-			else if(this.getFilterType().isWhitelist() && !this.isAddressWhitelisted(immutableAddress))
+			else if(addressFilterInfo().getFilterType().isWhitelist() && !addressFilterInfo().isAddressWhitelisted(immutableAddress))
 				return this.resetStargate(Stargate.Feedback.WHITELISTED_TARGET);
 		}
 		
@@ -794,6 +742,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.dhdInfo;
 	}
 	
+	@Override
+	public AddressFilterInfo addressFilterInfo()
+	{
+		return this.addressFilterInfo;
+	}
+	
 	//============================================================================================
 	//************************************Getters and setters*************************************
 	//============================================================================================
@@ -974,78 +928,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public int getRedstoneSegmentOutput()
 	{
 		return 0;
-	}
-	
-	public Stargate.FilterType setFilterType(int integerValue)
-	{
-		this.filter = Stargate.FilterType.getFilterType(integerValue);
-		
-		return this.filter;
-	}
-	
-	public Stargate.FilterType getFilterType()
-	{
-		return this.filter;
-	}
-	
-	public boolean isAddressWhitelisted(Address.Immutable address)
-	{
-		return this.whitelist.contains(address);
-	}
-	
-	public boolean addToWhitelist(Address.Immutable address)
-	{
-		if(this.whitelist.contains(address))
-			return false;
-		
-		this.whitelist.add(address);
-		
-		return true;
-	}
-	
-	public boolean removeFromWhitelist(Address.Immutable address)
-	{
-		if(!this.whitelist.contains(address))
-			return false;
-		
-		this.whitelist.remove(address);
-		
-		return true;
-	}
-	
-	public void clearWhitelist()
-	{
-		this.whitelist.clear();
-	}
-	
-	public boolean isAddressBlacklisted(Address.Immutable address)
-	{
-		return this.blacklist.contains(address);
-	}
-	
-	public boolean addToBlacklist(Address.Immutable address)
-	{
-		if(this.blacklist.contains(address))
-			return false;
-		
-		this.blacklist.add(address);
-		
-		return true;
-	}
-	
-	public boolean removeFromBlacklist(Address.Immutable address)
-	{
-		if(!this.blacklist.contains(address))
-			return false;
-		
-		this.blacklist.remove(address);
-		
-		return true;
-	}
-	
-	public void clearBlacklist()
-	{
-		this.blacklist.clear();
 	}
 	
 	//============================================================================================

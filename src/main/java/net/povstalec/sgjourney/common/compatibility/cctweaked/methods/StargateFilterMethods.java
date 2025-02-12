@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked.methods;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import dan200.computercraft.api.lua.IArguments;
@@ -11,6 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
 
 public class StargateFilterMethods
 {
@@ -27,7 +30,7 @@ public class StargateFilterMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				return new Object[] {stargate.getFilterType().getIntegerValue()};
+				return new Object[] {stargate.addressFilterInfo().getFilterType().getIntegerValue()};
 			});
 			
 			return result;
@@ -47,7 +50,7 @@ public class StargateFilterMethods
 		{
 			int filter = arguments.getInt(0);
 			
-			return MethodResult.of(stargate.setFilterType(filter).getIntegerValue());
+			return MethodResult.of(stargate.addressFilterInfo().setFilterType(filter).getIntegerValue());
 		}
 	}
 	
@@ -68,6 +71,7 @@ public class StargateFilterMethods
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
+				boolean isVisible = arguments.getBoolean(1);
 				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
 				
@@ -83,10 +87,10 @@ public class StargateFilterMethods
 				else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 					throw new LuaException("Array contains numbers which are out of bounds <1,47>");
 				
-				if(stargate.addToWhitelist(new Address(addressArray).immutable()))
+				if(stargate.addressFilterInfo().addToWhitelist(new Address(addressArray).immutable(), isVisible))
 					return new Object[] {"Address whitelisted successfully"};
 				else
-					return new Object[] {"Address is already whitelisted"};
+					return new Object[] {"Address visibility changed successfully"};
 			});
 			
 			return result;
@@ -123,10 +127,37 @@ public class StargateFilterMethods
 				else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 					throw new LuaException("Array contains numbers which are out of bounds <1,47>");
 				
-				if(stargate.removeFromWhitelist(new Address(addressArray).immutable()))
+				if(stargate.addressFilterInfo().removeFromWhitelist(new Address(addressArray).immutable()))
 					return new Object[] {"Address removed from whitelist successfully"};
 				else
 					return new Object[] {"Address is not whitelisted"};
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class GetWhitelist implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getPublicWhitelist";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				ArrayList<List<Integer>> addresses = new ArrayList<List<Integer>>();
+				for(AddressFilterInfo.HiddenAddress address : stargate.addressFilterInfo().getWhitelist())
+				{
+					if(address.isVisible())
+						addresses.add(address.address().toList());
+				}
+				
+				return new Object[] {addresses};
 			});
 			
 			return result;
@@ -146,7 +177,7 @@ public class StargateFilterMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				stargate.clearWhitelist();
+				stargate.addressFilterInfo().clearWhitelist();
 				
 				return new Object[] {"Whitelist cleared"};
 			});
@@ -172,6 +203,7 @@ public class StargateFilterMethods
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
+				boolean isVisible = arguments.getBoolean(1);
 				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
 				
@@ -187,10 +219,10 @@ public class StargateFilterMethods
 				else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 					throw new LuaException("Array contains numbers which are out of bounds <1,47>");
 				
-				if(stargate.addToBlacklist(new Address(addressArray).immutable()))
+				if(stargate.addressFilterInfo().addToBlacklist(new Address(addressArray).immutable(), isVisible))
 					return new Object[] {"Address blacklisted successfully"};
 				else
-					return new Object[] {"Address is already blacklisted"};
+					return new Object[] {"Address visibility changed successfully"};
 			});
 			
 			return result;
@@ -227,10 +259,37 @@ public class StargateFilterMethods
 				else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 					throw new LuaException("Array contains numbers which are out of bounds <1,47>");
 				
-				if(stargate.removeFromBlacklist(new Address(addressArray).immutable()))
+				if(stargate.addressFilterInfo().removeFromBlacklist(new Address(addressArray).immutable()))
 					return new Object[] {"Address removed from blacklist successfully"};
 				else
 					return new Object[] {"Address is not blacklisted"};
+			});
+			
+			return result;
+		}
+	}
+	
+	public static class GetBlacklist implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getPublicBlacklist";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+				ArrayList<List<Integer>> addresses = new ArrayList<List<Integer>>();
+				for(AddressFilterInfo.HiddenAddress address : stargate.addressFilterInfo().getBlacklist())
+				{
+					if(address.isVisible())
+						addresses.add(address.address().toList());
+				}
+				
+				return new Object[] {addresses};
 			});
 			
 			return result;
@@ -250,7 +309,7 @@ public class StargateFilterMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				stargate.clearBlacklist();
+				stargate.addressFilterInfo().clearBlacklist();
 				
 				return new Object[] {"Blacklist cleared"};
 			});

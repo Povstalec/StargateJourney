@@ -184,6 +184,11 @@ public final class Address
 		return this.addressArray;
 	}
 	
+	public List<Integer> toList()
+	{
+		return Arrays.stream(toArray()).boxed().toList();
+	}
+	
 	public int getLength()
 	{
 		return addressArray.length;
@@ -441,6 +446,11 @@ public final class Address
 		public final int[] toArray()
 		{
 			return addressArray;
+		}
+		
+		public final List<Integer> toList()
+		{
+			return Arrays.stream(toArray()).boxed().toList();
 		}
 		
 		@Override
