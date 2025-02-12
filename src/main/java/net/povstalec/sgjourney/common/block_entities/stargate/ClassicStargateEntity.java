@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public class ClassicStargateEntity extends AbstractStargateEntity
+public class ClassicStargateEntity extends IrisStargateEntity
 {
 	public static final float CLASSIC_THICKNESS = 8.0F;
 	public static final float HORIZONTAL_CENTER_CLASSIC_HEIGHT = (CLASSIC_THICKNESS / 2) / 16;

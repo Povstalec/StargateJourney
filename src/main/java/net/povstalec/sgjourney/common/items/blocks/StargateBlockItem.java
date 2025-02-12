@@ -18,10 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
@@ -36,7 +33,7 @@ public class StargateBlockItem extends BlockItem
 	private static final String ADD_TO_NETWORK = AbstractStargateEntity.ADD_TO_NETWORK;
 	private static final String POINT_OF_ORIGIN = AbstractStargateEntity.POINT_OF_ORIGIN;
 	private static final String SYMBOLS = AbstractStargateEntity.SYMBOLS;
-	private static final String IRIS_PROGRESS = AbstractStargateEntity.IRIS_PROGRESS;
+	private static final String IRIS_PROGRESS = IrisStargateEntity.IRIS_PROGRESS;
 	private static final ResourceLocation EMPTY = StargateJourney.EMPTY_LOCATION;
 	
 	public StargateBlockItem(Block block, Properties properties)

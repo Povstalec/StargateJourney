@@ -34,6 +34,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
 
 public class ClientAccess
 {
@@ -141,15 +142,19 @@ public class ClientAccess
         	stargate.setEngagedChevrons(engagedChevrons);
         	stargate.setKawooshTickCount(kawooshTick);
         	stargate.setTickCount(tick);
-        	stargate.setIrisProgress(irisProgress);
         	stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
         	stargate.symbolInfo().setSymbols(symbols);
         	stargate.setVariant(variant);
-        	
-        	if(!iris.isEmpty())
-        		stargate.setIris(iris);
-        	else
-        		stargate.unsetIris();
+			
+			if(blockEntity instanceof IrisInfo.Interface irisStargate)
+			{
+				irisStargate.irisInfo().setIrisProgress(irisProgress);
+				
+				if(!iris.isEmpty())
+					irisStargate.irisInfo().setIris(iris);
+				else
+					irisStargate.irisInfo().unsetIris();
+			}
         }
     }
     

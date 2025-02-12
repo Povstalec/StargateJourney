@@ -78,7 +78,7 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayS
 		//stack.mulPose(Axis.ZP.rotationDegrees(90));
 		//stack.translate(2.5, -2.5, 0);
 		
-		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
         
         this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
 		

@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
+import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
 import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -97,9 +98,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String ADDRESS = "Address";
 	public static final String ENERGY = "Energy";
 	
-	public static final String IRIS_PROGRESS = "IrisProgress";
-	public static final String SHIELD_PROGRESS = "ShieldProgress";
-	
 	// Connections
 	public static final String CONNECTION_ID = "ConnectionID";
 	public static final String NETWORK = "Network";
@@ -117,8 +115,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String VARIANT = "Variant";
 	
 	public static final String COVER_BLOCKS = "CoverBlocks";
-	public static final String IRIS_INVENTORY = "IrisInventory";
-	public static final String SHIELD_INVENTORY = "ShieldInventory";
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 
@@ -174,17 +170,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
 	
-	// Shielding
-	protected short irisProgress = 0;
-	protected short oldIrisProgress = 0;
-	protected final ItemStackHandler irisItemHandler = createIrisHandler();
-	
-	/*protected short shieldProgress = 0;
-	protected short oldShieldProgress = 0;
-	protected final ItemStackHandler shieldItemHandler = createStargateShieldHandler();*/
-	
 	protected SymbolInfo symbolInfo;
-	protected DHDInfo dhdInfo = new DHDInfo(this);
+	protected DHDInfo dhdInfo;
+	//protected ShieldInfo shieldInfo;
 
 	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
 			float verticalCenterHeight, float horizontalCenterHeight)
@@ -263,10 +251,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
 		
-		irisProgress = tag.getShort(IRIS_PROGRESS);
-		oldIrisProgress = irisProgress;
-		irisItemHandler.deserializeNBT(tag.getCompound(IRIS_INVENTORY));
-		
 		/*shieldProgress = tag.getShort(SHIELD_PROGRESS);
 		oldShieldProgress = shieldProgress;
 		shieldItemHandler.deserializeNBT(tag.getCompound(SHIELD_INVENTORY));*/
@@ -309,9 +293,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		serializeFilters(tag);
 		
 		tag.put(COVER_BLOCKS, blockCover.serializeNBT());
-		
-		tag.putShort(IRIS_PROGRESS, irisProgress);
-		tag.put(IRIS_INVENTORY, irisItemHandler.serializeNBT());
 		
 		/*tag.putShort(SHIELD_PROGRESS, shieldProgress);
 		tag.put(SHIELD_INVENTORY, shieldItemHandler.serializeNBT());*/
@@ -550,12 +531,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.CloseWormhole(this.worldPosition, incoming));
 	}
 	
-	public void playIrisThudSound()
-	{
-		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.IrisThud(this.worldPosition));
-	}
-	
 	public abstract void playRotationSound();
 	
 	public abstract void stopRotationSound();
@@ -606,9 +581,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public void doKawoosh(int kawooshTime)
 	{
 		setKawooshTickCount(kawooshTime);
-		//updateClient();
 		
-		if(kawooshTime > StargateConnection.KAWOOSH_TICKS || this.isIrisClosed())
+		if(kawooshTime > StargateConnection.KAWOOSH_TICKS)
 			return;
 		
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
@@ -905,213 +879,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		this.animationTick++;
 		return this.animationTick;
 	}
-
-	//TODO Finish Iris
-	public boolean hasIris()
-	{
-		return irisItemHandler.getStackInSlot(0).getItem() instanceof StargateIrisItem;
-	}
-	
-	public boolean setIris(ItemStack stack)
-	{
-		if(irisItemHandler.getStackInSlot(0).isEmpty())
-		{
-			irisItemHandler.setStackInSlot(0, stack.copy());
-			return true;
-		}
-		
-		return false;
-	}
-	
-	@Nonnull
-	public ItemStack getIris()
-	{
-		return irisItemHandler.getStackInSlot(0).copy();
-	}
-	
-	/**
-	 * Removes iris from the Stargate
-	 * @return true if the Iris has been removed, false if there was no Iris to remove
-	 */
-	public boolean unsetIris()
-	{
-		if(!irisItemHandler.getStackInSlot(0).isEmpty())
-		{
-			irisItemHandler.setStackInSlot(0, ItemStack.EMPTY);
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public void decreaseIrisDurability()
-	{
-		if(irisItemHandler.getStackInSlot(0).isEmpty())
-			return;
-		
-		if(getBlockState().getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
-		{
-			boolean shouldDestroyIris = !StargateIrisItem.decreaseDurability(irisItemHandler.getStackInSlot(0));
-			
-			if(shouldDestroyIris)
-				AbstractShieldingBlock.destroyShielding(level, this.getBlockPos(), stargateBlock.getShieldingParts(), getDirection(), getOrientation());
-		}
-	}
-	
-	public Optional<ResourceLocation> getIrisTexture()
-	{
-		if(!hasIris())
-			return Optional.empty();
-		
-		return Optional.ofNullable(StargateIrisItem.getIrisTexture(irisItemHandler.getStackInSlot(0)));
-	}
-	
-	public void setIrisProgress(short irisProgress)
-	{
-		this.oldIrisProgress = this.irisProgress;
-		this.irisProgress = irisProgress;
-	}
-	
-	public short getIrisProgress()
-	{
-		return hasIris() ? this.irisProgress : 0;
-	}
-	
-	public float getIrisProgress(float partialTick)
-	{
-		return StargateJourneyConfig.disable_smooth_animations.get() ?
-				(float) getIrisProgress() : Mth.lerp(partialTick, this.oldIrisProgress, this.irisProgress);
-	}
-	
-	public boolean isIrisClosed()
-	{
-		return hasIris() && this.irisProgress == ShieldingState.MAX_PROGRESS;
-	}
-	
-	public int getIrisDurability()
-	{
-		return hasIris() ? StargateIrisItem.getDurability(getIris()) : 0;
-	}
-	
-	public int getIrisMaxDurability()
-	{
-		if(getIris().getItem() instanceof StargateIrisItem iris)
-			return iris.getMaxDurability();
-		
-		return 0;
-	}
-	
-	public ShieldingState getShieldingState()
-	{
-		return ShieldingState.fromProgress(irisProgress);
-	}
-	
-	protected void setIrisState()
-	{
-		if(irisProgress == ShieldingState.CLOSED.getProgress())
-		{
-			if(oldIrisProgress > irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.MOVING_4);
-			else if(oldIrisProgress < irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.CLOSED);
-			return;
-		}
-
-		if(irisProgress == ShieldingState.MOVING_4.getProgress())
-		{
-			if(oldIrisProgress > irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.MOVING_3);
-			else if(oldIrisProgress < irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.MOVING_4);
-			return;
-		}
-
-		if(irisProgress == ShieldingState.MOVING_3.getProgress())
-		{
-			if(oldIrisProgress > irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.MOVING_2);
-			else if(oldIrisProgress < irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.MOVING_3);
-			return;
-		}
-
-		if(irisProgress == ShieldingState.MOVING_2.getProgress())
-		{
-			if(oldIrisProgress > irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.MOVING_1);
-			else if(oldIrisProgress < irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.MOVING_2);
-			return;
-		}
-
-		if(irisProgress == ShieldingState.MOVING_1.getProgress())
-		{
-			if(oldIrisProgress > irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.OPEN);
-			else if(oldIrisProgress < irisProgress)
-				setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.MOVING_1);
-			return;
-		}
-
-		if(irisProgress == 0 && oldIrisProgress > irisProgress)
-			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.OPEN);
-	}
-	
-	public boolean addIris(ItemStack stack)
-	{
-		if(setIris(stack))
-		{
-			irisProgress = ShieldingState.MAX_PROGRESS;
-			oldIrisProgress = ShieldingState.MAX_PROGRESS;
-			
-			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.CLOSED);
-			
-			return true;
-		}
-		else
-			return false;
-	}
-	
-	public void removeIris()
-	{
-		if(unsetIris())
-		{
-			ShieldingState shieldingState = ShieldingState.OPEN;
-			
-			irisProgress = shieldingState.getProgress();
-			oldIrisProgress = shieldingState.getProgress();
-			
-			setStargateState(this.getConnectionState(), this.getChevronsEngaged(), true, true, ShieldingState.OPEN);
-		}
-	}
-	
-	public short increaseIrisProgress()
-	{
-		oldIrisProgress = irisProgress;
-
-		if(hasIris() && irisProgress < ShieldingState.MAX_PROGRESS)
-		{
-			irisProgress++;
-			
-			setIrisState();
-		}
-		
-		return irisProgress;
-	}
-	
-	public short decreaseIrisProgress()
-	{
-		oldIrisProgress = irisProgress;
-		
-		if(hasIris() && irisProgress > 0)
-		{
-			irisProgress--;
-			
-			setIrisState();
-		}
-		
-		return irisProgress;
-	}
 	
 	public int getOpenTime()
 	{
@@ -1381,8 +1148,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void setStargateState(StargateConnection.State connectionState, int chevronsEngaged, boolean updateInterfaces)
 	{
-		setStargateState(connectionState, chevronsEngaged, updateInterfaces, false, getShieldingState());
-		updateClientState(); //TODO
+		setStargateState(connectionState, chevronsEngaged, updateInterfaces, false, ShieldingState.OPEN);
+		updateClientState();
 		
 	}
 	
@@ -1574,17 +1341,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.encoded_address").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.GREEN));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
-		
-		player.sendSystemMessage(Component.translatable("info.sgjourney.iris").append(Component.literal(": ").append((!getIris().isEmpty() ? getIris().getDisplayName() : Component.literal("-")))).withStyle(ChatFormatting.GRAY));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.iris_durability").append(Component.literal(": " + (!getIris().isEmpty() ? StargateIrisItem.getDurability(getIris()) : "-"))).withStyle(ChatFormatting.GRAY));
-		if(!getIris().isEmpty() && StargateIrisItem.hasCustomTexture(getIris()))
-			player.sendSystemMessage(Component.translatable("info.sgjourney.iris_texture").append(Component.literal(": " + StargateIrisItem.getIrisTexture(getIris()))).withStyle(ChatFormatting.DARK_PURPLE));
 
 		player.sendSystemMessage(Component.translatable("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
 		
-		super.getStatus(player);
+		player.sendSystemMessage(Component.literal("Energy: " + this.getEnergyStored() + " FE").withStyle(ChatFormatting.DARK_RED));
 	}
 	
 	@Override
@@ -1636,7 +1398,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.irisProgress, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, this.irisItemHandler.getStackInSlot(0)));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
 	}
 	
 	public void updateClientState()
@@ -1717,81 +1479,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public float checkConnectionShieldingState()
 	{
 		return StargateNetwork.get(level).checkStargateShieldingState(this, connectionID);
-	}
-	
-	public float checkIrisState()
-	{
-		return irisProgress * 100F / ShieldingState.MAX_PROGRESS;
-	}
-	
-	protected ItemStackHandler createIrisHandler()
-	{
-		return new ItemStackHandler(1)
-			{
-				@Override
-				protected void onContentsChanged(int slot)
-				{
-					setChanged();
-				}
-				
-				@Override
-				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-				{
-					return stack.getItem() instanceof StargateIrisItem;
-				}
-				
-				// Limits the number of items per slot
-				public int getSlotLimit(int slot)
-				{
-					return 1;
-				}
-				
-				@Nonnull
-				@Override
-				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-				{
-					if(!isItemValid(slot, stack))
-						return stack;
-					
-					return super.insertItem(slot, stack, simulate);
-					
-				}
-			};
-	}
-	
-	protected ItemStackHandler createStargateShieldHandler()
-	{
-		return new ItemStackHandler(1)
-			{
-				@Override
-				protected void onContentsChanged(int slot)
-				{
-					setChanged();
-				}
-				
-				@Override
-				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-				{
-					return stack.getItem() instanceof StargateShieldItem;
-				}
-				
-				// Limits the number of items per slot
-				public int getSlotLimit(int slot)
-				{
-					return 1;
-				}
-				
-				@Nonnull
-				@Override
-				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-				{
-					if(!isItemValid(slot, stack))
-						return stack;
-					
-					return super.insertItem(slot, stack, simulate);
-					
-				}
-			};
 	}
 	
 	//============================================================================================

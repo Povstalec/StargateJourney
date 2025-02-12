@@ -25,7 +25,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
-public class PegasusStargateEntity extends AbstractStargateEntity
+public class PegasusStargateEntity extends IrisStargateEntity
 {
 	public static final String ADDRESS_BUFFER = "AddressBuffer";
 	public static final String SYMBOL_BUFFER = "SymbolBuffer";

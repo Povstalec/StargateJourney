@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableMap;
@@ -300,9 +301,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		if(stack.getItem() instanceof StargateIrisItem && !level.isClientSide())
 		{
 			AbstractStargateEntity stargate = getStargate(level, pos, state);
-			if(stargate != null )
+			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 			{
-				if(stargate.addIris(stack))
+				if(irisStargate.irisInfo().addIris(stack))
 				{
 					if(!player.isCreative())
 						player.getItemInHand(hand).shrink(1);

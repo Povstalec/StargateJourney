@@ -30,7 +30,7 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
 
-public class MilkyWayStargateEntity extends AbstractStargateEntity
+public class MilkyWayStargateEntity extends IrisStargateEntity
 {
 	public static final int MAX_ROTATION = 156;
 	public static final int ROTATION_INCREASE = 1;

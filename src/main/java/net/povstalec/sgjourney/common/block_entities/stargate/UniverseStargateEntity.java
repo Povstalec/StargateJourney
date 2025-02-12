@@ -25,7 +25,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
-public class UniverseStargateEntity extends AbstractStargateEntity
+public class UniverseStargateEntity extends IrisStargateEntity
 {
 	public static final boolean FAST_ROTATION = CommonStargateConfig.universe_fast_rotation.get();
 	

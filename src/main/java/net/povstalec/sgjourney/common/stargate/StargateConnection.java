@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
@@ -429,7 +430,7 @@ public final class StargateConnection
 	
 	private final void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel wormholeTravel)
 	{
-		if(initialStargate.isIrisClosed())
+		if(initialStargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
 			return;
 		
 		Vec3 stargatePos = initialStargate.getCenter();
@@ -467,9 +468,9 @@ public final class StargateConnection
 	public float checkStargateShieldingState(AbstractStargateEntity sendingStargate)
 	{
 		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
-			return this.dialedStargate.checkIrisState();
+			return this.dialedStargate instanceof IrisStargateEntity irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F;
 		else
-			return this.dialingStargate.checkIrisState();
+			return this.dialingStargate instanceof IrisStargateEntity irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F;
 	}
 	
 	//============================================================================================

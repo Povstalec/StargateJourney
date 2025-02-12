@@ -14,6 +14,10 @@ public class SymbolInfo
 		symbols = StargateJourney.EMPTY_LOCATION;
 	}
 	
+	//============================================================================================
+	//************************************Getters and setters*************************************
+	//============================================================================================
+	
 	public void setPointOfOrigin(ResourceLocation pointOfOrigin)
 	{
 		this.pointOfOrigin = pointOfOrigin;
@@ -29,12 +33,12 @@ public class SymbolInfo
 		this.symbols = symbols;
 	}
 	
-	
-	
 	public ResourceLocation symbols()
 	{
 		return this.symbols;
 	}
+	
+	
 	
 	public interface Interface
 	{
