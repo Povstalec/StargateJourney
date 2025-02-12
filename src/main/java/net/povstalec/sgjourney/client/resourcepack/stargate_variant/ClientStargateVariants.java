@@ -207,16 +207,16 @@ public class ClientStargateVariants
 		if(!ClientStargateConfig.stargate_variants.get())
 			return optional;
 		
-		String variantString = stargate.getVariant();
+		ResourceLocation variant = stargate.getVariant();
 		
-		if(variantString.equals(StargateJourney.EMPTY))
+		if(variant == null || StargateJourney.EMPTY_LOCATION.equals(variant))
 			return optional;
 		
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 		
-		optional = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variantString)));
+		optional = Optional.ofNullable(variantRegistry.get(variant));
 		
 		return optional;
 	}

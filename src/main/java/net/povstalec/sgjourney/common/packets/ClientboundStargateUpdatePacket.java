@@ -19,11 +19,11 @@ public class ClientboundStargateUpdatePacket
     public final short irisProgress;
     public final ResourceLocation pointOfOrigin;
     public final ResourceLocation symbols;
-    public final String variant;
+    public final ResourceLocation variant;
     public final ItemStack iris;
 
     public ClientboundStargateUpdatePacket(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
-                                           ResourceLocation pointOfOrigin, ResourceLocation symbols, String variant, ItemStack iris)
+                                           ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris)
     {
         this.pos = pos;
         this.address = address;
@@ -39,7 +39,7 @@ public class ClientboundStargateUpdatePacket
 
     public ClientboundStargateUpdatePacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos(), buffer.readVarIntArray(), buffer.readVarIntArray(), buffer.readInt(), buffer.readInt(), buffer.readShort(), buffer.readResourceLocation(), buffer.readResourceLocation(), buffer.readUtf(), buffer.readItem());
+        this(buffer.readBlockPos(), buffer.readVarIntArray(), buffer.readVarIntArray(), buffer.readInt(), buffer.readInt(), buffer.readShort(), buffer.readResourceLocation(), buffer.readResourceLocation(), buffer.readResourceLocation(), buffer.readItem());
     }
 
     public void encode(FriendlyByteBuf buffer)
@@ -52,7 +52,7 @@ public class ClientboundStargateUpdatePacket
         buffer.writeShort(this.irisProgress);
         buffer.writeResourceLocation(this.pointOfOrigin);
         buffer.writeResourceLocation(this.symbols);
-        buffer.writeUtf(this.variant);
+        buffer.writeResourceLocation(this.variant);
         buffer.writeItem(this.iris);
     }
 

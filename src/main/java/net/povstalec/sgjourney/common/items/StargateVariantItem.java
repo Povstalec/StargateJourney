@@ -82,21 +82,22 @@ public class StargateVariantItem extends Item
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
-
-	public static Optional<String> getVariantString(ItemStack stack)
+	
+	@Nullable
+	public static ResourceLocation getVariant(ItemStack stack)
 	{
-		Optional<String> variant = Optional.empty();
-		
 		if(stack.getItem() instanceof StargateVariantItem)
 		{
 			if(stack.getOrCreateTag().contains(VARIANT))
 			{
 				String variantString = stack.getTag().getString(VARIANT);
-				variant = Optional.of(variantString);
+				ResourceLocation variant = ResourceLocation.tryParse(variantString);
+				
+				return variant;
 			}
 		}
 		
-		return variant;
+		return null;
 	}
 	
 	public static <StargateBlock extends AbstractStargateBlock> ItemStack stargateVariant(String variant)

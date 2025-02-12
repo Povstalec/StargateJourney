@@ -131,7 +131,7 @@ public class ClientAccess
     }
     
     public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
-									  ResourceLocation pointOfOrigin, ResourceLocation symbols, String variant, ItemStack iris)
+									  ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         

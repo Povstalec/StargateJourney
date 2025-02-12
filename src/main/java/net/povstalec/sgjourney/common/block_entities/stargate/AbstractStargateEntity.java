@@ -152,7 +152,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected ResourceLocation pointOfOrigin = StargateJourney.EMPTY_LOCATION;
 	protected ResourceLocation symbols = StargateJourney.EMPTY_LOCATION;
 	
-	protected String variant = EMPTY;
+	protected ResourceLocation variant = StargateJourney.EMPTY_LOCATION;
 	private final ResourceLocation defaultVariant;
 	
 	// Dialing and memory
@@ -253,7 +253,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		displayID = tag.getBoolean(DISPLAY_ID);
 		upgraded = isUpgraded ? true : tag.getBoolean(UPGRADED);
 		
-		variant = tag.getString(VARIANT);
+		variant = new ResourceLocation(tag.getString(VARIANT));
 		
 		if(tag.contains(DHD_POS))
 		{
@@ -300,7 +300,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		tag.putBoolean(DISPLAY_ID, displayID);
 		tag.putBoolean(UPGRADED, upgraded);
 
-		tag.putString(VARIANT, variant);
+		tag.putString(VARIANT, variant.toString());
 		
 		if(dhdRelativePos.isPresent())
 		{
@@ -1286,13 +1286,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.symbols;
 	}
 	
-	public void setVariant(String variant)
+	public void setVariant(ResourceLocation variant)
 	{
 		this.variant = variant;
 		this.setChanged();
 	}
 	
-	public String getVariant()
+	public ResourceLocation getVariant()
 	{
 		return this.variant;
 	}
