@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -37,9 +39,8 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 	
 	public int animationTicks = 1;
 	
-	protected static final String UNIVERSAL = StargateJourney.MODID + ":universal";
-	protected static final String POINT_OF_ORIGIN = UNIVERSAL;
-	protected static final String SYMBOLS = UNIVERSAL;
+	protected static final ResourceLocation POINT_OF_ORIGIN = PointOfOrigin.defaultPointOfOrigin().location();
+	protected static final ResourceLocation SYMBOLS = Symbols.defaultSymbols().location();
 
 	public int oldRotation = RESET_DEGREES;
 	public int rotation = RESET_DEGREES;

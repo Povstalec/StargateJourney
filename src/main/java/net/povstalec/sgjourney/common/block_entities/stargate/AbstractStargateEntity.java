@@ -148,8 +148,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected int animationTick = 0;
 	protected int[] engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 	protected int timesOpened = 0;
-	protected String pointOfOrigin = EMPTY;
-	protected String symbols = EMPTY;
+	
+	protected ResourceLocation pointOfOrigin = StargateJourney.EMPTY_LOCATION;
+	protected ResourceLocation symbols = StargateJourney.EMPTY_LOCATION;
 	
 	protected String variant = EMPTY;
 	private final ResourceLocation defaultVariant;
@@ -839,56 +840,21 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	 */
 	public void setPointOfOriginFromDimension(ResourceKey<Level> dimension)
 	{
-		pointOfOrigin = Universe.get(level).getPointOfOrigin(dimension).location().toString();
+		pointOfOrigin = PointOfOrigin.fromDimension(level.getServer(), dimension);
 		this.setChanged();
 	}
 	
 	
 	public void setRandomPointOfOrigin(ResourceKey<Level> dimension)
 	{
-		Random random = new Random();
-		pointOfOrigin = Universe.get(level).getRandomPointOfOriginFromDimension(dimension, random.nextLong()).location().toString();
-	}
-	
-	protected boolean isPointOfOriginValid(Level level)
-	{
-		RegistryAccess registries = level.getServer().registryAccess();
-		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		
-		if(!isLocationValid(pointOfOrigin))
-			return false;
-		
-		return pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin));
+		pointOfOrigin = PointOfOrigin.randomPointOfOrigin(level.getServer(), dimension);
+		this.setChanged();
 	}
 	
 	public void setSymbolsFromDimension(ResourceKey<Level> dimension)
 	{
-		symbols = Universe.get(level).getSymbols(level.dimension()).location().toString();
+		symbols = Symbols.fromDimension(level.getServer(), dimension);
 		this.setChanged();
-	}
-	
-	protected boolean areSymbolsValid(Level level)
-	{
-		RegistryAccess registries = level.getServer().registryAccess();
-		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		
-		if(!isLocationValid(symbols))
-			return false;
-		
-		return symbolRegistry.containsKey(new ResourceLocation(symbols));
-	}
-	
-	private boolean isLocationValid(String location)
-	{
-		String[] split = location.split(":");
-		
-		if(split.length != 2)
-			return false;
-		
-		if(!ResourceLocation.isValidNamespace(split[0]))
-			return false;
-		
-		return ResourceLocation.isValidPath(split[1]);
 	}
 	
 	//============================================================================================
@@ -1298,24 +1264,24 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.timesOpened;
 	}
 	
-	public void setPointOfOrigin(String pointOfOrigin)
+	public void setPointOfOrigin(ResourceLocation pointOfOrigin)
 	{
 		this.pointOfOrigin = pointOfOrigin;
 		this.setChanged();
 	}
 	
-	public String getPointOfOrigin()
+	public ResourceLocation getPointOfOrigin()
 	{
 		return this.pointOfOrigin;
 	}
 	
-	public void setSymbols(String symbols)
+	public void setSymbols(ResourceLocation symbols)
 	{
 		this.symbols = symbols;
 		this.setChanged();
 	}
 	
-	public String getSymbols()
+	public ResourceLocation getSymbols()
 	{
 		return this.symbols;
 	}

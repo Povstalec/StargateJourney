@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +35,7 @@ public class StargateBlockItem extends BlockItem
 	private static final String POINT_OF_ORIGIN = AbstractStargateEntity.POINT_OF_ORIGIN;
 	private static final String SYMBOLS = AbstractStargateEntity.SYMBOLS;
 	private static final String IRIS_PROGRESS = AbstractStargateEntity.IRIS_PROGRESS;
-	private static final String EMPTY = StargateJourney.EMPTY;
+	private static final ResourceLocation EMPTY = StargateJourney.EMPTY_LOCATION;
 	
 	public StargateBlockItem(Block block, Properties properties)
 	{

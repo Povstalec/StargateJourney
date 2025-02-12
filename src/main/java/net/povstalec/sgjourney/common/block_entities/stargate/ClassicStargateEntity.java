@@ -11,8 +11,10 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class ClassicStargateEntity extends AbstractStargateEntity
 {
@@ -43,12 +45,12 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 
         if(this.level.isClientSide())
         	return;
-
-        if(!isPointOfOriginValid(this.getLevel()))
-        	setPointOfOriginFromDimension(this.getLevel().dimension());
-
-        if(!areSymbolsValid(this.getLevel()))
-        	setSymbolsFromDimension(this.getLevel().dimension());
+		
+		if(!PointOfOrigin.validLocation(level.getServer(), pointOfOrigin))
+			setPointOfOriginFromDimension(level.dimension());
+		
+		if(!Symbols.validLocation(level.getServer(), symbols))
+			setSymbolsFromDimension(level.dimension());
     }
 
 	@Override
@@ -56,8 +58,8 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	{
 		super.serializeStargateInfo(tag);
 		
-		tag.putString("PointOfOrigin", pointOfOrigin);
-		tag.putString("Symbols", symbols);
+		tag.putString(POINT_OF_ORIGIN, pointOfOrigin.toString());
+		tag.putString(SYMBOLS, symbols.toString());
 		tag.putShort("Rotation", rotation);
 		
 		return tag;
@@ -66,11 +68,11 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	@Override
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
-		if(tag.contains("PointOfOrigin"))
-			this.pointOfOrigin = tag.getString("PointOfOrigin");
+		if(tag.contains(POINT_OF_ORIGIN))
+			this.pointOfOrigin = new ResourceLocation(tag.getString(POINT_OF_ORIGIN));
 		
-		if(tag.contains("Symbols"))
-			this.symbols = tag.getString("Symbols");
+		if(tag.contains(SYMBOLS))
+			this.symbols = new ResourceLocation(tag.getString(SYMBOLS));
 		
         if(tag.contains("Rotation"))
         	rotation = tag.getShort("Rotation");

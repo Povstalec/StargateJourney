@@ -26,17 +26,6 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-    public void onLoad()
-	{
-        if(level.isClientSide())
-        	return;
-		pointOfOrigin = "sgjourney:tauri";
-		symbols = "sgjourney:milky_way";
-        
-        super.onLoad();
-    }
-	
-	@Override
 	public boolean hasIris()
 	{
 		return false;

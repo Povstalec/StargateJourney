@@ -68,9 +68,9 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	{
 		int currentSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
 		
-		Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
+		PointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
-		if(pointOfOrigin.isPresent())
+		if(pointOfOrigin != null)
 		{
 			// Point of Origin
 			if(stargate.isDialingOut() && stargate.isConnected() || stargate.isConnected() && stargate.getKawooshTickCount() > 0)
@@ -93,9 +93,9 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			}
 		}
 		
-		Optional<Symbols> symbols = getSymbols(stargate, stargateVariant);
+		Symbols symbols = getSymbols(stargate, stargateVariant);
 		
-		if(symbols.isEmpty())
+		if(symbols == null)
 			return;
 		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
@@ -104,7 +104,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 		{
 			// Spinning Symbol
 			if(currentSymbol > 0)
-				renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, combinedLight, symbols.get().getTextureOffset(currentSymbol), symbols.get().getSize(), rotation);
+				renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, combinedLight, symbols.getTextureOffset(currentSymbol), symbols.getSize(), rotation);
 			
 			// Point of Origin when Stargate is connected
 			//if(stargate.isConnected())
@@ -115,7 +115,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			{
 				int symbolNumber = stargate.getChevronPosition(i + 1);
 				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbolNumber, 
-						symbols.get().getTextureOffset(stargate.getAddress().toArray()[i]), symbols.get().getSize(), 0, getSymbolColor(stargate, stargateVariant, true));
+						symbols.getTextureOffset(stargate.getAddress().toArray()[i]), symbols.getSize(), 0, getSymbolColor(stargate, stargateVariant, true));
 			}
 		}
 		else
@@ -137,7 +137,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			{
 				int renderedSymbol = (stargate.isConnected() ? i + 1 : i) % this.numberOfSymbols;
 				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, renderedSymbol, 
-						symbols.get().getTextureOffset(renderedSymbol), symbols.get().getSize(), 0, symbolColor);
+						symbols.getTextureOffset(renderedSymbol), symbols.getSize(), 0, symbolColor);
 			}
 		}
 	}

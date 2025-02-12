@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -52,12 +54,12 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 
         if(this.level.isClientSide())
         	return;
-
-        if(!isPointOfOriginValid(this.getLevel()))
-        	setPointOfOriginFromDimension(this.getLevel().dimension());
-
-        if(!areSymbolsValid(this.getLevel()))
-        	setSymbolsFromDimension(this.getLevel().dimension());
+		
+		if(!PointOfOrigin.validLocation(level.getServer(), pointOfOrigin))
+			setPointOfOriginFromDimension(level.dimension());
+		
+		if(!Symbols.validLocation(level.getServer(), symbols))
+			setSymbolsFromDimension(level.dimension());
     }
 	
 	@Override
@@ -73,8 +75,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 
         if(!dynamicSymbols)
         {
-    		pointOfOrigin = tag.getString(POINT_OF_ORIGIN);
-    		symbols = tag.getString(SYMBOLS);
+			this.pointOfOrigin = new ResourceLocation(tag.getString(POINT_OF_ORIGIN));
+			this.symbols = new ResourceLocation(tag.getString(SYMBOLS));
         }
     }
 	
@@ -91,8 +93,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 
         if(!dynamicSymbols)
         {
-    		tag.putString(POINT_OF_ORIGIN, pointOfOrigin);
-    		tag.putString(SYMBOLS, symbols);
+			tag.putString(POINT_OF_ORIGIN, pointOfOrigin.toString());
+			tag.putString(SYMBOLS, symbols.toString());
         }
 	}
 	
