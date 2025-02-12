@@ -122,9 +122,9 @@ public class ClientAccess
         
         if(blockEntity instanceof final AbstractDHDEntity dhd)
         {
-        	//TODO Make DHD use symbols
 			dhd.setEnergy(energy);
-        	//dhd.setSymbols(symbols);
+			dhd.symbolInfo().setPointOfOrigin(pointOfOrigin);
+        	dhd.symbolInfo().setSymbols(symbols);
         	dhd.setAddress(new Address(true).fromArray(address));
         	dhd.setCenterButtonEngaged(isCenterButtonEngaged);
         }
@@ -142,8 +142,8 @@ public class ClientAccess
         	stargate.setKawooshTickCount(kawooshTick);
         	stargate.setTickCount(tick);
         	stargate.setIrisProgress(irisProgress);
-        	stargate.setPointOfOrigin(pointOfOrigin);
-        	stargate.setSymbols(symbols);
+        	stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
+        	stargate.symbolInfo().setSymbols(symbols);
         	stargate.setVariant(variant);
         	
         	if(!iris.isEmpty())

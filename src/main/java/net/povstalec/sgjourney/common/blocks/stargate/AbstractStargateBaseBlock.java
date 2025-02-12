@@ -196,7 +196,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     		if(blockentity instanceof AbstractStargateEntity stargate)
     		{
     			stargate.bypassDisconnectStargate(Stargate.Feedback.STARGATE_DESTROYED, false);
-    			stargate.unsetDHD(true);
+    			stargate.dhdInfo().unsetDHD(true);
     			stargate.removeStargateFromNetwork();
     		}
     		

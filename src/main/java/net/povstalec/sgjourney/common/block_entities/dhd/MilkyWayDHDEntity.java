@@ -32,8 +32,8 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 		super.load(tag);
 		addTransferCrystals(itemHandler);
 		
-		this.pointOfOrigin = new ResourceLocation(tag.getString(POINT_OF_ORIGIN));
-		this.symbols = new ResourceLocation(tag.getString(SYMBOLS));
+		symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
+		symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
 	}
 	
 	@Override
@@ -41,8 +41,8 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	{
 		super.saveAdditional(tag);
 		
-		tag.putString(POINT_OF_ORIGIN, this.pointOfOrigin.toString());
-		tag.putString(SYMBOLS, this.symbols.toString());
+		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
 	}
 	
 	protected long buttonPressEnergyCost()

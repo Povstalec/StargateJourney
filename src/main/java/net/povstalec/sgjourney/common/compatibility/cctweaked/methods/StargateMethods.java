@@ -104,7 +104,7 @@ public class StargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				return new Object[] {stargate.getPointOfOrigin()};
+				return new Object[] {stargate.symbolInfo().pointOfOrigin()};
 			});
 			
 			return result;
@@ -124,7 +124,7 @@ public class StargateMethods
 		{
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				return new Object[] {stargate.getSymbols()};
+				return new Object[] {stargate.symbolInfo().symbols()};
 			});
 			
 			return result;

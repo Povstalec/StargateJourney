@@ -60,7 +60,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
 			return pointOfOriginRegistry.get(stargateVariant.symbols().permanentPointOfOrigin().get());
 		else
-			return pointOfOriginRegistry.get(stargate.getPointOfOrigin());
+			return pointOfOriginRegistry.get(stargate.symbolInfo().pointOfOrigin());
 	}
 	
 	protected ResourceLocation getPointOfOriginTexture(@Nullable PointOfOrigin pointOfOrigin)
@@ -81,7 +81,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		if(stargateVariant.symbols().permanentSymbols().isPresent())
 			return symbolRegistry.get(stargateVariant.symbols().permanentSymbols().get());
 		else
-			return symbolRegistry.get(stargate.getSymbols());
+			return symbolRegistry.get(stargate.symbolInfo().symbols());
 	}
 	
 	protected ResourceLocation getSymbolTexture(@Nullable Symbols symbols)

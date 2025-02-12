@@ -46,11 +46,11 @@ public class ClassicStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 		
-		if(!PointOfOrigin.validLocation(level.getServer(), pointOfOrigin))
-			setPointOfOriginFromDimension(level.dimension());
+		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
 		
-		if(!Symbols.validLocation(level.getServer(), symbols))
-			setSymbolsFromDimension(level.dimension());
+		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
     }
 
 	@Override
@@ -58,8 +58,8 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	{
 		super.serializeStargateInfo(tag);
 		
-		tag.putString(POINT_OF_ORIGIN, pointOfOrigin.toString());
-		tag.putString(SYMBOLS, symbols.toString());
+		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
 		tag.putShort("Rotation", rotation);
 		
 		return tag;
@@ -69,10 +69,10 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
 		if(tag.contains(POINT_OF_ORIGIN))
-			this.pointOfOrigin = new ResourceLocation(tag.getString(POINT_OF_ORIGIN));
+			symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
 		
 		if(tag.contains(SYMBOLS))
-			this.symbols = new ResourceLocation(tag.getString(SYMBOLS));
+			symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
 		
         if(tag.contains("Rotation"))
         	rotation = tag.getShort("Rotation");

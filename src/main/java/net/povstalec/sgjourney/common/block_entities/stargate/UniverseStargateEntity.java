@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -53,18 +54,20 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		super(BlockEntityInit.UNIVERSE_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state, Stargate.Gen.GEN_1, 1);
 		this.setOpenSoundLead(8);
 		this.symbolBounds = 35;
-	}
-	
-	@Override
-	public void onLoad()
-	{
-		if(level.isClientSide())
-			return;
 		
-		setPointOfOrigin(POINT_OF_ORIGIN);
-        setSymbols(SYMBOLS);
-        
-        super.onLoad();
+		symbolInfo.setPointOfOrigin(POINT_OF_ORIGIN);
+		symbolInfo.setSymbols(SYMBOLS);
+		
+		this.dhdInfo = new DHDInfo(this)
+		{
+			@Override
+			public void updateDHD()
+			{
+				if(hasDHD())
+					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
+							addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
+			}
+		};
 	}
 	
 	@Override
@@ -86,14 +89,6 @@ public class UniverseStargateEntity extends AbstractStargateEntity
 		tag.putInt("Rotation", rotation);
 		tag.putIntArray("AddressBuffer", addressBuffer.toArray());
 		tag.putInt("SymbolBuffer", symbolBuffer);
-	}
-	
-	@Override
-	public void updateDHD()
-	{
-		if(hasDHD())
-			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
-					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || this.isConnected());
 	}
 	
 	public int getRotation()

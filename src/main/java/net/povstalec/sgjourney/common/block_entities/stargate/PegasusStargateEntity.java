@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
+import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -45,6 +47,17 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		super(BlockEntityInit.PEGASUS_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state, Stargate.Gen.GEN_3, 3);
 		this.setOpenSoundLead(13);
 		this.symbolBounds = 47;
+		
+		this.dhdInfo = new DHDInfo(this)
+		{
+			@Override
+			public void updateDHD()
+			{
+				if(hasDHD())
+					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
+							addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
+			}
+		};
 	}
 	
 	@Override
@@ -55,11 +68,11 @@ public class PegasusStargateEntity extends AbstractStargateEntity
         if(this.level.isClientSide())
         	return;
 		
-		if(!PointOfOrigin.validLocation(level.getServer(), pointOfOrigin))
-			setPointOfOriginFromDimension(level.dimension());
+		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
 		
-		if(!Symbols.validLocation(level.getServer(), symbols))
-			setSymbolsFromDimension(level.dimension());
+		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
     }
 	
 	@Override
@@ -75,8 +88,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 
         if(!dynamicSymbols)
         {
-			this.pointOfOrigin = new ResourceLocation(tag.getString(POINT_OF_ORIGIN));
-			this.symbols = new ResourceLocation(tag.getString(SYMBOLS));
+			symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
+			symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
         }
     }
 	
@@ -93,23 +106,19 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 
         if(!dynamicSymbols)
         {
-			tag.putString(POINT_OF_ORIGIN, pointOfOrigin.toString());
-			tag.putString(SYMBOLS, symbols.toString());
+			tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+			tag.putString(SYMBOLS, symbolInfo().symbols().toString());
         }
 	}
+	
+	//============================================================================================
+	//*******************************************Other********************************************
+	//============================================================================================
 	
 	@Override
 	public ResourceLocation defaultVariant()
 	{
-		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();//TODO I hope this thing doesn't crash on servers
-	}
-	
-	@Override
-	public void updateDHD()
-	{
-		if(hasDHD())
-			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
-					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || this.isConnected());
+		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();
 	}
 	
 	public void dynamicSymbols(boolean dynamicSymbols)

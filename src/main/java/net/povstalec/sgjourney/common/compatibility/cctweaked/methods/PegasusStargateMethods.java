@@ -51,7 +51,7 @@ public class PegasusStargateMethods
 			{
 				context.executeMainThreadTask(() ->
 				{
-					stargate.setSymbols(symbols);
+					stargate.symbolInfo().setSymbols(symbols);
 					return null;
 				});
 			}
@@ -77,7 +77,7 @@ public class PegasusStargateMethods
 			{
 				context.executeMainThreadTask(() ->
 				{
-					stargate.setPointOfOrigin(pointOfOrigin);
+					stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
 					return null;
 				});
 			}

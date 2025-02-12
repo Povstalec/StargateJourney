@@ -403,10 +403,10 @@ public final class StargateConnection
 		doWormhole(this.dialedStargate.getWormhole(), this.dialedStargate, this.dialingStargate, CommonStargateConfig.two_way_wormholes.get());
 		
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
-		if(this.dialingStargate.autoclose() > 0 && this.timeSinceLastTraveler >= this.dialingStargate.autoclose() * 20)
+		if(this.dialingStargate.dhdInfo().autoclose() > 0 && this.timeSinceLastTraveler >= this.dialingStargate.dhdInfo().autoclose() * 20)
 			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 		
-		if(this.dialedStargate.autoclose() > 0 && this.timeSinceLastTraveler >= this.dialedStargate.autoclose() * 20)
+		if(this.dialedStargate.dhdInfo().autoclose() > 0 && this.timeSinceLastTraveler >= this.dialedStargate.dhdInfo().autoclose() * 20)
 			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 	}
 	
@@ -436,14 +436,14 @@ public final class StargateConnection
 		
 		if(wormhole.findCandidates(initialStargate.getLevel(), stargatePos, initialStargate.getDirection()) && this.used)
 			this.timeSinceLastTraveler = 0;
-		if(targetStargate.shouldCallForward())
+		if(targetStargate.dhdInfo().shouldCallForward())
 		{
-			if (wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel))
+			if(wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel))
 				this.used = true;
 		}
 		else
 		{
-			if (wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
+			if(wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
 				this.used = true;
 		}
 	}

@@ -59,7 +59,7 @@ public class Stargate
 	public Stargate(AbstractStargateEntity stargate)
 	{
 		this(stargate.get9ChevronAddress().immutable(), stargate.getLevel().dimension(), stargate.getBlockPos(),
-				stargate.hasDHD(), stargate.getGeneration(), stargate.getTimesOpened(), stargate.getNetwork());
+				stargate.dhdInfo().hasDHD(), stargate.getGeneration(), stargate.getTimesOpened(), stargate.getNetwork());
 	}
 	
 	public Address.Immutable get9ChevronAddress()
@@ -174,7 +174,7 @@ public class Stargate
 	
 	public void update(AbstractStargateEntity stargate)
 	{
-		this.hasDHD = stargate.hasDHD();
+		this.hasDHD = stargate.dhdInfo().hasDHD();
 		this.generation = stargate.getGeneration();
 		this.timesOpened = stargate.getTimesOpened();
 		this.network = stargate.getNetwork();

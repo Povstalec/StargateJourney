@@ -20,6 +20,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.IEnergyCore;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
+import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -50,7 +51,7 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractDHDEntity extends EnergyBlockEntity
+public abstract class AbstractDHDEntity extends EnergyBlockEntity implements SymbolInfo.Interface
 {
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
@@ -86,8 +87,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	protected final ItemStackHandler energyItemHandler;
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler;
 	
-	protected ResourceLocation pointOfOrigin;
-	protected ResourceLocation symbols;
+	protected SymbolInfo symbolInfo = new SymbolInfo();
 	
 	public AbstractDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
@@ -105,8 +105,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		this.energyItemHandler = createEnergyItemHandler();
 		this.lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
 		
-		this.pointOfOrigin = StargateJourney.EMPTY_LOCATION;
-		this.symbols = StargateJourney.EMPTY_LOCATION;
+		symbolInfo.setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+		symbolInfo.setSymbols(StargateJourney.EMPTY_LOCATION);
 	}
 	
 	@Override
@@ -147,26 +147,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
 	}
 	
-	
-	
-	public void setPointOfOrigin(ResourceLocation pointOfOrigin)
+	public SymbolInfo symbolInfo()
 	{
-		this.pointOfOrigin = pointOfOrigin;
-	}
-	
-	public ResourceLocation getPointOfOrigin()
-	{
-		return this.pointOfOrigin;
-	}
-	
-	public void setSymbols(ResourceLocation symbols)
-	{
-		this.symbols = symbols;
-	}
-	
-	public ResourceLocation getSymbols()
-	{
-		return this.symbols;
+		return this.symbolInfo;
 	}
 	
 	
@@ -247,7 +230,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		if(stargate == null)
 			return;
 		
-		stargate.setDHD(this, this.enableAdvancedProtocols ? 10 : 0);
+		stargate.dhdInfo().setDHD(this, this.enableAdvancedProtocols ? 10 : 0);
 	}
 	
 	protected boolean setStargateFromPos(BlockPos pos)
@@ -309,7 +292,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	{
 		if(stargate != null)
 		{
-			stargate.unsetDHD(false);
+			stargate.dhdInfo().unsetDHD(false);
 			stargate = null;
 		}
 		
@@ -503,7 +486,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 			{
 				AbstractStargateEntity stargate = iterator.next();
 				
-				if(!stargate.hasDHD())
+				if(!stargate.dhdInfo().hasDHD())
 				{
 					Direction direction = getDirection();
 					
@@ -576,6 +559,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), this.pointOfOrigin, this.symbols, this.address.toArray(), this.isCenterButtonEngaged));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.toArray(), this.isCenterButtonEngaged));
 	}
 }
