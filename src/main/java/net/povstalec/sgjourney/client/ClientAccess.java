@@ -50,7 +50,7 @@ public class ClientAccess
     	minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
     }
 	
-    public static void updateSymbol(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)
+    public static void updateSymbol(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -62,7 +62,7 @@ public class ClientAccess
         }
     }
     
-    public static void updateCartouche(BlockPos pos, String symbols, int[] address)
+    public static void updateCartouche(BlockPos pos, ResourceLocation symbols, int[] address)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         

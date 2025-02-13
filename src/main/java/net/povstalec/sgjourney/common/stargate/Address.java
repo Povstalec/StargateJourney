@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -160,21 +161,26 @@ public final class Address
 		return this;
 	}
 	
+	public Address fromDimensionAndGalaxy(MinecraftServer server, ResourceKey<Level> dimension, Galaxy.Serializable galaxy)
+	{
+		Optional<Address.Immutable> address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
+		
+		if(address.isPresent())
+		{
+			//TODO Would be nice to use copy here
+			fromArray(address.get().toArray());
+			this.dimension = dimension;
+		}
+		
+		return this;
+	}
+	
 	public Address fromDimension(MinecraftServer server, ResourceKey<Level> dimension)
 	{
 		Optional<Galaxy.Serializable> galaxy = Universe.get(server).getGalaxyFromDimension(dimension);
 		
 		if(galaxy.isPresent())
-		{
-			Optional<Address.Immutable> address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
-			
-			if(address.isPresent())
-			{
-				//TODO Would be nice to use copy here
-				fromArray(address.get().toArray());
-				this.dimension = dimension;
-			}
-		}
+			fromDimensionAndGalaxy(server, dimension, galaxy.get());
 		
 		return this;
 	}

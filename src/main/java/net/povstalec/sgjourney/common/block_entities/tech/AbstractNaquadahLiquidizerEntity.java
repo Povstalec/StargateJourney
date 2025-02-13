@@ -320,6 +320,19 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		itemInputHandler.extractItem(0, amount, false);
 	}
 	
+	public void outputLiquid()
+	{
+		BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(Direction.DOWN));
+		
+		if(blockEntity == null)
+			return;
+		
+		blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP).ifPresent(fluidHandler ->
+		{
+			fluidHandler.fill(this.fluidTank2.drain(100, IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+		});
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractNaquadahLiquidizerEntity naquadahLiquidizer)
 	{
 		if(level.isClientSide())
@@ -345,6 +358,8 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		
 	    if(naquadahLiquidizer.hasFluidItem2())
 	    	naquadahLiquidizer.putFluidInsideItem();
+		
+		naquadahLiquidizer.outputLiquid();
 	    
 	    PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(naquadahLiquidizer.worldPosition)), new ClientboundNaquadahLiquidizerUpdatePacket(naquadahLiquidizer.worldPosition, naquadahLiquidizer.getFluid1(), naquadahLiquidizer.getFluid2(), naquadahLiquidizer.progress));
 	}

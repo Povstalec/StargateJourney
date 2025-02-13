@@ -20,13 +20,13 @@ import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 
+import javax.annotation.Nullable;
+
 public class AddressTable
 {
 	public static final ResourceLocation ADDRESS_TABLES_LOCATION = new ResourceLocation(StargateJourney.MODID, "address_table");
 	public static final ResourceKey<Registry<AddressTable>> REGISTRY_KEY = ResourceKey.createRegistryKey(ADDRESS_TABLES_LOCATION);
 	public static final Codec<ResourceKey<AddressTable>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
-	
-	private static final Codec<Pair<ResourceKey<Level>, Integer>> DIMENSION_WEIGHT = Codec.pair(Level.RESOURCE_KEY_CODEC.fieldOf("dimension").codec(), Codec.INT.fieldOf("weight").codec());
 	
 	public static final Codec<AddressTable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.BOOL.fieldOf("include_generated_addresses").forGetter(AddressTable::includeGeneratedAddresses),
@@ -74,8 +74,9 @@ public class AddressTable
 			List<ResourceKey<Level>> generatedDimensions =  Universe.get(server).getDimensionsWithGeneratedSolarSystems();
 			for(ResourceKey<Level> dimensionKey : generatedDimensions)
 			{
-				addresses.add(new WeightedAddress(dimensionKey, 1));
-				totalWeight += 1;
+				WeightedAddress address = new WeightedAddress(dimensionKey, 1);
+				addresses.add(address);
+				totalWeight += address.weight();
 			}
 		}
 		
@@ -109,8 +110,6 @@ public class AddressTable
 		if(weightedAddress.addressDimension().right().isPresent())
 			return weightedAddress.addressDimension().right().get();
 		
-		
-		
 		return new Address(server, weightedAddress.addressDimension().left().get());
 	}
 	
@@ -120,26 +119,31 @@ public class AddressTable
 	{
 		private final Either<ResourceKey<Level>, Address> addressDimension;
 		private final int weight;
+		@Nullable
+		private ResourceKey<Galaxy> galaxy;
 		
 		public static final Codec<WeightedAddress> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.either(Level.RESOURCE_KEY_CODEC, Address.CODEC).fieldOf("address").forGetter(weightedAddress -> weightedAddress.addressDimension),
-				Codec.INT.fieldOf("weight").forGetter(weightedAddress -> weightedAddress.weight)
+				Codec.INT.fieldOf("weight").forGetter(weightedAddress -> weightedAddress.weight),
+				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(weightedAddress -> Optional.ofNullable(weightedAddress.galaxy))
 		).apply(instance, WeightedAddress::new));
 		
-		public WeightedAddress(Either<ResourceKey<Level>, Address> addressDimension, int weight)
+		public WeightedAddress(Either<ResourceKey<Level>, Address> addressDimension, int weight, Optional<ResourceKey<Galaxy>> galaxy)
 		{
 			this.addressDimension = addressDimension;
 			this.weight = weight;
+			
+			this.galaxy = galaxy.orElse(null);
 		}
 		
 		public WeightedAddress(ResourceKey<Level> dimension, int weight)
 		{
-			this(Either.left(dimension), weight);
+			this(Either.left(dimension), weight, Optional.empty());
 		}
 		
 		public WeightedAddress(Address address, int weight)
 		{
-			this(Either.right(address), weight);
+			this(Either.right(address), weight, Optional.empty());
 		}
 		
 		public Either<ResourceKey<Level>, Address> addressDimension()

@@ -1,14 +1,10 @@
 package net.povstalec.sgjourney.common.block_entities;
 
-import java.util.Optional;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,20 +21,20 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.AddressTable;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class CartoucheEntity extends BlockEntity
 {
-	private static final String EMPTY = StargateJourney.EMPTY;
-	
 	public static final String ADDRESS_TABLE = "AddressTable";
 	public static final String DIMENSION = "Dimension";
 	public static final String SYMBOLS = "Symbols";
 	public static final String ADDRESS = "Address";
 
-	private String addressTable = EMPTY;
-	private String dimension;
+	@Nullable
+	private ResourceLocation addressTable;
+	private ResourceLocation dimension;
 	
-	private String symbols;
+	private ResourceLocation symbols;
 	private Address address = new Address();
 	
 	public CartoucheEntity(BlockEntityType<?> cartouche, BlockPos pos, BlockState state) 
@@ -54,118 +50,66 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		if(addressTable != null && !addressTable.equals(EMPTY))
+		if(addressTable != null)
 			setAddressFromAddressTable();
-		else if(dimension == null)
-		{
+		else if(dimension == null && address.isEmpty())
 			setDimensionFromLevel(level);
+		
+		if(dimension != null && address.isEmpty())
 			setAddressFromDimension();
-		}
 		
 		if(symbols == null)
-			setSymbols(level);
+			symbolsFromLevel(level);
 	}
 	
 	@Override
     public void load(CompoundTag tag)
     {
     	super.load(tag);
+		
     	if(tag.contains(ADDRESS_TABLE))
-    		addressTable = tag.getString(ADDRESS_TABLE);
-    	if(tag.contains(DIMENSION))
-    		dimension = tag.getString(DIMENSION);
+    		addressTable = new ResourceLocation(tag.getString(ADDRESS_TABLE));
     	if(tag.contains(SYMBOLS))
-    		symbols = tag.getString(SYMBOLS);
-    	
-    	
-    	if(tag.contains(ADDRESS))
-    		address.fromArray(tag.getIntArray(ADDRESS));
+    		symbols = new ResourceLocation(tag.getString(SYMBOLS));
+		
+		
+		if(tag.contains(ADDRESS))
+			address.fromArray(tag.getIntArray(ADDRESS));
+		else if(tag.contains(DIMENSION))
+			dimension = new ResourceLocation(tag.getString(DIMENSION));
 	}
 	
 	@Override
     protected void saveAdditional(@NotNull CompoundTag tag)
 	{
 		if(addressTable != null)
-			tag.putString(ADDRESS_TABLE, addressTable);
-		if(dimension != null)
-			tag.putString(DIMENSION, dimension);
+			tag.putString(ADDRESS_TABLE, addressTable.toString());
 		if(symbols != null)
-			tag.putString(SYMBOLS, symbols);
+			tag.putString(SYMBOLS, symbols.toString());
 		
 		if(!address.isFromDimension())
 			tag.putIntArray(ADDRESS, address.toArray());
+		else if(dimension != null)
+			tag.putString(DIMENSION, dimension.toString());
 		
 		super.saveAdditional(tag);
 	}
 	
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return new AABB(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ() - 1,
-        		getBlockPos().getX() + 2, getBlockPos().getY() + 2, getBlockPos().getZ() + 2);
-    }
+	//============================================================================================
+	//************************************Getters and setters*************************************
+	//============================================================================================
 	
-	public void setDimensionFromLevel(Level level)
-	{
-		if(level.isClientSide())
-			return;
-		
-		dimension = level.dimension().location().toString();
-	}
-	
-	public void setDimension(String dimension)
+	public void setDimension(ResourceLocation dimension)
 	{
 		this.dimension = dimension;
 	}
 	
-	public void setAddressFromAddressTable()
-	{
-		AddressTable addressTable = AddressTable.getAddressTable(level, ResourceLocation.tryParse(this.addressTable));
-		Address address = AddressTable.randomAddress(level.getServer(), addressTable);
-		
-		if(address != null)
-		{
-			this.address = address;
-			if(address.isFromDimension())
-				this.dimension = address.getDimension().location().toString();
-		}
-		
-		this.addressTable = EMPTY;
-	}
-	
-	/*public void setDimensionFromAddressTable()
-	{
-		if(level.isClientSide())
-			return;
-		
-		AddressTable addressTable = AddressTable.getAddressTable(level, ResourceLocation.tryParse(this.addressTable));
-		Optional<ResourceKey<Level>> dimension = AddressTable.getRandomDimension(level, addressTable);
-		
-		if(dimension.isPresent())
-			this.dimension = dimension.get().location().toString();
-		
-		this.addressTable = EMPTY;
-	}*/
-	
-	public void setAddressFromDimension()
-	{
-		this.address.fromDimension(level.getServer(), Conversion.stringToDimension(this.dimension));
-	}
-	
-	public void setSymbols(Level level)
-	{
-		if(level.isClientSide())
-			return;
-		
-		symbols = Universe.get(level).getSymbols(level.dimension()).location().toString();
-	}
-	
-	public void setSymbols(String symbols)
+	public void setSymbols(ResourceLocation symbols)
 	{
 		this.symbols = symbols;
 	}
 	
-	public String getSymbols()
+	public ResourceLocation getSymbols()
 	{
 		return this.symbols;
 	}
@@ -180,13 +124,62 @@ public abstract class CartoucheEntity extends BlockEntity
 		return this.address;
 	}
 	
+	//============================================================================================
+	//****************************************Functionality***************************************
+	//============================================================================================
+	
+	public void setAddressFromAddressTable()
+	{
+		AddressTable addressTable = AddressTable.getAddressTable(level, this.addressTable);
+		Address address = AddressTable.randomAddress(level.getServer(), addressTable);
+		
+		if(address != null)
+		{
+			this.address = address;
+			if(address.isFromDimension())
+				this.dimension = address.getDimension().location();
+		}
+		
+		this.addressTable = null;
+		
+		this.setChanged();
+	}
+	
+	public void setAddressFromDimension()
+	{
+		this.address.fromDimension(level.getServer(), Conversion.locationToDimension(this.dimension));
+	}
+	
+	public void symbolsFromLevel(Level level)
+	{
+		if(level.isClientSide())
+			return;
+		
+		setSymbols(Universe.get(level).getSymbols(level.dimension()).location());
+	}
+	
+	public void setDimensionFromLevel(Level level)
+	{
+		if(level.isClientSide())
+			return;
+		
+		setDimension(level.dimension().location());
+	}
+	
 	protected void updateClient()
 	{
 		if(level.isClientSide())
 			return;
 		
-		int[] address = addressTable.equals(EMPTY) ? this.address.toArray() : new int[0];
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundCartoucheUpdatePacket(worldPosition, symbols, address));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)),
+				new ClientboundCartoucheUpdatePacket(worldPosition, symbols,addressTable == null ? this.address.toArray() : new int[0]));
+	}
+	
+	@Override
+	public AABB getRenderBoundingBox()
+	{
+		return new AABB(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ() - 1,
+				getBlockPos().getX() + 2, getBlockPos().getY() + 2, getBlockPos().getZ() + 2);
 	}
 	
 	public void tick(Level level, BlockPos pos, BlockState state)
@@ -194,6 +187,8 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(state.getValue(CartoucheBlock.HALF) == DoubleBlockHalf.LOWER)
 			updateClient();
 	}
+	
+	
 	
 	public static class Stone extends CartoucheEntity
 	{

@@ -2,8 +2,10 @@
 	"include_generated_addresses": true,
 	"addresses":
 	[
-		{"address": "minecraft:overworld", "weight": 2},
-		{"address": "sgjourney:abydos", "weight": 1},
-		{"address": "sgjourney:cavum_tenebrae", "weight": 2}
+		{"address": "sgjourney:abydos", "weight": 1, "galaxy": "sgjourney:milky_way"},
+		{"address": "sgjourney:cavum_tenebrae", "weight": 3, "galaxy": "sgjourney:milky_way"},
+		{"address": "minecraft:the_nether", "weight": 1, "galaxy": "sgjourney:milky_way"},
+		{"address": "minecraft:the_end", "weight": 1, "galaxy": "sgjourney:milky_way"},
+		{"address": "ad_astra:glacio", "weight": 1, "galaxy": "sgjourney:milky_way"}
 	]
 }

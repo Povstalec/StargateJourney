@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.mojang.datafixers.util.Pair;
 
@@ -66,7 +67,7 @@ public class Universe extends SavedData
 
 	private HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems = new HashMap<Address.Immutable, SolarSystem.Serializable>();
 	private HashMap<ResourceKey<Level>, SolarSystem.Serializable> dimensions = new HashMap<ResourceKey<Level>, SolarSystem.Serializable>();
-	private HashMap<String, Galaxy.Serializable> galaxies = new HashMap<String, Galaxy.Serializable>();
+	private HashMap<ResourceLocation, Galaxy.Serializable> galaxies = new HashMap<ResourceLocation, Galaxy.Serializable>();
 	
 	//============================================================================================
 	//*****************************************Generation*****************************************
@@ -128,7 +129,7 @@ public class Universe extends SavedData
         	
         	Galaxy.Serializable galaxy = new Galaxy.Serializable(galaxyKey, galaxyEntry.getValue(), new HashMap<Address.Immutable, SolarSystem.Serializable>(), new ArrayList<ResourceKey<PointOfOrigin>>());
         	
-        	this.galaxies.put(galaxyEntry.getKey().location().toString(), galaxy);
+        	this.galaxies.put(galaxyEntry.getKey().location(), galaxy);
         });
 		StargateJourney.LOGGER.info("Galaxies registered");
 	}
@@ -519,6 +520,12 @@ public class Universe extends SavedData
 		return Optional.empty();
 	}
 	
+	@Nullable
+	public Galaxy.Serializable getGalaxy(ResourceLocation galaxyID)
+	{
+		return this.galaxies.get(galaxyID);
+	}
+	
 	public Optional<Galaxy.Serializable> getGalaxyFromDimension(ResourceKey<Level> dimension)
 	{
 		Optional<HashMap<Galaxy.Serializable, Address.Immutable>> galaxiesOptional = getGalaxiesFromDimension(dimension);
@@ -534,7 +541,7 @@ public class Universe extends SavedData
 		return Optional.empty();
 	}
 	
-	public Optional<Address.Immutable> getAddressInGalaxyFromSolarSystem(String galaxyID, SolarSystem.Serializable solarSystem)
+	public Optional<Address.Immutable> getAddressInGalaxyFromSolarSystem(ResourceLocation galaxyID, SolarSystem.Serializable solarSystem)
 	{
 		if(this.galaxies.containsKey(galaxyID))
 		{
@@ -546,7 +553,7 @@ public class Universe extends SavedData
 		return Optional.empty();
 	}
 	
-	public Optional<Address.Immutable> getAddressInGalaxyFromDimension(String galaxyID, ResourceKey<Level> dimension)
+	public Optional<Address.Immutable> getAddressInGalaxyFromDimension(ResourceLocation galaxyID, ResourceKey<Level> dimension)
 	{
 		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
 		
@@ -642,7 +649,7 @@ public class Universe extends SavedData
 		
 		this.galaxies.forEach((galaxyID, galaxy) ->
 		{
-			galaxiesTag.put(galaxyID, galaxy.serialize());
+			galaxiesTag.put(galaxyID.toString(), galaxy.serialize());
 		});
 		
 		return galaxiesTag;
@@ -692,7 +699,7 @@ public class Universe extends SavedData
 			ResourceKey<Galaxy> galaxyKey = Conversion.stringToGalaxyKey(galaxyString);
 			Galaxy.Serializable galaxy = Galaxy.Serializable.deserialize(server, this.solarSystems, galaxyRegistry, galaxyKey, tag.getCompound(galaxyString));
 			
-			this.galaxies.put(galaxy.getKey().location().toString(), galaxy);
+			this.galaxies.put(galaxy.getKey().location(), galaxy);
 		});
 	}
 	

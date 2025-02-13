@@ -200,7 +200,7 @@ public class CommandInit
 					Entry<Serializable, Address.Immutable> galaxyEntry = galaxies.get(i);
 					Galaxy.Serializable galaxy = galaxyEntry.getKey();
 					
-					Optional<Address.Immutable> addressOptional = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey().location().toString(), dimension);
+					Optional<Address.Immutable> addressOptional = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
 					
 					if(addressOptional.isEmpty())
 						context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)

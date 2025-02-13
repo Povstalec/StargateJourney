@@ -710,7 +710,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			Optional<Galaxy.Serializable> galaxy = Universe.get(this.level).getGalaxyFromDimension(dimension);
 			if(galaxy.isPresent())
 			{
-				Optional<Address.Immutable> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location().toString(), dimension);
+				Optional<Address.Immutable> address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.get().getKey().location(), dimension);
 				if(address.isPresent())
 					return address.get().mutable();
 			}

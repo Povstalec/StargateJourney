@@ -11,52 +11,57 @@ import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class Conversion
 {
+	public static ResourceKey<Level> locationToDimension(ResourceLocation location)
+	{
+		return ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("minecraft", "dimension")), location);
+	}
+	
 	public static ResourceKey<Level> stringToDimension(String dimensionString)
 	{
-		String[] split = dimensionString.split(":");
+		ResourceLocation location = ResourceLocation.tryParse(dimensionString);
 		
-		if(split.length > 1)
-			return ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("minecraft", "dimension")), new ResourceLocation(split[0], split[1]));
+		if(location != null)
+			return locationToDimension(location);
 		
 		return null;
 	}
 	
 	public static ResourceKey<PointOfOrigin> stringToPointOfOrigin(String pointOfOriginString)
 	{
-		String[] split = pointOfOriginString.split(":");
+		ResourceLocation location = ResourceLocation.tryParse(pointOfOriginString);
 		
-		if(split.length > 1)
-			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+		if(location != null)
+			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, location);
 		
 		return null;
 	}
 	
 	public static ResourceKey<Symbols> stringToSymbols(String symbolsString)
 	{
-		String[] split = symbolsString.split(":");
+		ResourceLocation location = ResourceLocation.tryParse(symbolsString);
 		
-		if(split.length > 1)
-			return ResourceKey.create(Symbols.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+		if(location != null)
+			return ResourceKey.create(Symbols.REGISTRY_KEY, location);
 		
 		return null;
 	}
 	
 	public static ResourceKey<Galaxy> stringToGalaxyKey(String galaxyString)
 	{
-		String[] split = galaxyString.split(":");
+		ResourceLocation location = ResourceLocation.tryParse(galaxyString);
 		
-		if(split.length > 1)
-			return ResourceKey.create(Galaxy.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+		if(location != null)
+			return ResourceKey.create(Galaxy.REGISTRY_KEY, location);
 		
 		return null;
 	}
 	
 	public static ResourceKey<SolarSystem> stringToSolarSystemKey(String solarSystemString)
 	{
-		String[] split = solarSystemString.split(":");
+		ResourceLocation location = ResourceLocation.tryParse(solarSystemString);
 		
-		if(split.length > 1)
-			return ResourceKey.create(SolarSystem.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+		if(location != null)
+			return ResourceKey.create(SolarSystem.REGISTRY_KEY, location);
 		
 		return null;
 	}
