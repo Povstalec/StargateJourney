@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern":
+	[
+		"BLB",
+		"ICI",
+		"NXN"
+	],
+	"key":
+	{
+		"L": {"item": "minecraft:lapis_lazuli"},
+		"I": {"tag": "sgjourney:naquadah_alloy"},
+		"B": {"item": "minecraft:stone_button"},
+		"C": {"item": "sgjourney:advanced_communication_crystal"},
+		"X": {"item": "sgjourney:advanced_control_crystal"},
+		"N": {"tag": "sgjourney:naquadah"}
+	},
+	"result":
+	{
+		"item": "sgjourney:pegasus_dhd"
+	}
+}

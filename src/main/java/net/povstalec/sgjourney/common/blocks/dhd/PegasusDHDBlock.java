@@ -36,7 +36,9 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -142,25 +144,39 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 	{
 		ItemStack stack = new ItemStack(BlockInit.PEGASUS_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
-        CompoundTag inventory = new CompoundTag();
         
         blockEntityTag.putString("id", "sgjourney:pegasus_dhd");
-        blockEntityTag.putLong("Energy", 0);
-        
-        inventory.putInt("Size", 9);
-        inventory.put("Items", setupPegasusInventory());
-        
-        blockEntityTag.put("Inventory", inventory);
+        blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		
+		CompoundTag crystalInventory = new CompoundTag();
+		crystalInventory.putInt("Size", 9);
+		crystalInventory.put("Items", setupCrystalInventory());
+		blockEntityTag.put(CrystalDHDEntity.CRYSTAL_INVENTORY, crystalInventory);
+		
+		CompoundTag energyInventory = new CompoundTag();
+		energyInventory.putInt("Size", 2);
+		energyInventory.put("Items", setupEnergyInventory());
+		blockEntityTag.put(AbstractDHDEntity.ENERGY_INVENTORY, energyInventory);
+		
 		stack.addTagElement("BlockEntityTag", blockEntityTag);
 		
 		return stack;
 	}
 	
-	private static ListTag setupPegasusInventory()
+	private static ListTag setupEnergyInventory()
 	{
 		ListTag nbtTagList = new ListTag();
 		
-		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.ADVANCED_CONTROL_CRYSTAL.get()), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.FUSION_CORE.get()), 1, null));
+		
+		return nbtTagList;
+	}
+	
+	private static ListTag setupCrystalInventory()
+	{
+		ListTag nbtTagList = new ListTag();
+		
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));

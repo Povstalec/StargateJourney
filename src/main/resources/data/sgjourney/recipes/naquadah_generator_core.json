@@ -3,15 +3,15 @@
 	"category": "misc",
 	"pattern":
 	[
-		"RAR",
-		"ACA",
-		"RAR"
+		" A ",
+		"NCN",
+		" A "
 	],
 	
 	"key": 
 	{
-		"A": {"tag": "sgjourney:naquadah_alloy"},
-		"R": { "item": "minecraft:redstone" },
+		"A": { "tag": "sgjourney:naquadah_alloy" },
+		"N": { "tag": "sgjourney:refined_naquadah" },
 		"C": { "item": "sgjourney:reaction_chamber" }
 	},
 	

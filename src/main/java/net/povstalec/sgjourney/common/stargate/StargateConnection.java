@@ -232,12 +232,12 @@ public final class StargateConnection
 	{
 		if(this.dialingStargate != null)
 		{
-			this.dialingStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode());
+			this.dialingStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
 			this.dialingStargate.resetStargate(feedback);
 		}
 		if(this.dialedStargate != null)
 		{
-			this.dialedStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode());
+			this.dialedStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
 			this.dialedStargate.resetStargate(feedback);
 		}
 		

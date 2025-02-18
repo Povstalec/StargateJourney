@@ -27,6 +27,8 @@ import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 
 public abstract class CrystalDHDEntity extends AbstractDHDEntity
 {
+	public static final String CRYSTAL_INVENTORY = "Inventory"; // TODO Rename this to "crystal_inventory" in the future
+	
 	protected AbstractCrystalItem.Storage memoryCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage controlCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage energyCrystals = new AbstractCrystalItem.Storage();
@@ -45,13 +47,13 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		itemHandler.deserializeNBT(nbt.getCompound(CRYSTAL_INVENTORY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
-		nbt.put("Inventory", itemHandler.serializeNBT());
+		nbt.put(CRYSTAL_INVENTORY, itemHandler.serializeNBT());
 		super.saveAdditional(nbt);
 	}
 	

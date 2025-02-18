@@ -36,7 +36,9 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -142,21 +144,35 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
 	{
 		ItemStack stack = new ItemStack(BlockInit.MILKY_WAY_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
-        CompoundTag inventory = new CompoundTag();
         
         blockEntityTag.putString("id", "sgjourney:milky_way_dhd");
-        blockEntityTag.putLong("Energy", 0);
-        
-        inventory.putInt("Size", 9);
-        inventory.put("Items", setupMilkyWayInventory());
-        
-        blockEntityTag.put("Inventory", inventory);
+        blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		
+		CompoundTag crystalInventory = new CompoundTag();
+        crystalInventory.putInt("Size", 9);
+        crystalInventory.put("Items", setupCrystalInventory());
+        blockEntityTag.put(CrystalDHDEntity.CRYSTAL_INVENTORY, crystalInventory);
+		
+		CompoundTag energyInventory = new CompoundTag();
+		energyInventory.putInt("Size", 2);
+		energyInventory.put("Items", setupEnergyInventory());
+		blockEntityTag.put(AbstractDHDEntity.ENERGY_INVENTORY, energyInventory);
+		
 		stack.addTagElement("BlockEntityTag", blockEntityTag);
 		
 		return stack;
 	}
 	
-	private static ListTag setupMilkyWayInventory()
+	private static ListTag setupEnergyInventory()
+	{
+		ListTag nbtTagList = new ListTag();
+		
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.FUSION_CORE.get()), 1, null));
+		
+		return nbtTagList;
+	}
+	
+	private static ListTag setupCrystalInventory()
 	{
 		ListTag nbtTagList = new ListTag();
 		

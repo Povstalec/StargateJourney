@@ -10,6 +10,7 @@ import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
@@ -54,7 +55,6 @@ public class TabInit
 				items.accept(ItemInit.NAQUADAH_ROD.get());
 				items.accept(ItemInit.REACTION_CHAMBER.get());
 				items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
-				items.accept(ItemInit.FUSION_CORE.get());
 				items.accept(ItemInit.PLASMA_CONVERTER.get());
 				
 				items.accept(ItemInit.PDA.get());
@@ -134,8 +134,12 @@ public class TabInit
 				items.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
 				items.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
 				items.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
-				items.accept(BlockInit.CLASSIC_DHD.get());
+				items.accept(ClassicDHDBlock.classicCrystalSetup());
 				items.accept(BlockInit.TOLLAN_STARGATE.get());
+				
+				items.accept(ItemInit.FUSION_CORE.get());
+				items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
+				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 				
 				items.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 				

@@ -11,8 +11,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -181,7 +183,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
 				if(slot == 0)
-					return stack.getItem() instanceof IEnergyCore || stack.getItem() instanceof ZeroPointModule;
+					return stack.getItem() instanceof IEnergyCore || stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
 				
 				return true;
 			}
@@ -349,6 +351,18 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		return CommonDHDConfig.milky_way_dhd_max_energy_extract.get();
 	}
 	
+	private boolean stackHasEnergy(ItemStack stack)
+	{
+		if(stack.getCapability(ForgeCapabilities.ENERGY).isPresent())
+		{
+			IEnergyStorage energyStorage = stack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
+			
+			return energyStorage.canExtract() && energyStorage.getEnergyStored() > 0;
+		}
+		
+		return false;
+	}
+	
 	@Override
 	protected void outputEnergy(Direction outputDirection)
 	{
@@ -362,17 +376,21 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		{
 			long needed = getEnergyTarget() - stargate.getEnergyStored();
 			
-			// Uses energy from a ZPM if one is present
-			if(energyStack.getItem() instanceof ZeroPointModule && ZeroPointModule.getEnergy(energyStack) > 0)
+			// Uses energy from a Energy Item if one is present
+			if(stackHasEnergy(energyStack))
 			{
-				energyStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
+				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
+				
+				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
-					if(energy instanceof ZeroPointEnergy zpmEnergy)
-					{
-						long energySent = zpmEnergy.extractLongEnergy(Math.min(maxEnergyDeplete(), needed), false);
-						stargate.receiveEnergy(energySent, false);
-					}
-				});
+					long energySent = sgjourneyEnergy.extractLongEnergy(Math.min(maxEnergyDeplete(), needed), false);
+					stargate.receiveEnergy(energySent, false);
+				}
+				else
+				{
+					int energySent = energyStorage.extractEnergy(Math.min(Integer.MAX_VALUE, (int) Math.min(maxEnergyDeplete(), needed)), false);
+					stargate.receiveEnergy(energySent, false);
+				}
 			}
 			// Uses energy from the DHD energy buffer
 			else

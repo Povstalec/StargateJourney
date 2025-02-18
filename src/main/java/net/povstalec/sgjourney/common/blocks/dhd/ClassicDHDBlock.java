@@ -2,7 +2,11 @@ package net.povstalec.sgjourney.common.blocks.dhd;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -11,6 +15,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,11 +27,22 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.common.misc.InventoryHelper;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
+
+import java.util.List;
 
 public class ClassicDHDBlock extends AbstractDHDBlock
 {
@@ -49,22 +68,27 @@ public class ClassicDHDBlock extends AbstractDHDBlock
         	if(blockEntity instanceof AbstractDHDEntity dhd) 
         	{
         		dhd.setStargate();
-        		
-        		MenuProvider containerProvider = new MenuProvider() 
-        		{
-        			@Override
-        			public Component getDisplayName() 
-        			{
-        				return Component.translatable("screen.sgjourney.dhd");
-        			}
-        			
-        			@Override
-        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-        			{
-        				return new ClassicDHDMenu(windowId, playerInventory, blockEntity);
-        			}
-        		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				
+				if(player.isShiftKeyDown())
+					this.openCrystalMenu(player, blockEntity);
+				else
+				{
+					MenuProvider containerProvider = new MenuProvider()
+					{
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+						
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new ClassicDHDMenu(windowId, playerInventory, blockEntity);
+						}
+					};
+					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				}
         	}
         	else
         	{
@@ -86,4 +110,71 @@ public class ClassicDHDBlock extends AbstractDHDBlock
 	{
 		return createTickerHelper(type, BlockEntityInit.CLASSIC_DHD.get(), AbstractDHDEntity::tick);
     }
+	
+	public static ItemStack classicCrystalSetup()
+	{
+		ItemStack stack = new ItemStack(BlockInit.CLASSIC_DHD.get());
+		CompoundTag blockEntityTag = new CompoundTag();
+		
+		blockEntityTag.putString("id", "sgjourney:classic_dhd");
+		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		
+		CompoundTag crystalInventory = new CompoundTag();
+		crystalInventory.putInt("Size", 9);
+		crystalInventory.put("Items", setupCrystalInventory());
+		blockEntityTag.put(CrystalDHDEntity.CRYSTAL_INVENTORY, crystalInventory);
+		
+		CompoundTag energyInventory = new CompoundTag();
+		energyInventory.putInt("Size", 2);
+		energyInventory.put("Items", setupEnergyInventory());
+		blockEntityTag.put(AbstractDHDEntity.ENERGY_INVENTORY, energyInventory);
+		
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		
+		return stack;
+	}
+	
+	private static ListTag setupEnergyInventory()
+	{
+		ListTag nbtTagList = new ListTag();
+		
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.NAQUADAH_GENERATOR_CORE.get()), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.NAQUADAH_FUEL_ROD.get()), 1, null));
+		
+		return nbtTagList;
+	}
+	
+	private static ListTag setupCrystalInventory()
+	{
+		ListTag nbtTagList = new ListTag();
+		
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(5, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(CommonTechConfig.transfer_crystal_max_transfer.get())));
+		
+		return nbtTagList;
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		if(stack.hasTag())
+		{
+			CompoundTag blockEntityTag = BlockItem.getBlockEntityData(stack);
+			ListTag tagList = blockEntityTag.getCompound("Inventory").getList("Items", Tag.TAG_COMPOUND);
+			
+			if(tagList.size() > 0)
+			{
+				CompoundTag list1 = tagList.getCompound(0);
+				
+				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals(InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get())) && list1.contains("Count", Tag.TAG_BYTE) && list1.getByte("Count") > 0)
+					tooltipComponents.add(Component.translatable("tooltip.sgjourney.has_control_crystal").withStyle(ChatFormatting.DARK_RED));
+			}
+		}
+		
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+	}
 }

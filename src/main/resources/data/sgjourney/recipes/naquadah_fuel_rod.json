@@ -10,7 +10,7 @@
 	
 	"key": 
 	{
-		"N": { "tag": "sgjourney:naquadah" },
+		"N": { "tag": "sgjourney:refined_naquadah" },
 		"B": { "item": "sgjourney:liquid_naquadah_bucket" },
 		"R": { "item": "sgjourney:naquadah_rod" }
 	},

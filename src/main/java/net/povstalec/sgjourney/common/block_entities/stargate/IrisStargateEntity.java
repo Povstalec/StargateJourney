@@ -33,9 +33,7 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 	
 	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
 	{
-		super(blockEntity, defaultVariant, pos, state, gen, defaultNetwork);
-		
-		this.irisInfo = new IrisInfo(this);
+		this(blockEntity, defaultVariant, pos, state, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
