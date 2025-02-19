@@ -330,13 +330,13 @@ public class UniverseStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public void updateClient()
+	public boolean updateClient()
 	{
-		super.updateClient();
+		if(!super.updateClient())
+			return false;
 		
-		if(this.level.isClientSide())
-			return;
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.animationTicks, this.rotation, this.oldRotation));
+		return true;
 	}
 
 	@Override

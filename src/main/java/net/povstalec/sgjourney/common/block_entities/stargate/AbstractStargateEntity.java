@@ -152,8 +152,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected float verticalCenterHeight;
 	protected float horizontalCenterHeight;
 	
+	@Nullable
 	public SoundWrapper wormholeIdleSound = null;
+	@Nullable
 	public SoundWrapper wormholeOpenSound = null;
+	@Nullable
 	public SoundWrapper spinSound = null;
 	
 	protected boolean displayID = false;
@@ -1275,20 +1278,22 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void doWhileDialed(int openTime, Stargate.ChevronLockSpeed chevronLockSpeed) {}
 	
-	public void updateClient()
+	public boolean updateClient()
 	{
 		if(level.isClientSide())
-			return;
+			return false;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
+		return true;
 	}
 	
-	public void updateClientState()
+	public boolean updateClientState()
 	{
 		if(level.isClientSide())
-			return;
+			return false;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateStateUpdatePacket(this.worldPosition, this.blockCover.canSinkGate, this.blockCover.blockStates));
+		return true;
 	}
 	
 	public void spawnCoverParticles()

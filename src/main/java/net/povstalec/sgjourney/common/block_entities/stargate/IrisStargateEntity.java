@@ -122,11 +122,12 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 		player.sendSystemMessage(Component.literal("Energy: " + this.getEnergyStored() + " FE").withStyle(ChatFormatting.DARK_RED));
 	}
 	
-	public void updateClient()
+	public boolean updateClient()
 	{
 		if(level.isClientSide())
-			return;
+			return false;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, irisInfo().getIrisProgress(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, irisInfo().getIris()));
+		return true;
 	}
 }

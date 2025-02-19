@@ -22,10 +22,7 @@ import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
@@ -192,6 +189,20 @@ public class ClientAccess
         	stargate.blockCover.canSinkGate = canSinkGate;
         }
     }
+	
+	public static void updateRotatingStargate(BlockPos pos, int rotation, int oldRotation, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredSymbol)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final RotatingStargateEntity stargate)
+		{
+			stargate.setRotation(oldRotation, rotation);
+			stargate.signalStrength = signalStrength;
+			stargate.computerRotation = computerRotation;
+			stargate.rotateClockwise = rotateClockwise;
+			stargate.desiredSymbol = desiredSymbol;
+		}
+	}
     
     public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int animationTicks, int rotation, int oldRotation)
     {
@@ -207,20 +218,12 @@ public class ClientAccess
         }
     }
     
-    public static void updateMilkyWayStargate(BlockPos pos, int rotation, int oldRotation, boolean isChevronRaised, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredSymbol)
+    public static void updateMilkyWayStargate(BlockPos pos, boolean isChevronOpen)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final MilkyWayStargateEntity stargate)
-        {
-        	stargate.setRotation(rotation);
-        	stargate.oldRotation = oldRotation;
-        	stargate.isChevronOpen = isChevronRaised;
-        	stargate.signalStrength = signalStrength;
-        	stargate.computerRotation = computerRotation;
-        	stargate.rotateClockwise = rotateClockwise;
-        	stargate.desiredSymbol = desiredSymbol;
-        }
+			stargate.isChevronOpen = isChevronOpen;
     }
     
     public static void updatePegasusStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int currentSymbol)

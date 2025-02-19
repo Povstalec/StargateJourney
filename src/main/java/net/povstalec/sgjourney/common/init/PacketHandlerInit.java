@@ -5,29 +5,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundDialerOpenScreenPacket;
-import net.povstalec.sgjourney.common.packets.ClientboundGDOOpenScreenPacket;
-import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
-import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundTransceiverUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ServerboundGDOUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ServerboundTransceiverUpdatePacket;
+import net.povstalec.sgjourney.common.packets.*;
 
 public final class PacketHandlerInit
 {
@@ -106,6 +84,11 @@ public final class PacketHandlerInit
 		.encoder(ClientboundStargateUpdatePacket::encode)
 		.decoder(ClientboundStargateUpdatePacket::new)
 		.consumerMainThread(ClientboundStargateUpdatePacket::handle)
+		.add();
+		INSTANCE.messageBuilder(ClientboundRotatingStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundRotatingStargateUpdatePacket::encode)
+		.decoder(ClientboundRotatingStargateUpdatePacket::new)
+		.consumerMainThread(ClientboundRotatingStargateUpdatePacket::handle)
 		.add();
 		INSTANCE.messageBuilder(ClientboundStargateStateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundStargateStateUpdatePacket::encode)
@@ -214,16 +197,16 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientBoundSoundPackets.UniverseStart::handle)
 		.add();
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.MilkyWayBuildup.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.MilkyWayBuildup::encode)
-		.decoder(ClientBoundSoundPackets.MilkyWayBuildup::new)
-		.consumerMainThread(ClientBoundSoundPackets.MilkyWayBuildup::handle)
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.RotationStartup.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.RotationStartup::encode)
+		.decoder(ClientBoundSoundPackets.RotationStartup::new)
+		.consumerMainThread(ClientBoundSoundPackets.RotationStartup::handle)
 		.add();
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.MilkyWayStop.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientBoundSoundPackets.MilkyWayStop::encode)
-		.decoder(ClientBoundSoundPackets.MilkyWayStop::new)
-		.consumerMainThread(ClientBoundSoundPackets.MilkyWayStop::handle)
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.RotationStop.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientBoundSoundPackets.RotationStop::encode)
+		.decoder(ClientBoundSoundPackets.RotationStop::new)
+		.consumerMainThread(ClientBoundSoundPackets.RotationStop::handle)
 		.add();
 		
 		//============================================================================================

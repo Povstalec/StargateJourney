@@ -187,9 +187,8 @@ public class ClientStargateVariants
 			return getMilkyWayStargateVariant(location);
 		else if(stargate instanceof PegasusStargateEntity)
 			return getPegasusStargateVariant(location);
-
-		//else if(stargate instanceof ClassicStargateEntity)
-		//	return getClassicStargateVariant(location);
+		else if(stargate instanceof ClassicStargateEntity)
+			return getClassicStargateVariant(location);
 		
 		// Milky Way Stargate Variant will be the defaultest of defaults
 		return MilkyWayStargateVariant.DEFAULT_VARIANT;

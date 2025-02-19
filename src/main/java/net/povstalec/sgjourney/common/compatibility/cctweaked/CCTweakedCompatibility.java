@@ -1,11 +1,7 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked;
 
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.PegasusStargateMethods;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.ShieldingMethods;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateFilterMethods;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateMethods;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.*;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 
 public class CCTweakedCompatibility
@@ -20,6 +16,19 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisDurability());
 		peripheral.registerMethod(new ShieldingMethods.GetIrisMaxDurability());
+	}
+	
+	private static void genericRotationMethods(StargatePeripheral peripheral)
+	{
+		peripheral.registerMethod(new RotationMethods.GetCurrentSymbol());
+		peripheral.registerMethod(new RotationMethods.IsCurrentSymbol());
+		peripheral.registerMethod(new RotationMethods.EncodeChevron());
+		// Rotation methods
+		peripheral.registerMethod(new RotationMethods.GetRotation());
+		peripheral.registerMethod(new RotationMethods.GetRotationDegrees());
+		peripheral.registerMethod(new RotationMethods.RotateClockwise());
+		peripheral.registerMethod(new RotationMethods.RotateCounterClockwise());
+		peripheral.registerMethod(new RotationMethods.EndRotation());
 	}
 	
 	private static void genericBasicMethods(StargatePeripheral peripheral)
@@ -101,17 +110,17 @@ public class CCTweakedCompatibility
 		// Iris methods
 		irisMethods(peripheral);
 		// Misc Methods
-		peripheral.registerMethod(new MilkyWayStargateMethods.GetCurrentSymbol());
-		peripheral.registerMethod(new MilkyWayStargateMethods.IsCurrentSymbol());
+		peripheral.registerMethod(new RotationMethods.GetCurrentSymbol());
+		peripheral.registerMethod(new RotationMethods.IsCurrentSymbol());
+		peripheral.registerMethod(new RotationMethods.EncodeChevron());
 		// Rotation methods
-		peripheral.registerMethod(new MilkyWayStargateMethods.GetRotation());
-		peripheral.registerMethod(new MilkyWayStargateMethods.GetRotationDegrees());
+		peripheral.registerMethod(new RotationMethods.GetRotation());
+		peripheral.registerMethod(new RotationMethods.GetRotationDegrees());
 		peripheral.registerMethod(new MilkyWayStargateMethods.RotateClockwise());
-		peripheral.registerMethod(new MilkyWayStargateMethods.RotateAntiClockwise());
+		peripheral.registerMethod(new MilkyWayStargateMethods.RotateCounterClockwise());
 		peripheral.registerMethod(new MilkyWayStargateMethods.EndRotation());
 		// Dialing methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.OpenChevron());
-		peripheral.registerMethod(new MilkyWayStargateMethods.EngageChevron());
 		peripheral.registerMethod(new MilkyWayStargateMethods.CloseChevron());
 		peripheral.registerMethod(new MilkyWayStargateMethods.IsChevronOpen());
 		
@@ -193,6 +202,8 @@ public class CCTweakedCompatibility
 
 		// Iris methods
 		irisMethods(peripheral);
+		// Rotation methods
+		genericRotationMethods(peripheral);
 		// Misc Methods
 		genericBasicMethods(peripheral);
 		

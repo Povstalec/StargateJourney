@@ -8,10 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.sound.sounds.GenericStargateSound;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
@@ -105,10 +102,10 @@ public class SoundAccess
     	{
     		if(stargate.spinSound == null)
     		{
-    			if(stargate instanceof UniverseStargateEntity universeStargate)
+    			if(stargate instanceof RotatingStargateEntity rotatingStargate)
+				stargate.spinSound = new StargateSoundWrapper.RingRotation(rotatingStargate);
+				else if(stargate instanceof UniverseStargateEntity universeStargate)
     				stargate.spinSound = new StargateSoundWrapper.UniverseRingRotation(universeStargate);
-    			else if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-    				stargate.spinSound = new StargateSoundWrapper.MilkyWayRingRotation(milkyWayStargate);
     			else if(stargate instanceof PegasusStargateEntity pegasusStargate)
     				stargate.spinSound = new StargateSoundWrapper.PegasusRingRotation(pegasusStargate);
     		}
@@ -129,20 +126,20 @@ public class SoundAccess
     	}
     }
 	
-    public static void playMilkyWayBuildupSound(BlockPos pos)
+    public static void playRotationStartupSound(BlockPos pos)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof MilkyWayStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof RotatingStargateEntity stargate)
     	{
     		if(stargate.buildupSound == null || !stargate.buildupSound.hasSound())
-    			stargate.buildupSound = new StargateSoundWrapper.MilkyWayRingBuildup(stargate);
+    			stargate.buildupSound = new StargateSoundWrapper.RotationStartup(stargate);
 
     		stargate.playBuildupSound();
     	}
     }
 	
-    public static void playMilkyWayStopSound(BlockPos pos)
+    public static void playRotationStopSound(BlockPos pos)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof MilkyWayStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof RotatingStargateEntity stargate)
     	{
     		GenericStargateSound sound = new GenericStargateSound(stargate, getRotationStopSound(stargate), 0.75F);
     		minecraft.getSoundManager().play(sound);
@@ -211,14 +208,14 @@ public class SoundAccess
     	return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getRotatingStargateVariant(stargate.defaultVariant(), stargate).rotationSounds().rotationSound());
     }
     
-    public static SoundEvent getRotationStopSound(MilkyWayStargateEntity stargate)
+    public static SoundEvent getRotationStopSound(RotatingStargateEntity stargate)
     {
     	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
 		if(stargateVariant.isPresent())
-			return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.get().clientVariant()).rotationSounds().rotationStopSound());
+			return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getRotatingStargateVariant(stargateVariant.get().clientVariant(), stargate).rotationSounds().rotationStopSound());
     	
-    	return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getMilkyWayStargateVariant(stargate.defaultVariant()).rotationSounds().rotationStopSound());
+    	return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getRotatingStargateVariant(stargate.defaultVariant(), stargate).rotationSounds().rotationStopSound());
     }
     
     private static SoundEvent getFailSound(AbstractStargateEntity stargate, Stargate.Feedback stargateFeedback)
