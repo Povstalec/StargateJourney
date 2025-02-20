@@ -5,7 +5,6 @@ import net.povstalec.sgjourney.client.sound.sounds.RotatingStargateRingStartupSo
 import net.povstalec.sgjourney.client.sound.sounds.RotatingStargateRingSound;
 import net.povstalec.sgjourney.client.sound.sounds.PegasusStargateRingSound;
 import net.povstalec.sgjourney.client.sound.sounds.StargateSound;
-import net.povstalec.sgjourney.client.sound.sounds.UniverseStargateRingSound;
 import net.povstalec.sgjourney.client.sound.sounds.WormholeIdleSound;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 
@@ -62,29 +61,6 @@ public abstract class StargateSoundWrapper<T extends AbstractStargateEntity> ext
 		public WormholeIdle(AbstractStargateEntity stargate, boolean incoming)
 		{
 			super(stargate, new WormholeIdleSound(stargate, SoundAccess.getWormholeIdleSound(stargate, incoming)));
-		}
-	}
-	
-	public static class UniverseRingRotation extends StargateSoundWrapper<UniverseStargateEntity>
-	{
-		public UniverseRingRotation(UniverseStargateEntity stargate)
-		{
-			super(stargate, new UniverseStargateRingSound(stargate, SoundAccess.getRotationSound(stargate)));
-		}
-		
-		@Override
-		public void playSound()
-		{
-			this.sound = new UniverseStargateRingSound(stargate, SoundAccess.getRotationSound(stargate));
-			minecraft.getSoundManager().play(sound);
-			this.playingSound = true;
-		}
-
-		@Override
-		public void stopSound()
-		{
-			this.sound.stopSound();
-			this.playingSound = false;
 		}
 	}
 	

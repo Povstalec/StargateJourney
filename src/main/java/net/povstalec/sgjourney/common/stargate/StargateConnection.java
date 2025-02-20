@@ -122,7 +122,7 @@ public final class StargateConnection
 		private final boolean isConnected;
 		private final boolean isDialingOut;
 		
-		private State(String name, boolean isConnected, boolean isDialingOut)
+		State(String name, boolean isConnected, boolean isDialingOut)
 		{
 			this.name = name;
 			this.isConnected = isConnected;

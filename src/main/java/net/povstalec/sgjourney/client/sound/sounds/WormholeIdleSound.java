@@ -47,8 +47,5 @@ public class WormholeIdleSound extends StargateSound<AbstractStargateEntity>
 	{
 		if(this.volume >= VOLUME_MIN)
 			this.volume -= 0.05F;
-		
-		/*if(this.volume < VOLUME_MIN)
-			this.stopSound();*/
 	}
 }

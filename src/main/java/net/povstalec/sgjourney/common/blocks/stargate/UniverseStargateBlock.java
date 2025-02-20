@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldin
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
-public class UniverseStargateBlock extends AbstractStargateBaseBlock
+public class UniverseStargateBlock extends RotatingStargateBaseBlock
 {
 	public UniverseStargateBlock(Properties properties)
 	{

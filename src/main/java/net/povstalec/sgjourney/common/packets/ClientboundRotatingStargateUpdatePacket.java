@@ -15,10 +15,10 @@ public class ClientboundRotatingStargateUpdatePacket
     public final int signalStrength;
     public final boolean computerRotation;
     public final boolean rotateClockwise;
-    public final int desiredSymbol;
+    public final int desiredRotation;
     
     public ClientboundRotatingStargateUpdatePacket(BlockPos pos, int rotation, int oldRotation, int signalStrength,boolean computerRotation,
-                                                   boolean rotateClockwise, int desiredSymbol)
+                                                   boolean rotateClockwise, int desiredRotation)
     {
         this.pos = pos;
         this.rotation = rotation;
@@ -26,7 +26,7 @@ public class ClientboundRotatingStargateUpdatePacket
         this.signalStrength = signalStrength;
         this.computerRotation = computerRotation;
         this.rotateClockwise = rotateClockwise;
-        this.desiredSymbol = desiredSymbol;
+        this.desiredRotation = desiredRotation;
     }
 
     public ClientboundRotatingStargateUpdatePacket(FriendlyByteBuf buffer)
@@ -42,14 +42,14 @@ public class ClientboundRotatingStargateUpdatePacket
         buffer.writeInt(this.signalStrength);
         buffer.writeBoolean(this.computerRotation);
         buffer.writeBoolean(this.rotateClockwise);
-        buffer.writeInt(this.desiredSymbol);
+        buffer.writeInt(this.desiredRotation);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() ->
         {
-        	ClientAccess.updateRotatingStargate(this.pos, this.rotation, this.oldRotation, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol);
+        	ClientAccess.updateRotatingStargate(this.pos, this.rotation, this.oldRotation, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredRotation);
         });
         return true;
     }

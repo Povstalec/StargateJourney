@@ -73,7 +73,7 @@
 	
 	"rotation_sounds":
 	{
-		"rotation_startup_sound": "sgjourney:universe_dial_start",
+		"rotation_startup_sound": "sgjourney:universe_ring_spin_start",
 		"rotation_sound": "sgjourney:universe_ring_spin"
 	},
 	
@@ -87,5 +87,7 @@
 	"fail_sounds":
 	{
 		"default": "sgjourney:universe_dial_fail"
-	}
+	},
+	
+	"dial_start_sound": "sgjourney:universe_dial_start"
 }

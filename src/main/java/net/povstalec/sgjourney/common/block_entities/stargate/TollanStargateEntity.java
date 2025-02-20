@@ -14,15 +14,16 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class TollanStargateEntity extends AbstractStargateEntity
 {
+	public static final int TOTAL_SYMBOLS = 48;
+	
 	public static final float TOLLAN_THICKNESS = 5.0F;
 	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0F;
 	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
 	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state, Stargate.Gen.GEN_2, 2,
-				VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
-		this.symbolBounds = 47;
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state,
+				TOTAL_SYMBOLS, Stargate.Gen.GEN_2, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 	}
 
 	@Override
@@ -45,6 +46,6 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TollanStargateEntity stargate)
 	{
-		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		AbstractStargateEntity.tick(level, pos, state, stargate);
 	}
 }

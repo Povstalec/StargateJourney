@@ -23,17 +23,18 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 {
 	protected IrisInfo irisInfo;
 	
-	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
-							  float verticalCenterHeight, float horizontalCenterHeight)
+	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+							  int totalSymbols, Stargate.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
 	{
-		super(blockEntity, defaultVariant, pos, state, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
+		super(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
 		
 		this.irisInfo = new IrisInfo(this);
 	}
 	
-	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
+	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+							  int totalSymbols, Stargate.Gen gen, int defaultNetwork)
 	{
-		this(blockEntity, defaultVariant, pos, state, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
+		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)

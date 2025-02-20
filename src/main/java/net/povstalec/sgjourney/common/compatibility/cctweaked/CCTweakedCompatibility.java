@@ -38,6 +38,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
 		peripheral.registerMethod(new StargateMethods.GetSymbols());
+		peripheral.registerMethod(new StargateMethods.HasDHD());
 	}
 	
 	private static void genericCrystalMethods(StargatePeripheral peripheral)
@@ -87,6 +88,8 @@ public class CCTweakedCompatibility
 		
 		// Iris methods
 		irisMethods(peripheral);
+		// Rotation methods
+		genericRotationMethods(peripheral);
 		// Misc Methods
 		genericBasicMethods(peripheral);
 		
@@ -118,7 +121,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new RotationMethods.GetRotationDegrees());
 		peripheral.registerMethod(new MilkyWayStargateMethods.RotateClockwise());
 		peripheral.registerMethod(new MilkyWayStargateMethods.RotateCounterClockwise());
-		peripheral.registerMethod(new MilkyWayStargateMethods.EndRotation());
+		peripheral.registerMethod(new RotationMethods.EndRotation());
 		// Dialing methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.OpenChevron());
 		peripheral.registerMethod(new MilkyWayStargateMethods.CloseChevron());

@@ -28,7 +28,7 @@ public class MilkyWayStargateMethods
 			{
 				if(stargate.isChevronOpen())
 					throw new LuaException("Can't rotate while chevron is open");
-				else if(desiredSymbol < -1 || desiredSymbol > stargate.totalSymbols())
+				else if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 					throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");
 				
 				Stargate.Feedback feedback = stargate.startRotation(desiredSymbol, true);
@@ -56,31 +56,10 @@ public class MilkyWayStargateMethods
 			{
 				if(stargate.isChevronOpen())
 					throw new LuaException("Can't rotate while chevron is open");
-				else if(desiredSymbol < -1 || desiredSymbol > stargate.totalSymbols())
+				else if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 					throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");
 				
 				Stargate.Feedback feedback = stargate.startRotation(desiredSymbol, false);
-				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
-			});
-			
-			return result;
-		}
-	}
-	
-	public static class EndRotation implements InterfaceMethod<MilkyWayStargateEntity>
-	{
-		@Override
-		public String getName()
-		{
-			return "endRotation";
-		}
-		
-		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, MilkyWayStargateEntity stargate, IArguments arguments) throws LuaException
-		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				Stargate.Feedback feedback = stargate.endRotation(true);
 				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
 			});
 			

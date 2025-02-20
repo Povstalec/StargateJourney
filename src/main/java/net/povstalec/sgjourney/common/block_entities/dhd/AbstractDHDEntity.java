@@ -547,11 +547,11 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 			}
 			
 			if(symbol == 0)
-				level.playSound((Player)null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
+				level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
 			else
-				level.playSound((Player)null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.25F, 1F);
+				level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.25F, 1F);
 			
-			stargate.engageSymbol(symbol);
+			stargate.dhdEngageSymbol(symbol);
 			depleteEnergy(buttonPressEnergyCost(), false);
 		}
 		else

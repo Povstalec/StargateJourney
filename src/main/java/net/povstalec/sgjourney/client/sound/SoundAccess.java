@@ -103,9 +103,7 @@ public class SoundAccess
     		if(stargate.spinSound == null)
     		{
     			if(stargate instanceof RotatingStargateEntity rotatingStargate)
-				stargate.spinSound = new StargateSoundWrapper.RingRotation(rotatingStargate);
-				else if(stargate instanceof UniverseStargateEntity universeStargate)
-    				stargate.spinSound = new StargateSoundWrapper.UniverseRingRotation(universeStargate);
+					stargate.spinSound = new StargateSoundWrapper.RingRotation(rotatingStargate);
     			else if(stargate instanceof PegasusStargateEntity pegasusStargate)
     				stargate.spinSound = new StargateSoundWrapper.PegasusRingRotation(pegasusStargate);
     		}
@@ -117,11 +115,11 @@ public class SoundAccess
     	}
     }
 	
-    public static void playUniverseStartSound(BlockPos pos) // TODO Maybe merge with playMilkyWayBuildupSound
+    public static void playUniverseDialStartSound(BlockPos pos)
     {
     	if(minecraft.level.getBlockEntity(pos) instanceof UniverseStargateEntity stargate)
     	{
-    		GenericStargateSound sound = new GenericStargateSound(stargate, getRotationStartupSound(stargate), 0.75F);
+    		GenericStargateSound sound = new GenericStargateSound(stargate, getDialStartSound(stargate), 0.75F);
     		minecraft.getSoundManager().play(sound);
     	}
     }
@@ -187,6 +185,16 @@ public class SoundAccess
     	
     	return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getClientStargateVariant(stargate.defaultVariant(), stargate).chevronIncomingSounds().getSound(chevron));
     }
+	
+	public static SoundEvent getDialStartSound(UniverseStargateEntity stargate)
+	{
+		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		
+		if(stargateVariant.isPresent())
+			return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getUniverseStargateVariant(stargateVariant.get().clientVariant()).dialStartSound());
+		
+		return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getUniverseStargateVariant(stargate.defaultVariant()).dialStartSound());
+	}
     
     public static SoundEvent getRotationStartupSound(AbstractStargateEntity stargate)
     {

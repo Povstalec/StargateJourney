@@ -26,10 +26,8 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	public static final String ROTATION = "Rotation"; //TODO Change to "rotation"
 	
 	public static final int SEGMENTS = 3;
-	public static final int ROTATION_INCREASE = 1;
 	
 	// Rotation stuff
-	protected final int totalSymbols;
 	protected final int maxRotation;
 	protected final int stepsPerSymbol;
 	protected final int symbolAddition;
@@ -45,16 +43,15 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	public int previousSignalStrength;
 	public int signalStrength;
 	
-	public boolean computerRotation;
-	public int desiredSymbol;
+	public boolean rotating;
+	public int desiredRotation;
 	public boolean rotateClockwise;
 	
-	public RotatingStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
-							  float verticalCenterHeight, float horizontalCenterHeight, int totalSymbols, int maxRotation)
+	public RotatingStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+								  int totalSymbols, Stargate.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight, int maxRotation)
 	{
-		super(blockEntity, defaultVariant, pos, state, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
+		super(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
 		
-		this.totalSymbols = totalSymbols;
 		this.maxRotation = maxRotation;
 		this.stepsPerSymbol = this.maxRotation / this.totalSymbols;
 		this.symbolAddition = this.stepsPerSymbol / 2;
@@ -66,15 +63,15 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		this.previousSignalStrength = 0;
 		this.signalStrength = 0;
 		
-		this.computerRotation = false;
-		this.desiredSymbol = 0;
+		this.rotating = false;
+		this.desiredRotation = 0;
 		this.rotateClockwise = true;
 	}
 	
-	public RotatingStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
-								  int totalSymbols, int maxRotation)
+	public RotatingStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+								  int totalSymbols, Stargate.Gen gen, int defaultNetwork, int maxRotation)
 	{
-		this(blockEntity, defaultVariant, pos, state, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT, totalSymbols, maxRotation);
+		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT, maxRotation);
 	}
 	
 	@Override
@@ -82,7 +79,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	{
 		super.serializeStargateInfo(tag);
 		
-		tag.putInt(ROTATION, rotation);
+		tag.putInt(ROTATION, this.rotation);
 		
 		return tag;
 	}
@@ -91,15 +88,10 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
 		if(tag.contains(ROTATION))
-			rotation = tag.getInt(ROTATION);
+			this.rotation = tag.getInt(ROTATION);
 		this.oldRotation = this.rotation;
 		
 		super.deserializeStargateInfo(tag, isUpgraded);
-	}
-	
-	public int totalSymbols()
-	{
-		return this.totalSymbols;
 	}
 	
 	//============================================================================================
@@ -143,13 +135,18 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		return this.rotation != this.oldRotation;
 	}
 	
+	protected int rotationStep()
+	{
+		return 1;
+	}
+	
 	protected void rotate()
 	{
 		if(!isConnected())
 		{
-			if(this.computerRotation)
+			if(this.rotating)
 			{
-				if(isCurrentSymbol(this.desiredSymbol))
+				if(this.rotation == this.desiredRotation)
 					endRotation(false);
 				else
 					rotate(this.rotateClockwise);
@@ -164,6 +161,13 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 			else
 				syncRotation();
 		}
+		else if(!isDialingOut() && getKawooshTickCount() <= 0 && this.rotating)
+		{
+			if(this.rotation == this.desiredRotation)
+				endRotation(false);
+			else
+				rotate(this.rotateClockwise);
+		}
 		else
 			syncRotation();
 		setChanged();
@@ -174,9 +178,9 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		this.oldRotation = this.rotation;
 		
 		if(clockwise)
-			this.rotation -= ROTATION_INCREASE;
+			this.rotation -= rotationStep();
 		else
-			this.rotation += ROTATION_INCREASE;
+			this.rotation += rotationStep();
 		
 		if(this.rotation >= this.maxRotation)
 		{
@@ -188,13 +192,15 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 			this.rotation += this.maxRotation;
 			this.oldRotation += this.maxRotation;
 		}
+		this.rotation -= this.rotation % rotationStep();
+		
 		setChanged();
 	}
 	
-	public Stargate.Feedback startRotation(int desiredSymbol, boolean rotateClockwise)
+	protected Stargate.Feedback rotateTo(int degrees, boolean rotateClockwise)
 	{
-		this.computerRotation = true;
-		this.desiredSymbol = desiredSymbol;
+		this.rotating = true;
+		this.desiredRotation = degrees;
 		this.rotateClockwise = rotateClockwise;
 		
 		if(!this.level.isClientSide())
@@ -202,27 +208,33 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		
 		synchronizeWithClient();
 		
-		return Stargate.Feedback.ROTATING;
+		return setRecentFeedback(Stargate.Feedback.ROTATING);
+	}
+	
+	public Stargate.Feedback startRotation(int desiredSymbol, boolean rotateClockwise)
+	{
+		return rotateTo(desiredSymbol < 0 ? -1 : getDesiredRotation(desiredSymbol), rotateClockwise);
 	}
 	
 	public Stargate.Feedback endRotation(boolean playSound)
 	{
-		if(!this.computerRotation)
-			return Stargate.Feedback.NOT_ROTATING;
+		if(!this.rotating)
+			return setRecentFeedback(Stargate.Feedback.NOT_ROTATING);
 		
-		this.computerRotation = false;
+		this.rotating = false;
 		
 		if(!this.level.isClientSide() && playSound)
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStop(worldPosition));
 		
 		synchronizeWithClient();
 		
-		return Stargate.Feedback.ROTATION_STOPPED;
+		return setRecentFeedback(Stargate.Feedback.ROTATION_STOPPED);
 	}
 	
 	protected void syncRotation()
 	{
 		this.oldRotation = this.rotation;
+		
 		if(!this.level.isClientSide())
 			synchronizeWithClient();
 	}
@@ -246,6 +258,34 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	
 	@Override
 	public void stopRotationSound(){}
+	
+	public static boolean alternatingDirection(int addressLength)
+	{
+		return addressLength % 2 == 1;
+	}
+	
+	public boolean bestSymbolDirection(int desiredSymbol)
+	{
+		return bestRotationDirection(getDesiredRotation(desiredSymbol));
+	}
+	
+	public boolean bestRotationDirection(int desiredRotation)
+	{
+		int rotation = this.rotation;
+		double difference = desiredRotation - rotation;
+		
+		if(difference >= this.maxRotation / 2)
+			rotation = this.maxRotation;
+		else if(difference <= -this.maxRotation / 2)
+			rotation = -this.maxRotation;
+		
+		double lowerBound = desiredRotation - 1;
+		
+		if(rotation > lowerBound)
+			return true;
+		else
+			return false;
+	}
 	
 	//============================================================================================
 	//***************************************Redstone Signal**************************************
@@ -289,9 +329,14 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		return setRecentFeedback(engageSymbol(getCurrentSymbol()));
 	}
 	
+	public int getDesiredRotation(int desiredSymbol)
+	{
+		return desiredSymbol * this.stepsPerSymbol;
+	}
+	
 	public boolean isCurrentSymbol(int desiredSymbol)
 	{
-		return desiredSymbol * this.stepsPerSymbol == this.rotation;
+		return getDesiredRotation(desiredSymbol) == this.rotation;
 	}
 	
 	public int getCurrentSymbol()
@@ -334,7 +379,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		if(this.level.isClientSide())
 			return false;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunkAt(this.worldPosition)), new ClientboundRotatingStargateUpdatePacket(this.worldPosition, this.rotation, this.oldRotation, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunkAt(this.worldPosition)), new ClientboundRotatingStargateUpdatePacket(this.worldPosition, this.rotation, this.oldRotation, this.signalStrength, this.rotating, this.rotateClockwise, this.desiredRotation));
 		return true;
 	}
 	

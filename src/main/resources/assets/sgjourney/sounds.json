@@ -7,6 +7,17 @@
 			"sgjourney:universe_dial_start"
 		]
 	},
+	"universe_ring_spin_start":
+	{
+		"subtitle": "sounds.sgjourney.ring_spin_start",
+		"sounds":
+		[
+			{
+				"name": "sgjourney:universe_ring_spin_start",
+				"stream": false
+			}
+		]
+	},
 	"universe_ring_spin":
 	{
 		"subtitle": "sounds.sgjourney.ring_spin",

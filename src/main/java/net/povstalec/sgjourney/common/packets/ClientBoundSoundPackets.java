@@ -251,7 +251,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playUniverseStartSound(pos);
+            	SoundAccess.playUniverseDialStartSound(pos);
             });
             return true;
         }

@@ -109,7 +109,7 @@ public class RotationMethods
 			
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				if(desiredSymbol < -1 || desiredSymbol > stargate.totalSymbols())
+				if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 					throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");
 				
 				Stargate.Feedback feedback = stargate.startRotation(desiredSymbol, true);
@@ -135,7 +135,7 @@ public class RotationMethods
 			
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				if(desiredSymbol < -1 || desiredSymbol > stargate.totalSymbols())
+				if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 					throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");
 				
 				Stargate.Feedback feedback = stargate.startRotation(desiredSymbol, false);

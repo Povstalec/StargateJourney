@@ -114,6 +114,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String COVER_BLOCKS = "CoverBlocks";
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
+	
+	public static final int MAX_SYMBOLS = 48;
 
 	public static final float STANDARD_THICKNESS = 9.0F;
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
@@ -124,7 +126,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected boolean addToNetwork = true;
 	
 	protected final Stargate.Gen generation;
-	protected int symbolBounds = 38;
+	protected int totalSymbols;
+	protected int[] symbolMap;
 	protected int network;
 	protected boolean restrictNetwork = false;
 	
@@ -171,12 +174,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected AddressFilterInfo addressFilterInfo;
 	//protected ShieldInfo shieldInfo;
 
-	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork,
-			float verticalCenterHeight, float horizontalCenterHeight)
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+								  int totalSymbols,  Stargate.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
 	{
 		super(blockEntity, pos, state);
 		
 		this.defaultVariant = defaultVariant;
+		
+		this.totalSymbols = totalSymbols;
+		this.symbolMap = newSymbolMap();
 		
 		this.generation = gen;
 		this.network = defaultNetwork;
@@ -189,9 +195,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		this.addressFilterInfo = new AddressFilterInfo();
 	}
 
-	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state, Stargate.Gen gen, int defaultNetwork)
+	public AbstractStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+								  int totalSymbols, Stargate.Gen gen, int defaultNetwork)
 	{
-		this(blockEntity, defaultVariant, pos, state, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
+		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
 	@Override
@@ -354,9 +361,47 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	//******************************************Dialing*******************************************
 	//============================================================================================
 	
+	private int[] newSymbolMap()
+	{
+		int[] symbolMap = new int[this.totalSymbols];
+		
+		for(int i = 0; i < this.totalSymbols; i++)
+		{
+			symbolMap[i] = i;
+		}
+		
+		return symbolMap;
+	}
+	
+	public boolean remapSymbol(int symbol1, int symbol2)
+	{
+		if(isSymbolOutOfBounds(symbol1))
+			return false;
+		
+		if(symbol2 < 0 || symbol2 > MAX_SYMBOLS)
+			return false;
+		
+		this.symbolMap[symbol1] = symbol2;
+		
+		return true;
+	}
+	
+	public int getMappedSymbol(int symbol)
+	{
+		if(symbol < 0 || symbol >= this.symbolMap.length)
+			return -1;
+		
+		return this.symbolMap[symbol];
+	}
+	
+	public int totalSymbols()
+	{
+		return this.totalSymbols;
+	}
+	
 	public int getSymbolBounds()
 	{
-		return this.symbolBounds;
+		return this.totalSymbols - 1;
 	}
 	
 	public boolean isSymbolOutOfBounds(int symbol)
@@ -379,14 +424,24 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			return stargate.getEngagedChevrons()[chevronNumber];
 	}
 	
+	public Stargate.Feedback dhdEngageSymbol(int symbol)
+	{
+		return engageSymbol(symbol);
+	}
+	
 	public Stargate.Feedback engageSymbol(int symbol)
 	{
 		if(level.isClientSide())
 			return Stargate.Feedback.NONE;
 		
 		if(isSymbolOutOfBounds(symbol))
-			return Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS;
+			return setRecentFeedback(Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS);
 		
+		return encodeSymbol(getMappedSymbol(symbol));
+	}
+	
+	public Stargate.Feedback encodeSymbol(int symbol)
+	{
 		if(isConnected())
 		{
 			if(symbol == 0)
@@ -425,7 +480,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		updateAdvancedCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming, symbol);
 		this.setChanged();
 		
-		return Stargate.Feedback.SYMBOL_ENCODED;
+		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
 	}
 	
 	protected Stargate.Feedback lockPrimaryChevron()
@@ -644,9 +699,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		setChanged();
 		if(feedback == Stargate.Feedback.UNKNOWN_ERROR)
-			StargateJourney.LOGGER.error("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " " + Stargate.Feedback.UNKNOWN_ERROR.getMessage());
+			StargateJourney.LOGGER.error("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " " + feedback.getMessage());
 		else
-
 			StargateJourney.LOGGER.debug("Reset Stargate at " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ() + " " + this.getLevel().dimension().location().toString() + " " + feedback.getMessage());
 		return setRecentFeedback(feedback);
 	}
@@ -700,7 +754,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected void resetAddress(boolean updateInterfaces)
 	{
 		this.address.reset();
-		engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
+		this.engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
+		this.symbolMap = newSymbolMap();
 		setStargateState(StargateConnection.State.IDLE, 0, updateInterfaces);
 	}
 	
@@ -757,14 +812,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public Stargate.Feedback setRecentFeedback(Stargate.Feedback feedback)
 	{
-		//TODO Is this a good idea?
 		if(feedback != Stargate.Feedback.NONE)
 			this.recentFeedback = feedback;
 		
 		dhdInfo().sendDHDFeedback(feedback);
 		dhdInfo().updateDHD();
 		
-		return getRecentFeedback();
+		return feedback;
 	}
 	
 	public Stargate.Feedback getRecentFeedback()

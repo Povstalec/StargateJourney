@@ -214,6 +214,20 @@ public class StargateMethods
 			return result;
 		}
 	}
+	public static class HasDHD implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "hasDHD";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			return context.executeMainThreadTask(() -> new Object[] {stargate.dhdInfo().hasDHD()});
+		}
+	}
 
 	/*public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
 	{

@@ -31,8 +31,8 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.CLASSIC_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "classic/classic"), pos, state, Stargate.Gen.NONE, 0,
-				VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, TOTAL_SYMBOLS, MAX_ROTATION);
+		super(BlockEntityInit.CLASSIC_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "classic/classic"), pos, state,
+				TOTAL_SYMBOLS, Stargate.Gen.NONE, 0, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, MAX_ROTATION);
 		
 		displayID = true;
 	}

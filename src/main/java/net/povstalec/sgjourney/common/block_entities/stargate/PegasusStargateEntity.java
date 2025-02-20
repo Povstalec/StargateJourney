@@ -32,6 +32,8 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	public static final String CURRENT_SYMBOL = "CurrentSymbol";
 	
 	public static final String DYNAMC_SYMBOLS = "DynamicSymbols";
+	
+	public static final int TOTAL_SYMBOLS = 48;
 
 	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus_back_chevron");
 	
@@ -44,9 +46,9 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state, Stargate.Gen.GEN_3, 3);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state,
+				TOTAL_SYMBOLS, Stargate.Gen.GEN_3, 3);
 		this.setOpenSoundLead(13);
-		this.symbolBounds = 47;
 		
 		this.dhdInfo = new DHDInfo(this)
 		{
@@ -235,7 +237,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		
 		stargate.animateSpin();
 		
-		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		AbstractStargateEntity.tick(level, pos, state, stargate);
 		stargate.updateClient();
 	}
 	

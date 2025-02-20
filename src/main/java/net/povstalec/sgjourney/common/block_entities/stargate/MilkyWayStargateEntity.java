@@ -9,7 +9,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
@@ -37,8 +36,8 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state, Stargate.Gen.GEN_2, 2,
-				TOTAL_SYMBOLS, MAX_ROTATION);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state,
+				TOTAL_SYMBOLS, Stargate.Gen.GEN_2, 2, MAX_ROTATION);
 	}
 
 	@Override
@@ -190,9 +189,9 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	{
 		if(!isConnected() && !this.isChevronOpen)
 		{
-			if(this.computerRotation)
+			if(this.rotating)
 			{
-				if(isCurrentSymbol(this.desiredSymbol))
+				if(this.rotation == this.desiredRotation)
 					endRotation(false);
 				else
 					rotate(this.rotateClockwise);

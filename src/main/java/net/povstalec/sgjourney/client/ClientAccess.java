@@ -190,7 +190,7 @@ public class ClientAccess
         }
     }
 	
-	public static void updateRotatingStargate(BlockPos pos, int rotation, int oldRotation, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredSymbol)
+	public static void updateRotatingStargate(BlockPos pos, int rotation, int oldRotation, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredRotation)
 	{
 		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
 		
@@ -198,13 +198,13 @@ public class ClientAccess
 		{
 			stargate.setRotation(oldRotation, rotation);
 			stargate.signalStrength = signalStrength;
-			stargate.computerRotation = computerRotation;
+			stargate.rotating = computerRotation;
 			stargate.rotateClockwise = rotateClockwise;
-			stargate.desiredSymbol = desiredSymbol;
+			stargate.desiredRotation = desiredRotation;
 		}
 	}
     
-    public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int animationTicks, int rotation, int oldRotation)
+    public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -212,9 +212,6 @@ public class ClientAccess
         {
         	stargate.symbolBuffer = symbolBuffer;
         	stargate.addressBuffer.fromArray(addressBuffer);
-        	stargate.animationTicks = animationTicks;
-        	stargate.rotation = rotation;
-        	stargate.oldRotation = oldRotation;
         }
     }
     

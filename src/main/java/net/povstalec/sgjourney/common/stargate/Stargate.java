@@ -264,7 +264,7 @@ public class Stargate
 		
 		private final int gen;
 		
-		private Gen(int gen)
+		Gen(int gen)
 		{
 			this.gen = gen;
 		}
@@ -418,7 +418,7 @@ public class Stargate
 		private final String message;
 		private final Component feedbackMessage;
 		
-		private Feedback(int code, FeedbackType type, String message)
+		Feedback(int code, FeedbackType type, String message)
 		{
 			this.code = code;
 			this.type = type;
@@ -534,7 +534,7 @@ public class Stargate
 		
 		private boolean isRedstone;
 		
-		private IrisMotion(boolean isRedstone)
+		IrisMotion(boolean isRedstone)
 		{
 			this.isRedstone = isRedstone;
 		}
