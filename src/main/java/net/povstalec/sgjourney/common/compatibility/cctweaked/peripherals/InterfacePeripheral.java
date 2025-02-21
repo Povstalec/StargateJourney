@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethod;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethods;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.InterfaceFunctions;
 
 public class InterfacePeripheral implements IDynamicPeripheral
 {
@@ -95,18 +96,18 @@ public class InterfacePeripheral implements IDynamicPeripheral
 	@LuaFunction(mainThread = true)
 	public final long getEnergy() throws LuaException
 	{
-		return interfaceEntity.getEnergyStored();
+		return InterfaceFunctions.getEnergy(interfaceEntity);
 	}
 
 	@LuaFunction(mainThread = true)
 	public final long getEnergyCapacity() throws LuaException
 	{
-		return interfaceEntity.getEnergyCapacity();
+		return InterfaceFunctions.getEnergyCapacity(interfaceEntity);
 	}
 
 	@LuaFunction(mainThread = true)
 	public final long getEnergyTarget() throws LuaException
 	{
-		return interfaceEntity.getEnergyTarget();
+		return InterfaceFunctions.getEnergyTarget(interfaceEntity);
 	}
 }

@@ -9,9 +9,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.ItemInit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Random;
 
 public class FusionCoreItem extends Item implements IEnergyCore
 {
@@ -100,5 +102,15 @@ public class FusionCoreItem extends Item implements IEnergyCore
 			tag.putInt(FUEL, getMaxFuel() - 1);
 			return maxGeneratedEnergy(energyCore, input);
 		}
+	}
+	
+	public static ItemStack randomFusionCore(int minCapacity, int maxCapacity)
+	{
+		ItemStack fusionCore = new ItemStack(ItemInit.FUSION_CORE.get());
+		Random random = new Random();
+		
+		fusionCore.getOrCreateTag().putInt(FUEL, random.nextInt(minCapacity, maxCapacity + 1));
+		
+		return fusionCore;
 	}
 }

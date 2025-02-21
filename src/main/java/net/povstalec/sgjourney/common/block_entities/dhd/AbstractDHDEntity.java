@@ -3,12 +3,9 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -19,7 +16,6 @@ import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.IEnergyCore;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
@@ -58,6 +54,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
 	
+	public static final String GENERATE_ENERGY_CORE = "generate_energy_core";
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	
 	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
@@ -133,7 +130,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		else
 			stargateRelativePos = null;
 		
-		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
+		if(tag.contains(GENERATE_ENERGY_CORE) && tag.getBoolean(GENERATE_ENERGY_CORE))
+			generateEnergyCore();
+		else
+			energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 		
 		super.load(tag);
 	}
@@ -579,4 +579,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.toArray(), this.isCenterButtonEngaged));
 	}
+	
+	protected abstract void generateEnergyCore();
 }

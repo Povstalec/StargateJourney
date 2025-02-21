@@ -8,6 +8,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.PegasusStargateFunctions;
 
 public class PegasusStargateMethods
 {
@@ -26,7 +27,7 @@ public class PegasusStargateMethods
 			
 			context.executeMainThreadTask(() ->
 			{
-				stargate.dynamicSymbols(dynamicSymbols);
+				PegasusStargateFunctions.dynamicSymbols(stargate, dynamicSymbols);
 				return null;
 			});
 			
@@ -45,16 +46,11 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			ResourceLocation symbols = ResourceLocation.tryParse(arguments.getString(0));
-			
-			if(symbols != null)
+			context.executeMainThreadTask(() ->
 			{
-				context.executeMainThreadTask(() ->
-				{
-					stargate.symbolInfo().setSymbols(symbols);
-					return null;
-				});
-			}
+				PegasusStargateFunctions.overrideSymbols(stargate, arguments.getString(0));
+				return null;
+			});
 			
 			return MethodResult.of();
 		}
@@ -71,16 +67,11 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			ResourceLocation pointOfOrigin = ResourceLocation.tryParse(arguments.getString(0));
-			
-			if(pointOfOrigin != null)
+			context.executeMainThreadTask(() ->
 			{
-				context.executeMainThreadTask(() ->
-				{
-					stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
-					return null;
-				});
-			}
+				PegasusStargateFunctions.overridePointOfOrigin(stargate, arguments.getString(0));
+				return null;
+			});
 			
 			return MethodResult.of();
 		}

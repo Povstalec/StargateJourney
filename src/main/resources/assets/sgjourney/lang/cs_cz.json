@@ -463,6 +463,7 @@
 	"tooltip.sgjourney.dynamic_symbols": "Dynamické symboly",
 	
 	"tooltip.sgjourney.has_control_crystal": "Má ovládací krystal",
+	"tooltip.sgjourney.dhd.generates_energy_core": "Generuje energetické jádro",
 	"tooltip.sgjourney.address_table": "Tabulka adres",
 	
 	"tooltip.sgjourney.crystal.none": "-",

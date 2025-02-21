@@ -8,10 +8,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
+import net.povstalec.sgjourney.common.items.FusionCoreItem;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 
 import javax.annotation.Nonnull;
@@ -93,6 +95,12 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 				}
 			}
 		}
+	}
+	
+	@Override
+	protected void generateEnergyCore()
+	{
+		energyItemHandler.setStackInSlot(0, FusionCoreItem.randomFusionCore(CommonTechConfig.fusion_core_fuel_capacity.get() / 2, CommonTechConfig.fusion_core_fuel_capacity.get()));
 	}
 
 }

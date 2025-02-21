@@ -127,11 +127,11 @@ public class BlockInit
 	
 	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd", 
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
-					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
+					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
 	public static final RegistryObject<AbstractDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd", 
 			() -> new PegasusDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
-					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
+					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
 	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd", 
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)

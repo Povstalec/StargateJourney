@@ -8,14 +8,14 @@ public class CCTweakedCompatibility
 {
 	private static void irisMethods(StargatePeripheral peripheral)
 	{
-		peripheral.registerMethod(new ShieldingMethods.GetIris());
-		peripheral.registerMethod(new ShieldingMethods.CloseIris());
-		peripheral.registerMethod(new ShieldingMethods.OpenIris());
-		peripheral.registerMethod(new ShieldingMethods.StopIris());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgress());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisProgressPercentage());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisDurability());
-		peripheral.registerMethod(new ShieldingMethods.GetIrisMaxDurability());
+		peripheral.registerMethod(new IrisMethods.GetIris());
+		peripheral.registerMethod(new IrisMethods.CloseIris());
+		peripheral.registerMethod(new IrisMethods.OpenIris());
+		peripheral.registerMethod(new IrisMethods.StopIris());
+		peripheral.registerMethod(new IrisMethods.GetIrisProgress());
+		peripheral.registerMethod(new IrisMethods.GetIrisProgressPercentage());
+		peripheral.registerMethod(new IrisMethods.GetIrisDurability());
+		peripheral.registerMethod(new IrisMethods.GetIrisMaxDurability());
 	}
 	
 	private static void genericRotationMethods(StargatePeripheral peripheral)
@@ -27,7 +27,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new RotationMethods.GetRotation());
 		peripheral.registerMethod(new RotationMethods.GetRotationDegrees());
 		peripheral.registerMethod(new RotationMethods.RotateClockwise());
-		peripheral.registerMethod(new RotationMethods.RotateCounterClockwise());
+		peripheral.registerMethod(new RotationMethods.RotateAntiClockwise());
 		peripheral.registerMethod(new RotationMethods.EndRotation());
 	}
 	
@@ -120,7 +120,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new RotationMethods.GetRotation());
 		peripheral.registerMethod(new RotationMethods.GetRotationDegrees());
 		peripheral.registerMethod(new MilkyWayStargateMethods.RotateClockwise());
-		peripheral.registerMethod(new MilkyWayStargateMethods.RotateCounterClockwise());
+		peripheral.registerMethod(new MilkyWayStargateMethods.RotateAntiClockwise());
 		peripheral.registerMethod(new RotationMethods.EndRotation());
 		// Dialing methods
 		peripheral.registerMethod(new MilkyWayStargateMethods.OpenChevron());

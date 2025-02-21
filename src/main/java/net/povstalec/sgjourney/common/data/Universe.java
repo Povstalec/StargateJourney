@@ -244,7 +244,7 @@ public class Universe extends SavedData
 						if(!useDatapackAddresses(server) && isRandomizable)
 						{
 							long systemValue = generateRandomAddressSeed(server, solarSystemKey.location().toString());
-							address = generateAddress(galaxyKey.location().toString(), galaxy.getSize(), systemValue);
+							address = generateAddress(galaxyKey.location(), galaxy.getSize(), systemValue);
 						}
 						else
 							address = new Address(Address.integerListToArray(randomizableAddress.getFirst())).immutable();
@@ -274,8 +274,8 @@ public class Universe extends SavedData
 		int milkyWayPrefix = 1;
 		
 		Address.Immutable extragalacticAddress = generateExtragalacticAddress(milkyWayPrefix, seed);
-
-		String galaxyID = StargateJourney.MODID + ":milky_way";
+		
+		ResourceLocation galaxyID = new ResourceLocation(StargateJourney.MODID, "milky_way");
 		Galaxy.Serializable galaxy = this.galaxies.get(galaxyID);
 		
 		ResourceKey<PointOfOrigin> pointOfOrigin;
@@ -369,7 +369,7 @@ public class Universe extends SavedData
 		return true;
 	}
 	
-	private Address.Immutable generateAddress(String galaxyID, int galaxySize, long seed)
+	private Address.Immutable generateAddress(ResourceLocation galaxyID, int galaxySize, long seed)
 	{
 		Address.Immutable address;
 		

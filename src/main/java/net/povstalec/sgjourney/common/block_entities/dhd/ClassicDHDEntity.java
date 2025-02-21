@@ -6,9 +6,14 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
+import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
+import net.povstalec.sgjourney.common.items.FusionCoreItem;
+import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 
 public class ClassicDHDEntity extends CrystalDHDEntity
@@ -60,5 +65,12 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 			return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
 		
 		return stack.getItem() instanceof AbstractCrystalItem crystal && !crystal.isAdvanced() || stack.getItem() instanceof CallForwardingDevice;
+	}
+	
+	@Override
+	protected void generateEnergyCore()
+	{
+		energyItemHandler.setStackInSlot(0, new ItemStack(ItemInit.NAQUADAH_GENERATOR_CORE.get()));
+		energyItemHandler.setStackInSlot(1, NaquadahFuelRodItem.randomFuelRod(CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get() / 2, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get()));
 	}
 }

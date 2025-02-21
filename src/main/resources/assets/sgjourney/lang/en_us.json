@@ -461,7 +461,8 @@
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
 	"tooltip.sgjourney.dynamic_symbols": "Dynamic Symbols",
 	
-	"tooltip.sgjourney.has_control_crystal": "Has Control Crystal",
+	"tooltip.sgjourney.dhd.has_control_crystal": "Has Control Crystal",
+	"tooltip.sgjourney.dhd.generates_energy_core": "Generates Energy Core",
 	"tooltip.sgjourney.address_table": "Address Table",
 	
 	"tooltip.sgjourney.crystal.none": "None",
