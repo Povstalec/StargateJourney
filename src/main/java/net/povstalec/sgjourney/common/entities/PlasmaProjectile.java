@@ -41,6 +41,7 @@ public class PlasmaProjectile extends Projectile
 		this.setOwner(shooter);
 	}
 	
+	@Override
 	protected void onHit(HitResult hitResult)
 	{
 		super.onHit(hitResult);
@@ -51,9 +52,9 @@ public class PlasmaProjectile extends Projectile
 					canDestroy ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
 			this.discard();
 		}
-		
 	}
 	
+	@Override
 	protected void onHitEntity(EntityHitResult hitResult)
 	{
 		super.onHitEntity(hitResult);
@@ -70,6 +71,7 @@ public class PlasmaProjectile extends Projectile
 		}
 	}
 	
+	@Override
 	protected void onHitBlock(BlockHitResult result)
 	{
 		super.onHitBlock(result);
@@ -109,6 +111,7 @@ public class PlasmaProjectile extends Projectile
 	
 	}
 	
+	@Override
 	public void tick()
 	{
 		super.tick();
@@ -141,6 +144,7 @@ public class PlasmaProjectile extends Projectile
 		this.setPos(d0, d1, d2);
 	}
 	
+	@Override
 	protected double getDefaultGravity() {
 		return 0.03;
 	}

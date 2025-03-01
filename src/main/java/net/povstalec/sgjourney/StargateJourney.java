@@ -164,7 +164,7 @@ public class StargateJourney
         
         // Energy
         event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new EnergyCrystalItem.Energy(stack), ItemInit.ENERGY_CRYSTAL, ItemInit.ADVANCED_ENERGY_CRYSTAL);
-        event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new ZeroPointModule.Energy(stack), ItemInit.ENERGY_CRYSTAL, ItemInit.ZPM);
+        event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new ZeroPointModule.Energy(stack), ItemInit.ZPM);
         
         // Items
         event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new RingRemoteItem.ItemHandler(stack, DataComponents.CONTAINER), ItemInit.RING_REMOTE);
