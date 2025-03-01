@@ -1,0 +1,15 @@
+{
+  "name": "sgjourney:goauld_temple/desert_pyramid/abandoned/desert_pyramid_abandoned_corridor_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "sgjourney:goauld_temple/desert_pyramid/abandoned/desert_pyramid_abandoned_corridor_short",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.items;
 
 import java.util.List;
 
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -49,7 +50,7 @@ public class ZeroPointModule extends Item
 	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
-		return true;
+		return !StargateJourneyConfig.disable_energy_use.get();
 	}
 
 	@Override

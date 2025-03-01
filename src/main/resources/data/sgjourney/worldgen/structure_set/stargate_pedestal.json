@@ -35,12 +35,11 @@
     },
 
     {
-      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_nether",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_chulak",
       "weight": 1
     },
-
     {
-      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_chulak",
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_unitas",
       "weight": 1
     },
     {

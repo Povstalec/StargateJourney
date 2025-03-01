@@ -3,17 +3,23 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.CommonDHDConfig;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
+import net.povstalec.sgjourney.common.items.FusionCoreItem;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+import org.jetbrains.annotations.NotNull;
 
 public class MilkyWayDHDEntity extends CrystalDHDEntity
 {
@@ -23,10 +29,45 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void load(CompoundTag tag)
 	{
-		super.load(nbt);
+		super.load(tag);
 		addTransferCrystals(itemHandler);
+		
+		symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
+		symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
+	}
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag)
+	{
+		super.saveAdditional(tag);
+		
+		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+	}
+	
+	protected long buttonPressEnergyCost()
+	{
+		return CommonDHDConfig.milky_way_dhd_button_press_energy_cost.get();
+	}
+	
+	@Override
+	protected long capacity()
+	{
+		return CommonDHDConfig.milky_way_dhd_energy_buffer_capacity.get();
+	}
+	
+	@Override
+	protected long maxReceive()
+	{
+		return CommonDHDConfig.milky_way_dhd_max_energy_receive.get();
+	}
+	
+	@Override
+	public long maxEnergyDeplete()
+	{
+		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.milky_way_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
 	}
 
 	@Override
@@ -39,46 +80,6 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	protected SoundEvent getPressSound()
 	{
 		return SoundInit.MILKY_WAY_DHD_PRESS.get();
-	}
-	
-	@Override
-	protected ItemStackHandler createHandler()
-	{
-		return new ItemStackHandler(9)
-			{
-				@Override
-				protected void onContentsChanged(int slot)
-				{
-					setChanged();
-					recalculateCrystals();
-				}
-				
-				@Override
-				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-				{
-					if(slot == 0)
-						return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
-					else
-						return isValidCrystal(stack) || stack.getItem() instanceof CallForwardingDevice;
-				}
-				
-				// Limits the number of items per slot
-				public int getSlotLimit(int slot)
-				{
-					return 1;
-				}
-				
-				@Nonnull
-				@Override
-				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-				{
-					if(!isItemValid(slot, stack))
-						return stack;
-					
-					return super.insertItem(slot, stack, simulate);
-					
-				}
-			};
 	}
 
 	// TODO Temporary function for replacing old Energy Crystals with new Transfer Crystals
@@ -99,5 +100,13 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 				}
 			}
 		}
+	}
+	
+	@Override
+	protected void generateEnergyCore()
+	{
+		super.generateEnergyCore();
+		
+		energyItemHandler.setStackInSlot(0, FusionCoreItem.randomFusionCore(CommonTechConfig.fusion_core_fuel_capacity.get() / 3, CommonTechConfig.fusion_core_fuel_capacity.get()));
 	}
 }

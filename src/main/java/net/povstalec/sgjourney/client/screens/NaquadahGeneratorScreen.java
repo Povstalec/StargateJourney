@@ -70,6 +70,6 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
     {
     	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
-	    	renderTooltip(matrixStack, Component.literal("Energy: " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE").withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+	    	renderTooltip(matrixStack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE")).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
     }
 }

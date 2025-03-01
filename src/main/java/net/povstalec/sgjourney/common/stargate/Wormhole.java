@@ -29,6 +29,7 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
@@ -184,9 +185,9 @@ public class Wormhole implements ITeleporter
 	 * @param traveler
 	 * @return true if there were no issues, false if the traveler hit the shielding
 	 */
-	public boolean handleShielding(AbstractStargateEntity targetStargate, Vec3 destinationPos, Vec3 motionVec, Entity traveler)
+	public boolean handleShielding(IrisStargateEntity targetStargate, Vec3 destinationPos, Vec3 motionVec, Entity traveler)
 	{
-		if(targetStargate.isIrisClosed()) // No need to check, we know it's closed
+		if(targetStargate.irisInfo().isIrisClosed()) // No need to check, we know it's closed
 			return false;
 		
 		EntityDimensions dimension = traveler.getDimensions(traveler.getPose());
@@ -251,9 +252,7 @@ public class Wormhole implements ITeleporter
 	    		
 	    		Vec3 motionVec = CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum);
 	    		
-	    		boolean blocked = !handleShielding(targetStargate, destinationPos, motionVec, traveler);
-	    		
-	    		if(blocked)
+	    		if(targetStargate instanceof IrisStargateEntity irisStargate && !handleShielding(irisStargate, destinationPos, motionVec, traveler))
 	    		{
 	    			if(traveler instanceof ServerPlayer player && player.isCreative())
 	    			{
@@ -269,10 +268,10 @@ public class Wormhole implements ITeleporter
 							player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
 						traveler.kill();
 						
-						targetStargate.playIrisThudSound();
-						targetStargate.decreaseIrisDurability();
+						irisStargate.irisInfo().playIrisThudSound();
+						irisStargate.irisInfo().decreaseIrisDurability();
 				    	
-						irisThudEvent(targetStargate, traveler);
+						irisThudEvent(irisStargate, traveler);
 		    			
 		    			return;
 	    			}

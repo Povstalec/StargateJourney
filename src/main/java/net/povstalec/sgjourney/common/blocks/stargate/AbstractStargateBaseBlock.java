@@ -35,6 +35,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
@@ -80,7 +81,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 						return true;
 					}
 					
-					stargate.setVariant(StargateJourney.EMPTY);
+					stargate.setVariant(StargateJourney.EMPTY_LOCATION);
 					
 					if(!player.isCreative())
 						stack.shrink(1);
@@ -89,9 +90,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				return true;
 			}
 			
-			Optional<String> variant = StargateVariantItem.getVariantString(stack);
+			ResourceLocation variant = StargateVariantItem.getVariant(stack);
 			
-			if(variant.isPresent())
+			if(variant != null)
 			{
 				if(level.isClientSide())
 					return true;
@@ -100,7 +101,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				
 				if(blockEntity instanceof AbstractStargateEntity stargate)
 				{
-					if(variant.get().equals(stargate.getVariant()))
+					if(variant.equals(stargate.getVariant()))
 					{
 						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
 						return true;
@@ -109,7 +110,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 					RegistryAccess registries = level.getServer().registryAccess();
 			        Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 			        
-			        Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variant.get())));
+			        Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(variant));
 					
 					if(stargateVariant.isPresent() && !stargateVariant.get().getBaseStargate().equals(BlockEntityType.getKey(stargate.getType())))
 					{
@@ -117,7 +118,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 						return true;
 					}
 					
-					stargate.setVariant(variant.get());
+					stargate.setVariant(variant);
 					
 					if(!player.isCreative())
 						stack.shrink(1);
@@ -183,8 +184,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		
 		AbstractStargateEntity stargate = getStargate(level, pos, state);
 		
-		if(stargate != null)
-			updateIris(level, pos, state, stargate.getShieldingState());
+		if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+			updateIris(level, pos, state, irisStargate.irisInfo().getShieldingState());
 	}
 	
 	@Override
@@ -196,7 +197,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     		if(blockentity instanceof AbstractStargateEntity stargate)
     		{
     			stargate.bypassDisconnectStargate(Stargate.Feedback.STARGATE_DESTROYED, false);
-    			stargate.unsetDHD(true);
+    			stargate.dhdInfo().unsetDHD(true);
     			stargate.removeStargateFromNetwork();
     		}
     		
@@ -241,8 +242,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		AbstractStargateEntity stargate = getStargate(level, pos, state);
 		
-		if(stargate != null)
-			stargate.removeIris();
+		if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+			irisStargate.irisInfo().removeIris();
 		
 		updateStargate(level, pos, state, state.getValue(AbstractStargateBlock.CONNECTION_STATE), state.getValue(AbstractStargateBlock.CHEVRONS_ACTIVE), ShieldingState.OPEN);
 	}

@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
@@ -16,13 +17,13 @@ public class ClientboundStargateUpdatePacket
     public final int kawooshTick;
     public final int tick;
     public final short irisProgress;
-    public final String pointOfOrigin;
-    public final String symbols;
-    public final String variant;
+    public final ResourceLocation pointOfOrigin;
+    public final ResourceLocation symbols;
+    public final ResourceLocation variant;
     public final ItemStack iris;
 
     public ClientboundStargateUpdatePacket(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
-    		String pointOfOrigin, String symbols, String variant, ItemStack iris)
+                                           ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris)
     {
         this.pos = pos;
         this.address = address;
@@ -38,7 +39,7 @@ public class ClientboundStargateUpdatePacket
 
     public ClientboundStargateUpdatePacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos(), buffer.readVarIntArray(), buffer.readVarIntArray(), buffer.readInt(), buffer.readInt(), buffer.readShort(), buffer.readUtf(), buffer.readUtf(), buffer.readUtf(), buffer.readItem());
+        this(buffer.readBlockPos(), buffer.readVarIntArray(), buffer.readVarIntArray(), buffer.readInt(), buffer.readInt(), buffer.readShort(), buffer.readResourceLocation(), buffer.readResourceLocation(), buffer.readResourceLocation(), buffer.readItem());
     }
 
     public void encode(FriendlyByteBuf buffer)
@@ -49,9 +50,9 @@ public class ClientboundStargateUpdatePacket
         buffer.writeInt(this.kawooshTick);
         buffer.writeInt(this.tick);
         buffer.writeShort(this.irisProgress);
-        buffer.writeUtf(this.pointOfOrigin);
-        buffer.writeUtf(this.symbols);
-        buffer.writeUtf(this.variant);
+        buffer.writeResourceLocation(this.pointOfOrigin);
+        buffer.writeResourceLocation(this.symbols);
+        buffer.writeResourceLocation(this.variant);
         buffer.writeItem(this.iris);
     }
 

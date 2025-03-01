@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.items.crystals;
 import java.util.List;
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -30,7 +31,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
-		return true;
+		return !StargateJourneyConfig.disable_energy_use.get() && getEnergy(stack) > 0;
 	}
 
 	@Override

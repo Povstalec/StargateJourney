@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import net.minecraft.world.item.Item;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
-public class ClassicStargateRingBlock extends AbstractStargateRingBlock
+public class ClassicStargateRingBlock extends RotatingStargateRingBlock
 {
 	public ClassicStargateRingBlock(Properties properties)
 	{

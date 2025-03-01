@@ -1,0 +1,8 @@
+{
+	"type": "minecraft:blasting",
+	"category": "equipment",
+	"ingredient": { "item": "sgjourney:raw_naquadah_block" },
+	"result": { "item": "sgjourney:refined_naquadah" },
+	"experience": 1.0,
+	"cookingtime": 300
+}

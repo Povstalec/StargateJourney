@@ -10,7 +10,7 @@
 	
 	"key": 
 	{
-		"D": { "item": "minecraft:diamond" },
+		"D": { "tag": "sgjourney:crafting_crystal" },
 		"N": { "item": "sgjourney:pure_naquadah" },
 		"C": { "item": "sgjourney:crystal_base" },
 		"B": { "item": "sgjourney:liquid_naquadah_bucket" }

@@ -1,9 +1,9 @@
 {
 	"include_generated_addresses": true,
-	"dimensions":
+	"addresses":
 	[
-		{"dimension": "minecraft:the_nether", "weight": 1},
-		{"dimension": "minecraft:the_end", "weight": 1},
-		{"dimension": "ad_astra:glacio", "weight": 1}
+		{"address": "minecraft:the_nether", "weight": 1, "galaxy": "sgjourney:milky_way"},
+		{"address": "minecraft:the_end", "weight": 1, "galaxy": "sgjourney:milky_way"},
+		{"address": "ad_astra:glacio", "weight": 1, "galaxy": "sgjourney:milky_way"}
 	]
 }

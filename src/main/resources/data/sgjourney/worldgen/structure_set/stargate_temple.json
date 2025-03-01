@@ -3,6 +3,11 @@
     {
       "structure": "sgjourney:stargate/milky_way/temple/abydos_pyramid",
       "weight": 1
+    },
+
+    {
+      "structure": "sgjourney:stargate/milky_way/temple/stargate_temple_nether",
+      "weight": 1
     }
   ],
   "placement": {

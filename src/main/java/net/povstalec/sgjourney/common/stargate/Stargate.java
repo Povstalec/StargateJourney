@@ -59,7 +59,7 @@ public class Stargate
 	public Stargate(AbstractStargateEntity stargate)
 	{
 		this(stargate.get9ChevronAddress().immutable(), stargate.getLevel().dimension(), stargate.getBlockPos(),
-				stargate.hasDHD(), stargate.getGeneration(), stargate.getTimesOpened(), stargate.getNetwork());
+				stargate.dhdInfo().hasDHD(), stargate.getGeneration(), stargate.getTimesOpened(), stargate.getNetwork());
 	}
 	
 	public Address.Immutable get9ChevronAddress()
@@ -174,7 +174,7 @@ public class Stargate
 	
 	public void update(AbstractStargateEntity stargate)
 	{
-		this.hasDHD = stargate.hasDHD();
+		this.hasDHD = stargate.dhdInfo().hasDHD();
 		this.generation = stargate.getGeneration();
 		this.timesOpened = stargate.getTimesOpened();
 		this.network = stargate.getNetwork();
@@ -264,7 +264,7 @@ public class Stargate
 		
 		private final int gen;
 		
-		private Gen(int gen)
+		Gen(int gen)
 		{
 			this.gen = gen;
 		}
@@ -329,56 +329,6 @@ public class Stargate
 		ENABLED,
 		CREATIVE_ONLY,
 		DISABLED;
-	}
-	
-	public enum FilterType
-	{
-		NONE(0),
-		WHITELIST(1),
-		BLACKLIST(-1);
-		// 7-chevron addresses
-		// 8-chevron addresses
-		// 9-chevron addresses
-		
-		private int integerValue;
-		
-		FilterType(int integerValue)
-		{
-			this.integerValue = integerValue;
-		}
-		
-		public int getIntegerValue()
-		{
-			return this.integerValue;
-		}
-		
-		public boolean shouldFilter()
-		{
-			return this != NONE;
-		}
-		
-		public boolean isWhitelist()
-		{
-			return this == WHITELIST;
-		}
-		
-		public boolean isBlacklist()
-		{
-			return this == BLACKLIST;
-		}
-		
-		public static FilterType getFilterType(int integerValue)
-		{
-			switch(integerValue)
-			{
-			case 1:
-				return WHITELIST;
-			case -1:
-				return BLACKLIST;
-			default:
-				return NONE;
-			}
-		}
 	}
 	
 	public enum FeedbackType
@@ -460,7 +410,7 @@ public class Stargate
 		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"),
 		CHEVRON_ALREADY_OPENED(-33, FeedbackType.ERROR, "chevron_already_opened"),
 		CHEVRON_ALREADY_CLOSED(-34, FeedbackType.ERROR, "chevron_already_closed"),
-		CHEVRON_NOT_RAISED(-35, FeedbackType.ERROR, "chevron_not_raised"),
+		CHEVRON_NOT_OPEN(-35, FeedbackType.ERROR, "chevron_not_open"),
 		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin");
 		
 		private int code;
@@ -468,7 +418,7 @@ public class Stargate
 		private final String message;
 		private final Component feedbackMessage;
 		
-		private Feedback(int code, FeedbackType type, String message)
+		Feedback(int code, FeedbackType type, String message)
 		{
 			this.code = code;
 			this.type = type;
@@ -584,7 +534,7 @@ public class Stargate
 		
 		private boolean isRedstone;
 		
-		private IrisMotion(boolean isRedstone)
+		IrisMotion(boolean isRedstone)
 		{
 			this.isRedstone = isRedstone;
 		}

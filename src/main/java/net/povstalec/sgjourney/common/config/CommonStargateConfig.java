@@ -12,6 +12,7 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue end_connection_from_both_ends;
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
+	public static ForgeConfigSpec.BooleanValue can_break_connected_stargate;
 	
 	public static ForgeConfigSpec.BooleanValue kawoosh_destroys_blocks;
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_items;
@@ -61,11 +62,11 @@ public class CommonStargateConfig
 		
 		max_wormhole_open_time = server
 				.comment("The maximum amount of time the Stargate will be open for in seconds")
-				.defineInRange("server.max_wormhole_open_time", 228, 10, 2280);
+				.defineInRange("server.max_wormhole_open_time", 228, 10, Integer.MAX_VALUE); // 38 minutes == 2280 seconds
 		
 		end_connection_from_both_ends = server
 				.comment("If false, the Wormhole connection can only be ended from the dialing side")
-				.define("server.end_connection_from_both_ends", true);
+				.define("server.end_connection_from_both_ends", false);
 		
 		two_way_wormholes = server
 				.comment("ENABLED - Two way travel possible; CREATIVE_ONLY - Two way travel limited to Players in Creative Mode; DISABLED - Two way travel impossible")
@@ -74,6 +75,10 @@ public class CommonStargateConfig
 		reverse_wormhole_kills = server
 				.comment("If true, going through the wrong side of the wormhole will result in death")
 				.define("server.reverse_wormhole_kills", true);
+		
+		can_break_connected_stargate = server
+				.comment("If false, it will be impossible to break the Stargate through mining while it's connected")
+				.define("server.can_break_connected_stargate", false);
 		
 		
 		
@@ -162,11 +167,11 @@ public class CommonStargateConfig
 		// Energy Related
 		enable_energy_bypass = server
 				.comment("The maximum connection time can be extended by increasing the energy input")
-				.define("server.enable_energy_bypass", false);
+				.define("server.enable_energy_bypass", true);
 		
 		can_draw_power_from_both_ends = server
 				.comment("If true, the wormhole will draw power from both connected Stargates")
-				.define("server.can_draw_power_from_both_ends", false);
+				.define("server.can_draw_power_from_both_ends", true);
 		
 		
 		
@@ -205,5 +210,7 @@ public class CommonStargateConfig
 		energy_bypass_multiplier = server
 				.comment("The energy required to keep the Stargate open after exceeding the maximum open time is multiplied by this number")
 				.defineInRange("server.energy_bypass_multiplier", 100000, 1, 2147483647);
+		
+		
 	}
 }

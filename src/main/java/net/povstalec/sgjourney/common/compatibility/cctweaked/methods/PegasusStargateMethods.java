@@ -5,8 +5,10 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.PegasusStargateFunctions;
 
 public class PegasusStargateMethods
 {
@@ -25,7 +27,7 @@ public class PegasusStargateMethods
 			
 			context.executeMainThreadTask(() ->
 			{
-				stargate.dynamicSymbols(dynamicSymbols);
+				PegasusStargateFunctions.dynamicSymbols(stargate, dynamicSymbols);
 				return null;
 			});
 			
@@ -44,11 +46,9 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			String symbols = arguments.getString(0);
-			
 			context.executeMainThreadTask(() ->
 			{
-				stargate.setSymbols(symbols);
+				PegasusStargateFunctions.overrideSymbols(stargate, arguments.getString(0));
 				return null;
 			});
 			
@@ -67,11 +67,9 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			String pointOfOrigin = arguments.getString(0);
-			
 			context.executeMainThreadTask(() ->
 			{
-				stargate.setPointOfOrigin(pointOfOrigin);
+				PegasusStargateFunctions.overridePointOfOrigin(stargate, arguments.getString(0));
 				return null;
 			});
 			

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -20,11 +21,11 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public static final String SYMBOL = "Symbol";
 	public static final String SYMBOLS = "Symbols";
 	public static final String SYMBOL_NUMBER = "SymbolNumber";
-	public static final String EMPTY = StargateJourney.EMPTY;
+	public static final ResourceLocation EMPTY = StargateJourney.EMPTY_LOCATION;
 	
 	public int symbolNumber = 0;
-	public String pointOfOrigin = EMPTY;
-	public String symbols = EMPTY;
+	public ResourceLocation pointOfOrigin = EMPTY;
+	public ResourceLocation symbols = EMPTY;
 	
 	public SymbolBlockEntity(BlockEntityType<?> entity, BlockPos pos, BlockState state) 
 	{
@@ -55,10 +56,10 @@ public abstract class SymbolBlockEntity extends BlockEntity
     		symbolNumber = tag.getInt(SYMBOL_NUMBER);
     	
     	if(tag.contains(SYMBOL))
-    		pointOfOrigin = tag.getString(SYMBOL);
+    		pointOfOrigin = new ResourceLocation(tag.getString(SYMBOL));
     	
     	if(tag.contains(SYMBOLS))
-    		symbols = tag.getString(SYMBOLS);
+    		symbols = new ResourceLocation(tag.getString(SYMBOLS));
 	}
 	
 	@Override
@@ -67,10 +68,10 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		tag.putInt(SYMBOL_NUMBER, symbolNumber);
 		
 		if(pointOfOrigin != null)
-			tag.putString(SYMBOL, pointOfOrigin);
+			tag.putString(SYMBOL, pointOfOrigin.toString());
 		
 		if(symbols != null)
-			tag.putString(SYMBOLS, symbols);
+			tag.putString(SYMBOLS, symbols.toString());
 		
 		super.saveAdditional(tag);
 	}
@@ -85,10 +86,10 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension()).location().toString();
+		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension()).location();
 	}
 	
-	public String getPointOfOrigin()
+	public ResourceLocation getPointOfOrigin()
 	{
 		return this.pointOfOrigin;
 	}
@@ -98,10 +99,10 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		symbols = Universe.get(level).getSymbols(level.dimension()).location().toString();
+		symbols = Universe.get(level).getSymbols(level.dimension()).location();
 	}
 	
-	public String getSymbols()
+	public ResourceLocation getSymbols()
 	{
 		return this.symbols;
 	}

@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern":
+	[
+		"BRB",
+		"ICI",
+		"NXN"
+	],
+	"key":
+	{
+		"R": {"item": "minecraft:redstone"},
+		"I": {"tag": "sgjourney:naquadah_alloy"},
+		"B": {"item": "minecraft:stone_button"},
+		"C": {"item": "sgjourney:communication_crystal"},
+		"X": {"item": "sgjourney:control_crystal"},
+		"N": {"tag": "sgjourney:naquadah"}
+	},
+	"result":
+	{
+		"item": "sgjourney:milky_way_dhd"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "sgjourney:stargate_pedestal",
+	
+	"fallback": "minecraft:empty",
+	
+	"elements":
+	[
+		{
+			"weight": 1,
+			"element":
+			{
+				"location": "sgjourney:stargate/milky_way/pedestal/unitas_stargate_pedestal",
+				"processors": "minecraft:empty",
+				"projection": "rigid",
+				"element_type": "minecraft:single_pool_element"
+			}
+		}
+	]
+}

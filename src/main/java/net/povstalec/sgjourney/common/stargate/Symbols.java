@@ -9,14 +9,18 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Symbols
 {
 	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	
+	public static final ResourceLocation UNIVERSAL_LOCATION = new ResourceLocation(StargateJourney.MODID, "universal");
 	
 	public static final ResourceLocation SYMBOLS_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbols");
 	public static final ResourceKey<Registry<Symbols>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOLS_LOCATION);
@@ -144,5 +148,21 @@ public class Symbols
 	public static ResourceKey<Symbols> defaultSymbols()
 	{
 		return Conversion.stringToSymbols(StargateJourney.MODID + ":universal");
+	}
+	
+	public static boolean validLocation(MinecraftServer server, ResourceLocation symbols)
+	{
+		if(symbols == null || StargateJourney.EMPTY_LOCATION.equals(symbols))
+			return false;
+		
+		RegistryAccess registries = server.registryAccess();
+		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
+		
+		return symbolRegistry.containsKey(symbols);
+	}
+	
+	public static ResourceLocation fromDimension(MinecraftServer server, ResourceKey<Level> dimension)
+	{
+		return Universe.get(server).getSymbols(dimension).location();
 	}
 }

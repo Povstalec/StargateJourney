@@ -12,15 +12,8 @@
         {
           "type": "minecraft:item",
           "name": "sgjourney:matok",
+          "weight": 10,
           "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 0,
-                "max": 1
-              },
-              "add": false
-            },
             {
               "function": "minecraft:set_nbt",
               "tag": "{Inventory: {Size: 1, Items: [{Slot: 0, id: \"sgjourney:vial\", Count: 1, tag: {Fluid:{FluidName: \"sgjourney:liquid_naquadah\",  Amount: 50}}}]}, IsOpen: false}"
@@ -29,68 +22,37 @@
         },
         {
           "type": "minecraft:item",
+          "name": "sgjourney:jaffa_helmet",
+          "weight": 5,
+          "functions": []
+        },
+        {
+          "type": "minecraft:item",
           "name": "sgjourney:jaffa_chestplate",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 0,
-                "max": 1
-              },
-              "add": false
-            }
-          ]
+          "weight": 5,
+          "functions": []
         },
         {
           "type": "minecraft:item",
           "name": "sgjourney:jaffa_leggings",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 0,
-                "max": 1
-              },
-              "add": false
-            }
-          ]
+          "weight": 5,
+          "functions": []
         },
         {
           "type": "minecraft:item",
           "name": "sgjourney:jaffa_boots",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 0,
-                "max": 1
-              },
-              "add": false
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "sgjourney:naquadah_alloy",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 0,
-                "max": 2
-              },
-              "add": false
-            }
-          ]
+          "weight": 5,
+          "functions": []
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:gold_nugget",
+          "weight": 5,
           "functions": [
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 0,
+                "min": 2,
                 "max": 12
               },
               "add": false
@@ -100,11 +62,12 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:gold_ingot",
+          "weight": 6,
           "functions": [
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 0,
+                "min": 1,
                 "max": 6
               },
               "add": false

@@ -11,7 +11,7 @@ import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class ClientUtil
 {
-	public static final PointOfOrigin getPointOfOrigin(String pointOfOrigin)
+	public static final PointOfOrigin getPointOfOrigin(ResourceLocation pointOfOrigin)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
@@ -19,12 +19,12 @@ public class ClientUtil
 		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
 		if(pointOfOrigin != null)
-			return registry.get(new ResourceLocation(pointOfOrigin));
+			return registry.get(pointOfOrigin);
 		
 		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
 	}
 	
-	public static final Symbols getSymbols(String symbols)
+	public static final Symbols getSymbols(ResourceLocation symbols)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
@@ -32,7 +32,7 @@ public class ClientUtil
 		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
 		if(symbols != null)
-			return registry.get(new ResourceLocation(symbols));
+			return registry.get(symbols);
 		
 		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
 	}
