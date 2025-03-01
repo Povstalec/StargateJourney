@@ -9,6 +9,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 
 public class PlanetSkyRenderers
 {
+	//============================================================================================
+	//******************************************Milky Way*****************************************
+	//============================================================================================
+	
 	public static class AbydosSkyRenderer extends SGJourneySkyRenderer
 	{
 		public AbydosSkyRenderer()
@@ -54,6 +58,25 @@ public class PlanetSkyRenderers
 			this.renderBlackHole(bufferbuilder, lastMatrix, 70.0F, 0.0F, 0.0F);
 		}
 	}
+	
+	public static class UnitasSkyRenderer extends SGJourneySkyRenderer
+	{
+		public UnitasSkyRenderer()
+		{
+			super(87163L, 1800);
+		}
+		
+		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
+		{
+			this.renderSun(bufferbuilder, lastMatrix, 30.0F);
+			
+			this.renderMoon(bufferbuilder, lastMatrix, 20.0F, level.getMoonPhase(), 0.0F, (float) Math.toRadians(180));
+		}
+	}
+	
+	//============================================================================================
+	//******************************************Pegasus*******************************************
+	//============================================================================================
 	
 	public static class LanteaSkyRenderer extends SGJourneySkyRenderer
 	{

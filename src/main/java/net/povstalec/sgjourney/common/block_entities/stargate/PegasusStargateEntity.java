@@ -160,6 +160,9 @@ public class PegasusStargateEntity extends IrisStargateEntity
 				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		addressBuffer.addSymbol(symbol);
+		
+		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, spinClockwise());
+		
 		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
 	}
 	
@@ -211,7 +214,10 @@ public class PegasusStargateEntity extends IrisStargateEntity
 			if(symbol == 0)
 			{
 				if(currentSymbol == getChevronPosition(9))
+				{
+					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 					lockPrimaryChevron();
+				}
 				else
 					symbolWork();
 			}
@@ -223,7 +229,10 @@ public class PegasusStargateEntity extends IrisStargateEntity
 					symbolWork();
 				}
 				else
+				{
+					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 					encodeChevron(symbol, false, false);
+				}
 			}
 			else
 				symbolWork();
@@ -251,12 +260,17 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		return true;
 	}
 	
+	private boolean spinClockwise()
+	{
+		return symbolBuffer % 2 != 0;
+	}
+	
 	private void symbolWork()
 	{
-		if(symbolBuffer % 2 == 0)
-			currentSymbol--;
-		else
+		if(spinClockwise())
 			currentSymbol++;
+		else
+			currentSymbol--;
 
 		if(currentSymbol > 35)
 			currentSymbol = 0;

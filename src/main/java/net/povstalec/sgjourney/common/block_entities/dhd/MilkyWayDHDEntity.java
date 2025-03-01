@@ -105,6 +105,8 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	@Override
 	protected void generateEnergyCore()
 	{
+		super.generateEnergyCore();
+		
 		energyItemHandler.setStackInSlot(0, FusionCoreItem.randomFusionCore(CommonTechConfig.fusion_core_fuel_capacity.get() / 3, CommonTechConfig.fusion_core_fuel_capacity.get()));
 	}
 }

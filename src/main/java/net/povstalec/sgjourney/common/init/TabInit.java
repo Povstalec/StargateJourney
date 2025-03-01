@@ -93,7 +93,9 @@ public class TabInit
 				items.accept(ItemInit.SYRINGE.get());
 				items.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
 				items.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
-
+				
+				items.accept(ItemInit.UNITY_SHARD.get());
+				
 				items.accept(ItemInit.CRYSTAL_BASE.get());
 				items.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
 				
@@ -195,6 +197,13 @@ public class TabInit
 				
 				items.accept(BlockInit.ARCHEOLOGY_TABLE.get());
 				items.accept(BlockInit.GOLDEN_IDOL.get());
+				
+				items.accept(BlockInit.SULFUR_SAND.get());
+				items.accept(BlockInit.BUDDING_UNITY.get());
+				items.accept(BlockInit.SMALL_UNITY_BUD.get());
+				items.accept(BlockInit.MEDIUM_UNITY_BUD.get());
+				items.accept(BlockInit.LARGE_UNITY_BUD.get());
+				items.accept(BlockInit.UNITY_CLUSTER.get());
 
 				items.accept(BlockInit.NAQUADAH_ORE.get());
 				items.accept(BlockInit.DEEPSLATE_NAQUADAH_ORE.get());

@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures":
+  {
+    "layer0": "sgjourney:block/unity_cluster"
+  },
+  "display":
+  {
+    "head":
+    {
+      "translation": [ 0, 14, -5 ]
+    }
+  }
+}

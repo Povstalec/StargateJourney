@@ -7,6 +7,10 @@ import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class IrisFunctions
 {
+	//============================================================================================
+	//**************************************Basic Interface***************************************
+	//============================================================================================
+	
 	public static String getIris(IrisStargateEntity stargate)
 	{
 		if(stargate.irisInfo().getIris().isEmpty())

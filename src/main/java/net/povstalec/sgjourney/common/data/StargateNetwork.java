@@ -213,6 +213,9 @@ public final class StargateNetwork extends SavedData
 	
 	public final void removeStargate(Level level, Address.Immutable address)
 	{
+		if(address == null)
+			return;
+		
 		Optional<Stargate> stargate = getStargate(address);
 		
 		if(stargate.isPresent())

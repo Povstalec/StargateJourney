@@ -44,17 +44,21 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void load(CompoundTag tag)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound(CRYSTAL_INVENTORY));
+		super.load(tag);
+		itemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
+		
+		//TODO Remove this later
+		if(!tag.contains(ENERGY_INVENTORY) && tag.contains(CRYSTAL_INVENTORY))
+			generateEnergyCore();
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		nbt.put(CRYSTAL_INVENTORY, itemHandler.serializeNBT());
-		super.saveAdditional(nbt);
+		tag.put(CRYSTAL_INVENTORY, itemHandler.serializeNBT());
+		super.saveAdditional(tag);
 	}
 	
 	@Override

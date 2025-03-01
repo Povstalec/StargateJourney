@@ -1,0 +1,40 @@
+{
+	"parent": "sgjourney:adventure/use_stargate",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:sulfur_sand"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.adventure.visit_unitas.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.adventure.visit_unitas.description"
+		},
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"entered_unitas": 
+		{
+			"trigger": "minecraft:changed_dimension",
+			"conditions": 
+			{
+				"to": "sgjourney:unitas"
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"entered_unitas"
+		]
+	]
+}

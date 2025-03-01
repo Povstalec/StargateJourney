@@ -8,12 +8,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -23,18 +18,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.blocks.ATAGeneDetectorBlock;
-import net.povstalec.sgjourney.common.blocks.ArcheologyTableBlock;
-import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
-import net.povstalec.sgjourney.common.blocks.ChevronBlock;
-import net.povstalec.sgjourney.common.blocks.ClassicStargateBaseBlock;
-import net.povstalec.sgjourney.common.blocks.ExplosiveBlock;
-import net.povstalec.sgjourney.common.blocks.FirePitBlock;
-import net.povstalec.sgjourney.common.blocks.GoldenIdolBlock;
-import net.povstalec.sgjourney.common.blocks.RingPanelBlock;
-import net.povstalec.sgjourney.common.blocks.SecretSwitchBlock;
-import net.povstalec.sgjourney.common.blocks.SymbolBlock;
-import net.povstalec.sgjourney.common.blocks.TransceiverBlock;
+import net.povstalec.sgjourney.common.blocks.*;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
@@ -126,11 +110,11 @@ public class BlockInit
 					.sound(SoundType.METAL).noOcclusion()));
 	
 	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd", 
-			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
+			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
 	public static final RegistryObject<AbstractDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd", 
-			() -> new PegasusDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
+			() -> new PegasusDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
 	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd", 
@@ -148,6 +132,21 @@ public class BlockInit
 	public static final RegistryObject<RingPanelBlock> RING_PANEL = registerBlock("ring_panel", 
 			() -> new RingPanelBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE, 1);
+	
+	public static final RegistryObject<FallingBlock> SULFUR_SAND = registerBlock("sulfur_sand",
+			() -> new FallingBlock(BlockBehaviour.Properties.of(Material.SAND, MaterialColor.SAND).strength(0.5F).sound(SoundType.SAND)));
+	
+	public static final RegistryObject<BuddingUnityBlock> BUDDING_UNITY = registerBlock("budding_unity",
+			() -> new BuddingUnityBlock(BlockBehaviour.Properties.of(Material.SAND, MaterialColor.SAND).strength(0.5F).sound(SoundType.SAND).randomTicks()));
+	
+	public static final RegistryObject<UnityClusterBlock> SMALL_UNITY_BUD = registerBlock("small_unity_bud",
+			() -> new UnityClusterBlock(3, 4, BlockBehaviour.Properties.of(Material.AMETHYST, MaterialColor.DIAMOND).strength(1.5F).sound(SoundType.GLASS).requiresCorrectToolForDrops()));
+	public static final RegistryObject<UnityClusterBlock> MEDIUM_UNITY_BUD = registerBlock("medium_unity_bud",
+			() -> new UnityClusterBlock(4, 3, BlockBehaviour.Properties.of(Material.AMETHYST, MaterialColor.DIAMOND).strength(1.5F).sound(SoundType.GLASS).requiresCorrectToolForDrops()));
+	public static final RegistryObject<UnityClusterBlock> LARGE_UNITY_BUD = registerBlock("large_unity_bud",
+			() -> new UnityClusterBlock(5, 3, BlockBehaviour.Properties.of(Material.AMETHYST, MaterialColor.DIAMOND).strength(1.5F).sound(SoundType.GLASS).requiresCorrectToolForDrops()));
+	public static final RegistryObject<UnityClusterBlock> UNITY_CLUSTER = registerBlock("unity_cluster",
+			() -> new UnityClusterBlock(7, 3, BlockBehaviour.Properties.of(Material.AMETHYST, MaterialColor.DIAMOND).strength(1.5F).sound(SoundType.GLASS).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<ExplosiveBlock> NAQUADAH_ORE = registerBlock("naquadah_ore", 
 			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), 4.0F));
@@ -167,18 +166,18 @@ public class BlockInit
 			() -> new LiquidBlock(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
 	
 	public static final RegistryObject<Block> NAQUADAH_BLOCK = registerBlock("naquadah_block", 
-			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> NAQUADAH_STAIRS = registerBlock("naquadah_stairs", 
-			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> NAQUADAH_SLAB = registerBlock("naquadah_slab", 
-			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<Block> CUT_NAQUADAH_BLOCK = registerBlock("cut_naquadah_block", 
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> CUT_NAQUADAH_STAIRS = registerBlock("cut_naquadah_stairs", 
-			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> CUT_NAQUADAH_SLAB = registerBlock("cut_naquadah_slab", 
-			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
+			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<GoldenIdolBlock> GOLDEN_IDOL = registerBlock("golden_idol", 
 			() -> new GoldenIdolBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.GOLD).strength(3.0F, 6.0F)

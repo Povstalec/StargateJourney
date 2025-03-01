@@ -70,6 +70,8 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	@Override
 	protected void generateEnergyCore()
 	{
+		super.generateEnergyCore();
+		
 		energyItemHandler.setStackInSlot(0, new ItemStack(ItemInit.NAQUADAH_GENERATOR_CORE.get()));
 		energyItemHandler.setStackInSlot(1, NaquadahFuelRodItem.randomFuelRod(CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get() / 2, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get()));
 	}

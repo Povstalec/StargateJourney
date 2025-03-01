@@ -3,6 +3,7 @@
 	"addresses":
 	[
 		{"address": "sgjourney:chulak", "weight": 4, "galaxy": "sgjourney:milky_way"},
+		{"address": "sgjourney:unitas", "weight": 3, "galaxy": "sgjourney:milky_way"},
 		{"address": "sgjourney:cavum_tenebrae", "weight": 1, "galaxy": "sgjourney:milky_way"}
 	]
 }

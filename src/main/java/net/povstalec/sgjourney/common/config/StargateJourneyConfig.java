@@ -111,7 +111,7 @@ public class StargateJourneyConfig
 		server.comment("Stargate Journey General Config");
 		
 		disable_energy_use = new SGJourneyConfigValue.BooleanValue(server, "server.disable_energy_requirements", 
-				true, 
+				false,
 				"Disable energy requirements for blocks added by Stargate Journey");
 	}
 	

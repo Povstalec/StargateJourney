@@ -52,6 +52,9 @@ public class ItemInit
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> PLASMA_CONVERTER = ITEMS.register("plasma_converter", 
 			() -> new Item(new Item.Properties().fireResistant()));
+	
+	public static final RegistryObject<Item> UNITY_SHARD = ITEMS.register("unity_shard",
+			() -> new Item(new Item.Properties()));
 
 	public static final RegistryObject<Item> CRYSTAL_BASE = ITEMS.register("crystal_base", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));

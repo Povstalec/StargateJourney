@@ -86,7 +86,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	protected final ItemStackHandler energyItemHandler;
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler;
 	
-	protected SymbolInfo symbolInfo = new SymbolInfo();
+	protected SymbolInfo symbolInfo;
+	
+	protected boolean generateEnergyCore;
 	
 	public AbstractDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
@@ -104,8 +106,12 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		this.energyItemHandler = createEnergyItemHandler();
 		this.lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
 		
+		this.symbolInfo = new SymbolInfo();;
+		
 		symbolInfo.setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
 		symbolInfo.setSymbols(StargateJourney.EMPTY_LOCATION);
+		
+		generateEnergyCore = false;
 	}
 	
 	@Override
@@ -115,6 +121,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		
 		if(this.getLevel().isClientSide())
 			return;
+		
+		if(generateEnergyCore)
+			generateEnergyCore();
 		
 		this.setStargate();
 	}
@@ -129,11 +138,11 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		}
 		else
 			stargateRelativePos = null;
+			
+		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 		
-		if(tag.contains(GENERATE_ENERGY_CORE) && tag.getBoolean(GENERATE_ENERGY_CORE))
-			generateEnergyCore();
-		else
-			energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
+		if(tag.contains(GENERATE_ENERGY_CORE))
+			generateEnergyCore = tag.getBoolean(GENERATE_ENERGY_CORE);
 		
 		super.load(tag);
 	}
@@ -147,6 +156,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 			tag.putIntArray(STARGATE_POS, new int[] {stargateRelativePos.getX(), stargateRelativePos.getY(), stargateRelativePos.getZ()});
 		
 		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
+		
+		if(generateEnergyCore)
+			tag.putBoolean(GENERATE_ENERGY_CORE, true);
 	}
 	
 	public SymbolInfo symbolInfo()
@@ -240,9 +252,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		BlockEntity blockEntity = this.getLevel().getBlockEntity(pos);
 		if(blockEntity instanceof AbstractStargateEntity stargate)
 		{
-			//this.stargateRelativePos = Optional.of(new Vec3i(pos.getX(), pos.getY(), pos.getZ()));
 			this.stargate = stargate;
-			
 			return true;
 		}
 		else
@@ -275,7 +285,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		if(stargateRelativePos != null)
 		{
 			Vec3i pos = stargateRelativePos;
-			
 			Direction direction = getDirection();
 			
 			if(direction != null)
@@ -580,5 +589,13 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.toArray(), this.isCenterButtonEngaged));
 	}
 	
-	protected abstract void generateEnergyCore();
+	public void enableGeneratingEnergyCore()
+	{
+		generateEnergyCore = true;
+	}
+	
+	protected void generateEnergyCore()
+	{
+		generateEnergyCore = false;
+	}
 }

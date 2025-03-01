@@ -1,13 +1,13 @@
 {
-  "type": "sgjourney:stargate_pedestal",
+  "type": "sgjourney:stargate_temple",
 
-  "start_pool": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_nether",
+  "start_pool": "sgjourney:stargate/milky_way/temple/stargate_temple_nether",
 
   "size": 1,
 
   "max_distance_from_center": 80,
 
-  "biomes": "#sgjourney:has_structure/stargate_pedestal/stargate_pedestal_nether_biomes",
+  "biomes": "#sgjourney:has_structure/stargate_temple/stargate_temple_nether_biomes",
 
   "step": "strongholds",
 	

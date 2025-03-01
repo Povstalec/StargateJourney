@@ -208,6 +208,8 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		
 		synchronizeWithClient();
 		
+		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, rotateClockwise);
+		
 		return setRecentFeedback(Stargate.Feedback.ROTATING);
 	}
 	
@@ -227,6 +229,8 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStop(worldPosition));
 		
 		synchronizeWithClient();
+		
+		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 		
 		return setRecentFeedback(Stargate.Feedback.ROTATION_STOPPED);
 	}

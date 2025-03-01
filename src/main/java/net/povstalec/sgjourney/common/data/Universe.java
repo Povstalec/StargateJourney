@@ -155,7 +155,7 @@ public class Universe extends SavedData
 			{
 				galaxiesOptional.get().stream().forEach(galaxyKey ->
 				{
-					Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey.location().toString());
+					Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey.location());
 					
 					if(galaxy != null)
 						galaxy.addPointOfOrigin(pointOfOriginKey);
@@ -231,7 +231,7 @@ public class Universe extends SavedData
 				solarSystem.getAddresses().get().stream().forEach(galaxyAndAddress ->
 				{
 					ResourceKey<Galaxy> galaxyKey = galaxyAndAddress.getFirst();
-					Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey.location().toString());
+					Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey.location());
 					
 					if(galaxy != null)
 					{
