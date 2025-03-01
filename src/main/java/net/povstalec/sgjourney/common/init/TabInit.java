@@ -12,6 +12,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
@@ -60,9 +61,10 @@ public class TabInit
 			event.accept(ItemInit.VIAL.get());
 			event.accept(VialItem.liquidNaquadahSetup());
 			event.accept(VialItem.heavyLiquidNaquadahSetup());
-
+			
 			event.accept(ItemInit.NAQUADAH_ROD.get());
 			event.accept(ItemInit.REACTION_CHAMBER.get());
+			event.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
 			event.accept(ItemInit.PLASMA_CONVERTER.get());
 			
 			event.accept(ItemInit.PDA.get());
@@ -95,12 +97,13 @@ public class TabInit
 			event.accept(NaquadahFuelRodItem.fuelRodSetup());
 
 			event.accept(ItemInit.ZPM.get());
-			//event.accept(ItemInit.PERSONAL_SHIELD_EMITTER.get());
 			event.accept(PersonalShieldItem.personalShieldSetup());
 
 			event.accept(ItemInit.SYRINGE.get());
 			event.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
 			event.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
+			
+			event.accept(ItemInit.UNITY_SHARD.get());
 
 			event.accept(ItemInit.CRYSTAL_BASE.get());
 			event.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
@@ -126,10 +129,10 @@ public class TabInit
 			event.accept(BlockInit.UNIVERSE_STARGATE.get());
 			event.accept(BlockInit.MILKY_WAY_STARGATE.get());
 			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
-			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
+			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup(false));
 			event.accept(BlockInit.PEGASUS_STARGATE.get());
 			event.accept(PegasusStargateBlock.localSymbols(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
-			event.accept(PegasusDHDBlock.pegasusCrystalSetup());
+			event.accept(PegasusDHDBlock.pegasusCrystalSetup(false));
 			event.accept(BlockInit.CLASSIC_STARGATE.get());
 			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
 			event.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
@@ -193,6 +196,13 @@ public class TabInit
 			
 			event.accept(BlockInit.ARCHEOLOGY_TABLE.get());
 			event.accept(BlockInit.GOLDEN_IDOL.get());
+			
+			event.accept(BlockInit.SULFUR_SAND.get());
+			event.accept(BlockInit.BUDDING_UNITY.get());
+			event.accept(BlockInit.SMALL_UNITY_BUD.get());
+			event.accept(BlockInit.MEDIUM_UNITY_BUD.get());
+			event.accept(BlockInit.LARGE_UNITY_BUD.get());
+			event.accept(BlockInit.UNITY_CLUSTER.get());
 
 			event.accept(BlockInit.NAQUADAH_ORE.get());
 			event.accept(BlockInit.DEEPSLATE_NAQUADAH_ORE.get());
@@ -248,8 +258,11 @@ public class TabInit
 		{
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
+			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup(true));
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
+			event.accept(PegasusDHDBlock.pegasusCrystalSetup(true));
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
+			event.accept(ClassicDHDBlock.classicCrystalSetup(true));
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get())));
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
 		}

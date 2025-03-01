@@ -6,11 +6,10 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericStargateFunctions;
 
 public class StargatePeripheral extends InterfacePeripheral
 {
@@ -62,65 +61,54 @@ public class StargatePeripheral extends InterfacePeripheral
 	@LuaFunction
 	public final int getStargateGeneration()
 	{
-		return stargate.getGeneration().getGen();
+		return GenericStargateFunctions.getStargateGeneration(stargate);
 	}
 	
 	@LuaFunction
 	public final String getStargateType()
 	{
-		return BlockEntityType.getKey(stargate.getType()).toString();
+		return GenericStargateFunctions.getStargateType(stargate);
 	}
 	
 	@LuaFunction
 	public final boolean isStargateConnected()
 	{
-		return stargate.isConnected();
+		return GenericStargateFunctions.isStargateConnected(stargate);
 	}
 	
 	@LuaFunction
 	public final boolean isStargateDialingOut()
 	{
-		return stargate.isDialingOut();
+		return GenericStargateFunctions.isStargateDialingOut(stargate);
 	}
 	
 	@LuaFunction
 	public final boolean isWormholeOpen()
 	{
-		return stargate.isWormholeOpen();
+		return GenericStargateFunctions.isWormholeOpen(stargate);
 	}
 	
 	@LuaFunction
 	public final long getStargateEnergy()
 	{
-		return stargate.getEnergyStored();
+		return GenericStargateFunctions.getStargateEnergy(stargate);
 	}
 	
 	@LuaFunction
 	public final int getChevronsEngaged()
 	{
-		return stargate.getChevronsEngaged();
+		return GenericStargateFunctions.getChevronsEngaged(stargate);
 	}
 	
 	@LuaFunction
 	public final int getOpenTime()
 	{
-		return stargate.getOpenTime();
+		return GenericStargateFunctions.getOpenTime(stargate);
 	}
 	
 	@LuaFunction
 	public final MethodResult disconnectStargate(ILuaContext context) throws LuaException
 	{
-		MethodResult result = context.executeMainThreadTask(() ->
-		{
-			boolean wasConnected = stargate.isConnected();
-			
-			stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
-
-			boolean isConnected = stargate.isConnected();
-					
-			return new Object[] {!isConnected && (wasConnected != isConnected)};
-		});
-		
-		return result;
+		return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.disconnectStargate(stargate)});
 	}
 }

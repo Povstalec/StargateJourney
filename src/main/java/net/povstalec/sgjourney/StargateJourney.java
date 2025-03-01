@@ -86,6 +86,8 @@ import net.povstalec.sgjourney.common.stargate.SymbolSet;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 
+import javax.annotation.Nullable;
+
 @Mod(StargateJourney.MODID)
 public class StargateJourney
 {
@@ -96,8 +98,11 @@ public class StargateJourney
     public static final String STELLAR_VIEW_MODID = "stellarview";
     public static final String OCULUS_MODID = "oculus";
     public static final String COMPUTERCRAFT_MODID = "computercraft";
-    
-    private static Optional<Boolean> isOculusLoaded = Optional.empty();
+	
+	@Nullable
+	private static Boolean isStellarViewLoaded = null;
+	@Nullable
+    private static Boolean isOculusLoaded = null;
     
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -127,8 +132,6 @@ public class StargateJourney
         
         eventBus.addListener((DataPackRegistryEvent.NewRegistry event) -> 
         {
-        	//TODO Move Galaxy above Point of Origin
-        	// DON'T DELETE THIS COMMENT UNTIL I APPLY THE CHANGE TO OTHER VERSIONS OR I MIGHT FORGET
             event.dataPackRegistry(SymbolSet.REGISTRY_KEY, SymbolSet.CODEC, SymbolSet.CODEC);
             event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
             event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
@@ -168,14 +171,22 @@ public class StargateJourney
     		//VillagerInit.registerPOIs();
     	});
     }
+	
+	public static boolean isStellarViewLoaded()
+	{
+		if(isStellarViewLoaded == null)
+			isStellarViewLoaded = ModList.get().isLoaded(STELLAR_VIEW_MODID);
+		
+		return isStellarViewLoaded;
+	}
     
     // BECAUSE OCULUS MESSES WITH RENDERING TOO MUCH
     public static boolean isOculusLoaded()
     {
-    	if(isOculusLoaded.isEmpty())
-    		isOculusLoaded = Optional.of(ModList.get().isLoaded(OCULUS_MODID));
+    	if(isOculusLoaded == null)
+    		isOculusLoaded = ModList.get().isLoaded(OCULUS_MODID);
     	
-    	return isOculusLoaded.get();	
+    	return isOculusLoaded;
     }
 
     @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -235,10 +246,7 @@ public class StargateJourney
         @SubscribeEvent
         public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
         {
-        	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
-        		StellarViewCompatibility.registerStellarViewEffects(event);
-        	else
-        		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
+        	SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
         }
     	
     	@SubscribeEvent

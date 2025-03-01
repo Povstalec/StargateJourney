@@ -14,54 +14,17 @@ import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
 public class TollanStargateEntity extends AbstractStargateEntity
 {
+	public static final int TOTAL_SYMBOLS = 48;
+	
 	public static final float TOLLAN_THICKNESS = 5.0F;
 	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0F;
 	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
 	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state, Stargate.Gen.GEN_2, 2,
-				VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
-		this.symbolBounds = 47;
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state,
+				TOTAL_SYMBOLS, Stargate.Gen.GEN_2, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 	}
-	
-	@Override
-    public void onLoad()
-	{
-        if(level.isClientSide())
-        	return;
-		pointOfOrigin = "sgjourney:tauri";
-		symbols = "sgjourney:milky_way";
-        
-        super.onLoad();
-    }
-	
-	@Override
-	public boolean hasIris()
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean isIrisClosed()
-	{
-		return false;
-	}
-	
-	@Override
-	public short getIrisProgress()
-	{
-		return 0;
-	}
-	
-	@Override
-	public float getIrisProgress(float partialTick)
-	{
-		return 0;
-	}
-	
-	@Override
-	protected void setIrisState() {}
 
 	@Override
 	public void playRotationSound() {}
@@ -81,8 +44,8 @@ public class TollanStargateEntity extends AbstractStargateEntity
 		CCTweakedCompatibility.registerTollanStargateMethods(wrapper);
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
+	public static void tick(Level level, BlockPos pos, BlockState state, TollanStargateEntity stargate)
 	{
-		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		AbstractStargateEntity.tick(level, pos, state, stargate);
 	}
 }

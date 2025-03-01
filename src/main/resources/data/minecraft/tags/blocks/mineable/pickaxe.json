@@ -45,6 +45,12 @@
 		"sgjourney:cut_naquadah_stairs",
 		"sgjourney:cut_naquadah_slab",
 		
+		"sgjourney:budding_unity",
+		"sgjourney:unity_cluster",
+		"sgjourney:small_unity_bud",
+		"sgjourney:medium_unity_bud",
+		"sgjourney:large_unity_bud",
+		
 		"sgjourney:sandstone_with_lapis",
 		"sgjourney:sandstone_with_gold",
 		"sgjourney:sandstone_hieroglyphs",

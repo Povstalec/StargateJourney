@@ -1,0 +1,14 @@
+  {
+  "parent": "sgjourney:item/unity_bud",
+  "textures":
+  {
+    "layer0": "sgjourney:block/large_unity_bud"
+  },
+  "display":
+  {
+    "fixed":
+    {
+      "translation": [ 0, 4, 0 ]
+    }
+  }
+}

@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
@@ -121,7 +122,7 @@ public final class StargateConnection
 		private final boolean isConnected;
 		private final boolean isDialingOut;
 		
-		private State(String name, boolean isConnected, boolean isDialingOut)
+		State(String name, boolean isConnected, boolean isDialingOut)
 		{
 			this.name = name;
 			this.isConnected = isConnected;
@@ -231,12 +232,12 @@ public final class StargateConnection
 	{
 		if(this.dialingStargate != null)
 		{
-			this.dialingStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode());
+			this.dialingStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
 			this.dialingStargate.resetStargate(feedback);
 		}
 		if(this.dialedStargate != null)
 		{
-			this.dialedStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode());
+			this.dialedStargate.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
 			this.dialedStargate.resetStargate(feedback);
 		}
 		
@@ -390,7 +391,7 @@ public final class StargateConnection
 				return;
 			}
 			
-			if(this.dialedStargate.getEnergyStored() > this.dialingStargate.getEnergyStored())
+			if(CommonStargateConfig.can_draw_power_from_both_ends.get() && this.dialedStargate.getEnergyStored() > this.dialingStargate.getEnergyStored())
 				this.dialedStargate.depleteEnergy(energyDraw, false);
 			else
 				this.dialingStargate.depleteEnergy(energyDraw, false);
@@ -403,10 +404,10 @@ public final class StargateConnection
 		doWormhole(this.dialedStargate.getWormhole(), this.dialedStargate, this.dialingStargate, CommonStargateConfig.two_way_wormholes.get());
 		
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
-		if(this.dialingStargate.autoclose() > 0 && this.timeSinceLastTraveler >= this.dialingStargate.autoclose() * 20)
+		if(this.dialingStargate.dhdInfo().autoclose() > 0 && this.timeSinceLastTraveler >= this.dialingStargate.dhdInfo().autoclose() * 20)
 			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 		
-		if(this.dialedStargate.autoclose() > 0 && this.timeSinceLastTraveler >= this.dialedStargate.autoclose() * 20)
+		if(this.dialedStargate.dhdInfo().autoclose() > 0 && this.timeSinceLastTraveler >= this.dialedStargate.dhdInfo().autoclose() * 20)
 			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 	}
 	
@@ -429,21 +430,21 @@ public final class StargateConnection
 	
 	private final void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel wormholeTravel)
 	{
-		if(initialStargate.isIrisClosed())
+		if(initialStargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
 			return;
 		
 		Vec3 stargatePos = initialStargate.getCenter();
 		
 		if(wormhole.findCandidates(initialStargate.getLevel(), stargatePos, initialStargate.getDirection()) && this.used)
 			this.timeSinceLastTraveler = 0;
-		if(targetStargate.shouldCallForward())
+		if(targetStargate.dhdInfo().shouldCallForward())
 		{
-			if (wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel))
+			if(wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel))
 				this.used = true;
 		}
 		else
 		{
-			if (wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
+			if(wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
 				this.used = true;
 		}
 	}
@@ -467,9 +468,9 @@ public final class StargateConnection
 	public float checkStargateShieldingState(AbstractStargateEntity sendingStargate)
 	{
 		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
-			return this.dialedStargate.checkIrisState();
+			return this.dialedStargate instanceof IrisStargateEntity irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F;
 		else
-			return this.dialingStargate.checkIrisState();
+			return this.dialingStargate instanceof IrisStargateEntity irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F;
 	}
 	
 	//============================================================================================

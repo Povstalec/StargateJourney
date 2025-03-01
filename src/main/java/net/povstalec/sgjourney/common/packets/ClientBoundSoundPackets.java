@@ -251,19 +251,19 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playUniverseStartSound(pos);
+            	SoundAccess.playUniverseDialStartSound(pos);
             });
             return true;
         }
     }
     
-    public static class MilkyWayBuildup extends ClientBoundSoundPackets
+    public static class RotationStartup extends ClientBoundSoundPackets
     {
-    	public MilkyWayBuildup(BlockPos pos)
+    	public RotationStartup(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public MilkyWayBuildup(FriendlyByteBuf buffer)
+    	public RotationStartup(FriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
@@ -273,19 +273,19 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playMilkyWayBuildupSound(pos);
+            	SoundAccess.playRotationStartupSound(pos);
             });
             return true;
         }
     }
     
-    public static class MilkyWayStop extends ClientBoundSoundPackets
+    public static class RotationStop extends ClientBoundSoundPackets
     {
-    	public MilkyWayStop(BlockPos pos)
+    	public RotationStop(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public MilkyWayStop(FriendlyByteBuf buffer)
+    	public RotationStop(FriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
@@ -295,7 +295,7 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.get().enqueueWork(() ->
             {
-            	SoundAccess.playMilkyWayStopSound(pos);
+            	SoundAccess.playRotationStopSound(pos);
             });
             return true;
         }

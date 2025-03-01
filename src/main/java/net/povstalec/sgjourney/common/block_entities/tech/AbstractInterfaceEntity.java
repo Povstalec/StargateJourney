@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -295,17 +296,18 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	{
 		handleRedstone(state, stargate);
 		
-		handleIris(stargate);
+		if(stargate instanceof IrisStargateEntity irisStargate)
+			handleIris(irisStargate);
 	}
 	
-	private boolean belowMaxProgress(AbstractStargateEntity stargate)
+	private boolean belowMaxProgress(IrisStargateEntity stargate)
 	{
-		return stargate.getIrisProgress() < ShieldingState.MAX_PROGRESS;
+		return stargate.irisInfo().getIrisProgress() < ShieldingState.MAX_PROGRESS;
 	}
 	
-	private boolean aboveMinProgress(AbstractStargateEntity stargate)
+	private boolean aboveMinProgress(IrisStargateEntity stargate)
 	{
-		return stargate.getIrisProgress() > 0;
+		return stargate.irisInfo().getIrisProgress() > 0;
 	}
 	
 	protected void handleRedstone(BlockState state, AbstractStargateEntity stargate)
@@ -315,27 +317,30 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		if(mode != InterfaceMode.IRIS || !irisMotion.isRedstone())
 			return;
 		
-		if(signalStrength == 0 && irisMotion != Stargate.IrisMotion.IDLE)
-			setIrisMotion(Stargate.IrisMotion.IDLE);
-		else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != Stargate.IrisMotion.CLOSING_REDSTONE && belowMaxProgress(stargate))
-			setIrisMotion(Stargate.IrisMotion.CLOSING_REDSTONE);
-		else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != Stargate.IrisMotion.OPENING_REDSTONE && aboveMinProgress(stargate))
-			setIrisMotion(Stargate.IrisMotion.OPENING_REDSTONE);
+		if(stargate instanceof IrisStargateEntity irisStargate)
+		{
+			if(signalStrength == 0 && irisMotion != Stargate.IrisMotion.IDLE)
+				setIrisMotion(Stargate.IrisMotion.IDLE);
+			else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != Stargate.IrisMotion.CLOSING_REDSTONE && belowMaxProgress(irisStargate))
+				setIrisMotion(Stargate.IrisMotion.CLOSING_REDSTONE);
+			else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != Stargate.IrisMotion.OPENING_REDSTONE && aboveMinProgress(irisStargate))
+				setIrisMotion(Stargate.IrisMotion.OPENING_REDSTONE);
+		}
 	}
 	
-	protected void handleIris(AbstractStargateEntity stargate)
+	protected void handleIris(IrisStargateEntity stargate)
 	{
 		if(irisMotion.isClosing())
 		{
 			if(belowMaxProgress(stargate))
-				stargate.increaseIrisProgress();
+				stargate.irisInfo().increaseIrisProgress();
 			else
 				irisMotion = Stargate.IrisMotion.IDLE;
 		}
 		else if(irisMotion.isOpening())
 		{
 			if(aboveMinProgress(stargate))
-				stargate.decreaseIrisProgress();
+				stargate.irisInfo().decreaseIrisProgress();
 			else
 				irisMotion = Stargate.IrisMotion.IDLE;
 		}

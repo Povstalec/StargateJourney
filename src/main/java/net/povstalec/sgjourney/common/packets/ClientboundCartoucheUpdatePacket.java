@@ -4,16 +4,17 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
 
 public class ClientboundCartoucheUpdatePacket
 {
     public final BlockPos pos;
-    public final String symbols;
+    public final ResourceLocation symbols;
     public final int[] address;
 
-    public ClientboundCartoucheUpdatePacket(BlockPos pos, String symbols, int[] address)
+    public ClientboundCartoucheUpdatePacket(BlockPos pos, ResourceLocation symbols, int[] address)
     {
         this.pos = pos;
         this.symbols = symbols;
@@ -22,13 +23,13 @@ public class ClientboundCartoucheUpdatePacket
 
     public ClientboundCartoucheUpdatePacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos(), buffer.readUtf(), buffer.readVarIntArray());
+        this(buffer.readBlockPos(), buffer.readResourceLocation(), buffer.readVarIntArray());
     }
 
     public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
-        buffer.writeUtf(this.symbols);
+        buffer.writeResourceLocation(this.symbols);
         buffer.writeVarIntArray(this.address);
     }
 

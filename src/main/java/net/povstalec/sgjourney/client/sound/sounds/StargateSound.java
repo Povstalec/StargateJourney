@@ -10,19 +10,17 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public abstract class StargateSound extends AbstractTickableSoundInstance
+public abstract class StargateSound<T extends AbstractStargateEntity> extends AbstractTickableSoundInstance
 {
-	protected AbstractStargateEntity stargate;
+	protected T stargate;
 	protected Minecraft minecraft = Minecraft.getInstance();
 	
 	/**
 	 * 
 	 * @param stargate Stargate the sound is centered around
 	 * @param soundEvent SoundEvent used in the sound
-	 * @param fullDistance Distance from which the sound can still be heard at full volume
-	 * @param maxDistance Distance at which the sound can no longer be heard
 	 */
-	protected StargateSound(AbstractStargateEntity stargate, SoundEvent soundEvent)
+	protected StargateSound(T stargate, SoundEvent soundEvent)
 	{
 		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
 		

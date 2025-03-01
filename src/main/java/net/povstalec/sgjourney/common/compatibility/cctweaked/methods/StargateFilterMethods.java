@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked.methods;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import dan200.computercraft.api.lua.IArguments;
@@ -9,11 +11,39 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.StargateFilterFunctions;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
 
 public class StargateFilterMethods
 {
+	public static void checkAddressArray(int[] addressArray) throws LuaException
+	{
+		if(addressArray.length < 6)
+			throw new LuaException("Array is too short (minimum length: 6)");
+		
+		else if(addressArray.length > 8)
+			throw new LuaException("Array is too long (maximum length: 8)");
+		
+		else if(!ArrayHelper.differentNumbers(addressArray))
+			throw new LuaException("Array contains duplicate numbers");
+		
+		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
+			throw new LuaException("Array contains numbers which are out of bounds <1,47>");
+	}
+	
+	public static ArrayList<List<Integer>> addressListToIntList(ArrayList<Address.Immutable> addressList)
+	{
+		ArrayList<List<Integer>> integerList = new ArrayList<List<Integer>>();
+		for(Address.Immutable address : addressList)
+		{
+			integerList.add(address.toList());
+		}
+		
+		return integerList;
+	}
+	
 	public static class GetFilterType implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -25,12 +55,7 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				return new Object[] {stargate.getFilterType().getIntegerValue()};
-			});
-			
-			return result;
+			return MethodResult.of(StargateFilterFunctions.getFilterType(stargate));
 		}
 	}
 	
@@ -45,9 +70,7 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			int filter = arguments.getInt(0);
-			
-			return MethodResult.of(stargate.setFilterType(filter).getIntegerValue());
+			return MethodResult.of(StargateFilterFunctions.setFilterType(stargate, arguments.getInt(0)));
 		}
 	}
 	
@@ -69,25 +92,12 @@ public class StargateFilterMethods
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
+				boolean isVisible = arguments.getBoolean(1);
 				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
+				checkAddressArray(addressArray);
 				
-				if(addressArray.length < 6)
-					throw new LuaException("Array is too short (minimum length: 6)");
-				
-				else if(addressArray.length > 8)
-					throw new LuaException("Array is too long (maximum length: 8)");
-				
-				else if(!ArrayHelper.differentNumbers(addressArray))
-					throw new LuaException("Array contains duplicate numbers");
-				
-				else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
-					throw new LuaException("Array contains numbers which are out of bounds <1,47>");
-				
-				if(stargate.addToWhitelist(new Address(addressArray).immutable()))
-					return new Object[] {"Address whitelisted successfully"};
-				else
-					return new Object[] {"Address is already whitelisted"};
+				return new Object[] {StargateFilterFunctions.addToWhitelist(stargate, addressArray, isVisible)};
 			});
 			
 			return result;
@@ -112,26 +122,27 @@ public class StargateFilterMethods
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
 				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
+				checkAddressArray(addressArray);
 				
-				if(addressArray.length < 6)
-					throw new LuaException("Array is too short (minimum length: 6)");
-				
-				else if(addressArray.length > 8)
-					throw new LuaException("Array is too long (maximum length: 8)");
-				
-				else if(!ArrayHelper.differentNumbers(addressArray))
-					throw new LuaException("Array contains duplicate numbers");
-				
-				else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
-					throw new LuaException("Array contains numbers which are out of bounds <1,47>");
-				
-				if(stargate.removeFromWhitelist(new Address(addressArray).immutable()))
-					return new Object[] {"Address removed from whitelist successfully"};
-				else
-					return new Object[] {"Address is not whitelisted"};
+				return new Object[] {StargateFilterFunctions.removeFromWhitelist(stargate, addressArray)};
 			});
 			
 			return result;
+		}
+	}
+	
+	public static class GetWhitelist implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getPublicWhitelist";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			return context.executeMainThreadTask(() -> new Object[] {addressListToIntList(StargateFilterFunctions.getPublicWhitelist(stargate))});
 		}
 	}
 	
@@ -146,14 +157,7 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				stargate.clearWhitelist();
-				
-				return new Object[] {"Whitelist cleared"};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {StargateFilterFunctions.clearWhitelist(stargate)});
 		}
 	}
 	
@@ -175,25 +179,12 @@ public class StargateFilterMethods
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
+				boolean isVisible = arguments.getBoolean(1);
 				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
+				checkAddressArray(addressArray);
 				
-				if(addressArray.length < 6)
-					throw new LuaException("Array is too short (minimum length: 6)");
-				
-				else if(addressArray.length > 8)
-					throw new LuaException("Array is too long (maximum length: 8)");
-				
-				else if(!ArrayHelper.differentNumbers(addressArray))
-					throw new LuaException("Array contains duplicate numbers");
-				
-				else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
-					throw new LuaException("Array contains numbers which are out of bounds <1,47>");
-				
-				if(stargate.addToBlacklist(new Address(addressArray).immutable()))
-					return new Object[] {"Address blacklisted successfully"};
-				else
-					return new Object[] {"Address is already blacklisted"};
+				return new Object[] {StargateFilterFunctions.addToBlacklist(stargate, addressArray, isVisible)};
 			});
 			
 			return result;
@@ -218,26 +209,27 @@ public class StargateFilterMethods
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
 				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
+				checkAddressArray(addressArray);
 				
-				if(addressArray.length < 6)
-					throw new LuaException("Array is too short (minimum length: 6)");
-				
-				else if(addressArray.length > 8)
-					throw new LuaException("Array is too long (maximum length: 8)");
-				
-				else if(!ArrayHelper.differentNumbers(addressArray))
-					throw new LuaException("Array contains duplicate numbers");
-				
-				else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
-					throw new LuaException("Array contains numbers which are out of bounds <1,47>");
-				
-				if(stargate.removeFromBlacklist(new Address(addressArray).immutable()))
-					return new Object[] {"Address removed from blacklist successfully"};
-				else
-					return new Object[] {"Address is not blacklisted"};
+				return new Object[] {StargateFilterFunctions.removeFromBlacklist(stargate, addressArray)};
 			});
 			
 			return result;
+		}
+	}
+	
+	public static class GetBlacklist implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getPublicBlacklist";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			return context.executeMainThreadTask(() -> new Object[] {addressListToIntList(StargateFilterFunctions.getPublicBlacklist(stargate))});
 		}
 	}
 	
@@ -252,14 +244,7 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				stargate.clearBlacklist();
-				
-				return new Object[] {"Blacklist cleared"};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {StargateFilterFunctions.clearBlacklist(stargate)});
 		}
 	}
 }

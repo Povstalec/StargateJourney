@@ -12,8 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 
 public class DHDItem extends BlockItem
 {
@@ -63,15 +63,16 @@ public class DHDItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof MilkyWayDHDEntity dhd)
+		if(baseEntity instanceof AbstractDHDEntity dhd)
 		{
-			dhd.recalculateCrystals();
-			return true;
-		}
-		else if(baseEntity instanceof PegasusDHDEntity dhd)
-		{
-			dhd.recalculateCrystals();
-			return true;
+			if(info.contains(AbstractDHDEntity.GENERATE_ENERGY_CORE) && info.getBoolean(AbstractDHDEntity.GENERATE_ENERGY_CORE))
+				dhd.enableGeneratingEnergyCore();
+			
+			if(baseEntity instanceof CrystalDHDEntity crystalDHD)
+			{
+				crystalDHD.recalculateCrystals();
+				return true;
+			}
 		}
 		
 		return false;

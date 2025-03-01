@@ -91,8 +91,6 @@ public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStarg
             stack.mulPose(Axis.XP.rotationDegrees(90));
         
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
-
-		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
 		
         this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
 		

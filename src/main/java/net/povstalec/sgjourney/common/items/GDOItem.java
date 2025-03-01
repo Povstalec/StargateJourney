@@ -160,7 +160,7 @@ public class GDOItem extends Item
 		int frequency = 0;
 		String idc = "";
 		
-		if(stack.hasTag() && isAdvanced.isAdvanced())
+		if(stack.hasTag())
 		{
 			frequency = getFrequency(stack);
 			idc = getTransmissionMessage(stack);

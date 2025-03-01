@@ -1,14 +1,10 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,11 +13,8 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -36,7 +29,9 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -49,7 +44,7 @@ import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
-public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterloggedBlock
+public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterloggedBlock
 {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -138,29 +133,48 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 		return createTickerHelper(type, BlockEntityInit.PEGASUS_DHD.get(), AbstractDHDEntity::tick);
     }
 	
-	public static ItemStack pegasusCrystalSetup()
+	public static ItemStack pegasusCrystalSetup(boolean generateFusionCore)
 	{
 		ItemStack stack = new ItemStack(BlockInit.PEGASUS_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
-        CompoundTag inventory = new CompoundTag();
         
         blockEntityTag.putString("id", "sgjourney:pegasus_dhd");
-        blockEntityTag.putLong("Energy", 0);
-        
-        inventory.putInt("Size", 9);
-        inventory.put("Items", setupPegasusInventory());
-        
-        blockEntityTag.put("Inventory", inventory);
+        blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		
+		CompoundTag crystalInventory = new CompoundTag();
+		crystalInventory.putInt("Size", 9);
+		crystalInventory.put("Items", setupCrystalInventory());
+		blockEntityTag.put(CrystalDHDEntity.CRYSTAL_INVENTORY, crystalInventory);
+		
+		CompoundTag energyInventory = new CompoundTag();
+		energyInventory.putInt("Size", 2);
+		if(generateFusionCore)
+			blockEntityTag.putBoolean(AbstractDHDEntity.GENERATE_ENERGY_CORE, true);
+		else
+		{
+			energyInventory.put("Items", setupEnergyInventory());
+			blockEntityTag.put(AbstractDHDEntity.ENERGY_INVENTORY, energyInventory);
+		}
+		
 		stack.addTagElement("BlockEntityTag", blockEntityTag);
 		
 		return stack;
 	}
 	
-	private static ListTag setupPegasusInventory()
+	private static ListTag setupEnergyInventory()
 	{
 		ListTag nbtTagList = new ListTag();
 		
-		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.ADVANCED_CONTROL_CRYSTAL.get()), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.FUSION_CORE.get()), 1, null));
+		
+		return nbtTagList;
+	}
+	
+	private static ListTag setupCrystalInventory()
+	{
+		ListTag nbtTagList = new ListTag();
+		
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
@@ -169,24 +183,4 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 		
 		return nbtTagList;
 	}
-	
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
-    {
-		if(stack.hasTag())
-		{
-			CompoundTag blockEntityTag = BlockItem.getBlockEntityData(stack);
-			ListTag tagList = blockEntityTag.getCompound("Inventory").getList("Items", Tag.TAG_COMPOUND);
-			
-			if(tagList.size() > 0)
-			{
-				CompoundTag list1 = tagList.getCompound(0);
-				
-				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals(InventoryUtil.itemName(ItemInit.ADVANCED_CONTROL_CRYSTAL.get())) && list1.contains("Count", Tag.TAG_BYTE) && list1.getByte("Count") > 0)
-			        tooltipComponents.add(Component.translatable("tooltip.sgjourney.has_control_crystal").withStyle(ChatFormatting.AQUA));
-			}
-		}
-		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
-    }
 }

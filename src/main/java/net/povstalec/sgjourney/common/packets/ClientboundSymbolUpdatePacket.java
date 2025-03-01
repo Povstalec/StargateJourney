@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
 
@@ -11,10 +12,10 @@ public class ClientboundSymbolUpdatePacket
 {
     public final BlockPos pos;
     public final int symbolNumber;
-    public final String pointOfOrigin;
-    public final String symbols;
+    public final ResourceLocation pointOfOrigin;
+    public final ResourceLocation symbols;
 
-    public ClientboundSymbolUpdatePacket(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)
+    public ClientboundSymbolUpdatePacket(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
     {
         this.pos = pos;
         this.symbolNumber = symbolNumber;
@@ -24,15 +25,15 @@ public class ClientboundSymbolUpdatePacket
 
     public ClientboundSymbolUpdatePacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos(), buffer.readInt(), buffer.readUtf(), buffer.readUtf());
+        this(buffer.readBlockPos(), buffer.readInt(), buffer.readResourceLocation(), buffer.readResourceLocation());
     }
 
     public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeInt(this.symbolNumber);
-        buffer.writeUtf(this.pointOfOrigin);
-        buffer.writeUtf(this.symbols);
+        buffer.writeResourceLocation(this.pointOfOrigin);
+        buffer.writeResourceLocation(this.symbols);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
