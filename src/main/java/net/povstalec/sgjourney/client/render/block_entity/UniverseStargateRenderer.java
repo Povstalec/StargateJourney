@@ -75,7 +75,7 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer<UniverseS
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
         
         stack.pushPose();
-        stack.mulPose(Axis.ZP.rotationDegrees(stargate.getRotation(partialTick) / UniverseStargateEntity.MAX_ROTATION * 360));
+        stack.mulPose(Axis.ZP.rotationDegrees(stargate.getRotationDegrees(partialTick)));
 		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
         stack.popPose();
 		
