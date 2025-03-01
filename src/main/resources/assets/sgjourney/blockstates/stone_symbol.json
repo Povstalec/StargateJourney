@@ -1,25 +1,25 @@
 {
 	"variants":
 	{
-        	"orientation=upward,facing=up": { "model": "sgjourney:block/stone_symbol" },
-        	"orientation=upward,facing=down": { "model": "sgjourney:block/stone_symbol"},
-        	"orientation=upward,facing=north": { "model": "sgjourney:block/stone_symbol" },
-        	"orientation=upward,facing=south": { "model": "sgjourney:block/stone_symbol" },
-        	"orientation=upward,facing=west": { "model": "sgjourney:block/stone_symbol" },
-        	"orientation=upward,facing=east": { "model": "sgjourney:block/stone_symbol" },
+        	"orientation=upward,facing=up": { "model": "sgjourney:block/stone_symbol_up" },
+        	"orientation=upward,facing=down": { "model": "sgjourney:block/stone_symbol_up"},
+        	"orientation=upward,facing=north": { "model": "sgjourney:block/stone_symbol_up" },
+        	"orientation=upward,facing=south": { "model": "sgjourney:block/stone_symbol_up" },
+        	"orientation=upward,facing=west": { "model": "sgjourney:block/stone_symbol_up" },
+        	"orientation=upward,facing=east": { "model": "sgjourney:block/stone_symbol_up" },
         	
-        	"orientation=downward,facing=up": { "model": "sgjourney:block/stone_symbol", "x": 180 },
-        	"orientation=downward,facing=down": { "model": "sgjourney:block/stone_symbol", "x": 180 },
-        	"orientation=downward,facing=north": { "model": "sgjourney:block/stone_symbol", "x": 180 },
-        	"orientation=downward,facing=south": { "model": "sgjourney:block/stone_symbol", "x": 180 },
-        	"orientation=downward,facing=west": { "model": "sgjourney:block/stone_symbol", "x": 180 },
-        	"orientation=downward,facing=east": { "model": "sgjourney:block/stone_symbol", "x": 180 },
+        	"orientation=downward,facing=up": { "model": "sgjourney:block/stone_symbol_down" },
+        	"orientation=downward,facing=down": { "model": "sgjourney:block/stone_symbol_down" },
+        	"orientation=downward,facing=north": { "model": "sgjourney:block/stone_symbol_down" },
+        	"orientation=downward,facing=south": { "model": "sgjourney:block/stone_symbol_down" },
+        	"orientation=downward,facing=west": { "model": "sgjourney:block/stone_symbol_down" },
+        	"orientation=downward,facing=east": { "model": "sgjourney:block/stone_symbol_down" },
         	
-        	"orientation=regular,facing=up": { "model": "sgjourney:block/stone_symbol" },
-        	"orientation=regular,facing=down": { "model": "sgjourney:block/stone_symbol", "x": 180 },
-        	"orientation=regular,facing=north": { "model": "sgjourney:block/stone_symbol", "x": 90 },
-        	"orientation=regular,facing=south": { "model": "sgjourney:block/stone_symbol", "x": 90, "y": 180 },
-        	"orientation=regular,facing=west": { "model": "sgjourney:block/stone_symbol", "x": 90, "y": 270 },
-        	"orientation=regular,facing=east": { "model": "sgjourney:block/stone_symbol", "x": 90, "y": 90 }
+        	"orientation=regular,facing=up": { "model": "sgjourney:block/stone_symbol_up" },
+        	"orientation=regular,facing=down": { "model": "sgjourney:block/stone_symbol_down" },
+        	"orientation=regular,facing=north": { "model": "sgjourney:block/stone_symbol_side" },
+        	"orientation=regular,facing=south": { "model": "sgjourney:block/stone_symbol_side", "y": 180 },
+        	"orientation=regular,facing=west": { "model": "sgjourney:block/stone_symbol_side", "y": 270 },
+        	"orientation=regular,facing=east": { "model": "sgjourney:block/stone_symbol_side", "y": 90 }
 	}
 }

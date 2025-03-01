@@ -4,6 +4,7 @@
 		"sgjourney:cartouche/abydos_cartouche",
 		"sgjourney:cartouche/chulak_cartouche_monument",
 		"sgjourney:cartouche/stone_cartouche_monument",
-		"sgjourney:cartouche/sandstone_cartouche_monument"
+		"sgjourney:cartouche/sandstone_cartouche_monument",
+		"sgjourney:cartouche/red_sandstone_cartouche_monument"
 	]
 }

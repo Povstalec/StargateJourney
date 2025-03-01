@@ -13,7 +13,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.world.features.SpireFeature;
+import net.povstalec.sgjourney.common.world.features.CrystalPatchFeature;
 import net.povstalec.sgjourney.common.world.features.configuration.SpireConfiguration;
+import net.povstalec.sgjourney.common.world.features.configuration.CrystalPatchConfiguration;
 
 public class FeatureInit
 {
@@ -25,6 +27,7 @@ public class FeatureInit
     
     
 	public static final Feature<SpireConfiguration> ORE_SPIRE_FEATURE = register("ore_spire", new SpireFeature(SpireConfiguration.CODEC));
+	public static final Feature<CrystalPatchConfiguration> CRYSTAL_PATCH_FEATURE = register("crystal_patch", new CrystalPatchFeature(CrystalPatchConfiguration.CODEC));
 	
 	
 	

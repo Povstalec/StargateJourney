@@ -9,6 +9,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.InterfaceFunctions;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class InterfaceMethods
@@ -25,8 +26,7 @@ public class InterfaceMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
 		{
-			long energyTarget = arguments.getLong(0);
-			interfaceEntity.setEnergyTarget(energyTarget);
+			InterfaceFunctions.setEnergyTarget(interfaceEntity, arguments.getLong(0));
 			
 			return MethodResult.of();
 		}
@@ -45,9 +45,8 @@ public class InterfaceMethods
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
 		{
 			Map<Double, Double> addressTable = (Map<Double, Double>) arguments.getTable(0);
-			Address address = new Address(addressTable);
 			
-			return MethodResult.of(address.toString());
+			return MethodResult.of(InterfaceFunctions.addressToString(addressTable).toString());
 		}
 	}
 	

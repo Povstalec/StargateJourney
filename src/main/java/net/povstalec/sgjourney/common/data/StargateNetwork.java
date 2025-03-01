@@ -213,6 +213,9 @@ public final class StargateNetwork extends SavedData
 	
 	public final void removeStargate(Level level, Address.Immutable address)
 	{
+		if(address == null)
+			return;
+		
 		Optional<Stargate> stargate = getStargate(address);
 		
 		if(stargate.isPresent())
@@ -318,7 +321,7 @@ public final class StargateNetwork extends SavedData
 		if(outgoingStargate.isPresent() && incomingStargate.isPresent())
 		{
 			// Call Forwarding
-			if(incomingStargate.get().shouldCallForward())
+			if(incomingStargate.get().dhdInfo().shouldCallForward())
 			{
 				// Chooses a random Stargate to connect to
 				Random random = new Random();
@@ -333,7 +336,7 @@ public final class StargateNetwork extends SavedData
 					
 					if(reroutedStargate.isPresent())
 					{
-						while(reroutedStargate.get().getStargateEntity(server).get().shouldCallForward())
+						while(reroutedStargate.get().getStargateEntity(server).get().dhdInfo().shouldCallForward())
 						{
 							reroutedStargate = solarSystem.getRandomStargate(random.nextLong());
 						}

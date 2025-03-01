@@ -19,6 +19,8 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 
 public abstract class EnergyBlockEntity extends BlockEntity
 {
+	public static final String ENERGY = "Energy"; // TODO Change this to "energy"
+	
 	private boolean canGenerateEnergy;
 	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
 	
@@ -51,14 +53,14 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		ENERGY_STORAGE.setEnergy(nbt.getLong("Energy"));
+		ENERGY_STORAGE.setEnergy(nbt.getLong(ENERGY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
 		super.saveAdditional(nbt);
-		nbt.putLong("Energy", ENERGY_STORAGE.getTrueEnergyStored());
+		nbt.putLong(ENERGY, ENERGY_STORAGE.getTrueEnergyStored());
 	}
 	
 	//============================================================================================

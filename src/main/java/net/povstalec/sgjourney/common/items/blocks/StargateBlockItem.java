@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -17,16 +18,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class StargateBlockItem extends BlockItem
 {
@@ -34,8 +34,8 @@ public class StargateBlockItem extends BlockItem
 	private static final String ADD_TO_NETWORK = AbstractStargateEntity.ADD_TO_NETWORK;
 	private static final String POINT_OF_ORIGIN = AbstractStargateEntity.POINT_OF_ORIGIN;
 	private static final String SYMBOLS = AbstractStargateEntity.SYMBOLS;
-	private static final String IRIS_PROGRESS = AbstractStargateEntity.IRIS_PROGRESS;
-	private static final String EMPTY = StargateJourney.EMPTY;
+	private static final String IRIS_PROGRESS = IrisStargateEntity.IRIS_PROGRESS;
+	private static final ResourceLocation EMPTY = StargateJourney.EMPTY_LOCATION;
 	
 	public StargateBlockItem(Block block, Properties properties)
 	{
@@ -145,12 +145,12 @@ public class StargateBlockItem extends BlockItem
 				stargate.addStargateToNetwork();
 				
 				// Sets up symbols on the Milky Way Stargate
-				if(stargate instanceof MilkyWayStargateEntity)
-					stargate.setRandomPointOfOrigin(level.dimension());
+				if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
+					milkyWayStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
 				
 				// Sets up symbols on the Classic Stargate
-				else if(stargate instanceof ClassicStargateEntity)
-					stargate.setRandomPointOfOrigin(level.dimension());
+				else if(stargate instanceof ClassicStargateEntity classicStargate)
+					classicStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
 			}
 		}
 		
@@ -176,35 +176,35 @@ public class StargateBlockItem extends BlockItem
 			}
 			
 			// Sets up symbols on the Milky Way Stargate
-			if(stargate instanceof MilkyWayStargateEntity)
+			if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
 			{
 				if(!addToNetwork)
 				{
 					if(!info.contains(POINT_OF_ORIGIN))
-						stargate.setPointOfOrigin(EMPTY);
+						milkyWayStargate.symbolInfo().setPointOfOrigin(EMPTY);
 					if(!info.contains(SYMBOLS))
-						stargate.setSymbols(EMPTY);
+						milkyWayStargate.symbolInfo().setSymbols(EMPTY);
 				}
 			}
 			
 			// Sets up symbols on the Milky Way Stargate
-			else if(stargate instanceof PegasusStargateEntity)
+			else if(stargate instanceof PegasusStargateEntity pegasusStargate)
 			{
 				if(!info.contains(POINT_OF_ORIGIN))
-					stargate.setPointOfOriginFromDimension(level.dimension());
+					pegasusStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
 				if(!info.contains(SYMBOLS))
-					stargate.setSymbolsFromDimension(level.dimension());
+					pegasusStargate.symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
 			}
 			
 			// Sets up symbols on the Classic Stargate
-			else if(stargate instanceof ClassicStargateEntity)
+			else if(stargate instanceof ClassicStargateEntity classicStargate)
 			{
 				if(!addToNetwork)
 				{
 					if(!info.contains(POINT_OF_ORIGIN))
-						stargate.setPointOfOrigin(EMPTY);
+						classicStargate.symbolInfo().setPointOfOrigin(EMPTY);
 					if(!info.contains(SYMBOLS))
-						stargate.setSymbols(EMPTY);
+						classicStargate.symbolInfo().setSymbols(EMPTY);
 				}
 			}
 		}

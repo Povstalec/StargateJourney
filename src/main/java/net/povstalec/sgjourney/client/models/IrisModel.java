@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.models;
 
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
@@ -11,7 +12,6 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 
 public class IrisModel
@@ -50,11 +50,11 @@ public class IrisModel
 		this.maxOpenDegrees = maxOpenDegrees;
 	}
 	
-	public void renderIris(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay, float progress)
+	public void renderIris(IrisInfo.Interface irisStargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay, float progress)
 	{
 		float closingProgress = (float) (ShieldingState.MAX_PROGRESS - progress) / ShieldingState.MAX_PROGRESS;
 		
-		Optional<ResourceLocation> irisTexture = stargate.getIrisTexture();
+		Optional<ResourceLocation> irisTexture = irisStargate.irisInfo().getIrisTexture();
 		
 		if(!this.renderWhenOpen && progress == 0 || irisTexture.isEmpty())
 			return;

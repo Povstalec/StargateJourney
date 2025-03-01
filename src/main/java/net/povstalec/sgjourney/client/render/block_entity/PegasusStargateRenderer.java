@@ -76,7 +76,7 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusSta
         this.stargateModel.setCurrentSymbol(stargate.currentSymbol);
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
 
-		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
 		
         this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
 		

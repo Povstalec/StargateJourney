@@ -25,7 +25,7 @@
 			"uv": { "flip_uv": false }
 		},
 		{
-			"texture": "stellarview:textures/environment/planet/earth.png",
+			"texture": "sgjourney:textures/environment/planet/cavum_tenebrae.png",
 			"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
 			"blend": false,
 			"size": 30791388,

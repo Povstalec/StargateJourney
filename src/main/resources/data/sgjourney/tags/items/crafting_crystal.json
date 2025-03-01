@@ -1,0 +1,8 @@
+{
+	"replace": false,
+	"values":
+	[
+		"minecraft:diamond",
+		"sgjourney:unity_shard"
+	]
+}

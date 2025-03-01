@@ -71,12 +71,12 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer<UniverseS
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Vector3f.XP.rotationDegrees(90));
         
-        this.stargateModel.setRotation(stargate.getRotation(partialTick) / UniverseStargateEntity.MAX_ROTATION * 360);
+        this.stargateModel.setRotation(stargate.getRotationDegrees(partialTick));
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
         
         stack.pushPose();
-        stack.mulPose(Vector3f.ZP.rotationDegrees(stargate.getRotation(partialTick) / UniverseStargateEntity.MAX_ROTATION * 360));
-		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
+		stack.mulPose(Vector3f.ZP.rotationDegrees(stargate.getRotation(partialTick) / UniverseStargateEntity.MAX_ROTATION * 360));
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
         stack.popPose();
 		
         this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);

@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked.methods;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import dan200.computercraft.api.lua.IArguments;
@@ -11,11 +10,13 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericStargateFunctions;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 
 public class StargateMethods
 {
+	// Crystal Interfaces can display the actual feedback messages and not just their codes
 	public static Object[] returnedFeedback(AbstractInterfaceEntity interfaceEntity, Stargate.Feedback feedback)
 	{
 		if(interfaceEntity.getInterfaceType().hasCrystalMethods())
@@ -36,13 +37,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				Stargate.Feedback feedback = stargate.getRecentFeedback();
-				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.getRecentFeedback(stargate)));
 		}
 	}
 	
@@ -57,17 +52,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				if(!interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && !stargate.isWormholeOpen())
-					return new Object[] {false};
-				
-				String messageString = arguments.getString(0);
-				
-				return new Object[] {stargate.sendStargateMessage(messageString)};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.sendStargateMessage(interfaceEntity, stargate, arguments.getString(0))});
 		}
 	}
 	
@@ -82,12 +67,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				return new Object[] {stargate.getVariant()};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.getVariant(stargate)});
 		}
 	}
 	
@@ -102,12 +82,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				return new Object[] {stargate.getPointOfOrigin()};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.getPointOfOrigin(stargate)});
 		}
 	}
 	
@@ -122,12 +97,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				return new Object[] {stargate.getSymbols()};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.getSymbols(stargate)});
 		}
 	}
 	
@@ -145,13 +115,7 @@ public class StargateMethods
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				Stargate.Feedback feedback = stargate.engageSymbol(desiredSymbol);
-				return StargateMethods.returnedFeedback(interfaceEntity, feedback);
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(stargate, desiredSymbol)));
 		}
 	}
 	
@@ -166,15 +130,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				// Will only display the dialed Address
-				int[] stargateAddress = !stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ? stargate.getAddress().toArray() : new int[] {};
-				List<Integer> address = Arrays.stream(stargateAddress).boxed().toList();
-				return new Object[] {address};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {Arrays.stream(GenericStargateFunctions.getDialedAddress(stargate).toArray()).boxed().toList()});
 		}
 	}
 	
@@ -206,7 +162,7 @@ public class StargateMethods
 				else if(!ArrayHelper.isArrayInBounds(configurationArray, 1, 8))
 					throw new LuaException("Array contains numbers which are out of bounds <1,8>");
 				
-				stargate.setEngagedChevrons(configurationArray);
+				GenericStargateFunctions.setChevronConfiguration(stargate, configurationArray);
 				
 				return new Object[] {"Chevron configuration set successfully"};
 			});
@@ -214,95 +170,20 @@ public class StargateMethods
 			return result;
 		}
 	}
-
-	/*public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
+	public static class HasDHD implements InterfaceMethod<AbstractStargateEntity>
 	{
-
 		@Override
-		public String getName() {
-			return "callForward";
+		public String getName()
+		{
+			return "hasDHD";
 		}
-
+		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
-			return context.executeMainThreadTask(() -> {
-				boolean input = arguments.getBoolean(0);
-
-				blockEntity.setCFD(input);
-				return new Object[]{"Call Forwarding successfully"};
-			});
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.hasDHD(stargate)});
 		}
 	}
-
-	public static class SetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
-	{
-
-		@Override
-		public String getName() {
-			return "setCallForwardingTarget";
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException {
-
-			MethodResult result = context.executeMainThreadTask(() -> {
-
-				Map<Double, Double> chevronConfiguration = (Map<Double, Double>) arguments.getTable(0);
-
-				int[] configurationArray = ArrayHelper.tableToArray(chevronConfiguration);
-
-
-				if(configurationArray.length == 0)
-					stargate.setCFDTarget(new Address());
-				else if(configurationArray.length < 8)
-					throw new LuaException("Array is too short (required length: 8)");
-				else if(configurationArray.length > 8)
-					throw new LuaException("Array is too long (required length: 8)");
-				else if(!ArrayHelper.differentNumbers(configurationArray))
-					throw new LuaException("Array contains duplicate numbers");
-				else if(!ArrayHelper.isArrayInBounds(configurationArray, 1, 38))
-					throw new LuaException("Array contains numbers which are out of bounds <1,38>");
-
-				stargate.setCFDTarget(new Address().fromArray(configurationArray));
-
-				return new Object[] {"Call Forwarding target set successfully"};
-			});
-
-			return result;
-		}
-	}
-
-	public static class GetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
-	{
-
-		@Override
-		public String getName() {
-			return "shouldCallForward";
-		}
-
-		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
-			return context.executeMainThreadTask(() -> new Object[]{blockEntity.getCFD()});
-		}
-	}
-
-	public static class GetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
-	{
-
-		@Override
-		public String getName() {
-			return "getCallForwardingTarget";
-		}
-
-		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
-			return context.executeMainThreadTask(() -> {
-				List<Integer> address = Arrays.stream(blockEntity.getCFDTarget().toArray()).boxed().toList();
-				return new Object[] {address};
-			});
-		}
-	}*/
 
 	// Advanced Crystal Interface
 	public static class ConnectedAddress implements InterfaceMethod<AbstractStargateEntity>
@@ -316,13 +197,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				List<Integer> address = Arrays.stream(stargate.getAddress().toArray()).boxed().toList();
-				return new Object[] {address};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {Arrays.stream(GenericStargateFunctions.getConnectedAddress(stargate).toArray()).boxed().toList()});
 		}
 	}
 	
@@ -337,13 +212,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				List<Integer> dialedAddress = Arrays.stream(stargate.get9ChevronAddress().toArray()).boxed().toList();
-				return new Object[] {dialedAddress};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {Arrays.stream(GenericStargateFunctions.getLocalAddress(stargate).toArray()).boxed().toList()});
 		}
 	}
 	
@@ -358,12 +227,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				return new Object[] {stargate.getNetwork()};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.getNetwork(stargate)});
 		}
 	}
 	
@@ -378,8 +242,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			int network = arguments.getInt(0);
-			stargate.setNetwork(network);
+			GenericStargateFunctions.setNetwork(stargate, arguments.getInt(0));
 			
 			return MethodResult.of();
 		}
@@ -396,8 +259,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			boolean restrictNetwork = arguments.getBoolean(0);
-			stargate.setRestrictNetwork(restrictNetwork);
+			GenericStargateFunctions.setRestrictNetwork(stargate, arguments.getBoolean(0));
 			
 			return MethodResult.of();
 		}
@@ -414,12 +276,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				return new Object[] {stargate.getRestrictNetwork()};
-			});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.isNetworkRestricted(stargate)});
 		}
 	}
 }

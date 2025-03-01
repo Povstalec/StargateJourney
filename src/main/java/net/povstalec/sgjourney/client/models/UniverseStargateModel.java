@@ -311,9 +311,9 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	protected void renderSymbols(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, float rotation)
 	{
-		Optional<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
+		PointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
-		if(pointOfOrigin.isPresent())
+		if(pointOfOrigin != null)
 		{
 			boolean pointOfOriginEngaged = false;
 			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
@@ -326,9 +326,9 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
 		}
 		
-		Optional<Symbols> symbols = getSymbols(stargate, stargateVariant);
+		Symbols symbols = getSymbols(stargate, stargateVariant);
 		
-		if(symbols.isEmpty())
+		if(symbols == null)
 			return;
 		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
@@ -348,7 +348,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				symbolEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
 			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
-					MAX_LIGHT : combinedLight, j, symbols.get().getTextureOffset(j), symbols.get().getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+					MAX_LIGHT : combinedLight, j, symbols.getTextureOffset(j), symbols.getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
 		}
 	}
 	

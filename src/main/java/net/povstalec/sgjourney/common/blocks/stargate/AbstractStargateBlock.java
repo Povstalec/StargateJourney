@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableMap;
@@ -300,9 +302,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		if(stack.getItem() instanceof StargateIrisItem && !level.isClientSide())
 		{
 			AbstractStargateEntity stargate = getStargate(level, pos, state);
-			if(stargate != null )
+			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 			{
-				if(stargate.addIris(stack))
+				if(irisStargate.irisInfo().addIris(stack))
 				{
 					if(!player.isCreative())
 						player.getItemInHand(hand).shrink(1);
@@ -375,6 +377,13 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		{
 			if(this.getBlock() instanceof AbstractStargateBlock stargate)
 			{
+				if(!CommonStargateConfig.can_break_connected_stargate.get())
+				{
+					StargateConnection.State state = reader.getBlockState(pos).getValue(AbstractStargateBaseBlock.CONNECTION_STATE);
+					if(state != null && state.isConnected())
+						return -1.0F;
+				}
+				
 				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(reader, this, pos);
 				
 				if(blockCover.isPresent())

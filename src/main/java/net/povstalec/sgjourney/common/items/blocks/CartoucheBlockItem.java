@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -96,7 +97,7 @@ public class CartoucheBlockItem extends BlockItem
 		{
 			if(info.contains(CartoucheEntity.DIMENSION) && !info.contains(CartoucheEntity.ADDRESS))
 			{
-				cartouche.setDimension(info.getString(CartoucheEntity.DIMENSION));
+				cartouche.setDimension(new ResourceLocation(info.getString(CartoucheEntity.DIMENSION)));
 				cartouche.setAddressFromDimension();
 			}
 			return true;
