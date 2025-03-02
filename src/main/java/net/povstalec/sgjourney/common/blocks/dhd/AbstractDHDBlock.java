@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -157,15 +159,15 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		if(stack.hasTag())
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
 		{
-			CompoundTag blockEntityTag = BlockItem.getBlockEntityData(stack);
+			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
 			if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATE_ENERGY_CORE))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.dhd.generates_energy_core").withStyle(ChatFormatting.YELLOW));
 		}
 		
-		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 }

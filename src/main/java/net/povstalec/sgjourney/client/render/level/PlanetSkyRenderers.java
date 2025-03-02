@@ -67,11 +67,11 @@ public class PlanetSkyRenderers
 			super(87163L, 1800);
 		}
 		
-		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
+		protected void renderCelestials(ClientLevel level, float partialTicks, Matrix4f modelViewMatrix, Matrix4f projectionMatrix, Runnable setupFog, Tesselator tesselator, float rain)
 		{
-			this.renderSun(bufferbuilder, lastMatrix, 30.0F);
+			this.renderSun(tesselator, modelViewMatrix, 30.0F);
 			
-			this.renderMoon(bufferbuilder, lastMatrix, 20.0F, level.getMoonPhase(), 0.0F, (float) Math.toRadians(180));
+			this.renderMoon(tesselator, modelViewMatrix, 20.0F, level.getMoonPhase(), 0.0F, (float) Math.toRadians(180));
 		}
 	}
 	

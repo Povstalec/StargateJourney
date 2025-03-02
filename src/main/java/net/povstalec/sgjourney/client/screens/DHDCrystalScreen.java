@@ -78,8 +78,8 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 	protected void renderEnergy(GuiGraphics graphics, int x, int y)
 	{
 		float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();
-		int actual = Math.round(160 * percentage);
-		graphics.blit(TEXTURE, x, y, 0, 168, actual, 6);
+		int actual = Math.round(52 * percentage);
+		graphics.blit(TEXTURE, x, y + 52 - actual, 176, 0, 6, actual);
 	}
 	
 	protected void energyTooltip(GuiGraphics graphics, int x, int y, int mouseX, int mouseY)

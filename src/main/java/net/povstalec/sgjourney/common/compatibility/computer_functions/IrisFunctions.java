@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.compatibility.computer_functions;
 
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.stargate.Stargate;
@@ -16,7 +16,7 @@ public class IrisFunctions
 		if(stargate.irisInfo().getIris().isEmpty())
 			return null;
 		
-		return ForgeRegistries.ITEMS.getKey(stargate.irisInfo().getIris().getItem()).toString();
+		return BuiltInRegistries.ITEM.getKey(stargate.irisInfo().getIris().getItem()).toString();
 	}
 	
 	public static boolean closeIris(AbstractInterfaceEntity interfaceEntity)

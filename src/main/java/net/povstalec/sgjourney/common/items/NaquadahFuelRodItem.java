@@ -19,8 +19,6 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class NaquadahFuelRodItem extends Item
 {
-	public static final String FUEL = "Fuel";
-	
 	public NaquadahFuelRodItem(Properties properties)
 	{
 		super(properties);
@@ -97,7 +95,7 @@ public class NaquadahFuelRodItem extends Item
 		ItemStack fusionCore = new ItemStack(ItemInit.NAQUADAH_FUEL_ROD.get());
 		Random random = new Random();
 		
-		fusionCore.getOrCreateTag().putInt(FUEL, random.nextInt(minCapacity, maxCapacity + 1));
+		fusionCore.set(DataComponentInit.NAQUADAH_FUEL, random.nextInt(minCapacity, maxCapacity + 1));
 		
 		return fusionCore;
 	}

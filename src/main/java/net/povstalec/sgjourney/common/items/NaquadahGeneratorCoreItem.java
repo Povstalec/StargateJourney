@@ -9,14 +9,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class NaquadahGeneratorCoreItem extends Item implements IEnergyCore
 {
-	public static final String REACTION_PROGRESS = "reaction_progress";
-	
 	public NaquadahGeneratorCoreItem(Properties properties)
 	{
 		super(properties);
@@ -43,10 +42,7 @@ public class NaquadahGeneratorCoreItem extends Item implements IEnergyCore
 	
 	public long reactionProgress(ItemStack energyCore)
 	{
-		if(!energyCore.hasTag() || !energyCore.getTag().contains(REACTION_PROGRESS))
-			return 0;
-		
-		return energyCore.getTag().getLong(REACTION_PROGRESS);
+		return energyCore.getOrDefault(DataComponentInit.REACTION_PROGRESS, 0L);
 	}
 	
 	public long getMaxReactionProgress()
@@ -56,17 +52,10 @@ public class NaquadahGeneratorCoreItem extends Item implements IEnergyCore
 	
 	public long doReaction(ItemStack energyCore, ItemStack input)
 	{
-		CompoundTag tag = energyCore.getTag();
-		
-		if(tag == null || !tag.contains(REACTION_PROGRESS))
-			return 0;
-		
-		long progress = tag.getLong(REACTION_PROGRESS);
-		
+		long progress = reactionProgress(energyCore);
 		if(progress < getMaxReactionProgress())
 		{
-			progress++;
-			tag.putLong(REACTION_PROGRESS, progress);
+			energyCore.set(DataComponentInit.REACTION_PROGRESS, progress + 1);
 			
 			return maxGeneratedEnergy(energyCore, input);
 		}
@@ -75,11 +64,11 @@ public class NaquadahGeneratorCoreItem extends Item implements IEnergyCore
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_generator_core.reaction_progress").append(Component.literal(": " + reactionProgress(stack) + " / " + getMaxReactionProgress())).withStyle(ChatFormatting.GREEN));
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 	
 	
@@ -98,7 +87,7 @@ public class NaquadahGeneratorCoreItem extends Item implements IEnergyCore
 		if(energy == 0 && input.getItem() instanceof NaquadahFuelRodItem && NaquadahFuelRodItem.getFuel(input) > 0)
 		{
 			NaquadahFuelRodItem.depleteFuel(input);
-			energyCore.getOrCreateTag().putLong(REACTION_PROGRESS, 1);
+			energyCore.set(DataComponentInit.REACTION_PROGRESS, 1L);
 		}
 		
 		return energy;

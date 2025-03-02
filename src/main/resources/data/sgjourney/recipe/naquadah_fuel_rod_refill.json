@@ -14,5 +14,5 @@
 		"N": { "tag": "sgjourney:refined_naquadah" }
 	},
 	
-	"result": { "item": "sgjourney:naquadah_fuel_rod" }
+	"result": { "id": "sgjourney:naquadah_fuel_rod" }
 }

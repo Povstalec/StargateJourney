@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.stargate.info;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.items.StargateShieldItem;
 

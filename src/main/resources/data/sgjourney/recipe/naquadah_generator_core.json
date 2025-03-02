@@ -15,5 +15,5 @@
 		"C": { "item": "sgjourney:reaction_chamber" }
 	},
 	
-	"result": { "item": "sgjourney:naquadah_generator_core", "count": 1 }
+	"result": { "id": "sgjourney:naquadah_generator_core", "count": 1 }
 }

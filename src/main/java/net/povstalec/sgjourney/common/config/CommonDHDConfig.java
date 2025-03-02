@@ -1,25 +1,25 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonDHDConfig
 {
-	public static ForgeConfigSpec.LongValue milky_way_dhd_energy_buffer_capacity;
-	public static ForgeConfigSpec.LongValue milky_way_dhd_max_energy_receive;
-	public static ForgeConfigSpec.LongValue milky_way_dhd_max_energy_extract;
-	public static ForgeConfigSpec.LongValue milky_way_dhd_button_press_energy_cost;
+	public static ModConfigSpec.LongValue milky_way_dhd_energy_buffer_capacity;
+	public static ModConfigSpec.LongValue milky_way_dhd_max_energy_receive;
+	public static ModConfigSpec.LongValue milky_way_dhd_max_energy_extract;
+	public static ModConfigSpec.LongValue milky_way_dhd_button_press_energy_cost;
 	
-	public static ForgeConfigSpec.LongValue pegasus_dhd_energy_buffer_capacity;
-	public static ForgeConfigSpec.LongValue pegasus_dhd_max_energy_receive;
-	public static ForgeConfigSpec.LongValue pegasus_dhd_max_energy_extract;
-	public static ForgeConfigSpec.LongValue pegasus_dhd_button_press_energy_cost;
+	public static ModConfigSpec.LongValue pegasus_dhd_energy_buffer_capacity;
+	public static ModConfigSpec.LongValue pegasus_dhd_max_energy_receive;
+	public static ModConfigSpec.LongValue pegasus_dhd_max_energy_extract;
+	public static ModConfigSpec.LongValue pegasus_dhd_button_press_energy_cost;
 	
-	public static ForgeConfigSpec.LongValue classic_dhd_energy_buffer_capacity;
-	public static ForgeConfigSpec.LongValue classic_dhd_max_energy_receive;
-	public static ForgeConfigSpec.LongValue classic_dhd_max_energy_extract;
-	public static ForgeConfigSpec.LongValue classic_dhd_button_press_energy_cost;
+	public static ModConfigSpec.LongValue classic_dhd_energy_buffer_capacity;
+	public static ModConfigSpec.LongValue classic_dhd_max_energy_receive;
+	public static ModConfigSpec.LongValue classic_dhd_max_energy_extract;
+	public static ModConfigSpec.LongValue classic_dhd_button_press_energy_cost;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		milky_way_dhd_energy_buffer_capacity = server
 				.comment("Capacity of the energy buffer inside the DHD")

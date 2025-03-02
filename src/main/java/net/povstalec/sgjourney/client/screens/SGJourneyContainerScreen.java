@@ -1,8 +1,10 @@
 package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -13,10 +15,10 @@ public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> 
 		super(menu, playerInventory, title);
 	}
 	
-	protected void tooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, Component component)
+	protected void tooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, Component component)
 	{
 		if(this.isHovering(x, y, width, height, mouseX, mouseY))
-			renderTooltip(poseStack, component, mouseX, mouseY);
+			graphics.renderTooltip(this.font, component, mouseX, mouseY);
 	}
 	
 	protected boolean hasItem(int slot)
@@ -24,9 +26,9 @@ public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> 
 		return true;
 	}
 	
-	protected void itemHint(PoseStack poseStack, int x, int y, int hintTexturePosX, int hintTexturePosY, int slot)
+	protected void itemHint(GuiGraphics graphics, ResourceLocation texture, int x, int y, int hintTexturePosX, int hintTexturePosY, int slot)
 	{
 		if(!hasItem(slot))
-			this.blit(poseStack, x, y, hintTexturePosX, hintTexturePosY, 16, 16);
+			graphics.blit(texture, x, y, hintTexturePosX, hintTexturePosY, 16, 16);
 	}
 }

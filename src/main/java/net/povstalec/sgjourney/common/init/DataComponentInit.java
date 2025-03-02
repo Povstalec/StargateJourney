@@ -43,6 +43,8 @@ public class DataComponentInit
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MaterializationCrystalItem.CrystalMode>> MATERIALIZATION_CRYSTAL_MODE = register("materialization_crystal_mode", builder -> builder.persistent(MaterializationCrystalItem.CRYSTAL_MODE_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MemoryCrystalItem.MemoryType>> MEMORY_CRYSTAL_MODE = register("memory_crystal_mode", builder -> builder.persistent(MemoryCrystalItem.CRYSTAL_MODE_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> NAQUADAH_FUEL = register("naquadah_fuel", builder -> builder.persistent(Codec.INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> FUSION_FUEL = register("fusion_fuel", builder -> builder.persistent(Codec.INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> REACTION_PROGRESS = register("reaction_progress", builder -> builder.persistent(Codec.LONG));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SyringeItem.Contents>> SYRINGE_CONTENTS = register("syringe_contents", builder -> builder.persistent(SyringeItem.CONTENTS_CODEC));
 
 

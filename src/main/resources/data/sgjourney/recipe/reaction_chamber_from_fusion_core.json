@@ -5,5 +5,5 @@
 	[
 		{ "item": "sgjourney:fusion_core" }
 	],
-	"result": { "item": "sgjourney:reaction_chamber", "count": 1 }
+	"result": { "id": "sgjourney:reaction_chamber", "count": 1 }
 }

@@ -3,13 +3,15 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -37,21 +39,21 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
-		super.deserializeStargateInfo(tag, isUpgraded);
+		super.deserializeStargateInfo(tag, registries, isUpgraded);
 		
-		short irisProgress = tag.getShort(IRIS_PROGRESS);
+		short irisProgress = tag.getShort(IrisInfo.Interface.IRIS_PROGRESS);
 		irisInfo().setIrisProgress(irisProgress, irisProgress);
-		irisInfo().deserializeIrisInventory(tag.getCompound(IRIS_INVENTORY));
+		irisInfo().deserializeIrisInventory(registries, tag.getCompound(IrisInfo.Interface.IRIS_INVENTORY));
 	}
 	
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.serializeStargateInfo(tag);
+		super.serializeStargateInfo(tag, registries);
 		
-		tag.putShort(IRIS_PROGRESS, irisInfo().getIrisProgress());
-		tag.put(IRIS_INVENTORY, irisInfo().serializeIrisInventory());
+		tag.putShort(IrisInfo.Interface.IRIS_PROGRESS, irisInfo().getIrisProgress());
+		tag.put(IrisInfo.Interface.IRIS_INVENTORY, irisInfo().serializeIrisInventory(registries));
 		
 		return tag;
 	}
@@ -128,7 +130,7 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 		if(level.isClientSide())
 			return false;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, irisInfo().getIrisProgress(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, irisInfo().getIris()));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, irisInfo().getIrisProgress(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, irisInfo().getIris()));
 		return true;
 	}
 }

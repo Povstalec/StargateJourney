@@ -98,10 +98,9 @@ public class CartoucheBlockItem extends BlockItem
 		if(baseEntity instanceof CartoucheEntity cartouche)
 		{
 			cartouche.setNew();
-			System.out.println("Setting new");
 			if(info.contains(CartoucheEntity.DIMENSION) && !info.contains(CartoucheEntity.ADDRESS))
 			{
-				cartouche.setDimension(new ResourceLocation(info.getString(CartoucheEntity.DIMENSION)));
+				cartouche.setDimension(ResourceLocation.tryParse(info.getString(CartoucheEntity.DIMENSION)));
 				cartouche.setAddressFromDimension();
 			}
 			return true;

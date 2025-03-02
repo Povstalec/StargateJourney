@@ -276,7 +276,7 @@ public class Universe extends SavedData
 		
 		Address.Immutable extragalacticAddress = generateExtragalacticAddress(milkyWayPrefix, seed);
 		
-		ResourceLocation galaxyID = new ResourceLocation(StargateJourney.MODID, "milky_way");
+		ResourceLocation galaxyID = StargateJourney.sgjourneyLocation("milky_way");
 		Galaxy.Serializable galaxy = this.galaxies.get(galaxyID);
 		
 		ResourceKey<PointOfOrigin> pointOfOrigin;

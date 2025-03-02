@@ -7,8 +7,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,8 +19,6 @@ import java.util.Random;
 
 public class FusionCoreItem extends Item implements IEnergyCore
 {
-	public static final String FUEL = "fuel";
-	
 	public FusionCoreItem(Properties properties)
 	{
 		super(properties);
@@ -49,10 +49,7 @@ public class FusionCoreItem extends Item implements IEnergyCore
 	
 	public static int getFuel(ItemStack energyCore)
 	{
-		if(!energyCore.hasTag() || !energyCore.getTag().contains(FUEL))
-			return getMaxFuel();
-		
-		return energyCore.getTag().getInt(FUEL);
+		return energyCore.getOrDefault(DataComponentInit.NAQUADAH_FUEL, getMaxFuel());
 	}
 	
 	public static int getMaxFuel()
@@ -61,13 +58,13 @@ public class FusionCoreItem extends Item implements IEnergyCore
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		if(showEnergy())
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.fusion_core.fuel").append(Component.literal(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.AQUA));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.fusion_core.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 	
 	
@@ -84,24 +81,14 @@ public class FusionCoreItem extends Item implements IEnergyCore
 		if(CommonTechConfig.fusion_core_infinite_energy.get())
 			return maxGeneratedEnergy(energyCore, input);
 		
-		CompoundTag tag = energyCore.getOrCreateTag();
-		
-		if(tag.contains(FUEL))
+		int fuel = getFuel(energyCore);
+		if(fuel > 0)
 		{
-			int fuel = tag.getInt(FUEL);
-			if(fuel > 0)
-			{
-				tag.putInt(FUEL, fuel - 1);
-				return maxGeneratedEnergy(energyCore, input);
-			}
-			else
-				return 0;
-		}
-		else
-		{
-			tag.putInt(FUEL, getMaxFuel() - 1);
+			energyCore.set(DataComponentInit.FUSION_FUEL, fuel - 1);
 			return maxGeneratedEnergy(energyCore, input);
 		}
+		else
+			return 0;
 	}
 	
 	public static ItemStack randomFusionCore(int minCapacity, int maxCapacity)
@@ -109,7 +96,7 @@ public class FusionCoreItem extends Item implements IEnergyCore
 		ItemStack fusionCore = new ItemStack(ItemInit.FUSION_CORE.get());
 		Random random = new Random();
 		
-		fusionCore.getOrCreateTag().putInt(FUEL, random.nextInt(minCapacity, maxCapacity + 1));
+		fusionCore.set(DataComponentInit.FUSION_FUEL, random.nextInt(minCapacity, maxCapacity + 1));
 		
 		return fusionCore;
 	}

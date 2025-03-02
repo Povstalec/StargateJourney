@@ -173,7 +173,7 @@ public class DHDInfo
 	
 	public interface Interface
 	{
-		String DHD_POS = "DHDPos";
+		String DHD_POS = "dhd_pos";
 		
 		DHDInfo dhdInfo();
 	}
