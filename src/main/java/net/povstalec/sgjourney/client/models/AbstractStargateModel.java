@@ -20,6 +20,8 @@ import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
+import javax.annotation.Nullable;
+
 public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity, Variant extends ClientStargateVariant>
 {
 	protected static final float DEFAULT_RADIUS = 3.5F;
@@ -48,73 +50,46 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		this.numberOfSymbols = numberOfSymbols;
 	}
 	
-	protected Optional<PointOfOrigin> getPointOfOrigin(AbstractStargateEntity stargate, Variant stargateVariant)
+	@Nullable
+	protected PointOfOrigin getPointOfOrigin(AbstractStargateEntity stargate, Variant stargateVariant)
 	{
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
 		if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
-			return Optional.ofNullable(pointOfOriginRegistry.get(stargateVariant.symbols().permanentPointOfOrigin().get()));
+			return pointOfOriginRegistry.get(stargateVariant.symbols().permanentPointOfOrigin().get());
 		else
-		{
-			String pointOfOrigin = stargate.getPointOfOrigin();
-			
-			ResourceLocation location = ResourceLocation.tryParse(pointOfOrigin);
-			if(location != null)
-				return Optional.ofNullable(pointOfOriginRegistry.get(location));
-		}
-		
-		return Optional.empty();
+			return pointOfOriginRegistry.get(stargate.symbolInfo().pointOfOrigin());
 	}
 	
-	protected ResourceLocation getPointOfOriginTexture(Optional<PointOfOrigin> pointOfOrigin)
+	protected ResourceLocation getPointOfOriginTexture(@Nullable PointOfOrigin pointOfOrigin)
 	{
-		if(pointOfOrigin.isPresent())
-			return pointOfOrigin.get().texture();
+		if(pointOfOrigin != null)
+			return pointOfOrigin.texture();
 		
 		return EMPTY_LOCATION;
 	}
 	
-	protected Optional<Symbols> getSymbols(AbstractStargateEntity stargate, Variant stargateVariant)
+	@Nullable
+	protected Symbols getSymbols(AbstractStargateEntity stargate, Variant stargateVariant)
 	{
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
 		if(stargateVariant.symbols().permanentSymbols().isPresent())
-			return Optional.ofNullable(symbolRegistry.get(stargateVariant.symbols().permanentSymbols().get()));
+			return symbolRegistry.get(stargateVariant.symbols().permanentSymbols().get());
 		else
-		{
-			String symbols = stargate.getSymbols();
-			
-			ResourceLocation location = ResourceLocation.tryParse(symbols);
-			if(location != null)
-				return Optional.ofNullable(symbolRegistry.get(location));
-		}
-		
-		return Optional.empty();
+			return symbolRegistry.get(stargate.symbolInfo().symbols());
 	}
 	
-	protected ResourceLocation getSymbolTexture(Optional<Symbols> symbols)
+	protected ResourceLocation getSymbolTexture(@Nullable Symbols symbols)
 	{
-		if(symbols.isPresent())
-			return symbols.get().getSymbolTexture();
+		if(symbols != null)
+			return symbols.getSymbolTexture();
 		
 		return EMPTY_LOCATION;
-	}
-	
-	private boolean isLocationValid(String location)
-	{
-		String[] split = location.split(":");
-		
-		if(split.length != 2)
-			return false;
-		
-		if(!ResourceLocation.isValidNamespace(split[0]))
-			return false;
-		
-		return ResourceLocation.isValidPath(split[1]);
 	}
 	
 	//============================================================================================

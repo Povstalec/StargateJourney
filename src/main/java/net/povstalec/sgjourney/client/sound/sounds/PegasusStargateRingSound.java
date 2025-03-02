@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.client.sound.sounds;
 import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 
-public class PegasusStargateRingSound extends StargateSound
+public class PegasusStargateRingSound extends StargateSound<PegasusStargateEntity>
 {
 	private static final float VOLUME_MAX = 0.1F;
 	public PegasusStargateRingSound(PegasusStargateEntity stargate, SoundEvent soundEvent)

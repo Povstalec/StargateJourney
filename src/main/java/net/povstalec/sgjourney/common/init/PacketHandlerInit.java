@@ -3,29 +3,7 @@ package net.povstalec.sgjourney.common.init;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundDialerOpenScreenPacket;
-import net.povstalec.sgjourney.common.packets.ClientboundGDOOpenScreenPacket;
-import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
-import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundTransceiverUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ServerboundGDOUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.common.packets.ServerboundTransceiverUpdatePacket;
+import net.povstalec.sgjourney.common.packets.*;
 
 public final class PacketHandlerInit
 {
@@ -81,7 +59,6 @@ public final class PacketHandlerInit
 				ClientboundDHDUpdatePacket.STREAM_CODEC,
 				(packet, context) -> ClientboundDHDUpdatePacket.handle(packet, context));
 		
-		
 		//Stargate Info
 		registrar.playToClient(
 				ClientboundStargateParticleSpawnPacket.TYPE,
@@ -92,6 +69,11 @@ public final class PacketHandlerInit
 				ClientboundStargateUpdatePacket.TYPE,
 				ClientboundStargateUpdatePacket.STREAM_CODEC,
 				(packet, context) -> ClientboundStargateUpdatePacket.handle(packet, context));
+		
+		registrar.playToClient(
+				ClientboundRotatingStargateUpdatePacket.TYPE,
+				ClientboundRotatingStargateUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundRotatingStargateUpdatePacket.handle(packet, context));
 		
 		registrar.playToClient(
 				ClientboundStargateStateUpdatePacket.TYPE,
@@ -185,16 +167,14 @@ public final class PacketHandlerInit
 				(packet, context) -> ClientBoundSoundPackets.UniverseStart.handle(packet, context));
 		
 		registrar.playToClient(
-				ClientBoundSoundPackets.MilkyWayBuildup.TYPE,
-				ClientBoundSoundPackets.MilkyWayBuildup.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.MilkyWayBuildup.handle(packet, context));
+				ClientBoundSoundPackets.RotationStartup.TYPE,
+				ClientBoundSoundPackets.RotationStartup.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.RotationStartup.handle(packet, context));
 		
 		registrar.playToClient(
-				ClientBoundSoundPackets.MilkyWayStop.TYPE,
-				ClientBoundSoundPackets.MilkyWayStop.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.MilkyWayStop.handle(packet, context));
-		
-		
+				ClientBoundSoundPackets.RotationStop.TYPE,
+				ClientBoundSoundPackets.RotationStop.STREAM_CODEC,
+				(packet, context) -> ClientBoundSoundPackets.RotationStop.handle(packet, context));
 		
 		//============================================================================================
 		//****************************************Server-bound****************************************

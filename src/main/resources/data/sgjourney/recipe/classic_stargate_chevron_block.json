@@ -10,7 +10,7 @@
 	
 	"key": 
 	{
-		"N": { "tag": "sgjourney:naquadah" },
+		"N": { "tag": "sgjourney:refined_naquadah" },
 		"A": { "tag": "sgjourney:naquadah_alloy" },
 		"E": { "item": "sgjourney:materialization_crystal" },
 		"T": { "item": "sgjourney:transfer_crystal" },

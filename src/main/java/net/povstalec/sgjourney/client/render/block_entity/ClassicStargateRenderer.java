@@ -71,10 +71,10 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicSta
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Axis.XP.rotationDegrees(90));
 		
-        this.stargateModel.setRotation(stargate.getRotation(partialTick));
+        this.stargateModel.setRotation(stargate.getRotationDegrees(partialTick));
 		this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
 
-		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.getIrisProgress(partialTick));
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
 		
 	    this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
 	    

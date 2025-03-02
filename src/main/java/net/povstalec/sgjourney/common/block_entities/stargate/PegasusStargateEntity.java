@@ -3,6 +3,9 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -22,13 +25,15 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 
-public class PegasusStargateEntity extends AbstractStargateEntity
+public class PegasusStargateEntity extends IrisStargateEntity
 {
 	public static final String ADDRESS_BUFFER = "address_buffer";
 	public static final String SYMBOL_BUFFER = "symbol_buffer";
 	public static final String CURRENT_SYMBOL = "current_symbol";
 	
 	public static final String DYNAMC_SYMBOLS = "dynamic_symbols";
+	
+	public static final int TOTAL_SYMBOLS = 48;
 
 	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("pegasus/pegasus_back_chevron");
 	
@@ -41,9 +46,20 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateJourney.sgjourneyLocation("pegasus/pegasus"), pos, state, Stargate.Gen.GEN_3, 3);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateJourney.sgjourneyLocation("pegasus/pegasus"), pos, state,
+				TOTAL_SYMBOLS, Stargate.Gen.GEN_3, 3);
 		this.setOpenSoundLead(13);
-		this.symbolBounds = 47;
+		
+		this.dhdInfo = new DHDInfo(this)
+		{
+			@Override
+			public void updateDHD()
+			{
+				if(hasDHD())
+					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
+							addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
+			}
+		};
 	}
 	
 	@Override
@@ -53,12 +69,12 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 
         if(this.level.isClientSide())
         	return;
-
-        if(!isNew && !isPointOfOriginValid(this.getLevel()))
-        	setPointOfOriginFromDimension(this.getLevel().dimension());
-
-        if(!isNew && !areSymbolsValid(this.getLevel()))
-        	setSymbolsFromDimension(this.getLevel().dimension());
+		
+		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+		
+		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
     }
 	
 	@Override
@@ -74,8 +90,8 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 
         if(!dynamicSymbols)
         {
-    		pointOfOrigin = tag.getString(POINT_OF_ORIGIN);
-    		symbols = tag.getString(SYMBOLS);
+			symbolInfo().setPointOfOrigin(ResourceLocation.tryParse(tag.getString(POINT_OF_ORIGIN)));
+			symbolInfo().setSymbols(ResourceLocation.tryParse(tag.getString(SYMBOLS)));
         }
     }
 	
@@ -92,23 +108,19 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 
         if(!dynamicSymbols)
         {
-    		tag.putString(POINT_OF_ORIGIN, pointOfOrigin);
-    		tag.putString(SYMBOLS, symbols);
+			tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+			tag.putString(SYMBOLS, symbolInfo().symbols().toString());
         }
 	}
+	
+	//============================================================================================
+	//*******************************************Other********************************************
+	//============================================================================================
 	
 	@Override
 	public ResourceLocation defaultVariant()
 	{
-		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();//TODO I hope this thing doesn't crash on servers
-	}
-	
-	@Override
-	public void updateDHD()
-	{
-		if(hasDHD())
-			this.dhd.get().updateDHD(!this.isConnected() || (this.isConnected() && this.isDialingOut()) ? 
-					addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || this.isConnected());
+		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();
 	}
 	
 	public void dynamicSymbols(boolean dynamicSymbols)
@@ -148,6 +160,9 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 				PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		addressBuffer.addSymbol(symbol);
+		
+		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, spinClockwise());
+		
 		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
 	}
 	
@@ -199,7 +214,10 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 			if(symbol == 0)
 			{
 				if(currentSymbol == getChevronPosition(9))
+				{
+					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 					lockPrimaryChevron();
+				}
 				else
 					symbolWork();
 			}
@@ -211,7 +229,10 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 					symbolWork();
 				}
 				else
+				{
+					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 					encodeChevron(symbol, false, false);
+				}
 			}
 			else
 				symbolWork();
@@ -225,26 +246,31 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		
 		stargate.animateSpin();
 		
-		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		AbstractStargateEntity.tick(level, pos, state, stargate);
 		stargate.updateClient();
 	}
 	
 	@Override
-	public void updateClient()
+	public boolean updateClient()
 	{
-		super.updateClient();
+		if(!super.updateClient())
+			return false;
 		
-		if(this.level.isClientSide())
-			return;
 		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.currentSymbol));
+		return true;
+	}
+	
+	private boolean spinClockwise()
+	{
+		return symbolBuffer % 2 != 0;
 	}
 	
 	private void symbolWork()
 	{
-		if(symbolBuffer % 2 == 0)
-			currentSymbol--;
-		else
+		if(spinClockwise())
 			currentSymbol++;
+		else
+			currentSymbol--;
 
 		if(currentSymbol > 35)
 			currentSymbol = 0;

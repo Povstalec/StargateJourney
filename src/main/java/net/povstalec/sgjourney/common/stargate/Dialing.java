@@ -115,12 +115,12 @@ public class Dialing
 				if(targetStargate.isObstructed())
 					return dialingStargate.resetStargate(server, Stargate.Feedback.TARGET_OBSTRUCTED);
 				
-				else if(targetStargate.getFilterType().shouldFilter())
+				else if(targetStargate.addressFilterInfo().getFilterType().shouldFilter())
 				{
-					if(targetStargate.getFilterType().isBlacklist() && targetStargate.isAddressBlacklisted(dialingAddress))
+					if(targetStargate.addressFilterInfo().getFilterType().isBlacklist() && targetStargate.addressFilterInfo().isAddressBlacklisted(dialingAddress))
 						return dialingStargate.resetStargate(server, Stargate.Feedback.BLACKLISTED_SELF);
 					
-					else if(targetStargate.getFilterType().isWhitelist() && !targetStargate.isAddressWhitelisted(dialingAddress))
+					else if(targetStargate.addressFilterInfo().getFilterType().isWhitelist() && !targetStargate.addressFilterInfo().isAddressWhitelisted(dialingAddress))
 						return dialingStargate.resetStargate(server, Stargate.Feedback.WHITELISTED_SELF);
 				}
 				
@@ -155,8 +155,8 @@ public class Dialing
 				{
 					// If Stargate isn't obstructed and it's network isn't restricted, connect
 					if(!targetStargateEntity.isObstructed() && !targetStargateEntity.isRestricted(dialingStargate.getNetwork()) &&
-							!(targetStargateEntity.getFilterType().isBlacklist() && targetStargateEntity.isAddressBlacklisted(dialingAddress)) &&
-							!(targetStargateEntity.getFilterType().isWhitelist() && !targetStargateEntity.isAddressWhitelisted(dialingAddress)))
+							!(targetStargateEntity.addressFilterInfo().getFilterType().isBlacklist() && targetStargateEntity.addressFilterInfo().isAddressBlacklisted(dialingAddress)) &&
+							!(targetStargateEntity.addressFilterInfo().getFilterType().isWhitelist() && !targetStargateEntity.addressFilterInfo().isAddressWhitelisted(dialingAddress)))
 						return connectStargates(level.getServer(), dialingStargate, targetStargate, addressType, doKawoosh);
 					
 					// If last Stargate is obstructed
@@ -168,11 +168,11 @@ public class Dialing
 						return dialingStargate.resetStargate(server, Stargate.Feedback.TARGET_RESTRICTED);
 
 					// If last Stargate has a blacklist
-					else if(targetStargateEntity.getFilterType().isBlacklist() && targetStargateEntity.isAddressBlacklisted(dialingAddress) && isLastStargate)
+					else if(targetStargateEntity.addressFilterInfo().getFilterType().isBlacklist() && targetStargateEntity.addressFilterInfo().isAddressBlacklisted(dialingAddress) && isLastStargate)
 							return dialingStargate.resetStargate(server, Stargate.Feedback.BLACKLISTED_SELF);
 
 					// If last Stargate has a whitelist
-					else if(targetStargateEntity.getFilterType().isWhitelist() && !targetStargateEntity.isAddressWhitelisted(dialingAddress) && isLastStargate)
+					else if(targetStargateEntity.addressFilterInfo().getFilterType().isWhitelist() && !targetStargateEntity.addressFilterInfo().isAddressWhitelisted(dialingAddress) && isLastStargate)
 						return dialingStargate.resetStargate(server, Stargate.Feedback.WHITELISTED_SELF);
 				}
 			}

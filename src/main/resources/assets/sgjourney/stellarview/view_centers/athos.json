@@ -1,0 +1,82 @@
+{
+	"view_center": "sgjourney:planet/pegasus/athos_system/athos",
+	
+	"axis_rotation": { "x_axis": 0, "y_axis": -90, "z_axis": -90 },
+	"rotation_period": 24000,
+	
+	"day_max_brightness": 1,
+	"day_min_visible_size": 10,
+	"day_max_visible_size": 30,
+	
+	"shooting_star":
+	{
+		"meteor_types":
+		[
+			{
+				"weight": 10,
+				"texture_layers":
+				[
+					{
+						"texture": "stellarview:textures/environment/sky_effect/meteor/meteor_orange.png",
+						"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+						"blend": true,
+						"size": 1,
+						"rotation": 0,
+						"uv": { "flip_uv": false }
+					}
+				]
+			},
+			{
+				"weight": 5,
+				"texture_layers":
+				[
+					{
+						"texture": "stellarview:textures/environment/sky_effect/meteor/meteor_yellow.png",
+						"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+						"blend": true,
+						"size": 1,
+						"rotation": 0,
+						"uv": { "flip_uv": false }
+					}
+				]
+			}
+		],
+		"probability": 50
+	},
+
+	"meteor_shower":
+	{
+		"meteor_types":
+		[
+			{
+				"weight": 10,
+				"texture_layers":
+				[
+					{
+						"texture": "stellarview:textures/environment/sky_effect/meteor/meteor_orange.png",
+						"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+						"blend": true,
+						"size": 1,
+						"rotation": 0,
+						"uv": { "flip_uv": false }
+					}
+				]
+			},
+			{
+				"weight": 5,
+				"texture_layers":
+				[
+					{
+						"texture": "stellarview:textures/environment/sky_effect/meteor/meteor_yellow.png",
+						"rgba": {"red": 255, "green": 255, "blue": 255, "alpha": 255},
+						"blend": true,
+						"size": 1,
+						"rotation": 0,
+						"uv": { "flip_uv": false }
+					}
+				]
+			}
+		],
+		"probability": 50
+	}
+}

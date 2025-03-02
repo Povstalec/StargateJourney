@@ -26,7 +26,6 @@ public class CrystallizerMenu extends AbstractContainerMenu
     
     public CrystallizerMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
     {
-       // this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
         this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
@@ -41,15 +40,25 @@ public class CrystallizerMenu extends AbstractContainerMenu
         addPlayerInventory(inventory);
         addPlayerHotbar(inventory);
         
-        IItemHandler cap = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), null);
-        if(cap != null)
-        {
-            this.addSlot(new SlotItemHandler(cap, 0, 80, 20));
-            this.addSlot(new SlotItemHandler(cap, 1, 67, 50));
-            this.addSlot(new SlotItemHandler(cap, 2, 93, 50));
-            this.addSlot(new SlotItemHandler(cap, 3, 130, 36));
-            this.addSlot(new SlotItemHandler(cap, 4, 34, 20));
-        }
+        IItemHandler cap0 = this.blockEntity.getItemHandler(0).get();
+        if(cap0 != null)
+            this.addSlot(new SlotItemHandler(cap0, 0, 80, 20));
+        
+        IItemHandler cap1 = this.blockEntity.getItemHandler(1).get();
+        if(cap1 != null)
+            this.addSlot(new SlotItemHandler(cap1, 0, 67, 50));
+        
+        IItemHandler cap2 = this.blockEntity.getItemHandler(2).get();
+        if(cap2 != null)
+            this.addSlot(new SlotItemHandler(cap2, 0, 93, 50));
+        
+        IItemHandler cap3 = this.blockEntity.getItemHandler(3).get();
+        if(cap3 != null)
+            this.addSlot(new SlotItemHandler(cap3, 0, 130, 36));
+        
+        IItemHandler cap4 = this.blockEntity.getItemHandler(4).get();
+        if(cap4 != null)
+            this.addSlot(new SlotItemHandler(cap4, 0, 34, 20));
     }
     
     public void setFluid(FluidStack fluidStack)

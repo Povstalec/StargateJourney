@@ -18,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -26,14 +25,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
-import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
+public class MilkyWayStargateBlock extends RotatingStargateBaseBlock
 {
 	public MilkyWayStargateBlock(Properties properties)
 	{
@@ -73,25 +71,6 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	{
 		return createTickerHelper(type, BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateEntity::tick);
     }
-	
-	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos pos2, boolean bool)
-	{
-		if(level.isClientSide())
-			return;
-		
-		boolean hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
-		
-		BlockEntity blockentity = level.getBlockEntity(pos);
-		
-		if(blockentity instanceof MilkyWayStargateEntity stargate)
-		{
-			if(hasSignal)
-				stargate.updateSignal(StargatePart.BASE, level.getBestNeighborSignal(pos));
-			else
-				stargate.updateSignal(StargatePart.BASE, 0);
-		}
-	}
 	
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)

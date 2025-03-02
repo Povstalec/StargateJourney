@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -10,56 +11,95 @@ import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.SolarSystem;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
+import javax.annotation.Nullable;
+
 public class Conversion
 {
+	public static final ResourceLocation DIMENSION_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "dimension");
+	public static final ResourceKey<Registry<Level>> DIMENSION_KEY = ResourceKey.createRegistryKey(DIMENSION_LOCATION);
+	
+	@Nullable
+	public static ResourceKey<Level> locationToDimension(ResourceLocation location)
+	{
+		if(location != null)
+			return ResourceKey.create(DIMENSION_KEY, location);
+		
+		return null;
+	}
+	
+	@Nullable
 	public static ResourceKey<Level> stringToDimension(String dimensionString)
 	{
-		String[] split = dimensionString.split(":");
+		ResourceLocation location = ResourceLocation.tryParse(dimensionString);
 		
-		if(split.length > 1)
-			return ResourceKey.create(ResourceKey.createRegistryKey(StargateJourney.location("minecraft", "dimension")), StargateJourney.location(split[0], split[1]));
+		if(location != null)
+			return locationToDimension(location);
 		
 		return null;
 	}
 	
+	@Nullable
+	public static ResourceKey<PointOfOrigin> locationToPointOfOrigin(ResourceLocation location)
+	{
+		if(location != null)
+			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, location);
+		
+		return null;
+	}
+	
+	@Nullable
 	public static ResourceKey<PointOfOrigin> stringToPointOfOrigin(String pointOfOriginString)
 	{
-		String[] split = pointOfOriginString.split(":");
-		
-		if(split.length > 1)
-			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, StargateJourney.location(split[0], split[1]));
+		ResourceLocation location = ResourceLocation.tryParse(pointOfOriginString);
+		return locationToPointOfOrigin(location);
+	}
+	
+	@Nullable
+	public static ResourceKey<Symbols> locationToSymbols(ResourceLocation location)
+	{
+		if(location != null)
+			return ResourceKey.create(Symbols.REGISTRY_KEY, location);
 		
 		return null;
 	}
 	
+	@Nullable
 	public static ResourceKey<Symbols> stringToSymbols(String symbolsString)
 	{
-		String[] split = symbolsString.split(":");
-		
-		if(split.length > 1)
-			return ResourceKey.create(Symbols.REGISTRY_KEY, StargateJourney.location(split[0], split[1]));
+		ResourceLocation location = ResourceLocation.tryParse(symbolsString);
+		return locationToSymbols(location);
+	}
+	
+	@Nullable
+	public static ResourceKey<Galaxy> locationToGalaxyKey(ResourceLocation location)
+	{
+		if(location != null)
+			return ResourceKey.create(Galaxy.REGISTRY_KEY, location);
 		
 		return null;
 	}
 	
+	@Nullable
 	public static ResourceKey<Galaxy> stringToGalaxyKey(String galaxyString)
 	{
-		String[] split = galaxyString.split(":");
-		
-		if(split.length > 1)
-			return ResourceKey.create(Galaxy.REGISTRY_KEY, StargateJourney.location(split[0], split[1]));
+		ResourceLocation location = ResourceLocation.tryParse(galaxyString);
+		return locationToGalaxyKey(location);
+	}
+	
+	@Nullable
+	public static ResourceKey<SolarSystem> locationToSolarSystemKey(ResourceLocation location)
+	{
+		if(location != null)
+			return ResourceKey.create(SolarSystem.REGISTRY_KEY, location);
 		
 		return null;
 	}
 	
+	@Nullable
 	public static ResourceKey<SolarSystem> stringToSolarSystemKey(String solarSystemString)
 	{
-		String[] split = solarSystemString.split(":");
-		
-		if(split.length > 1)
-			return ResourceKey.create(SolarSystem.REGISTRY_KEY, StargateJourney.location(split[0], split[1]));
-		
-		return null;
+		ResourceLocation location = ResourceLocation.tryParse(solarSystemString);
+		return locationToSolarSystemKey(location);
 	}
 	
 	public static BlockPos intArrayToBlockPos(int[] coordinates)

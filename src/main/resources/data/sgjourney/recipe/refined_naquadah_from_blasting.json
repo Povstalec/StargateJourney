@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:blasting",
+	"category": "equipment",
+	"ingredient": { "item": "sgjourney:raw_naquadah_block" },
+<<<<<<<< HEAD:src/main/resources/data/sgjourney/recipe/temp_pure_naquadah_from_blasting.json
+	"result": { "id": "sgjourney:pure_naquadah" },
+========
+	"result": { "item": "sgjourney:refined_naquadah" },
+>>>>>>>> stargatejourney-1.19.3:src/main/resources/data/sgjourney/recipe/refined_naquadah_from_blasting.json
+	"experience": 1.0,
+	"cookingtime": 300
+}

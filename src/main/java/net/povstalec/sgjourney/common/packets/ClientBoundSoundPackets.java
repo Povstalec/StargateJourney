@@ -218,19 +218,19 @@ public abstract class ClientBoundSoundPackets
         {
             ctx.enqueueWork(() ->
             {
-            	SoundAccess.playUniverseStartSound(packet.blockPos);
+            	SoundAccess.playUniverseDialStartSound(packet.blockPos);
             });
         }
     }
     
-    public static record MilkyWayBuildup(BlockPos blockPos) implements CustomPacketPayload
+    public static record RotationStartup(BlockPos blockPos) implements CustomPacketPayload
     {
-		public static final CustomPacketPayload.Type<MilkyWayBuildup> TYPE =
-				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_milky_way_buildup_sound"));
+		public static final CustomPacketPayload.Type<RotationStartup> TYPE =
+				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_rotation_startup_sound"));
 		
-		public static final StreamCodec<RegistryFriendlyByteBuf, MilkyWayBuildup> STREAM_CODEC = StreamCodec.composite(
-				BlockPos.STREAM_CODEC, MilkyWayBuildup::blockPos,
-				MilkyWayBuildup::new
+		public static final StreamCodec<RegistryFriendlyByteBuf, RotationStartup> STREAM_CODEC = StreamCodec.composite(
+				BlockPos.STREAM_CODEC, RotationStartup::blockPos,
+				RotationStartup::new
 		);
 		
 		@Override
@@ -239,23 +239,23 @@ public abstract class ClientBoundSoundPackets
 			return TYPE;
 		}
 		
-		public static void handle(MilkyWayBuildup packet, IPayloadContext ctx)
+		public static void handle(RotationStartup packet, IPayloadContext ctx)
         {
             ctx.enqueueWork(() ->
             {
-            	SoundAccess.playMilkyWayBuildupSound(packet.blockPos);
+            	SoundAccess.playRotationStartupSound(packet.blockPos);
             });
         }
     }
     
-    public static record MilkyWayStop(BlockPos blockPos) implements CustomPacketPayload
+    public static record RotationStop(BlockPos blockPos) implements CustomPacketPayload
     {
-		public static final CustomPacketPayload.Type<MilkyWayStop> TYPE =
-				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_milky_way_stop_sound"));
+		public static final CustomPacketPayload.Type<RotationStop> TYPE =
+				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_rotation_stop_sound"));
 		
-		public static final StreamCodec<RegistryFriendlyByteBuf, MilkyWayStop> STREAM_CODEC = StreamCodec.composite(
-				BlockPos.STREAM_CODEC, MilkyWayStop::blockPos,
-				MilkyWayStop::new
+		public static final StreamCodec<RegistryFriendlyByteBuf, RotationStop> STREAM_CODEC = StreamCodec.composite(
+				BlockPos.STREAM_CODEC, RotationStop::blockPos,
+				RotationStop::new
 		);
 		
 		@Override
@@ -264,11 +264,11 @@ public abstract class ClientBoundSoundPackets
 			return TYPE;
 		}
 		
-		public static void handle(MilkyWayStop packet, IPayloadContext ctx)
+		public static void handle(RotationStop packet, IPayloadContext ctx)
         {
             ctx.enqueueWork(() ->
             {
-            	SoundAccess.playMilkyWayStopSound(packet.blockPos);
+            	SoundAccess.playRotationStopSound(packet.blockPos);
             });
         }
     }

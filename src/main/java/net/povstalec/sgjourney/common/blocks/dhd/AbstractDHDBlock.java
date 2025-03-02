@@ -2,8 +2,10 @@ package net.povstalec.sgjourney.common.blocks.dhd;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -14,8 +16,11 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -31,6 +36,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
+
+import java.util.List;
 
 
 public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -147,5 +154,18 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typeA, BlockEntityType<E> typeB, BlockEntityTicker<? super E> ticker)
 	{
 		return typeB == typeA ? (BlockEntityTicker<A>)ticker : null;
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		if(stack.hasTag())
+		{
+			CompoundTag blockEntityTag = BlockItem.getBlockEntityData(stack);
+			if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATE_ENERGY_CORE))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.dhd.generates_energy_core").withStyle(ChatFormatting.YELLOW));
+		}
+		
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}
 }

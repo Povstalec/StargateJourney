@@ -45,7 +45,7 @@ import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
-public class ClassicStargateBlock extends AbstractStargateBaseBlock
+public class ClassicStargateBlock extends RotatingStargateBaseBlock
 {
 	public ClassicStargateBlock(Properties properties)
 	{

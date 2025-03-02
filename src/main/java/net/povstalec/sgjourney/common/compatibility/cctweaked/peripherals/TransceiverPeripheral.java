@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.TransceiverMethod;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.TransceiverMethods;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.TransceiverFunctions;
 
 public class TransceiverPeripheral implements IPeripheral, IDynamicPeripheral
 {
@@ -108,12 +109,12 @@ public class TransceiverPeripheral implements IPeripheral, IDynamicPeripheral
 	@LuaFunction(mainThread = true)
 	public final int getFrequency() throws LuaException
 	{
-		return transceiverEntity.getFrequency();
+		return TransceiverFunctions.getFrequency(transceiverEntity);
 	}
 
 	@LuaFunction(mainThread = true)
 	public final String getCurrentCode() throws LuaException
 	{
-		return transceiverEntity.getCurrentCode();
+		return TransceiverFunctions.getCurrentCode(transceiverEntity);
 	}
 }

@@ -31,7 +31,7 @@ public class HeavyNaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEnt
 	@Override
 	protected boolean hasMaterial()
 	{
-		return itemStackHandler.getStackInSlot(0).is(ItemInit.PURE_NAQUADAH.get());
+		return itemInputHandler.getStackInSlot(0).is(ItemInit.PURE_NAQUADAH.get());
 	}
 
 	@Override

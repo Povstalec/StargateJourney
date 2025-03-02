@@ -187,9 +187,8 @@ public class ClientStargateVariants
 			return getMilkyWayStargateVariant(location);
 		else if(stargate instanceof PegasusStargateEntity)
 			return getPegasusStargateVariant(location);
-
-		//else if(stargate instanceof ClassicStargateEntity)
-		//	return getClassicStargateVariant(location);
+		else if(stargate instanceof ClassicStargateEntity)
+			return getClassicStargateVariant(location);
 		
 		// Milky Way Stargate Variant will be the defaultest of defaults
 		return MilkyWayStargateVariant.DEFAULT_VARIANT;
@@ -209,7 +208,7 @@ public class ClientStargateVariants
 		
 		ResourceLocation variant = stargate.getVariant();
 		
-		if(variant == null)
+		if(variant == null || StargateJourney.EMPTY_LOCATION.equals(variant))
 			return optional;
 		
 		ClientPacketListener clientPacketListener = minecraft.getConnection();

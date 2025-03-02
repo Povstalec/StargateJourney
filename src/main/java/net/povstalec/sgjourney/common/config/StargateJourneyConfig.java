@@ -30,6 +30,10 @@ public class StargateJourneyConfig
 		CommonZPMConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
 		
+		COMMON_BUILDER.push("DHD Config");
+		CommonDHDConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
 		COMMON_BUILDER.push("Interface Config");
 		CommonInterfaceConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
@@ -106,7 +110,7 @@ public class StargateJourneyConfig
 		server.comment("Stargate Journey General Config");
 		
 		disable_energy_use = new SGJourneyConfigValue.BooleanValue(server, "server.disable_energy_requirements", 
-				true, 
+				false,
 				"Disable energy requirements for blocks added by Stargate Journey");
 	}
 	

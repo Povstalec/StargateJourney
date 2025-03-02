@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import com.mojang.serialization.MapCodec;
@@ -17,13 +15,11 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -36,22 +32,21 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.BlockHitResult;
+import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
-public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterloggedBlock
+import java.util.List;
+
+public class MilkyWayDHDBlock extends CrystalDHDBlock implements SimpleWaterloggedBlock
 {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -145,25 +140,44 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
 		return createTickerHelper(type, BlockEntityInit.MILKY_WAY_DHD.get(), AbstractDHDEntity::tick);
     }
 	
-	public static ItemStack milkyWayCrystalSetup()
+	public static ItemStack milkyWayCrystalSetup(boolean generateFusionCore)
 	{
 		ItemStack stack = new ItemStack(BlockInit.MILKY_WAY_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
-        CompoundTag inventory = new CompoundTag();
         
         blockEntityTag.putString("id", "sgjourney:milky_way_dhd");
-        blockEntityTag.putLong("Energy", 0);
-        
-        inventory.putInt("Size", 9);
-        inventory.put("Items", setupMilkyWayInventory());
-        
-        blockEntityTag.put("Inventory", inventory);
+        blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		
+		CompoundTag crystalInventory = new CompoundTag();
+        crystalInventory.putInt("Size", 9);
+        crystalInventory.put("Items", setupCrystalInventory());
+        blockEntityTag.put(CrystalDHDEntity.CRYSTAL_INVENTORY, crystalInventory);
+		
+		CompoundTag energyInventory = new CompoundTag();
+		energyInventory.putInt("Size", 2);
+		if(generateFusionCore)
+			blockEntityTag.putBoolean(AbstractDHDEntity.GENERATE_ENERGY_CORE, true);
+		else
+		{
+			energyInventory.put("Items", setupEnergyInventory());
+			blockEntityTag.put(AbstractDHDEntity.ENERGY_INVENTORY, energyInventory);
+		}
+		
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		
 		return stack;
 	}
 	
-	private static ListTag setupMilkyWayInventory()
+	private static ListTag setupEnergyInventory()
+	{
+		ListTag nbtTagList = new ListTag();
+		
+		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.FUSION_CORE.get()), 1, null));
+		
+		return nbtTagList;
+	}
+	
+	private static ListTag setupCrystalInventory()
 	{
 		ListTag nbtTagList = new ListTag();
 		
@@ -176,24 +190,4 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
 		
 		return nbtTagList;
 	}
-	
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
-    {
-		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
-		{
-			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
-			ListTag tagList = blockEntityTag.getCompound("Inventory").getList("Items", Tag.TAG_COMPOUND);
-			
-			if(tagList.size() > 0)
-			{
-				CompoundTag list1 = tagList.getCompound(0);
-				
-				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals(InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get())) && list1.contains("count", Tag.TAG_INT) && list1.getInt("count") > 0)
-			        tooltipComponents.add(Component.translatable("tooltip.sgjourney.has_control_crystal").withStyle(ChatFormatting.DARK_RED));
-			}
-		}
-		
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-    }
 }

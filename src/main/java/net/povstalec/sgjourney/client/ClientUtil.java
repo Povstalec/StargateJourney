@@ -13,7 +13,7 @@ public class ClientUtil
 {
 	private static final ResourceLocation UNIVERSAL = StargateJourney.sgjourneyLocation("universal");
 
-	public static final PointOfOrigin getPointOfOrigin(String pointOfOrigin)
+	public static final PointOfOrigin getPointOfOrigin(ResourceLocation pointOfOrigin)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
@@ -21,12 +21,12 @@ public class ClientUtil
 		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 		
 		if(pointOfOrigin != null)
-			return registry.get(ResourceLocation.parse(pointOfOrigin));
+			return registry.get(pointOfOrigin);
 		
 		return registry.get(UNIVERSAL);
 	}
 	
-	public static final Symbols getSymbols(String symbols)
+	public static final Symbols getSymbols(ResourceLocation symbols)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
@@ -34,7 +34,7 @@ public class ClientUtil
 		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 		
 		if(symbols != null)
-			return registry.get(ResourceLocation.parse(symbols));
+			return registry.get(symbols);
 		
 		return registry.get(UNIVERSAL);
 	}

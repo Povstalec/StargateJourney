@@ -98,7 +98,7 @@ public class ForgeEvents
 			return;
 		
 		if(event.getEntity() instanceof AbstractVillager villager)
-			AncientGene.inheritGene(villager, CommonGeneticConfig.villager_player_ata_gene_inheritance_chance.get());
+			AncientGene.inheritGene(villager, CommonGeneticConfig.villager_ata_gene_inheritance_chance.get());
 		
 		// Lightning recharging the Stargate
 		if(entity instanceof LightningBolt lightning)

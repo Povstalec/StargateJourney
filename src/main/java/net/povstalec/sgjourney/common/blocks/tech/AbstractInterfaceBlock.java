@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
@@ -221,8 +222,9 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	
 	private int getIrisOutput(EnergyBlockEntity blockEntity)
 	{
-		if(blockEntity instanceof AbstractStargateEntity stargate)
-			return Math.round(15 * (float) stargate.getIrisProgress() / ShieldingState.MAX_PROGRESS);
+		if(blockEntity instanceof IrisStargateEntity stargate)
+			return Math.round(15 * (float) stargate.irisInfo().getIrisProgress() / ShieldingState.MAX_PROGRESS);
+		
 		return 0;
 	}
 	

@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		" A ",
+		"NCN",
+		" A "
+	],
+	
+	"key": 
+	{
+		"A": { "tag": "sgjourney:naquadah_alloy" },
+		"N": { "tag": "sgjourney:refined_naquadah" },
+		"C": { "item": "sgjourney:reaction_chamber" }
+	},
+	
+	"result": { "item": "sgjourney:naquadah_generator_core", "count": 1 }
+}

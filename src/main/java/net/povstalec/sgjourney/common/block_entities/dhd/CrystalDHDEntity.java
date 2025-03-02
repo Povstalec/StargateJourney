@@ -26,6 +26,8 @@ import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 
 public abstract class CrystalDHDEntity extends AbstractDHDEntity
 {
+	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
+	
 	protected AbstractCrystalItem.Storage memoryCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage controlCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage energyCrystals = new AbstractCrystalItem.Storage();
@@ -44,13 +46,13 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(nbt, registries);
-		itemHandler.deserializeNBT(registries, nbt.getCompound("Inventory"));
+		itemHandler.deserializeNBT(registries, nbt.getCompound(CRYSTAL_INVENTORY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		nbt.put("Inventory", itemHandler.serializeNBT(registries));
+		nbt.put(CRYSTAL_INVENTORY, itemHandler.serializeNBT(registries));
 		super.saveAdditional(nbt, registries);
 	}
 	
@@ -69,6 +71,10 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		handler.invalidate();
 		super.invalidateCapabilities();
 	}
+	
+	//============================================================================================
+	//****************************************Capabilities****************************************
+	//============================================================================================
 	
 	public IItemHandler getItemHandler(Direction side)
 	{
@@ -89,7 +95,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 				@Override
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
-					return isValidCrystal(stack) || stack.getItem() instanceof CallForwardingDevice;
+					return isValidCrystal(slot, stack) || stack.getItem() instanceof CallForwardingDevice;
 				}
 				
 				// Limits the number of items per slot
@@ -113,9 +119,12 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 			};
 	}
 	
-	protected boolean isValidCrystal(ItemStack stack)
+	protected boolean isValidCrystal(int slot, ItemStack stack)
 	{
-		return stack.getItem() instanceof AbstractCrystalItem;
+		if(slot == 0)
+			return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
+		
+		return stack.getItem() instanceof AbstractCrystalItem || stack.getItem() instanceof CallForwardingDevice;
 	}
 	
 	public void recalculateCrystals()
@@ -138,28 +147,34 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 			Item item = stack.getItem();
 			
 			if(item instanceof ControlCrystalItem controlCrystal)
-				this.controlCrystals.addCrystal(controlCrystal.isAdvanced(), i);
+				controlCrystals.addCrystal(controlCrystal.isAdvanced(), i);
 			
 			else if(item instanceof MemoryCrystalItem memoryCrystal)
-				this.memoryCrystals.addCrystal(memoryCrystal.isAdvanced(), i);
+				memoryCrystals.addCrystal(memoryCrystal.isAdvanced(), i);
 			
 			else if(item instanceof EnergyCrystalItem energyCrystal)
 			{
-				this.energyCrystals.addCrystal(energyCrystal.isAdvanced(), i);
-				this.energyTarget += energyCrystal.getCapacity();
+				energyCrystals.addCrystal(energyCrystal.isAdvanced(), i);
+				if(energyCrystals.getCrystals().length >= 4 || energyCrystals.getAdvancedCrystals().length >= 3)
+					energyTarget = -1;
+				else if(energyTarget >= 0)
+					energyTarget += energyCrystal.getCapacity();
 			}
 			
 			else if(item instanceof TransferCrystalItem transferCrystal)
 			{
-				this.transferCrystals.addCrystal(transferCrystal.isAdvanced(), i);
-				this.maxEnergyTransfer += transferCrystal.getMaxTransfer();
+				transferCrystals.addCrystal(transferCrystal.isAdvanced(), i);
+				if(transferCrystals.getCrystals().length >= 4 || transferCrystals.getAdvancedCrystals().length >= 3)
+					maxEnergyTransfer = -1;
+				else if(maxEnergyTransfer >= 0)
+					maxEnergyTransfer += transferCrystal.getMaxTransfer();
 			}
 			
 			else if(item instanceof CommunicationCrystalItem communicationCrystal)
-				this.communicationCrystals.addCrystal(communicationCrystal.isAdvanced(), i);
+				communicationCrystals.addCrystal(communicationCrystal.isAdvanced(), i);
 			
 			else if(item instanceof CallForwardingDevice)
-				this.enableCallForwarding = true;
+				enableCallForwarding = true;
 		}
 		
 		setStargate();

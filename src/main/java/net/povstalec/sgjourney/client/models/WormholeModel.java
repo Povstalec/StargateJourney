@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.models;
 
 import java.util.Random;
 
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -29,15 +30,8 @@ public class WormholeModel
 	
 	protected static final int DEFAULT_FRAMES = 32;
 	protected static final float DEFAULT_SCALE = 1F / DEFAULT_FRAMES;
-
-	protected static final float MULTIPLY_STATIC =  1F / 2.5F / 2;
-	protected static final float MULTIPLY_ANIMATED = 1F / 2.5F / 64;
-	protected static final float HALF_OF_ANIMATED = 2.5F / 2 / 80;
 	
-	//protected Stargate.RGBA rgba;
 	protected float maxDefaultDistortion;
-	
-	//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png")
 	
 	protected float[][] outerCircle = coordinates(DEFAULT_SIDES, 2.5F, 5, 0);
 	protected float[][] circle1 = coordinates(DEFAULT_SIDES, 2.0F, 0, 98);
@@ -86,16 +80,17 @@ public class WormholeModel
 	
 	public void renderWormhole(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, int combinedLight, int combinedOverlay)
 	{
+		short irisProgress = stargate instanceof IrisStargateEntity irisStargate ? irisStargate.irisInfo().getIrisProgress() : (short) 0;
 		float wormholeDistortion = getMaxDistortion(wormhole.distortion());
 		
-		this.renderKawoosh(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), stargate.getIrisProgress());
+		this.renderKawoosh(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), irisProgress);
 		
-		this.renderEventHorizon(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), stargate.getIrisProgress());
+		this.renderEventHorizon(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), irisProgress);
 		
 		//TODO this.renderDisconnect(stack, source, Optional.of(new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/shield/shield.png")), stargate.getTickCount(), stargate.getKawooshTickCount(), isBlocked);
 		
 		if(wormhole.hasStrudel())
-			this.renderStrudel(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), stargate.getIrisProgress());
+			this.renderStrudel(stack, source, wormhole, wormholeDistortion, stargate.getTickCount(), stargate.getKawooshTickCount(), irisProgress);
 	}
 	
 	protected void renderEventHorizon(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int ticks, int kawooshProgress, short irisProgress)

@@ -1,0 +1,165 @@
+package net.povstalec.sgjourney.common.compatibility.computer_functions;
+
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.Stargate;
+
+public class GenericStargateFunctions
+{
+	//============================================================================================
+	//**************************************Basic Interface***************************************
+	//============================================================================================
+	
+	public static int getStargateGeneration(AbstractStargateEntity stargate)
+	{
+		return stargate.getGeneration().getGen();
+	}
+	
+	public static String getStargateType(AbstractStargateEntity stargate)
+	{
+		return BlockEntityType.getKey(stargate.getType()).toString();
+	}
+	
+	public static boolean isStargateConnected(AbstractStargateEntity stargate)
+	{
+		return stargate.isConnected();
+	}
+	
+	public static boolean isStargateDialingOut(AbstractStargateEntity stargate)
+	{
+		return stargate.isDialingOut();
+	}
+	
+	public static boolean isWormholeOpen(AbstractStargateEntity stargate)
+	{
+		return stargate.isWormholeOpen();
+	}
+	
+	public static long getStargateEnergy(AbstractStargateEntity stargate)
+	{
+		return stargate.getEnergyStored();
+	}
+	
+	public static int getChevronsEngaged(AbstractStargateEntity stargate)
+	{
+		return stargate.getChevronsEngaged();
+	}
+	
+	public static int getOpenTime(AbstractStargateEntity stargate)
+	{
+		return stargate.getOpenTime();
+	}
+	
+	// Returns true if Stargate was connected and then got disconnected, otherwise returns false
+	public static boolean disconnectStargate(AbstractStargateEntity stargate)
+	{
+		boolean wasConnected = stargate.isConnected();
+		
+		stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+		
+		boolean isConnected = stargate.isConnected();
+		
+		return !isConnected && (wasConnected != isConnected);
+	}
+	
+	public static Stargate.Feedback getRecentFeedback(AbstractStargateEntity stargate)
+	{
+		return stargate.getRecentFeedback();
+	}
+	
+	public static boolean sendStargateMessage(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, String message)
+	{
+		if(!interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && !stargate.isWormholeOpen())
+			return false;
+		
+		return stargate.sendStargateMessage(message);
+	}
+	
+	public static String getVariant(AbstractStargateEntity stargate)
+	{
+		return stargate.getVariant().toString();
+	}
+	
+	public static String getPointOfOrigin(AbstractStargateEntity stargate)
+	{
+		return stargate.symbolInfo().pointOfOrigin().toString();
+	}
+	
+	public static String getSymbols(AbstractStargateEntity stargate)
+	{
+		return stargate.symbolInfo().symbols().toString();
+	}
+	
+	//============================================================================================
+	//*************************************Crystal Interface**************************************
+	//============================================================================================
+	
+	public static Stargate.Feedback engageSymbol(AbstractStargateEntity stargate, int desiredSymbol)
+	{
+		return stargate.engageSymbol(desiredSymbol);
+	}
+	
+	public static Address.Immutable getDialedAddress(AbstractStargateEntity stargate)
+	{
+		// Will only display the dialed Address
+		return !stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ? stargate.getAddress().immutable() : new Address().immutable();
+	}
+	
+	public static void setChevronConfiguration(AbstractStargateEntity stargate, int[] configurationArray)
+	{
+		// Should Handle the following exceptions
+		/*if(configurationArray.length < 8)
+			throw new LuaException("Array is too short (required length: 8)");
+		else if(configurationArray.length > 8)
+			throw new LuaException("Array is too long (required length: 8)");
+		else if(!ArrayHelper.differentNumbers(configurationArray))
+			throw new LuaException("Array contains duplicate numbers");
+		else if(!ArrayHelper.isArrayInBounds(configurationArray, 1, 8))
+			throw new LuaException("Array contains numbers which are out of bounds <1,8>");*/
+		
+		stargate.setEngagedChevrons(configurationArray);
+		
+		// Return message: "Chevron configuration set successfully"
+	}
+	
+	public static boolean hasDHD(AbstractStargateEntity stargate)
+	{
+		return stargate.dhdInfo().hasDHD();
+	}
+	
+	//============================================================================================
+	//*********************************Advanced Crystal Interface*********************************
+	//============================================================================================
+	
+	public static Address.Immutable getConnectedAddress(AbstractStargateEntity stargate)
+	{
+		return stargate.getAddress().immutable();
+	}
+	
+	public static Address.Immutable getLocalAddress(AbstractStargateEntity stargate)
+	{
+		return stargate.get9ChevronAddress().immutable();
+	}
+	
+	public static int getNetwork(AbstractStargateEntity stargate)
+	{
+		return stargate.getNetwork();
+	}
+	
+	public static void setNetwork(AbstractStargateEntity stargate, int network)
+	{
+		stargate.setNetwork(network);
+	}
+	
+	public static void setRestrictNetwork(AbstractStargateEntity stargate, boolean restrictNetwork)
+	{
+		stargate.setRestrictNetwork(restrictNetwork);
+	}
+	
+	public static boolean isNetworkRestricted(AbstractStargateEntity stargate)
+	{
+		return stargate.getRestrictNetwork();
+	}
+}

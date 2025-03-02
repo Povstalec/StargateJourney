@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.compatibility.computer_functions.TransceiverFunctions;
 
 public class TransceiverMethods
 {
@@ -21,8 +22,7 @@ public class TransceiverMethods
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
 			arguments.escapes();
-			int frequency = arguments.getInt(0);
-			transceiver.setFrequency(frequency);
+			TransceiverFunctions.setFrequency(transceiver, arguments.getInt(0));
 			
 			return MethodResult.of();
 		}
@@ -40,8 +40,7 @@ public class TransceiverMethods
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
 			arguments.escapes();
-			String message = arguments.getString(0);
-			transceiver.setCurrentCode(message);
+			TransceiverFunctions.setCurrentCode(transceiver, arguments.getString(0));
 			
 			return MethodResult.of();
 		}
@@ -61,8 +60,7 @@ public class TransceiverMethods
 			arguments.escapes();
 			context.executeMainThreadTask(() ->
 			{
-				transceiver.sendTransmission();
-				
+				TransceiverFunctions.sendTransmission(transceiver);
 				return new Object[] {};
 			});
 			
@@ -81,15 +79,7 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				int state = transceiver.checkShieldingState();
-				
-				if(state < 0)
-					return new Object[] {null};
-				
-				return new Object[] {state};
-			});
+			MethodResult result = context.executeMainThreadTask(() -> new Object[] {TransceiverFunctions.checkConnectedShielding(transceiver)});
 			
 			return result;
 		}

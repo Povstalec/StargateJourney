@@ -5,19 +5,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.items.CallForwardingDevice;
-import net.povstalec.sgjourney.common.items.GDOItem;
-import net.povstalec.sgjourney.common.items.KaraKeshItem;
-import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
-import net.povstalec.sgjourney.common.items.PDAItem;
-import net.povstalec.sgjourney.common.items.RingRemoteItem;
-import net.povstalec.sgjourney.common.items.StaffWeaponItem;
-import net.povstalec.sgjourney.common.items.StargateIrisItem;
-import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
-import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.items.SyringeItem;
-import net.povstalec.sgjourney.common.items.VialItem;
-import net.povstalec.sgjourney.common.items.ZeroPointModule;
+import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.FalconArmorItem;
 import net.povstalec.sgjourney.common.items.armor.JackalArmorItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
@@ -53,6 +41,9 @@ public class ItemInit
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final DeferredItem<Item> PLASMA_CONVERTER = ITEMS.register("plasma_converter",
 			() -> new Item(new Item.Properties().fireResistant()));
+	
+	public static final DeferredItem<Item> UNITY_SHARD = ITEMS.register("unity_shard",
+			() -> new Item(new Item.Properties()));
 
 	public static final DeferredItem<Item> CRYSTAL_BASE = ITEMS.register("crystal_base",
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
@@ -83,6 +74,11 @@ public class ItemInit
 	
 	/*public static final RegistryObject<Item> UNIVERSE_DIALER = ITEMS.register("universe_dialer", 
 			() -> new DialerItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));*/
+	
+	public static final DeferredItem<Item> NAQUADAH_GENERATOR_CORE = ITEMS.register("naquadah_generator_core",
+			() -> new NaquadahGeneratorCoreItem(new NaquadahGeneratorCoreItem.Properties().stacksTo(1)));
+	public static final DeferredItem<Item> FUSION_CORE = ITEMS.register("fusion_core",
+			() -> new FusionCoreItem(new FusionCoreItem.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 	
 	public static final DeferredItem<Item> ZPM = ITEMS.register("zero_point_module",
 			() -> new ZeroPointModule(new ZeroPointModule.Properties().stacksTo(1).rarity(Rarity.EPIC)));

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.models;
 
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -51,11 +52,11 @@ public class IrisModel
 		this.maxOpenDegrees = maxOpenDegrees;
 	}
 	
-	public void renderIris(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay, float progress)
+	public void renderIris(IrisInfo.Interface irisStargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay, float progress)
 	{
 		float closingProgress = (float) (ShieldingState.MAX_PROGRESS - progress) / ShieldingState.MAX_PROGRESS;
 		
-		Optional<ResourceLocation> irisTexture = stargate.getIrisTexture();
+		Optional<ResourceLocation> irisTexture = irisStargate.irisInfo().getIrisTexture();
 		
 		if(!this.renderWhenOpen && progress == 0 || irisTexture.isEmpty())
 			return;

@@ -11,7 +11,7 @@
 	"key": 
 	{
 		"G": { "item": "sgjourney:naquadah_generator_mark_i" },
-		"C": { "item": "sgjourney:reaction_chamber" },
+		"C": { "item": "sgjourney:naquadah_generator_core" },
 		"N": { "item": "sgjourney:naquadah" },
 		"A": { "tag": "sgjourney:naquadah_alloy" }
 		

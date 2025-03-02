@@ -145,6 +145,9 @@ public final class TransporterNetwork extends SavedData
 	
 	public final void removeTransporter(Level level, UUID id)
 	{
+		if(id == null)
+			return;
+		
 		Optional<Transporter> transporter = getTransporter(id);
 		
 		if(transporter.isPresent())

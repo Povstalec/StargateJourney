@@ -117,14 +117,14 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			{
 				Address address = cartouche.getAddress();
 
-				if(address.getDimension().isPresent())
-					player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(address.getDimension().get()).withStyle(ChatFormatting.GREEN));
+				if(address.isFromDimension())
+					player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(address.getDimension().location().toString()).withStyle(ChatFormatting.GREEN));
 				player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
 
 				if(cartouche.getSymbols() != null)
 				{
 					MutableComponent symbolsText = Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols())).withStyle(ChatFormatting.LIGHT_PURPLE);
-
+					
 					player.sendSystemMessage(symbolsText);
 				}
 			}
@@ -231,11 +231,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     		}
         	
         	if(tag.contains(CartoucheEntity.ADDRESS_TABLE))
-        	{
-        		addressTable = tag.getString(CartoucheEntity.ADDRESS_TABLE);
-        		if(!addressTable.equals("sgjourney:empty"))
-        			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + addressTable)).withStyle(ChatFormatting.YELLOW));
-        	}
+        		tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + tag.getString(CartoucheEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
     	}
     	
     	if(!hasAddress)
@@ -261,6 +257,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
+			if(state.getValue(HALF) == DoubleBlockHalf.UPPER)
+				return null;
+			
 			return new CartoucheEntity.Stone(pos, state);
 		}
 
@@ -293,6 +292,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
+			if(state.getValue(HALF) == DoubleBlockHalf.UPPER)
+				return null;
+			
 			return new CartoucheEntity.Sandstone(pos, state);
 		}
 
@@ -325,6 +327,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
+			if(state.getValue(HALF) == DoubleBlockHalf.UPPER)
+				return null;
+			
 			return new CartoucheEntity.RedSandstone(pos, state);
 		}
 		

@@ -5,7 +5,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
 
-public class WormholeIdleSound extends StargateSound
+public class WormholeIdleSound extends StargateSound<AbstractStargateEntity>
 {
 	private static final float VOLUME_MIN = 0.0F;
 	private static final float VOLUME_MAX = 1.0F;
@@ -47,8 +47,5 @@ public class WormholeIdleSound extends StargateSound
 	{
 		if(this.volume >= VOLUME_MIN)
 			this.volume -= 0.05F;
-		
-		/*if(this.volume < VOLUME_MIN)
-			this.stopSound();*/
 	}
 }

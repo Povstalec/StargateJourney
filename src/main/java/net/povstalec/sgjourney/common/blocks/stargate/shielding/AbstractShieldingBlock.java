@@ -33,6 +33,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
@@ -110,10 +111,10 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 	{
 		BlockEntity blockentity = level.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
 		
-		if(blockentity instanceof AbstractStargateEntity stargate)
+		if(blockentity instanceof IrisStargateEntity stargate)
 		{
-			if(stargate.getIris() != null && !stargate.getIris().isEmpty())
-				return stargate.getIris().copy();
+			if(stargate.irisInfo().getIris() != null && !stargate.irisInfo().getIris().isEmpty())
+				return stargate.irisInfo().getIris().copy();
 		}
 		
         return super.getCloneItemStack(state, target, level, pos, player);
@@ -168,9 +169,9 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 		if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 		{
 			AbstractStargateEntity stargate = stargateBlock.getStargate(level, baseBlockPos, state);
-			if(stargate != null)
+			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 			{
-				ItemStack irisStack = stargate.getIris();
+				ItemStack irisStack = irisStargate.irisInfo().getIris();
 				
 				if(!level.isClientSide() && !player.isCreative() && !irisStack.equals(ItemStack.EMPTY))
 				{
@@ -203,9 +204,9 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 			if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 			{
 				AbstractStargateEntity stargate = stargateBlock.getStargate(level, baseBlockPos, stargateState);
-				if(stargate != null)
+				if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 				{
-					if(shieldingPart.shieldingState().isBefore(stargate.getIrisProgress()))
+					if(shieldingPart.shieldingState().isBefore(irisStargate.irisInfo().getIrisProgress()))
 					{
 						AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
 						stargateBlock.unsetIris(stargateState, level, baseBlockPos);

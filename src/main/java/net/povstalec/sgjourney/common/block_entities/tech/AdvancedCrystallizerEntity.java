@@ -31,15 +31,17 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 	protected boolean hasIngredients()
 	{
 		Level level = this.getLevel();
-		SimpleContainer inventory = new SimpleContainer(itemStackHandler.getSlots());
+		SimpleContainer inventory = new SimpleContainer(5);
 		
-		for(int i = 0; i < itemStackHandler.getSlots(); i++)
-		{
-			inventory.setItem(i, itemStackHandler.getStackInSlot(i));
-		}
+		inventory.setItem(0, crystalBaseHandler.getStackInSlot(0));
+		inventory.setItem(1, primaryIngredientHandler.getStackInSlot(0));
+		inventory.setItem(2, secondaryIngredientHandler.getStackInSlot(0));
+		inventory.setItem(3, outputHandler.getStackInSlot(0));
+		inventory.setItem(4, fluidInputHandler.getStackInSlot(0));
 		
 		Optional<RecipeHolder<AdvancedCrystallizerRecipe>> recipe = level.getRecipeManager()
-				.getRecipeFor(AdvancedCrystallizerRecipe.Type.ADVANCED_CRYSTALLIZING, new CrystalRecipeInput(itemStackHandler.getStackInSlot(0), itemStackHandler.getStackInSlot(1), itemStackHandler.getStackInSlot(2)), level);
+				.getRecipeFor(AdvancedCrystallizerRecipe.Type.ADVANCED_CRYSTALLIZING,
+						new CrystalRecipeInput(crystalBaseHandler.getStackInSlot(0), primaryIngredientHandler.getStackInSlot(0), secondaryIngredientHandler.getStackInSlot(0)), level);
 		
 		if(!recipe.isPresent())
 			return false;
@@ -55,15 +57,17 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 	protected void crystallize()
 	{
 		Level level = this.getLevel();
-		SimpleContainer inventory = new SimpleContainer(itemStackHandler.getSlots());
+		SimpleContainer inventory = new SimpleContainer(5);
 		
-		for (int i = 0; i < itemStackHandler.getSlots(); i++)
-		{
-			inventory.setItem(i, itemStackHandler.getStackInSlot(i));
-		}
+		inventory.setItem(0, crystalBaseHandler.getStackInSlot(0));
+		inventory.setItem(1, primaryIngredientHandler.getStackInSlot(0));
+		inventory.setItem(2, secondaryIngredientHandler.getStackInSlot(0));
+		inventory.setItem(3, outputHandler.getStackInSlot(0));
+		inventory.setItem(4, fluidInputHandler.getStackInSlot(0));
 		
 		Optional<RecipeHolder<AdvancedCrystallizerRecipe>> recipe = level.getRecipeManager()
-				.getRecipeFor(AdvancedCrystallizerRecipe.Type.ADVANCED_CRYSTALLIZING, new CrystalRecipeInput(itemStackHandler.getStackInSlot(0), itemStackHandler.getStackInSlot(1), itemStackHandler.getStackInSlot(2)), level);
+				.getRecipeFor(AdvancedCrystallizerRecipe.Type.ADVANCED_CRYSTALLIZING,
+						new CrystalRecipeInput(crystalBaseHandler.getStackInSlot(0), primaryIngredientHandler.getStackInSlot(0), secondaryIngredientHandler.getStackInSlot(0)), level);
 		
 		if(hasIngredients())
 		{
@@ -72,7 +76,7 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 				useUpItems(recipe.get().value(), 1);
 			if(recipe.get().value().depleteSecondary())
 				useUpItems(recipe.get().value(), 2);
-			itemStackHandler.setStackInSlot(3, recipe.get().value().getResultItem(null));
+			outputHandler.setStackInSlot(0, recipe.get().value().getResultItem(null));
 			
 			this.progress = 0;
 		}
@@ -80,6 +84,16 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 	
 	protected void useUpItems(AdvancedCrystallizerRecipe recipe, int slot)
 	{
-		itemStackHandler.extractItem(slot, recipe.getAmountInSlot(slot), false);
+		switch(slot)
+		{
+			case 1:
+				primaryIngredientHandler.extractItem(slot, recipe.getAmountInSlot(0), false);
+				break;
+			case 2:
+				secondaryIngredientHandler.extractItem(slot, recipe.getAmountInSlot(0), false);
+				break;
+			default:
+				crystalBaseHandler.extractItem(slot, recipe.getAmountInSlot(0), false);
+		}
 	}
 }

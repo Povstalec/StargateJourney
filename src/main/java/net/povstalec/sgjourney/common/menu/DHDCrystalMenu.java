@@ -13,6 +13,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
@@ -40,7 +41,6 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         if(cap != null)
         {
             this.addSlot(new SlotItemHandler(cap, 0, 80, 35));
-            
             this.addSlot(new SlotItemHandler(cap, 1, 80, 17));
             this.addSlot(new SlotItemHandler(cap, 2, 98, 17));
             this.addSlot(new SlotItemHandler(cap, 3, 98, 35));
@@ -50,6 +50,61 @@ public class DHDCrystalMenu extends AbstractContainerMenu
             this.addSlot(new SlotItemHandler(cap, 7, 62, 35));
             this.addSlot(new SlotItemHandler(cap, 8, 62, 17));
         }
+        
+        IItemHandler energyItemHandler = this.blockEntity.getEnergyItemHandler(null);
+        if(energyItemHandler != null)
+        {
+            this.addSlot(new SlotItemHandler(energyItemHandler, 0, 134, 27));
+            this.addSlot(new SlotItemHandler(energyItemHandler, 1, 134, 53));
+        }
+    }
+    
+    public boolean advancedCrystals()
+    {
+        return this.blockEntity instanceof PegasusDHDEntity;
+    }
+    
+    public long getEnergy()
+    {
+        return this.blockEntity.getEnergyStored();
+    }
+    
+    public long getMaxEnergy()
+    {
+        return this.blockEntity.getEnergyCapacity();
+    }
+    
+    public boolean enableAdvancedProtocols()
+    {
+        return this.blockEntity.enableAdvancedProtocols();
+    }
+    
+    public long getEnergyTarget()
+    {
+        return this.blockEntity.getEnergyTarget();
+    }
+    
+    public long maxEnergyDeplete()
+    {
+        return this.blockEntity.maxEnergyDeplete();
+    }
+    
+    public int getMaxDistance()
+    {
+        return this.blockEntity.getMaxDistance();
+    }
+    
+    public boolean hasItem(int slot)
+    {
+        if(slot < 0 || slot > 8)
+            return false;
+        
+        IItemHandler cap = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), null);
+        
+        if(cap != null && cap.getStackInSlot(slot) != null)
+            return !cap.getStackInSlot(slot).isEmpty();
+        
+        return false;
     }
 	
     @Override
@@ -95,7 +150,7 @@ public class DHDCrystalMenu extends AbstractContainerMenu
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 9;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
+    private static final int TE_INVENTORY_SLOT_COUNT = 10;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) 

@@ -28,16 +28,22 @@ import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdat
 
 public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 {
-	private static final String PROGRESS = "Progress";
-	public static final String INVENTORY = "inventory";
+	private static final String PROGRESS = "progress";
+	private static final String INPUT_INVENTORY = "input_inventory";
+	private static final String FLUID_INPUT_INVENTORY = "fluid_input_inventory";
+	private static final String FLUID_OUTPUT_INVENTORY = "fluid_output_inventory";
 	public static final String FLUID_TANK_1 = "fluid_tank_1";
 	public static final String FLUID_TANK_2 = "fluid_tank_2";
 
 	public static final int TANK_CAPACITY = 4000;
 	public static final int MAX_PROGRESS = 100;
 	
-	protected final ItemStackHandler itemStackHandler = createHandler();
-	protected final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemStackHandler);
+	protected final ItemStackHandler itemInputHandler = createItemInputHandler();
+	protected final Lazy<IItemHandler> lazyInputHandler = Lazy.of(() -> itemInputHandler);
+	protected final ItemStackHandler fluidItemInputHandler = createFluidItemHandler();
+	protected final Lazy<IItemHandler> lazyFluidInputHandler = Lazy.of(() -> fluidItemInputHandler);
+	protected final ItemStackHandler fluidItemOutputHandler = createFluidItemHandler();
+	protected final Lazy<IItemHandler> lazyFluidOutputHandler = Lazy.of(() -> fluidItemOutputHandler);
 	
 	protected final FluidTank fluidTank1 = createFluidTank1();
 	protected Lazy<IFluidHandler> lazyFluidHandler1 = Lazy.of(() -> fluidTank1);
@@ -55,16 +61,24 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	public void invalidateCapabilities()
 	{
 		super.invalidateCapabilities();
+
 		lazyFluidHandler1.invalidate();
 		lazyFluidHandler2.invalidate();
-		lazyItemHandler.invalidate();
+		
+		lazyInputHandler.invalidate();
+		lazyFluidInputHandler.invalidate();
+		lazyFluidOutputHandler.invalidate();
 	}
 	
 	@Override
 	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(tag, registries);
-		itemStackHandler.deserializeNBT(registries, tag.getCompound(INVENTORY));
+		
+		itemInputHandler.deserializeNBT(registries, tag.getCompound(INPUT_INVENTORY));
+		fluidItemInputHandler.deserializeNBT(registries, tag.getCompound(FLUID_INPUT_INVENTORY));
+		fluidItemOutputHandler.deserializeNBT(registries, tag.getCompound(FLUID_OUTPUT_INVENTORY));
+		
 		fluidTank1.readFromNBT(registries, tag.getCompound(FLUID_TANK_1));
 		fluidTank2.readFromNBT(registries, tag.getCompound(FLUID_TANK_2));
 		
@@ -76,7 +90,10 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	{
 		CompoundTag tag1 = new CompoundTag();
 		CompoundTag tag2 = new CompoundTag();
-		tag.put(INVENTORY, itemStackHandler.serializeNBT(registries));
+		
+		tag.put(INPUT_INVENTORY, itemInputHandler.serializeNBT(registries));
+		tag.put(FLUID_INPUT_INVENTORY, fluidItemInputHandler.serializeNBT(registries));
+		tag.put(FLUID_OUTPUT_INVENTORY, fluidItemOutputHandler.serializeNBT(registries));
 		
 		fluidTank1.writeToNBT(registries, tag1);
 		tag.put(FLUID_TANK_1, tag1);
@@ -129,17 +146,20 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	public IFluidHandler getFluidHandler(Direction side)
 	{
-		if(side == Direction.UP)
+		if(side == Direction.DOWN)
+			return lazyFluidHandler2.get();
+		else
 			return lazyFluidHandler1.get();
-		else if(side == Direction.DOWN)
-			return lazyFluidHandler1.get();
-		
-		return null;
 	}
 	
 	public IItemHandler getItemHandler(Direction side)
 	{
-		return lazyItemHandler.get();
+		if(side == Direction.UP)
+			return lazyInputHandler.get();
+		else if(side == Direction.DOWN)
+			return lazyFluidOutputHandler.get();
+		else
+			return lazyFluidInputHandler.get();
 	}
 	
 	public abstract Fluid getDesiredFluid1();
@@ -166,9 +186,27 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		return this.fluidTank2.getFluid();
 	}
 	
-	private ItemStackHandler createHandler()
+	private ItemStackHandler createItemInputHandler()
 	{
-		return new ItemStackHandler(3)
+		return new ItemStackHandler(1)
+		{
+			@Override
+			protected void onContentsChanged(int slot)
+			{
+				setChanged();
+			}
+			
+			@Override
+			public int getSlotLimit(int slot)
+			{
+				return 64;
+			}
+		};
+	}
+	
+	private ItemStackHandler createFluidItemHandler()
+	{
+		return new ItemStackHandler(1)
 			{
 				@Override
 				protected void onContentsChanged(int slot)
@@ -179,21 +217,13 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 			    @Override
 			    public int getSlotLimit(int slot)
 			    {
-			    	return switch(slot)
-					{
-						case 0 -> 64;
-						default -> 1;
-					};
+			    	return 1;
 			    }
 				
 				@Override
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
-					return switch(slot)
-					{
-						case 0 -> true;
-						default -> stack.getCapability(Capabilities.FluidHandler.ITEM) != null;
-					};
+					return stack.getCapability(Capabilities.FluidHandler.ITEM) != null;
 				}
 				
 				@Nonnull
@@ -211,20 +241,20 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 
 	public boolean hasFluidItem1()
 	{
-    	return itemStackHandler.getStackInSlot(1).getCount() > 0;
+    	return fluidItemInputHandler.getStackInSlot(0).getCount() > 0;
 	}
 
 	public boolean hasFluidItem2()
 	{
-    	return itemStackHandler.getStackInSlot(2).getCount() > 0;
+    	return fluidItemOutputHandler.getStackInSlot(0).getCount() > 0;
 	}
 	
 	public void fillTank1(FluidStack stack, ItemStack container)
 	{
 		fluidTank1.fill(stack, IFluidHandler.FluidAction.EXECUTE);
 		
-		itemStackHandler.extractItem(1, 1, false);
-		itemStackHandler.insertItem(1, container, false);
+		fluidItemInputHandler.extractItem(0, 1, false);
+		fluidItemInputHandler.insertItem(0, container, false);
     }
 	
 	public void fillTank2(FluidStack stack, ItemStack container)
@@ -234,7 +264,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	public void drainFluidFromItem()
 	{
-		IFluidHandlerItem cap = itemStackHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM);
+		IFluidHandlerItem cap = fluidItemInputHandler.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM);
 		if(cap != null)
 		{
 			int drainAmount = Math.min(fluidTank1.getSpace(), 1000);
@@ -250,7 +280,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	public void putFluidInsideItem()
 	{
-		ItemStack stack = itemStackHandler.getStackInSlot(2);
+		ItemStack stack = fluidItemOutputHandler.getStackInSlot(0);
 		
 		IFluidHandlerItem cap = stack.getCapability(Capabilities.FluidHandler.ITEM);
 		if(cap != null)
@@ -260,7 +290,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 			
 			int fillAmount = cap.fill(getFluid2(), IFluidHandler.FluidAction.EXECUTE);
 			
-			itemStackHandler.setStackInSlot(2, cap.getContainer());
+			fluidItemOutputHandler.setStackInSlot(0, cap.getContainer());
 			
 			fluidTank2.drain(fillAmount, IFluidHandler.FluidAction.EXECUTE);
 		}
@@ -272,7 +302,21 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	protected void useUpItems(int amount)
 	{
-		itemStackHandler.extractItem(0, amount, false);
+		itemInputHandler.extractItem(0, amount, false);
+	}
+	
+	public void outputLiquid()
+	{
+		BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(Direction.DOWN));
+		
+		if(blockEntity == null)
+			return;
+		
+		IFluidHandler fluidHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, worldPosition.relative(Direction.DOWN), Direction.UP);
+		if(fluidHandler != null)
+		{
+			fluidHandler.fill(this.fluidTank2.drain(100, IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+		}
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractNaquadahLiquidizerEntity naquadahLiquidizer)
@@ -300,6 +344,8 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		
 	    if(naquadahLiquidizer.hasFluidItem2())
 	    	naquadahLiquidizer.putFluidInsideItem();
+		
+		naquadahLiquidizer.outputLiquid();
 		
 		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(naquadahLiquidizer.worldPosition).getPos(), new ClientboundNaquadahLiquidizerUpdatePacket(naquadahLiquidizer.worldPosition, naquadahLiquidizer.getFluid1(), naquadahLiquidizer.getFluid2(), naquadahLiquidizer.progress));
 	}

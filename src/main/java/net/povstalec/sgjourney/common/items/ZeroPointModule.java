@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -42,7 +43,7 @@ public class ZeroPointModule extends Item
 	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
-		return true;
+		return !StargateJourneyConfig.disable_energy_use.get();
 	}
 
 	@Override

@@ -1,0 +1,8 @@
+{
+  "render_type": "minecraft:cutout",
+  "parent": "minecraft:block/cross",
+  "textures":
+  {
+    "cross": "sgjourney:block/medium_unity_bud"
+  }
+}

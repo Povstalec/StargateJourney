@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.items;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -89,5 +90,15 @@ public class NaquadahFuelRodItem extends Item
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_fuel_rod.fuel").append(Component.literal(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.GREEN));
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+	}
+	
+	public static ItemStack randomFuelRod(int minCapacity, int maxCapacity)
+	{
+		ItemStack fusionCore = new ItemStack(ItemInit.NAQUADAH_FUEL_ROD.get());
+		Random random = new Random();
+		
+		fusionCore.getOrCreateTag().putInt(FUEL, random.nextInt(minCapacity, maxCapacity + 1));
+		
+		return fusionCore;
 	}
 }

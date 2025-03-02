@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.menu;
 
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,13 +39,17 @@ public abstract class LiquidizerMenu extends AbstractContainerMenu
         addPlayerInventory(inventory);
         addPlayerHotbar(inventory);
 		
-		IItemHandler cap = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), null);
-		if(cap != null)
-		{
-            this.addSlot(new SlotItemHandler(cap, 0, 80, 20));
-            this.addSlot(new SlotItemHandler(cap, 1, 34, 20));
-            this.addSlot(new SlotItemHandler(cap, 2, 126, 58));
-        }
+		IItemHandler cap0 = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), Direction.UP);
+		if(cap0 != null)
+			this.addSlot(new SlotItemHandler(cap0, 0, 80, 20));
+		
+		IItemHandler cap1 = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), Direction.NORTH);
+		if(cap1 != null)
+			this.addSlot(new SlotItemHandler(cap1, 0, 34, 20));
+		
+		IItemHandler cap2 = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), Direction.DOWN);
+		if(cap2 != null)
+			this.addSlot(new SlotItemHandler(cap2, 0, 126, 58));
     }
     
     public void setFluid1(FluidStack fluidStack)

@@ -12,7 +12,7 @@ import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
-public class ClassicStargateVariant extends ClientStargateVariant // TODO Make it into a rotating variant
+public class ClassicStargateVariant extends RotatingStargateVariant
 {
 	public static final ResourceLocation STARGATE_TEXTURE = StargateJourney.sgjourneyLocation("textures/entity/stargate/classic/classic_stargate.png");
 	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = StargateJourney.sgjourneyLocation("textures/entity/stargate/classic/classic_stargate_engaged.png");
@@ -21,6 +21,10 @@ public class ClassicStargateVariant extends ClientStargateVariant // TODO Make i
 	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/stargate/classic/classic_event_horizon_shiny.png");
 
 	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = StargateJourney.sgjourneyLocation("classic_chevron_engage");
+	
+	public static final ResourceLocation STARGATE_RING_SPIN_START = StargateJourney.sgjourneyLocation("classic_ring_spin_start");
+	public static final ResourceLocation STARGATE_RING_SPIN = StargateJourney.sgjourneyLocation("classic_ring_spin");
+	public static final ResourceLocation STARGATE_RING_SPIN_STOP = StargateJourney.sgjourneyLocation("classic_ring_spin_stop");
 
 	public static final ResourceLocation STARGATE_WORMHOLE_OPEN = StargateJourney.sgjourneyLocation("classic_wormhole_open");
 	public static final ResourceLocation STARGATE_WORMHOLE_IDLE = StargateJourney.sgjourneyLocation("classic_wormhole_idle");
@@ -37,13 +41,14 @@ public class ClassicStargateVariant extends ClientStargateVariant // TODO Make i
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
-
+	
+	public static final ResourcepackSounds.Rotation STARGATE_ROTATION_SOUNDS = new ResourcepackSounds.Rotation(STARGATE_RING_SPIN_START, STARGATE_RING_SPIN, STARGATE_RING_SPIN_STOP);
 	public static final ResourcepackSounds.Wormhole STARGATE_WROMHOLE_SOUNDS = new ResourcepackSounds.Wormhole(Either.right(STARGATE_WORMHOLE_OPEN), Either.right(STARGATE_WORMHOLE_IDLE), Either.right(STARGATE_WORMHOLE_CLOSE));
 	public static final ResourcepackSounds.Fail STARGATE_FAIL_SOUNDS = new ResourcepackSounds.Fail(STARGATE_FAIL);
 	
 	public static final ClassicStargateVariant DEFAULT_VARIANT = new ClassicStargateVariant(STARGATE_TEXTURE, Optional.empty(),
 			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
-			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
+			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
 	
 	public static final Codec<ClassicStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			// Gate and chevron textures
@@ -59,6 +64,7 @@ public class ClassicStargateVariant extends ClientStargateVariant // TODO Make i
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_ENGAGED_SOUNDS).forGetter(ClassicStargateVariant::chevronEngagedSounds),
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_INCOMING_SOUNDS).forGetter(ClassicStargateVariant::chevronIncomingSounds),
 			
+			ResourcepackSounds.Rotation.CODEC.fieldOf(ROTATION_SOUNDS).forGetter(ClassicStargateVariant::rotationSounds),
 			ResourcepackSounds.Wormhole.CODEC.fieldOf(WORMHOLE_SOUNDS).forGetter(ClassicStargateVariant::wormholeSounds),
 			ResourcepackSounds.Fail.CODEC.fieldOf(FAIL_SOUNDS).forGetter(ClassicStargateVariant::failSounds)
 			).apply(instance, ClassicStargateVariant::new));
@@ -66,10 +72,10 @@ public class ClassicStargateVariant extends ClientStargateVariant // TODO Make i
 	public ClassicStargateVariant(ResourceLocation texture, Optional<ResourceLocation> encodedTexture, ResourceLocation engagedTexture,
 			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole, ResourcepackModel.SymbolsModel symbols,
 			ResourcepackSounds.Chevron chevronEngagedSounds, ResourcepackSounds.Chevron chevronIncomingSounds,
-			ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds)
+			ResourcepackSounds.Rotation rotationSounds, ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds)
 	{
 		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, chevronEngagedSounds,
-				chevronIncomingSounds, wormholeSounds, failSounds);
+				chevronIncomingSounds, rotationSounds, wormholeSounds, failSounds);
 	}
 	
 }

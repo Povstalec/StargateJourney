@@ -29,6 +29,7 @@ import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 
 public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 {
@@ -131,7 +132,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 						stack.shrink(1);
 				}
 
-				stargate.setRandomPointOfOrigin(level.dimension());
+				stargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
 				stargate.addStargateToNetwork();
 			}
 			

@@ -7,9 +7,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
+import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public record ClientboundCartoucheUpdatePacket(BlockPos blockPos, String symbols, int[] address) implements CustomPacketPayload
+public record ClientboundCartoucheUpdatePacket(BlockPos blockPos, ResourceLocation symbols, int[] address) implements CustomPacketPayload
 {
     public static final CustomPacketPayload.Type<ClientboundCartoucheUpdatePacket> TYPE =
             new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_cartouche_update"));
@@ -18,13 +19,13 @@ public record ClientboundCartoucheUpdatePacket(BlockPos blockPos, String symbols
     {
         public ClientboundCartoucheUpdatePacket decode(RegistryFriendlyByteBuf buf)
         {
-            return new ClientboundCartoucheUpdatePacket(FriendlyByteBuf.readBlockPos(buf), buf.readUtf(), buf.readVarIntArray());
+            return new ClientboundCartoucheUpdatePacket(FriendlyByteBuf.readBlockPos(buf), buf.readResourceLocation(), buf.readVarIntArray());
         }
         
         public void encode(RegistryFriendlyByteBuf buf, ClientboundCartoucheUpdatePacket packet)
         {
             FriendlyByteBuf.writeBlockPos(buf, packet.blockPos);
-            buf.writeUtf(packet.symbols);
+            buf.writeResourceLocation(packet.symbols);
             buf.writeVarIntArray(packet.address);
         }
     };

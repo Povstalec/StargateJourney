@@ -62,6 +62,13 @@
 		"default": "sgjourney:classic_chevron_engage"
 	},
 	
+	"rotation_sounds":
+	{
+		"rotation_startup_sound": "sgjourney:classic_ring_spin_start",
+		"rotation_sound": "sgjourney:classic_ring_spin",
+		"rotation_stop_sound": "sgjourney:classic_ring_spin_stop"
+	},
+	
 	"wormhole_sounds":
 	{
 		"open": "sgjourney:classic_wormhole_open",

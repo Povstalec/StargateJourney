@@ -5,9 +5,10 @@ import java.util.Optional;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.world.ItemInteractionResult;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import org.jetbrains.annotations.Nullable;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
@@ -15,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -299,9 +299,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		if(stack.getItem() instanceof StargateIrisItem && !level.isClientSide())
 		{
 			AbstractStargateEntity stargate = getStargate(level, pos, state);
-			if(stargate != null )
+			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 			{
-				if(stargate.addIris(stack))
+				if(irisStargate.irisInfo().addIris(stack))
 				{
 					if(!player.isCreative())
 						player.getItemInHand(hand).shrink(1);
@@ -373,6 +373,13 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		{
 			if(this.getBlock() instanceof AbstractStargateBlock stargate)
 			{
+				if(!CommonStargateConfig.can_break_connected_stargate.get())
+				{
+					StargateConnection.State state = reader.getBlockState(pos).getValue(AbstractStargateBaseBlock.CONNECTION_STATE);
+					if(state != null && state.isConnected())
+						return -1.0F;
+				}
+				
 				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(reader, this, pos);
 				
 				if(blockCover.isPresent())

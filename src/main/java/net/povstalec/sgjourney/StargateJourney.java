@@ -81,6 +81,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 @Mod(StargateJourney.MODID)
 public class StargateJourney
 {
@@ -91,9 +93,12 @@ public class StargateJourney
     public static final String STELLAR_VIEW_MODID = "stellarview";
     public static final String IRIS_MODID = "iris";
     public static final String COMPUTERCRAFT_MODID = "computercraft";
-
-    private static Optional<Boolean> isIrisLoaded = Optional.empty();
-
+    
+	@Nullable
+	private static Boolean isStellarViewLoaded = null;
+	@Nullable
+    private static Boolean isIrisLoaded = null;
+    
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public StargateJourney(IEventBus eventBus, ModContainer modContainer)
@@ -238,14 +243,22 @@ public class StargateJourney
         event.registerEntity(AncientGene.ANCIENT_GENE_CAPABILITY, EntityType.VILLAGER, (entity, context) -> new AncientGene(entity));
         event.registerEntity(AncientGene.ANCIENT_GENE_CAPABILITY, EntityType.PLAYER, (entity, context) -> new AncientGene(entity));
     }
+	
+	public static boolean isStellarViewLoaded()
+	{
+		if(isStellarViewLoaded == null)
+			isStellarViewLoaded = ModList.get().isLoaded(STELLAR_VIEW_MODID);
+		
+		return isStellarViewLoaded;
+	}
     
     // BECAUSE OCULUS MESSES WITH RENDERING TOO MUCH
     public static boolean isIrisLoaded()
     {
-        if(isIrisLoaded.isEmpty())
-            isIrisLoaded = Optional.of(ModList.get().isLoaded(IRIS_MODID));
+        if(isIrisLoaded == null)
+            isIrisLoaded = ModList.get().isLoaded(IRIS_MODID);
         
-        return isIrisLoaded.get();
+        return isIrisLoaded;
     }
     
     @EventBusSubscriber(modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -412,10 +425,7 @@ public class StargateJourney
         @SubscribeEvent
         public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
         {
-        	if(ModList.get().isLoaded(STELLAR_VIEW_MODID))
-        		StellarViewCompatibility.registerStellarViewEffects(event);
-        	else
-        		SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
+        	SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
         }
         
         @SubscribeEvent

@@ -1,7 +1,7 @@
 {
 	"include_generated_addresses": false,
-	"dimensions":
+	"addresses":
 	[
-		{"dimension": "sgjourney:abydos", "weight": 1}
+		{"address": "sgjourney:abydos", "weight": 1, "galaxy": "sgjourney:milky_way"}
 	]
 }

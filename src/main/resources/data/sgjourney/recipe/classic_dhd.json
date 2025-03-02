@@ -4,7 +4,7 @@
 	"pattern":
 	[
 		"BBB",
-		"IEI",
+		"ICI",
 		"IRI"
 	],
 	"key":
@@ -12,7 +12,7 @@
 		"I": {"tag": "sgjourney:naquadah_alloy"},
 		"B": {"item": "minecraft:stone_button"},
 		"R": {"item": "minecraft:redstone"},
-		"E": {"item": "sgjourney:communication_crystal"}
+		"C": {"item": "sgjourney:communication_crystal"}
 	},
 	"result":
 	{

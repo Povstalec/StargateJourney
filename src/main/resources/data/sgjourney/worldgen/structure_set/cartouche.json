@@ -18,6 +18,10 @@
 		{
 			"structure": "sgjourney:cartouche/sandstone_cartouche_monument",
 			"weight": 1
+		},
+		{
+			"structure": "sgjourney:cartouche/red_sandstone_cartouche_monument",
+			"weight": 1
 		}
 	],
 	"placement":

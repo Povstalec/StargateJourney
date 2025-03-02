@@ -1,0 +1,10 @@
+{
+	"parent": "minecraft:block/orientable",
+	"textures":
+	{
+		"top": "minecraft:block/stone",
+		"front": "sgjourney:block/stone_symbol",
+		"side": "minecraft:block/stone",
+		"bottom": "minecraft:block/stone"
+	}
+}
