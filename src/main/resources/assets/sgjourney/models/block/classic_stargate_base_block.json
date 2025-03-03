@@ -1,26 +1,13 @@
 {
-	"parent": "block/block",
+	"parent": "block/cube",
 	"textures":
 	{
-		"bottom": "sgjourney:block/classic_stargate_top",
-		"side": "sgjourney:block/classic_stargate_ring",
-		"top": "sgjourney:block/classic_stargate_top",
-		"front": "sgjourney:block/classic_stargate_base",
-		"particle": "sgjourney:block/classic_stargate_base"
-	},
-    "elements":
-    [
-		{   "from": [ 0, 0, 0 ],
-            "to": [ 16, 16, 16 ],
-            "faces":
-            {
-                "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#bottom", "cullface": "down" },
-                "up":    { "uv": [ 0, 16, 16, 0 ], "texture": "#top", "cullface": "up" },
-                "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#front", "cullface": "north" },
-                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#side", "cullface": "south" },
-                "west":  { "uv": [ 0, 0, 16, 16 ], "texture": "#side", "cullface": "west" },
-                "east":  { "uv": [ 0, 0, 16, 16 ], "texture": "#side", "cullface": "east" }
-            }
-        }
-    ]
+		"particle": "sgjourney:block/classic_stargate_base",
+		"down": "sgjourney:block/classic_stargate_top",
+		"up": "sgjourney:block/classic_stargate_top",
+		"north": "sgjourney:block/classic_stargate_base",
+		"east": "sgjourney:block/classic_stargate_ring",
+		"south": "sgjourney:block/classic_stargate_ring",
+		"west": "sgjourney:block/classic_stargate_ring"
+	}
 }
