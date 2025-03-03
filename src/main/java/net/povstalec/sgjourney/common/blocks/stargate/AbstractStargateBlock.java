@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import org.jetbrains.annotations.Nullable;
-
-import com.google.common.collect.ImmutableMap;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -24,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -32,7 +25,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -40,7 +32,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
@@ -49,12 +40,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ForgeHooks;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
+import net.povstalec.sgjourney.common.blockstates.StargateBlockState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
@@ -361,93 +352,5 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		}
 		
         return super.getCloneItemStack(state, target, level, pos, player);
-	}
-	
-	public static class StargateBlockState extends BlockState
-	{
-
-		public StargateBlockState(Block block, ImmutableMap<Property<?>, Comparable<?>> properties,
-				MapCodec<BlockState> states)
-		{
-			super(block, properties, states);
-		}
-
-		@Override
-		public float getDestroySpeed(BlockGetter reader, BlockPos pos)
-		{
-			if(this.getBlock() instanceof AbstractStargateBlock stargate)
-			{
-				if(!CommonStargateConfig.can_break_connected_stargate.get())
-				{
-					StargateConnection.State state = reader.getBlockState(pos).getValue(AbstractStargateBaseBlock.CONNECTION_STATE);
-					if(state != null && state.isConnected())
-						return -1.0F;
-				}
-				
-				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(reader, this, pos);
-				
-				if(blockCover.isPresent())
-				{
-					StargatePart part = this.getValue(PART);
-					Optional<BlockState> coverState = blockCover.get().getBlockAt(part);
-					
-					if(coverState.isPresent()) // Destroy speed for the cover block
-						return coverState.get().getDestroySpeed(reader, pos);
-				}
-			}
-			
-			return super.getDestroySpeed(reader, pos);
-		}
-		
-		@Override
-		public float getDestroyProgress(Player player, BlockGetter reader, BlockPos pos)
-		{
-			float destroySpeed = getDestroySpeed(reader, pos);
-			if(destroySpeed == -1.0F)
-				return 0.0F;
-			
-			if(this.getBlock() instanceof AbstractStargateBlock stargate)
-			{
-				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(reader, this, pos);
-				
-				if(blockCover.isPresent())
-				{
-					StargatePart part = this.getValue(PART);
-					Optional<BlockState> coverState = blockCover.get().getBlockAt(part);
-					
-					if(coverState.isPresent())
-					{
-						float multiplier = ForgeHooks.isCorrectToolForDrops(coverState.get(), player) ? 30F : 100F;
-						
-						return player.getDigSpeed(coverState.get(), pos) / destroySpeed / multiplier;
-					}
-				}
-			}
-			
-			return super.getDestroyProgress(player, reader, pos);
-		}
-		
-		@Override
-		public SoundType getSoundType(LevelReader level, BlockPos pos, @Nullable Entity entity)
-		{
-			BlockState state = level.getBlockState(pos);
-			
-			if(state.getBlock() instanceof AbstractStargateBlock stargate)
-			{
-				Optional<StargateBlockCover> blockCover = stargate.getBlockCover(level, state, pos);
-				
-				if(blockCover.isPresent())
-				{
-					StargatePart part = state.getValue(PART);
-					Optional<BlockState> coverState = blockCover.get().getBlockAt(part);
-					
-					if(coverState.isPresent()) // Destroy speed for the cover block
-						return coverState.get().getSoundType(level, pos, entity);
-				}
-			}
-			
-			return super.getSoundType(level, pos, entity);
-			
-		}
 	}
 }
