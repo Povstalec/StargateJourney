@@ -49,7 +49,7 @@ public class FusionCoreItem extends Item implements IEnergyCore
 	
 	public static int getFuel(ItemStack energyCore)
 	{
-		return energyCore.getOrDefault(DataComponentInit.NAQUADAH_FUEL, getMaxFuel());
+		return energyCore.getOrDefault(DataComponentInit.FUSION_FUEL, getMaxFuel());
 	}
 	
 	public static int getMaxFuel()
