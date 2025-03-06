@@ -27,13 +27,13 @@
         {
           "type": "minecraft:item",
           "name": "sgjourney:pure_naquadah",
-          "weight": 1,
+          "weight": 8,
           "functions": [
             {
               "function": "minecraft:set_count",
               "count": {
                 "min": 0,
-                "max": 5
+                "max": 2
               }
             }
           ]
