@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -177,7 +178,7 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(),
-				new ClientboundCartoucheUpdatePacket(worldPosition, symbols,addressTable == null ? this.address.toArray() : new int[0]));
+				new ClientboundCartoucheUpdatePacket(worldPosition, symbols == null ? StargateJourney.EMPTY_LOCATION : symbols, addressTable == null ? this.address.toArray() : new int[0]));
 	}
 	
 	public void tick(Level level, BlockPos pos, BlockState state)
