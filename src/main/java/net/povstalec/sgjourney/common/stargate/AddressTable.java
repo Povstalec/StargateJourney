@@ -93,7 +93,7 @@ public class AddressTable
 		}
 		
 		Random random = new Random();
-		Iterator<WeightedAddress> iterator = datapackDimensions.iterator();
+		Iterator<WeightedAddress> iterator = addresses.iterator();
 		WeightedAddress weightedAddress = null;
 		for(int weight = random.nextInt(0, totalWeight + 1); iterator.hasNext();)
 		{
