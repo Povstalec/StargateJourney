@@ -168,7 +168,6 @@ public class StargateJourney
     	{
             StatisticsInit.register();
             PacketHandlerInit.register();
-    		VillagerInit.registerPOIs();
     	});
     }
 	
