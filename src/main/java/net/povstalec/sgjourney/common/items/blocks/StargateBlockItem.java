@@ -145,11 +145,17 @@ public class StargateBlockItem extends BlockItem
 				
 				// Sets up symbols on the Milky Way Stargate
 				if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
+				{
 					milkyWayStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+					milkyWayStargate.symbolInfo().setSymbols(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+				}
 				
 				// Sets up symbols on the Classic Stargate
 				else if(stargate instanceof ClassicStargateEntity classicStargate)
+				{
 					classicStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+					classicStargate.symbolInfo().setSymbols(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+				}
 			}
 		}
 		

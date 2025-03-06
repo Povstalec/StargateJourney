@@ -87,7 +87,7 @@ import javax.annotation.Nullable;
 public class StargateJourney
 {
     public static final String MODID = "sgjourney";
-    public static final ResourceLocation EMPTY_LOCATION = ResourceLocation.fromNamespaceAndPath(MODID, "empty");
+    public static final ResourceLocation EMPTY_LOCATION = sgjourneyLocation("empty");
     public static final String EMPTY = EMPTY_LOCATION.toString();
 
     public static final String STELLAR_VIEW_MODID = "stellarview";

@@ -64,6 +64,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	public static final int DEFAULT_ENERGY_TRANSFER = 2500;
 	public static final int DEFAULT_CONNECTION_DISTANCE = 16;
 	
+	protected boolean isNew = false;
+	
 	protected Direction direction;
 	
 	@Nullable
@@ -119,7 +121,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		if(this.getLevel().isClientSide())
 			return;
 		
-		if(generateEnergyCore)
+		if(!isNew && generateEnergyCore)
 			generateEnergyCore();
 		
 		this.setStargate();
@@ -156,6 +158,11 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		
 		if(generateEnergyCore)
 			tag.putBoolean(GENERATE_ENERGY_CORE, true);
+	}
+	
+	public void setNew()
+	{
+		this.isNew = true;
 	}
 	
 	public SymbolInfo symbolInfo()

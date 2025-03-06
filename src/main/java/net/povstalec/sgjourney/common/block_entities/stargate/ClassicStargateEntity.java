@@ -43,16 +43,16 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	@Override
     public void onLoad()
 	{
-       super.onLoad();
-
-        if(this.level.isClientSide())
-        	return;
-
-        if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+		if(!this.level.isClientSide() && !isNew && !addToNetwork)
+		{
+			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+			
+			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+		}
 		
-		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
-			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+       super.onLoad();
     }
 
 	@Override

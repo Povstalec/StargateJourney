@@ -49,18 +49,15 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
         {
         	Random random = new Random();
         	setRotation(2 * random.nextInt(0, MAX_ROTATION / 2 + 1));
+			
+			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+			
+			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
         }
 
         super.onLoad();
-
-        if(this.level.isClientSide())
-        	return;
-		
-        if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
-
-        if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
-			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
     }
 
 	@Override

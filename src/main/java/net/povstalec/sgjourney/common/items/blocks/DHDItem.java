@@ -66,6 +66,8 @@ public class DHDItem extends BlockItem
 	{
 		if(baseEntity instanceof AbstractDHDEntity dhd)
 		{
+			dhd.setNew();
+			
 			if(info.contains(AbstractDHDEntity.GENERATE_ENERGY_CORE) && info.getBoolean(AbstractDHDEntity.GENERATE_ENERGY_CORE))
 				dhd.enableGeneratingEnergyCore();
 			
