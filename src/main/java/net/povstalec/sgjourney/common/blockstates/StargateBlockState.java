@@ -268,7 +268,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public boolean shouldCheckWeakPower(LevelReader level, BlockPos pos, Direction side)
+	public boolean shouldCheckWeakPower(SignalGetter level, BlockPos pos, Direction side)
 	{
 		return this.self().getBlock().shouldCheckWeakPower(this.self(), level, pos, side);
 	}
@@ -397,7 +397,7 @@ public class StargateBlockState extends BlockState
 	@Override
 	public boolean isScaffolding(LivingEntity entity)
 	{
-		return this.self().getBlock().isScaffolding(this.self(), entity.level, entity.blockPosition(), entity);
+		return this.self().getBlock().isScaffolding(this.self(), entity.level(), entity.blockPosition(), entity);
 	}
 	
 	@Override
