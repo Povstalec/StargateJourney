@@ -717,9 +717,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(this.isConnected())
 		{
 			if(!CommonStargateConfig.end_connection_from_both_ends.get() && !this.isDialingOut())
-				return Stargate.Feedback.WRONG_DISCONNECT_SIDE;
+				return setRecentFeedback(Stargate.Feedback.WRONG_DISCONNECT_SIDE);
 			else if(this.getOpenTime() <= 0)
-				return Stargate.Feedback.CONNECTION_FORMING;
+				return setRecentFeedback(Stargate.Feedback.CONNECTION_FORMING);
 		}
 		
 		return bypassDisconnectStargate(feedback, updateInterfaces);
