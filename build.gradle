@@ -171,7 +171,7 @@ dependencies {
     compileOnly ("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     runtimeOnly ("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
-    implementation ("maven.modrinth:stellarview:SKIbaNBm")
+    implementation ("maven.modrinth:stellarview:sTzQz9NA")
 
     compileOnly ("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cct_version}")
     compileOnly ("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}")
