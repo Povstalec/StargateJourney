@@ -98,7 +98,7 @@ public class GenericStargateFunctions
 	
 	public static Stargate.Feedback engageSymbol(AbstractStargateEntity stargate, int desiredSymbol)
 	{
-		return stargate.engageSymbol(desiredSymbol);
+		return stargate.dhdEngageSymbol(desiredSymbol);
 	}
 	
 	public static Address.Immutable getDialedAddress(AbstractStargateEntity stargate)
