@@ -2,10 +2,7 @@ package net.povstalec.sgjourney;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
-import dan200.computercraft.api.peripheral.PeripheralCapability;
 import net.minecraft.client.Camera;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
@@ -20,7 +17,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.Event;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -33,7 +29,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.*;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.render.FalconArmorRenderProperties;
@@ -41,7 +36,6 @@ import net.povstalec.sgjourney.client.render.JackalArmorRenderProperties;
 import net.povstalec.sgjourney.client.render.block_entity.*;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
-import net.povstalec.sgjourney.client.render.level.StellarViewCompatibility;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
@@ -79,9 +73,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
 
 @Mod(StargateJourney.MODID)
 public class StargateJourney
@@ -101,7 +92,7 @@ public class StargateJourney
     
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public StargateJourney(IEventBus eventBus, ModContainer modContainer)
+    public StargateJourney(IEventBus eventBus, ModContainer modContainer, Dist dist)
     {
         DataComponentInit.register(eventBus);
         ItemInit.register(eventBus);
@@ -146,9 +137,9 @@ public class StargateJourney
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
-    
-        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class,
-                () -> (mc, screen) -> new ConfigScreen(screen));
+        
+        if(dist.isClient())
+            ConfigScreen.registerConfigScreen(modContainer);
 
         //NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(MiscInit::registerCommands);
