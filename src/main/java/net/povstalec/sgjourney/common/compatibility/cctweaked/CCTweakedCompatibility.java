@@ -11,11 +11,11 @@ public class CCTweakedCompatibility
 {
 	public static void registerPeripherals(RegisterCapabilitiesEvent event)
 	{
-		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.BASIC_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral() : null);
-		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral() : null);
-		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral() : null);
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.BASIC_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().newPeripheral().get() : null);
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().newPeripheral().get() : null);
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().newPeripheral().get() : null);
 		
-		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.TRANSCEIVER.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral() : null);
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.TRANSCEIVER.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().newPeripheral().get() : null);
 	}
 	
 	private static void irisMethods(StargatePeripheral peripheral)

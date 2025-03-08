@@ -194,10 +194,10 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		if(energyBlockEntity.getEnergyStored() >= energyTarget)
 			return;
 		
-		long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(this.maxExtract(), true);
-		long simulatedReceiveAmount = getEnergyStorage().receiveLongEnergy(simulatedOutputAmount, true);
-		ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
-		getEnergyStorage().receiveLongEnergy(simulatedReceiveAmount, false);
+		long simulatedOutputAmount = getEnergyStorage().extractLongEnergy(this.maxExtract(), true);
+		long simulatedReceiveAmount = energyBlockEntity.getEnergyStorage().receiveLongEnergy(simulatedOutputAmount, true);
+		getEnergyStorage().extractLongEnergy(simulatedReceiveAmount, false);
+		energyBlockEntity.getEnergyStorage().receiveLongEnergy(simulatedReceiveAmount, false);
 	}
 	
 	public long getEnergyTarget()
@@ -226,6 +226,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	{
 		if(!ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID))
 			return;
+		
 		if(this.peripheralWrapper != null)
 			this.peripheralWrapper.queueEvent(eventName, objects);
 	}
