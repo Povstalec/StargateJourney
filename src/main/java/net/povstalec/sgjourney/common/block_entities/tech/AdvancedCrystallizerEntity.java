@@ -83,13 +83,13 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 		switch(slot)
 		{
 			case 1:
-				primaryIngredientHandler.extractItem(0, recipe.getAmountInSlot(0), false);
+				primaryIngredientHandler.extractItem(0, recipe.getAmountInSlot(1), false);
 				break;
 			case 2:
-				secondaryIngredientHandler.extractItem(0, recipe.getAmountInSlot(1), false);
+				secondaryIngredientHandler.extractItem(0, recipe.getAmountInSlot(2), false);
 				break;
 			default:
-				crystalBaseHandler.extractItem(0, recipe.getAmountInSlot(2), false);
+				crystalBaseHandler.extractItem(0, recipe.getAmountInSlot(0), false);
 		}
 	}
 }
