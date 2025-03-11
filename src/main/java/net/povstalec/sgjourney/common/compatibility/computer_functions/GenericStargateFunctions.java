@@ -124,6 +124,16 @@ public class GenericStargateFunctions
 		// Return message: "Chevron configuration set successfully"
 	}
 	
+	public static boolean remapSymbol(AbstractStargateEntity stargate, int originalSymbol, int newSymbol)
+	{
+		return stargate.remapSymbol(originalSymbol, newSymbol);
+	}
+	
+	public static int getMappedSymbol(AbstractStargateEntity stargate, int symbol)
+	{
+		return stargate.getMappedSymbol(symbol);
+	}
+	
 	public static boolean hasDHD(AbstractStargateEntity stargate)
 	{
 		return stargate.dhdInfo().hasDHD();

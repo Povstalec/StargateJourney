@@ -45,6 +45,8 @@ public class CCTweakedCompatibility
 	{
 		peripheral.registerMethod(new StargateMethods.EngageSymbol());
 		peripheral.registerMethod(new StargateMethods.DialedAddress());
+		//peripheral.registerMethod(new StargateMethods.RemapSymbol());
+		//peripheral.registerMethod(new StargateMethods.GetMappedSymbol());
 	}
 	
 	private static void genericAdvancedCrystalMethods(StargatePeripheral peripheral)

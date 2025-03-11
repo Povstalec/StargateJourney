@@ -170,6 +170,37 @@ public class StargateMethods
 			return result;
 		}
 	}
+	
+	public static class RemapSymbol implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "remapSymbol";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.remapSymbol(stargate, arguments.getInt(0), arguments.getInt(1))});
+		}
+	}
+	
+	public static class GetMappedSymbol implements InterfaceMethod<AbstractStargateEntity>
+	{
+		@Override
+		public String getName()
+		{
+			return "getMappedSymbol";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		{
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.getMappedSymbol(stargate, arguments.getInt(0))});
+		}
+	}
+	
 	public static class HasDHD implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
