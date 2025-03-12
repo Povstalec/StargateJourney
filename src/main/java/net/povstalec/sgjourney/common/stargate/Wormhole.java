@@ -419,7 +419,6 @@ public class Wormhole
 		}
 		
 		func.run(traveler);
-		traveler.kill();
 	}
     
     private void irisThudEvent(AbstractStargateEntity targetStargate, Entity traveler)
