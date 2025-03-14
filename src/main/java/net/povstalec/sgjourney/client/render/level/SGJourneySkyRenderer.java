@@ -325,17 +325,17 @@ public abstract class SGJourneySkyRenderer
         BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	
-	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size)
+	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, ResourceLocation texture, float size)
 	{
-		this.createCelestialObject(bufferbuilder, lastMatrix, SUN_LOCATION, 
+		this.createCelestialObject(bufferbuilder, lastMatrix, texture,
 				size, 100.0F, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 
 		RenderSystem.enableBlend();
 	}
 	
-	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size, float theta, float phi)
+	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, ResourceLocation texture, float size, float theta, float phi)
 	{
-		this.createCelestialObject(bufferbuilder, lastMatrix, SUN_LOCATION, 
+		this.createCelestialObject(bufferbuilder, lastMatrix, texture,
 				size, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 
 		RenderSystem.enableBlend();
