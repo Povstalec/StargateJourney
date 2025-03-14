@@ -96,9 +96,9 @@ public class GenericStargateFunctions
 	//*************************************Crystal Interface**************************************
 	//============================================================================================
 	
-	public static Stargate.Feedback engageSymbol(AbstractStargateEntity stargate, int desiredSymbol)
+	public static Stargate.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, int desiredSymbol, boolean engageDirectly)
 	{
-		return stargate.dhdEngageSymbol(desiredSymbol);
+		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.engageSymbol(desiredSymbol) : stargate.dhdEngageSymbol(desiredSymbol);
 	}
 	
 	public static Address.Immutable getDialedAddress(AbstractStargateEntity stargate)

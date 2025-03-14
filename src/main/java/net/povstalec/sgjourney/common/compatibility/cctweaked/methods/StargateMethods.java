@@ -115,7 +115,16 @@ public class StargateMethods
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(stargate, desiredSymbol)));
+			try
+			{
+				boolean engageDirectly = arguments.getBoolean(1);
+				return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, engageDirectly)));
+			}
+			catch(LuaException e)
+			{
+				return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, false)));
+			}
+			
 		}
 	}
 	
