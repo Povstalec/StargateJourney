@@ -76,7 +76,9 @@
 	"block.sgjourney.ring_panel": "Ovládání kruhů",
 	
 	"block.sgjourney.naquadah_generator_mark_i": "Naquadahový Generátor Mark I",
+	"block.sgjourney.naquadah_generator_mark_i.description.mode": "Shift + pravé kliknutí na blok pro aktivaci/deaktivaci",
 	"block.sgjourney.naquadah_generator_mark_ii": "Naquadahový Generátor Mark II",
+	"block.sgjourney.naquadah_generator_mark_ii.description.mode": "Shift + pravé kliknutí na blok pro aktivaci/deaktivaci",
 	
 	"block.sgjourney.basic_interface": "Základní rozhraní",
 	"block.sgjourney.basic_interface.description": "Zařízení sloužící jako rozhraní mezi mimozemskou technologií a ruditem nebo počítači",
@@ -306,6 +308,8 @@
 	"advancements.sgjourney.adventure.visit_chulak.description": "Navštiv Čulak",
 	"advancements.sgjourney.adventure.visit_unitas.title": "Tolik žluté...",
 	"advancements.sgjourney.adventure.visit_unitas.description": "Navštiv Unitas",
+	"advancements.sgjourney.adventure.visit_rima.title": "Rozbité pláně",
+	"advancements.sgjourney.adventure.visit_rima.description": "Navštiv Rimu",
 	"advancements.sgjourney.adventure.visit_cavum_tenebrae.title": "Gravitace",
 	"advancements.sgjourney.adventure.visit_cavum_tenebrae.description": "Navštiv Cavum Tenebrae",
 	"advancements.sgjourney.adventure.visit_lantea.title": "Vítejte v Pegasu",
@@ -362,6 +366,7 @@
 	"solar_system.sgjourney.abydos": "Abydos",
 	"solar_system.sgjourney.chulak": "Čulak",
 	"solar_system.sgjourney.unitas": "Unitas",
+	"solar_system.sgjourney.rima": "Rima",
 	"solar_system.sgjourney.cavum_tenebrae": "Cavum Tenebrae",
 	"solar_system.sgjourney.proxima_centauri": "Proxima Centauri",
 	"solar_system.sgjourney.nether": "Nether",
@@ -395,6 +400,7 @@
 	"symbols.sgjourney.chulak": "Čulak",
 	"symbols.sgjourney.centauri": "Centauri",
 	"symbols.sgjourney.unitas": "Unitas",
+	"symbols.sgjourney.rima": "Rima",
 	"symbols.sgjourney.cavum_tenebrae": "Cavum Tenebrae",
 	"symbols.sgjourney.lantea": "Lantea",
 	"symbols.sgjourney.athos": "Athos",
@@ -409,6 +415,7 @@
 	"point_of_origin.sgjourney.abydos": "Abydos",
 	"point_of_origin.sgjourney.chulak": "Čulak",
 	"point_of_origin.sgjourney.unitas": "Unitas",
+	"point_of_origin.sgjourney.rima": "Rima",
 	"point_of_origin.sgjourney.cavum_tenebrae": "Cavum Tenebrae",
 	"point_of_origin.sgjourney.centauri": "Centauri",
 	"point_of_origin.sgjourney.kaliem": "Kaliem",
@@ -538,6 +545,7 @@
 	
 	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Palivo",
 	"tooltip.sgjourney.naquadah_generator_core.reaction_progress": "Průběh reakce",
+	"tooltip.sgjourney.naquadah_generator_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	"tooltip.sgjourney.fusion_core.fuel": "Palivo",
 	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	

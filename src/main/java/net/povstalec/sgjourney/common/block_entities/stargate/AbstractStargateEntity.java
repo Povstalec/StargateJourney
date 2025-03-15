@@ -375,15 +375,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return symbolMap;
 	}
 	
-	public boolean remapSymbol(int symbol1, int symbol2)
+	public boolean remapSymbol(int originalSymbol, int newSymbol)
 	{
-		if(isSymbolOutOfBounds(symbol1))
+		if(isSymbolOutOfBounds(originalSymbol))
 			return false;
 		
-		if(symbol2 < 0 || symbol2 > MAX_SYMBOLS)
+		if(newSymbol < 0 || newSymbol > MAX_SYMBOLS)
 			return false;
 		
-		this.symbolMap[symbol1] = symbol2;
+		this.symbolMap[originalSymbol] = newSymbol;
 		
 		return true;
 	}

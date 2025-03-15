@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -16,9 +13,7 @@ import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.items.CallForwardingDevice;
-import net.povstalec.sgjourney.common.items.FusionCoreItem;
-import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import org.jetbrains.annotations.NotNull;
 
 public class MilkyWayDHDEntity extends CrystalDHDEntity

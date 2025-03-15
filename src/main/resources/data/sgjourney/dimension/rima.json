@@ -1,0 +1,42 @@
+{
+  "type": "sgjourney:rima",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "sgjourney:rima",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "sgjourney:rima_shattered_plains",
+          "parameters": {
+            "temperature": 0,
+            "humidity": 0,
+            "continentalness": 0,
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": [
+              -2,
+              0.6
+            ],
+            "offset": 0
+          }
+        },
+        {
+          "biome": "sgjourney:rima_cracks",
+          "parameters": {
+            "temperature": 0,
+            "humidity": 0,
+            "continentalness": 0,
+            "erosion": 0,
+            "weirdness": 0,
+            "depth": [
+              0.6,
+              2
+            ],
+            "offset": 0
+          }
+        }
+      ]
+    }
+  }
+}

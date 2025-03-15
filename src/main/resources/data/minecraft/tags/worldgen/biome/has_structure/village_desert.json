@@ -1,6 +1,7 @@
 {
-  "values": [
-    "minecraft:desert",
+  "replace": false,
+	
+   "values": [
     "sgjourney:abydos_desert"
   ]
 }

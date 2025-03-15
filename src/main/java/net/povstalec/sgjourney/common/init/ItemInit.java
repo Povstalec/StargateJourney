@@ -25,6 +25,8 @@ import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
+import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
+import net.povstalec.sgjourney.common.items.energy_cores.NaquadahGeneratorCoreItem;
 
 public class ItemInit
 {
