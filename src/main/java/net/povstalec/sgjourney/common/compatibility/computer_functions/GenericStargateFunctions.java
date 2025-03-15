@@ -96,9 +96,9 @@ public class GenericStargateFunctions
 	//*************************************Crystal Interface**************************************
 	//============================================================================================
 	
-	public static Stargate.Feedback engageSymbol(AbstractStargateEntity stargate, int desiredSymbol)
+	public static Stargate.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, int desiredSymbol, boolean engageDirectly)
 	{
-		return stargate.dhdEngageSymbol(desiredSymbol);
+		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.engageSymbol(desiredSymbol) : stargate.dhdEngageSymbol(desiredSymbol);
 	}
 	
 	public static Address.Immutable getDialedAddress(AbstractStargateEntity stargate)
@@ -122,6 +122,16 @@ public class GenericStargateFunctions
 		stargate.setEngagedChevrons(configurationArray);
 		
 		// Return message: "Chevron configuration set successfully"
+	}
+	
+	public static boolean remapSymbol(AbstractStargateEntity stargate, int originalSymbol, int newSymbol)
+	{
+		return stargate.remapSymbol(originalSymbol, newSymbol);
+	}
+	
+	public static int getMappedSymbol(AbstractStargateEntity stargate, int symbol)
+	{
+		return stargate.getMappedSymbol(symbol);
 	}
 	
 	public static boolean hasDHD(AbstractStargateEntity stargate)

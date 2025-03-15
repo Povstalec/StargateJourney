@@ -119,6 +119,15 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
+	public Stargate.Feedback engageSymbol(int symbol)
+	{
+		if(!addressBuffer.containsSymbol(symbol))
+			addressBuffer.addSymbol(symbol);
+		
+		return super.engageSymbol(symbol);
+	}
+	
+	@Override
 	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;

@@ -77,7 +77,9 @@
 	"block.sgjourney.ring_panel": "Ring Panel",
 	
 	"block.sgjourney.naquadah_generator_mark_i": "Naquadah Generator Mark I",
+	"block.sgjourney.naquadah_generator_mark_i.description.mode": "Shift + Right-Click on the block to activate/deactivate",
 	"block.sgjourney.naquadah_generator_mark_ii": "Naquadah Generator Mark II",
+	"block.sgjourney.naquadah_generator_mark_ii.description.mode": "Shift + Right-Click on the block to activate/deactivate",
 	
 	"block.sgjourney.basic_interface": "Basic Interface",
 	"block.sgjourney.basic_interface.description": "Device used for interfacing alien technology with redstone and computers",
@@ -308,6 +310,8 @@
 	"advancements.sgjourney.adventure.visit_chulak.description": "Visit Chulak",
 	"advancements.sgjourney.adventure.visit_unitas.title": "So much yellow...",
 	"advancements.sgjourney.adventure.visit_unitas.description": "Visit Unitas",
+	"advancements.sgjourney.adventure.visit_rima.title": "Shattered plains",
+	"advancements.sgjourney.adventure.visit_rima.description": "Visit Rima",
 	"advancements.sgjourney.adventure.visit_cavum_tenebrae.title": "Gravity",
 	"advancements.sgjourney.adventure.visit_cavum_tenebrae.description": "Visit Cavum Tenebrae",
 	"advancements.sgjourney.adventure.visit_lantea.title": "Welcome to Pegasus",
@@ -363,6 +367,7 @@
 	"solar_system.sgjourney.abydos": "Abydos",
 	"solar_system.sgjourney.chulak": "Chulak",
 	"solar_system.sgjourney.unitas": "Unitas",
+	"solar_system.sgjourney.rima": "Rima",
 	"solar_system.sgjourney.cavum_tenebrae": "Cavum Tenebrae",
 	"solar_system.sgjourney.proxima_centauri": "Proxima Centauri",
 	"solar_system.sgjourney.nether": "Nether",
@@ -393,6 +398,7 @@
 	"symbols.sgjourney.abydos": "Abydos",
 	"symbols.sgjourney.chulak": "Chulak",
 	"symbols.sgjourney.unitas": "Unitas",
+	"symbols.sgjourney.rima": "Rima",
 	"symbols.sgjourney.cavum_tenebrae": "Cavum Tenebrae",
 	"symbols.sgjourney.centauri": "Centauri",
 	"symbols.sgjourney.lantea": "Lantea",
@@ -408,6 +414,7 @@
 	"point_of_origin.sgjourney.abydos": "Abydos",
 	"point_of_origin.sgjourney.chulak": "Chulak",
 	"point_of_origin.sgjourney.unitas": "Unitas",
+	"point_of_origin.sgjourney.rima": "Rima",
 	"point_of_origin.sgjourney.cavum_tenebrae": "Cavum Tenebrae",
 	"point_of_origin.sgjourney.centauri": "Centauri",
 	"point_of_origin.sgjourney.kaliem": "Kaliem",
@@ -538,6 +545,7 @@
 	
 	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Fuel",
 	"tooltip.sgjourney.naquadah_generator_core.reaction_progress": "Reaction Progress",
+	"tooltip.sgjourney.naquadah_generator_core.description": "Provides energy to the DHD",
 	"tooltip.sgjourney.fusion_core.fuel": "Fuel",
 	"tooltip.sgjourney.fusion_core.description": "Provides energy to the DHD",
 	

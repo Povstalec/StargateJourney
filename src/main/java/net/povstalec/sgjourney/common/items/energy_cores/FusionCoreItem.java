@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.items;
+package net.povstalec.sgjourney.common.items.energy_cores;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;

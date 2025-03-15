@@ -16,8 +16,7 @@ import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.items.IEnergyCore;
-import net.povstalec.sgjourney.common.items.ZeroPointModule;
+import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -346,6 +345,11 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	
 	protected abstract long buttonPressEnergyCost();
 	
+	public long minStoredEnergy()
+	{
+		return 10 * buttonPressEnergyCost();
+	}
+	
 	public abstract long maxEnergyDeplete();
 	
 	@Override
@@ -380,8 +384,39 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		
 		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
 		
+		// Stores energy in the DHD buffer
+		if(getEnergyStored() < minStoredEnergy() || (!this.stargate.isConnected() && getEnergyStored() < getEnergyCapacity()))
+		{
+			ItemStack inputStack = energyItemHandler.getStackInSlot(1);
+			// Generates energy if needed
+			if(energyStack.getItem() instanceof IEnergyCore energyCore && energyCore.maxGeneratedEnergy(energyStack, inputStack) <= (getEnergyCapacity() - getEnergyStored()))
+			{
+				long generatedEnergy = energyCore.generateEnergy(energyStack, inputStack);
+				
+				if(generatedEnergy > 0)
+					receiveEnergy(generatedEnergy, false);
+			}
+			else if(energyStack.getCapability(ForgeCapabilities.ENERGY).isPresent())
+			{
+				energyStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
+				{
+					if(energy instanceof ZeroPointEnergy zpmEnergy)
+					{
+						long energyNeeded = getEnergyCapacity() - getEnergyStored();
+						long energyExtracted = zpmEnergy.extractLongEnergy(energyNeeded, false);
+						receiveEnergy(energyExtracted, false);
+					}
+					else
+					{
+						int energyNeeded = (int) Math.min(getEnergyCapacity() - getEnergyStored(), Integer.MAX_VALUE);
+						int energyExtracted = energy.extractEnergy(energyNeeded, false);
+						receiveEnergy(energyExtracted, false);
+					}
+				});
+			}
+		}
 		// Sends energy to the Stargate
-		if(stargate.getEnergyStored() < getEnergyTarget())
+		else if(stargate.getEnergyStored() < getEnergyTarget())
 		{
 			long needed = getEnergyTarget() - stargate.getEnergyStored();
 			
@@ -407,28 +442,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 				long energySent = depleteEnergy(Math.min(maxEnergyDeplete(), needed), false);
 				stargate.receiveEnergy(energySent, false);
 			}
-		}
-		
-		ItemStack inputStack = energyItemHandler.getStackInSlot(1);
-		// Generates energy if needed
-		if(energyStack.getItem() instanceof IEnergyCore energyCore && energyCore.maxGeneratedEnergy(energyStack, inputStack) <= (getEnergyCapacity() - getEnergyStored()))
-		{
-			long generatedEnergy = energyCore.generateEnergy(energyStack, inputStack);
-			
-			if(generatedEnergy > 0)
-				receiveEnergy(generatedEnergy, false);
-		}
-		else if(energyStack.getItem() instanceof ZeroPointModule)
-		{
-			energyStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
-			{
-				if(energy instanceof ZeroPointEnergy zpmEnergy)
-				{
-					long energyNeeded = getEnergyCapacity() - getEnergyStored();
-					long energyExtracted = zpmEnergy.extractLongEnergy(energyNeeded, false);
-					receiveEnergy(energyExtracted, false);
-				}
-			});
 		}
 	}
 
