@@ -13,10 +13,8 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
-import net.povstalec.sgjourney.common.items.FusionCoreItem;
+import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
-
-import javax.annotation.Nonnull;
 
 public class PegasusDHDEntity extends CrystalDHDEntity
 {

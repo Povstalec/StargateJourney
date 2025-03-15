@@ -16,8 +16,7 @@ import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.items.IEnergyCore;
-import net.povstalec.sgjourney.common.items.ZeroPointModule;
+import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
