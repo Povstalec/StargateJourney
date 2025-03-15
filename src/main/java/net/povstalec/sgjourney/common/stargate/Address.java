@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
+import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
 
 import javax.annotation.Nullable;
 
@@ -349,6 +350,8 @@ public final class Address
 			return Arrays.equals(this.addressArray, address.addressArray);
 		else if(object instanceof Address.Immutable address)
 				return Arrays.equals(this.addressArray, address.addressArray);
+		else if(object instanceof AddressFilterInfo.HiddenAddress hiddenAddress)
+			return Arrays.equals(this.addressArray, hiddenAddress.address().addressArray);
 		
 		return false;
 	}
@@ -521,6 +524,8 @@ public final class Address
 				return Arrays.equals(this.addressArray, address.addressArray);
 			else if(object instanceof Address address)
 				return Arrays.equals(this.addressArray, address.addressArray);
+			else if(object instanceof AddressFilterInfo.HiddenAddress hiddenAddress)
+				return Arrays.equals(this.addressArray, hiddenAddress.address().addressArray);
 			
 			return false;
 		}
