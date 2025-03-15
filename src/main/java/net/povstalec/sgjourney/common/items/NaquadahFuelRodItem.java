@@ -53,7 +53,7 @@ public class NaquadahFuelRodItem extends Item
 	
 	public static int getFuel(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.NAQUADAH_FUEL, 0);
+		return stack.getOrDefault(DataComponentInit.NAQUADAH_FUEL, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get());
 	}
 	
 	/**
