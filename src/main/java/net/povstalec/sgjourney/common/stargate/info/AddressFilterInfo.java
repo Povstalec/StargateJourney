@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AddressFilterInfo
@@ -240,6 +241,12 @@ public class AddressFilterInfo
 		public boolean isVisible()
 		{
 			return this.isVisible;
+		}
+		
+		@Override
+		public boolean equals(Object object)
+		{
+			return address.equals(object);
 		}
 	}
 	

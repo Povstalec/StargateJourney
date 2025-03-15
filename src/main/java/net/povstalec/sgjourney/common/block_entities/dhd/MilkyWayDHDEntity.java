@@ -10,7 +10,8 @@ import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.items.FusionCoreItem;
+import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
+
 import org.jetbrains.annotations.NotNull;
 
 public class MilkyWayDHDEntity extends CrystalDHDEntity

@@ -23,6 +23,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	public static final ResourceLocation ABYDOS_EFFECTS = StargateJourney.sgjourneyLocation("abydos");
 	public static final ResourceLocation CHULAK_EFFECTS = StargateJourney.sgjourneyLocation("chulak");
 	public static final ResourceLocation UNITAS_EFFECTS = StargateJourney.sgjourneyLocation("unitas");
+	public static final ResourceLocation RIMA_EFFECTS = StargateJourney.sgjourneyLocation("rima");
 	public static final ResourceLocation CAVUM_TENEBRAE_EFFECTS = StargateJourney.sgjourneyLocation("cavum_tenebrae");
 	// Pegasus
 	public static final ResourceLocation LANTEA_EFFECTS = StargateJourney.sgjourneyLocation("lantea");
@@ -154,6 +155,20 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		}
 	}
 	
+	public static class Rima extends SGJourneyDimensionSpecialEffects
+	{
+		public Rima()
+		{
+			super(Float.NaN, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new PlanetSkyRenderers.RimaSkyRenderer();
+		}
+		
+		public boolean customSky()
+		{
+			return ClientSkyConfig.custom_rima_sky.get();
+		}
+	}
+	
 	//============================================================================================
 	//******************************************Pegasus*******************************************
 	//============================================================================================
@@ -194,6 +209,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		event.register(SGJourneyDimensionSpecialEffects.ABYDOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Abydos());
     	event.register(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, new SGJourneyDimensionSpecialEffects.Chulak());
 		event.register(SGJourneyDimensionSpecialEffects.UNITAS_EFFECTS, new SGJourneyDimensionSpecialEffects.Unitas());
+		event.register(SGJourneyDimensionSpecialEffects.RIMA_EFFECTS, new SGJourneyDimensionSpecialEffects.Rima());
     	event.register(SGJourneyDimensionSpecialEffects.CAVUM_TENEBRAE_EFFECTS, new SGJourneyDimensionSpecialEffects.CavumTenebrae());
 		// Pegasus
     	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());

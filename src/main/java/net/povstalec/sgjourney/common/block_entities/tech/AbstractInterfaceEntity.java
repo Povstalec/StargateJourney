@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech.BasicInterfaceBlock;
@@ -248,8 +248,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			{
 				interfaceEntity.handleShielding(state, stargate);
 				
-				if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-					interfaceEntity.rotateStargate(milkyWayStargate);
+				if(stargate instanceof RotatingStargateEntity rotatingStargate)
+					interfaceEntity.rotateStargate(rotatingStargate);
 			}
 
 			if(lastSymbol != interfaceEntity.currentSymbol)
@@ -269,7 +269,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			
 	}
 	
-	private void rotateStargate(MilkyWayStargateEntity stargate)
+	private void rotateStargate(RotatingStargateEntity stargate)
 	{
 		if(this.rotate)
 		{

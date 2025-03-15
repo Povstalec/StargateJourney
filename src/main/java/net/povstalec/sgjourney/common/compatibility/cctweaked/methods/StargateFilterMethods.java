@@ -92,7 +92,16 @@ public class StargateFilterMethods
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
-				boolean isVisible = arguments.getBoolean(1);
+				boolean isVisible;
+				
+				try
+				{
+					isVisible = arguments.getBoolean(1);
+				}
+				catch(LuaException e)
+				{
+					isVisible = false;
+				}
 				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
 				checkAddressArray(addressArray);
@@ -179,7 +188,16 @@ public class StargateFilterMethods
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
 				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
-				boolean isVisible = arguments.getBoolean(1);
+				boolean isVisible;
+				
+				try
+				{
+					isVisible = arguments.getBoolean(1);
+				}
+				catch(LuaException e)
+				{
+					isVisible = false;
+				}
 				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
 				checkAddressArray(addressArray);

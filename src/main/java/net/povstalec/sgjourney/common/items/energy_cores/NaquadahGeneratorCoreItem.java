@@ -1,16 +1,14 @@
-package net.povstalec.sgjourney.common.items;
+package net.povstalec.sgjourney.common.items.energy_cores;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
-import org.jetbrains.annotations.Nullable;
+import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 
 import java.util.List;
 
@@ -67,6 +65,7 @@ public class NaquadahGeneratorCoreItem extends Item implements IEnergyCore
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_generator_core.reaction_progress").append(Component.literal(": " + reactionProgress(stack) + " / " + getMaxReactionProgress())).withStyle(ChatFormatting.GREEN));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_generator_core.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}

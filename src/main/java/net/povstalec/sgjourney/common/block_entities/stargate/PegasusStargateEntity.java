@@ -135,7 +135,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback engageSymbol(int symbol)
+	public Stargate.Feedback dhdEngageSymbol(int symbol)
 	{
 		if(level.isClientSide())
 			return Stargate.Feedback.NONE;
@@ -164,6 +164,15 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, spinClockwise());
 		
 		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
+	}
+	
+	@Override
+	public Stargate.Feedback engageSymbol(int symbol)
+	{
+		if(!addressBuffer.containsSymbol(symbol))
+			addressBuffer.addSymbol(symbol);
+		
+		return super.engageSymbol(symbol);
 	}
 	
 	@Override
@@ -216,7 +225,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					lockPrimaryChevron();
+					engageSymbol(symbol);
 				}
 				else
 					symbolWork();
@@ -231,7 +240,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					encodeChevron(symbol, false, false);
+					engageSymbol(symbol);
 				}
 			}
 			else
