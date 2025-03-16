@@ -9,6 +9,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.init.TagInit;
 
 public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity
 {
@@ -32,7 +33,7 @@ public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity
 	@Override
 	protected boolean hasMaterial()
 	{
-		return itemInputHandler.getStackInSlot(0).is(ItemInit.RAW_NAQUADAH.get());
+		return itemInputHandler.getStackInSlot(0).is(TagInit.Items.RAW_NAQUADAH);
 	}
 
 	@Override

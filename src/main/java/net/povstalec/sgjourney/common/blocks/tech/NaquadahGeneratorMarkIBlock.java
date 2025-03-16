@@ -154,6 +154,8 @@ public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
 		
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + capacity +" FE")).withStyle(ChatFormatting.DARK_RED));
         tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_generator_mark_i.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }

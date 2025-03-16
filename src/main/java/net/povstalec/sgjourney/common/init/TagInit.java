@@ -16,6 +16,7 @@ public class TagInit
 	public class Items
 	{
 		public static final TagKey<Item> REACTION_HEATER = tag("reaction_heater");
+		public static final TagKey<Item> RAW_NAQUADAH = tag("raw_naquadah");
 		
 		private static TagKey<Item> tag(String name)
 		{
