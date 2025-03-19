@@ -232,6 +232,10 @@
 	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
 	
 	"sounds.sgjourney.nothing" : "nic",
+	
+	"death.attack.sgjourney.kawoosh": "Hráč %1$s byl dezintegrován nestabilním vírem",
+	"death.attack.sgjourney.reverseWormhole": "Hráč %1$s prošel špatnou stranou červí díry",
+	"death.attack.sgjourney.iris": "Hráč %1$s se rozplácnul o iris",
 
 	"stat.sgjourney.times_killed_by_kawoosh": "Počet úmrtí v nestabilním víru",
 	"stat.sgjourney.times_killed_by_wormhole": "Počet úmrtí v červí díře",

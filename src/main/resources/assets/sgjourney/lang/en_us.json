@@ -233,6 +233,10 @@
 	"sounds.sgjourney.matok_close" : "Staff Weapon closes",
 	
 	"sounds.sgjourney.nothing" : "Nothing",
+	
+	"death.attack.sgjourney.kawoosh": "%1$s was disintegrated by the kawoosh",
+	"death.attack.sgjourney.reverseWormhole": "%1$s walked through the wrong end of the wormhole",
+	"death.attack.sgjourney.iris": "%1$s was squashed against the iris",
 
 	"stat.sgjourney.times_smashed_against_iris": "Times smashed against Iris",
 	"stat.sgjourney.times_killed_by_kawoosh": "Times killed by Kawoosh",

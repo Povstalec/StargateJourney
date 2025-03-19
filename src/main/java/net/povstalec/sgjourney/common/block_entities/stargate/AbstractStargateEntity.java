@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
 import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
@@ -654,6 +655,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 				if(entity instanceof Player player)
 					player.awardStat(StatisticsInit.TIMES_KILLED_BY_KAWOOSH.get());
 				
+				entity.hurt(DamageSourceInit.KAWOOSH, Float.MAX_VALUE);
 				entity.kill();
 			}
 		});
