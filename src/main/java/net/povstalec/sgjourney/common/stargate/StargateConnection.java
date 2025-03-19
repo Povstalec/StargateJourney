@@ -111,34 +111,27 @@ public final class StargateConnection
 		}
 	}
 	
-	public enum State implements StringRepresentable
+	public enum State
 	{
-		IDLE("idle", false, false),
+		IDLE((byte) 0, false, false),
 		
-		OUTGOING_CONNECTION("outgoing_connection", true, true),
-		INCOMING_CONNECTION("incoming_connection", true, false);
+		OUTGOING_CONNECTION((byte) 1, true, true),
+		INCOMING_CONNECTION((byte) -1, true, false);
 		
-		private final String name;
+		private final byte value;
 		private final boolean isConnected;
 		private final boolean isDialingOut;
 		
-		State(String name, boolean isConnected, boolean isDialingOut)
+		State(byte value, boolean isConnected, boolean isDialingOut)
 		{
-			this.name = name;
+			this.value = value;
 			this.isConnected = isConnected;
 			this.isDialingOut = isDialingOut;
 		}
 
-		@Override
-		public String toString()
+		public byte byteValue()
 		{
-			return this.name;
-		}
-		
-		@Override
-		public String getSerializedName()
-		{
-			return this.name;
+			return this.value;
 		}
 		
 		public boolean isConnected()
@@ -149,6 +142,16 @@ public final class StargateConnection
 		public boolean isDialingOut()
 		{
 			return this.isDialingOut;
+		}
+		
+		public static State fromByte(byte value)
+		{
+			return switch (value)
+			{
+				case 1 -> OUTGOING_CONNECTION;
+				case -1 -> INCOMING_CONNECTION;
+				default -> IDLE;
+			};
 		}
 
 	}

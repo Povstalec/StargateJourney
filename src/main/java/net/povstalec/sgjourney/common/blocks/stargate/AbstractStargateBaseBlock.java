@@ -207,13 +207,10 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         }
     }
 	
-	public void updateStargate(Level level, BlockPos pos, BlockState state, StargateConnection.State connectionState, int chevronsActive, ShieldingState shieldingState)
+	public void updateStargate(Level level, BlockPos pos, BlockState state, ShieldingState shieldingState)
 	{
 		if(!(state.getBlock() instanceof AbstractStargateBlock))
 			return;
-		
-		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTION_STATE, connectionState)
-				.setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
 		
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
@@ -228,8 +225,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 					level.setBlock(part.getRingPos(pos,  direction, orientation), 
 							ringState()
 							.setValue(AbstractStargateRingBlock.PART, part)
-							.setValue(AbstractStargateRingBlock.CONNECTION_STATE, level.getBlockState(pos).getValue(CONNECTION_STATE))
-							.setValue(AbstractStargateRingBlock.CHEVRONS_ACTIVE, level.getBlockState(pos).getValue(CHEVRONS_ACTIVE))
 							.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
 							.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
 							.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
@@ -245,7 +240,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 			irisStargate.irisInfo().removeIris();
 		
-		updateStargate(level, pos, state, state.getValue(AbstractStargateBlock.CONNECTION_STATE), state.getValue(AbstractStargateBlock.CHEVRONS_ACTIVE), ShieldingState.OPEN);
+		updateStargate(level, pos, state, ShieldingState.OPEN);
 	}
 	
 	public void updateIris(Level level, BlockPos pos, BlockState state, ShieldingState shieldingState)

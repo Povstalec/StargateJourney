@@ -3,14 +3,23 @@ package net.povstalec.sgjourney.common.structures;
 import java.util.Optional;
 import java.util.Random;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 
 public abstract class StargateStructure extends SGJourneyStructure
 {
@@ -87,4 +96,21 @@ public abstract class StargateStructure extends SGJourneyStructure
 		else
 			return false;
 	}
+	
+	/*@Override
+	public void afterPlace(WorldGenLevel level, StructureManager structureManager, ChunkGenerator chunkGenerator, RandomSource randomSource,
+						   BoundingBox boundingBox,ChunkPos chunkPos, PiecesContainer piecesContainer)
+	{
+		BlockPos startPos = new BlockPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ());
+		for(BlockPos pos : level.getChunk(startPos).getBlockEntitiesPos())
+		{
+			if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+			{
+				stargate.symbolInfo().setSymbols(new ResourceLocation("sgjourney:lantea"));
+				System.out.println("Setting up Stargate!");
+			}
+		}
+		
+		System.out.println(BlockEntityList.get(level.getLevel()).getStargates());
+	}*/
 }

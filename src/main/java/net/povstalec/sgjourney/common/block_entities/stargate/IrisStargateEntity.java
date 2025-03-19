@@ -90,9 +90,9 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 	}
 	
 	@Override
-	public void setStargateState(StargateConnection.State connectionState, int chevronsEngaged, boolean updateInterfaces)
+	public void setStargateState(boolean updateInterfaces)
 	{
-		setStargateState(connectionState, chevronsEngaged, updateInterfaces, false, irisInfo().getShieldingState());
+		setStargateState(updateInterfaces, false, irisInfo().getShieldingState());
 		updateClientState();
 	}
 	
