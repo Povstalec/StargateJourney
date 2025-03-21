@@ -20,7 +20,7 @@ Each Stargate can have different [variants]({{ site.baseurl }}/blocks/stargate_v
 
 ### Classic
 It was initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
-The gate ring cannot move.
+The ring can move and the gate can be dialed manually using [redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone).
 
 ![Classic Stargate]({{ site.baseurl }}/assets/img/blocks/technological/classic_stargate.png)
 {: .max-width-512 }
@@ -29,6 +29,7 @@ The gate ring cannot move.
 Universe Stargate has only 35 symbols (+ Point of Origin). 
 The gate cannot dial any address with the symbol 36 and above.
 The entire Stargate rotates during the dial.
+It is also possible to dial the gate using [redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone).
 
 ![Universe Stargate]({{ site.baseurl }}/assets/img/blocks/technological/universe_stargate.png)
 {: .max-width-512 }
