@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
@@ -30,7 +31,6 @@ import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public class StargateBlockItem extends BlockItem
 {
-	private static final String ADD_TO_NETWORK = AbstractStargateEntity.ADD_TO_NETWORK;
 	private static final String POINT_OF_ORIGIN = AbstractStargateEntity.POINT_OF_ORIGIN;
 	private static final String SYMBOLS = AbstractStargateEntity.SYMBOLS;
 	private static final String IRIS_PROGRESS = IrisStargateEntity.IRIS_PROGRESS;
@@ -142,6 +142,7 @@ public class StargateBlockItem extends BlockItem
 			if(baseEntity instanceof AbstractStargateEntity stargate)
 			{
 				stargate.addStargateToNetwork();
+				stargate.generateAdditional(StructureGenEntity.Step.READY);
 				
 				// Sets up symbols on the Milky Way Stargate
 				if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
@@ -160,52 +161,24 @@ public class StargateBlockItem extends BlockItem
 	{
 		if(baseEntity instanceof AbstractStargateEntity stargate)
 		{
-			boolean addToNetwork = true;
+			StructureGenEntity.Step generationStep;
 			
-			if(info.contains(ADD_TO_NETWORK))
-				addToNetwork = info.getBoolean(ADD_TO_NETWORK);
+			if(info.contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(AbstractStargateEntity.GENERATION_STEP));
+			else
+				generationStep = StructureGenEntity.Step.GENERATED;
 			
-			if(addToNetwork)
+			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
 				// Registers it as one of the Block Entities in the list
 				stargate.addStargateToNetwork();
+				stargate.generateAdditional(StructureGenEntity.Step.GENERATED);
 				
 				if(!level.isClientSide())
 					StargateNetwork.get(level).updateStargate((ServerLevel) level, stargate);
 			}
-			
-			// Sets up symbols on the Milky Way Stargate
-			if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-			{
-				if(!addToNetwork)
-				{
-					if(!info.contains(POINT_OF_ORIGIN))
-						milkyWayStargate.symbolInfo().setPointOfOrigin(EMPTY);
-					if(!info.contains(SYMBOLS))
-						milkyWayStargate.symbolInfo().setSymbols(EMPTY);
-				}
-			}
-			
-			// Sets up symbols on the Milky Way Stargate
-			else if(stargate instanceof PegasusStargateEntity pegasusStargate)
-			{
-				if(!info.contains(POINT_OF_ORIGIN))
-					pegasusStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
-				if(!info.contains(SYMBOLS))
-					pegasusStargate.symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
-			}
-			
-			// Sets up symbols on the Classic Stargate
-			else if(stargate instanceof ClassicStargateEntity classicStargate)
-			{
-				if(!addToNetwork)
-				{
-					if(!info.contains(POINT_OF_ORIGIN))
-						classicStargate.symbolInfo().setPointOfOrigin(EMPTY);
-					if(!info.contains(SYMBOLS))
-						classicStargate.symbolInfo().setSymbols(EMPTY);
-				}
-			}
+			else
+				stargate.generateAdditional(StructureGenEntity.Step.SETUP);
 		}
 		
 		return false;

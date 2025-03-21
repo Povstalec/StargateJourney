@@ -1,33 +1,30 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.WorldGenLevel;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
-import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
 import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -42,12 +39,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
@@ -61,16 +56,12 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
-import net.povstalec.sgjourney.common.items.StargateIrisItem;
-import net.povstalec.sgjourney.common.items.StargateShieldItem;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePacket;
@@ -79,18 +70,15 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Dialing;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
 import net.povstalec.sgjourney.common.stargate.ITransmissionReceiver;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
-import net.povstalec.sgjourney.common.stargate.StargateConnection.State;
-import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.Wormhole;
 
-public abstract class AbstractStargateEntity extends EnergyBlockEntity implements SymbolInfo.Interface, DHDInfo.Interface, AddressFilterInfo.Interface, ITransmissionReceiver
+public abstract class AbstractStargateEntity extends EnergyBlockEntity implements ITransmissionReceiver, StructureGenEntity,
+		SymbolInfo.Interface, DHDInfo.Interface, AddressFilterInfo.Interface
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
-	public static final String ADD_TO_NETWORK = "AddToNetwork";
 	public static final String ID = "ID"; //TODO For legacy reasons
 	public static final String ID_9_CHEVRON_ADDRESS = "9ChevronAddress";
 	
@@ -126,9 +114,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
+	protected StructureGenEntity.Step generationStep = Step.GENERATED;
+	
 	// Basic Info
 	protected Address id9ChevronAddress = new Address();
-	protected boolean addToNetwork = true;
 	
 	protected final Stargate.Gen generation;
 	protected int totalSymbols;
@@ -215,8 +204,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
         if(level.isClientSide())
 	        return;
         
-        if(!addToNetwork)
-    		addStargateToNetwork();
+        if(generationStep == StructureGenEntity.Step.READY)
+    		generate();
         
         updateClientState();
         
@@ -226,6 +215,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	@Override
 	public void load(CompoundTag tag)
 	{
+		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
+		
 		connectionState = StargateConnection.State.fromByte(tag.getByte(CONNECTION_STATE));
 		connectionID = tag.getString(CONNECTION_ID);
 		
@@ -245,7 +237,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			id9ChevronAddress.fromString(tag.getString(ID));
 		else
 			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
-    	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
 		
 		displayID = tag.getBoolean(DISPLAY_ID);
 		upgraded = isUpgraded ? true : tag.getBoolean(UPGRADED);
@@ -273,6 +264,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
+		if(generationStep != Step.GENERATED)
+			tag.putByte(GENERATION_STEP, generationStep.byteValue());
+		
 		tag.putByte(CONNECTION_STATE, connectionState.byteValue());
 		tag.putString(CONNECTION_ID, connectionID);
 		
@@ -287,7 +281,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
-		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 
 		tag.putLong(ENERGY, this.getEnergyStored());
 
@@ -321,8 +314,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			set9ChevronAddress(generate9ChevronAddress());
 		
 		StargateNetwork.get(level).addStargate(this);
-		
-		addToNetwork = true;
 		this.setChanged();
 	}
 	
@@ -1082,7 +1073,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.direction;
 	}
 	
-	public void setConnectionState(State connectionState)
+	public void setConnectionState(StargateConnection.State connectionState)
 	{
 		this.connectionState = connectionState;
 	}
@@ -1094,7 +1085,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		if(FORCE_LOAD_CHUNK)
 		{
-			if(connectionState != State.IDLE)
+			if(connectionState != StargateConnection.State.IDLE)
 				ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, true, true);
 			else
 				ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, false, true);
@@ -1300,7 +1291,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
 
 		player.sendSystemMessage(Component.translatable("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
 		
 		player.sendSystemMessage(Component.literal("Energy: " + this.getEnergyStored() + " FE").withStyle(ChatFormatting.DARK_RED));
@@ -1458,4 +1449,35 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(!stargate.initialClientSync) // Syncs to client on the first tick
 			stargate.updateClientState();
     }
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
+	{
+		if(generationStep == Step.SETUP)
+			generationStep = Step.READY;
+	}
+	
+	public void generate()
+	{
+		addStargateToNetwork();
+		generateAdditional(Step.READY);
+		
+		generationStep = Step.GENERATED;
+	}
+	
+	public void generateAdditional(StructureGenEntity.Step generationStep) {}
+	
+	public void displayID()
+	{
+		displayID = true;
+	}
+	
+	public void upgraded()
+	{
+		displayID = true;
+	}
 }

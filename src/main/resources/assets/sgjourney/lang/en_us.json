@@ -472,6 +472,7 @@
 	"info.sgjourney.iris": "Iris",
 	"info.sgjourney.iris_texture": "Iris Texture",
 	"info.sgjourney.iris_durability": "Iris Durability",
+	"info.sgjourney.address_table": "Address Table",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symbols",
@@ -485,6 +486,7 @@
 	"tooltip.sgjourney.variant": "Variant",
 	"tooltip.sgjourney.requires": "Requires",
 	"tooltip.sgjourney.stargate_type": "Stargate Type",
+	"tooltip.sgjourney.generates_inside_structure": "Generates inside a Structure",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",

@@ -5,12 +5,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
@@ -48,12 +51,11 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractDHDEntity extends EnergyBlockEntity implements SymbolInfo.Interface
+public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface
 {
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
 	
-	public static final String GENERATE_ENERGY_CORE = "generate_energy_core";
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	
 	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
@@ -65,6 +67,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	public static final int DEFAULT_ENERGY_TARGET = 150000;
 	public static final int DEFAULT_ENERGY_TRANSFER = 2500;
 	public static final int DEFAULT_CONNECTION_DISTANCE = 16;
+	
+	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	protected Direction direction;
 	
@@ -87,8 +91,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	
 	protected SymbolInfo symbolInfo;
 	
-	protected boolean generateEnergyCore;
-	
 	public AbstractDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
 		super(blockEntity, pos, state);
@@ -109,8 +111,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		
 		symbolInfo.setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
 		symbolInfo.setSymbols(StargateJourney.EMPTY_LOCATION);
-		
-		generateEnergyCore = false;
 	}
 	
 	@Override
@@ -121,8 +121,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		if(this.getLevel().isClientSide())
 			return;
 		
-		if(generateEnergyCore)
-			generateEnergyCore();
+		if(generationStep == StructureGenEntity.Step.READY)
+			generate();
 		
 		this.setStargate();
 	}
@@ -140,8 +140,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 			
 		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 		
-		if(tag.contains(GENERATE_ENERGY_CORE))
-			generateEnergyCore = tag.getBoolean(GENERATE_ENERGY_CORE);
+		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
 		super.load(tag);
 	}
@@ -156,8 +156,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		
 		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
 		
-		if(generateEnergyCore)
-			tag.putBoolean(GENERATE_ENERGY_CORE, true);
+		if(generationStep != Step.GENERATED)
+			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 	}
 	
 	public SymbolInfo symbolInfo()
@@ -604,13 +604,28 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.toArray(), this.isCenterButtonEngaged));
 	}
 	
-	public void enableGeneratingEnergyCore()
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
-		generateEnergyCore = true;
+		if(generationStep == Step.SETUP)
+			generationStep = Step.READY;
 	}
 	
-	protected void generateEnergyCore()
+	public void generate()
 	{
-		generateEnergyCore = false;
+		generateEnergyCore();
+		
+		generationStep = Step.GENERATED;
 	}
+	
+	public void setToGenerate()
+	{
+		generationStep = Step.SETUP;
+	}
+	
+	protected abstract void generateEnergyCore();
 }

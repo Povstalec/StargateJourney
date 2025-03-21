@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.WorldGenLevel;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -23,12 +25,14 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.AddressTable;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class CartoucheEntity extends BlockEntity
+public abstract class CartoucheEntity extends BlockEntity implements StructureGenEntity
 {
 	public static final String ADDRESS_TABLE = "AddressTable";
 	public static final String DIMENSION = "Dimension";
 	public static final String SYMBOLS = "Symbols";
 	public static final String ADDRESS = "Address";
+	
+	protected StructureGenEntity.Step generationStep = StructureGenEntity.Step.GENERATED;
 
 	@Nullable
 	private ResourceLocation addressTable;
@@ -50,16 +54,11 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		if(addressTable != null)
-			setAddressFromAddressTable();
-		else if(dimension == null && address.isEmpty())
-			setDimensionFromLevel(level);
+		if(generationStep == StructureGenEntity.Step.READY)
+			generate();
 		
 		if(dimension != null && address.isEmpty())
 			setAddressFromDimension();
-		
-		if(symbols == null)
-			symbolsFromLevel(level);
 	}
 	
 	@Override
@@ -67,7 +66,10 @@ public abstract class CartoucheEntity extends BlockEntity
     {
     	super.load(tag);
 		
-    	if(tag.contains(ADDRESS_TABLE))
+		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
+		
+		if(tag.contains(ADDRESS_TABLE))
     		addressTable = new ResourceLocation(tag.getString(ADDRESS_TABLE));
     	if(tag.contains(SYMBOLS))
     		symbols = new ResourceLocation(tag.getString(SYMBOLS));
@@ -82,6 +84,9 @@ public abstract class CartoucheEntity extends BlockEntity
 	@Override
     protected void saveAdditional(@NotNull CompoundTag tag)
 	{
+		if(generationStep != Step.GENERATED)
+			tag.putByte(GENERATION_STEP, generationStep.byteValue());
+		
 		if(addressTable != null)
 			tag.putString(ADDRESS_TABLE, addressTable.toString());
 		if(symbols != null)
@@ -124,6 +129,11 @@ public abstract class CartoucheEntity extends BlockEntity
 		return this.address;
 	}
 	
+	public ResourceLocation getAddressTable()
+	{
+		return this.addressTable;
+	}
+	
 	//============================================================================================
 	//****************************************Functionality***************************************
 	//============================================================================================
@@ -150,7 +160,7 @@ public abstract class CartoucheEntity extends BlockEntity
 		this.address.fromDimension(level.getServer(), Conversion.locationToDimension(this.dimension));
 	}
 	
-	public void symbolsFromLevel(Level level)
+	public void setSymbolsFromLevel(Level level)
 	{
 		if(level.isClientSide())
 			return;
@@ -172,7 +182,7 @@ public abstract class CartoucheEntity extends BlockEntity
 			return;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)),
-				new ClientboundCartoucheUpdatePacket(worldPosition, symbols,addressTable == null ? this.address.toArray() : new int[0]));
+				new ClientboundCartoucheUpdatePacket(worldPosition, symbols == null ? StargateJourney.EMPTY_LOCATION : symbols, addressTable == null ? this.address.toArray() : new int[0]));
 	}
 	
 	@Override
@@ -186,6 +196,28 @@ public abstract class CartoucheEntity extends BlockEntity
 	{
 		if(state.getValue(CartoucheBlock.HALF) == DoubleBlockHalf.LOWER)
 			updateClient();
+	}
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
+	{
+		if(generationStep == Step.SETUP)
+			generationStep = Step.READY;
+	}
+	
+	public void generate()
+	{
+		if(addressTable != null)
+			setAddressFromAddressTable();
+		
+		if(symbols == null)
+			setSymbolsFromLevel(level);
+		
+		generationStep = Step.GENERATED;
 	}
 	
 	

@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
-public class StargateVoidStructure extends Structure
+public class StargateVoidStructure extends StargateStructure
 {
     public static final Codec<StargateVoidStructure> CODEC = RecordCodecBuilder.<StargateVoidStructure>mapCodec(instance ->
             instance.group(StargateVoidStructure.settingsCodec(instance),
@@ -28,34 +28,19 @@ public class StargateVoidStructure extends Structure
                     Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
-                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
+                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+                    StargateStructure.StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers))
             ).apply(instance, StargateVoidStructure::new)).codec();
 
-    private final Holder<StructureTemplatePool> startPool;
-    private final Optional<ResourceLocation> startJigsawName;
-    private final int size;
-    private final HeightProvider startHeight;
-    private final Optional<Heightmap.Types> projectStartToHeightmap;
-    private final int maxDistanceFromCenter;
-
-    public StargateVoidStructure(Structure.StructureSettings config,
-                         Holder<StructureTemplatePool> startPool,
-                         Optional<ResourceLocation> startJigsawName,
-                         int size,
-                         HeightProvider startHeight,
-                         Optional<Heightmap.Types> projectStartToHeightmap,
-                         int maxDistanceFromCenter)
+    public StargateVoidStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+                                 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
+                                 Optional<StargateModifiers> stargateModifiers)
     {
-        super(config);
-        this.startPool = startPool;
-        this.startJigsawName = startJigsawName;
-        this.size = size;
-        this.startHeight = startHeight;
-        this.projectStartToHeightmap = projectStartToHeightmap;
-        this.maxDistanceFromCenter = maxDistanceFromCenter;
+        super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, stargateModifiers);
     }
     
-    private static boolean extraSpawningChecks(Structure.GenerationContext context)
+    @Override
+    public boolean extraSpawningChecks(Structure.GenerationContext context)
     {
         // Grabs the chunk position we are at
     	 ChunkPos chunkpos = context.chunkPos();
@@ -75,10 +60,9 @@ public class StargateVoidStructure extends Structure
     @Override
     public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context)
     {
-        if(!StargateVoidStructure.extraSpawningChecks(context))
-        {
+        if(!extraSpawningChecks(context))
             return Optional.empty();
-        }
+        
         int startY = 70;
 
         // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)

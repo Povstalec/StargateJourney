@@ -473,6 +473,7 @@
 	"info.sgjourney.iris": "Iris",
 	"info.sgjourney.iris_texture": "Textura iris",
 	"info.sgjourney.iris_durability": "Výdrž iris",
+	"info.sgjourney.address_table": "Tabulka adres",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symboly",
@@ -486,6 +487,7 @@
 	"tooltip.sgjourney.variant": "Varianta",
 	"tooltip.sgjourney.requires": "Vyžaduje",
 	"tooltip.sgjourney.stargate_type": "Typ brány",
+	"tooltip.sgjourney.generates_inside_structure": "Generováno uvnitř struktury",
 
 	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
 	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
