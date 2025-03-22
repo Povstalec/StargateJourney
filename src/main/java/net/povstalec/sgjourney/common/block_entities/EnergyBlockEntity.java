@@ -231,7 +231,8 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			
 			if(blockentity == null)
 				return;
-			else if(blockentity instanceof EnergyBlockEntity energyBE)
+			
+			if(blockentity instanceof EnergyBlockEntity energyBE)
 			{
 				long simulatedOutputAmount = this.extractEnergy(this.maxExtract(), true);
 				long simulatedReceiveAmount = energyBE.receiveEnergy(simulatedOutputAmount, true);
@@ -241,7 +242,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			}
 			else
 			{
-				blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) ->
+				blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection).ifPresent((energyStorage) ->
 				{
 					int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.getRegularEnergy(ENERGY_STORAGE.maxExtract()), true);
 					int simulatedReceiveAmount = energyStorage.receiveEnergy(simulatedOutputAmount, true);
