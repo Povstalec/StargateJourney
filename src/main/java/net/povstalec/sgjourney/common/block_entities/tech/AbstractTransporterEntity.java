@@ -4,6 +4,9 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.WorldGenLevel;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -19,15 +22,14 @@ import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
-public abstract class AbstractTransporterEntity extends EnergyBlockEntity implements Nameable
+public abstract class AbstractTransporterEntity extends EnergyBlockEntity implements StructureGenEntity, Nameable
 {
 	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
-	public static final String ADD_TO_NETWORK = "AddToNetwork";
 	public static final String ID = "ID";
 	public static final String CUSTOM_NAME = "CustomName";
 	
-	protected boolean addToNetwork = true;
+	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	protected UUID id;
 	protected String connectionID = StargateJourney.EMPTY;
@@ -47,9 +49,9 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		
         if(level.isClientSide())
 	        return;
-        
-        if(!addToNetwork)
-    		addTransporterToNetwork();
+		
+		if(generationStep == StructureGenEntity.Step.READY)
+			generate();
 	}
 	
 	@Override
@@ -57,9 +59,10 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	{
 		super.load(tag);
 		
-    	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
-    	
-    	try
+		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
+		
+		try
 		{
     		if(tag.contains(ID))
         		id = UUID.fromString(tag.getString(ID));
@@ -76,7 +79,8 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
+		if(generationStep != Step.GENERATED)
+			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 		
 		if(id != null)
 			tag.putString(ID, id.toString());
@@ -107,13 +111,9 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	public void addTransporterToNetwork()
 	{
 		if(this.id == null)
-		{
 			setID(generateID());
-		}
 		
 		TransporterNetwork.get(level).addTransporter(this);
-		
-		addToNetwork = true;
 		this.setChanged();
 	}
 	
@@ -131,7 +131,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 			return;
 		
 		player.sendSystemMessage(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
 	}
 	
 	public void setCustomName(Component name)
@@ -164,5 +164,23 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	public int getTimeOffset()
 	{
 		return 0;
+	}
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
+	{
+		if(generationStep == Step.SETUP)
+			generationStep = Step.READY;
+	}
+	
+	public void generate()
+	{
+		addTransporterToNetwork();
+		
+		generationStep = Step.GENERATED;
 	}
 }

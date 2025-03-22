@@ -38,6 +38,7 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
@@ -149,8 +150,6 @@ public class Wormhole
 		
 		for(Entity traveler : localEntities)
 		{
-			System.out.println(traveler.getType() + " yRot " + traveler.getYRot());
-			
 			if(!traveler.getType().is(TagInit.Entities.WORMHOLE_CANNOT_TELEPORT) && !traveler.isPassenger() && this.entityLocations.containsKey(traveler.getId()))
 			{
 				if(wormholeEntity(initialStargate, targetStargate, twoWayWormhole, traveler, orientationDirection, entityLocations))
@@ -367,11 +366,13 @@ public class Wormhole
 							
 							irisThudEvent(irisStargate, entity);
 							irisStargate.irisInfo().decreaseIrisDurability();
+							entity.hurt(DamageSourceInit.IRIS, Float.MAX_VALUE);
 							entity.kill();
 						}
 					});
 					
 					irisStargate.irisInfo().playIrisThudSound(); // Only playing one sound
+					this.used = true;
 					return;
 	    		}
 				
@@ -396,6 +397,7 @@ public class Wormhole
 							if(entity instanceof ServerPlayer player)
 								player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
 							
+							entity.hurt(DamageSourceInit.REVERSE_WORMHOLE, Float.MAX_VALUE);
 							entity.kill();
 						}
 					}

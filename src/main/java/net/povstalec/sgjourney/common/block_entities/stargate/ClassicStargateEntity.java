@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -14,6 +15,8 @@ import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.stargate.Symbols;
+
+import java.util.Random;
 
 public class ClassicStargateEntity extends RotatingStargateEntity
 {
@@ -34,23 +37,8 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 		super(BlockEntityInit.CLASSIC_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "classic/classic"), pos, state,
 				TOTAL_SYMBOLS, Stargate.Gen.NONE, 0, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, MAX_ROTATION);
 		
-		displayID = true;
+		displayID();
 	}
-	
-	@Override
-    public void onLoad()
-	{
-       super.onLoad();
-
-        if(this.level.isClientSide())
-        	return;
-		
-		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
-		
-		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
-			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
-    }
 
 	@Override
 	public CompoundTag serializeStargateInfo(CompoundTag tag)
@@ -92,4 +80,33 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 		CCTweakedCompatibility.registerClassicStargateMethods(wrapper);
 	}
 	
+	@Override
+	public void generate()
+	{
+		super.generate();
+		
+		Random random = new Random();
+		setRotation(2 * random.nextInt(0, MAX_ROTATION / 2 + 1));
+	}
+	
+	@Override
+	public void generateAdditional(StructureGenEntity.Step generationStep)
+	{
+		if(generationStep == StructureGenEntity.Step.SETUP)
+		{
+			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+			
+			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(StargateJourney.EMPTY_LOCATION);
+		}
+		else
+		{
+			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+			
+			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+		}
+	}
 }
