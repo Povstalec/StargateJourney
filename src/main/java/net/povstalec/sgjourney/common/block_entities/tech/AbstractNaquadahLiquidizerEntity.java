@@ -329,7 +329,10 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		
 		blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP).ifPresent(fluidHandler ->
 		{
-			fluidHandler.fill(this.fluidTank2.drain(100, IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+			FluidStack simulatedOutputAmount = this.fluidTank2.drain(100, IFluidHandler.FluidAction.SIMULATE);
+			int simulatedReceiveAmount = fluidHandler.fill(simulatedOutputAmount, IFluidHandler.FluidAction.SIMULATE);
+			
+			fluidHandler.fill(this.fluidTank2.drain(simulatedReceiveAmount, IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
 		});
 	}
 	
@@ -341,7 +344,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	    if(naquadahLiquidizer.hasFluidItem1())
 	    	naquadahLiquidizer.drainFluidFromItem();
 	    
-	    if(naquadahLiquidizer.hasMaterial() && naquadahLiquidizer.fluidTank1.getFluidAmount() > 0 && naquadahLiquidizer.fluidTank2.getFluidAmount() < naquadahLiquidizer.fluidTank2.getCapacity())
+	    if(naquadahLiquidizer.hasMaterial() && naquadahLiquidizer.fluidTank1.getFluidAmount() > 0 && naquadahLiquidizer.fluidTank2.getFluidAmount() + 100 <= naquadahLiquidizer.fluidTank2.getCapacity())
 	    {
 	    	naquadahLiquidizer.progress++;
 	    	naquadahLiquidizer.fluidTank1.drain(1, IFluidHandler.FluidAction.EXECUTE);
