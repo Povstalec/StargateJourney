@@ -207,6 +207,10 @@
 	"item.sgjourney.bronze_iris": "Bronze Iris",
 	"item.sgjourney.steel_iris": "Steel Iris",
 	
+	"entity.sgjourney.goauld": "Goa'uld",
+	"entity.sgjourney.human": "Human",
+	"entity.sgjourney.jaffa": "Jaffa",
+	
 	"sounds.sgjourney.dial_start" : "Stargate starts dialing",
 	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",
 	"sounds.sgjourney.ring_spin" : "Stargate ring spins",

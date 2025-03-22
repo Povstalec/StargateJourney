@@ -5,7 +5,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.povstalec.sgjourney.client.models.JackalArmorModel;
+import net.povstalec.sgjourney.client.models.entity.JackalArmorModel;
 
 public class JackalArmorRenderProperties implements IClientItemExtensions
 {

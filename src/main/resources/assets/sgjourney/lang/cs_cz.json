@@ -206,6 +206,10 @@
 	"item.sgjourney.bronze_iris": "Bronzová iris",
 	"item.sgjourney.steel_iris": "Ocelová iris",
 	
+	"entity.sgjourney.goauld": "Goa'uld",
+	"entity.sgjourney.human": "Člověk",
+	"entity.sgjourney.jaffa": "Jaffa",
+	
 	"sounds.sgjourney.dial_start" : "vytáčení začalo",
 	"sounds.sgjourney.ring_spin_start" : "otáčení začalo",
 	"sounds.sgjourney.ring_spin" : "brána se otáčí",
