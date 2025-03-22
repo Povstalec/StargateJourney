@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 
@@ -140,8 +141,8 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		if(stack.hasTag())
 		{
 			CompoundTag blockEntityTag = BlockItem.getBlockEntityData(stack);
-			if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATE_ENERGY_CORE))
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.dhd.generates_energy_core").withStyle(ChatFormatting.YELLOW));
+			if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.GENERATED != StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractDHDEntity.GENERATION_STEP)))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		}
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);

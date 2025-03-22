@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -34,11 +32,11 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -46,7 +44,6 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateConnection;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
@@ -207,13 +204,10 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         }
     }
 	
-	public void updateStargate(Level level, BlockPos pos, BlockState state, StargateConnection.State connectionState, int chevronsActive, ShieldingState shieldingState)
+	public void updateStargate(Level level, BlockPos pos, BlockState state, ShieldingState shieldingState)
 	{
 		if(!(state.getBlock() instanceof AbstractStargateBlock))
 			return;
-		
-		level.setBlock(pos, state.setValue(AbstractStargateBaseBlock.CONNECTION_STATE, connectionState)
-				.setValue(AbstractStargateBaseBlock.CHEVRONS_ACTIVE, chevronsActive), 2);
 		
 		Direction direction = state.getValue(FACING);
 		Orientation orientation = state.getValue(ORIENTATION);
@@ -228,8 +222,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 					level.setBlock(part.getRingPos(pos,  direction, orientation), 
 							ringState()
 							.setValue(AbstractStargateRingBlock.PART, part)
-							.setValue(AbstractStargateRingBlock.CONNECTION_STATE, level.getBlockState(pos).getValue(CONNECTION_STATE))
-							.setValue(AbstractStargateRingBlock.CHEVRONS_ACTIVE, level.getBlockState(pos).getValue(CHEVRONS_ACTIVE))
 							.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
 							.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
 							.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
@@ -245,7 +237,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 			irisStargate.irisInfo().removeIris();
 		
-		updateStargate(level, pos, state, state.getValue(AbstractStargateBlock.CONNECTION_STATE), state.getValue(AbstractStargateBlock.CHEVRONS_ACTIVE), ShieldingState.OPEN);
+		updateStargate(level, pos, state, ShieldingState.OPEN);
 	}
 	
 	public void updateIris(Level level, BlockPos pos, BlockState state, ShieldingState shieldingState)
@@ -311,8 +303,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
             	tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
         }
         
-        if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.ADD_TO_NETWORK) && !stack.getTag().getCompound("BlockEntityTag").getBoolean(AbstractStargateEntity.ADD_TO_NETWORK))
-            tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
+        if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.getTag().getCompound("BlockEntityTag").getByte(AbstractStargateEntity.GENERATION_STEP)))
+            tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
         
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
@@ -320,7 +312,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public static ItemStack excludeFromNetwork(ItemStack stack)
 	{
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putBoolean(AbstractStargateEntity.ADD_TO_NETWORK, false);
+		compoundtag.putByte(AbstractStargateEntity.GENERATION_STEP, StructureGenEntity.Step.SETUP.byteValue());
 		stack.addTagElement("BlockEntityTag", compoundtag);
 		
 		return stack;

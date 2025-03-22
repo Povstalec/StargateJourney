@@ -20,7 +20,7 @@ import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
-public class CommonStargate extends Structure
+public class CommonStargate extends StargateStructure
 {
     public static final Codec<CommonStargate> CODEC = RecordCodecBuilder.<CommonStargate>mapCodec(instance ->
             instance.group(CommonStargate.settingsCodec(instance),
@@ -29,31 +29,15 @@ public class CommonStargate extends Structure
                     Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
-                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
+                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+                    StargateStructure.StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers))
             ).apply(instance, CommonStargate::new)).codec();
 
-    private final Holder<StructureTemplatePool> startPool;
-    private final Optional<ResourceLocation> startJigsawName;
-    private final int size;
-    private final HeightProvider startHeight;
-    private final Optional<Heightmap.Types> projectStartToHeightmap;
-    private final int maxDistanceFromCenter;
-
-    public CommonStargate(Structure.StructureSettings config,
-                         Holder<StructureTemplatePool> startPool,
-                         Optional<ResourceLocation> startJigsawName,
-                         int size,
-                         HeightProvider startHeight,
-                         Optional<Heightmap.Types> projectStartToHeightmap,
-                         int maxDistanceFromCenter)
+    public CommonStargate(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+                          int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
+                          Optional<StargateModifiers> stargateModifiers)
     {
-        super(config);
-        this.startPool = startPool;
-        this.startJigsawName = startJigsawName;
-        this.size = size;
-        this.startHeight = startHeight;
-        this.projectStartToHeightmap = projectStartToHeightmap;
-        this.maxDistanceFromCenter = maxDistanceFromCenter;
+        super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, stargateModifiers);
     }
     
 	/*private static boolean extraSpawningChecks(Structure.GenerationContext context)

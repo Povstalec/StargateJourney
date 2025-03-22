@@ -77,50 +77,50 @@ public class IrisInfo
 		if(irisProgress == ShieldingState.CLOSED.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.MOVING_4);
+				this.stargate.setStargateState(true, true, ShieldingState.MOVING_4);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.CLOSED);
+				this.stargate.setStargateState(true, true, ShieldingState.CLOSED);
 			return;
 		}
 		
 		if(irisProgress == ShieldingState.MOVING_4.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.MOVING_3);
+				this.stargate.setStargateState(true, true, ShieldingState.MOVING_3);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.MOVING_4);
+				this.stargate.setStargateState(true, true, ShieldingState.MOVING_4);
 			return;
 		}
 		
 		if(irisProgress == ShieldingState.MOVING_3.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.MOVING_2);
+				this.stargate.setStargateState(true, true, ShieldingState.MOVING_2);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.MOVING_3);
+				this.stargate.setStargateState(true, true, ShieldingState.MOVING_3);
 			return;
 		}
 		
 		if(irisProgress == ShieldingState.MOVING_2.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.MOVING_1);
+				this.stargate.setStargateState(true, true, ShieldingState.MOVING_1);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.MOVING_2);
+				this.stargate.setStargateState(true, true, ShieldingState.MOVING_2);
 			return;
 		}
 		
 		if(irisProgress == ShieldingState.MOVING_1.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.OPEN);
+				this.stargate.setStargateState(true, true, ShieldingState.OPEN);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.MOVING_1);
+				this.stargate.setStargateState(true, true, ShieldingState.MOVING_1);
 			return;
 		}
 		
 		if(irisProgress == 0 && oldIrisProgress > irisProgress)
-			this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.OPEN);
+			this.stargate.setStargateState(true, true, ShieldingState.OPEN);
 	}
 	
 	public boolean addIris(ItemStack stack)
@@ -130,7 +130,7 @@ public class IrisInfo
 			irisProgress = ShieldingState.MAX_PROGRESS;
 			oldIrisProgress = ShieldingState.MAX_PROGRESS;
 			
-			this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.CLOSED);
+			this.stargate.setStargateState(true, true, ShieldingState.CLOSED);
 			
 			return true;
 		}
@@ -147,7 +147,7 @@ public class IrisInfo
 			irisProgress = shieldingState.getProgress();
 			oldIrisProgress = shieldingState.getProgress();
 			
-			this.stargate.setStargateState(this.stargate.getConnectionState(), this.stargate.getChevronsEngaged(), true, true, ShieldingState.OPEN);
+			this.stargate.setStargateState(true, true, ShieldingState.OPEN);
 		}
 	}
 	

@@ -19,7 +19,7 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.povstalec.sgjourney.common.init.StructureInit;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
-public class Cartouche extends Structure
+public class Cartouche extends SGJourneyStructure
 {
     public static final Codec<Cartouche> CODEC = RecordCodecBuilder.<Cartouche>mapCodec(instance ->
             instance.group(Cartouche.settingsCodec(instance),
@@ -31,51 +31,10 @@ public class Cartouche extends Structure
                     Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
             ).apply(instance, Cartouche::new)).codec();
 
-    private final Holder<StructureTemplatePool> startPool;
-    private final Optional<ResourceLocation> startJigsawName;
-    private final int size;
-    private final HeightProvider startHeight;
-    private final Optional<Heightmap.Types> projectStartToHeightmap;
-    private final int maxDistanceFromCenter;
-
-    public Cartouche(Structure.StructureSettings config,
-                         Holder<StructureTemplatePool> startPool,
-                         Optional<ResourceLocation> startJigsawName,
-                         int size,
-                         HeightProvider startHeight,
-                         Optional<Heightmap.Types> projectStartToHeightmap,
-                         int maxDistanceFromCenter)
+    public Cartouche(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+                     int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter)
     {
-        super(config);
-        this.startPool = startPool;
-        this.startJigsawName = startJigsawName;
-        this.size = size;
-        this.startHeight = startHeight;
-        this.projectStartToHeightmap = projectStartToHeightmap;
-        this.maxDistanceFromCenter = maxDistanceFromCenter;
-    }
-
-    @Override
-    public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context)
-    {
-        int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
-
-        // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
-        ChunkPos chunkPos = context.chunkPos();
-        BlockPos blockPos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
-
-        Optional<Structure.GenerationStub> structurePiecesGenerator =
-                JigsawPlacement.addPieces(
-                        context,
-                        this.startPool,
-                        this.startJigsawName,
-                        this.size,
-                        blockPos,
-                        false,
-                        this.projectStartToHeightmap,
-                        this.maxDistanceFromCenter);
-        
-        return structurePiecesGenerator;
+        super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter);
     }
 
     @Override

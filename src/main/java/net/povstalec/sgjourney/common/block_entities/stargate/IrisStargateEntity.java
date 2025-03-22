@@ -90,9 +90,9 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 	}
 	
 	@Override
-	public void setStargateState(StargateConnection.State connectionState, int chevronsEngaged, boolean updateInterfaces)
+	public void setStargateState(boolean updateInterfaces)
 	{
-		setStargateState(connectionState, chevronsEngaged, updateInterfaces, false, irisInfo().getShieldingState());
+		setStargateState(updateInterfaces, false, irisInfo().getShieldingState());
 		updateClientState();
 	}
 	
@@ -102,25 +102,12 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 		if(level.isClientSide())
 			return;
 		
-		player.sendSystemMessage(Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": " + symbolInfo().pointOfOrigin())).withStyle(ChatFormatting.DARK_PURPLE));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbolInfo().symbols())).withStyle(ChatFormatting.LIGHT_PURPLE));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.times_opened").append(Component.literal(": " + timesOpened)).withStyle(ChatFormatting.BLUE));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.has_dhd").append(Component.literal(": " + dhdInfo().hasDHD())).withStyle(ChatFormatting.GOLD));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.autoclose").append(Component.literal(": " + dhdInfo().autoclose())).withStyle(ChatFormatting.RED));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.encoded_address").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.GREEN));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
-		
 		player.sendSystemMessage(Component.translatable("info.sgjourney.iris").append(Component.literal(": ").append((!irisInfo().getIris().isEmpty() ? irisInfo().getIris().getDisplayName() : Component.literal("-")))).withStyle(ChatFormatting.GRAY));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.iris_durability").append(Component.literal(": " + (!irisInfo().getIris().isEmpty() ? StargateIrisItem.getDurability(irisInfo().getIris()) : "-"))).withStyle(ChatFormatting.GRAY));
 		if(!irisInfo().getIris().isEmpty() && StargateIrisItem.hasCustomTexture(irisInfo().getIris()))
 			player.sendSystemMessage(Component.translatable("info.sgjourney.iris_texture").append(Component.literal(": " + StargateIrisItem.getIrisTexture(irisInfo().getIris()))).withStyle(ChatFormatting.DARK_PURPLE));
 		
-		player.sendSystemMessage(Component.translatable("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
-		
-		player.sendSystemMessage(Component.literal("Energy: " + this.getEnergyStored() + " FE").withStyle(ChatFormatting.DARK_RED));
+		super.getStatus(player);
 	}
 	
 	public boolean updateClient()

@@ -110,14 +110,13 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	@Nullable
 	public Direction getBottomDirection()
 	{
-		BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = this.level.getBlockState(gatePos);
+		BlockPos pos = this.getBlockPos();
+		BlockState state = this.level.getBlockState(pos);
 		
-		if(gateState.getBlock() instanceof NaquadahGeneratorBlock)
+		if(state.getBlock() instanceof NaquadahGeneratorBlock)
 		{
-			FrontAndTop orientation = gateState.getValue(NaquadahGeneratorBlock.ORIENTATION);
-			
-			return orientation.front();
+			FrontAndTop orientation = state.getValue(NaquadahGeneratorBlock.ORIENTATION);
+			return orientation.front().getOpposite();
 		}
 
 		StargateJourney.LOGGER.error("Couldn't find Direction " + this.getBlockPos().toString());
@@ -206,7 +205,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		Direction bottom = getBottomDirection();
 		
 		if(direction != null && bottom != null)
-			return side == bottom || side == direction.getClockWise() || side == direction.getCounterClockWise();
+			return side == bottom.getOpposite() || side == direction.getClockWise() || side == direction.getCounterClockWise();
 		
 		return false;
 	}
@@ -248,15 +247,15 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, NaquadahGeneratorEntity generator)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
 		generator.doReaction();
-		generator.outputEnergy(Direction.DOWN);
 		
 		Direction direction = generator.getDirection();
 		if(direction != null)
 		{
+			generator.outputEnergy(generator.getBottomDirection());
 			generator.outputEnergy(direction.getClockWise());
 			generator.outputEnergy(direction.getCounterClockWise());
 		}
