@@ -144,7 +144,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		
 		blockEntityTag.putByte(AbstractDHDEntity.GENERATION_STEP, StructureGenEntity.Step.SETUP.byteValue());
 		
-		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		
 		return stack;
 	}

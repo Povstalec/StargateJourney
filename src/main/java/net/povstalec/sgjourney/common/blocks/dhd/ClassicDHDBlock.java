@@ -119,7 +119,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 		
 		blockEntityTag.putByte(AbstractDHDEntity.GENERATION_STEP, StructureGenEntity.Step.SETUP.byteValue());
 		
-		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		
 		return stack;
 	}
