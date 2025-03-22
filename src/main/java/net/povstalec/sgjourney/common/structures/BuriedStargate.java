@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.StructureInit;
 
-public class BuriedStargate extends SGJourneyStructure
+public class BuriedStargate extends StargateStructure
 {
     public static final MapCodec<BuriedStargate> CODEC = RecordCodecBuilder.<BuriedStargate>mapCodec(instance ->
             instance.group(BuriedStargate.settingsCodec(instance),
@@ -27,22 +27,19 @@ public class BuriedStargate extends SGJourneyStructure
                     Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
-                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
+                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+					StargateStructure.StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers))
             ).apply(instance, BuriedStargate::new));
 
     private static Optional<Long> currentSeed = Optional.empty();
     private static Optional<Integer> x = Optional.empty();
     private static Optional<Integer> z = Optional.empty();
     
-    public BuriedStargate(Structure.StructureSettings config,
-			Holder<StructureTemplatePool> startPool,
-			Optional<ResourceLocation> startJigsawName,
-			int size,
-			HeightProvider startHeight,
-			Optional<Heightmap.Types> projectStartToHeightmap,
-			int maxDistanceFromCenter)
+    public BuriedStargate(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+						  int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
+						  Optional<StargateModifiers> stargateModifiers)
     {
-    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter);
+    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, stargateModifiers);
     }
     
     private static final void checkSeed(long seed)
@@ -55,7 +52,7 @@ public class BuriedStargate extends SGJourneyStructure
     	}
     }
     
-    public static final int getX(long seed)
+    public static int getX(long seed)
     {
     	checkSeed(seed);
     	if(x.isEmpty())
@@ -73,7 +70,7 @@ public class BuriedStargate extends SGJourneyStructure
     	return x.get();
     }
     
-    public static final int getZ(long seed)
+    public static int getZ(long seed)
     {
     	checkSeed(seed);
     	if(z.isEmpty())

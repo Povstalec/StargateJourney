@@ -240,7 +240,8 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			
 			if(blockentity == null)
 				return;
-			else if(blockentity instanceof EnergyBlockEntity energyBE)
+			
+			if(blockentity instanceof EnergyBlockEntity energyBE)
 			{
 				long simulatedOutputAmount = this.extractEnergy(this.maxExtract(), true);
 				long simulatedReceiveAmount = energyBE.receiveEnergy(simulatedOutputAmount, true);
@@ -250,7 +251,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			}
 			else
 			{
-				IEnergyStorage energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection.getOpposite()), null);
+				IEnergyStorage energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection), null);
 				if(energy != null)
 				{
 					int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.getRegularEnergy(ENERGY_STORAGE.maxExtract()), true);

@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
@@ -70,11 +71,8 @@ public class PegasusStargateEntity extends IrisStargateEntity
         if(this.level.isClientSide())
         	return;
 		
-		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
-		
-		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
-			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+		if(generationStep == Step.GENERATED)
+			setLocalSymbols();
     }
 	
 	@Override
@@ -332,5 +330,29 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		
 		this.currentSymbol = openTime / chevronLockSpeed.getMultiplier();
 		this.updateClient();
+	}
+	
+	public void setLocalSymbols()
+	{
+		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+		
+		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+	}
+	
+	@Override
+	public void generateAdditional(StructureGenEntity.Step generationStep)
+	{
+		if(generationStep == StructureGenEntity.Step.SETUP)
+		{
+			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+			
+			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(StargateJourney.EMPTY_LOCATION);
+		}
+		else
+			setLocalSymbols();
 	}
 }

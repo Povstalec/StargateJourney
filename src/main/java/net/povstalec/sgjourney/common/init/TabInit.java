@@ -129,10 +129,10 @@ public class TabInit
 			event.accept(BlockInit.UNIVERSE_STARGATE.get());
 			event.accept(BlockInit.MILKY_WAY_STARGATE.get());
 			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), BlockEntityInit.MILKY_WAY_STARGATE.get()));
-			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup(false));
+			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
 			event.accept(BlockInit.PEGASUS_STARGATE.get());
 			event.accept(PegasusStargateBlock.localSymbols(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), BlockEntityInit.PEGASUS_STARGATE.get()));
-			event.accept(PegasusDHDBlock.pegasusCrystalSetup(false));
+			event.accept(PegasusDHDBlock.pegasusCrystalSetup());
 			event.accept(BlockInit.CLASSIC_STARGATE.get());
 			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), BlockEntityInit.CLASSIC_STARGATE.get()));
 			event.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
@@ -258,11 +258,11 @@ public class TabInit
 		{
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), BlockEntityInit.UNIVERSE_STARGATE.get()));
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), BlockEntityInit.MILKY_WAY_STARGATE.get()));
-			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup(true));
+			event.accept(MilkyWayDHDBlock.generatedDHD());
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), BlockEntityInit.PEGASUS_STARGATE.get()));
-			event.accept(PegasusDHDBlock.pegasusCrystalSetup(true));
+			event.accept(PegasusDHDBlock.generatedDHD());
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), BlockEntityInit.CLASSIC_STARGATE.get()));
-			event.accept(ClassicDHDBlock.classicCrystalSetup(true));
+			event.accept(ClassicDHDBlock.generatedDHD());
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), BlockEntityInit.TOLLAN_STARGATE.get()));
 			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get()), BlockEntityInit.TRANSPORT_RINGS.get()));
 		}

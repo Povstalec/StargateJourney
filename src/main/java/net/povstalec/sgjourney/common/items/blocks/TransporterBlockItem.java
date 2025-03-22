@@ -13,12 +13,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 
 public class TransporterBlockItem extends BlockItem
 {
-	private static final String ADD_TO_NETWORK = AbstractTransporterEntity.ADD_TO_NETWORK;
-	
 	public TransporterBlockItem(Block block, Properties properties)
 	{
 		super(block, properties);
@@ -60,17 +59,7 @@ public class TransporterBlockItem extends BlockItem
 			}
 		}
 		else
-		{
-			BlockEntity baseEntity = level.getBlockEntity(pos);
-			
-			if(baseEntity instanceof AbstractTransporterEntity transporter)
-			{
-				if(stack.has(DataComponents.CUSTOM_NAME))
-					transporter.setCustomName(stack.getHoverName());
-				
-				transporter.addTransporterToNetwork();
-			}
-		}
+			return setupBlockEntity(level, level.getBlockEntity(pos), new CompoundTag(), stack);
 		
 		return false;
 	}
@@ -79,16 +68,17 @@ public class TransporterBlockItem extends BlockItem
 	{
 		if(baseEntity instanceof AbstractTransporterEntity transporter)
 		{
-			transporter.setNew();
-			boolean addToNetwork = true;
+			StructureGenEntity.Step generationStep;
 			
-			if(info.contains(ADD_TO_NETWORK))
-				addToNetwork = info.getBoolean(ADD_TO_NETWORK);
+			if(info.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(AbstractTransporterEntity.GENERATION_STEP));
+			else
+				generationStep = StructureGenEntity.Step.GENERATED;
 			
 			if(stack.has(DataComponents.CUSTOM_NAME))
 				transporter.setCustomName(stack.getHoverName());
 			
-			if(addToNetwork)
+			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
 				// Registers it as one of the Block Entities in the list
 				transporter.addTransporterToNetwork();

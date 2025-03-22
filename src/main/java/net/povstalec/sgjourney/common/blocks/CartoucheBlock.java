@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -123,9 +124,15 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 
 				if(cartouche.getSymbols() != null)
 				{
-					MutableComponent symbolsText = Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols())).withStyle(ChatFormatting.LIGHT_PURPLE);
+					if(address.isFromDimension())
+						player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(address.getDimension().location().toString()).withStyle(ChatFormatting.GREEN));
+					player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
 					
-					player.sendSystemMessage(symbolsText);
+					if(cartouche.getSymbols() != null)
+						player.sendSystemMessage(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols())).withStyle(ChatFormatting.LIGHT_PURPLE));
+					
+					if(cartouche.getAddressTable() != null)
+						player.sendSystemMessage(Component.translatable("info.sgjourney.address_table").append(Component.literal(": " + cartouche.getAddressTable())).withStyle(ChatFormatting.YELLOW));
 				}
 			}
 		}
@@ -237,6 +244,10 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	if(!hasAddress)
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimension)).withStyle(ChatFormatting.GREEN));
 		tooltipComponents.add(Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getCompound("BlockEntityTag").contains(CartoucheEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getCompound("BlockEntityTag").getByte(CartoucheEntity.GENERATION_STEP)))
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
     	
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }

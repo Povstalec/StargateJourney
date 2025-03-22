@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
@@ -109,7 +110,21 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 		return createTickerHelper(type, BlockEntityInit.CLASSIC_DHD.get(), AbstractDHDEntity::tick);
     }
 	
-	public static ItemStack classicCrystalSetup(boolean generateFusionCore)
+	public static ItemStack generatedDHD()
+	{
+		ItemStack stack = new ItemStack(BlockInit.CLASSIC_DHD.get());
+		CompoundTag blockEntityTag = new CompoundTag();
+		
+		blockEntityTag.putString("id", "sgjourney:classic_dhd");
+		
+		blockEntityTag.putByte(AbstractDHDEntity.GENERATION_STEP, StructureGenEntity.Step.SETUP.byteValue());
+		
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		
+		return stack;
+	}
+	
+	public static ItemStack classicCrystalSetup()
 	{
 		ItemStack stack = new ItemStack(BlockInit.CLASSIC_DHD.get());
 		CompoundTag blockEntityTag = new CompoundTag();
@@ -124,13 +139,8 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 		
 		CompoundTag energyInventory = new CompoundTag();
 		energyInventory.putInt("Size", 2);
-		if(generateFusionCore)
-			blockEntityTag.putBoolean(AbstractDHDEntity.GENERATE_ENERGY_CORE, true);
-		else
-		{
 			energyInventory.put("Items", setupEnergyInventory());
 			blockEntityTag.put(AbstractDHDEntity.ENERGY_INVENTORY, energyInventory);
-		}
 		
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		

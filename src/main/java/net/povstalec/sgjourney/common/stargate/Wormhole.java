@@ -2,11 +2,8 @@ package net.povstalec.sgjourney.common.stargate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -28,7 +25,6 @@ import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
@@ -38,12 +34,12 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.AdvancementInit;
+import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
-import org.jetbrains.annotations.Nullable;
 
 public class Wormhole
 {
@@ -149,8 +145,6 @@ public class Wormhole
 		
 		for(Entity traveler : localEntities)
 		{
-			System.out.println(traveler.getType() + " yRot " + traveler.getYRot());
-			
 			if(!traveler.getType().is(TagInit.Entities.WORMHOLE_CANNOT_TELEPORT) && !traveler.isPassenger() && this.entityLocations.containsKey(traveler.getId()))
 			{
 				if(wormholeEntity(initialStargate, targetStargate, twoWayWormhole, traveler, orientationDirection, entityLocations))
@@ -367,11 +361,13 @@ public class Wormhole
 							
 							irisThudEvent(irisStargate, entity);
 							irisStargate.irisInfo().decreaseIrisDurability();
+							entity.hurt(DamageSourceInit.damageSource(level.getServer(), DamageSourceInit.IRIS), Float.MAX_VALUE);
 							entity.kill();
 						}
 					});
 					
 					irisStargate.irisInfo().playIrisThudSound(); // Only playing one sound
+					this.used = true;
 					return;
 	    		}
 				
@@ -396,6 +392,7 @@ public class Wormhole
 							if(entity instanceof ServerPlayer player)
 								player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
 							
+							entity.hurt(DamageSourceInit.damageSource(level.getServer(), DamageSourceInit.REVERSE_WORMHOLE), Float.MAX_VALUE);
 							entity.kill();
 						}
 					}

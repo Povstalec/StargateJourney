@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
@@ -134,7 +135,21 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		return createTickerHelper(type, BlockEntityInit.PEGASUS_DHD.get(), AbstractDHDEntity::tick);
     }
 	
-	public static ItemStack pegasusCrystalSetup(boolean generateFusionCore)
+	public static ItemStack generatedDHD()
+	{
+		ItemStack stack = new ItemStack(BlockInit.PEGASUS_DHD.get());
+		CompoundTag blockEntityTag = new CompoundTag();
+		
+		blockEntityTag.putString("id", "sgjourney:pegasus_dhd");
+		
+		blockEntityTag.putByte(AbstractDHDEntity.GENERATION_STEP, StructureGenEntity.Step.SETUP.byteValue());
+		
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		
+		return stack;
+	}
+	
+	public static ItemStack pegasusCrystalSetup()
 	{
 		ItemStack stack = new ItemStack(BlockInit.PEGASUS_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
@@ -149,13 +164,8 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		
 		CompoundTag energyInventory = new CompoundTag();
 		energyInventory.putInt("Size", 2);
-		if(generateFusionCore)
-			blockEntityTag.putBoolean(AbstractDHDEntity.GENERATE_ENERGY_CORE, true);
-		else
-		{
 			energyInventory.put("Items", setupEnergyInventory());
 			blockEntityTag.put(AbstractDHDEntity.ENERGY_INVENTORY, energyInventory);
-		}
 		
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		

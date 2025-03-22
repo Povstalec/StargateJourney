@@ -14,6 +14,9 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.WorldGenLevel;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
@@ -49,12 +52,11 @@ import net.povstalec.sgjourney.common.stargate.Address;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractDHDEntity extends EnergyBlockEntity implements SymbolInfo.Interface
+public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface
 {
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
 	
-	public static final String GENERATE_ENERGY_CORE = "generate_energy_core";
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	
 	public static final String STARGATE_POS = "stargate_pos";
@@ -63,7 +65,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	public static final int DEFAULT_ENERGY_TRANSFER = 2500;
 	public static final int DEFAULT_CONNECTION_DISTANCE = 16;
 	
-	protected boolean isNew = false;
+	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	protected Direction direction;
 	
@@ -86,8 +88,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	
 	protected SymbolInfo symbolInfo;
 	
-	protected boolean generateEnergyCore;
-	
 	public AbstractDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
 		super(blockEntity, pos, state);
@@ -108,8 +108,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		
 		symbolInfo.setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
 		symbolInfo.setSymbols(StargateJourney.EMPTY_LOCATION);
-		
-		generateEnergyCore = false;
 	}
 	
 	@Override
@@ -120,8 +118,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		if(this.getLevel().isClientSide())
 			return;
 		
-		if(!isNew && generateEnergyCore)
-			generateEnergyCore();
+		if(generationStep == StructureGenEntity.Step.READY)
+			generate();
 		
 		this.setStargate();
 	}
@@ -139,8 +137,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 			
 		energyItemHandler.deserializeNBT(registries, tag.getCompound(ENERGY_INVENTORY));
 		
-		if(tag.contains(GENERATE_ENERGY_CORE))
-			generateEnergyCore = tag.getBoolean(GENERATE_ENERGY_CORE);
+		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
 		super.loadAdditional(tag, registries);
 	}
@@ -155,13 +153,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		
 		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT(registries));
 		
-		if(generateEnergyCore)
-			tag.putBoolean(GENERATE_ENERGY_CORE, true);
-	}
-	
-	public void setNew()
-	{
-		this.isNew = true;
+		if(generationStep != Step.GENERATED)
+			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 	}
 	
 	public SymbolInfo symbolInfo()
@@ -355,7 +348,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 	
 	public long minStoredEnergy()
 	{
-		return 10 * buttonPressEnergyCost();
+		return getEnergyCapacity() * 2 / 3;
 	}
 	
 	public abstract long maxEnergyDeplete();
@@ -390,7 +383,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
 		
 		// Stores energy in the DHD buffer
-		if(getEnergyStored() < minStoredEnergy() || (!this.stargate.isConnected() && getEnergyStored() < getEnergyCapacity()))
+		if(getEnergyStored() < minStoredEnergy())
 		{
 			ItemStack inputStack = energyItemHandler.getStackInSlot(1);
 			// Generates energy if needed
@@ -419,30 +412,33 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 			}
 		}
 		// Sends energy to the Stargate
-		else if(stargate.getEnergyStored() < getEnergyTarget())
+		else
 		{
-			long needed = getEnergyTarget() - stargate.getEnergyStored();
-			
-			// Uses energy from a Energy Item if one is present
-			if(stackHasEnergy(energyStack))
+			if(stargate.getEnergyStored() < getEnergyTarget())
 			{
-				IEnergyStorage energyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
-				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				long needed = getEnergyTarget() - stargate.getEnergyStored();
+				
+				// Uses energy from a Energy Item if one is present
+				if (stackHasEnergy(energyStack))
 				{
-					long energySent = sgjourneyEnergy.extractLongEnergy(Math.min(maxEnergyDeplete(), needed), false);
-					stargate.receiveEnergy(energySent, false);
+					IEnergyStorage energyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
+					
+					if (energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+					{
+						long energySent = sgjourneyEnergy.extractLongEnergy(Math.min(maxEnergyDeplete(), needed), false);
+						stargate.receiveEnergy(energySent, false);
+					} else
+					{
+						int energySent = energyStorage.extractEnergy(Math.min(Integer.MAX_VALUE, (int) Math.min(maxEnergyDeplete(), needed)), false);
+						stargate.receiveEnergy(energySent, false);
+					}
 				}
+				// Uses energy from the DHD energy buffer
 				else
 				{
-					int energySent = energyStorage.extractEnergy(Math.min(Integer.MAX_VALUE, (int) Math.min(maxEnergyDeplete(), needed)), false);
+					long energySent = depleteEnergy(Math.min(maxEnergyDeplete(), needed), false);
 					stargate.receiveEnergy(energySent, false);
 				}
-			}
-			// Uses energy from the DHD energy buffer
-			else
-			{
-				long energySent = depleteEnergy(Math.min(maxEnergyDeplete(), needed), false);
-				stargate.receiveEnergy(energySent, false);
 			}
 		}
 	}
@@ -604,13 +600,28 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Sym
 		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.toArray(), this.isCenterButtonEngaged));
 	}
 	
-	public void enableGeneratingEnergyCore()
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
-		generateEnergyCore = true;
+		if(generationStep == Step.SETUP)
+			generationStep = Step.READY;
 	}
 	
-	protected void generateEnergyCore()
+	public void generate()
 	{
-		generateEnergyCore = false;
+		generateEnergyCore();
+		
+		generationStep = Step.GENERATED;
 	}
+	
+	public void setToGenerate()
+	{
+		generationStep = Step.SETUP;
+	}
+	
+	protected abstract void generateEnergyCore();
 }

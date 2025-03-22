@@ -188,4 +188,18 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		
 		return DEFAULT_CONNECTION_DISTANCE + regularDistance + advancedDistance;
 	}
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void generate()
+	{
+		generateCrystals();
+		
+		super.generate();
+	}
+	
+	protected abstract void generateCrystals();
 }

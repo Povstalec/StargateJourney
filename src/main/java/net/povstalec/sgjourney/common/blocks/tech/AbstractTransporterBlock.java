@@ -22,6 +22,8 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
@@ -86,9 +88,10 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 			id = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString(AbstractTransporterEntity.ID);
 		
         tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
-
-        if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractTransporterEntity.ADD_TO_NETWORK) && !stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getBoolean(AbstractTransporterEntity.ADD_TO_NETWORK))
-            tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
+		
+        if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getCompound("BlockEntityTag").getByte(AbstractTransporterEntity.GENERATION_STEP)))
+            tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
@@ -96,7 +99,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	public static ItemStack excludeFromNetwork(ItemStack stack, BlockEntityType<?> blockEntityType)
 	{
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putBoolean(AbstractTransporterEntity.ADD_TO_NETWORK, false);
+		compoundtag.putByte(AbstractStargateEntity.GENERATION_STEP, StructureGenEntity.Step.SETUP.byteValue());
 		BlockEntity.addEntityType(compoundtag, blockEntityType);
 
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
