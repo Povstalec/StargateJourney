@@ -18,6 +18,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 
 public class CartoucheBlockItem extends BlockItem
@@ -87,6 +89,8 @@ public class CartoucheBlockItem extends BlockItem
             	}
             }
 		}
+		else
+			return setupBlockEntity(level, level.getBlockEntity(pos), new CompoundTag());
 		
 		return false;
 	}
@@ -95,10 +99,26 @@ public class CartoucheBlockItem extends BlockItem
 	{
 		if(baseEntity instanceof CartoucheEntity cartouche)
 		{
-			if(info.contains(CartoucheEntity.DIMENSION) && !info.contains(CartoucheEntity.ADDRESS))
+			StructureGenEntity.Step generationStep;
+			
+			if(info.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(AbstractTransporterEntity.GENERATION_STEP));
+			else
+				generationStep = StructureGenEntity.Step.GENERATED;
+			
+			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
-				cartouche.setDimension(new ResourceLocation(info.getString(CartoucheEntity.DIMENSION)));
+				if(info.contains(CartoucheEntity.DIMENSION, CompoundTag.TAG_STRING) && !info.contains(CartoucheEntity.ADDRESS))
+					cartouche.setDimension(ResourceLocation.tryParse(info.getString(CartoucheEntity.DIMENSION)));
+				else
+					cartouche.setDimensionFromLevel(level);
+				
 				cartouche.setAddressFromDimension();
+				
+				if(info.contains(CartoucheEntity.SYMBOLS, CompoundTag.TAG_STRING))
+					cartouche.setSymbols(ResourceLocation.tryParse(info.getString(CartoucheEntity.SYMBOLS)));
+				else
+					cartouche.setSymbolsFromLevel(level);
 			}
 			return true;
 		}

@@ -31,6 +31,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.stargate.StargateConnection;
 import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
 
 public class ClientAccess
@@ -179,12 +180,13 @@ public class ClientAccess
         }
     }
     
-    public static void updateStargateState(BlockPos pos, boolean canSinkGate, HashMap<StargatePart, BlockState> blockStates)
+    public static void updateStargateState(BlockPos pos, StargateConnection.State connectionState, boolean canSinkGate, HashMap<StargatePart, BlockState> blockStates)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final AbstractStargateEntity stargate)
         {
+			stargate.setConnectionState(connectionState);
         	stargate.blockCover.blockStates = blockStates;
         	stargate.blockCover.canSinkGate = canSinkGate;
         }

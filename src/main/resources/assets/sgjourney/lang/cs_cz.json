@@ -236,6 +236,10 @@
 	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
 	
 	"sounds.sgjourney.nothing" : "nic",
+	
+	"death.attack.sgjourney.kawoosh": "Hráč %1$s byl dezintegrován nestabilním vírem",
+	"death.attack.sgjourney.reverseWormhole": "Hráč %1$s prošel špatnou stranou červí díry",
+	"death.attack.sgjourney.iris": "Hráč %1$s se rozplácnul o iris",
 
 	"stat.sgjourney.times_killed_by_kawoosh": "Počet úmrtí v nestabilním víru",
 	"stat.sgjourney.times_killed_by_wormhole": "Počet úmrtí v červí díře",
@@ -473,6 +477,7 @@
 	"info.sgjourney.iris": "Iris",
 	"info.sgjourney.iris_texture": "Textura iris",
 	"info.sgjourney.iris_durability": "Výdrž iris",
+	"info.sgjourney.address_table": "Tabulka adres",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symboly",
@@ -486,6 +491,7 @@
 	"tooltip.sgjourney.variant": "Varianta",
 	"tooltip.sgjourney.requires": "Vyžaduje",
 	"tooltip.sgjourney.stargate_type": "Typ brány",
+	"tooltip.sgjourney.generates_inside_structure": "Generováno uvnitř struktury",
 
 	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
 	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",

@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 
@@ -65,8 +66,8 @@ public class DHDItem extends BlockItem
 	{
 		if(baseEntity instanceof AbstractDHDEntity dhd)
 		{
-			if(info.contains(AbstractDHDEntity.GENERATE_ENERGY_CORE) && info.getBoolean(AbstractDHDEntity.GENERATE_ENERGY_CORE))
-				dhd.enableGeneratingEnergyCore();
+			if(info.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(info.getByte(AbstractDHDEntity.GENERATION_STEP)))
+				dhd.setToGenerate();
 			
 			if(baseEntity instanceof CrystalDHDEntity crystalDHD)
 			{
