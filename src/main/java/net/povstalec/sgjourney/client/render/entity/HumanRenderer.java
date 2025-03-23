@@ -14,7 +14,7 @@ public class HumanRenderer<T extends Human> extends HumanoidMobRenderer<T, Human
 	public HumanRenderer(EntityRendererProvider.Context context, HumanModel model, HumanModel innerModel, HumanModel outerModel)
 	{
 		super(context, model, 0.5F);
-		this.addLayer(new HumanoidArmorLayer(this, innerModel, outerModel));
+		this.addLayer(new HumanoidArmorLayer(this, innerModel, outerModel, context.getModelManager()));
 	}
 	
 	public HumanRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer, ModelLayerLocation innerArmorLayer, ModelLayerLocation outerArmorLayer)
