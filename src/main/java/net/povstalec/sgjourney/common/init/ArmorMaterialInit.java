@@ -37,7 +37,16 @@ public class ArmorMaterialInit
 		map.put(ArmorItem.Type.CHESTPLATE, 8);
 		map.put(ArmorItem.Type.HELMET, 3);
 		map.put(ArmorItem.Type.BODY, 11);
-	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 2.0F, 0.0F, () -> Ingredient.of(ItemInit.NAQUADAH.get()));
+	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 2.0F, 0.0F, () -> Ingredient.of(ItemInit.NAQUADAH_ALLOY.get()));
+	
+	public static final Holder<ArmorMaterial> SYSTEM_LORD = register("system_lord", Util.make(new EnumMap<>(ArmorItem.Type.class), map ->
+	{
+		map.put(ArmorItem.Type.BOOTS, 3);
+		map.put(ArmorItem.Type.LEGGINGS, 6);
+		map.put(ArmorItem.Type.CHESTPLATE, 8);
+		map.put(ArmorItem.Type.HELMET, 3);
+		map.put(ArmorItem.Type.BODY, 11);
+	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 2.0F, 0.0F, () -> Ingredient.of(ItemInit.NAQUADAH_ALLOY.get()));
 
 	public static final Holder<ArmorMaterial> PERSONAL_SHIELD = register("personal_shield", Util.make(new EnumMap<>(ArmorItem.Type.class), map ->
 	{

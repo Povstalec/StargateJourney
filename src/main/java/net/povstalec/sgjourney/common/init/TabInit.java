@@ -94,6 +94,11 @@ public class TabInit
 			event.accept(ItemInit.JAFFA_LEGGINGS.get());
 			event.accept(ItemInit.JAFFA_BOOTS.get());
 			
+			event.accept(ItemInit.SYSTEM_LORD_HELMET.get());
+			event.accept(ItemInit.SYSTEM_LORD_CHESTPLATE.get());
+			event.accept(ItemInit.SYSTEM_LORD_LEGGINGS.get());
+			event.accept(ItemInit.SYSTEM_LORD_BOOTS.get());
+			
 			event.accept(NaquadahFuelRodItem.fuelRodSetup());
 			
 			event.accept(ItemInit.ZPM.get());
