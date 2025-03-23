@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.models;
+package net.povstalec.sgjourney.client.models.entity;
 
 import com.google.common.collect.ImmutableList;
 

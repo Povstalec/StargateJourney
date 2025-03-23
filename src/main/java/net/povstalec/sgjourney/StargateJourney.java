@@ -1,8 +1,9 @@
 package net.povstalec.sgjourney;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
 
+import net.povstalec.sgjourney.client.models.entity.HumanModel;
+import net.povstalec.sgjourney.common.entities.Jaffa;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -40,9 +41,10 @@ import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
+import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
+import net.povstalec.sgjourney.client.render.entity.HumanRenderer;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
-import net.povstalec.sgjourney.client.render.level.StellarViewCompatibility;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
@@ -57,6 +59,7 @@ import net.povstalec.sgjourney.client.screens.TransceiverScreen;
 import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.init.AdvancementInit;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -224,7 +227,9 @@ public class StargateJourney
 
         	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
         	
-        	//EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+        	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+			EntityRenderers.register(EntityInit.HUMAN.get(), HumanRenderer<Human>::new);
+			EntityRenderers.register(EntityInit.JAFFA.get(), HumanRenderer<Jaffa>::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
 			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.RedSandstone::new);
