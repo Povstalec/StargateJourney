@@ -4,9 +4,9 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.models.FalconArmorModel;
-import net.povstalec.sgjourney.client.models.JackalArmorModel;
-import net.povstalec.sgjourney.client.models.TransportRingsModel;
+import net.povstalec.sgjourney.client.models.entity.FalconArmorModel;
+import net.povstalec.sgjourney.client.models.entity.JackalArmorModel;
+import net.povstalec.sgjourney.client.models.block_entity.TransportRingsModel;
 
 public class Layers
 {
