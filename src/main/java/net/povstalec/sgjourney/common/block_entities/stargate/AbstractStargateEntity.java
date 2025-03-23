@@ -221,7 +221,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
-		else if(tag.contains("AddToNetwork"))
+		else if(tag.contains("add_to_network"))
 			generationStep = Step.SETUP;
 		
 		connectionState = StargateConnection.State.fromByte(tag.getByte(CONNECTION_STATE));
