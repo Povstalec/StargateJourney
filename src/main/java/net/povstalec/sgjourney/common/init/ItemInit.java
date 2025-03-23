@@ -154,6 +154,15 @@ public class ItemInit
 	public static final RegistryObject<ArmorItem> NAQUADAH_BOOTS = ITEMS.register("naquadah_boots", 
 			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.BOOTS, new Item.Properties().fireResistant()));
 	
+	public static final RegistryObject<ArmorItem> SYSTEM_LORD_HELMET = ITEMS.register("system_lord_helmet",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
+	public static final RegistryObject<ArmorItem> SYSTEM_LORD_CHESTPLATE = ITEMS.register("system_lord_chestplate",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.CHESTPLATE, new Item.Properties().fireResistant()));
+	public static final RegistryObject<ArmorItem> SYSTEM_LORD_LEGGINGS = ITEMS.register("system_lord_leggings",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.LEGGINGS, new Item.Properties().fireResistant()));
+	public static final RegistryObject<ArmorItem> SYSTEM_LORD_BOOTS = ITEMS.register("system_lord_boots",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.BOOTS, new Item.Properties().fireResistant()));
+	
 	public static final RegistryObject<ArmorItem> JAFFA_HELMET = ITEMS.register("jaffa_helmet", 
 			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().fireResistant()));
 	public static final RegistryObject<ArmorItem> JAFFA_CHESTPLATE = ITEMS.register("jaffa_chestplate", 
