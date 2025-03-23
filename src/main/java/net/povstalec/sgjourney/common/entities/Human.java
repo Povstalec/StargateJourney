@@ -35,7 +35,7 @@ public class Human extends AgeableMob
 	protected void registerGoals()
 	{
 		this.goalSelector.addGoal(1, new FloatGoal(this));
-		this.goalSelector.addGoal(1, new ClimbOnTopOfPowderSnowGoal(this, this.level));
+		this.goalSelector.addGoal(1, new ClimbOnTopOfPowderSnowGoal(this, this.level()));
 		this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, false));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
