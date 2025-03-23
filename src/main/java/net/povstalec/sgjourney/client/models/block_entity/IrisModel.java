@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.models;
+package net.povstalec.sgjourney.client.models.block_entity;
 
 import java.util.Optional;
 
@@ -13,7 +13,6 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 
 public class IrisModel

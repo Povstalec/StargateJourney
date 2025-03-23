@@ -1,6 +1,4 @@
-package net.povstalec.sgjourney.client.models;
-
-import java.util.Optional;
+package net.povstalec.sgjourney.client.models.block_entity;
 
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
