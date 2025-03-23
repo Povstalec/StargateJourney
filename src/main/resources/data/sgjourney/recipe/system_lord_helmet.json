@@ -1,5 +1,5 @@
 {
-	"type": "minecraft:smithing",
+	"type": "minecraft:smithing_transform",
 	"addition":
 	{
 		"item": "minecraft:gold_ingot"
@@ -10,6 +10,10 @@
 	},
 	"result":
 	{
-		"item": "sgjourney:system_lord_helmet"
+		"id": "sgjourney:system_lord_helmet"
+	},
+	"template":
+	{
+		"item": "minecraft:gold_ingot"
 	}
 }
