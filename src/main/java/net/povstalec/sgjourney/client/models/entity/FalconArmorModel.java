@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.models;
+package net.povstalec.sgjourney.client.models.entity;
 
 import com.google.common.collect.ImmutableList;
 
@@ -19,77 +19,78 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.client.Layers;
 
 @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
-public class JackalArmorModel extends HumanoidModel<LivingEntity>
+public class FalconArmorModel extends HumanoidModel<LivingEntity>
 {
-	public static JackalArmorModel INSTANCE;
-
-	public JackalArmorModel(ModelPart part) 
+	public static FalconArmorModel INSTANCE;
+	
+	public FalconArmorModel(ModelPart root) 
 	{
-		super(part);
+		super(root);
 	}
 	
 	public static LayerDefinition createBodyLayer() 
 	{
-        MeshDefinition meshdefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F);
+		MeshDefinition meshdefinition = HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F);
         PartDefinition partdefinition = meshdefinition.getRoot();
         
         PartDefinition head = partdefinition.getChild("head");
         
-        head.addOrReplaceChild("jackal_helmet", CubeListBuilder.create()
+        head.addOrReplaceChild("falcon_helmet", CubeListBuilder.create()
         		.texOffs(0, 0)
         		.addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, 
         				new CubeDeformation(1.0F)), 
         		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         
-        head.addOrReplaceChild("jackal_neck", CubeListBuilder.create()
+        head.addOrReplaceChild("falcon_neck", CubeListBuilder.create()
         		.texOffs(0, 18)
         		.addBox(-3.0F, -10.0F, -3.0F, 6.0F, 1.0F, 6.0F, 
         				new CubeDeformation(0.0F)), 
         		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         
-        head.addOrReplaceChild("jackal_back", CubeListBuilder.create()
+        head.addOrReplaceChild("falcon_back", CubeListBuilder.create()
         		.texOffs(0, 16)
         		.addBox(-4.0F, 1.0F, 4.0F, 8.0F, 1.0F, 1.0F, 
         				new CubeDeformation(0.0F)), 
         		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         
-        PartDefinition jackalHead = head.addOrReplaceChild("jackal_head", CubeListBuilder.create()
+        PartDefinition falconHead = head.addOrReplaceChild("falcon_head", CubeListBuilder.create()
         		.texOffs(40, 20)
         		.addBox(0.0F, 0.0F, 0.0F, 6.0F, 6.0F, 6.0F, 
         				new CubeDeformation(0.0F)), 
         		PartPose.offsetAndRotation(-3.0F, -8.0F, -9.25F, 0.75F, 0.0F, 0.0F));
         
-        jackalHead.addOrReplaceChild("jackal_nose", CubeListBuilder.create()
-        		.texOffs(0, 25)
-        		.addBox(1.5F, 3.0F, -4.0F, 3.0F, 3.0F, 4.0F, 
+        falconHead.addOrReplaceChild("falcon_beak", CubeListBuilder.create()
+        		.texOffs(0, 27)
+        		.addBox(1.5F, 1.5F, -2.0F, 3.0F, 3.0F, 2.0F, 
         				new CubeDeformation(0.0F)), 
         		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         
-        jackalHead.addOrReplaceChild("jackal_ear_right", CubeListBuilder.create()
-        		.texOffs(14, 26)
-        		.addBox(-1.0F, -5.0F, 0.0F, 1.0F, 5.0F, 1.0F, 
+        falconHead.addOrReplaceChild("falcon_beak_1", CubeListBuilder.create()
+        		.texOffs(10, 29)
+        		.addBox(2.0F, 2.5F, -3.0F, 2.0F, 2.0F, 1.0F, 
         				new CubeDeformation(0.0F)), 
-        		PartPose.offsetAndRotation(1.0F, 0.0F, 3.0F, 0.0F, 0.0F, -0.25F));
+        		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         
-        jackalHead.addOrReplaceChild("jackal_ear_left", CubeListBuilder.create()
-        		.texOffs(14, 26)
-        		.addBox(0.0F, -5.0F, 0.0F, 1.0F, 5.0F, 1.0F, 
+        falconHead.addOrReplaceChild("falcon_beak_2", CubeListBuilder.create()
+        		.texOffs(16, 30)
+        		.addBox(2.5F, 4.5F, -3.0F, 1.0F, 1.0F, 1.0F, 
         				new CubeDeformation(0.0F)), 
-        		PartPose.offsetAndRotation(5.0F, 0.0F, 3.0F, 0.0F, 0.0F, 0.25F));
+        		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 32);
     }
-	
+
     @Override
-    protected Iterable<ModelPart> bodyParts()
+    protected Iterable<ModelPart> bodyParts() 
     {
-    	return ImmutableList.of();
+        return ImmutableList.of();
     }
 
     @SubscribeEvent
     public static void bakeModelLayers(EntityRenderersEvent.AddLayers event)
     {
         EntityModelSet entityModelSet = event.getEntityModels();
-        INSTANCE = new JackalArmorModel(entityModelSet.bakeLayer(Layers.JACKAL_HEAD));
+        INSTANCE = new FalconArmorModel(entityModelSet.bakeLayer(Layers.FALCON_HEAD));
     }
+
 }

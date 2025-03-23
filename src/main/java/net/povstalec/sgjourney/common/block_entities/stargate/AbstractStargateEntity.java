@@ -221,6 +221,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
+		else if(tag.contains("AddToNetwork"))
+			generationStep = Step.SETUP;
 		
 		connectionState = StargateConnection.State.fromByte(tag.getByte(CONNECTION_STATE));
 		connectionID = tag.getString(CONNECTION_ID);
@@ -670,6 +672,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public Stargate.Feedback resetStargate(Stargate.Feedback feedback, boolean updateInterfaces)
 	{
+		if(level.isClientSide())
+			return Stargate.Feedback.NONE;
+		
 		if(isConnected())
 		{
 			closeWormholeSound(!isDialingOut());

@@ -1,6 +1,4 @@
-package net.povstalec.sgjourney.client.models;
-
-import java.util.Optional;
+package net.povstalec.sgjourney.client.models.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

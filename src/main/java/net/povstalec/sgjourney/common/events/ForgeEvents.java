@@ -49,6 +49,7 @@ import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
@@ -99,6 +100,8 @@ public class ForgeEvents
 		
 		if(event.getEntity() instanceof AbstractVillager villager)
 			AncientGene.inheritGene(villager, CommonGeneticConfig.villager_ata_gene_inheritance_chance.get());
+		else if(event.getEntity() instanceof Human human)
+			AncientGene.inheritGene(human, CommonGeneticConfig.human_ata_gene_inheritance_chance.get());
 		
 		// Lightning recharging the Stargate
 		if(entity instanceof LightningBolt lightning)

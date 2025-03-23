@@ -6,6 +6,7 @@ public class CommonGeneticConfig
 {
 	public static SGJourneyConfigValue.IntValue player_ata_gene_inheritance_chance;
 	public static SGJourneyConfigValue.IntValue villager_ata_gene_inheritance_chance;
+	public static SGJourneyConfigValue.IntValue human_ata_gene_inheritance_chance;
 
 	public static SGJourneyConfigValue.IntValue prototype_ata_gene_therapy_success_rate;
 	public static SGJourneyConfigValue.IntValue ata_gene_therapy_success_rate;
@@ -19,6 +20,10 @@ public class CommonGeneticConfig
 		villager_ata_gene_inheritance_chance = new SGJourneyConfigValue.IntValue(server, "server.villager_ata_gene_inheritance_chance",
 				30, 0, 100, 
 				"Percentage of Villagers who will inherit the Ancient Gene");
+		
+		human_ata_gene_inheritance_chance = new SGJourneyConfigValue.IntValue(server, "server.human_ata_gene_inheritance_chance",
+				30, 0, 100,
+				"Percentage of Humans who will inherit the Ancient Gene");
 		
 		
 		

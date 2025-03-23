@@ -6,6 +6,14 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
+
+import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
+import net.povstalec.sgjourney.client.render.entity.HumanRenderer;
+import net.povstalec.sgjourney.common.entities.Human;
+import net.povstalec.sgjourney.common.entities.Jaffa;
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -18,7 +26,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -28,7 +35,6 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.registries.*;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.render.FalconArmorRenderProperties;
@@ -267,7 +273,9 @@ public class StargateJourney
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
 
             EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
-            //EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+            EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+            EntityRenderers.register(EntityInit.HUMAN.get(), HumanRenderer<Human>::new);
+            EntityRenderers.register(EntityInit.JAFFA.get(), HumanRenderer<Jaffa>::new);
             
             BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
             BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.RedSandstone::new);
