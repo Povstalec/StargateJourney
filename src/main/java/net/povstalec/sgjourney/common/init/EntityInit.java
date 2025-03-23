@@ -13,6 +13,8 @@ import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 
+import java.util.function.Supplier;
+
 public class EntityInit 
 {
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, StargateJourney.MODID);
@@ -25,20 +27,20 @@ public class EntityInit
 
 	
 	// Creatures
-	public static final RegistryObject<EntityType<Goauld>> GOAULD = ENTITIES.register("goauld",
+	public static final Supplier<EntityType<Goauld>> GOAULD = ENTITIES.register("goauld",
 					() -> EntityType.Builder.<Goauld>of(Goauld::new, MobCategory.CREATURE)
 						.sized(0.4F, 0.4F)
-						.build(new ResourceLocation(StargateJourney.MODID, "goauld").toString()));
+						.build(StargateJourney.sgjourneyLocation("goauld").toString()));
 	
-	public static final RegistryObject<EntityType<Human>> HUMAN = ENTITIES.register("human",
+	public static final Supplier<EntityType<Human>> HUMAN = ENTITIES.register("human",
 			() -> EntityType.Builder.<Human>of(Human::new, MobCategory.CREATURE)
 					.sized(0.625F, 1.8125F)
-					.build(new ResourceLocation(StargateJourney.MODID, "human").toString()));
+					.build(StargateJourney.sgjourneyLocation("human").toString()));
 	
-	public static final RegistryObject<EntityType<Jaffa>> JAFFA = ENTITIES.register("jaffa",
+	public static final Supplier<EntityType<Jaffa>> JAFFA = ENTITIES.register("jaffa",
 			() -> EntityType.Builder.<Jaffa>of(Jaffa::new, MobCategory.CREATURE)
 					.sized(0.625F, 1.8125F)
-					.build(new ResourceLocation(StargateJourney.MODID, "jaffa").toString()));
+					.build(StargateJourney.sgjourneyLocation("jaffa").toString()));
 	
 	public static void register(IEventBus eventBus)
 	{

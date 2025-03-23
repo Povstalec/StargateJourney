@@ -13,13 +13,12 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ForgeMod;
 
 import javax.annotation.Nullable;
 
 public class Human extends AgeableMob
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/player/wide/makena.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse("textures/entity/player/wide/makena.png");
 	
 	public Human(EntityType<? extends AgeableMob> type, Level level)
 	{
@@ -35,7 +34,7 @@ public class Human extends AgeableMob
 	protected void registerGoals()
 	{
 		this.goalSelector.addGoal(1, new FloatGoal(this));
-		this.goalSelector.addGoal(1, new ClimbOnTopOfPowderSnowGoal(this, this.level));
+		this.goalSelector.addGoal(1, new ClimbOnTopOfPowderSnowGoal(this, this.level()));
 		this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, false));
 		this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers());
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -44,7 +43,7 @@ public class Human extends AgeableMob
 	public static AttributeSupplier.Builder createAttributes()
 	{
 		return AgeableMob.createMobAttributes()
-				.add(ForgeMod.ENTITY_GRAVITY.get(), 0.5f)
+				.add(Attributes.GRAVITY, 0.5f)
 				.add(Attributes.MAX_HEALTH, 20.0D)
 				.add(Attributes.MOVEMENT_SPEED, 0.75D);
 	}
