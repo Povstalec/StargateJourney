@@ -23,6 +23,8 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
+import javax.annotation.Nullable;
+
 public final class StargateConnection
 {
 	private static final String EVENT_CHEVRON_ENGAGED = AbstractStargateEntity.EVENT_CHEVRON_ENGAGED;
@@ -483,6 +485,23 @@ public final class StargateConnection
 	public String getID()
 	{
 		return this.uuid;
+	}
+	
+	public StargateConnection.Type getConnectionType()
+	{
+		return this.connectionType;
+	}
+	
+	@Nullable
+	public AbstractStargateEntity getDialingStargate()
+	{
+		return dialingStargate;
+	}
+	
+	@Nullable
+	public AbstractStargateEntity getDialedStargate()
+	{
+		return dialedStargate;
 	}
 	
 	public int getOpenTime()

@@ -372,6 +372,8 @@ public final class StargateNetwork extends SavedData
 		{
 			this.connections.put(connection.getID(), connection);
 			
+			SGJourneyEvents.onConnectionEstablished(server, connection);
+			
 			return true;
 		}
 		
@@ -388,8 +390,14 @@ public final class StargateNetwork extends SavedData
 	
 	public final void terminateConnection(String uuid, Stargate.Feedback feedback)
 	{
-		if(hasConnection(uuid))
-			this.connections.get(uuid).terminate(server, feedback);
+		if(!hasConnection(uuid))
+			return;
+		
+		StargateConnection connection = this.connections.get(uuid);
+		
+		SGJourneyEvents.onConnectionTerminated(server, connection);
+		
+		connection.terminate(server, feedback);
 	}
 	
 	public final void removeConnection(String uuid, Stargate.Feedback feedback)

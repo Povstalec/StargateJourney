@@ -7,8 +7,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
@@ -39,38 +41,21 @@ public class CommonStargate extends StargateStructure
     {
         super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, stargateModifiers);
     }
-    
-	/*private static boolean extraSpawningChecks(Structure.GenerationContext context)
+	
+	@Override
+	public HolderSet<Biome> biomes()
 	{
-    	return CommonGenerationConfig.common_stargate_generation.get();
-	}*/
-
+		if(false) //TODO Write a config check
+			return HolderSet.direct();
+		
+		return super.biomes();
+	}
+    
     @Override
-    public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context)
-    {
-        /*if(!CommonStargate.extraSpawningChecks(context))
-            return Optional.empty();*/
-        
-        int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
-
-        // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
-        ChunkPos chunkPos = context.chunkPos();
-        BlockPos blockPos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
-
-        Optional<Structure.GenerationStub> structurePiecesGenerator =
-                SGJourneyJigsawPlacement.addPieces(
-                        context,
-                        this.startPool,
-                        this.startJigsawName,
-                        this.size,
-                        blockPos,
-                        false,
-                        this.projectStartToHeightmap,
-                        this.maxDistanceFromCenter,
-                        Rotation.NONE);
-        
-        return structurePiecesGenerator;
-    }
+	protected boolean extraSpawningChecks(Structure.GenerationContext context)
+	{
+    	return true;
+	}
 
     @Override
     public StructureType<?> type()

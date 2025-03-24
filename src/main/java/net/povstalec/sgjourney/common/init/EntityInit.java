@@ -21,6 +21,7 @@ public class EntityInit
 	public static final RegistryObject<EntityType<PlasmaProjectile>> JAFFA_PLASMA = ENTITIES.register("jaffa_plasma",
 					() -> EntityType.Builder.<PlasmaProjectile>of(PlasmaProjectile::new, MobCategory.MISC)
 						.sized(0.25F, 0.25F)
+						.setUpdateInterval(20)
 						.build(new ResourceLocation(StargateJourney.MODID, "jaffa_plasma").toString()));
 
 	
@@ -32,12 +33,14 @@ public class EntityInit
 	
 	public static final RegistryObject<EntityType<Human>> HUMAN = ENTITIES.register("human",
 			() -> EntityType.Builder.<Human>of(Human::new, MobCategory.CREATURE)
-					.sized(0.625F, 1.8125F)
+					.sized(0.625F, 1.95F)
+					.clientTrackingRange(8)
 					.build(new ResourceLocation(StargateJourney.MODID, "human").toString()));
 	
 	public static final RegistryObject<EntityType<Jaffa>> JAFFA = ENTITIES.register("jaffa",
 			() -> EntityType.Builder.<Jaffa>of(Jaffa::new, MobCategory.CREATURE)
-					.sized(0.625F, 1.8125F)
+					.sized(0.625F, 1.95F)
+					.clientTrackingRange(8)
 					.build(new ResourceLocation(StargateJourney.MODID, "jaffa").toString()));
 	
 	public static void register(IEventBus eventBus)

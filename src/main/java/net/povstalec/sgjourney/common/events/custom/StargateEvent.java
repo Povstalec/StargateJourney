@@ -11,8 +11,6 @@ import net.povstalec.sgjourney.common.stargate.StargateConnection;
 @Cancelable
 public class StargateEvent extends Event
 {
-	//TODO Add these events to the mod
-
 	private final MinecraftServer server;
 	private final Stargate stargate;
 	
