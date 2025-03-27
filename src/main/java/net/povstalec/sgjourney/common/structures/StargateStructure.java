@@ -131,6 +131,8 @@ public abstract class StargateStructure extends SGJourneyStructure
 			
 			if(upgraded)
 				stargate.upgraded();
+			
+			//TODO Point of Origin randomization
 		}
 	}
 }

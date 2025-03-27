@@ -18,6 +18,7 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 
@@ -45,7 +46,7 @@ public class CommonStargate extends StargateStructure
 	@Override
 	public HolderSet<Biome> biomes()
 	{
-		if(false) //TODO Write a config check
+		if(!CommonGenerationConfig.common_stargate_generation.get())
 			return HolderSet.direct();
 		
 		return super.biomes();

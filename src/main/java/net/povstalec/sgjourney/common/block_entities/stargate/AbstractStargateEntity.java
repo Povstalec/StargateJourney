@@ -1483,6 +1483,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void upgraded()
 	{
-		displayID = true;
+		upgraded = true;
 	}
 }

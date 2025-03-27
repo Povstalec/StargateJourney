@@ -8,6 +8,8 @@
 
 		"sgjourney:stargate/pegasus/pegasus_stargate",
 
-		"sgjourney:stargate/universe/destiny"
+		"sgjourney:stargate/universe/destiny",
+		
+		{id: "#common_stargates:common_stargate", required: false}
 	]
 }
