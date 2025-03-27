@@ -22,6 +22,7 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Stargate
 {
+	//TODO Use snake_case
 	public static final String DIMENSION = "Dimension";
 	public static final String COORDINATES = "Coordinates";
 

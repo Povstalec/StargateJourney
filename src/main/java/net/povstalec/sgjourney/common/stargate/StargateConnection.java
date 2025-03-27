@@ -33,6 +33,7 @@ public final class StargateConnection
 	private static final String EVENT_OUTGOING_WORMHOLE = "stargate_outgoing_wormhole";
 	private static final String EVENT_DISCONNECTED = "stargate_disconnected";
 	
+	//TODO Use snake_case
 	private static final String DIMENSION = "Dimension";
 	private static final String COORDINATES = "Coordinates";
 	
@@ -68,10 +69,10 @@ public final class StargateConnection
 	protected AbstractStargateEntity dialedStargate; // Dialed Stargates can be changed mid connection
 	protected boolean doKawoosh;
 	
-	protected boolean used = false;
-	protected int openTime = 0;
-	protected int connectionTime = 0;
-	protected int timeSinceLastTraveler = 0;
+	protected boolean used;
+	protected int openTime;
+	protected int connectionTime;
+	protected int timeSinceLastTraveler;
 	
 	private StargateConnection(String uuid, StargateConnection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate,
 			boolean used, int openTime, int connectionTime, int timeSinceLastTraveler, boolean doKawoosh)
@@ -479,7 +480,7 @@ public final class StargateConnection
 	}
 	
 	//============================================================================================
-	//************************************Getters and setters*************************************
+	//******************************************Getters*******************************************
 	//============================================================================================
 	
 	public String getID()
