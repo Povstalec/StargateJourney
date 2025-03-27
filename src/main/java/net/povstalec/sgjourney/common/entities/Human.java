@@ -52,7 +52,7 @@ public class Human extends AgeableMob implements RangedAttackMob
 	public static AttributeSupplier.Builder createAttributes()
 	{
 		return AgeableMob.createMobAttributes()
-				.add(Attributes.FOLLOW_RANGE, 32.0)
+				.add(Attributes.FOLLOW_RANGE, 32.0D)
 				.add(Attributes.MAX_HEALTH, 20.0D)
 				.add(Attributes.ATTACK_DAMAGE, 1.0D);
 	}

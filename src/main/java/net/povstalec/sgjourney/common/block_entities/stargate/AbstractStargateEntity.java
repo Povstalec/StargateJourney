@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -142,7 +143,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	// Dialing and memory
 	protected Address address = new Address();
-	protected String connectionID = EMPTY;
+	@Nullable
+	protected UUID connectionID = null;
 	protected StargateConnection.State connectionState = StargateConnection.State.IDLE;
 	protected Wormhole wormhole = new Wormhole();
 
@@ -221,7 +223,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			generationStep = Step.SETUP;
 		
 		connectionState = StargateConnection.State.fromByte(tag.getByte(CONNECTION_STATE));
-		connectionID = tag.getString(CONNECTION_ID);
+		if(tag.contains(CONNECTION_ID, CompoundTag.TAG_STRING))
+		{
+			try { connectionID = UUID.fromString(tag.getString(CONNECTION_ID)); }
+			catch(IllegalArgumentException e) {}
+		}
 		
 		deserializeStargateInfo(tag, false);
 	}
@@ -270,7 +276,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 		
 		tag.putByte(CONNECTION_STATE, connectionState.byteValue());
-		tag.putString(CONNECTION_ID, connectionID);
+		if(connectionID != null)
+			tag.putString(CONNECTION_ID, connectionID.toString());
 		
 		serializeStargateInfo(tag);
 	}
@@ -569,7 +576,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return resetStargate(Stargate.Feedback.UNKNOWN_ERROR);
 	}
 	
-	public void connectStargate(String connectionID, StargateConnection.State connectionState)
+	public void connectStargate(UUID connectionID, StargateConnection.State connectionState)
 	{
 		this.connectionID = connectionID;
 		this.setConnected(connectionState);
@@ -685,7 +692,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		}
 
 		resetAddress(updateInterfaces);
-		this.connectionID = EMPTY;
+		this.connectionID = null;
 		setKawooshTickCount(0);
 		setTickCount(0);
 		//updateClient();
@@ -730,7 +737,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public Stargate.Feedback bypassDisconnectStargate(Stargate.Feedback feedback, boolean updateInterfaces)
 	{
-		if(connectionID != null && !connectionID.equals(EMPTY))
+		if(connectionID != null)
 			StargateNetwork.get(level).terminateConnection(connectionID, feedback);
 		return resetStargate(feedback, updateInterfaces);
 	}
@@ -1372,7 +1379,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateParticleSpawnPacket(this.worldPosition, this.blockCover.blockStates));
 	}
 	
-	public String getConnectionID()
+	public UUID getConnectionID()
 	{
 		return this.connectionID;
 	}
@@ -1382,7 +1389,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(isConnected())
 		{
 			// Will reset the Stargate if it incorrectly thinks it's connected
-			if(!StargateNetwork.get(getLevel()).hasConnection(getConnectionID()) || getConnectionID().equals(StargateJourney.EMPTY))
+			if(!StargateNetwork.get(getLevel()).hasConnection(getConnectionID()))
 				resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
 		}
 	}

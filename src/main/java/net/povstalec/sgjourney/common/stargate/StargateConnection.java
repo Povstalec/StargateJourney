@@ -63,7 +63,7 @@ public final class StargateConnection
 	protected static final long interstellarConnectionDraw = CommonStargateConfig.interstellar_connection_energy_draw.get();
 	protected static final long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
 	
-	protected final String uuid;
+	protected final UUID uuid;
 	protected final StargateConnection.Type connectionType;
 	protected final AbstractStargateEntity dialingStargate;
 	protected AbstractStargateEntity dialedStargate; // Dialed Stargates can be changed mid connection
@@ -74,7 +74,7 @@ public final class StargateConnection
 	protected int connectionTime;
 	protected int timeSinceLastTraveler;
 	
-	private StargateConnection(String uuid, StargateConnection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate,
+	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate,
 			boolean used, int openTime, int connectionTime, int timeSinceLastTraveler, boolean doKawoosh)
 	{
 		this.uuid = uuid;
@@ -207,7 +207,7 @@ public final class StargateConnection
 		return StargateConnection.Type.INTERGALACTIC;
 	}
 	
-	private StargateConnection(String uuid, StargateConnection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
+	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
 		this(uuid, connectionType, dialingStargate, dialedStargate, false, 0, 0, 0, doKawoosh);
 	}
@@ -215,7 +215,7 @@ public final class StargateConnection
 	//TODO Replace these parameters with Stargate object
 	public static final StargateConnection create(StargateConnection.Type connectionType, AbstractStargateEntity dialingStargate, AbstractStargateEntity dialedStargate, boolean doKawoosh)
 	{
-		String uuid = UUID.randomUUID().toString();
+		UUID uuid = UUID.randomUUID();
 		
 		if(dialingStargate != null && dialedStargate != null)
 		{
@@ -483,7 +483,7 @@ public final class StargateConnection
 	//******************************************Getters*******************************************
 	//============================================================================================
 	
-	public String getID()
+	public UUID getID()
 	{
 		return this.uuid;
 	}
@@ -555,7 +555,7 @@ public final class StargateConnection
 		return tag;
 	}
 	
-	public static StargateConnection deserialize(MinecraftServer server, String uuid, CompoundTag tag)
+	public static StargateConnection deserialize(MinecraftServer server, UUID uuid, CompoundTag tag)
 	{
 		Type connectionType = Type.valueOf(tag.getString(CONNECTION_TYPE));
 		AbstractStargateEntity dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
