@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -209,10 +210,10 @@ public final class StargateNetwork extends SavedData
 		if(address == null)
 			return;
 		
-		Optional<Stargate> stargate = getStargate(address);
+		Stargate stargate = getStargate(address);
 		
-		if(stargate.isPresent())
-			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate.get());
+		if(stargate != null)
+			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate);
 
 		BlockEntityList.get(level).removeStargate(address);
 		
@@ -220,29 +221,22 @@ public final class StargateNetwork extends SavedData
 		setDirty();
 	}
 	
-	public final void updateStargate(ServerLevel level, AbstractStargateEntity stargate)
+	public final void updateStargate(ServerLevel level, AbstractStargateEntity stargateEntity)
 	{
-		Optional<Stargate> stargateOptional = getStargate(stargate.get9ChevronAddress().immutable());
+		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress().immutable());
 		
-		if(stargateOptional.isPresent())
+		if(stargate != null)
 		{
-			Universe.get(server).removeStargateFromDimension(level.dimension(), stargateOptional.get());
-			stargateOptional.get().update(stargate);
-			Universe.get(server).addStargateToDimension(level.dimension(), stargateOptional.get());
+			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate);
+			stargate.update(stargateEntity);
+			Universe.get(server).addStargateToDimension(level.dimension(), stargate);
 		}
 	}
 	
-	public final Optional<Stargate> getStargate(Address.Immutable address)
+	@Nullable
+	public final Stargate getStargate(Address.Immutable address)
 	{
-		if(address.getLength() == 8)
-		{
-			Stargate stargate = BlockEntityList.get(server).getStargates().get(address);
-			
-			if(stargate != null)
-				return Optional.of(stargate);
-		}
-
-		return Optional.empty();
+		return BlockEntityList.get(server).getStargate(address);
 	}
 	
 	//============================================================================================
@@ -308,13 +302,14 @@ public final class StargateNetwork extends SavedData
 				return dialingStargate.resetStargate(server, Stargate.Feedback.NOT_ENOUGH_POWER, true);
 		}
 		
-		Optional<AbstractStargateEntity> outgoingStargate = dialingStargate.getStargateEntity(server);
-		Optional<AbstractStargateEntity> incomingStargate = dialedStargate.getStargateEntity(server);
+		//TODO Make better call forwarding
+		/*AbstractStargateEntity outgoingStargate = dialingStargate.getStargateEntity(server);
+		AbstractStargateEntity incomingStargate = dialedStargate.getStargateEntity(server);
 		
-		if(outgoingStargate.isPresent() && incomingStargate.isPresent())
+		if(outgoingStargate != null && incomingStargate != null)
 		{
 			// Call Forwarding
-			if(incomingStargate.get().dhdInfo().shouldCallForward())
+			if(incomingStargate.dhdInfo().shouldCallForward())
 			{
 				// Chooses a random Stargate to connect to
 				Random random = new Random();
@@ -329,7 +324,7 @@ public final class StargateNetwork extends SavedData
 					
 					if(reroutedStargate.isPresent())
 					{
-						while(reroutedStargate.get().getStargateEntity(server).get().dhdInfo().shouldCallForward())
+						while(reroutedStargate.get().getStargateEntity(server).dhdInfo().shouldCallForward())
 						{
 							reroutedStargate = solarSystem.getRandomStargate(random.nextLong());
 						}
@@ -338,21 +333,21 @@ public final class StargateNetwork extends SavedData
 					}
 				}
 			}
-
-			StargateConnection connection = StargateConnection.create(connectionType, outgoingStargate.get(), incomingStargate.get(), doKawoosh);
-			if(connection != null)
+		}*/
+		
+		StargateConnection connection = StargateConnection.create(server, connectionType, dialingStargate, dialedStargate, doKawoosh);
+		if(connection != null)
+		{
+			addConnection(connection);
+			
+			switch(connectionType)
 			{
-				addConnection(connection);
-				
-				switch(connectionType)
-				{
 				case SYSTEM_WIDE:
 					return Stargate.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
 				case INTERSTELLAR:
 					return Stargate.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR;
 				default:
 					return Stargate.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC;
-				}
 			}
 		}
 		
@@ -418,7 +413,7 @@ public final class StargateNetwork extends SavedData
 	{
 		if(hasConnection(uuid))
 		{
-			this.connections.get(uuid).sendStargateMessage(sendingStargate, messsage);
+			this.connections.get(uuid).sendStargateMessage(server, sendingStargate, messsage);
 			return true;
 		}
 		else
@@ -428,13 +423,13 @@ public final class StargateNetwork extends SavedData
 	public final void sendStargateTransmission(AbstractStargateEntity sendingStargate, UUID uuid, int transmissionJumps, int frequency, String transmission)
 	{
 		if(hasConnection(uuid))
-			this.connections.get(uuid).sendStargateTransmission(sendingStargate, transmissionJumps, frequency, transmission);
+			this.connections.get(uuid).sendStargateTransmission(server, sendingStargate, transmissionJumps, frequency, transmission);
 	}
 	
 	public final float checkStargateShieldingState(AbstractStargateEntity sendingStargate, UUID uuid)
 	{
 		if(hasConnection(uuid))
-			return this.connections.get(uuid).checkStargateShieldingState(sendingStargate);
+			return this.connections.get(uuid).checkStargateShieldingState(server, sendingStargate);
 		
 		return 0;
 	}
@@ -473,11 +468,18 @@ public final class StargateNetwork extends SavedData
 	
 	private final void deserializeConnections(CompoundTag tag)
 	{
-		tag.getAllKeys().forEach(connectionID ->
+		for(String connectionID : tag.getAllKeys())
 		{
-			try { this.connections.put(UUID.fromString(connectionID), StargateConnection.deserialize(server, UUID.fromString(connectionID), tag.getCompound(connectionID))); }
+			try
+			{
+				UUID uuid = UUID.fromString(connectionID);
+				StargateConnection connection = StargateConnection.deserialize(server, uuid, tag.getCompound(connectionID));
+				
+				if(connection != null)
+					this.connections.put(uuid, connection);
+			}
 			catch(IllegalArgumentException e) {}
-		});
+		}
 	}
 	
 	public static final void findStargates(ServerLevel level)

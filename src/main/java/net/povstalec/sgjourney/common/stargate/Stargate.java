@@ -20,6 +20,8 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
+import javax.annotation.Nullable;
+
 public class Stargate
 {
 	//TODO Use snake_case
@@ -32,15 +34,18 @@ public class Stargate
 	
 	public static final String NETWORK = "Network";
 	
+	@Nullable
+	private AbstractStargateEntity stargate;
+	private boolean stargateCached = false;
+	
 	private final Address.Immutable address;
 	private final ResourceKey<Level> dimension;
 	private final BlockPos blockPos;
 
+	// Preferred Stargate decision
 	private boolean hasDHD;
 	private Gen generation;
 	private int timesOpened;
-	
-	//private boolean restrictNetwork;
 	private int network;
 	
 	public Stargate(Address.Immutable address, ResourceKey<Level> dimension, BlockPos blockPos, boolean hasDHD, Gen generation, int timesOpened, int network)
@@ -52,8 +57,6 @@ public class Stargate
 		this.hasDHD = hasDHD;
 		this.generation = generation;
 		this.timesOpened = timesOpened;
-		
-		//this.restrictNetwork = stargate.getRestrictNetwork();
 		this.network = network;
 	}
 	
@@ -61,6 +64,8 @@ public class Stargate
 	{
 		this(stargate.get9ChevronAddress().immutable(), stargate.getLevel().dimension(), stargate.getBlockPos(),
 				stargate.dhdInfo().hasDHD(), stargate.getGeneration(), stargate.getTimesOpened(), stargate.getNetwork());
+		
+		cacheStargateEntity(stargate);
 	}
 	
 	public Address.Immutable get9ChevronAddress()
@@ -98,77 +103,97 @@ public class Stargate
 		return this.network;
 	}
 	
-	/*public boolean getRestrictNetwork()
+	@Nullable
+	private AbstractStargateEntity cacheStargateEntity(@Nullable AbstractStargateEntity stargate)
 	{
-		return this.restrictNetwork;
-	}*/
+		this.stargate = stargate;
+		this.stargateCached = true;
+		
+		return stargate;
+	}
 	
-	public Optional<AbstractStargateEntity> getStargateEntity(MinecraftServer server)
+	@Nullable
+	private AbstractStargateEntity tryCacheStargateEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && level.getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
-			return Optional.of(stargate);
+			return cacheStargateEntity(stargate);
 		
-		return Optional.empty();
+		return cacheStargateEntity(null);
 	}
+	
+	@Nullable
+	public AbstractStargateEntity getStargateEntity(MinecraftServer server)
+	{
+		if(this.stargateCached || server == null)
+			return this.stargate;
+		
+		return tryCacheStargateEntity(server);
+	}
+	
+	/*@Nullable
+	public AbstractStargateEntity getStargateEntity()
+	{
+		return this.stargate;
+	}*/
 	
 	public Stargate.Feedback resetStargate(MinecraftServer server, Stargate.Feedback feedback, boolean updateInterfaces)
 	{
-		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
 		
-		if(stargateEntity.isPresent())
-			return stargateEntity.get().resetStargate(feedback, updateInterfaces);
+		if(stargateEntity != null)
+			return stargateEntity.resetStargate(feedback, updateInterfaces);
 		
 		return feedback;
 	}
 	
 	public Stargate.Feedback resetStargate(MinecraftServer server, Stargate.Feedback feedback)
 	{
-		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
 		
-		if(stargateEntity.isPresent())
-			return stargateEntity.get().resetStargate(feedback);
+		if(stargateEntity != null)
+			return stargateEntity.resetStargate(feedback);
 		
 		return feedback;
 	}
 	
 	public boolean isConnected(MinecraftServer server)
 	{
-		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
 		
-		if(stargateEntity.isPresent())
-			return stargateEntity.get().isConnected();
+		if(stargateEntity != null)
+			return stargateEntity.isConnected();
 		
 		return false;
 	}
 	
 	public boolean isObstructed(MinecraftServer server)
 	{
-		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
 		
-		if(stargateEntity.isPresent())
-			return stargateEntity.get().isConnected();
+		if(stargateEntity != null)
+			return stargateEntity.isConnected();
 		
 		return false;
 	}
 	
 	public boolean canExtractEnergy(MinecraftServer server, long energy)
 	{
-		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
 		
-		if(stargateEntity.isPresent())
-			return stargateEntity.get().canExtractEnergy(energy);
+		if(stargateEntity != null)
+			return stargateEntity.canExtractEnergy(energy);
 		
 		return false;
 	}
 	
 	public void depleteEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
-		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
 		
-		if(stargateEntity.isPresent())
-			stargateEntity.get().depleteEnergy(energy, simulate);
+		if(stargateEntity != null)
+			stargateEntity.depleteEnergy(energy, simulate);
 	}
 	
 	
@@ -191,24 +216,18 @@ public class Stargate
 	
 	public boolean checkStargateEntity(MinecraftServer server)
 	{
-		Optional<AbstractStargateEntity> stargateOptional = getStargateEntity(server);
+		AbstractStargateEntity stargate = getStargateEntity(server);
 		
-		if(stargateOptional.isPresent())
+		if(stargate != null)
 		{
-			AbstractStargateEntity stargate = stargateOptional.get();
-			
-			if(stargate == null)
-				StargateJourney.LOGGER.error("Stargate does not exist");
-			else
-			{
-				stargate.checkStargate();
-				return true;
-			}
+			stargate.checkStargate();
+			return true;
 		}
 		else
+		{
 			StargateJourney.LOGGER.error("Stargate not found");
-		
-		return false;
+			return false;
+		}
 	}
 	
 	

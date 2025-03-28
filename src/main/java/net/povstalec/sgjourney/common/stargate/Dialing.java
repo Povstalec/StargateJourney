@@ -100,13 +100,13 @@ public class Dialing
 	private static Stargate.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate,
 			Address.Immutable address, Address.Immutable dialingAddress, boolean doKawoosh)
 	{
-		Optional<Stargate> stargate = StargateNetwork.get(server).getStargate(address);
+		Stargate stargate = StargateNetwork.get(server).getStargate(address);
 		
-		if(stargate.isEmpty())
+		if(stargate == null)
 			return dialingStargate.resetStargate(server, Stargate.Feedback.INVALID_ADDRESS);
 		
-		BlockPos pos = stargate.get().getBlockPos();
-		ResourceKey<Level> dimension = stargate.get().getDimension();
+		BlockPos pos = stargate.getBlockPos();
+		ResourceKey<Level> dimension = stargate.getDimension();
 		
 		if(pos != null && dimension != null)
 		{
@@ -124,7 +124,7 @@ public class Dialing
 						return dialingStargate.resetStargate(server, Stargate.Feedback.WHITELISTED_SELF);
 				}
 				
-				return connectStargates(server, dialingStargate, stargate.get(), Address.Type.ADDRESS_9_CHEVRON, doKawoosh);
+				return connectStargates(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh);
 			}
 		}
 		
@@ -150,10 +150,11 @@ public class Dialing
 			{
 				boolean isLastStargate = i == stargates.size() - 1;
 				Stargate targetStargate = stargates.get(i);
+				AbstractStargateEntity targetStargateEntity = targetStargate.getStargateEntity(server);
 				
-				if(server.getLevel(targetStargate.getDimension()).getBlockEntity(targetStargate.getBlockPos()) instanceof AbstractStargateEntity targetStargateEntity)
+				if(targetStargateEntity != null)
 				{
-					// If Stargate isn't obstructed and it's network isn't restricted, connect
+					// If Stargate isn't obstructed and its network isn't restricted, connect
 					if(!targetStargateEntity.isObstructed() && !targetStargateEntity.isRestricted(dialingStargate.getNetwork()) &&
 							!(targetStargateEntity.addressFilterInfo().getFilterType().isBlacklist() && targetStargateEntity.addressFilterInfo().isAddressBlacklisted(dialingAddress)) &&
 							!(targetStargateEntity.addressFilterInfo().getFilterType().isWhitelist() && !targetStargateEntity.addressFilterInfo().isAddressWhitelisted(dialingAddress)))

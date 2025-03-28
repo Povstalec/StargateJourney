@@ -319,7 +319,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void addStargateToNetwork()
 	{
-		if(id9ChevronAddress.isEmpty() || BlockEntityList.get(level).getStargate(id9ChevronAddress.immutable()).isPresent())
+		if(id9ChevronAddress.isEmpty() || BlockEntityList.get(level).containsStargate(id9ChevronAddress.immutable()))
 			set9ChevronAddress(generate9ChevronAddress());
 		
 		StargateNetwork.get(level).addStargate(this);
@@ -351,7 +351,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		{
 			address = new Address().randomAddress(8, 36, random.nextLong());
 			
-			if(BlockEntityList.get(level).getStargate(address.immutable()).isEmpty())
+			if(!BlockEntityList.get(level).containsStargate(address.immutable()))
 				break;
 		}
 		
@@ -568,10 +568,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		}
 		
 		Address dialingAddress = this.getConnectionAddress(address.getLength());
-		Optional<Stargate> stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress().immutable());
+		Stargate stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress().immutable());
 		
-		if(stargate.isPresent())
-			return Dialing.dialStargate((ServerLevel) this.level, stargate.get(), immutableAddress, dialingAddress.immutable(), doKawoosh);
+		if(stargate != null)
+			return Dialing.dialStargate((ServerLevel) this.level, stargate, immutableAddress, dialingAddress.immutable(), doKawoosh);
 		
 		return resetStargate(Stargate.Feedback.UNKNOWN_ERROR);
 	}
@@ -1306,7 +1306,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
 		
-		player.sendSystemMessage(Component.literal("Energy: " + this.getEnergyStored() + " FE").withStyle(ChatFormatting.DARK_RED));
+		super.getStatus(player);
 	}
 	
 	@Override

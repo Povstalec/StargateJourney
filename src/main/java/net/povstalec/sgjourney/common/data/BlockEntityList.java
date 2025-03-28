@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -136,25 +137,29 @@ public class BlockEntityList extends SavedData
 		return (HashMap<Address.Immutable, Stargate>) stargateMap.clone();
 	}
 	
-	public Optional<Stargate> getStargate(Address.Immutable address)
+	public boolean containsStargate(Address.Immutable address)
 	{
-		if(address.getLength() == 8)
-		{
-			Stargate stargate = stargateMap.get(address);
-			
-			if(stargate!= null)
-				return Optional.of(stargate);
-		}
-		
-		return Optional.empty();
+		return stargateMap.containsKey(address);
 	}
 	
-	public Optional<Stargate> getRandomStargate(long seed)
+	@Nullable
+	public Stargate getStargate(Address.Immutable address)
+	{
+		if(address.getLength() != 8)
+			return null;
+		
+		Stargate stargate = stargateMap.get(address);
+		
+		return stargate;
+	}
+	
+	@Nullable
+	public Stargate getRandomStargate(long seed)
 	{
 		int size = this.stargateMap.size();
 		
 		if(size < 1)
-			return Optional.empty();
+			return null;
 		
 		Random random = new Random(seed);
 		
@@ -162,7 +167,7 @@ public class BlockEntityList extends SavedData
 		
 		Stargate randomStargate = (Stargate) this.stargateMap.entrySet().stream().toArray()[randomValue];
 		
-		return Optional.of(randomStargate);
+		return randomStargate;
 	}
 	
 	
@@ -173,14 +178,12 @@ public class BlockEntityList extends SavedData
 		return (HashMap<UUID, Transporter>) transporterMap.clone();
 	}
 	
-	public Optional<Transporter> getTransporter(UUID id)
+	@Nullable
+	public Transporter getTransporter(UUID id)
 	{
 		Transporter transporter = transporterMap.get(id);
 		
-		if(transporter!= null)
-			return Optional.of(transporter);
-		
-		return Optional.empty();
+		return transporter;
 	}
 	
 	public void printTransporters()
