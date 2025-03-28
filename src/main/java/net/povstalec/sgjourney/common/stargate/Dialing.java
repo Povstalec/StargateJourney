@@ -43,33 +43,33 @@ public class Dialing
 	private static Stargate.Feedback get7ChevronStargate(ServerLevel level, Stargate dialingStargate, 
 		Address.Immutable dialedAddress, Address.Immutable dialingAddress, boolean doKawoosh)
 	{
-		Optional<SolarSystem.Serializable> solarSystem = Universe.get(level).getSolarSystemFromAddress(level.dimension(), dialedAddress);
+		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromAddress(level.dimension(), dialedAddress);
 		
-		if(solarSystem.isEmpty())
+		if(solarSystem == null)
 			return dialingStargate.resetStargate(level.getServer(), Stargate.Feedback.INVALID_ADDRESS);
 		
-		return getStargate(level, dialingStargate, solarSystem.get(), Address.Type.ADDRESS_7_CHEVRON, dialingAddress, doKawoosh);
+		return getStargate(level, dialingStargate, solarSystem, Address.Type.ADDRESS_7_CHEVRON, dialingAddress, doKawoosh);
 	}
 	
 	private static Stargate.Feedback get8ChevronStargate(ServerLevel level, Stargate dialingStargate,
 			Address.Immutable extragalacticAddress, Address.Immutable dialingAddress, boolean doKawoosh)
 	{
-		Optional<SolarSystem.Serializable> solarSystem = Universe.get(level).getSolarSystemFromExtragalacticAddress(extragalacticAddress);
+		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromExtragalacticAddress(extragalacticAddress);
 		
-		if(solarSystem.isEmpty())
+		if(solarSystem == null)
 			return dialingStargate.resetStargate(level.getServer(), Stargate.Feedback.INVALID_ADDRESS);
 		
-		return getStargate(level, dialingStargate, solarSystem.get(), Address.Type.ADDRESS_8_CHEVRON, dialingAddress, doKawoosh);
+		return getStargate(level, dialingStargate, solarSystem, Address.Type.ADDRESS_8_CHEVRON, dialingAddress, doKawoosh);
 	}
 	
 	private static Stargate.Feedback getStargate(ServerLevel level, Stargate dialingStargate, SolarSystem.Serializable dialedSystem,
 			Address.Type addressType, Address.Immutable dialingAddress, boolean doKawoosh)
 	{
-		Optional<SolarSystem.Serializable> currentSystem = Universe.get(level).getSolarSystemFromDimension(level.dimension());
+		SolarSystem.Serializable currentSystem = Universe.get(level).getSolarSystemFromDimension(level.dimension());
 		
 		MinecraftServer server = level.getServer();
 		
-		if(currentSystem.isPresent() && dialedSystem.equals(currentSystem.get()))
+		if(currentSystem != null && dialedSystem.equals(currentSystem))
 			return dialingStargate.resetStargate(server, Stargate.Feedback.SAME_SYSTEM_DIAL);
 		
 		if(dialedSystem.getStargates().isEmpty())

@@ -166,13 +166,10 @@ public class Universe extends SavedData
 	
 	public ResourceKey<PointOfOrigin> getRandomPointOfOriginFromDimension(ResourceKey<Level> dimension, long seed)
 	{
-		Optional<Galaxy.Serializable> galaxyOptional = getGalaxyFromDimension(dimension);
+		Galaxy.Serializable galaxy = getGalaxyFromDimension(dimension);
 		
-		if(galaxyOptional.isPresent())
-		{
-			Galaxy.Serializable galaxy = galaxyOptional.get();
+		if(galaxy != null)
 			return galaxy.getRandomPointOfOrigin(seed);
-		}
 		
 		return PointOfOrigin.defaultPointOfOrigin();
 	}
@@ -387,24 +384,22 @@ public class Universe extends SavedData
 	
 	public void addStargateToDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
-		Optional<SolarSystem.Serializable> solarSystem = getSolarSystemFromDimension(dimension);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
-		if(solarSystem.isPresent())
+		if(solarSystem != null)
 		{
-			solarSystem.get().addStargate(stargate);
-			
+			solarSystem.addStargate(stargate);
 			this.setDirty();
 		}
 	}
 	
 	public void removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
-		Optional<SolarSystem.Serializable> solarSystem = getSolarSystemFromDimension(dimension);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
-		if(solarSystem.isPresent())
+		if(solarSystem != null)
 		{
-			solarSystem.get().removeStargate(stargate);
-			
+			solarSystem.removeStargate(stargate);
 			this.setDirty();
 		}
 	}
@@ -453,20 +448,16 @@ public class Universe extends SavedData
 	//*******************************************Getters******************************************
 	//============================================================================================
 	
-	public Optional<SolarSystem.Serializable> getSolarSystemFromDimension(ResourceKey<Level> dimension)
+	@Nullable
+	public SolarSystem.Serializable getSolarSystemFromDimension(ResourceKey<Level> dimension)
 	{
-		if(!this.dimensions.containsKey(dimension))
-			return Optional.empty();
-		
-		return Optional.of(this.dimensions.get(dimension));
+		return this.dimensions.get(dimension);
 	}
 	
-	public Optional<SolarSystem.Serializable> getSolarSystemFromExtragalacticAddress(Address.Immutable extragalacticAddress)
+	@Nullable
+	public SolarSystem.Serializable getSolarSystemFromExtragalacticAddress(Address.Immutable extragalacticAddress)
 	{
-		if(!this.solarSystems.containsKey(extragalacticAddress))
-			return Optional.empty();
-		
-		return Optional.of(this.solarSystems.get(extragalacticAddress));
+		return this.solarSystems.get(extragalacticAddress);
 	}
 	
 	public List<ResourceKey<Level>> getDimensionsWithGeneratedSolarSystems()
@@ -482,42 +473,46 @@ public class Universe extends SavedData
 		return dimensions;
 	}
 	
-	public Optional<List<ResourceKey<Level>>> getDimensionsFromSolarSystem(Address.Immutable extragalacticAddress)
+	@Nullable
+	public List<ResourceKey<Level>> getDimensionsFromSolarSystem(Address.Immutable extragalacticAddress)
 	{
-		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromExtragalacticAddress(extragalacticAddress);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromExtragalacticAddress(extragalacticAddress);
 		
-		if(solarSystemOptional.isPresent())
-			return Optional.of(solarSystemOptional.get().getDimensions());
+		if(solarSystem != null)
+			return solarSystem.getDimensions();
 		
-		return Optional.empty();
+		return new ArrayList<ResourceKey<Level>>();
 	}
 	
-	public Optional<SolarSystem.Serializable> getSolarSystemInGalaxy(String galaxyID, Address.Immutable address)
+	@Nullable
+	public SolarSystem.Serializable getSolarSystemInGalaxy(ResourceLocation galaxyID, Address.Immutable address)
 	{
 		if(!this.galaxies.containsKey(galaxyID))
-			return Optional.empty();
+			return null;
 		
 		return this.galaxies.get(galaxyID).getSolarSystem(address);
 	}
 	
-	public Optional<SolarSystem.Serializable> getSolarSystemFromAddress(ResourceKey<Level> dimension, Address.Immutable address)
+	@Nullable
+	public SolarSystem.Serializable getSolarSystemFromAddress(ResourceKey<Level> dimension, Address.Immutable address)
 	{
-		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
-		if(solarSystemOptional.isPresent())
-			return solarSystemOptional.get().getSolarSystemFromAddress(address);
+		if(solarSystem != null)
+			return solarSystem.getSolarSystemFromAddress(address);
 		
-		return Optional.empty();
+		return null;
 	}
 	
-	public Optional<HashMap<Galaxy.Serializable, Address.Immutable>> getGalaxiesFromDimension(ResourceKey<Level> dimension)
+	@Nullable
+	public HashMap<Galaxy.Serializable, Address.Immutable> getGalaxiesFromDimension(ResourceKey<Level> dimension)
 	{
-		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
-		if(solarSystemOptional.isPresent())
-			return Optional.of(solarSystemOptional.get().getGalacticAddresses());
+		if(solarSystem != null)
+			return solarSystem.getGalacticAddresses();
 		
-		return Optional.empty();
+		return null;
 	}
 	
 	@Nullable
@@ -526,66 +521,56 @@ public class Universe extends SavedData
 		return this.galaxies.get(galaxyID);
 	}
 	
-	public Optional<Galaxy.Serializable> getGalaxyFromDimension(ResourceKey<Level> dimension)
+	@Nullable
+	public Galaxy.Serializable getGalaxyFromDimension(ResourceKey<Level> dimension)
 	{
-		Optional<HashMap<Galaxy.Serializable, Address.Immutable>> galaxiesOptional = getGalaxiesFromDimension(dimension);
+		HashMap<Galaxy.Serializable, Address.Immutable> galaxies = getGalaxiesFromDimension(dimension);
 		
-		if(galaxiesOptional.isPresent())
-		{
-			HashMap<Galaxy.Serializable, Address.Immutable> galaxies = galaxiesOptional.get();
-			
-			if(!galaxies.isEmpty())
-				return Optional.of(galaxies.entrySet().iterator().next().getKey());
-		}
+		if(galaxies != null && !galaxies.isEmpty())
+			return galaxies.entrySet().iterator().next().getKey();
 		
-		return Optional.empty();
+		return null;
 	}
 	
-	public Optional<Address.Immutable> getAddressInGalaxyFromSolarSystem(ResourceLocation galaxyID, SolarSystem.Serializable solarSystem)
+	@Nullable
+	public Address.Immutable getAddressInGalaxyFromSolarSystem(ResourceLocation galaxyID, SolarSystem.Serializable solarSystem)
 	{
-		if(this.galaxies.containsKey(galaxyID))
+		if(this.galaxies.containsKey(galaxyID) && solarSystem != null)
 		{
 			Galaxy.Serializable galaxy = this.galaxies.get(galaxyID);
 			
 			return solarSystem.getAddressFromGalaxy(galaxy);
 		}
 		
-		return Optional.empty();
+		return null;
 	}
 	
-	public Optional<Address.Immutable> getAddressInGalaxyFromDimension(ResourceLocation galaxyID, ResourceKey<Level> dimension)
+	@Nullable
+	public Address.Immutable getAddressInGalaxyFromDimension(ResourceLocation galaxyID, ResourceKey<Level> dimension)
 	{
-		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
-		if(solarSystemOptional.isPresent())
-			return getAddressInGalaxyFromSolarSystem(galaxyID, solarSystemOptional.get());
-		
-		return Optional.empty();
+		return getAddressInGalaxyFromSolarSystem(galaxyID, solarSystem);
 	}
 	
-	public Optional<Address.Immutable> getExtragalacticAddressFromDimension(ResourceKey<Level> dimension)
+	@Nullable
+	public Address.Immutable getExtragalacticAddressFromDimension(ResourceKey<Level> dimension)
 	{
-		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
-		if(solarSystemOptional.isPresent())
-		{
-			SolarSystem.Serializable solarSystem = solarSystemOptional.get();
-			return Optional.of(solarSystem.getExtragalacticAddress());
-		}
+		if(solarSystem != null)
+			return solarSystem.getExtragalacticAddress();
 		
-		return Optional.empty();
+		return null;
 	}
 	
 	public ResourceKey<PointOfOrigin> getPointOfOrigin(ResourceKey<Level> dimension)
 	{
 		
-		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
-		if(solarSystemOptional.isPresent())
-		{
-			SolarSystem.Serializable solarSystem = solarSystemOptional.get();
+		if(solarSystem != null)
 			return solarSystem.getPointOfOrigin();
-		}
 		
 		return PointOfOrigin.defaultPointOfOrigin();
 	}
@@ -593,13 +578,10 @@ public class Universe extends SavedData
 	public ResourceKey<Symbols> getSymbols(ResourceKey<Level> dimension)
 	{
 		
-		Optional<SolarSystem.Serializable> solarSystemOptional = getSolarSystemFromDimension(dimension);
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
-		if(solarSystemOptional.isPresent())
-		{
-			SolarSystem.Serializable solarSystem = solarSystemOptional.get();
+		if(solarSystem != null)
 			return solarSystem.getSymbols();
-		}
 		
 		return Symbols.defaultSymbols();
 	}

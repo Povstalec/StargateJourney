@@ -22,6 +22,8 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
+import javax.annotation.Nullable;
+
 public class SolarSystem
 {
 	public static final ResourceKey<Registry<SolarSystem>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "solar_system"));
@@ -240,12 +242,10 @@ public class SolarSystem
 			this.galacticAddresses.put(galaxy, address);
 		}
 		
-		public Optional<Address.Immutable> getAddressFromGalaxy(Galaxy.Serializable galaxy)
+		@Nullable
+		public Address.Immutable getAddressFromGalaxy(Galaxy.Serializable galaxy)
 		{
-			if(this.galacticAddresses.containsKey(galaxy))
-				return Optional.of(this.galacticAddresses.get(galaxy));
-			
-			return Optional.empty();
+			return this.galacticAddresses.get(galaxy);
 		}
 		
 		/**
@@ -253,7 +253,8 @@ public class SolarSystem
 		 * @param address
 		 * @return
 		 */
-		public Optional<SolarSystem.Serializable> getSolarSystemFromAddress(Address.Immutable address)
+		@Nullable
+		public SolarSystem.Serializable getSolarSystemFromAddress(Address.Immutable address)
 		{
 			List<SolarSystem.Serializable> solarSystems = new ArrayList<SolarSystem.Serializable>();
 
@@ -263,16 +264,15 @@ public class SolarSystem
 
 				if(galaxy.containsSolarSystem(address))
 				{
-					Optional<SolarSystem.Serializable> solarSystemOptional = galaxy.getSolarSystem(address);
-					SolarSystem.Serializable solarSystem = solarSystemOptional.get();
+					SolarSystem.Serializable solarSystem = galaxy.getSolarSystem(address);
 					solarSystems.add(solarSystem);
 				}
 			});
 			
 			if(solarSystems.size() > 0)
-				return Optional.of(solarSystems.get(0));
+				return solarSystems.get(0);
 			
-			return Optional.empty();
+			return null;
 		}
 		
 		public List<Stargate> getStargates()

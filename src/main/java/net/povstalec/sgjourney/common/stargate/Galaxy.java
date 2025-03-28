@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.stargate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
@@ -20,6 +19,8 @@ import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.GalaxyInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
+
+import javax.annotation.Nullable;
 
 public class Galaxy
 {
@@ -136,12 +137,10 @@ public class Galaxy
 			return this.solarSystems.containsKey(address);
 		}
 		
-		public Optional<SolarSystem.Serializable> getSolarSystem(Address.Immutable address)
+		@Nullable
+		public SolarSystem.Serializable getSolarSystem(Address.Immutable address)
 		{
-			if(!containsSolarSystem(address))
-				return Optional.empty();
-			
-			return Optional.of(this.solarSystems.get(address));
+			return this.solarSystems.get(address);
 		}
 		
 		public void addSolarSystem(Address.Immutable address, SolarSystem.Serializable solarSystem)
@@ -156,12 +155,13 @@ public class Galaxy
 				this.solarSystems.remove(address);
 		}
 		
-		public Optional<SolarSystem.Serializable> getRandomSolarSystem(long seed)
+		@Nullable
+		public SolarSystem.Serializable getRandomSolarSystem(long seed)
 		{
 			int size = this.solarSystems.size();
 			
 			if(size < 1)
-				return Optional.empty();
+				return null;
 			
 			Random random = new Random(seed);
 			
@@ -169,7 +169,7 @@ public class Galaxy
 			
 			SolarSystem.Serializable randomSolarSystem = (SolarSystem.Serializable) this.solarSystems.entrySet().stream().toArray()[randomValue];
 			
-			return Optional.of(randomSolarSystem);
+			return randomSolarSystem;
 		}
 		
 		public void addPointOfOrigin(ResourceKey<PointOfOrigin> pointOfOrigin)

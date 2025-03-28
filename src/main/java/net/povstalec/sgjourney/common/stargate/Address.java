@@ -164,12 +164,12 @@ public final class Address
 	
 	public Address fromDimensionAndGalaxy(MinecraftServer server, ResourceKey<Level> dimension, Galaxy.Serializable galaxy)
 	{
-		Optional<Address.Immutable> address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
+		Address.Immutable address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
 		
-		if(address.isPresent())
+		if(address != null)
 		{
 			//TODO Would be nice to use copy here
-			fromArray(address.get().toArray());
+			fromArray(address.toArray());
 			this.dimension = dimension;
 		}
 		
@@ -178,10 +178,10 @@ public final class Address
 	
 	public Address fromDimension(MinecraftServer server, ResourceKey<Level> dimension)
 	{
-		Optional<Galaxy.Serializable> galaxy = Universe.get(server).getGalaxyFromDimension(dimension);
+		Galaxy.Serializable galaxy = Universe.get(server).getGalaxyFromDimension(dimension);
 		
-		if(galaxy.isPresent())
-			fromDimensionAndGalaxy(server, dimension, galaxy.get());
+		if(galaxy != null)
+			fromDimensionAndGalaxy(server, dimension, galaxy);
 		
 		return this;
 	}
