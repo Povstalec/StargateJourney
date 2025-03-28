@@ -31,9 +31,9 @@ public abstract class StargateStructure extends SGJourneyStructure
     
     public StargateStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
 							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
-							 Optional<StargateModifiers> stargateModifiers)
+							 Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers)
     {
-    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter);
+    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates);
 		
 		this.stargateModifiers = stargateModifiers.orElse(null);
     }

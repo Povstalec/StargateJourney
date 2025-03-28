@@ -1,0 +1,13 @@
+{
+	"values":
+	[
+		"#sgjourney:buried_stargate",
+		"#sgjourney:stargate_pedestal",
+		"#sgjourney:stargate_temple",
+		"#sgjourney:stargate_outpost",
+
+		"sgjourney:stargate/pegasus/pegasus_stargate",
+
+		"sgjourney:stargate/universe/destiny"
+	]
+}

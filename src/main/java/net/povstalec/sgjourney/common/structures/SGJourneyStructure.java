@@ -4,11 +4,13 @@ import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -20,6 +22,9 @@ import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
+
+import javax.annotation.Nullable;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
 public abstract class SGJourneyStructure extends Structure
@@ -30,14 +35,12 @@ public abstract class SGJourneyStructure extends Structure
     protected final HeightProvider startHeight;
     protected final Optional<Heightmap.Types> projectStartToHeightmap;
     protected final int maxDistanceFromCenter;
+    @Nullable
+    protected Boolean commonStargates; // Decides whether this Structure should generate while Common Stargate Generation config setting is set to true of false
 
-    public SGJourneyStructure(Structure.StructureSettings config,
-                         Holder<StructureTemplatePool> startPool,
-                         Optional<ResourceLocation> startJigsawName,
-                         int size,
-                         HeightProvider startHeight,
-                         Optional<Heightmap.Types> projectStartToHeightmap,
-                         int maxDistanceFromCenter)
+    public SGJourneyStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+                              int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
+                              Optional<Boolean> commonStargates)
     {
         super(config);
         this.startPool = startPool;
@@ -46,6 +49,20 @@ public abstract class SGJourneyStructure extends Structure
         this.startHeight = startHeight;
         this.projectStartToHeightmap = projectStartToHeightmap;
         this.maxDistanceFromCenter = maxDistanceFromCenter;
+        
+        this.commonStargates = commonStargates.orElse(null);
+    }
+    
+    @Override
+    public HolderSet<Biome> biomes()
+    {
+        if(commonStargates == null)
+            return super.biomes();
+        
+        if(commonStargates != CommonGenerationConfig.common_stargate_generation.get())
+            return HolderSet.direct();
+        
+        return super.biomes();
     }
     
     protected boolean extraSpawningChecks(Structure.GenerationContext context)

@@ -33,5 +33,6 @@
 	{
 		"display_id": true,
 		"upgraded": true
-	}
+	},
+	"common_stargates": true
 }

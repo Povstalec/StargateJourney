@@ -10,6 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -33,29 +34,33 @@ public class CommonStargate extends StargateStructure
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
                     Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+					Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates)),
                     StargateStructure.StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers))
             ).apply(instance, CommonStargate::new)).codec();
 
     public CommonStargate(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
                           int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
-                          Optional<StargateModifiers> stargateModifiers)
+						  Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers)
     {
-        super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, stargateModifiers);
+        super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates, stargateModifiers);
     }
 	
 	@Override
-	public HolderSet<Biome> biomes()
-	{
-		if(!CommonGenerationConfig.common_stargate_generation.get())
-			return HolderSet.direct();
-		
-		return super.biomes();
-	}
-    
-    @Override
 	protected boolean extraSpawningChecks(Structure.GenerationContext context)
 	{
-    	return true;
+		// Grabs the chunk position we are at
+		ChunkPos chunkpos = context.chunkPos();
+		
+		int landHeight = context.chunkGenerator().getFirstOccupiedHeight(
+				chunkpos.getMinBlockX(),
+				chunkpos.getMinBlockZ(),
+				Heightmap.Types.WORLD_SURFACE,
+				context.heightAccessor(),
+				context.randomState());
+		
+		NoiseColumn columnOfBlocks = context.chunkGenerator().getBaseColumn(chunkpos.getMinBlockX(), chunkpos.getMinBlockZ(), context.heightAccessor(), context.randomState());
+		
+		return !columnOfBlocks.getBlock(landHeight).isAir();
 	}
 
     @Override

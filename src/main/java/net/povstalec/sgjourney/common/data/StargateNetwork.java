@@ -489,7 +489,7 @@ public final class StargateNetwork extends SavedData
 		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
         int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
 		//Nearest Structure that potentially has a Stargate
-		BlockPos blockpos = ((ServerLevel) level).findNearestMapStructure(TagInit.Structures.HAS_STARGATE, new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
+		BlockPos blockpos = ((ServerLevel) level).findNearestMapStructure(TagInit.Structures.NETWORK_STARGATE, new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
 		if(blockpos == null)
 		{
 			StargateJourney.LOGGER.info("Stargate Structure not found");
