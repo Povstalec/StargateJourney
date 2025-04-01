@@ -276,7 +276,7 @@ public final class StargateNetwork extends SavedData
 		
 		// Will reset the Stargate if something's wrong
 		if(!dialedStargate.checkStargateEntity(server))
-			return dialingStargate.resetStargate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
+			return dialingStargate.resetStargate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE, true);
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
 				addressType == Address.Type.ADDRESS_8_CHEVRON &&

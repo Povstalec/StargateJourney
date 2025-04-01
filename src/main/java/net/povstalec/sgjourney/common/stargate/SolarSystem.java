@@ -129,6 +129,8 @@ public class SolarSystem
 	 */
 	public static class Serializable
 	{
+		public static final String PRIMARY_STARGATE = "primary_stargate";
+		
 		public static final String SOLAR_SYSTEM_KEY = "SolarSystemKey";
 		
 		public static final String SYSTEMATIC_NAME = "SystematicName";
@@ -154,6 +156,11 @@ public class SolarSystem
 		
 		private HashMap<Galaxy.Serializable, Address.Immutable> galacticAddresses = new HashMap<Galaxy.Serializable, Address.Immutable>();
 		private List<Stargate> stargates = new ArrayList<Stargate>();
+		
+		@Nullable
+		private Address.Immutable primaryAddress = new Address.Immutable(new int[] {1, 2, 3, 4, 5, 6, 7, 8});
+		@Nullable
+		private Stargate primaryStargate = null;
 		
 		public Serializable(Address.Immutable extragalacticAddress, ResourceKey<SolarSystem> solarSystemKey, SolarSystem solarSystem)
 		{
@@ -288,6 +295,9 @@ public class SolarSystem
 		 */
 		public void addStargate(Stargate addedStargate)
 		{
+			if(this.primaryAddress != null && this.primaryStargate == null && this.primaryAddress.equals(addedStargate.get9ChevronAddress()))
+				this.primaryStargate = addedStargate;
+			
 			if(!this.stargates.contains(addedStargate))
 			{
 				int i = 0;
@@ -320,8 +330,51 @@ public class SolarSystem
 		
 		public void removeStargate(Stargate stargate)
 		{
+			if(stargate == this.primaryStargate)
+				this.primaryStargate = null;
+			
 			if(this.stargates.contains(stargate))
 				this.stargates.remove(stargate);
+		}
+		
+		@Nullable
+		private Stargate findStargate(Address.Immutable primaryAddress)
+		{
+			for(Stargate stargate : this.stargates)
+			{
+				if(primaryAddress.equals(stargate.get9ChevronAddress()))
+					return stargate;
+			}
+			
+			return null;
+		}
+		
+		@Nullable
+		public boolean setPrimaryStargate(@Nullable Address.Immutable primaryAddress)
+		{
+			if(primaryAddress != null && primaryAddress.getType() != Address.Type.ADDRESS_9_CHEVRON)
+				return false;
+			
+			if(primaryAddress == null)
+				this.primaryStargate = null;
+			else if(primaryAddress.equals(this.primaryAddress))
+				return false;
+			
+			this.primaryStargate = findStargate(primaryAddress);
+			this.primaryAddress = primaryAddress;
+			return true;
+		}
+		
+		@Nullable
+		public Address.Immutable primaryAddress()
+		{
+			return this.primaryAddress;
+		}
+		
+		@Nullable
+		public Stargate primaryStargate()
+		{
+			return this.primaryStargate;
 		}
 		
 		public Optional<Stargate> getRandomStargate(long seed)
@@ -367,19 +420,23 @@ public class SolarSystem
 			// Extragalactic Address may be randomized, so it needs to always be saved
 			solarSystemTag.putIntArray(EXTRAGALACTIC_ADDRESS, this.extragalacticAddress.toArray());
 			
+			if(this.primaryAddress != null)
+				solarSystemTag.putIntArray(PRIMARY_STARGATE, this.primaryAddress.toArray());
+			
 			return solarSystemTag;
 		}
 		
 		public static SolarSystem.Serializable deserialize(MinecraftServer server, Registry<SolarSystem> solarSystemRegistry, CompoundTag solarSystemTag)
 		{
+			SolarSystem.Serializable solarSystem;
+			
 			if(solarSystemTag.contains(SOLAR_SYSTEM_KEY))
 			{
 				ResourceKey<SolarSystem> solarSystemKey = Conversion.stringToSolarSystemKey(solarSystemTag.getString(SOLAR_SYSTEM_KEY));
 				
-				SolarSystem solarSystem = solarSystemRegistry.get(solarSystemKey);
 				Address.Immutable extragalacticAddress = new Address(solarSystemTag.getIntArray(EXTRAGALACTIC_ADDRESS)).immutable();
 				
-				return new SolarSystem.Serializable(extragalacticAddress, solarSystemKey, solarSystem);
+				solarSystem = new SolarSystem.Serializable(extragalacticAddress, solarSystemKey, solarSystemRegistry.get(solarSystemKey));
 			}
 			else
 			{
@@ -396,8 +453,13 @@ public class SolarSystem
 					dimensions.add(Conversion.stringToDimension(dimensionString));
 				});
 				
-				return new SolarSystem.Serializable(translationName, extragalacticAddress, pointOfOrigin, symbols, symbolPrefix, dimensions);
+				solarSystem = new SolarSystem.Serializable(translationName, extragalacticAddress, pointOfOrigin, symbols, symbolPrefix, dimensions);
 			}
+			
+			if(solarSystemTag.contains(PRIMARY_STARGATE, CompoundTag.TAG_INT_ARRAY))
+				solarSystem.setPrimaryStargate(new Address.Immutable(solarSystemTag.getIntArray(PRIMARY_STARGATE)));
+			
+			return solarSystem;
 		}
 	}
 }

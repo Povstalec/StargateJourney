@@ -103,8 +103,7 @@ public class Stargate
 		return this.network;
 	}
 	
-	@Nullable
-	private AbstractStargateEntity cacheStargateEntity(@Nullable AbstractStargateEntity stargate)
+	private AbstractStargateEntity cacheStargateEntity(AbstractStargateEntity stargate)
 	{
 		this.stargate = stargate;
 		this.stargateCached = true;
@@ -120,7 +119,7 @@ public class Stargate
 		if(level != null && level.getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
 			return cacheStargateEntity(stargate);
 		
-		return cacheStargateEntity(null);
+		return null;
 	}
 	
 	@Nullable
@@ -132,28 +131,17 @@ public class Stargate
 		return tryCacheStargateEntity(server);
 	}
 	
-	/*@Nullable
-	public AbstractStargateEntity getStargateEntity()
-	{
-		return this.stargate;
-	}*/
-	
 	public Stargate.Feedback resetStargate(MinecraftServer server, Stargate.Feedback feedback, boolean updateInterfaces)
 	{
 		AbstractStargateEntity stargateEntity = getStargateEntity(server);
 		
+		this.stargate = null;
+		this.stargateCached = false;
+		
 		if(stargateEntity != null)
 			return stargateEntity.resetStargate(feedback, updateInterfaces);
-		
-		return feedback;
-	}
-	
-	public Stargate.Feedback resetStargate(MinecraftServer server, Stargate.Feedback feedback)
-	{
-		AbstractStargateEntity stargateEntity = getStargateEntity(server);
-		
-		if(stargateEntity != null)
-			return stargateEntity.resetStargate(feedback);
+		else
+			StargateJourney.LOGGER.error("Failed to reset Stargate as it does not exist");
 		
 		return feedback;
 	}
