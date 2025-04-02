@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.stargate;
 
+import java.lang.ref.WeakReference;
 import java.util.Optional;
 
 import com.mojang.datafixers.util.Either;
@@ -35,8 +36,7 @@ public class Stargate
 	public static final String NETWORK = "Network";
 	
 	@Nullable
-	private AbstractStargateEntity stargate;
-	private boolean stargateCached = false;
+	private WeakReference<AbstractStargateEntity> stargate;
 	
 	private final Address.Immutable address;
 	private final ResourceKey<Level> dimension;
@@ -105,8 +105,7 @@ public class Stargate
 	
 	private AbstractStargateEntity cacheStargateEntity(AbstractStargateEntity stargate)
 	{
-		this.stargate = stargate;
-		this.stargateCached = true;
+		this.stargate = new WeakReference(stargate);
 		
 		return stargate;
 	}
@@ -125,8 +124,8 @@ public class Stargate
 	@Nullable
 	public AbstractStargateEntity getStargateEntity(MinecraftServer server)
 	{
-		if(this.stargateCached || server == null)
-			return this.stargate;
+		if((this.stargate != null && this.stargate.get() != null) || server == null)
+			return this.stargate.get();
 		
 		return tryCacheStargateEntity(server);
 	}
@@ -136,7 +135,6 @@ public class Stargate
 		AbstractStargateEntity stargateEntity = getStargateEntity(server);
 		
 		this.stargate = null;
-		this.stargateCached = false;
 		
 		if(stargateEntity != null)
 			return stargateEntity.resetStargate(feedback, updateInterfaces);

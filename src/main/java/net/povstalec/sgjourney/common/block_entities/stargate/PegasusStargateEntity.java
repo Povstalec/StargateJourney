@@ -149,7 +149,12 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		}
 		
 		if(addressBuffer.containsSymbol(symbol))
-			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
+		{
+			if(symbol == 0)
+				return resetStargate(Stargate.Feedback.INCOMPLETE_ADDRESS);
+			else
+				return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
+		}
 		
 		if(addressBuffer.getLength() == getAddress().getLength())
 		{
