@@ -8,8 +8,8 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEntity, PegasusStargateVariant>
 {

@@ -26,9 +26,9 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 {

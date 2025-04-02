@@ -10,8 +10,8 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStarga
 import net.povstalec.sgjourney.client.sound.sounds.GenericStargateSound;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class SoundAccess
 {
@@ -91,7 +91,7 @@ public class SoundAccess
     {
     	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
     	{
-    		GenericStargateSound sound = new GenericStargateSound(stargate, getFailSound(stargate, Stargate.Feedback.UNKNOWN_ERROR), 0.5F); //TODO Accept different kinds of errors
+    		GenericStargateSound sound = new GenericStargateSound(stargate, getFailSound(stargate, StargateInfo.Feedback.UNKNOWN_ERROR), 0.5F); //TODO Accept different kinds of errors
     		minecraft.getSoundManager().play(sound);
     	}
     }
@@ -226,7 +226,7 @@ public class SoundAccess
     	return SoundEvent.createVariableRangeEvent(ClientStargateVariants.getRotatingStargateVariant(stargate.defaultVariant(), stargate).rotationSounds().rotationStopSound());
     }
     
-    private static SoundEvent getFailSound(AbstractStargateEntity stargate, Stargate.Feedback stargateFeedback)
+    private static SoundEvent getFailSound(AbstractStargateEntity stargate, StargateInfo.Feedback stargateFeedback)
     {
     	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
 		

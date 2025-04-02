@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.stargate.info;
+package net.povstalec.sgjourney.common.sgjourney.info;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;

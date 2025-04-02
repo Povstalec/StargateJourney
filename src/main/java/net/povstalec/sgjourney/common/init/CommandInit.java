@@ -32,11 +32,11 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Galaxy;
-import net.povstalec.sgjourney.common.stargate.Galaxy.Serializable;
-import net.povstalec.sgjourney.common.stargate.SolarSystem;
-import net.povstalec.sgjourney.common.stargate.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.Galaxy;
+import net.povstalec.sgjourney.common.sgjourney.Galaxy.Serializable;
+import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
+import net.povstalec.sgjourney.common.sgjourney.Transporter;
 
 public class CommandInit
 {

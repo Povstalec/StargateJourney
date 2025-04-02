@@ -1,10 +1,9 @@
-package net.povstalec.sgjourney.common.stargate.info;
+package net.povstalec.sgjourney.common.sgjourney.info;
 
 import net.minecraft.nbt.CompoundTag;
-import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class AddressFilterInfo

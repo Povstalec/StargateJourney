@@ -21,8 +21,8 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.AddressTable;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.AddressTable;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class CartoucheEntity extends BlockEntity implements StructureGenEntity

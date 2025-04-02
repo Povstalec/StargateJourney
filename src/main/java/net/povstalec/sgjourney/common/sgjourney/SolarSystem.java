@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.stargate;
+package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,12 +155,12 @@ public class SolarSystem
 		private final List<ResourceKey<Level>> dimensions;
 		
 		private HashMap<Galaxy.Serializable, Address.Immutable> galacticAddresses = new HashMap<Galaxy.Serializable, Address.Immutable>();
-		private List<Stargate> stargates = new ArrayList<Stargate>();
+		private List<StargateInfo> stargates = new ArrayList<StargateInfo>();
 		
 		@Nullable
 		private Address.Immutable primaryAddress = new Address.Immutable(new int[] {1, 2, 3, 4, 5, 6, 7, 8});
 		@Nullable
-		private Stargate primaryStargate = null;
+		private StargateInfo primaryStargate = null;
 		
 		public Serializable(Address.Immutable extragalacticAddress, ResourceKey<SolarSystem> solarSystemKey, SolarSystem solarSystem)
 		{
@@ -282,7 +282,7 @@ public class SolarSystem
 			return null;
 		}
 		
-		public List<Stargate> getStargates()
+		public List<StargateInfo> getStargates()
 		{
 			return this.stargates;
 		}
@@ -293,7 +293,7 @@ public class SolarSystem
 		 * 2. Stargate Generation
 		 * 3. The amount of times the Stargate was used
 		 */
-		public void addStargate(Stargate addedStargate)
+		public void addStargate(StargateInfo addedStargate)
 		{
 			if(this.primaryAddress != null && this.primaryStargate == null && this.primaryAddress.equals(addedStargate.get9ChevronAddress()))
 				this.primaryStargate = addedStargate;
@@ -303,7 +303,7 @@ public class SolarSystem
 				int i = 0;
 				for(; i < this.stargates.size(); i++)
 				{
-					Stargate existingStargate = this.stargates.get(i);
+					StargateInfo existingStargate = this.stargates.get(i);
 					
 					// If the gate has a DHD and the other one doesn't, end right there
 					if(DHD_PREFERENCE && Boolean.compare(addedStargate.hasDHD(), existingStargate.hasDHD()) > 0)
@@ -328,7 +328,7 @@ public class SolarSystem
 			}
 		}
 		
-		public void removeStargate(Stargate stargate)
+		public void removeStargate(StargateInfo stargate)
 		{
 			if(stargate == this.primaryStargate)
 				this.primaryStargate = null;
@@ -338,9 +338,9 @@ public class SolarSystem
 		}
 		
 		@Nullable
-		private Stargate findStargate(Address.Immutable primaryAddress)
+		private StargateInfo findStargate(Address.Immutable primaryAddress)
 		{
-			for(Stargate stargate : this.stargates)
+			for(StargateInfo stargate : this.stargates)
 			{
 				if(primaryAddress.equals(stargate.get9ChevronAddress()))
 					return stargate;
@@ -372,12 +372,12 @@ public class SolarSystem
 		}
 		
 		@Nullable
-		public Stargate primaryStargate()
+		public StargateInfo primaryStargate()
 		{
 			return this.primaryStargate;
 		}
 		
-		public Optional<Stargate> getRandomStargate(long seed)
+		public Optional<StargateInfo> getRandomStargate(long seed)
 		{
 			int size = this.stargates.size();
 			
@@ -388,7 +388,7 @@ public class SolarSystem
 			
 			int randomValue = random.nextInt(0, size);
 			
-			Stargate randomStargate = this.stargates.get(randomValue);
+			StargateInfo randomStargate = this.stargates.get(randomValue);
 			
 			return Optional.of(randomStargate);
 		}

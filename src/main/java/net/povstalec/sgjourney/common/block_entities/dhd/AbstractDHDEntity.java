@@ -20,7 +20,7 @@ import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
-import net.povstalec.sgjourney.common.stargate.info.SymbolInfo;
+import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -46,7 +46,7 @@ import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

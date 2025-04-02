@@ -1,0 +1,230 @@
+package net.povstalec.sgjourney.common.sgjourney.stargate;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+
+import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
+
+public class SGJourneyStargate implements Stargate
+{
+	private Address.Immutable address;
+	
+	@Nullable
+	private WeakReference<AbstractStargateEntity> stargate;
+	private ResourceKey<Level> dimension;
+	private BlockPos blockPos;
+	
+	// Preferred Stargate decision
+	private boolean hasDHD;
+	private StargateInfo.Gen generation;
+	private int timesOpened;
+	private int network;
+	
+	public SGJourneyStargate() {}
+	
+	public SGJourneyStargate(AbstractStargateEntity stargate)
+	{
+		this.address = stargate.get9ChevronAddress().immutable();
+		
+		this.dimension = stargate.getLevel().dimension();
+		this.blockPos = stargate.getBlockPos();
+		
+		this.hasDHD = stargate.dhdInfo().hasDHD();
+		this.generation = stargate.getGeneration();
+		this.timesOpened = stargate.getTimesOpened();
+		this.network = stargate.getNetwork();
+		
+		cacheStargateEntity(stargate);
+	}
+	
+	@Override
+	public Address.Immutable get9ChevronAddress()
+	{
+		return this.address;
+	}
+	
+	
+	
+	public ResourceKey<Level> getDimension()
+	{
+		return this.dimension;
+	}
+	
+	public BlockPos getBlockPos()
+	{
+		return this.blockPos;
+	}
+	
+	
+	
+	@Override
+	public boolean hasDHD()
+	{
+		return this.hasDHD;
+	}
+	
+	@Override
+	public StargateInfo.Gen getGeneration()
+	{
+		return this.generation;
+	}
+	
+	@Override
+	public int getTimesOpened()
+	{
+		return this.timesOpened;
+	}
+	
+	@Override
+	public int getNetwork()
+	{
+		return this.network;
+	}
+	
+	private AbstractStargateEntity cacheStargateEntity(AbstractStargateEntity stargate)
+	{
+		this.stargate = new WeakReference(stargate);
+		
+		return stargate;
+	}
+	
+	@Nullable
+	private AbstractStargateEntity tryCacheStargateEntity(MinecraftServer server)
+	{
+		ServerLevel level = server.getLevel(dimension);
+		
+		if(level != null && level.getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
+			return cacheStargateEntity(stargate);
+		
+		return null;
+	}
+	
+	@Nullable
+	public AbstractStargateEntity getStargateEntity(MinecraftServer server)
+	{
+		if((this.stargate != null && this.stargate.get() != null) || server == null)
+			return this.stargate.get();
+		
+		return tryCacheStargateEntity(server);
+	}
+	
+	
+	
+	@Override
+	public StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback, boolean updateInterfaces)
+	{
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
+		
+		this.stargate = null;
+		
+		if(stargateEntity != null)
+			return stargateEntity.resetStargate(feedback, updateInterfaces);
+		else
+			StargateJourney.LOGGER.error("Failed to reset Stargate as it does not exist");
+		
+		return feedback;
+	}
+	
+	@Override
+	public boolean isConnected(MinecraftServer server)
+	{
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity != null)
+			return stargateEntity.isConnected();
+		
+		return false;
+	}
+	
+	@Override
+	public boolean isObstructed(MinecraftServer server)
+	{
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity != null)
+			return stargateEntity.isConnected();
+		
+		return false;
+	}
+	
+	@Override
+	public boolean canExtractEnergy(MinecraftServer server, long energy)
+	{
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity != null)
+			return stargateEntity.canExtractEnergy(energy);
+		
+		return false;
+	}
+	
+	@Override
+	public void depleteEnergy(MinecraftServer server, long energy, boolean simulate)
+	{
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity != null)
+			stargateEntity.depleteEnergy(energy, simulate);
+	}
+	
+	@Override
+	public CompoundTag serializeNBT()
+	{
+		CompoundTag stargateTag = new CompoundTag();
+		ResourceKey<Level> level = this.getDimension();
+		BlockPos pos = this.getBlockPos();
+		
+		stargateTag.putString(DIMENSION, level.location().toString());
+		stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+		
+		stargateTag.putBoolean(HAS_DHD, hasDHD);
+		stargateTag.putInt(GENERATION, generation.getGen());
+		stargateTag.putInt(TIMES_OPENED, timesOpened);
+		stargateTag.putInt(NETWORK, network);
+		
+		return stargateTag;
+	}
+	
+	@Override
+	public void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag)
+	{
+		this.address = address;
+		
+		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+		this.blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
+		
+		if(!tag.contains(HAS_DHD) || !tag.contains(GENERATION) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORK))
+		{
+			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
+			{
+				this.hasDHD = stargate.dhdInfo().hasDHD();
+				this.generation = stargate.getGeneration();
+				this.timesOpened = stargate.getTimesOpened();
+				this.network = stargate.getNetwork();
+				
+				cacheStargateEntity(stargate);
+			}
+			else
+				StargateJourney.LOGGER.info("Failed to deserialize Stargate " + address.toString());
+		}
+		else
+		{
+			this.hasDHD = tag.getBoolean(HAS_DHD);
+			this.generation = StargateInfo.Gen.intToGen(tag.getInt(GENERATION));
+			this.timesOpened = tag.getInt(TIMES_OPENED);
+			this.network = tag.getInt(NETWORK);
+			
+			this.stargate = null;
+		}
+	}
+}

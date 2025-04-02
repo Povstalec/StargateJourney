@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.stargate;
+package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,13 +11,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 
 import javax.annotation.Nullable;
 

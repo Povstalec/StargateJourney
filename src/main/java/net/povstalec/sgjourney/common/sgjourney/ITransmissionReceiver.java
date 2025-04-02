@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.stargate;
+package net.povstalec.sgjourney.common.sgjourney;
 
 public interface ITransmissionReceiver
 {

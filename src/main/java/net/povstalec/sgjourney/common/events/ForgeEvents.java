@@ -64,7 +64,7 @@ import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
-import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
+import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
 {

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.stargate.info;
+package net.povstalec.sgjourney.common.sgjourney.info;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -6,11 +6,10 @@ import net.minecraft.core.Vec3i;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 public class DHDInfo
 {
@@ -106,7 +105,7 @@ public class DHDInfo
 					this.stargate.getAddress() : new Address(), this.stargate.isConnected());
 	}
 	
-	public void sendDHDFeedback(Stargate.Feedback feedback)
+	public void sendDHDFeedback(StargateInfo.Feedback feedback)
 	{
 		if(hasDHD() && feedback.isError())
 			this.dhd.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), DHD_INFO_DISTANCE);

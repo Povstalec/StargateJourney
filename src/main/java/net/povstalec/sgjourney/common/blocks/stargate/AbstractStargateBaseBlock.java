@@ -42,9 +42,9 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
@@ -193,7 +193,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     		BlockEntity blockentity = level.getBlockEntity(pos);
     		if(blockentity instanceof AbstractStargateEntity stargate)
     		{
-    			stargate.bypassDisconnectStargate(Stargate.Feedback.STARGATE_DESTROYED, false);
+    			stargate.bypassDisconnectStargate(StargateInfo.Feedback.STARGATE_DESTROYED, false);
     			stargate.dhdInfo().unsetDHD(true);
     			stargate.removeStargateFromNetwork();
     		}

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.stargate;
+package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 

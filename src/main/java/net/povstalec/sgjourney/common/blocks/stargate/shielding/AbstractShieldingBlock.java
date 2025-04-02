@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.blocks.stargate.shielding;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,15 +33,12 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
-import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
-import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
 
 public abstract class AbstractShieldingBlock extends Block implements SimpleWaterloggedBlock
 {

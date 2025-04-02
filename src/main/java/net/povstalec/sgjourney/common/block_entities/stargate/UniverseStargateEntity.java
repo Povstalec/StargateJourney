@@ -1,8 +1,9 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Symbols;
-import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -19,9 +20,8 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 
 public class UniverseStargateEntity extends RotatingStargateEntity
 {
@@ -48,7 +48,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.UNIVERSE_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state,
-				TOTAL_SYMBOLS, Stargate.Gen.GEN_1, 1, MAX_ROTATION);
+				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_1, 1, MAX_ROTATION);
 		this.setOpenSoundLead(8);
 		
 		this.angle = this.maxRotation / 54;
@@ -90,41 +90,41 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback dhdEngageSymbol(int symbol)
+	public StargateInfo.Feedback dhdEngageSymbol(int symbol)
 	{
 		if(isSymbolOutOfBounds(symbol))
-			return setRecentFeedback(Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS);
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS);
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() > 0)
-			resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+			resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 		
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 			else
-				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
+				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
 		}
 		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
-			return setRecentFeedback(Stargate.Feedback.INCOMPLETE_ADDRESS);
+			return setRecentFeedback(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
 		
 		if(addressBuffer.containsSymbol(symbol))
 		{
 			if(symbol == 0)
-				return resetStargate(Stargate.Feedback.INCOMPLETE_ADDRESS);
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
 			else
-				return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
+				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
 		}
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() == 0)
 			startSound();
 		
 		addressBuffer.addSymbol(symbol);
-		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
+		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
 	}
 	
 	@Override
-	public Stargate.Feedback engageSymbol(int symbol)
+	public StargateInfo.Feedback engageSymbol(int symbol)
 	{
 		if(!addressBuffer.containsSymbol(symbol))
 			addressBuffer.addSymbol(symbol);
@@ -133,7 +133,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
+	public StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;
 		waitTicks++;
@@ -225,7 +225,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback resetStargate(Stargate.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback, boolean updateInterfaces)
 	{
 		super.resetStargate(feedback, updateInterfaces);
 		
@@ -267,7 +267,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(int openTime, Stargate.ChevronLockSpeed chevronLockSpeed)
+	public void doWhileDialed(int openTime, StargateInfo.ChevronLockSpeed chevronLockSpeed)
 	{
 		if(this.level.isClientSide())
 			return;

@@ -23,10 +23,9 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.TagInit;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.SolarSystem;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 
 public final class StargateNetwork extends SavedData
 {
@@ -92,7 +91,7 @@ public final class StargateNetwork extends SavedData
 		{
 			Entry<UUID, StargateConnection> nextConnection = iterator.next();
 			StargateConnection connection = nextConnection.getValue();
-			connection.terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK);
+			connection.terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
 		}
 		StargateJourney.LOGGER.info("Connections terminated");
 		
@@ -122,11 +121,11 @@ public final class StargateNetwork extends SavedData
 	
 	public final void addStargates(MinecraftServer server)
 	{
-		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
+		HashMap<Address.Immutable, StargateInfo> stargates = BlockEntityList.get(server).getStargates();
 		
 		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
-			Stargate mapStargate = stargateInfo.getValue();
+			StargateInfo mapStargate = stargateInfo.getValue();
 			
 			if(mapStargate != null)
 			{
@@ -151,12 +150,12 @@ public final class StargateNetwork extends SavedData
 	
 	private final void resetStargates(MinecraftServer server, boolean updateInterfaces)
 	{
-		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
+		HashMap<Address.Immutable, StargateInfo> stargates = BlockEntityList.get(server).getStargates();
 		
 		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
 			Address.Immutable address = stargateInfo.getKey();
-			Stargate mapStargate = stargateInfo.getValue();
+			StargateInfo mapStargate = stargateInfo.getValue();
 			
 			if(mapStargate != null)
 			{
@@ -175,7 +174,7 @@ public final class StargateNetwork extends SavedData
 						if(!address.equals(stargate.get9ChevronAddress().immutable()))
 							removeStargate(server.getLevel(dimension), address);
 						
-						stargate.resetStargate(Stargate.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
+						stargate.resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
 						
 						addStargate(stargate);
 						stargate.updateStargate(updateInterfaces);//TODO Probably should look at this
@@ -194,11 +193,11 @@ public final class StargateNetwork extends SavedData
 	
 	public final void addStargate(AbstractStargateEntity stargateEntity)
 	{
-		Optional<Stargate> stargateOptional = BlockEntityList.get(server).addStargate(stargateEntity);
+		Optional<StargateInfo> stargateOptional = BlockEntityList.get(server).addStargate(stargateEntity);
 		
 		if(stargateOptional.isPresent())
 		{
-			Stargate stargate = stargateOptional.get();
+			StargateInfo stargate = stargateOptional.get();
 			Universe.get(server).addStargateToDimension(stargate.getDimension(), stargate);
 		}
 		
@@ -210,7 +209,7 @@ public final class StargateNetwork extends SavedData
 		if(address == null)
 			return;
 		
-		Stargate stargate = getStargate(address);
+		StargateInfo stargate = getStargate(address);
 		
 		if(stargate != null)
 			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate);
@@ -223,7 +222,7 @@ public final class StargateNetwork extends SavedData
 	
 	public final void updateStargate(ServerLevel level, AbstractStargateEntity stargateEntity)
 	{
-		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress().immutable());
+		StargateInfo stargate = getStargate(stargateEntity.get9ChevronAddress().immutable());
 		
 		if(stargate != null)
 		{
@@ -234,7 +233,7 @@ public final class StargateNetwork extends SavedData
 	}
 	
 	@Nullable
-	public final Stargate getStargate(Address.Immutable address)
+	public final StargateInfo getStargate(Address.Immutable address)
 	{
 		return BlockEntityList.get(server).getStargate(address);
 	}
@@ -266,40 +265,40 @@ public final class StargateNetwork extends SavedData
 		return 0;
 	}
 	
-	public final Stargate.Feedback createConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
+	public final StargateInfo.Feedback createConnection(MinecraftServer server, StargateInfo dialingStargate, StargateInfo dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		StargateConnection.Type connectionType = StargateConnection.getType(server, dialingStargate, dialedStargate);
 		
 		// Event for Stargate connecting, can be cancelled - !!!NOTE That it does NOT reset the Stargate or actually change its feedback when cancelled!!!
 		if(SGJourneyEvents.onStargateConnect(server, dialingStargate, dialedStargate, connectionType, addressType, doKawoosh))
-			return Stargate.Feedback.NONE;
+			return StargateInfo.Feedback.NONE;
 		
 		// Will reset the Stargate if something's wrong
 		if(!dialedStargate.checkStargateEntity(server))
-			return dialingStargate.resetStargate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE, true);
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
 				addressType == Address.Type.ADDRESS_8_CHEVRON &&
 				connectionType == StargateConnection.Type.INTERSTELLAR)
-			return dialingStargate.resetStargate(server, Stargate.Feedback.INVALID_8_CHEVRON_ADDRESS, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_8_CHEVRON_ADDRESS, true);
 		
 		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == StargateConnection.Type.SYSTEM_WIDE)
-			return dialingStargate.resetStargate(server, Stargate.Feedback.INVALID_SYSTEM_WIDE_CONNECTION, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_SYSTEM_WIDE_CONNECTION, true);
 		
 		if(dialingStargate.equals(dialedStargate))
-			return dialingStargate.resetStargate(server, Stargate.Feedback.SELF_DIAL, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SELF_DIAL, true);
 
 		if(dialedStargate.isConnected(server))
-			return dialingStargate.resetStargate(server, Stargate.Feedback.ALREADY_CONNECTED, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.ALREADY_CONNECTED, true);
 		else if(dialedStargate.isObstructed(server))
-			return dialingStargate.resetStargate(server, Stargate.Feedback.TARGET_OBSTRUCTED, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_OBSTRUCTED, true);
 		
 		if(requireEnergy)
 		{
 			if(dialingStargate.canExtractEnergy(server, connectionType.getEstablishingPowerCost()))
 				dialingStargate.depleteEnergy(server, connectionType.getEstablishingPowerCost(), false);
 			else
-				return dialingStargate.resetStargate(server, Stargate.Feedback.NOT_ENOUGH_POWER, true);
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NOT_ENOUGH_POWER, true);
 		}
 		
 		//TODO Make better call forwarding
@@ -343,15 +342,15 @@ public final class StargateNetwork extends SavedData
 			switch(connectionType)
 			{
 				case SYSTEM_WIDE:
-					return Stargate.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
+					return StargateInfo.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
 				case INTERSTELLAR:
-					return Stargate.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR;
+					return StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR;
 				default:
-					return Stargate.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC;
+					return StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC;
 			}
 		}
 		
-		return Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
+		return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
 	}
 	
 	public final boolean addConnection(StargateConnection connection)
@@ -376,7 +375,7 @@ public final class StargateNetwork extends SavedData
 		return false;
 	}
 	
-	public final void terminateConnection(UUID uuid, Stargate.Feedback feedback)
+	public final void terminateConnection(UUID uuid, StargateInfo.Feedback feedback)
 	{
 		if(!hasConnection(uuid))
 			return;
@@ -388,7 +387,7 @@ public final class StargateNetwork extends SavedData
 		connection.terminate(server, feedback);
 	}
 	
-	public final void removeConnection(UUID uuid, Stargate.Feedback feedback)
+	public final void removeConnection(UUID uuid, StargateInfo.Feedback feedback)
 	{
 		if(hasConnection(uuid))
 		{

@@ -1,18 +1,14 @@
-package net.povstalec.sgjourney.common.stargate;
+package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -22,7 +18,6 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.misc.Conversion;
 
 import javax.annotation.Nullable;
 
@@ -67,8 +62,8 @@ public final class StargateConnection
 	
 	protected final UUID uuid;
 	protected final StargateConnection.Type connectionType;
-	protected Stargate dialingStargate;
-	protected Stargate dialedStargate; // Dialed Stargates can be changed mid connection
+	protected StargateInfo dialingStargate;
+	protected StargateInfo dialedStargate; // Dialed Stargates can be changed mid connection
 	protected boolean doKawoosh;
 	
 	protected boolean used;
@@ -76,8 +71,8 @@ public final class StargateConnection
 	protected int connectionTime;
 	protected int timeSinceLastTraveler;
 	
-	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate,
-			boolean used, int openTime, int connectionTime, int timeSinceLastTraveler, boolean doKawoosh)
+	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, StargateInfo dialingStargate, StargateInfo dialedStargate,
+							   boolean used, int openTime, int connectionTime, int timeSinceLastTraveler, boolean doKawoosh)
 	{
 		this.uuid = uuid;
 		this.connectionType = connectionType;
@@ -174,7 +169,7 @@ public final class StargateConnection
 		System.out.println(" | Connection Time: " + connectionTime);
 	}
 	
-	public static final StargateConnection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
+	public static final StargateConnection.Type getType(MinecraftServer server, StargateInfo dialingStargate, StargateInfo dialedStargate)
 	{
 		SolarSystem.Serializable dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getDimension());
 		SolarSystem.Serializable dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension());
@@ -206,19 +201,19 @@ public final class StargateConnection
 		return StargateConnection.Type.INTERGALACTIC;
 	}
 	
-	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate, boolean doKawoosh)
+	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, StargateInfo dialingStargate, StargateInfo dialedStargate, boolean doKawoosh)
 	{
 		this(uuid, connectionType, dialingStargate, dialedStargate, false, 0, 0, 0, doKawoosh);
 	}
 
 	//TODO Replace these parameters with Stargate object
-	public static final StargateConnection create(MinecraftServer server, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate, boolean doKawoosh)
+	public static final StargateConnection create(MinecraftServer server, StargateConnection.Type connectionType, StargateInfo dialingStargate, StargateInfo dialedStargate, boolean doKawoosh)
 	{
 		UUID uuid = UUID.randomUUID();
 		
 		if(dialingStargate != null && dialedStargate != null)
 		{
-			dialedStargate.getStargateEntity(server).resetStargate(Stargate.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION);
+			dialedStargate.getStargateEntity(server).resetStargate(StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION);
 			
 			dialingStargate.getStargateEntity(server).setKawooshTickCount(0);
 			dialingStargate.getStargateEntity(server).updateClient();
@@ -233,7 +228,7 @@ public final class StargateConnection
 		return null;
 	}
 	
-	public final void terminate(MinecraftServer server, Stargate.Feedback feedback)
+	public final void terminate(MinecraftServer server, StargateInfo.Feedback feedback)
 	{
 		if(this.dialingStargate != null)
 		{
@@ -257,7 +252,7 @@ public final class StargateConnection
 		newDialedStargate.connectStargate(this.uuid, false);
 	}*/
 	
-	public final boolean isStargateValid(MinecraftServer server, Stargate stargate)
+	public final boolean isStargateValid(MinecraftServer server, StargateInfo stargate)
 	{
 		if(stargate == null || stargate.getStargateEntity(server) == null)
 		{
@@ -287,7 +282,7 @@ public final class StargateConnection
 	{
 		if(!isStargateValid(server, this.dialingStargate) || !isStargateValid(server, this.dialedStargate))
 		{
-			terminate(server, Stargate.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
+			terminate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 			return;
 		}
 		
@@ -295,7 +290,7 @@ public final class StargateConnection
 		if(this.openTime == 0)
 			this.dialedStargate.getStargateEntity(server).updateInterfaceBlocks(EVENT_INCOMING_CONNECTION);
 		
-		Stargate.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? Stargate.ChevronLockSpeed.FAST : this.dialedStargate.getStargateEntity(server).getChevronLockSpeed();
+		StargateInfo.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? StargateInfo.ChevronLockSpeed.FAST : this.dialedStargate.getStargateEntity(server).getChevronLockSpeed();
 		int chevronWaitTicks = chevronLockSpeed.getChevronWaitTicks();
 		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
 		int maxKawooshTicks = kawooshStartTicks + KAWOOSH_TICKS;
@@ -381,7 +376,7 @@ public final class StargateConnection
 		
 		if(this.connectionTime >= maxOpenTime && !energyBypassEnabled)
 		{
-			terminate(server, Stargate.Feedback.EXCEEDED_CONNECTION_TIME);
+			terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME);
 			return;
 		}
 		
@@ -393,7 +388,7 @@ public final class StargateConnection
 			
 			if(!this.dialingStargate.canExtractEnergy(server, energyDraw) && !this.dialedStargate.canExtractEnergy(server, energyDraw))
 			{
-				terminate(server, Stargate.Feedback.RAN_OUT_OF_POWER);
+				terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER);
 				return;
 			}
 			
@@ -406,15 +401,15 @@ public final class StargateConnection
 		if(this.used)
 			this.timeSinceLastTraveler++;
 		
-		doWormhole(this.dialingStargate.getStargateEntity(server).getWormhole(), this.dialingStargate.getStargateEntity(server), this.dialedStargate.getStargateEntity(server), Stargate.WormholeTravel.ENABLED);
+		doWormhole(this.dialingStargate.getStargateEntity(server).getWormhole(), this.dialingStargate.getStargateEntity(server), this.dialedStargate.getStargateEntity(server), StargateInfo.WormholeTravel.ENABLED);
 		doWormhole(this.dialedStargate.getStargateEntity(server).getWormhole(), this.dialedStargate.getStargateEntity(server), this.dialingStargate.getStargateEntity(server), CommonStargateConfig.two_way_wormholes.get());
 		
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
 		if(this.dialingStargate.getStargateEntity(server).dhdInfo().autoclose() > 0 && this.timeSinceLastTraveler >= this.dialingStargate.getStargateEntity(server).dhdInfo().autoclose() * 20)
-			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
+			terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 		
 		if(this.dialedStargate.getStargateEntity(server).dhdInfo().autoclose() > 0 && this.timeSinceLastTraveler >= this.dialedStargate.getStargateEntity(server).dhdInfo().autoclose() * 20)
-			terminate(server, Stargate.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
+			terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 	}
 	
 	private final void playStargateOpenSound(AbstractStargateEntity stargate, int kawooshStartTicks, int ticks, boolean incoming)
@@ -434,7 +429,7 @@ public final class StargateConnection
 			this.connectionTime++;
 	}
 	
-	private final void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel wormholeTravel)
+	private final void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, StargateInfo.WormholeTravel wormholeTravel)
 	{
 		if(initialStargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
 			return;
@@ -494,13 +489,13 @@ public final class StargateConnection
 	}
 	
 	@Nullable
-	public Stargate getDialingStargate()
+	public StargateInfo getDialingStargate()
 	{
 		return dialingStargate;
 	}
 	
 	@Nullable
-	public Stargate getDialedStargate()
+	public StargateInfo getDialedStargate()
 	{
 		return dialedStargate;
 	}
@@ -545,7 +540,7 @@ public final class StargateConnection
 		return tag;
 	}
 	
-	protected CompoundTag serializeStargate(Stargate stargate)
+	protected CompoundTag serializeStargate(StargateInfo stargate)
 	{
 		CompoundTag tag = new CompoundTag();
 		
@@ -561,8 +556,8 @@ public final class StargateConnection
 	public static StargateConnection deserialize(MinecraftServer server, UUID uuid, CompoundTag tag)
 	{
 		Type connectionType = Type.valueOf(tag.getString(CONNECTION_TYPE));
-		Stargate dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
-		Stargate dialedStargate = deserializeStargate(server, tag.getCompound(DIALED_STARGATE));
+		StargateInfo dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
+		StargateInfo dialedStargate = deserializeStargate(server, tag.getCompound(DIALED_STARGATE));
 		boolean used = tag.getBoolean(USED);
 		int openTime = tag.getInt(OPEN_TIME);
 		int connectionTime = tag.getInt(CONNECTION_TIME);
@@ -572,7 +567,7 @@ public final class StargateConnection
 		return new StargateConnection(uuid, connectionType, dialingStargate, dialedStargate, used, openTime, connectionTime, timeSinceLastTraveler, doKawoosh);
 	}
 	
-	private static Stargate deserializeStargate(MinecraftServer server, CompoundTag stargateInfo)
+	private static StargateInfo deserializeStargate(MinecraftServer server, CompoundTag stargateInfo)
 	{
 		return BlockEntityList.get(server).getStargate(new Address.Immutable(stargateInfo.getIntArray(ADDRESS)));
 	}

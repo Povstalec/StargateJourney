@@ -4,23 +4,23 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 
 @Cancelable
 public class StargateEvent extends Event
 {
 	private final MinecraftServer server;
-	private final Stargate stargate;
+	private final StargateInfo stargate;
 	
-	public StargateEvent(MinecraftServer server, Stargate stargate)
+	public StargateEvent(MinecraftServer server, StargateInfo stargate)
 	{
 		this.server = server;
 		this.stargate = stargate;
 	}
 	
-	public Stargate getStargate()
+	public StargateInfo getStargate()
 	{
 		return this.stargate;
 	}
@@ -44,7 +44,7 @@ public class StargateEvent extends Event
 		private final Address.Immutable dialingAddress;
 		private final boolean doKawoosh;
 		
-		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, Address.Immutable dialingAddress, boolean doKawoosh)
+		public Dial(MinecraftServer server, StargateInfo stargate, Address.Immutable dialedAddress, Address.Immutable dialingAddress, boolean doKawoosh)
 		{
 			super(server, stargate);
 			this.dialedAddress = dialedAddress.copy();
@@ -79,11 +79,11 @@ public class StargateEvent extends Event
 	public static class Connect extends StargateEvent
 	{
 		private final StargateConnection.Type connectionType;
-		private final Stargate connectedStargate;
+		private final StargateInfo connectedStargate;
 		private final Address.Type addressType;
 		private final boolean doKawoosh;
 		
-		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh)
+		public Connect(MinecraftServer server, StargateInfo stargate, StargateInfo connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh)
 		{
 			super(server, stargate);
 
@@ -93,7 +93,7 @@ public class StargateEvent extends Event
 			this.doKawoosh = doKawoosh;
 		}
 		
-		public Stargate getConnectedStargate()
+		public StargateInfo getConnectedStargate()
 		{
 			return this.connectedStargate;
 		}
@@ -124,13 +124,13 @@ public class StargateEvent extends Event
 	@Cancelable
 	public static class WormholeTravel extends StargateEvent
 	{
-		private final Stargate connectedStargate;
+		private final StargateInfo connectedStargate;
 		private final StargateConnection.Type connectionType;
 		private final Entity traveler;
-		private final Stargate.WormholeTravel wormholeTravel;
+		private final StargateInfo.WormholeTravel wormholeTravel;
 
-		public WormholeTravel(MinecraftServer server, Stargate stargate, Stargate connectedStargate,
-				StargateConnection.Type connectionType, Entity traveler, Stargate.WormholeTravel wormholeTravel)
+		public WormholeTravel(MinecraftServer server, StargateInfo stargate, StargateInfo connectedStargate,
+							  StargateConnection.Type connectionType, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
 		{
 			super(server, stargate);
 			
@@ -140,7 +140,7 @@ public class StargateEvent extends Event
 			this.wormholeTravel = wormholeTravel;
 		}
 		
-		public Stargate getConnectedStargate()
+		public StargateInfo getConnectedStargate()
 		{
 			return this.connectedStargate;
 		}
@@ -155,7 +155,7 @@ public class StargateEvent extends Event
 			return this.traveler;
 		}
 		
-		public Stargate.WormholeTravel getWormholeTravel()
+		public StargateInfo.WormholeTravel getWormholeTravel()
 		{
 			return this.wormholeTravel;
 		}

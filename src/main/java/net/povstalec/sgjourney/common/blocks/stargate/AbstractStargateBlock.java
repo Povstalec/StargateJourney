@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
@@ -50,8 +49,8 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
 {
@@ -186,7 +185,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		AbstractStargateEntity stargate = getStargate(level, pos, state);
 		if(stargate != null)
 		{
-			stargate.resetStargate(Stargate.Feedback.STARGATE_DESTROYED, true);
+			stargate.resetStargate(StargateInfo.Feedback.STARGATE_DESTROYED, true);
 			if(!level.isClientSide() && !player.isCreative())
 			{
 				ItemStack itemstack = new ItemStack(asItem());

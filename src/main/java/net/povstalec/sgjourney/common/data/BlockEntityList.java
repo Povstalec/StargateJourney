@@ -16,9 +16,9 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.Transporter;
 
 /**
  * This class is designed to save all Block Entities along with their coordinates and dimensions. 
@@ -36,7 +36,7 @@ public class BlockEntityList extends SavedData
 	
 	private MinecraftServer server;
 	
-	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<Address.Immutable, Stargate>();
+	protected HashMap<Address.Immutable, StargateInfo> stargateMap = new HashMap<Address.Immutable, StargateInfo>();
 	protected HashMap<UUID, Transporter> transporterMap = new HashMap<UUID, Transporter>();
 	
 	/**
@@ -44,7 +44,7 @@ public class BlockEntityList extends SavedData
 	 * @param stargate
 	 * @return Optional containing Stargate that got added if successful, empty optional if unsuccessful
 	 */
-	public Optional<Stargate> addStargate(AbstractStargateEntity stargate)
+	public Optional<StargateInfo> addStargate(AbstractStargateEntity stargate)
 	{
 		Address.Immutable address = stargate.get9ChevronAddress().immutable();
 		
@@ -60,7 +60,7 @@ public class BlockEntityList extends SavedData
 		if(stargate.getBlockPos() == null)
 			return Optional.empty();
 		
-		Stargate savedStargate = new Stargate(stargate);
+		StargateInfo savedStargate = new StargateInfo(stargate);
 		
 		this.stargateMap.put(address, savedStargate);
 		
@@ -132,9 +132,9 @@ public class BlockEntityList extends SavedData
 	}
 
     @SuppressWarnings("unchecked")
-	public HashMap<Address.Immutable, Stargate> getStargates()
+	public HashMap<Address.Immutable, StargateInfo> getStargates()
 	{
-		return (HashMap<Address.Immutable, Stargate>) stargateMap.clone();
+		return (HashMap<Address.Immutable, StargateInfo>) stargateMap.clone();
 	}
 	
 	public boolean containsStargate(Address.Immutable address)
@@ -143,18 +143,18 @@ public class BlockEntityList extends SavedData
 	}
 	
 	@Nullable
-	public Stargate getStargate(Address.Immutable address)
+	public StargateInfo getStargate(Address.Immutable address)
 	{
 		if(address.getLength() != 8)
 			return null;
 		
-		Stargate stargate = stargateMap.get(address);
+		StargateInfo stargate = stargateMap.get(address);
 		
 		return stargate;
 	}
 	
 	@Nullable
-	public Stargate getRandomStargate(long seed)
+	public StargateInfo getRandomStargate(long seed)
 	{
 		int size = this.stargateMap.size();
 		
@@ -165,7 +165,7 @@ public class BlockEntityList extends SavedData
 		
 		int randomValue = random.nextInt(0, size);
 		
-		Stargate randomStargate = (Stargate) this.stargateMap.entrySet().stream().toArray()[randomValue];
+		StargateInfo randomStargate = (StargateInfo) this.stargateMap.entrySet().stream().toArray()[randomValue];
 		
 		return randomStargate;
 	}
@@ -254,7 +254,7 @@ public class BlockEntityList extends SavedData
 			//StargateJourney.LOGGER.info("Deserializing Stargate " + stargate);
 			Address.Immutable address = new Address(stargateAddress).immutable();
 			
-			Stargate stargate = Stargate.deserialize(server, address, stargates.getCompound(stargateAddress));
+			StargateInfo stargate = StargateInfo.deserialize(server, address, stargates.getCompound(stargateAddress));
 			
 			if(stargate != null)
 				this.stargateMap.put(address, stargate);

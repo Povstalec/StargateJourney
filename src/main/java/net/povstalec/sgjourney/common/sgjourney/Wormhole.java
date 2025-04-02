@@ -1,12 +1,10 @@
-package net.povstalec.sgjourney.common.stargate;
+package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -43,7 +41,7 @@ import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.WormholeTravel;
 import org.jetbrains.annotations.Nullable;
 
 public class Wormhole
@@ -85,7 +83,7 @@ public class Wormhole
 		return false;
 	}
 	
-	public boolean wormholeEntity(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole,
+	public boolean wormholeEntity(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, StargateInfo.WormholeTravel twoWayWormhole,
 							   Entity traveler, Direction orientationDirection, Map<Integer, Vec3> entityLocations)
 	{
 		double previousX = this.entityLocations.get(traveler.getId()).x();
@@ -141,7 +139,7 @@ public class Wormhole
 		return false;
 	}
 	
-	public boolean wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Stargate.WormholeTravel twoWayWormhole)
+	public boolean wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, StargateInfo.WormholeTravel twoWayWormhole)
 	{
 		this.used = false;
 		Direction direction = initialStargate.getDirection();
@@ -317,7 +315,7 @@ public class Wormhole
 		playWormholeSound(destinationlevel, traveler);
 	}
 	
-    public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, Stargate.WormholeTravel twoWayWormhole)
+    public void doWormhole(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, Entity traveler, Vec3 momentum, StargateInfo.WormholeTravel twoWayWormhole)
     {
 		Level level = traveler.getLevel();
 		playWormholeSound(level, traveler);

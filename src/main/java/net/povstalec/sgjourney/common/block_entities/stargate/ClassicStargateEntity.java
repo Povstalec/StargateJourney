@@ -11,10 +11,10 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
-import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import java.util.Random;
 
@@ -35,7 +35,7 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.CLASSIC_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "classic/classic"), pos, state,
-				TOTAL_SYMBOLS, Stargate.Gen.NONE, 0, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, MAX_ROTATION);
+				TOTAL_SYMBOLS, StargateInfo.Gen.NONE, 0, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, MAX_ROTATION);
 		
 		displayID();
 	}

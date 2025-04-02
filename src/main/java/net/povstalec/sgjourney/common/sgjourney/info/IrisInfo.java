@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.stargate.info;
+package net.povstalec.sgjourney.common.sgjourney.info;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
