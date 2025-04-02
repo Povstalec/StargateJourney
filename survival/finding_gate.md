@@ -22,10 +22,12 @@ To gain the ability to travel to distant planets, you will first need a Stargate
 It is an advanced technology, so you **cannot build** it yourself (yet).
 You need to **find it** somewhere first.
 
-<details markdown="block">
-<summary><b>[Spoiler]</b> A cheat way to find a Stargate</summary>
+<details markdown="block" id="locate-command">
+<summary><b>[Spoiler]</b> A cheat way to find a Stargate using a command</summary>
 You can use the locate command.  
 `/locate structure #sgjourney:buried_stargate`
+
+[No structure found?](#no-stargate-generated)
 </details>
 
 An Archeologist villager could find a way.
@@ -65,7 +67,16 @@ For crafting, you will need a book, a golden idol, 3 wooden slabs, and 2 (wooden
 
 Now, you can trade a **Map to Chappa'ai** (Stargate) on the villager's last (**Master**) level.
 
+{: .warning #no-stargate-generated }
+> If the villager is refusing to give you the map and the [locate command](#locate-command) results in no structure found,
+> please check the [Known incompatibilities]({{ site.baseurl }}/#known-incompatibilities) section on the main page.
+
 ![Villager map trade]({{ site.baseurl }}/assets/img/survival/stargate_map_trade.png)
+
+{: .note }
+> The map must be named **Map to Chappa'ai** or **Map to the Ring of Gods**.
+> The villager can also give you an **Archeologist Map** which leads to a Goa'uld temple.
+
 
 ___
 
@@ -77,8 +88,10 @@ Search and dig for the X. The Stargate is somewhere in there.
 
 The gate is usually around 5 blocks under the surface (but not strictly).
 
+<blockquote class="warning">
+<p>If you have trouble finding the Stargate on the X mark, you can check this spoiler / hint.</p>
 <details markdown="block">
-<summary><b>[Spoiler / Hint]</b> If you have trouble finding the Stargate on the X</summary>
+<summary><b>[Spoiler / Hint]</b> Buried Stargate location</summary>
 The gate is always generated in the corner of the chunk.  
 So you can go to the X and press `F3 + G` to show chunk boundaries.  
 Find the chunk corner and dig there.  
@@ -86,6 +99,9 @@ Find the chunk corner and dig there.
 ![Chunk border with buried Stargate]({{ site.baseurl }}/assets/img/survival/chunk_border_buried_stargate.png)
 
 </details>
+</blockquote>
+
+[//]: # (add some spoiler with structure screenshot, probably with erased address https://discord.com/channels/1011344665678708818/1061413949440020561/1287358192136884267)
 
 {: .tip }
 > Once you find it, you want to look for three essential things.
@@ -96,7 +112,6 @@ Find the chunk corner and dig there.
 > The Gate and the DHD can be broken with any tool (even by hand), but a pickaxe is best for the job.
 > Use a **stone pickaxe** (or a better one) to break the cartouche.
 
-[//]: # (add some spoiler with structure screenshot, probably with erased address https://discord.com/channels/1011344665678708818/1061413949440020561/1287358192136884267)
 
 <details markdown="block">
 <summary><b>[Spoiler]</b> Stargate overworld generation</summary>

@@ -90,6 +90,12 @@ Converts the array specified by address to a form used elsewhere in the mod (`-1
 **Usage**
 - Convert the abydos address to text `-26-6-14-31-11-29-`
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local stringAddress = interface.addressToString({ 26, 6, 14, 31, 11, 29 }) 
 print(stringAddress) -- prints -26-6-14-31-11-29-
 ```
@@ -124,6 +130,12 @@ Returns the current amount of energy [FE (Forge Energy)] stored in the interface
 **Usage**
 - Print the current amount of energy in the interface
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local energy = interface.getEnergy()
 print("There is "..energy.." FE in the interface")
 ```
@@ -143,6 +155,12 @@ Returns the maximal amount of energy [FE] that can be stored in the interface.
 **Usage**
 - Print the energy capacity of the interface
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local capacity = interface.getEnergyCapacity()
 print("The interface can store up to "..capacity.." FE")
 ```
@@ -166,6 +184,12 @@ Returns the current energy target that is set for the interface.
 **Usage**
 - Print the current energy target
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local energyTarget = interface.getEnergyTarget()
 print("The current energy target: "..energyTarget.." FE")
 ```
@@ -189,6 +213,12 @@ Sets the energy target to the amount specified by `energyTarget` parameter.
 **Usage**
 - Set a new energy target
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 -- the amount of energy [FE] required to reach another galaxy by default (100 000 000 000)
 local energyTarget = 100000000000 
 interface.setEnergyTarget(energyTarget)
@@ -222,6 +252,12 @@ If the symbol is already encoded, returns `-2` (`symbol_in_address`).
 **Usage**
 - Close chevron
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local feedback = interface.closeChevron()
 print(feedback) 
 ```
@@ -249,6 +285,12 @@ Requires the chevron to be **open**, otherwise returns `-35` (`chevron_not_raise
 **Usage**
 - Encode chevron
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local feedback = interface.encodeChevron()
 print(feedback) 
 ```
@@ -276,6 +318,12 @@ Does nothing if the ring rotates due to a redstone signal.
 **Usage**
 - End the ring rotation
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local feedback = interface.endRotation()
 print(feedback) 
 ```
@@ -295,6 +343,12 @@ Returns the current symbol under the top chevron.
 **Usage**
 - Print the current symbol
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local symbol = interface.getCurrentSymbol()
 print(symbol) 
 ```
@@ -322,6 +376,12 @@ Returns the current inner ring rotation from `0` up to `155` (inclusive).
 **Usage**
 - Check current ring rotation
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 while true do
     local rotation = interface.getRotation()
     print(rotation) 
@@ -350,6 +410,12 @@ Returns `true` when the top chevron is open, `false` otherwise.
 **Usage**
 - Check whether the top chevron is open
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local isOpen = interface.isChevronOpen()
 if isOpen then
     print("The chevron is open")
@@ -383,6 +449,12 @@ Returns `false` otherwise.
 **Usage**
 - Await the rotation completion
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local symbol = 15
 interface.rotateClockwise(symbol)
 while not interface.isCurrentSymbol(symbol) do
@@ -414,6 +486,12 @@ Opens the top chevron in preparation for encoding the current symbol.
 **Usage**
 - Open the top chevron
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local feedback interface.openChevron()
 print(feedback)
 ```
@@ -448,6 +526,12 @@ The rotation is stopped when the interface is destroyed.
 **Usage**
 - Rotate the ring anticlockwise to the symbol
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local symbol = 15
 -- start the rotation
 interface.rotateAntiClockwise(symbol)
@@ -489,6 +573,12 @@ The rotation is stopped when the interface is destroyed.
 **Usage**
 - Rotate the ring clockwise to the symbol
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local symbol = 15
 -- start the rotation
 interface.rotateClockwise(symbol)
@@ -523,6 +613,12 @@ The Stargate won't disconnect/reset if the connection is currently forming (befo
 **Usage**
 - Disconnect the Stargate
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local result = interface.disconnectStargate()
 if result then
     print("Stargate disconnected")
@@ -546,6 +642,12 @@ Returns a number from `0` to `9` which represents a number of chevrons that are 
 **Usage**
 - Print the number of engaged chevrons
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local engaged = interface.getChevronsEngaged()
 print("Stargate has "..engaged.."/9 chevrons engaged")
 ```
@@ -568,6 +670,12 @@ Returns a number of ticks for which Stargate has been active.
 **Usage**
 - Print a number of seconds for which the Stargate has been active
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local openTimeInTicks = interface.getOpenTime()
 -- each second has 20 ticks
 local openTimeInSeconds = math.floor(openTimeInTicks / 20)
@@ -595,6 +703,12 @@ you can check the [feedback codes in the mod source code](https://github.com/Pov
 **Usage**
 - Print the recent feedback
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local feedbackCode, feedbackMessage = interface.getRecentFeedback()
 print("Feedback code: "..feedbackCode)
 if feedbackMessage then
@@ -623,6 +737,12 @@ Returns the amount of energy currently stored in the Stargate.
 **Usage**
 - Print the current amount of energy in the Stargate
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local energy = interface.getEnergy()
 print("There is "..energy.." FE in the Stargate")
 ```
@@ -653,6 +773,12 @@ Returns the Stargate generation identifier.
 **Usage**
 - Print the Stargate generation
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local generation = interface.getStargateGeneration()
 print("The Stargate is "..generation.." generation")
 ```
@@ -684,6 +810,12 @@ Returns the minecraft resource identifier for the Stargate.
 **Usage**
 - Print the Stargate type
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local type = interface.getStargateType()
 print("The stargate identifier: "..type)
 ```
@@ -710,6 +842,12 @@ or `sgjourney:empty` for the default Stargate variant
 **Usage**
 - Print the Stargate variant
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local variant = interface.getStargateVariant()
 print("The stargate variant: "..variant)
 ```
@@ -738,6 +876,12 @@ Once the Point of Origin is successfully encoded or the first chevron is being l
 **Usage**
 - Check whether the Stargate is connected
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local isConnected = interface.isStargateConnected()
 if isConnected then
     print("Stargate is connected")
@@ -765,6 +909,12 @@ Returns `true` when there is an active **outgoing** connection (this Stargate di
 **Usage**
 - Check whether the active connection is outgoing
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local isDialingOut = interface.isStargateDialingOut()
 if isDialingOut then
     print("Stargate is dialing out")
@@ -794,6 +944,12 @@ After the kawoosh finishes, and it is safe to enter the wormhole,
 **Usage**
 - Check whether the wormhole has formed
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local isOpen = interface.isWormholeOpen()
 if isOpen then
     print("Wormhole is open")
@@ -804,6 +960,12 @@ end
 
 - Check whether the wormhole is active and it is safe to enter
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 -- assuming the config uses default values (the reverse wormhole kills)
 local isConnected = interface.isStargateConnected()
 local isOpen = interface.isWormholeOpen()
@@ -848,6 +1010,12 @@ Any interface can receive the message.
 **Usage**
 - Send a message
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local message = "Hello from the other side"
 local wasSent = interface.sendStargateMessage(message)
 if wasSent then
@@ -858,6 +1026,12 @@ end
 ```
 - Receive a message from the stargate
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local message = os.pullEvent("stargate_message_received")
 print("Received a message from the Stargate:")
 print(message)
@@ -896,6 +1070,12 @@ For example, the Milky Way Stargate does not need to spin the ring; it just enco
 **Usage**
 - Dial the address
 ```lua
+-- find crystal or advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local address = { 26, 6, 14, 31, 11, 29, 0 } -- Abydos
 -- don't forgot the zero (Point of Origin) at the end!
 for _, symbol in pairs(address) do
@@ -928,6 +1108,12 @@ If the currently active connection is incoming or there is no active connection,
 **Usage**
 - Print the dialed address
 ```lua
+-- find crystal or advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local address = interface.getDialedAddress()
 print("The dialed address: " .. interface.addressToString(address))
 ```
@@ -969,10 +1155,22 @@ The configuration must be an array of exact length 8 with numbers from 1 to 8 wi
 **Usage**
  - Set the default chevron order
 ```lua
+-- find crystal or advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 interface.setChevronConfiguration({1, 2, 3, 6, 7, 8, 4, 5})
 ```
  - Set clockwise chevron order (e.g. when encoding 9-chevron address).
 ```lua
+-- find crystal or advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 interface.setChevronConfiguration({1, 2, 3, 4, 5, 6, 7, 8})
 ```
 
@@ -1018,6 +1216,12 @@ However, it will not block 9-chevron connections from/to such Stargates.
 **Usage**
 - Blacklist a 9-chevron address
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local address = { 16, 25, 4, 21, 6, 19, 33, 22 }
 interface.clearBlacklist()
 interface.setFilterType(-1) -- set filter to blacklist mode
@@ -1063,6 +1267,12 @@ unless those addresses are also specifically whitelisted.
 **Usage**
 - Whitelist the Abydos 7-chevron address
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local address = { 26, 6, 14, 31, 11, 29 }
 interface.clearWhitelist()
 interface.setFilterType(1) -- set filter to whitelist mode
@@ -1093,6 +1303,12 @@ Removes all addresses from the blacklist.
 **Usage**
 - Remove all addresses from the blacklist
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 interface.clearBlacklist()
 -- blacklist is now empty
 ```
@@ -1119,6 +1335,12 @@ Removes all addresses from the whitelist.
 **Usage**
 - Remove all addresses from the whitelist
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 interface.clearWhitelist()
 -- whitelist is now empty
 ```
@@ -1151,6 +1373,12 @@ Returns the address to which the Stargate is connected (the address on the other
 **Usage**
 - Print the remote address
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 if interface.isWormholeOpen() then
     local address = interface.getConnectedAddress()
     print("The remote address is "..interface.addressToString(address))
@@ -1183,6 +1411,12 @@ Returns the numeric identifier of the filter type.
 **Usage**
 - Print the current filter type
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local type = interface.getFilterType()
 if type == 0 then
     print("Filter is disabled")
@@ -1214,6 +1448,12 @@ Returns the 9-chevron address of this stargate.
 **Usage**
 - Print the local address
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local localAddress = interface.getLocalAddress()
 print(interface.addressToString(localAddress))
 ```
@@ -1249,6 +1489,12 @@ Returns the numeric identifier of the Stargate network of which the Stargate is 
 **Usage**
 - Print the network ID
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local network = interface.getNetwork()
 print("The network ID is: "..network)
 ```
@@ -1276,6 +1522,12 @@ Checks for the network restriction of the Stargate.
 **Usage**
 - Print whether the Stargate is network restricted
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local isRestricted = interface.isNetworkRestricted()
 if isRestricted then
     print("Network restriction is active")
@@ -1311,6 +1563,12 @@ Removes the specified address from the blacklist.
 **Usage**
 - Remove the address from the blacklist
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local address = { 16, 25, 4, 21, 6, 19, 33, 22 }
 interface.removeFromBlacklist(address)
 ```
@@ -1342,6 +1600,12 @@ Removes the specified address from the whitelist.
 **Usage**
 - Remove the address from the whitelist
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local address = { 26, 6, 14, 31, 11, 29 }
 interface.removeFromWhitelist(address)
 ```
@@ -1375,6 +1639,12 @@ Outgoing connections are not affected.
 **Usage**
 - Enable network restriction
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 interface.restrictNetwork(true)
 ```
 
@@ -1409,6 +1679,12 @@ Only one filter type can be active, either whitelist, or blacklist (or none to d
 **Usage**
 - Set the filter type to blacklist
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local FilterType = { 
     None = 0,
     Whitelist = 1,
@@ -1439,6 +1715,12 @@ Sets the network identifier for the Stargate.
 **Usage**
 - Set the network of the Stargate
 ```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local network = 415252 -- could be any number
 interface.setNetwork(network) 
 ```
@@ -1473,6 +1755,12 @@ Retrieves the identifier of the currently installed iris on the Stargate.
 **Usage**
 - Check the installed iris
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local iris = interface.getIris()
 if iris then
     print("The Stargate has an iris installed: "..iris)
@@ -1506,6 +1794,12 @@ Can return `true` even when there is no iris installed.
 **Usage**
 - Close the iris
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local closing = interface.closeIris()
 if closing then
     print("Closing the iris...")
@@ -1539,6 +1833,12 @@ Can return `true` even when there is no iris installed.
 **Usage**
 - Open the iris
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local opening = interface.openIris()
 if opening then
     print("Opening the iris...")
@@ -1572,6 +1872,12 @@ Can return `true` even when there is no iris installed.
 **Usage**
 - Stop the iris
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local stopped = interface.stopIris()
 if stopped then
     print("Stopped the iris...")
@@ -1628,6 +1934,12 @@ Retrieves the percentage of the iris closing progress.
 **Usage**
 - Get the iris closing percentage
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local progress = interface.getIrisProgressPercentage()
 if progress == 0 then
     print("Iris is open")
@@ -1661,6 +1973,12 @@ Retrieves the iris remaining durability.
 **Usage**
 - Get the iris durability
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local durability = interface.getIrisDurability()
 local maxDurability = interface.getIrisMaxDurability()
 print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(durability/maxDurability*100).."%")
@@ -1689,6 +2007,12 @@ Retrieves the iris maximum durability.
 **Usage**
 - Get the iris durability
 ```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
 local durability = interface.getIrisDurability()
 local maxDurability = interface.getIrisMaxDurability()
 print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(durability/maxDurability*100).."%")
