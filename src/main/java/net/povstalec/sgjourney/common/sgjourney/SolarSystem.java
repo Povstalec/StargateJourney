@@ -132,22 +132,22 @@ public class SolarSystem
 	{
 		public static final String PRIMARY_STARGATE = "primary_stargate";
 		
-		public static final String SOLAR_SYSTEM_KEY = "SolarSystemKey";
+		public static final String LOCATION = "location";
 		
-		public static final String SYSTEMATIC_NAME = "SystematicName";
+		public static final String NAME = "name";
 		
-		public static final String POINT_OF_ORIGIN = "PointOfOrigin";
-		public static final String SYMBOLS = "Sybmols";
-		public static final String SYMBOL_PREFIX = "SybmolPrefix";
-		public static final String EXTRAGALACTIC_ADDRESS = "ExtragalacticAddress";
-		public static final String DIMENSIONS = "Dimensions";
+		public static final String POINT_OF_ORIGIN = "point_of_origin";
+		public static final String SYMBOLS = "symbols";
+		public static final String SYMBOL_PREFIX = "symbol_prefix";
+		public static final String EXTRAGALACTIC_ADDRESS = "extragalactic_address";
+		public static final String DIMENSIONS = "dimensions";
 	    
 	    private static final boolean DHD_PREFERENCE = !CommonStargateNetworkConfig.disable_dhd_preference.get();
 
-		private final Optional<ResourceKey<SolarSystem>> solarSystemKey;
+		private final ResourceLocation location;
 		
-		private final Optional<String> translationName;
-		private final Optional<String> systematicName;
+		private final String name;
+		private final boolean isGenerated;
 		
 		private final ResourceKey<PointOfOrigin> pointOfOrigin;
 		private final ResourceKey<Symbols> symbols;
@@ -163,12 +163,12 @@ public class SolarSystem
 		@Nullable
 		private Stargate primaryStargate = null;
 		
-		public Serializable(Address.Immutable extragalacticAddress, ResourceKey<SolarSystem> solarSystemKey, SolarSystem solarSystem)
+		public Serializable(ResourceLocation location, Address.Immutable extragalacticAddress, SolarSystem solarSystem)
 		{
-			this.solarSystemKey = Optional.of(solarSystemKey);
+			this.location = location;
 			
-			this.translationName = Optional.of(solarSystem.getName());
-			this.systematicName = Optional.empty();
+			this.name = solarSystem.getName();
+			this.isGenerated = false;
 			
 			this.pointOfOrigin = solarSystem.getPointOfOrigin();
 			this.symbols = solarSystem.getSymbols();
@@ -177,14 +177,14 @@ public class SolarSystem
 			this.dimensions = solarSystem.getDimensions();
 		}
 		
-		public Serializable(String translationName, Address.Immutable extragalacticAddress, 
+		public Serializable(ResourceLocation location, String name, Address.Immutable extragalacticAddress,
 				ResourceKey<PointOfOrigin> pointOfOrigin, ResourceKey<Symbols> symbols, 
 				int symbolPrefix, List<ResourceKey<Level>> dimensions)
 		{
-			this.solarSystemKey = Optional.empty();
+			this.location = location;
 			
-			this.translationName = Optional.empty();
-			this.systematicName = Optional.of(translationName);
+			this.name = name;
+			this.isGenerated = true;
 
 			this.extragalacticAddress = extragalacticAddress;
 			this.pointOfOrigin = pointOfOrigin;
@@ -194,20 +194,22 @@ public class SolarSystem
 			this.dimensions = dimensions;
 		}
 		
+		public ResourceLocation location()
+		{
+			return this.location;
+		}
+		
 		public String getName()
 		{
-			if(this.translationName.isPresent())
-				return this.translationName.get();
-			
-			return this.systematicName.get();
+			return this.name;
 		}
 		
 		public Component getTranslatedName()
 		{
-			if(this.translationName.isPresent())
-				return Component.translatable(this.translationName.get());
+			if(!this.isGenerated)
+				return Component.translatable(this.name);
 			
-			return Component.literal(this.systematicName.get());
+			return Component.literal(this.name);
 		}
 		
 		public ResourceKey<PointOfOrigin> getPointOfOrigin()
@@ -237,7 +239,7 @@ public class SolarSystem
 		
 		public boolean isGenerated()
 		{
-			return this.solarSystemKey.isEmpty();
+			return this.isGenerated;
 		}
 		
 		public HashMap<Galaxy.Serializable, Address.Immutable> getGalacticAddresses()
@@ -416,11 +418,11 @@ public class SolarSystem
 		{
 			CompoundTag solarSystemTag = new CompoundTag();
 			
-			if(this.solarSystemKey.isPresent())
-				solarSystemTag.putString(SOLAR_SYSTEM_KEY, this.solarSystemKey.get().location().toString());
-			else
+			solarSystemTag.putString(LOCATION, this.location.toString());
+			
+			if(isGenerated())
 			{
-				solarSystemTag.putString(SYSTEMATIC_NAME, this.systematicName.get());
+				solarSystemTag.putString(NAME, this.name);
 				
 				solarSystemTag.putString(POINT_OF_ORIGIN, this.pointOfOrigin.location().toString());
 				solarSystemTag.putString(SYMBOLS, this.symbols.location().toString());
@@ -447,17 +449,18 @@ public class SolarSystem
 		{
 			SolarSystem.Serializable solarSystem;
 			
-			if(solarSystemTag.contains(SOLAR_SYSTEM_KEY))
+			if(!solarSystemTag.contains(NAME, CompoundTag.TAG_STRING))
 			{
-				ResourceKey<SolarSystem> solarSystemKey = Conversion.stringToSolarSystemKey(solarSystemTag.getString(SOLAR_SYSTEM_KEY));
+				ResourceKey<SolarSystem> solarSystemKey = Conversion.stringToSolarSystemKey(solarSystemTag.getString(LOCATION));
 				
 				Address.Immutable extragalacticAddress = new Address(solarSystemTag.getIntArray(EXTRAGALACTIC_ADDRESS)).immutable();
 				
-				solarSystem = new SolarSystem.Serializable(extragalacticAddress, solarSystemKey, solarSystemRegistry.get(solarSystemKey));
+				solarSystem = new SolarSystem.Serializable(solarSystemKey.location(), extragalacticAddress, solarSystemRegistry.get(solarSystemKey));
 			}
 			else
 			{
-				String translationName = solarSystemTag.getString(SYSTEMATIC_NAME);
+				String translationName = solarSystemTag.getString(NAME);
+				ResourceLocation location = ResourceLocation.tryParse(solarSystemTag.getString(LOCATION));
 				
 				ResourceKey<PointOfOrigin> pointOfOrigin = Conversion.stringToPointOfOrigin(solarSystemTag.getString(POINT_OF_ORIGIN));
 				ResourceKey<Symbols> symbols = Conversion.stringToSymbols(solarSystemTag.getString(SYMBOLS));
@@ -470,7 +473,7 @@ public class SolarSystem
 					dimensions.add(Conversion.stringToDimension(dimensionString));
 				});
 				
-				solarSystem = new SolarSystem.Serializable(translationName, extragalacticAddress, pointOfOrigin, symbols, symbolPrefix, dimensions);
+				solarSystem = new SolarSystem.Serializable(location, translationName, extragalacticAddress, pointOfOrigin, symbols, symbolPrefix, dimensions);
 			}
 			
 			if(solarSystemTag.contains(PRIMARY_STARGATE, CompoundTag.TAG_INT_ARRAY))

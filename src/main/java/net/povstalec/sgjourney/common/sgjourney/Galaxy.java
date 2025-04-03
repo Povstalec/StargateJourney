@@ -79,9 +79,8 @@ public class Galaxy
 	 */
 	public static final class Serializable
 	{
-		public static final String GALAXY_KEY = "GalaxyKey";
-		public static final String SOLAR_SYSTEMS = "SolarSystems";
-		public static final String POINTS_OF_ORIGIN = "PointsOfOrigin";
+		public static final String SOLAR_SYSTEMS = "solar_systems";
+		public static final String POINTS_OF_ORIGIN = "points_of_origin";
 		
 		private final ResourceKey<Galaxy> galaxyKey;
 		private final Galaxy galaxy;

@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -98,10 +99,12 @@ public final class StargateNetwork extends SavedData
 		
 		StargateNetworkSettings.get(server).updateSettings();
 		
+		HashMap<ResourceLocation, Address.Immutable> primaryStargates = Universe.get(server).getPrimaryStargateAddresses();
 		Universe.get(server).eraseUniverseInfo();
 		StargateJourney.LOGGER.debug("Universe erased");
 		
 		Universe.get(server).generateUniverseInfo(server);
+		Universe.get(server).setPrimaryStargateAddresses(primaryStargates);
 		StargateJourney.LOGGER.debug("Universe regenerated");
 		
 		eraseNetwork();

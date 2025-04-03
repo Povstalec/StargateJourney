@@ -62,6 +62,7 @@ public class Universe extends SavedData
 	private MinecraftServer server;
 
 	private HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems = new HashMap<Address.Immutable, SolarSystem.Serializable>();
+	private HashMap<ResourceLocation, SolarSystem.Serializable> solarSystemLocations = new HashMap<ResourceLocation, SolarSystem.Serializable>();
 	private HashMap<ResourceKey<Level>, SolarSystem.Serializable> dimensions = new HashMap<ResourceKey<Level>, SolarSystem.Serializable>();
 	private HashMap<ResourceLocation, Galaxy.Serializable> galaxies = new HashMap<ResourceLocation, Galaxy.Serializable>();
 	
@@ -90,6 +91,7 @@ public class Universe extends SavedData
 		this.galaxies.clear();
 		this.dimensions.clear();
 		this.solarSystems.clear();
+		this.solarSystemLocations.clear();
 		
 		this.setDirty();
 	}
@@ -215,7 +217,7 @@ public class Universe extends SavedData
 			extragalacticAddress = generateExtragalacticAddress(prefix <= 0 ? 1 : prefix, seed);
 		}
 		
-		SolarSystem.Serializable networkSolarSystem = new SolarSystem.Serializable(extragalacticAddress, solarSystemKey, solarSystem);
+		SolarSystem.Serializable networkSolarSystem = new SolarSystem.Serializable(solarSystemKey.location(), extragalacticAddress, solarSystem);
 		if(saveSolarSystem(extragalacticAddress, networkSolarSystem))
 		{
 			//Cycle through all Galaxies this Solar System should be in and add it to each one
@@ -277,7 +279,7 @@ public class Universe extends SavedData
 		else
 			pointOfOrigin = PointOfOrigin.defaultPointOfOrigin();
 		
-		SolarSystem.Serializable solarSystem = new SolarSystem.Serializable(systemName, extragalacticAddress, 
+		SolarSystem.Serializable solarSystem = new SolarSystem.Serializable(systemNameToResourceLocation(systemName), systemName, extragalacticAddress,
 				pointOfOrigin, defaultSymbols, milkyWayPrefix, List.of(dimension));
 		
 		if(saveSolarSystem(extragalacticAddress, solarSystem))
@@ -311,6 +313,11 @@ public class Universe extends SavedData
 		String systemName = "P" + prefixA + prefixB + "-" + suffixValue;
 		
 		return systemName;
+	}
+	
+	private ResourceLocation systemNameToResourceLocation(String systemName)
+	{
+		return new ResourceLocation(StargateJourney.MODID, systemName.toLowerCase());
 	}
 	
 	private long generateRandomAddressSeed(MinecraftServer server, String name)
@@ -352,6 +359,7 @@ public class Universe extends SavedData
 		}
 		
 		this.solarSystems.put(extragalacticAddress, solarSystem);
+		this.solarSystemLocations.put(solarSystem.location(), solarSystem);
 		
 		solarSystem.getDimensions().forEach((dimension) ->this.dimensions.put(dimension, solarSystem));
 		
@@ -580,6 +588,30 @@ public class Universe extends SavedData
 			return solarSystem.getSymbols();
 		
 		return Symbols.defaultSymbols();
+	}
+	
+	public HashMap<ResourceLocation, Address.Immutable> getPrimaryStargateAddresses()
+	{
+		HashMap<ResourceLocation, Address.Immutable> primaryStargates = new HashMap<>();
+		for(HashMap.Entry<Address.Immutable, SolarSystem.Serializable> entry : solarSystems.entrySet())
+		{
+			Address.Immutable address = entry.getValue().primaryAddress();
+			if(address != null)
+				primaryStargates.put(entry.getValue().location(), address);
+		}
+		
+		return primaryStargates;
+	}
+	
+	public void setPrimaryStargateAddresses(HashMap<ResourceLocation, Address.Immutable> primaryStargates)
+	{
+		for(HashMap.Entry<ResourceLocation, Address.Immutable> entry : primaryStargates.entrySet())
+		{
+			SolarSystem.Serializable solarSystem = solarSystemLocations.get(entry.getKey());
+			
+			if(solarSystem != null)
+				solarSystem.setPrimaryStargate(entry.getValue());
+		}
 	}
 	
 	//============================================================================================
