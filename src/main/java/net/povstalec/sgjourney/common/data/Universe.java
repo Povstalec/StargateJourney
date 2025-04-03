@@ -25,7 +25,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public class Universe extends SavedData
 {
@@ -378,18 +378,18 @@ public class Universe extends SavedData
 		return address;
 	}
 	
-	public void addStargateToDimension(ResourceKey<Level> dimension, StargateInfo stargate)
+	public void addStargateToDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
 		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		
 		if(solarSystem != null)
 		{
-			solarSystem.addStargate(stargate);
+			solarSystem.addStargate(server, stargate);
 			this.setDirty();
 		}
 	}
 	
-	public void removeStargateFromDimension(ResourceKey<Level> dimension, StargateInfo stargate)
+	public void removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
 		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
 		

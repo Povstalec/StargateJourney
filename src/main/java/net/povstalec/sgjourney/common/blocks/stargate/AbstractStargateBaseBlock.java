@@ -305,6 +305,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         
         if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.getTag().getCompound("BlockEntityTag").getByte(AbstractStargateEntity.GENERATION_STEP)))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+		
+		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").getBoolean(AbstractStargateEntity.PRIMARY))
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
         
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }

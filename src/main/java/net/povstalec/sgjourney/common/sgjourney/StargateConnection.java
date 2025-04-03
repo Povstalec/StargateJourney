@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 import javax.annotation.Nullable;
 
@@ -62,8 +63,8 @@ public final class StargateConnection
 	
 	protected final UUID uuid;
 	protected final StargateConnection.Type connectionType;
-	protected StargateInfo dialingStargate;
-	protected StargateInfo dialedStargate; // Dialed Stargates can be changed mid connection
+	protected Stargate dialingStargate;
+	protected Stargate dialedStargate; // Dialed Stargates can be changed mid connection
 	protected boolean doKawoosh;
 	
 	protected boolean used;
@@ -71,7 +72,7 @@ public final class StargateConnection
 	protected int connectionTime;
 	protected int timeSinceLastTraveler;
 	
-	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, StargateInfo dialingStargate, StargateInfo dialedStargate,
+	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate,
 							   boolean used, int openTime, int connectionTime, int timeSinceLastTraveler, boolean doKawoosh)
 	{
 		this.uuid = uuid;
@@ -169,7 +170,7 @@ public final class StargateConnection
 		System.out.println(" | Connection Time: " + connectionTime);
 	}
 	
-	public static final StargateConnection.Type getType(MinecraftServer server, StargateInfo dialingStargate, StargateInfo dialedStargate)
+	public static final StargateConnection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
 	{
 		SolarSystem.Serializable dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getDimension());
 		SolarSystem.Serializable dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension());
@@ -201,13 +202,13 @@ public final class StargateConnection
 		return StargateConnection.Type.INTERGALACTIC;
 	}
 	
-	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, StargateInfo dialingStargate, StargateInfo dialedStargate, boolean doKawoosh)
+	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate, boolean doKawoosh)
 	{
 		this(uuid, connectionType, dialingStargate, dialedStargate, false, 0, 0, 0, doKawoosh);
 	}
 
 	//TODO Replace these parameters with Stargate object
-	public static final StargateConnection create(MinecraftServer server, StargateConnection.Type connectionType, StargateInfo dialingStargate, StargateInfo dialedStargate, boolean doKawoosh)
+	public static final StargateConnection create(MinecraftServer server, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate, boolean doKawoosh)
 	{
 		UUID uuid = UUID.randomUUID();
 		
@@ -252,7 +253,7 @@ public final class StargateConnection
 		newDialedStargate.connectStargate(this.uuid, false);
 	}*/
 	
-	public final boolean isStargateValid(MinecraftServer server, StargateInfo stargate)
+	public final boolean isStargateValid(MinecraftServer server, Stargate stargate) //TODO Remove
 	{
 		if(stargate == null || stargate.getStargateEntity(server) == null)
 		{
@@ -489,13 +490,13 @@ public final class StargateConnection
 	}
 	
 	@Nullable
-	public StargateInfo getDialingStargate()
+	public Stargate getDialingStargate()
 	{
 		return dialingStargate;
 	}
 	
 	@Nullable
-	public StargateInfo getDialedStargate()
+	public Stargate getDialedStargate()
 	{
 		return dialedStargate;
 	}
@@ -540,12 +541,13 @@ public final class StargateConnection
 		return tag;
 	}
 	
-	protected CompoundTag serializeStargate(StargateInfo stargate)
+	protected CompoundTag serializeStargate(Stargate stargate)
 	{
 		CompoundTag tag = new CompoundTag();
 		
 		tag.putIntArray(ADDRESS, stargate.get9ChevronAddress().toArray());
 		
+		//TODO Remove
 		tag.putString(DIMENSION, stargate.getDimension().toString());
 		tag.putIntArray(COORDINATES, new int[] {stargate.getBlockPos().getX(), stargate.getBlockPos().getY(), stargate.getBlockPos().getZ()});
 		
@@ -556,8 +558,8 @@ public final class StargateConnection
 	public static StargateConnection deserialize(MinecraftServer server, UUID uuid, CompoundTag tag)
 	{
 		Type connectionType = Type.valueOf(tag.getString(CONNECTION_TYPE));
-		StargateInfo dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
-		StargateInfo dialedStargate = deserializeStargate(server, tag.getCompound(DIALED_STARGATE));
+		Stargate dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
+		Stargate dialedStargate = deserializeStargate(server, tag.getCompound(DIALED_STARGATE));
 		boolean used = tag.getBoolean(USED);
 		int openTime = tag.getInt(OPEN_TIME);
 		int connectionTime = tag.getInt(CONNECTION_TIME);
@@ -567,7 +569,7 @@ public final class StargateConnection
 		return new StargateConnection(uuid, connectionType, dialingStargate, dialedStargate, used, openTime, connectionTime, timeSinceLastTraveler, doKawoosh);
 	}
 	
-	private static StargateInfo deserializeStargate(MinecraftServer server, CompoundTag stargateInfo)
+	private static Stargate deserializeStargate(MinecraftServer server, CompoundTag stargateInfo)
 	{
 		return BlockEntityList.get(server).getStargate(new Address.Immutable(stargateInfo.getIntArray(ADDRESS)));
 	}

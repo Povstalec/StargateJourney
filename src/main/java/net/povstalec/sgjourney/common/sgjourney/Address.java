@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.sgjourney;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -71,10 +72,22 @@ public final class Address
 	
 	public enum Type
 	{
-		ADDRESS_INVALID,
-		ADDRESS_9_CHEVRON,
-		ADDRESS_8_CHEVRON,
-		ADDRESS_7_CHEVRON;
+		ADDRESS_INVALID((byte) 0),
+		ADDRESS_9_CHEVRON((byte) 8),
+		ADDRESS_8_CHEVRON((byte) 7),
+		ADDRESS_7_CHEVRON((byte) 6);
+		
+		private byte value;
+		
+		Type(byte value)
+		{
+			this.value = value;
+		}
+		
+		public byte byteValue()
+		{
+			return value;
+		}
 		
 		public static final Address.Type fromInt(int addressLength)
 		{
@@ -371,6 +384,25 @@ public final class Address
 	//*******************************************Static*******************************************
 	//============================================================================================
 	
+	private static boolean isAllowedInAddress(char character)
+	{
+		return character == '-' || (character >= '0' && character <= '9');
+	}
+	
+	public static Address.Immutable read(StringReader reader)
+	{
+		int i = reader.getCursor();
+		
+		while(reader.canRead() && isAllowedInAddress(reader.peek()))
+		{
+			reader.skip();
+		}
+		
+		String string = reader.getString().substring(i, reader.getCursor());
+		
+		return new Address.Immutable(string);
+	}
+	
 	public static boolean canBeTransformedToAddress(String addressString)
 	{
 		for(int i = 0; i < addressString.length(); i++)
@@ -496,8 +528,12 @@ public final class Address
 			}
 			
 			Style style = Style.EMPTY;
-			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
+			
+			if(copyToClipboard)
+			{
+				style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+				style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
+			}
 			
 			return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
 		}

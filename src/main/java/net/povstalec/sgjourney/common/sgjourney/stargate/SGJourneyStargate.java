@@ -10,6 +10,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
@@ -93,7 +94,7 @@ public class SGJourneyStargate implements Stargate
 	
 	private AbstractStargateEntity cacheStargateEntity(AbstractStargateEntity stargate)
 	{
-		this.stargate = new WeakReference(stargate);
+		//this.stargate = new WeakReference(stargate); //TODO Bring caching back once Stargates are more flexible
 		
 		return stargate;
 	}
@@ -112,8 +113,8 @@ public class SGJourneyStargate implements Stargate
 	@Nullable
 	public AbstractStargateEntity getStargateEntity(MinecraftServer server)
 	{
-		if((this.stargate != null && this.stargate.get() != null) || server == null)
-			return this.stargate.get();
+		//if((this.stargate != null && this.stargate.get() != null) || server == null)
+		//	return this.stargate.get();
 		
 		return tryCacheStargateEntity(server);
 	}
@@ -178,6 +179,71 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
+	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, Address.Immutable dialingAddress, boolean doKawoosh)
+	{
+		AbstractStargateEntity targetStargateEntity = getStargateEntity(server);
+		
+		if(targetStargateEntity == null)
+			return StargateInfo.Feedback.UNKNOWN_ERROR;
+		
+		// If last Stargate is obstructed
+		if(targetStargateEntity.isObstructed())
+			return StargateInfo.Feedback.TARGET_OBSTRUCTED;
+		
+		// If last Stargate is restricted
+		if(targetStargateEntity.isRestricted(dialingStargate.getNetwork()))
+			return StargateInfo.Feedback.TARGET_RESTRICTED;
+		
+		// If last Stargate has a blacklist
+		if(targetStargateEntity.addressFilterInfo().getFilterType().isBlacklist() && targetStargateEntity.addressFilterInfo().isAddressBlacklisted(dialingAddress))
+			return StargateInfo.Feedback.BLACKLISTED_SELF;
+		
+		// If last Stargate has a whitelist
+		if(targetStargateEntity.addressFilterInfo().getFilterType().isWhitelist() && !targetStargateEntity.addressFilterInfo().isAddressWhitelisted(dialingAddress))
+			return StargateInfo.Feedback.WHITELISTED_SELF;
+		
+		return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
+	}
+	
+	public boolean isPrimary(MinecraftServer server)
+	{
+		AbstractStargateEntity stargateEntity = getStargateEntity(server);
+		
+		if(stargateEntity != null)
+			return stargateEntity.isPrimary();
+		
+		return false;
+	}
+	
+	
+	
+	public void update(AbstractStargateEntity stargate)
+	{
+		this.hasDHD = stargate.dhdInfo().hasDHD();
+		this.generation = stargate.getGeneration();
+		this.timesOpened = stargate.getTimesOpened();
+		this.network = stargate.getNetwork();
+	}
+	
+	public boolean checkStargateEntity(MinecraftServer server)
+	{
+		AbstractStargateEntity stargate = getStargateEntity(server);
+		
+		if(stargate != null)
+		{
+			stargate.checkStargate();
+			return true;
+		}
+		else
+		{
+			StargateJourney.LOGGER.error("Stargate not found");
+			return false;
+		}
+	}
+	
+	
+	
+	@Override
 	public CompoundTag serializeNBT()
 	{
 		CompoundTag stargateTag = new CompoundTag();
@@ -226,5 +292,13 @@ public class SGJourneyStargate implements Stargate
 			
 			this.stargate = null;
 		}
+	}
+	
+	
+	
+	@Override
+	public String toString()
+	{
+		return "[ " + this.address.toString() + " | DHD: " + this.hasDHD + " | Generation: " + this.generation + " | Times Opened: " + this.timesOpened + " ]";
 	}
 }

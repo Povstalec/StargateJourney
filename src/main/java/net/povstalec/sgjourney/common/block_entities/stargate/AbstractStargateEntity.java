@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -103,6 +104,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String UPGRADED = "Upgraded";
 	public static final String DISPLAY_ID = "DisplayID";
 	public static final String VARIANT = "Variant";
+	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
+	public static final String PRIMARY = "primary";
 	
 	public static final String COVER_BLOCKS = "CoverBlocks";
 	
@@ -160,6 +163,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	protected boolean displayID = false;
 	protected boolean upgraded = false;
+	protected boolean localPointOfOrigin = false;
+	protected boolean primary = false;
 	
 	private boolean initialClientSync = false;
 	
@@ -245,8 +250,19 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		else
 			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
 		
-		displayID = tag.getBoolean(DISPLAY_ID);
-		upgraded = isUpgraded ? true : tag.getBoolean(UPGRADED);
+		if(tag.contains(DISPLAY_ID))
+			displayID = tag.getBoolean(DISPLAY_ID);
+		
+		if(isUpgraded)
+			upgraded = true;
+		else if(tag.contains(UPGRADED))
+			upgraded = tag.getBoolean(UPGRADED);
+		
+		if(tag.contains(LOCAL_POINT_OF_ORIGIN))
+			localPointOfOrigin = tag.getBoolean(LOCAL_POINT_OF_ORIGIN);
+		
+		if(tag.contains(PRIMARY))
+			primary = tag.getBoolean(PRIMARY);
 		
 		variant = new ResourceLocation(tag.getString(VARIANT));
 		
@@ -291,9 +307,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 
 		tag.putLong(ENERGY, this.getEnergyStored());
-
-		tag.putBoolean(DISPLAY_ID, displayID);
-		tag.putBoolean(UPGRADED, upgraded);
+		
+		if(displayID)
+			tag.putBoolean(DISPLAY_ID, true);
+		if(upgraded)
+			tag.putBoolean(UPGRADED, true);
+		if(localPointOfOrigin)
+			tag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
+		if(primary)
+			tag.putBoolean(PRIMARY, true);
 
 		tag.putString(VARIANT, variant.toString());
 		
@@ -567,7 +589,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		}
 		
 		Address dialingAddress = this.getConnectionAddress(address.getLength());
-		StargateInfo stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress().immutable());
+		Stargate stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress().immutable());
 		
 		if(stargate != null)
 			return Dialing.dialStargate((ServerLevel) this.level, stargate, immutableAddress, dialingAddress.immutable(), doKawoosh);
@@ -792,8 +814,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 				return address.mutable();
 		}
 		
-		return this.get9ChevronAddress();
 		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
+		return this.get9ChevronAddress();
 	}
 	
 	//============================================================================================
@@ -1303,6 +1325,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 
 		player.sendSystemMessage(Component.translatable("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
+		if(isPrimary())
+			player.sendSystemMessage(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
 		
 		super.getStatus(player);
@@ -1490,5 +1514,20 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public void upgraded()
 	{
 		upgraded = true;
+	}
+	
+	public void localPointOfOrigin()
+	{
+		localPointOfOrigin = true;
+	}
+	
+	public void setPrimary()
+	{
+		primary = true;
+	}
+	
+	public boolean isPrimary()
+	{
+		return primary;
 	}
 }

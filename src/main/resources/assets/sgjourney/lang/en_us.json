@@ -496,6 +496,7 @@
 	"tooltip.sgjourney.requires": "Requires",
 	"tooltip.sgjourney.stargate_type": "Stargate Type",
 	"tooltip.sgjourney.generates_inside_structure": "Generates inside a Structure",
+	"tooltip.sgjourney.is_primary": "Is Primary",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",

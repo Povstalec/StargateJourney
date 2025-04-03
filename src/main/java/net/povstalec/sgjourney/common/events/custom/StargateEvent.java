@@ -5,22 +5,23 @@ import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 @Cancelable
 public class StargateEvent extends Event
 {
 	private final MinecraftServer server;
-	private final StargateInfo stargate;
+	private final Stargate stargate;
 	
-	public StargateEvent(MinecraftServer server, StargateInfo stargate)
+	public StargateEvent(MinecraftServer server, Stargate stargate)
 	{
 		this.server = server;
 		this.stargate = stargate;
 	}
 	
-	public StargateInfo getStargate()
+	public Stargate getStargate()
 	{
 		return this.stargate;
 	}
@@ -33,7 +34,7 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when a Stargate attempts to dial a certain Address
+	 * Fired when a Stargate attempts to dial a certain Address (cancelable)
 	 * @author Povstalec
 	 *
 	 */
@@ -44,7 +45,7 @@ public class StargateEvent extends Event
 		private final Address.Immutable dialingAddress;
 		private final boolean doKawoosh;
 		
-		public Dial(MinecraftServer server, StargateInfo stargate, Address.Immutable dialedAddress, Address.Immutable dialingAddress, boolean doKawoosh)
+		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, Address.Immutable dialingAddress, boolean doKawoosh)
 		{
 			super(server, stargate);
 			this.dialedAddress = dialedAddress.copy();
@@ -71,7 +72,8 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when a Stargate attempts to form a connection with another Stargate
+	 * Fired when a Stargate attempts to form a connection with another Stargate (cancelable)
+	 * !!!NOTE That it does NOT reset the Stargate or actually change its feedback when cancelled!!!
 	 * @author Povstalec
 	 *
 	 */
@@ -79,11 +81,11 @@ public class StargateEvent extends Event
 	public static class Connect extends StargateEvent
 	{
 		private final StargateConnection.Type connectionType;
-		private final StargateInfo connectedStargate;
+		private final Stargate connectedStargate;
 		private final Address.Type addressType;
 		private final boolean doKawoosh;
 		
-		public Connect(MinecraftServer server, StargateInfo stargate, StargateInfo connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh)
+		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh)
 		{
 			super(server, stargate);
 
@@ -93,7 +95,7 @@ public class StargateEvent extends Event
 			this.doKawoosh = doKawoosh;
 		}
 		
-		public StargateInfo getConnectedStargate()
+		public Stargate getConnectedStargate()
 		{
 			return this.connectedStargate;
 		}
@@ -117,19 +119,19 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when a an Entity goes through the Wormhole
+	 * Fired when a an Entity goes through the Wormhole (cancelable)
 	 * @author Povstalec
 	 *
 	 */
 	@Cancelable
 	public static class WormholeTravel extends StargateEvent
 	{
-		private final StargateInfo connectedStargate;
+		private final Stargate connectedStargate;
 		private final StargateConnection.Type connectionType;
 		private final Entity traveler;
 		private final StargateInfo.WormholeTravel wormholeTravel;
 
-		public WormholeTravel(MinecraftServer server, StargateInfo stargate, StargateInfo connectedStargate,
+		public WormholeTravel(MinecraftServer server, Stargate stargate, Stargate connectedStargate,
 							  StargateConnection.Type connectionType, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
 		{
 			super(server, stargate);
@@ -140,7 +142,7 @@ public class StargateEvent extends Event
 			this.wormholeTravel = wormholeTravel;
 		}
 		
-		public StargateInfo getConnectedStargate()
+		public Stargate getConnectedStargate()
 		{
 			return this.connectedStargate;
 		}

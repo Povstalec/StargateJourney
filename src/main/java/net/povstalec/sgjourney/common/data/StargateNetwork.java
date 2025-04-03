@@ -26,6 +26,7 @@ import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public final class StargateNetwork extends SavedData
 {
@@ -41,7 +42,7 @@ public final class StargateNetwork extends SavedData
 	
 	private MinecraftServer server;
 	
-	private Map<UUID, StargateConnection> connections = new HashMap<UUID, StargateConnection>();
+	private HashMap<UUID, StargateConnection> connections = new HashMap<UUID, StargateConnection>();
 	private int version = 0;
 	
 	//============================================================================================
@@ -62,11 +63,11 @@ public final class StargateNetwork extends SavedData
 	{
 		if(getVersion() == updateVersion)
 		{
-			StargateJourney.LOGGER.info("Stargate Network is up to date (Version: " + version + ")");
+			StargateJourney.LOGGER.debug("Stargate Network is up to date (Version: " + version + ")");
 			return;
 		}
 		
-		StargateJourney.LOGGER.info("Detected an incompatible Stargate Network version (Version: " + getVersion() + ") - updating to version " + updateVersion);
+		StargateJourney.LOGGER.debug("Detected an incompatible Stargate Network version (Version: " + getVersion() + ") - updating to version " + updateVersion);
 		
 		stellarUpdate(server, false);
 	}
@@ -93,24 +94,24 @@ public final class StargateNetwork extends SavedData
 			StargateConnection connection = nextConnection.getValue();
 			connection.terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
 		}
-		StargateJourney.LOGGER.info("Connections terminated");
+		StargateJourney.LOGGER.debug("Connections terminated");
 		
 		StargateNetworkSettings.get(server).updateSettings();
 		
 		Universe.get(server).eraseUniverseInfo();
-		StargateJourney.LOGGER.info("Universe erased");
+		StargateJourney.LOGGER.debug("Universe erased");
 		
 		Universe.get(server).generateUniverseInfo(server);
-		StargateJourney.LOGGER.info("Universe regenerated");
+		StargateJourney.LOGGER.debug("Universe regenerated");
 		
 		eraseNetwork();
-		StargateJourney.LOGGER.info("Stargate Network erased");
+		StargateJourney.LOGGER.debug("Stargate Network erased");
 		
 		resetStargates(server, updateInterfaces);
-		StargateJourney.LOGGER.info("Stargates reset");
+		StargateJourney.LOGGER.debug("Stargates reset");
 		
 		updateVersion();
-		StargateJourney.LOGGER.info("Version updated");
+		StargateJourney.LOGGER.debug("Version updated");
 		
 		this.setDirty();
 	}
@@ -121,11 +122,11 @@ public final class StargateNetwork extends SavedData
 	
 	public final void addStargates(MinecraftServer server)
 	{
-		HashMap<Address.Immutable, StargateInfo> stargates = BlockEntityList.get(server).getStargates();
+		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
 		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
-			StargateInfo mapStargate = stargateInfo.getValue();
+			Stargate mapStargate = stargateInfo.getValue();
 			
 			if(mapStargate != null)
 			{
@@ -150,12 +151,12 @@ public final class StargateNetwork extends SavedData
 	
 	private final void resetStargates(MinecraftServer server, boolean updateInterfaces)
 	{
-		HashMap<Address.Immutable, StargateInfo> stargates = BlockEntityList.get(server).getStargates();
+		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
 		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
 			Address.Immutable address = stargateInfo.getKey();
-			StargateInfo mapStargate = stargateInfo.getValue();
+			Stargate mapStargate = stargateInfo.getValue();
 			
 			if(mapStargate != null)
 			{
@@ -193,11 +194,11 @@ public final class StargateNetwork extends SavedData
 	
 	public final void addStargate(AbstractStargateEntity stargateEntity)
 	{
-		Optional<StargateInfo> stargateOptional = BlockEntityList.get(server).addStargate(stargateEntity);
+		Optional<Stargate> stargateOptional = BlockEntityList.get(server).addStargate(stargateEntity);
 		
 		if(stargateOptional.isPresent())
 		{
-			StargateInfo stargate = stargateOptional.get();
+			Stargate stargate = stargateOptional.get();
 			Universe.get(server).addStargateToDimension(stargate.getDimension(), stargate);
 		}
 		
@@ -209,20 +210,20 @@ public final class StargateNetwork extends SavedData
 		if(address == null)
 			return;
 		
-		StargateInfo stargate = getStargate(address);
+		Stargate stargate = getStargate(address);
 		
 		if(stargate != null)
 			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate);
 
 		BlockEntityList.get(level).removeStargate(address);
 		
-		StargateJourney.LOGGER.info("Removed " + address.toString() + " from Stargate Network");
+		StargateJourney.LOGGER.debug("Removed " + address.toString() + " from Stargate Network");
 		setDirty();
 	}
 	
 	public final void updateStargate(ServerLevel level, AbstractStargateEntity stargateEntity)
 	{
-		StargateInfo stargate = getStargate(stargateEntity.get9ChevronAddress().immutable());
+		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress().immutable());
 		
 		if(stargate != null)
 		{
@@ -233,7 +234,7 @@ public final class StargateNetwork extends SavedData
 	}
 	
 	@Nullable
-	public final StargateInfo getStargate(Address.Immutable address)
+	public final Stargate getStargate(Address.Immutable address)
 	{
 		return BlockEntityList.get(server).getStargate(address);
 	}
@@ -265,7 +266,7 @@ public final class StargateNetwork extends SavedData
 		return 0;
 	}
 	
-	public final StargateInfo.Feedback createConnection(MinecraftServer server, StargateInfo dialingStargate, StargateInfo dialedStargate, Address.Type addressType, boolean doKawoosh)
+	public final StargateInfo.Feedback createConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		StargateConnection.Type connectionType = StargateConnection.getType(server, dialingStargate, dialedStargate);
 		
@@ -392,7 +393,7 @@ public final class StargateNetwork extends SavedData
 		if(hasConnection(uuid))
 		{
 			this.connections.remove(uuid);
-			StargateJourney.LOGGER.info("Removed connection " + uuid);
+			StargateJourney.LOGGER.debug("Removed connection " + uuid);
 		}
 		else
 			StargateJourney.LOGGER.error("Could not find connection " + uuid);
@@ -483,18 +484,18 @@ public final class StargateNetwork extends SavedData
 	
 	public static final void findStargates(ServerLevel level)
 	{
-		StargateJourney.LOGGER.info("Attempting to locate the Stargate Structure in " + level.dimension().location().toString());
+		StargateJourney.LOGGER.debug("Attempting to locate the Stargate Structure in " + level.dimension().location().toString());
 		
 		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
         int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
-		//Nearest Structure that potentially has a Stargate
+		// Nearest Structure that potentially has a Stargate
 		BlockPos blockpos = ((ServerLevel) level).findNearestMapStructure(TagInit.Structures.NETWORK_STARGATE, new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
 		if(blockpos == null)
 		{
-			StargateJourney.LOGGER.info("Stargate Structure not found");
+			StargateJourney.LOGGER.debug("Stargate Structure not found");
 			return;
 		}
-		//Map of Block Entities that might contain a Stargate
+		// Map of Block Entities that might contain a Stargate
 		List<AbstractStargateEntity> stargates = new ArrayList<AbstractStargateEntity>();
 		
 		for(int x = -2; x <= 2; x++)
@@ -514,12 +515,11 @@ public final class StargateNetwork extends SavedData
 		
 		if(stargates.isEmpty())
 		{
-			StargateJourney.LOGGER.info("No Stargates found in Stargate Structure");
+			StargateJourney.LOGGER.debug("No Stargates found in Stargate Structure");
 			return;
 		}
 		
 		stargates.stream().forEach(stargate -> stargate.onLoad());
-		return;
 	}
 	
 	//============================================================================================
