@@ -11,6 +11,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
@@ -67,14 +68,6 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePacket;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.Dialing;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy;
-import net.povstalec.sgjourney.common.sgjourney.ITransmissionReceiver;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.Wormhole;
 
 public abstract class AbstractStargateEntity extends EnergyBlockEntity implements ITransmissionReceiver, StructureGenEntity,
 		SymbolInfo.Interface, DHDInfo.Interface, AddressFilterInfo.Interface
@@ -106,6 +99,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String VARIANT = "Variant";
 	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
 	public static final String PRIMARY = "primary";
+	public static final String PROTECTED = "protected";
 	
 	public static final String COVER_BLOCKS = "CoverBlocks";
 	
@@ -164,7 +158,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected boolean displayID = false;
 	protected boolean upgraded = false;
 	protected boolean localPointOfOrigin = false;
-	protected boolean primary = false;
+	protected boolean isPrimary = false;
+	protected boolean isProtected = false;
 	
 	private boolean initialClientSync = false;
 	
@@ -262,7 +257,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			localPointOfOrigin = tag.getBoolean(LOCAL_POINT_OF_ORIGIN);
 		
 		if(tag.contains(PRIMARY))
-			primary = tag.getBoolean(PRIMARY);
+			isPrimary = tag.getBoolean(PRIMARY);
+		
+		if(tag.contains(PROTECTED))
+			isProtected = tag.getBoolean(PROTECTED);
 		
 		variant = new ResourceLocation(tag.getString(VARIANT));
 		
@@ -314,8 +312,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			tag.putBoolean(UPGRADED, true);
 		if(localPointOfOrigin)
 			tag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
-		if(primary)
+		if(isPrimary)
 			tag.putBoolean(PRIMARY, true);
+		if(isProtected)
+			tag.putBoolean(PROTECTED, true);
 
 		tag.putString(VARIANT, variant.toString());
 		
@@ -1496,10 +1496,23 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			generationStep = Step.READY;
 	}
 	
+	private void trySetPrimary()
+	{
+		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(level.dimension());
+		
+		if(solarSystem == null || solarSystem.primaryAddress() != null)
+			return;
+		
+		solarSystem.setPrimaryStargate(this.get9ChevronAddress().immutable());
+	}
+	
 	public void generate()
 	{
 		addStargateToNetwork();
 		generateAdditional(Step.READY);
+		
+		if(isPrimary())
+			trySetPrimary();
 		
 		generationStep = Step.GENERATED;
 	}
@@ -1523,11 +1536,21 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void setPrimary()
 	{
-		primary = true;
+		isPrimary = true;
 	}
 	
 	public boolean isPrimary()
 	{
-		return primary;
+		return isPrimary;
+	}
+	
+	public void setProtected()
+	{
+		isProtected = true;
+	}
+	
+	public boolean isProtected()
+	{
+		return isProtected;
 	}
 }

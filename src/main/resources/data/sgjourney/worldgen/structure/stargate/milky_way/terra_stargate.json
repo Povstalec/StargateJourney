@@ -28,5 +28,11 @@
 			"spawns":
 			[]
 		}
+	},
+	
+	"stargate_modifiers":
+	{
+		"primary": true,
+		"protected": true
 	}
 }

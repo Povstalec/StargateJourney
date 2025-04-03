@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
@@ -146,7 +147,7 @@ public class Dialing
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_STARGATES, true);
 		
 		// Primary Stargate
-		if(solarSystem.primaryStargate() != null)
+		if(CommonStargateNetworkConfig.primary_stargate.get() && solarSystem.primaryStargate() != null)
 		{
 			StargateInfo.Feedback feedback = solarSystem.primaryStargate().tryConnect(server, dialingStargate, addressType, dialingAddress, doKawoosh);
 			

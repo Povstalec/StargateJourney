@@ -115,23 +115,26 @@ public abstract class StargateStructure extends SGJourneyStructure
 		private boolean localPointOfOrigin;
 		
 		private boolean primary;
-		//TODO Unbreakable Stargate
+		private boolean isProtected;
 		
 		public static final Codec<StargateModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.BOOL.optionalFieldOf("display_id").forGetter(modifiers -> Optional.ofNullable(modifiers.displayID)),
 				Codec.BOOL.optionalFieldOf("upgraded").forGetter(modifiers -> Optional.ofNullable(modifiers.upgraded)),
 				Codec.BOOL.optionalFieldOf("local_point_of_origin").forGetter(modifiers -> Optional.ofNullable(modifiers.localPointOfOrigin)),
 				
-				Codec.BOOL.optionalFieldOf("primary").forGetter(modifiers -> Optional.ofNullable(modifiers.primary))
+				Codec.BOOL.optionalFieldOf("primary").forGetter(modifiers -> Optional.ofNullable(modifiers.primary)),
+				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.ofNullable(modifiers.isProtected))
 		).apply(instance, StargateModifiers::new));
 		
-		public StargateModifiers(Optional<Boolean> displayID, Optional<Boolean> upgraded, Optional<Boolean> localPointOfOrigin, Optional<Boolean> primary)
+		public StargateModifiers(Optional<Boolean> displayID, Optional<Boolean> upgraded, Optional<Boolean> localPointOfOrigin,
+								 Optional<Boolean> primary, Optional<Boolean> isProtected)
 		{
 			this.displayID = displayID.orElse(false);
 			this.upgraded = upgraded.orElse(false);
-			this.localPointOfOrigin = upgraded.orElse(false);
+			this.localPointOfOrigin = localPointOfOrigin.orElse(false);
 			
-			this.primary = upgraded.orElse(false);
+			this.primary = primary.orElse(false);
+			this.isProtected = isProtected.orElse(false);
 		}
 		
 		public void modifyStargate(AbstractStargateEntity stargate)
@@ -147,6 +150,9 @@ public abstract class StargateStructure extends SGJourneyStructure
 			
 			if(primary)
 				stargate.setPrimary();
+			
+			if(isProtected)
+				stargate.setProtected();
 		}
 	}
 }

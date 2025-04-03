@@ -13,6 +13,7 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.EnumValue<WormholeTravel> two_way_wormholes;
 	public static ForgeConfigSpec.BooleanValue reverse_wormhole_kills;
 	public static ForgeConfigSpec.BooleanValue can_break_connected_stargate;
+	public static ForgeConfigSpec.IntValue protected_stargate_permissions;
 	
 	public static ForgeConfigSpec.BooleanValue kawoosh_destroys_blocks;
 	public static ForgeConfigSpec.BooleanValue kawoosh_disintegrates_items;
@@ -79,6 +80,10 @@ public class CommonStargateConfig
 		can_break_connected_stargate = server
 				.comment("If false, it will be impossible to break the Stargate through mining while it's connected")
 				.define("server.can_break_connected_stargate", false);
+		
+		protected_stargate_permissions = server
+				.comment("Decides the player permission level required to break protected Stargates")
+				.defineInRange("server.protected_stargate_permissions", 0, 0, 4);
 		
 		
 		

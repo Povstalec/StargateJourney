@@ -29,5 +29,11 @@
 			[]
 		}
 	},
-	"terrain_adaptation": "none"
+	"terrain_adaptation": "none",
+	
+	"stargate_modifiers":
+	{
+		"primary": true,
+		"protected": true
+	}
 }

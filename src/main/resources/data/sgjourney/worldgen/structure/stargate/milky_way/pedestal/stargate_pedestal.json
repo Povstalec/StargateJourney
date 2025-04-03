@@ -29,5 +29,11 @@
 			[]
 		}
 	},
-	"terrain_adaptation": "beard_thin"
+	"terrain_adaptation": "beard_thin",
+	
+	"stargate_modifiers":
+	{
+		"primary": true,
+		"protected": true
+	}
 }

@@ -81,12 +81,15 @@ public class StargateBlockState extends BlockState
 		
 		if(this.getBlock() instanceof AbstractStargateBlock stargate)
 		{
-			Optional<StargateBlockCover> blockCover = stargate.getBlockCover(reader, this, pos);
-			
-			if(blockCover.isPresent())
+			AbstractStargateEntity stargateEntity = stargate.getStargate(reader, pos, this);
+			if(stargateEntity != null)
 			{
+				if(stargateEntity.isProtected() && !player.hasPermissions(CommonStargateConfig.protected_stargate_permissions.get()))
+					return 0.0F;
+				
+				StargateBlockCover blockCover = stargateEntity.blockCover;
 				StargatePart part = this.getValue(AbstractStargateBlock.PART);
-				Optional<BlockState> coverState = blockCover.get().getBlockAt(part);
+				Optional<BlockState> coverState = blockCover.getBlockAt(part);
 				
 				if(coverState.isPresent())
 				{
