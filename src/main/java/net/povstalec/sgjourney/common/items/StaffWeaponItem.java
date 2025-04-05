@@ -166,10 +166,7 @@ public class StaffWeaponItem extends Item
 				level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 				if(!level.isClientSide())
 				{
-					// If the player is in Creative and it's empty, the explosions will be the same size as if it was filled with Liquid Naquadah
-					float explosionPower = getFluidStack(itemstack).getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get() ?
-							HEAVY_LIQUID_NAQUADAH_EXPLOSION_POWER : LIQUID_NAQUADAH_EXPLOSION_POWER;
-					PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level, explosionPower);
+					PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level, getExplosionPower(stack));
 					plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
 					level.addFreshEntity(plasmaProjectile);
 				}
@@ -185,6 +182,13 @@ public class StaffWeaponItem extends Item
 		
 		
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+	}
+	
+	public float getExplosionPower(ItemStack stack)
+	{
+		// If the player is in Creative and it's empty, the explosions will be the same size as if it was filled with Liquid Naquadah
+		return getFluidStack(stack).getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get() ?
+				HEAVY_LIQUID_NAQUADAH_EXPLOSION_POWER : LIQUID_NAQUADAH_EXPLOSION_POWER;
 	}
 	
 	@Override

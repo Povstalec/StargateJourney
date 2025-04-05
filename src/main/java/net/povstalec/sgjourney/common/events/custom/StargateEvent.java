@@ -4,15 +4,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 @Cancelable
 public class StargateEvent extends Event
 {
-	//TODO Add these events to the mod
-
 	private final MinecraftServer server;
 	private final Stargate stargate;
 	
@@ -35,7 +34,7 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when a Stargate attempts to dial a certain Address
+	 * Fired when a Stargate attempts to dial a certain Address (cancelable)
 	 * @author Povstalec
 	 *
 	 */
@@ -73,7 +72,8 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when a Stargate attempts to form a connection with another Stargate
+	 * Fired when a Stargate attempts to form a connection with another Stargate (cancelable)
+	 * !!!NOTE That it does NOT reset the Stargate or actually change its feedback when cancelled!!!
 	 * @author Povstalec
 	 *
 	 */
@@ -119,7 +119,7 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when a an Entity goes through the Wormhole
+	 * Fired when a an Entity goes through the Wormhole (cancelable)
 	 * @author Povstalec
 	 *
 	 */
@@ -129,10 +129,10 @@ public class StargateEvent extends Event
 		private final Stargate connectedStargate;
 		private final StargateConnection.Type connectionType;
 		private final Entity traveler;
-		private final Stargate.WormholeTravel wormholeTravel;
+		private final StargateInfo.WormholeTravel wormholeTravel;
 
 		public WormholeTravel(MinecraftServer server, Stargate stargate, Stargate connectedStargate,
-				StargateConnection.Type connectionType, Entity traveler, Stargate.WormholeTravel wormholeTravel)
+							  StargateConnection.Type connectionType, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
 		{
 			super(server, stargate);
 			
@@ -157,7 +157,7 @@ public class StargateEvent extends Event
 			return this.traveler;
 		}
 		
-		public Stargate.WormholeTravel getWormholeTravel()
+		public StargateInfo.WormholeTravel getWormholeTravel()
 		{
 			return this.wormholeTravel;
 		}

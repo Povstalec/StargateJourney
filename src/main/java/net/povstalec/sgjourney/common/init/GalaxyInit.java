@@ -12,7 +12,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.stargate.GalaxyType;
+import net.povstalec.sgjourney.common.sgjourney.GalaxyType;
 
 public class GalaxyInit
 {

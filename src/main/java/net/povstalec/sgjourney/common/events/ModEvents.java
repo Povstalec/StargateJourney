@@ -29,11 +29,11 @@ public class ModEvents
 		}
 	}
 	
-	@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	/*@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Server
 	{
 	
-	}
+	}*/
 	
 	@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class Client

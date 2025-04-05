@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.events;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -48,6 +47,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
@@ -64,7 +64,7 @@ import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
-import net.povstalec.sgjourney.common.stargate.StargateBlockCover;
+
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
 {
@@ -264,7 +264,6 @@ public class ForgeEvents
 					event.getEntity().swing(InteractionHand.MAIN_HAND);
 
 					event.setCanceled(true);
-					return;
 				}
 			}
 		}
@@ -278,19 +277,27 @@ public class ForgeEvents
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 		
-		if(state.getBlock() instanceof AbstractStargateBlock stargate)
+		if(state.getBlock() instanceof ProtectedBlock protectedBlock)
 		{
-			Optional<StargateBlockCover> blockCover = stargate.getBlockCover(level, state, event.getPos());
+			// Player doesn't have permissions to break the Block
+			if(!protectedBlock.hasPermissions(level, pos, state, event.getEntity(), true))
+			{
+				event.setCanceled(true);
+				return;
+			}
+		}
+		
+		if(state.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		{
+			AbstractStargateEntity stargate = stargateBlock.getStargate(level, pos, state);
 			
-			if(blockCover.isPresent() && !blockCover.get().blockStates.isEmpty())
+			if(stargate != null && !stargate.blockCover.blockStates.isEmpty())
 			{
 				StargatePart part = state.getValue(AbstractStargateBlock.PART);
 				
-				if(blockCover.get().getBlockAt(part).isEmpty())
+				if(stargate.blockCover.getBlockAt(part).isEmpty())
 				{
-					AbstractStargateEntity stargateEntity = stargate.getStargate(level, pos, state);
-					if(stargateEntity != null)
-						stargateEntity.spawnCoverParticles();
+					stargate.spawnCoverParticles();
 					
 					event.getEntity().displayClientMessage(Component.translatable("block.sgjourney.stargate.break_cover_blocks"), true);
 					event.setCanceled(true);
@@ -301,21 +308,43 @@ public class ForgeEvents
 	}
 	
 	@SubscribeEvent
-	public static void onBlockBreak(BlockEvent.BreakEvent event) // Break individual blocks covering the Stargate
+	public static void onBlockBreak(BlockEvent.BreakEvent event) // Break individual Blocks covering the Stargate
 	{
-		if(event.getState().getBlock() instanceof AbstractStargateBlock stargate)
+		BlockState state = event.getState();
+		
+		if(state.getBlock() instanceof ProtectedBlock protectedBlock)
 		{
 			Player player = event.getPlayer();
 			Level level = player.level();
+			BlockPos pos = event.getPos();
 			
-			Optional<StargateBlockCover> blockCover = stargate.getBlockCover(level, event.getState(), event.getPos());
-			
-			if(blockCover.isPresent() && !blockCover.get().blockStates.isEmpty())
+			// Player doesn't have permissions to break the Block
+			if(!protectedBlock.hasPermissions(level, pos, state, player, false))
 			{
-				StargatePart part = event.getState().getValue(AbstractStargateBlock.PART);
-				
-				if(blockCover.get().mineBlockAt(level, player, part, event.getPos()))
+				event.setCanceled(true);
+				return;
+			}
+		}
+		
+		if(state.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		{
+			Player player = event.getPlayer();
+			Level level = player.level();
+			BlockPos pos = event.getPos();
+			AbstractStargateEntity stargate = stargateBlock.getStargate(level, pos, state);
+			
+			if(stargate != null)
+			{
+				if(!stargate.hasPermissions(player, false))
 					event.setCanceled(true);
+				
+				else if(!stargate.blockCover.blockStates.isEmpty())
+				{
+					StargatePart part = event.getState().getValue(AbstractStargateBlock.PART);
+					
+					if (stargate.blockCover.mineBlockAt(level, player, part, pos))
+						event.setCanceled(true);
+				}
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.compatibility.computer_functions;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class RotatingStargateFunctions
 {
@@ -19,7 +19,7 @@ public class RotatingStargateFunctions
 		return stargate.isCurrentSymbol(symbol);
 	}
 	
-	public static Stargate.Feedback encodeChevron(RotatingStargateEntity stargate)
+	public static StargateInfo.Feedback encodeChevron(RotatingStargateEntity stargate)
 	{
 		return stargate.encodeChevron();
 	}
@@ -34,7 +34,7 @@ public class RotatingStargateFunctions
 		return stargate.getRotationDegrees();
 	}
 	
-	public static Stargate.Feedback rotateClockwise(RotatingStargateEntity stargate, int desiredSymbol)
+	public static StargateInfo.Feedback rotateClockwise(RotatingStargateEntity stargate, int desiredSymbol)
 	{
 		// Should handle following exception
 		/*if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
@@ -43,7 +43,7 @@ public class RotatingStargateFunctions
 		return stargate.startRotation(desiredSymbol, true);
 	}
 	
-	public static Stargate.Feedback rotateAntiClockwise(RotatingStargateEntity stargate, int desiredSymbol)
+	public static StargateInfo.Feedback rotateAntiClockwise(RotatingStargateEntity stargate, int desiredSymbol)
 	{
 		// Should handle following exception
 		/*if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
@@ -52,7 +52,7 @@ public class RotatingStargateFunctions
 		return stargate.startRotation(desiredSymbol, false);
 	}
 	
-	public static Stargate.Feedback endRotation(RotatingStargateEntity stargate)
+	public static StargateInfo.Feedback endRotation(RotatingStargateEntity stargate)
 	{
 		return stargate.endRotation(true);
 	}

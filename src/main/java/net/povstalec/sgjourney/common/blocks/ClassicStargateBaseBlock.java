@@ -26,8 +26,9 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 {
@@ -80,7 +81,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 					return InteractionResult.FAIL;
 				}
 				
-				if(BlockEntityList.get(level).getStargate(address.immutable()).isPresent())
+				if(BlockEntityList.get(level).containsStargate(address.immutable()))
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.address_exists"), true);
 					return InteractionResult.FAIL;
@@ -126,6 +127,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 				}
 
 				stargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+				stargate.symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
 				stargate.addStargateToNetwork();
 			}
 			

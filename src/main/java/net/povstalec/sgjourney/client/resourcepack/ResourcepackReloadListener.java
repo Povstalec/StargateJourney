@@ -1,9 +1,7 @@
 package net.povstalec.sgjourney.client.resourcepack;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -30,8 +28,7 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStar
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
-import net.povstalec.stellarview.StellarView;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class ResourcepackReloadListener
 {

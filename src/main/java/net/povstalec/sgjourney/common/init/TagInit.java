@@ -67,6 +67,7 @@ public class TagInit
 	public class Structures
 	{
 		public static final TagKey<Structure> STARGATE_MAP = tag("stargate_map");
+		public static final TagKey<Structure> NETWORK_STARGATE = tag("network_stargate");
 		public static final TagKey<Structure> HAS_STARGATE = tag("has_stargate");
 		public static final TagKey<Structure> BURIED_STARGATE = tag("buried_stargate");
 		public static final TagKey<Structure> STARGATE_PEDESTAL = tag("stargate_pedestal");
