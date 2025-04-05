@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.common.compatibility.computer_functions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class IrisFunctions
 {
@@ -21,17 +21,17 @@ public class IrisFunctions
 	
 	public static boolean closeIris(AbstractInterfaceEntity interfaceEntity)
 	{
-		return interfaceEntity.setIrisMotion(Stargate.IrisMotion.CLOSING_COMPUTER);
+		return interfaceEntity.setIrisMotion(StargateInfo.IrisMotion.CLOSING_COMPUTER);
 	}
 	
 	public static boolean openIris(AbstractInterfaceEntity interfaceEntity)
 	{
-		return interfaceEntity.setIrisMotion(Stargate.IrisMotion.OPENING_COMPUTER);
+		return interfaceEntity.setIrisMotion(StargateInfo.IrisMotion.OPENING_COMPUTER);
 	}
 	
 	public static boolean stopIris(AbstractInterfaceEntity interfaceEntity)
 	{
-		return interfaceEntity.setIrisMotion(Stargate.IrisMotion.IDLE);
+		return interfaceEntity.setIrisMotion(StargateInfo.IrisMotion.IDLE);
 	}
 	
 	public static short getIrisProgress(IrisStargateEntity stargate)

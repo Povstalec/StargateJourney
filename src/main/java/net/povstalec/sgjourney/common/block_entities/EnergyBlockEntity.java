@@ -268,6 +268,6 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	{
 		if(level.isClientSide())
 			return;
-		player.sendSystemMessage(Component.literal("Energy: " + this.getEnergyStored() + " FE").withStyle(ChatFormatting.DARK_RED));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.energy").append(Component.literal(": " + this.getEnergyStored() + " FE")).withStyle(ChatFormatting.DARK_RED));
 	}
 }

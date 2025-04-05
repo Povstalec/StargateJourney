@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.client.sound.sounds;
 import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.stargate.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 
 public class WormholeIdleSound extends StargateSound<AbstractStargateEntity>
 {

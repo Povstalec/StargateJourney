@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.compatibility.computer_functions;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class MilkyWayStargateFunctions
 {
@@ -23,12 +23,12 @@ public class MilkyWayStargateFunctions
 	else if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 		throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");*/
 	
-	public static Stargate.Feedback openChevron(MilkyWayStargateEntity stargate)
+	public static StargateInfo.Feedback openChevron(MilkyWayStargateEntity stargate)
 	{
 		return stargate.openChevron();
 	}
 	
-	public static Stargate.Feedback closeChevron(MilkyWayStargateEntity stargate)
+	public static StargateInfo.Feedback closeChevron(MilkyWayStargateEntity stargate)
 	{
 		return stargate.closeChevron();
 	}

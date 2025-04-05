@@ -23,6 +23,7 @@ public class EntityInit
 	public static final DeferredHolder<EntityType<?>, EntityType<PlasmaProjectile>> JAFFA_PLASMA = ENTITIES.register("jaffa_plasma",
 					() -> EntityType.Builder.<PlasmaProjectile>of(PlasmaProjectile::new, MobCategory.MISC)
 						.sized(0.25F, 0.25F)
+						.setUpdateInterval(20)
 						.build(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "jaffa_plasma").toString()));
 
 	
@@ -34,12 +35,14 @@ public class EntityInit
 	
 	public static final Supplier<EntityType<Human>> HUMAN = ENTITIES.register("human",
 			() -> EntityType.Builder.<Human>of(Human::new, MobCategory.CREATURE)
-					.sized(0.625F, 1.8125F)
+					.sized(0.625F, 1.95F)
+					.clientTrackingRange(8)
 					.build(StargateJourney.sgjourneyLocation("human").toString()));
 	
 	public static final Supplier<EntityType<Jaffa>> JAFFA = ENTITIES.register("jaffa",
 			() -> EntityType.Builder.<Jaffa>of(Jaffa::new, MobCategory.CREATURE)
-					.sized(0.625F, 1.8125F)
+					.sized(0.625F, 1.95F)
+					.clientTrackingRange(8)
 					.build(StargateJourney.sgjourneyLocation("jaffa").toString()));
 	
 	public static void register(IEventBus eventBus)

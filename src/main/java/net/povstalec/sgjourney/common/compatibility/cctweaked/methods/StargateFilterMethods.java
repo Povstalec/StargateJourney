@@ -13,8 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.StargateFilterFunctions;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 
 public class StargateFilterMethods
 {

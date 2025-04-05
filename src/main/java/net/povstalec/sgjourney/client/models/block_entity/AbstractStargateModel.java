@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.models.block_entity;
 
-import java.util.Optional;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -16,9 +14,9 @@ import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
 
@@ -216,11 +214,11 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			return stargateVariant.symbols().symbolsGlow();
 	}
 	
-	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, Stargate.ChevronSymbolState state, boolean incoming)
+	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, StargateInfo.ChevronSymbolState state, boolean incoming)
 	{
-		if(state == Stargate.ChevronSymbolState.OFF)
+		if(state == StargateInfo.ChevronSymbolState.OFF)
 			return stargateVariant.symbols().symbolColor();
-		else if(state == Stargate.ChevronSymbolState.ENGAGED)
+		else if(state == StargateInfo.ChevronSymbolState.ENGAGED)
 			return stargateVariant.symbols().engagedSymbolColor(); // TODO Split for incoming
 		else
 			return stargateVariant.symbols().encodedSymbolColor(); // TODO Split for incoming

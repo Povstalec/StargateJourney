@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
 import net.povstalec.sgjourney.client.render.entity.HumanRenderer;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.Jaffa;
+import net.povstalec.sgjourney.common.init.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -51,7 +52,6 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.fluids.NaquadahFluidType;
 import net.povstalec.sgjourney.common.fluids.HeavyNaquadahFluidType;
-import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.RingRemoteItem;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 import net.povstalec.sgjourney.common.items.VialItem;
@@ -60,13 +60,16 @@ import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
-import net.povstalec.sgjourney.common.stargate.*;
+import net.povstalec.sgjourney.common.sgjourney.AddressTable;
+import net.povstalec.sgjourney.common.sgjourney.Galaxy;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.SymbolSet;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
-import org.slf4j.Logger;
-
-import com.mojang.logging.LogUtils;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -116,7 +119,8 @@ public class StargateJourney
         TabInit.register(eventBus);
         RecipeTypeInit.register(eventBus);
         StatisticsInit.register(eventBus);
-    
+		CommandInit.register(eventBus);
+
         GalaxyInit.register(eventBus);
     
         AdvancementInit.register(eventBus);

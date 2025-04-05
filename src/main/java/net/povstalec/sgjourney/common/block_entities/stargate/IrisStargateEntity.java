@@ -17,16 +17,16 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateConnection;
-import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
 
 public abstract class IrisStargateEntity extends AbstractStargateEntity implements IrisInfo.Interface
 {
 	protected IrisInfo irisInfo;
 	
 	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-							  int totalSymbols, Stargate.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
+							  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
 	{
 		super(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
 		
@@ -34,7 +34,7 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 	}
 	
 	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-							  int totalSymbols, Stargate.Gen gen, int defaultNetwork)
+							  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork)
 	{
 		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}

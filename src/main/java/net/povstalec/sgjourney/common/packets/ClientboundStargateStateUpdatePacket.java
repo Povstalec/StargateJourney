@@ -19,7 +19,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
-import net.povstalec.sgjourney.common.stargate.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 
 public record ClientboundStargateStateUpdatePacket(BlockPos blockPos, StargateConnection.State connectionState, boolean canSinkGate, Map<StargatePart, BlockState> blockStates) implements CustomPacketPayload
 {

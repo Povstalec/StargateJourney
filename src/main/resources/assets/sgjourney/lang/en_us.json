@@ -72,6 +72,8 @@
 	"block.sgjourney.stargate.classic.invalid_address": "Invalid Address",
 	"block.sgjourney.stargate.classic.address_exists": "Address already exists",
 	"block.sgjourney.stargate.incorrect_stargate_type": "Incorrect Stargate type",
+	
+	"block.sgjourney.protected_permissions": "Protected: You lack permissions to do this",
 
 	"block.sgjourney.transport_rings": "Transport Rings",
 	"block.sgjourney.ring_panel": "Ring Panel",
@@ -481,6 +483,7 @@
 	"info.sgjourney.iris_texture": "Iris Texture",
 	"info.sgjourney.iris_durability": "Iris Durability",
 	"info.sgjourney.address_table": "Address Table",
+	"info.sgjourney.energy": "Energy",
 	
 	"tooltip.sgjourney.symbol": "Symbol",
 	"tooltip.sgjourney.symbols": "Symbols",
@@ -495,6 +498,7 @@
 	"tooltip.sgjourney.requires": "Requires",
 	"tooltip.sgjourney.stargate_type": "Stargate Type",
 	"tooltip.sgjourney.generates_inside_structure": "Generates inside a Structure",
+	"tooltip.sgjourney.is_primary": "Is Primary",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
@@ -648,6 +652,13 @@
 	"message.sgjourney.command.get_transporters": "Transporters in dimension",
 	"message.sgjourney.command.transporter_network_reload": "Transporter Network reloaded",
 	"message.sgjourney.command.click_to_copy.address": "Click to copy Address",
+	"message.sgjourney.command.primary_stargate_set": "Primary Stargate set",
+	"message.sgjourney.command.primary_stargate_unset": "Primary Stargate unset",
+	"message.sgjourney.command.primary_stargate": "Primary Stargate",
+	"message.sgjourney.command.primary_stargate_none": "No Primary Stargate",
+	"message.sgjourney.command.protected_block_set": "Protected Block set",
+	"message.sgjourney.command.protected_block_unset": "Protected Block unset",
+	"message.sgjourney.command.not_protected_block": "Target is not a protectable Block",
 
 	"message.sgjourney.gdo.shielded": "Shielded",
 	"message.sgjourney.gdo.error.no_nearby_stargate": "No nearby Stargate",

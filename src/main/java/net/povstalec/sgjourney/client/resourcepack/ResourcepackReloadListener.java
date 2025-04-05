@@ -31,7 +31,7 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStar
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class ResourcepackReloadListener
 {

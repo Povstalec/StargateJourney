@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.compatibility.computer_functions;
 
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import java.util.Map;
 

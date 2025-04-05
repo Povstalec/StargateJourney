@@ -8,7 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class ResourcepackSounds
 {
@@ -144,36 +144,36 @@ public class ResourcepackSounds
 		public static final String CLOSE_SOUND = "close";
 		
 		public static final Codec<ResourcepackSounds.Wormhole> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Stargate.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(OPEN_SOUND).forGetter(ResourcepackSounds.Wormhole::openSound),
-				Stargate.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(IDLE_SOUND).forGetter(ResourcepackSounds.Wormhole::idleSound),
-				Stargate.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(CLOSE_SOUND).forGetter(ResourcepackSounds.Wormhole::closeSound)
+				StargateInfo.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(OPEN_SOUND).forGetter(ResourcepackSounds.Wormhole::openSound),
+				StargateInfo.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(IDLE_SOUND).forGetter(ResourcepackSounds.Wormhole::idleSound),
+				StargateInfo.IncomingOutgoing.bothCodec(ResourceLocation.CODEC).fieldOf(CLOSE_SOUND).forGetter(ResourcepackSounds.Wormhole::closeSound)
 				// TODO probably add some unstable connection sounds in the future
 				).apply(instance, ResourcepackSounds.Wormhole::new));
 		
-		private final Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound;
-		private final Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound;
-		private final Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound;
+		private final Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound;
+		private final Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound;
+		private final Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound;
 		
-		public Wormhole(Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound,
-				Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound,
-				Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound)
+		public Wormhole(Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound,
+				Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound,
+				Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound)
 		{
 			this.openSound = openSound;
 			this.idleSound = idleSound;
 			this.closeSound = closeSound;
 		}
 		
-		public Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound()
+		public Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> openSound()
 		{
 			return openSound;
 		}
 		
-		public Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound()
+		public Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> idleSound()
 		{
 			return idleSound;
 		}
 		
-		public Either<Stargate.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound()
+		public Either<StargateInfo.IncomingOutgoing<ResourceLocation>, ResourceLocation> closeSound()
 		{
 			return closeSound;
 		}
@@ -219,7 +219,7 @@ public class ResourcepackSounds
 			this.defaultSound = defaultSound;
 		}
 		
-		public ResourceLocation getSound(Stargate.Feedback feedback)
+		public ResourceLocation getSound(StargateInfo.Feedback feedback)
 		{
 			return switch(feedback)
 			{

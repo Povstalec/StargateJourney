@@ -8,11 +8,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
+
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,7 +24,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Transc
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.packets.ClientboundTransceiverUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.ITransmissionReceiver;
+import net.povstalec.sgjourney.common.sgjourney.ITransmissionReceiver;
 
 public class TransceiverEntity extends BlockEntity implements ITransmissionReceiver
 {

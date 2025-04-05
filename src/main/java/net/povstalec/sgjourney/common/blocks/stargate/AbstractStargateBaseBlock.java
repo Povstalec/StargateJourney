@@ -47,9 +47,9 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
@@ -77,7 +77,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				if(blockEntity instanceof AbstractStargateEntity stargate)
 				{
-					if(stargate.getVariant().equals(StargateJourney.EMPTY))
+					if(!stargate.hasPermissions(player, true))
+						return false;
+					else if(stargate.getVariant().equals(StargateJourney.EMPTY))
 					{
 						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
 						return true;
@@ -103,7 +105,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				
 				if(blockEntity instanceof AbstractStargateEntity stargate)
 				{
-					if(variant.equals(stargate.getVariant()))
+					if(!stargate.hasPermissions(player, true))
+						return false;
+					else if(variant.equals(stargate.getVariant()))
 					{
 						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
 						return true;
@@ -198,7 +202,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     		BlockEntity blockentity = level.getBlockEntity(pos);
     		if(blockentity instanceof AbstractStargateEntity stargate)
     		{
-    			stargate.bypassDisconnectStargate(Stargate.Feedback.STARGATE_DESTROYED, false);
+    			stargate.bypassDisconnectStargate(StargateInfo.Feedback.STARGATE_DESTROYED, false);
     			stargate.dhdInfo().unsetDHD(true);
     			stargate.removeStargateFromNetwork();
     		}
@@ -302,6 +306,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         
         if(hasData && blockEntityTag.contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP)))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+		
+		if(blockEntityTag.contains(AbstractStargateEntity.PRIMARY, CompoundTag.TAG_BYTE) && blockEntityTag.getBoolean(AbstractStargateEntity.PRIMARY))
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
         
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }

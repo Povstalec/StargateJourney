@@ -4,9 +4,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Symbols;
-import net.povstalec.sgjourney.common.stargate.info.DHDInfo;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -22,9 +23,8 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundPegasusStargateUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 
 public class PegasusStargateEntity extends IrisStargateEntity
 {
@@ -48,7 +48,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateJourney.sgjourneyLocation("pegasus/pegasus"), pos, state,
-				TOTAL_SYMBOLS, Stargate.Gen.GEN_3, 3);
+				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_3, 3);
 		this.setOpenSoundLead(13);
 		
 		this.dhdInfo = new DHDInfo(this)
@@ -133,24 +133,29 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback dhdEngageSymbol(int symbol)
+	public StargateInfo.Feedback dhdEngageSymbol(int symbol)
 	{
 		if(level.isClientSide())
-			return Stargate.Feedback.NONE;
+			return StargateInfo.Feedback.NONE;
 		
 		if(isSymbolOutOfBounds(symbol))
-			return Stargate.Feedback.SYMBOL_OUT_OF_BOUNDS;
+			return StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS;
 		
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 			else
-				return setRecentFeedback(Stargate.Feedback.ENCODE_WHEN_CONNECTED);
+				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
 		}
 		
 		if(addressBuffer.containsSymbol(symbol))
-			return setRecentFeedback(Stargate.Feedback.SYMBOL_IN_ADDRESS);
+		{
+			if(symbol == 0)
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+			else
+				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
+		}
 		
 		if(addressBuffer.getLength() == getAddress().getLength())
 		{
@@ -161,11 +166,11 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, spinClockwise());
 		
-		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
+		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
 	}
 	
 	@Override
-	public Stargate.Feedback engageSymbol(int symbol)
+	public StargateInfo.Feedback engageSymbol(int symbol)
 	{
 		if(!addressBuffer.containsSymbol(symbol))
 			addressBuffer.addSymbol(symbol);
@@ -174,7 +179,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	protected Stargate.Feedback lockPrimaryChevron()
+	protected StargateInfo.Feedback lockPrimaryChevron()
 	{
 		if(!this.level.isClientSide())
 			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
@@ -182,14 +187,14 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public Stargate.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
+	public StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
 			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
-		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming, encode);
+		StargateInfo.Feedback feedback = super.encodeChevron(symbol, incoming, encode);
 		
 		if(addressBuffer.getLength() > getAddress().getLength())
 		{
@@ -320,7 +325,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(int openTime, Stargate.ChevronLockSpeed chevronLockSpeed)
+	public void doWhileDialed(int openTime, StargateInfo.ChevronLockSpeed chevronLockSpeed)
 	{
 		if(this.level.isClientSide())
 			return;

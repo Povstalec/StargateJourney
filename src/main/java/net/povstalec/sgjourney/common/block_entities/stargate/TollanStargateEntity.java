@@ -8,8 +8,8 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.stargate.Stargate;
-import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 
 public class TollanStargateEntity extends AbstractStargateEntity
 {
@@ -22,7 +22,7 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.TOLLAN_STARGATE.get(), StargateJourney.sgjourneyLocation("tollan/tollan"), pos, state,
-				TOTAL_SYMBOLS, Stargate.Gen.GEN_2, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
+				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_2, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 	}
 
 	@Override

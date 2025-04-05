@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.stargate.GalaxyType;
+import net.povstalec.sgjourney.common.sgjourney.GalaxyType;
 
 public class GalaxyInit
 {

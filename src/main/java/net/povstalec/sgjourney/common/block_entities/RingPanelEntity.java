@@ -33,7 +33,7 @@ import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.Transporter;
 
 public class RingPanelEntity extends BlockEntity
 {
