@@ -1,0 +1,22 @@
+{
+	"values":
+	[
+		"common_stargates:stargate/universe/pedestal/stargate_pedestal_end",
+
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_deepslate",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_badlands",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_deep_dark",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_desert",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_jungle",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_mushroom",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_snow",
+
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_nether",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_soul_sand",
+		"common_stargates:stargate/milky_way/pedestal/stargate_pedestal_basalt",
+
+		"common_stargates:stargate/pegasus/pegasus_stargate_grass",
+		"common_stargates:stargate/pegasus/outpost/pegasus_stargate_outpost"
+	]
+}

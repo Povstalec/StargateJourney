@@ -1,7 +1,7 @@
 {
   "structures": [
     {
-      "structure": "sgjourney:stargate/universe/pedestal/universe_stargate_pedestal_end",
+      "structure": "sgjourney:stargate/universe/pedestal/universe_stargate_pedestal_island_end",
       "weight": 1
     },
 
@@ -11,6 +11,10 @@
     },
     {
       "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal",
+      "weight": 1
+    },
+    {
+      "structure": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_deepslate",
       "weight": 1
     },
     {

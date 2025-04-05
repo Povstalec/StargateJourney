@@ -29,5 +29,16 @@
 			[]
 		}
 	},
-	"terrain_adaptation": "beard_thin"
+	"terrain_adaptation": "beard_thin",
+	
+	"stargate_modifiers":
+	{
+		"local_point_of_origin": true,
+		"primary": true,
+		"protected": true
+	},
+	"dhd_modifiers":
+	{
+		"protected": true
+	}
 }

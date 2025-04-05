@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class StargateVariantItem extends Item
 {

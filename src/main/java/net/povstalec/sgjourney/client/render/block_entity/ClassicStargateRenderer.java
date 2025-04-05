@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEnt
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicStargateEntity, ClassicStargateVariant>
 {

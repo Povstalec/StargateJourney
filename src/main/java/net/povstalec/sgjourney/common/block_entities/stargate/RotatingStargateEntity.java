@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundRotatingStargateUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -48,7 +48,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	public boolean rotateClockwise;
 	
 	public RotatingStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-								  int totalSymbols, Stargate.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight, int maxRotation)
+								  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight, int maxRotation)
 	{
 		super(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
 		
@@ -69,7 +69,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	}
 	
 	public RotatingStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-								  int totalSymbols, Stargate.Gen gen, int defaultNetwork, int maxRotation)
+								  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork, int maxRotation)
 	{
 		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT, maxRotation);
 	}
@@ -197,7 +197,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		setChanged();
 	}
 	
-	protected Stargate.Feedback rotateTo(int degrees, boolean rotateClockwise)
+	protected StargateInfo.Feedback rotateTo(int degrees, boolean rotateClockwise)
 	{
 		this.rotating = true;
 		this.desiredRotation = degrees;
@@ -210,18 +210,18 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, rotateClockwise);
 		
-		return setRecentFeedback(Stargate.Feedback.ROTATING);
+		return setRecentFeedback(StargateInfo.Feedback.ROTATING);
 	}
 	
-	public Stargate.Feedback startRotation(int desiredSymbol, boolean rotateClockwise)
+	public StargateInfo.Feedback startRotation(int desiredSymbol, boolean rotateClockwise)
 	{
 		return rotateTo(desiredSymbol < 0 ? -1 : getDesiredRotation(desiredSymbol), rotateClockwise);
 	}
 	
-	public Stargate.Feedback endRotation(boolean playSound)
+	public StargateInfo.Feedback endRotation(boolean playSound)
 	{
 		if(!this.rotating)
-			return setRecentFeedback(Stargate.Feedback.NOT_ROTATING);
+			return setRecentFeedback(StargateInfo.Feedback.NOT_ROTATING);
 		
 		this.rotating = false;
 		
@@ -232,7 +232,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 		
-		return setRecentFeedback(Stargate.Feedback.ROTATION_STOPPED);
+		return setRecentFeedback(StargateInfo.Feedback.ROTATION_STOPPED);
 	}
 	
 	protected void syncRotation()
@@ -325,7 +325,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	//***************************************Manual Dialing***************************************
 	//============================================================================================
 	
-	public Stargate.Feedback encodeChevron()
+	public StargateInfo.Feedback encodeChevron()
 	{
 		if(!level.isClientSide())
 			synchronizeWithClient();
@@ -359,7 +359,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 			if(!isConnected())
 				engageSymbol(getCurrentSymbol());
 			else
-				disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN, true);
+				disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN, true);
 		}
 		
 		if(!this.level.isClientSide())

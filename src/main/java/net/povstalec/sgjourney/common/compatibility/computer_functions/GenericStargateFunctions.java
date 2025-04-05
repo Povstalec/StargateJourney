@@ -3,8 +3,8 @@ package net.povstalec.sgjourney.common.compatibility.computer_functions;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class GenericStargateFunctions
 {
@@ -57,14 +57,14 @@ public class GenericStargateFunctions
 	{
 		boolean wasConnected = stargate.isConnected();
 		
-		stargate.disconnectStargate(Stargate.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+		stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
 		
 		boolean isConnected = stargate.isConnected();
 		
 		return !isConnected && (wasConnected != isConnected);
 	}
 	
-	public static Stargate.Feedback getRecentFeedback(AbstractStargateEntity stargate)
+	public static StargateInfo.Feedback getRecentFeedback(AbstractStargateEntity stargate)
 	{
 		return stargate.getRecentFeedback();
 	}
@@ -96,7 +96,7 @@ public class GenericStargateFunctions
 	//*************************************Crystal Interface**************************************
 	//============================================================================================
 	
-	public static Stargate.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, int desiredSymbol, boolean engageDirectly)
+	public static StargateInfo.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, int desiredSymbol, boolean engageDirectly)
 	{
 		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.engageSymbol(desiredSymbol) : stargate.dhdEngageSymbol(desiredSymbol);
 	}

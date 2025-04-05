@@ -2,8 +2,8 @@ package net.povstalec.sgjourney;
 
 import java.util.function.BiFunction;
 
-import net.povstalec.sgjourney.client.models.entity.HumanModel;
 import net.povstalec.sgjourney.common.entities.Jaffa;
+import net.povstalec.sgjourney.common.init.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -80,13 +80,13 @@ import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
-import net.povstalec.sgjourney.common.stargate.AddressTable;
-import net.povstalec.sgjourney.common.stargate.Galaxy;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.SolarSystem;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
-import net.povstalec.sgjourney.common.stargate.SymbolSet;
-import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.AddressTable;
+import net.povstalec.sgjourney.common.sgjourney.Galaxy;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.SymbolSet;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 
 import javax.annotation.Nullable;
@@ -127,6 +127,7 @@ public class StargateJourney
         SoundInit.register(eventBus);
         RecipeTypeInit.register(eventBus);
         StatisticsInit.register(eventBus);
+		CommandInit.register(eventBus);
 
         GalaxyInit.register(eventBus);
         

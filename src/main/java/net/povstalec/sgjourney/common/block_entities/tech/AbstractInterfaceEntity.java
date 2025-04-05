@@ -30,7 +30,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Interf
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 {
@@ -43,7 +43,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	private boolean rotate = false;
 	private boolean rotateClockwise = true;
 	
-	private Stargate.IrisMotion irisMotion = Stargate.IrisMotion.IDLE;
+	private StargateInfo.IrisMotion irisMotion = StargateInfo.IrisMotion.IDLE;
 	
 	private long energyTarget = CommonInterfaceConfig.default_energy_target.get();
 	
@@ -319,12 +319,12 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		
 		if(stargate instanceof IrisStargateEntity irisStargate)
 		{
-			if(signalStrength == 0 && irisMotion != Stargate.IrisMotion.IDLE)
-				setIrisMotion(Stargate.IrisMotion.IDLE);
-			else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != Stargate.IrisMotion.CLOSING_REDSTONE && belowMaxProgress(irisStargate))
-				setIrisMotion(Stargate.IrisMotion.CLOSING_REDSTONE);
-			else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != Stargate.IrisMotion.OPENING_REDSTONE && aboveMinProgress(irisStargate))
-				setIrisMotion(Stargate.IrisMotion.OPENING_REDSTONE);
+			if(signalStrength == 0 && irisMotion != StargateInfo.IrisMotion.IDLE)
+				setIrisMotion(StargateInfo.IrisMotion.IDLE);
+			else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != StargateInfo.IrisMotion.CLOSING_REDSTONE && belowMaxProgress(irisStargate))
+				setIrisMotion(StargateInfo.IrisMotion.CLOSING_REDSTONE);
+			else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != StargateInfo.IrisMotion.OPENING_REDSTONE && aboveMinProgress(irisStargate))
+				setIrisMotion(StargateInfo.IrisMotion.OPENING_REDSTONE);
 		}
 	}
 	
@@ -335,18 +335,18 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			if(belowMaxProgress(stargate))
 				stargate.irisInfo().increaseIrisProgress();
 			else
-				irisMotion = Stargate.IrisMotion.IDLE;
+				irisMotion = StargateInfo.IrisMotion.IDLE;
 		}
 		else if(irisMotion.isOpening())
 		{
 			if(aboveMinProgress(stargate))
 				stargate.irisInfo().decreaseIrisProgress();
 			else
-				irisMotion = Stargate.IrisMotion.IDLE;
+				irisMotion = StargateInfo.IrisMotion.IDLE;
 		}
 	}
 	
-	public boolean setIrisMotion(Stargate.IrisMotion irisMotion)
+	public boolean setIrisMotion(StargateInfo.IrisMotion irisMotion)
 	{
 		if(this.irisMotion == irisMotion)
 			return false;

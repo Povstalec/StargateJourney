@@ -11,7 +11,7 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStar
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.stargate.Address;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 
 public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity, MilkyWayStargateVariant>
 {

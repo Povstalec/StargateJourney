@@ -2,7 +2,8 @@ package net.povstalec.sgjourney.client.models.block_entity;
 
 import java.util.Optional;
 
-import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
+import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;

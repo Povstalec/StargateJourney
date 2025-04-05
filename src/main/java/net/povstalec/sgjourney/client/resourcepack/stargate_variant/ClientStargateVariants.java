@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEnt
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class ClientStargateVariants
 {

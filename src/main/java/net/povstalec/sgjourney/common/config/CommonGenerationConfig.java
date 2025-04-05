@@ -4,7 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonGenerationConfig
 {
-	//public static SGJourneyConfigValue.BooleanValue common_stargate_generation;
+	public static SGJourneyConfigValue.BooleanValue common_stargate_generation;
 
 	public static ForgeConfigSpec.IntValue stargate_generation_center_x_chunk_offset;
 	public static ForgeConfigSpec.IntValue stargate_generation_center_z_chunk_offset;
@@ -15,9 +15,9 @@ public class CommonGenerationConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
-		/*common_stargate_generation = new SGJourneyConfigValue.BooleanValue(server, "server.common_stargate_generation", 
+		common_stargate_generation = new SGJourneyConfigValue.BooleanValue(server, "server.common_stargate_generation",
 				false,
-				"Common Stargates will generate around the Overworld");*/
+				"Common Stargates will generate");
 		
 		
 		

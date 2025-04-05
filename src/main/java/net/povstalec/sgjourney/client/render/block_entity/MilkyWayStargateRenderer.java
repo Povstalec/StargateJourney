@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayStargateEntity, MilkyWayStargateVariant>
 {

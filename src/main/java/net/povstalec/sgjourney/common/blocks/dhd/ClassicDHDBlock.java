@@ -59,12 +59,12 @@ public class ClassicDHDBlock extends CrystalDHDBlock
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof AbstractDHDEntity dhd) 
+        	if(blockEntity instanceof ClassicDHDEntity dhd)
         	{
         		dhd.setStargate();
 				
 				if(player.isShiftKeyDown())
-					this.openCrystalMenu(player, blockEntity);
+					this.openCrystalMenu(player, dhd);
 				else
 				{
 					MenuProvider containerProvider = new MenuProvider()
