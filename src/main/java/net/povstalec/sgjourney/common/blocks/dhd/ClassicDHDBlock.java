@@ -26,14 +26,10 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
-import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 import net.povstalec.sgjourney.common.misc.InventoryHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
@@ -61,40 +57,40 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 	@Override
 	protected void use(Level level, BlockPos pos, Player player)
 	{
-        if(!level.isClientSide()) 
-        {
-    		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if(level.isClientSide())
+			return;
+		
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof ClassicDHDEntity dhd)
+		{
+			dhd.setStargate();
 			
-        	if(blockEntity instanceof ClassicDHDEntity dhd)
-        	{
-        		dhd.setStargate();
-				
-				if(player.isShiftKeyDown())
-					this.openCrystalMenu(player, dhd);
-				else
+			if(player.isShiftKeyDown())
+				this.openCrystalMenu(player, dhd);
+			else
+			{
+				MenuProvider containerProvider = new MenuProvider()
 				{
-					MenuProvider containerProvider = new MenuProvider()
+					@Override
+					public Component getDisplayName()
 					{
-						@Override
-						public Component getDisplayName()
-						{
-							return Component.translatable("screen.sgjourney.dhd");
-						}
-						
-						@Override
-						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
-						{
-							return new ClassicDHDMenu(windowId, playerInventory, blockEntity);
-						}
-					};
-					NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-				}
-        	}
-        	else
-        	{
-        		throw new IllegalStateException("Our named container provider is missing!");
-        	}
-        }
+						return Component.translatable("screen.sgjourney.dhd");
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+					{
+						return new MilkyWayDHDMenu(windowId, playerInventory, dhd);
+					}
+				};
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+			}
+		}
+		else
+		{
+			throw new IllegalStateException("Our named container provider is missing!");
+		}
     }
 
 	@Override

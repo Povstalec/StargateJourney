@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.events.custom;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 
 public class ConnectionEvent extends Event

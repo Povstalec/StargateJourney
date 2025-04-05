@@ -25,7 +25,7 @@ import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class TabInit
 {

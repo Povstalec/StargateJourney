@@ -318,7 +318,7 @@ public class Universe extends SavedData
 	
 	private ResourceLocation systemNameToResourceLocation(String systemName)
 	{
-		return new ResourceLocation(StargateJourney.MODID, systemName.toLowerCase());
+		return StargateJourney.sgjourneyLocation(systemName.toLowerCase());
 	}
 	
 	private long generateRandomAddressSeed(MinecraftServer server, String name)
