@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel.WormholeTex
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.stargate.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 
 public class WormholeModel
 {

@@ -13,8 +13,8 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStarg
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
-import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
-import net.povstalec.sgjourney.common.stargate.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity, ClassicStargateVariant>
 {

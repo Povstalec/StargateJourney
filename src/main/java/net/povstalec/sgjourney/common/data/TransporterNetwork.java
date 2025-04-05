@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.stargate.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.Transporter;
 
 /**
  * Dimension - Frequency - Rings
@@ -147,10 +148,10 @@ public final class TransporterNetwork extends SavedData
 		if(id == null)
 			return;
 		
-		Optional<Transporter> transporter = getTransporter(id);
+		Transporter transporter = getTransporter(id);
 		
-		if(transporter.isPresent())
-			removeTransporterFromDimension(level.dimension(), transporter.get());
+		if(transporter != null)
+			removeTransporterFromDimension(level.dimension(), transporter);
 
 		BlockEntityList.get(level).removeTransporter(id);
 		
@@ -158,14 +159,10 @@ public final class TransporterNetwork extends SavedData
 		setDirty();
 	}
 	
-	public final Optional<Transporter> getTransporter(UUID id)
+	@Nullable
+	public final Transporter getTransporter(UUID id)
 	{
-		Transporter transporter = BlockEntityList.get(server).getTransporters().get(id);
-		
-		if(transporter != null)
-			return Optional.of(transporter);
-
-		return Optional.empty();
+		return BlockEntityList.get(server).getTransporters().get(id);
 	}
 	
 	
@@ -392,10 +389,10 @@ public final class TransporterNetwork extends SavedData
 	    	List<Transporter> transporters = new ArrayList<Transporter>();
 			dimensionTag.getCompound(TRANSPORTERS).getAllKeys().forEach(transporterID ->
 			{
-				Optional<Transporter> transporter = BlockEntityList.get(server).getTransporter(UUID.fromString(transporterID));
+				Transporter transporter = BlockEntityList.get(server).getTransporter(UUID.fromString(transporterID));
 				
-				if(transporter.isPresent())
-					transporters.add(transporter.get());
+				if(transporter != null)
+					transporters.add(transporter);
 			});
 			
 			return new TransporterNetwork.Dimension(dimension, transporters);

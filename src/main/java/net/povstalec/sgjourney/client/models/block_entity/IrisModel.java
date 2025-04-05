@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.client.models.block_entity;
 
 import java.util.Optional;
 
-import net.povstalec.sgjourney.common.stargate.info.IrisInfo;
+import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 

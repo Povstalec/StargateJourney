@@ -25,7 +25,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundGDOOpenScreenPacket;
-import net.povstalec.sgjourney.common.stargate.ITransmissionReceiver;
+import net.povstalec.sgjourney.common.sgjourney.ITransmissionReceiver;
 
 public class GDOItem extends Item
 {

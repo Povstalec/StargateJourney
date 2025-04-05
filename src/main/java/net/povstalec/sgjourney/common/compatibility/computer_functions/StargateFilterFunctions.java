@@ -1,11 +1,10 @@
 package net.povstalec.sgjourney.common.compatibility.computer_functions;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.stargate.Address;
-import net.povstalec.sgjourney.common.stargate.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class StargateFilterFunctions
 {

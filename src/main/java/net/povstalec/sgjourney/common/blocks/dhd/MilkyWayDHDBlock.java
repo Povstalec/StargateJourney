@@ -88,12 +88,12 @@ public class MilkyWayDHDBlock extends CrystalDHDBlock implements SimpleWaterlogg
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof AbstractDHDEntity dhd) 
+        	if(blockEntity instanceof MilkyWayDHDEntity dhd)
         	{
         		dhd.setStargate();
         		
         		if(player.isShiftKeyDown())
-        			this.openCrystalMenu(player, blockEntity);
+        			this.openCrystalMenu(player, dhd);
         		else
         		{
         			MenuProvider containerProvider = new MenuProvider() 

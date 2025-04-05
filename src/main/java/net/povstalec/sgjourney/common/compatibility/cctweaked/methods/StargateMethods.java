@@ -12,12 +12,12 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericStargateFunctions;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class StargateMethods
 {
 	// Crystal Interfaces can display the actual feedback messages and not just their codes
-	public static Object[] returnedFeedback(AbstractInterfaceEntity interfaceEntity, Stargate.Feedback feedback)
+	public static Object[] returnedFeedback(AbstractInterfaceEntity interfaceEntity, StargateInfo.Feedback feedback)
 	{
 		if(interfaceEntity.getInterfaceType().hasCrystalMethods())
 			return new Object[] {feedback.getCode(), feedback.getMessage()};

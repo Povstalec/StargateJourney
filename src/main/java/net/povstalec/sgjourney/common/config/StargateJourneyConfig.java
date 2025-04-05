@@ -27,6 +27,10 @@ public class StargateJourneyConfig
 		
 		generalServerConfig(COMMON_BUILDER);
 		
+		COMMON_BUILDER.push("Permission Config");
+		CommonPermissionConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
 		COMMON_BUILDER.push("ZPM Config");
 		CommonZPMConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();

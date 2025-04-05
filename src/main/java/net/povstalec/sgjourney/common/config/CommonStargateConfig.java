@@ -1,8 +1,8 @@
 package net.povstalec.sgjourney.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.povstalec.sgjourney.common.stargate.Stargate.ChevronLockSpeed;
-import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.WormholeTravel;
 
 public class CommonStargateConfig
 {

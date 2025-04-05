@@ -10,7 +10,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.InterfaceFunctions;
-import net.povstalec.sgjourney.common.stargate.Address;
 
 public class InterfaceMethods
 {

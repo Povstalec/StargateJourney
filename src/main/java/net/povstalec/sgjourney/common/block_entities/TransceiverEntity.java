@@ -6,10 +6,6 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +28,7 @@ import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundTransceiverUpdatePacket;
-import net.povstalec.sgjourney.common.stargate.ITransmissionReceiver;
+import net.povstalec.sgjourney.common.sgjourney.ITransmissionReceiver;
 
 public class TransceiverEntity extends BlockEntity implements ITransmissionReceiver
 {

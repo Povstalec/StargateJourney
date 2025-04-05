@@ -1,31 +1,43 @@
 {
-  "type": "sgjourney:stargate_pedestal",
+	"type": "sgjourney:stargate_pedestal",
 
-  "start_pool": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_jungle",
+	"start_pool": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_jungle",
 
-  "size": 1,
+	"size": 1,
 
-  "max_distance_from_center": 80,
+	"max_distance_from_center": 80,
 
-  "biomes": "#sgjourney:has_structure/stargate_pedestal/stargate_pedestal_jungle_biomes",
+	"biomes": "#sgjourney:has_structure/stargate_pedestal/stargate_pedestal_jungle_biomes",
 
-  "step": "strongholds",
+	"step": "strongholds",
 
-  "start_height": {
-    "absolute": 0
-  },
+	"start_height":
+	{
+		"absolute": 0
+	},
 
-  "project_start_to_heightmap": "OCEAN_FLOOR_WG",
+	"project_start_to_heightmap": "OCEAN_FLOOR_WG",
 
-  "use_expansion_hack": false,
+	"use_expansion_hack": false,
 
-  "spawn_overrides": {
-    "monster": {
-      "bounding_box": "piece",
-      "spawns": [
-        
-      ]
-    }
-  },
-  "terrain_adaptation": "beard_thin"
+	"spawn_overrides":
+	{
+		"monster":
+		{
+			"bounding_box": "piece",
+			"spawns": []
+		}
+	},
+	"terrain_adaptation": "beard_thin",
+	
+	"stargate_modifiers":
+	{
+		"local_point_of_origin": true,
+		"primary": true,
+		"protected": true
+	},
+	"dhd_modifiers":
+	{
+		"protected": true
+	}
 }
