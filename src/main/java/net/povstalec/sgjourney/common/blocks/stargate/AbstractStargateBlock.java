@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 
 import net.minecraft.core.BlockPos;
@@ -41,6 +42,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
@@ -52,7 +54,7 @@ import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 
-public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
+public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock, ProtectedBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
@@ -249,6 +251,22 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	
 	public abstract AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state);
 	
+	@Override
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		return getStargate(reader, pos, state);
+	}
+	
+	@Override
+	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
+	{
+		AbstractStargateEntity stargate = getStargate(reader, pos, state);
+		if(stargate != null)
+			return stargate.hasPermissions(player, sendMessage);
+		
+		return true;
+	}
+	
 	public boolean setCover(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
 		if(!player.isShiftKeyDown())
@@ -267,7 +285,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 					
 					if(coverState != null && !(coverState.getBlock() instanceof EntityBlock))
 					{
-						if(blockCover.get().setBlockAt(part, coverState))
+						if(!hasPermissions(level, pos, state, player, true))
+							player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions"), true);
+						else if(blockCover.get().setBlockAt(part, coverState))
 						{
 							level.playSound(player, pos, coverState.getBlock().getSoundType(coverState).getPlaceSound(), SoundSource.BLOCKS);
 							
@@ -292,7 +312,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			AbstractStargateEntity stargate = getStargate(level, pos, state);
 			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 			{
-				if(irisStargate.irisInfo().addIris(stack))
+				if(!hasPermissions(level, pos, state, player, true))
+					player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions"), true);
+				else if(irisStargate.irisInfo().addIris(stack))
 				{
 					if(!player.isCreative())
 						player.getItemInHand(hand).shrink(1);

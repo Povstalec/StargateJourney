@@ -103,7 +103,12 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 		else
 		{
 			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-				symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+			{
+				if(localPointOfOrigin)
+					symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+				else
+					symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+			}
 			
 			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));

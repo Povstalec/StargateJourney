@@ -72,6 +72,8 @@
 	"block.sgjourney.stargate.classic.address_exists": "Addresa již existujes",
 	"block.sgjourney.stargate.incorrect_stargate_type": "Špatný druh brány",
 	
+	"block.sgjourney.protected_permissions": "Chráněno: Nemáš dostatečné pravomoce",
+	
 	"block.sgjourney.transport_rings": "Transportní kruhy",
 	"block.sgjourney.ring_panel": "Ovládání kruhů",
 	
@@ -646,6 +648,13 @@
 	"message.sgjourney.command.get_transporters": "Transportéry v dimenzi",
 	"message.sgjourney.command.transporter_network_reload": "Transportéry načteny",
 	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy",
+	"message.sgjourney.command.primary_stargate_set": "Primární hvězdná brána nastavena",
+	"message.sgjourney.command.primary_stargate_unset": "Primární hvězdná brána zrušena",
+	"message.sgjourney.command.primary_stargate": "Primární hvězdná brána",
+	"message.sgjourney.command.primary_stargate_none": "Žádná primární hvězdná brána",
+	"message.sgjourney.command.protected_block_set": "Chráněný blok nastaven",
+	"message.sgjourney.command.protected_block_unset": "Chráněný blok zrušen",
+	"message.sgjourney.command.not_protected_block": "Cíl není chránitelný blok",
 
 	"message.sgjourney.gdo.shielded": "Chráněno",
 	"message.sgjourney.gdo.error.no_nearby_stargate": "Žádná hvězdná brána poblíž",

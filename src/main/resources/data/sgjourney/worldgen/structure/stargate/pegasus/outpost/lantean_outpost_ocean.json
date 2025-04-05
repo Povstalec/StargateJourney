@@ -33,5 +33,9 @@
 	{
 		"primary": true,
 		"protected": true
+	},
+	"dhd_modifiers":
+	{
+		"protected": true
 	}
 }

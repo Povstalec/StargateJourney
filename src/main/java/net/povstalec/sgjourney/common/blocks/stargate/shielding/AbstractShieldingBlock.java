@@ -30,9 +30,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
@@ -40,7 +43,7 @@ import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
-public abstract class AbstractShieldingBlock extends Block implements SimpleWaterloggedBlock
+public abstract class AbstractShieldingBlock extends Block implements SimpleWaterloggedBlock, ProtectedBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
@@ -153,6 +156,35 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 			default -> VoxelShapeProvider.getShapeFromArray(shapeProvider.IRIS_FULL, direction, orientation);
 		};
 	}
+	
+	public AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		BlockPos baseBlockPos = state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
+		
+		BlockState stargateState = reader.getBlockState(baseBlockPos);
+		
+		if(stargateState.getBlock() instanceof AbstractStargateBlock stargateBlock)
+			return stargateBlock.getStargate(reader, baseBlockPos, stargateState);
+		
+		return null;
+	}
+	
+	@Override
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		return getStargate(reader, pos, state);
+	}
+	
+	@Override
+	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
+	{
+		AbstractStargateEntity stargate = getStargate(reader, pos, state);
+		
+		if(stargate != null)
+			return stargate.hasPermissions(player, sendMessage);
+		
+		return true;
+	}
 
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
@@ -163,7 +195,7 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 		
 		if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 		{
-			AbstractStargateEntity stargate = stargateBlock.getStargate(level, baseBlockPos, state);
+			AbstractStargateEntity stargate = stargateBlock.getStargate(level, baseBlockPos, stargateState);
 			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
 			{
 				ItemStack irisStack = irisStargate.irisInfo().getIris();

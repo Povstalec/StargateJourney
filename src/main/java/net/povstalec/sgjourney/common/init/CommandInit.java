@@ -16,6 +16,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.core.BlockPos;
@@ -24,14 +25,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
@@ -201,6 +207,23 @@ public class CommandInit
 				.then(Commands.literal(GENE)
 						.then(Commands.argument("target", EntityArgument.entity())
 								.then(Commands.literal("remove").executes(CommandInit::removeGene))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		
+		
+		//Protection commands
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("protection")
+						.then(Commands.literal("set")
+								.then(Commands.argument("pos", BlockPosArgument.blockPos())
+										.executes(CommandInit::setProtected))))
+				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal("protection")
+						.then(Commands.literal("unset")
+								.then(Commands.argument("pos", BlockPosArgument.blockPos())
+										.executes(CommandInit::unsetProtected))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		
@@ -528,6 +551,52 @@ public class CommandInit
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
 		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.removeGene());
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int setProtected(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		ServerLevel level = context.getSource().getLevel();
+		BlockPos pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+		
+		BlockState state = level.getBlockState(pos);
+		
+		if(state.getBlock() instanceof ProtectedBlock protectedBlock)
+		{
+			ProtectedBlockEntity blockEntity = protectedBlock.getProtectedBlockEntity(level, pos, state);
+			
+			if(context.getSource().isPlayer() && blockEntity.hasPermissions(context.getSource().getPlayer(), true))
+			{
+				blockEntity.setProtected(true);
+				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.protected_block_set").withStyle(ChatFormatting.LIGHT_PURPLE), true);
+			}
+		}
+		else
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.not_protected_block").withStyle(ChatFormatting.RED), true);
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int unsetProtected(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		ServerLevel level = context.getSource().getLevel();
+		BlockPos pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+		
+		BlockState state = level.getBlockState(pos);
+		
+		if(state.getBlock() instanceof ProtectedBlock protectedBlock)
+		{
+			ProtectedBlockEntity blockEntity = protectedBlock.getProtectedBlockEntity(level, pos, state);
+			
+			if(context.getSource().isPlayer() && blockEntity.hasPermissions(context.getSource().getPlayer(), true))
+			{
+				blockEntity.setProtected(false);
+				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.protected_block_unset").withStyle(ChatFormatting.LIGHT_PURPLE), true);
+			}
+		}
+		else
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.not_protected_block").withStyle(ChatFormatting.RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}

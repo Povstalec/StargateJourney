@@ -7,12 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,15 +25,15 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 
 import java.util.List;
 
 
-public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock
+public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock
 {
 	public AbstractDHDBlock(Properties properties) 
 	{
@@ -109,25 +105,6 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		super.playerWillDestroy(level, pos, state, player);
 	}
 	
-	protected void openCrystalMenu(Player player, BlockEntity blockEntity)
-	{
-		MenuProvider containerProvider = new MenuProvider() 
-		{
-			@Override
-			public Component getDisplayName() 
-			{
-				return Component.translatable("screen.sgjourney.dhd");
-			}
-			
-			@Override
-			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-			{
-				return new DHDCrystalMenu(windowId, playerInventory, blockEntity);
-			}
-		};
-		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Nullable
 	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typeA, BlockEntityType<E> typeB, BlockEntityTicker<? super E> ticker)
@@ -146,5 +123,27 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		}
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+	}
+	
+	@Nullable
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		
+		if(blockEntity instanceof AbstractDHDEntity dhd)
+			return dhd;
+		
+		return null;
+	}
+	
+	@Override
+	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
+	{
+		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		
+		if(blockEntity instanceof AbstractDHDEntity dhd)
+			return dhd.hasPermissions(player, sendMessage);
+		
+		return true;
 	}
 }

@@ -88,12 +88,12 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof AbstractDHDEntity dhd) 
+        	if(blockEntity instanceof PegasusDHDEntity dhd)
         	{
         		dhd.setStargate();
         		
         		if(player.isShiftKeyDown())
-        			this.openCrystalMenu(player, blockEntity);
+        			this.openCrystalMenu(player, dhd);
         		else
         		{
         			MenuProvider containerProvider = new MenuProvider() 

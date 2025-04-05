@@ -67,12 +67,15 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		
 		if(item instanceof StargateVariantItem)
 		{
+			
 			if(!stack.hasTag())
 			{
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				if(blockEntity instanceof AbstractStargateEntity stargate)
 				{
-					if(stargate.getVariant().equals(StargateJourney.EMPTY))
+					if(!stargate.hasPermissions(player, true))
+						return false;
+					else if(stargate.getVariant().equals(StargateJourney.EMPTY))
 					{
 						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
 						return true;
@@ -98,7 +101,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				
 				if(blockEntity instanceof AbstractStargateEntity stargate)
 				{
-					if(variant.equals(stargate.getVariant()))
+					if(!stargate.hasPermissions(player, true))
+						return false;
+					else if(variant.equals(stargate.getVariant()))
 					{
 						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
 						return true;

@@ -9,7 +9,9 @@ import javax.annotation.Nullable;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
@@ -70,7 +72,7 @@ import net.povstalec.sgjourney.common.packets.ClientboundStargateStateUpdatePack
 import net.povstalec.sgjourney.common.packets.ClientboundStargateUpdatePacket;
 
 public abstract class AbstractStargateEntity extends EnergyBlockEntity implements ITransmissionReceiver, StructureGenEntity,
-		SymbolInfo.Interface, DHDInfo.Interface, AddressFilterInfo.Interface
+		SymbolInfo.Interface, DHDInfo.Interface, AddressFilterInfo.Interface, ProtectedBlockEntity
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
 	public static final String ID = "ID"; //TODO For legacy reasons
@@ -1544,13 +1546,29 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return isPrimary;
 	}
 	
-	public void setProtected()
+	@Override
+	public void setProtected(boolean isProtected)
 	{
-		isProtected = true;
+		this.isProtected = isProtected;
 	}
 	
+	@Override
 	public boolean isProtected()
 	{
 		return isProtected;
+	}
+	
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_stargate_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+			
+			return false;
+		}
+		
+		return true;
 	}
 }
