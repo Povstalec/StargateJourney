@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
@@ -28,7 +27,7 @@ import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 public class StargatePedestal extends StargateStructure
 {
 	public static final MapCodec<StargatePedestal> CODEC = RecordCodecBuilder.<StargatePedestal>mapCodec(instance ->
-    instance.group(StargateOutpost.settingsCodec(instance),
+    instance.group(StargatePedestal.settingsCodec(instance),
             StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
             ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
             Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),

@@ -68,7 +68,7 @@ public class StargateTemple extends StargateStructure
                         false,
                         this.projectStartToHeightmap,
                         this.maxDistanceFromCenter,
-                        Rotation.COUNTERCLOCKWISE_90,
+                        Rotation.NONE,
 						PoolAliasLookup.EMPTY,
 						DimensionPadding.ZERO,
 						LiquidSettings.APPLY_WATERLOGGING);
