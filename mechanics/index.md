@@ -1,7 +1,6 @@
 ---
 title: Mechanics
 nav_order: 70
-has_children: true
 nav_exclude: true # TODO: mechanics
 ---
 

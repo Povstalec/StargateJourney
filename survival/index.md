@@ -1,7 +1,6 @@
 ---
 title: Survival Guide
 nav_order: 30
-has_children: true
 ---
 
 # Survival Guide

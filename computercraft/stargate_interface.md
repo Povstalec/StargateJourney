@@ -1,7 +1,6 @@
 ---
 title: Stargate Interface
 nav_order: 0
-has_children: false
 parent: Computercraft
 ---
 

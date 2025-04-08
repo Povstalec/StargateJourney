@@ -1,7 +1,6 @@
 ---
 title: Events
 nav_order: 50
-has_children: false
 parent: Computercraft
 ---
 

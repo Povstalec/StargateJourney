@@ -1,6 +1,5 @@
 ---
 title: Stargate variants
-has_children: false
 nav_order: 20
 parent: Blocks
 ---

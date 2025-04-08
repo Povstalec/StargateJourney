@@ -1,7 +1,6 @@
 ---
 title: All The Mods 9
 nav_order: 80
-has_children: false
 ---
 # All the Mods 9
 Given the amount of questions regarding [All The Mods 9](https://www.curseforge.com/minecraft/modpacks/all-the-mods-9)

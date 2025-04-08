@@ -1,7 +1,6 @@
 ---
 title: Transceiver
 nav_order: 5
-has_children: false
 parent: Computercraft
 ---
 

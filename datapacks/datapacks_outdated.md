@@ -1,7 +1,6 @@
 ---
 title: Datapacks - outdated
 nav_order: 0
-has_children: false
 parent: Datapacks and Resourcepacks
 ---
 

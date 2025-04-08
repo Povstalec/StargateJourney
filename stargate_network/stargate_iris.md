@@ -1,7 +1,6 @@
 ---
 title: Stargate Iris
 nav_order: 10
-has_children: false
 parent: Stargate Network
 iris_types: [Naquadah Alloy, Steel, Copper, Iron, Golden, Diamond, Netherite, Bronze]
 ---
