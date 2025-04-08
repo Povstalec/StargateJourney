@@ -5,7 +5,7 @@ gem "github-pages", group: :jekyll_plugins
 
 # theme
 # https://github.com/just-the-docs/just-the-docs
-gem "just-the-docs", "~> 0.9.0"
+gem "just-the-docs", "~> 0.10.1"
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
 # and associated library.
