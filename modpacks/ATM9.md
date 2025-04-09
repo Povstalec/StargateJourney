@@ -1,7 +1,9 @@
 ---
 title: All The Mods 9
-nav_order: 80
+parent: Modpacks
+nav_order: 60
 ---
+
 # All the Mods 9
 Given the amount of questions regarding [All The Mods 9](https://www.curseforge.com/minecraft/modpacks/all-the-mods-9)
 there are because Stargate Journey works slightly differently with that modpack,
@@ -16,16 +18,16 @@ You can still find the Buried Stargate through a map you get as a final trade fr
 On older versions of ATM9, the Map that leads to the Buried Stargate could instead lead to one of the many Stargate Pedestals that Common Stargates Datapack generates.
 
 # World Generation
-## Stargates 
+## Stargates
 All The Mods 9 uses the [Common Stargates Datapack](https://www.curseforge.com/minecraft/texture-packs/common-stargates),
-which changes the world generation in such a way that Stargates generate approximately 64 chunks apart on average, 
+which changes the world generation in such a way that Stargates generate approximately 64 chunks apart on average,
 as opposed to once per Dimension (which is how Stargate Journey does it normally).
 
 ![Stargate pedestal]({{ site.baseurl }}/assets/img/blocks/technological/milkyway_pedestal.png)
 
 ## Cartouches
-Cartouches with the Abydos Address will generate around the Overworld:  
-  
+Cartouches with the Abydos Address will generate around the Overworld:
+
 ![Stone cartouche structure]({{ site.baseurl }}/assets/img/stone_cartouche.png)
 
 

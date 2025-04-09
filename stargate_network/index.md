@@ -1,6 +1,6 @@
 ---
 title: Stargate Network
-nav_order: 70
+nav_order: 50
 ---
 
 {: .note }

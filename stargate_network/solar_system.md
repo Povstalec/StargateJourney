@@ -1,6 +1,6 @@
 ---
 title: Solar system
-nav_order: 40
+nav_order: 10
 parent: Stargate Network
 ---
 

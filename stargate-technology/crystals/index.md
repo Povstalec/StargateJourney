@@ -1,8 +1,9 @@
 ---
 title: Crystals
-nav_order: 40
-parent: Items
+nav_order: 20
+parent: Stargate Technology
 ---
+
 
 # Crystals
 Crystals are crafted in Crystallizer or Advance Crystallizer.

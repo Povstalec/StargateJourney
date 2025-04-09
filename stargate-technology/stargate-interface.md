@@ -1,8 +1,9 @@
 ---
 title: Stargate Interface
-nav_order: 20
-parent: Stargate Network
+parent: Stargate Technology
+nav_order: 30
 ---
+
 
 [//]: # (Probably temporary placement, before mechanics category is done or something)
 
@@ -47,7 +48,7 @@ ___
 ![Interface segment mode]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/interface_mode_ring_segment.png)
 
 The interface in the segment mode provides rough information about a Stargate rotation.
-For the Milky Way Stargate, it gives details about the inner ring rotation. 
+For the Milky Way Stargate, it gives details about the inner ring rotation.
 For the Pegasus and Universe Stargates, it provides information about the last encoded symbol.
 
 The Milky Way Stargate ring is divided into **three segments**, each with **13 symbols**.
@@ -83,7 +84,7 @@ Each segment of the Milky Way Stargate ring has 13 symbols.
 Based on the symbol under the top chevron, the interface provides the redstone signal.
 
 Each segment of the Universe Stargate has 12 symbols,
-Based on the last encoded symbol, the interface provides a redstone signal 
+Based on the last encoded symbol, the interface provides a redstone signal
 with strength from **0** to **12** always skipping the strength **1** (0, 2, 3...12).
 
 {: .future }
@@ -191,13 +192,13 @@ ___
 In order for the Stargate to require power, the power requirements needs to be enabled in the mod configuration file.  
 `disable_energy_requirements = false` <!-- TODO: link to mod configuration page -->
 
-Due to some alien technology's incredibly high energy capacity, the interfaces will, by default, 
+Due to some alien technology's incredibly high energy capacity, the interfaces will, by default,
 only push energy into it until a **targeted energy level** is reached **within the technology**.
 
 For example, The Stargate can hold several **billion** FE units.
-By default, the interface will **stop** pushing energy once it reaches `200 000` FE to prevent early energy drain, 
+By default, the interface will **stop** pushing energy once it reaches `200 000` FE to prevent early energy drain,
 even though the Stargate is not near full capacity.
 
 The amount of energy the alien technology is charged with is called the **Energy Target**.
-It can be set with **Computercraft** using the 
+It can be set with **Computercraft** using the
 [`setEnergyTarget`]({{ site.baseurl }}/computercraft/stargate_interface/#setEnergyTarget) method

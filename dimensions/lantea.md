@@ -1,6 +1,6 @@
 ---
 title: Lantea
-nav_order: 30
+nav_order: 70
 parent: Dimensions
 ---
 

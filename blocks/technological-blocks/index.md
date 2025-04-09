@@ -1,8 +1,9 @@
 ---
-title: Technological blocks
-nav_order: 10
+title: Technological Blocks
 parent: Blocks
+nav_order: 0
 ---
+
 # Technological blocks
 {: .no_toc }
 
@@ -25,7 +26,7 @@ The ring can move and the gate can be dialed manually using [redstone]({{ site.b
 {: .max-width-512 }
 
 ### Universe
-Universe Stargate has only 35 symbols (+ Point of Origin). 
+Universe Stargate has only 35 symbols (+ Point of Origin).
 The gate cannot dial any address with the symbol 36 and above.
 The entire Stargate rotates during the dial.
 It is also possible to dial the gate using [redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone).
@@ -34,22 +35,22 @@ It is also possible to dial the gate using [redstone]({{ site.baseurl }}/surviva
 {: .max-width-512 }
 
 ### Milky Way
-The inner ring with symbols rotates 
-when the gate is [powered by redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone) 
+The inner ring with symbols rotates
+when the gate is [powered by redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone)
 or when a [computer instructs]({{ site.baseurl }}/survival/dialing/#dialing-with-computercraft) it to do so.
 
 ![Milky Way Stargate]({{ site.baseurl }}/assets/img/blocks/technological/milkyway_stargate.png)
 {: .max-width-512 }
 
 ### Tollan
-The Tollan Stargate has no symbols and no moving parts. 
+The Tollan Stargate has no symbols and no moving parts.
 The chevrons light up when encoded.
 
 ![Tollan Stargate]({{ site.baseurl }}/assets/img/blocks/technological/tollan_stargate.png)
 {: .max-width-512 }
 
 ### Pegasus
-The Pegasus Stargate has only 35 visible symbols (+ Point of Origin). 
+The Pegasus Stargate has only 35 visible symbols (+ Point of Origin).
 Still, any symbol can be encoded, including 36 and above.
 The gate automatically picks up symbols of the galaxy each time it is placed (unless disabled by a computer).
 
@@ -76,14 +77,14 @@ The gate automatically picks up symbols of the galaxy each time it is placed (un
 ___
 
 ## Transceiver
-The transceiver is capable of receiving an IDC (IDentification code) from the 
+The transceiver is capable of receiving an IDC (IDentification code) from the
 [Garage Door Opener (GDO)]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo).
 It will provide a redstone signal pulse through a comparator when a correct IDC is received
 and will notify connected computers with an event.
 Transceiver is also able to transmit the IDC.
 
-See [Stargate Network / Stargate Iris / Controlling / Remote iris control]({{ site.baseurl }}/stargate_network/stargate_iris/#remote-iris-control) 
-for redstone example. 
+See [Stargate Network / Stargate Iris / Controlling / Remote iris control]({{ site.baseurl }}/stargate_network/stargate_iris/#remote-iris-control)
+for redstone example.
 
 **GUI usage**
 - The **code** is displayed on the first line of the display.

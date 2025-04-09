@@ -1,6 +1,6 @@
 ---
 title: Cavum Tenebrae
-nav_order: 20
+nav_order: 60
 parent: Dimensions
 ---
 

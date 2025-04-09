@@ -1,6 +1,6 @@
 ---
 title: Galaxy
-nav_order: 30
+nav_order: 20
 parent: Stargate Network
 ---
 

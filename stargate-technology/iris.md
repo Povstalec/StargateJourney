@@ -1,7 +1,7 @@
 ---
-title: Stargate Iris
-nav_order: 10
-parent: Stargate Network
+title: Iris
+parent: Stargate Technology
+nav_order: 40
 iris_types: [Naquadah Alloy, Steel, Copper, Iron, Golden, Diamond, Netherite, Bronze]
 ---
 
@@ -13,14 +13,14 @@ ___
 # Stargate Iris
 
 > The iris is a metal covering on the Earth Stargate which is used to screen incoming traffic.  
-> When the iris is closed, it forms a barrier less than three μm from the wormhole's event horizon, 
+> When the iris is closed, it forms a barrier less than three μm from the wormhole's event horizon,
 > thereby preventing most forms of matter from properly reintegrating.  
 > Source: [stargate.fandom.com](https://stargate.fandom.com/wiki/Iris)
 
 Stargate is a gateway to other worlds, hiding many things to discover but also many dangers.
 
-Surely, you don't want any uninvited visitors; 
-there is a very *democratic* way of preventing such occurrences -- build a wall and let every visitor smash into it, 
+Surely, you don't want any uninvited visitors;
+there is a very *democratic* way of preventing such occurrences -- build a wall and let every visitor smash into it,
 and by the wall, I mean the iris.
 
 [//]: # (Idk man, its 1AM, what do you want from me?)
@@ -32,7 +32,7 @@ and by the wall, I mean the iris.
 {% for type in page.iris_types %}
 
 {{ type }} iris  
-`{{ type | downcase | replace: " ", "_" }}_iris`  
+`{{ type | downcase | replace: " ", "_" }}_iris`
 
 ![{{ type }} iris]({{ site.baseurl }}/assets/img/blocks/technological/iris/{{ type | downcase | replace: " ", "_" }}_iris.png)
 {: .max-width-512 }
@@ -47,12 +47,12 @@ ___
 
 ## Crafting
 
-You will need a Stargate shielding ring first to craft an iris, 
+You will need a Stargate shielding ring first to craft an iris,
 which you can craft with four iron ingots and four redstone dusts.
 
 ![Stargate shielding ring recipe]({{ site.baseurl }}/assets/img/blocks/technological/iris/stargate_shielding_ring_recipe.png)
 
-Then, you can use the ring in the middle of the crafting table 
+Then, you can use the ring in the middle of the crafting table
 and surround it with a material for the [iris type](#iris-types).
 
 ![Stargate naquadah alloy iris]({{ site.baseurl }}/assets/img/blocks/technological/iris/stargate_iris_recipe.png)
@@ -61,9 +61,9 @@ ___
 
 ## Setting up
 
-Once you have an iris, 
-you can install it into any Stargate with **right-click** 
-(except for [Tollan Stargate]({{ site.baseurl }}/blocks/technological_blocks/#tollan), 
+Once you have an iris,
+you can install it into any Stargate with **right-click**
+(except for [Tollan Stargate]({{ site.baseurl }}/blocks/technological_blocks/#tollan),
 which is too thin for an iris installation).
 
 Only a single iris can be installed on the gate at the time.
@@ -79,8 +79,8 @@ ___
 > is in **the same chunk as the gate itself**.
 > Otherwise, when an incoming connection to the gate loads the remote chunk, anything **outside** the gate's chunk
 > will not be loaded, so that **it won't work**.
-> 
-> Also, **do not use pistons** in the redstone circuits. 
+>
+> Also, **do not use pistons** in the redstone circuits.
 > Pistons and similar mechanics will not work when the gate loads the chunk.
 
 ___
@@ -106,8 +106,8 @@ Then simply powering the interface with a signal of strength 8 or more will open
 There are, of course, plenty of ways how to do it, here are two examples.  
 The simple way using a lever and redstone torch.
 The torch emits a signal of strength **15**, the left path is **9** blocks long.
-Redstone loses a level for each block, leaving the interface with signal strength **7** 
-(which is the largest strength level that closes the iris). 
+Redstone loses a level for each block, leaving the interface with signal strength **7**
+(which is the largest strength level that closes the iris).
 The direct way from lever has a length of **4** blocks, providing signal strength **12** when lever is switched on
 (any signal above **7** will work).
 
@@ -134,13 +134,13 @@ ___
 
 ### Automatic iris closing
 
-What if you wanted the iris to automatically open for outgoing connections, 
-so you can use the gate, 
-and closed for incoming connections reflecting any uninvited visitors, 
+What if you wanted the iris to automatically open for outgoing connections,
+so you can use the gate,
+and closed for incoming connections reflecting any uninvited visitors,
 unless opened with a lever?  
 It is indeed possible with a very simple setup.
 
-Using an interface in the [wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) 
+Using an interface in the [wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode)
 will provide appropriate signal strength for the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode)
 to automatically open/close the iris based on the connection direction.
 
@@ -148,14 +148,14 @@ During an incoming connection, the iris can be easily opened with a redstone sig
 
 ![Iris auto close]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/auto_close.png)
 
-You can also instruct the iris to **open automatically** when there is **no connection**. 
-With another comparator, you can read from the interface in the 
-[wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) whether there is an active connection. 
-**Negating** this signal with a **torch** will power the interface in the 
-[iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode), 
-**opening** the iris when there is **no connection**. 
-When there is **any connection**, 
-the second comparator will emit **some** signal to the torch, 
+You can also instruct the iris to **open automatically** when there is **no connection**.
+With another comparator, you can read from the interface in the
+[wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) whether there is an active connection.
+**Negating** this signal with a **torch** will power the interface in the
+[iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode),
+**opening** the iris when there is **no connection**.
+When there is **any connection**,
+the second comparator will emit **some** signal to the torch,
 **powering it off** and leaving the **first comparator** to provide an appropriate signal to the iris interface.
 
 ![Iris auto open-close]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/auto_open_close.png)
@@ -166,7 +166,7 @@ ___
 
 So you have secured the gate with an auto-closing iris for incoming connection, but how you can open the iris
 when you are on the other side of the connection?  
-[Garage Door Opener (GDO)]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo) is a hand-held device 
+[Garage Door Opener (GDO)]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo) is a hand-held device
 that allows to send a signal through the Stargate connection to the other side.
 For example, automatically opening the iris.
 
@@ -202,22 +202,22 @@ more [transceivers]({{ site.baseurl }}/blocks/technological_blocks/#transceiver)
 ![Iris setup with GDO top view]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/iris_with_gdo_top.png)
 
 Adding two slabs (**must be slabs**) and a torch instructs the iris to automatically open when the gate is idle.
-Additionally, buttons can be added. 
+Additionally, buttons can be added.
 The top/left one closes and the bottom/right one opens the iris.
 
 ![Iris setup with GDO with auto open]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/gdo_breakdown/iris_with_gdo_auto_open.png)
 
 ### Circuit breakdown
-So, how the circuit with [GDO]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo) works.  
+So, how the circuit with [GDO]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo) works.
 
 As explained in the [automatic iris closing section]({{ site.baseurl }}/stargate_network/stargate_iris/#automatic-iris-closing),
-the interface on the left in the [wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) 
+the interface on the left in the [wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode)
 will provide via comparator a signal of strength
-- **0** -- When there is no active connection, 
-resulting in no action from the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode) 
-on the right.
+- **0** -- When there is no active connection,
+  resulting in no action from the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode)
+  on the right.
 - **7** -- When there is an **incoming** connection, resulting in **closing** the iris by the interface on the right.
-- **15** -- When there is an **outgoing** connection, resulting in **opening** the iris by the interface on the right. 
+- **15** -- When there is an **outgoing** connection, resulting in **opening** the iris by the interface on the right.
 
 Next, we need to add the control of the iris with the [transceiver]({{ site.baseurl }}/blocks/technological_blocks/#transceiver).
 
@@ -255,16 +255,16 @@ This will activate the torch under the interface and instruct the iris to open.
 ![Iris setup with GDO RS NOR latch highlight with transceiver]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/gdo_breakdown/iris_with_gdo_rsnorlatch_transceiver.png)
 
 *Iris opened*  
-Leaving the circuit like that will never switch the latch back to active torch **A** 
+Leaving the circuit like that will never switch the latch back to active torch **A**
 and the iris will never close for the next incoming connection.
 We need to reset the latch state when the connection is over.
 
-With a new comparator, you can read from the interface in the 
+With a new comparator, you can read from the interface in the
 [wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) whether there is an active connection.
 This signal can be negated with a redstone torch which can power the latch behind the torch **B**.
 So whenever the gate is idle (there is no active connection), the comparator won't output any signal,
 leaving the torch active.
-The torch will power the latch, switching it to the default state allowing the iris to close 
+The torch will power the latch, switching it to the default state allowing the iris to close
 (the torch under the iris interface is off).
 When there is any active connection, the comparator reading the wormhole interface will light up
 which will turn off the torch allowing the [RS NOR Latch](https://minecraft.wiki/w/Redstone_circuits/Memory#RS-NOR_latches) to be switched.
@@ -273,7 +273,7 @@ which will turn off the torch allowing the [RS NOR Latch](https://minecraft.wiki
 
 As mentioned before, the iris can be also instructed to automatically open when the gate is idle.
 We already have a place, which can emit a signal when the gate is idle.
-Hooking the added torch directly to the interface in the 
+Hooking the added torch directly to the interface in the
 [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode) will power the interface with signal strength **14**
 opening the iris whenever the gate is not active.
 
@@ -282,12 +282,12 @@ opening the iris whenever the gate is not active.
 **Summary**
 
 When the gate is active, the left side of the latch should be active.
-The torch below the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode) should be inactive, 
+The torch below the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode) should be inactive,
 leaving the comparator between interfaces to instruct
 the iris based on the connection type (open for outgoing, close for incoming).
-The second comparator reading from the interface in the 
+The second comparator reading from the interface in the
 [wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) disables the torch resetting the latch,
-allowing it to be switched to the other state by the [transceiver]({{ site.baseurl }}/blocks/technological_blocks/#transceiver) 
+allowing it to be switched to the other state by the [transceiver]({{ site.baseurl }}/blocks/technological_blocks/#transceiver)
 (to open the iris when requested).
 
 ![Iris setup with GDO active connection]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/gdo_breakdown/iris_with_gdo_active_connection.png)

@@ -1,6 +1,6 @@
 ---
 title: Datapacks and Resourcepacks
-nav_order: 100
+nav_order: 140
 ---
 
 # Making Datapacks for Stargate Journey
