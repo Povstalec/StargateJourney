@@ -84,7 +84,10 @@ public class ForgeEvents
 	{
 		MinecraftServer server = event.getServer();
 		if(event.phase.equals(TickEvent.Phase.START) && server != null)
+		{
 			StargateNetwork.get(server).handleConnections();
+			TransporterNetwork.get(server).handleConnections();
+		}
 	}
 	
 	private static AbstractStargateEntity getStargateAtPos(Level level, BlockPos pos, BlockState blockstate)

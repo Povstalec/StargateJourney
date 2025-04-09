@@ -20,7 +20,9 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
 /**
  * Dimension - Frequency - Rings
@@ -36,46 +38,47 @@ public final class TransporterNetwork extends SavedData
 	private static final String RINGS_A = "RingsA";
 	private static final String RINGS_B = "RingsB";
 	private static final String CONNECTION_TIME = "ConnectionTime";*/
-	private static final String DIMENSIONS = "Dimensions";
-	private static final String CONNECTIONS = "Connections";
+	private static final String DIMENSIONS = "dimensions";
+	private static final String CONNECTIONS = "connections";
 
-	private static final String VERSION = "Version";
+	private static final String VERSION = "version";
 
-	private static final int updateVersion = 1;
+	private static final int UPDATE_VERSION = 1;
 	
 	private MinecraftServer server;
 
 	private Map<String, TransporterNetwork.Dimension> dimensions = new HashMap<String, TransporterNetwork.Dimension>();
+	private HashMap<UUID, TransporterConnection> connections = new HashMap<UUID, TransporterConnection>();
 	private int version = 0;
 	
 	//============================================================================================
 	//******************************************Versions******************************************
 	//============================================================================================
 	
-	public final int getVersion()
+	public int getVersion()
 	{
 		return this.version;
 	}
 	
-	private final void updateVersion()
+	private void updateVersion()
 	{
-		this.version = updateVersion;
+		this.version = UPDATE_VERSION;
 	}
 	
-	public final void updateNetwork(MinecraftServer server)
+	public void updateNetwork(MinecraftServer server)
 	{
-		if(getVersion() == updateVersion)
+		if(getVersion() == UPDATE_VERSION)
 		{
 			StargateJourney.LOGGER.info("Transporter Network is up to date (Version: " + version + ")");
 			return;
 		}
 		
-		StargateJourney.LOGGER.info("Detected an incompatible Transporter Network version (Version: " + getVersion() + ") - updating to version " + updateVersion);
+		StargateJourney.LOGGER.info("Detected an incompatible Transporter Network version (Version: " + getVersion() + ") - updating to version " + UPDATE_VERSION);
 		
 		reloadNetwork(server, false);
 	}
 	
-	public final void reloadNetwork(MinecraftServer server, boolean updateInterfaces)
+	public void reloadNetwork(MinecraftServer server, boolean updateInterfaces)
 	{
 		eraseNetwork();
 		StargateJourney.LOGGER.info("Transporter Network erased");
@@ -89,14 +92,14 @@ public final class TransporterNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public final void eraseNetwork()
+	public void eraseNetwork()
 	{
 		this.dimensions.clear();
 		
 		this.setDirty();
 	}
 	
-	private final void addTransporters()
+	private void addTransporters()
 	{
 		HashMap<UUID, Transporter> transporters = BlockEntityList.get(server).getTransporters();
 		
@@ -109,9 +112,7 @@ public final class TransporterNetwork extends SavedData
 			if(blockentity instanceof AbstractTransporterEntity transporterEntity)
 			{
 				if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
-				{
 					addTransporterToDimension(transporter.getDimension(), transporter);
-				}
 				else
 				{
 					BlockEntityList.get(server).removeTransporter(transporter.getID());
@@ -120,7 +121,6 @@ public final class TransporterNetwork extends SavedData
 			}
 			else
 				BlockEntityList.get(server).removeTransporter(transporter.getID());
-			
 		});
 	}
 	
@@ -128,7 +128,7 @@ public final class TransporterNetwork extends SavedData
 	//****************************************Transporters****************************************
 	//============================================================================================
 	
-	public final void addTransporter(AbstractTransporterEntity transporterEntity)
+	public void addTransporter(AbstractTransporterEntity transporterEntity)
 	{
 		Optional<Transporter> transporterOptional = BlockEntityList.get(server).addTransporter(transporterEntity);
 		
@@ -143,31 +143,31 @@ public final class TransporterNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public final void removeTransporter(Level level, UUID id)
+	public void removeTransporter(Level level, UUID uuid)
 	{
-		if(id == null)
+		if(uuid == null)
 			return;
 		
-		Transporter transporter = getTransporter(id);
+		Transporter transporter = getTransporter(uuid);
 		
 		if(transporter != null)
 			removeTransporterFromDimension(level.dimension(), transporter);
 
-		BlockEntityList.get(level).removeTransporter(id);
+		BlockEntityList.get(level).removeTransporter(uuid);
 		
-		StargateJourney.LOGGER.info("Removed " + id.toString() + " from Transporter Network");
+		StargateJourney.LOGGER.info("Removed " + uuid.toString() + " from Transporter Network");
 		setDirty();
 	}
 	
 	@Nullable
-	public final Transporter getTransporter(UUID id)
+	public Transporter getTransporter(UUID uuid)
 	{
-		return BlockEntityList.get(server).getTransporters().get(id);
+		return BlockEntityList.get(server).getTransporters().get(uuid);
 	}
 	
 	
 	
-	public final void addTransporterToDimension(ResourceKey<Level> dimensionKey, Transporter transporter)
+	public void addTransporterToDimension(ResourceKey<Level> dimensionKey, Transporter transporter)
 	{
 		String dimensionString = dimensionKey.location().toString();
 		
@@ -177,7 +177,7 @@ public final class TransporterNetwork extends SavedData
 		dimensions.get(dimensionString).addTransporter(transporter);
 	}
 	
-	public final void removeTransporterFromDimension(ResourceKey<Level> dimensionKey, Transporter transporter)
+	public void removeTransporterFromDimension(ResourceKey<Level> dimensionKey, Transporter transporter)
 	{
 		String dimensionString = dimensionKey.location().toString();
 		
@@ -185,7 +185,7 @@ public final class TransporterNetwork extends SavedData
 			dimensions.get(dimensionString).removeTransporter(transporter);
 	}
 	
-	public final Optional<List<Transporter>> getTransportersFromDimension(ResourceKey<Level> dimensionKey)
+	public Optional<List<Transporter>> getTransportersFromDimension(ResourceKey<Level> dimensionKey)
 	{
 		if(dimensions.containsKey(dimensionKey.location().toString()))
 		{
@@ -204,6 +204,57 @@ public final class TransporterNetwork extends SavedData
 		{
 			dimensionEntry.getValue().printDimension();
 		});
+	}
+	
+	//============================================================================================
+	//****************************************Connections*****************************************
+	//============================================================================================
+	
+	public void handleConnections()
+	{
+		Map<UUID, TransporterConnection> connections = new HashMap<>();
+		connections.putAll(this.connections);
+		
+		connections.forEach((uuid, connection) -> connection.tick(server));
+		this.setDirty();
+	}
+	
+	//TODO Maybe replace booleans with Transporter Feedback
+	public boolean createConnection(MinecraftServer server, Transporter transporterA, Transporter transporterB)
+	{
+		TransporterConnection connection = TransporterConnection.create(server, transporterA, transporterB);
+		
+		if(connection == null)
+			return false;
+		
+		return addConnection(connection);
+	}
+	
+	public boolean addConnection(TransporterConnection connection)
+	{
+		if(hasConnection(connection.getID()))
+			return false;
+		
+		this.connections.put(connection.getID(), connection);
+		return true;
+	}
+	
+	public boolean hasConnection(UUID uuid)
+	{
+		if(this.connections.containsKey(uuid))
+			return true;
+		
+		return false;
+	}
+	
+	public void terminateConnection(UUID uuid)
+	{
+		TransporterConnection connection = this.connections.get(uuid);
+		
+		if(connection == null)
+			return;
+		
+		connection.terminate(server);
 	}
 	
 	//============================================================================================

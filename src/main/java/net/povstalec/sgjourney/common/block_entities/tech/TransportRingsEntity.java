@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -21,6 +22,8 @@ import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 
+import javax.annotation.Nullable;
+
 public class TransportRingsEntity extends AbstractTransporterEntity
 {
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
@@ -32,8 +35,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
     
 	public int emptySpace = 0;
 	public int ticks = 0;
-	
-	
 	
 	public int progressOld = 0;
 	public int progress = 0;
@@ -69,6 +70,37 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	//========================================================================================================
 	//**********************************************Transporting**********************************************
 	//========================================================================================================
+	
+	@Override
+	@Nullable
+	public List<Entity> entitiesToTransport()
+	{
+		AABB localBox = new AABB((transportPos.getX() - 1), (transportPos.getY()), (transportPos.getZ() - 1),
+				(transportPos.getX() + 2), (transportPos.getY() + 3), (transportPos.getZ() + 2));
+		
+		return this.level.getEntitiesOfClass(Entity.class, localBox);
+	}
+	
+	@Override
+	public BlockPos transportPos()
+	{
+		return new BlockPos(getBlockPos().getX(), (getBlockPos().getY() + getEmptySpace()), getBlockPos().getZ());
+	}
+	
+	@Override
+	public void doTicks(int ticks)
+	{
+	
+	}
+	
+	public void updateClient()
+	{
+		if(!level.isClientSide())
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)),
+					new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight));
+	}
+	
+	
 	
 	private void activate(BlockPos targetPos, boolean isSender)
 	{
@@ -112,7 +144,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 				target = null;
 			
 			//TODO sync difference with client
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight));
+			updateClient();
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -11,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -21,6 +23,8 @@ public class Transporter
 	public static final String COORDINATES = "Coordinates";
 
 	public static final String CUSTOM_NAME = "CustomName";
+	
+	public static final int TRANSPORT_DURATION = 22;
 	
 	private final UUID id;
 	private final ResourceKey<Level> dimension;
@@ -63,24 +67,57 @@ public class Transporter
 		return name != null ? name : Component.empty();
 	}
 	
-	public Optional<AbstractTransporterEntity> getTransporterEntity(MinecraftServer server)
+	@Nullable
+	public AbstractTransporterEntity getTransporterEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && level.getBlockEntity(blockPos) instanceof AbstractTransporterEntity transporter)
-			return Optional.of(transporter);
+			return transporter;
 		
-		return Optional.empty();
+		return null;
 	}
 	
 	public int getTimeOffset(MinecraftServer server)
 	{
-		Optional<AbstractTransporterEntity> transporter = getTransporterEntity(server);
+		AbstractTransporterEntity transporter = getTransporterEntity(server);
 		
-		if(transporter.isPresent())
-			return transporter.get().getTimeOffset();
+		if(transporter != null)
+			return transporter.getTimeOffset();
 		
 		return 0;
+	}
+	
+	@Nullable
+	public List<Entity> entitiesToTransport(MinecraftServer server)
+	{
+		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			return transporter.entitiesToTransport();
+		
+		return new ArrayList<>();
+	}
+	
+	@Nullable
+	public BlockPos transportPos(MinecraftServer server)
+	{
+		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			return transporter.transportPos();
+		
+		return null;
+	}
+	
+	public boolean isConnected(MinecraftServer server)
+	{
+		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			return transporter.isConnected();
+		
+		return false;
 	}
 	
 	

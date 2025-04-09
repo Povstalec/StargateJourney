@@ -34,7 +34,23 @@ public class Goauld extends PathfinderMob
 	{
 		return PathfinderMob.createMobAttributes()
 				.add(ForgeMod.ENTITY_GRAVITY.get(), 0.5f)
-				.add(Attributes.MAX_HEALTH, 5.0D)
+				.add(Attributes.MAX_HEALTH, 6.0D)
 				.add(Attributes.MOVEMENT_SPEED, 0.4D);
+	}
+	
+	
+	
+	public static class Info
+	{
+		public Info()
+		{
+		
+		}
+		
+		// Goa'uld name
+		// Goa'uld health
+		// Goa'uld age
+		// Goa'uld faction
+		// Goa'uld rank?
 	}
 }

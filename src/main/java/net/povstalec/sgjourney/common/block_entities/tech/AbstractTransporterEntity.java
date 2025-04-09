@@ -1,10 +1,13 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.WorldGenLevel;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +35,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	protected UUID id;
-	protected String connectionID = StargateJourney.EMPTY;
+	protected UUID connectionID = null;
 
 	@Nullable
 	private Component name;
@@ -165,6 +168,17 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	{
 		return 0;
 	}
+	
+	//========================================================================================================
+	//**********************************************Transporting**********************************************
+	//========================================================================================================
+	
+	@Nullable
+	public abstract List<Entity> entitiesToTransport();
+	
+	public abstract BlockPos transportPos();
+	
+	public abstract void doTicks(int ticks);
 	
 	//============================================================================================
 	//*****************************************Generation*****************************************

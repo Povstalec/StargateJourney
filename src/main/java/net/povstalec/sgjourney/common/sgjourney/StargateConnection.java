@@ -206,8 +206,7 @@ public final class StargateConnection
 	{
 		this(uuid, connectionType, dialingStargate, dialedStargate, false, 0, 0, 0, doKawoosh);
 	}
-
-	//TODO Replace these parameters with Stargate object
+	
 	public static final StargateConnection create(MinecraftServer server, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate, boolean doKawoosh)
 	{
 		UUID uuid = UUID.randomUUID();

@@ -19,7 +19,9 @@ public class Jaffa extends Human
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/player/wide/efe.png");
 	
-	public Jaffa(EntityType<? extends AgeableMob> type, Level level)
+	//protected Goauld.Info goauldLarva;
+	
+	public Jaffa(EntityType<? extends Jaffa> type, Level level)
 	{
 		super(type, level);
 	}
