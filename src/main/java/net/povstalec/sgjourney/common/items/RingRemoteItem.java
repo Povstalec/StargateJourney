@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import net.povstalec.sgjourney.common.sgjourney.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;

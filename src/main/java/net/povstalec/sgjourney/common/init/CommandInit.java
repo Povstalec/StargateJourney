@@ -29,7 +29,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -50,7 +49,7 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy.Serializable;
 import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
-import net.povstalec.sgjourney.common.sgjourney.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class CommandInit
 {

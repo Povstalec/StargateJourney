@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class TransporterConnection
 {

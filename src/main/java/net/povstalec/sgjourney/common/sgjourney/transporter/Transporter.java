@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney;
+package net.povstalec.sgjourney.common.sgjourney.transporter;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
-import net.povstalec.sgjourney.common.sgjourney.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import javax.annotation.Nullable;
 
