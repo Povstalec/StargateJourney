@@ -4,13 +4,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -18,6 +15,8 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.entities.goals.NearestThreatGoal;
+import net.povstalec.sgjourney.common.entities.goals.StaffWeaponAttackGoal;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
@@ -38,7 +37,7 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 	{
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		
-		//this.goalSelector.addGoal(2, new StaffWeaponAttackGoal(this, 1.0D, 10.0F, 32.0F));
+		this.goalSelector.addGoal(2, new StaffWeaponAttackGoal(this, 1.0D, 8.0F, 12.0F));
 		
 		this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 5F));
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
@@ -46,15 +45,7 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 		this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
 		
 		//this.targetSelector.addGoal(2, (new HurtByTargetGoal(this)).setAlertOthers());
-		this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
-	}
-	
-	public static AttributeSupplier.Builder createAttributes()
-	{
-		return AgeableMob.createMobAttributes()
-				.add(Attributes.FOLLOW_RANGE, 32.0D)
-				.add(Attributes.MAX_HEALTH, 20.0D)
-				.add(Attributes.ATTACK_DAMAGE, 1.0D);
+		this.targetSelector.addGoal(1, new NearestThreatGoal<>(this, Player.class, true));
 	}
 	
 	@Override

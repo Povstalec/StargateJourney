@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -27,9 +26,6 @@ public interface Transporter
 	BlockPos getBlockPos();
 	
 	Component getName();
-	
-	@Nullable
-	AbstractTransporterEntity getTransporterEntity(MinecraftServer server);
 	
 	int getTimeOffset(MinecraftServer server);
 	

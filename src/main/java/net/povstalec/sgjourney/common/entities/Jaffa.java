@@ -34,9 +34,7 @@ public class Jaffa extends Human
 	
 	public static AttributeSupplier.Builder createAttributes()
 	{
-		return AgeableMob.createMobAttributes()
-				.add(Attributes.FOLLOW_RANGE, 32.0)
-				.add(Attributes.MAX_HEALTH, 30.0D)
+		return Human.createAttributes()
 				.add(Attributes.ATTACK_DAMAGE, 2.0D);
 	}
 	

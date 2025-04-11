@@ -66,7 +66,6 @@ public class SGJourneyTransporter implements Transporter
 		return name != null ? name : Component.empty();
 	}
 	
-	@Override
 	@Nullable
 	public AbstractTransporterEntity getTransporterEntity(MinecraftServer server)
 	{

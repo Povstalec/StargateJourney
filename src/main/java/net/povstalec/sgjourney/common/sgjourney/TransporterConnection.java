@@ -161,17 +161,7 @@ public class TransporterConnection
 			return false;
 		}
 		
-		if(transporter.getTransporterEntity(server) != null)
-		{
-			if(transporter.getTransporterEntity(server).isConnected())
-				return true;
-
-			StargateJourney.LOGGER.info("Transporter is not connected");
-		}
-		else
-			StargateJourney.LOGGER.info("Transporter not found");
-		
-		return false;
+		return transporter.isConnected(server);
 	}
 	
 	

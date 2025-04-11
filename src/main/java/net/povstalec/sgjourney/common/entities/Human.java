@@ -28,6 +28,15 @@ public class Human extends Anthropoid
 		super(type, level);
 	}
 	
+	public static AttributeSupplier.Builder createAttributes()
+	{
+		return AgeableMob.createMobAttributes()
+				.add(Attributes.MOVEMENT_SPEED, 0.3D)
+				.add(Attributes.FOLLOW_RANGE, 32.0D)
+				.add(Attributes.MAX_HEALTH, 20.0D)
+				.add(Attributes.ATTACK_DAMAGE, 1.0D);
+	}
+	
 	@Override
 	public ResourceLocation texture()
 	{
