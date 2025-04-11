@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import net.povstalec.sgjourney.common.sgjourney.Transporter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -156,7 +157,9 @@ public class RingRemoteItem extends Item
 								{
 									if(transportRings.get().canTransport() && targetRings.canTransport())
 									{
-										transportRings.get().activate(targetPos);
+										Transporter transporter = targetRings.getTransporter();
+										if(transporter != null)
+											transportRings.get().startTransport(transporter);
 									}
 									else
 										player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.BLUE), true);

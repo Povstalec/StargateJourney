@@ -1,26 +1,25 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
+import net.povstalec.sgjourney.common.sgjourney.Transporter;
 
 import javax.annotation.Nullable;
 
@@ -28,17 +27,13 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 {
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
 	
-	private BlockPos transportPos;
-	private BlockPos targetPos;
-	
-	public boolean isSender = false;
-    
+	@Nullable
+	private BlockPos transportPos = null;
 	public int emptySpace = 0;
-	public int ticks = 0;
-	
-	public int progressOld = 0;
-	public int progress = 0;
 	public int transportHeight = 0;
+	
+	public int progress = -1;
+	public int progressOld = -1;
 	
 	private TransportRingsEntity target;
 	
@@ -53,12 +48,11 @@ public class TransportRingsEntity extends AbstractTransporterEntity
         return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
     }
 	
-	public boolean canTransport()
+	@Nullable
+	public Transporter getTransporter()
 	{
-		if(this.isConnected())
-			return false;
-		
-		return true;
+		//TODO Maybe start caching it?
+		return TransporterNetwork.get(level).getTransporter(id);
 	}
 	
 	@Override
@@ -84,138 +78,108 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	@Override
 	public BlockPos transportPos()
 	{
-		return new BlockPos(getBlockPos().getX(), (getBlockPos().getY() + getEmptySpace()), getBlockPos().getZ());
-	}
-	
-	@Override
-	public void doTicks(int ticks)
-	{
-	
+		if(transportPos == null)
+		{
+			this.emptySpace = getEmptySpace();
+			this.transportPos = new BlockPos(getBlockPos().getX(), (getBlockPos().getY() + this.emptySpace), getBlockPos().getZ());
+		}
+		
+		return this.transportPos;
 	}
 	
 	public void updateClient()
 	{
 		if(!level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)),
-					new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight));
+					new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight, this.progress));
 	}
 	
-	
-	
-	private void activate(BlockPos targetPos, boolean isSender)
+	public void startTransport(Transporter target)
 	{
-		if(level.getBlockEntity(targetPos) instanceof TransportRingsEntity transportRings)
-		{
-			target = transportRings;
-			
-			// If Rings aren't targeting themselves and neither end is active yet
-			if(!targetPos.equals(this.getBlockPos()) && !this.isConnected() && !target.isConnected())
-			{
-				if(isSender)
-				{
-					target.activate(getBlockPos(), false);
-					this.isSender = true;
-				}
-				else
-					target.isSender = false;
-				
-				setActivated(true);
-				
-				emptySpace = getEmptySpace();
-				
-				transportPos = new BlockPos(getBlockPos().getX(), (getBlockPos().getY() + emptySpace), getBlockPos().getZ());
-				
-				int difference = Math.abs(this.getTransportHeight() - target.getTransportHeight());
-				
-				if(this.transportHeight >= target.transportHeight)
-					ticks = 0;
-				else
-					ticks = -difference;
-				
-				progress = 0;
-
-				this.targetPos = targetPos;
-				
-				target = (TransportRingsEntity) level.getBlockEntity(targetPos);
-				
-				loadChunk(true);
-			}
-			else
-				target = null;
-			
-			//TODO sync difference with client
-			updateClient();
-		}
+		Transporter transporter = getTransporter();
+		
+		if(transporter == null) //TODO Maybe some kind of feedback when it goes wrong?
+			return;
+		
+		TransporterNetwork.get(level).createConnection(level.getServer(), transporter, target);
 	}
+	
+	public boolean connectTransporter(UUID connectionID)
+	{
+		transportPos();
+		return super.connectTransporter(connectionID);
+	}
+	
+	public void resetTransporter()
+	{
+		this.emptySpace = 0;
+		this.transportHeight = 0;
+		this.transportPos = null;
+		
+		super.resetTransporter();
+	}
+	
+	
 	
 	public int getTransportHeight()
 	{
-		int emptySpace = getEmptySpace();
+		if(transportHeight == 0)
+		{
+			int emptySpace = getEmptySpace();
+			
+			if(emptySpace > 0)
+				transportHeight = Math.abs(emptySpace * 4) + 8;
+			else
+				transportHeight = Math.abs(emptySpace * 4);
+		}
 		
-		if(emptySpace > 0) 
-			transportHeight = Math.abs(emptySpace * 4) + 8;
-		else 
-			transportHeight = Math.abs(emptySpace * 4) - 2;
 		return transportHeight;
 	}
 	
-	public void activate(BlockPos targetPos)
+	@Override
+	public void updateTicks(int connectionTime)
 	{
-		activate(targetPos, true);
-	}
-	
-	public void deactivate()
-	{
-		isSender = false;
-		setActivated(false);
-		ticks = 0;
-		progressOld = 0;
-		progress = 0;
-		
-		loadChunk(false);
-	}
-	
-	private void loadChunk(boolean load)
-	{
-		if(level.isClientSide())
-			return;
-		
-		ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+		this.progress = connectionTime;
+		this.progressOld = connectionTime;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TransportRingsEntity rings)
 	{
 		if(rings.isConnected())
-			rings.ticks++;
+			rings.doClientProgress();
+		else
+		{
+			rings.progress = -1;
+			rings.progressOld = -1;
+		}
 		
-		rings.doProgress();
-		
-		if(rings.ticks > 0 && rings.progress <= 0)
-			rings.deactivate();
-		
-		if(level.isClientSide())
-			return;
-		
-		if(rings.ticks == (rings.transportHeight + 22) && rings.isSender && level.getBlockEntity(rings.targetPos) instanceof TransportRingsEntity)
-			rings.startTransporting();
-		      
-		//PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(rings.worldPosition)), new ClientboundRingsUpdatePacket(pos, rings.emptySpace, rings.transportHeight, rings.transportLight));
+		rings.updateClient();
 	}
 	
-	private void doProgress()
+	private void doClientProgress()
 	{
+		if(!this.level.isClientSide() || this.progress < 0)
+			return;
+		
 		this.progressOld = this.progress;
-		
-		if(this.ticks > 0 && this.ticks <= this.transportHeight + 17)
-			this.progress = this.ticks;
-		
-		else if(this.ticks >= this.transportHeight + 42 && this.progress > 0)
-			this.progress--;
+		this.progress++;
+	}
+	
+	// Only updates the progress if there is none - should prevent jittering
+	public void updateProgress(int progress)
+	{
+		if(this.progress == -1 || progress == -1)
+		{
+			//if(progress != -1 && level.isClientSide())
+			//	System.out.println(this.progress + " -> " + progress);
+			this.progress = progress;
+			this.progressOld = progress;
+		}
 	}
 	
 	public void setProgress(int progress)
 	{
-		this.progressOld = this.progress; //TODO This may not work
+		this.progressOld = this.progress;
 		this.progress = progress;
 	}
 	
@@ -224,75 +188,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		return StargateJourneyConfig.disable_smooth_animations.get() ?
 				(float) this.progress : Mth.lerp(partialTick, this.progressOld, this.progress);
 	}
-	
-	/*public void getStatus()
-	{
-	    System.out.println("ID: " + getID());
-	    if(this.getBlockPos() != null)
-	    	System.out.println("Pos: " + this.getBlockPos().getX() + " " + this.getBlockPos().getY() + " " + this.getBlockPos().getZ());
-	    if(targetPos != null)
-	    	System.out.println("Target: " + targetPos.getX() + " "  + targetPos.getY() + " " + targetPos.getZ());
-	    if(transportPos != null)
-	    	System.out.println("Transport: " + transportPos.getX() + " "  + transportPos.getY() + " " + transportPos.getZ());
-	    System.out.println("Sending: " + isSender);
-	    System.out.println("Ticks: " + ticks);
-	}*/
-	
-	/*public void emergencyDeactivate()
-	{
-		if(this.targetPos != null)
-		{
-			((TransportRingsEntity) level.getBlockEntity(this.targetPos)).activated = false;
-		}
-	}*/
-	
-	// Actual Transporting
-	
-	private void startTransporting()
-	{
-  		AABB localBox = new AABB((transportPos.getX() - 1), (transportPos.getY()), (transportPos.getZ() - 1), 
-  									(transportPos.getX() + 2), (transportPos.getY() + 3), (transportPos.getZ() + 2));
-		List<Entity> localEntities = this.level.getEntitiesOfClass(Entity.class, localBox);
-		
-		AABB targetBox = new AABB((target.transportPos.getX() - 1), (target.transportPos.getY()), (target.transportPos.getZ() - 1), 
-									(target.transportPos.getX() + 2), (target.transportPos.getY() + 3), (target.transportPos.getZ() + 2));
-		List<Entity> targetEntities = this.level.getEntitiesOfClass(Entity.class, targetBox);
-    	
-    	if(!localEntities.isEmpty())
-    		localEntities.stream().forEach(this::transportToTarget);
-    	
-    	if(!targetEntities.isEmpty())
-    		targetEntities.stream().forEach(this::transportFromTarget);
-	}
-	
-	private void transportToTarget(Entity entity)
-	{
-		double x_offset = entity.getX() - transportPos.getX();
-		double y_offset = entity.getY() - transportPos.getY();
-		double z_offset = entity.getZ() - transportPos.getZ();
-		
-		//entity.teleportTo((target.transportPos.getX() + x_offset), (target.transportPos.getY() + y_offset), (target.transportPos.getZ() + z_offset));
-		//((ServerLevel) level).getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, new ChunkPos(target.transportPos), 1, entity.getId());
-		if(entity instanceof ServerPlayer player)
-			player.teleportTo((target.transportPos.getX() + x_offset), (target.transportPos.getY() + y_offset), (target.transportPos.getZ() + z_offset));
-		else
-			entity.teleportTo((target.transportPos.getX() + x_offset), (target.transportPos.getY() + y_offset), (target.transportPos.getZ() + z_offset));
-	}
-	
-	private void transportFromTarget(Entity entity)
-	{
-		double x_offset = entity.getX() - target.transportPos.getX();
-		double y_offset = entity.getY() - target.transportPos.getY();
-		double z_offset = entity.getZ() - target.transportPos.getZ();
-		
-		//entity.teleportTo((transportPos.getX() + x_offset), (transportPos.getY() + y_offset), (transportPos.getZ() + z_offset));
-		if(entity instanceof ServerPlayer player)
-			player.teleportTo((transportPos.getX() + x_offset), (transportPos.getY() + y_offset), (transportPos.getZ() + z_offset));
-		else
-			entity.teleportTo((transportPos.getX() + x_offset), (transportPos.getY() + y_offset), (transportPos.getZ() + z_offset));
-	}
-	
-	// Activation
 	
 	@Override
 	public boolean isConnected()
@@ -306,13 +201,16 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		return false;
 	}
 	
-	public void setActivated(boolean active)
+	@Override
+	public void setConnected(boolean connected)
 	{
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
 		
 		if(state.is(BlockInit.TRANSPORT_RINGS.get()))
-			level.setBlock(pos, state.setValue(TransportRingsBlock.ACTIVATED, active), 2);
+			level.setBlock(pos, state.setValue(TransportRingsBlock.ACTIVATED, connected), 2);
+		
+		loadChunk(connected);
 	}
 	
 	private int getEmptySpace()

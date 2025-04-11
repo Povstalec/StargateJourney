@@ -20,7 +20,6 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
@@ -32,18 +31,13 @@ import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 public final class TransporterNetwork extends SavedData
 {
 	private static final String FILE_NAME = StargateJourney.MODID + "-transporter_network";
-
-	/*private static final String COORDINATES = "Coordinates";
-
-	private static final String RINGS_A = "RingsA";
-	private static final String RINGS_B = "RingsB";
-	private static final String CONNECTION_TIME = "ConnectionTime";*/
+	
 	private static final String DIMENSIONS = "dimensions";
 	private static final String CONNECTIONS = "connections";
 
 	private static final String VERSION = "version";
 
-	private static final int UPDATE_VERSION = 1;
+	private static final int UPDATE_VERSION = 2;
 	
 	private MinecraftServer server;
 
@@ -106,7 +100,6 @@ public final class TransporterNetwork extends SavedData
 		transporters.entrySet().stream().forEach((transporterInfo) ->
 		{
 			Transporter transporter = transporterInfo.getValue();
-			
 			BlockEntity blockentity = server.getLevel(transporter.getDimension()).getBlockEntity(transporter.getBlockPos());
 			
 			if(blockentity instanceof AbstractTransporterEntity transporterEntity)
@@ -257,11 +250,23 @@ public final class TransporterNetwork extends SavedData
 		connection.terminate(server);
 	}
 	
+	public void removeConnection(UUID uuid)
+	{
+		if(hasConnection(uuid))
+		{
+			this.connections.remove(uuid);
+			StargateJourney.LOGGER.debug("Removed connection " + uuid);
+		}
+		else
+			StargateJourney.LOGGER.error("Could not find connection " + uuid);
+		this.setDirty();
+	}
+	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
-	private final CompoundTag serialize()
+	private CompoundTag serialize()
 	{
 		CompoundTag tag = new CompoundTag();
 		
@@ -272,7 +277,7 @@ public final class TransporterNetwork extends SavedData
 		return tag;
 	}
 	
-	private final CompoundTag serializeDimensions()
+	private CompoundTag serializeDimensions()
 	{
 		CompoundTag dimensionsTag = new CompoundTag();
 		
@@ -284,19 +289,19 @@ public final class TransporterNetwork extends SavedData
 		return dimensionsTag;
 	}
 	
-	private final CompoundTag serializeConnections()
+	private CompoundTag serializeConnections()
 	{
 		CompoundTag connectionsTag = new CompoundTag();
 		
-		/*this.connections.forEach((connectionID, connection) ->
+		this.connections.forEach((connectionID, connection) ->
 		{
-			connectionsTag.put(connectionID, connection.serialize());
-		});*/
+			connectionsTag.put(connectionID.toString(), connection.serialize());
+		});
 		
 		return connectionsTag;
 	}
 	
-	private final void deserialize(CompoundTag tag)
+	private void deserialize(CompoundTag tag)
 	{
 		this.version = tag.getInt(VERSION);
 
@@ -304,7 +309,7 @@ public final class TransporterNetwork extends SavedData
 		deserializeConnections(tag.getCompound(CONNECTIONS));
 	}
 	
-	private final void deserializeDimensions(CompoundTag tag)
+	private void deserializeDimensions(CompoundTag tag)
 	{
 		tag.getAllKeys().forEach(dimensionString ->
 		{
@@ -312,12 +317,20 @@ public final class TransporterNetwork extends SavedData
 		});
 	}
 	
-	private final void deserializeConnections(CompoundTag tag)
+	private void deserializeConnections(CompoundTag tag)
 	{
-		/*tag.getAllKeys().forEach(connectionID ->
+		for(String connectionID : tag.getAllKeys())
 		{
-			this.connections.put(connectionID, StargateConnection.deserialize(server, connectionID, tag.getCompound(connectionID)));
-		});*/
+			try
+			{
+				UUID uuid = UUID.fromString(connectionID);
+				TransporterConnection connection = TransporterConnection.deserialize(server, UUID.fromString(connectionID), tag.getCompound(connectionID));
+				
+				if(connection != null)
+					this.connections.put(uuid, connection);
+			}
+			catch(IllegalArgumentException e) {}
+		}
 	}
 	
 //================================================================================================

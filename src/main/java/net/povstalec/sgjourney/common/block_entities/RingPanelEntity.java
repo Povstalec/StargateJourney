@@ -102,23 +102,7 @@ public class RingPanelEntity extends BlockEntity
 				@Override
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
-					switch(slot)
-					{
-					case 0:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 1:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 2:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 3:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 4:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 5:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					default: 
-						return false;
-					}
+					return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
 				}
 				
 				// Limits the number of items per slot
@@ -187,7 +171,6 @@ public class RingPanelEntity extends BlockEntity
 		}
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientboundRingPanelUpdatePacket(worldPosition, ringsPos, ringsName));
-		return;
 	}
 	
 	protected List<TransportRingsEntity> getNearbyTransportRings(int maxDistance)
@@ -275,7 +258,9 @@ public class RingPanelEntity extends BlockEntity
 			if(!target.canTransport())
 				return;
 			
-			transportRings.activate(targetPos);
+			Transporter transporter = target.getTransporter();
+			if(transporter != null)
+				transportRings.startTransport(transporter);
 		}
 	}
 	

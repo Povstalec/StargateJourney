@@ -28,7 +28,7 @@ public class TransportRingsModel
 	
 	public void setRingHeight(int ring, float height)
 	{
-		if(ring < 1 && ring > 5)
+		if(ring < 1 || ring > 5)
 			return;
 		
 		getRing(ring).setPos(0.0F, height, 0.0F);

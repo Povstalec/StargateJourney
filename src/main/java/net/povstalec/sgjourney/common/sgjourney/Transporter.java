@@ -110,6 +110,30 @@ public class Transporter
 		return null;
 	}
 	
+	public void connect(MinecraftServer server, UUID connectionID)
+	{
+		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			transporter.connectTransporter(connectionID);
+	}
+	
+	public void disconnect(MinecraftServer server)
+	{
+		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			transporter.disconnectTransporter();
+	}
+	
+	public void reset(MinecraftServer server)
+	{
+		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			transporter.resetTransporter();
+	}
+	
 	public boolean isConnected(MinecraftServer server)
 	{
 		AbstractTransporterEntity transporter = getTransporterEntity(server);
@@ -118,6 +142,14 @@ public class Transporter
 			return transporter.isConnected();
 		
 		return false;
+	}
+	
+	public void updateTicks(MinecraftServer server, int connectionTime)
+	{
+		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			transporter.updateTicks(connectionTime);
 	}
 	
 	
