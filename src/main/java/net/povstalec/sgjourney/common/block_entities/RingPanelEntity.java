@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -34,7 +35,6 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class RingPanelEntity extends BlockEntity
 {
@@ -197,6 +197,9 @@ public class RingPanelEntity extends BlockEntity
 	
 	private long distanceSqr(BlockPos pos, BlockPos targetPos)
 	{
+		if(targetPos == null)
+			return Long.MAX_VALUE;
+		
 		int x = Math.abs(targetPos.getX() - pos.getX());
 		int y = Math.abs(targetPos.getY() - pos.getY());
 		int z = Math.abs(targetPos.getZ() - pos.getZ());

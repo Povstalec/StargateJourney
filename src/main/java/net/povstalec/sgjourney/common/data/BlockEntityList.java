@@ -8,7 +8,9 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -16,10 +18,12 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyTransporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 /**
  * This class is designed to save all Block Entities along with their coordinates and dimensions. 
@@ -88,7 +92,7 @@ public class BlockEntityList extends SavedData
 		if(transporterEntity.getBlockPos() == null)
 			return Optional.empty();
 		
-		Transporter transporter = new Transporter(transporterEntity);
+		SGJourneyTransporter transporter = new SGJourneyTransporter(transporterEntity);
 		
 		this.transporterMap.put(id, transporter);
 		
@@ -231,7 +235,7 @@ public class BlockEntityList extends SavedData
 		
 		this.transporterMap.forEach((ringsID, transporter) -> 
 		{
-			transportersTag.put(ringsID.toString(), transporter.serialize());
+			transportersTag.put(ringsID.toString(), transporter.serializeNBT());
 		});
 		
 		return transportersTag;
@@ -274,10 +278,9 @@ public class BlockEntityList extends SavedData
 			
 			transportRingsTag.getAllKeys().stream().forEach(transportRings ->
 			{
-				//StargateJourney.LOGGER.info("Deserializing Transport Rings " + transportRings);
-				Transporter transporter = Transporter.deserialize(server, transportRings, transportRingsTag.getCompound(transportRings));
+				Transporter transporter = tryDeserializeTransporter(server, transportRings, transportRingsTag.getCompound(transportRings));
 
-				if(!this.transporterMap.containsKey(transporter.getID()))
+				if(transporter != null && !this.transporterMap.containsKey(transporter.getID()))
 					this.transporterMap.put(transporter.getID(), transporter);
 			});
 		}
@@ -286,14 +289,36 @@ public class BlockEntityList extends SavedData
 		
 		transportersTag.getAllKeys().stream().forEach(transporterString ->
 		{
-			//StargateJourney.LOGGER.info("Deserializing Transporter " + transporterString);
-			Transporter transporter = Transporter.deserialize(server, transporterString, transportersTag.getCompound(transporterString));
+			Transporter transporter = tryDeserializeTransporter(server, transporterString, transportersTag.getCompound(transporterString));
 			
-			if(!this.transporterMap.containsKey(transporter.getID()))
+			if(transporter != null && !this.transporterMap.containsKey(transporter.getID()))
 				this.transporterMap.put(transporter.getID(), transporter);
 		});
 		
 		StargateJourney.LOGGER.debug("Finished deserializing Transporters");
+	}
+	
+	private static Transporter tryDeserializeTransporter(MinecraftServer server, String id, CompoundTag transporterTag)
+	{
+		try
+		{
+			SGJourneyTransporter transporter = new SGJourneyTransporter();
+			transporter.deserializeNBT(server, UUID.fromString(id), transporterTag);
+			return transporter;
+		}
+		catch(IllegalArgumentException e)
+		{
+			ResourceKey<Level> dimension = Conversion.stringToDimension(transporterTag.getString(Transporter.DIMENSION));
+			BlockPos blockPos = Conversion.intArrayToBlockPos(transporterTag.getIntArray(Transporter.COORDINATES));
+			
+			if(dimension != null && blockPos != null && server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractTransporterEntity transporter)
+			{
+				transporter.setID(transporter.generateID());
+				return new SGJourneyTransporter(transporter);
+			}
+			else
+				return null;
+		}
 	}
 	
 	//================================================================================================
