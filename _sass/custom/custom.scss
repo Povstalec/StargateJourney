@@ -1,3 +1,26 @@
+.side-bar {
+  @include mq(lg) {
+    width: $nav-width;
+    min-width: $nav-width;
+  }
+}
+
+.main{
+  @include mq(lg) {
+    margin-left: $nav-width !important;
+    max-width: calc(100vw - (2 * #{$nav-width}));
+  }
+}
+
+.right-side-bar {
+  @include mq(lg) {
+    width: $nav-width;
+    min-width: $nav-width;
+    right: 0;
+    padding-right: 2rem;
+  }
+}
+
 .site-title {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
