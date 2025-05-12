@@ -1,0 +1,24 @@
+/*
+
+  Page layout styles
+
+*/
+
+/* Changing the page layout to full width removing the empty spaces on sides */
+
+// overrides side-bar width to only the nav width removing the left empty space
+.side-bar {
+  @include mq(lg) {
+    width: $nav-width;
+    min-width: $nav-width;
+  }
+}
+
+.main{
+  @include mq(lg) {
+    // overrides left margin to match the side-bar width without left empty space
+    margin-left: $nav-width !important;
+    // the content max width should be 100vw minus two side-bars (for each side)
+    max-width: calc(100vw - (2 * #{$nav-width}));
+  }
+}

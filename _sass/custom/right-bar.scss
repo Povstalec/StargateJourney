@@ -1,0 +1,14 @@
+
+.right-bar {
+  @include mq(lg) {
+    width: $nav-width;
+    min-width: $nav-width;
+    right: 0;
+    padding-right: $sp-1;
+  }
+  .site-nav {
+    // add top/bottom padding to right bar (header height + top padding of left side bar)
+    padding-top: calc(#{$header-height} + #{$sp-8});
+    padding-bottom: calc(#{$header-height} + #{$sp-8});
+  }
+}

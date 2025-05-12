@@ -73,7 +73,7 @@ These are the functions every Interface has available at all times.
 
 ___
 
-<h3 class="h-function">
+<h3 class="h-function" id="addressToString">
     <code>addressToString(address)</code>
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35">source</a>
 </h3>
@@ -113,7 +113,7 @@ end
 
 ___
 
-<h3 class="h-function">
+<h3 class="h-function" id="getEnergy">
     <code>getEnergy()</code>
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L96">source</a>
 </h3>
@@ -141,7 +141,7 @@ print("There is "..energy.." FE in the interface")
 
 ___
 
-<h3 class="h-function">
+<h3 class="h-function" id="getEnergyCapacity">
     <code>getEnergyCapacity()</code>
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L102">source</a>
 </h3>
@@ -891,7 +891,7 @@ end
 
 ___
 
-<h3 class="h-function">
+<h3 class="h-function" id="isStargateDialingOut">
     <code>isStargateDialingOut()</code>
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L71">source</a>
 </h3>

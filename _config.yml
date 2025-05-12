@@ -21,6 +21,9 @@ permalink: pretty
 
 color_scheme: night
 
+plugins:
+  - jekyll-toc
+
 # Enable or disable the site search
 # Supports true (default) or false
 search_enabled: true

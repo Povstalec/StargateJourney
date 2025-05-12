@@ -7,6 +7,9 @@ gem "github-pages", group: :jekyll_plugins
 # https://github.com/just-the-docs/just-the-docs
 gem "just-the-docs", "~> 0.10.1"
 
+# table of contents generation
+gem 'jekyll-toc'
+
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
 # and associated library.
 platforms :mingw, :x64_mingw, :mswin, :jruby do

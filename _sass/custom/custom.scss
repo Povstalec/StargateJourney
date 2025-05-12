@@ -1,27 +1,9 @@
-.side-bar {
-  @include mq(lg) {
-    width: $nav-width;
-    min-width: $nav-width;
-  }
-}
+@import "./layout";
+@import "./right-bar";
 
-.main{
-  @include mq(lg) {
-    margin-left: $nav-width !important;
-    max-width: calc(100vw - (2 * #{$nav-width}));
-  }
-}
-
-.right-side-bar {
-  @include mq(lg) {
-    width: $nav-width;
-    min-width: $nav-width;
-    right: 0;
-    padding-right: 2rem;
-  }
-}
 
 .site-title {
+  // lower the padding to give more space for the logo
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }

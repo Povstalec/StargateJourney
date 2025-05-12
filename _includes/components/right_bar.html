@@ -1,0 +1,16 @@
+{%- comment -%}
+{%- endcomment -%}
+
+<div class="right-bar side-bar">
+
+  <nav class="site-nav" aria-label="Secondary">
+    <b>Table of contents</b>
+    <ul class="nav-list">
+      <div id="table-of-contents">
+        {% include toc.html sanitize=true ordered=false html=content class="nav-list" item_class="nav-list-item" anchor_class="nav-list-link" h_min=1 h_max=6 %}
+      </div>
+    </ul>
+
+  </nav>
+
+</div>
