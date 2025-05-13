@@ -4,7 +4,7 @@ nav_order: 0
 parent: Computercraft
 ---
 
-{% include computercraft_doc.html %}
+{% include computercraft/doc-utils.html %}
 
 # Stargate Interface
 {: .no_toc }
@@ -73,10 +73,11 @@ These are the functions every Interface has available at all times.
 
 ___
 
-<h3 class="h-function" id="addressToString">
-    <code>addressToString(address)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35">source</a>
-</h3>
+{% include computercraft/function.html
+    name="addressToString"
+    arguments="address"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35"
+%}
 
 Converts the array specified by address to a form used elsewhere in the mod (`-1-2-3-4-5-6-`).
 
@@ -113,10 +114,11 @@ end
 
 ___
 
-<h3 class="h-function" id="getEnergy">
-    <code>getEnergy()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L96">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getEnergy"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L96"
+%}
 
 Returns the current amount of energy [FE (Forge Energy)] stored in the interface.
 
@@ -141,10 +143,11 @@ print("There is "..energy.." FE in the interface")
 
 ___
 
-<h3 class="h-function" id="getEnergyCapacity">
-    <code>getEnergyCapacity()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L102">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getEnergyCapacity"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L102"
+%}
 
 Returns the maximal amount of energy [FE] that can be stored in the interface.
 
@@ -166,10 +169,11 @@ print("The interface can store up to "..capacity.." FE")
 
 ___
 
-<h3 class="h-function">
-    <code>getEnergyTarget()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L108">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getEnergyTarget"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L108"
+%}
 
 Returns the current energy target that is set for the interface.
 
@@ -195,10 +199,13 @@ print("The current energy target: "..energyTarget.." FE")
 
 ___
 
-<h3 class="h-function">
-    <code>setEnergyTarget(energyTarget)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L17">source</a>
-</h3>
+
+{% include computercraft/function.html
+    name="setEnergyTarget"
+    arguments="energyTarget"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L17"
+%}
+
 
 Sets the energy target to the amount specified by `energyTarget` parameter.
 
@@ -230,10 +237,11 @@ Functions available for an interface connected to the **Milky Way Stargate**.
 
 ___
 
-<h3 class="h-function">
-    <code>closeChevron()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L180">source</a>
-</h3>
+{% include computercraft/function.html
+    name="closeChevron"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L180"
+%}
 
 Closes the upper chevron if it is open, encoding the current symbol.  
 If the symbol is already encoded, returns `-2` (`symbol_in_address`).
@@ -263,10 +271,11 @@ print(feedback)
 
 ___
 
-<h3 class="h-function">
-    <code>encodeChevron()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L159">source</a>
-</h3>
+{% include computercraft/function.html
+    name="encodeChevron"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L159"
+%}
 
 Encodes the current symbol under the top chevron.
 Requires the chevron to be **open**, otherwise returns `-35` (`chevron_not_raised`).
@@ -296,10 +305,11 @@ print(feedback)
 
 ___
 
-<h3 class="h-function">
-    <code>endRotation()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L117">source</a>
-</h3>
+{% include computercraft/function.html
+    name="endRotation"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L117"
+%}
 
 Stops the inner ring rotation if it was started by a computer.  
 Does nothing if the ring rotates due to a redstone signal.
@@ -329,10 +339,11 @@ print(feedback)
 
 ___
 
-<h3 class="h-function">
-    <code>getCurrentSymbol()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L14">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getCurrentSymbol"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L14"
+%}
 
 Returns the current symbol under the top chevron.
 
@@ -354,10 +365,11 @@ print(symbol)
 
 ___
 
-<h3 class="h-function">
-    <code>getRotation()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L46">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getRotation"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L46"
+%}
 
 Returns the current inner ring rotation from `0` up to `155` (inclusive).  
 > `0` when the Point of Origin is centered under the top chevron  
@@ -390,10 +402,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>isChevronOpen()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L201">source</a>
-</h3>
+{% include computercraft/function.html
+    name="isChevronOpen"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L201"
+%}
 
 Returns `true` when the top chevron is open, `false` otherwise.
 
@@ -425,10 +438,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>isCurrentSymbol(symbol)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29">source</a>
-</h3>
+{% include computercraft/function.html
+    name="isCurrentSymbol"
+    arguments="symbol"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29"
+%}
 
 Returns `true` when the current symbol is **centered** under the top chevron, 
 and it is the desired symbol specified as parameter.
@@ -465,10 +479,11 @@ print("The current symbol is "..symbol)
 
 ___
 
-<h3 class="h-function">
-    <code>openChevron()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L138">source</a>
-</h3>
+{% include computercraft/function.html
+    name="openChevron"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L138"
+%}
 
 Opens the top chevron in preparation for encoding the current symbol.
 
@@ -497,10 +512,11 @@ print(feedback)
 
 ___
 
-<h3 class="h-function">
-    <code>rotateAntiClockwise(symbol)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89">source</a>
-</h3>
+{% include computercraft/function.html
+    name="rotateAntiClockwise"
+    arguments="symbol"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89"
+%}
 
 Rotates the inner ring anticlockwise, positioning the specified symbol centered under the top chevron.  
 The method does not block the execution for the whole rotation.  
@@ -544,10 +560,11 @@ print("The current symbol is "..symbol)
 
 ___
 
-<h3 class="h-function">
-    <code>rotateClockwise(symbol)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61">source</a>
-</h3>
+{% include computercraft/function.html
+    name="rotateClockwise"
+    arguments="symbol"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61"
+%}
 
 Rotates the inner ring clockwise, positioning the specified symbol centered under the top chevron.  
 The method does not block the execution for the whole rotation.  
@@ -596,10 +613,11 @@ Functions available for an interface connected to a Stargate.
 
 ___
 
-<h3 class="h-function">
-    <code>disconnectStargate()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L101">source</a>
-</h3>
+{% include computercraft/function.html
+    name="disconnectStargate"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L101"
+%}
 
 Disconnects the Stargate if there is an active connection.
 The Stargate will be reset if it isn't connected (encoded chevrons will be deactivated).
@@ -628,10 +646,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>getChevronsEngaged()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L89">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getChevronsEngaged"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L89"
+%}
 
 Returns a number from `0` to `9` which represents a number of chevrons that are engaged on the Stargate.
 
@@ -653,10 +672,11 @@ print("Stargate has "..engaged.."/9 chevrons engaged")
 
 ___
 
-<h3 class="h-function">
-    <code>getOpenTime()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L95">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getOpenTime"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L95"
+%}
 
 Returns a number of ticks for which Stargate has been active.
 
@@ -683,10 +703,11 @@ print("Stargate has been open for "..openTimeInSeconds.." seconds")
 
 ___
 
-<h3 class="h-function">
-    <code>getRecentFeedback()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L28">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getRecentFeedback"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L28"
+%}
 
 Returns information about the Stargate state.  
 For Advanced Crystal interface also returns a second string value with a status description.
@@ -719,10 +740,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>getStargateEnergy()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L83">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getStargateEnergy"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L83"
+%}
 
 Returns the amount of energy currently stored in the Stargate.
 
@@ -748,10 +770,11 @@ print("There is "..energy.." FE in the Stargate")
 
 ___
 
-<h3 class="h-function">
-    <code>getStargateGeneration()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L53">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getStargateGeneration"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L53"
+%}
 
 Returns the Stargate generation identifier.
 
@@ -784,10 +807,11 @@ print("The Stargate is "..generation.." generation")
 
 ___
 
-<h3 class="h-function">
-    <code>getStargateType()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L59">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getStargateType"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L59"
+%}
 
 Returns the minecraft resource identifier for the Stargate.
 
@@ -821,10 +845,11 @@ print("The stargate identifier: "..type)
 
 ___
 
-<h3 class="h-function">
-    <code>getStargateVariant()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L74">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getStargateVariant"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L74"
+%}
 
 Returns the minecraft resource identifier for the Stargate variant.
 
@@ -853,10 +878,11 @@ print("The stargate variant: "..variant)
 
 ___
 
-<h3 class="h-function">
-    <code>isStargateConnected()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L65">source</a>
-</h3>
+{% include computercraft/function.html
+    name="isStargateConnected"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L65"
+%}
 
 Check whether the Stargate is connected to another gate.
 
@@ -891,10 +917,11 @@ end
 
 ___
 
-<h3 class="h-function" id="isStargateDialingOut">
-    <code>isStargateDialingOut()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L71">source</a>
-</h3>
+{% include computercraft/function.html
+    name="isStargateDialingOut"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L71"
+%}
 
 Returns `true` when there is an active **outgoing** connection (this Stargate dialed the other gate).
 
@@ -924,10 +951,11 @@ end
 
 ___
 
-<h3 class="h-function" id="isWormholeOpen">
-    <code>isWormholeOpen()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L77">source</a>
-</h3>
+{% include computercraft/function.html
+    name="isWormholeOpen"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L77"
+%}
 
 Returns `true` if there is an active wormhole. 
 After the kawoosh finishes, and it is safe to enter the wormhole,
@@ -983,10 +1011,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>sendStargateMessage(message)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L49">source</a>
-</h3>
+{% include computercraft/function.html
+    name="sendStargateMessage"
+    arguments="message"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L49"
+%}
 Sends the `message` through the current Stargate connection, 
 which can be received by a computer on the other side as event `stargate_message_received`.
 
@@ -1038,10 +1067,11 @@ print(message)
 
 ___
 
-<h3 class="h-function">
-    <code>engageSymbol(symbol)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L95">source</a>
-</h3>
+{% include computercraft/function.html
+    name="engageSymbol"
+    arguments="symbol"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L95"
+%}
 Crystal Interface
 {: .label .label-green }
 Advanced Crystal Interface
@@ -1085,10 +1115,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>getDialedAddress()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L118">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getDialedAddress"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L118"
+%}
 Crystal Interface
 {: .label .label-green }
 Advanced Crystal Interface
@@ -1119,10 +1150,11 @@ print("The dialed address: " .. interface.addressToString(address))
 
 ___
 
-<h3 class="h-function">
-    <code>setChevronConfiguration(configuration)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L141">source</a>
-</h3>
+{% include computercraft/function.html
+    name="setChevronConfiguration"
+    arguments="configuration"
+    source="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L141"
+%}
 Crystal Interface
 {: .label .label-green }
 Advanced Crystal Interface
@@ -1175,10 +1207,11 @@ interface.setChevronConfiguration({1, 2, 3, 4, 5, 6, 7, 8})
 
 ___
 
-<h3 class="h-function">
-    <code>addToBlacklist(address)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L160">source</a>
-</h3>
+{% include computercraft/function.html
+    name="addToBlacklist"
+    arguments="address"
+    source="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L160"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1231,10 +1264,11 @@ interface.addToBlacklist(address)
 
 ___
 
-<h3 class="h-function">
-    <code>addToWhitelist(address)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L56">source</a>
-</h3>
+{% include computercraft/function.html
+    name="addToWhitelist"
+    arguments="address"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L56"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1282,10 +1316,11 @@ interface.addToWhitelist(address)
 
 ___
 
-<h3 class="h-function">
-    <code>clearBlacklist()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L240">source</a>
-</h3>
+{% include computercraft/function.html
+    name="clearBlacklist"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L240"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1314,10 +1349,11 @@ interface.clearBlacklist()
 
 ___
 
-<h3 class="h-function">
-    <code>clearWhitelist()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L136">source</a>
-</h3>
+{% include computercraft/function.html
+    name="clearWhitelist"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L136"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1345,10 +1381,11 @@ interface.clearWhitelist()
 ```
 ___
 
-<h3 class="h-function">
-    <code>getConnectedAddress()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L268">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getConnectedAddress"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L268"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1388,10 +1425,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>getFilterType()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L17">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getFilterType"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L17"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1428,10 +1466,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>getLocalAddress()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L289">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getLocalAddress"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L289"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1459,10 +1498,11 @@ print(interface.addressToString(localAddress))
 
 ___
 
-<h3 class="h-function">
-    <code>getNetwork()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L310">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getNetwork"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L310"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1499,10 +1539,11 @@ print("The network ID is: "..network)
 ```
 ___
 
-<h3 class="h-function">
-    <code>isNetworkRestricted()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L366">source</a>
-</h3>
+{% include computercraft/function.html
+    name="isNetworkRestricted"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L366"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1537,10 +1578,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>removeFromBlacklist(address)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L200">source</a>
-</h3>
+{% include computercraft/function.html
+    name="removeFromBlacklist"
+    arguments="address"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L200"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1574,10 +1616,11 @@ interface.removeFromBlacklist(address)
 
 ___
 
-<h3 class="h-function">
-    <code>removeFromWhitelist(address)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L96">source</a>
-</h3>
+{% include computercraft/function.html
+    name="removeFromWhitelist"
+    arguments="address"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L96"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1611,10 +1654,11 @@ interface.removeFromWhitelist(address)
 
 ___
 
-<h3 class="h-function">
-    <code>restrictNetwork(enable)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L348">source</a>
-</h3>
+{% include computercraft/function.html
+    name="restrictNetwork"
+    arguments="enable"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L348"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1649,10 +1693,11 @@ interface.restrictNetwork(true)
 
 ___
 
-<h3 class="h-function">
-    <code>setFilterType(type)</code>
-    <a class="source" target="_blank" href="">source</a>
-</h3>
+{% include computercraft/function.html
+    name="setFilterType"
+    arguments="type"
+    source=""
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1694,10 +1739,11 @@ interface.setFilterType(FilterType.Blacklist)
 
 ___
 
-<h3 class="h-function">
-    <code>setNetwork(network)</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L330">source</a>
-</h3>
+{% include computercraft/function.html
+    name="setNetwork"
+    arguments="network"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L330"
+%}
 Advanced Crystal Interface
 {: .label .label-purple }
 
@@ -1726,16 +1772,17 @@ interface.setNetwork(network)
 
 ___
 
-### Iris control
+## Iris control
 Iris related methods are available even when the Stargate does not have an iris installed.
 However, they are not available for the Tollan Stargate which can't have an iris.
 
 ___
 
-<h3 class="h-function">
-    <code>getIris()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L16">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getIris"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L16"
+%}
 Retrieves the identifier of the currently installed iris on the Stargate.
 
 **Returns**
@@ -1770,10 +1817,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>closeIris()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L39">source</a>
-</h3>
+{% include computercraft/function.html
+    name="closeIris"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L39"
+%}
 Instruct the Iris to start closing.
 The function does not wait for the iris to close.
 
@@ -1809,10 +1857,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>openIris()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L59">source</a>
-</h3>
+{% include computercraft/function.html
+    name="openIris"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L59"
+%}
 Instruct the Iris to start opening.
 The function does not wait for the iris to open.
 
@@ -1848,10 +1897,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>stopIris()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L79">source</a>
-</h3>
+{% include computercraft/function.html
+    name="stopIris"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L79"
+%}
 Instruct the Iris to stop.
 The function does not wait for the iris to stop.
 
@@ -1887,10 +1937,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>getIrisProgress()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L99">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getIrisProgress"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L99"
+%}
 Retrieves the internal iris closing progress.  
 This progress is internally used for [blocking the gate by the iris](https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/client/models/WormholeModel.java#L51).
 
@@ -1910,10 +1961,11 @@ This progress is internally used for [blocking the gate by the iris](https://git
 
 ___
 
-<h3 class="h-function">
-    <code>getIrisProgressPercentage()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L119">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getIrisProgressPercentage"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L119"
+%}
 Retrieves the percentage of the iris closing progress.
 
 **Returns**
@@ -1951,10 +2003,11 @@ end
 
 ___
 
-<h3 class="h-function">
-    <code>getIrisDurability()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L139">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getIrisDurability"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L139"
+%}
 Retrieves the iris remaining durability.
 
 **Returns**
@@ -1985,10 +2038,11 @@ print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(d
 
 ___
 
-<h3 class="h-function">
-    <code>getIrisMaxDurability()</code>
-    <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L159">source</a>
-</h3>
+{% include computercraft/function.html
+    name="getIrisMaxDurability"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L159"
+%}
 Retrieves the iris maximum durability.
 
 **Returns**

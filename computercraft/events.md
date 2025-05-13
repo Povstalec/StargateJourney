@@ -4,7 +4,7 @@ nav_order: 50
 parent: Computercraft
 ---
 
-{% include computercraft_doc.html %}
+{% include computercraft/doc-utils.html %}
 
 # Events
 {: .no_toc }

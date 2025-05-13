@@ -1,0 +1,17 @@
+{%- comment -%}
+    Include as: {%- include computercraft/function.html -%}
+    Results in: HTML of computercraft function heading with a link to sourcecode
+    Arguments:
+        - name: string, name of the function (without arguments)
+        - arguments: list of strings separated by commas, arguments of the function
+        - source: string (optional), link to the source code
+        - headerLevel: integer (optional), level of the header (h1, h2, h3, etc.) (default: 3)
+{%- endcomment -%}
+{% assign arguments = include.arguments | default: "" %}
+{% assign headerLevel = include.headerLevel | default: 3 %}
+<div class="h-function">
+    <h{{headerLevel}} id="{{ include.name }}">
+        <code>{{ include.name }}({{ include.arguments }})</code>
+    </h{{headerLevel}}>
+    <a class="source" target="_blank" href="{{ include.source }}">source</a>
+</div>

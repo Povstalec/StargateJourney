@@ -1,21 +1,33 @@
 <style>
-.h-function {
-    display: flex;
-    justify-content: space-between;
-}
+    .h-function {
+        display: flex;
+        justify-content: space-between;
+    }
 
-a.source:before {
-    display: inline;
-    content: '[';
-}
+    .h-function h3 > code {
+        font-size: unset;
+        line-height: unset;
+        padding: 0.25rem;
+    }
 
-a.source:after {
-    content: ']';
-}
+    .h-function h3 {
+        display: inline;
+        flex-grow: 2;
+        margin: 0;
+    }
 
-a.source {
-    font-size: 0.75em;
-}
+    a.source:before {
+        display: inline;
+        content: '[';
+    }
+
+    a.source:after {
+        content: ']';
+    }
+
+    a.source {
+        font-size: 1rem;
+    }
 </style>
 
 <script>
@@ -51,10 +63,10 @@ a.source {
         h.prepend(wrapper);
     }
 
-    document.addEventListener("DOMContentLoaded", ()=>
-        document.querySelectorAll(".h-function")?.forEach(h => {
-            headingLabels(h);
-            functionHeadingLink(h);
-        })
-    );
+    // document.addEventListener("DOMContentLoaded", ()=>
+    //     document.querySelectorAll(".h-function")?.forEach(h => {
+    //         headingLabels(h);
+    //         functionHeadingLink(h);
+    //     })
+    // );
 </script>

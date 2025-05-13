@@ -4,7 +4,7 @@ nav_order: 5
 parent: Computercraft
 ---
 
-{% include computercraft_doc.html %}
+{% include computercraft/doc-utils.html %}
 
 # Transceiver
 {: .no_toc }

@@ -7,8 +7,42 @@
     padding-right: $sp-1;
   }
   .site-nav {
+    width: 100%;
     // add top/bottom padding to right bar (header height + top padding of left side bar)
     padding-top: calc(#{$header-height} + #{$sp-8});
     padding-bottom: calc(#{$header-height} + #{$sp-8});
+  }
+
+  ol a.nav-list-link {
+    padding-left: 0 !important;
+  }
+
+  // if there is a second level ol
+  // the first level will have lower latin (a, b, c, ...)
+  // while the second level will have decimal (1, 2, 3, ...)
+  ol:has(li > ol) {
+    li::before {
+      content: counter(step-counter, lower-latin) '.';
+    }
+    ol > li {
+      &::before {
+        content: counter(sub-counter, decimal) '.';
+      }
+      ol > li::before {
+        content: counter(sub-counter, lower-roman) '.';
+      }
+    }
+  }
+
+  // lets see how this will work,
+  // otherwise here is a fallback for • in second level
+  //@supports #{'not selector(:has(a, b))'} {
+  //  ol ol > li::before {
+  //      content: '•' !important;//counter(sub-counter, lower-roman);
+  //  }
+  //}
+
+  a > code {
+    color: $grey-lt-000;
   }
 }
