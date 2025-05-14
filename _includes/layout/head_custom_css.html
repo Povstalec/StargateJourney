@@ -1,0 +1,25 @@
+{%- comment -%}
+    Allows pages to include custom CSS links to the header
+    Usage in page’s front matter:
+    ---
+    custom_css: "https://example.com/foo.css"
+    # or
+    custom_css:
+        - "/assets/bar.css"
+        - "https://cdn.example.com/baz.css"
+    ---
+{%- endcomment -%}
+
+{%- assign css_param = page.custom_css | default: site.custom_css -%}
+
+{%- if css_param -%}
+    {%- assign css_type = css_param.class -%}
+
+    {%- if css_type == "Array" -%}
+        {%- for href in css_param -%}
+            <link rel="stylesheet" href="{{ href | absolute_url  }}" />
+        {%- endfor -%}
+    {%- else -%}
+        <link rel="stylesheet" href="{{ css_param | absolute_url }}" />
+    {%- endif -%}
+{%- endif -%}

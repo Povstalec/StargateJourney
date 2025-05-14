@@ -1,0 +1,47 @@
+---
+# required to trigger the compilation
+---
+
+.h-function {
+  display: flex;
+  justify-content: space-between;
+
+  pre {
+    display: inline;
+    margin: 0;
+    line-height: 1.25;
+    font-size: 1.125rem !important;
+  }
+
+  & > pre {
+    display: flex;
+    justify-content: left;
+    align-items: baseline;
+  }
+
+  code pre > code {
+    padding: 0;
+    font-weight: unset;
+    background: none;
+    border: none;
+    border-radius: 0;
+    font-size: unset;
+    line-height: unset;
+  }
+
+  h3 {
+    display: inline;
+    margin: 0;
+  }
+
+  a.source{
+    font-size: 1rem;
+    &:before {
+      display: inline;
+      content: '[';
+    }
+    &:after {
+      content: ']';
+    }
+  }
+}

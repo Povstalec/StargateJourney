@@ -2,9 +2,9 @@
 title: Events
 nav_order: 50
 parent: Computercraft
+custom_css: "/assets/css/computercraft.css"
+# custom_js: "/assets/js/computercraft.js"
 ---
-
-{% include computercraft/doc-utils.html %}
 
 # Events
 {: .no_toc }

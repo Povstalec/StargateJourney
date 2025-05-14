@@ -2,9 +2,8 @@
 title: Transceiver
 nav_order: 5
 parent: Computercraft
+custom_css: "/assets/css/computercraft.css"
 ---
-
-{% include computercraft/doc-utils.html %}
 
 # Transceiver
 {: .no_toc }

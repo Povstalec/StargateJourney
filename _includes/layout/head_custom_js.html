@@ -1,0 +1,25 @@
+{%- comment -%}
+    Allows pages to include custom JS scripts
+    Usage in page’s front matter:
+    ---
+    custom_js: "https://example.com/foo.js"
+    # or
+    custom_js:
+        - "/assets/bar.js"
+        - "https://cdn.example.com/baz.js"
+    ---
+{%- endcomment -%}
+
+{%- assign js_param = page.custom_js | default: site.custom_js -%}
+
+{%- if js_param -%}
+    {%- assign js_type = js_param.class -%}
+
+    {%- if js_type == "Array" -%}
+        {%- for src in js_param -%}
+        <script src="{{ src }}"></script>
+        {%- endfor -%}
+    {%- else -%}
+        <script src="{{ js_param }}"></script>
+    {%- endif -%}
+{%- endif -%}
