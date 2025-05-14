@@ -10,8 +10,11 @@
 {% assign arguments = include.arguments | default: "" %}
 {% assign headerLevel = include.headerLevel | default: 3 %}
 <div class="h-function">
-    <h{{headerLevel}} id="{{ include.name }}">
-        <code>{{ include.name }}({{ include.arguments }})</code>
-    </h{{headerLevel}}>
+    <code>
+        <h{{headerLevel}} id="{{ include.name }}">
+            <pre><code>{{ include.name }}</code></pre>
+        </h{{headerLevel}}>
+        <span>({{ include.arguments }})</span>
+    </code>
     <a class="source" target="_blank" href="{{ include.source }}">source</a>
 </div>

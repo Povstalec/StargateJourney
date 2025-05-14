@@ -41,8 +41,17 @@
   //      content: '•' !important;//counter(sub-counter, lower-roman);
   //  }
   //}
+  pre {
+    margin: 0;
+  }
 
-  a > code {
+  code {
     color: $grey-lt-000;
+    line-height: unset;
+    font-size: unset;
+
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
