@@ -83,6 +83,12 @@
 
     {% capture listModifier %}{% if orderedList %}ol{% else %}ul{% endif %}{% endcapture %}
 
+    {% capture listExpanderButton %}
+        <button class="nav-list-expander btn-reset" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+        </button>
+    {% endcapture %}
+
     {% for node in nodes %}
         {% if node == "" %}
             {% continue %}
@@ -141,6 +147,9 @@
         {% endif %}
 
         {% if currLevel > lastLevel and flatToc == false %}
+            {% if currLevel > minHeader %}
+                {% capture jekyll_toc %}{{ jekyll_toc }}{{ listExpanderButton }}{% endcapture %}
+            {% endif %}
             {% capture jekyll_toc %}{{ jekyll_toc }}<{{ listModifier }}{{ subMenuClass }}>{% endcapture %}
         {% elsif currLevel < lastLevel and flatToc == false %}
             {% assign repeatCount = lastLevel | minus: currLevel %}

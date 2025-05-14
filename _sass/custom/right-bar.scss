@@ -45,13 +45,20 @@
     margin: 0;
   }
 
+
   code {
     color: $grey-lt-000;
     line-height: unset;
     font-size: unset;
 
+    // make code blocks stripped (prevent line breaking)
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  // nav expander buttons are printed in toc after the link
+  .nav-list-expander {
+    top: 0;
   }
 }

@@ -4,45 +4,45 @@
         justify-content: space-between;
     }
 
-    .h-function h3 > pre {
+    .h-function pre {
+        display: inline;
         margin: 0;
-        & > code {
-            padding: 0;
-            font-weight: unset;
-            background: none;
-            border: none;
-            border-radius: 0;
-            font-size: unset;
-            line-height: unset;
-        }
+        line-height: 1.25;
+        font-size: 1.125rem !important;
     }
 
-        .h-function > code {
-            display: flex;
-            justify-content: left;
-            align-items: baseline;
+    .h-function > pre {
+        display: flex;
+        justify-content: left;
+        align-items: baseline;
+    }
 
-            line-height: 1.25;
-            font-size: 1.125rem !important;
-        }
+    .h-function code pre > code {
+        padding: 0;
+        font-weight: unset;
+        background: none;
+        border: none;
+        border-radius: 0;
+        font-size: unset;
+        line-height: unset;
+    }
 
-        .h-function h3 {
-            display: inline;
-            margin: 0;
-        }
+    .h-function h3 {
+        display: inline;
+        margin: 0;
+    }
 
-        a.source:before {
-            display: inline;
-            content: '[';
-        }
+    a.source:before {
+        display: inline;
+        content: '[';
+    }
 
-        a.source:after {
-            content: ']';
-        }
+    a.source:after {
+        content: ']';
+    }
 
-        a.source {
-            font-size: 1rem;
-        }
+    a.source {
+        font-size: 1rem;
     }
 </style>
 
