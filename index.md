@@ -2,9 +2,12 @@
 nav_exclude: true
 ---
 
+<div class="text-center" markdown="block">
+
 ![Stargate Journey logo]({{ site.baseurl }}/assets/img/logo.png)
 
 # Stargate Journey
+{: .no_toc }
 
 <div style="display: none">
     <p>// Lets call this an easter egg</p>
@@ -24,10 +27,11 @@ nav_exclude: true
 
 Stargate Journey is a mod for Minecraft with many additions, such as several dimensions, items, and obviously - Stargates.
 
+</div>
 
 {: .note }
 This project is in early development, and a lot of stuff still needs to be implemented.
-Things may be buggy, unfinished, or unobtainable in survival.
+Things may be buggy, unfinished, or unobtainable in survival.  
 If you find a bug, it will be appreciated if you report it to 
 [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
 
@@ -54,8 +58,8 @@ The documentation is divided into a few main parts:
 
 ## Compatibility with other mods
 Stargate Journey is compatible with multiple other mods:
- - [CC:Tweaked](https://tweaked.cc/), which allows the control of Stargates with interfaces
  - [Stellar View](https://www.curseforge.com/minecraft/mc-mods/stellarview) can be used to enhance your experience of different planetary night skies
+ - [CC:Tweaked](https://tweaked.cc/), which allows the control of Stargates with interfaces
  - [Ad Astra](https://ad-astra.terrarium.wiki/ad-astra)'s two default Solar Systems are also considered Solar Systems within Stargate Journey
 
 ## Known incompatibilities

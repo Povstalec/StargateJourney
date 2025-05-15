@@ -1,0 +1,34 @@
+/*
+
+  Layout class utilities
+
+*/
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+@include mq(lg) {
+  .width-lg-50 {
+    width: 50%;
+  }
+
+  .child-md-max-width-50 > * {
+    max-width: 50%;
+  }
+}
+
+@include mq(xl) {
+  .max-width-xl-75 {
+    max-width: 75%;
+  }
+}
+
+// adds m-X-auto classes for each media query
+@each $media-query in map-keys($media-queries) {
+  @include mq($media-query) {
+    .m-#{$media-query}-auto {
+      margin: auto;
+    }
+  }
+}

@@ -4,6 +4,17 @@
 
 */
 
+main {
+  text-align: justify;
+}
+
+main {
+  @include mq(xl) {
+    max-width: 60vw;
+    margin: 0 auto;
+  }
+}
+
 /* Changing the page layout to full width removing the empty spaces on sides */
 
 // overrides side-bar width to only the nav width removing the left empty space
