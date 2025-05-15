@@ -7,7 +7,7 @@
   $right-bar-background: darken($body-background-color, 5%);
   background-color: $right-bar-background;
 
-  max-height: 100vh;
+  height: 100vh;
   overflow-y: scroll;
 
   @include mq(md) {
