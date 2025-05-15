@@ -72,7 +72,7 @@ These are the functions every Interface has available at all times.
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="addressToString"
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35"
@@ -113,7 +113,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getEnergy"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L96"
@@ -142,7 +142,7 @@ print("There is "..energy.." FE in the interface")
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getEnergyCapacity"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L102"
@@ -168,7 +168,7 @@ print("The interface can store up to "..capacity.." FE")
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getEnergyTarget"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L108"
@@ -199,7 +199,7 @@ print("The current energy target: "..energyTarget.." FE")
 ___
 
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="setEnergyTarget"
     arguments="energyTarget"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L17"
@@ -236,7 +236,7 @@ Functions available for an interface connected to the **Milky Way Stargate**.
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="closeChevron"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L180"
@@ -270,7 +270,7 @@ print(feedback)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="encodeChevron"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L159"
@@ -304,7 +304,7 @@ print(feedback)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="endRotation"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L117"
@@ -338,7 +338,7 @@ print(feedback)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getCurrentSymbol"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L14"
@@ -364,7 +364,7 @@ print(symbol)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getRotation"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L46"
@@ -401,7 +401,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="isChevronOpen"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L201"
@@ -437,7 +437,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="isCurrentSymbol"
     arguments="symbol"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29"
@@ -478,7 +478,7 @@ print("The current symbol is "..symbol)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="openChevron"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L138"
@@ -511,7 +511,7 @@ print(feedback)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="rotateAntiClockwise"
     arguments="symbol"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89"
@@ -559,7 +559,7 @@ print("The current symbol is "..symbol)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="rotateClockwise"
     arguments="symbol"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61"
@@ -612,7 +612,7 @@ Functions available for an interface connected to a Stargate.
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="disconnectStargate"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L101"
@@ -645,7 +645,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getChevronsEngaged"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L89"
@@ -671,7 +671,7 @@ print("Stargate has "..engaged.."/9 chevrons engaged")
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getOpenTime"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L95"
@@ -702,7 +702,7 @@ print("Stargate has been open for "..openTimeInSeconds.." seconds")
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getRecentFeedback"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L28"
@@ -739,7 +739,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getStargateEnergy"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L83"
@@ -769,7 +769,7 @@ print("There is "..energy.." FE in the Stargate")
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getStargateGeneration"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L53"
@@ -806,7 +806,7 @@ print("The Stargate is "..generation.." generation")
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getStargateType"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L59"
@@ -844,7 +844,7 @@ print("The stargate identifier: "..type)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getStargateVariant"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L74"
@@ -877,7 +877,7 @@ print("The stargate variant: "..variant)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="isStargateConnected"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L65"
@@ -916,7 +916,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="isStargateDialingOut"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L71"
@@ -950,7 +950,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="isWormholeOpen"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L77"
@@ -1010,7 +1010,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="sendStargateMessage"
     arguments="message"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L49"
@@ -1066,7 +1066,7 @@ print(message)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="engageSymbol"
     arguments="symbol"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L95"
@@ -1114,7 +1114,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getDialedAddress"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L118"
@@ -1149,7 +1149,7 @@ print("The dialed address: " .. interface.addressToString(address))
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="setChevronConfiguration"
     arguments="configuration"
     source="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L141"
@@ -1206,7 +1206,7 @@ interface.setChevronConfiguration({1, 2, 3, 4, 5, 6, 7, 8})
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="addToBlacklist"
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L160"
@@ -1263,7 +1263,7 @@ interface.addToBlacklist(address)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="addToWhitelist"
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L56"
@@ -1315,7 +1315,7 @@ interface.addToWhitelist(address)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="clearBlacklist"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L240"
@@ -1348,7 +1348,7 @@ interface.clearBlacklist()
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="clearWhitelist"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L136"
@@ -1380,7 +1380,7 @@ interface.clearWhitelist()
 ```
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getConnectedAddress"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L268"
@@ -1424,7 +1424,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getFilterType"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L17"
@@ -1465,7 +1465,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getLocalAddress"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L289"
@@ -1497,7 +1497,7 @@ print(interface.addressToString(localAddress))
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getNetwork"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L310"
@@ -1538,7 +1538,7 @@ print("The network ID is: "..network)
 ```
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="isNetworkRestricted"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L366"
@@ -1577,7 +1577,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="removeFromBlacklist"
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L200"
@@ -1615,7 +1615,7 @@ interface.removeFromBlacklist(address)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="removeFromWhitelist"
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L96"
@@ -1653,7 +1653,7 @@ interface.removeFromWhitelist(address)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="restrictNetwork"
     arguments="enable"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L348"
@@ -1692,7 +1692,7 @@ interface.restrictNetwork(true)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="setFilterType"
     arguments="type"
     source=""
@@ -1738,7 +1738,7 @@ interface.setFilterType(FilterType.Blacklist)
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="setNetwork"
     arguments="network"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L330"
@@ -1777,7 +1777,7 @@ However, they are not available for the Tollan Stargate which can't have an iris
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getIris"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L16"
@@ -1816,7 +1816,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="closeIris"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L39"
@@ -1856,7 +1856,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="openIris"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L59"
@@ -1896,7 +1896,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="stopIris"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L79"
@@ -1936,7 +1936,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getIrisProgress"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L99"
@@ -1960,7 +1960,7 @@ This progress is internally used for [blocking the gate by the iris](https://git
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getIrisProgressPercentage"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L119"
@@ -2002,7 +2002,7 @@ end
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getIrisDurability"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L139"
@@ -2037,7 +2037,7 @@ print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(d
 
 ___
 
-{% include components/computercraft-function.html
+{% include components/computercraft_function.html
     name="getIrisMaxDurability"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/ShieldingMethods.java#L159"
