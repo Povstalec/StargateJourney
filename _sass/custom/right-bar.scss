@@ -38,6 +38,14 @@
     }
   }
 
+  .nav-list-item::before {
+    @media (max-width: map-get($media-queries, "md")) {
+      top: 0.75em;
+    }
+    @media (max-width: map-get($media-queries, "sm")) {
+      top: 1em;
+    }
+  }
 
   ol a.nav-list-link {
     padding-left: 0 !important;
