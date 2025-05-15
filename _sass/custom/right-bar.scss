@@ -17,7 +17,7 @@
     padding-right: $sp-1;
 
     .menu-button {
-        display: none;
+      display: none;
     }
   }
 
@@ -92,7 +92,6 @@
   .menu-button {
     position: fixed;
     bottom: 2rem;
-    opacity: 0.75;
     transform-box: view-box;
     transform: translateX(-95%);
     z-index: 99; // lower than the right bar
@@ -107,7 +106,7 @@
     }
 
     button:hover {
-      $sidebar-toggle-button-hover-color: lighten($right-bar-background, 5%);
+      $sidebar-toggle-button-hover-color: lighten($right-bar-background, 3%);
       background-image: linear-gradient(
                       -90deg,
                       rgba($sidebar-toggle-button-hover-color, 1) 100%,
