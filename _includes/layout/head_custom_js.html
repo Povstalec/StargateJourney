@@ -17,9 +17,9 @@
 
     {%- if js_type == "Array" -%}
         {%- for src in js_param -%}
-        <script src="{{ src }}"></script>
+        <script src="{{ src | absolute_url }}"></script>
         {%- endfor -%}
     {%- else -%}
-        <script src="{{ js_param }}"></script>
+        <script src="{{ js_param | absolute_url }}"></script>
     {%- endif -%}
 {%- endif -%}

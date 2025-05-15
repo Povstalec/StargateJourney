@@ -1,19 +1,43 @@
 
 .right-bar {
+  position: fixed;
+  top: 0;
   right: 0;
-  padding-right: $sp-1;
+  z-index: 100; // otherwise it behind codeblocks for example
+  $right-bar-background: darken($body-background-color, 5%);
+  background-color: $right-bar-background;
+
+  max-height: 100vh;
+  overflow-y: scroll;
 
   @include mq(md) {
     width: $nav-width;
     min-width: $nav-width;
+    background-color: unset;
+    padding-right: $sp-1;
+
+    .menu-button {
+        display: none;
+    }
   }
 
   .site-nav {
+    display: none;
     width: 100%;
-    // add top/bottom padding to right bar (header height + top padding of left side bar)
-    padding-top: calc(#{$header-height} + #{$sp-8});
-    padding-bottom: calc(#{$header-height} + #{$sp-8});
+    padding: 1rem;
+
+    @include mq(md) {
+      display: block;
+      // add top/bottom padding to right bar (header height + top padding of left side bar)
+      padding-top: calc(#{$header-height} + #{$sp-8});
+      padding-bottom: calc(#{$header-height} + #{$sp-8});
+    }
+
+    &.nav-open {
+      display: block;
+    }
   }
+
 
   ol a.nav-list-link {
     padding-left: 0 !important;
@@ -47,7 +71,6 @@
     margin: 0;
   }
 
-
   code {
     color: $grey-lt-000;
     line-height: unset;
@@ -62,5 +85,35 @@
   // nav expander buttons are printed in toc after the link
   .nav-list-expander {
     top: 0;
+  }
+
+  // fixed button for sidebar toggle
+  $sidebar-toggle-button-color: $right-bar-background;
+  .menu-button {
+    position: fixed;
+    bottom: 2rem;
+    opacity: 0.75;
+    transform-box: view-box;
+    transform: translateX(-95%);
+    z-index: 99; // lower than the right bar
+
+    svg {
+      color: $body-text-color;
+    }
+
+    button {
+      border-radius: 1rem 0 0 1rem; // rounding on the left side
+      background-color: $sidebar-toggle-button-color;
+    }
+
+    button:hover {
+      $sidebar-toggle-button-hover-color: lighten($right-bar-background, 5%);
+      background-image: linear-gradient(
+                      -90deg,
+                      rgba($sidebar-toggle-button-hover-color, 1) 100%,
+                      rgba($sidebar-toggle-button-hover-color, 0.8) 20%,
+                      rgba($sidebar-toggle-button-hover-color, 0) 0%
+      );
+    }
   }
 }
