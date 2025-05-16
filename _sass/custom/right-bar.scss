@@ -7,18 +7,23 @@
   $right-bar-background: darken($body-background-color, 5%);
   background-color: $right-bar-background;
   max-width: calc(100vw - 60px) !important; // prevents overflowing of the toggle button out of the screen when the sidebar is too wide
-
+  border-left: $border $border-color;
   height: 100vh;
 
   @include mq(md) {
-    width: $nav-width;
-    min-width: $nav-width;
+    width: $nav-width-md;
+    min-width: $nav-width-md;
     background-color: unset;
     padding-right: $sp-1;
 
     .menu-button {
       display: none;
     }
+  }
+
+  @include mq(lg) {
+    width: $nav-width;
+    min-width: $nav-width;
   }
 
   .site-nav {

@@ -4,7 +4,11 @@
 
 */
 
-main {
+.main {
+  max-width: unset;
+}
+
+main {;
   text-align: justify;
 }
 
@@ -26,13 +30,15 @@ main {
   & + .main {
     @include mq(md) {
       margin-left: $nav-width-md;
-      max-width: Max(#{$nav-width-md}, calc(100vw - (2 * #{$nav-width-md})));
+      margin-right: $nav-width-md;
+      //max-width: calc(100vw - (2 * #{$nav-width-md}));
     }
     @include mq(lg) {
       // overrides left margin to match the side-bar width without left empty space
       margin-left: $nav-width !important;
+      margin-right: $nav-width !important;
       // the content max width should be 100vw minus two side-bars (for each side)
-      max-width: Max(#{$nav-width}, calc(100vw - (2 * #{$nav-width})));
+      //max-width: Max(#{$nav-width}, calc(100vw - (2 * #{$nav-width})));
     }
   }
 }
