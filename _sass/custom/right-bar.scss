@@ -9,7 +9,6 @@
   max-width: calc(100vw - 60px) !important; // prevents overflowing of the toggle button out of the screen when the sidebar is too wide
 
   height: 100vh;
-  overflow-y: scroll;
 
   @include mq(md) {
     width: $nav-width;
