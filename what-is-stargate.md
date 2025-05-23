@@ -1,6 +1,7 @@
 ---
 title: What's that Stargate anyway?
 nav_order: 0
+description: "What is a Stargate? A brief description of the Stargate device from the Stargate franchise."
 ---
 
 # What's that Stargate thing anyway?

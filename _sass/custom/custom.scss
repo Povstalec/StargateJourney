@@ -39,5 +39,9 @@ details {
   align-items: center;
 }
 
+code {
+  text-wrap: nowrap;
+}
+
 // located in /assets/css
 @import "./youtubePlayer.css";

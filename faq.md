@@ -1,6 +1,7 @@
 ---
 title: Frequently Asked Questions
 nav_order: 10
+description: "Frequently Asked Questions about Stargate Journey Minecraft mod"
 ---
 
 # Frequently Asked Questions
@@ -131,6 +132,8 @@ Note that the mod is still in development.
 > which will allow modpack authors to specify whether a ZPM is allowed to power blocks and items that don't come from Stargate Journey. 
 > This should make balancing tech mods easier and give them more breathing room, 
 > as otherwise all ZPMs would always need to be endgame-only items.
+
+___
 
 ## Why I keep fining only cartouches with the Overworld address?
 If you are on Abyods and you are only finding cartouches with Overworld address,

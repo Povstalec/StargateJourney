@@ -1,6 +1,7 @@
 ---
 title: Troubleshooting
 nav_order: 20
+description: "Troubleshooting steps for common issues with Stargate Journey Minecraft mod"
 ---
 
 # Troubleshooting
@@ -9,17 +10,13 @@ nav_order: 20
 If you can't find a solution to your problem on this page or if one of the solutions below doesn’t work, 
 you can visit the [Discord server]({{ site.discord_invite_link }}) and ask there.
 
-1. Table of Contents
-{:toc}
-
 ## Stargate is not dialing / not disconnecting / causing any trouble
-_With access to commands:_  
-Use the `/sgjourney stargateNetwork forceStellarUpdate`  
-As of 0.6.6 this command can no longer be used in Survival
+**With access to commands:**  
+Use the `/sgjourney stargateNetwork forceStellarUpdate` command.
 
-_Without access to commands, but with access to world files:_  
-Go to your `saves/<world name here>/data` folder
-Delete `sgjourney-stargate_network.dat`
+**Without access to commands, but with access to world files:**  
+1. Go to your `saves/<world name here>/data` folder  
+2. Delete `sgjourney-stargate_network.dat`
 
 {: .warning }
 > **UNDER NO CIRCUMSTANCES EVER DELETE** `sgjourney-block_enties.dat`.
@@ -31,71 +28,65 @@ After all that, log in to your world again to let the Stargate Network regenerat
 
 ___
 
+## I created a new world, but the Stargate isn't generating.
+Villager is not giving me the **map to Chappa'ai**, or the **locate command** results in an error.
 
-## I added the mod to an existing world, but Stargate isn't generating.
-The Stargate structure can only generate in **new chunks**. 
-By default, Stargate structures generate in an area **centered around** the `X = 0` `Z = 0` coordinates, 
-and the maximum allowed **offset** from that **center** position is `64` chunks.
-Suppose you've already explored the world **before** adding Stargate Journey. 
-In that case, you must change the **area offset** that the Stargate structure can generate.
-To do this:
+If you are trying to locate the buried Stargate with the locate command, which results in an error,
+try executing the command positioned at the Stargate generation center.
 
-Go to the **Common Config** (`config/sgjourney_common.toml`), and under the **Stargate Network Config**, change 
-`stargate_generation_center_x_chunk_offset` or `stargate_generation_center_z_chunk_offset` to some number of chunks further away, which you haven't generated yet.
+Leveling up the villager for the map trade should have the same effect.
+If the villager is not giving you the map, the positioned command will probably not work either.
+
+The stargate generation center is by default at `X = 0` `Z = 0` coordinates,
+though you may have changed it in the config file
+(`stargate_generation_center_x_chunk_offset`, `stargate_generation_center_z_chunk_offset`).
+If that is the case, multiply the values from the config by `16`
+and use them in the command.
+
+`/execute in minecraft:overworld positioned X 0 Z run locate structure #sgjourney:has_stargate` (replace `X` and `Z` with actual values)
+
+**If the locating still fails, it's most likely that the stargate structure is not generating.**
+
+In this case, there are some possible reasons:
+1. Stargate Journey was added to an existing world. [See the next section.](#i-added-the-mod-to-an-existing-world-but-stargate-isnt-generating)
+2. An incompatible mod is installed.
+   - Check the [known incompatibilities]({{ '/#known-incompatibilities' | absolute_url }})
+   - A mod altering the structures generation or their locating is installed.
+     This usually results in structures being generated in places different from what Stargate Journey expects.
+     With some mods, it is possible to fix the problem by excluding the Stargate Journey structures.
+
+   - A world generation mod that alters biomes and doesn't use proper (overworld) tags prevents the generation of structures.
+     Removing the world generation mod will fix the problem.
+     To keep the mod, it will probably be necessary to create a compatibility datapack
+     that will allow the generation of the Stargate Journey structures in the modded biomes.
 
 ___
 
-# Outdated
 
-## Addresses are randomized (Stargate Journey 0.6.6)
-> Addresses are randomized after updating my world's sgjourney to 0.6.6 even though they weren't before.
+## I added the mod to an existing world, but Stargate isn't generating.
+The locations of Stargate structures are fixed positions in the world based on the seed.
+The Stargate structure can only be generated in **new chunks**.
+If the chunk that should contain the Stargate structure has already been generated, it will not generate there.
 
-1. Either:
-- Change `use_datapack_addresses` int your config to `true`
-- Delete your config altogether and let it regenerate
-2. Open your `saves/<world name here>/data` folder  
-   Delete `sgjourney-stargate_network_settings.dat`, `sgjourney-stargate_network.dat` and `sgjourney-universe.dat`
+By default, Stargate structures positions are picked from `64` chunks (`1024` blocks) radius, centered at `X = 0` `Z = 0`.
 
-{: .warning }
-> **UNDER NO CIRCUMSTANCES EVER DELETE** `sgjourney-block_enties.dat`.
-> It holds info with **locations** of all the block entities,
-> like **Stargates** and **Transport Rings**,
-> and deleting it means Stargate Network won't be able to find the Stargates anymore.
+You can move the generation area with config if the default area was already generated.  
+Setting following values in the `sgjourney-common.toml` config file:
 
-## Stargate Journey is causing datapack related crashes
+```toml
+  ["Stargate Journey Common Config"."Generation Config".server]
+      # ... other values ...
+      # X chunk center offset of structures that contain a Stargate
+      # Default: 0
+      # Range: -512 ~ 512
+      stargate_generation_center_x_chunk_offset = 200
+      # Z chunk center offset of structures that contain a Stargate
+      # Default: 0
+      # Range: -512 ~ 512
+      stargate_generation_center_z_chunk_offset = 200
+      # ... other values ...
+```
 
-<!-- // TODO: There is no image :D not even on discord -->
+will move the generation area to `X = 3200` `Z = 3200` coordinates (chunk is an area of `16x16` blocks).
+With the default radius bonds (`64` chunks) it will generate the structure somewhere between `X = 2176` `Z = 2176` and `X = 4224` `Z = 4224`.
 
-Normall you would fix it by just deleting the current Common Stargates datapack and dragging a new one in your datapack folder, 
-but since some modpacks (like ATM9) handle datapacks through kubejs, which isn't something I'm specificaly familiar with, 
-here's a copy-paste version of what tehgreatdoge who knows how to use it came up with:
-
-================================================================
-
-- This tutorial assumes that you have 0 knowledge about how KubeJS works.
-
-- To get started, open your Minecraft instance’s folder. 
-Then go to ./kubejs/data. 
-If you see a folder labeled sgjourney, this is (probably) the right tutorial for you.
-
-- If you are using ATM9 you can go ahead and skip this next step.
-
-- Now that you have the folder, 
-you will need to verify that there aren’t any other important changes made by the modpack. 
-To do so, compare your file structure against the attached image. 
-While this won’t 100% guarantee that everything will be alright, it should help prevent any issues.
-If your file structure doesn’t exactly match, please open a post in #bugs-and-suggestions with the following info: 
-Modpack and modpack version, sgjourney version, common stargates version.
-Now that we have verified that the folders match, go ahead and delete the sgjourney folder.
-
-- Now, download the latest version of common stargates for your Minecraft version and open it. 
-Inside, there should be a data folder. 
-Copy the common_stargates and sgjourney folder from it and paste it into the ./kubejs/data folder. 
-You did it! 
-If this doesn’t work, please create a post in #bugs-and-suggestions with the previously mentioned info 
-
-================================================================
-
-In case this doesn't work, you can join the Discord Server and try discussing it there with tehgreatedoge directly
-
-[//]: # (// TODO: datapack update tutorial also with KubeJS variant)
