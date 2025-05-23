@@ -9,8 +9,7 @@ nav_order: 10
 {: .highlight }
 If you are playing All the Mods 9 modpack, check [its section]({{ site.baseurl }}/atm9) first. 
 
-1. Table of Contents
-{:toc}
+[//]: # (TODO: update ATM9 link)
 
 ## I am having an issue with the mod. How do I fix it?
 Check out Troubleshooting for common problems.
@@ -19,7 +18,9 @@ ___
 
 ## I dialed a Milky Way Stargate. Why isn't it rotating?
 Milky Way Stargates do not spin if DHD is used, and symbols are instead "encoded directly."
-If you want the gate to spin, use the [interface and computercraft mod](), or dial the gate [manually (with redstone)](). <!-- TODO: add links for dialing -->
+If you want the gate to spin, use the [interface and computercraft mod](), or dial the gate [manually (with redstone)](). 
+
+[//]: # (TODO: add links for dialing)
 
 {: .future }
 A designated Dialing Computer block is planned for the future that will allow easy dialing with the gate spinning
@@ -69,8 +70,9 @@ Verify that the address is correct and the target solar system belongs to the sa
 For solar systems from other galaxies it is required to use 8 or 9-chevron address.
 - `Not enough power` - Gates require power in order to establish and maintain a connection.
 The error simply means that the gate is not charged enough for the connection.
-You can check the current amount of energy in the gate by right-clicking it with a PDA or using a computer from [CC:Tweaked](https://tweaked.cc/).  
-If you are trying to dial **Lantea**, or other dimension in distant galaxy, you need a huge amount of energy to establish a connection (`100 000 000 000 FE` by default).
+You can check the current amount of energy in the gate by right-clicking it with a PDA or using a computer from [CC:Tweaked](https://tweaked.cc/).
+If you are trying to dial **Lantea**, or other dimension in distant galaxy, 
+you need a huge amount of energy to establish a connection (`100 000 000 000 FE` by [default](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/config/CommonStargateConfig.java#L200)).
 - `Target Stargate is obstructed` - The destination gate is obstructed by blocks.
 Some naturally generated gates are obstructed by blocks (in the Nether, the End and Glacio) 
 and needs to be found and unobstructed before dialing.
@@ -81,8 +83,8 @@ You need to use 9-chevron address to dial a specific stargate.
 Stargates only generate in some dimensions specified by the mod or by a datapack.
 You need to reach the dimension otherwise first and place your own Stargate there.  
 If the dimension should have generated a Stargate (e.g. dimension is from Stargate Journey), then the gate either didn't generate or was broken by a player.
-The gate may not generate in some cases - e.g. when an mod that modifies structure generation (or lookups) is installed.
-Please check the [known incompatibilities]({{ '/#known-incompatibilities' | absolute_url }}) for more information.  
+The gate may not generate in some cases - e.g. when a mod that modifies structure generation (or lookups) is installed.
+Please check the [known incompatibilities]({{ '/#known-incompatibilities' | absolute_url }}) for more information.
 If you want to make a gate generate in the dimension, you can create a datapack by following this [guide]({{ '/datapacks/datapacks_outdated/#adding-a-dimension-to-stargate-network' | absolute_url }}).
 
 [//]: # (TODO: add link to list of errors and their explanations)

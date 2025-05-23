@@ -36,7 +36,7 @@ If you find a bug, it will be appreciated if you report it to
 [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
 
 If you are __new to the topic__ and want to know what that thing is...  
-Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what_is_stargate).
+Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what-is-stargate).
 
 {: .highlight }
 If you are playing All the Mods 9 modpack, check the [ATM 9]({{ site.baseurl }}/atm9) section.

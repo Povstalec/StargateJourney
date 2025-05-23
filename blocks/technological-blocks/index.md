@@ -14,7 +14,7 @@ ___
 
 ## Stargates
 If you are __new to the topic__ and want to know what that thing is...  
-Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what_is_stargate).
+Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what-is-stargate).
 
 Each Stargate can have different [variants]({{ site.baseurl }}/blocks/stargate_variants) which can be also added by [datapacks]({{ site.baseurl }}/datapacks).
 
