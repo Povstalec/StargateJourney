@@ -4,7 +4,7 @@ nav_exclude: true
 
 <div class="text-center" markdown="block">
 
-![Stargate Journey logo]({{ site.baseurl }}/assets/img/logo.png)
+![Stargate Journey logo]({{ '/assets/img/logo.png' | absolute_url }})
 
 # Stargate Journey
 {: .no_toc }
@@ -35,25 +35,29 @@ Things may be buggy, unfinished, or unobtainable in survival.
 If you find a bug, it will be appreciated if you report it to 
 [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
 
-If you are __new to the topic__ and want to know what that thing is...  
-Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what-is-stargate).
+If you are __new to the topic__ and want to know what that thing is...
+Stargate, they call it - check [What's that Stargate anyway?]({{ '/what-is-stargate' | absolute_url }}).
 
 {: .highlight }
-If you are playing All the Mods 9 modpack, check the [ATM 9]({{ site.baseurl }}/atm9) section.
+If you are playing All the Mods 9 modpack, check the [Modpacks / All the Mods 9]({{ '/modpacks/atm9' | absolute_url }}) section.
 
 The documentation is divided into a few main parts:
-* [Survival Guide]({{ site.baseurl }}/survival): A ~~recommended~~ possible way to progress through the mod in survival.
-* [Dimensions]({{ site.baseurl }}/additions/dimensions), [Items]({{ site.baseurl }}/additions/items), and [Blocks]({{ site.baseurl }}/additions/blocks): Detailed explanations on how they work and how to use them.
-* [Stargate network]({{ site.baseurl }}/stargate_network): Descriptions of the Stargate network.
-* [All the mods 9]({{ site.baseurl }}/atm9): Information on modifications and changes made by the modpack.
-* [Computercraft]({{ site.baseurl }}/computercraft): Integration with the [computercraft](https://tweaked.cc/) mod.
-* [Datapacks and Resourcepacks]({{ site.baseurl }}/datapacks): Features available for customization.
+* [Survival Guide]({{ '/survival' | absolute_url }}): A ~~recommended~~ possible way to progress through the mod in survival.
+* [Stargate Technology]({{ '/stargate-technology' | absolute_url }}): A look at Stargate mechanics and related technology, including DHDs, crystals and the iris.
+* [Stargate Network]({{ '/stargate-network' | absolute_url }}): How are Stargates addressed and how they connect to each other.
+* [Blocks]({{ '/blocks' | absolute_url }}): Details about special blocks, ores, their generation and machines.
+* [Items]({{ '/items' | absolute_url }}): Crafting and resources processing, weapons and tools. Although, for crafting recipes it is strongly recommended to use the [JEI](https://www.curseforge.com/minecraft/mc-mods/jei) mod.
+* [Dimensions]({{ '/dimensions' | absolute_url }}): A list of new planets, how to get there and what to expect.
+* [Structures]({{ '/structures' | absolute_url }}): Information about the structures that generate around the world.
+* [Commands]({{ '/commands' | absolute_url }}): List of commands and their usage available for operators.
+* [Computercraft]({{ '/computercraft' | absolute_url }}): API documentation for compatibility integration with [ComputerCraft Tweaked](https://tweaked.cc/) mod.
+* [Datapacks and Resourcepacks]({{ '/datapacks' | absolute_url }}): Explanation of resourcepack and datapack features available for customization.
 
 {: .highlight }
 > Feel free to ask on the [Discord server]({{ site.discord_invite_link }}) if you have a question.
 > 
 > Before asking a question or reporting a bug,
-> please check the [F&Q]({{ site.baseurl }}/faq) section and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord]({{ site.discord_invite_link }}).  
+> please check the [F&Q]({{ '/faq' | absolute_url }}) and [Troubleshooting]({{ '/troubleshooting' | absolute_url }}) sections and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord]({{ site.discord_invite_link }}).
 > Someone else may have already asked about that.
 
 ## Compatibility with other mods
@@ -79,6 +83,9 @@ Stargates might not generate, you might not be able to find a Stargate and to re
 ___
 
 ## Community Creations
+Some cool people found the mod interesting enough to create new content for it.  
+These are some of them:
+
 ### New Stargate Variants:
    - [More Gates](https://www.curseforge.com/minecraft/mc-mods/more-gates-mod-ver)
    - [Dimension Gates](https://discord.com/channels/1011344665678708818/1200953359650263100) (discord thread link)

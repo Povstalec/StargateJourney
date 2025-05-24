@@ -1,5 +1,5 @@
 ---
-title: All The Mods 9
+title: All the Mods 9
 parent: Modpacks
 nav_order: 60
 ---
