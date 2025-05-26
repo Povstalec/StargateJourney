@@ -25,6 +25,8 @@
 
 		"sgjourney:milky_way_dhd",
 		"sgjourney:classic_dhd",
-		"sgjourney:pegasus_dhd"
+		"sgjourney:pegasus_dhd",
+
+		"sgjourney:zpm_hub"
 	]
 }

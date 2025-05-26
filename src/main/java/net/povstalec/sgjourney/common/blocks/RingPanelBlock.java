@@ -26,11 +26,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 
 
-public class RingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock
+public class RingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock
 {
 	protected static final VoxelShape NORTH = Block.box(2.0D, 0.0D, 13.0D, 14.0D, 16.0D, 16.0D);
 	protected static final VoxelShape SOUTH = Block.box(2.0D, 0.0D, 0.0D, 14.0D, 16.0D, 3.0D);
@@ -117,6 +118,24 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 		default:
 			return NORTH;
 		}
+	}
+
+	@Override
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter level, BlockPos pos, BlockState state) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if(blockEntity instanceof RingPanelEntity ringPanelEntity)
+			return ringPanelEntity;
+
+		return null;
+	}
+
+	@Override
+	public boolean hasPermissions(BlockGetter level, BlockPos pos, BlockState state, Player player, boolean sendMessage) {
+		ProtectedBlockEntity blockEntity = getProtectedBlockEntity(level, pos, state);
+		if(blockEntity instanceof RingPanelEntity ringPanelEntity)
+			return ringPanelEntity.hasPermissions(player, sendMessage);
+
+		return true;
 	}
 	
 }
