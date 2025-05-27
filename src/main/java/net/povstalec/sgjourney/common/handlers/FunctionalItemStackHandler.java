@@ -56,7 +56,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @param slots number of slots to create
      */
-    @SuppressWarnings("unused")
     public FunctionalItemStackHandler(int slots) {
         super(slots);
     }
@@ -66,7 +65,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @param stacks pre-populated list of stacks to back this handler
      */
-    @SuppressWarnings("unused")
     public FunctionalItemStackHandler(NonNullList<ItemStack> stacks) {
         super(stacks);
     }
@@ -144,7 +142,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param function user supplied lambda
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_setSize(SetSizeFunction function) {
         return set_setSize(function, false);
     }
@@ -161,7 +158,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *                When override is true and no function is set, an IllegalStateException will be thrown.
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_setSize(SetSizeFunction function, boolean override) {
         if (!override && this.setSizeFunction != null) {
             throw new IllegalStateException("SetSizeFunction is already set and override is false");
@@ -183,7 +179,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param function user supplied lambda
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_setStackInSlot(SetStackInSlotFunction function) {
         return set_setStackInSlot(function, false);
     }
@@ -195,7 +190,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_setStackInSlot(SetStackInSlotFunction function, boolean override) {
         if (!override && this.setStackInSlotFunction != null) {
             throw new IllegalStateException("SetStackInSlotFunction is already set and override is false");
@@ -217,7 +211,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param function user supplied lambda
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_getSlots(GetSlotsFunction function) {
         return set_getSlots(function, false);
     }
@@ -229,7 +222,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_getSlots(GetSlotsFunction function, boolean override) {
         if (!override && this.getSlotsFunction != null) {
             throw new IllegalStateException("GetSlotsFunction is already set and override is false");
@@ -244,7 +236,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #getStackInSlot(int)}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_getStackInSlot(GetStackInSlotFunction function) {
         return set_getStackInSlot(function, false);
     }
@@ -256,7 +247,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_getStackInSlot(GetStackInSlotFunction function, boolean override) {
         if (!override && this.getStackInSlotFunction != null) {
             throw new IllegalStateException("GetStackInSlotFunction is already set and override is false");
@@ -271,7 +261,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #insertItem(int, ItemStack, boolean)}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_insertItem(InsertItemFunction function) {
         return set_insertItem(function, false);
     }
@@ -283,7 +272,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_insertItem(InsertItemFunction function, boolean override) {
         if (!override && this.insertItemFunction != null) {
             throw new IllegalStateException("InsertItemFunction is already set and override is false");
@@ -298,7 +286,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #extractItem(int, int, boolean)}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_extractItem(ExtractItemFunction function) {
         return set_extractItem(function, false);
     }
@@ -310,7 +297,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_extractItem(ExtractItemFunction function, boolean override) {
         if (!override && this.extractItemFunction != null) {
             throw new IllegalStateException("ExtractItemFunction is already set and override is false");
@@ -325,7 +311,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #getSlotLimit(int)}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_getSlotLimit(GetSlotLimitFunction function) {
         return set_getSlotLimit(function, false);
     }
@@ -337,7 +322,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_getSlotLimit(GetSlotLimitFunction function, boolean override) {
         if (!override && this.getSlotLimitFunction != null) {
             throw new IllegalStateException("GetSlotLimitFunction is already set and override is false");
@@ -352,7 +336,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #isItemValid(int, ItemStack)}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_isItemValid(IsItemValidFunction function) {
         return set_isItemValid(function, false);
     }
@@ -364,7 +347,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_isItemValid(IsItemValidFunction function, boolean override) {
         if (!override && this.isItemValidFunction != null) {
             throw new IllegalStateException("IsItemValidFunction is already set and override is false");
@@ -379,7 +361,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #serializeNBT()}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_serializeNBT(SerializeNBTFunction function) {
         return set_serializeNBT(function, false);
     }
@@ -391,7 +372,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_serializeNBT(SerializeNBTFunction function, boolean override) {
         if (!override && this.serializeNBTFunction != null) {
             throw new IllegalStateException("SerializeNBTFunction is already set and override is false");
@@ -406,7 +386,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #deserializeNBT(CompoundTag)}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_deserializeNBT(DeserializeNBTFunction function) {
         return set_deserializeNBT(function, false);
     }
@@ -418,7 +397,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_deserializeNBT(DeserializeNBTFunction function, boolean override) {
         if (!override && this.deserializeNBTFunction != null) {
             throw new IllegalStateException("DeserializeNBTFunction is already set and override is false");
@@ -433,7 +411,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #onLoad()}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_onLoad(OnLoadFunction function) {
         return set_onLoad(function, false);
     }
@@ -445,7 +422,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_onLoad(OnLoadFunction function, boolean override) {
         if (!override && this.onLoadFunction != null) {
             throw new IllegalStateException("OnLoadFunction is already set and override is false");
@@ -460,7 +436,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for {@link #onContentsChanged(int)}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_onContentsChanged(OnContentsChangedFunction function) {
         return set_onContentsChanged(function, false);
     }
@@ -472,7 +447,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_onContentsChanged(OnContentsChangedFunction function, boolean override) {
         if (!override && this.onContentsChangedFunction != null) {
             throw new IllegalStateException("OnContentsChangedFunction is already set and override is false");
@@ -487,7 +461,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
     /**
      * Registers a replacement for protected {@link #getStackLimit(int, ItemStack)}.
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_getStackLimit(GetStackLimitFunction function) {
         return set_getStackLimit(function, false);
     }
@@ -499,7 +472,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param override if false and a function is already set, throws an error
      * @return {@code this} for call chaining
      */
-    @SuppressWarnings("unused")
     public final FunctionalItemStackHandler set_getStackLimit(GetStackLimitFunction function, boolean override) {
         if (!override && this.getStackLimitFunction != null) {
             throw new IllegalStateException("GetStackLimitFunction is already set and override is false");
@@ -530,7 +502,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @param size the new size for the inventory
      */
-    @SuppressWarnings("unused")
     public final void super_setSize(int size) { super.setSize(size); }
 
     /**
@@ -544,7 +515,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param slot the slot to modify
      * @param stack the stack to set
      */
-    @SuppressWarnings("unused")
     public final void super_setStackInSlot(int slot, @NotNull ItemStack stack) { super.setStackInSlot(slot, stack); }
 
     /**
@@ -557,7 +527,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return the number of slots in the inventory
      */
-    @SuppressWarnings("unused")
     public final int super_getSlots() { return super.getSlots(); }
 
     /**
@@ -571,7 +540,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param slot the slot to get the stack from
      * @return the stack in the given slot
      */
-    @SuppressWarnings("unused")
     public final @NotNull ItemStack super_getStackInSlot(int slot) { return super.getStackInSlot(slot); }
 
     /**
@@ -587,7 +555,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param simulate if true, the insertion is only simulated
      * @return the remaining stack that was not inserted
      */
-    @SuppressWarnings("unused")
     public final @NotNull ItemStack super_insertItem(int slot, @NotNull ItemStack stack, boolean simulate) { return super.insertItem(slot, stack, simulate); }
 
     /**
@@ -603,7 +570,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param simulate if true, the extraction is only simulated
      * @return the extracted stack
      */
-    @SuppressWarnings("unused")
     public final @NotNull ItemStack super_extractItem(int slot, int amount, boolean simulate) { return super.extractItem(slot, amount, simulate); }
 
     /**
@@ -617,7 +583,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param slot the slot to get the limit for
      * @return the slot's stack limit
      */
-    @SuppressWarnings("unused")
     public final int super_getSlotLimit(int slot) { return super.getSlotLimit(slot); }
 
     /**
@@ -632,7 +597,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param stack the stack to check
      * @return true if the stack is valid for the slot
      */
-    @SuppressWarnings("unused")
     public final boolean super_isItemValid(int slot, @NotNull ItemStack stack) { return super.isItemValid(slot, stack); }
 
     /**
@@ -645,7 +609,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return the serialized NBT
      */
-    @SuppressWarnings("unused")
     public final CompoundTag super_serializeNBT() { return super.serializeNBT(); }
 
     /**
@@ -658,7 +621,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @param nbt the NBT to deserialize
      */
-    @SuppressWarnings("unused")
     public final void super_deserializeNBT(@NotNull CompoundTag nbt) { super.deserializeNBT(nbt); }
 
     /**
@@ -669,7 +631,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * to call through to the super implementation if needed.
      * <br/><b><u>This method is not intended to be used outside the context of a set_* method.</u></b>
      */
-    @SuppressWarnings("unused")
     public final void super_onLoad() { super.onLoad(); }
 
     /**
@@ -682,7 +643,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @param slot the slot that changed
      */
-    @SuppressWarnings("unused")
     public final void super_onContentsChanged(int slot) { super.onContentsChanged(slot); }
 
     /**
@@ -697,7 +657,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @param stack the stack to check
      * @return the stack limit for the slot and stack
      */
-    @SuppressWarnings("unused")
     public final int super_getStackLimit(int slot, @NotNull ItemStack stack) { return super.getStackLimit(slot, stack); }
 
     /* ======================================================================
@@ -709,7 +668,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_setSize() {
         return this.setSizeFunction != null;
     }
@@ -719,7 +677,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_setStackInSlot() {
         return this.setStackInSlotFunction != null;
     }
@@ -729,7 +686,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_getSlots() {
         return this.getSlotsFunction != null;
     }
@@ -739,7 +695,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_getStackInSlot() {
         return this.getStackInSlotFunction != null;
     }
@@ -749,7 +704,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_insertItem() {
         return this.insertItemFunction != null;
     }
@@ -759,7 +713,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_extractItem() {
         return this.extractItemFunction != null;
     }
@@ -769,7 +722,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_getSlotLimit() {
         return this.getSlotLimitFunction != null;
     }
@@ -779,7 +731,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_isItemValid() {
         return this.isItemValidFunction != null;
     }
@@ -789,7 +740,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_serializeNBT() {
         return this.serializeNBTFunction != null;
     }
@@ -799,7 +749,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_deserializeNBT() {
         return this.deserializeNBTFunction != null;
     }
@@ -809,7 +758,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_onLoad() {
         return this.onLoadFunction != null;
     }
@@ -819,7 +767,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_onContentsChanged() {
         return this.onContentsChangedFunction != null;
     }
@@ -829,7 +776,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      *
      * @return {@code true} if the function is set, {@code false} otherwise
      */
-    @SuppressWarnings("unused")
     public final boolean isSet_getStackLimit() {
         return this.getStackLimitFunction != null;
     }
@@ -863,7 +809,6 @@ public class FunctionalItemStackHandler extends ItemStackHandler
      * @return NonNullList<ItemStack> which is {@link #stacks}
      */
     @Override
-         @SuppressWarnings("unused")
     public NonNullList<ItemStack> get_stacks() {
         return stacks;
     }

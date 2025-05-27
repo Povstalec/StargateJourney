@@ -88,8 +88,10 @@ public class ProtectedItemStackHandler extends ItemStackHandler implements IProt
         return backed.getSlotLimit(slot);
     }
 
+
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        //noinspection SimplifiableConditionalExpression
         return isProtected() ? false
                              : backed.isItemValid(slot, stack);
     }
