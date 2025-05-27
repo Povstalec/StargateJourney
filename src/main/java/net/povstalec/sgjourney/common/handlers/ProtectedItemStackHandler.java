@@ -27,7 +27,7 @@ public class ProtectedItemStackHandler extends ItemStackHandler implements IProt
     }
 
     @Override
-    public FunctionalItemStackHandler unprotect() {
+    public final FunctionalItemStackHandler unprotect() {
         return backed;
     }
 

@@ -1,12 +1,17 @@
 package net.povstalec.sgjourney.common.handlers;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public interface IFunctionalItemStackHandler{
 
     void setSize(int size);
+
+
+    NonNullList<ItemStack> get_stacks();
 
     @FunctionalInterface
     interface SetSizeFunction {
