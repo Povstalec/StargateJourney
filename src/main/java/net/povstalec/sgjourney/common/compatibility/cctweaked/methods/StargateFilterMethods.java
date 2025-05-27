@@ -21,17 +21,17 @@ public class StargateFilterMethods
 	{
 		if(addressArray.length < 6)
 			throw new LuaException("Array is too short (minimum length: 6)");
-		
+
 		else if(addressArray.length > 8)
 			throw new LuaException("Array is too long (maximum length: 8)");
-		
+
 		else if(!ArrayHelper.differentNumbers(addressArray))
 			throw new LuaException("Array contains duplicate numbers");
-		
+
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");
 	}
-	
+
 	public static ArrayList<List<Integer>> addressListToIntList(ArrayList<Address.Immutable> addressList)
 	{
 		ArrayList<List<Integer>> integerList = new ArrayList<List<Integer>>();
@@ -39,10 +39,10 @@ public class StargateFilterMethods
 		{
 			integerList.add(address.toList());
 		}
-		
+
 		return integerList;
 	}
-	
+
 	public static class GetFilterType implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -57,7 +57,7 @@ public class StargateFilterMethods
 			return MethodResult.of(StargateFilterFunctions.getFilterType(stargate));
 		}
 	}
-	
+
 	public static class SetFilterType implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -72,9 +72,9 @@ public class StargateFilterMethods
 			return MethodResult.of(StargateFilterFunctions.setFilterType(stargate, arguments.getInt(0)));
 		}
 	}
-	
-	
-	
+
+
+
 	public static class AddToWhitelist implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -87,30 +87,34 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() ->
-			{
-				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
-				boolean isVisible;
-				
+
+			Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
+			boolean isVisible = ((java.util.function.Supplier<Boolean>)()->{
+				boolean _isVisible;
 				try
 				{
-					isVisible = arguments.getBoolean(1);
+					_isVisible = arguments.getBoolean(1);
 				}
 				catch(LuaException e)
 				{
-					isVisible = false;
+					_isVisible = false;
 				}
-				
+				return _isVisible;
+			}).get();
+
+			MethodResult result = context.executeMainThreadTask(() ->
+			{
+
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
 				checkAddressArray(addressArray);
-				
+
 				return new Object[] {StargateFilterFunctions.addToWhitelist(stargate, addressArray, isVisible)};
 			});
-			
+
 			return result;
 		}
 	}
-	
+
 	public static class RemoveFromWhitelist implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -123,20 +127,19 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
-				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
 				checkAddressArray(addressArray);
-				
+
 				return new Object[] {StargateFilterFunctions.removeFromWhitelist(stargate, addressArray)};
 			});
-			
+
 			return result;
 		}
 	}
-	
+
 	public static class GetWhitelist implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -144,14 +147,14 @@ public class StargateFilterMethods
 		{
 			return "getPublicWhitelist";
 		}
-		
+
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {addressListToIntList(StargateFilterFunctions.getPublicWhitelist(stargate))});
 		}
 	}
-	
+
 	public static class ClearWhitelist implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -159,16 +162,16 @@ public class StargateFilterMethods
 		{
 			return "clearWhitelist";
 		}
-		
+
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {StargateFilterFunctions.clearWhitelist(stargate)});
 		}
 	}
-	
-	
-	
+
+
+
 	public static class AddToBlacklist implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -181,30 +184,32 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
+				boolean isVisible = ((java.util.function.Supplier<Boolean>)()->{
+					boolean _isVisible;
+					try
+					{
+						_isVisible = arguments.getBoolean(1);
+					}
+					catch(LuaException e)
+					{
+						_isVisible = false;
+					}
+					return _isVisible;
+				}).get();
+
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
-				boolean isVisible;
-				
-				try
-				{
-					isVisible = arguments.getBoolean(1);
-				}
-				catch(LuaException e)
-				{
-					isVisible = false;
-				}
-				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
 				checkAddressArray(addressArray);
-				
+
 				return new Object[] {StargateFilterFunctions.addToBlacklist(stargate, addressArray, isVisible)};
 			});
-			
+
 			return result;
 		}
 	}
-	
+
 	public static class RemoveFromBlacklist implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -217,20 +222,19 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
-				
 				int[] addressArray = ArrayHelper.tableToArray(addressMap);
 				checkAddressArray(addressArray);
-				
+
 				return new Object[] {StargateFilterFunctions.removeFromBlacklist(stargate, addressArray)};
 			});
-			
+
 			return result;
 		}
 	}
-	
+
 	public static class GetBlacklist implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
@@ -238,14 +242,14 @@ public class StargateFilterMethods
 		{
 			return "getPublicBlacklist";
 		}
-		
+
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {addressListToIntList(StargateFilterFunctions.getPublicBlacklist(stargate))});
 		}
 	}
-	
+
 	public static class ClearBlacklist implements InterfaceMethod<AbstractStargateEntity>
 	{
 		@Override
