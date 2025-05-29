@@ -74,22 +74,8 @@ public class SGJourneyJEIPlugin implements IModPlugin
 	}
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration reg) {
-		reg.registerSubtypeInterpreter(
-				ItemInit.STARGATE_VARIANT_CRYSTAL.get(),
-				(stack, ctx) -> {
-					CompoundTag tag = stack.getTag();
-					return tag != null && tag.contains("Variant")
-							? tag.getString("Variant")
-							: IIngredientSubtypeInterpreter.NONE;
-				});
-		reg.registerSubtypeInterpreter(
-				ItemInit.STARGATE_UPGRADE_CRYSTAL.get(),
-				(stack, ctx) -> {
-					CompoundTag tag = stack.getTag();
-					return tag != null && tag.contains("Type")
-							? tag.getString("Type")
-							: IIngredientSubtypeInterpreter.NONE;
-				});
+		reg.registerSubtypeInterpreter(ItemInit.STARGATE_VARIANT_CRYSTAL.get(),CrystalSubtypeInterpreter.INSTANCE);
+		reg.registerSubtypeInterpreter(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(),CrystalSubtypeInterpreter.INSTANCE);
 	}
 
 }
