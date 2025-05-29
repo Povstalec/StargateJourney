@@ -129,3 +129,10 @@
     }
   }
 }
+
+.right-bar:not(:has(li)) {
+  .menu-button, .site-nav {
+    // if there is no content in the table of contents, hide the right bar contents
+    display: none;
+  }
+}

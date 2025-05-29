@@ -4,6 +4,8 @@ nav_order: 30
 ---
 
 # Survival Guide
+{: .no_toc }
+
 Stargate Journey aims to replicate the exploration aspect of the [Stargate franchise](https://en.wikipedia.org/wiki/Stargate).
 That is why you won't be able to create Stargates immediately. 
 You will have to find and learn to make them along the way.
@@ -16,7 +18,8 @@ so **it's up to you** if you want to see them,
 or you'll **enjoy the moment** when you find them for the first time in the game.
 
 {: .future }
-This wiki was written with Stargate Journey version `0.6.27`.  
+This wiki was written with Stargate Journey version `0.6.39`.  
 It is planned that the survival progression will change in the future.  
 
 ## [Begin with finding a Stargate]({{ site.baseurl }}/survival/finding_gate/)
+{: .no_toc }
