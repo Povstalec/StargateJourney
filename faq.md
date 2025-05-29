@@ -98,11 +98,12 @@ If you want to make a gate generate in the dimension, you can create a datapack 
 ___
 
 ## How can I find the 9-chevron address of my Stargate?
-You can right-click the gate with a PDA which will print details in the chat (including the local 9-chevron address).
+There are three possible ways:
+1. **Using a PDA** - Right-click the Stargate with a PDA which will print the 9-chevron address in the chat.
+2. **Using CC:Tweaked** - The advanced crystal interface is capable of reading the local address of the Stargate with [`getLocalAddress()`]({{ '/computercraft/stargate_interface/#getLocalAddress' | absolute_url }}).
+3. **Item tooltip** - If the Stargate was created as a classic Stargate (possibly upgraded afterward),
+or the `always_display_stargate_id` config option is enabled (disabled by default), you can break the gate and check its tooltip in the inventory.
 
-Or you can break the gate and check its tooltip in the inventory.
-The 9-chevron address will be in the tooltip if it is a **classic (or upgraded) Stargate**
-or the `always_display_stargate_id` config option is enabled (disabled by default).
 <details markdown="block">
 <summary>Tooltip image</summary>
 ![Classic Stargate tooltip]({{ site.baseurl }}/assets/img/classic_stargate_tooltip.png)
@@ -135,7 +136,7 @@ Note that the mod is still in development.
 
 ___
 
-## Why I keep fining only cartouches with the Overworld address?
+## Why I keep finding only cartouches with the Overworld address?
 If you are on Abyods and you are only finding cartouches with Overworld address,
 you are not searching the cartouche structure carefully enough.
 
@@ -148,4 +149,35 @@ and 2 random addresses of non-Stargate Journey dimensions (Vanilla or added by o
 
 ![Abydos cartouche structure]({{ '/assets/img/survival/abydos_cartouche_first.png' | absolute_url }})
 ![Abydos cartouche hidden room]({{ '/assets/img/survival/abydos_cartouche_second.png' | absolute_url }})
+</details>
+
+## How can I find the Beta Stargate?
+You can leverage Stargates with DHD taking priority by removing DHD from all your Stargates in the Overworld.
+Break the DHD and the Stargate, and place the Stargate back without the DHD.
+It is required to break the Stargate as well to remove the information about the previously linked DHD.
+Dial the Stargate manually (with redstone) or with a computer from [CC:Tweaked](https://tweaked.cc/).
+Then you can dial the Terra system back from any other Solar system (using 7 or 8-chevron address) and you should end up at the Beta Stargate.
+
+If you are able to locate specific structures using other mods or the `/locate` command, you can search for `sgjourney:stargate/milky_way/terra_stargate` structure.
+
+`/execute in minecraft:overworld positioned 0 0 0 run locate structure sgjourney:stargate/milky_way/terra_stargate`
+
+
+## How can I find an obstructed Stargate?
+By default, obstructed Stargates are generated in the Nether, the End and Glacio from Ad Astra mod.
+
+You can find them in the same way as the buried Stargates in the Overworld.
+Take an archeologist villager to the dimension and level him up to the master level to unlock the map trade.
+**You can't use already leveled up villager since he will always offer the same map.**
+
+Second way (which may be a little bit cheaty) is to go to specific coordinates in the dimension.
+<details markdown="block">
+<summary>Stargate pedestal coordinates</summary>
+
+All Stargate pedestals are generated at the same coordinates in every dimension.
+You can go to any dimension with generated Stargate (e.g. Chulak) and note down the coordinates of the generated Stargate pedestal.
+Then you can go to the Nether, the End or Glacio and use the same coordinates to find the obstructed Stargate.
+
+In the Overworld, the Beta Stargate matches the coordinates of other pedestals.
+The buried Stargate with the seal is generated on unique coordinates.
 </details>
