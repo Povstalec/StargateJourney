@@ -52,7 +52,8 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.sendStargateMessage(interfaceEntity, stargate, arguments.getString(0))});
+			String message = arguments.getString(0);
+			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.sendStargateMessage(interfaceEntity, stargate, message)});
 		}
 	}
 	
