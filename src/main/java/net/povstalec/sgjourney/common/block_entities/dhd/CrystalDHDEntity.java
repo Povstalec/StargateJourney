@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import javax.annotation.Nonnull;
 
+import net.povstalec.sgjourney.common.handlers.ProtectedItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -35,19 +36,33 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	protected AbstractCrystalItem.Storage transferCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage communicationCrystals = new AbstractCrystalItem.Storage();
 	
-	protected final ItemStackHandler itemHandler = createHandler();
-	protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-	
+	protected final ItemStackHandler itemHandler;
+	protected final ProtectedItemStackHandler protectedItemHandler;
+	private final LazyOptional<IItemHandler> lazyItemHandler;
+	private final LazyOptional<IItemHandler> lazyProtectedItemHandler;
+
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
 		super(blockEntity, pos, state);
+
+		protectedItemHandler = new ProtectedItemStackHandler(9, this::isProtected);
+		itemHandler = protectedItemHandler.unprotect()
+						.set_onContentsChanged((slots)->{
+					this.setChanged();
+					this.recalculateCrystals();
+				})
+					.set_isItemValid((slot, stack)->
+							isValidCrystal(slot, stack) || stack.getItem() instanceof CallForwardingDevice)
+					.set_getSlotLimit((slot)->1);
+		lazyProtectedItemHandler = LazyOptional.of(()->protectedItemHandler);
+		lazyItemHandler = LazyOptional.of(() -> itemHandler);
 	}
 	
 	@Override
 	public void load(CompoundTag tag)
 	{
 		super.load(tag);
-		itemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
+		protectedItemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
 		
 		//TODO Remove this later
 		if(!tag.contains(ENERGY_INVENTORY) && tag.contains(CRYSTAL_INVENTORY))
@@ -57,7 +72,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		tag.put(CRYSTAL_INVENTORY, itemHandler.serializeNBT());
+		tag.put(CRYSTAL_INVENTORY, protectedItemHandler.serializeNBT());
 		super.saveAdditional(tag);
 	}
 	
@@ -69,11 +84,12 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		
 		super.onLoad();
 	}
-	
+
 	@Override
 	public void invalidateCaps()
 	{
-		handler.invalidate();
+		lazyItemHandler.invalidate();
+		lazyProtectedItemHandler.invalidate();
 		super.invalidateCaps();
 	}
 	
@@ -81,50 +97,14 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
-		{
-			return handler.cast();
+		if(capability == ForgeCapabilities.ITEM_HANDLER) {
+			if (side != null) // automation passes a side 99.9% of times
+				return lazyProtectedItemHandler.cast();
+			else // User trying to access by hand
+				return lazyItemHandler.cast();
 		}
 		
 		return super.getCapability(capability, side);
-	}
-	
-	protected ItemStackHandler createHandler()
-	{
-		return new ItemStackHandler(9)
-			{
-				@Override
-				protected void onContentsChanged(int slot)
-				{
-					setChanged();
-					recalculateCrystals();
-				}
-				
-				@Override
-				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-				{
-					return isValidCrystal(slot, stack) || stack.getItem() instanceof CallForwardingDevice;
-				}
-				
-				// Limits the number of items per slot
-				public int getSlotLimit(int slot)
-				{
-					return 1;
-				}
-				
-				@Nonnull
-				@Override
-				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-				{
-					if(!isItemValid(slot, stack))
-					{
-						return stack;
-					}
-					
-					return super.insertItem(slot, stack, simulate);
-					
-				}
-			};
 	}
 	
 	protected boolean isValidCrystal(int slot, ItemStack stack)
@@ -139,7 +119,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	{
 		// Check if the DHD has a Control Crystal
 		this.enableCallForwarding = false;
-		this.enableAdvancedProtocols = !itemHandler.getStackInSlot(0).isEmpty();
+		this.enableAdvancedProtocols = !protectedItemHandler.unprotect().getStackInSlot(0).isEmpty();
 		this.memoryCrystals.reset();
 		this.controlCrystals.reset();
 		this.energyCrystals.reset();

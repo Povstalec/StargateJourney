@@ -9,6 +9,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -36,7 +39,7 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Transporter;
 
-public class RingPanelEntity extends BlockEntity
+public class RingPanelEntity extends BlockEntity implements ProtectedBlockEntity
 {
 	public static final String INVENTORY = "Inventory";
 	
@@ -48,7 +51,9 @@ public class RingPanelEntity extends BlockEntity
 	
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-	
+
+	protected boolean isProtected = false;
+
 	private TransportRingsEntity transportRings;
 	
 	public RingPanelEntity(BlockPos pos, BlockState state)
@@ -290,6 +295,36 @@ public class RingPanelEntity extends BlockEntity
 		//CompoundTag ringsTag = BlockEntityList.get(level).getBlockEntities("TransportRings");
 		//int[] coords = {ringsTag.getIntArray(this.rings[chosenNumber])[0], ringsTag.getIntArray(this.rings[chosenNumber])[1], ringsTag.getIntArray(this.rings[chosenNumber])[2]};
 		return new int[] {0, 0, 0};//coords;
+	}
+
+	//============================================================================================
+	//*****************************************Protection*****************************************
+	//============================================================================================
+
+	@Override
+	public void setProtected(boolean isProtected)
+	{
+		this.isProtected = isProtected;
+	}
+
+	@Override
+	public boolean isProtected()
+	{
+		return isProtected;
+	}
+
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_block_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+
+			return false;
+		}
+
+		return true;
 	}
 	
 }

@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
@@ -112,6 +113,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final float STANDARD_THICKNESS = 9.0F;
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
+	
+	protected ForgeConfigSpec.IntValue MAX_OBSTRUCTIVE_BLOCKS_CONFIG = CommonStargateConfig.max_obstructive_blocks;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
@@ -1169,7 +1172,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		return getConnectionState().isDialingOut();
 	}
-	
+
+	protected int getMaxObstructiveBlocks(){
+		return CommonStargateConfig.max_obstructive_blocks.get();
+	}
+
 	public boolean isObstructed()
 	{
 		Direction direction = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
@@ -1187,7 +1194,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 					obstructingBlocks++;
 			}
 		}
-		return obstructingBlocks >= CommonStargateConfig.max_obstructive_blocks.get();
+		return obstructingBlocks >= getMaxObstructiveBlocks();
 	}
 	
 	@Override
