@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.PegasusStargateFunctions;
@@ -23,6 +22,7 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			//TODO: fail the overrides if dynamic is on
 			boolean dynamicSymbols = arguments.getBoolean(0);
 			
 			context.executeMainThreadTask(() ->
@@ -46,9 +46,10 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			String override_symbols = arguments.getString(0);
 			context.executeMainThreadTask(() ->
 			{
-				PegasusStargateFunctions.overrideSymbols(stargate, arguments.getString(0));
+				PegasusStargateFunctions.overrideSymbols(stargate, override_symbols);
 				return null;
 			});
 			
@@ -67,9 +68,10 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			String override_PoO = arguments.getString(0);
 			context.executeMainThreadTask(() ->
 			{
-				PegasusStargateFunctions.overridePointOfOrigin(stargate, arguments.getString(0));
+				PegasusStargateFunctions.overridePointOfOrigin(stargate, override_PoO);
 				return null;
 			});
 			

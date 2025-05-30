@@ -21,6 +21,12 @@
 		"sgjourney:tollan_stargate",
 		"sgjourney:tollan_ring",
 
-		"sgjourney:transport_rings"
+		"sgjourney:transport_rings",
+
+        "sgjourney:milky_way_dhd",
+        "sgjourney:classic_dhd",
+        "sgjourney:pegasus_dhd",
+
+		"sgjourney:zpm_hub"
 	]
 }

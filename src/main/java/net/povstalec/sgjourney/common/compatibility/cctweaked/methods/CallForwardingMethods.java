@@ -2,7 +2,8 @@ package net.povstalec.sgjourney.common.compatibility.cctweaked.methods;
 
 public class CallForwardingMethods
 {
-	/*public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
+	/*
+	public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
 	{
 
 		@Override
@@ -89,5 +90,6 @@ public class CallForwardingMethods
 				return new Object[] {address};
 			});
 		}
-	}*/
+	}
+	*/
 }
