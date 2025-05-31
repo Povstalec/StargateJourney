@@ -33,6 +33,7 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEntity
 {
+	public static final String PROTECTED = "protected";
 	private static final long maxTransfer = CommonZPMConfig.zpm_hub_max_transfer.get();
 	private static final long maxEnergyDisplayed = CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	
@@ -77,6 +78,8 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	{
 		super.load(nbt);
 		pItemStackHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		if(nbt.contains(PROTECTED, CompoundTag.TAG_BYTE))
+			isProtected = nbt.getBoolean(PROTECTED);
 	}
 	
 	@Override
@@ -84,6 +87,8 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	{
 		super.saveAdditional(nbt);
 		nbt.put("Inventory", pItemStackHandler.serializeNBT());
+		if(isProtected)
+			nbt.putBoolean(PROTECTED, true);
 	}
 	
 	//============================================================================================
