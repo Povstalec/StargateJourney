@@ -26,8 +26,11 @@ public class MilkyWayDHDMenu extends AbstractDHDMenu
 	@Override
     public boolean stillValid(Player player)
     {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
+        boolean valid_milky_way_dhd = stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
                 player, BlockInit.MILKY_WAY_DHD.get());
+        boolean valid_classic_dhd = stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
+                player, BlockInit.CLASSIC_DHD.get());
+        return valid_milky_way_dhd || valid_classic_dhd;
     }
 
 }
