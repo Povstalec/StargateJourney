@@ -636,7 +636,11 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	}
 	
 	protected abstract void generateEnergyCore();
-	
+
+	//============================================================================================
+	//*****************************************Protection*****************************************
+	//============================================================================================
+
 	@Override
 	public void setProtected(boolean isProtected)
 	{

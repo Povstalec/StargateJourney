@@ -21,8 +21,8 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
-			TransceiverFunctions.setFrequency(transceiver, arguments.getInt(0));
+			int freq = arguments.getInt(0);
+			TransceiverFunctions.setFrequency(transceiver, freq);
 			
 			return MethodResult.of();
 		}
@@ -39,10 +39,12 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
-			TransceiverFunctions.setCurrentCode(transceiver, arguments.getString(0));
+			String idc = arguments.getString(0);
+			if (idc.length() > 1024)
+				return MethodResult.of(false);
+			TransceiverFunctions.setCurrentCode(transceiver, idc);
 			
-			return MethodResult.of();
+			return MethodResult.of(true);
 		}
 	}
 	
@@ -57,11 +59,10 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
 			context.executeMainThreadTask(() ->
 			{
 				TransceiverFunctions.sendTransmission(transceiver);
-				return new Object[] {};
+				return null;
 			});
 			
 			return MethodResult.of();

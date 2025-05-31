@@ -15,6 +15,9 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -35,7 +38,7 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Transporter;
 
-public class RingPanelEntity extends BlockEntity
+public class RingPanelEntity extends BlockEntity implements ProtectedBlockEntity
 {
 	public static final String INVENTORY = "inventory";
 	
@@ -47,7 +50,9 @@ public class RingPanelEntity extends BlockEntity
 	
 	private final ItemStackHandler itemStackHandler = createHandler();
 	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemStackHandler);
-	
+
+	protected boolean isProtected = false;
+
 	private TransportRingsEntity transportRings;
 	
 	public RingPanelEntity(BlockPos pos, BlockState state)
@@ -91,16 +96,16 @@ public class RingPanelEntity extends BlockEntity
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
-	
+
 	public IItemHandler getItemHandler(Direction side)
 	{
 		return lazyItemHandler.get();
 	}
-	
+
 	//============================================================================================
 	//******************************************Storage*******************************************
 	//============================================================================================
-	
+
 	private ItemStackHandler createHandler()
 	{
 		return new ItemStackHandler(6)
@@ -153,7 +158,7 @@ public class RingPanelEntity extends BlockEntity
 				}
 			};
 	}
-	
+
 	
 	
 	public void getNearest6Rings(Level level, BlockPos pos, double maxDistance)
@@ -293,5 +298,35 @@ public class RingPanelEntity extends BlockEntity
 		//int[] coords = {ringsTag.getIntArray(this.rings[chosenNumber])[0], ringsTag.getIntArray(this.rings[chosenNumber])[1], ringsTag.getIntArray(this.rings[chosenNumber])[2]};
 		return new int[] {0, 0, 0};//coords;
 	}
-	
+
+	//============================================================================================
+	//*****************************************Protection*****************************************
+	//============================================================================================
+
+	@Override
+	public void setProtected(boolean isProtected)
+	{
+		this.isProtected = isProtected;
+	}
+
+	@Override
+	public boolean isProtected()
+	{
+		return isProtected;
+	}
+
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_block_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+
+			return false;
+		}
+
+		return true;
+	}
+
 }

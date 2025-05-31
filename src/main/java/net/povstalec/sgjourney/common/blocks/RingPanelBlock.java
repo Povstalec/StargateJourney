@@ -28,12 +28,13 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 
-public class RingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock
+public class RingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock
 {
 	protected static final VoxelShape NORTH = Block.box(2.0D, 0.0D, 13.0D, 14.0D, 16.0D, 16.0D);
 	protected static final VoxelShape SOUTH = Block.box(2.0D, 0.0D, 0.0D, 14.0D, 16.0D, 3.0D);
@@ -41,7 +42,7 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	protected static final VoxelShape WEST = Block.box(13.0D, 0.0D, 2.0D, 16.0D, 16.0D, 14.0D);
 
 	public static final MapCodec<RingPanelBlock> CODEC = simpleCodec(RingPanelBlock::new);
-	
+
 	public RingPanelBlock(Properties properties) 
 	{
 		super(properties);
@@ -50,7 +51,7 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	protected MapCodec<RingPanelBlock> codec() {
 		return CODEC;
 	}
-	
+
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
@@ -141,5 +142,23 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 			return NORTH;
 		}
 	}
-	
+
+	@Override
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter level, BlockPos pos, BlockState state) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if(blockEntity instanceof RingPanelEntity ringPanelEntity)
+			return ringPanelEntity;
+
+		return null;
+	}
+
+	@Override
+	public boolean hasPermissions(BlockGetter level, BlockPos pos, BlockState state, Player player, boolean sendMessage) {
+		ProtectedBlockEntity blockEntity = getProtectedBlockEntity(level, pos, state);
+		if(blockEntity instanceof RingPanelEntity ringPanelEntity)
+			return ringPanelEntity.hasPermissions(player, sendMessage);
+
+		return true;
+	}
+
 }

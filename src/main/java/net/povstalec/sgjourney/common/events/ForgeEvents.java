@@ -23,6 +23,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.phys.EntityHitResult;
@@ -35,11 +37,13 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
@@ -340,7 +344,22 @@ public class ForgeEvents
 			}
 		}
 	}
-	
+
+	@SubscribeEvent
+	public static void onDetonate(ExplosionEvent.Detonate event)
+	{
+		Level level = event.getLevel();
+
+		// remove any block entitys that report "protected"
+		event.getAffectedBlocks().removeIf(pos -> {
+			BlockState blockState = level.getBlockState(pos);
+			Block block = blockState.getBlock();
+			//Note: This should* never throw null pointer
+			return block instanceof ProtectedBlock pBlock &&
+					pBlock.getProtectedBlockEntity(level, pos, blockState).isProtected();
+		});
+	}
+
 	@SubscribeEvent
 	public static void onPlayerCloned(PlayerEvent.Clone event)
 	{

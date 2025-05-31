@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -8,6 +9,12 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.handlers.ProtectedItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -26,19 +33,38 @@ import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 
-public class ZPMHubEntity extends EnergyBlockEntity
+public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEntity
 {
 	public static final String INVENTORY = "inventory";
-	
+
 	private static final long maxTransfer = CommonZPMConfig.zpm_hub_max_transfer.get();
 	private static final long maxEnergyDisplayed = CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	
-	private final ItemStackHandler itemHandler = createHandler();
-	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemHandler);
-	
+	protected final ProtectedItemStackHandler pItemStackHandler;
+	private final Lazy<IItemHandler> lazyItemHandler;
+	private final Lazy<IItemHandler> lazyProtectedItemHandler;
+
+	protected boolean isProtected = false;
+
 	public ZPMHubEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.ZPM_HUB.get(), pos, state);
+		pItemStackHandler = new ProtectedItemStackHandler(1,this::isProtected);
+		pItemStackHandler.unprotect().set_onContentsChanged((slots)->{
+				this.setChanged();
+			})
+				.set_isItemValid((slot, stack)->{
+				switch(slot)
+					{
+						case 0:
+						return stack.getItem() == ItemInit.ZPM.get();
+				default:
+						return false;
+			}
+		});
+
+		lazyProtectedItemHandler = Lazy.of(()-> pItemStackHandler);
+		lazyItemHandler = Lazy.of(pItemStackHandler::unprotect);
 	}
 	
 	@Override
@@ -46,20 +72,21 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	{
 		super.invalidateCapabilities();
 		lazyItemHandler.invalidate();
+		lazyProtectedItemHandler.invalidate();
 	}
 	
 	@Override
 	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(nbt, registries);
-		itemHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
+		pItemStackHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
-		nbt.put(INVENTORY, itemHandler.serializeNBT(registries));
+		nbt.put(INVENTORY, pItemStackHandler.serializeNBT(registries));
 	}
 	
 	//============================================================================================
@@ -68,62 +95,22 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	
 	public IItemHandler getItemHandler(Direction side)
 	{
-		return lazyItemHandler.get();
+		if(side != null) // automation passes a side 99.9% of times
+			return lazyProtectedItemHandler.get();
+		else // User trying to access by hand
+			return lazyItemHandler.get();
 	}
 	
 	//============================================================================================
 	//******************************************Storage*******************************************
 	//============================================================================================
-	
-	private ItemStackHandler createHandler()
-	{
-		return new ItemStackHandler(1)
-			{
-				@Override
-				protected void onContentsChanged(int slot)
-				{
-					setChanged();
-				}
-				
-				@Override
-				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-				{
-					switch(slot)
-					{
-					case 0:
-						return stack.getItem() == ItemInit.ZPM.get();
-					default: 
-						return false;
-					}
-				}
-				
-				// Limits the number of items per slot
-				public int getSlotLimit(int slot)
-				{
-					return 1;
-				}
-				
-				@Nonnull
-				@Override
-				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-				{
-					if(!isItemValid(slot, stack))
-					{
-						return stack;
-					}
-					
-					return super.insertItem(slot, stack, simulate);
-					
-				}
-			};
-	}
-	
+
 	public void drops()
 	{
-		SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-		for (int i = 0; i < itemHandler.getSlots(); i++)
+		SimpleContainer inventory = new SimpleContainer(pItemStackHandler.getSlots());
+		for (int i = 0; i < pItemStackHandler.getSlots(); i++)
 		{
-			inventory.setItem(i, itemHandler.getStackInSlot(i));
+			inventory.setItem(i, pItemStackHandler.getStackInSlot(i));
 		}
 		
 		Containers.dropContents(this.level, this.worldPosition, inventory);
@@ -165,7 +152,7 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	@Override
 	public void outputEnergy(Direction outputDirection)
 	{
-		ItemStack stack = itemHandler.getStackInSlot(0);
+		ItemStack stack = pItemStackHandler.unprotect().getStackInSlot(0);
 		
 		if(stack.is(ItemInit.ZPM.get()))
 		{
@@ -258,5 +245,33 @@ public class ZPMHubEntity extends EnergyBlockEntity
 		//hub.setEnergy(energy);
 		
 		//PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(hub.worldPosition)), new ClientboundNaquadahGeneratorUpdatePacket(hub.worldPosition, hub.getReactionProgress(), hub.getEnergy()));
+	}
+
+	//*****************************************Protection*****************************************
+	//============================================================================================
+	@Override
+	public void setProtected(boolean isProtected)
+	{
+		this.isProtected = isProtected;
+	}
+
+	@Override
+	public boolean isProtected()
+	{
+		return isProtected;
+	}
+
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_block_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+
+			return false;
+		}
+
+		return true;
 	}
 }

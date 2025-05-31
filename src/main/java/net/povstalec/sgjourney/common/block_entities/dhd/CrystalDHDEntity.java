@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.handlers.ProtectedItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -33,26 +34,41 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	protected AbstractCrystalItem.Storage energyCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage transferCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage communicationCrystals = new AbstractCrystalItem.Storage();
-	
-	protected final ItemStackHandler itemHandler = createHandler();
-	protected final Lazy<IItemHandler> handler = Lazy.of(() -> itemHandler);
-	
+
+	protected final ItemStackHandler itemHandler;
+	protected final ProtectedItemStackHandler protectedItemHandler;
+	private final Lazy<IItemHandler> lazyItemHandler;
+	private final Lazy<IItemHandler> lazyProtectedItemHandler;
+
+
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
 		super(blockEntity, pos, state);
+
+		protectedItemHandler = new ProtectedItemStackHandler(9, this::isProtected);
+		itemHandler = protectedItemHandler.unprotect()
+						.set_onContentsChanged((slots)->{
+					this.setChanged();
+					this.recalculateCrystals();
+				})
+					.set_isItemValid((slot, stack)->
+							isValidCrystal(slot, stack) || stack.getItem() instanceof CallForwardingDevice)
+					.set_getSlotLimit((slot)->1);
+		lazyProtectedItemHandler = Lazy.of(()->protectedItemHandler);
+		lazyItemHandler = Lazy.of(() -> itemHandler);
 	}
 	
 	@Override
 	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		super.loadAdditional(nbt, registries);
-		itemHandler.deserializeNBT(registries, nbt.getCompound(CRYSTAL_INVENTORY));
+		protectedItemHandler.deserializeNBT(registries, nbt.getCompound(CRYSTAL_INVENTORY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		nbt.put(CRYSTAL_INVENTORY, itemHandler.serializeNBT(registries));
+		nbt.put(CRYSTAL_INVENTORY, protectedItemHandler.serializeNBT(registries));
 		super.saveAdditional(nbt, registries);
 	}
 	
@@ -64,61 +80,27 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		
 		super.onLoad();
 	}
-	
+
 	@Override
 	public void invalidateCapabilities()
 	{
-		handler.invalidate();
+		lazyItemHandler.invalidate();
+		lazyProtectedItemHandler.invalidate();
 		super.invalidateCapabilities();
 	}
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
-	
+
 	public IItemHandler getItemHandler(Direction side)
 	{
-		return handler.get();
+		if (side != null) // automation passes a side 99.9% of times
+			return lazyProtectedItemHandler.get();
+		else // User trying to access by hand
+			return lazyItemHandler.get();
 	}
-	
-	protected ItemStackHandler createHandler()
-	{
-		return new ItemStackHandler(9)
-			{
-				@Override
-				protected void onContentsChanged(int slot)
-				{
-					setChanged();
-					recalculateCrystals();
-				}
-				
-				@Override
-				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-				{
-					return isValidCrystal(slot, stack) || stack.getItem() instanceof CallForwardingDevice;
-				}
-				
-				// Limits the number of items per slot
-				public int getSlotLimit(int slot)
-				{
-					return 1;
-				}
-				
-				@Nonnull
-				@Override
-				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-				{
-					if(!isItemValid(slot, stack))
-					{
-						return stack;
-					}
-					
-					return super.insertItem(slot, stack, simulate);
-					
-				}
-			};
-	}
-	
+
 	protected boolean isValidCrystal(int slot, ItemStack stack)
 	{
 		if(slot == 0)
@@ -131,7 +113,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	{
 		// Check if the DHD has a Control Crystal
 		this.enableCallForwarding = false;
-		this.enableAdvancedProtocols = !itemHandler.getStackInSlot(0).isEmpty();
+		this.enableAdvancedProtocols = !protectedItemHandler.unprotect().getStackInSlot(0).isEmpty();
 		this.memoryCrystals.reset();
 		this.controlCrystals.reset();
 		this.energyCrystals.reset();

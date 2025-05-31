@@ -11,6 +11,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -20,11 +21,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.tech.ZPMHubEntity;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.menu.ZPMHubMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
-public class ZPMHubBlock extends BaseEntityBlock
+public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
 {
 	public static final MapCodec<ZPMHubBlock> CODEC = simpleCodec(ZPMHubBlock::new);
 
@@ -55,9 +58,12 @@ public class ZPMHubBlock extends BaseEntityBlock
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof ZPMHubEntity) 
+        	if(blockEntity instanceof ZPMHubEntity zpmHubEntity)
         	{
-        		MenuProvider containerProvider = new MenuProvider() 
+				if (!zpmHubEntity.hasPermissions(player, true)) {
+					return InteractionResult.FAIL;
+				}
+        		MenuProvider containerProvider = new MenuProvider()
         		{
         			@Override
         			public Component getDisplayName() 
@@ -100,4 +106,23 @@ public class ZPMHubBlock extends BaseEntityBlock
 	{
 		return createTickerHelper(type, BlockEntityInit.ZPM_HUB.get(), ZPMHubEntity::tick);
     }
+
+	@Override
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter level, BlockPos pos, BlockState state) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if(blockEntity instanceof ZPMHubEntity zpmHubEntity)
+			return zpmHubEntity;
+
+		return null;
+	}
+
+	@Override
+	public boolean hasPermissions(BlockGetter level, BlockPos pos, BlockState state, Player player, boolean sendMessage) {
+		ProtectedBlockEntity blockEntity = getProtectedBlockEntity(level, pos, state);
+		if(blockEntity instanceof ZPMHubEntity zpmHubEntity){
+			return zpmHubEntity.hasPermissions(player, sendMessage);
+		}
+
+		return true;
+	}
 }

@@ -33,6 +33,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -45,7 +46,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public float getDestroySpeed(BlockGetter reader, BlockPos pos)
+	public float getDestroySpeed(@NotNull BlockGetter reader, BlockPos pos)
 	{
 		if(this.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{

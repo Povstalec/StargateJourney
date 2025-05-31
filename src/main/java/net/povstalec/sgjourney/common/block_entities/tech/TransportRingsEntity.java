@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -10,18 +11,21 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 
-public class TransportRingsEntity extends AbstractTransporterEntity
+public class TransportRingsEntity extends AbstractTransporterEntity implements ProtectedBlockEntity
 {
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
 	
@@ -40,6 +44,8 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	public int transportHeight = 0;
 	
 	private TransportRingsEntity target;
+
+	protected boolean isProtected = false;
 	
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
@@ -50,7 +56,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		if(this.isConnected())
 			return false;
-		
+
 		return true;
 	}
 	
@@ -337,6 +343,36 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	protected Component getDefaultName()
 	{
 		return Component.translatable("block.sgjourney.transport_rings");
+	}
+
+	//============================================================================================
+	//*****************************************Protection*****************************************
+	//============================================================================================
+
+	@Override
+	public void setProtected(boolean isProtected)
+	{
+		this.isProtected = isProtected;
+	}
+
+	@Override
+	public boolean isProtected()
+	{
+		return isProtected;
+	}
+
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_block_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+
+			return false;
+		}
+
+		return true;
 	}
 	
 }
