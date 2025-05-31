@@ -33,6 +33,7 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
 		if(!isNearMaxEntropy() && energyExtracted > this.energy)
 		{
 			long leftover = energyExtracted - this.energy;
+
 			if(!simulate)
 			{
 				this.entropy++;
@@ -111,8 +112,8 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
 			
 			this.stack = stack;
 			
-			this.entropy = stack.getOrDefault(DataComponentInit.ENTROPY, ZeroPointModule.MAX_ENTROPY);
-			this.energy = stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+			this.entropy = stack.getOrDefault(DataComponentInit.ENTROPY, 0);
+			this.energy = stack.getOrDefault(DataComponentInit.ENERGY, capacity);
 		}
 		
 		@Override
