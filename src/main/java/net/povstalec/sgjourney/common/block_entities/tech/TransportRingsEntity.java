@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -24,9 +25,11 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
+import org.jetbrains.annotations.NotNull;
 
 public class TransportRingsEntity extends AbstractTransporterEntity implements ProtectedBlockEntity
 {
+	public static final String PROTECTED = "protected";
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
 	
 	private BlockPos transportPos;
@@ -50,6 +53,22 @@ public class TransportRingsEntity extends AbstractTransporterEntity implements P
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state);
+	}
+
+	@Override
+	public void load(CompoundTag nbt)
+	{
+		super.load(nbt);
+		if(nbt.contains(PROTECTED, CompoundTag.TAG_BYTE))
+			isProtected = nbt.getBoolean(PROTECTED);
+	}
+
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag nbt)
+	{
+		super.saveAdditional(nbt);
+		if(isProtected)
+			nbt.putBoolean(PROTECTED, true);
 	}
 
 	@Override
