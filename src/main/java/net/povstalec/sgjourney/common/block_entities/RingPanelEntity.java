@@ -41,7 +41,8 @@ import net.povstalec.sgjourney.common.sgjourney.Transporter;
 public class RingPanelEntity extends BlockEntity implements ProtectedBlockEntity
 {
 	public static final String INVENTORY = "inventory";
-	
+	public static final String PROTECTED = "protected";
+
 	private BlockPos targetPos;
 	
 	// Used for Client syncing
@@ -65,13 +66,17 @@ public class RingPanelEntity extends BlockEntity implements ProtectedBlockEntity
 	{
 		super.loadAdditional(nbt, registries);
 		itemStackHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
+		if(nbt.contains(PROTECTED, CompoundTag.TAG_BYTE))
+			isProtected = nbt.getBoolean(PROTECTED);
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		nbt.put(INVENTORY, itemStackHandler.serializeNBT(registries));
 		super.saveAdditional(nbt, registries);
+		nbt.put(INVENTORY, itemStackHandler.serializeNBT(registries));
+		if(isProtected)
+			nbt.putBoolean(PROTECTED, true);
 	}
 	
 	private void drops()
@@ -160,7 +165,7 @@ public class RingPanelEntity extends BlockEntity implements ProtectedBlockEntity
 	}
 
 	
-	
+
 	public void getNearest6Rings(Level level, BlockPos pos, double maxDistance)
 	{
 		if(transportRings == null)

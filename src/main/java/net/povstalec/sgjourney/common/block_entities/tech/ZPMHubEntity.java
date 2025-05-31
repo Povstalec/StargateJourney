@@ -37,6 +37,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 {
 	public static final String INVENTORY = "inventory";
 
+	public static final String PROTECTED = "protected";
 	private static final long maxTransfer = CommonZPMConfig.zpm_hub_max_transfer.get();
 	private static final long maxEnergyDisplayed = CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	
@@ -80,6 +81,8 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	{
 		super.loadAdditional(nbt, registries);
 		pItemStackHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
+		if(nbt.contains(PROTECTED, CompoundTag.TAG_BYTE))
+			isProtected = nbt.getBoolean(PROTECTED);
 	}
 	
 	@Override
@@ -87,6 +90,8 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.put(INVENTORY, pItemStackHandler.serializeNBT(registries));
+		if(isProtected)
+			nbt.putBoolean(PROTECTED, true);
 	}
 	
 	//============================================================================================

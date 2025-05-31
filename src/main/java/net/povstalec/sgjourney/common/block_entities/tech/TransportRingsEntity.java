@@ -5,7 +5,9 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,9 +26,11 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
+import org.jetbrains.annotations.NotNull;
 
 public class TransportRingsEntity extends AbstractTransporterEntity implements ProtectedBlockEntity
 {
+	public static final String PROTECTED = "protected";
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
 	
 	private BlockPos transportPos;
@@ -50,6 +54,22 @@ public class TransportRingsEntity extends AbstractTransporterEntity implements P
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state);
+	}
+
+	@Override
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider)
+	{
+		super.loadAdditional(nbt, provider);
+		if(nbt.contains(PROTECTED, CompoundTag.TAG_BYTE))
+			isProtected = nbt.getBoolean(PROTECTED);
+	}
+
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider provider)
+	{
+		super.saveAdditional(nbt,provider);
+		if(isProtected)
+			nbt.putBoolean(PROTECTED, true);
 	}
 	
 	public boolean canTransport()
