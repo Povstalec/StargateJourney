@@ -178,8 +178,8 @@ public class ZPMHubEntity extends EnergyBlockEntity
 					
 					if(blockEntity == null)
 						return;
-					
-					IEnergyStorage cap2 = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection.getOpposite()), null);
+
+					IEnergyStorage cap2 = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection), null);
 					if(cap2 != null)
 					{
 						if(cap2 instanceof SGJourneyEnergy sgjourneyEnergy)
