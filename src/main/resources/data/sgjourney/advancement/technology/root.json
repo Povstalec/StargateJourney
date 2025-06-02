@@ -28,7 +28,7 @@
 			{
 				"items":
 				[
-          			{"tag": "sgjourney:stargate"}
+          			{"items": "#sgjourney:stargate"}
         		]
 			}
 		}

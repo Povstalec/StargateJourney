@@ -29,7 +29,7 @@
 			{
 				"items":
 				[
-          			{"tag": "sgjourney:classic_stargate_block"}
+          			{"items": "#sgjourney:classic_stargate_block"}
         		]
 			}
 		}
