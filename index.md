@@ -2,6 +2,21 @@
 nav_exclude: true
 ---
 
+{: .warning }
+> This is development version of the documentation.  
+> The production version can be found at [https://povstalec.github.io/StargateJourney/](https://povstalec.github.io/StargateJourney/)
+> 
+> The current state of the new structure:  
+> 
+> |                                    |                        |
+> |:----------------------------------:|:----------------------:|
+> |  **What's that Stargate anyway?**  |       no changes       |
+> |   **Frequently Asked Questions**   | done, ready for review |
+> |        **Troubleshooting**         | done, ready for review |
+> |         **Survival Guide**         |    ongoing changes     |
+> |                                    |                        |
+>
+
 <div class="text-center" markdown="block">
 
 ![Stargate Journey logo]({{ '/assets/img/logo.png' | absolute_url }})
