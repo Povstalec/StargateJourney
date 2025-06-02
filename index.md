@@ -42,7 +42,7 @@ nav_exclude: true
 
 Stargate Journey is a mod for Minecraft with many additions, such as several dimensions, items, and obviously - Stargates.
 
-</div>
+</>
 
 {: .note }
 This project is in early development, and a lot of stuff still needs to be implemented.

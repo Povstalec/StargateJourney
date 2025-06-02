@@ -32,3 +32,18 @@ bundle exec jekyll serve --livereload --incremental
     - Source: GitHub Actions
 
 in the file [_config.yml](/_config.yml) set `url`
+
+
+# License
+
+Uses MCUI created by Valgard  
+https://github.com/Valgard/mcui  
+Licensed under the MIT License  
+Related files: 
+```
+/_sass/custom/mcui.scss
+/assets/img/mcui
+/assets/fonts/minecraft.eot
+/assets/fonts/minecraft.ttf
+/assets/fonts/minecraft.woff
+```
