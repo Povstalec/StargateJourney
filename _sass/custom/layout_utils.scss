@@ -8,6 +8,11 @@
   flex-wrap: wrap;
 }
 
+.width-fit-content {
+  width: fit-content;
+  max-width: 100%;
+}
+
 @include mq(lg) {
   .width-lg-50 {
     width: 50%;

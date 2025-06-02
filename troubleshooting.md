@@ -12,7 +12,12 @@ you can visit the [Discord server]({{ site.discord_invite_link }}) and ask there
 
 ## Stargate is not dialing / not disconnecting / causing any trouble
 **With access to commands:**  
-Use the `/sgjourney stargateNetwork forceStellarUpdate` command.
+Use the force stellar update command.
+
+```
+/sgjourney stargateNetwork forceStellarUpdate
+```
+{: .width-fit-content }
 
 **Without access to commands, but with access to world files:**  
 1. Go to your `saves/<world name here>/data` folder  
@@ -43,7 +48,11 @@ though you may have changed it in the config file
 If that is the case, multiply the values from the config by `16`
 and use them in the command.
 
-`/execute in minecraft:overworld positioned X 0 Z run locate structure #sgjourney:has_stargate` (replace `X` and `Z` with actual values)
+```
+/execute in minecraft:overworld positioned X 0 Z run locate structure #sgjourney:has_stargate
+```
+{: .width-fit-content }
+(replace `X` and `Z` with actual values)
 
 **If the locating still fails, it's most likely that the stargate structure is not generating.**
 
