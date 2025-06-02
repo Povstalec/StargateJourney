@@ -7,7 +7,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
 public class RecipeUtil {
-    /*
+    /* //Must remain for 1.19.2
     public static <T> NonNullList<ItemStack> getAllVariants(Class<T> type, String typeKey) {
         NonNullList<ItemStack> variants = NonNullList.create();
         Level level = Minecraft.getInstance().level;
