@@ -1,15 +1,15 @@
 {
-	"type": "minecraft:smithing",
-	"addition":
-	{
-		"item": "minecraft:gold_ingot"
-	},
-	"base":
-	{
-		"item": "sgjourney:jaffa_chestplate"
-	},
-	"result":
-	{
-		"item": "sgjourney:system_lord_chestplate"
-	}
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "minecraft:gold_ingot"
+  },
+  "base": {
+    "item": "sgjourney:jaffa_chestplate"
+  },
+  "result": {
+    "item": "sgjourney:system_lord_chestplate"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
 }

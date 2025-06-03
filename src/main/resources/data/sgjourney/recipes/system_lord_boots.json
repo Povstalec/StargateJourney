@@ -1,15 +1,15 @@
 {
-	"type": "minecraft:smithing",
-	"addition":
-	{
-		"item": "minecraft:gold_ingot"
-	},
-	"base":
-	{
-		"item": "sgjourney:jaffa_boots"
-	},
-	"result":
-	{
-		"item": "sgjourney:system_lord_boots"
-	}
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "minecraft:gold_ingot"
+  },
+  "base": {
+    "item": "sgjourney:jaffa_boots"
+  },
+  "result": {
+    "item": "sgjourney:system_lord_boots"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
 }
