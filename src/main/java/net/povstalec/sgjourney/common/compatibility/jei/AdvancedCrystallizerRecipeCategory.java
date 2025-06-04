@@ -58,9 +58,9 @@ public class AdvancedCrystallizerRecipeCategory implements IRecipeCategory<Advan
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, AdvancedCrystallizerRecipe recipe, IFocusGroup focuses)
 	{
-		ItemStack stack1 = recipe.getIngredients().get(0).getItems()[0];
-		ItemStack stack2 = recipe.getIngredients().get(1).getItems()[0];
-		ItemStack stack3 = recipe.getIngredients().get(2).getItems()[0];
+		ItemStack stack1 = recipe.getIngredients().get(0).getItems()[0].copy();
+		ItemStack stack2 = recipe.getIngredients().get(1).getItems()[0].copy();
+		ItemStack stack3 = recipe.getIngredients().get(2).getItems()[0].copy();
 		
 		stack1.setCount(recipe.getAmountInSlot(0));
 		stack2.setCount(recipe.getAmountInSlot(1));
