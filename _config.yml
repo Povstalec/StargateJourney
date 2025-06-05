@@ -21,6 +21,7 @@ permalink: pretty
 
 color_scheme: night
 
+safe: false
 plugins:
   - jekyll-toc
 
