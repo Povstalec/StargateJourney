@@ -98,7 +98,7 @@ module Jekyll
 
     def load_sgjourney_item(item_name)
       item_file = item_name + ".png"
-      jekyll_assets_dir = File.join(@site_source, @jekyll_assets)
+      jekyll_assets_dir = File.join(File.join(@site_source, '_site'), @jekyll_assets)
       item_img = File.join(jekyll_assets_dir, item_file)
       unless File.exist?(item_img)
         puts "Missing file #{item_img}"
@@ -106,6 +106,7 @@ module Jekyll
         impl_item_img = File.join(impl_assets, item_file)
         if File.exist?(impl_item_img)
           puts "Copying #{impl_item_img} to #{item_img}"
+          FileUtils.mkdir_p(jekyll_assets_dir)
           FileUtils.cp(impl_item_img, item_img)
         else
           raise "Item missing texture for crafting in implementation: #{item_name} (#{impl_item_img})"
