@@ -67,12 +67,18 @@ Modifications have been made for the purpose of this wiki
   padding: 2px
 }
 
-.invslot-item-image > a.new:first-child {
-  background: url("../img/mcui/sprites_items_vanilla.png") no-repeat content-box;
-  width: 32px;
-  height: 32px;
-  text-indent: -9999px;
-  overflow: hidden
+.invslot-item-image {
+  image-rendering: pixelated;
+  & > a.new:first-child {
+    background: url("../img/mcui/sprites_items_vanilla.png") no-repeat content-box;
+  }
+
+  & > a.new:first-child, & > a > img {
+    width: 32px;
+    height: 32px;
+    text-indent: -9999px;
+    overflow: hidden
+  }
 }
 
 .invslot-stacksize {

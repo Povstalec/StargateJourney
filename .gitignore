@@ -41,3 +41,7 @@ _site/
 Gemfile.lock
 .bundle/
 vendor/
+
+implementation_branch
+
+assets/img/items/crafting/

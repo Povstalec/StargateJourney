@@ -21,7 +21,7 @@ nav_exclude: true
 
 ![Stargate Journey logo]({{ '/assets/img/logo.png' | absolute_url }})
 
-{% minecraft_recipe_crafting %}
+{% minecraft_recipe_crafting item:"sgjourney:advanced_crystal_base" %}
 
 # Stargate Journey
 {: .no_toc }

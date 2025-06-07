@@ -1,7 +1,9 @@
 source "https://rubygems.org"
 
-gem "webrick", "~> 1.8"
+gem "webrick"
 gem "github-pages"
+
+gem 'sorbet-runtime'
 
 # theme
 # https://github.com/just-the-docs/just-the-docs

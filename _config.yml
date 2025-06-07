@@ -122,3 +122,4 @@ exclude:
   - .gradle/
   - .bundle/
   - build/
+  - implementation_branch/
