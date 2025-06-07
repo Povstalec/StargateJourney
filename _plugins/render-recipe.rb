@@ -101,9 +101,11 @@ module Jekyll
       jekyll_assets_dir = File.join(@site_source, @jekyll_assets)
       item_img = File.join(jekyll_assets_dir, item_file)
       unless File.exist?(item_img)
+        puts "Missing file #{item_img}"
         impl_assets = File.join(@implementation_branch, 'src/main/resources/assets/sgjourney/textures/item/')
         impl_item_img = File.join(impl_assets, item_file)
         if File.exist?(impl_item_img)
+          puts "Copying #{impl_item_img} to #{item_img}"
           FileUtils.cp(impl_item_img, item_img)
         else
           raise "Item missing texture for crafting in implementation: #{item_name} (#{impl_item_img})"
