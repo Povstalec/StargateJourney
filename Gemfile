@@ -3,8 +3,6 @@ source "https://rubygems.org"
 gem "webrick"
 gem "github-pages"
 
-gem 'sorbet-runtime'
-
 # theme
 # https://github.com/just-the-docs/just-the-docs
 gem "just-the-docs", "~> 0.10.1"

@@ -69,9 +69,6 @@ Modifications have been made for the purpose of this wiki
 
 .invslot-item-image {
   image-rendering: pixelated;
-  & > a.new:first-child {
-    background: url("../img/mcui/sprites_items_vanilla.png") no-repeat content-box;
-  }
 
   & > a.new:first-child, & > a > img {
     width: 32px;
@@ -281,7 +278,6 @@ Modifications have been made for the purpose of this wiki
 }
 
 .inv-sprite {
-  background-image: url("../img/mcui/sprites_items_vanilla.png");
   width: 32px;
   height: 32px;
   vertical-align: middle
