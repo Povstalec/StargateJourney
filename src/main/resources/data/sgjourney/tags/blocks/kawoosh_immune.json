@@ -13,7 +13,22 @@
 		"minecraft:end_portal_frame",
 		"minecraft:jigsaw",
 		"minecraft:structure_block",
-		
-		{"id": "gravestone:gravestone", "required": false}
+
+		{"id": "gravestone:gravestone", "required": false},
+		{"id": "gravestones:gravestone", "required": false},
+		{"id": "universal_graves:grave", "required": false},
+		{"id": "yigd:grave", "required": false},
+		{"id": "simplygraves:andesite_gravestone", "required": false},
+		{"id": "simplygraves:basselt_gravestone", "required": false},
+		{"id": "simplygraves:blackstone_gravestone", "required": false},
+		{"id": "simplygraves:calcite_gravestone", "required": false},
+		{"id": "simplygraves:dark_prismarine_gravestone", "required": false},
+		{"id": "simplygraves:deepslate_gravestone", "required": false},
+		{"id": "simplygraves:diorite_gravestone", "required": false},
+		{"id": "simplygraves:dripstone_gravestone", "required": false},
+		{"id": "simplygraves:end_stone_gravestone", "required": false},
+		{"id": "simplygraves:granite_gravestone", "required": false},
+		{"id": "simplygraves:gravestone_wood", "required": false},
+		{"id": "simplygraves:stone_gravestone", "required": false}
 	]
 }
