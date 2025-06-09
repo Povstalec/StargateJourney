@@ -2,6 +2,10 @@
 	"replace": false,
 	"values":
 	[
-		{"id": "#sgjourney:kawoosh_immune/create", "required": false}
+		{"id": "#sgjourney:kawoosh_immune/create", 	"required": false},
+
+		{"id": "corpse:corpse",						"required": false},
+		{"id": "enigmaticgraves:grave",				"required": false},
+		{"id": "quark:totem",						"required": false}
 	]
 }
