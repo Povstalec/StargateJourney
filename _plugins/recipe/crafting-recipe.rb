@@ -1,10 +1,6 @@
-# https://perseuslynx.dev/blog/jekyll-first-plugin
-# https://jekyllrb.com/docs/plugins/tags/
-
-LOG = Jekyll.logger
-
-module Jekyll
-  class RecipeCrafting < Liquid::Tag
+module Recipe
+  class CraftingRecipe < Liquid::Tag
+    include Jekyll::Filters::URLFilters
     def render_crafting_table
       <<~HTML
         <span class="mcui mcui-Crafting_Table pixel-image">
@@ -27,7 +23,7 @@ module Jekyll
           </span>
           <span class="mcui-arrow"><br></span>
           <span class="mcui-output">
-            <span class="invslot invslot-large"></span>
+            <span class="invslot invslot-large">#{@product}</span>
           </span>
         </span>
       HTML
@@ -61,19 +57,19 @@ module Jekyll
 
     # @param context [Liquid::Context] The template context
     def render(context)
+      @context = context
+      @lang = Lang.new(context)
       unless @attributes["item"]
-        puts this.inspect
         raise "Recipe Crafting Tag usage error: missing item attribute with an item id"
       end
-      @site_source = context.registers[:site].source
-      @implementation_branch = File.join(@site_source, "/implementation_branch")
-      @jekyll_assets = "assets/img/items/crafting"
       load_recipes
-      load_item_recipe(@attributes["item"].split(":", 2))
+      load_item_recipe(McResource.from(@attributes["item"]))
 
       render_crafting_table
     end
 
+    # @param str [String] Text to strip single and double quotes from
+    # @return [String]
     def strip_quotes(str)
       str.gsub(/(^")|("$)/,'').gsub(/(^')|('$)/, "")
     end
@@ -81,7 +77,7 @@ module Jekyll
     # flattens sgjourney recipes folder for easy lookups
     def load_recipes
       @recipes = {}
-      dirs = [File.join(@implementation_branch, 'src/main/resources/data/sgjourney/recipe')]
+      dirs = [File.join(IMPLEMENTATION_BRANCH, 'src/main/resources/data/sgjourney/recipe')]
       while dirs.any?
         dir = dirs.shift
         Dir.each_child(dir) do |entry|
@@ -96,13 +92,14 @@ module Jekyll
       LOG.debug("Loaded #{@recipes.count} recipes for sgjourney")
     end
 
+    # @param item_name [String]
     def load_sgjourney_item(item_name)
-      item_file = item_name + ".png"
-      jekyll_assets_dir = File.join(File.join(@site_source, '_site'), @jekyll_assets)
+      item_file = "#{item_name}.png"
+      jekyll_assets_dir = File.join(PROJECT_DIRECTORY, RELATIVE_JEKYLL_CRAFTING_ASSETS)
       item_img = File.join(jekyll_assets_dir, item_file)
       unless File.exist?(item_img)
         puts "Missing file #{item_img}"
-        impl_assets = File.join(@implementation_branch, 'src/main/resources/assets/sgjourney/textures/item/')
+        impl_assets = File.join(IMPLEMENTATION_BRANCH, 'src/main/resources/assets/sgjourney/textures/item/')
         impl_item_img = File.join(impl_assets, item_file)
         if File.exist?(impl_item_img)
           puts "Copying #{impl_item_img} to #{item_img}"
@@ -114,26 +111,26 @@ module Jekyll
       end
     end
 
-    def load_item(nspace, item_name)
-      case nspace
+    # @param resource [McResource]
+    def load_item(resource)
+      case resource.namespace
       when 'sgjourney'
-        load_sgjourney_item(item_name.freeze)
+        load_sgjourney_item(resource.name)
       when 'minecraft'
       else
         # TODO
       end
     end
 
-    # @param item [Array] [namespace, item_name]
-    def load_item_recipe(item)
-      if item[0] != "sgjourney"
-        puts this.inspect
+    # @param resource [McResource]
+    def load_item_recipe(resource)
+      if resource.namespace != "sgjourney"
         raise "Recipe Crafting Tag does not support recipes from other namespaces than sgjourney"
       end
 
-      recipe_file = @recipes[item[1]]
+      recipe_file = @recipes[resource.name]
       unless recipe_file
-        raise "Crafting recipe for #{item[0]}:#{item[1]} was not found"
+        raise "Crafting recipe for #{resource} was not found"
       end
 
       recipe = JSON.parse(open(recipe_file).read)
@@ -150,16 +147,30 @@ module Jekyll
       end
     end
 
-    def render_item(nspace, item_name)
-      case nspace
-      when 'sgjourney'
-        return <<~HTML
-            <span class="invslot-item invslot-item-image" data-minetip-title="#{item_name}">
-              <a href="#"><img src="#{File.join(@jekyll_assets, item_name + ".png")}"></a>
-            </span>
-        HTML
-          .gsub(/>\s+</, '><').strip
+    # @param resource [McResource] The resource to render
+    def render_item(resource)
+      title = @lang.translate(resource)
+      description = ""
+      if title.nil?
+        title = resource.to_s
+        description = "missing translation"
       end
+      file = "assets/img/mcui/questionmark.png"
+      case resource.namespace
+      when 'sgjourney'
+        file = File.join(RELATIVE_JEKYLL_CRAFTING_ASSETS, resource.name + ".png")
+      when 'minecraft'
+        file = "https://minecraft.wiki/images/ItemSprite_" + resource.name + ".png"
+      else
+        LOG.warn("Missing translation for item/block: #{resource}")
+      end
+
+      <<~HTML
+        <span class="invslot-item invslot-item-image" data-minetip-title="#{title}" data-minetip-text="#{description}">
+          <a href=""><img src="#{absolute_url(file)}"></a>
+        </span>
+      HTML
+        .gsub(/>\s+</, '><').strip
     end
 
     def process_crafting_shaped(recipe)
@@ -174,19 +185,19 @@ module Jekyll
         col = 0
         line.chars.each do |key|
           if (not items[key].nil?) and (not items[key].strip().empty?)
-            item = items[key].split(":", 2)
-            nspace = item[0]
-            item_name = item[1]
-            load_item(nspace, item_name)
-            set_ingredient(row, col, render_item(nspace, item_name))
+            item = McResource.from(items[key])
+            load_item(item)
+            set_ingredient(row, col, render_item(item))
           end
           col += 1
         end
         row += 1
       end
+
+      product_item = McResource.from(recipe["result"]["id"])
+      load_item(product_item)
+      @product = render_item(product_item)
     end
 
   end
 end
-
-Liquid::Template.register_tag('minecraft_recipe_crafting', Jekyll::RecipeCrafting)
