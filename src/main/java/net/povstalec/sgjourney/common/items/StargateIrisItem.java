@@ -82,15 +82,11 @@ public abstract class StargateIrisItem extends Item
 	 */
 	public static boolean decreaseDurability(ItemStack stack)
 	{
-		if(stack.has(DataComponentInit.IRIS_DURABILITY))
+		if(getDurability(stack) > 0)
 		{
 			int durability = getDurability(stack);
-			durability--;
-			
-			stack.set(DataComponentInit.IRIS_DURABILITY, durability);
-			
-			if(durability >= 1)
-				return true;
+			stack.set(DataComponentInit.IRIS_DURABILITY, --durability);
+            return durability >= 1;
 		}
 		
 		return false;
