@@ -8,6 +8,7 @@ nav_order: 20
 A light source.
 It can be lit with a flint and steel or a fire charge.
 
+{% minecraft_recipe_crafting item:"sgjourney:fire_pit" %}
 
 ![Fire pit]({{ site.baseurl }}/assets/img/blocks/functional/fire_pit.png)
 

@@ -1,0 +1,2 @@
+{% assign item_id = include.item_id | default: include.item %}
+<td>{{include.amount}} x <a href="https://minecraft.wiki/w/{{item_id}}"><img class="vertical-text-bottom" src="https://minecraft.wiki/images/Invicon_{{item_id}}.png" /> {{include.item}}</a></td>

@@ -167,6 +167,9 @@ module Recipe
     def process_crafting_shaped(recipe)
       items = {}
       recipe["key"].each do |key, value| # TODO this will need an upgrade for newer versions
+        if value.class == Array
+            value = value[0]
+        end
         if value["item"].nil?
           items[key] = ("#" + value["tag"]).freeze
         else
