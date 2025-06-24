@@ -14,6 +14,10 @@ module Recipe
     # @param resource [McResource] The minecraft resource
     # @return [String, nil]
     def translate(resource)
+      if resource.is_tag and TAG_CACHE.has_key?(resource)
+        resource = TAG_CACHE[resource]
+      end
+
       translation = choose_namespace(resource)
       if translation.nil?
         return nil
@@ -38,13 +42,9 @@ module Recipe
     private
       include Jekyll::Filters::URLFilters
 
-      # Vanilla translations
-      MINECRAFT_LANG = JSON.load(URI.open("https://assets.mcasset.cloud/1.21.1/assets/minecraft/lang/en_us.json")).freeze
-      SGJ_LANG = JSON.load(open(File.join(PROJECT_DIRECTORY, "implementation_branch", "src/main/resources/assets/sgjourney/lang/en_us.json")).read)
-
       NAMESPACE_MAP = {
-        "minecraft" => MINECRAFT_LANG,
-        "sgjourney" => SGJ_LANG,
+        "minecraft" => JSON.load(URI.open("https://assets.mcasset.cloud/#{RECIPE_GAME_VERSION}/assets/minecraft/lang/en_us.json")).freeze,
+        "sgjourney" => JSON.load(open(File.join(PROJECT_DIRECTORY, "implementation_branch", "src/main/resources/assets/sgjourney/lang/en_us.json")).read).freeze,
       }
 
       # @param resource [McResource]

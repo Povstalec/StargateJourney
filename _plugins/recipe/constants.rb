@@ -3,4 +3,6 @@ module Recipe
   # Absolute path to the project root (hopefully)
   PROJECT_DIRECTORY = Dir.getwd
   IMPLEMENTATION_BRANCH = File.join(PROJECT_DIRECTORY, 'implementation_branch')
+  # Minecraft version used for accessing vanilla data at https://mcasset.cloud
+  RECIPE_GAME_VERSION = '1.21.1'.freeze
 end

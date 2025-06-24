@@ -1,6 +1,35 @@
 module Recipe
   class CraftingRecipe < Liquid::Tag
     include Jekyll::Filters::URLFilters
+    RECIPES = {}
+
+    # flattens sgjourney recipes folder for easy lookups
+    def self.load_recipes
+      # stack for directories with recipes (we are doing a recursive traversing)
+      dirs = [File.join(IMPLEMENTATION_BRANCH, 'src/main/resources/data/sgjourney/recipe')]
+      while dirs.any? # repeat until there is a directory to search
+        # @type [String]
+        dir = dirs.pop
+
+        if dir.nil?
+          throw "Assertation error: recipe directory is nil"
+        end
+
+        Dir.each_child(dir) do |entry|
+          path = File.join(dir, entry)
+          if File.file?(path)
+            # removes .json from the end of the file name, this should leave only the item resource name
+            RECIPES[entry.gsub(/(.json)$/, "")] = path
+          else
+            # if we found a directory, add it to the stack for traversal
+            dirs.push(path)
+          end
+        end
+      end
+      puts "Loaded #{RECIPES.count} recipes for sgjourney"
+    end
+    load_recipes # loads SGJ recipes on class init
+
     def render_crafting_table
       <<~HTML
         <span class="mcui mcui-Crafting_Table pixel-image">
@@ -31,6 +60,7 @@ module Recipe
         .gsub(/>\s+</, '><').strip
     end
 
+    # called by jekyll for each tag usage to init the object
     def initialize(tag_name, markup, parse_context)
       super
       @recipe_items = Array.new(3*3)
@@ -55,14 +85,15 @@ module Recipe
       @recipe_items[row * 3 + col] = value
     end
 
+    # called by jekyll when the tag should be rendered
     # @param context [Liquid::Context] The template context
     def render(context)
       @context = context
       @lang = Lang.new(context)
+      @resource_loader = ResourceLoader.new(context)
       unless @attributes["item"]
         raise "Recipe Crafting Tag usage error: missing item attribute with an item id"
       end
-      load_recipes
       load_item_recipe(McResource.from(@attributes["item"]))
 
       render_crafting_table
@@ -74,61 +105,13 @@ module Recipe
       str.gsub(/(^")|("$)/,'').gsub(/(^')|('$)/, "")
     end
 
-    # flattens sgjourney recipes folder for easy lookups
-    def load_recipes
-      @recipes = {}
-      dirs = [File.join(IMPLEMENTATION_BRANCH, 'src/main/resources/data/sgjourney/recipe')]
-      while dirs.any?
-        dir = dirs.shift
-        Dir.each_child(dir) do |entry|
-          path = File.join(dir, entry)
-          if File.file?(path)
-            @recipes[entry.gsub(/(.json)$/, "")] = path
-          else
-            dirs.push(path)
-          end
-        end
-      end
-      LOG.debug("Loaded #{@recipes.count} recipes for sgjourney")
-    end
-
-    # @param item_name [String]
-    def load_sgjourney_item(item_name)
-      item_file = "#{item_name}.png"
-      jekyll_assets_dir = File.join(PROJECT_DIRECTORY, RELATIVE_JEKYLL_CRAFTING_ASSETS)
-      item_img = File.join(jekyll_assets_dir, item_file)
-      unless File.exist?(item_img)
-        puts "Missing file #{item_img}"
-        impl_assets = File.join(IMPLEMENTATION_BRANCH, 'src/main/resources/assets/sgjourney/textures/item/')
-        impl_item_img = File.join(impl_assets, item_file)
-        if File.exist?(impl_item_img)
-          puts "Copying #{impl_item_img} to #{item_img}"
-          FileUtils.mkdir_p(jekyll_assets_dir)
-          FileUtils.cp(impl_item_img, item_img)
-        else
-          raise "Item missing texture for crafting in implementation: #{item_name} (#{impl_item_img})"
-        end
-      end
-    end
-
-    # @param resource [McResource]
-    def load_item(resource)
-      case resource.namespace
-      when 'sgjourney'
-        load_sgjourney_item(resource.name)
-      when 'minecraft'
-      else
-        # TODO
-      end
-    end
-
     # @param resource [McResource]
     def load_item_recipe(resource)
       if resource.namespace != "sgjourney"
         raise "Recipe Crafting Tag does not support recipes from other namespaces than sgjourney"
       end
 
-      recipe_file = @recipes[resource.name]
+      recipe_file = RECIPES[resource.name]
       unless recipe_file
         raise "Crafting recipe for #{resource} was not found"
       end
@@ -147,6 +130,17 @@ module Recipe
       end
     end
 
+    def item_web_link(resource)
+      case resource.namespace
+      when "minecraft"
+        name = resource.name.split('_').map(&:capitalize).join('_')
+        return "https://minecraft.wiki/w/#{name}#Crafting"
+        # TODO: sgjourney namespace linking
+      else
+        return ""
+      end
+    end
+
     # @param resource [McResource] The resource to render
     def render_item(resource)
       title = @lang.translate(resource)
@@ -155,29 +149,24 @@ module Recipe
         title = resource.to_s
         description = "missing translation"
       end
-      file = "assets/img/mcui/questionmark.png"
-      case resource.namespace
-      when 'sgjourney'
-        file = File.join(RELATIVE_JEKYLL_CRAFTING_ASSETS, resource.name + ".png")
-      when 'minecraft'
-        file = "https://minecraft.wiki/images/ItemSprite_" + resource.name + ".png"
-      else
-        LOG.warn("Missing translation for item/block: #{resource}")
-      end
+      file = resource.asset_url
 
       <<~HTML
         <span class="invslot-item invslot-item-image" data-minetip-title="#{title}" data-minetip-text="#{description}">
-          <a href=""><img src="#{absolute_url(file)}"></a>
+          <a href="#{item_web_link(resource)}"><img src="#{absolute_url(file)}"></a>
         </span>
       HTML
         .gsub(/>\s+</, '><').strip
     end
 
     def process_crafting_shaped(recipe)
-      # TODO: handle tags
       items = {}
       recipe["key"].each do |key, value| # TODO this will need an upgrade for newer versions
-        items[key] = value["item"].freeze || ("#" + value["tag"]).freeze
+        if value["item"].nil?
+          items[key] = ("#" + value["tag"]).freeze
+        else
+          items[key] = value["item"]
+        end
       end
 
       row = 0
@@ -186,8 +175,10 @@ module Recipe
         line.chars.each do |key|
           if (not items[key].nil?) and (not items[key].strip().empty?)
             item = McResource.from(items[key])
-            load_item(item)
+            @resource_loader.load(item)
             set_ingredient(row, col, render_item(item))
+          elsif key != ' '
+            LOG.error("Unknown recipe pattern key '#{key}' in #{recipe}")
           end
           col += 1
         end
@@ -195,7 +186,7 @@ module Recipe
       end
 
       product_item = McResource.from(recipe["result"]["id"])
-      load_item(product_item)
+      @resource_loader.load(product_item)
       @product = render_item(product_item)
     end
 

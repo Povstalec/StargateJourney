@@ -35,7 +35,7 @@ jobs:
           path: implementation_branch
           # Git revision with branch containing mod implementation
           # this is used e.g. by the recipe render plugin to read recipes definitions
-          ref: 3c44e6e08a1bc8b64b39f59db2ea772f53ffd6cd
+          ref: main
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
