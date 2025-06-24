@@ -21,9 +21,6 @@ nav_exclude: true
 
 ![Stargate Journey logo]({{ '/assets/img/logo.png' | absolute_url }})
 
-{% minecraft_recipe_crafting item:"sgjourney:archeology_table" %}
-{% minecraft_recipe_crafting item:"sgjourney:naquadah_liquidizer" %}
-
 # Stargate Journey
 {: .no_toc }
 

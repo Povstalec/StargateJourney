@@ -48,11 +48,17 @@ though you may have changed it in the config file
 If that is the case, multiply the values from the config by `16`
 and use them in the command.
 
+By default, this command should work:
+```
+/execute in minecraft:overworld positioned 0 0 0 run locate structure #sgjourney:has_stargate
+```
+{: .width-fit-content }
+
+Or use this one and replace `X` and `Z` with the actual values from the config:
 ```
 /execute in minecraft:overworld positioned X 0 Z run locate structure #sgjourney:has_stargate
 ```
 {: .width-fit-content }
-(replace `X` and `Z` with actual values)
 
 **If the locating still fails, it's most likely that the stargate structure is not generating.**
 

@@ -10,9 +10,9 @@ parent: Survival Guide
 To gain the ability to travel to distant planets, you will first need a Stargate.
 It is an advanced technology, so you **cannot build** it yourself (yet).
 You need to **find it** somewhere.
-All information has been lost in the mists of time
+All information has been lost in the mists of time.
 You could employ an Archeologist villager to help you.
-But first, you must attract his attention, perhaps with some valuable relic.
+But first, you must get his interest, perhaps with some valuable relic.
 
 <details markdown="block" id="locate-command">
 <summary><b>[Spoiler]</b> A cheat way to find a Stargate using a command</summary>
@@ -39,14 +39,14 @@ Goa'ulds - _an ancient and powerful race whose temples now lie buried in the for
 To find the idol, you must brave the ruins scattered across deserts, badlands, and jungles.
 
 <details markdown="block">
-<summary><b>[Spoiler]</b> Goa'uld temple overworld generation</summary>
+<summary><b>[Spoiler]</b> Goa'uld temple overworld generation and a cheat way of finding a temple using a command</summary>
 There are three types of Goa'uld temples depending on the biome in which they are generated: 
 [badlands ziggurats]({{ '/structures/goauld_temples/#badlands-ziggurat' | absolute_url }}), 
 [desert pyramids]({{ '/structures/goauld_temples/#abandoned-desert-pyramid' | absolute_url }}), 
 and [jungle pyramids]({{ '/structures/goauld_temples/#jungle-pyramid' | absolute_url }}).
-Each temple has a room with a loot, a [golden idol]({{ '/blocks/golden-idol/' | absolute_url }}),
-and a room with [transport rings]({{ '/blocks/technological-blocks/transport-rings/' | absolute_url }})
-that are connected to six other nearby rings (possibly in other temples).
+Each temple has a room with loot, a [golden idol]({{ '/blocks/golden-idol/' | absolute_url }}),
+and [transport rings]({{ '/blocks/technological-blocks/transport-rings/' | absolute_url }})
+connected to six other nearby rings (possibly in other temples) - as long as they were generated before.
 
 **A cheat way:** You can use the locate command to find the coordinates of the closest temple  
 
@@ -68,55 +68,64 @@ With a [golden idol]({{ '/blocks/golden-idol/' | absolute_url }}), you can now c
 that can be used as a workstation for a villager.
 Remember that there are [Nitwits](https://minecraft.wiki/w/Villager#Nitwit) who cannot have a profession.
 
-![Archeology table crafting]({{ '/assets/img/survival/archeology_table_crafting.png' | absolute_url }})
+{% minecraft_recipe_crafting item:"sgjourney:archeology_table" %}
 
-The villager offers few trades:
-- Paper for emeralds
-- Bones for emeralds
-- Golden idol for emeralds
-- Gold ingots for emeralds
-- Sandstone Hieroglyphs for emeralds
-- Emeralds for:
-  - **Archeologist Map** (which leads to a Goa'uld temple)
-  - Compass
-  - Writable book
-  - Fire pit
-  - Sandstone with lapis
-  - Sandstone, Red sandstone and Stone symbol
-  - **Map to Chappa'ai** (Stargate) at the last Master level
+You can find available trades in the archeology table description at [Blocks / Archeology table]({{ '/blocks/archeology-table/' | absolute_url }}).
 
-[//]: # (TODO: replace with trade images)
-
-To unlock the **Map to Chappa'ai** trade, you need to level up the villager to **Master**.
-In case the villager refused to give you the map at the Master level, 
-check [troubleshooting steps]({{ '/troubleshooting/#i-created-a-new-world-but-the-stargate-isnt-generating' | absolute_url }})
-when the stargate is not generating.
+To unlock the **Map to Chappa'ai** trade, you must level up the villager to **Master**.
+If the villager refuses to give you the map at the Master level, he failed to locate the structure in the current world.
+Check [Troubleshooting / Stargate isn't generating]({{ '/troubleshooting/#i-created-a-new-world-but-the-stargate-isnt-generating' | absolute_url }}).
 
 ![Villager map trade]({{ '/assets/img/survival/stargate_map_trade.png' | absolute_url }})
 
 ___
 
 ## The Map to Chappa'ai
-The big red **X** on the map will lead you to a buried Stargate.
-Search and dig for the X. The Stargate is somewhere in there.
+The big red **X** on the map will lead you to a buried stargate.
+Search and dig for the X, the stargate is somewhere in there.
+
+{: .warning #map-name-warning }
+> Note that the map must be named **Map to Chappa'ai** and traded on the **Master** level.
+> The villager may also offer an **Archeologist's map** that leads to a goa'uld temple, not a stargate.
+
+The gate is usually around 5 blocks under the surface (but not strictly, you certainly don't have to dig all the way to the bedrock).
+If you are having trouble finding the gate, see the note below with a hint.
+
+Once you find it, you want to look for three essential things.
+- The Stargate
+- Dial Home Device (DHD) buried somewhere nearby/next to the gate
+- The cartouche placed in the middle of the seal
+
+The Gate and DHD can be broken with any tool (even by hand), but a pickaxe is best for the job.
+You need a **stone pickaxe** (or a better one) to obtain the cartouche.
+
+
+<details markdown="block">
+<summary><b>[Spoiler]</b> Stargate overworld generation</summary>
+By default, **two stargates** are generated in the **overworld** ([datapacks]({{ '/datapacks' | absolute_url }}) can change that).
+Both gates are generated and buried underground with a DHD.  
+The [Alpha gate]({{ '/structures/stargates/#buried-stargate-the-alpha-gate' | absolute_url }}) is generated in a horizontal position and with a seal and Abydos cartouche.  
+The [Beta gate]({{ '/structures/stargates/#terra-gate-the-beta-gate' | absolute_url }}) is generated in a vertical position in a small cave. There is no seal or a cartouche.
+
+In the overworld, the map should always lead to the sealed alpha gate.
+</details>
 
 ![Map with red X]({{ '/assets/img/survival/map.png' | absolute_url }})
 
-The gate is usually around 5 blocks under the surface (but not strictly, you certainly don't have to dig all the way to the bedrock).
-
-{: .warning }
+{: .warning #map-missing-x-bug-warning }
 > There is a known bug that can cause the map to lack the red **X** mark.
 > In that case, you can read the location with the `/data` command (while holding the map):
 >
 > ```
 > /data get entity PlayerName SelectedItem.components."minecraft:map_decorations".+
 > ```
+> {: .width-fit-content }
 > or just use the [`/locate` command](#locate-command).  
 > _"If the game is not playing fair, why should you?"_
 
-<blockquote class="note">
+<blockquote class="note" id="spoiler-hint-buried-stargate-location">
 <p>If you have trouble finding the Stargate on the <b>X</b> mark, you can check this spoiler / hint.</p>
-<details markdown="block">
+<details markdown="block" id="spoiler-hint-buried-stargate-location">
 <summary><b>[Spoiler / Hint]</b> Buried Stargate location</summary>
 The gate is always generated in the exact location inside the chunk.
 So you can go to the **X** mark and press `F3 + G` to see chunk boundaries.  
@@ -129,30 +138,17 @@ The last three numbers in square brackets are the block coordinates in the chunk
 Dig on `[13 y 3]`, and you should find the Stargate (the middle number is height and will be different for each world).
 Note that you might be in the wrong chunk, so if you can't find the gate, try to dig in the neighboring chunks as well.
 
+If you really can't find the gate, you can use the [`/locate` command](#locate-command) to find the exact coordinates 
+or switch to spectator mode and fly around.
+
+If you could confirm the location using the [`/locate` command](#locate-command) and found out in the spectator mode that the gate is not there, 
+then the gate was probably not generated in your world.
+Check [Troubleshooting / Stargate isn't generating]({{ '/troubleshooting/#i-created-a-new-world-but-the-stargate-isnt-generating' | absolute_url }}) for further steps.
+
 ![Chunk border with buried Stargate]({{ '/assets/img/survival/chunk_border_buried_stargate.png' | absolute_url }})
 
 </details>
 </blockquote>
-
-{: .tip }
-> Once you find it, you want to look for three essential things.
-> - The Stargate
-> - Dial Home Device (DHD) buried somewhere nearby/next to the gate
-> - The cartouche placed in the middle of the seal  
->
-> The Gate and the DHD can be broken with any tool (even by hand), but a pickaxe is best for the job.
-> Use a **stone pickaxe** (or a better one) to break the cartouche.
-
-
-<details markdown="block">
-<summary><b>[Spoiler]</b> Stargate overworld generation</summary>
-By default, **two stargates** are generated in the **overworld** ([datapacks]({{ '/datapacks' | absolute_url }}) can change that).  
-Both gates are generated and buried underground with DHD.  
-The [Alpha gate]({{ '/structures/stargates/#buried-stargate-the-alpha-gate' | absolute_url }}) is generated in a horizontal position and with a seal and Abydos cartouche.  
-The [Beta gate]({{ '/structures/stargates/#terra-gate-the-beta-gate' | absolute_url }}) is generated in a vertical position in a small cave.  
-
-In the overworld, the map should always lead to the sealed alpha gate.
-</details>
 
 ## [Next page: Dialing]({{ site.baseurl }}/survival/dialing)
 {: .no_toc }

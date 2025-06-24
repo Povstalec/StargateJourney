@@ -150,10 +150,15 @@ module Recipe
         description = "missing translation"
       end
       file = resource.asset_url
+      link = item_web_link(resource)
+      img = "<img src=\"#{absolute_url(file)}\">"
+      if not link.nil? and not link.empty? and link != '#'
+          img = "<a href=\"#{link}\">#{img}</a>"
+      end
 
       <<~HTML
         <span class="invslot-item invslot-item-image" data-minetip-title="#{title}" data-minetip-text="#{description}">
-          <a href="#{item_web_link(resource)}"><img src="#{absolute_url(file)}"></a>
+          #{img}
         </span>
       HTML
         .gsub(/>\s+</, '><').strip

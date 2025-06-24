@@ -64,7 +64,7 @@ Modifications have been made for the purpose of this wiki
   padding: 8px
 }
 
-.invslot-item, .invslot-item > a:first-child {
+.invslot-item, .invslot-item img {
   position: relative;
   display: block;
   margin: -2px;
@@ -74,7 +74,7 @@ Modifications have been made for the purpose of this wiki
 .invslot-item-image {
   image-rendering: pixelated;
 
-  & > a.new:first-child, & > a > img {
+  & img {
     width: 32px;
     height: 32px;
     text-indent: -9999px;
@@ -103,7 +103,7 @@ Modifications have been made for the purpose of this wiki
   content: none
 }
 
-.invslot-plain > .invslot-item, .invslot-plain > .invslot-item > a:first-child {
+.invslot-plain > .invslot-item, .invslot-plain > .invslot-item img {
   margin: 0;
   padding: 0
 }
