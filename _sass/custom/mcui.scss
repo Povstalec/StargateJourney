@@ -37,6 +37,10 @@ Modifications have been made for the purpose of this wiki
   vertical-align: bottom
 }
 
+.invslot:hover {
+  filter: brightness(1.15);
+}
+
 .invslot:before, .invslot:after {
   content: "";
   position: absolute;
