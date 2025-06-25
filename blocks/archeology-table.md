@@ -13,15 +13,14 @@ nav_order: 50
 Can be crafted with a [golden idol](/blocks/golden-idol/) and used as a [villager workstation](https://minecraft.wiki/w/Villager#Job_site_blocks).
 
 ## Archeologist Villager
-You can trade an __archeologist map__ on the [second villager's level](https://minecraft.wiki/w/Trading#Level) (Apprentice)
-and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | absolute_url }}) on the [last level](https://minecraft.wiki/w/Trading#Level)(Master).
+You can trade an __archeologist map__ on the [first villager's level](https://minecraft.wiki/w/Trading#Level) (Novice)
+and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | absolute_url }}) on the [last level](https://minecraft.wiki/w/Trading#Level) (Master).
 
 {: .note }
 > __Archeologist map__ leads to a Goa'uld temple.  
-> __Map to Chappa'ai__ leads to a buried Stargate.
+> [__Map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | absolute_url }}) leads to a buried Stargate.
 
-[//]: # (TODO: add links to map items in the table)
-
+[//]: # (a simple css limited only to this table to set image size)
 <style>
 .img-max-height-16 img {
   max-height: 16px;
@@ -146,5 +145,3 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
     </tr>
   </tbody>
 </table>
-
-[//]: # (TODO: Add map descriptions)

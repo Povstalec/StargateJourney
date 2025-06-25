@@ -2,6 +2,7 @@
 title: Finding a Stargate
 nav_order: 0
 parent: Survival Guide
+description: "A survival guide to finding the buried stargate from the Stargate Journey Minecraft mod."
 ---
 
 # Finding a Stargate
@@ -41,9 +42,9 @@ To find the idol, you must brave the ruins scattered across deserts, badlands, a
 <details markdown="block">
 <summary><b>[Spoiler]</b> Goa'uld temple overworld generation and a cheat way of finding a temple using a command</summary>
 There are three types of Goa'uld temples depending on the biome in which they are generated: 
-[badlands ziggurats]({{ '/structures/goauld_temples/#badlands-ziggurat' | absolute_url }}), 
-[desert pyramids]({{ '/structures/goauld_temples/#abandoned-desert-pyramid' | absolute_url }}), 
-and [jungle pyramids]({{ '/structures/goauld_temples/#jungle-pyramid' | absolute_url }}).
+[badlands ziggurats]({{ '/structures/goauld-temples/#badlands-ziggurat' | absolute_url }}), 
+[desert pyramids]({{ '/structures/goauld-temples/#abandoned-desert-pyramid' | absolute_url }}), 
+and [jungle pyramids]({{ '/structures/goauld-temples/#jungle-pyramid' | absolute_url }}).
 Each temple has a room with loot, a [golden idol]({{ '/blocks/golden-idol/' | absolute_url }}),
 and [transport rings]({{ '/blocks/technological-blocks/transport-rings/' | absolute_url }})
 connected to six other nearby rings (possibly in other temples) - as long as they were generated before.
@@ -65,15 +66,15 @@ ___
 
 ## Archeologist villager
 With a [golden idol]({{ '/blocks/golden-idol/' | absolute_url }}), you can now craft an [archeology table]({{ '/blocks/archeology-table/' | absolute_url }})
-that can be used as a workstation for a villager.
+that can be used as a [workstation for a villager](https://minecraft.wiki/w/Villager#Job_site_blocks).
 Remember that there are [Nitwits](https://minecraft.wiki/w/Villager#Nitwit) who cannot have a profession.
 
 {% minecraft_recipe_crafting item:"sgjourney:archeology_table" %}
 
-You can find available trades in the archeology table description at [Blocks / Archeology table]({{ '/blocks/archeology-table/' | absolute_url }}).
+You can find available trades in the archeology table description at [Blocks / Archeology table]({{ '/blocks/archeology-table/#archeologist-villager' | absolute_url }}).
 
 To unlock the **Map to Chappa'ai** trade, you must level up the villager to **Master**.
-If the villager refuses to give you the map at the Master level, he failed to locate the structure in the current world.
+If the villager refuses to give you the map at the Master level, he failed to locate the structure in the current dimension.
 Check [Troubleshooting / Stargate isn't generating]({{ '/troubleshooting/#i-created-a-new-world-but-the-stargate-isnt-generating' | absolute_url }}).
 
 ![Villager map trade]({{ '/assets/img/survival/stargate_map_trade.png' | absolute_url }})
