@@ -108,7 +108,11 @@ Both gates are generated and buried underground with a DHD.
 The [Alpha gate]({{ '/structures/stargates/#buried-stargate-the-alpha-gate' | absolute_url }}) is generated in a horizontal position and with a seal and Abydos cartouche.  
 The [Beta gate]({{ '/structures/stargates/#terra-gate-the-beta-gate' | absolute_url }}) is generated in a vertical position in a small cave. There is no seal or a cartouche.
 
-In the overworld, the map should always lead to the sealed alpha gate.
+More gate pedestals may be generated when the `common_stargate_generation` config option is enabled.
+
+[//]: # (TODO: add link to page about config options and common stargates especially)
+
+In the overworld, the map should always lead to the sealed alpha gate with the cartouche.
 </details>
 
 ![Map with red X]({{ '/assets/img/survival/map.png' | absolute_url }})
