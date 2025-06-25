@@ -32,7 +32,13 @@ function changeHashOnClick() {
     document.querySelectorAll("details > summary").forEach(el => {
         const details = el.parentElement;
         if (details.id == null || details.id.trim() === "") {
-            details.id = el.textContent.trim().replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, "-").toLowerCase();
+            // if details element is missing an ID, use the ID from summary element or construct one from summary text
+            if (el.id != null && el.id.trim() !== "") {
+                details.id = el.id;
+            } else {
+                // remove any special non alphanumeric characters and replace spaces with hyphens
+                details.id = el.textContent.trim().replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, "-").toLowerCase();
+            }
         }
         el.addEventListener("click", function() {
             if (!details.hasAttribute("open")) {

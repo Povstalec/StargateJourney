@@ -7,30 +7,35 @@ parent: Survival Guide
 # Stargate dialing
 {: .no_toc }
 
-1. Table of Contents
-{:toc}
+To activate the stargate, you need to dial an **address** of the destination gate.
+
 
 ## The address
 
-So you have Stargate, but you need to activate it now.
+Each stargate has a unique **9 chevron** long address.
+That address is unique for the specific stargate and can never be changed once the gate is built (or generated).
 
-To dial the Stargate, you need to know the **destination address**, which can be 6-symbol, 7-symbol, or 8-symbol long.
-<!-- TODO: add link to address length explanation -->
-You should have found the **cartouche** with the **Abydos address** along with the buried gate.
+Additionally, the gate can be dialed using an address of **the solar system** it is located in.
+**7-chevron** address is an address of the solar system within the **current galaxy**.
+To dial a solar system in a **different galaxy**, you need to use an **8-chevron** address.
+
+**The first address cartouche** you found buried along with the stargate is an address to the Abydos solar system in Milky Way galaxy.
+The address consists of **6 symbols**, the 7th symbol is the **Point of Origin** (PoO).
+
+[//]: # (TODO: add link to further addressing system explanation)
 
 You can place the cartouche on the ground and see the symbols (from top to bottom),
-or right-click it and see the address as numbers (`-1-2-3-4-5-6-`).
+or right-click it and see the address as numbers in the chat.
 
 <details markdown="block">
-<summary><b>I did not find the cartouche</b></summary>
+<summary><b>[Spoiler / Hint]</b> I did not find the cartouche</summary>
 
 That could happen if you did not find the sealed [Alpha gate]({{ site.baseurl }}/structures/stargates/#buried-stargate)
 and instead found the [Beta gate]({{ site.baseurl }}/structures/stargates/#terra-gate-the-beta-gate) 
 or other gate structure (a Stargate pedestal added by a datapack, for example).
+In that case, here is an image of the cartouche with the Abydos address.
 
-In that case, here is an image of a cartouche with the Abydos address.
-
-![Cartouche with the Abydoss address]({{ site.baseurl }}/assets/img/survival/cartouche_abydos_address.png)
+![Cartouche with the Abydos address]({{ site.baseurl }}/assets/img/survival/cartouche_abydos_address.png)
 
 Its number representation is `-26-6-14-31-11-29-`.
 
@@ -38,17 +43,100 @@ Its number representation is `-26-6-14-31-11-29-`.
 
 ___
 
+## Power
+The stargate requires **power** to operate.
+The buried stargate was found with a DHD containing a **Fusion Core** that is able to supply the gate with energy for some time.
+The DHD inventory can be accessed by `shift+right-clicking` it with an **empty hand**.
+Fusion Core operates on cold fusion technology and so **doesn't require any fuel**.
+However, once the Fusion Core runs out of energy, it will need to be **replaced with a new power source** (e.g. with Naquadah Generator Core).
+It should be able to power the gate for standard **interstellar** travel (inside the same galaxy).
+
+[//]: # (TODO: fusion core & naquadah generator core link)
+
+The DHD will also power the gate even if other dialing methods are used, it just needs to be placed nearby the gate.
+
+Alternatively, the gate can be powered using a **stargate interface** powered by a generator from **other mod**.
+
+[//]: # (TODO: show interface connected to a gate and powered by a cable (e.g. from Mekanism)
 
 ## Dialing
 
-Now, you should decide **how you want to dial** the gate.  
-There are a few options:
-<details markdown="block">
-<summary id="dialing-using-a-dial-home-device-dhd">1. Dialing using a Dial Home Device (DHD)</summary>
+There are several ways to encode the address based on the stargate type used.
+The options are: Using a **Dial Home Device (DHD)**, **manual dialing with redstone**, or using a **computer** from CC:Tweaked (Computercraft).
+When a computer is used, it can either rotate the gate encoding the symbol at the top, or engage the symbols directly, like a DHD.
 
-### Dialing using a Dial Home Device (DHD)
+Table below summarizes the available dialing methods for each Stargate type.
+
+<style>
+.tick::before {
+    content: "✓";
+    color: green;
+    font-weight: bold;
+}
+.cross::before {
+    content: "✗";
+    color: red;
+    font-weight: bold;
+}
+</style>
+
+<table class="text-center">
+    <thead>
+        <tr>
+            <th rowspan="2">Stargate type</th>
+            <th rowspan="2">DHD</th>
+            <th rowspan="2">Redstone</th>
+            <th colspan="2">Computer</th>
+        </tr>
+        <tr>
+            <th>Rotate</th>
+            <th>Engage</th>
+        </tr>
+    </thead>
+    <tbody class="td-bold">
+        <tr>
+            <td>Classic Stargate</td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+        </tr>
+        <tr>
+            <td>Universe Stargate</td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+        </tr>
+        <tr>
+            <td>Milky Way Stargate</td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+        </tr>
+        <tr>
+            <td>Pegasus Way Stargate</td>
+            <td class="tick"></td>
+            <td class="cross"></td>
+            <td class="cross"></td>
+            <td class="tick"></td>
+        </tr>
+        <tr>
+            <td>Tollan Stargate</td>
+            <td class="tick"></td>
+            <td class="cross"></td>
+            <td class="cross"></td>
+            <td class="tick"></td>
+        </tr>
+    </tbody>
+</table>
+
+<details markdown="block" id="dialing-using-a-dial-home-device-dhd">
+<summary>1. Dialing using a Dial Home Device (DHD)</summary>
 
 ![DHD GUI]({{ site.baseurl }}/assets/img/survival/dhd_gui.png)
+{: .max-width-512 }
 
 First, place down the gate, and then place DHD anywhere near it.
 The DHD should be able to connect to the gate within a 16-block range.
