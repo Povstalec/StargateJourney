@@ -153,7 +153,7 @@ Table below summarizes the available dialing methods for each Stargate type.
 <summary>1. Dialing using a Dial Home Device (DHD)</summary>
 
 <details id="dialing-using-a-dial-home-device-dhd-youtube-video">
-<summary>Youtube video</summary>
+<summary><b>[Spoiler]</b> Youtube video</summary>
 {% include youtubePlayer.html id="Fv10GPshSCI" %}
 </details>
 
@@ -173,7 +173,7 @@ Finally, click the big red button in the middle to encode the Point of Origin (s
 <summary>2. Manual dialing with redstone</summary>
 
 <details>
-<summary>Youtube video</summary>
+<summary><b>[Spoiler]</b> Youtube video</summary>
 {% include youtubePlayer.html id="Ulcp8-21B6U" %}
 </details>
 
