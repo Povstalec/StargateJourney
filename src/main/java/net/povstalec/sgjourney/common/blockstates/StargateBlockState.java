@@ -47,7 +47,7 @@ public class StargateBlockState extends BlockState
 	@Override
 	public float getDestroySpeed(BlockGetter reader, BlockPos pos)
 	{
-		if(this.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		if(pos != null && this.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
 			AbstractStargateEntity stargate = stargateBlock.getStargate(reader, pos, reader.getBlockState(pos));
 			if(stargate != null && !CommonStargateConfig.can_break_connected_stargate.get())
