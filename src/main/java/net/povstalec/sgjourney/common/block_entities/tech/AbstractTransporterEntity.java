@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -110,6 +111,13 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	public UUID getID()
 	{
 		return id;
+	}
+	
+	@Nullable
+	public Transporter getTransporter()
+	{
+		//TODO Maybe start caching it?
+		return TransporterNetwork.get(level).getTransporter(id);
 	}
 	
 	public void addTransporterToNetwork()

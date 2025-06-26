@@ -158,7 +158,7 @@ public class StaffWeaponItem extends Item
 			if(isOpen(stack))
 			{
 				boolean canShoot = player.isCreative() ?
-						true : depleteLiquidNaquadah(player.getItemInHand(hand));
+						true : tryDepleteLiquidNaquadah(player.getItemInHand(hand));
 				
 				if(!canShoot)
 					return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
@@ -245,7 +245,7 @@ public class StaffWeaponItem extends Item
 	 * @param stack
 	 * @return
 	 */
-	public boolean depleteLiquidNaquadah(ItemStack staffWeaponItemStack)
+	public boolean tryDepleteLiquidNaquadah(ItemStack staffWeaponItemStack)
 	{
 		Optional<Boolean> drained = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
 		{
@@ -337,5 +337,15 @@ public class StaffWeaponItem extends Item
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+	}
+	
+	public static ItemStack filledStaffWeapon(boolean heavyLiquidNaquadah, int amount)
+	{
+		ItemStack staffWeapon = new ItemStack(ItemInit.MATOK.get());
+		ItemStack vial = heavyLiquidNaquadah ? VialItem.heavyLiquidNaquadahSetup(amount) : VialItem.liquidNaquadahSetup(amount);
+		
+		staffWeapon.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler -> itemHandler.insertItem(0, vial, false));
+		
+		return staffWeapon;
 	}
 }

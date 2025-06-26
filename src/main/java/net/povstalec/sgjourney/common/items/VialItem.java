@@ -45,28 +45,38 @@ public class VialItem extends Item
 				};
 	}
 	
-	public static ItemStack liquidNaquadahSetup()
+	public static ItemStack liquidNaquadahSetup(int amount)
 	{
 		ItemStack stack = new ItemStack(ItemInit.VIAL.get());
-        
-        stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
-        {
-        	fluidHandler.fill(new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get().getSource(), MAX_CAPACITY), FluidAction.EXECUTE);
-        });
+		
+		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
+		{
+			fluidHandler.fill(new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get().getSource(), amount), FluidAction.EXECUTE);
+		});
+		
+		return stack;
+	}
+	
+	public static ItemStack liquidNaquadahSetup()
+	{
+		return liquidNaquadahSetup(MAX_CAPACITY);
+	}
+	
+	public static ItemStack heavyLiquidNaquadahSetup(int amount)
+	{
+		ItemStack stack = new ItemStack(ItemInit.VIAL.get());
+		
+		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
+		{
+			fluidHandler.fill(new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get().getSource(), amount), FluidAction.EXECUTE);
+		});
 		
 		return stack;
 	}
 	
 	public static ItemStack heavyLiquidNaquadahSetup()
 	{
-		ItemStack stack = new ItemStack(ItemInit.VIAL.get());
-        
-        stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
-        {
-        	fluidHandler.fill(new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get().getSource(), MAX_CAPACITY), FluidAction.EXECUTE);
-        });
-		
-		return stack;
+		return heavyLiquidNaquadahSetup(MAX_CAPACITY);
 	}
 	
 	public static int getFluidAmount(ItemStack stack)

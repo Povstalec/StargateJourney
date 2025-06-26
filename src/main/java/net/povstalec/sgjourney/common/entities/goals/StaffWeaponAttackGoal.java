@@ -43,7 +43,12 @@ public class StaffWeaponAttackGoal<T extends PathfinderMob & RangedAttackMob> ex
 	
 	private boolean isHoldingStaffWeapon()
 	{
-		return this.mob.isHolding((is) -> is.getItem() instanceof StaffWeaponItem);
+		return this.mob.isHolding(stack -> stack.getItem() instanceof StaffWeaponItem);
+	}
+	
+	private boolean staffWeaponCanFire()
+	{
+		return this.mob.isHolding(stack -> stack.getItem() instanceof StaffWeaponItem staffWeapon && staffWeapon.getNaquadahAmount(stack) > 0);
 	}
 	
 	public boolean canContinueToUse()
@@ -97,7 +102,6 @@ public class StaffWeaponAttackGoal<T extends PathfinderMob & RangedAttackMob> ex
 		
 		if(shouldMoveToTarget)
 		{
-			System.out.println("pursuing");
 			--this.updatePathDelay;
 			if(this.updatePathDelay <= 0)
 			{
@@ -132,7 +136,7 @@ public class StaffWeaponAttackGoal<T extends PathfinderMob & RangedAttackMob> ex
 		
 		double distanceSqr = this.mob.distanceToSqr(target);
 		
-		if(distanceSqr > meleeAttackRadiusSqr)
+		if(distanceSqr > meleeAttackRadiusSqr && staffWeaponCanFire())
 			rangedTick(target, distanceSqr);
 		else
 			meleeTick(target);

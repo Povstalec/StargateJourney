@@ -155,7 +155,7 @@ public final class TransporterNetwork extends SavedData
 	@Nullable
 	public Transporter getTransporter(UUID uuid)
 	{
-		return BlockEntityList.get(server).getTransporters().get(uuid);
+		return BlockEntityList.get(server).getTransporter(uuid);
 	}
 	
 	

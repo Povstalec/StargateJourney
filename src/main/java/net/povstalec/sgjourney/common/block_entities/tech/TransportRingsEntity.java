@@ -35,8 +35,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	public int progress = -1;
 	public int progressOld = -1;
 	
-	private TransportRingsEntity target;
-	
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state);
@@ -47,13 +45,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
     {
         return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
     }
-	
-	@Nullable
-	public Transporter getTransporter()
-	{
-		//TODO Maybe start caching it?
-		return TransporterNetwork.get(level).getTransporter(id);
-	}
 	
 	@Override
 	public int getTimeOffset()
@@ -170,8 +161,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		if(this.progress == -1 || progress == -1)
 		{
-			//if(progress != -1 && level.isClientSide())
-			//	System.out.println(this.progress + " -> " + progress);
 			this.progress = progress;
 			this.progressOld = progress;
 		}

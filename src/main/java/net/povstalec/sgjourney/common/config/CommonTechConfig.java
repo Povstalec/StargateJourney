@@ -37,7 +37,7 @@ public class CommonTechConfig
 		
 		disable_kara_kesh_requirements = server
 				.comment("If true Kara Kesh won't require its user to have Naquadah in their bloodstream")
-				.define("server.disable_kara_kesh_requirements", true);
+				.define("server.disable_kara_kesh_requirements", false);
 		
 		personal_shield_capacity = server
 				.comment("The amount of Heavy Liquid Naquadah a Personal Shield can hold")

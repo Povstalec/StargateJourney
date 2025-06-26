@@ -50,10 +50,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
-import net.povstalec.sgjourney.common.capabilities.AncientGene;
-import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
-import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
-import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
+import net.povstalec.sgjourney.common.capabilities.*;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -355,17 +352,11 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onAttachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event)
 	{
-		if(event.getObject() instanceof Player)
+		if(event.getObject() instanceof Player || event.getObject() instanceof Human || event.getObject() instanceof AbstractVillager)
 		{
-			if(!event.getObject().getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).isPresent())
-				event.addCapability(new ResourceLocation(StargateJourney.MODID, "bloodstream_naquadah"), new BloodstreamNaquadahProvider());
+			if(!event.getObject().getCapability(GoauldHostProvider.GOAULD_HOST).isPresent())
+				event.addCapability(new ResourceLocation(StargateJourney.MODID, "goauld_host"), new GoauldHostProvider());
 			
-			if(!event.getObject().getCapability(AncientGeneProvider.ANCIENT_GENE).isPresent())
-				event.addCapability(new ResourceLocation(StargateJourney.MODID, "ancient_gene"), new AncientGeneProvider());
-		}
-		
-		else if(event.getObject() instanceof AbstractVillager)
-		{
 			if(!event.getObject().getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).isPresent())
 				event.addCapability(new ResourceLocation(StargateJourney.MODID, "bloodstream_naquadah"), new BloodstreamNaquadahProvider());
 			
@@ -381,6 +372,9 @@ public class ForgeEvents
 		Player clone = event.getEntity();
 		original.reviveCaps();
 		
+		original.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(oldCap ->
+				clone.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(newCap -> newCap.copyFrom(oldCap)));
+		
 		original.getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).ifPresent(oldCap ->
 			clone.getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).ifPresent(newCap -> newCap.copyFrom(oldCap)));
 		
@@ -393,6 +387,7 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onRegisterCapabilities(RegisterCapabilitiesEvent event)
 	{
+		event.register(GoauldHost.class);
 		event.register(BloodstreamNaquadah.class);
 		event.register(AncientGene.class);
 	}

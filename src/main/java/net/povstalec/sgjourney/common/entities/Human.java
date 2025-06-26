@@ -6,12 +6,14 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.entities.goals.NearestThreatGoal;
 import net.povstalec.sgjourney.common.entities.goals.StaffWeaponAttackGoal;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
@@ -26,6 +28,26 @@ public class Human extends Anthropoid
 	public Human(EntityType<? extends Human> type, Level level)
 	{
 		super(type, level);
+	}
+	
+	@Override
+	protected void registerGoals()
+	{
+		super.registerGoals();
+		
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
+	}
+	
+	@Override
+	protected boolean shouldDespawnInPeaceful()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean removeWhenFarAway(double distanceSqr)
+	{
+		return false;
 	}
 	
 	public static AttributeSupplier.Builder createAttributes()

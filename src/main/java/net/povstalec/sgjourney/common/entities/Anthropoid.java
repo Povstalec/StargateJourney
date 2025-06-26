@@ -1,21 +1,20 @@
 package net.povstalec.sgjourney.common.entities;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.common.entities.goals.NearestThreatGoal;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.povstalec.sgjourney.common.entities.goals.StaffWeaponAttackGoal;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
@@ -25,9 +24,27 @@ import javax.annotation.Nullable;
 
 public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 {
+	private final StaffWeaponAttackGoal staffWeaponGoal = new StaffWeaponAttackGoal(this, 1.0D, 8.0F, 12.0F);
+	private final RangedBowAttackGoal<Anthropoid> bowGoal = new RangedBowAttackGoal<>(this, 1.0D, 20, 15.0F);
+	private final MeleeAttackGoal meleeGoal = new MeleeAttackGoal(this, 1.2D, false)
+	{
+		public void stop()
+		{
+			super.stop();
+			Anthropoid.this.setAggressive(false);
+		}
+		
+		public void start()
+		{
+			super.start();
+			Anthropoid.this.setAggressive(true);
+		}
+	};
+	
 	public Anthropoid(EntityType<? extends Anthropoid> type, Level level)
 	{
 		super(type, level);
+		this.reassessWeaponGoal();
 	}
 	
 	public abstract ResourceLocation texture();
@@ -37,15 +54,10 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 	{
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		
-		this.goalSelector.addGoal(2, new StaffWeaponAttackGoal(this, 1.0D, 8.0F, 12.0F));
-		
 		this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 5F));
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		
 		this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
-		
-		//this.targetSelector.addGoal(2, (new HurtByTargetGoal(this)).setAlertOthers());
-		this.targetSelector.addGoal(1, new NearestThreatGoal<>(this, Player.class, true));
 	}
 	
 	@Override
@@ -60,13 +72,70 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 		return this.isBaby() ? 0.93F : 1.74F;
 	}
 	
+	public void reassessWeaponGoal()
+	{
+		if(this.level == null || this.level.isClientSide())
+			return;
+		
+		this.goalSelector.removeGoal(this.meleeGoal);
+		this.goalSelector.removeGoal(this.bowGoal);
+		this.goalSelector.removeGoal(this.staffWeaponGoal);
+		
+		ItemStack itemstack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, item -> isWeapon(item)));
+		
+		if(itemstack.getItem() instanceof StaffWeaponItem)
+			this.goalSelector.addGoal(2, staffWeaponGoal);
+		else if(itemstack.getItem() instanceof BowItem)
+		{
+			int i = 20;
+			
+			if(this.level.getDifficulty() != Difficulty.HARD)
+				i = 40;
+			
+			this.bowGoal.setMinAttackInterval(i);
+			this.goalSelector.addGoal(4, this.bowGoal);
+		}
+		else
+			this.goalSelector.addGoal(4, this.meleeGoal);
+	}
+	
+	
+	@Override
+	@Nullable
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag tag)
+	{
+		this.setCanPickUpLoot(true);
+		spawnGroupData = super.finalizeSpawn(level, difficulty, type, spawnGroupData, tag);
+		
+		reassessWeaponGoal();
+		
+		return spawnGroupData;
+	}
+	
+	@Override
+	public void readAdditionalSaveData(CompoundTag tag)
+	{
+		super.readAdditionalSaveData(tag);
+		this.reassessWeaponGoal();
+	}
+	
+	@Override
+	public void setItemSlot(EquipmentSlot slot, ItemStack stack)
+	{
+		super.setItemSlot(slot, stack);
+		
+		if(!this.level.isClientSide())
+			this.reassessWeaponGoal();
+		
+	}
+	
 	@Override
 	public void performRangedAttack(LivingEntity entity, float distanceFactor)
 	{
-		performStaffWeaponAttack(entity, distanceFactor);
-		
-		//TODO Humans should be able to use other weapons as well
-		//performBowAttack(entity, distanceFactor);
+		if(getMainHandItem().getItem() instanceof StaffWeaponItem)
+			performStaffWeaponAttack(entity, distanceFactor);
+		else
+			performBowAttack(entity, distanceFactor);
 	}
 	
 	protected void performBowAttack(LivingEntity entity, float distanceFactor)
@@ -92,7 +161,7 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 	{
 		ItemStack itemstack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, (item) -> item instanceof StaffWeaponItem));
 		
-		if(itemstack.getItem() instanceof StaffWeaponItem staffWeapon)
+		if(itemstack.getItem() instanceof StaffWeaponItem staffWeapon && staffWeapon.tryDepleteLiquidNaquadah(itemstack))
 		{
 			PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), this, level, staffWeapon.getExplosionPower(itemstack));
 			
@@ -106,5 +175,22 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 			this.playSound(SoundInit.MATOK_FIRE.get(), 0.25F, 1.0F);
 			level.addFreshEntity(plasmaProjectile);
 		}
+	}
+	
+	public static boolean isWeapon(Item item)
+	{
+		if(item instanceof SwordItem)
+			return true;
+		
+		if(item instanceof StaffWeaponItem)
+			return true;
+		
+		if(item instanceof BowItem)
+			return true;
+		
+		if(item instanceof CrossbowItem)
+			return true;
+		
+		return false;
 	}
 }

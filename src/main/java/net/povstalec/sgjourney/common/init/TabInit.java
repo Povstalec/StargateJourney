@@ -23,6 +23,7 @@ import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
+import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
 public class TabInit
@@ -109,8 +110,6 @@ public class TabInit
 				items.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.MEMORY_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_MEMORY_CRYSTAL.get());
-				//items.accept(MemoryCrystalItem.atlantisAddress());
-				//items.accept(MemoryCrystalItem.abydosAddress());
 				items.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ENERGY_CRYSTAL.get());

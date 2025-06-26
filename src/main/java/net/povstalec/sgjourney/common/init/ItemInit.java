@@ -215,6 +215,9 @@ public class ItemInit
 			() -> new StargateIrisItem.Bronze(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<StargateIrisItem.Steel> STEEL_IRIS = ITEMS.register("steel_iris", 
 			() -> new StargateIrisItem.Steel(new Item.Properties().stacksTo(1)));
+	
+	public static final RegistryObject<GoauldItem> GOAULD = ITEMS.register("goauld",
+			() -> new GoauldItem(new Item.Properties().stacksTo(1)));
 		
 	
 	public static void register(IEventBus eventBus)
