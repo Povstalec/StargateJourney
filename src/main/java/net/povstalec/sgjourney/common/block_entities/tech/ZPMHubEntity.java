@@ -87,7 +87,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && CommonPermissionConfig.protected_inventory_access.get())
+		if(capability == ForgeCapabilities.ITEM_HANDLER && isProtected() && CommonPermissionConfig.protected_inventory_access.get())
 			return lazyItemHandler.cast();
 		
 		return super.getCapability(capability, side);
