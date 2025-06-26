@@ -38,9 +38,13 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			TransceiverFunctions.setCurrentCode(transceiver, arguments.getString(0));
+			String code = arguments.getString(0);
+			if(code.length() > 1024)
+				return MethodResult.of(false);
 			
-			return MethodResult.of();
+			TransceiverFunctions.setCurrentCode(transceiver, code);
+			
+			return MethodResult.of(true);
 		}
 	}
 	
