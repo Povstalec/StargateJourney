@@ -87,7 +87,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && isProtected() && CommonPermissionConfig.protected_inventory_access.get())
+		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
 			return handler.cast();
 		
 		return super.getCapability(capability, side);
