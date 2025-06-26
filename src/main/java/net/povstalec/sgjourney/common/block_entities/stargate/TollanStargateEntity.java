@@ -28,7 +28,8 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
-	protected int getMaxObstructiveBlocks(){
+	protected int getMaxObstructiveBlocks()
+	{
 		return CommonStargateConfig.max_obstructive_blocks_tollan.get();
 	}
 

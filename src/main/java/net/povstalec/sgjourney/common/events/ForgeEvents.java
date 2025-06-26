@@ -357,14 +357,11 @@ public class ForgeEvents
 	public static void onDetonate(ExplosionEvent.Detonate event)
 	{
 		Level level = event.getLevel();
-
-		// remove any block entitys that report "protected"
-		event.getAffectedBlocks().removeIf(pos -> {
-			BlockState blockState = level.getBlockState(pos);
-			Block block = blockState.getBlock();
-			//Note: This should* never throw null pointer
-			return block instanceof ProtectedBlock pBlock &&
-					pBlock.getProtectedBlockEntity(level, pos, blockState).isProtected();
+		// Prevent Protected Block Entities from being destroyed by explosions
+		event.getAffectedBlocks().removeIf(pos ->
+		{
+			BlockState state = level.getBlockState(pos);
+			return state.getBlock() instanceof ProtectedBlock block && block.canExplode(level, pos, state, event.getExplosion());
 		});
 	}
 	

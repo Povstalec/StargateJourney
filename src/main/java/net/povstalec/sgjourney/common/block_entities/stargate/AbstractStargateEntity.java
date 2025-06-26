@@ -114,8 +114,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
-	protected ForgeConfigSpec.IntValue MAX_OBSTRUCTIVE_BLOCKS_CONFIG = CommonStargateConfig.max_obstructive_blocks;
-	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	// Basic Info
@@ -1173,7 +1171,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return getConnectionState().isDialingOut();
 	}
 
-	protected int getMaxObstructiveBlocks(){
+	protected int getMaxObstructiveBlocks()
+	{
 		return CommonStargateConfig.max_obstructive_blocks.get();
 	}
 
