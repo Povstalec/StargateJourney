@@ -55,13 +55,11 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			context.executeMainThreadTask(() ->
+			return context.executeMainThreadTask(() ->
 			{
 				TransceiverFunctions.sendTransmission(transceiver);
-				return new Object[] {};
+				return new Object[] {true};
 			});
-			
-			return MethodResult.of();
 		}
 	}
 	
@@ -76,9 +74,7 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() -> new Object[] {TransceiverFunctions.checkConnectedShielding(transceiver)});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {TransceiverFunctions.checkConnectedShielding(transceiver)});
 		}
 	}
 }
