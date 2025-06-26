@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.ZPMHubEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -104,8 +103,8 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
 	{
 		BlockEntity blockEntity = reader.getBlockEntity(pos);
 		
-		if(blockEntity instanceof AbstractDHDEntity dhd)
-			return dhd;
+		if(blockEntity instanceof ZPMHubEntity zpmHub)
+			return zpmHub;
 		
 		return null;
 	}
@@ -115,8 +114,8 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
 	{
 		BlockEntity blockEntity = reader.getBlockEntity(pos);
 		
-		if(blockEntity instanceof AbstractDHDEntity dhd)
-			return dhd.hasPermissions(player, sendMessage);
+		if(blockEntity instanceof ZPMHubEntity zpmHub)
+			return zpmHub.hasPermissions(player, sendMessage);
 		
 		return true;
 	}
