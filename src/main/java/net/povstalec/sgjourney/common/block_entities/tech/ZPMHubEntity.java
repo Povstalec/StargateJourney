@@ -3,6 +3,11 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -27,7 +32,7 @@ import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 
-public class ZPMHubEntity extends EnergyBlockEntity
+public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEntity
 {
 	private static final long maxTransfer = CommonZPMConfig.zpm_hub_max_transfer.get();
 	private static final long maxEnergyDisplayed = CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
@@ -35,6 +40,8 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
 	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
+	
+	protected boolean isProtected = false;
 	
 	public ZPMHubEntity(BlockPos pos, BlockState state)
 	{
@@ -243,6 +250,32 @@ public class ZPMHubEntity extends EnergyBlockEntity
 		
 		super.changeEnergy(difference, simulate);
 	}*/
+	
+	@Override
+	public void setProtected(boolean isProtected)
+	{
+		this.isProtected = isProtected;
+	}
+	
+	@Override
+	public boolean isProtected()
+	{
+		return isProtected;
+	}
+	
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_zpm_hub_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+			
+			return false;
+		}
+		
+		return true;
+	}
 	
 	//============================================================================================
 	//******************************************Ticking*******************************************

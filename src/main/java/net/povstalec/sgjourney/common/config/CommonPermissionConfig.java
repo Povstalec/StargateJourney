@@ -6,6 +6,8 @@ public class CommonPermissionConfig
 {
 	public static SGJourneyConfigValue.IntValue protected_stargate_permissions;
 	public static SGJourneyConfigValue.IntValue protected_dhd_permissions;
+	public static SGJourneyConfigValue.IntValue protected_zpm_hub_permissions;
+	
 	public static SGJourneyConfigValue.BooleanValue protected_blocks_ignore_explosions;
 	
 	public static void init(ForgeConfigSpec.Builder server)
@@ -17,6 +19,10 @@ public class CommonPermissionConfig
 		protected_dhd_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_dhd_permissions",
 				0, 0, 4,
 				"Decides the player permission level required to modify or break protected DHDs");
+		
+		protected_zpm_hub_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_zpm_hub_permissions",
+				0, 0, 4,
+				"Decides the player permission level required to modify or break protected ZPM Hubs");
 		
 		protected_blocks_ignore_explosions = new SGJourneyConfigValue.BooleanValue(server, "server.protected_blocks_ignore_explosions",
 				false,

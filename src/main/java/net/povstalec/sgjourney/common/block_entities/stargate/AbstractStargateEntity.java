@@ -102,7 +102,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String VARIANT = "Variant";
 	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
 	public static final String PRIMARY = "primary";
-	public static final String PROTECTED = "protected";
 	
 	public static final String COVER_BLOCKS = "CoverBlocks";
 	
