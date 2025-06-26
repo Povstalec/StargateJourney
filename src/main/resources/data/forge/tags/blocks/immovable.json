@@ -24,6 +24,7 @@
 		"sgjourney:tollan_stargate",
 		"sgjourney:tollan_ring",
 
-		"sgjourney:transport_rings"
+		"sgjourney:transport_rings",
+		"sgjourney:zpm_hub"
 	]
 }
