@@ -28,8 +28,8 @@ public class CommonPermissionConfig
 		
 		
 		protected_inventory_access = new SGJourneyConfigValue.BooleanValue(server, "server.protected_inventory_access",
-				false,
-				"If true, it will be impossible for other blocks (like Hoppers) to access the inventories of protected blocks");
+				true,
+				"If false, it will be impossible for other blocks (like Hoppers) to access the inventories of protected blocks");
 		
 		protected_blocks_ignore_explosions = new SGJourneyConfigValue.BooleanValue(server, "server.protected_blocks_ignore_explosions",
 				false,
