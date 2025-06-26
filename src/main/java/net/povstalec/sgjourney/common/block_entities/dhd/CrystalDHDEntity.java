@@ -78,6 +78,11 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		super.invalidateCaps();
 	}
 	
+	public LazyOptional<IItemHandler> getItemHandler()
+	{
+		return handler.cast();
+	}
+	
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)

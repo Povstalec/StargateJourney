@@ -33,7 +33,7 @@ public class ZPMHubMenu extends AbstractContainerMenu
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
         
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
+        this.blockEntity.getItemHandler().ifPresent(handler -> {
             this.addSlot(new SlotItemHandler(handler, 0, 80, 35));
         });
     }

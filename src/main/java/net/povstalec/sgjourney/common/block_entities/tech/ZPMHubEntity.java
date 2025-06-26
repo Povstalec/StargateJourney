@@ -75,6 +75,11 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 			tag.putBoolean(PROTECTED, true);
 	}
 	
+	public LazyOptional<IItemHandler> getItemHandler()
+	{
+		return lazyItemHandler.cast();
+	}
+	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
