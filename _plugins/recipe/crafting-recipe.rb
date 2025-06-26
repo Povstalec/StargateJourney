@@ -113,6 +113,7 @@ module Recipe
 
       recipe_file = RECIPES[resource.name]
       unless recipe_file
+        puts RECIPES.inspect
         raise "Crafting recipe for #{resource} was not found"
       end
 

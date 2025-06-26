@@ -22,12 +22,13 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
 
 [//]: # (a simple css limited only to this table to set image size)
 <style>
-.img-max-height-16 img {
-  max-height: 16px;
+.a-preserve-spaces a {
+    white-space: preserve-spaces;
 }
+
 </style>
 
-<table class="text-center img-max-height-16">
+<table class="text-center a-preserve-spaces">
   <thead>
     <tr><th colspan="8">Archeologist</th></tr>
     <tr>
@@ -49,7 +50,7 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
       <td>12</td>
     </tr>
     <tr>
-      <td>1 x <a href="{{ '/blocks/golden-idol/' | absolute_url}}"><img class="vertical-text-bottom" src="{{ '/assets/img/items/crafting/sgjourney/golden_idol.png' | absolute_url }}" /> Golden idol</a></td>
+      <td>1 x <a href="{{ '/blocks/golden-idol/' | absolute_url}}">{% include components/inline_item.html src="/assets/img/items/crafting/sgjourney/golden_idol.png" %} Golden idol</a></td>
       {%- include components/survival/villager_table_td.html amount="5" item="Emerald" -%}
       <td>4</td>
       <td>9%</td>
@@ -57,7 +58,7 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
     </tr>
     <tr>
       {%- include components/survival/villager_table_td.html amount="8" item="Emerald" -%}
-      <td>1 x <img class="vertical-text-bottom" src="https://minecraft.wiki/images/Invicon_Map.png" /> Archeologist's Map</td>
+      <td>1 x {% include components/inline_item.html src="https://minecraft.wiki/images/Invicon_Map.png" %} Archeologist's Map</td>
       <td>1</td>
       <td>-</td>
       <td>80</td>
@@ -65,7 +66,7 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
     <tr>
       <th rowspan="3">Apprentice</th>
       {%- include components/survival/villager_table_td.html amount="4" item="Emerald" -%}
-      <td>1 x <a href="https://minecraft.wiki/w/Compass"><img class="vertical-text-bottom" src="https://minecraft.wiki/images/Invicon_Compass.gif" /> Compass</a></td>
+      <td>1 x <a href="https://minecraft.wiki/w/Compass">{% include components/inline_item.html src="https://minecraft.wiki/images/Invicon_Compass.gif" %} Compass</a></td>
       <td>4</td>
       <td>9%</td>
       <td>12</td>
@@ -87,13 +88,13 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
     <tr>
       <td rowspan="3">Journeyman</td>
       {%- include components/survival/villager_table_td.html amount="3" item="Emerald" -%}
-      <td>4 x <a href="{{ '/blocks/fire-pit/' | absolute_url}}"><img class="vertical-text-bottom" src="{{ '/assets/img/items/crafting/sgjourney/fire_pit.png' | absolute_url }}" /> Fire pit</a></td>
+      <td>4 x <a href="{{ '/blocks/fire-pit/' | absolute_url}}">{% include components/inline_item.html src="/assets/img/items/crafting/sgjourney/fire_pit.png" %} Fire pit</a></td>
       <td>1</td>
       <td>9%</td>
       <td>12</td>
     </tr>
     <tr>
-      <td>3 x <a href="{{ '/blocks/building-blocks/#sandstone-hieroglyphs' | absolute_url}}"><img class="vertical-text-bottom" src="{{ '/assets/img/items/crafting/sgjourney/sandstone_hieroglyphs.png' | absolute_url }}" /> Sandstone Hieroglyphs</a></td>
+      <td>3 x <a href="{{ '/blocks/building-blocks/#sandstone-hieroglyphs' | absolute_url}}">{% include components/inline_item.html src="/assets/img/items/crafting/sgjourney/sandstone_hieroglyphs.png" %} Sandstone Hieroglyphs</a></td>
       {%- include components/survival/villager_table_td.html amount="1" item="Emerald" -%}
       <td>4</td>
       <td>9%</td>
@@ -101,7 +102,7 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
     </tr>
     <tr>
       {%- include components/survival/villager_table_td.html amount="4" item="Emerald" -%}
-      <td>3 x <a href="{{ '/blocks/building-blocks/#sandstone-with-lapis' | absolute_url}}"><img class="vertical-text-bottom" src="{{ '/assets/img/items/crafting/sgjourney/sandstone_with_lapis.png' | absolute_url }}" /> Sandstone with Lapis</a></td>
+      <td>3 x <a href="{{ '/blocks/building-blocks/#sandstone-with-lapis' | absolute_url}}">{% include components/inline_item.html src="/assets/img/items/crafting/sgjourney/sandstone_with_lapis.png" %} Sandstone with Lapis</a></td>
       <td>4</td>
       <td>9%</td>
       <td>12</td>
@@ -109,21 +110,21 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
     <tr>
       <td rowspan="4">Expert</td>
       {%- include components/survival/villager_table_td.html amount="4" item="Emerald" -%}
-      <td>1 x <a href="{{ '/blocks/symbol-block' | absolute_url}}"><img class="vertical-text-bottom" src="{{ '/assets/img/items/crafting/sgjourney/stone_symbol.png' | absolute_url }}" /> Stone Symbol</a></td>
+      <td>1 x <a href="{{ '/blocks/symbol-block' | absolute_url}}">{% include components/inline_item.html src="/assets/img/items/crafting/sgjourney/stone_symbol.png" %} Stone Symbol</a></td>
       <td>4</td>
       <td>9%</td>
       <td>12</td>
     </tr>
     <tr>
       {%- include components/survival/villager_table_td.html amount="4" item="Emerald" -%}
-      <td>1 x <a href="{{ '/blocks/symbol-block' | absolute_url}}"><img class="vertical-text-bottom" src="{{ '/assets/img/items/crafting/sgjourney/sandstone_symbol.png' | absolute_url }}" /> Sandstone Symbol</a></td>
+      <td>1 x <a href="{{ '/blocks/symbol-block' | absolute_url}}">{% include components/inline_item.html src="/assets/img/items/crafting/sgjourney/sandstone_symbol.png" %} Sandstone Symbol</a></td>
       <td>4</td>
       <td>9%</td>
       <td>12</td>
     </tr>
     <tr>
       {%- include components/survival/villager_table_td.html amount="4" item="Emerald" -%}
-      <td>1 x <a href="{{ '/blocks/symbol-block' | absolute_url}}"><img class="vertical-text-bottom" src="{{ '/assets/img/items/crafting/sgjourney/red_sandstone_symbol.png' | absolute_url }}" /> Red Sandstone Symbol</a></td>
+      <td>1 x <a href="{{ '/blocks/symbol-block' | absolute_url}}">{% include components/inline_item.html src="/assets/img/items/crafting/sgjourney/red_sandstone_symbol.png" %} Red Sandstone Symbol</a></td>
       <td>4</td>
       <td>9%</td>
       <td>12</td>
@@ -138,7 +139,7 @@ and a [__map to Chappa'ai__]({{ '/survival/finding-gate/#the-map-to-chappaai' | 
     <tr>
       <td>Master</td>
       {%- include components/survival/villager_table_td.html amount="8" item="Emerald" -%}
-      <td>1 x <a href="{{ '/survival/finding-gate/#the-map-to-chappaai' | absolute_url }}"><img class="vertical-text-bottom" src="https://minecraft.wiki/images/Invicon_Map.png" /> Map to Chappa'ai</a></td>
+      <td>1 x <a href="{{ '/survival/finding-gate/#the-map-to-chappaai' | absolute_url }}">{% include components/inline_item.html src="https://minecraft.wiki/images/Invicon_Map.png" %} Map to Chappa'ai</a></td>
       <td>1</td>
       <td>-</td>
       <td>80</td>

@@ -12,58 +12,73 @@ To activate the stargate, you need to dial an **address** of the destination gat
 
 ## The address
 
-Each stargate has a unique **9 chevron** long address.
+Each stargate has a unique **9-chevron** address.
 That address is unique for the specific stargate and can never be changed once the gate is built (or generated).
 
-Additionally, the gate can be dialed using an address of **the solar system** it is located in.
-**7-chevron** address is an address of the solar system within the **current galaxy**.
+Additionally, the gate can be dialed using the address of **the solar system** in which it is located.
+The **7-chevron** address is an address of the solar system within the **current galaxy**.
 To dial a solar system in a **different galaxy**, you need to use an **8-chevron** address.
 
-**The first address cartouche** you found buried along with the stargate is an address to the Abydos solar system in Milky Way galaxy.
-The address consists of **6 symbols**, the 7th symbol is the **Point of Origin** (PoO).
+**The first address** on a cartouche you found buried along with the stargate is an address to the **Abydos** solar system in the Milky Way galaxy.
+The address consists of **6&nbsp;symbols**.
+The 7th symbol is the **Point of Origin** (PoO).
 
 [//]: # (TODO: add link to further addressing system explanation)
 
-You can place the cartouche on the ground and see the symbols (from top to bottom),
+You can place the cartouche on the ground and see the symbols (from top to bottom)
 or right-click it and see the address as numbers in the chat.
 
+If you did not find the cartouche along with the stargate, but you found the
+[Beta gate]({{ '/structures/stargates/#terra-gate-the-beta-gate' | absolute_url }})
+or other stargate pedestal from a datapack instead,
+in that case, you can either return to 
+[Finding the buried stargate]({{ '/survival/finding-gate/' | absolute_url }}) 
+or see the spoiler with the Abydos address below.
+
 <details markdown="block">
-<summary><b>[Spoiler / Hint]</b> I did not find the cartouche</summary>
-
-That could happen if you did not find the sealed [Alpha gate]({{ site.baseurl }}/structures/stargates/#buried-stargate)
-and instead found the [Beta gate]({{ site.baseurl }}/structures/stargates/#terra-gate-the-beta-gate) 
-or other gate structure (a Stargate pedestal added by a datapack, for example).
-In that case, here is an image of the cartouche with the Abydos address.
-
+<summary><b>[Spoiler]</b> Cartouche with the Abydos address</summary>
 ![Cartouche with the Abydos address]({{ site.baseurl }}/assets/img/survival/cartouche_abydos_address.png)
 
 Its number representation is `-26-6-14-31-11-29-`.
-
 </details>
 
 ___
 
 ## Power
 The stargate requires **power** to operate.
-The buried stargate was found with a DHD containing a **Fusion Core** that is able to supply the gate with energy for some time.
+The buried stargate was found with a DHD containing a [**Fusion Core**]({{ '/items/functional-items/fusion-core/' | absolute_url }}) 
+that is able to supply the gate with energy
+for interstellar travel (in the current galaxy) for some time.
 The DHD inventory can be accessed by `shift+right-clicking` it with an **empty hand**.
-Fusion Core operates on cold fusion technology and so **doesn't require any fuel**.
-However, once the Fusion Core runs out of energy, it will need to be **replaced with a new power source** (e.g. with Naquadah Generator Core).
-It should be able to power the gate for standard **interstellar** travel (inside the same galaxy).
-
-[//]: # (TODO: fusion core & naquadah generator core link)
+[Fusion Core]({{ '/items/functional-items/fusion-core/' | absolute_url }}) 
+is an Ancient technology, that seems to operate on a cold fusion basis and **doesn't require any fuel**.
+However, once the 
+[Fusion Core]({{ '/items/functional-items/fusion-core/' | absolute_url }}) 
+runs out of energy, it will need to be **replaced with a new power source** (e.g. with 
+[Naquadah Generator Core]({{ 'items/functional-items/naquadah-generator-core/' | absolute_url }})).
 
 The DHD will also power the gate even if other dialing methods are used, it just needs to be placed nearby the gate.
 
-Alternatively, the gate can be powered using a **stargate interface** powered by a generator from **other mod**.
+Alternatively, the gate can be powered using a **stargate interface** with an **external power supply** (e.g. from other mod).
 
-[//]: # (TODO: show interface connected to a gate and powered by a cable (e.g. from Mekanism)
+<details markdown="block">
+<summary>Stargate interface powering the gate</summary>
+![Stargate interface powering the gate]({{ site.baseurl }}/assets/img/survival/stargate_interface_power.png)
+{: .max-width-512 }
+
+The stargate interface must face the gate (the black side facing away from the gate).
+And there must be a power supply connected to the interface from any side.
+The image shows an energy cube from Mekanism connected to the interface with a universal cable.
+</details>
+
 
 ## Dialing
 
 There are several ways to encode the address based on the stargate type used.
 The options are: Using a **Dial Home Device (DHD)**, **manual dialing with redstone**, or using a **computer** from CC:Tweaked (Computercraft).
 When a computer is used, it can either rotate the gate encoding the symbol at the top, or engage the symbols directly, like a DHD.
+To engage a symbol in the same way as the DHD does, the computer requires the crystal stargate interface (or the advanced stargate interface).
+For dialing using rotation, the basic stargate interface is sufficient.
 
 Table below summarizes the available dialing methods for each Stargate type.
 
@@ -79,6 +94,8 @@ Table below summarizes the available dialing methods for each Stargate type.
     font-weight: bold;
 }
 </style>
+
+[//]: # (Add links to stargate interfaces in the table below)
 
 <table class="text-center">
     <thead>
@@ -135,54 +152,65 @@ Table below summarizes the available dialing methods for each Stargate type.
 <details markdown="block" id="dialing-using-a-dial-home-device-dhd">
 <summary>1. Dialing using a Dial Home Device (DHD)</summary>
 
+<details id="dialing-using-a-dial-home-device-dhd-youtube-video">
+<summary>Youtube video</summary>
+{% include youtubePlayer.html id="Fv10GPshSCI" %}
+</details>
+
 ![DHD GUI]({{ site.baseurl }}/assets/img/survival/dhd_gui.png)
-{: .max-width-512 }
+{: .max-width-512 .m-auto .d-flex .flex-justify-around }
 
 First, place down the gate, and then place DHD anywhere near it.
-The DHD should be able to connect to the gate within a 16-block range.
+The DHD with a single [communication crystal](/stargate-technology/crystals/dhd-crystals/#communication-crystal) 
+is able to connect to the gate within a 32-block range.
 
 Right-click the DHD and enter the address (the order of the numbers matters).
-Finally, click the big red button in the middle to encode the Point of Origin and activate the gate.
+Finally, click the big red button in the middle to encode the Point of Origin (symbol 0) and activate the gate.
 
 </details>
 
-<details markdown="block">
-<summary id="manual-dialing-with-redstone">2. Manual dialing with redstone</summary>
+<details markdown="block" id="manual-dialing-with-redstone">
+<summary>2. Manual dialing with redstone</summary>
 
-### Manual dialing with redstone
+<details>
+<summary>Youtube video</summary>
+{% include youtubePlayer.html id="Ulcp8-21B6U" %}
+</details>
 
-Stargate reacts to the redstone signal.  
+Classic, Universe and Milky Way stargates reacts to the redstone signal.  
 When you place the gate, note the symbol under the top chevron, that is, the Point of Origin (PoO).
 You will need it later.
 
-|       Signal strength        |         Action          |
-|:----------------------------:|:-----------------------:|
-|              0               |         Nothing         |
-|      less or equal to 6      | Anti-clockwise rotation |
-|      more or equal to 7      |   Clockwise rotation    |
-|         equal to 15          |      Open chevron       |
-|     change from 15 to 0      |      Close chevron      |
+| Redstone signal strength |         Action          |
+|:------------------------:|:-----------------------:|
+|            0             |         Nothing         |
+|    less or equal to 6    | Anti-clockwise rotation |
+|    more or equal to 7    |   Clockwise rotation    |
+|       equal to 15        |      Open chevron       |
+|   change from 15 to 0    |      Close chevron      |
 
 To dial the Stargate with redstone,
-use signals to **spin the ring** and position the desired **symbol** under the **top chevron**.
+provide power to the gate with DHD or stargate interface.
+Use different redstone signal strengths to **spin the ring** and position the desired **symbol** under the **top chevron**.
+The whole Universe stargate rotates, so the symbol at the top will be encoded.
 You can see the symbols and their order on the **cartouche**.
 Once the symbol is in place, use signal strength **15** to **open the chevron** and then cut the signal (change from 15 to 0) to **close the chevron**.
+No other redstone signal must be present on the gate.
 This way, the symbol will be **encoded**, and the next chevron will light up.
-You can proceed to the next symbol.
 
 If you accidentally encoded a **wrong symbol**, you can encode the **Point of Origin** anytime,
 resetting the gate (as the encoded address will be invalid).
 
 Once you encode **all symbols** from the address, encode the **Point of Origin**, activating the Stargate.
 
-![Manual redstone dialing setup]({{ site.baseurl }}/assets/img/survival/redstone_dialing.png)
+![Manual redstone dialing setup]({{ '/assets/img/survival/redstone_dialing.png' | absolute_url }})
+{: .max-width-512 .m-auto .d-flex .flex-justify-around }
 
+The observers in the image reacts to stone buttons resulting in two pulses moving the ring together by a single symbol.
 </details>
 
-<details markdown="block">
-<summary id="dialing-with-computercraft">3. Dialing using a <a href="https://tweaked.cc/" target="_blank">Computercraft</a></summary>
-
-### Dialing with computercraft
+<details markdown="block" id="dialing-with-computercraft">
+<summary>3. Dialing using a <a href="https://tweaked.cc/" target="_blank">Computercraft</a></summary>
 
 First, you will need a way to connect the computer to the Stargate.
 "Interfaces" act as computer peripherals (you can use any computer basic/advanced).

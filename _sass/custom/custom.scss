@@ -43,5 +43,10 @@ code {
   text-wrap: nowrap;
 }
 
+img.inline-item {
+  max-height: 16px;
+  vertical-align: text-bottom;
+}
+
 // located in /assets/css
 @import "./youtubePlayer.css";
