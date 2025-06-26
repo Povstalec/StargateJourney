@@ -76,7 +76,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
+		if(capability == ForgeCapabilities.ITEM_HANDLER && CommonPermissionConfig.protected_inventory_access.get())
 			return lazyItemHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -283,7 +283,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, ZPMHubEntity hub)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
 		hub.outputEnergy(Direction.DOWN);

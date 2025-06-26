@@ -52,9 +52,12 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof ZPMHubEntity) 
+        	if(blockEntity instanceof ZPMHubEntity zpmHub)
         	{
-        		MenuProvider containerProvider = new MenuProvider() 
+				if(!zpmHub.hasPermissions(player, true))
+					return InteractionResult.FAIL;
+				
+				MenuProvider containerProvider = new MenuProvider()
         		{
         			@Override
         			public Component getDisplayName() 
@@ -71,9 +74,7 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
         		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
-        	{
         		throw new IllegalStateException("Our named container provider is missing!");
-        	}
         }
         return InteractionResult.SUCCESS;
     }
