@@ -56,17 +56,23 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void load(CompoundTag tag)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound("Inventory"));
+		super.load(tag);
+		itemHandler.deserializeNBT(tag.getCompound("Inventory"));
+		
+		if(tag.contains(PROTECTED, CompoundTag.TAG_BYTE))
+			isProtected = tag.getBoolean(PROTECTED);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(nbt);
-		nbt.put("Inventory", itemHandler.serializeNBT());
+		super.saveAdditional(tag);
+		tag.put("Inventory", itemHandler.serializeNBT());
+		
+		if(isProtected)
+			tag.putBoolean(PROTECTED, true);
 	}
 	
 	//============================================================================================
