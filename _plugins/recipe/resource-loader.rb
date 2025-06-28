@@ -46,6 +46,7 @@ module Recipe
     # @param resource [McResource]
     def load_sgj_item(resource)
       source_file = File.join(IMPLEMENTATION_BRANCH, 'src/main/resources/assets/sgjourney/textures/item/', "#{resource.name}.png")
+      exported_source_file = File.join(PROJECT_DIRECTORY, "exported/sgjourney", "#{resource.name}.png")
       destination_file = resource.resource_file(false) # dynamic asset
       if File.exist?(resource.resource_file(true)) # check if static asset exists
         resource.asset_url = resource.asset_file(true)
@@ -56,6 +57,11 @@ module Recipe
         FileUtils.mkdir_p(File.dirname(source_file))
         FileUtils.cp(source_file, destination_file)
         resource.asset_url = resource.asset_file(false) # dynamic asset
+      elsif File.exist?(exported_source_file)
+        LOG.info("Copying exported asset to static assets: #{resource.name}.png")
+        FileUtils.mkdir_p(File.dirname(resource.resource_file(true))) # static asset directory
+        FileUtils.cp(exported_source_file, resource.resource_file(true))
+        resource.asset_url = resource.asset_file(true) # static asset
       else
         raise "Missing source file #{source_file} for resource #{resource}"
       end
