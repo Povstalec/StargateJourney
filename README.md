@@ -86,7 +86,7 @@ Related files:
 /assets/fonts/minecraft.woff
 ```
 
-Uses Jekyll-TOC created by Vladimir "allejo" Jimenez
-https://github.com/allejo/jekyll-toc
-(c) 2017 Vladimir "allejo" Jimenez
+Uses Jekyll-TOC created by Vladimir "allejo" Jimenez  
+https://github.com/allejo/jekyll-toc  
+(c) 2017 Vladimir "allejo" Jimenez  
 Uses modified version of [toc.html](https://github.com/allejo/jekyll-toc/blob/master/_includes/toc.html) at `_includes/toc.html`

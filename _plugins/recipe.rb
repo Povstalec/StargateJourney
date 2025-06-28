@@ -34,6 +34,10 @@
 # You can use `scripts/update_exported.sh` script to automatically update git tracked files in the static directory with files from the exported directory
 # Or you can manually just add files to the `assets/img/items/crafting/sgjourney/static` directory
 
+
+# Note: this was my first interaction with Jekyll plugins and with Ruby in general,
+# I strongly encourage everyone reading this code to keep holy water next to the monitor to wash their eyes regularly.
+
 module Recipe
   LOG = Jekyll.logger
 end
