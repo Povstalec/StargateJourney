@@ -29,13 +29,17 @@ module Recipe
     end
 
     # @return [String] absolute path to the image file representing the resource in jekyll source assets directory
-    def resource_file
-      File.join(PROJECT_DIRECTORY, asset_file)
+    def resource_file(static = true)
+      File.join(PROJECT_DIRECTORY, asset_file(static))
     end
 
     # @return [String] path relative to project root pointing to the resource file in the assets directory
-    def asset_file
-      File.join(RELATIVE_JEKYLL_CRAFTING_ASSETS, @namespace, "#{@name}.png")
+    def asset_file(static = true)
+      ver = "static"
+      unless static
+          ver = "dynamic"
+      end
+      File.join(RELATIVE_JEKYLL_CRAFTING_ASSETS, @namespace, ver, "#{@name}.png")
     end
 
     # @return [String] absolute web url to the asset

@@ -210,16 +210,14 @@ The observers in the image reacts to stone buttons resulting in two pulses movin
 </details>
 
 <details markdown="block" id="dialing-with-computercraft">
-<summary>3. Dialing using a <a href="https://tweaked.cc/" target="_blank">Computercraft</a></summary>
+<summary>3. Dialing using the <a href="https://tweaked.cc/" target="_blank">Computercraft</a></summary>
 
 First, you will need a way to connect the computer to the Stargate.
 "Interfaces" act as computer peripherals (you can use any computer basic/advanced).
 
-You can craft a basic interface with 4 iron ingots, 2 gold ingots, 2 copper ingots, and one redstone.
+{% minecraft_recipe_crafting item:"sgjourney:basic_interface" %}
 
-![Crafting a basic interface]({{ site.baseurl }}/assets/img/survival/basic_interface_crafting.png)
-
-![Stargate setup with computer and interface]({{ site.baseurl }}/assets/img/survival/gate_interface_setup.png)
+![Stargate setup with computer and interface]({{ site.baseurl }}/assets/img/computercraft/connecting_interface_to_computer.png)
 
 Place the interface **facing the gate**,
 ensuring that the **black side** is facing **away** from the gate.

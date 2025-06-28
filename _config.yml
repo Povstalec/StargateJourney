@@ -123,3 +123,4 @@ exclude:
   - .bundle/
   - build/
   - implementation_branch/
+  - scripts/

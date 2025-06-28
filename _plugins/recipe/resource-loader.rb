@@ -21,21 +21,18 @@ module Recipe
         return
       end
 
-      file = resource.resource_file
-
       unless @namespace_handlers.has_key?(resource.namespace)
         LOG.error("Unable to load resource, unknown namespace: #{resource.namespace} for #{resource}")
         return
       end
 
-      @namespace_handlers[resource.namespace].load(resource, file)
+      @namespace_handlers[resource.namespace].load(resource)
     end
 
     private # methods below are private
 
     # @param resource [McResource]
-    # @param destination_file [String]
-    def load_minecraft_item(resource, destination_file)
+    def load_minecraft_item(resource)
       capital_name = resource.name.split('_').map(&:capitalize).join('_')
       resource.asset_url = "https://minecraft.wiki/images/Invicon_" + capital_name + ".png"
     end
@@ -47,16 +44,18 @@ module Recipe
     end
 
     # @param resource [McResource]
-    # @param destination_file [String]
-    def load_sgj_item(resource, destination_file)
+    def load_sgj_item(resource)
       source_file = File.join(IMPLEMENTATION_BRANCH, 'src/main/resources/assets/sgjourney/textures/item/', "#{resource.name}.png")
-      if File.exist?(destination_file)
-        resource.asset_url = resource.asset_file
+      destination_file = resource.resource_file(false) # dynamic asset
+      if File.exist?(resource.resource_file(true)) # check if static asset exists
+        resource.asset_url = resource.asset_file(true)
+      elsif File.exist?(destination_file)
+        resource.asset_url = resource.asset_file(false) # dynamic asset already exists
       elsif File.exist?(source_file)
         LOG.debug("Copying #{source_file} to #{destination_file}")
         FileUtils.mkdir_p(File.dirname(source_file))
         FileUtils.cp(source_file, destination_file)
-        resource.asset_url = resource.asset_file
+        resource.asset_url = resource.asset_file(false) # dynamic asset
       else
         raise "Missing source file #{source_file} for resource #{resource}"
       end
@@ -96,7 +95,7 @@ module Recipe
     end
 
     # @param resource [McResource]
-    def load(resource, destination_file)
+    def load(resource)
       if resource.is_tag
         if TAG_CACHE.has_key?(resource)
           resource.asset_url = TAG_CACHE[resource].asset_url
@@ -104,7 +103,7 @@ module Recipe
         end
         @load_tag.call(resource)
       else
-        @load_item.call(resource, destination_file)
+        @load_item.call(resource)
       end
     end
   end
