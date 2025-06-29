@@ -9,15 +9,20 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+
+import static net.povstalec.sgjourney.common.init.FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE;
+import static net.povstalec.sgjourney.common.init.FluidInit.LIQUID_NAQUADAH_SOURCE;
 
 public abstract class LiquidizerMenu extends AbstractContainerMenu
 {
@@ -128,6 +133,36 @@ public abstract class LiquidizerMenu extends AbstractContainerMenu
     // THIS YOU HAVE TO DEFINE!
     private static final int TE_INVENTORY_SLOT_COUNT = 3;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
 
+    private static final int TE_INVENTORY_INPUT_BUCKET_SLOT_INDEX = 1;
+    private static final int TE_INVENTORY_OUTPUT_BUCKET_SLOT_INDEX = 2;
+
+    /**
+     * Checks if the ItemStack has the required liquid for the liquidizer.
+     * @return true if the ItemStack has the required liquid, false otherwise.
+     */
+    private boolean hasRequiredLiquid(ItemStack itemStack) {
+        return itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(cap ->
+                cap.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid1())
+        ).orElse(false);
+    }
+
+    /**
+     * Checks if the ItemStack can accept the resulting liquid from the liquidizer.
+     * @return true if the ItemStack has fluid tank with matching fluid type or is empty, false otherwise.
+     */
+    private boolean canAcceptResultingLiquid(ItemStack itemStack)
+    {
+        return itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(cap ->
+                cap.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid2()) ||
+                        cap.getFluidInTank(0).getFluid().isSame(Fluids.EMPTY)
+        ).orElse(false);
+    }
+
+    private static boolean countEquals(ItemStack first, ItemStack second)
+    {
+        return first.getCount() == second.getCount();
+    }
+
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) 
     {
@@ -135,13 +170,30 @@ public abstract class LiquidizerMenu extends AbstractContainerMenu
         if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
+        boolean stopQuickMove = false;
 
         // Check if the slot clicked is one of the vanilla container slots
         if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) 
         {
             // This is a vanilla container slot so merge the stack into the tile inventory
-            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT, false)) 
+
+            stopQuickMove = true;
+            // try to move it to the bucket slot first if it has the required liquid
+            if(hasRequiredLiquid(sourceStack))
+            {
+                moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_INPUT_BUCKET_SLOT_INDEX,
+                        TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_INPUT_BUCKET_SLOT_INDEX + 1, false);
+                // we are trying a single slot which might fail
+            }
+            else if (canAcceptResultingLiquid(sourceSlot.getItem())) {
+                // try an empty bucket for the output slot
+                moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_OUTPUT_BUCKET_SLOT_INDEX,
+                    TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_OUTPUT_BUCKET_SLOT_INDEX + 1, false);
+            }
+
+            // if nothing was moved before, try all slots
+            if (countEquals(sourceStack, copyOfSourceStack) && !moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
+                    TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false))
             {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
@@ -167,6 +219,10 @@ public abstract class LiquidizerMenu extends AbstractContainerMenu
             sourceSlot.setChanged();
         }
         sourceSlot.onTake(playerIn, sourceStack);
+        if (stopQuickMove) {
+            // Do not "overflow" to the next slot
+            return ItemStack.EMPTY;
+        }
         return copyOfSourceStack;
     }
 	
