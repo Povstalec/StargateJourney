@@ -37,6 +37,12 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundGDOOpenScreenPacket::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ClientboundArcheologistNotebookOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundArcheologistNotebookOpenScreenPacket::encode)
+		.decoder(ClientboundArcheologistNotebookOpenScreenPacket::new)
+		.consumerMainThread(ClientboundArcheologistNotebookOpenScreenPacket::handle)
+		.add();
+		
 		INSTANCE.messageBuilder(ClientboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundTransceiverUpdatePacket::encode)
 		.decoder(ClientboundTransceiverUpdatePacket::new)

@@ -8,12 +8,14 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.client.screens.GDOScreen;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
@@ -47,6 +49,11 @@ public class ClientAccess
     {
     	minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
     }
+	
+	public static void openArcheologistNotebookScreen(UUID playerId, boolean mainHand, CompoundTag tag)
+	{
+		minecraft.setScreen(new ArcheologistNotebookScreen(playerId, mainHand, tag));
+	}
 	
     public static void updateSymbol(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
     {

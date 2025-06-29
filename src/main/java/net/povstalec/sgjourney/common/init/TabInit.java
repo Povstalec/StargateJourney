@@ -62,6 +62,8 @@ public class TabInit
 
 				items.accept(ItemInit.GDO.get());
 				
+				items.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
+				
 				items.accept(ItemInit.NAQUADAH_SWORD.get());
 				items.accept(ItemInit.NAQUADAH_PICKAXE.get());
 				items.accept(ItemInit.NAQUADAH_AXE.get());

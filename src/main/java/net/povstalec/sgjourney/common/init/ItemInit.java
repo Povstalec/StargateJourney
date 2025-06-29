@@ -99,6 +99,9 @@ public class ItemInit
 	public static final RegistryObject<Item> SYRINGE = ITEMS.register("syringe", 
 			() -> new SyringeItem(new SyringeItem.Properties().stacksTo(1)));
 	
+	public static final RegistryObject<ArcheologistNotebook> ARCHEOLOGIST_NOTEBOOK = ITEMS.register("archeologist_notebook",
+			() -> new ArcheologistNotebook(new Item.Properties().stacksTo(1)));
+	
 	// Crystals
 	public static final RegistryObject<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal", 
 			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
