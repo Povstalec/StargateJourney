@@ -232,25 +232,25 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			if(blockentity == null)
 				return;
 			
-			if(blockentity instanceof EnergyBlockEntity energyBE)
+			blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) ->
 			{
-				long simulatedOutputAmount = this.extractEnergy(this.maxExtract(), true);
-				long simulatedReceiveAmount = energyBE.receiveEnergy(simulatedOutputAmount, true);
-				
-				this.extractEnergy(simulatedReceiveAmount, false);
-				energyBE.receiveEnergy(simulatedReceiveAmount, false);
-			}
-			else
-			{
-				blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection).ifPresent((energyStorage) ->
+				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				{
+					long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(SGJourneyEnergy.getRegularEnergy(ENERGY_STORAGE.maxExtract()), true);
+					long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
+					
+					ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
+					sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
+				}
+				else
 				{
 					int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.getRegularEnergy(ENERGY_STORAGE.maxExtract()), true);
 					int simulatedReceiveAmount = energyStorage.receiveEnergy(simulatedOutputAmount, true);
 					
 					ENERGY_STORAGE.extractEnergy(simulatedReceiveAmount, false);
 					energyStorage.receiveEnergy(simulatedReceiveAmount, false);
-				});
-			}
+				}
+			});
 		}
 	}
 	

@@ -34,17 +34,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
-import net.povstalec.sgjourney.common.blocks.tech.AdvancedCrystalInterfaceBlock;
-import net.povstalec.sgjourney.common.blocks.tech.AdvancedCrystallizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.BasicInterfaceBlock;
-import net.povstalec.sgjourney.common.blocks.tech.CrystalInterfaceBlock;
-import net.povstalec.sgjourney.common.blocks.tech.CrystallizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.HeavyNaquadahLiquidizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorMarkIBlock;
-import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorMarkIIBlock;
-import net.povstalec.sgjourney.common.blocks.tech.NaquadahLiquidizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
-import net.povstalec.sgjourney.common.blocks.tech.ZPMHubBlock;
+import net.povstalec.sgjourney.common.blocks.tech.*;
 import net.povstalec.sgjourney.common.items.blocks.CartoucheBlockItem;
 import net.povstalec.sgjourney.common.items.blocks.DHDItem;
 import net.povstalec.sgjourney.common.items.blocks.StargateBlockItem;
@@ -254,6 +244,9 @@ public class BlockInit
 
 	public static final RegistryObject<TransceiverBlock> TRANSCEIVER = registerBlock("transceiver", 
 			() -> new TransceiverBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F)), 1);
+	
+	public static final RegistryObject<CableBlock.NaquadahCable> NAQUADAH_CABLE = registerBlock("naquadah_cable",
+			() -> new CableBlock.NaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F).noOcclusion()), 64);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)

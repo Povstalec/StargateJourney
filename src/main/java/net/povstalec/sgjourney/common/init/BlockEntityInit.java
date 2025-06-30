@@ -20,16 +20,9 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.ZPMHubEntity;
-public class BlockEntityInit 
+import net.povstalec.sgjourney.common.block_entities.tech.*;
+
+public class BlockEntityInit
 {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, StargateJourney.MODID);
 	
@@ -100,6 +93,9 @@ public class BlockEntityInit
 	
 	public static final RegistryObject<BlockEntityType<TransceiverEntity>> TRANSCEIVER = BLOCK_ENTITIES.register("transciever",
             () -> BlockEntityType.Builder.of(TransceiverEntity::new, BlockInit.TRANSCEIVER.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<CableBlockEntity.NaquadahCable>> NAQUADAH_CABLE = BLOCK_ENTITIES.register("naquadah_cable",
+			() -> BlockEntityType.Builder.of(CableBlockEntity.NaquadahCable::new, BlockInit.NAQUADAH_CABLE.get()).build(null));
 	
 	public static void register(IEventBus eventBus)
 	{

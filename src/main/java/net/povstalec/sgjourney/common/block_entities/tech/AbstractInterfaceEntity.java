@@ -182,7 +182,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		if(side == getDirection())
+		if(side == getDirection().getOpposite())
 			return false;
 		return true;
 	}

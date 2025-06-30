@@ -24,7 +24,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     @Override
 	public int receiveEnergy(int maxReceive, boolean simulate)
 	{
-    	return (int) receiveLongEnergy((long) maxReceive, simulate);
+    	return (int) Math.min(Integer.MAX_VALUE, receiveLongEnergy(maxReceive, simulate));
 	}
     
     public long receiveLongEnergy(long maxReceive, boolean simulate)
@@ -43,7 +43,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	@Override
     public int extractEnergy(int maxExtract, boolean simulate)
     {
-		return (int) extractLongEnergy((long) maxExtract, simulate);
+		return (int) Math.min(Integer.MAX_VALUE, extractLongEnergy(maxExtract, simulate));
     }
 	
 	public long extractLongEnergy(long maxExtract, boolean simulate)

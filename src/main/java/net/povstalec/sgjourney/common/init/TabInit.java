@@ -261,6 +261,8 @@ public class TabInit
 				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				
 				items.accept(BlockInit.ZPM_HUB.get());
+				
+				items.accept(BlockInit.NAQUADAH_CABLE.get());
 			});
 		});
 	}
