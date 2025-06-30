@@ -19,7 +19,7 @@ public interface ProtectedBlock
 	
 	default boolean canExplode(BlockGetter reader, BlockPos pos, BlockState state, Explosion explosion)
 	{
-		if(explosion.getIndirectSourceEntity() instanceof Player player)
+		if(explosion.getSourceMob() instanceof Player player)
 			return hasPermissions(reader, pos, state, player, false);
 		
 		return !CommonPermissionConfig.protected_blocks_ignore_explosions.get();
