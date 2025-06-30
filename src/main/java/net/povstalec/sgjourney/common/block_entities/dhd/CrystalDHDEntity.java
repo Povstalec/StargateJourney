@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import javax.annotation.Nonnull;
 
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -77,14 +78,17 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		super.invalidateCaps();
 	}
 	
+	public LazyOptional<IItemHandler> getItemHandler()
+	{
+		return handler.cast();
+	}
+	
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
-		{
+		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
 			return handler.cast();
-		}
 		
 		return super.getCapability(capability, side);
 	}

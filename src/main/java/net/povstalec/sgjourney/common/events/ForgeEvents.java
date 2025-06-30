@@ -26,6 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.phys.EntityHitResult;
@@ -41,11 +43,13 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
@@ -347,6 +351,18 @@ public class ForgeEvents
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public static void onDetonate(ExplosionEvent.Detonate event)
+	{
+		Level level = event.getLevel();
+		// Prevent Protected Block Entities from being destroyed by explosions
+		event.getAffectedBlocks().removeIf(pos ->
+		{
+			BlockState state = level.getBlockState(pos);
+			return state.getBlock() instanceof ProtectedBlock block && block.canExplode(level, pos, state, event.getExplosion());
+		});
 	}
 	
 	@SubscribeEvent

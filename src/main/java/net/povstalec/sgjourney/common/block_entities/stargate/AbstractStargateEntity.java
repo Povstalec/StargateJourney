@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
@@ -101,7 +102,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String VARIANT = "Variant";
 	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
 	public static final String PRIMARY = "primary";
-	public static final String PROTECTED = "protected";
 	
 	public static final String COVER_BLOCKS = "CoverBlocks";
 	
@@ -1169,7 +1169,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		return getConnectionState().isDialingOut();
 	}
-	
+
+	protected int getMaxObstructiveBlocks()
+	{
+		return CommonStargateConfig.max_obstructive_blocks.get();
+	}
+
 	public boolean isObstructed()
 	{
 		Direction direction = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
@@ -1187,7 +1192,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 					obstructingBlocks++;
 			}
 		}
-		return obstructingBlocks >= CommonStargateConfig.max_obstructive_blocks.get();
+		return obstructingBlocks >= getMaxObstructiveBlocks();
 	}
 	
 	@Override

@@ -47,7 +47,8 @@ public class StargateBlockState extends BlockState
 	@Override
 	public float getDestroySpeed(BlockGetter reader, BlockPos pos)
 	{
-		if(this.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		// Null checks here because ProjectMMO passes a null values in here https://github.com/Caltinor/Project-MMO-2.0/issues/706
+		if(reader != null && pos != null && this.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
 			AbstractStargateEntity stargate = stargateBlock.getStargate(reader, pos, reader.getBlockState(pos));
 			if(stargate != null && !CommonStargateConfig.can_break_connected_stargate.get())

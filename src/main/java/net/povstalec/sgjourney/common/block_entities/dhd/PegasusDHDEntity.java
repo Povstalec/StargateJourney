@@ -50,7 +50,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	@Override
 	public long maxEnergyDeplete()
 	{
-		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.milky_way_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
+		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.pegasus_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
 	}
 
 	@Override

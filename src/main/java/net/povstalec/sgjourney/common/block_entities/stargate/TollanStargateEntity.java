@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
@@ -24,6 +25,12 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	{
 		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state,
 				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_2, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
+	}
+
+	@Override
+	protected int getMaxObstructiveBlocks()
+	{
+		return CommonStargateConfig.max_obstructive_blocks_tollan.get();
 	}
 
 	@Override

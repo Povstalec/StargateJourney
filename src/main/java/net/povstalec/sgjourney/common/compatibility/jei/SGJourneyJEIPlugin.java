@@ -11,12 +11,14 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
 import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 
@@ -67,5 +69,12 @@ public class SGJourneyJEIPlugin implements IModPlugin
 				registration.addRecipeCatalyst(new ItemStack(item), AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE);
 			}
 		});
+	}
+	
+	@Override
+	public void registerItemSubtypes(ISubtypeRegistration registration)
+	{
+		registration.registerSubtypeInterpreter(ItemInit.STARGATE_VARIANT_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.INSTANCE);
+		registration.registerSubtypeInterpreter(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.INSTANCE);
 	}
 }

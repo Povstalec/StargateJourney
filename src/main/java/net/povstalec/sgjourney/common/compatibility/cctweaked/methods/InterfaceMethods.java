@@ -25,7 +25,8 @@ public class InterfaceMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
 		{
-			InterfaceFunctions.setEnergyTarget(interfaceEntity, arguments.getLong(0));
+			long target = arguments.getLong(0);
+			InterfaceFunctions.setEnergyTarget(interfaceEntity, target);
 			
 			return MethodResult.of();
 		}

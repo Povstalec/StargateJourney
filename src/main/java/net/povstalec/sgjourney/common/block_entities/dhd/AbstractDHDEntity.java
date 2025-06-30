@@ -55,8 +55,6 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity
 {
-	public static final String PROTECTED = "protected";
-	
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
 	

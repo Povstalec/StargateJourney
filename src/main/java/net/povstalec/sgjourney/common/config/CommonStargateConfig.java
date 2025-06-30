@@ -21,6 +21,7 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue enable_redstone_dialing;
 	public static ForgeConfigSpec.BooleanValue always_display_stargate_id;
 	public static ForgeConfigSpec.IntValue max_obstructive_blocks;
+	public static ForgeConfigSpec.IntValue max_obstructive_blocks_tollan;
 	
 	public static ForgeConfigSpec.BooleanValue allow_interstellar_8_chevron_addresses;
 	public static ForgeConfigSpec.BooleanValue allow_system_wide_connections;
@@ -113,9 +114,13 @@ public class CommonStargateConfig
 		max_obstructive_blocks = server
 				.comment("The maximum amount of blocks allowed within the ring area before Stargate becomes obstructed")
 				.defineInRange("server.max_obstructive_blocks", 12, 1, 21);
-		
-		
-		
+
+		max_obstructive_blocks_tollan = server
+				.comment("The maximum amount of blocks allowed within the ring area before Tollan Stargate becomes obstructed")
+				.defineInRange("server.max_obstructive_blocks_tollan", 9, 1, 16);
+
+
+
 		enable_address_choice = server
 				.comment("Enables choosing the Address when first creating a Stargate by right-clicking it with a renamed Control Crystal")
 				.define("server.enable_address_choice", false);
