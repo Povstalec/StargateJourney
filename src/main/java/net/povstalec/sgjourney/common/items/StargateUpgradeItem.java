@@ -3,6 +3,9 @@ package net.povstalec.sgjourney.common.items;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.povstalec.sgjourney.common.misc.RecipeUtil;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -43,8 +46,17 @@ public class StargateUpgradeItem extends Item
 		
 		return stargate;
 	}
-    
-    public static Optional<String> getStargateString(ItemStack stack)
+
+
+	@Override
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
+		if (this.allowedIn(tab)) {
+            items.addAll(RecipeUtil.getAllVariants(this.getClass(), TYPE));
+		}
+	}
+
+
+	public static Optional<String> getStargateString(ItemStack stack)
 	{
     	Optional<String> stargate = Optional.empty();
     	
