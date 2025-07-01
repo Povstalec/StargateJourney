@@ -3,7 +3,7 @@
 # Stargate Journey
 <a href="https://www.curseforge.com/minecraft/mc-mods/sgjourney" target="_blank"><img src="https://img.shields.io/curseforge/dt/689083?style=for-the-badge&logo=curseforge&color=626e7b&label=Curseforge" alt="Curseforge"></a>
 <a href="https://modrinth.com/mod/sgjourney" target="_blank"><img src="https://img.shields.io/modrinth/dt/sgjourney?style=for-the-badge&logo=modrinth&color=626e7b&label=Modrinth" alt="Modrinth"></a>
-<a href="{{ site.discord_invite_link }}" target="_blank"><img src="https://img.shields.io/badge/Join_our_Discord_server-grey?style=for-the-badge&logo=discord" alt="Discord"></a>
+<a href="https://discord.gg/VDSqzdBqRd" target="_blank"><img src="https://img.shields.io/badge/Join_our_Discord_server-grey?style=for-the-badge&logo=discord" alt="Discord"></a>
 <a href="https://povstalec.github.io/StargateJourney/"><img alt="Static Badge" src="https://img.shields.io/badge/-grey?style=for-the-badge&logo=jekyll&logoColor=white&label=wiki%20%26%20documentation" /></a>
 
 Let's add Stargates to Minecraft... in a different way. 
