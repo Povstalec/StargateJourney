@@ -1,5 +1,5 @@
 ---
-title: Glacio
+title: Ad Astra / Glacio
 nav_order: 200
 parent: Dimensions
 ---
