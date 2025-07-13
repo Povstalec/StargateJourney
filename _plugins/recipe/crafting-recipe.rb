@@ -71,9 +71,9 @@ module Recipe
     # parses attributes from markup
     # and fills @attributes map
     def parse_attributes(markup)
-      @attributes = {}
+      @attributes_to_parse = {}
       markup.scan(Liquid::TagAttributes) do |key, value|
-        @attributes[key] = strip_quotes(value)
+        @attributes_to_parse[key] = Liquid::Expression.parse(value)
       end
     end
 
@@ -89,6 +89,12 @@ module Recipe
     # @param context [Liquid::Context] The template context
     def render(context)
       @context = context
+      @attributes = {}
+
+      @attributes_to_parse.each do |key, value|
+          @attributes[key] = context.evaluate(value)
+      end
+
       @lang = Lang.new(context)
       @resource_loader = ResourceLoader.new(context)
       unless @attributes["item"]
