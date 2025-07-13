@@ -5,12 +5,9 @@ nav_order: 40
 iris_types: [Naquadah Alloy, Steel, Copper, Iron, Golden, Diamond, Netherite, Bronze]
 ---
 
-1. Table of Contents
-{:toc}
-
-___
 
 # Stargate Iris
+{: .no_toc }
 
 > The iris is a metal covering on the Earth Stargate which is used to screen incoming traffic.  
 > When the iris is closed, it forms a barrier less than three μm from the wormhole's event horizon,
@@ -25,24 +22,6 @@ and by the wall, I mean the iris.
 
 [//]: # (Idk man, its 1AM, what do you want from me?)
 
-<details markdown="block">
-<summary id="iris-types">Iris types</summary>
-
-[//]: # (This loop will print each iris type defined in the page header as the name and image)
-{% for type in page.iris_types %}
-
-{{ type }} iris  
-`{{ type | downcase | replace: " ", "_" }}_iris`
-
-![{{ type }} iris]({{ site.baseurl }}/assets/img/blocks/technological/iris/{{ type | downcase | replace: " ", "_" }}_iris.png)
-{: .max-width-512 }
-
-___
-
-{% endfor %}
-
-</details>
-
 ___
 
 ## Crafting
@@ -50,12 +29,35 @@ ___
 You will need a Stargate shielding ring first to craft an iris,
 which you can craft with four iron ingots and four redstone dusts.
 
-![Stargate shielding ring recipe]({{ site.baseurl }}/assets/img/blocks/technological/iris/stargate_shielding_ring_recipe.png)
+{% minecraft_recipe_crafting item:"sgjourney:stargate_shielding_ring" %}
 
 Then, you can use the ring in the middle of the crafting table
 and surround it with a material for the [iris type](#iris-types).
 
-![Stargate naquadah alloy iris]({{ site.baseurl }}/assets/img/blocks/technological/iris/stargate_iris_recipe.png)
+{% minecraft_recipe_crafting item:"sgjourney:naquadah_alloy_iris" %}
+
+<details markdown="block">
+<summary id="iris-types">Iris types</summary>
+
+[//]: # (This loop will print each iris type defined in the page header as the name and image)
+{% for type in page.iris_types %}
+
+{% assign iris_id = type | downcase | replace: " ", "_" | append: "_iris" %}
+{% assign iris_item_id = 'sgjourney:' | append: iris_id %}
+
+{{ type }} iris  
+`{{ iris_item_id }}`
+
+{% minecraft_recipe_crafting item:iris_item_id %}
+
+![{{ type }} iris]({{ '/assets/img/blocks/technological/iris/' | append: iris_id | append: '.png' | absolute_url }})
+{: .max-width-512 }
+
+___
+
+{% endfor %}
+
+</details>
 
 ___
 
