@@ -155,5 +155,5 @@ Check [Troubleshooting / Stargate isn't generating]({{ '/troubleshooting/#i-crea
 </details>
 </blockquote>
 
-## [Next page: Dialing]({{ site.baseurl }}/survival/dialing)
+## [Next page: Dialing]({{ '/survival/dialing' | absolute_url }})
 {: .no_toc }

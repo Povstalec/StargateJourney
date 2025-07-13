@@ -21,6 +21,10 @@ Additionally, the gate can be dialed using the address of **the solar system** i
 The **7-chevron** address is an address of the solar system within the **current galaxy**.
 To dial a solar system in a **different galaxy**, you need to use an **8-chevron** address.
 
+As of the mod's current state, it is impossible to find an 8-chevron address in survival.
+Meaning you can't reach other galaxies without commands (yet).
+The 9-chevron address of the gate can be obtained by right-clicking the stargate with a PDA.
+
 **The first address** you found on a cartouche buried along with the stargate is an address to the **Abydos** solar system in the Milky Way galaxy.
 The address consists of **6&nbsp;symbols**.
 The 7th symbol is the **Point of Origin** (PoO).
@@ -334,5 +338,5 @@ On this planet, you are looking primarily for two things:
 an ore called [Naquadah]({{ site.baseurl }}/survival/naquadah/) 
 and your [way back home]({{ site.baseurl }}/survival/addresses/) to the Earth (the address of the overworld).
 
-## [Next page: Finding addresses]({{ site.baseurl }}/survival/addresses/)
+## [Next page: Finding addresses]({{ '/survival/addresses/' | absolute_url }})
 {: .no_toc }

@@ -8,13 +8,13 @@ nav_exclude: true
 > 
 > The current state of the new structure:  
 > 
-> |                                    |                        |
-> |:----------------------------------:|:----------------------:|
-> |  **What's that Stargate anyway?**  |       no changes       |
-> |   **Frequently Asked Questions**   | done, ready for review |
-> |        **Troubleshooting**         | done, ready for review |
-> |         **Survival Guide**         |    ongoing changes     |
-> |                                    |                        |
+> |                                    |                                              |
+> |:----------------------------------:|:--------------------------------------------:|
+> |  **What's that Stargate anyway?**  |                  no changes                  |
+> |   **Frequently Asked Questions**   |            done, ready for review            |
+> |        **Troubleshooting**         |            done, ready for review            |
+> |         **Survival Guide**         | done, needs update with links to other sites |
+> |                                    |                                              |
 >
 
 <div class="text-center" markdown="block">

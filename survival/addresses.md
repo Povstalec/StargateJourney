@@ -32,7 +32,7 @@ Or to get the extra-galactic address for a solar system in a different galaxy:
 
 ## Abydos cartouche
 
-Abydos is a planet under Ra's control, a Goa'uld System Lord.
+Abydos is a planet under [Ra](https://stargate.fandom.com/wiki/Ra)'s control, a Goa'uld System Lord.
 
 The structures housing **cartouches** on Abydos look like **sandstone rock formation**.
 You can find these scattered around the vast Abydos desert.
@@ -61,7 +61,7 @@ Once inside, the first cartouche holds the Earth's address.
 </details>
 
 ## Chulak cartouche
-Chulak, on the other hand, is under the control of another Goa'uld System Lord - Apophis.
+Chulak, on the other hand, is under the control of another Goa'uld System Lord - [Apophis](https://stargate.fandom.com/wiki/Apophis).
 
 The **cartouche** structure on Chulak is a formation of several small stone pillars in a circle.
 It can contain addresses to other planets under Apophis' control, the Abydos and vanilla or other modded dimensions.
@@ -75,6 +75,6 @@ It can contain addresses to other planets under Apophis' control, the Abydos and
 
 <!-- TODO: add a cheat way - link to a list of addresses -->
 
-## [Next page: Naquadah]({{ site.baseurl }}/survival/naquadah/)
+## [Next page: Naquadah]({{ '/survival/naquadah/' | absolute_url }})
 {: .no_toc }
 

@@ -45,10 +45,7 @@ vendor/
 
 implementation_branch
 
-assets/img/items/crafting/
-!assets/img/items/crafting/sgjourney/
-!assets/img/items/crafting/sgjourney/static/
-!assets/img/items/crafting/sgjourney/static/**
+assets/img/items/crafting/*/dynamic/
 !assets/img/items/crafting/sgjourney/dynamic/.gitkeep
 
 exported/
