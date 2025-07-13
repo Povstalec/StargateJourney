@@ -154,7 +154,11 @@ module Recipe
       description = ""
       if title.nil?
         title = resource.to_s
-        description = "missing translation"
+        if resource.is_tag
+          title = "Tag: #{title}"
+        else
+          description = "missing translation"
+        end
       end
       file = resource.asset_url
       link = item_web_link(resource)

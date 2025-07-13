@@ -9,7 +9,9 @@ module Recipe
       @context = context
       @namespace_handlers = {
         "sgjourney" => ResourceLoaderHandler.new(method(:load_sgj_item), method(:load_sgj_tag)),
-        "minecraft" => ResourceLoaderHandler.new(method(:load_minecraft_item), method(:load_minecraft_tag))
+        "minecraft" => ResourceLoaderHandler.new(method(:load_minecraft_item), method(:load_minecraft_tag)),
+        "neoforge" => ResourceLoaderHandler.new(method(:load_neoforge_item), method(:load_neoforge_tag)),
+        "c" => ResourceLoaderHandler.new(method(:load_neoforge_item), method(:load_neoforge_tag)),
       }.freeze
     end
 
@@ -76,6 +78,14 @@ module Recipe
       else
         raise "Missing tag file #{tag_file} for resource #{resource}"
       end
+    end
+
+    def load_neoforge_item(resource)
+      resource.asset_url = File.join("assets", "img", "mcui", "questionmark.png")
+    end
+
+    def load_neoforge_tag(resource)
+      resource.asset_url = File.join("assets", "img", "mcui", "hash_tag.png")
     end
 
     def process_tag(tag, resource)
