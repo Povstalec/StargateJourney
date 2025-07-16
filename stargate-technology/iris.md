@@ -88,14 +88,14 @@ ___
 ___
 
 ### Manual control
-The iris can be controlled with a [Stargate interface]({{ site.baseurl }}/stargate_network/interface/) with redstone or computers.
+The iris can be controlled with a [Stargate interface]({{ site.baseurl }}/stargate-network/interface/) with redstone or computers.
 Additionally, you can use a Garage Door Opener (GDO) to open the iris remotely.
 
 {: .warning }
 If you don't know redstone well, pay attention to each block and its direction, comparators and repeaters don't work both ways.
 
 First, you need to set up the **basic interface** in the shielding mode (not that other interfaces can't be used yet).  
-[Stargate Network / Stargate Interface / Shielding mode]({{ site.baseurl }}/stargate_network/interface/#shielding-mode)
+[Stargate Network / Stargate Interface / Shielding mode]({{ site.baseurl }}/stargate-network/interface/#shielding-mode)
 
 ![Basic interface in shielding mode]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/basic_interface_shielding.png)
 {: .max-width-512 }
@@ -142,8 +142,8 @@ and closed for incoming connections reflecting any uninvited visitors,
 unless opened with a lever?  
 It is indeed possible with a very simple setup.
 
-Using an interface in the [wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode)
-will provide appropriate signal strength for the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode)
+Using an interface in the [wormhole mode]({{ site.baseurl }}/stargate-network/interface/#wormhole-mode)
+will provide appropriate signal strength for the interface in the [iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode)
 to automatically open/close the iris based on the connection direction.
 
 During an incoming connection, the iris can be easily opened with a redstone signal of strength **8** or higher.
@@ -152,9 +152,9 @@ During an incoming connection, the iris can be easily opened with a redstone sig
 
 You can also instruct the iris to **open automatically** when there is **no connection**.
 With another comparator, you can read from the interface in the
-[wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) whether there is an active connection.
+[wormhole mode]({{ site.baseurl }}/stargate-network/interface/#wormhole-mode) whether there is an active connection.
 **Negating** this signal with a **torch** will power the interface in the
-[iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode),
+[iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode),
 **opening** the iris when there is **no connection**.
 When there is **any connection**,
 the second comparator will emit **some** signal to the torch,
@@ -212,11 +212,11 @@ The top/left one closes and the bottom/right one opens the iris.
 ### Circuit breakdown
 So, how the circuit with [GDO]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo) works.
 
-As explained in the [automatic iris closing section]({{ site.baseurl }}/stargate_network/stargate_iris/#automatic-iris-closing),
-the interface on the left in the [wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode)
+As explained in the [automatic iris closing section]({{ site.baseurl }}/stargate-network/stargate_iris/#automatic-iris-closing),
+the interface on the left in the [wormhole mode]({{ site.baseurl }}/stargate-network/interface/#wormhole-mode)
 will provide via comparator a signal of strength
 - **0** -- When there is no active connection,
-  resulting in no action from the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode)
+  resulting in no action from the interface in the [iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode)
   on the right.
 - **7** -- When there is an **incoming** connection, resulting in **closing** the iris by the interface on the right.
 - **15** -- When there is an **outgoing** connection, resulting in **opening** the iris by the interface on the right.
@@ -236,7 +236,7 @@ The latch will hold the state until its switched again.
 
 For the output of the [RS NOR Latch](https://minecraft.wiki/w/Redstone_circuits/Memory#RS-NOR_latches)
 a torch marked with letter **A** is used.
-However, the torch under the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode) negates the signal.
+However, the torch under the interface in the [iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode) negates the signal.
 So in fact, the state of the torch **B** is the same as the state of the torch under the interface.
 This indicates whether the iris should open.
 When the torch **A** is inactive, the torch under the interface will light up.
@@ -262,7 +262,7 @@ and the iris will never close for the next incoming connection.
 We need to reset the latch state when the connection is over.
 
 With a new comparator, you can read from the interface in the
-[wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) whether there is an active connection.
+[wormhole mode]({{ site.baseurl }}/stargate-network/interface/#wormhole-mode) whether there is an active connection.
 This signal can be negated with a redstone torch which can power the latch behind the torch **B**.
 So whenever the gate is idle (there is no active connection), the comparator won't output any signal,
 leaving the torch active.
@@ -276,7 +276,7 @@ which will turn off the torch allowing the [RS NOR Latch](https://minecraft.wiki
 As mentioned before, the iris can be also instructed to automatically open when the gate is idle.
 We already have a place, which can emit a signal when the gate is idle.
 Hooking the added torch directly to the interface in the
-[iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode) will power the interface with signal strength **14**
+[iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode) will power the interface with signal strength **14**
 opening the iris whenever the gate is not active.
 
 ![Iris setup with GDO with auto open]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/gdo_breakdown/iris_with_gdo_auto_open.png)
@@ -284,11 +284,11 @@ opening the iris whenever the gate is not active.
 **Summary**
 
 When the gate is active, the left side of the latch should be active.
-The torch below the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode) should be inactive,
+The torch below the interface in the [iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode) should be inactive,
 leaving the comparator between interfaces to instruct
 the iris based on the connection type (open for outgoing, close for incoming).
 The second comparator reading from the interface in the
-[wormhole mode]({{ site.baseurl }}/stargate_network/interface/#wormhole-mode) disables the torch resetting the latch,
+[wormhole mode]({{ site.baseurl }}/stargate-network/interface/#wormhole-mode) disables the torch resetting the latch,
 allowing it to be switched to the other state by the [transceiver]({{ site.baseurl }}/blocks/technological_blocks/#transceiver)
 (to open the iris when requested).
 
@@ -309,13 +309,13 @@ The right lever is connected directly to the redstone on the original granite sl
 There are two solid blocks added next to the granite slabs to block neighboring redstone dust.
 
 The left lever powers the block with torches to reset the [RS NOR Latch](https://minecraft.wiki/w/Redstone_circuits/Memory#RS-NOR_latches),
-the block below the torch below the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode).
+the block below the torch below the interface in the [iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode).
 The comparator between the interfaces is powered from the side with a repeater,
-and the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode) is powered directly with dust (to keep the signal level low).
+and the interface in the [iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode) is powered directly with dust (to keep the signal level low).
 The comparator between the interfaces is set to subtracting mode.
 The lever will also override the [GDO]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo) signal.
 In case you do not want the lever to override the [GDO]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo) signal,
-simply remove the repeater powering the torch under the interface in the [iris mode]({{ site.baseurl }}/stargate_network/interface/#iris-mode).
+simply remove the repeater powering the torch under the interface in the [iris mode]({{ site.baseurl }}/stargate-network/interface/#iris-mode).
 
 
 ![Iris manual override front]({{ site.baseurl }}/assets/img/mechanics/stargate_network/iris/gdo_breakdown/iris_with_gdo_manual_override_front.png)

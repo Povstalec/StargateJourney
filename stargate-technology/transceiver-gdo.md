@@ -11,7 +11,7 @@ and report the state of the iris or the shield on the other side of the connecti
 On the other side, the [transceiver]({{ site.baseurl }}/blocks/technological_blocks/#transceiver)
 can receive and validate the identification code.
 
-See [Stargate Network / Stargate Iris / Controlling / Remote iris control]({{ site.baseurl }}/stargate_network/stargate_iris/#remote-iris-control)
+See [Stargate Network / Stargate Iris / Controlling / Remote iris control]({{ site.baseurl }}/stargate-network/stargate_iris/#remote-iris-control)
 for redstone example using the [transceiver]({{ site.baseurl }}/blocks/technological_blocks/#transceiver).
 
 **Usage**

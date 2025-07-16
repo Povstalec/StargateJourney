@@ -83,7 +83,7 @@ It will provide a redstone signal pulse through a comparator when a correct IDC 
 and will notify connected computers with an event.
 Transceiver is also able to transmit the IDC.
 
-See [Stargate Network / Stargate Iris / Controlling / Remote iris control]({{ site.baseurl }}/stargate_network/stargate_iris/#remote-iris-control)
+See [Stargate Network / Stargate Iris / Controlling / Remote iris control]({{ site.baseurl }}/stargate-network/stargate_iris/#remote-iris-control)
 for redstone example.
 
 **GUI usage**
@@ -113,7 +113,7 @@ ___
 ___
 
 ## Stargate Interface
-See the [Stargate Network / Stargate Interface]({{ site.baseurl }}/stargate_network/interface/) section for further details.
+See the [Stargate Network / Stargate Interface]({{ site.baseurl }}/stargate-network/interface/) section for further details.
 
 ### Basic Interface
 

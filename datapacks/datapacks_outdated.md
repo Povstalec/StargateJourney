@@ -13,9 +13,9 @@ This content was migrated from the old wiki and is awaiting an update.
 One of the core features of Stargate Journey is its reliance on [Datapacks](https://minecraft.wiki/w/Data_pack). When used well, Datapacks can serve as powerful tools to customize your gameplay experience. Along with features from Vanilla Minecraft that can be customized through the use of Datapacks, Stargate Journey allows the following to be added:
 
 * Address Tables
-* [Symbols / Symbol Sets / Points of Origin]({{ site.baseurl }}/stargate_network/stargate/#symbols)
-* [Solar Systems]({{ site.baseurl }}/stargate_network/solar_system/)
-* [Galaxies]({{ site.baseurl }}/stargate_network/galaxy/)
+* [Symbols / Symbol Sets / Points of Origin]({{ site.baseurl }}/stargate-network/stargate/#symbols)
+* [Solar Systems]({{ site.baseurl }}/stargate-network/solar_system/)
+* [Galaxies]({{ site.baseurl }}/stargate-network/galaxy/)
 * Stargate Variants (v0.6.9+)
 
 # Installing an existing Datapack
@@ -180,5 +180,5 @@ The structure inside each of the files should look like this:
 }
 ```
 * `name` is the name of the Galaxy. The name is translatable, so add it to whichever languages you want your Datapack to support file inside the assets folder.
-* `type` currently specifies the [size of the Galaxy]({{ site.baseurl }}/stargate_network/galaxy/#galaxy-size).
+* `type` currently specifies the [size of the Galaxy]({{ site.baseurl }}/stargate-network/galaxy/#galaxy-size).
 * `default_symbols` refers to the Symbols which are used by randomly generated Solar Systems inside this galaxy.

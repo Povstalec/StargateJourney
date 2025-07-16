@@ -143,7 +143,7 @@ ___
 ![Interface iris mode]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/interface_mode_iris.png)
 
 {: .note }
-For shielding mode to work, you need to install [the iris]({{ site.baseurl }}/stargate_network/stargate_iris) in the Stargate first.
+For shielding mode to work, you need to install [the iris]({{ site.baseurl }}/stargate-network/stargate_iris) in the Stargate first.
 
 The interface in the shielding mode is able to provide and to accept a redstone signal for communication with the iris.
 
@@ -165,7 +165,7 @@ You can also provide the interface with a redstone signal controlling the iris.
 |    **1 - 7**    | Iris will close.                |
 |   **8 - 15**    | Iris will open.                 |
 
-Example setup with iris and GDO is described on the iris page [Stargate Network / Stargate iris]({{ site.baseurl }}/stargate_network/stargate_iris/).
+Example setup with iris and GDO is described on the iris page [Stargate Network / Stargate iris]({{ site.baseurl }}/stargate-network/stargate_iris/).
 
 <h2>Shielding mode <p class="label label-purple">Advanced Crystal Interface</p></h2>
 ![Interface shielding mode]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/interface_mode_shielding.png)

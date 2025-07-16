@@ -16,7 +16,7 @@ This is achieved through the use of Interfaces,
 which, as the name suggests, 
 interface with alien technology and enable you to control it.
 
-They can read information from a Stargate and provide a [redstone signal with a comparator]({{ site.baseurl }}/stargate_network/interface/).
+They can read information from a Stargate and provide a [redstone signal with a comparator]({{ site.baseurl }}/stargate-network/interface/).
 And they can also act as computercraft peripherals.
 
 There are three available Stargate Interfaces -
@@ -180,7 +180,7 @@ Returns the current energy target that is set for the interface.
 1. `number` The current energy target [FE]
 
 **See also**
-- [Energy Target](/stargate_network/interface/#energy-target)
+- [Energy Target](/stargate-network/interface/#energy-target)
 - [setEnergyTarget(energyTarget)](#setEnergyTarget)
 
 **Usage**
@@ -212,7 +212,7 @@ Sets the energy target to the amount specified by `energyTarget` parameter.
 1. `energyTarget`: `number` The new energy target
 
 **See also**
-- [Energy Target](/stargate_network/interface/#energy-target)
+- [Energy Target](/stargate-network/interface/#energy-target)
 - [getEnergyTarget()](#getEnergyTarget)
 
 **Usage**
