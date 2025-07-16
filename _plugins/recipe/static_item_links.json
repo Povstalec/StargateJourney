@@ -1,0 +1,13 @@
+{
+  "sgjourney": {
+    "golden_idol": "/blocks/golden-idol/",
+    "basic_interface": "/stargate-technology/stargate-interface/",
+    "communication_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "transfer_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "control_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "energy_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "materialization_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "refined_naquadah": "/items/naquadah/",
+    "naquadah_alloy": "/items/naquadah/"
+  }
+}

@@ -1,7 +1,10 @@
+require 'open-uri'
+
 module Recipe
   class CraftingRecipe < Liquid::Tag
     include Jekyll::Filters::URLFilters
     RECIPES = {}
+    STATIC_ITEM_LINKS = JSON.load(URI.open(STATIC_ITEM_LINKS_FILE)).freeze
 
     # flattens sgjourney recipes folder for easy lookups
     def self.load_recipes
@@ -137,12 +140,17 @@ module Recipe
       end
     end
 
+    # @param resource [McResource]
     def item_web_link(resource)
+      if STATIC_ITEM_LINKS.has_key?(resource.namespace) &&
+         STATIC_ITEM_LINKS[resource.namespace].has_key?(resource.name)
+        return absolute_url(STATIC_ITEM_LINKS[resource.namespace][resource.name])
+      end
+
       case resource.namespace
       when "minecraft"
         name = resource.name.split('_').map(&:capitalize).join('_')
         return "https://minecraft.wiki/w/#{name}#Crafting"
-        # TODO: sgjourney namespace linking
       else
         return ""
       end
