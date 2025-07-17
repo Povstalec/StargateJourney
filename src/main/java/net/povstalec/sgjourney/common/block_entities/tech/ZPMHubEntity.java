@@ -158,7 +158,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		return side == Direction.DOWN;
+		return side == Direction.UP;
 	}
 	
 	protected boolean receivesEnergy()
@@ -191,76 +191,37 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 		
 		if(stack.is(ItemInit.ZPM.get()))
 		{
-			stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
+			stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy ->
 			{
-				if(energy instanceof ZeroPointEnergy zpmEnergy)
+				if(itemEnergy instanceof ZeroPointEnergy zpmEnergy)
 				{
 					BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(outputDirection));
 					
 					if(blockEntity == null)
 						return;
 					
-					blockEntity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(blockEntityEnergy ->
+					blockEntity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(otherEnergy ->
 					{
-						if(blockEntityEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
+						if(otherEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.maxExtract(), true);
-							long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
+							long simulatedReceiveAmount = sgjourneyEnergy.receiveZeroPointEnergy(simulatedOutputAmount, true);
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
-							sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
+							sgjourneyEnergy.receiveZeroPointEnergy(simulatedReceiveAmount, false);
 						}
-						else
+						else if(CommonZPMConfig.other_mods_use_zero_point_energy.get())
 						{
-							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.getRegularEnergy(this.maxExtract()), true);
-							int simulatedReceiveAmount = blockEntityEnergy.receiveEnergy(simulatedOutputAmount, true);
+							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.regularEnergy(this.maxExtract()), true);
+							int simulatedReceiveAmount = otherEnergy.receiveEnergy(simulatedOutputAmount, true);
 							
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
-							blockEntityEnergy.receiveEnergy(simulatedReceiveAmount, false);
+							otherEnergy.receiveEnergy(simulatedReceiveAmount, false);
 						}
 					});
 				}
 			});
 		}
-		
-		/*if(ZeroPointModule.hasEnergy(stack))
-		{
-			BlockEntity blockentity = level.getBlockEntity(worldPosition.relative(outputDirection));
-			
-			if(blockentity == null)
-				return;
-			else if(blockentity instanceof EnergyBlockEntity energyBE)
-			{
-				long simulatedReceiveAmount = energyBE.receiveEnergy(this.maxExtract(), true);
-				
-				long extractedAmount = this.extractEnergy(simulatedReceiveAmount, true);
-				
-				this.extractEnergy(extractedAmount, false);
-				energyBE.receiveEnergy(extractedAmount, false);
-			}
-			else
-			{
-				blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) ->
-				{
-					int simulatedReceiveAmount = energyStorage.receiveEnergy(SGJourneyEnergy.getRegularEnergy(this.getMaxExtract()), true);
-					
-					int extractedAmount = SGJourneyEnergy.getRegularEnergy(ZeroPointModule.extractEnergy(stack, simulatedReceiveAmount));
-					energyStorage.receiveEnergy(extractedAmount, false);
-				});
-			}
-		}*/
 	}
-	
-	//This should make sure the energy taken by cables is properly subtracted from the ZPM
-	/*@Override
-	protected void changeEnergy(long difference, boolean simulate)
-	{
-		ItemStack stack = itemHandler.getStackInSlot(0);
-		
-		if(!simulate)
-			ZeroPointModule.extractEnergy(stack, difference);
-		
-		super.changeEnergy(difference, simulate);
-	}*/
 	
 	@Override
 	public void setProtected(boolean isProtected)

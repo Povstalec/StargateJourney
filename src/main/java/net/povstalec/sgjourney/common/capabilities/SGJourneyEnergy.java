@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.capabilities;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.energy.EnergyStorage;
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 
 public abstract class SGJourneyEnergy extends EnergyStorage
 {
@@ -13,7 +14,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	
 	public SGJourneyEnergy(long capacity, long maxReceive, long maxExtract)
 	{
-		super(getRegularEnergy(capacity), getRegularEnergy(maxReceive), getRegularEnergy(maxExtract));
+		super(regularEnergy(capacity), regularEnergy(maxReceive), regularEnergy(maxExtract));
 
 		this.energy = 0;
 		this.capacity = capacity;
@@ -24,7 +25,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     @Override
 	public int receiveEnergy(int maxReceive, boolean simulate)
 	{
-    	return (int) Math.min(Integer.MAX_VALUE, receiveLongEnergy(maxReceive, simulate));
+    	return regularEnergy(receiveLongEnergy(maxReceive, simulate));
 	}
     
     public long receiveLongEnergy(long maxReceive, boolean simulate)
@@ -40,10 +41,15 @@ public abstract class SGJourneyEnergy extends EnergyStorage
         return energyReceived;
     }
 	
+	public long receiveZeroPointEnergy(long maxReceive, boolean simulate)
+	{
+		return receiveLongEnergy(maxReceive, simulate);
+	}
+	
 	@Override
     public int extractEnergy(int maxExtract, boolean simulate)
     {
-		return (int) Math.min(Integer.MAX_VALUE, extractLongEnergy(maxExtract, simulate));
+		return CommonZPMConfig.other_mods_use_zero_point_energy.get() ? regularEnergy(extractLongEnergy(maxExtract, simulate)) : 0;
     }
 	
 	public long extractLongEnergy(long maxExtract, boolean simulate)
@@ -64,7 +70,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	@Override
     public int getEnergyStored()
     {
-        return getRegularEnergy(getTrueEnergyStored());
+        return regularEnergy(getTrueEnergyStored());
     }
 	
 	public long getTrueEnergyStored()
@@ -75,7 +81,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     @Override
     public int getMaxEnergyStored()
     {
-        return getRegularEnergy(getTrueMaxEnergyStored());
+        return regularEnergy(getTrueMaxEnergyStored());
     }
     
     public long getTrueMaxEnergyStored()
@@ -136,8 +142,8 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     	this.setEnergy(longTag.getAsLong());
     }
     
-    public static int getRegularEnergy(long energy)
+    public static int regularEnergy(long energy)
     {
-    	return energy > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) energy;
+    	return (int) Math.min(Integer.MAX_VALUE, energy);
     }
 }

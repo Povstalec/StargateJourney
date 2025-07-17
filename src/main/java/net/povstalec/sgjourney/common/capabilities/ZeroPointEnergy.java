@@ -14,12 +14,14 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
 		this.maxEntropy = maxEntropy;
 		this.energy = capacity;
 	}
-    
+	
+	@Override
     public long receiveLongEnergy(long maxReceive, boolean simulate)
     {
         return 0;
     }
 	
+	@Override
 	public long extractLongEnergy(long maxExtract, boolean simulate)
 	{
 		if(!canExtract())
@@ -58,9 +60,15 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
 	}
 	
 	@Override
+	public int extractEnergy(int maxExtract, boolean simulate)
+	{
+		return regularEnergy(extractLongEnergy(maxExtract, simulate));
+	}
+	
+	@Override
     public int getEnergyStored()
     {
-        return getRegularEnergy(getTrueEnergyStored());
+        return regularEnergy(getTrueEnergyStored());
     }
 	
 	public long getTrueEnergyStored()

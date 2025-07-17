@@ -246,7 +246,9 @@
 	"sounds.sgjourney.nothing" : "nic",
 	
 	"death.attack.sgjourney.kawoosh": "Hráč %1$s byl dezintegrován nestabilním vírem",
+	"death.attack.sgjourney.kawoosh.player": "Hráč %1$s byl dezintegrován nestabilním vírem během boje s hráčem %2$s",
 	"death.attack.sgjourney.reverseWormhole": "Hráč %1$s prošel špatnou stranou červí díry",
+	"death.attack.sgjourney.reverseWormhole.player": "Hráč %1$s prošel špatnou stranou červí díry během boje s hráčem %2$s",
 	"death.attack.sgjourney.iris": "Hráč %1$s se rozplácnul o iris",
 
 	"stat.sgjourney.times_killed_by_kawoosh": "Počet úmrtí v nestabilním víru",

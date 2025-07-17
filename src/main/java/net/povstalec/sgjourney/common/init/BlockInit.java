@@ -246,7 +246,7 @@ public class BlockInit
 			() -> new TransceiverBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F)), 1);
 	
 	public static final RegistryObject<CableBlock.NaquadahCable> NAQUADAH_CABLE = registerBlock("naquadah_cable",
-			() -> new CableBlock.NaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F).noOcclusion()), 64);
+			() -> new CableBlock.NaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F).noOcclusion(), 0.25), 64);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -85,6 +86,11 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		return true;
 	}
 	
+	protected boolean canReceiveZeroPointEnergy()
+	{
+		return CommonZPMConfig.tech_uses_zero_point_energy.get();
+	}
+	
 	protected boolean outputsEnergy()
 	{
 		return getMaxExtract() > 0;
@@ -103,6 +109,12 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
 	{
+		@Override
+		public long receiveZeroPointEnergy(long maxReceive, boolean simulate)
+		{
+			return canReceiveZeroPointEnergy() ? receiveLongEnergy(maxReceive, simulate) : 0;
+		}
+		
 		@Override
 		public boolean canExtract()
 		{
@@ -236,7 +248,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			{
 				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
-					long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(SGJourneyEnergy.getRegularEnergy(ENERGY_STORAGE.maxExtract()), true);
+					long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
 					long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
 					
 					ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
@@ -244,7 +256,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 				}
 				else
 				{
-					int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.getRegularEnergy(ENERGY_STORAGE.maxExtract()), true);
+					int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
 					int simulatedReceiveAmount = energyStorage.receiveEnergy(simulatedOutputAmount, true);
 					
 					ENERGY_STORAGE.extractEnergy(simulatedReceiveAmount, false);

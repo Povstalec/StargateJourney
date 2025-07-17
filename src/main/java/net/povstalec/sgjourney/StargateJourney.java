@@ -2,6 +2,7 @@ package net.povstalec.sgjourney;
 
 import java.util.function.BiFunction;
 
+import net.minecraftforge.client.event.ModelEvent;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.povstalec.sgjourney.client.Layers;
+import net.povstalec.sgjourney.client.models.block.CableModelLoader;
 import net.povstalec.sgjourney.client.render.block_entity.CartoucheRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
@@ -242,6 +244,12 @@ public class StargateJourney
         {
     		ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
         }
+		
+		@SubscribeEvent
+		public static void modelLoaderInit(ModelEvent.RegisterGeometryLoaders event)
+		{
+			CableModelLoader.register(event);
+		}
     }
     
 }

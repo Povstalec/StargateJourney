@@ -410,10 +410,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			{
 				energyStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
 				{
-					if(energy instanceof ZeroPointEnergy zpmEnergy)
+					if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
 					{
 						long energyNeeded = getEnergyCapacity() - getEnergyStored();
-						long energyExtracted = zpmEnergy.extractLongEnergy(energyNeeded, false);
+						long energyExtracted = sgjourneyEnergy.extractLongEnergy(energyNeeded, false);
 						receiveEnergy(energyExtracted, false);
 					}
 					else

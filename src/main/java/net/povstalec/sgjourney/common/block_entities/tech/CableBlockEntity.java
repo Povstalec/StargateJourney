@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -9,17 +10,27 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.povstalec.sgjourney.common.blocks.tech.CableBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.data.ConduitNetworks;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public abstract class CableBlockEntity extends BlockEntity
 {
+	public static final String NETWORK_ID = "network_id";
+	
 	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
-	private Map<BlockPos, Direction> outputs = null;
+	//private Set<BlockPos> outputs;
+	
+	private int networkID = 0;
+	private ConduitNetworks.ConduitNetwork cableNetwork = null;
+	
+	private List<Direction> connectedSides = null;
 	
 	public CableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
@@ -38,17 +49,44 @@ public abstract class CableBlockEntity extends BlockEntity
 		lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
 	}
 	
-	public long transfer()
+	@Override
+	public void invalidateCaps()
 	{
-		return Long.MAX_VALUE;
+		lazyEnergyHandler.invalidate();
+		super.invalidateCaps();
 	}
 	
-	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.transfer(), this.transfer(), this.transfer())
+	@Override
+	public void load(CompoundTag nbt)
+	{
+		super.load(nbt);
+		this.networkID = nbt.getInt(NETWORK_ID);
+	}
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag nbt)
+	{
+		super.saveAdditional(nbt);
+		nbt.putInt(NETWORK_ID, this.networkID);
+	}
+	
+	public long transfer()
+	{
+		return Long.MAX_VALUE; // TODO Add config to change this
+	}
+	
+	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(transfer(), transfer(), transfer())
 	{
 		@Override
 		public long receiveLongEnergy(long maxReceive, boolean simulate)
 		{
-			return transferEnergy(maxReceive, simulate);
+			return transferEnergy(Math.min(transfer(), maxReceive), simulate);
+		}
+		
+		@Override
+		public long receiveZeroPointEnergy(long maxReceive, boolean simulate)
+		{
+			return transferEnergy(Math.min(transfer(), maxReceive), simulate);
 		}
 		
 		@Override
@@ -76,94 +114,122 @@ public abstract class CableBlockEntity extends BlockEntity
 		}
 	};
 	
-	public void bfs(BlockPos startingPos, Consumer<CableBlockEntity> consumer)
+	public void setNetworkID(int networkID)
 	{
-		Set<BlockPos> visited = new HashSet<>();
-		Queue<BlockPos> queue = new LinkedList<>();
-		queue.add(startingPos);
+		this.networkID = networkID;
+		this.cableNetwork = null;
+	}
+	
+	public int networkID()
+	{
+		return networkID;
+	}
+	
+	@Nullable
+	private ConduitNetworks.ConduitNetwork getNetwork()
+	{
+		if(cableNetwork != null)
+			return cableNetwork;
 		
-		while(!queue.isEmpty())
+		if(networkID == 0)
+			return null;
+		
+		cableNetwork = ConduitNetworks.get(getLevel()).getCableNetwork(networkID);
+		return cableNetwork;
+	}
+	
+	public void update()
+	{
+		this.connectedSides = null;
+	}
+	
+	public boolean isOutput()
+	{
+		for(Direction direction : getConnectedSides())
 		{
-			BlockPos pos = queue.remove();
-			visited.add(pos);
-			
-			if(level.getBlockEntity(pos) instanceof CableBlockEntity cable)
+			BlockPos outputPos = getBlockPos().relative(direction);
+			BlockEntity blockEntity =  level.getBlockEntity(outputPos);
+			if(blockEntity != null && !(blockEntity instanceof CableBlockEntity))
 			{
-				consumer.accept(cable);
-				
-				for(Direction direction : Direction.values())
+				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).resolve().orElse(null);
+				if(energy != null)
 				{
-					BlockPos visitPos = cable.getBlockPos().relative(direction);
-					
-					if(!visited.contains(visitPos))
-						queue.add(visitPos);
+					if(energy.canReceive())
+						return true;
 				}
 			}
 		}
+		
+		return false;
 	}
 	
-	public void tryCacheOutputs()
+	public List<Direction> getConnectedSides()
 	{
-		if(this.outputs != null)
-			return;
-		
-		this.outputs = new HashMap<>();
-		
-		bfs(getBlockPos(), cable ->
+		if(this.connectedSides == null)
 		{
+			this.connectedSides = new ArrayList<>();
 			for(Direction direction : Direction.values())
 			{
-				BlockPos outputPos = cable.getBlockPos().relative(direction);
-				BlockEntity blockEntity =  level.getBlockEntity(outputPos);
-				if(blockEntity != null && !(blockEntity instanceof CableBlockEntity))
-				{
-					blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).ifPresent(energy ->
-					{
-						if(energy.canReceive() && !this.outputs.containsKey(outputPos))
-							this.outputs.put(outputPos, direction);
-					});
-				}
+				if(CableBlock.connectionTypeSide(getLevel(), getBlockPos(), direction) == CableBlock.ConnectorType.BLOCK)
+					this.connectedSides.add(direction);
 			}
-		});
+		}
+		
+		return this.connectedSides;
 	}
 	
-	public void invalidate()
+	public int validOutputs()
 	{
-		bfs(getBlockPos(), cable -> cable.outputs = null);
+		int outputs = 0;
+		for(Direction direction : getConnectedSides())
+		{
+			BlockPos outputPos = getBlockPos().relative(direction);
+			BlockEntity blockEntity =  level.getBlockEntity(outputPos);
+			if(blockEntity != null)
+			{
+				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).resolve().orElse(null);
+				
+				if(energy.canReceive())
+				{
+					if(energy instanceof SGJourneyEnergy sgjourneyEnergy && sgjourneyEnergy.getTrueEnergyStored() < sgjourneyEnergy.getTrueMaxEnergyStored())
+						outputs++;
+					else if(energy.getEnergyStored() < energy.getMaxEnergyStored())
+						outputs++;
+				}
+			}
+		}
+		return outputs;
+	}
+	
+	public long outputEnergy(Direction direction, long toOutput, boolean simulate)
+	{
+		BlockEntity blockEntity = level.getBlockEntity(getBlockPos().relative(direction));
+		if(blockEntity == null)
+			return 0;
+		
+		IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).resolve().orElse(null);
+		if(energy == null || !energy.canReceive())
+			return 0;
+		
+		if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
+			return sgjourneyEnergy.receiveLongEnergy(toOutput, simulate);
+		else
+			return energy.receiveEnergy(SGJourneyEnergy.regularEnergy(toOutput), simulate);
 	}
 	
 	/**
 	 * Transfers energy through the local grid
 	 * @param toTransfer Energy to transfer
+	 * @param simulate If TRUE, the insertion will only be simulated.
 	 * @return amount of energy successfully transferred
 	 */
 	public long transferEnergy(long toTransfer, boolean simulate)
 	{
-		if(toTransfer <= 0)
+		ConduitNetworks.ConduitNetwork cableNetwork = getNetwork();
+		if(cableNetwork == null)
 			return 0;
 		
-		tryCacheOutputs();
-		if(outputs.isEmpty())
-			return 0;
-		
-		long transferred = 0;
-		long amount = toTransfer / outputs.size();
-		
-		for(Map.Entry<BlockPos, Direction> entry : outputs.entrySet())
-		{
-			BlockEntity blockEntity = level.getBlockEntity(entry.getKey());
-			if(blockEntity != null)
-			{
-				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, entry.getValue()).orElse(null);
-				if(energy != null && energy.canReceive())
-				{
-					int transfer = energy.receiveEnergy((int) Math.min(Integer.MAX_VALUE, amount), simulate);
-					transferred += transfer;
-				}
-			}
-		}
-		
-		return transferred;
+		return cableNetwork.transferEnergy(getLevel(), toTransfer, simulate);
 	}
 	
 	//============================================================================================

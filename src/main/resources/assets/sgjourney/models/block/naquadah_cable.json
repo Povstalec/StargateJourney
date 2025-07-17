@@ -1,1 +1,5 @@
-{}
+{
+	"parent": "minecraft:block/cube",
+	"thickness": 0.25,
+	"loader": "sgjourney:cable_loader"
+}
