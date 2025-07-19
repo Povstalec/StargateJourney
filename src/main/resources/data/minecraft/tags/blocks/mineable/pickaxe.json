@@ -86,6 +86,10 @@
 		
 		"sgjourney:zpm_hub",
 		
-		"sgjourney:transceiver"
+		"sgjourney:transceiver",
+		
+		"sgjourney:small_naquadah_cable",
+		"sgjourney:medium_naquadah_cable",
+		"sgjourney:large_naquadah_cable"
 	]
 }

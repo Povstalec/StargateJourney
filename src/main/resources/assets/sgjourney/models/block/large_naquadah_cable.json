@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:block/cube",
+	"loader": "sgjourney:cable_loader",
+	
+	"texture": "sgjourney:block/large_naquadah_cable",
+	"thickness": 0.5
+}

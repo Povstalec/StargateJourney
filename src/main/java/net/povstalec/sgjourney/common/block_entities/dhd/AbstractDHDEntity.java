@@ -21,6 +21,7 @@ import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
@@ -204,7 +205,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
 				if(slot == 0)
-					return stack.getItem() instanceof IEnergyCore || stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+					return stack.getItem() instanceof IEnergyCore || stack.getItem() instanceof ZeroPointModule || stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
 				
 				return true;
 			}

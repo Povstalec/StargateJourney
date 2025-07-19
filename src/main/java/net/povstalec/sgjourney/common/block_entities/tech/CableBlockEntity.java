@@ -18,14 +18,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public abstract class CableBlockEntity extends BlockEntity
 {
 	public static final String NETWORK_ID = "network_id";
 	
 	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
-	//private Set<BlockPos> outputs;
 	
 	private int networkID = 0;
 	private ConduitNetworks.ConduitNetwork cableNetwork = null;
@@ -35,11 +33,6 @@ public abstract class CableBlockEntity extends BlockEntity
 	public CableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
-	}
-	
-	public CableBlockEntity(BlockPos pos, BlockState state)
-	{
-		this(BlockEntityInit.NAQUADAH_CABLE.get(), pos, state);
 	}
 	
 	@Override
@@ -247,11 +240,27 @@ public abstract class CableBlockEntity extends BlockEntity
 	
 	
 	
-	public static class NaquadahCable extends CableBlockEntity
+	public static class SmallNaquadahCable extends CableBlockEntity
 	{
-		public NaquadahCable(BlockPos pos, BlockState state)
+		public SmallNaquadahCable(BlockPos pos, BlockState state)
 		{
-			super(BlockEntityInit.NAQUADAH_CABLE.get(), pos, state);
+			super(BlockEntityInit.SMALL_NAQUADAH_CABLE.get(), pos, state);
+		}
+	}
+	
+	public static class MediumNaquadahCable extends CableBlockEntity
+	{
+		public MediumNaquadahCable(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.MEDIUM_NAQUADAH_CABLE.get(), pos, state);
+		}
+	}
+	
+	public static class LargeNaquadahCable extends CableBlockEntity
+	{
+		public LargeNaquadahCable(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.LARGE_NAQUADAH_CABLE.get(), pos, state);
 		}
 	}
 }

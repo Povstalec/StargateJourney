@@ -262,7 +262,9 @@ public class TabInit
 				
 				items.accept(BlockInit.ZPM_HUB.get());
 				
-				items.accept(BlockInit.NAQUADAH_CABLE.get());
+				items.accept(BlockInit.SMALL_NAQUADAH_CABLE.get());
+				items.accept(BlockInit.MEDIUM_NAQUADAH_CABLE.get());
+				items.accept(BlockInit.LARGE_NAQUADAH_CABLE.get());
 			});
 		});
 	}

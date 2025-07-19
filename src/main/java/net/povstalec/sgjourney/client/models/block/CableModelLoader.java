@@ -14,7 +14,6 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
-import net.povstalec.sgjourney.StargateJourney;
 
 import java.util.function.Function;
 
@@ -22,16 +21,29 @@ public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableM
 {
 	public static final String CABLE_LOADER = "cable_loader";
 	
+	public static final String THICKNESS = "thickness";
+	public static final String TEXTURE = "texture";
+	
 	@Override
 	public CableModelGeometry read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException
 	{
-		double thickness;
-		if(jsonObject.has("thickness"))
-			thickness = jsonObject.get("thickness").getAsDouble();
+		ResourceLocation texture;
+		if(jsonObject.has(TEXTURE))
+		{
+			texture = ResourceLocation.tryParse(jsonObject.get(TEXTURE).getAsString());
+			if(texture == null)
+				throw new JsonParseException("Texture is not a valid Resource Location");
+		}
 		else
-			thickness = 0.4;
+			throw new JsonParseException("Missing texture field in cable model");
 		
-		return new CableModelGeometry(thickness);
+		double thickness;
+		if(jsonObject.has(THICKNESS))
+			thickness = jsonObject.get(THICKNESS).getAsDouble();
+		else
+			throw new JsonParseException("Missing thickness field in cable model");
+		
+		return new CableModelGeometry(texture, thickness);
 	}
 	
 	public static void register(ModelEvent.RegisterGeometryLoaders event)
@@ -43,17 +55,19 @@ public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableM
 	
 	public static class CableModelGeometry implements IUnbakedGeometry<CableModelGeometry>
 	{
-		double thickness;
+		private ResourceLocation texture;
+		private double thickness;
 		
-		public CableModelGeometry(double thickness)
+		public CableModelGeometry(ResourceLocation texture, double thickness)
 		{
+			this.texture = texture;
 			this.thickness = thickness;
 		}
 		
 		@Override
 		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
-			return new CableBakedModel(context, this.thickness);
+			return new CableBakedModel(context, this.texture, this.thickness);
 		}
 	}
 }

@@ -94,8 +94,14 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<TransceiverEntity>> TRANSCEIVER = BLOCK_ENTITIES.register("transciever",
             () -> BlockEntityType.Builder.of(TransceiverEntity::new, BlockInit.TRANSCEIVER.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<CableBlockEntity.NaquadahCable>> NAQUADAH_CABLE = BLOCK_ENTITIES.register("naquadah_cable",
-			() -> BlockEntityType.Builder.of(CableBlockEntity.NaquadahCable::new, BlockInit.NAQUADAH_CABLE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CableBlockEntity.SmallNaquadahCable>> SMALL_NAQUADAH_CABLE = BLOCK_ENTITIES.register("small_naquadah_cable",
+			() -> BlockEntityType.Builder.of(CableBlockEntity.SmallNaquadahCable::new, BlockInit.SMALL_NAQUADAH_CABLE.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<CableBlockEntity.MediumNaquadahCable>> MEDIUM_NAQUADAH_CABLE = BLOCK_ENTITIES.register("medium_naquadah_cable",
+			() -> BlockEntityType.Builder.of(CableBlockEntity.MediumNaquadahCable::new, BlockInit.MEDIUM_NAQUADAH_CABLE.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<CableBlockEntity.LargeNaquadahCable>> LARGE_NAQUADAH_CABLE = BLOCK_ENTITIES.register("large_naquadah_cable",
+			() -> BlockEntityType.Builder.of(CableBlockEntity.LargeNaquadahCable::new, BlockInit.LARGE_NAQUADAH_CABLE.get()).build(null));
 	
 	public static void register(IEventBus eventBus)
 	{

@@ -115,6 +115,10 @@
 	"block.sgjourney.transceiver": "Vysílač",
 	"block.sgjourney.transceiver.description": "Zařízení pro vysílání a zachycování signálů z jiných vysílačů a GDO",
 	
+	"block.sgjourney.small_naquadah_cable": "Malý naquadahový kabel",
+	"block.sgjourney.medium_naquadah_cable": "Střední naquadahový kabel",
+	"block.sgjourney.large_naquadah_cable": "Velký naquadahový kabel",
+	
 	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
 	

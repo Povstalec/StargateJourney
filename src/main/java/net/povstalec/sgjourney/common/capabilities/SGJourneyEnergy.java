@@ -32,6 +32,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     {
         if(!canReceive())
             return 0;
+		
         long energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
         if(!simulate)
         	energy += energyReceived;
@@ -47,10 +48,10 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	}
 	
 	@Override
-    public int extractEnergy(int maxExtract, boolean simulate)
-    {
-		return CommonZPMConfig.other_mods_use_zero_point_energy.get() ? regularEnergy(extractLongEnergy(maxExtract, simulate)) : 0;
-    }
+	public int extractEnergy(int maxExtract, boolean simulate)
+	{
+		return regularEnergy(extractLongEnergy(maxExtract, simulate));
+	}
 	
 	public long extractLongEnergy(long maxExtract, boolean simulate)
 	{

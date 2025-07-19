@@ -33,6 +33,10 @@
 		
 		"sgjourney:ancient_gene_detector",
 		
-		"sgjourney:zpm_hub"
+		"sgjourney:zpm_hub",
+		
+		"sgjourney:small_naquadah_cable",
+		"sgjourney:medium_naquadah_cable",
+		"sgjourney:large_naquadah_cable"
   ]
 }

@@ -110,7 +110,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 	{
 		super.setPlacedBy(level, pos, state, entity, stack);
 		
-		updateCable(level, pos, state);
+		updateCable(level, pos);
 		
 		BlockState blockState = calculateState(level, pos, state);
 		if(state != blockState)
@@ -128,7 +128,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		else
 		{
 			super.onRemove(oldState, level, pos, newState, isMoving);
-			updateCable(level, pos, newState);
+			updateCable(level, pos);
 		}
 	}
 	
@@ -154,7 +154,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		return calculateState(level, current, state);
 	}
 	
-	private void updateCable(Level level, BlockPos pos, BlockState state)
+	private void updateCable(Level level, BlockPos pos)
 	{
 		if(!level.isClientSide())
 		{
@@ -173,7 +173,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 			return ConnectorType.NONE;
 		
 		if(state.getBlock() instanceof CableBlock)
-			return ConnectorType.CABLE;
+			return state.getBlock() == getter.getBlockState(pos).getBlock() ? ConnectorType.CABLE : ConnectorType.NONE;
 		
 		BlockEntity blockEntity = getter.getBlockEntity(otherPos);
 		if(blockEntity == null)
@@ -282,17 +282,45 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 	}
 	
 	
-	public static class NaquadahCable extends CableBlock
+	public static class SmallNaquadahCable extends CableBlock
 	{
-		public NaquadahCable(Properties properties, double thickness)
+		public SmallNaquadahCable(Properties properties)
 		{
-			super(properties, thickness);
+			super(properties, 0.25);
 		}
 		
 		@Override
 		public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			return isEdge(state) ? new CableBlockEntity.NaquadahCable(pos, state) : null;
+			return isEdge(state) ? new CableBlockEntity.SmallNaquadahCable(pos, state) : null;
+		}
+	}
+	
+	public static class MediumNaquadahCable extends CableBlock
+	{
+		public MediumNaquadahCable(Properties properties)
+		{
+			super(properties, 0.375);
+		}
+		
+		@Override
+		public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+		{
+			return isEdge(state) ? new CableBlockEntity.MediumNaquadahCable(pos, state) : null;
+		}
+	}
+	
+	public static class LargeNaquadahCable extends CableBlock
+	{
+		public LargeNaquadahCable(Properties properties)
+		{
+			super(properties, 0.5);
+		}
+		
+		@Override
+		public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+		{
+			return isEdge(state) ? new CableBlockEntity.LargeNaquadahCable(pos, state) : null;
 		}
 	}
 	

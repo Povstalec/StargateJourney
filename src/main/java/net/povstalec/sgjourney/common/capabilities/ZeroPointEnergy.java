@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.capabilities;
 
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 
 public abstract class ZeroPointEnergy extends SGJourneyEnergy
 {
@@ -62,7 +63,7 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate)
 	{
-		return regularEnergy(extractLongEnergy(maxExtract, simulate));
+		return CommonZPMConfig.other_mods_use_zero_point_energy.get() ? regularEnergy(extractLongEnergy(maxExtract, simulate)) : 0;
 	}
 	
 	@Override

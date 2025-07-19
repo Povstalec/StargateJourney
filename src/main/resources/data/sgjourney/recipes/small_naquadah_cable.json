@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"NNN",
+		"RRR",
+		"NNN"
+	],
+	
+	"key": 
+	{
+		"N": { "tag": "sgjourney:naquadah_alloy" },
+		"R": { "item": "minecraft:redstone" }
+	},
+	
+	"result": { "item": "sgjourney:small_naquadah_cable", "count": 6 }
+}

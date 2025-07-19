@@ -1,7 +1,8 @@
 package net.povstalec.sgjourney.client.models.block;
 
+import com.google.gson.JsonParseException;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -17,7 +18,6 @@ import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.common.blocks.tech.CableBlock;
 import org.jetbrains.annotations.NotNull;
@@ -30,20 +30,27 @@ public class CableBakedModel implements IDynamicBakedModel
 {
 	public static final ResourceLocation MISSING = new ResourceLocation("missingno");
 	
+	private static final byte DEFAULT_OFFSET = 15;
+	private static final byte CONNECTED_OFFSET = 16;
+	
 	private static Minecraft minecraft = Minecraft.getInstance();
 	
 	private final IGeometryBakingContext context;
-	
+	private final double thickness; // Thickness of the cable
+	private final double sideSpace; // Free space between block and cable
+	private final ResourceLocation texture;
 	private TextureAtlasSprite sprite;
 	
 	private final Vec3 x0y0z0, x1y0z0, x1y0z1, x0y0z1, x0y1z0, x1y1z0, x1y1z1, x0y1z1; // Vectors defining the edges of the center cube that makes up the cable
 	private final Vec3 xSpace, ySpace, zSpace; // Vectors defining the space between the center cube and the side of the block
 	
-	public CableBakedModel(IGeometryBakingContext context, double thickness)
+	public CableBakedModel(IGeometryBakingContext context, ResourceLocation texture, double thickness)
 	{
 		this.context = context;
+		this.thickness = thickness;
+		this.texture = texture;
 		
-		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
+		this.sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
 		
 		this.x0y0z0 = new Vec3(sideSpace, sideSpace, sideSpace);
 		this.x1y0z0 = new Vec3(sideSpace + thickness, sideSpace, sideSpace);
@@ -60,15 +67,35 @@ public class CableBakedModel implements IDynamicBakedModel
 		this.zSpace = new Vec3(0, 0, sideSpace);
 	}
 	
-	private static TextureAtlasSprite getTexture(String path)
+	private static TextureAtlasSprite getTexture(ResourceLocation texture)
 	{
-		return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(StargateJourney.MODID, path));
+		return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
 	}
 	
 	private void initTexture()
 	{
 		if(sprite == null)
-			sprite = getTexture("block/naquadah_cable");
+			sprite = getTexture(texture);
+	}
+	
+	private static byte getOffset(CableBlock.ConnectorType top, CableBlock.ConnectorType left, CableBlock.ConnectorType bottom, CableBlock.ConnectorType right)
+	{
+		byte mask = 0;
+		
+		if(top != CableBlock.ConnectorType.NONE)
+			mask |= 0b000001;
+		if(left != CableBlock.ConnectorType.NONE)
+			mask |= 0b000010;
+		if(bottom != CableBlock.ConnectorType.NONE)
+			mask |= 0b000100;
+		if(right != CableBlock.ConnectorType.NONE)
+			mask |= 0b001000;
+		return mask;
+	}
+	
+	private static BakedQuad bakeQuad(TextureAtlasSprite sprite, Vec3 vec1, Vec3 vec2, Vec3 vec3, Vec3 vec4, double uStart, double vStart, double uEnd, double vEnd, byte offset)
+	{
+		return ClientUtil.bakeQuad(sprite, vec1, vec2, vec3, vec4, (float) (16 * uStart), (float) (16 / 17F * (vStart + offset)), (float) (16 * uEnd), (float) (16 / 17F * (vEnd + offset)));
 	}
 	
 	@NotNull
@@ -77,6 +104,7 @@ public class CableBakedModel implements IDynamicBakedModel
 	{
 		initTexture();
 		List<BakedQuad> quads = new ArrayList<>();
+		byte offset;
 		
 		if(side == null && (layer == null || layer.equals(RenderType.solid())))
 		{
@@ -102,63 +130,87 @@ public class CableBakedModel implements IDynamicBakedModel
 			
 			if(north != CableBlock.ConnectorType.NONE)
 			{
-				quads.add(ClientUtil.bakeQuad(sprite, x0y1z0.subtract(zSpace), x0y1z0, x1y1z0, x1y1z0.subtract(zSpace))); // Up
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z0, x1y0z0.subtract(zSpace), x1y1z0.subtract(zSpace), x1y1z0)); // East
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z0.subtract(zSpace), x1y0z0, x0y0z0, x0y0z0.subtract(zSpace))); // Down
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z0.subtract(zSpace), x0y0z0, x0y1z0, x0y1z0.subtract(zSpace))); // West
+				offset = north == CableBlock.ConnectorType.BLOCK ? CONNECTED_OFFSET : DEFAULT_OFFSET;
+				quads.add(bakeQuad(sprite, x0y1z0.subtract(zSpace), x0y1z0, x1y1z0, x1y1z0.subtract(zSpace), 0, sideSpace, sideSpace, sideSpace + thickness, offset)); // Up
+				quads.add(bakeQuad(sprite, x1y0z0, x1y0z0.subtract(zSpace), x1y1z0.subtract(zSpace), x1y1z0, sideSpace + thickness, sideSpace, 1, sideSpace + thickness, offset)); // East
+				quads.add(bakeQuad(sprite, x1y0z0.subtract(zSpace), x1y0z0, x0y0z0, x0y0z0.subtract(zSpace), 0, sideSpace, sideSpace, sideSpace + thickness, offset)); // Down
+				quads.add(bakeQuad(sprite, x0y0z0.subtract(zSpace), x0y0z0, x0y1z0, x0y1z0.subtract(zSpace), 0, sideSpace, sideSpace, sideSpace + thickness, offset)); // West
+				
+				if(north == CableBlock.ConnectorType.BLOCK)
+					quads.add(bakeQuad(sprite, x1y0z0.subtract(zSpace), x0y0z0.subtract(zSpace), x0y1z0.subtract(zSpace), x1y1z0.subtract(zSpace), sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, (byte) 0)); // North
 			}
 			else
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z0, x0y0z0, x0y1z0, x1y1z0)); // North
+				quads.add(bakeQuad(sprite, x1y0z0, x0y0z0, x0y1z0, x1y1z0, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, getOffset(up, east, down, west))); // North
 			
 			if(east != CableBlock.ConnectorType.NONE)
 			{
-				quads.add(ClientUtil.bakeQuad(sprite, x1y1z0, x1y1z1, x1y1z1.add(xSpace), x1y1z0.add(xSpace))); // Up
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z0.add(xSpace), x1y0z0, x1y1z0, x1y1z0.add(xSpace))); // North
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z0.add(xSpace), x1y0z1.add(xSpace), x1y0z1, x1y0z0)); // Down
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z1, x1y0z1.add(xSpace), x1y1z1.add(xSpace), x1y1z1)); // South
+				offset = east == CableBlock.ConnectorType.BLOCK ? CONNECTED_OFFSET : DEFAULT_OFFSET;
+				quads.add(bakeQuad(sprite, x1y1z0, x1y1z1, x1y1z1.add(xSpace), x1y1z0.add(xSpace), sideSpace, 0, sideSpace + thickness, sideSpace, offset)); // Up
+				quads.add(bakeQuad(sprite, x1y0z0.add(xSpace), x1y0z0, x1y1z0, x1y1z0.add(xSpace), 0, sideSpace, sideSpace, sideSpace + thickness, offset)); // North
+				quads.add(bakeQuad(sprite, x1y0z0.add(xSpace), x1y0z1.add(xSpace), x1y0z1, x1y0z0, sideSpace, sideSpace + thickness, sideSpace + thickness, 1, offset)); // Down
+				quads.add(bakeQuad(sprite, x1y0z1, x1y0z1.add(xSpace), x1y1z1.add(xSpace), x1y1z1, sideSpace + thickness, sideSpace, 1, sideSpace + thickness, offset)); // South
+				
+				if(east == CableBlock.ConnectorType.BLOCK)
+					quads.add(bakeQuad(sprite, x1y0z1.add(xSpace), x1y0z0.add(xSpace), x1y1z0.add(xSpace), x1y1z1.add(xSpace), sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, (byte) 0)); // East
 			}
 			else
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z1, x1y0z0, x1y1z0, x1y1z1)); // East
+				quads.add(bakeQuad(sprite, x1y0z1, x1y0z0, x1y1z0, x1y1z1, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, getOffset(up, south, down, north))); // East
 			
 			if(south != CableBlock.ConnectorType.NONE)
 			{
-				quads.add(ClientUtil.bakeQuad(sprite, x0y1z1, x0y1z1.add(zSpace), x1y1z1.add(zSpace), x1y1z1)); // Up
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z1.add(zSpace), x1y0z1, x1y1z1, x1y1z1.add(zSpace))); // East
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z1, x1y0z1.add(zSpace), x0y0z1.add(zSpace), x0y0z1)); // Down
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z1, x0y0z1.add(zSpace), x0y1z1.add(zSpace), x0y1z1)); // West
+				offset = south == CableBlock.ConnectorType.BLOCK ? CONNECTED_OFFSET : DEFAULT_OFFSET;
+				quads.add(bakeQuad(sprite, x0y1z1, x0y1z1.add(zSpace), x1y1z1.add(zSpace), x1y1z1, sideSpace + thickness, sideSpace, 1, sideSpace + thickness, offset)); // Up
+				quads.add(bakeQuad(sprite, x1y0z1.add(zSpace), x1y0z1, x1y1z1, x1y1z1.add(zSpace), 0, sideSpace, sideSpace, sideSpace + thickness, offset)); // East
+				quads.add(bakeQuad(sprite, x1y0z1, x1y0z1.add(zSpace), x0y0z1.add(zSpace), x0y0z1, sideSpace + thickness, sideSpace, 1, sideSpace + thickness, offset)); // Down
+				quads.add(bakeQuad(sprite, x0y0z1, x0y0z1.add(zSpace), x0y1z1.add(zSpace), x0y1z1, sideSpace + thickness, sideSpace, 1, sideSpace + thickness, offset)); // West
+				
+				if(south == CableBlock.ConnectorType.BLOCK)
+					quads.add(bakeQuad(sprite, x0y0z1.add(zSpace), x1y0z1.add(zSpace), x1y1z1.add(zSpace), x0y1z1.add(zSpace), sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, (byte) 0)); // South
 			}
 			else
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z1, x1y0z1, x1y1z1, x0y1z1)); // South
+				quads.add(bakeQuad(sprite, x0y0z1, x1y0z1, x1y1z1, x0y1z1, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, getOffset(up, west, down, east))); // South
 			
 			if(west != CableBlock.ConnectorType.NONE)
 			{
-				quads.add(ClientUtil.bakeQuad(sprite, x0y1z0.subtract(xSpace), x0y1z1.subtract(xSpace), x0y1z1, x0y1z0)); // Up
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z0, x0y0z0.subtract(xSpace), x0y1z0.subtract(xSpace), x0y1z0)); // North
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z0, x0y0z1, x0y0z1.subtract(xSpace), x0y0z0.subtract(xSpace))); // Down
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z1.subtract(xSpace), x0y0z1, x0y1z1, x0y1z1.subtract(xSpace))); // South
+				offset = west == CableBlock.ConnectorType.BLOCK ? CONNECTED_OFFSET : DEFAULT_OFFSET;
+				quads.add(bakeQuad(sprite, x0y1z0.subtract(xSpace), x0y1z1.subtract(xSpace), x0y1z1, x0y1z0, sideSpace, sideSpace + thickness, sideSpace + thickness, 1, offset)); // Up
+				quads.add(bakeQuad(sprite, x0y0z0, x0y0z0.subtract(xSpace), x0y1z0.subtract(xSpace), x0y1z0, sideSpace + thickness, sideSpace, 1, sideSpace + thickness, offset)); // North
+				quads.add(bakeQuad(sprite, x0y0z0, x0y0z1, x0y0z1.subtract(xSpace), x0y0z0.subtract(xSpace), sideSpace, 0, sideSpace + thickness, sideSpace, offset)); // Down
+				quads.add(bakeQuad(sprite, x0y0z1.subtract(xSpace), x0y0z1, x0y1z1, x0y1z1.subtract(xSpace), 0, sideSpace, sideSpace, sideSpace + thickness, offset)); // South
+				
+				if(west == CableBlock.ConnectorType.BLOCK)
+					quads.add(bakeQuad(sprite, x0y0z0.subtract(xSpace), x0y0z1.subtract(xSpace), x0y1z1.subtract(xSpace), x0y1z0.subtract(xSpace), sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, (byte) 0)); // West
 			}
 			else
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z0, x0y0z1, x0y1z1, x0y1z0)); // West
+				quads.add(bakeQuad(sprite, x0y0z0, x0y0z1, x0y1z1, x0y1z0, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, getOffset(up, north, down, south))); // West
 			
 			if(up != CableBlock.ConnectorType.NONE)
 			{
-				quads.add(ClientUtil.bakeQuad(sprite, x1y1z0, x0y1z0, x0y1z0.add(ySpace), x1y1z0.add(ySpace))); // North
-				quads.add(ClientUtil.bakeQuad(sprite, x1y1z1, x1y1z0, x1y1z0.add(ySpace), x1y1z1.add(ySpace))); // East
-				quads.add(ClientUtil.bakeQuad(sprite, x0y1z1, x1y1z1, x1y1z1.add(ySpace), x0y1z1.add(ySpace))); // South
-				quads.add(ClientUtil.bakeQuad(sprite, x0y1z0, x0y1z1, x0y1z1.add(ySpace), x0y1z0.add(ySpace))); // West
+				offset = up == CableBlock.ConnectorType.BLOCK ? CONNECTED_OFFSET : DEFAULT_OFFSET;
+				quads.add(bakeQuad(sprite, x1y1z0, x0y1z0, x0y1z0.add(ySpace), x1y1z0.add(ySpace), sideSpace, 0, sideSpace + thickness, sideSpace, offset)); // North
+				quads.add(bakeQuad(sprite, x1y1z1, x1y1z0, x1y1z0.add(ySpace), x1y1z1.add(ySpace), sideSpace, 0, sideSpace + thickness, sideSpace, offset)); // East
+				quads.add(bakeQuad(sprite, x0y1z1, x1y1z1, x1y1z1.add(ySpace), x0y1z1.add(ySpace), sideSpace, 0, sideSpace + thickness, sideSpace, offset)); // South
+				quads.add(bakeQuad(sprite, x0y1z0, x0y1z1, x0y1z1.add(ySpace), x0y1z0.add(ySpace), sideSpace, 0, sideSpace + thickness, sideSpace, offset)); // West
+				
+				if(up == CableBlock.ConnectorType.BLOCK)
+					quads.add(bakeQuad(sprite, x0y1z0.add(ySpace), x0y1z1.add(ySpace), x1y1z1.add(ySpace), x1y1z0.add(ySpace), sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, (byte) 0)); // Up
 			}
 			else
-				quads.add(ClientUtil.bakeQuad(sprite, x0y1z0, x0y1z1, x1y1z1, x1y1z0)); // Up
+				quads.add(bakeQuad(sprite, x0y1z0, x0y1z1, x1y1z1, x1y1z0, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, getOffset(east, north, west, south))); // Up
 			
 			if(down != CableBlock.ConnectorType.NONE)
 			{
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z0.subtract(ySpace), x0y0z0.subtract(ySpace), x0y0z0, x1y0z0)); // North
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z1.subtract(ySpace), x1y0z0.subtract(ySpace), x1y0z0, x1y0z1)); // East
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z1.subtract(ySpace), x1y0z1.subtract(ySpace), x1y0z1, x0y0z1)); // South
-				quads.add(ClientUtil.bakeQuad(sprite, x0y0z0.subtract(ySpace), x0y0z1.subtract(ySpace), x0y0z1, x0y0z0)); // West
+				offset = down == CableBlock.ConnectorType.BLOCK ? CONNECTED_OFFSET : DEFAULT_OFFSET;
+				quads.add(bakeQuad(sprite, x1y0z0.subtract(ySpace), x0y0z0.subtract(ySpace), x0y0z0, x1y0z0, sideSpace, sideSpace + thickness, sideSpace + thickness, 1, offset)); // North
+				quads.add(bakeQuad(sprite, x1y0z1.subtract(ySpace), x1y0z0.subtract(ySpace), x1y0z0, x1y0z1, sideSpace, sideSpace + thickness, sideSpace + thickness, 1, offset)); // East
+				quads.add(bakeQuad(sprite, x0y0z1.subtract(ySpace), x1y0z1.subtract(ySpace), x1y0z1, x0y0z1, sideSpace, sideSpace + thickness, sideSpace + thickness, 1, offset)); // South
+				quads.add(bakeQuad(sprite, x0y0z0.subtract(ySpace), x0y0z1.subtract(ySpace), x0y0z1, x0y0z0, sideSpace, sideSpace + thickness, sideSpace + thickness, 1, offset)); // West
+				
+				if(down == CableBlock.ConnectorType.BLOCK)
+					quads.add(bakeQuad(sprite, x1y0z0.subtract(ySpace), x1y0z1.subtract(ySpace), x0y0z1.subtract(ySpace), x0y0z0.subtract(ySpace), sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, (byte) 0)); // Down
 			}
 			else
-				quads.add(ClientUtil.bakeQuad(sprite, x1y0z0, x1y0z1, x0y0z1, x0y0z0)); // Down
+				quads.add(bakeQuad(sprite, x1y0z0, x1y0z1, x0y0z1, x0y0z0, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, getOffset(west, north, east, south))); // Down
 		}
 		
 		return quads;

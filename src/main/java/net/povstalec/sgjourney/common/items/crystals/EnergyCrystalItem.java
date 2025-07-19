@@ -62,7 +62,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		CompoundTag tag = stack.getOrCreateTag();
 		
 		if(!tag.contains(ENERGY))
-			tag.putInt(ENERGY, 0);
+			return 0;
 		
 		if(tag.getTagType(ENERGY) == Tag.TAG_INT) // TODO This is here for legacy reasons because it was originally an int
 			energy = tag.getInt(ENERGY);

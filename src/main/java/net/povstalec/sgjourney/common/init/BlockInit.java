@@ -245,8 +245,14 @@ public class BlockInit
 	public static final RegistryObject<TransceiverBlock> TRANSCEIVER = registerBlock("transceiver", 
 			() -> new TransceiverBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F)), 1);
 	
-	public static final RegistryObject<CableBlock.NaquadahCable> NAQUADAH_CABLE = registerBlock("naquadah_cable",
-			() -> new CableBlock.NaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F).noOcclusion(), 0.25), 64);
+	public static final RegistryObject<CableBlock> SMALL_NAQUADAH_CABLE = registerBlock("small_naquadah_cable",
+			() -> new CableBlock.SmallNaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(1.5F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), 64);
+	
+	public static final RegistryObject<CableBlock> MEDIUM_NAQUADAH_CABLE = registerBlock("medium_naquadah_cable",
+			() -> new CableBlock.MediumNaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(2.0F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), Rarity.UNCOMMON, 64);
+	
+	public static final RegistryObject<CableBlock> LARGE_NAQUADAH_CABLE = registerBlock("large_naquadah_cable",
+			() -> new CableBlock.LargeNaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), Rarity.RARE, 64);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)

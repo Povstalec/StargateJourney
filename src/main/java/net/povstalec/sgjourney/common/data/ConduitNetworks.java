@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -61,11 +62,11 @@ public class ConduitNetworks extends SavedData
 	
 	public void update(Level level, BlockPos pos)
 	{
-		int id = createCableNetwork();
 		Set<CableBlockEntity> cables = findConnectedCables(level, pos);
 		
 		if(!cables.isEmpty())
 		{
+			int id = createCableNetwork();
 			ConduitNetwork newNetwork = new ConduitNetwork(id);
 			for(CableBlockEntity cable : cables)
 			{
@@ -193,6 +194,8 @@ public class ConduitNetworks extends SavedData
 	 */
 	public static Set<CableBlockEntity> findConnectedCables(Level level, BlockPos startingPos)
 	{
+		Block cableBlock = level.getBlockState(startingPos).getBlock();
+		
 		Set<CableBlockEntity> cables = new HashSet<>();
 		Set<BlockPos> visited = new HashSet<>();
 		Queue<BlockPos> queue = new LinkedList<>();
@@ -203,7 +206,7 @@ public class ConduitNetworks extends SavedData
 			BlockPos pos = queue.remove();
 			visited.add(pos);
 			
-			if(level.getBlockState(pos).getBlock() instanceof CableBlock)
+			if(level.getBlockState(pos).getBlock() == cableBlock)
 			{
 				if(level.getBlockEntity(pos) instanceof CableBlockEntity cable)
 					cables.add(cable);

@@ -25,36 +25,17 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 		this.stack = stack;
 	}
 	
-	private final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
+	private final ItemEnergy ENERGY_STORAGE = new ItemEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
 	{
-	    public long receiveLongEnergy(long maxReceive, boolean simulate)
-	    {
-	    	loadEnergy();
-	        return super.receiveLongEnergy(maxReceive, simulate);
-	    }
-	    
-	    public long extractLongEnergy(long maxExtract, boolean simulate)
-	    {
-	    	loadEnergy();
-	        return super.extractLongEnergy(maxExtract, simulate);
-	    }
-		
-		public long getTrueEnergyStored()
+		public void reloadEnergy()
 		{
 			loadEnergy();
-			return this.energy;
-		}
-	    
-		@Override
-		public boolean canExtract()
-		{
-			return canExtractEnergy();
 		}
 		
 		@Override
 		public boolean canReceive()
 		{
-			return canReceiveEnergy();
+			return super.canReceive() && canReceiveEnergy();
 		}
 
 		@Override
@@ -74,22 +55,12 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 	
 	public boolean canReceiveEnergy()
 	{
-		return true;
-	}
-	
-	public boolean canExtractEnergy()
-	{
-		return true;
+		return stack.getCount() == 1;
 	}
 	
 	public void energyChanged(long difference, boolean simulate)
 	{
 		saveEnergy();
-	}
-	
-	public long getEnergy()
-	{
-		return ENERGY_STORAGE.getTrueEnergyStored();
 	}
 	
 	@Override
@@ -109,8 +80,13 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 	
 	public void saveEnergy()
 	{
-		CompoundTag tag = stack.getOrCreateTag();
-		tag.put(ENERGY, ENERGY_STORAGE.serializeNBT());
-		stack.setTag(tag);
+		if(ENERGY_STORAGE.getEnergyWithoutLoading()  > 0)
+		{
+			CompoundTag tag = stack.getOrCreateTag();
+			tag.put(ENERGY, ENERGY_STORAGE.serializeNBT());
+			stack.setTag(tag);
+		}
+		else if(stack.getTag() != null && stack.getTag().contains(ENERGY))
+			stack.removeTagKey(ENERGY);
 	}
 }
