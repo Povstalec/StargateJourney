@@ -4,14 +4,98 @@ parent: Stargate Technology
 nav_order: 0
 ---
 
+# Stargate
+{: .no_toc }
+
+If you don't know what stargate is, 
+check [What’s that Stargate thing anyway?]({{ '/what-is-stargate/' | absolute_url }})
+
+## Natural Generation
+Stargates generate only in pre-defined dimensions.
+Generation in other dimensions can be achieved with datapacks. 
+
+[//]: # (TODO: add link to generation datapacks)
+
+There are two Stargates in the **Overworld**.
+
+**Lore:**  
+The first gate (**Beta gate**), originally built on Earth by the Ancients,
+was buried in ice for thousands of years in Antarctica.
+The SG-1 discovered this gate after the first gate in Egypt,
+hence the Beta gate.
+The gate found in Giza, Egypt, was the second Earth's Stargate
+brought by the Goa'uld System Lord Ra.
+it was the first gate found (in 1928)
+and operated by [SGC](https://www.gateworld.net/wiki/Stargate_Command), 
+hence the Alpha gate.
+
+
+The **Alpha gate** is buried in-game with a seal 
+and can be found with an archeologist's help ([Survival Guide / Finding a Stargate]({{ '/survival/finding-gate' | absolute_url }})).
+
+![Stargate buried with seal in desert]({{ '/assets/img/structures/gate_buried_desert.png' | absolute_url }})
+{: .max-width-768 }
+
+The **Beta gate** can be found in a cave.
+To find it, dial your stargate to a different dimension and remove the DHD from your stargate in the overworld.
+That way, the Beta gate in the cave will be the only gate in the overworld 
+and will **take priority** once you dial back to the overworld.
+However, that will only work when the **Beta gate** structure was already generated.
+
+If you end up again in your stargate, there is a second option.
+Travel to other StargateJourney dimension (Abydos, Chulak or a different one).
+Note the coordinates (X and Z can be displayed by pressing `F3`) 
+of the stargate in the other dimension, and visit the same coordinates in the overworld.
+Remember that you need to dig. 
+You are looking for a cave with the beta stargate.
+Also, don't forget the DHD that is in the cave with the gate.
+
+![Stargate buried in a cave]({{ '/assets/img/structures/terra_gate.png' | absolute_url }})
+{: .max-width-768 }
+
+
+[//]: # (TODO: other dimensions generation)
+[//]: # (TODO: link to common stargates config and explanation)
+
+## Crafting
+
+## Symbols
+### Point of Origin
+
+## Types and variants
+[//]: # (TODO: Stargate generation levels)
+There are 4 stargate generations that the Ancients developed over time.
+[//]: # (TODO: make a hidden sub page for variants)
+### Classic Stargate
+### Universe Stargate
+### Milky Way Stargate
+### Tollan Stargate
+### Pegasus Stargate
+
+[//]: # (TODO: move feedback codes to computercraft docs)
+
+------------------------  
+------------------------  
+------------------------  
+------------------------  
+------------------------  
+------------------------  
+------------------------  
+------------------------  
+------------------------
+------------------------  
+------------------------
+------------------------  
+------------------------
+------------------------  
+
+
 
 {: .note }
 This content was migrated from the old wiki and is awaiting an update.
 
-1. Table of Contents
-{:toc}
-
 # Stargate
+{: .no_toc }
 
 ## Generation
 By default, two Stargates generate in the Overworld and then one Stargate generates in each of the Dimensions added by Stargate Journey. Other Dimensions like Nether and End are still reachable through the Stargate Network, but they do not have their own Stargates by default.
