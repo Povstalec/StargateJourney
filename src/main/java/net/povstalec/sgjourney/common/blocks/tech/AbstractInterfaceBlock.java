@@ -44,6 +44,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntit
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 
 public abstract class AbstractInterfaceBlock extends BaseEntityBlock
@@ -275,7 +276,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
 			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
 		
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + getCapacity() +" FE")).withStyle(ChatFormatting.DARK_RED));
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(energy, getCapacity()))).withStyle(ChatFormatting.DARK_RED));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 }

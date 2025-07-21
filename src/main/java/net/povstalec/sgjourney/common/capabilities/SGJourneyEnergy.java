@@ -7,6 +7,8 @@ import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 
 public abstract class SGJourneyEnergy extends EnergyStorage
 {
+	private static final char[] PREFIXES = {'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'};
+	
 	protected long energy;
     protected long capacity;
     protected long maxReceive;
@@ -147,4 +149,38 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     {
     	return (int) Math.min(Integer.MAX_VALUE, energy);
     }
+	
+	public static String energyToString(long energy, boolean displayFE)
+	{
+		if(energy < 1000)
+			return displayFE ? energy + " FE" : String.valueOf(energy);
+		
+		double total = energy;
+		int prefix = -1;
+		for(; total >= 1000 && prefix < PREFIXES.length; prefix++)
+		{
+			total /= 1000;
+		}
+		
+		total *= 100;
+		total = Math.round(total);
+		total /= 100;
+		
+		return displayFE ? total + " " + PREFIXES[prefix] + "FE" : String.valueOf(total);
+	}
+	
+	public static String energyToString(long energy)
+	{
+		return energyToString(energy, true);
+	}
+	
+	public static String energyToString(long energy, long capacity, boolean displayFE)
+	{
+		return energyToString(energy, false) + "/" + energyToString(capacity, displayFE);
+	}
+	
+	public static String energyToString(long energy, long capacity)
+	{
+		return energyToString(energy, capacity, true);
+	}
 }

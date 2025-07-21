@@ -97,8 +97,8 @@ public class StargateBlockState extends BlockState
 				}
 			}
 		}
-		
-		return super.getDestroyProgress(player, reader, pos);
+		// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
+		return this.getBlock().getDestroyProgress(asState(), player, reader, pos);
 	}
 	
 	@Override
@@ -119,12 +119,17 @@ public class StargateBlockState extends BlockState
 					return coverState.get().getSoundType(level, pos, entity);
 			}
 		}
-		
-		return super.getSoundType(level, pos, entity);
+		// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
+		return this.self().getBlock().getSoundType(self(), level, pos, entity);
 		
 	}
 	
-	
+	// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
+	@Override
+	protected BlockState asState()
+	{
+		return this;
+	}
 	
 	private BlockState self()
 	{

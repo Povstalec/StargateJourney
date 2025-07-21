@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import org.joml.Vector3d;
 
 import net.minecraft.ChatFormatting;
@@ -131,7 +132,7 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
 			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
 
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + capacity +" FE")).withStyle(ChatFormatting.DARK_RED));
+        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(energy, capacity))).withStyle(ChatFormatting.DARK_RED));
         tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));
 		tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_generator_mark_ii.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		

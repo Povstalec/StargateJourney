@@ -244,7 +244,7 @@ public class ConduitNetworks extends SavedData
 		 * @param simulate If TRUE, the insertion will only be simulated.
 		 * @return amount of energy successfully transferred
 		 */
-		public long transferEnergy(Level level, long toTransfer, boolean simulate)
+		public long transferEnergy(Level level, long toTransfer, boolean simulate, boolean zeroPointEnergy)
 		{
 			if(toTransfer <= 0 || outputs.isEmpty())
 				return 0;
@@ -271,7 +271,7 @@ public class ConduitNetworks extends SavedData
 				{
 					for(Direction direction : cable.getConnectedSides())
 					{
-						transferred += cable.outputEnergy(direction, amount, simulate);
+						transferred += cable.outputEnergy(direction, amount, simulate, zeroPointEnergy);
 					}
 				}
 			}

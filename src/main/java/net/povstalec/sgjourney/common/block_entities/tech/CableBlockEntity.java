@@ -12,6 +12,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.blocks.tech.CableBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonCableConfig;
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.data.ConduitNetworks;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import org.jetbrains.annotations.NotNull;
@@ -63,23 +65,20 @@ public abstract class CableBlockEntity extends BlockEntity
 		nbt.putInt(NETWORK_ID, this.networkID);
 	}
 	
-	public long transfer()
-	{
-		return Long.MAX_VALUE; // TODO Add config to change this
-	}
+	public abstract long maxTransfer();
 	
-	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(transfer(), transfer(), transfer())
+	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(maxTransfer(), maxTransfer(), maxTransfer())
 	{
 		@Override
 		public long receiveLongEnergy(long maxReceive, boolean simulate)
 		{
-			return transferEnergy(Math.min(transfer(), maxReceive), simulate);
+			return transferEnergy(Math.min(maxTransfer(), maxReceive), simulate, false);
 		}
 		
 		@Override
 		public long receiveZeroPointEnergy(long maxReceive, boolean simulate)
 		{
-			return transferEnergy(Math.min(transfer(), maxReceive), simulate);
+			return transferEnergy(Math.min(maxTransfer(), maxReceive), simulate, true);
 		}
 		
 		@Override
@@ -194,7 +193,7 @@ public abstract class CableBlockEntity extends BlockEntity
 		return outputs;
 	}
 	
-	public long outputEnergy(Direction direction, long toOutput, boolean simulate)
+	public long outputEnergy(Direction direction, long toOutput, boolean simulate, boolean zeroPointEnergy)
 	{
 		BlockEntity blockEntity = level.getBlockEntity(getBlockPos().relative(direction));
 		if(blockEntity == null)
@@ -205,9 +204,11 @@ public abstract class CableBlockEntity extends BlockEntity
 			return 0;
 		
 		if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
-			return sgjourneyEnergy.receiveLongEnergy(toOutput, simulate);
-		else
-			return energy.receiveEnergy(SGJourneyEnergy.regularEnergy(toOutput), simulate);
+			return zeroPointEnergy ? sgjourneyEnergy.receiveZeroPointEnergy(toOutput, simulate) : sgjourneyEnergy.receiveLongEnergy(toOutput, simulate);
+		else if(zeroPointEnergy && !CommonZPMConfig.other_mods_use_zero_point_energy.get())
+			return 0;
+		
+		return energy.receiveEnergy(SGJourneyEnergy.regularEnergy(toOutput), simulate);
 	}
 	
 	/**
@@ -216,14 +217,19 @@ public abstract class CableBlockEntity extends BlockEntity
 	 * @param simulate If TRUE, the insertion will only be simulated.
 	 * @return amount of energy successfully transferred
 	 */
-	public long transferEnergy(long toTransfer, boolean simulate)
+	public long transferEnergy(long toTransfer, boolean simulate, boolean zeroPointEnergy)
 	{
+		if(zeroPointEnergy && !canTransferZeroPointEnergy())
+			return 0;
+		
 		ConduitNetworks.ConduitNetwork cableNetwork = getNetwork();
 		if(cableNetwork == null)
 			return 0;
 		
-		return cableNetwork.transferEnergy(getLevel(), toTransfer, simulate);
+		return cableNetwork.transferEnergy(getLevel(), toTransfer, simulate, zeroPointEnergy);
 	}
+	
+	public abstract boolean canTransferZeroPointEnergy();
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
@@ -246,6 +252,18 @@ public abstract class CableBlockEntity extends BlockEntity
 		{
 			super(BlockEntityInit.SMALL_NAQUADAH_CABLE.get(), pos, state);
 		}
+		
+		@Override
+		public long maxTransfer()
+		{
+			return CommonCableConfig.small_naquadah_cable_max_transfer.get();
+		}
+		
+		@Override
+		public boolean canTransferZeroPointEnergy()
+		{
+			return CommonCableConfig.small_naquadah_cable_transfers_zero_point_energy.get();
+		}
 	}
 	
 	public static class MediumNaquadahCable extends CableBlockEntity
@@ -254,6 +272,18 @@ public abstract class CableBlockEntity extends BlockEntity
 		{
 			super(BlockEntityInit.MEDIUM_NAQUADAH_CABLE.get(), pos, state);
 		}
+		
+		@Override
+		public long maxTransfer()
+		{
+			return CommonCableConfig.medium_naquadah_cable_max_transfer.get();
+		}
+		
+		@Override
+		public boolean canTransferZeroPointEnergy()
+		{
+			return CommonCableConfig.medium_naquadah_cable_transfers_zero_point_energy.get();
+		}
 	}
 	
 	public static class LargeNaquadahCable extends CableBlockEntity
@@ -261,6 +291,18 @@ public abstract class CableBlockEntity extends BlockEntity
 		public LargeNaquadahCable(BlockPos pos, BlockState state)
 		{
 			super(BlockEntityInit.LARGE_NAQUADAH_CABLE.get(), pos, state);
+		}
+		
+		@Override
+		public long maxTransfer()
+		{
+			return CommonCableConfig.large_naquadah_cable_max_transfer.get();
+		}
+		
+		@Override
+		public boolean canTransferZeroPointEnergy()
+		{
+			return CommonCableConfig.large_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 }

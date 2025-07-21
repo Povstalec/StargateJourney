@@ -71,6 +71,10 @@ public class StargateJourneyConfig
 		CommonTechConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
 		
+		COMMON_BUILDER.push("Cable Config");
+		CommonCableConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
 		COMMON_BUILDER.push("Genetic Config");
 		CommonGeneticConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
