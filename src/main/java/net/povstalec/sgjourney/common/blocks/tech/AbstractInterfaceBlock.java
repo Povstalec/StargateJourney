@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,6 +48,7 @@ import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 {
@@ -268,15 +271,19 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		return 0;
 	}
 	
+	public long getEnergy(ItemStack stack)
+	{
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		if(blockEntityTag != null && blockEntityTag.contains(AbstractInterfaceEntity.ENERGY, Tag.TAG_LONG))
+			return blockEntityTag.getLong(AbstractInterfaceEntity.ENERGY);
+			
+		return 0L;
+	}
+	
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	int energy = 0;
-    	
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
-			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
-		
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(energy, getCapacity()))).withStyle(ChatFormatting.DARK_RED));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 }

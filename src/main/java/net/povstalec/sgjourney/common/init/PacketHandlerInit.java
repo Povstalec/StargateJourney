@@ -151,6 +151,12 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundCartoucheUpdatePacket::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ClientboundBatteryBlockUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+				.encoder(ClientboundBatteryBlockUpdatePacket::encode)
+				.decoder(ClientboundBatteryBlockUpdatePacket::new)
+				.consumerMainThread(ClientboundBatteryBlockUpdatePacket::handle)
+				.add();
+		
 		//============================================================================================
 		//*******************************************Sounds*******************************************
 		//============================================================================================

@@ -1,29 +1,26 @@
-package net.povstalec.sgjourney.common.items.crystals;
-
-import java.util.List;
-import java.util.Optional;
-
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import org.jetbrains.annotations.Nullable;
+package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import org.jetbrains.annotations.Nullable;
 
-public class EnergyCrystalItem extends AbstractCrystalItem
+import java.util.List;
+
+public class BatteryItem extends Item
 {
-	public static final String ENERGY = "Energy";
+	public static final String ENERGY = "energy";
 	
-	public EnergyCrystalItem(Properties properties)
+	public BatteryItem(Item.Properties properties)
 	{
 		super(properties);
 	}
@@ -31,15 +28,15 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
-		return !StargateJourneyConfig.disable_energy_use.get() && getEnergy(stack) > 0;
+		return true;
 	}
-
+	
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
 		return Math.round(13.0F * (float) getEnergy(stack) / getCapacity());
 	}
-
+	
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
@@ -58,28 +55,22 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public static long getEnergy(ItemStack stack)
 	{
-		long energy;
 		CompoundTag tag = stack.getOrCreateTag();
 		
-		if(!tag.contains(ENERGY))
-			return 0;
+		if(tag.contains(ENERGY, Tag.TAG_LONG))
+			return tag.getLong(ENERGY);
 		
-		if(tag.getTagType(ENERGY) == Tag.TAG_INT) // TODO This is here for legacy reasons because it was originally an int
-			energy = tag.getInt(ENERGY);
-		else
-			energy = tag.getLong(ENERGY);
-		
-		return energy;
+		return 0;
 	}
 	
 	public long getCapacity()
 	{
-		return CommonTechConfig.energy_crystal_capacity.get();
+		return 5000000L;
 	}
 	
 	public long getTransfer()
 	{
-		return CommonTechConfig.advanced_energy_crystal_max_transfer.get();
+		return 100000L;
 	}
 	
 	@Override
@@ -98,19 +89,13 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 			{
 				return getTransfer();
 			}
-
+			
 			@Override
 			public long maxExtract()
 			{
 				return getTransfer();
 			}
 		};
-	}
-
-	@Override
-	public Optional<Component> descriptionInDHD(ItemStack stack)
-	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy").append(Component.literal(" " + SGJourneyEnergy.energyToString(getCapacity()))).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
 	
 	@Override
@@ -119,31 +104,5 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-	}
-	
-	public static final class Advanced extends EnergyCrystalItem
-	{
-		public Advanced(Properties properties)
-		{
-			super(properties);
-		}
-		
-		@Override
-		public long getCapacity()
-		{
-			return CommonTechConfig.advanced_energy_crystal_capacity.get();
-		}
-
-		@Override
-		public long getTransfer()
-		{
-			return CommonTechConfig.advanced_energy_crystal_max_transfer.get();
-		}
-		
-		@Override
-		public boolean isAdvanced()
-		{
-			return true;
-		}
 	}
 }

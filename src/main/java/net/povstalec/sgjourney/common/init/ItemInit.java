@@ -138,15 +138,15 @@ public class ItemInit
 	
 	// Tools
 	public static final RegistryObject<SwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword", 
-			() -> new SwordItem(ToolMaterialInit.naquadah, 4, -2.4f, new Item.Properties().fireResistant()));
+			() -> new SwordItem(ToolMaterialInit.NAQUADAH, 4, -2.4f, new Item.Properties().fireResistant()));
 	public static final RegistryObject<PickaxeItem> NAQUADAH_PICKAXE = ITEMS.register("naquadah_pickaxe", 
-			() -> new PickaxeItem(ToolMaterialInit.naquadah, 2, -2.8f, new Item.Properties().fireResistant()));
+			() -> new PickaxeItem(ToolMaterialInit.NAQUADAH, 2, -2.8f, new Item.Properties().fireResistant()));
 	public static final RegistryObject<AxeItem> NAQUADAH_AXE = ITEMS.register("naquadah_axe", 
-			() -> new AxeItem(ToolMaterialInit.naquadah, 6.0f, -3.0f, new Item.Properties().fireResistant()));
+			() -> new AxeItem(ToolMaterialInit.NAQUADAH, 6.0f, -3.0f, new Item.Properties().fireResistant()));
 	public static final RegistryObject<ShovelItem> NAQUADAH_SHOVEL = ITEMS.register("naquadah_shovel", 
-			() -> new ShovelItem(ToolMaterialInit.naquadah, 2.5f, -3.0f, new Item.Properties().fireResistant()));
+			() -> new ShovelItem(ToolMaterialInit.NAQUADAH, 2.5f, -3.0f, new Item.Properties().fireResistant()));
 	public static final RegistryObject<HoeItem> NAQUADAH_HOE = ITEMS.register("naquadah_hoe", 
-			() -> new HoeItem(ToolMaterialInit.naquadah, -2, 0.0f, new Item.Properties().fireResistant()));
+			() -> new HoeItem(ToolMaterialInit.NAQUADAH, -2, 0.0f, new Item.Properties().fireResistant()));
 	
 	// Armor
 	public static final RegistryObject<ArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet", 
@@ -218,6 +218,14 @@ public class ItemInit
 			() -> new StargateIrisItem.Bronze(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<StargateIrisItem.Steel> STEEL_IRIS = ITEMS.register("steel_iris", 
 			() -> new StargateIrisItem.Steel(new Item.Properties().stacksTo(1)));
+	
+	public static final RegistryObject<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
+			() -> new BatteryItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	
+	public static final RegistryObject<PowerCellItem> LIQUID_NAQUADAH_POWER_CELL = ITEMS.register("liquid_naquadah_power_cell",
+			() -> new PowerCellItem(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<PowerCellItem> HEAVY_LIQUID_NAQUADAH_POWER_CELL = ITEMS.register("heavy_liquid_naquadah_power_cell",
+			() -> new PowerCellItem(new Item.Properties().stacksTo(1)));
 		
 	
 	public static void register(IEventBus eventBus)

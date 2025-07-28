@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 
 public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
@@ -61,9 +62,9 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 		this.crystalEffectTooltip(matrixStack, 14, 22, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.advanced_protocols")
 				.append(Component.literal(": " + menu.enableAdvancedProtocols())).withStyle(ChatFormatting.AQUA));
 		this.crystalEffectTooltip(matrixStack, 14, 34, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_target")
-				.append(Component.literal(": " + menu.getEnergyTarget() + " FE")).withStyle(ChatFormatting.DARK_RED));
+				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED));
 		this.crystalEffectTooltip(matrixStack, 14, 46, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_transfer")
-				.append(Component.literal(": " + menu.maxEnergyDeplete() + " FE/t")).withStyle(ChatFormatting.GOLD));
+				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD));
 		this.crystalEffectTooltip(matrixStack, 14, 58, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.communication_range_1")
 				.append(Component.literal(": " + menu.getMaxDistance() + " "))
 				.append(Component.translatable("tooltip.sgjourney.dhd.communication_range_2")).withStyle(ChatFormatting.GRAY));
@@ -85,7 +86,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 	
 	protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
 	{
-		this.tooltip(matrixStack, mouseX, mouseY, x, y, 6, 52, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE")).withStyle(ChatFormatting.DARK_RED));
+		this.tooltip(matrixStack, mouseX, mouseY, x, y, 6, 52, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED));
 	}
 	
 	@Override

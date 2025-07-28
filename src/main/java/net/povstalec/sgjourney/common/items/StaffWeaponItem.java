@@ -33,6 +33,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -40,7 +41,7 @@ import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 
-public class StaffWeaponItem extends Item
+public class StaffWeaponItem extends FluidItem.Holder
 {
 	public static final String IS_OPEN = "IsOpen";
 	
@@ -72,26 +73,6 @@ public class StaffWeaponItem extends Item
 		closedBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", CLOSED_ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION));
 		closedBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", CLOSED_ATTACK_SPEED, AttributeModifier.Operation.ADDITION));
 		this.closedModifiers = closedBuilder.build();
-	}
-	
-	@Override
-	public boolean isBarVisible(ItemStack stack)
-	{
-		return true;
-	}
-
-	@Override
-	public int getBarWidth(ItemStack stack)
-	{
-		return Math.round(13.0F * (float) getNaquadahAmount(stack) / VialItem.getMaxCapacity());
-	}
-
-	@Override
-	public int getBarColor(ItemStack stack)
-	{
-		float f = Math.max(0.0F, (float) getNaquadahAmount(stack) / VialItem.getMaxCapacity());
-		
-		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
 	@Override
@@ -205,29 +186,28 @@ public class StaffWeaponItem extends Item
 		return !player.isCreative();
 	}
 	
-	public FluidStack getFluidStack(ItemStack staffWeaponItemStack)
+	@Override
+	public ItemStack getHeldItem(ItemStack holderStack)
 	{
-		Optional<FluidStack> optional = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
-		{
-			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
-			if(inventoryStack.is(ItemInit.VIAL.get()))
-				return VialItem.getFluidStack(inventoryStack);
-			else
-				return FluidStack.EMPTY;
-		});
+		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
 		
-		if(optional.isPresent())
-			return optional.get();
+		if(itemHandler == null)
+			return ItemStack.EMPTY;
 		
-		return FluidStack.EMPTY;
+		return itemHandler.getStackInSlot(0);
 	}
 	
+	@Override
 	public boolean isCorrectFluid(FluidStack fluidStack)
 	{
-		Fluid fluid = fluidStack.getFluid();
-		
-		return fluid == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-				fluid == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+		return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
+				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+	}
+	
+	@Override
+	public boolean isValidItem(ItemStack heldStack)
+	{
+		return heldStack.is(ItemInit.VIAL.get());
 	}
 	
 	public int getNaquadahAmount(ItemStack staffWeaponItemStack)
@@ -242,7 +222,7 @@ public class StaffWeaponItem extends Item
 	
 	/**
 	 * Returns true if it depletes naquadah, otherwise false
-	 * @param stack
+	 * @param staffWeaponItemStack
 	 * @return
 	 */
 	public boolean depleteLiquidNaquadah(ItemStack staffWeaponItemStack)
@@ -250,7 +230,7 @@ public class StaffWeaponItem extends Item
 		Optional<Boolean> drained = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
 		{
 			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
-			if(inventoryStack.is(ItemInit.VIAL.get()))
+			if(inventoryStack.getItem() instanceof VialItem vial)
 			{
 				FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
 				
@@ -262,7 +242,7 @@ public class StaffWeaponItem extends Item
 				
 				if(getNaquadahAmount(staffWeaponItemStack) >= drainAmount)
 				{
-					VialItem.drainNaquadah(inventoryStack, drainAmount);
+					vial.drainFluid(inventoryStack, drainAmount);
 					return true;
 				}
 			}
@@ -320,22 +300,14 @@ public class StaffWeaponItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		
 		MutableComponent isOpen = isOpen(stack) ? 
 				Component.translatable("tooltip.sgjourney.matok.open").withStyle(ChatFormatting.YELLOW) :
 					Component.translatable("tooltip.sgjourney.matok.closed").withStyle(ChatFormatting.YELLOW);
 		tooltipComponents.add(isOpen);
-		
-		FluidStack fluidStack = getFluidStack(stack);
-		if(!getFluidStack(stack).equals(FluidStack.EMPTY))
-		{
-			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getTranslationKey()).withStyle(ChatFormatting.GREEN);
-			liquidNaquadah.append(Component.literal(" " + fluidStack.getAmount() + "mB").withStyle(ChatFormatting.GREEN));
-	    	tooltipComponents.add(liquidNaquadah);
-		}
     	
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.open_close").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-    	
-    	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 }

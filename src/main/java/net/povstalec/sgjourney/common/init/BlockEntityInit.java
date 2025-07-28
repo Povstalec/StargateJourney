@@ -6,12 +6,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIIEntity;
-import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
-import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.block_entities.*;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
@@ -96,12 +91,13 @@ public class BlockEntityInit
 	
 	public static final RegistryObject<BlockEntityType<CableBlockEntity.SmallNaquadahCable>> SMALL_NAQUADAH_CABLE = BLOCK_ENTITIES.register("small_naquadah_cable",
 			() -> BlockEntityType.Builder.of(CableBlockEntity.SmallNaquadahCable::new, BlockInit.SMALL_NAQUADAH_CABLE.get()).build(null));
-	
 	public static final RegistryObject<BlockEntityType<CableBlockEntity.MediumNaquadahCable>> MEDIUM_NAQUADAH_CABLE = BLOCK_ENTITIES.register("medium_naquadah_cable",
 			() -> BlockEntityType.Builder.of(CableBlockEntity.MediumNaquadahCable::new, BlockInit.MEDIUM_NAQUADAH_CABLE.get()).build(null));
-	
 	public static final RegistryObject<BlockEntityType<CableBlockEntity.LargeNaquadahCable>> LARGE_NAQUADAH_CABLE = BLOCK_ENTITIES.register("large_naquadah_cable",
 			() -> BlockEntityType.Builder.of(CableBlockEntity.LargeNaquadahCable::new, BlockInit.LARGE_NAQUADAH_CABLE.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<BatteryBlockEntity.Naquadah>> LARGE_NAQUADAH_BATTERY = BLOCK_ENTITIES.register("large_naquadah_battery",
+			() -> BlockEntityType.Builder.of(BatteryBlockEntity.Naquadah::new, BlockInit.LARGE_NAQUADAH_BATTERY.get()).build(null));
 	
 	public static void register(IEventBus eventBus)
 	{

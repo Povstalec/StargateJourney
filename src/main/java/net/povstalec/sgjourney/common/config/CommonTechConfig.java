@@ -47,19 +47,19 @@ public class CommonTechConfig
 		
 		energy_crystal_capacity = server
 				.comment("The amount of energy an Energy Crystal can hold")
-				.defineInRange("server.energy_crystal_capacity", 50000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.energy_crystal_capacity", 500000L, 1L, Long.MAX_VALUE);
 		
 		advanced_energy_crystal_capacity = server
 				.comment("The amount of energy an Advanced Energy Crystal can hold")
-				.defineInRange("server.advanced_energy_crystal_capacity", 100000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.advanced_energy_crystal_capacity", 2000000L, 1L, Long.MAX_VALUE);
 		
 		energy_crystal_max_transfer = server
 				.comment("The amount of energy that can be transfered into and out of an Energy Crystal per tick")
-				.defineInRange("server.energy_crystal_max_transfer", 1500L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.energy_crystal_max_transfer", 100000L, 1L, Long.MAX_VALUE);
 		
 		advanced_energy_crystal_max_transfer = server
 				.comment("The amount of energy that can be transfered into and out of an Advanced Energy Crystal per tick")
-				.defineInRange("server.advanced_energy_crystal_max_transfer", 3000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.advanced_energy_crystal_max_transfer", 1000000L, 1L, Long.MAX_VALUE);
 		
 		
 		

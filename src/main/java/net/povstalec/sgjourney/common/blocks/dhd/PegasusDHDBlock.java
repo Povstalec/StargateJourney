@@ -42,7 +42,6 @@ import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
-import net.povstalec.sgjourney.common.misc.InventoryHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterloggedBlock
@@ -175,7 +174,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 	{
 		ListTag nbtTagList = new ListTag();
 		
-		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.FUSION_CORE.get()), 1, null));
+		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(ItemInit.FUSION_CORE.get()), 1, null));
 		
 		return nbtTagList;
 	}
@@ -184,12 +183,12 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 	{
 		ListTag nbtTagList = new ListTag();
 		
-		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(6, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(CommonTechConfig.advanced_transfer_crystal_max_transfer.get())));
+		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
+		nbtTagList.add(InventoryUtil.addItem(1, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(6, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(7, InventoryUtil.itemName(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(CommonTechConfig.advanced_transfer_crystal_max_transfer.get())));
 		
 		return nbtTagList;
 	}

@@ -11,8 +11,8 @@ public class LiquidNaquadahPropertyFunction implements ClampedItemPropertyFuncti
 	@Override
 	public float unclampedCall(ItemStack stack, ClientLevel level, LivingEntity entity, int id)
 	{
-		if(entity != null && stack.getItem() instanceof VialItem)
-			return (float) VialItem.getFluidAmount(stack) / VialItem.getMaxCapacity();
+		if(entity != null && stack.getItem() instanceof VialItem vial)
+			return vial.getFluidPercentage(stack);
 		
 		return 0;
 	}

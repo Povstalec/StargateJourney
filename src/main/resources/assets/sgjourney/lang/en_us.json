@@ -120,6 +120,8 @@
 	"block.sgjourney.medium_naquadah_cable": "Medium Naquadah Cable",
 	"block.sgjourney.large_naquadah_cable": "Large Naquadah Cable",
 	
+	"block.sgjourney.large_naquadah_battery": "Large Naquadah Battery",
+	
 	"fluid_type.sgjourney.liquid_naquadah": "Liquid Naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Heavy Liquid Naquadah",
 	
@@ -289,6 +291,8 @@
 	"screen.sgjourney.advanced_crystallizer": "Advanced Crystallizer",
 	"screen.sgjourney.naquadah_liquidizer": "Naquadah Liquidizer",
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
+	
+	"screen.sgjourney.naquadah_battery": "Naquadah Battery",
 
 	"screen.sgjourney.transceiver": "Transceiver",
 	"screen.sgjourney.transceiver.symbol.toggle_frequency": "f",
@@ -499,6 +503,7 @@
 	"tooltip.sgjourney.address": "Address",
 	"tooltip.sgjourney.9_chevron_address": "9-Chevron Address",
 	"tooltip.sgjourney.energy": "Energy",
+	"tooltip.sgjourney.energy_buffer": "Energy Buffer",
 	"tooltip.sgjourney.dimension": "Dimension",
 	"tooltip.sgjourney.mode": "Mode",
 	"tooltip.sgjourney.upgraded": "Upgraded",
@@ -521,10 +526,8 @@
 	"tooltip.sgjourney.crystal.in_ring_panel": "In Ring Panel:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Enables advanced protocols in Stargate",
 	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Enables advanced protocols in Stargate",
-	"tooltip.sgjourney.crystal.in_dhd.energy": "Increases targeted Energy capacity in Stargate by 50000 FE",
-	"tooltip.sgjourney.crystal.in_dhd.energy.advanced": "Increases targeted Energy capacity in Stargate by 100000 FE",
-	"tooltip.sgjourney.crystal.in_dhd.transfer": "Increases the amount of Energy transferred to the Stargate by 2500 FE",
-	"tooltip.sgjourney.crystal.in_dhd.transfer.advanced": "Increases the amount of Energy transferred to the Stargate by 5000 FE",
+	"tooltip.sgjourney.crystal.in_dhd.energy": "Increases targeted Energy capacity in Stargate by",
+	"tooltip.sgjourney.crystal.in_dhd.transfer": "Increases the amount of Energy transferred to the Stargate by",
 	"tooltip.sgjourney.crystal.in_dhd.communication": "Increases the range at which the DHD can communicate with a Stargate by 16 blocks",
 	"tooltip.sgjourney.crystal.in_dhd.communication.advanced": "Increases the range at which the DHD can communicate with a Stargate by 32 blocks",
 	"tooltip.sgjourney.communication_crystal.frequency": "Frequency",
@@ -545,6 +548,8 @@
 	
 	"tooltip.sgjourney.zpm.entropy": "Entropy",
 	"tooltip.sgjourney.zpm.energy_in_level": "Energy in Level",
+	
+	"tooltip.sgjourney.cable.zpm_transfer": "Can handle transferring Energy from a ZPM",
 	
 	"tooltip.sgjourney.energy_transfer": "Max Energy Transfer",
 	"tooltip.sgjourney.matok.open": "Open",

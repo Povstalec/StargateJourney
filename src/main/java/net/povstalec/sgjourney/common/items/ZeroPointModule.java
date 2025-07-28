@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.items;
 
 import java.util.List;
 
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,8 +42,6 @@ public class ZeroPointModule extends Item
 	private static final String ENERGY = "Energy";
 	private static final String ENTROPY = "Entropy";
 	
-	public static final int maxEntropy = 1000;
-	
 	public ZeroPointModule(Properties properties)
 	{
 		super(properties);
@@ -56,7 +56,7 @@ public class ZeroPointModule extends Item
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (maxEntropy - (float) getEntropy(stack)) / maxEntropy);
+		return Math.round(13.0F * (ZeroPointEnergy.MAX_ENTROPY - (float) getEntropy(stack)) / ZeroPointEnergy.MAX_ENTROPY);
 	}
 
 	@Override
@@ -68,10 +68,7 @@ public class ZeroPointModule extends Item
 	@Override
     public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
 	{
-		return new ZPMEnergyProvider(stack)
-				{
-					
-				};
+		return new ZPMEnergyProvider(stack) {};
 	}
 	
 	private static int getEntropy(ItemStack stack)
@@ -103,7 +100,7 @@ public class ZeroPointModule extends Item
 				return longTag.getAsLong();
 		}
 		
-		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
+		return ZeroPointEnergy.ENERGY_PER_ENTROPY_LEVEL;
 	}
 	
 	@Override
@@ -112,10 +109,10 @@ public class ZeroPointModule extends Item
 		int entropy = getEntropy(stack);
 		long remainingEnergy = getEnergy(stack);
 		
-		float currentEntropy = (float) entropy * 100 / maxEntropy;
+		float currentEntropy = (float) entropy * 100 / ZeroPointEnergy.MAX_ENTROPY;
 		
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.entropy").append(Component.literal(": " + currentEntropy + "%")).withStyle(ChatFormatting.GOLD));
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.energy_in_level").append(Component.literal(": " + remainingEnergy + " FE")).withStyle(ChatFormatting.DARK_RED));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + ZeroPointEnergy.zeroPointEnergyToString(entropy, remainingEnergy))).withStyle(ChatFormatting.DARK_RED));
     	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}

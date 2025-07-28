@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.models.block;
 
-import com.google.gson.JsonParseException;
-import net.minecraft.ResourceLocationException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -40,15 +38,18 @@ public class CableBakedModel implements IDynamicBakedModel
 	private final double sideSpace; // Free space between block and cable
 	private final ResourceLocation texture;
 	private TextureAtlasSprite sprite;
+	private final ResourceLocation particleTexture;
+	private TextureAtlasSprite particleSprite;
 	
 	private final Vec3 x0y0z0, x1y0z0, x1y0z1, x0y0z1, x0y1z0, x1y1z0, x1y1z1, x0y1z1; // Vectors defining the edges of the center cube that makes up the cable
 	private final Vec3 xSpace, ySpace, zSpace; // Vectors defining the space between the center cube and the side of the block
 	
-	public CableBakedModel(IGeometryBakingContext context, ResourceLocation texture, double thickness)
+	public CableBakedModel(IGeometryBakingContext context, ResourceLocation texture, ResourceLocation particleTexture, double thickness)
 	{
 		this.context = context;
-		this.thickness = thickness;
 		this.texture = texture;
+		this.particleTexture = particleTexture;
+		this.thickness = thickness;
 		
 		this.sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
 		
@@ -76,6 +77,8 @@ public class CableBakedModel implements IDynamicBakedModel
 	{
 		if(sprite == null)
 			sprite = getTexture(texture);
+		if(particleSprite == null)
+			particleSprite = getTexture(particleTexture);
 	}
 	
 	private static byte getOffset(CableBlock.ConnectorType top, CableBlock.ConnectorType left, CableBlock.ConnectorType bottom, CableBlock.ConnectorType right)
@@ -249,7 +252,7 @@ public class CableBakedModel implements IDynamicBakedModel
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
-		return sprite == null ? minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply((MISSING)) : sprite;
+		return particleSprite == null ? minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply((MISSING)) : particleSprite;
 	}
 	
 	@Override

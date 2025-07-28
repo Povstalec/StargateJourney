@@ -46,9 +46,14 @@ public class ModEvents
 				if(layer == 0)
 					return -1;
 				
-				FluidStack fluidStack = VialItem.getFluidStack(stack);
-				IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-		        return renderProperties.getTintColor(fluidStack);
+				if(stack.getItem() instanceof VialItem vial)
+				{
+					FluidStack fluidStack = vial.getFluidStack(stack);
+					IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
+					return renderProperties.getTintColor(fluidStack);
+				}
+				
+				return -1;
 			}, ItemInit.VIAL.get());
 		}
 	}

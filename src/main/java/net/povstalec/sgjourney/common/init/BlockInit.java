@@ -35,10 +35,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.*;
-import net.povstalec.sgjourney.common.items.blocks.CartoucheBlockItem;
-import net.povstalec.sgjourney.common.items.blocks.DHDItem;
-import net.povstalec.sgjourney.common.items.blocks.StargateBlockItem;
-import net.povstalec.sgjourney.common.items.blocks.TransporterBlockItem;
+import net.povstalec.sgjourney.common.items.blocks.*;
 
 //A class for initializing blocks
 public class BlockInit
@@ -252,6 +249,9 @@ public class BlockInit
 	public static final RegistryObject<CableBlock> LARGE_NAQUADAH_CABLE = registerBlock("large_naquadah_cable",
 			() -> new CableBlock.LargeNaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), Rarity.RARE, 64);
 	
+	public static final RegistryObject<BatteryBlock> LARGE_NAQUADAH_BATTERY = registerBatteryBlock("large_naquadah_battery",
+			() -> new BatteryBlock.Naquadah(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F)), Rarity.RARE);
+	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)
 	{
@@ -314,6 +314,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>RegistryObject<T> registerBatteryBlock(String name, Supplier<T> block, Rarity rarity)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		
+		registerBatteryBlockItem(name, toReturn, rarity);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block)
 	{
 		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
@@ -347,6 +356,11 @@ public class BlockInit
 	private static <T extends Block>RegistryObject<Item> registerCartoucheBlockItem(String name, RegistryObject<T> block, int stacksTo)
 	{
 		return ItemInit.ITEMS.register(name, () -> new CartoucheBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+	}
+	
+	private static <T extends Block>RegistryObject<Item> registerBatteryBlockItem(String name, RegistryObject<T> block, Rarity rarity)
+	{
+		return ItemInit.ITEMS.register(name, () -> new BatteryBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(1)));
 	}
 	
 	public static void register(IEventBus eventBus)

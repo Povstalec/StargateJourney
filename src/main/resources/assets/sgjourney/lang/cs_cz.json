@@ -119,6 +119,8 @@
 	"block.sgjourney.medium_naquadah_cable": "Střední naquadahový kabel",
 	"block.sgjourney.large_naquadah_cable": "Velký naquadahový kabel",
 	
+	"block.sgjourney.large_naquadah_battery": "Velká naquadahová baterie",
+	
 	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
 	
@@ -287,6 +289,8 @@
 	"screen.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
 	"screen.sgjourney.naquadah_liquidizer": "Zkapalňovač naquadahu",
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
+	
+	"screen.sgjourney.naquadah_battery": "Naquadahová baterie",
 
 	"screen.sgjourney.transceiver": "Vysílač",
 	"screen.sgjourney.transceiver.symbol.toggle_frequency": "f",
@@ -500,6 +504,7 @@
 	"tooltip.sgjourney.address": "Adresa",
 	"tooltip.sgjourney.9_chevron_address": "9chevronová adresa",
 	"tooltip.sgjourney.energy": "Energie",
+	"tooltip.sgjourney.energy_buffer": "Vyrovnavač energie",
 	"tooltip.sgjourney.dimension": "Dimenze",
 	"tooltip.sgjourney.mode": "Mód",
 	"tooltip.sgjourney.upgraded": "Upgradováno",
@@ -521,10 +526,8 @@
 	"tooltip.sgjourney.crystal.in_dhd": "V DHD:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Povolí bráně používat pokročilé nastavení",
 	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Povolí bráně používat pokročilé nastavení",
-	"tooltip.sgjourney.crystal.in_dhd.energy": "Zvýší cílenou energetickou kapacitu v bráně o 50000 FE",
-	"tooltip.sgjourney.crystal.in_dhd.energy.advanced": "Zvýší cílenou energetickou kapacitu v bráně o 100000 FE",
-	"tooltip.sgjourney.crystal.in_dhd.transfer": "Zvýší energii přenášenou do hvězdné brány o 2500 FE",
-	"tooltip.sgjourney.crystal.in_dhd.transfer.advanced": "Zvýší energii přenášenou do hvězdné brány o 5000 FE",
+	"tooltip.sgjourney.crystal.in_dhd.energy": "Zvýší cílenou energetickou kapacitu v bráně o",
+	"tooltip.sgjourney.crystal.in_dhd.transfer": "Zvýší energii přenášenou do hvězdné brány o",
 	"tooltip.sgjourney.crystal.in_dhd.communication": "Zvýší vzdálenost ze které zvládne DHD komunikovat s hvězdnou bránou o 16 bloků",
 	"tooltip.sgjourney.crystal.in_dhd.communication.advanced": "Zvýší vzdálenost ze které zvládne DHD komunikovat s hvězdnou bránou o 32 bloků",
 	"tooltip.sgjourney.communication_crystal.frequency": "Frekvence",
@@ -545,6 +548,8 @@
 	
 	"tooltip.sgjourney.zpm.entropy": "Entropie",
 	"tooltip.sgjourney.zpm.energy_in_level": "Energie v úrovni",
+	
+	"tooltip.sgjourney.cable.zpm_transfer": "Dokáže vydržet přenos energie ze ZPM",
 	
 	"tooltip.sgjourney.energy_transfer": "Max. přenos energie",
 	"tooltip.sgjourney.matok.open": "Otevřený",

@@ -3,6 +3,7 @@ package net.povstalec.sgjourney;
 import java.util.function.BiFunction;
 
 import net.minecraftforge.client.event.ModelEvent;
+import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import org.slf4j.Logger;
@@ -48,17 +49,6 @@ import net.povstalec.sgjourney.client.render.entity.HumanRenderer;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
-import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
-import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
-import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
-import net.povstalec.sgjourney.client.screens.InterfaceScreen;
-import net.povstalec.sgjourney.client.screens.LiquidizerScreen;
-import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
-import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
-import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
-import net.povstalec.sgjourney.client.screens.RingPanelScreen;
-import net.povstalec.sgjourney.client.screens.TransceiverScreen;
-import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.entities.Human;
@@ -211,6 +201,8 @@ public class StargateJourney
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
 
         	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
+			
+			MenuScreens.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
         	
         	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
 			EntityRenderers.register(EntityInit.HUMAN.get(), HumanRenderer<Human>::new);

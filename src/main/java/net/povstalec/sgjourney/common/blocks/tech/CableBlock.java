@@ -1,10 +1,13 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -26,8 +29,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.data.ConduitNetworks;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class CableBlock extends Block implements SimpleWaterloggedBlock, EntityBlock
 {
@@ -281,6 +288,20 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 				connectorType(state, UP).isEdge() || connectorType(state, DOWN).isEdge();
 	}
 	
+	public abstract long energyTransfer();
+	
+	public abstract boolean transfersZeroPointEnergy();
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		if(transfersZeroPointEnergy())
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.cable.zpm_transfer").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + SGJourneyEnergy.energyToString(energyTransfer()) + "/t")).withStyle(ChatFormatting.RED));
+		
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+	}
+	
 	
 	public static class SmallNaquadahCable extends CableBlock
 	{
@@ -293,6 +314,18 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
 			return isEdge(state) ? new CableBlockEntity.SmallNaquadahCable(pos, state) : null;
+		}
+		
+		@Override
+		public long energyTransfer()
+		{
+			return CommonCableConfig.small_naquadah_cable_max_transfer.get();
+		}
+		
+		@Override
+		public boolean transfersZeroPointEnergy()
+		{
+			return CommonCableConfig.small_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 	
@@ -308,6 +341,18 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		{
 			return isEdge(state) ? new CableBlockEntity.MediumNaquadahCable(pos, state) : null;
 		}
+		
+		@Override
+		public long energyTransfer()
+		{
+			return CommonCableConfig.medium_naquadah_cable_max_transfer.get();
+		}
+		
+		@Override
+		public boolean transfersZeroPointEnergy()
+		{
+			return CommonCableConfig.medium_naquadah_cable_transfers_zero_point_energy.get();
+		}
 	}
 	
 	public static class LargeNaquadahCable extends CableBlock
@@ -321,6 +366,18 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
 			return isEdge(state) ? new CableBlockEntity.LargeNaquadahCable(pos, state) : null;
+		}
+		
+		@Override
+		public long energyTransfer()
+		{
+			return CommonCableConfig.large_naquadah_cable_max_transfer.get();
+		}
+		
+		@Override
+		public boolean transfersZeroPointEnergy()
+		{
+			return CommonCableConfig.large_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 	
