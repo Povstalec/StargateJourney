@@ -86,7 +86,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 	
 	protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
 	{
-		this.tooltip(matrixStack, mouseX, mouseY, x, y, 6, 52, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED));
+		this.tooltip(matrixStack, mouseX, mouseY, x, y, 6, 52, Component.translatable("tooltip.sgjourney.energy_buffer").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED));
 	}
 	
 	@Override

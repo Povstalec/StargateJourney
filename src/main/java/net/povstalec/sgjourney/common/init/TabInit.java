@@ -62,7 +62,7 @@ public class TabInit
 
 				items.accept(ItemInit.GDO.get());
 				
-				items.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
+				//items.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
 				
 				items.accept(ItemInit.NAQUADAH_SWORD.get());
 				items.accept(ItemInit.NAQUADAH_PICKAXE.get());
@@ -78,6 +78,7 @@ public class TabInit
 				items.accept(ItemInit.KARA_KESH.get());
 				items.accept(ItemInit.RING_REMOTE.get());
 				
+				items.accept(ItemInit.JAFFA_STAFF_HEAD.get());
 				items.accept(ItemInit.MATOK.get());
 				
 				items.accept(ItemInit.JACKAL_HELMET.get());
@@ -122,7 +123,7 @@ public class TabInit
 				items.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
 				
-				items.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
+				//items.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
 			});
 		});
 		
@@ -269,7 +270,7 @@ public class TabInit
 				items.accept(BlockInit.MEDIUM_NAQUADAH_CABLE.get());
 				items.accept(BlockInit.LARGE_NAQUADAH_CABLE.get());
 				
-				items.accept(BlockInit.LARGE_NAQUADAH_BATTERY.get());
+				//items.accept(BlockInit.LARGE_NAQUADAH_BATTERY.get());
 			});
 		});
 	}

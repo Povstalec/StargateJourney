@@ -162,6 +162,9 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        url "https://nexus.velocitypowered.com/repository/maven-public/"
+    }
   }
 }
 
@@ -180,6 +183,8 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    implementation("net.jodah:typetools:0.8.3")
     
     compileOnly fg.deobf("maven.modrinth:stellarview:OuIfup4Y")
     runtimeOnly fg.deobf("maven.modrinth:stellarview:OuIfup4Y")

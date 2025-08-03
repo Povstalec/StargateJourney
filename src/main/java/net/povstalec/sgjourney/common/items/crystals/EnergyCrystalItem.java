@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -106,11 +107,16 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 			}
 		};
 	}
+	
+	public long energyTargetIncrease()
+	{
+		return CommonDHDConfig.energy_crystal_dhd_energy_target.get();
+	}
 
 	@Override
 	public Optional<Component> descriptionInDHD(ItemStack stack)
 	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy").append(Component.literal(" " + SGJourneyEnergy.energyToString(getCapacity()))).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy").append(Component.literal(" " + SGJourneyEnergy.energyToString(energyTargetIncrease()))).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
 	
 	@Override
@@ -144,6 +150,12 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		public boolean isAdvanced()
 		{
 			return true;
+		}
+		
+		@Override
+		public long energyTargetIncrease()
+		{
+			return CommonDHDConfig.advanced_energy_crystal_dhd_energy_target.get();
 		}
 	}
 }

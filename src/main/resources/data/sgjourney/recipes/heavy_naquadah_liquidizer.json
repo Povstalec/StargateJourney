@@ -4,13 +4,13 @@
 	"pattern":
 	[
 		"NCN",
-		"BLB",
+		"BPB",
 		"RRR"
 	],
 	
 	"key": 
 	{
-		"L": { "item": "sgjourney:naquadah_liquidizer" },
+		"P": { "item": "sgjourney:naquadah_power_cell" },
 		"C": { "item": "sgjourney:control_crystal" },
 		"N": { "tag": "sgjourney:naquadah" },
 		"B": { "item": "sgjourney:liquid_naquadah_bucket" },

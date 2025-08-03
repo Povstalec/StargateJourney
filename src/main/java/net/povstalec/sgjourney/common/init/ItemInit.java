@@ -79,6 +79,9 @@ public class ItemInit
 	public static final RegistryObject<Item> KARA_KESH = ITEMS.register("kara_kesh", 
 			() -> new KaraKeshItem(new KaraKeshItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 	
+	public static final RegistryObject<Item> JAFFA_STAFF_HEAD = ITEMS.register("jaffa_staff_head",
+			() -> new Item(new Item.Properties().stacksTo(1)));
+	
 	public static final RegistryObject<Item> MATOK = ITEMS.register("matok", 
 			() -> new StaffWeaponItem(new StaffWeaponItem.Properties().stacksTo(1)));
 	
@@ -222,8 +225,8 @@ public class ItemInit
 	public static final RegistryObject<StargateIrisItem.Steel> STEEL_IRIS = ITEMS.register("steel_iris", 
 			() -> new StargateIrisItem.Steel(new Item.Properties().stacksTo(1)));
 	
-	public static final RegistryObject<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
-			() -> new BatteryItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+	/*public static final RegistryObject<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
+			() -> new BatteryItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));*/
 		
 	
 	public static void register(IEventBus eventBus)

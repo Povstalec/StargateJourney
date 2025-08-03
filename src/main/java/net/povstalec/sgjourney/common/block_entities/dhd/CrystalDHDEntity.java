@@ -170,7 +170,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 				if(energyCrystals.getCrystals().length >= 4 || energyCrystals.getAdvancedCrystals().length >= 3)
 					energyTarget = -1;
 				else if(energyTarget >= 0)
-					energyTarget += energyCrystal.getCapacity();
+					energyTarget += energyCrystal.energyTargetIncrease();
 			}
 			
 			else if(item instanceof TransferCrystalItem transferCrystal)
