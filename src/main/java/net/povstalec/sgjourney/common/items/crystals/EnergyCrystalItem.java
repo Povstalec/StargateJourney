@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 
 public class EnergyCrystalItem extends AbstractCrystalItem
 {
@@ -74,12 +74,12 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public long getCapacity()
 	{
-		return CommonTechConfig.energy_crystal_capacity.get();
+		return CommonCrystalConfig.energy_crystal_capacity.get();
 	}
 	
 	public long getTransfer()
 	{
-		return CommonTechConfig.advanced_energy_crystal_max_transfer.get();
+		return CommonCrystalConfig.energy_crystal_max_transfer.get();
 	}
 	
 	@Override
@@ -131,13 +131,13 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		@Override
 		public long getCapacity()
 		{
-			return CommonTechConfig.advanced_energy_crystal_capacity.get();
+			return CommonCrystalConfig.advanced_energy_crystal_capacity.get();
 		}
 
 		@Override
 		public long getTransfer()
 		{
-			return CommonTechConfig.advanced_energy_crystal_max_transfer.get();
+			return CommonCrystalConfig.advanced_energy_crystal_max_transfer.get();
 		}
 		
 		@Override

@@ -3,16 +3,16 @@
 	"category": "misc",
 	"pattern":
 	[
-		"NNN",
-		"GCG",
-		"NNN"
+		"CCC",
+		"NGN",
+		"CCC"
 	],
 	
 	"key": 
 	{
 		"N": { "tag": "sgjourney:refined_naquadah" },
 		"G": { "item": "minecraft:gold_ingot" },
-		"C": { "item": "sgjourney:energy_crystal" }
+		"C": { "item": "sgjourney:small_naquadah_cable" }
 	},
 	
 	"result": { "item": "sgjourney:medium_naquadah_cable", "count": 6 }

@@ -116,6 +116,7 @@
 	"block.sgjourney.transceiver": "Transceiver",
 	"block.sgjourney.transceiver.description": "Device used for transmitting and receiving signals from other Transceivers and GDOs",
 	
+	"block.sgjourney.naquadah_wire": "Naquadah Wire",
 	"block.sgjourney.small_naquadah_cable": "Small Naquadah Cable",
 	"block.sgjourney.medium_naquadah_cable": "Medium Naquadah Cable",
 	"block.sgjourney.large_naquadah_cable": "Large Naquadah Cable",
@@ -220,6 +221,9 @@
 	"item.sgjourney.trinium_iris": "Trinium Iris",
 	"item.sgjourney.bronze_iris": "Bronze Iris",
 	"item.sgjourney.steel_iris": "Steel Iris",
+	
+	"item.sgjourney.small_naquadah_battery": "Small Naquadah Battery",
+	"item.sgjourney.naquadah_power_cell": "Naquadah Power Cell",
 	
 	"entity.sgjourney.goauld": "Goa'uld",
 	"entity.sgjourney.human": "Human",
@@ -504,6 +508,8 @@
 	"tooltip.sgjourney.9_chevron_address": "9-Chevron Address",
 	"tooltip.sgjourney.energy": "Energy",
 	"tooltip.sgjourney.energy_buffer": "Energy Buffer",
+	"tooltip.sgjourney.fluid": "Fluid",
+	"tooltip.sgjourney.holding": "Holding",
 	"tooltip.sgjourney.dimension": "Dimension",
 	"tooltip.sgjourney.mode": "Mode",
 	"tooltip.sgjourney.upgraded": "Upgraded",
@@ -552,6 +558,7 @@
 	"tooltip.sgjourney.cable.zpm_transfer": "Can handle transferring Energy from a ZPM",
 	
 	"tooltip.sgjourney.energy_transfer": "Max Energy Transfer",
+	"tooltip.sgjourney.naquadah_power_cell.reload": "Right-Click in Off-Hand to Reload with Naquadah Vial in Main Hand",
 	"tooltip.sgjourney.matok.open": "Open",
 	"tooltip.sgjourney.matok.closed": "Closed",
 	"tooltip.sgjourney.matok.open_close": "Shift + Right-Click in Main Hand to Open/Close",

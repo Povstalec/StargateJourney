@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.LightningRodBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -47,14 +49,6 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 	public static final EnumProperty<ConnectorType> UP = EnumProperty.create("up", ConnectorType.class);
 	public static final EnumProperty<ConnectorType> DOWN = EnumProperty.create("down", ConnectorType.class);
 	
-	private final VoxelShape shapeCenter;
-	private final VoxelShape shapeNorth;
-	private final VoxelShape shapeSouth;
-	private final VoxelShape shapeWest;
-	private final VoxelShape shapeEast;
-	private final VoxelShape shapeUp;
-	private final VoxelShape shapeDown;
-	
 	public final VoxelShape[] shapeCache;
 	
 	public CableBlock(Properties properties, double thickness)
@@ -62,17 +56,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
 		
-		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
-		
-		this.shapeCenter = Shapes.box(sideSpace, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, sideSpace + thickness);
-		this.shapeNorth = Shapes.box(sideSpace, sideSpace, 0.0, sideSpace + thickness, sideSpace + thickness, sideSpace);
-		this.shapeSouth = Shapes.box(sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, sideSpace + thickness, 1.0);
-		this.shapeWest = Shapes.box(0.0, sideSpace, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness);
-		this.shapeEast = Shapes.box(sideSpace + thickness, sideSpace, sideSpace, 1.0, sideSpace + thickness, sideSpace + thickness);
-		this.shapeUp = Shapes.box(sideSpace, sideSpace + thickness, sideSpace, sideSpace + thickness, 1.0, sideSpace + thickness);
-		this.shapeDown = Shapes.box(sideSpace, 0.0, sideSpace, sideSpace + thickness, sideSpace, sideSpace + thickness);
-		
-		this.shapeCache = buildShapeCache();
+		this.shapeCache = buildShapeCache(thickness);
 	}
 	
 	@Override
@@ -94,12 +78,21 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		super.neighborChanged(state, level, pos, block, fromPos, isMoving);
 		
 		// We don't want a Block Entity to be present when the cable isn't connected to any energy block
-		if(!isEdge(state) && level.getBlockEntity(pos) instanceof CableBlockEntity cable)
+		if(level.getBlockEntity(pos) instanceof CableBlockEntity cable)
 		{
-			level.removeBlockEntity(pos);
-			cable.setRemoved();
-			level.setBlock(pos, state, 3);
+			if(!isEdge(state))
+			{
+				level.removeBlockEntity(pos);
+				cable.setRemoved();
+				level.setBlock(pos, state, 3);
+				return;
+			}
+			// Get Energy from Lightning strike
+			BlockState otherState = level.getBlockState(fromPos);
+			if(otherState.getBlock() instanceof LightningRodBlock && otherState.getValue(LightningRodBlock.POWERED))
+				cable.transferEnergy(CommonCableConfig.lightning_strike_energy.get(), false, false);
 		}
+		
 	}
 	
 	@Nullable
@@ -183,10 +176,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 			return state.getBlock() == getter.getBlockState(pos).getBlock() ? ConnectorType.CABLE : ConnectorType.NONE;
 		
 		BlockEntity blockEntity = getter.getBlockEntity(otherPos);
-		if(blockEntity == null)
-			return ConnectorType.NONE;
+		if(blockEntity != null)
+			return blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).isPresent() ? ConnectorType.BLOCK : ConnectorType.NONE;
 		
-		return blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).isPresent() ? ConnectorType.BLOCK : ConnectorType.NONE;
+		if(state.getBlock() instanceof LightningRodBlock && state.getValue(LightningRodBlock.FACING) == direction)
+			return ConnectorType.BLOCK;
+		
+		return ConnectorType.NONE;
 	}
 	
 	public static ConnectorType connectorType(BlockState state, EnumProperty<ConnectorType> property)
@@ -230,33 +226,75 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		return state.setValue(NORTH, north).setValue(SOUTH, south).setValue(WEST, west).setValue(EAST, east).setValue(UP, up).setValue(DOWN, down);
 	}
 	
-	public VoxelShape[] buildShapeCache()
+	public VoxelShape[] buildShapeCache(double thickness)
 	{
 		VoxelShape[] shapes = new VoxelShape[0b1000000];
 		for(byte i = 0; i < 0b1000000; ++i)
 		{
-			shapes[i] = shapeFromBits(i);
+			shapes[i] = shapeFromBits(thickness, i);
 		}
 		
 		return shapes;
 	}
 	
-	public VoxelShape shapeFromBits(byte bits)
+	public static VoxelShape centerShape(double thickness)
 	{
-		VoxelShape shape = shapeCenter;
+		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
+		return Shapes.box(sideSpace, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, sideSpace + thickness);
+	}
+	
+	public static VoxelShape northShape(double thickness)
+	{
+		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
+		return Shapes.box(sideSpace, sideSpace, 0.0, sideSpace + thickness, sideSpace + thickness, sideSpace);
+	}
+	
+	public static VoxelShape southShape(double thickness)
+	{
+		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
+		return Shapes.box(sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness, sideSpace + thickness, 1.0);
+	}
+	
+	public static VoxelShape westShape(double thickness)
+	{
+		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
+		return Shapes.box(0.0, sideSpace, sideSpace, sideSpace, sideSpace + thickness, sideSpace + thickness);
+	}
+	
+	public static VoxelShape eastShape(double thickness)
+	{
+		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
+		return Shapes.box(sideSpace + thickness, sideSpace, sideSpace, 1.0, sideSpace + thickness, sideSpace + thickness);
+	}
+	
+	public static VoxelShape upShape(double thickness)
+	{
+		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
+		return Shapes.box(sideSpace, sideSpace + thickness, sideSpace, sideSpace + thickness, 1.0, sideSpace + thickness);
+	}
+	
+	public static VoxelShape downShape(double thickness)
+	{
+		double sideSpace = (1 - thickness) / 2; // Empty space on one side of the cable
+		return Shapes.box(sideSpace, 0.0, sideSpace, sideSpace + thickness, sideSpace, sideSpace + thickness);
+	}
+	
+	public VoxelShape shapeFromBits(double thickness, byte bits)
+	{
+		VoxelShape shape = centerShape(thickness);
 		
 		if((0b000001 & bits) != 0)
-			shape = Shapes.or(shape, shapeNorth);
+			shape = Shapes.or(shape, northShape(thickness));
 		if((0b000010 & bits) != 0)
-			shape = Shapes.or(shape, shapeEast);
+			shape = Shapes.or(shape, eastShape(thickness));
 		if((0b000100 & bits) != 0)
-			shape = Shapes.or(shape, shapeSouth);
+			shape = Shapes.or(shape, southShape(thickness));
 		if((0b001000 & bits) != 0)
-			shape = Shapes.or(shape, shapeWest);
+			shape = Shapes.or(shape, westShape(thickness));
 		if((0b010000 & bits) != 0)
-			shape = Shapes.or(shape, shapeUp);
+			shape = Shapes.or(shape, upShape(thickness));
 		if((0b100000 & bits) != 0)
-			shape = Shapes.or(shape, shapeDown);
+			shape = Shapes.or(shape, downShape(thickness));
 		
 		return shape;
 	}
@@ -300,6 +338,50 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + SGJourneyEnergy.energyToString(energyTransfer()) + "/t")).withStyle(ChatFormatting.RED));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+	}
+	
+	
+	public static class NaquadahWire extends CableBlock
+	{
+		public final VoxelShape[] collisionShapeCache;
+		
+		public NaquadahWire(Properties properties)
+		{
+			super(properties, 0.25);
+			
+			this.collisionShapeCache = buildShapeCache(0.125);
+		}
+		
+		@Override
+		public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+		{
+			return isEdge(state) ? new CableBlockEntity.NaquadahWire(pos, state) : null;
+		}
+		
+		@Override
+		public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context)
+		{
+			ConnectorType north = connectorType(state, NORTH);
+			ConnectorType east = connectorType(state, EAST);
+			ConnectorType south = connectorType(state, SOUTH);
+			ConnectorType west = connectorType(state, WEST);
+			ConnectorType up = connectorType(state, UP);
+			ConnectorType down = connectorType(state, DOWN);
+			
+			return collisionShapeCache[bitsFromConnectors(north, east, south, west, up, down)];
+		}
+		
+		@Override
+		public long energyTransfer()
+		{
+			return CommonCableConfig.naquadah_wire_max_transfer.get();
+		}
+		
+		@Override
+		public boolean transfersZeroPointEnergy()
+		{
+			return CommonCableConfig.naquadah_wire_transfers_zero_point_energy.get();
+		}
 	}
 	
 	

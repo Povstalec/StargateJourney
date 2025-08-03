@@ -184,6 +184,9 @@ public class ItemInit
 	public static final RegistryObject<NaquadahFuelRodItem> NAQUADAH_FUEL_ROD = ITEMS.register("naquadah_fuel_rod", 
 			() -> new NaquadahFuelRodItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).fireResistant()));
 	
+	public static final RegistryObject<PowerCellItem> NAQUADAH_POWER_CELL = ITEMS.register("naquadah_power_cell",
+			() -> new PowerCellItem(new Item.Properties().stacksTo(1)));
+	
 	public static final RegistryObject<PersonalShieldItem> PERSONAL_SHIELD_EMITTER = ITEMS.register("personal_shield_emitter", 
 			() -> new PersonalShieldItem(ArmorMaterialInit.PERSONAL_SHIELD, EquipmentSlot.CHEST, new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 	
@@ -221,11 +224,6 @@ public class ItemInit
 	
 	public static final RegistryObject<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
 			() -> new BatteryItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-	
-	public static final RegistryObject<PowerCellItem> LIQUID_NAQUADAH_POWER_CELL = ITEMS.register("liquid_naquadah_power_cell",
-			() -> new PowerCellItem(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<PowerCellItem> HEAVY_LIQUID_NAQUADAH_POWER_CELL = ITEMS.register("heavy_liquid_naquadah_power_cell",
-			() -> new PowerCellItem(new Item.Properties().stacksTo(1)));
 		
 	
 	public static void register(IEventBus eventBus)

@@ -7,8 +7,14 @@ public abstract class ItemEnergy extends SGJourneyEnergy
 		super(capacity, maxReceive, maxExtract);
 	}
 	
+	
 	public abstract void reloadEnergy();
 	
+	/**
+	 * A method used instead of {@link #getTrueEnergyStored()} in places where reloading energy before use would cause issues,
+	 * like in the case of saving energy to the Item.
+	 * @return Energy currently stored in the Item
+	 */
 	public long getEnergyWithoutLoading()
 	{
 		return energy;
@@ -18,7 +24,7 @@ public abstract class ItemEnergy extends SGJourneyEnergy
 	public long getTrueEnergyStored()
 	{
 		reloadEnergy();
-		return this.energy;
+		return energy;
 	}
 	
 	@Override

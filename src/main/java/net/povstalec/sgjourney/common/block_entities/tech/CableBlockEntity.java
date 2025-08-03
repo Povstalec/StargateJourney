@@ -246,6 +246,26 @@ public abstract class CableBlockEntity extends BlockEntity
 	
 	
 	
+	public static class NaquadahWire extends CableBlockEntity
+	{
+		public NaquadahWire(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.NAQUADAH_WIRE.get(), pos, state);
+		}
+		
+		@Override
+		public long maxTransfer()
+		{
+			return CommonCableConfig.naquadah_wire_max_transfer.get();
+		}
+		
+		@Override
+		public boolean canTransferZeroPointEnergy()
+		{
+			return CommonCableConfig.naquadah_wire_transfers_zero_point_energy.get();
+		}
+	}
+	
 	public static class SmallNaquadahCable extends CableBlockEntity
 	{
 		public SmallNaquadahCable(BlockPos pos, BlockState state)

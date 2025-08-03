@@ -17,11 +17,7 @@ import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
-import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
-import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.items.SyringeItem;
-import net.povstalec.sgjourney.common.items.VialItem;
+import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
@@ -57,6 +53,9 @@ public class TabInit
 				items.accept(ItemInit.REACTION_CHAMBER.get());
 				items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
 				items.accept(ItemInit.PLASMA_CONVERTER.get());
+				items.accept(ItemInit.NAQUADAH_POWER_CELL.get());
+				items.accept(PowerCellItem.liquidNaquadahSetup());
+				items.accept(PowerCellItem.heavyLiquidNaquadahSetup());
 				
 				items.accept(ItemInit.PDA.get());
 				//items.accept(ItemInit.UNIVERSE_DIALER.get());
@@ -124,8 +123,6 @@ public class TabInit
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
 				
 				items.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
-				items.accept(ItemInit.LIQUID_NAQUADAH_POWER_CELL.get());
-				items.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_POWER_CELL.get());
 			});
 		});
 		
@@ -267,6 +264,7 @@ public class TabInit
 				
 				items.accept(BlockInit.ZPM_HUB.get());
 				
+				items.accept(BlockInit.NAQUADAH_WIRE.get());
 				items.accept(BlockInit.SMALL_NAQUADAH_CABLE.get());
 				items.accept(BlockInit.MEDIUM_NAQUADAH_CABLE.get());
 				items.accept(BlockInit.LARGE_NAQUADAH_CABLE.get());

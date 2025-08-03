@@ -33,7 +33,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandler;
+import net.povstalec.sgjourney.common.capabilities.ItemFluidHolderProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -75,29 +78,26 @@ public class StaffWeaponItem extends FluidItem.Holder
 		this.closedModifiers = closedBuilder.build();
 	}
 	
-	@Override
-    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
+	protected void shoot(Level level, Player player, ItemStack staffWeaponStack)
 	{
-		return new ItemInventoryProvider(stack)
-				{
-					@Override
-					public int getNumberOfSlots()
-					{
-						return 1;
-					}
-
-					@Override
-					public boolean isValid(int slot, ItemStack stack)
-					{
-						return stack.is(ItemInit.VIAL.get());
-					}
-				};
+		if(!player.isCreative() && !depleteLiquidNaquadah(staffWeaponStack))
+			return;
+		
+		level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+		if(!level.isClientSide())
+		{
+			PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level, getExplosionPower(staffWeaponStack));
+			plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
+			level.addFreshEntity(plasmaProjectile);
+		}
+		player.awardStat(Stats.ITEM_USED.get(this));
+		player.getCooldowns().addCooldown(this, 25);
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
 	{
-		ItemStack itemstack = player.getItemInHand(hand);
+		ItemStack stack = player.getItemInHand(hand);
 		
 		if(player.isShiftKeyDown())
 		{
@@ -105,24 +105,12 @@ public class StaffWeaponItem extends FluidItem.Holder
 			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
 			
 			// Reloading
-			if(offHandStack.is(ItemInit.MATOK.get()) && !level.isClientSide())
+			if(offHandStack.getItem() instanceof StaffWeaponItem staffWeapon)
 			{
-				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-				{
-					ItemStack returnStack;
-					if(mainHandStack.isEmpty())
-						returnStack = itemHandler.extractItem(0, 1, false);
-					else if(mainHandStack.is(ItemInit.VIAL.get()))
-					{
-						returnStack = itemHandler.extractItem(0, 1, false);
-						itemHandler.insertItem(0, mainHandStack, false);
-					}
-					else
-						returnStack = itemHandler.insertItem(0, mainHandStack, false);
-					
-					player.setItemInHand(InteractionHand.MAIN_HAND, returnStack);
-				});
+				if(!level.isClientSide() && staffWeapon.swapItem(player, offHandStack, mainHandStack))
+					return InteractionResultHolder.success(offHandStack);
 				
+				return InteractionResultHolder.pass(stack);
 			}
 			// Opening and closing
 			else if(mainHandStack.is(ItemInit.MATOK.get()))
@@ -132,37 +120,11 @@ public class StaffWeaponItem extends FluidItem.Holder
 			}
 		}
 		// Shooting
-		else if(!player.isShiftKeyDown()/* && canShoot(player, player.getItemInHand(hand))*/)
-		{
-			ItemStack stack = player.getItemInHand(hand);
-			
-			if(isOpen(stack))
-			{
-				boolean canShoot = player.isCreative() ?
-						true : depleteLiquidNaquadah(player.getItemInHand(hand));
-				
-				if(!canShoot)
-					return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
-				
-				level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
-				if(!level.isClientSide())
-				{
-					PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level, getExplosionPower(stack));
-					plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
-					level.addFreshEntity(plasmaProjectile);
-				}
-				player.awardStat(Stats.ITEM_USED.get(this));
-				player.getCooldowns().addCooldown(this, 25);
-			}
-			else
-				return InteractionResultHolder.fail(itemstack);
-				
-		}
-		else
-			return InteractionResultHolder.fail(itemstack);
+		else if(isOpen(stack) && !level.isClientSide())
+			shoot(level, player, stack);
 		
 		
-		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
 	}
 	
 	public float getExplosionPower(ItemStack stack)
@@ -190,7 +152,6 @@ public class StaffWeaponItem extends FluidItem.Holder
 	public ItemStack getHeldItem(ItemStack holderStack)
 	{
 		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-		
 		if(itemHandler == null)
 			return ItemStack.EMPTY;
 		
@@ -210,16 +171,6 @@ public class StaffWeaponItem extends FluidItem.Holder
 		return heldStack.is(ItemInit.VIAL.get());
 	}
 	
-	public int getNaquadahAmount(ItemStack staffWeaponItemStack)
-	{
-		FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
-		
-		if(isCorrectFluid(fluidStack))
-			return fluidStack.getAmount();
-		
-		return 0;
-	}
-	
 	/**
 	 * Returns true if it depletes naquadah, otherwise false
 	 * @param staffWeaponItemStack
@@ -227,30 +178,19 @@ public class StaffWeaponItem extends FluidItem.Holder
 	 */
 	public boolean depleteLiquidNaquadah(ItemStack staffWeaponItemStack)
 	{
-		Optional<Boolean> drained = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
+		IFluidHandlerItem fluidHandler = staffWeaponItemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		if(fluidHandler instanceof ItemFluidHolderProvider fluidHolder)
 		{
-			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
-			if(inventoryStack.getItem() instanceof VialItem vial)
-			{
-				FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
-				
-				if(!isCorrectFluid(fluidStack))
-					return false;
-				
-				int drainAmount = fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ?
-						LIQUID_NAQUADAH_DEPLETION : HEAVY_LIQUID_NAQUADAH_DEPLETION;
-				
-				if(getNaquadahAmount(staffWeaponItemStack) >= drainAmount)
-				{
-					vial.drainFluid(inventoryStack, drainAmount);
-					return true;
-				}
-			}
+			FluidStack fluidStack = fluidHolder.getFluidInTank(0);
+			int drainAmount = fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ?
+					LIQUID_NAQUADAH_DEPLETION : HEAVY_LIQUID_NAQUADAH_DEPLETION;
 			
-			return false;
-		});
+			FluidStack depleted = fluidHolder.deplete(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+			if(!depleted.isEmpty())
+				return true;
+		}
 		
-		return drained.isPresent() ? drained.get() : false;
+		return false;
 	}
 	
 	/*public boolean canShoot(Player player, ItemStack stack)

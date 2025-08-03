@@ -32,6 +32,9 @@ public class BatteryScreen extends SGJourneyContainerScreen<BatteryMenu>
         this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
         
         this.renderEnergy(pPoseStack, x + 44, y + 18);
+		
+		this.itemHint(pPoseStack, x + 8, y + 36, 88, 166, 0);
+		this.itemHint(pPoseStack, x + 152, y + 36, 104, 166, 1);
     }
 
     @Override
@@ -61,5 +64,11 @@ public class BatteryScreen extends SGJourneyContainerScreen<BatteryMenu>
 	protected void energyTooltip(PoseStack poseStack, int x, int y, int mouseX, int mouseY)
 	{
 		this.tooltip(poseStack, mouseX, mouseY, x, y, 88, 52, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergy(), menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED));
+	}
+	
+	@Override
+	protected boolean hasItem(int slot)
+	{
+		return this.menu.hasItem(slot);
 	}
 }

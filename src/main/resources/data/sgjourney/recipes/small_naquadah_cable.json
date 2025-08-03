@@ -3,15 +3,16 @@
 	"category": "misc",
 	"pattern":
 	[
-		"NNN",
-		"RRR",
-		"NNN"
+		"WWW",
+		"RCR",
+		"WWW"
 	],
 	
 	"key": 
 	{
-		"N": { "tag": "sgjourney:naquadah_alloy" },
-		"R": { "item": "minecraft:redstone" }
+		"R": { "item": "minecraft:redstone" },
+		"C": { "item": "sgjourney:energy_crystal" },
+		"W": { "item": "sgjourney:naquadah_wire" }
 	},
 	
 	"result": { "item": "sgjourney:small_naquadah_cable", "count": 6 }

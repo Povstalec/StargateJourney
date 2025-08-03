@@ -10,16 +10,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.povstalec.sgjourney.common.block_entities.tech.BatteryBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BatteryBlockItem extends BlockItem
+public abstract class EnergyBlockItem extends BlockItem
 {
-	public BatteryBlockItem(Block block, Properties properties)
+	public EnergyBlockItem(Block block, Properties properties)
 	{
 		super(block, properties);
 	}
@@ -27,21 +28,18 @@ public class BatteryBlockItem extends BlockItem
 	public long getEnergy(ItemStack stack)
 	{
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
-		if(blockEntityTag != null && blockEntityTag.contains(BatteryBlockEntity.ENERGY, Tag.TAG_LONG))
-			return blockEntityTag.getLong(BatteryBlockEntity.ENERGY);
+		if(blockEntityTag != null && blockEntityTag.contains(EnergyBlockEntity.ENERGY, Tag.TAG_LONG))
+			return blockEntityTag.getLong(EnergyBlockEntity.ENERGY);
 		
 		return 0L;
 	}
 	
-	public long getCapacity()
-	{
-		return 1000000000L; //TODO
-	}
+	public abstract long getCapacity();
 	
 	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
-		return true;
+		return getEnergy(stack) > 0;
 	}
 	
 	@Override
@@ -63,5 +61,27 @@ public class BatteryBlockItem extends BlockItem
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+	}
+	
+	public static class Getter extends EnergyBlockItem
+	{
+		private CapacityGetter capacityGetter;
+		
+		public Getter(Block block, Properties properties, CapacityGetter capacityGetter)
+		{
+			super(block, properties);
+			
+			this.capacityGetter = capacityGetter;
+		}
+		
+		public long getCapacity()
+		{
+			return capacityGetter.getCapacity();
+		}
+	}
+	
+	public interface CapacityGetter
+	{
+		long getCapacity();
 	}
 }

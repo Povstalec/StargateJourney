@@ -115,6 +115,7 @@
 	"block.sgjourney.transceiver": "Vysílač",
 	"block.sgjourney.transceiver.description": "Zařízení pro vysílání a zachycování signálů z jiných vysílačů a GDO",
 	
+	"block.sgjourney.naquadah_wire": "Naquadahový drát",
 	"block.sgjourney.small_naquadah_cable": "Malý naquadahový kabel",
 	"block.sgjourney.medium_naquadah_cable": "Střední naquadahový kabel",
 	"block.sgjourney.large_naquadah_cable": "Velký naquadahový kabel",
@@ -219,6 +220,9 @@
 	"item.sgjourney.trinium_iris": "Triniová iris",
 	"item.sgjourney.bronze_iris": "Bronzová iris",
 	"item.sgjourney.steel_iris": "Ocelová iris",
+	
+	"item.sgjourney.small_naquadah_battery": "Malá naquadahová baterie",
+	"item.sgjourney.naquadah_power_cell": "Naquadahový napájecí článek",
 	
 	"entity.sgjourney.goauld": "Goa'uld",
 	"entity.sgjourney.human": "Člověk",
@@ -505,6 +509,8 @@
 	"tooltip.sgjourney.9_chevron_address": "9chevronová adresa",
 	"tooltip.sgjourney.energy": "Energie",
 	"tooltip.sgjourney.energy_buffer": "Vyrovnavač energie",
+	"tooltip.sgjourney.fluid": "Tekutina",
+	"tooltip.sgjourney.holding": "Uvnitř",
 	"tooltip.sgjourney.dimension": "Dimenze",
 	"tooltip.sgjourney.mode": "Mód",
 	"tooltip.sgjourney.upgraded": "Upgradováno",
@@ -552,6 +558,7 @@
 	"tooltip.sgjourney.cable.zpm_transfer": "Dokáže vydržet přenos energie ze ZPM",
 	
 	"tooltip.sgjourney.energy_transfer": "Max. přenos energie",
+	"tooltip.sgjourney.naquadah_power_cell.reload": "Pravé kliknutí ve vedlejší ruce pro doplnění naquadahovou ampulkou v hlavní ruce",
 	"tooltip.sgjourney.matok.open": "Otevřený",
 	"tooltip.sgjourney.matok.closed": "Zavřený",
 	"tooltip.sgjourney.matok.open_close": "Shift + pravé kliknutí v hlavní ruce pro otevření/zavření",

@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -65,12 +66,12 @@ public class BatteryItem extends Item
 	
 	public long getCapacity()
 	{
-		return 5000000L;
+		return CommonTechConfig.small_naquadah_battery_capacity.get();
 	}
 	
 	public long getTransfer()
 	{
-		return 100000L;
+		return CommonTechConfig.small_naquadah_battery_max_transfer.get();
 	}
 	
 	@Override

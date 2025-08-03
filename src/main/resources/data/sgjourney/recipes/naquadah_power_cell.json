@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"ANA",
+		" N ",
+		"ARA"
+	],
+	
+	"key": 
+	{
+		"A": { "tag": "sgjourney:naquadah_alloy" },
+		"N": { "tag": "sgjourney:refined_naquadah" },
+		"R": { "item": "minecraft:redstone" }
+	},
+	
+	"result": { "item": "sgjourney:naquadah_power_cell" }
+}

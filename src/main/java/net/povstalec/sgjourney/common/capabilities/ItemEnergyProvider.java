@@ -73,7 +73,10 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 	
 	public void loadEnergy()
 	{
-		CompoundTag tag = stack.getOrCreateTag();
+		if(!stack.hasTag())
+			return;
+		
+		CompoundTag tag = stack.getTag();
 		if(tag.contains(ENERGY, Tag.TAG_LONG))
 			ENERGY_STORAGE.deserializeNBT(tag.get(ENERGY));
 	}

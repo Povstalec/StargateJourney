@@ -58,6 +58,7 @@ import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
+import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -141,7 +142,7 @@ public class ForgeEvents
 			}
 
 			Set<AbstractStargateEntity> set = new HashSet<AbstractStargateEntity>(list);
-			set.stream().forEach(stargate -> stargate.receiveEnergy(100000, false));
+			set.stream().forEach(stargate -> stargate.receiveEnergy(CommonCableConfig.lightning_strike_energy.get(), false));
 		}
 	}
 	

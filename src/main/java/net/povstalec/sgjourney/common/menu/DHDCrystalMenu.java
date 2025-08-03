@@ -98,9 +98,9 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         if(slot < 0 || slot > 8)
             return false;
         
-        IItemHandler cap = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
+        IItemHandler cap = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
         
-        if(cap != null && cap.getStackInSlot(slot) != null)
+        if(cap != null)
             return !cap.getStackInSlot(slot).isEmpty();
         
         return false;

@@ -1,7 +1,7 @@
 {
-    "parent": "item/generated",
-    "textures": 
+	"parent": "item/generated",
+	"textures": 
 	{
-        "layer0": "sgjourney:item/medium_naquadah_cable"
-    }
+		"layer0": "sgjourney:item/medium_naquadah_cable"
+	}
 }

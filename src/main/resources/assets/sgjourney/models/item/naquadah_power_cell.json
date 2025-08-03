@@ -1,0 +1,11 @@
+{
+	"parent": "item/generated",
+	"textures": 
+	{
+		"layer0": "sgjourney:item/naquadah_power_cell"
+	},
+	"overrides":
+	[
+		{ "predicate": { "sgjourney:liquid_naquadah": 0.01 }, "model": "sgjourney:item/naquadah_power_cell_filled" }
+	]
+}

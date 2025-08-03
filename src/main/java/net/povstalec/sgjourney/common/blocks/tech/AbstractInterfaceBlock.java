@@ -279,11 +279,4 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			
 		return 0L;
 	}
-	
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
-    {
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
-    }
 }

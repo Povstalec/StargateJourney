@@ -2,6 +2,6 @@
 	"parent": "item/generated",
 	"textures": 
 	{
-		"layer0": "sgjourney:item/large_naquadah_cable"
+        	"layer0": "sgjourney:item/naquadah_wire"
 	}
 }

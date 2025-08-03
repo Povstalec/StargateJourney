@@ -4,16 +4,30 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonCableConfig
 {
+	public static ForgeConfigSpec.LongValue lightning_strike_energy;
+	
+	public static ForgeConfigSpec.LongValue naquadah_wire_max_transfer;
 	public static ForgeConfigSpec.LongValue small_naquadah_cable_max_transfer;
 	public static ForgeConfigSpec.LongValue medium_naquadah_cable_max_transfer;
 	public static ForgeConfigSpec.LongValue large_naquadah_cable_max_transfer;
 	
+	public static ForgeConfigSpec.BooleanValue naquadah_wire_transfers_zero_point_energy;
 	public static ForgeConfigSpec.BooleanValue small_naquadah_cable_transfers_zero_point_energy;
 	public static ForgeConfigSpec.BooleanValue medium_naquadah_cable_transfers_zero_point_energy;
 	public static ForgeConfigSpec.BooleanValue large_naquadah_cable_transfers_zero_point_energy;
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		lightning_strike_energy = server
+				.comment("The amount of energy that will be generated if Lightning strikes a Stargate or a Lightning Rod connected to a cable")
+				.defineInRange("server.lightning_strike_energy", 100000L, 0L, Long.MAX_VALUE);
+		
+		
+		
+		naquadah_wire_max_transfer = server
+				.comment("Maximum amount of energy that can be transferred through the Naquadah Wire per tick")
+				.defineInRange("server.naquadah_wire_max_transfer", 5000L, 1L, Long.MAX_VALUE);
+		
 		small_naquadah_cable_max_transfer = server
 				.comment("Maximum amount of energy that can be transferred through the Small Naquadah Cable per tick")
 				.defineInRange("server.small_naquadah_cable_max_transfer", 100000L, 1L, Long.MAX_VALUE);
@@ -27,6 +41,10 @@ public class CommonCableConfig
 				.defineInRange("server.large_naquadah_cable_max_transfer", 100000000000L, 1L, Long.MAX_VALUE);
 		
 		
+		
+		naquadah_wire_transfers_zero_point_energy = server
+				.comment("If true, Naquadah Wires will be able to transfer energy from ZPMs")
+				.define("server.naquadah_wire_transfers_zero_point_energy", false);
 		
 		small_naquadah_cable_transfers_zero_point_energy = server
 				.comment("If true, Small Naquadah Cables will be able to transfer energy from ZPMs")

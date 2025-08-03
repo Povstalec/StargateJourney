@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import org.jetbrains.annotations.NotNull;
 
@@ -248,7 +249,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			{
 				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
-					long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
+					long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
 					long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
 					
 					ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
@@ -264,6 +265,52 @@ public abstract class EnergyBlockEntity extends BlockEntity
 				}
 			});
 		}
+	}
+	
+	public void extractItemEnergy(ItemStack stack)
+	{
+		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy ->
+		{
+			if(itemEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
+			{
+				long simulatedOutputAmount = sgjourneyEnergy.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
+				long simulatedReceiveAmount = ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
+				
+				sgjourneyEnergy.extractLongEnergy(simulatedReceiveAmount, false);
+				ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
+			}
+			else
+			{
+				int simulatedOutputAmount = itemEnergy.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
+				int simulatedReceiveAmount = ENERGY_STORAGE.receiveEnergy(simulatedOutputAmount, true);
+				
+				itemEnergy.extractEnergy(simulatedReceiveAmount, false);
+				ENERGY_STORAGE.receiveEnergy(simulatedReceiveAmount, false);
+			}
+		});
+	}
+	
+	public void fillItemEnergy(ItemStack stack)
+	{
+		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy ->
+		{
+			if(itemEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
+			{
+				long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
+				long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
+				
+				ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
+				sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
+			}
+			else
+			{
+				int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
+				int simulatedReceiveAmount = itemEnergy.receiveEnergy(simulatedOutputAmount, true);
+				
+				ENERGY_STORAGE.extractEnergy(simulatedReceiveAmount, false);
+				itemEnergy.receiveEnergy(simulatedReceiveAmount, false);
+			}
+		});
 	}
 	
 	public void getStatus(Player player)
