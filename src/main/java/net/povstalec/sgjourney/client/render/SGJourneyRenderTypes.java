@@ -34,6 +34,7 @@ public class SGJourneyRenderTypes extends RenderType
 		return create("event_horizon", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
 				RenderType.CompositeState.builder()
 				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+				//.setShaderState(RENDERTYPE_EYES_SHADER) // Fixes stuff for linux
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)

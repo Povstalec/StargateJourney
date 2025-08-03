@@ -541,11 +541,14 @@ public class WormholeModel
 		
 		consumer.vertex(matrix4, x1, y1, z1).color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).uv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
+		//.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex(); // Fixes stuff for linux
 		
 		consumer.vertex(matrix4, x2, y2, z2).color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).uv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
+		//.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex(); // Fixes stuff for linux
 		
 		consumer.vertex(matrix4, x3, y3, z3).color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).uv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
+		//.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex(); // Fixes stuff for linux
 	}
 }
