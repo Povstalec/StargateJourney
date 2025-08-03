@@ -2,6 +2,8 @@ package net.povstalec.sgjourney;
 
 import java.util.function.BiFunction;
 
+import net.minecraftforge.client.event.ModelEvent;
+import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import org.slf4j.Logger;
@@ -34,6 +36,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.povstalec.sgjourney.client.Layers;
+import net.povstalec.sgjourney.client.models.block.CableModelLoader;
 import net.povstalec.sgjourney.client.render.block_entity.CartoucheRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
@@ -47,17 +50,6 @@ import net.povstalec.sgjourney.client.render.entity.HumanRenderer;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
-import net.povstalec.sgjourney.client.screens.ClassicDHDScreen;
-import net.povstalec.sgjourney.client.screens.CrystallizerScreen;
-import net.povstalec.sgjourney.client.screens.DHDCrystalScreen;
-import net.povstalec.sgjourney.client.screens.InterfaceScreen;
-import net.povstalec.sgjourney.client.screens.LiquidizerScreen;
-import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
-import net.povstalec.sgjourney.client.screens.NaquadahGeneratorScreen;
-import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
-import net.povstalec.sgjourney.client.screens.RingPanelScreen;
-import net.povstalec.sgjourney.client.screens.TransceiverScreen;
-import net.povstalec.sgjourney.client.screens.ZPMHubScreen;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.entities.Human;
@@ -78,7 +70,7 @@ import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.StructureInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
-import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
+import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
 import net.povstalec.sgjourney.common.sgjourney.AddressTable;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
@@ -225,7 +217,8 @@ public class StargateJourney
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-        	ItemProperties.register(ItemInit.VIAL.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new LiquidNaquadahPropertyFunction());
+        	ItemProperties.register(ItemInit.VIAL.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new FluidPropertyFunction());
+			ItemProperties.register(ItemInit.NAQUADAH_POWER_CELL.get(), new ResourceLocation(StargateJourney.MODID, "liquid_naquadah"), new FluidPropertyFunction());
         	ItemProperties.register(ItemInit.MATOK.get(), new ResourceLocation(StargateJourney.MODID, "open"), new WeaponStatePropertyFunction());
         	
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
@@ -253,6 +246,8 @@ public class StargateJourney
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
 
         	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
+			
+			MenuScreens.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
         	
         	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
 			EntityRenderers.register(EntityInit.HUMAN.get(), HumanRenderer<Human>::new);
@@ -286,6 +281,12 @@ public class StargateJourney
         {
     		ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
         }
+		
+		@SubscribeEvent
+		public static void modelLoaderInit(ModelEvent.RegisterGeometryLoaders event)
+		{
+			CableModelLoader.register(event);
+		}
     }
     
 }

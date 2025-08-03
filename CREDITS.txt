@@ -15,5 +15,6 @@ AlexandriaOL - Fixed a typo in advancements
 SquidDev - Fixed Basic Interface not working dynamically
 kittycat2002 - Fixed CCTweaked table issue
 the_destiny - Pure Naquadah Block texture
+kluas005 - Portugese translations
 
 I guess I could thank the Stargate franchize for... existing... as inspiration. Yeah, let's go with that.

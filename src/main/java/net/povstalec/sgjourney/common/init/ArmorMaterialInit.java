@@ -23,7 +23,7 @@ public enum ArmorMaterialInit implements ArmorMaterial
 	private float toughness;
 	private float knockbackResistance;
 	
-	private ArmorMaterialInit(String name, int durability, int[] damageReductionAmounts, int enchantability, Item repairItem, SoundEvent equipSound, float toughness, float knockbackResistance)
+	ArmorMaterialInit(String name, int durability, int[] damageReductionAmounts, int enchantability, Item repairItem, SoundEvent equipSound, float toughness, float knockbackResistance)
 	{
 		this.name = name;
 		this.equipSound = equipSound;

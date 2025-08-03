@@ -1,0 +1,13 @@
+{
+	"name": "Stargates & Dialing",
+	"icon": "sgjourney:milky_way_stargate",
+	"sortnum": 3,
+	"category": "sgjourney:getting_started",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

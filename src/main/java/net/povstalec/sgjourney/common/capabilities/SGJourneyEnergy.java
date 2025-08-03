@@ -3,9 +3,12 @@ package net.povstalec.sgjourney.common.capabilities;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.energy.EnergyStorage;
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 
 public abstract class SGJourneyEnergy extends EnergyStorage
 {
+	public static final char[] PREFIXES = {'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'};
+	
 	protected long energy;
     protected long capacity;
     protected long maxReceive;
@@ -13,7 +16,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	
 	public SGJourneyEnergy(long capacity, long maxReceive, long maxExtract)
 	{
-		super(getRegularEnergy(capacity), getRegularEnergy(maxReceive), getRegularEnergy(maxExtract));
+		super(regularEnergy(capacity), regularEnergy(maxReceive), regularEnergy(maxExtract));
 
 		this.energy = 0;
 		this.capacity = capacity;
@@ -24,13 +27,14 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     @Override
 	public int receiveEnergy(int maxReceive, boolean simulate)
 	{
-    	return (int) receiveLongEnergy((long) maxReceive, simulate);
+    	return regularEnergy(receiveLongEnergy(maxReceive, simulate));
 	}
     
     public long receiveLongEnergy(long maxReceive, boolean simulate)
     {
         if(!canReceive())
             return 0;
+		
         long energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
         if(!simulate)
         	energy += energyReceived;
@@ -40,11 +44,16 @@ public abstract class SGJourneyEnergy extends EnergyStorage
         return energyReceived;
     }
 	
+	public long receiveZeroPointEnergy(long maxReceive, boolean simulate)
+	{
+		return receiveLongEnergy(maxReceive, simulate);
+	}
+	
 	@Override
-    public int extractEnergy(int maxExtract, boolean simulate)
-    {
-		return (int) extractLongEnergy((long) maxExtract, simulate);
-    }
+	public int extractEnergy(int maxExtract, boolean simulate)
+	{
+		return regularEnergy(extractLongEnergy(maxExtract, simulate));
+	}
 	
 	public long extractLongEnergy(long maxExtract, boolean simulate)
 	{
@@ -64,7 +73,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	@Override
     public int getEnergyStored()
     {
-        return getRegularEnergy(getTrueEnergyStored());
+        return regularEnergy(getTrueEnergyStored());
     }
 	
 	public long getTrueEnergyStored()
@@ -75,7 +84,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     @Override
     public int getMaxEnergyStored()
     {
-        return getRegularEnergy(getTrueMaxEnergyStored());
+        return regularEnergy(getTrueMaxEnergyStored());
     }
     
     public long getTrueMaxEnergyStored()
@@ -136,8 +145,32 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     	this.setEnergy(longTag.getAsLong());
     }
     
-    public static int getRegularEnergy(long energy)
+    public static int regularEnergy(long energy)
     {
-    	return energy > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) energy;
+    	return (int) Math.min(Integer.MAX_VALUE, energy);
     }
+	
+	public static String energyToString(long energy)
+	{
+		if(energy < 1000)
+			return energy + " FE";
+		
+		double total = energy;
+		int prefix = -1;
+		for(; total >= 1000 && prefix < PREFIXES.length; prefix++)
+		{
+			total /= 1000;
+		}
+		
+		total *= 100;
+		total = Math.round(total);
+		total /= 100;
+		
+		return total + " " + PREFIXES[prefix] + "FE";
+	}
+	
+	public static String energyToString(long energy, long capacity)
+	{
+		return energyToString(energy) + "/" + energyToString(capacity);
+	}
 }

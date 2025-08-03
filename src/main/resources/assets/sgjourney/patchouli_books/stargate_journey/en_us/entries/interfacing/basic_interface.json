@@ -1,0 +1,13 @@
+{
+	"name": "Basic Interface",
+	"icon": "sgjourney:basic_interface",
+	"sortnum": 1,
+	"category": "sgjourney:interfacing",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

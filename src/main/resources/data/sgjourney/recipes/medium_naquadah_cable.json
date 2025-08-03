@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"CCC",
+		"NGN",
+		"CCC"
+	],
+	
+	"key": 
+	{
+		"N": { "tag": "sgjourney:refined_naquadah" },
+		"G": { "item": "minecraft:gold_ingot" },
+		"C": { "item": "sgjourney:small_naquadah_cable" }
+	},
+	
+	"result": { "item": "sgjourney:medium_naquadah_cable", "count": 6 }
+}

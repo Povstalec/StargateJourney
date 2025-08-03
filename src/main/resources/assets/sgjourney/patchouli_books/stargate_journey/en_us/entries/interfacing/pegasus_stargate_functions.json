@@ -1,0 +1,13 @@
+{
+	"name": "Pegasus Stargate Functions",
+	"icon": "sgjourney:pegasus_stargate",
+	"sortnum": 6,
+	"category": "sgjourney:interfacing",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

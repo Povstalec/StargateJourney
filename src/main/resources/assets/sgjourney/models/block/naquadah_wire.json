@@ -1,0 +1,8 @@
+{
+	"parent": "minecraft:block/cube",
+	"loader": "sgjourney:cable_loader",
+	
+	"texture": "sgjourney:block/naquadah_wire",
+	"particle_texture": "sgjourney:item/naquadah_wire",
+	"thickness": 0.125
+}

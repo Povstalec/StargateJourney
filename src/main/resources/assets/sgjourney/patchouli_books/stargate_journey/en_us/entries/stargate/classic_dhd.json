@@ -1,0 +1,20 @@
+{
+	"name": "Classic DHD",
+	"icon": "sgjourney:classic_dhd",
+	"sortnum": 8,
+	"category": "sgjourney:stargates",
+	"pages":
+	[
+		{
+			"title": "Classic DHD",
+			"type": "patchouli:crafting",
+			"recipe": "sgjourney:classic_dhd",
+			"text": "Classic DHD is the simplest and cheapest DHD to craft."
+		},
+		{
+			"type": "patchouli:text",
+			"text": "The Classic DHD can't use Advanced Crystals, but it can still use ordinary Crystals."
+		}
+		
+	]
+}

@@ -13,10 +13,10 @@
 		"O": { "item": "sgjourney:control_crystal" },
 		"N": { "tag": "sgjourney:naquadah" },
 		"A": { "tag": "sgjourney:naquadah_alloy" },
-		"C": { "item": "sgjourney:crystallizer" },
+		"C": { "item": "sgjourney:naquadah_power_cell" },
 		"M": { "item": "sgjourney:materialization_crystal" }
 		
 	},
 	
-	"result": { "item": "sgjourney:advanced_crystallizer" }
+	"result": { "item": "sgjourney:advanced_crystallizer", "count": 1 }
 }
