@@ -188,7 +188,7 @@ public class ItemInit
 			() -> new NaquadahFuelRodItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).fireResistant()));
 	
 	public static final RegistryObject<PowerCellItem> NAQUADAH_POWER_CELL = ITEMS.register("naquadah_power_cell",
-			() -> new PowerCellItem(new Item.Properties().stacksTo(1)));
+			() -> new PowerCellItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 	
 	public static final RegistryObject<PersonalShieldItem> PERSONAL_SHIELD_EMITTER = ITEMS.register("personal_shield_emitter", 
 			() -> new PersonalShieldItem(ArmorMaterialInit.PERSONAL_SHIELD, EquipmentSlot.CHEST, new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));

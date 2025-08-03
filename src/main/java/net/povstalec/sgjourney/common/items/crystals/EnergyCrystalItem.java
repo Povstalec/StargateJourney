@@ -83,6 +83,11 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		return CommonCrystalConfig.energy_crystal_max_transfer.get();
 	}
 	
+	public long energyTargetIncrease()
+	{
+		return CommonDHDConfig.energy_crystal_dhd_energy_target.get();
+	}
+	
 	@Override
 	public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
 	{
@@ -106,11 +111,6 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 				return getTransfer();
 			}
 		};
-	}
-	
-	public long energyTargetIncrease()
-	{
-		return CommonDHDConfig.energy_crystal_dhd_energy_target.get();
 	}
 
 	@Override
@@ -139,6 +139,12 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		{
 			return CommonCrystalConfig.advanced_energy_crystal_capacity.get();
 		}
+		
+		@Override
+		public long energyTargetIncrease()
+		{
+			return CommonDHDConfig.advanced_energy_crystal_dhd_energy_target.get();
+		}
 
 		@Override
 		public long getTransfer()
@@ -150,12 +156,6 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		public boolean isAdvanced()
 		{
 			return true;
-		}
-		
-		@Override
-		public long energyTargetIncrease()
-		{
-			return CommonDHDConfig.advanced_energy_crystal_dhd_energy_target.get();
 		}
 	}
 }
