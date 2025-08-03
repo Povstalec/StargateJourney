@@ -1,0 +1,20 @@
+{
+	"name": "Tollan Stargate",
+	"icon": "sgjourney:tollan_stargate",
+	"sortnum": 6,
+	"category": "sgjourney:stargates",
+	"pages":
+	[
+		{
+			"title": "Tollan Stargate",
+			"type": "patchouli:image",
+			"images": ["sgjourney:textures/gui/patchouli/tollan_stargate.png"],
+			"text": "Generation 2 Stargate with no visible symbols."
+		},
+		{
+			"title": "Quirks",
+			"type": "patchouli:text",
+			"text": "This Stargate cannot have an Iris, as it does not fit inside the ring. This Stargate cannot be dialed manually. Even though no symbols are visible on the ring, the gate itself can dial 39 symbols."
+		}
+	]
+}

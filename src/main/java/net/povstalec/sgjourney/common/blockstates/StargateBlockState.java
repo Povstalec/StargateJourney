@@ -47,7 +47,8 @@ public class StargateBlockState extends BlockState
 	@Override
 	public float getDestroySpeed(BlockGetter reader, BlockPos pos)
 	{
-		if(this.getBlock() instanceof AbstractStargateBlock stargateBlock)
+		// Null checks here because ProjectMMO passes a null values in here https://github.com/Caltinor/Project-MMO-2.0/issues/706
+		if(reader != null && pos != null && this.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
 			AbstractStargateEntity stargate = stargateBlock.getStargate(reader, pos, reader.getBlockState(pos));
 			if(stargate != null && !CommonStargateConfig.can_break_connected_stargate.get())
@@ -96,8 +97,8 @@ public class StargateBlockState extends BlockState
 				}
 			}
 		}
-		
-		return super.getDestroyProgress(player, reader, pos);
+		// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
+		return this.getBlock().getDestroyProgress(asState(), player, reader, pos);
 	}
 	
 	@Override
@@ -118,12 +119,17 @@ public class StargateBlockState extends BlockState
 					return coverState.get().getSoundType(level, pos, entity);
 			}
 		}
-		
-		return super.getSoundType(level, pos, entity);
+		// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
+		return this.self().getBlock().getSoundType(self(), level, pos, entity);
 		
 	}
 	
-	
+	// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
+	@Override
+	protected BlockState asState()
+	{
+		return this;
+	}
 	
 	private BlockState self()
 	{

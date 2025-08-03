@@ -12,20 +12,17 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
-import net.povstalec.sgjourney.common.blocks.tech.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
-import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
-import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.items.SyringeItem;
-import net.povstalec.sgjourney.common.items.VialItem;
+import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public class TabInit
 {
@@ -66,6 +63,9 @@ public class TabInit
 			event.accept(ItemInit.REACTION_CHAMBER.get());
 			event.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
 			event.accept(ItemInit.PLASMA_CONVERTER.get());
+			event.accept(ItemInit.NAQUADAH_POWER_CELL.get());
+			event.accept(PowerCellItem.liquidNaquadahSetup());
+			event.accept(PowerCellItem.heavyLiquidNaquadahSetup());
 			
 			event.accept(ItemInit.PDA.get());
 
@@ -128,6 +128,8 @@ public class TabInit
 			event.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
 			event.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
 			event.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
+			
+			//items.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
 		}
 		else if(event.getTab() == STARGATE_STUFF.get())
 		{
@@ -254,23 +256,30 @@ public class TabInit
 			event.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 
 			event.accept(BlockInit.TRANSCEIVER.get());
-
+			
 			event.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 			
 			event.accept(BlockInit.ZPM_HUB.get());
+			
+			event.accept(BlockInit.NAQUADAH_WIRE.get());
+			event.accept(BlockInit.SMALL_NAQUADAH_CABLE.get());
+			event.accept(BlockInit.MEDIUM_NAQUADAH_CABLE.get());
+			event.accept(BlockInit.LARGE_NAQUADAH_CABLE.get());
+			
+			//event.accept(BlockInit.LARGE_NAQUADAH_BATTERY.get());
 		}
 		else if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
 		{
-			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
-			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
+			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), StructureGenEntity.Step.SETUP));
+			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), StructureGenEntity.Step.SETUP));
 			event.accept(MilkyWayDHDBlock.generatedDHD());
-			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
+			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), StructureGenEntity.Step.SETUP));
 			event.accept(PegasusDHDBlock.generatedDHD());
-			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
+			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), StructureGenEntity.Step.SETUP));
 			event.accept(ClassicDHDBlock.generatedDHD());
-			event.accept(AbstractStargateBaseBlock.excludeFromNetwork(new ItemStack(BlockInit.TOLLAN_STARGATE.get())));
+			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), StructureGenEntity.Step.SETUP));
 			
-			event.accept(AbstractTransporterBlock.excludeFromNetwork(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
+			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP));
 		}
 	}
 	

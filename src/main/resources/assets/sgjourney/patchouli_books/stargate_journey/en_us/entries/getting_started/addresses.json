@@ -1,0 +1,13 @@
+{
+	"name": "Addresses",
+	"icon": "sgjourney:sandstone_cartouche",
+	"sortnum": 6,
+	"category": "sgjourney:getting_started",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

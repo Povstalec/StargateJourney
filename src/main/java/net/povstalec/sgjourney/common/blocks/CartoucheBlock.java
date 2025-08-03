@@ -44,6 +44,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
@@ -196,33 +197,31 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	boolean hasAddress = false;
     	String dimension = "";
     	String symbols = "";
-    	String addressTable = "";
-    	
-    	if(stack.hasTag() && stack.getTag().contains("BlockEntityTag"))
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		
+    	if(blockEntityTag != null)
     	{
-    		CompoundTag tag = stack.getTag().getCompound("BlockEntityTag");
-    		
-    		if(tag.contains(CartoucheEntity.ADDRESS))
+    		if(blockEntityTag.contains(CartoucheEntity.ADDRESS))
     		{
     			hasAddress = true;
     			
-    			int[] addressArray = tag.getIntArray(CartoucheEntity.ADDRESS);
+    			int[] addressArray = blockEntityTag.getIntArray(CartoucheEntity.ADDRESS);
     			
     			Address address = new Address(addressArray);
     			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": ").append(address.toComponent(false))).withStyle(ChatFormatting.YELLOW));
     		}
     		
-    		if(tag.contains(CartoucheEntity.DIMENSION))
-    			dimension = tag.getString(CartoucheEntity.DIMENSION);
+    		if(blockEntityTag.contains(CartoucheEntity.DIMENSION))
+    			dimension = blockEntityTag.getString(CartoucheEntity.DIMENSION);
     		
-    		if(tag.contains(CartoucheEntity.SYMBOLS))
+    		if(blockEntityTag.contains(CartoucheEntity.SYMBOLS))
     		{
         		Minecraft minecraft = Minecraft.getInstance();
         		ClientPacketListener clientPacketListener = minecraft.getConnection();
         		RegistryAccess registries = clientPacketListener.registryAccess();
         		Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
         		
-    			ResourceLocation location = new ResourceLocation(tag.getString(CartoucheEntity.SYMBOLS));
+    			ResourceLocation location = new ResourceLocation(blockEntityTag.getString(CartoucheEntity.SYMBOLS));
     			if(location.toString().equals("sgjourney:empty"))
     				symbols = "Empty";
     			else if(symbolsRegistry.containsKey(location))
@@ -231,8 +230,8 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     				symbols = "Error";
     		}
         	
-        	if(tag.contains(CartoucheEntity.ADDRESS_TABLE))
-        		tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + tag.getString(CartoucheEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
+        	if(blockEntityTag.contains(CartoucheEntity.ADDRESS_TABLE))
+        		tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + blockEntityTag.getString(CartoucheEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
     	}
     	
     	if(!hasAddress)

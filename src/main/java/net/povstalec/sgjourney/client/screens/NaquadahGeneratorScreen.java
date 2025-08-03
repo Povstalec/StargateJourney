@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
 
 public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGeneratorMenu>
@@ -70,6 +71,6 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     protected void energyTooltip(GuiGraphics graphics, int x, int y, int mouseX, int mouseY)
     {
     	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
-    		graphics.renderTooltip(this.font, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE")).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+    		graphics.renderTooltip(this.font, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
     }
 }

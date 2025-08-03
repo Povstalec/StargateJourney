@@ -39,10 +39,13 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
-			TransceiverFunctions.setCurrentCode(transceiver, arguments.getString(0));
+			String code = arguments.getString(0);
+			if(code.length() > 1024)
+				return MethodResult.of(false);
 			
-			return MethodResult.of();
+			TransceiverFunctions.setCurrentCode(transceiver, code);
+			
+			return MethodResult.of(true);
 		}
 	}
 	
@@ -57,14 +60,11 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
-			context.executeMainThreadTask(() ->
+			return context.executeMainThreadTask(() ->
 			{
 				TransceiverFunctions.sendTransmission(transceiver);
-				return new Object[] {};
+				return new Object[] {true};
 			});
-			
-			return MethodResult.of();
 		}
 	}
 	
@@ -79,9 +79,7 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			MethodResult result = context.executeMainThreadTask(() -> new Object[] {TransceiverFunctions.checkConnectedShielding(transceiver)});
-			
-			return result;
+			return context.executeMainThreadTask(() -> new Object[] {TransceiverFunctions.checkConnectedShielding(transceiver)});
 		}
 	}
 }

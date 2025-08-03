@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -180,9 +181,15 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	//============================================================================================
 	
 	@Override
+	protected boolean canReceiveZeroPointEnergy()
+	{
+		return CommonZPMConfig.stargates_use_zero_point_energy.get();
+	}
+	
+	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		if(side == getDirection())
+		if(side == getDirection().getOpposite())
 			return false;
 		return true;
 	}

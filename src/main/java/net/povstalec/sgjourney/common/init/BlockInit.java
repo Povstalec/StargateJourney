@@ -33,21 +33,11 @@ import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
-import net.povstalec.sgjourney.common.blocks.tech.AdvancedCrystalInterfaceBlock;
-import net.povstalec.sgjourney.common.blocks.tech.AdvancedCrystallizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.BasicInterfaceBlock;
-import net.povstalec.sgjourney.common.blocks.tech.CrystalInterfaceBlock;
-import net.povstalec.sgjourney.common.blocks.tech.CrystallizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.HeavyNaquadahLiquidizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorMarkIBlock;
-import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorMarkIIBlock;
-import net.povstalec.sgjourney.common.blocks.tech.NaquadahLiquidizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
-import net.povstalec.sgjourney.common.blocks.tech.ZPMHubBlock;
-import net.povstalec.sgjourney.common.items.blocks.CartoucheBlockItem;
-import net.povstalec.sgjourney.common.items.blocks.DHDItem;
-import net.povstalec.sgjourney.common.items.blocks.StargateBlockItem;
-import net.povstalec.sgjourney.common.items.blocks.TransporterBlockItem;
+import net.povstalec.sgjourney.common.blocks.tech.*;
+import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
+import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.items.blocks.*;
 
 public class BlockInit
 {
@@ -220,17 +210,22 @@ public class BlockInit
 	public static final RegistryObject<SymbolBlock> STONE_SYMBOL = registerBlock("stone_symbol",
 			() -> new SymbolBlock.Stone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
 	
-	public static final RegistryObject<NaquadahGeneratorMarkIBlock> NAQUADAH_GENERATOR_MARK_I = registerBlock("naquadah_generator_mark_i", 
-			() -> new NaquadahGeneratorMarkIBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), 1);
-	public static final RegistryObject<NaquadahGeneratorMarkIIBlock> NAQUADAH_GENERATOR_MARK_II = registerBlock("naquadah_generator_mark_ii", 
-			() -> new NaquadahGeneratorMarkIIBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), 1);
+	public static final RegistryObject<NaquadahGeneratorMarkIBlock> NAQUADAH_GENERATOR_MARK_I = registerEnergyBlock("naquadah_generator_mark_i",
+			() -> new NaquadahGeneratorMarkIBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)),
+			() -> CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get(), Rarity.COMMON);
+	public static final RegistryObject<NaquadahGeneratorMarkIIBlock> NAQUADAH_GENERATOR_MARK_II = registerEnergyBlock("naquadah_generator_mark_ii",
+			() -> new NaquadahGeneratorMarkIIBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)),
+			() -> CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get(), Rarity.COMMON);
 	
-	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerBlock("basic_interface", 
-			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), 1);
-	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerBlock("crystal_interface", 
-			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
-	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerBlock("advanced_crystal_interface", 
-			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)), Rarity.RARE, 1);
+	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerEnergyBlock("basic_interface",
+			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
+			() -> CommonInterfaceConfig.basic_interface_capacity.get(), Rarity.COMMON);
+	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerEnergyBlock("crystal_interface",
+			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
+			() -> CommonInterfaceConfig.crystal_interface_capacity.get(), Rarity.UNCOMMON);
+	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerEnergyBlock("advanced_crystal_interface",
+			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
+			() -> CommonInterfaceConfig.advanced_crystal_interface_capacity.get(), Rarity.RARE);
 	
 	public static final RegistryObject<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
 			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
@@ -252,6 +247,19 @@ public class BlockInit
 
 	public static final RegistryObject<TransceiverBlock> TRANSCEIVER = registerBlock("transceiver", 
 			() -> new TransceiverBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F)), 1);
+	
+	public static final RegistryObject<CableBlock> NAQUADAH_WIRE = registerBlock("naquadah_wire",
+			() -> new CableBlock.NaquadahWire(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.0F, 6.0F).noOcclusion()), 64);
+	public static final RegistryObject<CableBlock> SMALL_NAQUADAH_CABLE = registerBlock("small_naquadah_cable",
+			() -> new CableBlock.SmallNaquadahCable(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), 64);
+	public static final RegistryObject<CableBlock> MEDIUM_NAQUADAH_CABLE = registerBlock("medium_naquadah_cable",
+			() -> new CableBlock.MediumNaquadahCable(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), Rarity.UNCOMMON, 64);
+	public static final RegistryObject<CableBlock> LARGE_NAQUADAH_CABLE = registerBlock("large_naquadah_cable",
+			() -> new CableBlock.LargeNaquadahCable(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), Rarity.RARE, 64);
+	
+	public static final RegistryObject<BatteryBlock> LARGE_NAQUADAH_BATTERY = registerEnergyBlock("large_naquadah_battery",
+			() -> new BatteryBlock.Naquadah(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F)),
+			() -> CommonTechConfig.large_naquadah_battery_capacity.get(), Rarity.RARE);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)
@@ -315,6 +323,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>RegistryObject<T> registerEnergyBlock(String name, Supplier<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		
+		registerEnergyBlockItem(name, toReturn, getter, rarity);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block)
 	{
 		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
@@ -348,6 +365,11 @@ public class BlockInit
 	private static <T extends Block>RegistryObject<Item> registerCartoucheBlockItem(String name, RegistryObject<T> block, int stacksTo)
 	{
 		return ItemInit.ITEMS.register(name, () -> new CartoucheBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+	}
+	
+	private static <T extends Block>RegistryObject<Item> registerEnergyBlockItem(String name, RegistryObject<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
+	{
+		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter));
 	}
 	
 	public static void register(IEventBus eventBus)

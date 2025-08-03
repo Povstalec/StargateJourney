@@ -1,0 +1,14 @@
+{
+	"name": "Stargate Network",
+	"icon": "sgjourney:universe_stargate_chevron",
+	"sortnum": 0,
+	"category": "sgjourney:stargates",
+	"pages":
+	[
+		{
+			"title": "Preferred Stargates",
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

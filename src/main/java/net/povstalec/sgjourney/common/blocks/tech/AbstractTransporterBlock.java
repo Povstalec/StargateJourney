@@ -22,11 +22,10 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock
 {
-	protected String listName;
-	
 	protected AbstractTransporterBlock(Properties properties)
 	{
 		super(properties);
@@ -77,27 +76,15 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	@Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-		String id;
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("ID"))
-			id = stack.getTag().getCompound("BlockEntityTag").getString("ID");
-		else
-			id = "";
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		String id = blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.ID) ? blockEntityTag.getString(AbstractTransporterEntity.ID) : "-";
 		
-        tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
+		tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
 
-        if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
-				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.getTag().getCompound("BlockEntityTag").getByte(AbstractTransporterEntity.GENERATION_STEP)))
+        if(blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractTransporterEntity.GENERATION_STEP)))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
-	
-	public static ItemStack excludeFromNetwork(ItemStack stack)
-	{
-        CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putByte(AbstractStargateEntity.GENERATION_STEP, StructureGenEntity.Step.SETUP.byteValue());
-		stack.addTagElement("BlockEntityTag", compoundtag);
-		
-		return stack;
-	}
 }

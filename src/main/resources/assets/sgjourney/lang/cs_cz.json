@@ -115,6 +115,13 @@
 	"block.sgjourney.transceiver": "Vysílač",
 	"block.sgjourney.transceiver.description": "Zařízení pro vysílání a zachycování signálů z jiných vysílačů a GDO",
 	
+	"block.sgjourney.naquadah_wire": "Naquadahový drát",
+	"block.sgjourney.small_naquadah_cable": "Malý naquadahový kabel",
+	"block.sgjourney.medium_naquadah_cable": "Střední naquadahový kabel",
+	"block.sgjourney.large_naquadah_cable": "Velký naquadahový kabel",
+	
+	"block.sgjourney.large_naquadah_battery": "Velká naquadahová baterie",
+	
 	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
 	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
 	
@@ -166,6 +173,7 @@
 	"item.sgjourney.kara_kesh": "Ozbrojená ruka",
 	"item.sgjourney.ring_remote": "Ovládání kruhů",
 	
+	"item.sgjourney.jaffa_staff_head": "Hlava Jaffské tyče",
 	"item.sgjourney.matok": "Tyčová zbraň Ma'Tok",
 	
 	"item.sgjourney.pda": "PDA",
@@ -178,6 +186,8 @@
 	"item.sgjourney.naquadah_fuel_rod": "Naquadahová palivová tyč",
 	
 	"item.sgjourney.syringe": "Injekce",
+	
+	"item.sgjourney.archeologist_notebook": "Archeologův zápisník",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadahová helma",
 	"item.sgjourney.naquadah_chestplate": "Naquadahové brnění",
@@ -212,6 +222,9 @@
 	"item.sgjourney.bronze_iris": "Bronzová iris",
 	"item.sgjourney.steel_iris": "Ocelová iris",
 	
+	"item.sgjourney.small_naquadah_battery": "Malá naquadahová baterie",
+	"item.sgjourney.naquadah_power_cell": "Naquadahový napájecí článek",
+	
 	"entity.sgjourney.goauld": "Goa'uld",
 	"entity.sgjourney.human": "Člověk",
 	"entity.sgjourney.jaffa": "Jaffa",
@@ -244,7 +257,9 @@
 	"sounds.sgjourney.nothing" : "nic",
 	
 	"death.attack.sgjourney.kawoosh": "Hráč %1$s byl dezintegrován nestabilním vírem",
+	"death.attack.sgjourney.kawoosh.player": "Hráč %1$s byl dezintegrován nestabilním vírem během boje s hráčem %2$s",
 	"death.attack.sgjourney.reverseWormhole": "Hráč %1$s prošel špatnou stranou červí díry",
+	"death.attack.sgjourney.reverseWormhole.player": "Hráč %1$s prošel špatnou stranou červí díry během boje s hráčem %2$s",
 	"death.attack.sgjourney.iris": "Hráč %1$s se rozplácnul o iris",
 
 	"stat.sgjourney.times_killed_by_kawoosh": "Počet úmrtí v nestabilním víru",
@@ -279,6 +294,8 @@
 	"screen.sgjourney.advanced_crystallizer": "Pokročilý krystalizér",
 	"screen.sgjourney.naquadah_liquidizer": "Zkapalňovač naquadahu",
 	"screen.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
+	
+	"screen.sgjourney.naquadah_battery": "Naquadahová baterie",
 
 	"screen.sgjourney.transceiver": "Vysílač",
 	"screen.sgjourney.transceiver.symbol.toggle_frequency": "f",
@@ -492,6 +509,9 @@
 	"tooltip.sgjourney.address": "Adresa",
 	"tooltip.sgjourney.9_chevron_address": "9chevronová adresa",
 	"tooltip.sgjourney.energy": "Energie",
+	"tooltip.sgjourney.energy_buffer": "Vyrovnavač energie",
+	"tooltip.sgjourney.fluid": "Tekutina",
+	"tooltip.sgjourney.holding": "Uvnitř",
 	"tooltip.sgjourney.dimension": "Dimenze",
 	"tooltip.sgjourney.mode": "Mód",
 	"tooltip.sgjourney.upgraded": "Upgradováno",
@@ -513,10 +533,8 @@
 	"tooltip.sgjourney.crystal.in_dhd": "V DHD:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Povolí bráně používat pokročilé nastavení",
 	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Povolí bráně používat pokročilé nastavení",
-	"tooltip.sgjourney.crystal.in_dhd.energy": "Zvýší cílenou energetickou kapacitu v bráně o 50000 FE",
-	"tooltip.sgjourney.crystal.in_dhd.energy.advanced": "Zvýší cílenou energetickou kapacitu v bráně o 100000 FE",
-	"tooltip.sgjourney.crystal.in_dhd.transfer": "Zvýší energii přenášenou do hvězdné brány o 2500 FE",
-	"tooltip.sgjourney.crystal.in_dhd.transfer.advanced": "Zvýší energii přenášenou do hvězdné brány o 5000 FE",
+	"tooltip.sgjourney.crystal.in_dhd.energy": "Zvýší cílenou energetickou kapacitu v bráně o",
+	"tooltip.sgjourney.crystal.in_dhd.transfer": "Zvýší energii přenášenou do hvězdné brány o",
 	"tooltip.sgjourney.crystal.in_dhd.communication": "Zvýší vzdálenost ze které zvládne DHD komunikovat s hvězdnou bránou o 16 bloků",
 	"tooltip.sgjourney.crystal.in_dhd.communication.advanced": "Zvýší vzdálenost ze které zvládne DHD komunikovat s hvězdnou bránou o 32 bloků",
 	"tooltip.sgjourney.communication_crystal.frequency": "Frekvence",
@@ -538,7 +556,10 @@
 	"tooltip.sgjourney.zpm.entropy": "Entropie",
 	"tooltip.sgjourney.zpm.energy_in_level": "Energie v úrovni",
 	
+	"tooltip.sgjourney.cable.zpm_transfer": "Dokáže vydržet přenos energie ze ZPM",
+	
 	"tooltip.sgjourney.energy_transfer": "Max. přenos energie",
+	"tooltip.sgjourney.naquadah_power_cell.reload": "Pravé kliknutí ve vedlejší ruce pro doplnění naquadahovou ampulkou v hlavní ruce",
 	"tooltip.sgjourney.matok.open": "Otevřený",
 	"tooltip.sgjourney.matok.closed": "Zavřený",
 	"tooltip.sgjourney.matok.open_close": "Shift + pravé kliknutí v hlavní ruce pro otevření/zavření",

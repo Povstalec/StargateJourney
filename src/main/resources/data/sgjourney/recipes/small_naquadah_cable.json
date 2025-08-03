@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"WWW",
+		"RCR",
+		"WWW"
+	],
+	
+	"key": 
+	{
+		"R": { "item": "minecraft:redstone" },
+		"C": { "item": "sgjourney:energy_crystal" },
+		"W": { "item": "sgjourney:naquadah_wire" }
+	},
+	
+	"result": { "item": "sgjourney:small_naquadah_cable", "count": 6 }
+}
