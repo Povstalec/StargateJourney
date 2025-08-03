@@ -1,0 +1,21 @@
+{
+	"name": "Finding the Stargate",
+	"icon": "minecraft:filled_map",
+	"sortnum": 2,
+	"category": "sgjourney:getting_started",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "Trade with the Archeologist Villager until you unlock the final Master Level trade, Map to Chappa'ai."
+		},
+		{
+			"type": "patchouli:text",
+			"text": "X on the map marks the spot, dig down and find a structure inside which the Buried Stargate is sealed."
+		},
+		{
+			"type": "patchouli:text",
+			"text": "On top of the Buried Stargate, there should be a Cartouche that holds the Address to Abydos (You can right-click on it to get the address as a string of numbers). Take it with you, you will need it."
+		}
+	]
+}

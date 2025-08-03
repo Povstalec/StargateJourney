@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import org.joml.Vector3d;
 
 import net.minecraft.ChatFormatting;
@@ -119,22 +120,16 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 		return createTickerHelper(type, BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), NaquadahGeneratorEntity::tick);
     }
 	
+	@Override
+	public long energyPerTick()
+	{
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get();
+	}
+	
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	long capacity = CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
-    	
-    	long energyPerTick = CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
-    	
-    	int energy = 0;
-    	
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
-			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
-
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + capacity +" FE")).withStyle(ChatFormatting.DARK_RED));
-        tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));
-		tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_generator_mark_ii.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+    	tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_generator_mark_ii.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }
 }

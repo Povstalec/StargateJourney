@@ -1,0 +1,6 @@
+{
+	"name": "Interfacing",
+	"description": "Interfaces allow redstone and computers to connect to all kinds of alien technology.",
+	"sortnum": 5,
+	"icon": "sgjourney:basic_interface"
+}

@@ -128,6 +128,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 
 				stargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
 				stargate.symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+				stargate.displayID();
 				stargate.addStargateToNetwork();
 			}
 			

@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.menu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEn
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
-public class CrystallizerMenu extends AbstractContainerMenu
+public class CrystallizerMenu extends InventoryMenu
 {
     protected final AbstractCrystallizerEntity blockEntity;
     protected final Level level;
@@ -36,8 +35,8 @@ public class CrystallizerMenu extends AbstractContainerMenu
         this.level = inventory.player.level;
         this.fluidStack = this.blockEntity.getFluid();
 
-        addPlayerInventory(inventory);
-        addPlayerHotbar(inventory);
+        addPlayerInventory(inventory, 8, 84);
+        addPlayerHotbar(inventory, 8, 142);
         
         this.blockEntity.getItemHandler(0).ifPresent(handler -> {
             this.addSlot(new SlotItemHandler(handler, 0, 80, 20));
@@ -82,25 +81,6 @@ public class CrystallizerMenu extends AbstractContainerMenu
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CRYSTALLIZER.get()) ||
         		stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ADVANCED_CRYSTALLIZER.get());
     }
-
-    private void addPlayerInventory(Inventory playerInventory)
-    {
-        for (int i = 0; i < 3; ++i)
-        {
-            for (int l = 0; l < 9; ++l)
-            {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
-            }
-        }
-    }
-
-    private void addPlayerHotbar(Inventory playerInventory)
-    {
-        for (int i = 0; i < 9; ++i)
-        {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
-        }
-    }
     
 	// CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
@@ -120,45 +100,73 @@ public class CrystallizerMenu extends AbstractContainerMenu
     // THIS YOU HAVE TO DEFINE!
     private static final int TE_INVENTORY_SLOT_COUNT = 5;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
 
+    /**
+     * Checks if the ItemStack has the required liquid for the liquidizer.
+     * @return true if the ItemStack has the required liquid, false otherwise.
+     */
+    private boolean hasRequiredLiquid(ItemStack itemStack) {
+        return itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(cap ->
+                cap.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid())
+        ).orElse(false);
+    }
+
+    private static boolean countEquals(ItemStack first, ItemStack second)
+    {
+        return first.getCount() == second.getCount();
+    }
+
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) 
+    public ItemStack quickMoveStack(Player playerIn, int index)
     {
         Slot sourceSlot = slots.get(index);
         if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
+        boolean stopQuickMove = false;
 
         // Check if the slot clicked is one of the vanilla container slots
-        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) 
+        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT)
         {
             // This is a vanilla container slot so merge the stack into the tile inventory
-            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT, false)) 
+            stopQuickMove = true;
+
+            // try to move it to the bucket slot first if it has the required liquid
+            if(hasRequiredLiquid(sourceStack))
+            {
+                moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX + 4, TE_INVENTORY_FIRST_SLOT_INDEX + 5, false);
+                // we are trying a single slot which might fail
+            }
+
+            if (countEquals(sourceStack, copyOfSourceStack) && !moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
+                    TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false))
             {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
-        } 
-        else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) 
+        }
+        else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT)
         {
             // This is a TE slot so merge the stack into the players inventory
-            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) 
+            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false))
             {
                 return ItemStack.EMPTY;
             }
-        } else 
+        } else
         {
             System.out.println("Invalid slotIndex:" + index);
             return ItemStack.EMPTY;
         }
         // If stack size == 0 (the entire stack was moved) set slot contents to null
-        if (sourceStack.getCount() == 0) 
+        if (sourceStack.getCount() == 0)
         {
             sourceSlot.set(ItemStack.EMPTY);
-        } else 
+        } else
         {
             sourceSlot.setChanged();
         }
         sourceSlot.onTake(playerIn, sourceStack);
+        if (stopQuickMove) {
+            return ItemStack.EMPTY;
+        }
         return copyOfSourceStack;
     }
 	

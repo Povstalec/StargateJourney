@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 
 public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
@@ -64,7 +65,7 @@ public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
     {
     	if(this.isHovering(x, y, 106, 16, (double) mouseX, (double) mouseY))
 	    {
-	    	renderTooltip(matrixStack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE")).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+	    	renderTooltip(matrixStack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
 	    }
     }
 }

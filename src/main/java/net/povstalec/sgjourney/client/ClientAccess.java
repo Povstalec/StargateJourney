@@ -8,25 +8,20 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.client.screens.GDOScreen;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
-import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
-import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.block_entities.*;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.*;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -47,6 +42,11 @@ public class ClientAccess
     {
     	minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
     }
+	
+	public static void openArcheologistNotebookScreen(UUID playerId, boolean mainHand, CompoundTag tag)
+	{
+		minecraft.setScreen(new ArcheologistNotebookScreen(playerId, mainHand, tag));
+	}
 	
     public static void updateSymbol(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
     {
@@ -76,9 +76,7 @@ public class ClientAccess
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final AbstractInterfaceEntity interfaceEntity)
-        {
         	interfaceEntity.setEnergy(energy);
-        }
     }
     
     public static void updateTransceiver(BlockPos pos, boolean editingFrequency, int frequency, String idc)
@@ -270,4 +268,12 @@ public class ClientAccess
         	naquadahLiquidizer.progress = progress;
         }
     }
+	
+	public static void updateBatteryBlock(BlockPos pos, long energy)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final BatteryBlockEntity battery)
+			battery.setEnergy(energy);
+	}
 }

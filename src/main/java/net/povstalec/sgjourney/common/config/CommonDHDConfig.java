@@ -4,6 +4,9 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonDHDConfig
 {
+	public static ForgeConfigSpec.LongValue energy_crystal_dhd_energy_target;
+	public static ForgeConfigSpec.LongValue advanced_energy_crystal_dhd_energy_target;
+	
 	public static ForgeConfigSpec.LongValue milky_way_dhd_energy_buffer_capacity;
 	public static ForgeConfigSpec.LongValue milky_way_dhd_max_energy_receive;
 	public static ForgeConfigSpec.LongValue milky_way_dhd_max_energy_extract;
@@ -21,6 +24,16 @@ public class CommonDHDConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		energy_crystal_dhd_energy_target = server
+				.comment("The amount by which the Energy Crystal increases a DHD's Energy Target")
+				.defineInRange("server.energy_crystal_dhd_energy_target", 50000L, 1L, Long.MAX_VALUE);
+		
+		advanced_energy_crystal_dhd_energy_target = server
+				.comment("The amount by which the AdvancedEnergy Crystal increases a DHD's Energy Target")
+				.defineInRange("server.advanced_energy_crystal_dhd_energy_target", 100000L, 1L, Long.MAX_VALUE);
+		
+		
+		
 		milky_way_dhd_energy_buffer_capacity = server
 				.comment("Capacity of the energy buffer inside the DHD")
 				.defineInRange("server.milky_way_dhd_energy_buffer_capacity", 300000, 0L, Long.MAX_VALUE);

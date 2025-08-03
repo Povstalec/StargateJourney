@@ -220,13 +220,13 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	
 	public StargateInfo.Feedback endRotation(boolean playSound)
 	{
+		if(!this.level.isClientSide() && playSound)
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStop(worldPosition));
+		
 		if(!this.rotating)
 			return setRecentFeedback(StargateInfo.Feedback.NOT_ROTATING);
 		
 		this.rotating = false;
-		
-		if(!this.level.isClientSide() && playSound)
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStop(worldPosition));
 		
 		synchronizeWithClient();
 		

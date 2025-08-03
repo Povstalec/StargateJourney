@@ -1,0 +1,13 @@
+{
+	"name": "Lantea",
+	"icon": "sgjourney:pegasus_stargate",
+	"sortnum": 6,
+	"category": "sgjourney:planets",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "An ocean planet that is the ancient resting place of the city of Atlantis."
+		}
+	]
+}

@@ -13,6 +13,7 @@ import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.VialItem;
 
 public class ModEvents
@@ -46,10 +47,30 @@ public class ModEvents
 				if(layer == 0)
 					return -1;
 				
-				FluidStack fluidStack = VialItem.getFluidStack(stack);
-				IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-		        return renderProperties.getTintColor(fluidStack);
+				if(stack.getItem() instanceof VialItem vial)
+				{
+					FluidStack fluidStack = vial.getFluidStack(stack);
+					IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
+					return renderProperties.getTintColor(fluidStack);
+				}
+				
+				return -1;
 			}, ItemInit.VIAL.get());
+			
+			event.register((stack, layer) ->
+			{
+				if(layer == 0)
+					return -1;
+				
+				if(stack.getItem() instanceof PowerCellItem powerCell)
+				{
+					FluidStack fluidStack = powerCell.getFluidStack(stack);
+					IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
+					return renderProperties.getTintColor(fluidStack);
+				}
+				
+				return -1;
+			}, ItemInit.NAQUADAH_POWER_CELL.get());
 		}
 	}
 }

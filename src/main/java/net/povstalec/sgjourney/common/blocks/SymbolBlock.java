@@ -40,6 +40,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
@@ -158,11 +159,10 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     	int symbolNumber = 0;
 		String symbol = "";
     	String symbols = "";
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
-    	if(stack.hasTag() && stack.getTag().contains("BlockEntityTag"))
+		if(blockEntityTag != null)
     	{
-        	CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
-        	
         	if(blockEntityTag.contains(SymbolBlockEntity.SYMBOL_NUMBER))
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);
 

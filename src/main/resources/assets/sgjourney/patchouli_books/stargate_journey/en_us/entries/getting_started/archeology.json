@@ -1,0 +1,25 @@
+{
+	"name": "Archeology",
+	"icon": "sgjourney:archeology_table",
+	"sortnum": 1,
+	"category": "sgjourney:getting_started",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "1. Find a Goa'uld Temple."
+		},
+		{
+			"type": "patchouli:text",
+			"text": "2. Inside the Goa'uld Temple there will be a room which houses a Golden Idol, take it."
+		},
+		{
+			"type": "patchouli:text",
+			"text": "3. Use the Golden Idol to craft an Archeology Table"
+		},
+		{
+			"type": "patchouli:text",
+			"text": "4. Place the Archeology Table down near a Villager, who will then become an Archeologist"
+		}
+	]
+}

@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"NNN"
+	],
+	
+	"key": 
+	{
+		"N": { "tag": "sgjourney:naquadah_alloy_nugget" }
+	},
+	
+	"result": { "item": "sgjourney:naquadah_wire", "count": 1 }
+}

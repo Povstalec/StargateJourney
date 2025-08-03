@@ -14,13 +14,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
 public class DHDCrystalMenu extends AbstractContainerMenu
 {
-    private final AbstractDHDEntity blockEntity;
+    private final CrystalDHDEntity blockEntity;
     private final Level level;
     
     public DHDCrystalMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
@@ -32,13 +33,13 @@ public class DHDCrystalMenu extends AbstractContainerMenu
     {
         super(MenuInit.DHD_CRYSTAL.get(), containerId);
         checkContainerSize(inv, 9);
-        blockEntity = ((AbstractDHDEntity) entity);
+        blockEntity = (CrystalDHDEntity) entity;
         this.level = inv.player.level;
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
         
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
+        this.blockEntity.getItemHandler().ifPresent(handler -> {
             this.addSlot(new SlotItemHandler(handler, 0, 80, 35));
             
             this.addSlot(new SlotItemHandler(handler, 1, 80, 17));
@@ -97,9 +98,9 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         if(slot < 0 || slot > 8)
             return false;
         
-        IItemHandler cap = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
+        IItemHandler cap = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
         
-        if(cap != null && cap.getStackInSlot(slot) != null)
+        if(cap != null)
             return !cap.getStackInSlot(slot).isEmpty();
         
         return false;

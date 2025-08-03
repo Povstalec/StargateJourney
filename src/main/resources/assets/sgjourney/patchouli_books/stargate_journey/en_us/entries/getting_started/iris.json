@@ -1,0 +1,13 @@
+{
+	"name": "Iris",
+	"icon": "sgjourney:iron_iris",
+	"sortnum": 8,
+	"category": "sgjourney:getting_started",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

@@ -55,6 +55,8 @@ public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
 	@Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		
 		tooltipComponents.add(Component.translatable("block.sgjourney.advanced_crystal_interface.description").withStyle(ChatFormatting.DARK_GRAY));
 		tooltipComponents.add(Component.translatable("block.sgjourney.advanced_crystal_interface.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }
