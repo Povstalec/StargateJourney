@@ -239,15 +239,19 @@ public final class StargateConnection
 	
 	public final void terminate(MinecraftServer server, StargateInfo.Feedback feedback)
 	{
-		if(this.dialingStargate != null)
 		{
-			this.dialingStargate.getStargateEntity(server).updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
-			this.dialingStargate.resetStargate(server, feedback, true);
+			AbstractStargateEntity entity = this.dialingStargate.getStargateEntity(server);
+			if (this.dialingStargate != null && entity != null) {
+				entity.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
+				this.dialingStargate.resetStargate(server, feedback, true);
+			}
 		}
-		if(this.dialedStargate != null)
 		{
-			this.dialedStargate.getStargateEntity(server).updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
-			this.dialedStargate.resetStargate(server, feedback, true);
+			AbstractStargateEntity entity = this.dialedStargate.getStargateEntity(server);
+			if (this.dialedStargate != null && entity != null) {
+				entity.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
+				this.dialedStargate.resetStargate(server, feedback, true);
+			}
 		}
 		
 		StargateNetwork.get(server).removeConnection(uuid, feedback);

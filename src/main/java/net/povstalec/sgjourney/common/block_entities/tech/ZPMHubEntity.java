@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -8,6 +9,11 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -26,7 +32,7 @@ import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 
-public class ZPMHubEntity extends EnergyBlockEntity
+public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEntity
 {
 	public static final String INVENTORY = "inventory";
 	
@@ -35,6 +41,8 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	
 	private final ItemStackHandler itemHandler = createHandler();
 	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemHandler);
+	
+	protected boolean isProtected = false;
 	
 	public ZPMHubEntity(BlockPos pos, BlockState state)
 	{
@@ -53,6 +61,9 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	{
 		super.loadAdditional(nbt, registries);
 		itemHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
+		
+		if(nbt.contains(PROTECTED, CompoundTag.TAG_BYTE))
+			isProtected = nbt.getBoolean(PROTECTED);
 	}
 	
 	@Override
@@ -60,15 +71,27 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.put(INVENTORY, itemHandler.serializeNBT(registries));
+		
+		if(isProtected)
+			nbt.putBoolean(PROTECTED, true);
 	}
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	public IItemHandler getItemHandler(Direction side)
+	public IItemHandler getItemHandler()
 	{
 		return lazyItemHandler.get();
+	}
+	
+	@Nullable
+	public IItemHandler getItemHandler(Direction side)
+	{
+		if(!isProtected() || CommonPermissionConfig.protected_inventory_access.get())
+			return lazyItemHandler.get();
+		
+		return null;
 	}
 	
 	//============================================================================================
@@ -136,7 +159,7 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		return side == Direction.DOWN;
+		return side == Direction.UP;
 	}
 	
 	protected boolean receivesEnergy()
@@ -169,78 +192,65 @@ public class ZPMHubEntity extends EnergyBlockEntity
 		
 		if(stack.is(ItemInit.ZPM.get()))
 		{
-			IEnergyStorage cap = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-			if(cap != null)
+			IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+			if(itemEnergy != null)
 			{
-				if(cap instanceof ZeroPointEnergy zpmEnergy)
+				if(itemEnergy instanceof ZeroPointEnergy zpmEnergy)
 				{
 					BlockEntity blockEntity = level.getBlockEntity(worldPosition.relative(outputDirection));
 					
 					if(blockEntity == null)
 						return;
 					
-					IEnergyStorage cap2 = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection.getOpposite()), null);
-					if(cap2 != null)
+					IEnergyStorage otherEnergy = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection.getOpposite()), null);
+					if(otherEnergy != null)
 					{
-						if(cap2 instanceof SGJourneyEnergy sgjourneyEnergy)
+						if(otherEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.maxExtract(), true);
-							long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
+							long simulatedReceiveAmount = sgjourneyEnergy.receiveZeroPointEnergy(simulatedOutputAmount, true);
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
-							sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
+							sgjourneyEnergy.receiveZeroPointEnergy(simulatedReceiveAmount, false);
 						}
-						else
+						else if(CommonZPMConfig.other_mods_use_zero_point_energy.get())
 						{
-							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.getRegularEnergy(this.maxExtract()), true);
-							int simulatedReceiveAmount = cap2.receiveEnergy(simulatedOutputAmount, true);
+							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.regularEnergy(this.maxExtract()), true);
+							int simulatedReceiveAmount = otherEnergy.receiveEnergy(simulatedOutputAmount, true);
 							
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
-							cap2.receiveEnergy(simulatedReceiveAmount, false);
+							otherEnergy.receiveEnergy(simulatedReceiveAmount, false);
 						}
 					}
 				}
 			}
 		}
-		
-		/*if(ZeroPointModule.hasEnergy(stack))
-		{
-			BlockEntity blockentity = level.getBlockEntity(worldPosition.relative(outputDirection));
-			
-			if(blockentity == null)
-				return;
-			else if(blockentity instanceof EnergyBlockEntity energyBE)
-			{
-				long simulatedReceiveAmount = energyBE.receiveEnergy(this.maxExtract(), true);
-				
-				long extractedAmount = this.extractEnergy(simulatedReceiveAmount, true);
-				
-				this.extractEnergy(extractedAmount, false);
-				energyBE.receiveEnergy(extractedAmount, false);
-			}
-			else
-			{
-				blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) ->
-				{
-					int simulatedReceiveAmount = energyStorage.receiveEnergy(SGJourneyEnergy.getRegularEnergy(this.getMaxExtract()), true);
-					
-					int extractedAmount = SGJourneyEnergy.getRegularEnergy(ZeroPointModule.extractEnergy(stack, simulatedReceiveAmount));
-					energyStorage.receiveEnergy(extractedAmount, false);
-				});
-			}
-		}*/
 	}
 	
-	//This should make sure the energy taken by cables is properly subtracted from the ZPM
-	/*@Override
-	protected void changeEnergy(long difference, boolean simulate)
+	@Override
+	public void setProtected(boolean isProtected)
 	{
-		ItemStack stack = itemHandler.getStackInSlot(0);
+		this.isProtected = isProtected;
+	}
+	
+	@Override
+	public boolean isProtected()
+	{
+		return isProtected;
+	}
+	
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_zpm_hub_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+			
+			return false;
+		}
 		
-		if(!simulate)
-			ZeroPointModule.extractEnergy(stack, difference);
-		
-		super.changeEnergy(difference, simulate);
-	}*/
+		return true;
+	}
 	
 	//============================================================================================
 	//******************************************Ticking*******************************************
@@ -248,7 +258,7 @@ public class ZPMHubEntity extends EnergyBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, ZPMHubEntity hub)
 	{
-		if(level.isClientSide)
+		if(level.isClientSide())
 			return;
 		
 		hub.outputEnergy(Direction.DOWN);

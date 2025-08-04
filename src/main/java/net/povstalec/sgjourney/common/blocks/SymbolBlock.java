@@ -45,6 +45,7 @@ import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
@@ -174,11 +175,10 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     	int symbolNumber = 0;
 		String symbol = "";
     	String symbols = "";
-
-		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
-		{
-			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
-        	
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		
+		if(blockEntityTag != null)
+    	{
         	if(blockEntityTag.contains(SymbolBlockEntity.SYMBOL_NUMBER))
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);
 

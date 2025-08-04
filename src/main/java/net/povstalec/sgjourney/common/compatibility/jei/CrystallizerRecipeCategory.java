@@ -14,8 +14,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
+import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 
 public class CrystallizerRecipeCategory implements IRecipeCategory<CrystallizerRecipe>
@@ -80,11 +81,20 @@ public class CrystallizerRecipeCategory implements IRecipeCategory<CrystallizerR
 		stack1.setCount(recipe.getAmountInSlot(0));
 		stack2.setCount(recipe.getAmountInSlot(1));
 		stack3.setCount(recipe.getAmountInSlot(2));
-		
+
+		// liquid naquadah tank
+		builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 12, 20)
+				.addFluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), AbstractCrystallizerEntity.MAX_PROGRESS)
+				.setFluidRenderer(AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY, true, 16, 54);
+
+		// upper slot
 		builder.addSlot(RecipeIngredientRole.INPUT, 80, 20).addItemStack(stack1);
+		// lower left slot
 		builder.addSlot(RecipeIngredientRole.INPUT, 67, 50).addItemStack(stack2);
+		// lower right slot
 		builder.addSlot(RecipeIngredientRole.INPUT, 93, 50).addItemStack(stack3);
 		
+		// result slot
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 130, 36).addItemStack(recipe.getResultItem(null));
 	}
 }

@@ -11,9 +11,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
@@ -99,7 +101,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final String VARIANT = "variant";
 	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
 	public static final String PRIMARY = "primary";
-	public static final String PROTECTED = "protected";
 	
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
@@ -1163,7 +1164,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		return getConnectionState().isDialingOut();
 	}
-	
+
+	protected int getMaxObstructiveBlocks()
+	{
+		return CommonStargateConfig.max_obstructive_blocks.get();
+	}
+
 	public boolean isObstructed()
 	{
 		Direction direction = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
@@ -1181,7 +1187,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 					obstructingBlocks++;
 			}
 		}
-		return obstructingBlocks >= CommonStargateConfig.max_obstructive_blocks.get();
+		return obstructingBlocks >= getMaxObstructiveBlocks();
 	}
 	
 	@Override
@@ -1326,6 +1332,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
 		
 		super.getStatus(player);
+	}
+	
+	@Override
+	protected boolean canReceiveZeroPointEnergy()
+	{
+		return CommonZPMConfig.stargates_use_zero_point_energy.get();
 	}
 	
 	@Override

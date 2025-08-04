@@ -13,13 +13,14 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
 public class DHDCrystalMenu extends AbstractContainerMenu
 {
-    private final AbstractDHDEntity blockEntity;
+    private final CrystalDHDEntity blockEntity;
     private final Level level;
     
     public DHDCrystalMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
@@ -31,13 +32,13 @@ public class DHDCrystalMenu extends AbstractContainerMenu
     {
         super(MenuInit.DHD_CRYSTAL.get(), containerId);
         checkContainerSize(inv, 9);
-        blockEntity = ((AbstractDHDEntity) entity);
+        blockEntity = (CrystalDHDEntity) entity;
         this.level = inv.player.level();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
         
-        IItemHandler cap = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), null);
+        IItemHandler cap = this.blockEntity.getItemHandler();
         if(cap != null)
         {
             this.addSlot(new SlotItemHandler(cap, 0, 80, 35));
@@ -99,9 +100,9 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         if(slot < 0 || slot > 8)
             return false;
         
-        IItemHandler cap = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), null);
+        IItemHandler cap = this.blockEntity.getItemHandler();
         
-        if(cap != null && cap.getStackInSlot(slot) != null)
+        if(cap != null)
             return !cap.getStackInSlot(slot).isEmpty();
         
         return false;
@@ -153,7 +154,7 @@ public class DHDCrystalMenu extends AbstractContainerMenu
     private static final int TE_INVENTORY_SLOT_COUNT = 10;  // must match TileEntityInventoryBasic.NUMBER_OF_SLOTS
 
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) 
+    public ItemStack quickMoveStack(Player playerIn, int index)
     {
         Slot sourceSlot = slots.get(index);
         if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
@@ -161,32 +162,32 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         ItemStack copyOfSourceStack = sourceStack.copy();
 
         // Check if the slot clicked is one of the vanilla container slots
-        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) 
+        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT)
         {
             // This is a vanilla container slot so merge the stack into the tile inventory
             if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT, false)) 
+                    + TE_INVENTORY_SLOT_COUNT, false))
             {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
-        } 
-        else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) 
+        }
+        else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT)
         {
             // This is a TE slot so merge the stack into the players inventory
-            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) 
+            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false))
             {
                 return ItemStack.EMPTY;
             }
-        } else 
+        } else
         {
             System.out.println("Invalid slotIndex:" + index);
             return ItemStack.EMPTY;
         }
         // If stack size == 0 (the entire stack was moved) set slot contents to null
-        if (sourceStack.getCount() == 0) 
+        if (sourceStack.getCount() == 0)
         {
             sourceSlot.set(ItemStack.EMPTY);
-        } else 
+        } else
         {
             sourceSlot.setChanged();
         }

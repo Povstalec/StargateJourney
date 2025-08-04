@@ -1,11 +1,13 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -76,9 +78,17 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	public IItemHandler getItemHandler(Direction side)
+	public IItemHandler getItemHandler()
 	{
 		return handler.get();
+	}
+	
+	@Nullable
+	public IItemHandler getItemHandler(Direction side)
+	{
+		if(!isProtected() || CommonPermissionConfig.protected_inventory_access.get())
+			return handler.get();
+		return null;
 	}
 	
 	protected ItemStackHandler createHandler()
@@ -158,7 +168,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 				if(energyCrystals.getCrystals().length >= 4 || energyCrystals.getAdvancedCrystals().length >= 3)
 					energyTarget = -1;
 				else if(energyTarget >= 0)
-					energyTarget += energyCrystal.getCapacity();
+					energyTarget += energyCrystal.energyTargetIncrease();
 			}
 			
 			else if(item instanceof TransferCrystalItem transferCrystal)

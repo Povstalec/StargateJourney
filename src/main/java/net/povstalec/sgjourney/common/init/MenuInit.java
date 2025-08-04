@@ -9,17 +9,7 @@ import net.neoforged.neoforge.network.IContainerFactory;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
-import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
-import net.povstalec.sgjourney.common.menu.InterfaceMenu;
-import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
-import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
-import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
-import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
-import net.povstalec.sgjourney.common.menu.RingPanelMenu;
-import net.povstalec.sgjourney.common.menu.TransceiverMenu;
-import net.povstalec.sgjourney.common.menu.ZPMHubMenu;
+import net.povstalec.sgjourney.common.menu.*;
 
 public class MenuInit 
 {
@@ -60,6 +50,9 @@ public class MenuInit
 	
 	public static final DeferredHolder<MenuType<?>, MenuType<TransceiverMenu>> TRANSCEIVER =
             registerMenuType(TransceiverMenu::new, "transceiver");
+	
+	public static final RegistryObject<MenuType<BatteryMenu>> NAQUADAH_BATTERY =
+			registerMenuType(BatteryMenu::new, "naquadah_battery");
 
 
 

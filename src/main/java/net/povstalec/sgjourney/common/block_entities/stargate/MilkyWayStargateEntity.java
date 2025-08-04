@@ -31,6 +31,8 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	public static final int TOTAL_SYMBOLS = 39;
 	public static final int RING_SEGMENTS = 3;
 	public static final int SYMBOLS_PER_SEGMENT = TOTAL_SYMBOLS / RING_SEGMENTS;
+	
+	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.milky_way_chevron_lock_speed.get();
 
 	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("milky_way/milky_way_back_chevron");
 	
@@ -254,7 +256,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed()
 	{
-		return CommonStargateConfig.milky_way_chevron_lock_speed.get();
+		return CHEVRON_LOCK_SPEED;
 	}
 
 	@Override

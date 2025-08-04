@@ -32,6 +32,10 @@ public final class PacketHandlerInit
 				ClientboundGDOOpenScreenPacket.STREAM_CODEC,
 				(packet, context) -> ClientboundGDOOpenScreenPacket.handle(packet, context));
 		
+		registrar.playToClient(
+				ClientboundArcheologistNotebookOpenScreenPacket.TYPE,
+				ClientboundArcheologistNotebookOpenScreenPacket.STREAM_CODEC,
+				(packet, context) -> ClientboundArcheologistNotebookOpenScreenPacket.handle(packet, context));
 		
 		// Tech
 		registrar.playToClient(
@@ -123,6 +127,11 @@ public final class PacketHandlerInit
 				ClientboundCartoucheUpdatePacket.TYPE,
 				ClientboundCartoucheUpdatePacket.STREAM_CODEC,
 				(packet, context) -> ClientboundCartoucheUpdatePacket.handle(packet, context));
+		
+		registrar.playToClient(
+				ClientboundBatteryBlockUpdatePacket.TYPE,
+				ClientboundBatteryBlockUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ClientboundBatteryBlockUpdatePacket.handle(packet, context));
 		
 		
 		// Sounds

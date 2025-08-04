@@ -21,12 +21,12 @@ public class InterfaceMethods
 		{
 			return "setEnergyTarget";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
-			InterfaceFunctions.setEnergyTarget(interfaceEntity, arguments.getLong(0));
+			long target = arguments.getLong(0);
+			InterfaceFunctions.setEnergyTarget(interfaceEntity, target);
 			
 			return MethodResult.of();
 		}
@@ -39,7 +39,7 @@ public class InterfaceMethods
 		{
 			return "addressToString";
 		}
-
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException

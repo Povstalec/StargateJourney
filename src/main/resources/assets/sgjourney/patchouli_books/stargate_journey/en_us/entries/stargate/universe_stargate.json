@@ -1,0 +1,20 @@
+{
+	"name": "Universe Stargate",
+	"icon": "sgjourney:universe_stargate",
+	"sortnum": 1,
+	"category": "sgjourney:stargates",
+	"pages":
+	[
+		{
+			"title": "Universe Stargate",
+			"type": "patchouli:image",
+			"images": ["sgjourney:textures/gui/patchouli/universe_stargate.png"],
+			"text": "Generation 1 Stargate with 36 symbols."
+		},
+		{
+			"title": "Quirks",
+			"type": "patchouli:text",
+			"text": "The entire Stargate always rotates while it's being dialed. This Stargate can be dialed manually."
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"name": "Unitas",
+	"icon": "sgjourney:sulfur_sand",
+	"sortnum": 3,
+	"category": "sgjourney:planets",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "A planet covered in a desert made of sulfur sand."
+		}
+	]
+}

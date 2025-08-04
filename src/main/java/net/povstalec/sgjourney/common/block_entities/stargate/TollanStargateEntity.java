@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
@@ -19,10 +20,18 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0F;
 	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
 	
+	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.tollan_chevron_lock_speed.get();
+	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.TOLLAN_STARGATE.get(), StargateJourney.sgjourneyLocation("tollan/tollan"), pos, state,
 				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_2, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
+	}
+
+	@Override
+	protected int getMaxObstructiveBlocks()
+	{
+		return CommonStargateConfig.max_obstructive_blocks_tollan.get();
 	}
 
 	@Override
@@ -34,7 +43,7 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed()
 	{
-		return CommonStargateConfig.tollan_chevron_lock_speed.get();
+		return CHEVRON_LOCK_SPEED;
 	}
 
 	@Override

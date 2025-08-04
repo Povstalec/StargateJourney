@@ -26,11 +26,10 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock
 {
-	protected String listName;
-	
 	protected AbstractTransporterBlock(Properties properties)
 	{
 		super(properties);
@@ -81,29 +80,15 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	@Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-		String id = "";
-		boolean hasData = stack.has(DataComponents.BLOCK_ENTITY_DATA);
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		String id = blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.ID) ? blockEntityTag.getString(AbstractTransporterEntity.ID) : "-";
+		
+		tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
 
-		if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractTransporterEntity.ID))
-			id = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString(AbstractTransporterEntity.ID);
-		
-        tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
-		
-        if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
-				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getCompound("BlockEntityTag").getByte(AbstractTransporterEntity.GENERATION_STEP)))
+        if(blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractTransporterEntity.GENERATION_STEP)))
             tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
-	
-	public static ItemStack excludeFromNetwork(ItemStack stack, BlockEntityType<?> blockEntityType)
-	{
-        CompoundTag compoundtag = new CompoundTag();
-		compoundtag.putByte(AbstractStargateEntity.GENERATION_STEP, StructureGenEntity.Step.SETUP.byteValue());
-		BlockEntity.addEntityType(compoundtag, blockEntityType);
-
-		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
-		
-		return stack;
-	}
 }

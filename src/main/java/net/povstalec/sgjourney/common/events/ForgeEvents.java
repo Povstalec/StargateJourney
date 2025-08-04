@@ -35,6 +35,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -46,6 +47,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
+import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -126,7 +128,7 @@ public class ForgeEvents
 			}
 
 			Set<AbstractStargateEntity> set = new HashSet<AbstractStargateEntity>(list);
-			set.stream().forEach(stargate -> stargate.receiveEnergy(100000, false));
+			set.stream().forEach(stargate -> stargate.receiveEnergy(CommonCableConfig.lightning_strike_energy.get(), false));
 		}
 	}
 	
@@ -339,6 +341,18 @@ public class ForgeEvents
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public static void onDetonate(ExplosionEvent.Detonate event)
+	{
+		Level level = event.getLevel();
+		// Prevent Protected Block Entities from being destroyed by explosions
+		event.getAffectedBlocks().removeIf(pos ->
+		{
+			BlockState state = level.getBlockState(pos);
+			return state.getBlock() instanceof ProtectedBlock block && block.canExplode(level, pos, state, event.getExplosion());
+		});
 	}
 	
 	@SubscribeEvent

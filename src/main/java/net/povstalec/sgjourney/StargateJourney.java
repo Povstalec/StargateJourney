@@ -7,9 +7,11 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
 import net.povstalec.sgjourney.client.render.entity.HumanRenderer;
 import net.povstalec.sgjourney.common.entities.Human;
+import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import org.slf4j.Logger;
@@ -45,6 +47,15 @@ import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
+import net.povstalec.sgjourney.client.models.block.CableModelLoader;
+import net.povstalec.sgjourney.client.render.block_entity.CartoucheRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.PegasusStargateRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
@@ -58,7 +69,7 @@ import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.properties.LiquidNaquadahPropertyFunction;
+import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
 import net.povstalec.sgjourney.common.sgjourney.AddressTable;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
@@ -208,6 +219,7 @@ public class StargateJourney
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_HUB.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
         
         // Items
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.CLASSIC_DHD.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
         
@@ -268,9 +280,10 @@ public class StargateJourney
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-            ItemProperties.register(ItemInit.VIAL.get(), sgjourneyLocation("liquid_naquadah"), new LiquidNaquadahPropertyFunction());
-            ItemProperties.register(ItemInit.MATOK.get(), sgjourneyLocation("open"), new WeaponStatePropertyFunction());
-            
+        	ItemProperties.register(ItemInit.VIAL.get(), sgjourneyLocation("liquid_naquadah"), new FluidPropertyFunction());
+			ItemProperties.register(ItemInit.NAQUADAH_POWER_CELL.get(), sgjourneyLocation("liquid_naquadah"), new FluidPropertyFunction());
+        	ItemProperties.register(ItemInit.MATOK.get(), sgjourneyLocation("open"), new WeaponStatePropertyFunction());
+        	
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
@@ -311,7 +324,7 @@ public class StargateJourney
             event.register(MenuInit.CLASSIC_DHD.get(), ClassicDHDScreen::new);
 
             event.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
-
+            
             event.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
 
             event.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
@@ -319,6 +332,8 @@ public class StargateJourney
             event.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
 
             event.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
+            
+            event.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
         }
 
         @SubscribeEvent
@@ -436,6 +451,12 @@ public class StargateJourney
         {
             ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
         }
+		
+		@SubscribeEvent
+		public static void modelLoaderInit(ModelEvent.RegisterGeometryLoaders event)
+		{
+			CableModelLoader.register(event);
+		}
     }
 
     public static ResourceLocation location(String path)

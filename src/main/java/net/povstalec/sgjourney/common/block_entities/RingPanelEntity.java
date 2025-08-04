@@ -216,9 +216,9 @@ public class RingPanelEntity extends BlockEntity
 	
 	private long distanceSqr(BlockPos pos, BlockPos targetPos)
 	{
-		int x = Math.abs(targetPos.getX() - pos.getX());
-		int y = Math.abs(targetPos.getY() - pos.getY());
-		int z = Math.abs(targetPos.getZ() - pos.getZ());
+		long x = Math.abs(targetPos.getX() - pos.getX());
+		long y = Math.abs(targetPos.getY() - pos.getY());
+		long z = Math.abs(targetPos.getZ() - pos.getZ());
 		
 		long distance = x*x + y*y + z*z;
 		

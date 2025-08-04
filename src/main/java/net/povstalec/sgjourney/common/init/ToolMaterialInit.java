@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public enum ToolMaterialInit implements Tier
 {
-	naquadah(TagInit.Blocks.INCORRECT_FOR_NAQUADAH_TOOL, 3200, 9.0F, 4.0F, 12, () -> {return Ingredient.of(new ItemLike[]{ItemInit.NAQUADAH.get()});});
+	NAQUADAH(TagInit.Blocks.INCORRECT_FOR_NAQUADAH_TOOL, 3200, 9.0F, 4.0F, 12, () -> {return Ingredient.of(new ItemLike[]{ItemInit.NAQUADAH.get()});});
 
 	private final TagKey<Block> incorrectBlocksForDrops;
 	private final int uses;

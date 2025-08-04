@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -40,11 +41,7 @@ import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
-import net.povstalec.sgjourney.common.data.BlockEntityList;
-import net.povstalec.sgjourney.common.data.StargateNetwork;
-import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
-import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.data.*;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy.Serializable;
@@ -615,21 +612,24 @@ public class CommandInit
 	//Only used for console checks
 	private static int printStargateNetworkInfo(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level();
+		MinecraftServer server = context.getSource().getServer();
 
 		System.out.println("===============Universe===============");
-		Universe.get(level).printDimensions();
-		Universe.get(level).printSolarSystems();
-		Universe.get(level).printGalaxies();
+		Universe.get(server).printDimensions();
+		Universe.get(server).printSolarSystems();
+		Universe.get(server).printGalaxies();
 		
 		System.out.println("===============Stargate Network===============");
-		BlockEntityList.get(level).printStargates();
-		StargateNetwork.get(level).printConnections();
+		BlockEntityList.get(server).printStargates();
+		StargateNetwork.get(server).printConnections();
 
 		System.out.println("===============Transporter Network===============");
-		BlockEntityList.get(level).printTransporters();
-		TransporterNetwork.get(level).printDimensions();
-
+		BlockEntityList.get(server).printTransporters();
+		TransporterNetwork.get(server).printDimensions();
+		
+		System.out.println("===============Conduit Networks===============");
+		ConduitNetworks.get(server).printConduits();
+		
 		context.getSource().sendSuccess(() -> Component.literal("Printed info onto the console"), false);
 		
 		return Command.SINGLE_SUCCESS;

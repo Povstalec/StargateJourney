@@ -1,0 +1,20 @@
+{
+	"name": "Milky Way Stargate",
+	"icon": "sgjourney:milky_way_stargate",
+	"sortnum": 2,
+	"category": "sgjourney:stargates",
+	"pages":
+	[
+		{
+			"title": "Milky Way Stargate",
+			"type": "patchouli:image",
+			"images": ["sgjourney:textures/gui/patchouli/milky_way_stargate.png"],
+			"text": "Generation 2 Stargate with 39 symbols."
+		},
+		{
+			"title": "Quirks",
+			"type": "patchouli:text",
+			"text": "This Stargate can be dialed manually."
+		}
+	]
+}

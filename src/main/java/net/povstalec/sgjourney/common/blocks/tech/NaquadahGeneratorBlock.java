@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
@@ -10,6 +11,8 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -26,8 +29,13 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 {
@@ -124,4 +132,14 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
         }
         return InteractionResult.SUCCESS;
     }
+	
+	public abstract long energyPerTick();
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		tooltipComponents.add(Component.literal(SGJourneyEnergy.energyToString(energyPerTick()) + "/Tick").withStyle(ChatFormatting.YELLOW));
+		
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+	}
 }

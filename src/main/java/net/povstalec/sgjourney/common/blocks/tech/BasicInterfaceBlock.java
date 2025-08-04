@@ -75,6 +75,8 @@ public class BasicInterfaceBlock extends AbstractInterfaceBlock
 	@Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		
 		tooltipComponents.add(Component.translatable("block.sgjourney.basic_interface.description").withStyle(ChatFormatting.DARK_GRAY));
 		tooltipComponents.add(Component.translatable("block.sgjourney.basic_interface.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }

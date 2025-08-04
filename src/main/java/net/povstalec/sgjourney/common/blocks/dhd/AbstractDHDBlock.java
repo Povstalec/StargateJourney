@@ -136,7 +136,7 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 	@Nullable
 	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typeA, BlockEntityType<E> typeB, BlockEntityTicker<? super E> ticker)
 	{
-		return typeB == typeA ? (BlockEntityTicker<A>)ticker : null;
+		return typeB == typeA ? (BlockEntityTicker<A>) ticker : null;
 	}
 	
 	@Override

@@ -35,6 +35,8 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	public static final String DYNAMC_SYMBOLS = "dynamic_symbols";
 	
 	public static final int TOTAL_SYMBOLS = 48;
+	
+	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.pegasus_chevron_lock_speed.get();
 
 	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("pegasus/pegasus_back_chevron");
 	
@@ -315,7 +317,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed()
 	{
-		return CommonStargateConfig.pegasus_chevron_lock_speed.get();
+		return CHEVRON_LOCK_SPEED;
 	}
 
 	@Override

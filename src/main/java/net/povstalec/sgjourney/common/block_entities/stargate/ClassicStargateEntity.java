@@ -32,6 +32,8 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	private static final short ROTATION_TICK_DURATION = 40;
 	private static final short CHEVRON_LOCK_TICK_DURATION = 20;
 	
+	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.classic_chevron_lock_speed.get();
+	
 	public int[] addressBuffer = new int[0];
 	public int symbolBuffer = 0;
 	
@@ -39,8 +41,6 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	{
 		super(BlockEntityInit.CLASSIC_STARGATE.get(), StargateJourney.sgjourneyLocation("classic/classic"), pos, state,
 				TOTAL_SYMBOLS, StargateInfo.Gen.NONE, 0, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, MAX_ROTATION);
-		
-		displayID();
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed()
 	{
-		return CommonStargateConfig.classic_chevron_lock_speed.get();
+		return CHEVRON_LOCK_SPEED;
 	}
 
 	@Override

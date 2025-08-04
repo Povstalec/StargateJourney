@@ -46,9 +46,10 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			String symbols = arguments.getString(0);
 			context.executeMainThreadTask(() ->
 			{
-				PegasusStargateFunctions.overrideSymbols(stargate, arguments.getString(0));
+				PegasusStargateFunctions.overrideSymbols(stargate, symbols);
 				return null;
 			});
 			
@@ -67,9 +68,10 @@ public class PegasusStargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			String pointOfOrigin = arguments.getString(0);
 			context.executeMainThreadTask(() ->
 			{
-				PegasusStargateFunctions.overridePointOfOrigin(stargate, arguments.getString(0));
+				PegasusStargateFunctions.overridePointOfOrigin(stargate, pointOfOrigin);
 				return null;
 			});
 			

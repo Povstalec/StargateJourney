@@ -38,6 +38,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	
 	public static final int MAX_WAIT_TICKS = 20;
 	
+	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.universe_chevron_lock_speed.get();
+	
 	public int waitTicks = 1;
 	
 	public Address addressBuffer = new Address(true);
@@ -257,7 +259,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed()
 	{
-		return CommonStargateConfig.universe_chevron_lock_speed.get();
+		return CHEVRON_LOCK_SPEED;
 	}
 
 	@Override

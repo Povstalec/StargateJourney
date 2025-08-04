@@ -29,11 +29,6 @@ public class ZeroPointModule extends Item
 	 * 
 	 * When Entropy reaches its max state, the ZPM is considered depleted
 	 */
-
-	private static final String ENERGY = "Energy";
-	private static final String ENTROPY = "Entropy";
-	
-	public static final int MAX_ENTROPY = 1000;
 	
 	public ZeroPointModule(Properties properties)
 	{
@@ -49,7 +44,7 @@ public class ZeroPointModule extends Item
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (MAX_ENTROPY - (float) getEntropy(stack)) / MAX_ENTROPY);
+		return Math.round(13.0F * (ZeroPointEnergy.MAX_ENTROPY - (float) getEntropy(stack)) / ZeroPointEnergy.MAX_ENTROPY);
 	}
 
 	@Override
@@ -74,10 +69,10 @@ public class ZeroPointModule extends Item
 		int entropy = getEntropy(stack);
 		long remainingEnergy = getEnergy(stack);
 		
-		float currentEntropy = (float) entropy * 100 / MAX_ENTROPY;
+		float currentEntropy = (float) entropy * 100 / ZeroPointEnergy.MAX_ENTROPY;
 		
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.entropy").append(Component.literal(": " + currentEntropy + "%")).withStyle(ChatFormatting.GOLD));
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.energy_in_level").append(Component.literal(": " + remainingEnergy + " FE")).withStyle(ChatFormatting.DARK_RED));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + ZeroPointEnergy.zeroPointEnergyToString(entropy, remainingEnergy))).withStyle(ChatFormatting.DARK_RED));
     	
     	super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
@@ -98,7 +93,7 @@ public class ZeroPointModule extends Item
 	{
 		public Energy(ItemStack stack)
 		{
-			super(stack, MAX_ENTROPY, getMaxEnergy(), 0, getMaxExtract());
+			super(stack, ZeroPointEnergy.MAX_ENTROPY, getMaxEnergy(), 0, getMaxExtract());
 		}
 		
 		public long maxReceive()

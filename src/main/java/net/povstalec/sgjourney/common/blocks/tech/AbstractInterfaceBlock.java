@@ -1,11 +1,9 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import java.util.List;
-
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,9 +15,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -44,6 +40,7 @@ import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 {
@@ -266,15 +263,12 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		return 0;
 	}
 	
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
-    {
-    	int energy = 0;
-
-		if(stack.has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains("Energy"))
-			energy = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getInt("Energy");
-		
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + getCapacity() +" FE")).withStyle(ChatFormatting.DARK_RED));
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-    }
+	public long getEnergy(ItemStack stack)
+	{
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		if(blockEntityTag != null && blockEntityTag.contains(AbstractInterfaceEntity.ENERGY, Tag.TAG_LONG))
+			return blockEntityTag.getLong(AbstractInterfaceEntity.ENERGY);
+			
+		return 0L;
+	}
 }

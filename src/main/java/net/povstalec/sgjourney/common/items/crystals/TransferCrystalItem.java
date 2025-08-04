@@ -3,12 +3,12 @@ package net.povstalec.sgjourney.common.items.crystals;
 import java.util.List;
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 
 public class TransferCrystalItem extends AbstractCrystalItem
 {
@@ -19,13 +19,13 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	
 	public long getMaxTransfer()
 	{
-		return CommonTechConfig.transfer_crystal_max_transfer.get();
+		return CommonCrystalConfig.transfer_crystal_max_transfer.get();
 	}
 
 	@Override
 	public Optional<Component> descriptionInDHD(ItemStack stack)
 	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.transfer").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.transfer").append(Component.literal(" " + SGJourneyEnergy.energyToString(getMaxTransfer()))).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	{
 		long maxEnergyTransfer = getMaxTransfer();
 		
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + maxEnergyTransfer + " FE")).withStyle(ChatFormatting.RED));
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + SGJourneyEnergy.energyToString(maxEnergyTransfer) + "/t")).withStyle(ChatFormatting.RED));
         
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
@@ -48,19 +48,13 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		@Override
 		public long getMaxTransfer()
 		{
-			return CommonTechConfig.advanced_transfer_crystal_max_transfer.get();
+			return CommonCrystalConfig.advanced_transfer_crystal_max_transfer.get();
 		}
 		
 		@Override
 		public boolean isAdvanced()
 		{
 			return true;
-		}
-
-		@Override
-		public Optional<Component> descriptionInDHD(ItemStack stack)
-		{
-			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.transfer.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}
 	}
 }

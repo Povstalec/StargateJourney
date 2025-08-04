@@ -24,6 +24,7 @@ import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
@@ -56,8 +57,6 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity
 {
-	public static final String PROTECTED = "protected";
-	
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
 	
@@ -198,7 +197,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
 				if(slot == 0)
-					return stack.getItem() instanceof IEnergyCore || stack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
+					return stack.getItem() instanceof IEnergyCore || stack.getItem() instanceof ZeroPointModule || stack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
 				
 				return true;
 			}
@@ -386,6 +385,68 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return false;
 	}
 	
+	private void tryStoreEnergy(ItemStack energyStack)
+	{
+		ItemStack inputStack = energyItemHandler.getStackInSlot(1);
+		// Generates energy if needed
+		if(energyStack.getItem() instanceof IEnergyCore energyCore && energyCore.maxGeneratedEnergy(energyStack, energyItemHandler.getStackInSlot(1)) <= (getEnergyCapacity() - getEnergyStored()))
+		{
+			long generatedEnergy = energyCore.generateEnergy(energyStack, inputStack);
+			
+			if(generatedEnergy > 0)
+				receiveEnergy(generatedEnergy, false);
+		}
+		else if(energyStack.getCapability(Capabilities.EnergyStorage.ITEM) != null)
+		{
+			IEnergyStorage energy = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
+			if(energy != null)
+			{
+				if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
+				{
+					long energyNeeded = getEnergyCapacity() - getEnergyStored();
+					long energyExtracted = sgjourneyEnergy.extractLongEnergy(energyNeeded, false);
+					receiveEnergy(energyExtracted, false);
+				}
+				else
+				{
+					int energyNeeded = (int) Math.min(getEnergyCapacity() - getEnergyStored(), Integer.MAX_VALUE);
+					int energyExtracted = energy.extractEnergy(energyNeeded, false);
+					receiveEnergy(energyExtracted, false);
+				}
+			}
+		}
+	}
+	
+	private void tryPowerStargate(ItemStack energyStack)
+	{
+		if(stargate.getEnergyStored() < getEnergyTarget())
+		{
+			long needed = getEnergyTarget() - stargate.getEnergyStored();
+			
+			// Uses energy from a Energy Item if one is present
+			if (stackHasEnergy(energyStack))
+			{
+				IEnergyStorage energyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
+				
+				if (energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				{
+					long energySent = sgjourneyEnergy.extractLongEnergy(Math.min(maxEnergyDeplete(), needed), false);
+					stargate.receiveEnergy(energySent, false);
+				} else
+				{
+					int energySent = energyStorage.extractEnergy(Math.min(Integer.MAX_VALUE, (int) Math.min(maxEnergyDeplete(), needed)), false);
+					stargate.receiveEnergy(energySent, false);
+				}
+			}
+			// Uses energy from the DHD energy buffer
+			else
+			{
+				long energySent = depleteEnergy(Math.min(maxEnergyDeplete(), needed), false);
+				stargate.receiveEnergy(energySent, false);
+			}
+		}
+	}
+	
 	@Override
 	protected void outputEnergy(Direction outputDirection)
 	{
@@ -397,62 +458,18 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		// Stores energy in the DHD buffer
 		if(getEnergyStored() < minStoredEnergy())
 		{
-			ItemStack inputStack = energyItemHandler.getStackInSlot(1);
-			// Generates energy if needed
-			if(energyStack.getItem() instanceof IEnergyCore energyCore && energyCore.maxGeneratedEnergy(energyStack, inputStack) <= (getEnergyCapacity() - getEnergyStored()))
+			try
 			{
-				long generatedEnergy = energyCore.generateEnergy(energyStack, inputStack);
-				
-				if(generatedEnergy > 0)
-					receiveEnergy(generatedEnergy, false);
+				tryStoreEnergy(energyStack);
 			}
-			else if(energyStack.getCapability(Capabilities.EnergyStorage.ITEM) != null)
+			catch(Exception e)
 			{
-				IEnergyStorage energyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
-				if(energyStorage instanceof ZeroPointEnergy zpmEnergy)
-				{
-					long energyNeeded = getEnergyCapacity() - getEnergyStored();
-					long energyExtracted = zpmEnergy.extractLongEnergy(energyNeeded, false);
-					receiveEnergy(energyExtracted, false);
-				}
-				else
-				{
-					int energyNeeded = (int) Math.min(getEnergyCapacity() - getEnergyStored(), Integer.MAX_VALUE);
-					int energyExtracted = energyStorage.extractEnergy(energyNeeded, false);
-					receiveEnergy(energyExtracted, false);
-				}
+				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}
 		// Sends energy to the Stargate
 		else
-		{
-			if(stargate.getEnergyStored() < getEnergyTarget())
-			{
-				long needed = getEnergyTarget() - stargate.getEnergyStored();
-				
-				// Uses energy from a Energy Item if one is present
-				if (stackHasEnergy(energyStack))
-				{
-					IEnergyStorage energyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
-					
-					if (energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
-					{
-						long energySent = sgjourneyEnergy.extractLongEnergy(Math.min(maxEnergyDeplete(), needed), false);
-						stargate.receiveEnergy(energySent, false);
-					} else
-					{
-						int energySent = energyStorage.extractEnergy(Math.min(Integer.MAX_VALUE, (int) Math.min(maxEnergyDeplete(), needed)), false);
-						stargate.receiveEnergy(energySent, false);
-					}
-				}
-				// Uses energy from the DHD energy buffer
-				else
-				{
-					long energySent = depleteEnergy(Math.min(maxEnergyDeplete(), needed), false);
-					stargate.receiveEnergy(energySent, false);
-				}
-			}
-		}
+			tryPowerStargate(energyStack);
 	}
 
 	public void setCallForwardingState(boolean enableCallForwarding)

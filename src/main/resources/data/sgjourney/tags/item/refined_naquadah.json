@@ -2,6 +2,7 @@
 	"replace": false,
 	"values":
 	[
-		"sgjourney:refined_naquadah"
+		"sgjourney:refined_naquadah",
+		{"id": "#forge:refined_ores/naquadah", "required": false}
 	]
 }

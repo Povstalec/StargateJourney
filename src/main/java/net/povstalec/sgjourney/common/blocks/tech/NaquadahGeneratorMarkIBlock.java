@@ -7,10 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import org.joml.Vector3d;
 
 import net.minecraft.ChatFormatting;
@@ -136,26 +133,16 @@ public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
 		return createTickerHelper(type, BlockEntityInit.NAQUADAH_GENERATOR_MARK_I.get(), NaquadahGeneratorEntity::tick);
     }
 	
+	@Override
+	public long energyPerTick()
+	{
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get();
+	}
+	
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-    	long capacity = CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get();
-    	
-    	long energyPerTick = CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get();
-    	
-    	int energy = 0;
-    	
-		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
-		{
-			CompoundTag tag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
-			if(tag.contains("Energy"))
-				energy = tag.getInt("Energy");
-		}
-		
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + capacity +" FE")).withStyle(ChatFormatting.DARK_RED));
-        tooltipComponents.add(Component.literal(energyPerTick + " FE/Tick").withStyle(ChatFormatting.YELLOW));
-		tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_generator_mark_i.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    	tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_generator_mark_i.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }
 }
