@@ -15,5 +15,5 @@
 		"W": { "item": "sgjourney:naquadah_wire" }
 	},
 	
-	"result": { "item": "sgjourney:small_naquadah_cable", "count": 6 }
+	"result": { "id": "sgjourney:small_naquadah_cable", "count": 6 }
 }

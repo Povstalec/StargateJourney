@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ArcheologistNotebookScreen extends Screen
 {
-	public static final ResourceLocation BOOK_LOCATION = new ResourceLocation("textures/gui/book.png");
+	public static final ResourceLocation BOOK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/book.png");
 	
 	private static final int IMAGE_WIDTH = 192;
 	private static final int IMAGE_HEIGHT = 192;
@@ -22,7 +22,7 @@ public class ArcheologistNotebookScreen extends Screen
 		super(Component.empty());
 	}
 	
-	public void render(PoseStack stack, int mouseX, int mouseY, float delta)
+	/*public void render(PoseStack stack, int mouseX, int mouseY, float delta)
 	{
 		this.renderBackground(stack);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -33,5 +33,5 @@ public class ArcheologistNotebookScreen extends Screen
 		this.blit(stack, x, y, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
 		
 		super.render(stack, mouseX, mouseY, delta);
-	}
+	}*/
 }

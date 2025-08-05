@@ -303,13 +303,13 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         	
         	if((blockEntityTag.contains(LOCAL_POINT_OF_ORIGIN)))
             	tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
+			
+			if(blockEntityTag.contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP)))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(AbstractStargateEntity.PRIMARY, CompoundTag.TAG_BYTE) && blockEntityTag.getBoolean(AbstractStargateEntity.PRIMARY))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
         }
-        
-        if(blockEntityTag.contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP)))
-            tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
-		
-		if(blockEntityTag.contains(AbstractStargateEntity.PRIMARY, CompoundTag.TAG_BYTE) && blockEntityTag.getBoolean(AbstractStargateEntity.PRIMARY))
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
         
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }

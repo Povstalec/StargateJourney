@@ -73,6 +73,18 @@ public class StargateBlockState extends BlockState
 		return super.getDestroySpeed(reader, pos);
 	}
 	
+	protected float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos)
+	{
+		float speed = state.getDestroySpeed(level, pos);
+		if(speed == -1.0F)
+			return 0.0F;
+		else
+		{
+			int i = EventHooks.doPlayerHarvestCheck(player, state, level, pos) ? 30 : 100;
+			return player.getDigSpeed(state, pos) / speed / (float) i;
+		}
+	}
+	
 	@Override
 	public float getDestroyProgress(Player player, BlockGetter reader, BlockPos pos)
 	{
@@ -98,7 +110,7 @@ public class StargateBlockState extends BlockState
 			}
 		}
 		// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
-		return this.getBlock().getDestroyProgress(asState(), player, reader, pos);
+		return getDestroyProgress(asState(), player, reader, pos);
 	}
 	
 	@Override

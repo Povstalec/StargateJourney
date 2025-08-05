@@ -51,7 +51,7 @@ public class MenuInit
 	public static final DeferredHolder<MenuType<?>, MenuType<TransceiverMenu>> TRANSCEIVER =
             registerMenuType(TransceiverMenu::new, "transceiver");
 	
-	public static final RegistryObject<MenuType<BatteryMenu>> NAQUADAH_BATTERY =
+	public static final DeferredHolder<MenuType<?>, MenuType<BatteryMenu>> NAQUADAH_BATTERY =
 			registerMenuType(BatteryMenu::new, "naquadah_battery");
 
 

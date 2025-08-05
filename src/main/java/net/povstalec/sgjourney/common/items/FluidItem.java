@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
@@ -11,18 +11,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.povstalec.sgjourney.common.capabilities.ItemFluidHolderProvider;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.povstalec.sgjourney.common.capabilities.SingleItemHandler;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -67,7 +66,7 @@ public abstract class FluidItem extends Item
 	
 	public FluidStack getFluidStack(ItemStack stack)
 	{
-		IFluidHandler fluidHandler = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		IFluidHandler fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
 		
 		if(fluidHandler == null)
 			return FluidStack.EMPTY;
@@ -82,23 +81,9 @@ public abstract class FluidItem extends Item
 	
 	public void drainFluid(ItemStack stack, int amount)
 	{
-		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
-		{
+		IFluidHandler fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+		if(fluidHandler != null)
 			fluidHandler.drain(amount, IFluidHandler.FluidAction.EXECUTE);
-		});
-	}
-	
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-	{
-		return new FluidHandlerItemStack(stack, getFluidCapacity(stack))
-		{
-			@Override
-			public boolean isFluidValid(int tank, @NotNull FluidStack fluidStack)
-			{
-				return isCorrectFluid(fluidStack);
-			}
-		};
 	}
 	
 	protected ChatFormatting fluidComponentColor(FluidStack fluidStack)
@@ -112,7 +97,7 @@ public abstract class FluidItem extends Item
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		FluidStack fluidStack = getFluidStack(stack);
 		
@@ -121,13 +106,13 @@ public abstract class FluidItem extends Item
 			fluidComponent.append("0 mB");
 		else
 		{
-			fluidComponent.append(Component.translatable(fluidStack.getTranslationKey()));
+			fluidComponent.append(fluidStack.getFluidType().getDescription());
 			fluidComponent.append(Component.literal(" " + fluidStack.getAmount() + "mB"));
 		}
 		fluidComponent.withStyle(fluidComponentColor(fluidStack));
 		tooltipComponents.add(fluidComponent);
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 	
 	
@@ -164,54 +149,9 @@ public abstract class FluidItem extends Item
 			return FluidStack.EMPTY;
 		}
 		
-		@Override
-		public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-		{
-			return new ItemFluidHolderProvider(stack)
-			{
-				@Override
-				public boolean isValid(@NotNull ItemStack stack)
-				{
-					return !(stack.getItem() instanceof FluidItem.Holder) && isValidItem(stack);
-				}
-				
-				@Override
-				public @NotNull FluidStack getFluidInTank(int tank)
-				{
-					if(!hasItem())
-						return FluidStack.EMPTY;
-					// Return the FluidStack of the held Item
-					ItemStack heldStack = getHeldItem(stack);
-					if(heldStack.getItem() instanceof FluidItem fluidItem)
-						return fluidItem.getFluidStack(heldStack);
-					
-					return FluidStack.EMPTY;
-				}
-				
-				@Override
-				public int getTankCapacity(int tank)
-				{
-					if(!hasItem())
-						return 0;
-					// Return the capacity of the held Item
-					ItemStack heldStack = getHeldItem(stack);
-					if(heldStack.getItem() instanceof FluidItem fluidItem)
-						return fluidItem.getFluidCapacity(heldStack);
-					
-					return 0;
-				}
-				
-				@Override
-				public boolean isFluidValid(int tank, @NotNull FluidStack fluidStack)
-				{
-					return isCorrectFluid(fluidStack);
-				}
-			};
-		}
-		
 		public boolean swapItem(Player player, ItemStack holderStack, ItemStack insertedStack)
 		{
-			IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+			IItemHandler itemHandler = holderStack.getCapability(Capabilities.ItemHandler.ITEM);
 			if(itemHandler != null)
 			{
 				// Swap held item with item in player hand
@@ -242,7 +182,7 @@ public abstract class FluidItem extends Item
 		}
 		
 		@Override
-		public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+		public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 		{
 			ItemStack heldItem = getHeldItem(stack);
 			
@@ -253,7 +193,128 @@ public abstract class FluidItem extends Item
 				itemComponent.append(heldItem.getDisplayName());
 			tooltipComponents.add(itemComponent);
 			
-			super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+			super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		}
+		
+		public static abstract class FluidItemHandler extends SingleItemHandler implements IFluidHandlerItem
+		{
+			protected ItemStack stack;
+			
+			public FluidItemHandler(ItemStack stack, DataComponentType<ItemContainerContents> component)
+			{
+				super(stack, component);
+				this.stack = stack;
+			}
+			
+			@Override
+			public @NotNull ItemStack getContainer()
+			{
+				return stack;
+			}
+			
+			@Override
+			public int getTanks()
+			{
+				return 0;
+			}
+			
+			@Override
+			public @NotNull FluidStack getFluidInTank(int i)
+			{
+				if(!hasItem())
+					return FluidStack.EMPTY;
+				
+				// Return the FluidStack of the held Item
+				ItemStack heldStack = getHeldItem();
+				if(heldStack.getItem() instanceof FluidItem fluidItem)
+					return fluidItem.getFluidStack(heldStack);
+				
+				return FluidStack.EMPTY;
+			}
+			
+			@Override
+			public int getTankCapacity(int i)
+			{
+				if(!hasItem())
+					return 0;
+				// Return the capacity of the held Item
+				ItemStack heldStack = getHeldItem();
+				if(heldStack.getItem() instanceof FluidItem fluidItem)
+					return fluidItem.getFluidCapacity(heldStack);
+				
+				return 0;
+			}
+			
+			/*@Override
+			public boolean isFluidValid(int i, FluidStack fluidStack)
+			{
+				return false;
+			}*/
+			
+			@Override
+			public int fill(FluidStack resource, FluidAction action)
+			{
+				if(!hasItem())
+					return 0;
+				
+				ItemStack heldStack = getHeldItem();
+				IFluidHandlerItem fluidHandler = heldStack.getCapability(Capabilities.FluidHandler.ITEM);
+				if(fluidHandler != null)
+				{
+					int amount = fluidHandler.fill(resource, action);
+					
+					if(amount != 0)
+						updateContents(heldStack);
+					
+					return amount;
+				}
+				
+				return 0;
+			}
+			
+			public @NotNull FluidStack deplete(int maxDrain, FluidAction action)
+			{
+				if(!hasItem())
+					return FluidStack.EMPTY;
+				
+				ItemStack heldStack = getHeldItem();
+				IFluidHandlerItem fluidHandler = heldStack.getCapability(Capabilities.FluidHandler.ITEM);
+				if(fluidHandler != null)
+				{
+					FluidStack fluidStack = fluidHandler.drain(maxDrain, action);
+					
+					if(!fluidStack.isEmpty())
+						updateContents(heldStack);
+					
+					return fluidStack;
+				}
+				
+				return FluidStack.EMPTY;
+			}
+			
+			@Override
+			public @NotNull FluidStack drain(FluidStack resource, FluidAction fluidAction)
+			{
+				if(stack.getCount() != 1 || resource.isEmpty() || !resource.is(getFluidInTank(0).getFluid()))
+					return FluidStack.EMPTY;
+				
+				return drain(resource.getAmount(), fluidAction);
+			}
+			
+			@Override
+			public @NotNull FluidStack drain(int maxDrain, FluidAction fluidAction)
+			{
+				return FluidStack.EMPTY;
+			}
+			
+			@Override
+			public boolean isFluidValid(int tank, @NotNull FluidStack fluidStack)
+			{
+				if(stack.getItem() instanceof FluidItem fluidItem)
+					return fluidItem.isCorrectFluid(fluidStack);
+				
+				return false;
+			}
 		}
 	}
 	
@@ -261,10 +322,9 @@ public abstract class FluidItem extends Item
 	{
 		ItemStack stack = new ItemStack(item);
 		
-		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
-		{
+		IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+		if(fluidHandler != null)
 			fluidHandler.fill(new FluidStack(fluid, amount), IFluidHandler.FluidAction.EXECUTE);
-		});
 		
 		return stack;
 	}

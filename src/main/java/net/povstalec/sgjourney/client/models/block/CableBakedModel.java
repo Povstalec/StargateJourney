@@ -12,10 +12,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.ChunkRenderTypeSet;
-import net.minecraftforge.client.model.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
+import net.neoforged.neoforge.client.model.IDynamicBakedModel;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.common.blocks.tech.CableBlock;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class CableBakedModel implements IDynamicBakedModel
 {
-	public static final ResourceLocation MISSING = new ResourceLocation("missingno");
+	public static final ResourceLocation MISSING = ResourceLocation.fromNamespaceAndPath("minecraft", "missingno");
 	
 	private static final byte DEFAULT_OFFSET = 15;
 	private static final byte CONNECTED_OFFSET = 16;

@@ -177,7 +177,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	
 	
 	
-	public static class Item extends SGJourneyEnergy
+	public static abstract class Item extends SGJourneyEnergy
 	{
 		protected ItemStack stack;
 		
@@ -186,13 +186,30 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 			super(capacity, maxReceive, maxExtract);
 			
 			this.stack = stack;
-			this.energy = stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+			this.energy = loadEnergy(stack);
 		}
 		
+		public abstract long loadEnergy(ItemStack stack);
+		
 		@Override
-		public void onEnergyChanged(long difference, boolean simulate)
+		public long extractLongEnergy(long maxExtract, boolean simulate)
 		{
-			stack.set(DataComponentInit.ENERGY, this.energy);
+			System.out.println("Extract " + maxExtract);
+			if(!canExtract())
+				return 0;
+			
+			System.out.println("can extract");
+			System.out.println("energy " + energy);
+			System.out.println("this.maxExtract " + this.maxExtract);
+			long energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+			System.out.println("ext " +  energyExtracted);
+			if(!simulate)
+				energy -= energyExtracted;
+			
+			if(energyExtracted != 0)
+				onEnergyChanged(energyExtracted, simulate);
+			
+			return energyExtracted;
 		}
 	}
 }

@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -25,19 +24,15 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.MutableDataComponentHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.*;
 
 public class StaffWeaponItem extends FluidItem.Holder
 {
-	public static final String IS_OPEN = "is_open";
-	
 	private static final float OPEN_ATTACK_DAMAGE = 3.0F;
 	private static final float CLOSED_ATTACK_DAMAGE = 6.0F;
 
@@ -169,7 +164,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 	public boolean depleteLiquidNaquadah(ItemStack staffWeaponItemStack)
 	{
 		IFluidHandlerItem fluidHandler = staffWeaponItemStack.getCapability(Capabilities.FluidHandler.ITEM);
-		if(fluidHandler instanceof FluidItem.Holder.Capability fluidHolder)
+		if(fluidHandler instanceof Holder.FluidItemHandler fluidHolder)
 		{
 			FluidStack fluidStack = fluidHolder.getFluidInTank(0);
 			int drainAmount = fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ?
@@ -221,11 +216,11 @@ public class StaffWeaponItem extends FluidItem.Holder
 	
 	
 	
-	public static class ItemHandler extends ComponentItemHandler
+	public static class FluidItemHandler extends Holder.FluidItemHandler
 	{
-		public ItemHandler(MutableDataComponentHolder parent, DataComponentType<ItemContainerContents> component)
+		public FluidItemHandler(ItemStack stack, DataComponentType<ItemContainerContents> component)
 		{
-			super(parent, component, 1);
+			super(stack, component);
 		}
 		
 		@Override

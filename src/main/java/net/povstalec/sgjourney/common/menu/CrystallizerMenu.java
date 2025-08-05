@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
@@ -109,10 +110,13 @@ public class CrystallizerMenu extends InventoryMenu
      * Checks if the ItemStack has the required liquid for the liquidizer.
      * @return true if the ItemStack has the required liquid, false otherwise.
      */
-    private boolean hasRequiredLiquid(ItemStack itemStack) {
-        return itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(cap ->
-                cap.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid())
-        ).orElse(false);
+    private boolean hasRequiredLiquid(ItemStack itemStack)
+    {
+        IFluidHandlerItem fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        if(fluidHandler != null)
+            return fluidHandler.getFluidInTank(0).is(blockEntity.getDesiredFluid());
+        
+        return false;
     }
 
     private static boolean countEquals(ItemStack first, ItemStack second)

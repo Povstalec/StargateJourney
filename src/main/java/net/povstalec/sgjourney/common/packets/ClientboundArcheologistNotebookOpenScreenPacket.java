@@ -1,45 +1,40 @@
 package net.povstalec.sgjourney.common.packets;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
-public class ClientboundArcheologistNotebookOpenScreenPacket
+public record ClientboundArcheologistNotebookOpenScreenPacket(UUID playerId, boolean mainHand, CompoundTag tag) implements CustomPacketPayload
 {
-    public final UUID playerId;
-    public final boolean mainHand;
+    public static final CustomPacketPayload.Type<ClientboundArcheologistNotebookOpenScreenPacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_archeologist_notebook_update"));
     
-    public final CompoundTag tag;
-
-    public ClientboundArcheologistNotebookOpenScreenPacket(UUID playerId, boolean mainHand, CompoundTag tag)
+    public static final StreamCodec<ByteBuf, ClientboundArcheologistNotebookOpenScreenPacket> STREAM_CODEC = StreamCodec.composite(
+            UUIDUtil.STREAM_CODEC, ClientboundArcheologistNotebookOpenScreenPacket::playerId,
+            ByteBufCodecs.BOOL, ClientboundArcheologistNotebookOpenScreenPacket::mainHand,
+            ByteBufCodecs.COMPOUND_TAG, ClientboundArcheologistNotebookOpenScreenPacket::tag,
+            ClientboundArcheologistNotebookOpenScreenPacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.playerId = playerId;
-        this.mainHand = mainHand;
-        
-        this.tag = tag;
+        return TYPE;
     }
-
-    public ClientboundArcheologistNotebookOpenScreenPacket(FriendlyByteBuf buffer)
+    
+    public static void handle(ClientboundArcheologistNotebookOpenScreenPacket packet, IPayloadContext ctx)
     {
-        this(buffer.readUUID(), buffer.readBoolean(), buffer.readNbt());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeUUID(playerId);
-        buffer.writeBoolean(mainHand);
-        
-        buffer.writeNbt(tag);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> ClientAccess.openArcheologistNotebookScreen(playerId, mainHand, tag));
-        return true;
+        ctx.enqueueWork(() -> {
+            ClientAccess.openArcheologistNotebookScreen(packet.playerId, packet.mainHand, packet.tag);
+        });
     }
 }
 

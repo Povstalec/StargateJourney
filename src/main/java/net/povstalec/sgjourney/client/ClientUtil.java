@@ -56,7 +56,7 @@ public class ClientUtil
 	public static void addVertex(VertexConsumer consumer, TextureAtlasSprite sprite, Vec3 pos, Vec3 normal, float u, float v)
 	{
 		consumer.addVertex((float) pos.x(), (float) pos.y(), (float) pos.z());
-		consumer.setUv(sprite.getU(u), sprite.getV(v));
+		consumer.setUv(sprite.getU(u / 16F), sprite.getV(v / 16F));
 		consumer.setUv2(0, 0);
 		consumer.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 		consumer.setNormal((float) normal.x(), (float) normal.y(), (float) normal.z());

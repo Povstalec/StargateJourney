@@ -92,6 +92,11 @@ public class RingPanelEntity extends BlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
+	public IItemHandler getItemHandler()
+	{
+		return lazyItemHandler.get();
+	}
+	
 	public IItemHandler getItemHandler(Direction side)
 	{
 		return lazyItemHandler.get();

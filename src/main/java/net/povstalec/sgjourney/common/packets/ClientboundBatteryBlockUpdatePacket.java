@@ -1,40 +1,36 @@
 package net.povstalec.sgjourney.common.packets;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-import java.util.function.Supplier;
-
-public class ClientboundBatteryBlockUpdatePacket
+public record ClientboundBatteryBlockUpdatePacket(BlockPos blockPos, long energy) implements CustomPacketPayload
 {
-    public final BlockPos pos;
-    public final long energy;
-
-    public ClientboundBatteryBlockUpdatePacket(BlockPos pos, long energy)
+    public static final CustomPacketPayload.Type<ClientboundBatteryBlockUpdatePacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_battery_block_update"));
+    
+    public static final StreamCodec<ByteBuf, ClientboundBatteryBlockUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClientboundBatteryBlockUpdatePacket::blockPos,
+            ByteBufCodecs.VAR_LONG, ClientboundBatteryBlockUpdatePacket::energy,
+            ClientboundBatteryBlockUpdatePacket::new
+    );
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-        this.pos = pos;
-        this.energy = energy;
+        return TYPE;
     }
-
-    public ClientboundBatteryBlockUpdatePacket(FriendlyByteBuf buffer)
+    
+    public static void handle(ClientboundBatteryBlockUpdatePacket packet, IPayloadContext ctx)
     {
-        this(buffer.readBlockPos(), buffer.readLong());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-        buffer.writeBlockPos(this.pos);
-        buffer.writeLong(this.energy);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateBatteryBlock(this.pos, this.energy);
+        ctx.enqueueWork(() -> {
+            ClientAccess.updateBatteryBlock(packet.blockPos, packet.energy);
         });
-        return true;
     }
 }
 

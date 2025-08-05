@@ -6,9 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.BatteryBlockEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
@@ -20,23 +19,24 @@ public class BatteryMenu extends InventoryMenu
     
     public BatteryMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
     {
-        this(containerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public BatteryMenu(int containerId, Inventory inventory, BlockEntity entity)
     {
         super(MenuInit.NAQUADAH_BATTERY.get(), containerId);
 		battery = ((BatteryBlockEntity) entity);
-        this.level = inventory.player.level;
+        this.level = inventory.player.level();
 		
 		addPlayerInventory(inventory, 8, 84);
 		addPlayerHotbar(inventory, 8, 142);
 		
-		battery.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler ->
+		IItemHandler itemHandler = battery.getItemHandler();
+		if(itemHandler != null)
 		{
-			this.addSlot(new SlotItemHandler(handler, 0, 8, 36));
-			this.addSlot(new SlotItemHandler(handler, 1, 152, 36));
-		});
+			this.addSlot(new SlotItemHandler(itemHandler, 0, 8, 36));
+			this.addSlot(new SlotItemHandler(itemHandler, 1, 152, 36));
+		}
     }
     
     public long getEnergy()
@@ -54,7 +54,7 @@ public class BatteryMenu extends InventoryMenu
 		if(slot < 0 || slot > 8)
 			return false;
 		
-		IItemHandler cap = battery.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+		IItemHandler cap = battery.getItemHandler();
 		
 		if(cap != null)
 			return !cap.getStackInSlot(slot).isEmpty();

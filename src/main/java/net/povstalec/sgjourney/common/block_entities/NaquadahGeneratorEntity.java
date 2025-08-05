@@ -257,7 +257,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 			generator.outputEnergy(direction.getCounterClockWise());
 		}
 		
-		
-		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(generator.worldPosition).getPos(), new ClientboundNaquadahGeneratorUpdatePacket(generator.worldPosition, generator.getReactionProgress(), generator.getEnergyStored()));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(generator.worldPosition).getPos(),
+				new ClientboundNaquadahGeneratorUpdatePacket(generator.worldPosition, generator.getReactionProgress(), generator.getEnergyStored()));
 	}
 }

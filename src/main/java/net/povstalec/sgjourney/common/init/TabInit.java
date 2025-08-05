@@ -64,8 +64,8 @@ public class TabInit
 			event.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
 			event.accept(ItemInit.PLASMA_CONVERTER.get());
 			event.accept(ItemInit.NAQUADAH_POWER_CELL.get());
-			event.accept(PowerCellItem.liquidNaquadahSetup());
-			event.accept(PowerCellItem.heavyLiquidNaquadahSetup());
+			event.accept(PowerCellItem.liquidNaquadahSetup()); //TODO Bring this back
+			event.accept(PowerCellItem.heavyLiquidNaquadahSetup()); //TODO Bring this back
 			
 			event.accept(ItemInit.PDA.get());
 			

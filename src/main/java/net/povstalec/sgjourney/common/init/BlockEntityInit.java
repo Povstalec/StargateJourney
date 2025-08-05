@@ -89,16 +89,16 @@ public class BlockEntityInit
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TransceiverEntity>> TRANSCEIVER = BLOCK_ENTITIES.register("transciever",
             () -> BlockEntityType.Builder.of(TransceiverEntity::new, BlockInit.TRANSCEIVER.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<CableBlockEntity.NaquadahWire>> NAQUADAH_WIRE = BLOCK_ENTITIES.register("naquadah_wire",
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CableBlockEntity.NaquadahWire>> NAQUADAH_WIRE = BLOCK_ENTITIES.register("naquadah_wire",
 			() -> BlockEntityType.Builder.of(CableBlockEntity.NaquadahWire::new, BlockInit.NAQUADAH_WIRE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<CableBlockEntity.SmallNaquadahCable>> SMALL_NAQUADAH_CABLE = BLOCK_ENTITIES.register("small_naquadah_cable",
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CableBlockEntity.SmallNaquadahCable>> SMALL_NAQUADAH_CABLE = BLOCK_ENTITIES.register("small_naquadah_cable",
 			() -> BlockEntityType.Builder.of(CableBlockEntity.SmallNaquadahCable::new, BlockInit.SMALL_NAQUADAH_CABLE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<CableBlockEntity.MediumNaquadahCable>> MEDIUM_NAQUADAH_CABLE = BLOCK_ENTITIES.register("medium_naquadah_cable",
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CableBlockEntity.MediumNaquadahCable>> MEDIUM_NAQUADAH_CABLE = BLOCK_ENTITIES.register("medium_naquadah_cable",
 			() -> BlockEntityType.Builder.of(CableBlockEntity.MediumNaquadahCable::new, BlockInit.MEDIUM_NAQUADAH_CABLE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<CableBlockEntity.LargeNaquadahCable>> LARGE_NAQUADAH_CABLE = BLOCK_ENTITIES.register("large_naquadah_cable",
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CableBlockEntity.LargeNaquadahCable>> LARGE_NAQUADAH_CABLE = BLOCK_ENTITIES.register("large_naquadah_cable",
 			() -> BlockEntityType.Builder.of(CableBlockEntity.LargeNaquadahCable::new, BlockInit.LARGE_NAQUADAH_CABLE.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<BatteryBlockEntity.Naquadah>> LARGE_NAQUADAH_BATTERY = BLOCK_ENTITIES.register("large_naquadah_battery",
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BatteryBlockEntity.Naquadah>> LARGE_NAQUADAH_BATTERY = BLOCK_ENTITIES.register("large_naquadah_battery",
 			() -> BlockEntityType.Builder.of(BatteryBlockEntity.Naquadah::new, BlockInit.LARGE_NAQUADAH_BATTERY.get()).build(null));
 	
 	public static void register(IEventBus eventBus)

@@ -43,7 +43,9 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public static long getEnergy(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+		long e = stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+		System.out.println("getEnergy " + e);
+		return e;
 	}
 	
 	public long getCapacity()
@@ -114,6 +116,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 			super(stack, 0, 0, 0);
 		}
 		
+		@Override
 		public long maxReceive()
 		{
 			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
@@ -122,6 +125,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 			return 0;
 		}
 		
+		@Override
 		public long maxExtract()
 		{
 			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
@@ -130,12 +134,25 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 			return 0;
 		}
 		
+		@Override
+		public long loadEnergy(ItemStack stack)
+		{
+			return getEnergy(stack);
+		}
+		
+		@Override
 		public long getTrueMaxEnergyStored()
 		{
 			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
 				return energyCrystal.getCapacity();
 			
 			return 0;
+		}
+		
+		@Override
+		public void onEnergyChanged(long difference, boolean simulate)
+		{
+			stack.set(DataComponentInit.ENERGY, this.energy);
 		}
 	}
 }
