@@ -163,7 +163,7 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 		}
 		
 		total *= 100;
-		total = Math.round(total);
+		total = Math.floor(total);
 		total /= 100;
 		
 		return total + " " + PREFIXES[prefix] + "FE";

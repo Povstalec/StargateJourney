@@ -138,7 +138,7 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
 		}
 		
 		total *= 100;
-		total = Math.round(total);
+		total = Math.floor(total);
 		total /= 100;
 		
 		return total + " " + PREFIXES[prefix] + "FE";

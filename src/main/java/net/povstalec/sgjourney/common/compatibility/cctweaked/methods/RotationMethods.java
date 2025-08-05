@@ -37,7 +37,8 @@ public class RotationMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			return MethodResult.of(RotatingStargateFunctions.isCurrentSymbol(stargate, arguments.getInt(0)));
+			int symbol = arguments.getInt(0);
+			return MethodResult.of(RotatingStargateFunctions.isCurrentSymbol(stargate, symbol));
 		}
 	}
 	
