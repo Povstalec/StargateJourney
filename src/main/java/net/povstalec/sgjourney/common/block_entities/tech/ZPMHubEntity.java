@@ -202,7 +202,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 					if(blockEntity == null)
 						return;
 					
-					IEnergyStorage otherEnergy = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection.getOpposite()), null);
+					IEnergyStorage otherEnergy = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection), outputDirection.getOpposite());
 					if(otherEnergy != null)
 					{
 						if(otherEnergy instanceof SGJourneyEnergy sgjourneyEnergy)

@@ -43,9 +43,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public static long getEnergy(ItemStack stack)
 	{
-		long e = stack.getOrDefault(DataComponentInit.ENERGY, 0L);
-		System.out.println("getEnergy " + e);
-		return e;
+		return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
 	}
 	
 	public long getCapacity()

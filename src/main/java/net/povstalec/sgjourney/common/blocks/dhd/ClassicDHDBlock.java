@@ -29,7 +29,7 @@ import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
+import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
@@ -80,7 +80,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
 					{
-						return new MilkyWayDHDMenu(windowId, playerInventory, dhd);
+						return new ClassicDHDMenu(windowId, playerInventory, dhd);
 					}
 				};
 				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, dhd.getBlockPos());

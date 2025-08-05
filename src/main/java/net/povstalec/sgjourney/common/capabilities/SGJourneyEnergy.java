@@ -189,26 +189,5 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 		}
 		
 		public abstract long loadEnergy(ItemStack stack);
-		
-		@Override
-		public long extractLongEnergy(long maxExtract, boolean simulate)
-		{
-			System.out.println("Extract " + maxExtract);
-			if(!canExtract())
-				return 0;
-			
-			System.out.println("can extract");
-			System.out.println("energy " + energy);
-			System.out.println("this.maxExtract " + this.maxExtract);
-			long energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
-			System.out.println("ext " +  energyExtracted);
-			if(!simulate)
-				energy -= energyExtracted;
-			
-			if(energyExtracted != 0)
-				onEnergyChanged(energyExtracted, simulate);
-			
-			return energyExtracted;
-		}
 	}
 }

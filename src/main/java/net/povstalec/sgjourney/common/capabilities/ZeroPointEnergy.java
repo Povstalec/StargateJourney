@@ -156,8 +156,8 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
 			
 			this.stack = stack;
 			
-			this.entropy = stack.getOrDefault(DataComponentInit.ENTROPY, MAX_ENTROPY);
-			this.energy = stack.getOrDefault(DataComponentInit.ENERGY, 0L); // TODO Fix these
+			this.entropy = stack.getOrDefault(DataComponentInit.ENTROPY, 0);
+			this.energy = stack.getOrDefault(DataComponentInit.ENERGY, ENERGY_PER_ENTROPY_LEVEL);
 		}
 		
 		@Override

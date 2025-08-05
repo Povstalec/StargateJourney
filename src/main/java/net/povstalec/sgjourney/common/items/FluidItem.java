@@ -245,12 +245,6 @@ public abstract class FluidItem extends Item
 				return 0;
 			}
 			
-			/*@Override
-			public boolean isFluidValid(int i, FluidStack fluidStack)
-			{
-				return false;
-			}*/
-			
 			@Override
 			public int fill(FluidStack resource, FluidAction action)
 			{

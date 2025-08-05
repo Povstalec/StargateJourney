@@ -8,6 +8,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -100,6 +102,67 @@ public class PowerCellItem extends FluidItem.Holder
 		public Energy(ItemStack stack)
 		{
 			super(stack, CommonTechConfig.naquadah_power_cell_buffer_capacity.get(), CommonTechConfig.naquadah_power_cell_max_transfer.get(), CommonTechConfig.naquadah_power_cell_max_transfer.get());
+		}
+		
+		private long convertFluidToEnergy(long maxExtract, long energyFromFluid, boolean simulate)
+		{
+			long drained = maxExtract / energyFromFluid;
+			
+			int toDrain = (int) Math.min(((PowerCellItem) stack.getItem()).getFluidAmount(stack), drained);
+			
+			IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+			if(fluidHandler instanceof FluidItem.Holder.FluidItemHandler fluidItemHandler)
+			{
+				fluidItemHandler.deplete(toDrain, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+				return toDrain * energyFromFluid;
+			}
+			
+			return 0;
+		}
+		
+		public long convertLiquidNaquadahToEnergy(long maxExtract, boolean simulate)
+		{
+			IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+			if(fluidHandler instanceof FluidItem.Holder.FluidItemHandler fluidItemHandler)
+			{
+				FluidStack fluidStack = fluidItemHandler.getFluidInTank(0);
+				if(fluidStack.getAmount() <= 0)
+					return 0;
+				
+				if(fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get())
+					return convertFluidToEnergy(maxExtract, CommonTechConfig.energy_from_liquid_naquadah.get(), simulate);
+				else if(fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get())
+					return convertFluidToEnergy(maxExtract, CommonTechConfig.energy_from_heavy_liquid_naquadah.get(), simulate);
+			}
+			
+			return 0;
+		}
+		
+		@Override
+		public long receiveLongEnergy(long maxReceive, boolean simulate)
+		{
+			return 0;
+		}
+		
+		@Override
+		public long extractLongEnergy(long maxExtract, boolean simulate)
+		{
+			long currentEnergy = getTrueEnergyStored();
+			if(currentEnergy >= maxExtract)
+				return super.extractLongEnergy(maxExtract, simulate);
+			
+			long convertedEnergy = convertLiquidNaquadahToEnergy(maxExtract, simulate);
+			if(convertedEnergy <= 0)
+				return super.extractLongEnergy(maxExtract, simulate);
+			currentEnergy += convertedEnergy;
+			
+			long extractedEnergy = Math.min(maxExtract, currentEnergy);
+			long energyLeft = currentEnergy - extractedEnergy;
+			
+			if(!simulate)
+				this.setEnergy(Math.min(getTrueMaxEnergyStored(), energyLeft));
+			
+			return extractedEnergy;
 		}
 		
 		@Override
