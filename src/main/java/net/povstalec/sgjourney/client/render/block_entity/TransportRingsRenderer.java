@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingsModel;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
 public class TransportRingsRenderer implements BlockEntityRenderer<TransportRingsEntity>

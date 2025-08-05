@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities;
+package net.povstalec.sgjourney.common.block_entities.tech;
 
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;

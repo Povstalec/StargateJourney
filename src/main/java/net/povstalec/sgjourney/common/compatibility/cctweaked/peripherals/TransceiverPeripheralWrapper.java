@@ -6,7 +6,7 @@ import java.util.List;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraftforge.common.util.LazyOptional;
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 
 public class TransceiverPeripheralWrapper
 {

@@ -12,8 +12,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.blocks.tech.AbstractTransporterBlock;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import org.jetbrains.annotations.Nullable;
 

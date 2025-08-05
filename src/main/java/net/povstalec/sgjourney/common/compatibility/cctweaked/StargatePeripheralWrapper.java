@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked;
 
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 
 public class StargatePeripheralWrapper
