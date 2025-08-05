@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities.tech;
+package net.povstalec.sgjourney.common.block_entities.tech_interface;
 
 import javax.annotation.Nullable;
 
@@ -19,11 +19,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
-import net.povstalec.sgjourney.common.blocks.tech.BasicInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech_interface.AbstractInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech_interface.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;

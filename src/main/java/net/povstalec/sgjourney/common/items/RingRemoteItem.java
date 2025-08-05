@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;

@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 
 public class CartoucheBlockItem extends BlockItem

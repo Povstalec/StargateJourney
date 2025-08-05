@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks.tech;
+package net.povstalec.sgjourney.common.blocks.tech_interface;
 
 import java.util.List;
 
@@ -16,15 +16,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
-public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
+public class BasicInterfaceBlock extends AbstractInterfaceBlock
 {
-	public AdvancedCrystalInterfaceBlock(Properties properties)
+	public BasicInterfaceBlock(Properties properties)
 	{
 		super(properties);
 	}
@@ -32,24 +32,34 @@ public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
-		return new AdvancedCrystalInterfaceEntity(pos, state);
+		return new BasicInterfaceEntity(pos, state);
 	}
 	
 	public Block getDroppedBlock()
 	{
-		return BlockInit.ADVANCED_CRYSTAL_INTERFACE.get();
+		return BlockInit.BASIC_INTERFACE.get();
 	}
 	
 	public long getCapacity()
 	{
-		return CommonInterfaceConfig.advanced_crystal_interface_capacity.get();
+		return CommonInterfaceConfig.basic_interface_capacity.get();
+	}
+	
+	@Override
+	public void updateInterface(BlockState state, Level level, BlockPos pos) //TODO Remove these eventually
+	{
+		if(state.getValue(MODE) == InterfaceMode.SHIELDING)
+			level.setBlock(pos, state.setValue(AbstractInterfaceBlock.UPDATE, true).setValue(BasicInterfaceBlock.MODE, InterfaceMode.IRIS), 3);
+		else
+			level.setBlock(pos, state.setValue(AbstractInterfaceBlock.UPDATE, true), 3);
+		level.scheduleTick(pos, this, 2);
 	}
 	
 	@Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
-		return createTickerHelper(type, BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), CrystalInterfaceEntity::tick);
+		return createTickerHelper(type, BlockEntityInit.BASIC_INTERFACE.get(), BasicInterfaceEntity::tick);
     }
 	
 	@Override
@@ -57,7 +67,7 @@ public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
     {
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 		
-		tooltipComponents.add(Component.translatable("block.sgjourney.advanced_crystal_interface.description").withStyle(ChatFormatting.DARK_GRAY));
-		tooltipComponents.add(Component.translatable("block.sgjourney.advanced_crystal_interface.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(Component.translatable("block.sgjourney.basic_interface.description").withStyle(ChatFormatting.DARK_GRAY));
+		tooltipComponents.add(Component.translatable("block.sgjourney.basic_interface.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }
 }

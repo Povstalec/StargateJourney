@@ -25,7 +25,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;

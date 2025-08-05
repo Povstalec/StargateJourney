@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.common.compatibility.computer_functions;
 
 import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class IrisFunctions

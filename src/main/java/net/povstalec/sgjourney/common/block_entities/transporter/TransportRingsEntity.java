@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities.tech;
+package net.povstalec.sgjourney.common.block_entities.transporter;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;

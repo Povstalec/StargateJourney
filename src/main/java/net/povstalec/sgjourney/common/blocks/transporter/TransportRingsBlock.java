@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks.tech;
+package net.povstalec.sgjourney.common.blocks.transporter;
 
 import javax.annotation.Nullable;
 
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 

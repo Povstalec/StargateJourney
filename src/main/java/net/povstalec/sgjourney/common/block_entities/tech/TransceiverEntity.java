@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities;
+package net.povstalec.sgjourney.common.block_entities.tech;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.blocks.TransceiverBlock;
+import net.povstalec.sgjourney.common.blocks.tech.TransceiverBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransceiverPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;

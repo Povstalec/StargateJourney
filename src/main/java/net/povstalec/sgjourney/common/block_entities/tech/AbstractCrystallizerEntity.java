@@ -3,11 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.core.FrontAndTop;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
-import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
-import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -28,7 +24,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
 

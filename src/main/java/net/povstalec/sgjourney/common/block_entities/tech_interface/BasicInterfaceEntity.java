@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities.tech;
+package net.povstalec.sgjourney.common.block_entities.tech_interface;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;

@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Transporter

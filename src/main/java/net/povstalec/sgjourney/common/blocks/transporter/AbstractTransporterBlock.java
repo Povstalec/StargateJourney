@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks.tech;
+package net.povstalec.sgjourney.common.blocks.transporter;
 
 import java.util.List;
 
@@ -19,8 +19,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 

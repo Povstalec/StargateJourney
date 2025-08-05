@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities.tech;
+package net.povstalec.sgjourney.common.block_entities.transporter;
 
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 

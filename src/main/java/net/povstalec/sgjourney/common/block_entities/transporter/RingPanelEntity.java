@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities;
+package net.povstalec.sgjourney.common.block_entities.transporter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +28,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;

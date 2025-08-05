@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks;
+package net.povstalec.sgjourney.common.blocks.tech;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 import net.povstalec.sgjourney.common.blockstates.Receiving;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.menu.TransceiverMenu;

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks;
+package net.povstalec.sgjourney.common.blocks.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;

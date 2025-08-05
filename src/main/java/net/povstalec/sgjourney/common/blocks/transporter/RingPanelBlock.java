@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks;
+package net.povstalec.sgjourney.common.blocks.transporter;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 
 

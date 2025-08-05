@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities;
+package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

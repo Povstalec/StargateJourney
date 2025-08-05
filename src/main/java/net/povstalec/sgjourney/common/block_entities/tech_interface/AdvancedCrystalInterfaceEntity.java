@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities.tech;
+package net.povstalec.sgjourney.common.block_entities.tech_interface;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -6,16 +6,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
-public class CrystalInterfaceEntity extends AbstractInterfaceEntity
+public class AdvancedCrystalInterfaceEntity extends AbstractInterfaceEntity
 {
-	public CrystalInterfaceEntity(BlockPos pos, BlockState state)
+	public AdvancedCrystalInterfaceEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.CRYSTAL_INTERFACE.get(), pos, state, InterfaceType.CRYSTAL);
+		super(BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), pos, state, InterfaceType.ADVANCED_CRYSTAL);
 	}
 	
-	protected CrystalInterfaceEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
+	protected AdvancedCrystalInterfaceEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state, InterfaceType.CRYSTAL);
+		super(type, pos, state, InterfaceType.ADVANCED_CRYSTAL);
 	}
 	
 	//============================================================================================
@@ -25,18 +25,18 @@ public class CrystalInterfaceEntity extends AbstractInterfaceEntity
 	@Override
 	public long capacity()
 	{
-		return CommonInterfaceConfig.crystal_interface_capacity.get();
+		return CommonInterfaceConfig.advanced_crystal_interface_capacity.get();
 	}
 
 	@Override
 	public long maxReceive()
 	{
-		return CommonInterfaceConfig.crystal_interface_max_transfer.get();
+		return CommonInterfaceConfig.advanced_crystal_interface_max_transfer.get();
 	}
 
 	@Override
 	public long maxExtract()
 	{
-		return CommonInterfaceConfig.crystal_interface_max_transfer.get();
+		return CommonInterfaceConfig.advanced_crystal_interface_max_transfer.get();
 	}
 }

@@ -1,10 +1,5 @@
-package net.povstalec.sgjourney.common.blocks.tech;
+package net.povstalec.sgjourney.common.blocks.tech_interface;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -21,9 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -39,14 +32,13 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
