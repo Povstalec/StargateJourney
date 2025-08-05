@@ -1,8 +1,15 @@
 package net.povstalec.sgjourney.common.items;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.povstalec.sgjourney.common.misc.RecipeUtil;
+import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -39,7 +46,17 @@ public class StargateVariantItem extends Item
 		return stack.hasTag();
 	}
 
-    @Override
+
+	@Override
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
+		if (this.allowedIn(tab)) {
+			items.add(new ItemStack(this));
+			items.addAll(RecipeUtil.getAllVariants(this.getClass(), VARIANT));
+		}
+	}
+
+
+	@Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
         if(stack.hasTag())
