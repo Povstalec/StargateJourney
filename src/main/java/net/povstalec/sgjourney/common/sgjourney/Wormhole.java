@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,7 +61,7 @@ public class Wormhole
 	
 	public boolean hasCandidates()
 	{
-		return localEntities.isEmpty();
+		return !localEntities.isEmpty();
 	}
 	
 	public boolean findCandidates(Level level, Vec3 centerPos, Direction direction)
@@ -69,7 +70,7 @@ public class Wormhole
 			centerPos.x - 2.5, centerPos.y - 2.5, centerPos.z - 2.5, 
 			centerPos.x + 2.5, centerPos.y + 2.5, centerPos.z + 2.5);
 		
-		localEntities = level.getEntitiesOfClass(Entity.class, localBox);
+		localEntities = level.getEntitiesOfClass(Entity.class, localBox, entity -> entity.isAlive());
 		
 		if(localEntities.isEmpty())
 			return false;
@@ -146,7 +147,7 @@ public class Wormhole
 		Direction orientationDirection = Orientation.getEffectiveDirection(direction, initialStargate.getOrientation());
 		Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 		
-		for(Entity traveler : localEntities)
+		for(Entity traveler : this.localEntities)
 		{
 			if(!traveler.getType().is(TagInit.Entities.WORMHOLE_CANNOT_TELEPORT) && !traveler.isPassenger() && this.entityLocations.containsKey(traveler.getId()))
 			{
@@ -323,7 +324,7 @@ public class Wormhole
 		if(level.isClientSide())
 			return;
 		
-		if(twoWayWormhole == WormholeTravel.ENABLED || (traveler instanceof Player player && player.isCreative() && twoWayWormhole == WormholeTravel.CREATIVE_ONLY))
+		if(twoWayWormhole == WormholeTravel.ENABLED || (traveler instanceof Player player && (player.isCreative() || player.isSpectator()) && twoWayWormhole == WormholeTravel.CREATIVE_ONLY))
 		{
 			ServerLevel destinationlevel = (ServerLevel) targetStargate.getLevel();
 	        
@@ -352,19 +353,22 @@ public class Wormhole
 	    		{
 					recursiveExecute(traveler, (entity) ->
 					{
-						if(entity instanceof ServerPlayer player && player.isCreative())
+						if(entity instanceof ServerPlayer player && (player.isCreative() || player.isSpectator()))
 						{
 							if(!CommonIrisConfig.creative_ignores_iris.get())
 								player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.iris").withStyle(ChatFormatting.DARK_RED), true);
 						}
 						else
 						{
-							if(entity instanceof ServerPlayer player)
-								player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
-							
+							if(entity instanceof LivingEntity livingEntity)
+							{
+								if(entity instanceof ServerPlayer player)
+									player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
+								
+								livingEntity.die(DamageSourceInit.IRIS);
+							}
 							irisThudEvent(irisStargate, entity);
 							irisStargate.irisInfo().decreaseIrisDurability();
-							entity.hurt(DamageSourceInit.IRIS, Float.MAX_VALUE);
 							entity.kill();
 						}
 					});
@@ -388,14 +392,17 @@ public class Wormhole
 				{
 					if(entity.isAlive())
 					{
-						if(entity instanceof ServerPlayer player && player.isCreative())
+						if(entity instanceof ServerPlayer player && (player.isCreative() || player.isSpectator()))
 							player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 						else
 						{
-							if(entity instanceof ServerPlayer player)
-								player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
-							
-							entity.hurt(DamageSourceInit.REVERSE_WORMHOLE, Float.MAX_VALUE);
+							if(entity instanceof LivingEntity livingEntity)
+							{
+								if(entity instanceof ServerPlayer player)
+									player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
+								
+								livingEntity.die(DamageSourceInit.REVERSE_WORMHOLE);
+							}
 							entity.kill();
 						}
 					}

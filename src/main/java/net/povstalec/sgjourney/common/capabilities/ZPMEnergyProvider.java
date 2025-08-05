@@ -18,7 +18,6 @@ public abstract class ZPMEnergyProvider implements ICapabilityProvider
 {
 	private static final String ENERGY = "Energy";
 	private static final String ENTROPY = "Entropy";
-	public static final int maxEntropy = 1000;
 	
 	private ItemStack stack;
 	
@@ -28,7 +27,7 @@ public abstract class ZPMEnergyProvider implements ICapabilityProvider
 		this.stack = stack;
 	}
 	
-	private final ZeroPointEnergy ENERGY_STORAGE = new ZeroPointEnergy(maxEntropy, this.capacity(), this.maxReceive(), this.maxExtract())
+	private final ZeroPointEnergy ENERGY_STORAGE = new ZeroPointEnergy(ZeroPointEnergy.MAX_ENTROPY, this.capacity(), this.maxReceive(), this.maxExtract())
 	{
 	    public long receiveLongEnergy(long maxReceive, boolean simulate)
 	    {
@@ -107,12 +106,12 @@ public abstract class ZPMEnergyProvider implements ICapabilityProvider
 	
 	public static long getMaxEnergy()
 	{
-		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
+		return ZeroPointEnergy.ENERGY_PER_ENTROPY_LEVEL;
 	}
 	
 	public static long getMaxExtract()
 	{
-		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
+		return ZeroPointEnergy.ENERGY_PER_ENTROPY_LEVEL;
 	}
 	
 	@Override

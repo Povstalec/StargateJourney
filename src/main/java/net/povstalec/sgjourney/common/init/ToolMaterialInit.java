@@ -6,7 +6,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 public enum ToolMaterialInit implements Tier
 {
-	naquadah(4, 3200, 9.0F, 4.0F, 12, ItemInit.NAQUADAH.get());
+	NAQUADAH(4, 3200, 9.0F, 4.0F, 12, ItemInit.NAQUADAH.get());
 	
 	private float attackDamage, efficiency;
 	private int durability, harvestLevel, enchantability;

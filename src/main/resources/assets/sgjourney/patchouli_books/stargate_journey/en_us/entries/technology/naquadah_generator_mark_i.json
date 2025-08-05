@@ -1,0 +1,13 @@
+{
+	"name": "Naquadah Generator Mark I",
+	"icon": "sgjourney:naquadah_generator_mark_i",
+	"sortnum": 0,
+	"category": "sgjourney:technology",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

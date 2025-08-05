@@ -48,7 +48,7 @@ public class StaffWeaponAttackGoal<T extends PathfinderMob & RangedAttackMob> ex
 	
 	private boolean staffWeaponCanFire()
 	{
-		return this.mob.isHolding(stack -> stack.getItem() instanceof StaffWeaponItem staffWeapon && staffWeapon.getNaquadahAmount(stack) > 0);
+		return this.mob.isHolding(stack -> stack.getItem() instanceof StaffWeaponItem staffWeapon && staffWeapon.getFluidAmount(stack) > 0);
 	}
 	
 	public boolean canContinueToUse()

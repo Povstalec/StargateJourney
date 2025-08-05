@@ -4,8 +4,6 @@ Stargate Journey: Credits/Thank You
 TakeruDavis - Typing out the things would take too long, so... A really good contributor
 tehgreatdoge - Various code contributions
 AngelaTheSephira - Sandstone with Gold
-================================
-
 Otwnt - Stargate Pedestals, Jaffa House
 Kranyolsu - Stargate Pedestals
 Carter Addon Pack - Sounds
@@ -15,5 +13,7 @@ AlexandriaOL - Fixed a typo in advancements
 SquidDev - Fixed Basic Interface not working dynamically
 kittycat2002 - Fixed CCTweaked table issue
 the_destiny - Pure Naquadah Block texture
+kluas005 - Portugese translations
+cookta2012 - Many fixes, especially ones related to CC:Tweaked
 
 I guess I could thank the Stargate franchize for... existing... as inspiration. Yeah, let's go with that.

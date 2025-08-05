@@ -1,0 +1,35 @@
+{
+	"name": "Making Stargates",
+	"icon": "sgjourney:classic_stargate_base_block",
+	"sortnum": 10,
+	"category": "sgjourney:getting_started",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		},
+		{
+			"type": "patchouli:multiblock",
+			"multiblock":
+			{
+				"mapping":
+				{
+					"0": "sgjourney:classic_stargate_base_block[facing=south]",
+					"C": "sgjourney:classic_stargate_chevron_block",
+					"R": "sgjourney:classic_stargate_ring_block"
+				},
+				"pattern":
+				[
+					[" ", "C", "R", "C", "R", "C", " "],
+					["R", "R", " ", " ", " ", "R", "R"],
+					["C", " ", " ", " ", " ", " ", "C"],
+					["R", " ", " ", " ", " ", " ", "R"],
+					["R", " ", " ", " ", " ", " ", "R"],
+					["C", "R", " ", " ", " ", "R", "C"],
+					[" ", "R", "C", "0", "C", "R", " "]
+				]
+			}
+		}
+	]
+}

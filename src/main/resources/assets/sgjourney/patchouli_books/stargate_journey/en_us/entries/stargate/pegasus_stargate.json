@@ -1,0 +1,20 @@
+{
+	"name": "Pegasus Stargate",
+	"icon": "sgjourney:pegasus_stargate",
+	"sortnum": 4,
+	"category": "sgjourney:stargates",
+	"pages":
+	[
+		{
+			"title": "Pegasus Stargate",
+			"type": "patchouli:image",
+			"images": ["sgjourney:textures/gui/patchouli/pegasus_stargate.png"],
+			"text": "Generation 3 Stargate with 36 symbols."
+		},
+		{
+			"title": "Quirks",
+			"type": "patchouli:text",
+			"text": "This Stargate cannot be dialed manually. Even though only 36 symbols are displayed on the ring, the gate itself can dial 48 symbols."
+		}
+	]
+}

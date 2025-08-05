@@ -25,7 +25,8 @@ public class InterfaceMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
 		{
-			InterfaceFunctions.setEnergyTarget(interfaceEntity, arguments.getLong(0));
+			long target = arguments.getLong(0);
+			InterfaceFunctions.setEnergyTarget(interfaceEntity, target);
 			
 			return MethodResult.of();
 		}
@@ -65,9 +66,9 @@ public class InterfaceMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
+			Map<Double, Double> addressTable = (Map<Double, Double>) arguments.getTable(0);
 			MethodResult result = context.executeMainThreadTask(() ->
 			{
-				Map<Double, Double> addressTable = (Map<Double, Double>) arguments.getTable(0);
 				Address address = new Address(addressTable);
 				
 				String dimension = stargate.getLevel().dimension().location().toString();

@@ -11,13 +11,16 @@ public class CommonTechConfig
 	public static ForgeConfigSpec.BooleanValue disable_kara_kesh_requirements;
 	public static ForgeConfigSpec.IntValue personal_shield_capacity;
 	
-	public static ForgeConfigSpec.LongValue energy_crystal_capacity;
-	public static ForgeConfigSpec.LongValue advanced_energy_crystal_capacity;
-	public static ForgeConfigSpec.LongValue energy_crystal_max_transfer;
-	public static ForgeConfigSpec.LongValue advanced_energy_crystal_max_transfer;
+	public static ForgeConfigSpec.IntValue vial_capacity;
+	public static ForgeConfigSpec.LongValue energy_from_liquid_naquadah;
+	public static ForgeConfigSpec.LongValue energy_from_heavy_liquid_naquadah;
+	public static ForgeConfigSpec.LongValue naquadah_power_cell_buffer_capacity;
+	public static ForgeConfigSpec.LongValue naquadah_power_cell_max_transfer;
 	
-	public static ForgeConfigSpec.LongValue transfer_crystal_max_transfer;
-	public static ForgeConfigSpec.LongValue advanced_transfer_crystal_max_transfer;
+	public static ForgeConfigSpec.LongValue small_naquadah_battery_capacity;
+	public static ForgeConfigSpec.LongValue small_naquadah_battery_max_transfer;
+	public static ForgeConfigSpec.LongValue large_naquadah_battery_capacity;
+	public static ForgeConfigSpec.LongValue large_naquadah_battery_max_transfer;
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
@@ -41,34 +44,46 @@ public class CommonTechConfig
 		
 		personal_shield_capacity = server
 				.comment("The amount of Heavy Liquid Naquadah a Personal Shield can hold")
-				.defineInRange("server.personal_shield_capacity", 300, 1, 10000);
+				.defineInRange("server.personal_shield_capacity", 300, 1, Integer.MAX_VALUE);
 		
 		
 		
-		energy_crystal_capacity = server
+		vial_capacity = server
+				.comment("The amount of Liquid Naquadah or Heavy Liquid Naquadah a Vial can hold")
+				.defineInRange("server.vial_capacity", 250, 1, Integer.MAX_VALUE);
+		
+		energy_from_liquid_naquadah = server
+				.comment("The amount of energy generated from one unit of Liquid Naquadah")
+				.defineInRange("server.energy_from_liquid_naquadah", 10000L, 1, Long.MAX_VALUE);
+		
+		energy_from_heavy_liquid_naquadah = server
+				.comment("The amount of energy generated from one unit of Heavy Liquid Naquadah")
+				.defineInRange("server.energy_from_heavy_liquid_naquadah", 50000L, 1, Long.MAX_VALUE);
+		
+		naquadah_power_cell_buffer_capacity = server
+				.comment("The amount of energy the Naquadah Power Cell's Energy Buffer can hold")
+				.defineInRange("server.naquadah_power_cell_buffer_capacity", 50000L, 1, Long.MAX_VALUE);
+		
+		naquadah_power_cell_max_transfer = server
+				.comment("The amount of energy the Naquadah Power Cell's Energy Buffer can transfer out at once")
+				.defineInRange("server.naquadah_power_cell_max_transfer", 200000L, 1, Long.MAX_VALUE);
+		
+		
+		
+		small_naquadah_battery_capacity = server
 				.comment("The amount of energy an Energy Crystal can hold")
-				.defineInRange("server.energy_crystal_capacity", 50000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.small_naquadah_battery_capacity", 5000000L, 1L, Long.MAX_VALUE);
 		
-		advanced_energy_crystal_capacity = server
+		small_naquadah_battery_max_transfer = server
 				.comment("The amount of energy an Advanced Energy Crystal can hold")
-				.defineInRange("server.advanced_energy_crystal_capacity", 100000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.small_naquadah_battery_max_transfer", 10000L, 1L, Long.MAX_VALUE);
 		
-		energy_crystal_max_transfer = server
-				.comment("The amount of energy that can be transfered into and out of an Energy Crystal per tick")
-				.defineInRange("server.energy_crystal_max_transfer", 1500L, 1L, Long.MAX_VALUE);
+		large_naquadah_battery_capacity = server
+				.comment("The amount of energy an Energy Crystal can hold")
+				.defineInRange("server.large_naquadah_battery_capacity", 1000000000L, 1L, Long.MAX_VALUE);
 		
-		advanced_energy_crystal_max_transfer = server
-				.comment("The amount of energy that can be transfered into and out of an Advanced Energy Crystal per tick")
-				.defineInRange("server.advanced_energy_crystal_max_transfer", 3000L, 1L, Long.MAX_VALUE);
-		
-		
-		
-		transfer_crystal_max_transfer = server
-				.comment("The amount of energy a Transfer Crystal can transfer per tick")
-				.defineInRange("server.transfer_crystal_max_transfer", 2500L, 1L, Long.MAX_VALUE);
-		
-		advanced_transfer_crystal_max_transfer = server
-				.comment("The amount of energy an Advanced Transfer Crystal can transfer per tick")
-				.defineInRange("server.advanced_transfer_crystal_max_transfer", 5000L, 1L, Long.MAX_VALUE);
+		large_naquadah_battery_max_transfer = server
+				.comment("The amount of energy an Advanced Energy Crystal can hold")
+				.defineInRange("server.large_naquadah_battery_max_transfer", 100000L, 1L, Long.MAX_VALUE);
 	}
 }

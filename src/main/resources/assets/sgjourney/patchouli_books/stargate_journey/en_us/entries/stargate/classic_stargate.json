@@ -1,0 +1,21 @@
+{
+	"name": "Classic Stargate",
+	"icon": "sgjourney:classic_stargate",
+	"sortnum": 7,
+	"category": "sgjourney:stargates",
+	"pages":
+	[
+		{
+			"title": "Classic Stargate",
+			"type": "patchouli:image",
+			"images": ["sgjourney:textures/gui/patchouli/classic_stargate.png"],
+			"text": "Generation 0 Stargate with 39 symbols."
+		},
+		{
+			"title": "Quirks",
+			"type": "patchouli:text",
+			"text": "This Stargate can be dialed manually."
+		}
+		
+	]
+}

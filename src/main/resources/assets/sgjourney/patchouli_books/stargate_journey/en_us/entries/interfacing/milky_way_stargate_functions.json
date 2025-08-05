@@ -1,0 +1,13 @@
+{
+	"name": "Milky Way Stargate Functions",
+	"icon": "sgjourney:milky_way_stargate",
+	"sortnum": 5,
+	"category": "sgjourney:interfacing",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

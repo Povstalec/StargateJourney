@@ -41,6 +41,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,6 +52,11 @@ import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.*;
+import net.povstalec.sgjourney.common.capabilities.AncientGene;
+import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
+import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
+import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
+import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -137,7 +143,7 @@ public class ForgeEvents
 			}
 
 			Set<AbstractStargateEntity> set = new HashSet<AbstractStargateEntity>(list);
-			set.stream().forEach(stargate -> stargate.receiveEnergy(100000, false));
+			set.stream().forEach(stargate -> stargate.receiveEnergy(CommonCableConfig.lightning_strike_energy.get(), false));
 		}
 	}
 	
@@ -347,6 +353,18 @@ public class ForgeEvents
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public static void onDetonate(ExplosionEvent.Detonate event)
+	{
+		Level level = event.getLevel();
+		// Prevent Protected Block Entities from being destroyed by explosions
+		event.getAffectedBlocks().removeIf(pos ->
+		{
+			BlockState state = level.getBlockState(pos);
+			return state.getBlock() instanceof ProtectedBlock block && block.canExplode(level, pos, state, event.getExplosion());
+		});
 	}
 	
 	@SubscribeEvent

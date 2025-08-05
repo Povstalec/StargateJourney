@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.entities.goals.NearestThreatGoal;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
@@ -63,7 +64,7 @@ public class Jaffa extends Human
 		
 		spawnGroupData = super.finalizeSpawn(level, difficulty, type, spawnGroupData, tag);
 		
-		setItemInHand(InteractionHand.MAIN_HAND, StaffWeaponItem.filledStaffWeapon(randomSource.nextFloat() > difficulty.getDifficulty().getId() / 3F, (int) (randomSource.nextFloat() * VialItem.MAX_CAPACITY)));
+		setItemInHand(InteractionHand.MAIN_HAND, StaffWeaponItem.filledStaffWeapon(randomSource.nextFloat() > difficulty.getDifficulty().getId() / 3F, (int) (randomSource.nextFloat() * CommonTechConfig.vial_capacity.get())));
 		
 		if(level.getLevel().dimension().location().equals(ABYDOS))
 			setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemInit.JACKAL_HELMET.get()));

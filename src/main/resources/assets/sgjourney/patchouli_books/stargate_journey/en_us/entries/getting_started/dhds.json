@@ -1,0 +1,28 @@
+{
+	"name": "DHDs",
+	"icon": "sgjourney:milky_way_dhd",
+	"sortnum": 4,
+	"category": "sgjourney:getting_started",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "DHD is an acronym that stands for Dial Home Device. It is a device that can be remotely connected to a Stargate and thus control it, as well as provide it with power wirelessly."
+		},
+		{
+			"title": "Dialing",
+			"type": "patchouli:text",
+			"text": "TODO"
+		},
+		{
+			"title": "Energy",
+			"type": "patchouli:text",
+			"text": "TODO"
+		},
+		{
+			"title": "Crystal Technology",
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

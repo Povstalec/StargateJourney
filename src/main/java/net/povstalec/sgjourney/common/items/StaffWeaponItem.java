@@ -33,6 +33,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.IItemHandler;
+import net.povstalec.sgjourney.common.capabilities.ItemFluidHolderProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -40,7 +44,7 @@ import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 
-public class StaffWeaponItem extends Item
+public class StaffWeaponItem extends FluidItem.Holder
 {
 	public static final String IS_OPEN = "IsOpen";
 	
@@ -74,49 +78,26 @@ public class StaffWeaponItem extends Item
 		this.closedModifiers = closedBuilder.build();
 	}
 	
-	@Override
-	public boolean isBarVisible(ItemStack stack)
+	protected void shoot(Level level, Player player, ItemStack staffWeaponStack)
 	{
-		return true;
-	}
-
-	@Override
-	public int getBarWidth(ItemStack stack)
-	{
-		return Math.round(13.0F * (float) getNaquadahAmount(stack) / VialItem.getMaxCapacity());
-	}
-
-	@Override
-	public int getBarColor(ItemStack stack)
-	{
-		float f = Math.max(0.0F, (float) getNaquadahAmount(stack) / VialItem.getMaxCapacity());
+		if(!player.isCreative() && !tryDepleteLiquidNaquadah(staffWeaponStack))
+			return;
 		
-		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
-	}
-	
-	@Override
-    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-	{
-		return new ItemInventoryProvider(stack)
-				{
-					@Override
-					public int getNumberOfSlots()
-					{
-						return 1;
-					}
-
-					@Override
-					public boolean isValid(int slot, ItemStack stack)
-					{
-						return stack.is(ItemInit.VIAL.get());
-					}
-				};
+		level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+		if(!level.isClientSide())
+		{
+			PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level, getExplosionPower(staffWeaponStack));
+			plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
+			level.addFreshEntity(plasmaProjectile);
+		}
+		player.awardStat(Stats.ITEM_USED.get(this));
+		player.getCooldowns().addCooldown(this, 25);
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
 	{
-		ItemStack itemstack = player.getItemInHand(hand);
+		ItemStack stack = player.getItemInHand(hand);
 		
 		if(player.isShiftKeyDown())
 		{
@@ -124,24 +105,12 @@ public class StaffWeaponItem extends Item
 			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
 			
 			// Reloading
-			if(offHandStack.is(ItemInit.MATOK.get()) && !level.isClientSide())
+			if(offHandStack.getItem() instanceof StaffWeaponItem staffWeapon)
 			{
-				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-				{
-					ItemStack returnStack;
-					if(mainHandStack.isEmpty())
-						returnStack = itemHandler.extractItem(0, 1, false);
-					else if(mainHandStack.is(ItemInit.VIAL.get()))
-					{
-						returnStack = itemHandler.extractItem(0, 1, false);
-						itemHandler.insertItem(0, mainHandStack, false);
-					}
-					else
-						returnStack = itemHandler.insertItem(0, mainHandStack, false);
-					
-					player.setItemInHand(InteractionHand.MAIN_HAND, returnStack);
-				});
+				if(!level.isClientSide() && staffWeapon.swapItem(player, offHandStack, mainHandStack))
+					return InteractionResultHolder.success(offHandStack);
 				
+				return InteractionResultHolder.pass(stack);
 			}
 			// Opening and closing
 			else if(mainHandStack.is(ItemInit.MATOK.get()))
@@ -151,37 +120,11 @@ public class StaffWeaponItem extends Item
 			}
 		}
 		// Shooting
-		else if(!player.isShiftKeyDown()/* && canShoot(player, player.getItemInHand(hand))*/)
-		{
-			ItemStack stack = player.getItemInHand(hand);
-			
-			if(isOpen(stack))
-			{
-				boolean canShoot = player.isCreative() ?
-						true : tryDepleteLiquidNaquadah(player.getItemInHand(hand));
-				
-				if(!canShoot)
-					return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
-				
-				level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
-				if(!level.isClientSide())
-				{
-					PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), player, level, getExplosionPower(stack));
-					plasmaProjectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5.0F, 1.0F);
-					level.addFreshEntity(plasmaProjectile);
-				}
-				player.awardStat(Stats.ITEM_USED.get(this));
-				player.getCooldowns().addCooldown(this, 25);
-			}
-			else
-				return InteractionResultHolder.fail(itemstack);
-				
-		}
-		else
-			return InteractionResultHolder.fail(itemstack);
+		else if(isOpen(stack) && !level.isClientSide())
+			shoot(level, player, stack);
 		
 		
-		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
 	}
 	
 	public float getExplosionPower(ItemStack stack)
@@ -205,72 +148,49 @@ public class StaffWeaponItem extends Item
 		return !player.isCreative();
 	}
 	
-	public FluidStack getFluidStack(ItemStack staffWeaponItemStack)
+	@Override
+	public ItemStack getHeldItem(ItemStack holderStack)
 	{
-		Optional<FluidStack> optional = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
-		{
-			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
-			if(inventoryStack.is(ItemInit.VIAL.get()))
-				return VialItem.getFluidStack(inventoryStack);
-			else
-				return FluidStack.EMPTY;
-		});
+		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+		if(itemHandler == null)
+			return ItemStack.EMPTY;
 		
-		if(optional.isPresent())
-			return optional.get();
-		
-		return FluidStack.EMPTY;
+		return itemHandler.getStackInSlot(0);
 	}
 	
+	@Override
 	public boolean isCorrectFluid(FluidStack fluidStack)
 	{
-		Fluid fluid = fluidStack.getFluid();
-		
-		return fluid == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-				fluid == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+		return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
+				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
 	}
 	
-	public int getNaquadahAmount(ItemStack staffWeaponItemStack)
+	@Override
+	public boolean isValidItem(ItemStack heldStack)
 	{
-		FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
-		
-		if(isCorrectFluid(fluidStack))
-			return fluidStack.getAmount();
-		
-		return 0;
+		return heldStack.is(ItemInit.VIAL.get());
 	}
 	
 	/**
 	 * Returns true if it depletes naquadah, otherwise false
-	 * @param stack
+	 * @param staffWeaponItemStack
 	 * @return
 	 */
 	public boolean tryDepleteLiquidNaquadah(ItemStack staffWeaponItemStack)
 	{
-		Optional<Boolean> drained = staffWeaponItemStack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> 
+		IFluidHandlerItem fluidHandler = staffWeaponItemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		if(fluidHandler instanceof ItemFluidHolderProvider fluidHolder)
 		{
-			ItemStack inventoryStack = itemHandler.getStackInSlot(0);
-			if(inventoryStack.is(ItemInit.VIAL.get()))
-			{
-				FluidStack fluidStack = getFluidStack(staffWeaponItemStack);
-				
-				if(!isCorrectFluid(fluidStack))
-					return false;
-				
-				int drainAmount = fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ?
-						LIQUID_NAQUADAH_DEPLETION : HEAVY_LIQUID_NAQUADAH_DEPLETION;
-				
-				if(getNaquadahAmount(staffWeaponItemStack) >= drainAmount)
-				{
-					VialItem.drainNaquadah(inventoryStack, drainAmount);
-					return true;
-				}
-			}
+			FluidStack fluidStack = fluidHolder.getFluidInTank(0);
+			int drainAmount = fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ?
+					LIQUID_NAQUADAH_DEPLETION : HEAVY_LIQUID_NAQUADAH_DEPLETION;
 			
-			return false;
-		});
+			FluidStack depleted = fluidHolder.deplete(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+			if(!depleted.isEmpty())
+				return true;
+		}
 		
-		return drained.isPresent() ? drained.get() : false;
+		return false;
 	}
 	
 	/*public boolean canShoot(Player player, ItemStack stack)
@@ -320,23 +240,15 @@ public class StaffWeaponItem extends Item
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		
 		MutableComponent isOpen = isOpen(stack) ? 
 				Component.translatable("tooltip.sgjourney.matok.open").withStyle(ChatFormatting.YELLOW) :
 					Component.translatable("tooltip.sgjourney.matok.closed").withStyle(ChatFormatting.YELLOW);
 		tooltipComponents.add(isOpen);
-		
-		FluidStack fluidStack = getFluidStack(stack);
-		if(!getFluidStack(stack).equals(FluidStack.EMPTY))
-		{
-			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getTranslationKey()).withStyle(ChatFormatting.GREEN);
-			liquidNaquadah.append(Component.literal(" " + fluidStack.getAmount() + "mB").withStyle(ChatFormatting.GREEN));
-	    	tooltipComponents.add(liquidNaquadah);
-		}
     	
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.open_close").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-    	
-    	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 	
 	public static ItemStack filledStaffWeapon(boolean heavyLiquidNaquadah, int amount)

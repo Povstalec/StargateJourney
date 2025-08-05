@@ -6,12 +6,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIIEntity;
-import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
-import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.block_entities.*;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
@@ -20,16 +15,9 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.ZPMHubEntity;
-public class BlockEntityInit 
+import net.povstalec.sgjourney.common.block_entities.tech.*;
+
+public class BlockEntityInit
 {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, StargateJourney.MODID);
 	
@@ -100,6 +88,18 @@ public class BlockEntityInit
 	
 	public static final RegistryObject<BlockEntityType<TransceiverEntity>> TRANSCEIVER = BLOCK_ENTITIES.register("transciever",
             () -> BlockEntityType.Builder.of(TransceiverEntity::new, BlockInit.TRANSCEIVER.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<CableBlockEntity.NaquadahWire>> NAQUADAH_WIRE = BLOCK_ENTITIES.register("naquadah_wire",
+			() -> BlockEntityType.Builder.of(CableBlockEntity.NaquadahWire::new, BlockInit.NAQUADAH_WIRE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CableBlockEntity.SmallNaquadahCable>> SMALL_NAQUADAH_CABLE = BLOCK_ENTITIES.register("small_naquadah_cable",
+			() -> BlockEntityType.Builder.of(CableBlockEntity.SmallNaquadahCable::new, BlockInit.SMALL_NAQUADAH_CABLE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CableBlockEntity.MediumNaquadahCable>> MEDIUM_NAQUADAH_CABLE = BLOCK_ENTITIES.register("medium_naquadah_cable",
+			() -> BlockEntityType.Builder.of(CableBlockEntity.MediumNaquadahCable::new, BlockInit.MEDIUM_NAQUADAH_CABLE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CableBlockEntity.LargeNaquadahCable>> LARGE_NAQUADAH_CABLE = BLOCK_ENTITIES.register("large_naquadah_cable",
+			() -> BlockEntityType.Builder.of(CableBlockEntity.LargeNaquadahCable::new, BlockInit.LARGE_NAQUADAH_CABLE.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<BatteryBlockEntity.Naquadah>> LARGE_NAQUADAH_BATTERY = BLOCK_ENTITIES.register("large_naquadah_battery",
+			() -> BlockEntityType.Builder.of(BatteryBlockEntity.Naquadah::new, BlockInit.LARGE_NAQUADAH_BATTERY.get()).build(null));
 	
 	public static void register(IEventBus eventBus)
 	{

@@ -1,0 +1,13 @@
+{
+	"name": "Universe Stargate Functions",
+	"icon": "sgjourney:universe_stargate",
+	"sortnum": 4,
+	"category": "sgjourney:interfacing",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}

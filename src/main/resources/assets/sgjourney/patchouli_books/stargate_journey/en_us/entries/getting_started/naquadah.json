@@ -1,0 +1,13 @@
+{
+	"name": "Naquadah",
+	"icon": "sgjourney:raw_naquadah",
+	"sortnum": 7,
+	"category": "sgjourney:getting_started",
+	"pages":
+	[
+		{
+			"type": "patchouli:text",
+			"text": "TODO"
+		}
+	]
+}
