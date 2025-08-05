@@ -85,6 +85,7 @@ public class TabInit
 			event.accept(ItemInit.KARA_KESH.get());
 			event.accept(ItemInit.RING_REMOTE.get());
 			
+			event.accept(ItemInit.JAFFA_STAFF_HEAD.get());
 			event.accept(ItemInit.MATOK.get());
 			
 			event.accept(ItemInit.JACKAL_HELMET.get());
