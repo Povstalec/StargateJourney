@@ -92,7 +92,7 @@ public class ItemInit
 			() -> new DialerItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));*/
 	
 	public static final RegistryObject<Item> NAQUADAH_GENERATOR_CORE = ITEMS.register("naquadah_generator_core",
-			() -> new NaquadahGeneratorCoreItem(new NaquadahGeneratorCoreItem.Properties().stacksTo(1)));
+			() -> new NaquadahGeneratorCoreItem(new NaquadahGeneratorCoreItem.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<Item> FUSION_CORE = ITEMS.register("fusion_core",
 			() -> new FusionCoreItem(new FusionCoreItem.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 	
