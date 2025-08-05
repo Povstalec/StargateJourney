@@ -85,4 +85,10 @@ public class RingPanelMenu extends InventoryMenu
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
                 player, BlockInit.RING_PANEL.get());
     }
+	
+	@Override
+	protected int blockEntitySlotCount()
+	{
+		return 6;
+	}
 }

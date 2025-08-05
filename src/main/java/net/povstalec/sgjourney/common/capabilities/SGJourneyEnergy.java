@@ -4,10 +4,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.energy.EnergyStorage;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public abstract class SGJourneyEnergy extends EnergyStorage
+public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializable<Tag>
 {
 	public static final char[] PREFIXES = {'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'};
 	
@@ -18,8 +18,6 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	
 	public SGJourneyEnergy(long capacity, long maxReceive, long maxExtract)
 	{
-		super(regularEnergy(capacity), regularEnergy(maxReceive), regularEnergy(maxExtract));
-
 		this.energy = 0;
 		this.capacity = capacity;
 		this.maxReceive = maxReceive;
@@ -36,6 +34,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     {
         if(!canReceive())
             return 0;
+		
         long energyReceived = Math.min(getTrueMaxEnergyStored() - energy, Math.min(maxReceive(), maxReceive));
         if(!simulate)
         	energy += energyReceived;
@@ -61,7 +60,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 		if(!canExtract())
             return 0;
 		
-		long energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+		long energyExtracted = Math.min(energy, Math.min(maxExtract(), maxExtract));
         if(!simulate)
         	energy -= energyExtracted;
         

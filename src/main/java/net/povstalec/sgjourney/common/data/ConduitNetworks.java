@@ -13,6 +13,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
+import net.povstalec.sgjourney.common.config.CommonCableConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,7 +58,7 @@ public class ConduitNetworks extends SavedData
 	
 	public void update(Level level, BlockPos pos)
 	{
-		Set<CableBlockEntity> cables = findConnectedCables(level, pos);
+		List<CableBlockEntity> cables = findConnectedCables(level, pos);
 		
 		if(!cables.isEmpty())
 		{
@@ -192,16 +193,16 @@ public class ConduitNetworks extends SavedData
 	 * @param level
 	 * @param startingPos
 	 */
-	public static Set<CableBlockEntity> findConnectedCables(Level level, BlockPos startingPos)
+	public static List<CableBlockEntity> findConnectedCables(Level level, BlockPos startingPos)
 	{
 		Block cableBlock = level.getBlockState(startingPos).getBlock();
 		
-		Set<CableBlockEntity> cables = new HashSet<>();
+		List<CableBlockEntity> cables = new ArrayList<>();
 		Set<BlockPos> visited = new HashSet<>();
 		Queue<BlockPos> queue = new LinkedList<>();
 		queue.add(startingPos);
 		
-		while(!queue.isEmpty())
+		for(int i = 0; !queue.isEmpty() && i < CommonCableConfig.max_cables_in_network.get(); i++)
 		{
 			BlockPos pos = queue.remove();
 			visited.add(pos);

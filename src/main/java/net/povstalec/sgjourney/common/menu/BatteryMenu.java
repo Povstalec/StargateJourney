@@ -68,4 +68,9 @@ public class BatteryMenu extends InventoryMenu
 		return stillValid(ContainerLevelAccess.create(level, battery.getBlockPos()), player, BlockInit.LARGE_NAQUADAH_BATTERY.get());
 	}
 	
+	@Override
+	protected int blockEntitySlotCount()
+	{
+		return 2;
+	}
 }

@@ -42,4 +42,10 @@ public class ZPMHubMenu extends InventoryMenu
     {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ZPM_HUB.get());
     }
+    
+    @Override
+    protected int blockEntitySlotCount()
+    {
+        return 1;
+    }
 }

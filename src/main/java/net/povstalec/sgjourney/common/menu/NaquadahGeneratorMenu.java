@@ -65,4 +65,9 @@ public class NaquadahGeneratorMenu extends InventoryMenu
 				player, BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 	}
 	
+	@Override
+	protected int blockEntitySlotCount()
+	{
+		return 1;
+	}
 }
