@@ -69,7 +69,8 @@ public class StargateFilterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			return MethodResult.of(StargateFilterFunctions.setFilterType(stargate, arguments.getInt(0)));
+			int filterType = arguments.getInt(0);
+			return MethodResult.of(StargateFilterFunctions.setFilterType(stargate, filterType));
 		}
 	}
 	
