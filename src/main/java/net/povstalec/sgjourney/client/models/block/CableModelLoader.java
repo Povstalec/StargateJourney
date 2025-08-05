@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
@@ -68,12 +69,14 @@ public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableM
 	public static class CableModelGeometry implements IUnbakedGeometry<CableModelGeometry>
 	{
 		private ResourceLocation texture;
+		private Material material;
 		private ResourceLocation particleTexture;
 		private double thickness;
 		
 		public CableModelGeometry(ResourceLocation texture, ResourceLocation particleTexture, double thickness)
 		{
 			this.texture = texture;
+			this.material = ForgeHooksClient.getBlockMaterial(texture);
 			this.particleTexture = particleTexture;
 			this.thickness = thickness;
 		}
@@ -87,7 +90,7 @@ public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableM
 		@Override
 		public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 		{
-			return List.of();
+			return List.of(material);
 		}
 	}
 }

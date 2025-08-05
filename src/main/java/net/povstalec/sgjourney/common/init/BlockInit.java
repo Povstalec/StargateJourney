@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.BlockGetter;
@@ -85,7 +86,7 @@ public class BlockInit
 	public static final RegistryObject<GenericShieldingBlock> CLASSIC_SHIELDING =  BLOCKS.register("classic_shielding", 
 			() -> new GenericShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
-	public static final RegistryObject<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerBlock("classic_stargate_base_block", 
+	public static final RegistryObject<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerStargateBlock("classic_stargate_base_block",
 			() -> new ClassicStargateBaseBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
 	public static final RegistryObject<Block> CLASSIC_STARGATE_CHEVRON_BLOCK = registerStargateBlock("classic_stargate_chevron_block", 
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
@@ -214,20 +215,20 @@ public class BlockInit
 	
 	public static final RegistryObject<NaquadahGeneratorMarkIBlock> NAQUADAH_GENERATOR_MARK_I = registerEnergyBlock("naquadah_generator_mark_i",
 			() -> new NaquadahGeneratorMarkIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)),
-			() -> CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get(), Rarity.COMMON);
+			() -> CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get(), Rarity.COMMON, TabInit.STARGATE_BLOCKS);
 	public static final RegistryObject<NaquadahGeneratorMarkIIBlock> NAQUADAH_GENERATOR_MARK_II = registerEnergyBlock("naquadah_generator_mark_ii",
 			() -> new NaquadahGeneratorMarkIIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)),
-			() -> CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get(), Rarity.COMMON);
+			() -> CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get(), Rarity.COMMON, TabInit.STARGATE_BLOCKS);
 	
 	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerEnergyBlock("basic_interface",
 			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
-			() -> CommonInterfaceConfig.basic_interface_capacity.get(), Rarity.COMMON);
+			() -> CommonInterfaceConfig.basic_interface_capacity.get(), Rarity.COMMON, TabInit.STARGATE_STUFF);
 	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerEnergyBlock("crystal_interface",
 			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
-			() -> CommonInterfaceConfig.crystal_interface_capacity.get(), Rarity.UNCOMMON);
+			() -> CommonInterfaceConfig.crystal_interface_capacity.get(), Rarity.UNCOMMON, TabInit.STARGATE_STUFF);
 	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerEnergyBlock("advanced_crystal_interface",
 			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
-			() -> CommonInterfaceConfig.advanced_crystal_interface_capacity.get(), Rarity.RARE);
+			() -> CommonInterfaceConfig.advanced_crystal_interface_capacity.get(), Rarity.RARE, TabInit.STARGATE_STUFF);
 	
 	public static final RegistryObject<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
 			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
@@ -347,6 +348,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>RegistryObject<T> registerEnergyBlock(String name, Supplier<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity, CreativeModeTab tab)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		
+		registerEnergyBlockItem(name, toReturn, getter, rarity, tab);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block)
 	{
 		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(TabInit.STARGATE_BLOCKS)));
@@ -390,6 +400,11 @@ public class BlockInit
 	private static <T extends Block>RegistryObject<Item> registerEnergyBlockItem(String name, RegistryObject<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
 	{
 		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter));
+	}
+	
+	private static <T extends Block>RegistryObject<Item> registerEnergyBlockItem(String name, RegistryObject<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity, CreativeModeTab tab)
+	{
+		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1).tab(tab), getter));
 	}
 	
 	public static void register(IEventBus eventBus)
