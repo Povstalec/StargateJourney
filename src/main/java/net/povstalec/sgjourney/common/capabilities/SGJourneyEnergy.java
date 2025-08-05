@@ -2,10 +2,12 @@ package net.povstalec.sgjourney.common.capabilities;
 
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 
-public abstract class SGJourneyEnergy extends EnergyStorage
+public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializable<Tag>
 {
 	public static final char[] PREFIXES = {'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y', 'R', 'Q'};
 	
@@ -16,8 +18,6 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 	
 	public SGJourneyEnergy(long capacity, long maxReceive, long maxExtract)
 	{
-		super(regularEnergy(capacity), regularEnergy(maxReceive), regularEnergy(maxExtract));
-
 		this.energy = 0;
 		this.capacity = capacity;
 		this.maxReceive = maxReceive;
@@ -35,7 +35,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
         if(!canReceive())
             return 0;
 		
-        long energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+        long energyReceived = Math.min(getTrueMaxEnergyStored() - energy, Math.min(maxReceive(), maxReceive));
         if(!simulate)
         	energy += energyReceived;
 
@@ -60,7 +60,7 @@ public abstract class SGJourneyEnergy extends EnergyStorage
 		if(!canExtract())
             return 0;
 		
-		long energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+		long energyExtracted = Math.min(energy, Math.min(maxExtract(), maxExtract));
         if(!simulate)
         	energy -= energyExtracted;
         
@@ -95,18 +95,18 @@ public abstract class SGJourneyEnergy extends EnergyStorage
     @Override
     public boolean canExtract()
     {
-        return this.maxExtract > 0;
+        return maxExtract() > 0;
     }
 
     @Override
     public boolean canReceive()
     {
-        return this.maxReceive > 0 && this.energy < this.capacity;
+        return maxReceive() > 0 && this.energy < getTrueMaxEnergyStored();
     }
     
     public boolean canReceive(long receivedEnergy)
 	{
-		return energy + receivedEnergy <= capacity;
+		return energy + receivedEnergy <= getTrueMaxEnergyStored();
 	}
     
     

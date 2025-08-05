@@ -4,6 +4,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonCableConfig
 {
+	public static ForgeConfigSpec.IntValue max_cables_in_network;
+	
 	public static ForgeConfigSpec.LongValue lightning_strike_energy;
 	
 	public static ForgeConfigSpec.LongValue naquadah_wire_max_transfer;
@@ -18,6 +20,12 @@ public class CommonCableConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		max_cables_in_network = server
+				.comment("The maximum number of Cable Blocks in a single Cable Network")
+				.defineInRange("server.max_cables_in_network", 4096, 1, Integer.MAX_VALUE);
+		
+		
+		
 		lightning_strike_energy = server
 				.comment("The amount of energy that will be generated if Lightning strikes a Stargate or a Lightning Rod connected to a cable")
 				.defineInRange("server.lightning_strike_energy", 100000L, 0L, Long.MAX_VALUE);
