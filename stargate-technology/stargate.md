@@ -18,20 +18,21 @@ Generation in other dimensions can be achieved with datapacks.
 
 There are two Stargates in the **Overworld**.
 
-**Lore:**  
-The first gate (**Beta gate**), originally built on Earth by the Ancients,
-was buried in ice for thousands of years in Antarctica.
-The SG-1 discovered this gate after the first gate in Egypt,
-hence the Beta gate.
-The gate found in Giza, Egypt, was the second Earth's Stargate
-brought by the Goa'uld System Lord Ra.
-it was the first gate found (in 1928)
-and operated by [SGC](https://www.gateworld.net/wiki/Stargate_Command), 
-hence the Alpha gate.
+{: .lore }
+> The first gate (**Beta gate**), originally built on Earth by the Ancients,
+> was buried in ice for thousands of years in Antarctica.
+> The SG-1 discovered this gate after the first gate in Egypt,
+> hence the Beta gate.
+> The gate found in Giza, Egypt, was the second Earth's Stargate
+> brought by the Goa'uld System Lord Ra.
+> it was the first gate found (in 1928)
+> and operated by [SGC](https://www.gateworld.net/wiki/Stargate_Command), 
+> hence the Alpha gate.
 
 
-The **Alpha gate** is buried in-game with a seal 
-and can be found with an archeologist's help ([Survival Guide / Finding a Stargate]({{ '/survival/finding-gate' | absolute_url }})).
+The **Alpha gate** is buried in-game with a seal containing the address to the [Abydos]({{ '/dimension/abydos' | absolute_url }}). 
+The gate can be found with an archeologist's help.  
+[Survival Guide / Finding a Stargate]({{ '/survival/finding-gate' | absolute_url }}) can guide you through the steps.
 
 ![Stargate buried with seal in desert]({{ '/assets/img/structures/gate_buried_desert.png' | absolute_url }})
 {: .max-width-768 }
@@ -57,280 +58,403 @@ Also, don't forget the DHD that is in the cave with the gate.
 [//]: # (TODO: other dimensions generation)
 [//]: # (TODO: link to common stargates config and explanation)
 
+___
+
 ## Crafting
 
+The classic stargate can be created by building a structure described below.
+The [classic stargate](#classic-stargate) can be upgraded to other types using an [upgrade crystal]({{ '/stargate-technology/crystals/stargate-upgrade-crystals/' | absolute_url }}).
+The stargate visuals can be changed with a [variant crystal]({{ '/stargate-technology/crystals/stargate-variant-crystals/' | absolute_url }}).
+
+To build a Classic Stargate, you will need the following:
+- **&ensp;1x** Classic Stargate Base Block
+- **&ensp;9x** Classic Stargate Chevron Blocks
+- **14x** Classic Stargate Ring Blocks
+
+{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_base_block" %}
+{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_chevron_block" %}
+{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_ring_block" %}
+
+With the mentioned blocks, you need to build this structure:
+
+![Classic Stargate Block Structure]({{ site.baseurl }}/assets/img/survival/classic_stargate_block_structure.png)
+{: .max-width-512 }
+
+The classic stargate will form from the structure once you right-click the Classic Stargate Base Block with an empty hand.
+
+<details markdown="block">
+<summary>Address choice</summary>
+
+When the address choice is allowed in the Stargate Journey Common config (`enable_address_choice`, **it is disabled by default**),
+the base block can be right-clicked with a renamed [control crystal]({{ '/stargate-technology/crystals/dhd-crystals/#control-crystal' | absolute_url }}),
+the 9-chevron address from the name of the control crystal will be used for the stargate.
+The crystal can be renamed in the vanilla anvil and the name needs to follow the format `-1-2-3-4-5-6-7-8-`.
+
+<div class="mcui">
+<span 
+    class="invslot invslot-item invslot-item-image" 
+    data-minetip-title="-1-2-3-4-5-6-7-8-" 
+    data-minetip-text="&9Stargate Journey">
+        <a href="{{ '/stargate-technology/crystals/dhd-crystals/' | absolute_url }}">
+            <img src="{{ '/assets/img/items/crafting/sgjourney/dynamic/control_crystal.png' | absolute_url }}">
+        </a>
+</span>
+</div>
+
+</details>
+
+___
+
 ## Symbols
+Sometimes called glyphs, are used for [address]({{ '/stargate-network/stargate-address/' | absolute_url }}) composition.
+Usually each [galaxy]({{ '/stargate-network/galaxy/' | absolute_url }}) has its own set of symbols. Optionally a player can enable `unique_symbols` in the Stargate Journey client config.
+When enabled, each [solar system]({{ '/stargate-network/solar-system/' | absolute_url }}) will have a slightly different symbols, usually following a common style within the [galaxy]({{ '/stargate-network/galaxy/' | absolute_url }}).
+The used symbols can also be overridden by a [stargate variant](#stargate-variants).
+
+{: .lore }
+The `unique_symbols` configuration option was inspired by the original Stargate movie where the symbols for each solar system were different.
+
+Each stargate, except for the Universe, will pick the symbols of the local solar system when generated,
+or placed for the first time. 
+Additionally, since the Pegasus stargate is digital, it will change the symbols each time it is placed,
+unless it was [disabled by a computer]({{ '/computercraft/stargate_interface/#dynamicSymbols' | absolute_url }}).
+
+Each symbol represents a number that is used for a more user-friendly address representation.
+Starting with zero which is always the [point of origin](#point-of-origin).
+
+There are 4 symbol sets for galaxies, and additional sets for each solar system, when unique symbols are enabled.
+Those are in the base mod, more symbols can be added by [resourcepacks]({{ '/datapacks' | absolute_url }}).
+The symbols below do not include points of origin, so the first symbol on the left represents the number one
+and the others follow sequentially.
+
+MilkyWay  
+<img alt="MilkyWay symbols" class="width-100 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/milky_way/galaxy_milky_way.png">
+
+Pegasus  
+<img alt="Pegasus symbols" class="width-100 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/pegasus/galaxy_pegasus.png">
+
+
+Universal  
+<img alt="Universal symbols" class="width-100 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/universal/universal.png">
+
+Kaliem  
+<img alt="Kaliem symbols" class="width-100 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/kaliem/galaxy_kaliem.png">
+
 ### Point of Origin
 
-## Types and variants
-[//]: # (TODO: Stargate generation levels)
-There are 4 stargate generations that the Ancients developed over time.
-[//]: # (TODO: make a hidden sub page for variants)
+Point of Origin is a unique* symbol on each stargate that represents the location from which the stargate is dialing.  
+*There is a limited set of point of origin symbols for each galaxy, 
+so they are not exactly unique, but randomly chosen for each gate.  
+The point of origin can also be overridden by a [stargate variant](#stargate-variants).
+
+The point of origin always represents the number zero.
+To confirm dialed address, the point of origin (number zero) must be encoded at the end to initialize the connection.
+On the DHD it is automatically encoded by pressing the big button in the middle.
+
+___
+
+## Powering and Dialing
+See [Survival Guide / Dialing]({{ '/survival/dialing' | absolute_url }}) for all the options.
+
+___
+
+## Interaction
+
+DHD, Stargate interface, redstone
+
+[//]: # (TODO: add explanation of interacting with stargate)
+
+___
+
+## Stargate generations
+
+{: .lore }
+Ancients developed 3 generations of stargates over time.
+Starting with Universe stargate, the generation 1, improving the gate in generation 2 for the MilkyWay galaxy
+and digital generation 3 built for the Pegasus galaxy.
+Tollans and Nox built their own "Tollan stargate" based on the generation 2 stargates in the MilkyWay galaxy.
+
+All four stargate types are available in the mod alongside with the classic stargate introduced as the generation 0
+which was inspired by the [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft) mod.
+
+Below is description for each stargate type and their variants available in the base mod.
+Note that datapacks and resourcepacks can add more custom variants.
+
+<style>
+.tick::before {
+    content: "✓";
+    color: green;
+    font-weight: bold;
+}
+.cross::before {
+    content: "✗";
+    color: red;
+    font-weight: bold;
+}
+</style>
+
 ### Classic Stargate
-### Universe Stargate
-### Milky Way Stargate
-### Tollan Stargate
-### Pegasus Stargate
+Generation 0
 
-[//]: # (TODO: move feedback codes to computercraft docs)
+![Classic stargate]({{ '/assets/img/blocks/technological/classic_stargate.png' | absolute_url }})
+{: .max-width-512 }
 
-------------------------  
-------------------------  
-------------------------  
-------------------------  
-------------------------  
-------------------------  
-------------------------  
-------------------------  
-------------------------
-------------------------  
-------------------------
-------------------------  
-------------------------
-------------------------  
+Initially inspired by the [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft) mod.
 
+The gate has 38 physical symbols (+ point of origin).
+Can't dial Symbols above 38.  
+The gate ring can rotate when powered by redstone or when instructed to by a computer.  
+It can be dialed by rotating the ring with a redstone or any stargate interface.
+Additionally, can also be dialed by directly engaging the symbols with a DHD or a (advanced) crystal interface.
 
+When generated or placed for a first time, the gate will use the symbols of the solar system and will keep them even after breaking.
+The only way to change them on an existing stargate is with a command or a variant that overrides the symbols.
 
-{: .note }
-This content was migrated from the old wiki and is awaiting an update.
+The available variants can be found at [Stargate Technology / Crystals / Variant crystals]({{ '/stargate-technology/crystals/stargate-variant-crystals/#classic-stargate' | absolute_url }}).
 
-# Stargate
-{: .no_toc }
-
-## Generation
-By default, two Stargates generate in the Overworld and then one Stargate generates in each of the Dimensions added by Stargate Journey. Other Dimensions like Nether and End are still reachable through the Stargate Network, but they do not have their own Stargates by default.
-
-## Symbols
-Stargates use Addresses to dial other Stargates. These Addresses are formed by Symbols and while there dozens upon dozens of Symbols in the mod, all of them fit under one of these two categories:
-
-### Regular Symbols
-Regular Symbols are Symbols numbered 1, 2, 3,... which actually form an Address. Different Solar Systems will generaly share regular Symbols if they're located in the same Galaxy. Even though different Galaxies may use different sets of Symbols, those Symbols still represent numbers starting from 1, 2, 3,... and as such, they will work the exact same way in different Galaxies.
-
-### Point Of Origin
-The Point of Origin is a special kind of symbol with the number 0. Each Solar System usually has a unique Point Of Origin representing it (Though they may look different, all of them share the number 0).
-
-## Natural Generation
-Only one Stargate will generate per dimension by default(the only exception to this is Overworld, which will generate 2 Stargates in the form of a Buried Stargate and a Stargate Pedestal), however, this can be changed with the use of datapacks.
-
-## Variants
-
-### Universe Stargate
-* Generation: 1
-* Only has 36 Symbols (Can't dial Symbols above 35)
-* Always has the same set of Symbols, that being the Universal Symbols.
-
-### Milky Way Stargate
-* Generation: 2
-* Only has 39 Symbols (Can't dial Symbols above 38)
-* Can be dialed Manually: [Manual Dialing Tutorial]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone)
-* When first placed, the Stargate will adapt the set of Symbols belonging to the Solar System it was placed in uses. It will remember those Symbols when broken.
-
-### Pegasus Stargate
-* Generation: 3
-* Only displays 36 Symbols at a time, but can actually dial any Symbol
-* When placed, it will use the set of Symbols belonging to the Solar System it is currently in. When broken and placed in another Solar System, it will switch to that Solar System's Symbols.
-
-## Feedback Codes
-Whenever Stargate performs any action that may succeed or fail, it will return a Feedback Code, which may be used to better understand what caused the success or failure. The codes are return in the form of an integer, with error codes being negative integers and success codes being positive.
-
-* `0` NONE
-
-### Success Codes
-* `1` SYMBOL_ENCODED
-* `2` CONNECTION_ESTABILISHED_SYSTEM_WIDE
-* `3` CONNECTION_ESTABILISHED_INTERSTELLAR
-* `4` CONNECTION_ESTABILISHED_INTERGALACTIC
-* `7` CONNECTION_ENDED_BY_DISCONNECT
-* `8` CONNECTION_ENDED_BY_POINT_OF_ORIGIN
-* `9` CONNECTION_ENDED_BY_NETWORK
-* `10` CONNECTION_ENDED_BY_AUTOCLOSE
-* `11` CHEVRON_RAISED
-
-### Error Codes
-* `-1` UNKNOWN_ERROR
-* `-2` SYMBOL_IN_ADDRESS
-* `-3` SYMBOL_OUT_OF_BOUNDS
-* `-4` INCOPLETE_ADDRESS
-* `-5` INVALID_ADDRESS
-* `-6` NOT_ENOUGH_POWER
-* `-7` SELF_OBSTRUCTED
-* `-8` TARGET_OBSTRUCTED
-* `-9` SELF_DIAL
-* `-10` SAME_SYSTEM_DIAL
-* `-11` ALREADY_CONNECTED
-* `-12` NO_GALAXY
-* `-13` NO_DIMENSIONS
-* `-14` NO_STARGATES
-* `-15` EXCEEDED_CONNECTION_TIME
-* `-16` RAN_OUT_OF_POWER
-* `-17` CONNECTION_REROUTED
-* `-18` WRONG_DISCONNECT_SIDE
-* `-19` STARGATE_DESTROYED
-* `-20` TARGET_STARGATE_DOES_NOT_EXIST
-* `-21` CHEVRON_ALREADY_RAISED
-* `-22` CHEVRON_ALREADY_LOWERED
-
-
-# Stargate Variants
-{: .no_toc }
-[Datapacks]({{ site.baseurl }}/datapacks) are able to add custom Stargate variants.  
-These variants are available in the base mod.  
-To change the gate variant, you need a [Stargate variant crystal]({{ site.baseurl }}/items/crystals/#stargate-variant-crystals).
-
-{: .future }
-It is planned to distinguish the variant crystals for different Stargates.
-
-1. Table of Contents
-{:toc}
-
-## Classic Stargate
-
-Initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
-The gate ring cannot move.
-Each chevron lights up and moves when locked.
+<table class="text-center">
+    <thead>
+        <tr>
+            <th rowspan="2">DHD</th>
+            <th rowspan="2">Redstone</th>
+            <th colspan="2">Computer</th>
+        </tr>
+        <tr>
+            <th>Rotate</th>
+            <th>Engage</th>
+        </tr>
+    </thead>
+    <tbody class="td-bold">
+        <tr>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+        </tr>
+    </tbody>
+</table>
 
 <details>
-    <summary>Dialing sequence video</summary>
+    <summary>Classic dialing sequence video</summary>
     {% include youtubePlayer.html id="8i-3zoKVpp4" %}
 </details>
 
 ___
 
-### Milky Way
-`classic_milky_way`
-
-Milky way variant of classic Stargate.
-
-<details>
-    <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="gQbaDO334c4" %}
-</details>
-
-
-![Classic Stargate Milky Way variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/classic_milkyway.png)
-{: .max-width-512 }
-
-![Classic Stargate Milky Way variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_classic_milkyway.png)
-
-___
-
-## Milky Way Stargate
-
-The gate ring can rotate when the gate is powered with redstone or used with computercraft.  
-The symbol being encoded is always under the top chevron.
-
-<details>
-    <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="bOG_9Q9396E" %}
-</details>
-
-___
-
-### Movie
-`milkyway_movie`
-
-Chevrons do not glow.
-Each chevron opens and closes individually and moves on both sides of the gate instead of just the front.
-The primary chevron is the only one that doesn't move.
-Tt has open space under it, so the symbol under it is easier to see.
-<details markdown="block">
-<summary>The event horizon forms a strudel behind the gate</summary>
-![Milky Way Stargate movie variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/strudel.png)
-{: .max-width-256 }
-</details>
-
-<details>
-    <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="ptVJKO5nW20" %}
-</details>
-
-![Milky Way Stargate movie variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_movie.png)
-{: .max-width-512 }
-
-![Milky Way Stargate movie variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_milkyway_movie.png)
-
-___
-
-### Promo
-`milkyway_promo`
-
-Same as the [Milky Way Movie variant](#movie), but the chevrons are lit and there is no vortex behind the gate.
-
-<details>
-    <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="gf6m-AcZwMg" %}
-</details>
-
-![Milky Way Stargate promo variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_promo.png)
-{: .max-width-512 }
-
-![Milky Way Stargate promo variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_milkyway_promo.png)
-
-___
-
-### SG-1
-`milkyway_sg-1`
-
-Same as the default gate variant (chevrons glow, do not move, except the top one and there is no vortex)
-Milky Way symbols and the Tau'ri Point of Origin (Giza) is set to be used permanently.
-
-<details>
-    <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="Fwc8eTm0Ph8" %}
-</details>
-
-![Milky Way Stargate SG-1 variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_sg-1.png)
-{: .max-width-512 }
-
-![Milky Way Stargate SG-1 variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_milkyway_sg-1.png)
-
-___
-
-## Pegasus
-
-<details>
-    <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="BcUokqncKYI" %}
-</details>
-
-Pegasus Stargate with Milky Way symbols:
-> This is not a variant.  
-> By default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.
-
-![Pegasus Stargate Milky Way symbols]({{ site.baseurl }}/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
-{: .max-width-512 }
-
-___
-
-### Atlantis
-`pegasus_atlantis`
-
-Same as the default gate variant.
-Pegasus symbols and the Lantea Point of Origin (Subido) are set to be used permanently.
-
-![Pegasus Stargate atlantis_variant]({{ site.baseurl }}/assets/img/blocks/technological/pegasus_stargate.png)
-{: .max-width-512 }
-
-![Pegasus Stargate Atlantis variant crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal_pegasus_atlantis.png)
-
-___
-
-{: .note }
-Neither the Universe nor Tollan Stargate has an available alternative variant in the base mod.
-However, [datapacks]({{ site.baseurl }}/datapacks) can add them.
-
 ## Universe
+Generation 1
+
+{: .lore }
+The first stargate created by the ancients.
+Those stargates were automatically built by [seed ships](https://www.gateworld.net/wiki/Seed_ship) and distributed along their path.
+Universe stargates are not much durable and are created from common materials collected by the ships from common planets.
+
+![Universe stargate]({{ '/assets/img/blocks/technological/universe_stargate.png' | absolute_url }})
+{: .max-width-512 }
+
+The gate has only 35 physical symbols (+ point of origin).
+Can't dial symbols above 35.
+The gate has always the Universal symbols, unless changed by a gate variant.
+
+The whole gate rotates during dialing, always encoding the symbol at the top.
+It can be dialed by rotating the ring with a redstone or any stargate interface.
+Additionally, can also be dialed by directly engaging the symbols with a DHD or a (advanced) crystal interface.
+
+<table class="text-center">
+    <thead>
+        <tr>
+            <th rowspan="2">DHD</th>
+            <th rowspan="2">Redstone</th>
+            <th colspan="2">Computer</th>
+        </tr>
+        <tr>
+            <th>Rotate</th>
+            <th>Engage</th>
+        </tr>
+    </thead>
+    <tbody class="td-bold">
+        <tr>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+        </tr>
+    </tbody>
+</table>
 
 <details>
-    <summary>Dialing sequence video</summary>
+    <summary>Universe dialing sequence video</summary>
     {% include youtubePlayer.html id="yN7fWUbOnsw" %}
 </details>
 
 ___
 
-## Tollan
+
+### Milky Way Stargate
+Generation 2
+
+{: .lore }
+A second generation of stargates built by the ancients.
+The gate is made primarily of naquadah, which allows it to hold a large amount of energy
+and be quite durable, even withstanding a meteorite impact.
+Those gates are known to be located in the Milky Way galaxy.
+
+![Milky Way stargate]({{ '/assets/img/blocks/technological/milkyway_stargate.png' | absolute_url }})
+{: .max-width-512 }
+
+The gate has 38 physical symbols (+ point of origin).
+Can't dial Symbols above 38.  
+The gate ring can rotate when powered by redstone or when instructed to by a computer.  
+It can be dialed by rotating the ring with a redstone or any stargate interface.
+Additionally, can also be dialed by directly engaging the symbols with a DHD or a (advanced) crystal interface.
+
+When generated or placed for a first time, the gate will use the symbols of the solar system and will keep them even after breaking.
+The only way to change them on an existing stargate is with a command or a variant that overrides the symbols.
+
+The available variants can be found at [Stargate Technology / Crystals / Variant crystals]({{ '/stargate-technology/crystals/stargate-variant-crystals/#milky-way-stargate' | absolute_url }}).
+
+<table class="text-center">
+    <thead>
+        <tr>
+            <th rowspan="2">DHD</th>
+            <th rowspan="2">Redstone</th>
+            <th colspan="2">Computer</th>
+        </tr>
+        <tr>
+            <th>Rotate</th>
+            <th>Engage</th>
+        </tr>
+    </thead>
+    <tbody class="td-bold">
+        <tr>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+            <td class="tick"></td>
+        </tr>
+    </tbody>
+</table>
 
 <details>
-    <summary>Dialing sequence video</summary>
+    <summary>Milky way dialing sequence video</summary>
+    {% include youtubePlayer.html id="bOG_9Q9396E" %}
+</details>
+
+___
+
+## Tollan
+Generation 2
+
+{: .lore }
+The Tollan stargate was built by Tollans and Nox based on the second generation of stargates in the Milky Way galaxy.
+There is only one known gate of this type on the home planet of Tollans.
+
+![Tollan stargate]({{ '/assets/img/blocks/technological/tollan_stargate.png' | absolute_url }})
+{: .max-width-512 }
+
+The gate has no symbols on it.
+But it can dial **any** Symbol.   
+It **cannot** be dialed with redstone nor using a rotation with a stargate interface.
+The gate can be dialed **only** by directly engaging the symbols with a DHD or a (advanced) crystal interface.
+
+<table class="text-center">
+    <thead>
+        <tr>
+            <th rowspan="2">DHD</th>
+            <th rowspan="2">Redstone</th>
+            <th colspan="2">Computer</th>
+        </tr>
+        <tr>
+            <th>Rotate</th>
+            <th>Engage</th>
+        </tr>
+    </thead>
+    <tbody class="td-bold">
+        <tr>
+            <td class="tick"></td>
+            <td class="cross"></td>
+            <td class="cross"></td>
+            <td class="tick"></td>
+        </tr>
+    </tbody>
+</table>
+
+<details>
+    <summary>Tollan dialing sequence video</summary>
     {% include youtubePlayer.html id="XX9BfnVoAkc" %}
 </details>
+
+___
+
+### Pegasus Stargate
+Generation 3
+
+{: .lore }
+The newest stargates built by the ancients are known to be located in the Pegasus galaxy.
+They are digital, have no moving parts and cannot be manually dialed.
+
+![Pegasus stargate]({{ '/assets/img/blocks/technological/pegasus_stargate.png' | absolute_url }})
+{: .max-width-512 }
+
+The gate has only 36 digital symbols (+ point of origin).
+But it can dial **any** Symbol.   
+It **cannot** be dialed with redstone nor using a rotation with a stargate interface.
+The gate can be dialed **only** by directly engaging the symbols with a DHD or a (advanced) crystal interface.
+
+The pegasus stargate will change its symbols to the current solar system each time it is placed.
+This behavior can be disabled with a computer by [disabling dynamic symbols]({{ '/computercraft/stargate_interface/#dynamicSymbols' | absolute_url }})
+and/or [overriding them]({{ '/computercraft/stargate_interface/#overrideSymbols' | absolute_url }}).
+The symbols can also be overridden by a stargate variant.
+
+The available variants can be found at [Stargate Technology / Crystals / Variant crystals]({{ '/stargate-technology/crystals/stargate-variant-crystals/#pegasus-stargate' | absolute_url }}).
+
+<table class="text-center">
+    <thead>
+        <tr>
+            <th rowspan="2">DHD</th>
+            <th rowspan="2">Redstone</th>
+            <th colspan="2">Computer</th>
+        </tr>
+        <tr>
+            <th>Rotate</th>
+            <th>Engage</th>
+        </tr>
+    </thead>
+    <tbody class="td-bold">
+        <tr>
+            <td class="tick"></td>
+            <td class="cross"></td>
+            <td class="cross"></td>
+            <td class="tick"></td>
+        </tr>
+    </tbody>
+</table>
+
+<details>
+    <summary>Pegasus dialing sequence video</summary>
+    {% include youtubePlayer.html id="BcUokqncKYI" %}
+</details>
+
+<details markdown="block">
+<summary>Pegasus Stargate with Milky Way symbols</summary>
+
+This is not a variant.    
+By default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.
+
+![Pegasus Stargate Milky Way symbols]({{ site.baseurl }}/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
+{: .max-width-512 }
+
+</details>
+
+___
+
+## Stargate Feedback
+
+The most recent list of feedback codes can be found in the source code at [GitHub / StargateInfo](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/sgjourney/StargateInfo.java#L120).
+
+The codes are formatted as  
+```java
+FEEDBACK_NAME ( feedback_code_number, feedback_type, feedback_name ),
+```
+
+[//]: # (TODO explain stargate feedbacks)

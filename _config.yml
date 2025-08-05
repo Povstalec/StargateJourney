@@ -86,6 +86,9 @@ callouts:
   future:
     title: Planned feature
     color: grey-lt
+  lore:
+    title: Lore
+    color: purple
 
 
 

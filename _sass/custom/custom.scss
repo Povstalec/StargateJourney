@@ -14,6 +14,10 @@
   flex-grow: 1;
 }
 
+.width-100 {
+  width: 100%;
+}
+
 .max-width-768 {
   max-width: 768px;
 }
@@ -50,6 +54,10 @@ code {
 img.inline-item {
   max-height: 16px;
   vertical-align: text-bottom;
+}
+
+.pixel-image {
+  image-rendering: pixelated;
 }
 
 // located in /assets/css
