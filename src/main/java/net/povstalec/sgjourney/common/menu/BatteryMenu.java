@@ -32,7 +32,7 @@ public class BatteryMenu extends InventoryMenu
 		addPlayerInventory(inventory, 8, 84);
 		addPlayerHotbar(inventory, 8, 142);
 		
-		battery.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler ->
+		battery.getItemHandler().ifPresent(handler ->
 		{
 			this.addSlot(new SlotItemHandler(handler, 0, 8, 36));
 			this.addSlot(new SlotItemHandler(handler, 1, 152, 36));
@@ -68,4 +68,9 @@ public class BatteryMenu extends InventoryMenu
 		return stillValid(ContainerLevelAccess.create(level, battery.getBlockPos()), player, BlockInit.LARGE_NAQUADAH_BATTERY.get());
 	}
 	
+	@Override
+	protected int blockEntitySlotCount()
+	{
+		return 2;
+	}
 }

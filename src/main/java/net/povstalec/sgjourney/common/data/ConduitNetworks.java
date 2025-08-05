@@ -3,25 +3,20 @@ package net.povstalec.sgjourney.common.data;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
-import net.povstalec.sgjourney.common.blocks.tech.CableBlock;
-import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.config.CommonCableConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * This class is designed to save all Conduit Networks (primarily Cables) along with their coordinates and dimensions.
@@ -62,7 +57,7 @@ public class ConduitNetworks extends SavedData
 	
 	public void update(Level level, BlockPos pos)
 	{
-		Set<CableBlockEntity> cables = findConnectedCables(level, pos);
+		List<CableBlockEntity> cables = findConnectedCables(level, pos);
 		
 		if(!cables.isEmpty())
 		{
@@ -192,16 +187,16 @@ public class ConduitNetworks extends SavedData
 	 * @param level
 	 * @param startingPos
 	 */
-	public static Set<CableBlockEntity> findConnectedCables(Level level, BlockPos startingPos)
+	public static List<CableBlockEntity> findConnectedCables(Level level, BlockPos startingPos)
 	{
 		Block cableBlock = level.getBlockState(startingPos).getBlock();
 		
-		Set<CableBlockEntity> cables = new HashSet<>();
+		List<CableBlockEntity> cables = new ArrayList<>();
 		Set<BlockPos> visited = new HashSet<>();
 		Queue<BlockPos> queue = new LinkedList<>();
 		queue.add(startingPos);
 		
-		while(!queue.isEmpty())
+		for(int i = 0; !queue.isEmpty() && i < CommonCableConfig.max_cables_in_network.get(); i++)
 		{
 			BlockPos pos = queue.remove();
 			visited.add(pos);
