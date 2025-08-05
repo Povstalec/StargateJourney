@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 public abstract class ItemPowerCellProvider extends ItemFluidHolderProvider
 {
-	public static final String ENERGY_BUFFER = "energy_buffer"; //TODO Change to "energy_buffer"
+	public static final String ENERGY_BUFFER = "energy";
 	
 	public ItemPowerCellProvider(ItemStack stack)
 	{

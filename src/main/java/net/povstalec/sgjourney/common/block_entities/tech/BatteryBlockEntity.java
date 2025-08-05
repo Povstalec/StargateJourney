@@ -62,6 +62,11 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
+	public LazyOptional<IItemHandler> getItemHandler()
+	{
+		return lazyItemHandler.cast();
+	}
+	
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{

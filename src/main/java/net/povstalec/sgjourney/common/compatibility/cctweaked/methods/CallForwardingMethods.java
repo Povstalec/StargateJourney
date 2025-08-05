@@ -12,8 +12,8 @@ public class CallForwardingMethods
 
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
+			boolean input = arguments.getBoolean(0);
 			return context.executeMainThreadTask(() -> {
-				boolean input = arguments.getBoolean(0);
 
 				blockEntity.setCFD(input);
 				return new Object[]{"Call Forwarding successfully"};
@@ -33,9 +33,9 @@ public class CallForwardingMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException {
 
+			Map<Double, Double> chevronConfiguration = (Map<Double, Double>) arguments.getTable(0);
 			MethodResult result = context.executeMainThreadTask(() -> {
 
-				Map<Double, Double> chevronConfiguration = (Map<Double, Double>) arguments.getTable(0);
 
 				int[] configurationArray = ArrayHelper.tableToArray(chevronConfiguration);
 

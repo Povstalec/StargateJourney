@@ -233,6 +233,46 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		return ENERGY_STORAGE.canReceive(receivedEnergy);
 	}
 	
+	protected void drainEnergyStorage(IEnergyStorage energyStorage)
+	{
+		if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+		{
+			long simulatedOutputAmount = sgjourneyEnergy.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
+			long simulatedReceiveAmount = ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
+			
+			sgjourneyEnergy.extractLongEnergy(simulatedReceiveAmount, false);
+			ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
+		}
+		else
+		{
+			int simulatedOutputAmount = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
+			int simulatedReceiveAmount = ENERGY_STORAGE.receiveEnergy(simulatedOutputAmount, true);
+			
+			energyStorage.extractEnergy(simulatedReceiveAmount, false);
+			ENERGY_STORAGE.receiveEnergy(simulatedReceiveAmount, false);
+		}
+	}
+	
+	protected void fillEnergyStorage(IEnergyStorage energyStorage)
+	{
+		if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+		{
+			long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
+			long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
+			
+			ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
+			sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
+		}
+		else
+		{
+			int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
+			int simulatedReceiveAmount = energyStorage.receiveEnergy(simulatedOutputAmount, true);
+			
+			ENERGY_STORAGE.extractEnergy(simulatedReceiveAmount, false);
+			energyStorage.receiveEnergy(simulatedReceiveAmount, false);
+		}
+	}
+	
 	protected void outputEnergy(Direction outputDirection)
 	{
 		if(outputDirection == null)
@@ -245,72 +285,18 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			if(blockentity == null)
 				return;
 			
-			blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) ->
-			{
-				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
-				{
-					long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
-					long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
-					
-					ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
-					sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
-				}
-				else
-				{
-					int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
-					int simulatedReceiveAmount = energyStorage.receiveEnergy(simulatedOutputAmount, true);
-					
-					ENERGY_STORAGE.extractEnergy(simulatedReceiveAmount, false);
-					energyStorage.receiveEnergy(simulatedReceiveAmount, false);
-				}
-			});
+			blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) -> fillEnergyStorage(energyStorage));
 		}
 	}
 	
 	public void extractItemEnergy(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy ->
-		{
-			if(itemEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
-			{
-				long simulatedOutputAmount = sgjourneyEnergy.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
-				long simulatedReceiveAmount = ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
-				
-				sgjourneyEnergy.extractLongEnergy(simulatedReceiveAmount, false);
-				ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
-			}
-			else
-			{
-				int simulatedOutputAmount = itemEnergy.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
-				int simulatedReceiveAmount = ENERGY_STORAGE.receiveEnergy(simulatedOutputAmount, true);
-				
-				itemEnergy.extractEnergy(simulatedReceiveAmount, false);
-				ENERGY_STORAGE.receiveEnergy(simulatedReceiveAmount, false);
-			}
-		});
+		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy -> drainEnergyStorage(itemEnergy));
 	}
 	
 	public void fillItemEnergy(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy ->
-		{
-			if(itemEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
-			{
-				long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
-				long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
-				
-				ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
-				sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
-			}
-			else
-			{
-				int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
-				int simulatedReceiveAmount = itemEnergy.receiveEnergy(simulatedOutputAmount, true);
-				
-				ENERGY_STORAGE.extractEnergy(simulatedReceiveAmount, false);
-				itemEnergy.receiveEnergy(simulatedReceiveAmount, false);
-			}
-		});
+		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy -> fillEnergyStorage(itemEnergy));
 	}
 	
 	public void getStatus(Player player)
