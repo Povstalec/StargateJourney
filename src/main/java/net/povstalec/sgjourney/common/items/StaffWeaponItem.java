@@ -120,7 +120,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 			}
 		}
 		// Shooting
-		else if(isOpen(stack) && !level.isClientSide())
+		else if(isOpen(stack))
 			shoot(level, player, stack);
 		
 		
