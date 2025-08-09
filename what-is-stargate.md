@@ -4,6 +4,8 @@ nav_order: 0
 description: "What is a Stargate? A brief description of the Stargate device from the Stargate franchise."
 ---
 
+![Milky Way Stargate](https://upload.wikimedia.org/wikipedia/en/7/7a/SG1stargate.jpg)
+
 # What's that Stargate thing anyway?
 A Stargate is a sophisticated and ancient technology
 that allows for travel between distant locations across the universe--originating from the science fiction [franchise Stargate](https://en.wikipedia.org/wiki/Stargate).
@@ -15,7 +17,7 @@ So you can either use the internet to find the answers
  [Fandom Wiki](https://stargate.fandom.com/wiki/Stargate))  
 or read this summary (until someone rewrites it into something readable and exciting).
 
-![Milky Way Stargate](https://upload.wikimedia.org/wikipedia/en/7/7a/SG1stargate.jpg)
+{% include youtubePlayer.html id="CAK_x-hQFUs" %}
 
 ## Description
 A Stargate consists of a large, **ring-shaped structure**.
@@ -69,4 +71,11 @@ This artifact, later identified as a Stargate, was transported to the United Sta
 It wasn't until 1994 that Dr. Daniel Jackson, a brilliant but unconventional archaeologist,
 deciphered the symbols on the Stargate and discovered the first address (Abydos).
 
+### Goa'ulds
+{% include youtubePlayer.html id="k2utP-T5KjU" %}
 
+### Ancients
+{% include youtubePlayer.html id="wRoA66KuOMg" %}
+
+### Ascension
+{% include youtubePlayer.html id="xw_XEdjCx8I" %}

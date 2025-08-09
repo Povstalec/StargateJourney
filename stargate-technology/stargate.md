@@ -10,97 +10,9 @@ nav_order: 0
 If you don't know what stargate is, 
 check [What’s that Stargate thing anyway?]({{ '/what-is-stargate/' | absolute_url }})
 
-## Natural Generation
-Stargates generate only in pre-defined dimensions.
-Generation in other dimensions can be achieved with datapacks. 
-
-[//]: # (TODO: add link to generation datapacks)
-
-There are two Stargates in the **Overworld**.
-
-{: .lore }
-> The first gate (**Beta gate**), originally built on Earth by the Ancients,
-> was buried in ice for thousands of years in Antarctica.
-> The SG-1 discovered this gate after the first gate in Egypt,
-> hence the Beta gate.
-> The gate found in Giza, Egypt, was the second Earth's Stargate
-> brought by the Goa'uld System Lord Ra.
-> it was the first gate found (in 1928)
-> and operated by [SGC](https://www.gateworld.net/wiki/Stargate_Command), 
-> hence the Alpha gate.
-
-
-The **Alpha gate** is buried in-game with a seal containing the address to the [Abydos]({{ '/dimension/abydos' | absolute_url }}). 
-The gate can be found with an archeologist's help.  
-[Survival Guide / Finding a Stargate]({{ '/survival/finding-gate' | absolute_url }}) can guide you through the steps.
-
-![Stargate buried with seal in desert]({{ '/assets/img/structures/gate_buried_desert.png' | absolute_url }})
-{: .max-width-768 }
-
-The **Beta gate** can be found in a cave.
-To find it, dial your stargate to a different dimension and remove the DHD from your stargate in the overworld.
-That way, the Beta gate in the cave will be the only gate in the overworld 
-and will **take priority** once you dial back to the overworld.
-However, that will only work when the **Beta gate** structure was already generated.
-
-If you end up again in your stargate, there is a second option.
-Travel to other StargateJourney dimension (Abydos, Chulak or a different one).
-Note the coordinates (X and Z can be displayed by pressing `F3`) 
-of the stargate in the other dimension, and visit the same coordinates in the overworld.
-Remember that you need to dig. 
-You are looking for a cave with the beta stargate.
-Also, don't forget the DHD that is in the cave with the gate.
-
-![Stargate buried in a cave]({{ '/assets/img/structures/terra_gate.png' | absolute_url }})
-{: .max-width-768 }
-
-
-[//]: # (TODO: other dimensions generation)
-[//]: # (TODO: link to common stargates config and explanation)
-
-___
-
-## Crafting
-
-The classic stargate can be created by building a structure described below.
-The [classic stargate](#classic-stargate) can be upgraded to other types using an [upgrade crystal]({{ '/stargate-technology/crystals/stargate-upgrade-crystals/' | absolute_url }}).
-The stargate visuals can be changed with a [variant crystal]({{ '/stargate-technology/crystals/stargate-variant-crystals/' | absolute_url }}).
-
-To build a Classic Stargate, you will need the following:
-- **&ensp;1x** Classic Stargate Base Block
-- **&ensp;9x** Classic Stargate Chevron Blocks
-- **14x** Classic Stargate Ring Blocks
-
-{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_base_block" %}
-{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_chevron_block" %}
-{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_ring_block" %}
-
-With the mentioned blocks, you need to build this structure:
-
-![Classic Stargate Block Structure]({{ site.baseurl }}/assets/img/survival/classic_stargate_block_structure.png)
-{: .max-width-512 }
-
-The classic stargate will form from the structure once you right-click the Classic Stargate Base Block with an empty hand.
-
-<details markdown="block">
-<summary>Address choice</summary>
-
-When the address choice is allowed in the Stargate Journey Common config (`enable_address_choice`, **it is disabled by default**),
-the base block can be right-clicked with a renamed [control crystal]({{ '/stargate-technology/crystals/dhd-crystals/#control-crystal' | absolute_url }}),
-the 9-chevron address from the name of the control crystal will be used for the stargate.
-The crystal can be renamed in the vanilla anvil and the name needs to follow the format `-1-2-3-4-5-6-7-8-`.
-
-<div class="mcui">
-<span 
-    class="invslot invslot-item invslot-item-image" 
-    data-minetip-title="-1-2-3-4-5-6-7-8-" 
-    data-minetip-text="&9Stargate Journey">
-        <a href="{{ '/stargate-technology/crystals/dhd-crystals/' | absolute_url }}">
-            <img src="{{ '/assets/img/items/crafting/sgjourney/dynamic/control_crystal.png' | absolute_url }}">
-        </a>
-</span>
-</div>
-
+<details>
+<summary>Dr. Jackson's instructional video on Stargate</summary>
+{% include youtubePlayer.html id="CAK_x-hQFUs" %}
 </details>
 
 ___
@@ -163,6 +75,103 @@ ___
 DHD, Stargate interface, redstone
 
 [//]: # (TODO: add explanation of interacting with stargate)
+
+___
+
+
+## Natural Generation
+Stargates generate only in pre-defined dimensions.
+Generation in other dimensions can be achieved with datapacks.
+
+[//]: # (TODO: add link to generation datapacks)
+
+There are two Stargates in the **Overworld**.
+
+{: .lore }
+> The first gate (**Beta gate**), originally built on Earth by the Ancients,
+> was buried in ice for thousands of years in Antarctica.
+> The SG-1 discovered this gate after the first gate in Egypt,
+> hence the Beta gate.
+> The gate found in Giza, Egypt, was the second Earth's Stargate
+> brought by the Goa'uld System Lord Ra.
+> it was the first gate found (in 1928)
+> and operated by [SGC](https://www.gateworld.net/wiki/Stargate_Command),
+> hence the Alpha gate.
+
+
+The **Alpha gate** is buried in-game with a seal containing the address to the [Abydos]({{ '/dimension/abydos' | absolute_url }}).
+The gate can be found with an archeologist's help.  
+[Survival Guide / Finding a Stargate]({{ '/survival/finding-gate' | absolute_url }}) can guide you through the steps.
+
+![Stargate buried with seal in desert]({{ '/assets/img/structures/gate_buried_desert.png' | absolute_url }})
+{: .max-width-768 }
+
+The **Beta gate** can be found in a cave.
+To find it, dial your stargate to a different dimension and remove the DHD from your stargate in the overworld.
+That way, the Beta gate in the cave will be the only gate in the overworld
+and will **take priority** once you dial back to the overworld.
+However, that will only work when the **Beta gate** structure was already generated.
+
+If you end up again in your stargate, there is a second option.
+Travel to other StargateJourney dimension (Chulak, Rima or a different one which has a stargate pedestal).
+Note the coordinates (X and Z can be displayed by pressing `F3`)
+of the stargate in the other dimension, and visit the same coordinates in the overworld.
+Remember that you need to dig.
+You are looking for a cave with the beta stargate.
+Also, don't forget the DHD that is in the cave with the gate.
+
+![Stargate buried in a cave]({{ '/assets/img/structures/terra_gate.png' | absolute_url }})
+{: .max-width-768 }
+
+
+[//]: # (TODO: other dimensions generation)
+[//]: # (TODO: link to common stargates config and explanation)
+
+
+___
+
+## Crafting
+
+The classic stargate can be created by building a structure described below.
+The [classic stargate](#classic-stargate) can be upgraded to other types using an [upgrade crystal]({{ '/stargate-technology/crystals/stargate-upgrade-crystals/' | absolute_url }}).
+The stargate visuals can be changed with a [variant crystal]({{ '/stargate-technology/crystals/stargate-variant-crystals/' | absolute_url }}).
+
+To build a Classic Stargate, you will need the following:
+- **&ensp;1x** Classic Stargate Base Block
+- **&ensp;9x** Classic Stargate Chevron Blocks
+- **14x** Classic Stargate Ring Blocks
+
+{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_base_block" %}
+{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_chevron_block" %}
+{% minecraft_recipe_crafting item:"sgjourney:classic_stargate_ring_block" %}
+
+With the mentioned blocks, you need to build this structure:
+
+![Classic Stargate Block Structure]({{ site.baseurl }}/assets/img/survival/classic_stargate_block_structure.png)
+{: .max-width-512 }
+
+The classic stargate will form from the structure once you right-click the Classic Stargate Base Block with an empty hand.
+
+<details markdown="block">
+<summary>Address choice</summary>
+
+When the address choice is allowed in the Stargate Journey Common config (`enable_address_choice`, **it is disabled by default**),
+the base block can be right-clicked with a renamed [control crystal]({{ '/stargate-technology/crystals/dhd-crystals/#control-crystal' | absolute_url }}),
+the 9-chevron address from the name of the control crystal will be used for the stargate.
+The crystal can be renamed in the vanilla anvil and the name needs to follow the format `-1-2-3-4-5-6-7-8-`.
+
+<div class="mcui">
+<span 
+    class="invslot invslot-item invslot-item-image" 
+    data-minetip-title="-1-2-3-4-5-6-7-8-" 
+    data-minetip-text="&9Stargate Journey">
+        <a href="{{ '/stargate-technology/crystals/dhd-crystals/' | absolute_url }}">
+            <img src="{{ '/assets/img/items/crafting/sgjourney/dynamic/control_crystal.png' | absolute_url }}">
+        </a>
+</span>
+</div>
+
+</details>
 
 ___
 
