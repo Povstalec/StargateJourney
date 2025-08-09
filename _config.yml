@@ -127,3 +127,4 @@ exclude:
   - build/
   - implementation_branch/
   - scripts/
+  - section_includes/

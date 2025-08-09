@@ -39,18 +39,33 @@ Those are in the base mod, more symbols can be added by [resourcepacks]({{ '/dat
 The symbols below do not include points of origin, so the first symbol on the left represents the number one
 and the others follow sequentially.
 
-MilkyWay  
-<img alt="MilkyWay symbols" class="width-100 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/milky_way/galaxy_milky_way.png">
+<style>
+.min-width-1000 {
+    min-width: 1000px;
+}
+
+.symbols-container {
+    width: 100%;
+    overflow: scroll;
+}
+</style>
+
+<div class="symbols-container">
+
+MilkyWay
+<img alt="MilkyWay symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/milky_way/galaxy_milky_way.png">
 
 Pegasus  
-<img alt="Pegasus symbols" class="width-100 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/pegasus/galaxy_pegasus.png">
+<img alt="Pegasus symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/pegasus/galaxy_pegasus.png">
 
 
 Universal  
-<img alt="Universal symbols" class="width-100 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/universal/universal.png">
+<img alt="Universal symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/universal/universal.png">
 
 Kaliem  
-<img alt="Kaliem symbols" class="width-100 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/kaliem/galaxy_kaliem.png">
+<img alt="Kaliem symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/kaliem/galaxy_kaliem.png">
+
+</div>
 
 ### Point of Origin
 
@@ -65,27 +80,46 @@ On the DHD it is automatically encoded by pressing the big button in the middle.
 
 ___
 
-## Powering and Dialing
+## Energy supply
 See [Survival Guide / Dialing]({{ '/survival/dialing' | absolute_url }}) for all the options.
 
 ___
 
-## Interaction
-
-DHD, Stargate interface, redstone
-
-[//]: # (TODO: add explanation of interacting with stargate)
+{% include /section_includes/stargate_dialing.md %}
 
 ___
 
 
 ## Natural Generation
 Stargates generate only in pre-defined dimensions.
+By default, a single gate[*](#beta-stargate) generates in 
+[Overworld]({{ '/dimensions/overworld' | absolute_url }}),
+[Nether]({{ '/dimensions/nether' | absolute_url }}),
+[The End]({{ '/dimensions/the-end' | absolute_url }}),
+[Abydos]({{ '/dimensions/abydos' | absolute_url }}),
+[Chulak]({{ '/dimensions/chulak' | absolute_url }}),
+[Rima]({{ '/dimensions/rima' | absolute_url }}),
+[Unitas]({{ '/dimensions/unitas' | absolute_url }}),
+[Cavum Tenebrae]({{ '/dimensions/cavum-tenebrae' | absolute_url }}),
+[Lantea]({{ '/dimensions/lantea' | absolute_url }}),
+[Athos]({{ '/dimensions/athos' | absolute_url }}),
+and [Glacio from Ad Astra]({{ '/dimensions/glacio' | absolute_url }}).
 Generation in other dimensions can be achieved with datapacks.
 
 [//]: # (TODO: add link to generation datapacks)
 
-There are two Stargates in the **Overworld**.
+In the [Overworld]({{ '/dimensions/overworld' | absolute_url }})
+the **Alpha gate** is buried with a seal containing the address to the [Abydos]({{ '/dimension/abydos' | absolute_url }}).
+The gate can be found with an archeologist's help.  
+[Survival Guide / Finding a Stargate]({{ '/survival/finding-gate' | absolute_url }}) can guide you through the steps.
+
+![Stargate buried with seal in desert]({{ '/assets/img/structures/gate_buried_desert.png' | absolute_url }})
+{: .max-width-768 }
+
+<details markdown="block">
+<summary>Beta stargate</summary>
+
+*There are two Stargates in the **Overworld**.
 
 {: .lore }
 > The first gate (**Beta gate**), originally built on Earth by the Ancients,
@@ -94,17 +128,9 @@ There are two Stargates in the **Overworld**.
 > hence the Beta gate.
 > The gate found in Giza, Egypt, was the second Earth's Stargate
 > brought by the Goa'uld System Lord Ra.
-> it was the first gate found (in 1928)
+> It was the first gate found (in 1928)
 > and operated by [SGC](https://www.gateworld.net/wiki/Stargate_Command),
 > hence the Alpha gate.
-
-
-The **Alpha gate** is buried in-game with a seal containing the address to the [Abydos]({{ '/dimension/abydos' | absolute_url }}).
-The gate can be found with an archeologist's help.  
-[Survival Guide / Finding a Stargate]({{ '/survival/finding-gate' | absolute_url }}) can guide you through the steps.
-
-![Stargate buried with seal in desert]({{ '/assets/img/structures/gate_buried_desert.png' | absolute_url }})
-{: .max-width-768 }
 
 The **Beta gate** can be found in a cave.
 To find it, dial your stargate to a different dimension and remove the DHD from your stargate in the overworld.
@@ -122,6 +148,8 @@ Also, don't forget the DHD that is in the cave with the gate.
 
 ![Stargate buried in a cave]({{ '/assets/img/structures/terra_gate.png' | absolute_url }})
 {: .max-width-768 }
+
+</details>
 
 
 [//]: # (TODO: other dimensions generation)
@@ -254,7 +282,7 @@ ___
 Generation 1
 
 <details>
-    <summary>Universe dialing sequence video</summary>
+    <summary>Dialing sequence video</summary>
     {% include youtubePlayer.html id="7MEE5h36Fjs" %}
 </details>
 
@@ -303,7 +331,7 @@ ___
 Generation 2
 
 <details>
-    <summary>Milky way dialing sequence video</summary>
+    <summary>Dialing sequence video</summary>
     {% include youtubePlayer.html id="w4uUZ5zNEOA" %}
 </details>
 
@@ -355,7 +383,7 @@ ___
 Generation 2
 
 <details>
-    <summary>Tollan dialing sequence video</summary>
+    <summary>Dialing sequence video</summary>
     {% include youtubePlayer.html id="Y3gaR9EG-uY" %}
 </details>
 
@@ -399,7 +427,7 @@ ___
 Generation 3
 
 <details>
-    <summary>Pegasus dialing sequence video</summary>
+    <summary>Dialing sequence video</summary>
     {% include youtubePlayer.html id="DxB9vEU02XY" %}
 </details>
 
