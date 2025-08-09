@@ -20,7 +20,7 @@ Milky way variant of the classic Stargate.
 
 <details>
     <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="gQbaDO334c4" %}
+    {% include youtubePlayer.html id="AcLe_qdOUSA" %}
 </details>
 
 
@@ -48,7 +48,7 @@ Tt has open space under it, so the symbol under it is easier to see.
 
 <details>
     <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="ptVJKO5nW20" %}
+    {% include youtubePlayer.html id="fnnquM_zeFk" %}
 </details>
 
 ![Milky Way Stargate movie variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_movie.png)
@@ -65,7 +65,7 @@ Same as the [Milky Way Movie variant](#movie), but the chevrons are lit and ther
 
 <details>
     <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="gf6m-AcZwMg" %}
+    {% include youtubePlayer.html id="PTWPdgAuINI" %}
 </details>
 
 ![Milky Way Stargate promo variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_promo.png)
@@ -83,7 +83,7 @@ Milky Way symbols and the Tau'ri Point of Origin (Giza) is set to be used perman
 
 <details>
     <summary>Dialing sequence video</summary>
-    {% include youtubePlayer.html id="Fwc8eTm0Ph8" %}
+    {% include youtubePlayer.html id="JBj9pqAE-ww" %}
 </details>
 
 ![Milky Way Stargate SG-1 variant]({{ site.baseurl }}/assets/img/blocks/technological/variants/milkyway_sg-1.png)

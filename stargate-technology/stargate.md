@@ -196,6 +196,11 @@ Note that datapacks and resourcepacks can add more custom variants.
 ### Classic Stargate
 Generation 0
 
+<details>
+    <summary>Classic dialing sequence video</summary>
+    {% include youtubePlayer.html id="TllvQYYwdu8" %}
+</details>
+
 ![Classic stargate]({{ '/assets/img/blocks/technological/classic_stargate.png' | absolute_url }})
 {: .max-width-512 }
 
@@ -234,15 +239,15 @@ The available variants can be found at [Stargate Technology / Crystals / Variant
     </tbody>
 </table>
 
-<details>
-    <summary>Classic dialing sequence video</summary>
-    {% include youtubePlayer.html id="8i-3zoKVpp4" %}
-</details>
-
 ___
 
-## Universe
+### Universe
 Generation 1
+
+<details>
+    <summary>Universe dialing sequence video</summary>
+    {% include youtubePlayer.html id="7MEE5h36Fjs" %}
+</details>
 
 {: .lore }
 The first stargate created by the ancients.
@@ -282,16 +287,16 @@ Additionally, can also be dialed by directly engaging the symbols with a DHD or 
     </tbody>
 </table>
 
-<details>
-    <summary>Universe dialing sequence video</summary>
-    {% include youtubePlayer.html id="yN7fWUbOnsw" %}
-</details>
-
 ___
 
 
 ### Milky Way Stargate
 Generation 2
+
+<details>
+    <summary>Milky way dialing sequence video</summary>
+    {% include youtubePlayer.html id="w4uUZ5zNEOA" %}
+</details>
 
 {: .lore }
 A second generation of stargates built by the ancients.
@@ -335,15 +340,15 @@ The available variants can be found at [Stargate Technology / Crystals / Variant
     </tbody>
 </table>
 
-<details>
-    <summary>Milky way dialing sequence video</summary>
-    {% include youtubePlayer.html id="bOG_9Q9396E" %}
-</details>
-
 ___
 
-## Tollan
+### Tollan
 Generation 2
+
+<details>
+    <summary>Tollan dialing sequence video</summary>
+    {% include youtubePlayer.html id="Y3gaR9EG-uY" %}
+</details>
 
 {: .lore }
 The Tollan stargate was built by Tollans and Nox based on the second generation of stargates in the Milky Way galaxy.
@@ -379,15 +384,15 @@ The gate can be dialed **only** by directly engaging the symbols with a DHD or a
     </tbody>
 </table>
 
-<details>
-    <summary>Tollan dialing sequence video</summary>
-    {% include youtubePlayer.html id="XX9BfnVoAkc" %}
-</details>
-
 ___
 
 ### Pegasus Stargate
 Generation 3
+
+<details>
+    <summary>Pegasus dialing sequence video</summary>
+    {% include youtubePlayer.html id="DxB9vEU02XY" %}
+</details>
 
 {: .lore }
 The newest stargates built by the ancients are known to be located in the Pegasus galaxy.
@@ -429,11 +434,6 @@ The available variants can be found at [Stargate Technology / Crystals / Variant
         </tr>
     </tbody>
 </table>
-
-<details>
-    <summary>Pegasus dialing sequence video</summary>
-    {% include youtubePlayer.html id="BcUokqncKYI" %}
-</details>
 
 <details markdown="block">
 <summary>Pegasus Stargate with Milky Way symbols</summary>

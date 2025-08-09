@@ -162,7 +162,7 @@ Table below summarizes the available dialing methods for each Stargate type.
 
 <details id="dialing-using-a-dial-home-device-dhd-youtube-video">
 <summary><b>[Spoiler]</b> Youtube video</summary>
-{% include youtubePlayer.html id="Fv10GPshSCI" %}
+{% include youtubePlayer.html id="NRQBZ53qCYM" %}
 </details>
 
 ![DHD GUI]({{ site.baseurl }}/assets/img/survival/dhd_gui.png)
@@ -181,7 +181,7 @@ is able to connect to the gate within a **32-block range**.
 
 <details>
 <summary><b>[Spoiler]</b> Youtube video</summary>
-{% include youtubePlayer.html id="Ulcp8-21B6U" %}
+{% include youtubePlayer.html id="Pu3V4u2MGJs" %}
 </details>
 
 Classic, Universe, and Milky Way stargates react to the redstone signal. 
@@ -223,7 +223,7 @@ The observers in the image reacts to stone buttons resulting in two pulses movin
 
 <details>
 <summary><b>[Spoiler]</b> Youtube video</summary>
-{% include youtubePlayer.html id="VzTOlO9Ccas" %}
+{% include youtubePlayer.html id="t6SBpAXBaUg" %}
 </details>
 
 Stargate can be dialed using any computer (basic or advanced) from the [CC:Tweaked](https://tweaked.cc/) mod.
