@@ -81,7 +81,24 @@ On the DHD it is automatically encoded by pressing the big button in the middle.
 ___
 
 ## Energy supply
-See [Survival Guide / Dialing]({{ '/survival/dialing' | absolute_url }}) for all the options.
+
+The primary source of energy for a stargate is the [Dial Home Device (DHD)]({{ '/stargate-technology/dhd' | absolute_url }}).
+From ancient times, each DHD contains a [fusion core]({{ '/items/functional-items/fusion-core' | absolute_url }})
+capable of providing power for common stargate usage for a vast time.
+However, the fusion core cannot be refueled; once it runs out, it must be replaced.
+See the [Dial Home Device (DHD)]({{ '/stargate-technology/dhd' | absolute_url }}) page for DHD crystal configuration
+and fusion core replacement options.
+
+In addition to DHD, the gate can be powered with a [stargate interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }})
+and any other source of **Forge energy (FE)**.
+
+![Stargate interface powering the gate]({{ '/assets/img/survival/stargate_interface_power.png' | absolute_url }})
+{: .max-width-512 }
+
+The stargate interface must face the gate (the black side facing away from the gate).
+And there must be a power supply connected to the interface from any side.
+The image shows the naquadah generator connected to a basic interface with a small naquadah cable 
+and an energy cube from Mekanism connected to the crystal interface with a universal cable.
 
 ___
 

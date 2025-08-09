@@ -71,12 +71,13 @@ Alternatively, the gate can be powered using a **stargate interface** with an **
 
 <details markdown="block">
 <summary>Stargate interface powering the gate</summary>
-![Stargate interface powering the gate]({{ site.baseurl }}/assets/img/survival/stargate_interface_power.png)
+![Stargate interface powering the gate]({{ '/assets/img/survival/stargate_interface_power.png' | absolute_url }})
 {: .max-width-512 }
 
 The stargate interface must face the gate (the black side facing away from the gate).
 And there must be a power supply connected to the interface from any side.
-The image shows an energy cube from Mekanism connected to the interface with a universal cable.
+The image shows the naquadah generator connected to a basic interface with a small naquadah cable
+and an energy cube from Mekanism connected to the crystal interface with a universal cable.
 </details>
 
 ___
