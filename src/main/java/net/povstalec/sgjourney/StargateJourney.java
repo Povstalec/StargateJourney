@@ -4,8 +4,11 @@ import java.util.function.BiFunction;
 
 import net.minecraftforge.client.event.ModelEvent;
 import net.povstalec.sgjourney.client.screens.*;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
+import net.povstalec.sgjourney.common.misc.RenderAMD;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -166,6 +169,17 @@ public class StargateJourney
     	
     	return isOculusLoaded;
     }
+	
+	public static boolean shouldRenderAMD()
+	{
+		if(ClientStargateConfig.render_amd.get() == RenderAMD.AUTO)
+			return SystemUtils.IS_OS_LINUX;
+		
+		if(isOculusLoaded())
+			return false;
+		
+		return ClientStargateConfig.render_amd.get() == RenderAMD.ENABLED;
+	}
 
     @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
