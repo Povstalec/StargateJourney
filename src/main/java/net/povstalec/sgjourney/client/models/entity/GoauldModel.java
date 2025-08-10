@@ -19,7 +19,7 @@ public class GoauldModel<T extends Goauld> extends HierarchicalModel<T>
 	private final ModelPart[] bodyParts = new ModelPart[7];
 	//private final ModelPart[] bodyLayers = new ModelPart[3];
 	private static final int[][] BODY_SIZES = new int[][]{{2, 2, 3}, {2, 2, 3}, {2, 2, 3}, {2, 2, 3}, {2, 2, 3}, {2, 1, 2}, {1, 1, 2}};
-	private static final int[][] BODY_TEXS = new int[][]{{0, 0}, {0, 4}, {0, 9}, {0, 16}, {0, 22}, {11, 0}, {13, 4}};
+	private static final int[][] BODY_TEXS = new int[][]{{0, 0}, {0, 5}, {0, 10}, {0, 15}, {0, 20}, {10, 0}, {10, 3}};
 	
 	public GoauldModel(ModelPart part)
 	{
@@ -63,11 +63,13 @@ public class GoauldModel<T extends Goauld> extends HierarchicalModel<T>
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 	
+	@Override
 	public ModelPart root()
 	{
 		return this.root;
 	}
 	
+	@Override
 	public void setupAnim(T goauld, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		for(int i = 0; i < this.bodyParts.length; ++i)

@@ -52,6 +52,7 @@ public class TabInit
 				items.accept(ItemInit.NAQUADAH_ROD.get());
 				items.accept(ItemInit.REACTION_CHAMBER.get());
 				items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
+				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 				items.accept(ItemInit.PLASMA_CONVERTER.get());
 				items.accept(ItemInit.NAQUADAH_POWER_CELL.get());
 				items.accept(PowerCellItem.liquidNaquadahSetup());
@@ -92,8 +93,6 @@ public class TabInit
 				items.accept(ItemInit.SYSTEM_LORD_CHESTPLATE.get());
 				items.accept(ItemInit.SYSTEM_LORD_LEGGINGS.get());
 				items.accept(ItemInit.SYSTEM_LORD_BOOTS.get());
-
-				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 				
 				items.accept(ItemInit.ZPM.get());
 				items.accept(PersonalShieldItem.personalShieldSetup());

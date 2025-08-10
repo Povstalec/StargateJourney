@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +36,7 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 
-public class RingPanelEntity extends BlockEntity
+public class RingPanelEntity extends TransporterControllerEntity
 {
 	public static final String INVENTORY = "Inventory";
 	
@@ -150,8 +151,7 @@ public class RingPanelEntity extends BlockEntity
 		List<Transporter> transporters = transporterListOptional.get();
 		
 		transporters.sort((transportRingsA, transportRingsB) ->
-		Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()))
-		.compareTo(Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos()))));
+				Long.compare(CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()), CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos())));
 		
 		ringsPos.clear();
 		ringsName.clear();
@@ -172,47 +172,12 @@ public class RingPanelEntity extends BlockEntity
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientboundRingPanelUpdatePacket(worldPosition, ringsPos, ringsName));
 	}
 	
-	protected List<TransportRingsEntity> getNearbyTransportRings(int maxDistance)
-	{
-		List<TransportRingsEntity> transportRingsList = new ArrayList<TransportRingsEntity>();
-		
-		for(int x = -maxDistance / 16; x <= maxDistance / 16; x++)
-		{
-			for(int z = -maxDistance / 16; z <= maxDistance / 16; z++)
-			{
-				ChunkAccess chunk = this.level.getChunk(this.getBlockPos().east(16 * x).south(16 * z));
-				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
-				
-				positions.stream().forEach(pos ->
-				{
-					if(this.level.getBlockEntity(pos) instanceof TransportRingsEntity transportRings)
-						transportRingsList.add(transportRings);
-				});
-			}
-		}
-		
-		return transportRingsList;
-	}
-	
-	private long distanceSqr(BlockPos pos, BlockPos targetPos)
-	{
-		if(targetPos == null || pos == null)
-			return Long.MAX_VALUE;
-		
-		long x = Math.abs(targetPos.getX() - pos.getX());
-		long y = Math.abs(targetPos.getY() - pos.getY());
-		long z = Math.abs(targetPos.getZ() - pos.getZ());
-		
-		return x*x + y*y + z*z;
-	}
-	
 	public TransportRingsEntity findNearestTransportRings(int maxDistance)
 	{
 		List<TransportRingsEntity> transportRingsList = getNearbyTransportRings(maxDistance);
 		
 		transportRingsList.sort((transportRingsA, transportRingsB) ->
-				Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()))
-				.compareTo(Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos()))));
+				Long.compare(CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()), CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos())));
 		
 		if(!transportRingsList.isEmpty())
 		{

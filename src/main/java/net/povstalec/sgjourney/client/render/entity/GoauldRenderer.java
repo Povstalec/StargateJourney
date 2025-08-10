@@ -11,8 +11,8 @@ import net.povstalec.sgjourney.common.entities.Goauld;
 
 public class GoauldRenderer extends MobRenderer<Goauld, GoauldModel<Goauld>>
 {
-	private static final ResourceLocation LARVA_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/goauld_larva.png");
-	private static final ResourceLocation ADULT_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/goauld.png");
+	private static final ResourceLocation LARVA_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/goauld/goauld_larva.png");
+	private static final ResourceLocation ADULT_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/goauld/goauld.png");
 	
 	public GoauldRenderer(EntityRendererProvider.Context context)
 	{

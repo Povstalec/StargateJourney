@@ -235,6 +235,9 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	protected void drainEnergyStorage(IEnergyStorage energyStorage)
 	{
+		if(!energyStorage.canExtract())
+			return;
+		
 		if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 		{
 			long simulatedOutputAmount = sgjourneyEnergy.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
@@ -255,6 +258,9 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	protected void fillEnergyStorage(IEnergyStorage energyStorage)
 	{
+		if(!energyStorage.canReceive())
+			return;
+		
 		if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 		{
 			long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);

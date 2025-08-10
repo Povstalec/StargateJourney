@@ -329,7 +329,10 @@ public final class TransporterNetwork extends SavedData
 				if(connection != null)
 					this.connections.put(uuid, connection);
 			}
-			catch(IllegalArgumentException e) {}
+			catch(IllegalArgumentException e)
+			{
+				StargateJourney.LOGGER.error(e.toString());
+			}
 		}
 	}
 	
