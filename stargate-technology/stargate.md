@@ -2,6 +2,7 @@
 title: Stargate
 parent: Stargate Technology
 nav_order: 0
+description: "Documentation for stargates from the Stargate Journey Minecraft mod."
 ---
 
 # Stargate

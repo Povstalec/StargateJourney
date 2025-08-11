@@ -2,6 +2,7 @@
 title: End game
 nav_order: 40
 parent: Survival Guide
+description: "The end game possibilities with all the technology in the survival with the Stargate Journey Minecraft mod."
 ---
 
 # End game

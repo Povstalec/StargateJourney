@@ -2,6 +2,7 @@
 title: Dialing
 nav_order: 10
 parent: Survival Guide
+description: "Guide to dialing the stargate for the first time in the survival with the Stargate Journey Minecraft mod."
 ---
 
 # Stargate dialing

@@ -1,7 +1,7 @@
 ---
 title: Survival Guide
 nav_order: 30
-description: "A guide to the survival progression in Stargate Journey Minecraft mod."
+description: "A guide to the survival progression in the Stargate Journey Minecraft mod."
 ---
 
 # Survival Guide

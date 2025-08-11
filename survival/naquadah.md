@@ -2,6 +2,7 @@
 title: Naquadah
 nav_order: 30
 parent: Survival Guide
+description: "Guide to naquadah processing in the survival with the Stargate Journey Minecraft mod."
 ---
 
 # Naquadah

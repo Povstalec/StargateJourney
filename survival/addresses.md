@@ -2,6 +2,7 @@
 title: Finding addresses
 nav_order: 20
 parent: Survival Guide
+description: "Guide to finding stargate addresses in the survival with the Stargate Journey Minecraft mod."
 ---
 
 # Finding addresses

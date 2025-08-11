@@ -2,7 +2,7 @@
 title: Finding a Stargate
 nav_order: 0
 parent: Survival Guide
-description: "A survival guide to finding the buried stargate from the Stargate Journey Minecraft mod."
+description: "Guide to finding the first stargate in the survival with the Stargate Journey Minecraft mod."
 ---
 
 # Finding a Stargate
