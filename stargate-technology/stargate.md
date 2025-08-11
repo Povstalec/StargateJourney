@@ -11,6 +11,10 @@ description: "Documentation for stargates from the Stargate Journey Minecraft mo
 If you don't know what stargate is, 
 check [What’s that Stargate thing anyway?]({{ '/what-is-stargate/' | absolute_url }})
 
+In order to interact with the stargate, to read it's state using redstone
+or communicate with [CC:Tweaked](https://tweaked.cc) computers, 
+a [stargate interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }}) is required.
+
 <details>
 <summary>Dr. Jackson's instructional video on Stargate</summary>
 {% include youtubePlayer.html id="CAK_x-hQFUs" %}
@@ -495,6 +499,7 @@ The available variants can be found at [Stargate Technology / Crystals / Variant
 
 This is not a variant.    
 By default, the Pegasus gate picks the symbols of the galaxy it is currently placed in.
+This is how it looks like when placed in the Milky Way galaxy.
 
 ![Pegasus Stargate Milky Way symbols]({{ site.baseurl }}/assets/img/blocks/technological/variants/pegasus_milkyway_symbols.png)
 {: .max-width-512 }
@@ -505,11 +510,65 @@ ___
 
 ## Stargate Feedback
 
+Stargate is a complicated device which can enter numerous states
+and a lot of things can go wrong.
+Feedback system is in place to provide a list of status codes (and their description)
+indicating the result of the last action the stargate performed.
+A value above zero indicating a success and value below zero an error.
+
+To read the last feedback, right-click the gate with PDA, the gate information will be printed to the chat.
+Alternatively, computers can read the feedback and obtain it as a result of some commands.
+See the [computercraft documentation for the stargate interface]({{ '/computercraft/stargate-interface' | absolute_url }}) 
+for details.
+
 The most recent list of feedback codes can be found in the source code at [GitHub / StargateInfo](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/sgjourney/StargateInfo.java#L120).
 
 The codes are formatted as  
 ```java
-FEEDBACK_NAME ( feedback_code_number, feedback_type, feedback_name ),
+FEEDBACK_NAME ( feedback_code_number, feedback_type, feedback_name )
 ```
 
-[//]: # (TODO explain stargate feedbacks)
+Below, you can find a list explaining some of the feedback errors.
+
+- `unknown` - The unknown error is a result of a faulty and unexpected behavior of the stargate network. 
+Please report any occurrence and include description of actions that caused it.
+- `symbol_in_address` - This error indicates that the symbol is already encoded in the current address.
+A single symbol cannot be present in the address twice.
+This feedback can often be observed while using 3-way chevron encoding where both actions `encode chevron` and `close chevron`
+attempts to encode the current symbol, resulting in two encodings of the same symbol.
+- `symbol_out_of_bonds` - The stargate cannot encode the symbol. 
+Happens, for example, when trying to encode a symbol above 35 on [Universe stargate](#universe).
+- `invalid_address` - The address is not valid. 
+Happens when the 7-chevron address does not exist in the current galaxy (it may exist in a different galaxy),
+or the 8-chevron (or 9-chevron) address does not exist at all.
+If you are sure that the address is correct, but you did not obtain it in-game, 
+it is possible that your game is configured to generate addresses randomly.
+- `self_obstructed` - The local stargate is obstructed by blocks. 
+Remove blocks from the inside of the gate and try dialing the address again. 
+- `target_obstructed` - The destination stargate is obstructed by blocks.
+You will need to find the gate first and break the blocks.
+- `no_galaxy` - The gate is not located in a galaxy. 
+This could indicate a solar system misconfiguration from datapacks.
+Or possibly the current dimension was dynamically added, you can try executing the 
+[stellar update]({{ '/commands/#sgjourney-stargatenetwork-forcestellarupdate' | absolute_url }}).
+- `no_dimensions` - The dialed solar system exists but has no dimensions.
+This indicates a solar system misconfiguration from datapacks.
+- `no_stargates` - The dialed solar system has no stargates.
+Note that not every dimension automatically generates a stargate.
+See [datapacks]({{ '/datapacks' | absolute_url }}) section
+for options to add a stargate generation to a new dimension.
+- `target_restricted` - The destination stargate does not accept connections from a different networks.
+- `invalid_system_wide_connection` - The common config does not allow establishing a system-wide connection.
+- `whitelisted_target` - The dialed address is not whitelisted by the local stargate.
+The local stargate needs to add the dialed address to the whitelist.
+- `whitelisted_self` - The local address is not whitelisted by the destination stargate.
+The destination stargate needs to add the local address to the whitelist.
+- `blacklisted_target` - The dialed address is blacklisted by the local stargate.
+The local stargate needs to remove the dialed address from the blacklist.
+- `blacklisted_self` - The destination stargate has the local address blacklisted.
+The destination stargate needs to remove the local address from the blacklist.
+- `wrong_disconnect_side` - The connection cannot be closed from this side.
+The other side needs to end the connection.
+- `could_not_reach_target_stargate` - The stargate network was not able to find the destination gate.
+This means an unexpected error occurred, and you should report it.
+Before you do that, ensure you do not have any [incompatible mod]({{ '/#known-incompatibilities' | absolute_url }}) installed.
