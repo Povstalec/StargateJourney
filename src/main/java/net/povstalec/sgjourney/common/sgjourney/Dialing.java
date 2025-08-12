@@ -119,10 +119,10 @@ public class Dialing
 				else if(targetStargate.addressFilterInfo().getFilterType().shouldFilter())
 				{
 					if(targetStargate.addressFilterInfo().getFilterType().isBlacklist() && targetStargate.addressFilterInfo().isAddressBlacklisted(dialingAddress))
-						return dialingStargate.resetStargate(server, StargateInfo.Feedback.BLACKLISTED_SELF, true);
+						return dialingStargate.resetStargate(server, StargateInfo.Feedback.BLACKLISTED_BY_TARGET, true);
 					
 					else if(targetStargate.addressFilterInfo().getFilterType().isWhitelist() && !targetStargate.addressFilterInfo().isAddressWhitelisted(dialingAddress))
-						return dialingStargate.resetStargate(server, StargateInfo.Feedback.WHITELISTED_SELF, true);
+						return dialingStargate.resetStargate(server, StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET, true);
 				}
 				
 				return connectStargates(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh);
@@ -152,7 +152,7 @@ public class Dialing
 			StargateInfo.Feedback feedback = solarSystem.primaryStargate().tryConnect(server, dialingStargate, addressType, dialingAddress, doKawoosh);
 			
 			if(feedback != StargateInfo.Feedback.TARGET_OBSTRUCTED && feedback != StargateInfo.Feedback.TARGET_RESTRICTED &&
-					feedback != StargateInfo.Feedback.BLACKLISTED_SELF && feedback != StargateInfo.Feedback.WHITELISTED_SELF)
+					feedback != StargateInfo.Feedback.BLACKLISTED_BY_TARGET && feedback != StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET)
 				return feedback;
 		}
 		
@@ -166,7 +166,7 @@ public class Dialing
 			
 			// If Stargate isn't obstructed and its network isn't restricted, connect
 			if(feedback != StargateInfo.Feedback.TARGET_OBSTRUCTED && feedback != StargateInfo.Feedback.TARGET_RESTRICTED &&
-					feedback != StargateInfo.Feedback.BLACKLISTED_SELF && feedback != StargateInfo.Feedback.WHITELISTED_SELF)
+					feedback != StargateInfo.Feedback.BLACKLISTED_BY_TARGET && feedback != StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET)
 				return feedback;
 			
 			if(isLastStargate)
