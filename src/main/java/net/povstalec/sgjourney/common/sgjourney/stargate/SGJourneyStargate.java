@@ -11,10 +11,12 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Dialing;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.UUID;
 
 public class SGJourneyStargate implements Stargate
 {
@@ -139,43 +141,25 @@ public class SGJourneyStargate implements Stargate
 	@Override
 	public boolean isConnected(MinecraftServer server)
 	{
-		AbstractStargateEntity stargateEntity = getStargateEntity(server);
-		
-		if(stargateEntity != null)
-			return stargateEntity.isConnected();
-		
-		return false;
+		return stargateReturn(server, stargate -> stargate.isConnected(), false);
 	}
 	
 	@Override
 	public boolean isObstructed(MinecraftServer server)
 	{
-		AbstractStargateEntity stargateEntity = getStargateEntity(server);
-		
-		if(stargateEntity != null)
-			return stargateEntity.isConnected();
-		
-		return false;
+		return stargateReturn(server, stargate -> stargate.isConnected(), false);
 	}
 	
 	@Override
 	public boolean canExtractEnergy(MinecraftServer server, long energy)
 	{
-		AbstractStargateEntity stargateEntity = getStargateEntity(server);
-		
-		if(stargateEntity != null)
-			return stargateEntity.canExtractEnergy(energy);
-		
-		return false;
+		return stargateReturn(server, stargate -> stargate.canExtractEnergy(energy), false);
 	}
 	
 	@Override
 	public void depleteEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
-		AbstractStargateEntity stargateEntity = getStargateEntity(server);
-		
-		if(stargateEntity != null)
-			stargateEntity.depleteEnergy(energy, simulate);
+		stargateRun(server, stargate -> stargate.depleteEnergy(energy, simulate));
 	}
 	
 	@Override
@@ -205,14 +189,10 @@ public class SGJourneyStargate implements Stargate
 		return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
 	}
 	
+	@Override
 	public boolean isPrimary(MinecraftServer server)
 	{
-		AbstractStargateEntity stargateEntity = getStargateEntity(server);
-		
-		if(stargateEntity != null)
-			return stargateEntity.isPrimary();
-		
-		return false;
+		return stargateReturn(server, stargate -> stargate.isPrimary(), false);
 	}
 	
 	
@@ -239,6 +219,48 @@ public class SGJourneyStargate implements Stargate
 			StargateJourney.LOGGER.error("Stargate not found");
 			return false;
 		}
+	}
+	
+	@Override
+	public void doWhileDialed(MinecraftServer server, int openTime, StargateInfo.ChevronLockSpeed chevronLockSpeed)
+	{
+		stargateRun(server, stargate -> stargate.doWhileDialed(openTime, chevronLockSpeed));
+	}
+	
+	@Override
+	public void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration)
+	{
+		stargateRun(server, stargate -> stargate.setEngagedChevrons(chevronConfiguration));
+	}
+	
+	@Override
+	public void updateInterfaceBlocks(MinecraftServer server, @Nullable String eventName, Object... objects)
+	{
+		stargateRun(server, stargate -> stargate.updateInterfaceBlocks(eventName, objects));
+	}
+	
+	@Override
+	public void setKawooshTickCount(MinecraftServer server, int kawooshTick)
+	{
+		stargateRun(server, stargate -> stargate.setKawooshTickCount(kawooshTick));
+	}
+	
+	@Override
+	public void updateClient(MinecraftServer server)
+	{
+		stargateRun(server, stargate -> stargate.updateClient());
+	}
+	
+	@Override
+	public void connectStargate(MinecraftServer server, UUID connectionID, StargateConnection.State connectionState)
+	{
+		stargateRun(server, stargate -> stargate.connectStargate(connectionID, connectionState));
+	}
+	
+	@Override
+	public void receiveStargateMessage(MinecraftServer server, String message)
+	{
+		stargateRun(server, stargate -> stargate.receiveStargateMessage(message));
 	}
 	
 	
@@ -300,5 +322,35 @@ public class SGJourneyStargate implements Stargate
 	public String toString()
 	{
 		return "[ " + this.address.toString() + " | DHD: " + this.hasDHD + " | Generation: " + this.generation + " | Times Opened: " + this.timesOpened + " ]";
+	}
+	
+	
+	
+	public interface StargateConsumer
+	{
+		void run(AbstractStargateEntity stargate);
+	}
+	
+	public interface ReturnStargateConsumer<T>
+	{
+		T run(AbstractStargateEntity stargate);
+	}
+	
+	private void stargateRun(MinecraftServer server, StargateConsumer consumer)
+	{
+		AbstractStargateEntity stargate = getStargateEntity(server);
+		
+		if(stargate != null)
+			consumer.run(stargate);
+	}
+	
+	private <T> T stargateReturn(MinecraftServer server, ReturnStargateConsumer<T> consumer, @Nullable T defaultValue)
+	{
+		AbstractStargateEntity stargate = getStargateEntity(server);
+		
+		if(stargate != null)
+			return consumer.run(stargate);
+		
+		return defaultValue;
 	}
 }
