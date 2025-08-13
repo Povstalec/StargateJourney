@@ -584,10 +584,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(addressFilterInfo().getFilterType().shouldFilter())
 		{
 			if(addressFilterInfo().getFilterType().isBlacklist() && addressFilterInfo().isAddressBlacklisted(immutableAddress))
-				return this.resetStargate(StargateInfo.Feedback.BLACKLISTED_TARGET);
+				return this.resetStargate(StargateInfo.Feedback.TARGET_BLACKLISTED);
 			
 			else if(addressFilterInfo().getFilterType().isWhitelist() && !addressFilterInfo().isAddressWhitelisted(immutableAddress))
-				return this.resetStargate(StargateInfo.Feedback.WHITELISTED_TARGET);
+				return this.resetStargate(StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
 		}
 		
 		Address dialingAddress = this.getConnectionAddress(address.getLength());
