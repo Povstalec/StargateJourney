@@ -157,7 +157,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		return side == Direction.UP;
+		return side == Direction.DOWN;
 	}
 	
 	protected boolean receivesEnergy()
