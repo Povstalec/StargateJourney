@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -72,7 +73,13 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 				useUpItems(recipe.get(), 1);
 			if(recipe.get().depleteSecondary())
 				useUpItems(recipe.get(), 2);
-			outputHandler.setStackInSlot(0, recipe.get().getResultItem());
+			
+			ItemStack outputStack = outputHandler.getStackInSlot(0);
+			
+			if(outputStack.isEmpty())
+				outputHandler.setStackInSlot(0, recipe.get().getResultItem());
+			else if(recipe.get().getResultItem().is(outputStack.getItem()))
+				outputStack.grow(1);
 			
 			this.progress = 0;
 		}
