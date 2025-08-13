@@ -583,10 +583,11 @@
   "message.sgjourney.stargate.error.target_restricted": "La Porte Des Étoiles composé est restreint",
   "message.sgjourney.stargate.error.invalid_8_chevron_address": "L'adresse à 8 chevrons ne peut pas renvoyer au sein de la même Galaxie",
   "message.sgjourney.stargate.error.invalid_system_wide_connection": "Impossible de se connecter au sein du même système solaire",
-  "message.sgjourney.stargate.error.whitelisted_target": "La Porte Des Étoiles cible n'est pas sur la liste blanche",
-  "message.sgjourney.stargate.error.whitelisted_self": "La Porte Des Étoiles ne figure pas sur la liste blanche de la Porte Des Étoiles cible",
-  "message.sgjourney.stargate.error.blacklisted_target": "La Porte Des Étoiles cible est sur la liste noire",
-  "message.sgjourney.stargate.error.blacklisted_self": "La Porte Des Étoiles figure sur la liste noire de la Porte Des Étoiles cible",
+  
+  "message.sgjourney.stargate.error.target_not_whitelisted": "La Porte Des Étoiles cible n'est pas sur la liste blanche",
+  "message.sgjourney.stargate.error.not_whitelisted_by_target": "La Porte Des Étoiles ne figure pas sur la liste blanche de la Porte Des Étoiles cible",
+  "message.sgjourney.stargate.error.target_blacklisted": "La Porte Des Étoiles cible est sur la liste noire",
+  "message.sgjourney.stargate.error.blacklisted_by_target": "La Porte Des Étoiles figure sur la liste noire de la Porte Des Étoiles cible",
 
   "message.sgjourney.stargate.info.connection_ended.disconnect": "La Porte Des Étoiles est déconnecté",
   "message.sgjourney.stargate.info.connection_ended.point_of_origin": "La Porte Des Étoiles est déconnecté en verrouillant le point d'origine",
