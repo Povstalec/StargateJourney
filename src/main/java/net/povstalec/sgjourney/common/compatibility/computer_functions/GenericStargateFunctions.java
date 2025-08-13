@@ -104,7 +104,7 @@ public class GenericStargateFunctions
 	public static Address.Immutable getDialedAddress(AbstractStargateEntity stargate)
 	{
 		// Will only display the dialed Address
-		return !stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ? stargate.getAddress().immutable() : new Address().immutable();
+		return !stargate.isConnected() || stargate.isDialingOut() ? stargate.getAddress().immutable() : new Address().immutable();
 	}
 	
 	public static void setChevronConfiguration(AbstractStargateEntity stargate, int[] configurationArray)

@@ -9,6 +9,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -33,9 +35,8 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
-import net.povstalec.sgjourney.common.sgjourney.Transporter;
 
-public class RingPanelEntity extends BlockEntity
+public class RingPanelEntity extends TransporterControllerEntity
 {
 	public static final String INVENTORY = "Inventory";
 	
@@ -101,23 +102,7 @@ public class RingPanelEntity extends BlockEntity
 				@Override
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
-					switch(slot)
-					{
-					case 0:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 1:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 2:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 3:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 4:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					case 5:
-						return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
-					default: 
-						return false;
-					}
+					return stack.getItem() == ItemInit.MEMORY_CRYSTAL.get();
 				}
 				
 				// Limits the number of items per slot
@@ -166,8 +151,7 @@ public class RingPanelEntity extends BlockEntity
 		List<Transporter> transporters = transporterListOptional.get();
 		
 		transporters.sort((transportRingsA, transportRingsB) ->
-		Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()))
-		.compareTo(Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos()))));
+				Long.compare(CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()), CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos())));
 		
 		ringsPos.clear();
 		ringsName.clear();
@@ -186,40 +170,6 @@ public class RingPanelEntity extends BlockEntity
 		}
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientboundRingPanelUpdatePacket(worldPosition, ringsPos, ringsName));
-		return;
-	}
-	
-	protected List<TransportRingsEntity> getNearbyTransportRings(int maxDistance)
-	{
-		List<TransportRingsEntity> transportRingsList = new ArrayList<TransportRingsEntity>();
-		
-		for(int x = -maxDistance / 16; x <= maxDistance / 16; x++)
-		{
-			for(int z = -maxDistance / 16; z <= maxDistance / 16; z++)
-			{
-				ChunkAccess chunk = this.level.getChunk(this.getBlockPos().east(16 * x).south(16 * z));
-				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
-				
-				positions.stream().forEach(pos ->
-				{
-					if(this.level.getBlockEntity(pos) instanceof TransportRingsEntity transportRings)
-						transportRingsList.add(transportRings);
-				});
-			}
-		}
-		
-		return transportRingsList;
-	}
-	
-	private long distanceSqr(BlockPos pos, BlockPos targetPos)
-	{
-		long x = Math.abs(targetPos.getX() - pos.getX());
-		long y = Math.abs(targetPos.getY() - pos.getY());
-		long z = Math.abs(targetPos.getZ() - pos.getZ());
-		
-		long distance = x*x + y*y + z*z;
-		
-		return distance;
 	}
 	
 	public TransportRingsEntity findNearestTransportRings(int maxDistance)
@@ -227,8 +177,7 @@ public class RingPanelEntity extends BlockEntity
 		List<TransportRingsEntity> transportRingsList = getNearbyTransportRings(maxDistance);
 		
 		transportRingsList.sort((transportRingsA, transportRingsB) ->
-				Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()))
-				.compareTo(Long.valueOf(distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos()))));
+				Long.compare(CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()), CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos())));
 		
 		if(!transportRingsList.isEmpty())
 		{
@@ -274,7 +223,9 @@ public class RingPanelEntity extends BlockEntity
 			if(!target.canTransport())
 				return;
 			
-			transportRings.activate(targetPos);
+			Transporter transporter = target.getTransporter();
+			if(transporter != null)
+				transportRings.startTransport(transporter);
 		}
 	}
 	

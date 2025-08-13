@@ -1,26 +1,13 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.lang.ref.WeakReference;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.EitherCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.misc.Conversion;
-
-import javax.annotation.Nullable;
 
 public class StargateInfo
 {
@@ -147,10 +134,10 @@ public class StargateInfo
 		TARGET_RESTRICTED(-16, FeedbackType.MAJOR_ERROR, "target_restricted"),
 		INVALID_8_CHEVRON_ADDRESS(-17, FeedbackType.MAJOR_ERROR, "invalid_8_chevron_address"),
 		INVALID_SYSTEM_WIDE_CONNECTION(-18, FeedbackType.MAJOR_ERROR, "invalid_system_wide_connection"),
-		WHITELISTED_TARGET(-19, FeedbackType.MAJOR_ERROR, "whitelisted_target"),
-		WHITELISTED_SELF(-20, FeedbackType.MAJOR_ERROR, "whitelisted_self"),
-		BLACKLISTED_TARGET(-21, FeedbackType.MAJOR_ERROR, "blacklisted_target"),
-		BLACKLISTED_SELF(-22, FeedbackType.MAJOR_ERROR, "blacklisted_self"),
+		TARGET_NOT_WHITELISTED(-19, FeedbackType.MAJOR_ERROR, "target_not_whitelisted"),
+		NOT_WHITELISTED_BY_TARGET(-20, FeedbackType.MAJOR_ERROR, "not_whitelisted_by_target"),
+		TARGET_BLACKLISTED(-21, FeedbackType.MAJOR_ERROR, "target_blacklisted"),
+		BLACKLISTED_BY_TARGET(-22, FeedbackType.MAJOR_ERROR, "blacklisted_by_target"),
 
 		// Wormhole TODO
 		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),

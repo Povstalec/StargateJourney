@@ -35,23 +35,23 @@ import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
 public class ClientAccess
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
-    
-    public static void updateDialer(BlockPos pos)
-    {
-    	minecraft.setScreen(new DialerScreen());
-    }
-    
-    public static void openGDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
-    {
-    	minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
-    }
 	
 	public static void openArcheologistNotebookScreen(UUID playerId, boolean mainHand, CompoundTag tag)
 	{
 		minecraft.setScreen(new ArcheologistNotebookScreen(playerId, mainHand, tag));
 	}
 	
-    public static void updateSymbol(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
+	public static void updateDialer(BlockPos pos)
+	{
+		minecraft.setScreen(new DialerScreen());
+	}
+	
+	public static void openGDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
+	{
+		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
+	}
+	
+	public static void updateSymbol(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -93,28 +93,29 @@ public class ClientAccess
         	transceiver.setCurrentCode(idc);
         }
     }
-    
-    public static void updateRings(BlockPos pos, int emptySpace, int transportHeight)
-    {
-        final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final TransportRingsEntity rings)
-        {
-        	rings.emptySpace = emptySpace;
-        	rings.transportHeight = transportHeight;
-        }
-    }
-    
-    public static void updateRingPanel(BlockPos pos, ArrayList<BlockPos> ringsPos, ArrayList<Component> ringsName)
-    {
-        final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final RingPanelEntity panel)
-        {
-        	panel.ringsPos = ringsPos;
-        	panel.ringsName = ringsName;
-        }
-    }
+	
+	public static void updateRings(BlockPos pos, int emptySpace, int transportHeight, int progress)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final TransportRingsEntity rings)
+		{
+			rings.emptySpace = emptySpace;
+			rings.transportHeight = transportHeight;
+			rings.updateProgress(progress);
+		}
+	}
+	
+	public static void updateRingPanel(BlockPos pos, ArrayList<BlockPos> ringsPos, ArrayList<Component> ringsName)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final RingPanelEntity panel)
+		{
+			panel.ringsPos = ringsPos;
+			panel.ringsName = ringsName;
+		}
+	}
     
     public static void updateDHD(BlockPos pos, long energy, ResourceLocation pointOfOrigin, ResourceLocation symbols, int[] address, boolean isCenterButtonEngaged)
     {
@@ -124,26 +125,26 @@ public class ClientAccess
         {
 			dhd.setEnergy(energy);
 			dhd.symbolInfo().setPointOfOrigin(pointOfOrigin);
-        	dhd.symbolInfo().setSymbols(symbols);
-        	dhd.setAddress(new Address(true).fromArray(address));
-        	dhd.setCenterButtonEngaged(isCenterButtonEngaged);
-        }
-    }
-    
-    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
+			dhd.symbolInfo().setSymbols(symbols);
+			dhd.setAddress(new Address(true).fromArray(address));
+			dhd.setCenterButtonEngaged(isCenterButtonEngaged);
+		}
+	}
+	
+	public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
 									  ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractStargateEntity stargate)
-        {
-        	stargate.setAddress(new Address(address));
-        	stargate.setEngagedChevrons(engagedChevrons);
-        	stargate.setKawooshTickCount(kawooshTick);
-        	stargate.setTickCount(tick);
-        	stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
-        	stargate.symbolInfo().setSymbols(symbols);
-        	stargate.setVariant(variant);
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final AbstractStargateEntity stargate)
+		{
+			stargate.setAddress(new Address(address));
+			stargate.setEngagedChevrons(engagedChevrons);
+			stargate.setKawooshTickCount(kawooshTick);
+			stargate.setTickCount(tick);
+			stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
+			stargate.symbolInfo().setSymbols(symbols);
+			stargate.setVariant(variant);
 			
 			if(blockEntity instanceof IrisInfo.Interface irisStargate)
 			{
@@ -154,44 +155,44 @@ public class ClientAccess
 				else
 					irisStargate.irisInfo().unsetIris();
 			}
-        }
-    }
-    
-    public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
-    {
-    	final BlockState state = minecraft.level.getBlockState(pos);
-        
-        if(state.getBlock() instanceof final AbstractStargateBlock stargateBlock)
-        {
-        	StargatePart part = state.getValue(AbstractStargateBlock.PART);
-        	Direction direction = state.getValue(AbstractStargateBlock.FACING);
-        	Orientation orientation = state.getValue(AbstractStargateBlock.ORIENTATION);
-        	
-        	if(part == null || direction == null || orientation == null)
-        		return;
-        	
-        	BlockPos basePos = part.getBaseBlockPos(pos, direction, orientation);
-        	
-        	for(Map.Entry<StargatePart, BlockState> entry : blockStates.entrySet())
-        	{
-        		BlockPos coverPos = entry.getKey().getRingPos(basePos, direction, orientation);
-        		
-            	minecraft.particleEngine.destroy(coverPos, stargateBlock.defaultBlockState());
-        	}
-        }
-    }
-    
-    public static void updateStargateState(BlockPos pos, StargateConnection.State connectionState, boolean canSinkGate, HashMap<StargatePart, BlockState> blockStates)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractStargateEntity stargate)
-        {
+		}
+	}
+	
+	public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
+	{
+		final BlockState state = minecraft.level.getBlockState(pos);
+		
+		if(state.getBlock() instanceof final AbstractStargateBlock stargateBlock)
+		{
+			StargatePart part = state.getValue(AbstractStargateBlock.PART);
+			Direction direction = state.getValue(AbstractStargateBlock.FACING);
+			Orientation orientation = state.getValue(AbstractStargateBlock.ORIENTATION);
+			
+			if(part == null || direction == null || orientation == null)
+				return;
+			
+			BlockPos basePos = part.getBaseBlockPos(pos, direction, orientation);
+			
+			for(Map.Entry<StargatePart, BlockState> entry : blockStates.entrySet())
+			{
+				BlockPos coverPos = entry.getKey().getRingPos(basePos, direction, orientation);
+				
+				minecraft.particleEngine.destroy(coverPos, stargateBlock.defaultBlockState());
+			}
+		}
+	}
+	
+	public static void updateStargateState(BlockPos pos, StargateConnection.State connectionState, boolean canSinkGate, HashMap<StargatePart, BlockState> blockStates)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final AbstractStargateEntity stargate)
+		{
 			stargate.setConnectionState(connectionState);
-        	stargate.blockCover.blockStates = blockStates;
-        	stargate.blockCover.canSinkGate = canSinkGate;
-        }
-    }
+			stargate.blockCover.blockStates = blockStates;
+			stargate.blockCover.canSinkGate = canSinkGate;
+		}
+	}
 	
 	public static void updateRotatingStargate(BlockPos pos, int rotation, int oldRotation, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredRotation)
 	{
@@ -206,23 +207,23 @@ public class ClientAccess
 			stargate.desiredRotation = desiredRotation;
 		}
 	}
-    
-    public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final UniverseStargateEntity stargate)
-        {
-        	stargate.symbolBuffer = symbolBuffer;
-        	stargate.addressBuffer.fromArray(addressBuffer);
-        }
-    }
-    
-    public static void updateMilkyWayStargate(BlockPos pos, boolean isChevronOpen)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final MilkyWayStargateEntity stargate)
+	
+	public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final UniverseStargateEntity stargate)
+		{
+			stargate.symbolBuffer = symbolBuffer;
+			stargate.addressBuffer.fromArray(addressBuffer);
+		}
+	}
+	
+	public static void updateMilkyWayStargate(BlockPos pos, boolean isChevronOpen)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final MilkyWayStargateEntity stargate)
 			stargate.isChevronOpen = isChevronOpen;
     }
     

@@ -251,7 +251,7 @@ public final class StargateNetwork extends SavedData
 		Map<UUID, StargateConnection> connections = new HashMap<>();
 		connections.putAll(this.connections);
 		
-		connections.forEach((connectionID, connection) -> connection.tick(server));
+		connections.forEach((uuid, connection) -> connection.tick(server));
 		this.setDirty();
 	}
 	

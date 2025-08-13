@@ -38,12 +38,15 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	@Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
 	{
-        if (state.getBlock() != newState.getBlock())
+        if(state.getBlock() != newState.getBlock())
         {
             BlockEntity entity = level.getBlockEntity(pos);
             
             if(entity instanceof AbstractTransporterEntity transporterEntity)
-            	transporterEntity.removeTransporterFromNetwork();
+			{
+				transporterEntity.disconnectTransporter();
+				transporterEntity.removeTransporterFromNetwork();
+			}
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }

@@ -1,12 +1,16 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -32,7 +36,8 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	protected UUID id;
-	protected String connectionID = StargateJourney.EMPTY;
+	@Nullable
+	protected UUID connectionID = null;
 
 	@Nullable
 	private Component name;
@@ -108,6 +113,13 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		return id;
 	}
 	
+	@Nullable
+	public Transporter getTransporter()
+	{
+		//TODO Maybe start caching it?
+		return TransporterNetwork.get(level).getTransporter(id);
+	}
+	
 	public void addTransporterToNetwork()
 	{
 		if(this.id == null)
@@ -161,10 +173,56 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	
 	public abstract boolean isConnected();
 	
+	public boolean canTransport()
+	{
+		return !this.isConnected();
+	}
+	
 	public int getTimeOffset()
 	{
 		return 0;
 	}
+	
+	public boolean connectTransporter(UUID connectionID)
+	{
+		this.connectionID = connectionID;
+		setConnected(true);
+		
+		return true;
+	}
+	
+	public void disconnectTransporter()
+	{
+		if(connectionID != null)
+			TransporterNetwork.get(level).terminateConnection(this.connectionID);
+		resetTransporter();
+	}
+	
+	public void resetTransporter()
+	{
+		this.connectionID = null;
+		setConnected(false);
+	}
+	
+	protected void loadChunk(boolean load)
+	{
+		if(!level.isClientSide())
+			ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(),
+					level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+	}
+	
+	//========================================================================================================
+	//**********************************************Transporting**********************************************
+	//========================================================================================================
+	
+	@Nullable
+	public abstract List<Entity> entitiesToTransport();
+	
+	public abstract BlockPos transportPos();
+	
+	public abstract void updateTicks(int connectionTime);
+	
+	public abstract void setConnected(boolean connected);
 	
 	//============================================================================================
 	//*****************************************Generation*****************************************

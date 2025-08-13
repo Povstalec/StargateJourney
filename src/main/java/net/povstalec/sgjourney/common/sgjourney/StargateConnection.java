@@ -206,23 +206,22 @@ public final class StargateConnection
 	{
 		this(uuid, connectionType, dialingStargate, dialedStargate, false, 0, 0, 0, doKawoosh);
 	}
-
-	//TODO Replace these parameters with Stargate object
+	
 	public static final StargateConnection create(MinecraftServer server, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate, boolean doKawoosh)
 	{
 		UUID uuid = UUID.randomUUID();
 		
 		if(dialingStargate != null && dialedStargate != null)
 		{
-			dialedStargate.getStargateEntity(server).resetStargate(StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION);
+			dialedStargate.resetStargate(server, StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION, true);
 			
-			dialingStargate.getStargateEntity(server).setKawooshTickCount(0);
-			dialingStargate.getStargateEntity(server).updateClient();
-			dialedStargate.getStargateEntity(server).setKawooshTickCount(0);
-			dialedStargate.getStargateEntity(server).updateClient();
+			dialingStargate.setKawooshTickCount(server, 0);
+			dialingStargate.updateClient(server);
+			dialedStargate.setKawooshTickCount(server, 0);
+			dialedStargate.updateClient(server);
 
-			dialingStargate.getStargateEntity(server).connectStargate(uuid, StargateConnection.State.OUTGOING_CONNECTION);
-			dialedStargate.getStargateEntity(server).connectStargate(uuid, StargateConnection.State.INCOMING_CONNECTION);
+			dialingStargate.connectStargate(server, uuid, StargateConnection.State.OUTGOING_CONNECTION);
+			dialedStargate.connectStargate(server, uuid, StargateConnection.State.INCOMING_CONNECTION);
 			
 			return new StargateConnection(uuid, connectionType, dialingStargate, dialedStargate, doKawoosh);
 		}
@@ -231,19 +230,16 @@ public final class StargateConnection
 	
 	public final void terminate(MinecraftServer server, StargateInfo.Feedback feedback)
 	{
+		if(this.dialingStargate != null)
 		{
-			AbstractStargateEntity entity = this.dialingStargate.getStargateEntity(server);
-			if (this.dialingStargate != null && entity != null) {
-				entity.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
-				this.dialingStargate.resetStargate(server, feedback, true);
-			}
+			this.dialingStargate.updateInterfaceBlocks(server, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
+			this.dialingStargate.resetStargate(server, feedback, true);
 		}
+		
+		if (this.dialedStargate != null)
 		{
-			AbstractStargateEntity entity = this.dialedStargate.getStargateEntity(server);
-			if (this.dialedStargate != null && entity != null) {
-				entity.updateInterfaceBlocks(EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
-				this.dialedStargate.resetStargate(server, feedback, true);
-			}
+			this.dialedStargate.updateInterfaceBlocks(server, EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
+			this.dialedStargate.resetStargate(server, feedback, true);
 		}
 		
 		StargateNetwork.get(server).removeConnection(uuid, feedback);
@@ -293,7 +289,7 @@ public final class StargateConnection
 		
 		// Updates Interfaces when incoming connection is detected
 		if(this.openTime == 0)
-			this.dialedStargate.getStargateEntity(server).updateInterfaceBlocks(EVENT_INCOMING_CONNECTION);
+			this.dialedStargate.updateInterfaceBlocks(server, EVENT_INCOMING_CONNECTION);
 		
 		StargateInfo.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? StargateInfo.ChevronLockSpeed.FAST : this.dialedStargate.getStargateEntity(server).getChevronLockSpeed();
 		int chevronWaitTicks = chevronLockSpeed.getChevronWaitTicks();
@@ -316,11 +312,11 @@ public final class StargateConnection
 			int addressLength = this.dialingStargate.getStargateEntity(server).getAddress().getLength();
 			Address dialingAddress = this.dialingStargate.getStargateEntity(server).getConnectionAddress(addressLength);
 			
-			this.dialedStargate.getStargateEntity(server).setEngagedChevrons(AbstractStargateEntity.getChevronConfiguration(addressLength));
+			this.dialedStargate.setChevronConfiguration(server, AbstractStargateEntity.getChevronConfiguration(addressLength));
 			
 			// Used for handling what the Stargate does when it's being dialed
 			// For example: Pegasus Stargate's ring booting up
-			this.dialedStargate.getStargateEntity(server).doWhileDialed(this.openTime, chevronLockSpeed);
+			this.dialedStargate.doWhileDialed(server, this.openTime, chevronLockSpeed);
 			
 			if(this.openTime % chevronWaitTicks == 0)
 			{

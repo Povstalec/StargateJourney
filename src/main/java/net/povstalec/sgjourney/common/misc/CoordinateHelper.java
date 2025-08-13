@@ -167,6 +167,18 @@ public class CoordinateHelper
 			return new Vec3i(x, vector.getY(), z);
 		}
 		
+		public static long distanceSqr(Vec3i posA, Vec3i posB)
+		{
+			if(posA == null || posB == null)
+				return Long.MAX_VALUE;
+			
+			long x = posB.getX() - posA.getX();
+			long y = posB.getY() - posA.getY();
+			long z = posB.getZ() - posA.getZ();
+			
+			return x*x + y*y + z*z;
+		}
+		
 		public static final Vec3i blockPosOffset(BlockPos initialPos, BlockPos otherPos)
 		{
 			return new Vec3i(otherPos.getX() - initialPos.getX(), otherPos.getY() - initialPos.getY(), otherPos.getZ() - initialPos.getZ());
