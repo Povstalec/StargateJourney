@@ -180,11 +180,11 @@ public class SGJourneyStargate implements Stargate
 		
 		// If last Stargate has a blacklist
 		if(targetStargateEntity.addressFilterInfo().getFilterType().isBlacklist() && targetStargateEntity.addressFilterInfo().isAddressBlacklisted(dialingAddress))
-			return StargateInfo.Feedback.BLACKLISTED_SELF;
+			return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
 		
 		// If last Stargate has a whitelist
 		if(targetStargateEntity.addressFilterInfo().getFilterType().isWhitelist() && !targetStargateEntity.addressFilterInfo().isAddressWhitelisted(dialingAddress))
-			return StargateInfo.Feedback.WHITELISTED_SELF;
+			return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
 		
 		return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
 	}

@@ -168,6 +168,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 	{
 		BlockPos otherPos = pos.relative(direction);
 		BlockState state = getter.getBlockState(otherPos);
+		Direction otherDirection = direction.getOpposite();
 		
 		if(state.isAir())
 			return ConnectorType.NONE;
@@ -177,7 +178,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		
 		BlockEntity blockEntity = getter.getBlockEntity(otherPos);
 		if(blockEntity != null)
-			return blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).isPresent() ? ConnectorType.BLOCK : ConnectorType.NONE;
+			return blockEntity.getCapability(ForgeCapabilities.ENERGY, otherDirection).isPresent() ? ConnectorType.BLOCK : ConnectorType.NONE;
 		
 		if(state.getBlock() instanceof LightningRodBlock && state.getValue(LightningRodBlock.FACING) == direction)
 			return ConnectorType.BLOCK;

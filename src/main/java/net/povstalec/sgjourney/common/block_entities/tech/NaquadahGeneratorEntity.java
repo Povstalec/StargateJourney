@@ -205,7 +205,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		Direction bottom = getBottomDirection();
 		
 		if(direction != null && bottom != null)
-			return side == bottom.getOpposite() || side == direction.getClockWise() || side == direction.getCounterClockWise();
+			return side == bottom || side == direction.getClockWise() || side == direction.getCounterClockWise();
 		
 		return false;
 	}
