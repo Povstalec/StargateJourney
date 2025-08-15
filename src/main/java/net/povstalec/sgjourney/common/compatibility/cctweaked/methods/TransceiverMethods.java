@@ -21,7 +21,10 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			TransceiverFunctions.setFrequency(transceiver, arguments.getInt(0));
+			long frequency = arguments.getLong(0);
+			if(frequency > Integer.MAX_VALUE || frequency < Integer.MIN_VALUE)
+				throw new LuaException("Frequency " + frequency + " out of range for <" + Integer.MIN_VALUE + ", " + Integer.MAX_VALUE + ">");
+			TransceiverFunctions.setFrequency(transceiver, (int) frequency);
 			
 			return MethodResult.of();
 		}

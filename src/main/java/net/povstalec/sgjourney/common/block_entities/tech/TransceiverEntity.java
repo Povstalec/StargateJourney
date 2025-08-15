@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -87,7 +88,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		return CommonTransmissionConfig.max_transceiver_transmission_distance.get();
 	}
 	
-	public float transmissionRadius2()
+	public float transmissionRadiusSqr()
 	{
 		return transmissionRadius() * transmissionRadius();
 	}
@@ -191,7 +192,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 				
 				positions.stream().forEach(pos ->
 				{
-					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && distance2(getBlockPos(), stargate.getBlockPos()) <= transmissionRadius2())
+					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && CoordinateHelper.Relative.distanceSqr(getBlockPos(), stargate.getBlockPos()) <= transmissionRadiusSqr())
 					{
 						stargates.add(stargate);
 					}
@@ -203,8 +204,8 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 			return -1; // No Stargates nearby
 		
 		stargates.sort((stargateA, stargateB) ->
-				Double.valueOf(distance2(getBlockPos(), stargateA.getBlockPos()))
-						.compareTo(Double.valueOf(distance2(getBlockPos(), stargateB.getBlockPos()))));
+				Double.valueOf(CoordinateHelper.Relative.distanceSqr(getBlockPos(), stargateA.getBlockPos()))
+						.compareTo(Double.valueOf(CoordinateHelper.Relative.distanceSqr(getBlockPos(), stargateB.getBlockPos()))));
 		
 		AbstractStargateEntity stargate = stargates.get(0);
 		
@@ -261,15 +262,6 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 			return;
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundTransceiverUpdatePacket(this.worldPosition, this.editingFrequency, this.frequency, this.idc));
-	}
-	
-	private static double distance2(BlockPos pos, BlockPos targetPos)
-	{
-		int x = Math.abs(targetPos.getX() - pos.getX());
-		int y = Math.abs(targetPos.getY() - pos.getY());
-		int z = Math.abs(targetPos.getZ() - pos.getZ());
-		
-		return x*x + y*y + z*z;
 	}
 	
 	//============================================================================================
