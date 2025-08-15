@@ -171,12 +171,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 		if(!isConnected() && !this.isChevronOpen)
 		{
 			if(this.rotating)
-			{
-				if(this.rotation == this.desiredRotation)
-					endRotation(false);
-				else
-					rotate(this.rotateClockwise);
-			}
+				rotateToTarget();
 			else if(this.signalStrength > 0 && this.signalStrength < 15)
 			{
 				if(this.signalStrength > 7)

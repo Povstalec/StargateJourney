@@ -223,7 +223,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	@Override
 	protected int rotationStep()
 	{
-		return FAST_ROTATION ? (this.rotating ? 3 : 2) : 2;
+		return FAST_ROTATION ? (this.rotating ? 3 : 2) : 2; // Only rotates fast during computer dialing or DHD dialing, not during redstone dialing
 	}
 	
 	@Override
