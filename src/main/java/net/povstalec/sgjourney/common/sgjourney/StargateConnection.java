@@ -50,16 +50,19 @@ public final class StargateConnection
 	
 	protected static final int maxOpenTime = CommonStargateConfig.max_wormhole_open_time.get() * 20;
 	protected static final boolean energyBypassEnabled = CommonStargateConfig.enable_energy_bypass.get();
-	protected static final int energyBypassMultiplier = CommonStargateConfig.energy_bypass_multiplier.get();
 	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
 	protected static final long systemWideConnectionCost = CommonStargateConfig.system_wide_connection_energy_cost.get();
-	protected static final long interstellarConnectionCost = CommonStargateConfig.interstellar_connection_energy_cost.get();
-	protected static final long intergalacticConnectionCost = CommonStargateConfig.intergalactic_connection_energy_cost.get();
-
 	protected static final long systemWideConnectionDraw = CommonStargateConfig.system_wide_connection_energy_draw.get();
+	protected static final long systemWideConnectionBypassDraw = CommonStargateConfig.system_wide_connection_bypass_energy_draw.get();
+	
+	protected static final long interstellarConnectionCost = CommonStargateConfig.interstellar_connection_energy_cost.get();
 	protected static final long interstellarConnectionDraw = CommonStargateConfig.interstellar_connection_energy_draw.get();
+	protected static final long interstellarConnectionBypassDraw = CommonStargateConfig.interstellar_connection_bypass_energy_draw.get();
+	
+	protected static final long intergalacticConnectionCost = CommonStargateConfig.intergalactic_connection_energy_cost.get();
 	protected static final long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
+	protected static final long intergalacticConnectionBypassDraw = CommonStargateConfig.intergalactic_connection_bypass_energy_draw.get();
 	
 	protected final UUID uuid;
 	protected final StargateConnection.Type connectionType;
@@ -88,17 +91,19 @@ public final class StargateConnection
 	
 	public enum Type
 	{
-		SYSTEM_WIDE(systemWideConnectionCost, systemWideConnectionDraw),
-		INTERSTELLAR(interstellarConnectionCost, interstellarConnectionDraw),
-		INTERGALACTIC(intergalacticConnectionCost, intergalacticConnectionDraw);
+		SYSTEM_WIDE(systemWideConnectionCost, systemWideConnectionDraw, systemWideConnectionBypassDraw),
+		INTERSTELLAR(interstellarConnectionCost, interstellarConnectionDraw, interstellarConnectionBypassDraw),
+		INTERGALACTIC(intergalacticConnectionCost, intergalacticConnectionDraw, intergalacticConnectionBypassDraw);
 		
 		private long establishingPowerCost;
 		private long powerDraw;
+		private long bypassPowerDraw;
 		
-		Type(long establishingPowerCost, long powerDraw)
+		Type(long establishingPowerCost, long powerDraw, long bypassPowerDraw)
 		{
 			this.establishingPowerCost = establishingPowerCost;
 			this.powerDraw = powerDraw;
+			this.bypassPowerDraw = bypassPowerDraw;
 		}
 		
 		public long getEstablishingPowerCost()
@@ -106,9 +111,9 @@ public final class StargateConnection
 			return this.establishingPowerCost;
 		}
 		
-		public long getPowerDraw()
+		public long getPowerDraw(boolean energyBypass)
 		{
-			return this.powerDraw;
+			return energyBypass ? this.bypassPowerDraw : this.powerDraw;
 		}
 	}
 	
@@ -384,8 +389,7 @@ public final class StargateConnection
 		// Depletes energy over time
 		if(requireEnergy)
 		{
-			long energyDraw = this.connectionType.getPowerDraw();
-			energyDraw = this.connectionTime >= maxOpenTime ? energyDraw * energyBypassMultiplier : energyDraw;
+			long energyDraw = this.connectionType.getPowerDraw(this.connectionTime >= maxOpenTime);
 			
 			if(!this.dialingStargate.canExtractEnergy(server, energyDraw) && !this.dialedStargate.canExtractEnergy(server, energyDraw))
 			{
