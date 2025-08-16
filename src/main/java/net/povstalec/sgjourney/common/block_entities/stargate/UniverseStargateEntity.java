@@ -269,8 +269,10 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(int openTime, StargateInfo.ChevronLockSpeed chevronLockSpeed)
+	public void doWhileDialed(Address connectedAddress, boolean doKawoosh, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
 	{
+		super.doWhileDialed(connectedAddress, doKawoosh, kawooshStartTicks, chevronLockSpeed, openTime);
+		
 		if(this.level.isClientSide())
 			return;
 		

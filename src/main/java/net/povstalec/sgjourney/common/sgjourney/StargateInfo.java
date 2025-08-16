@@ -107,7 +107,7 @@ public class StargateInfo
 	public enum Feedback
 	{
 		NONE(0, FeedbackType.INFO, "none"),
-		UNKNOWN_ERROR(-1, FeedbackType.ERROR, "unknown"),
+		UNKNOWN_ERROR(-1, FeedbackType.ERROR, "unknown"), // Error usually used when Stargate isn't present for some unknown reason
 		
 		// Chevron/Symbol
 		SYMBOL_ENCODED(1, FeedbackType.INFO, "symbol_encoded"),

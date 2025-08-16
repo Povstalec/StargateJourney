@@ -140,12 +140,18 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		return 1;
 	}
 	
-	private int ringDistance(int rotationA, int rotationB)
+	/**
+	 * Calculates the absolute distance between two points on the Stargate's ring
+	 * @param rotationA Point A
+	 * @param rotationB Point B
+	 * @return Distance between point A and point B
+	 */
+	public int ringDistance(int rotationA, int rotationB)
 	{
 		int distance = Math.abs(rotationA - rotationB);
 		
-		if(distance > 180)
-			return 360 - distance;
+		if(distance > this.maxRotation / 2F)
+			return this.maxRotation - distance;
 		
 		return distance;
 	}

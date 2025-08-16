@@ -1308,6 +1308,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		this.openSoundLead = openSoundLead;
 	}
 	
+	/**
+	 * Stargates can make noises before the kawoosh itself starts (for example the WAH-WAH of the Milky Way Stargate)
+	 * @return The number of ticks which the Stargate opening sound will get as a head-start before the actual kawoosh
+	 */
 	public int getOpenSoundLead()
 	{
 		return this.openSoundLead;
@@ -1387,7 +1391,36 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public abstract void registerInterfaceMethods(StargatePeripheralWrapper wrapper);
 	
-	public void doWhileDialed(int openTime, StargateInfo.ChevronLockSpeed chevronLockSpeed) {}
+	public void doWhileConnecting(boolean incoming, boolean doKawoosh, int kawooshStartTicks, int openTime)
+	{
+		if(openTime == kawooshStartTicks - getOpenSoundLead())
+			openWormholeSound(incoming);
+	}
+	
+	public void doWhileDialed(Address dialingAddress, boolean doKawoosh, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	{
+		if(openTime % chevronLockSpeed.getChevronWaitTicks() == 0)
+		{
+			int dialedAddressLength = getAddress().getLength();
+			int dialingAddressLength = dialingAddress.getLength();
+			
+			if(dialedAddressLength < dialingAddress.getLength())
+			{
+				if(openTime / chevronLockSpeed.getChevronWaitTicks() == 4 && dialingAddressLength < 7)
+					return;
+				else if(openTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddressLength < 8)
+					return;
+				else
+					encodeChevron(dialingAddress.getSymbol(dialedAddressLength), true, false);
+			}
+			else
+			{
+				chevronSound((short) 0, true, false, false);
+				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().getLength() + 1,
+						AbstractStargateEntity.getChevron(this, getAddress().getLength() + 1), true, 0);
+			}
+		}
+	}
 	
 	public boolean updateClient()
 	{
