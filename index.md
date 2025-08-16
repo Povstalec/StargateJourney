@@ -14,6 +14,7 @@ nav_exclude: true
 > |   **Frequently Asked Questions**   |            done, ready for review            |
 > |        **Troubleshooting**         |            done, ready for review            |
 > |         **Survival Guide**         | done, needs update with links to other sites |
+> | **Stargate Technology / Stargate** |            done, ready for review            |
 > |                                    |                                              |
 >
 

@@ -72,6 +72,8 @@ Kaliem
 
 </div>
 
+___
+
 ### Point of Origin
 
 Point of Origin is a unique* symbol on each stargate that represents the location from which the stargate is dialing.  
@@ -82,6 +84,8 @@ The point of origin can also be overridden by a [stargate variant](#stargate-var
 The point of origin always represents the number zero.
 To confirm dialed address, the point of origin (number zero) must be encoded at the end to initialize the connection.
 On the DHD it is automatically encoded by pressing the big button in the middle.
+
+___
 
 ### Symbols and Symbol sets
 "Symbols" are small collections of symbols unique for a solar system.
