@@ -72,6 +72,41 @@ See the file for details about the implementation and usage.
 - **Block assets (images)**:
 For instructions where to get image of in-game blocks, see the `_plugins/recipe.rb` file.
 
+
+To obtain an ordered list of computercraft methods for documentation start the game and place a computer connected with wired modems
+to advanced crystal interfaces facing all stargate types.
+Then run this program to get a list of all unique methods.
+```lua
+local devices = peripheral.getNames()
+local allMethods = {}
+local methodSetIndex = {}
+
+for _, name in pairs(devices) do
+    local type = peripheral.getType(name)
+    if name ~= "modem" and name ~= "back" and name ~= "right" and name ~= "left" and name ~= "top" and name ~= "bottom" then
+        print("processing "..name)
+        local methods = peripheral.getMethods(name)
+        for _, methodName in pairs(methods) do 
+            if methodSetIndex[methodName] == nil then
+                methodSetIndex[methodName] = true
+                table.insert(allMethods, methodName) 
+            end
+        end
+    end
+end
+
+table.sort(allMethods)
+
+local f = fs.open("methods.txt", "w")
+
+for _, method in pairs(allMethods) do
+    f.write(method)
+    f.write("\n")
+end
+
+f.close()
+```
+
 # License
 
 Uses MCUI created by Valgard  

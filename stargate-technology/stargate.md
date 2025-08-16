@@ -300,7 +300,7 @@ The available variants can be found at [Stargate Technology / Crystals / Variant
 
 ___
 
-### Universe
+### Universe Stargate
 Generation 1
 
 <details>
@@ -401,7 +401,7 @@ The available variants can be found at [Stargate Technology / Crystals / Variant
 
 ___
 
-### Tollan
+### Tollan Stargate
 Generation 2
 
 <details>

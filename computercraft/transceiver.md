@@ -36,7 +36,7 @@ ___
 Sets the frequency at which the transceiver will listen.
 
 **Parameters**
-1. `number`: The frequency to set
+1. `number`: The frequency to set - a number in range `0 - 2 147 483 647`
 
 **Usage**
 - Set the frequency to `1234`

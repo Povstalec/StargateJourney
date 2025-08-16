@@ -231,49 +231,17 @@ interface.setEnergyTarget(energyTarget)
 
 ___
 
-## Milky Way Stargate functions
-Functions available for an interface connected to the **Milky Way Stargate**.
-
-___
-
-{% include components/computercraft_function.html
-    name="closeChevron"
-    arguments=""
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L180"
-%}
-
-Closes the upper chevron if it is open, encoding the current symbol.  
-If the symbol is already encoded, returns `-2` (`symbol_in_address`).
-
-**Returns**
-1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
-
-**See also**
-- [getRecentFeedback()](#getRecentFeedback)
-- [openChevron()](#openChevron)
-- [encodeChevron()](#encodeChevron)
-- [isChevronOpen()](#isChevronOpen)
-
-**Usage**
-- Close chevron
-```lua
--- find any interface connected to the computer
-local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
-if interface == nil then
-    error("The interface is not connected")
-end
--- use the interface:
-local feedback = interface.closeChevron()
-print(feedback) 
-```
-
-___
+## Rotating Stargate functions
+Functions available for an interface connected to a stargate can be rotated --
+[Classic]({{ '/stargate-technology/stargate/#classic-stargate' | absolute_url }}), 
+[Milky Way]({{ '/stargate-technology/stargate/#milky-way-stargate' | absolute_url }}), 
+[Universe]({{ '/stargate-technology/stargate/#universe-stargate' | absolute_url }}), 
+stargates.
 
 {% include components/computercraft_function.html
-    name="encodeChevron"
-    arguments=""
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L159"
+name="encodeChevron"
+arguments=""
+source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L159"
 %}
 
 Encodes the current symbol under the top chevron.
@@ -305,9 +273,9 @@ print(feedback)
 ___
 
 {% include components/computercraft_function.html
-    name="endRotation"
-    arguments=""
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L117"
+name="endRotation"
+arguments=""
+source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L117"
 %}
 
 Stops the inner ring rotation if it was started by a computer.  
@@ -339,15 +307,16 @@ print(feedback)
 ___
 
 {% include components/computercraft_function.html
-    name="getCurrentSymbol"
-    arguments=""
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L14"
+name="getCurrentSymbol"
+arguments=""
+source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L14"
 %}
 
 Returns the current symbol under the top chevron.
 
 **Returns**
-1. `number` The symbol under the top chevron
+1. `number` The symbol under the top chevron or `-1`
+   (e.g. when no symbol is at the top on the universe stargate)
 
 **Usage**
 - Print the current symbol
@@ -365,18 +334,23 @@ print(symbol)
 ___
 
 {% include components/computercraft_function.html
-    name="getRotation"
-    arguments=""
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L46"
+name="getRotation"
+arguments=""
+source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L46"
 %}
 
-Returns the current inner ring rotation from `0` up to `155` (inclusive).  
-> `0` when the Point of Origin is centered under the top chevron  
-> plus `4` for each symbol to the right centered under the top chevron  
-> `152` for the last symbol (`38`) centered under the top chevron.
+Returns the current gate rotation.
+> For Classic and Milky Way stargates: `0 - 155`  
+> `0` when the Point of Origin is centered under the top chevron.   
+> Plus `4` for each symbol to the right centered under the top chevron,  
+> `152` for the last symbol (`38`) centered under the top chevron.  
+> 
+> For Universe stargate: `0 - 322`  
+> `0` when the chevron to the left from the Point of Origin is centered at the top,  
+> `9` when the Point of Origin is centered at the top.
 
 **Returns**
-1. `number` The current ring rotation from `0` to `155`
+1. `number` The current ring rotation based on the stargate type.
 
 **See also**
 - [endRotation()](#endRotation)
@@ -402,48 +376,12 @@ end
 ___
 
 {% include components/computercraft_function.html
-    name="isChevronOpen"
-    arguments=""
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L201"
+name="isCurrentSymbol"
+arguments="symbol"
+source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29"
 %}
 
-Returns `true` when the top chevron is open, `false` otherwise.
-
-**Returns**
-1. `boolean` Whether the top chevron is open
-
-**See also**
-- [getRecentFeedback()](#getRecentFeedback)
-- [encodeChevron()](#encodeChevron)
-- [openChevron()](#openChevron)
-- [closeChevron()](#closeChevron)
-
-**Usage**
-- Check whether the top chevron is open
-```lua
--- find any interface connected to the computer
-local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
-if interface == nil then
-    error("The interface is not connected")
-end
--- use the interface:
-local isOpen = interface.isChevronOpen()
-if isOpen then
-    print("The chevron is open")
-else
-    print("The chevron is closed")
-end 
-```
-
-___
-
-{% include components/computercraft_function.html
-    name="isCurrentSymbol"
-    arguments="symbol"
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29"
-%}
-
-Returns `true` when the current symbol is **centered** under the top chevron, 
+Returns `true` when the current symbol is **centered** under the top chevron,
 and it is the desired symbol specified as parameter.
 Returns `false` otherwise.
 
@@ -478,43 +416,11 @@ print("The current symbol is "..symbol)
 
 ___
 
-{% include components/computercraft_function.html
-    name="openChevron"
-    arguments=""
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L138"
-%}
-
-Opens the top chevron in preparation for encoding the current symbol.
-
-**Returns**
-1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
-
-**See also**
-- [getRecentFeedback()](#getRecentFeedback)
-- [closeChevron()](#closeChevron)
-- [encodeChevron()](#encodeChevron)
-- [isChevronOpen()](#isChevronOpen)
-
-**Usage**
-- Open the top chevron
-```lua
--- find any interface connected to the computer
-local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
-if interface == nil then
-    error("The interface is not connected")
-end
--- use the interface:
-local feedback interface.openChevron()
-print(feedback)
-```
-
-___
 
 {% include components/computercraft_function.html
-    name="rotateAntiClockwise"
-    arguments="symbol"
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89"
+name="rotateAntiClockwise"
+arguments="symbol"
+source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89"
 %}
 
 Rotates the inner ring anticlockwise, positioning the specified symbol centered under the top chevron.  
@@ -559,10 +465,11 @@ print("The current symbol is "..symbol)
 
 ___
 
+
 {% include components/computercraft_function.html
-    name="rotateClockwise"
-    arguments="symbol"
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61"
+name="rotateClockwise"
+arguments="symbol"
+source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61"
 %}
 
 Rotates the inner ring clockwise, positioning the specified symbol centered under the top chevron.  
@@ -606,6 +513,225 @@ print("The current symbol is "..symbol)
 ```
 
 ___
+
+## Milky Way Stargate functions
+Functions exclusive to
+<span class="label label-milkyway m-0">Milky Way</span>
+stargate.
+
+{% include components/computercraft_function.html
+    name="closeChevron"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L180"
+%}
+
+Closes the upper chevron if it is open, encoding the current symbol.  
+If the symbol is already encoded, returns `-2` (`symbol_in_address`).
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [openChevron()](#openChevron)
+- [encodeChevron()](#encodeChevron)
+- [isChevronOpen()](#isChevronOpen)
+
+**Usage**
+- Close chevron
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local feedback = interface.closeChevron()
+print(feedback) 
+```
+
+___
+
+
+{% include components/computercraft_function.html
+    name="isChevronOpen"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L201"
+%}
+
+Returns `true` when the top chevron is open, `false` otherwise.
+
+**Returns**
+1. `boolean` Whether the top chevron is open
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [encodeChevron()](#encodeChevron)
+- [openChevron()](#openChevron)
+- [closeChevron()](#closeChevron)
+
+**Usage**
+- Check whether the top chevron is open
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local isOpen = interface.isChevronOpen()
+if isOpen then
+    print("The chevron is open")
+else
+    print("The chevron is closed")
+end 
+```
+
+___
+
+
+{% include components/computercraft_function.html
+    name="openChevron"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L138"
+%}
+
+Opens the top chevron in preparation for encoding the current symbol.
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+- [closeChevron()](#closeChevron)
+- [encodeChevron()](#encodeChevron)
+- [isChevronOpen()](#isChevronOpen)
+
+**Usage**
+- Open the top chevron
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local feedback interface.openChevron()
+print(feedback)
+```
+
+___
+
+
+## Pegasus Stargate functions
+Functions exclusive for an interface connected to a Pegasus stargate.
+
+{% include components/computercraft_function.html
+name="dynamicSymbols"
+arguments="enabled"
+source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L24"
+%}
+
+Controls the gate ability to dynamically switch symbols based on its location.
+The gate will keep the value when picked up.
+
+**Parameters**
+1. `enabled`: `boolean` Whether the gate should dynamically change symbols.
+
+**See also**
+- [overrideSymbols(symbols)](#overrideSymbols)
+- [overridePointOfOrigin()](#overridePointOfOrigin)
+
+**Usage**
+- Disables dynamically changing symbols
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+interface.dynamicSymbols(false)
+```
+
+___
+
+{% include components/computercraft_function.html
+name="overrideSymbols"
+arguments="symbols"
+source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L47"
+%}
+
+Overrides the symbols used by the gate.
+This change has only visual effect.
+The gate will reset its symbols based on its location when the chunk is unloaded.
+To keep the overridden symbols, disable dynamic symbols with [`dynamicSymbols(false)`](#dynamicSymbols).
+
+All symbols options in the base mod (more can be added by datapacks) are available on [GitHub / data directory](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/data/sgjourney/sgjourney/symbols).
+Their textures are available in a [different folder](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/assets/sgjourney/textures/symbols).
+Note that unique symbols for solar systems can be seen only by players with `unique_symbols` config option enabled.
+By default, the rendered symbols will fall back to respective symbol set.
+
+[//]: # (TODO link to the config option docs)
+[//]: # (TODO link to symbols vs symbol set explanation)
+
+**Parameters**
+1. `symbols`: `string` The resource location of the symbols.
+Examples: `"sgjourney:galaxy_pegasus"`, `"sgjourney:galaxy_milky_way"`
+
+**See also**
+- [dynamicSymbols(enabled)](#dynamicSymbols)
+- [overridePointOfOrigin()](#overridePointOfOrigin)
+
+**Usage**
+- Overrides symbols to Milky Way galaxy
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+interface.overrideSymbols("sgjourney:galaxy_milky_way")
+```
+
+___
+
+{% include components/computercraft_function.html
+name="overridePointOfOrigin"
+arguments="pointOfOrigin"
+source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L69"
+%}
+
+Overrides the Point Of Origin used by the gate.
+This change has only visual effect.
+The gate will reset its Point Of Origin based on its location when the chunk is unloaded.
+To keep the overridden symbols, disable dynamic symbols with [`dynamicSymbols(false)`](#dynamicSymbols).
+
+All Point Of Origin options in the base mod (more can be added by datapacks) are available in [GitHub / data directory](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/data/sgjourney/sgjourney/point_of_origin).
+Their textures are available in a [different folder, look for subfolders with points of origins](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/assets/sgjourney/textures/symbols).
+
+**Parameters**
+1. `pointOfOrigin`: `string` The resource location of the Point Of Origin.
+   Examples: `"sgjourney:terra"`, `"sgjourney:tauri"`, `"sgjourney:subido"`
+
+**See also**
+- [dynamicSymbols(enabled)](#dynamicSymbols)
+- [overrideSymbols()](#overridePointOfOrigin)
+
+**Usage**
+- Overrides the Point Of Origin to universal
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+interface.overridePointOfOrigin("sgjourney:universal")
+```
 
 ## Stargate functions
 Functions available for an interface connected to a Stargate.
