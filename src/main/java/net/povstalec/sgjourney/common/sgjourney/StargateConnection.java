@@ -310,7 +310,7 @@ public final class StargateConnection
 			this.dialingStargate.doWhileConnecting(server, false, doKawoosh(), kawooshStartTicks, this.openTime);
 			this.dialedStargate.doWhileConnecting(server, true, doKawoosh(), kawooshStartTicks, this.openTime);
 			
-			this.dialedStargate.doWhileDialed(server, dialingAddress, doKawoosh(), kawooshStartTicks, chevronLockSpeed, this.openTime);
+			this.dialedStargate.doWhileDialed(server, dialingAddress, kawooshStartTicks, chevronLockSpeed, this.openTime);
 			
 			// Updates Interfaces when a wormhole is detected
 			if(this.openTime == kawooshStartTicks)
@@ -345,8 +345,8 @@ public final class StargateConnection
 		if(doKawoosh() && this.openTime < maxKawooshTicks)
 			return;
 
-		this.dialingStargate.idleWormholeSound(server, false);
-		this.dialedStargate.idleWormholeSound(server, true);
+		this.dialingStargate.doWhileConnected(server, false, this.openTime);
+		this.dialedStargate.doWhileConnected(server, true, this.openTime);
 		
 		if(this.connectionTime >= maxOpenTime && !energyBypassEnabled)
 		{

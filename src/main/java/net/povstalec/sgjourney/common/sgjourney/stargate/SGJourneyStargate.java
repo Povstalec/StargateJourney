@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -18,6 +19,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.UUID;
 
 public class SGJourneyStargate implements Stargate
@@ -210,18 +212,6 @@ public class SGJourneyStargate implements Stargate
 		stargateRun(server, stargate -> stargate.updateClient());
 	}
 	
-	@Override
-	public void chevronSound(MinecraftServer server, short chevron, boolean incoming, boolean open, boolean encode)
-	{
-		stargateRun(server, stargate -> stargate.chevronSound(chevron, incoming, open, encode));
-	}
-	
-	@Override
-	public void idleWormholeSound(MinecraftServer server, boolean incoming)
-	{
-		stargateRun(server, stargate -> stargate.idleWormholeSound(incoming));
-	}
-	
 	// Communication
 	
 	@Override
@@ -301,28 +291,27 @@ public class SGJourneyStargate implements Stargate
 	@Override
 	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, Address.Immutable dialingAddress, boolean doKawoosh)
 	{
-		AbstractStargateEntity targetStargateEntity = getStargateEntity(server);
-		
-		if(targetStargateEntity == null)
-			return StargateInfo.Feedback.UNKNOWN_ERROR;
-		
-		// If last Stargate is obstructed
-		if(targetStargateEntity.isObstructed())
-			return StargateInfo.Feedback.TARGET_OBSTRUCTED;
-		
-		// If last Stargate is restricted
-		if(targetStargateEntity.isRestricted(dialingStargate.getNetwork()))
-			return StargateInfo.Feedback.TARGET_RESTRICTED;
-		
-		// If last Stargate has a blacklist
-		if(targetStargateEntity.addressFilterInfo().getFilterType().isBlacklist() && targetStargateEntity.addressFilterInfo().isAddressBlacklisted(dialingAddress))
-			return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
-		
-		// If last Stargate has a whitelist
-		if(targetStargateEntity.addressFilterInfo().getFilterType().isWhitelist() && !targetStargateEntity.addressFilterInfo().isAddressWhitelisted(dialingAddress))
-			return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
-		
-		return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
+		return stargateReturn(server, stargate ->
+		{
+			// If last Stargate is obstructed
+			if(stargate.isObstructed())
+				return StargateInfo.Feedback.TARGET_OBSTRUCTED;
+			
+			// If last Stargate is restricted
+			if(stargate.isRestricted(dialingStargate.getNetwork()))
+				return StargateInfo.Feedback.TARGET_RESTRICTED;
+			
+			// If last Stargate has a blacklist
+			if(stargate.addressFilterInfo().getFilterType().isBlacklist() && stargate.addressFilterInfo().isAddressBlacklisted(dialingAddress))
+				return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
+			
+			// If last Stargate has a whitelist
+			if(stargate.addressFilterInfo().getFilterType().isWhitelist() && !stargate.addressFilterInfo().isAddressWhitelisted(dialingAddress))
+				return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
+			
+			return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
+		},
+		StargateInfo.Feedback.UNKNOWN_ERROR);
 	}
 	
 	@Override
@@ -338,15 +327,27 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void doWhileDialed(MinecraftServer server, Address connectedAddress, boolean doKawoosh, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	public void doWhileDialed(MinecraftServer server, Address connectedAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
 	{
-		stargateRun(server, stargate -> stargate.doWhileDialed(connectedAddress, doKawoosh, kawooshStartTicks, chevronLockSpeed, openTime));
+		stargateRun(server, stargate -> stargate.doWhileDialed(connectedAddress, kawooshStartTicks, chevronLockSpeed, openTime));
+	}
+	
+	@Override
+	public void doWhileConnected(MinecraftServer server, boolean incoming, int openTime)
+	{
+		stargateRun(server, stargate -> stargate.doWhileConnected(incoming, openTime));
 	}
 	
 	@Override
 	public void setKawooshTickCount(MinecraftServer server, int kawooshTick)
 	{
 		stargateRun(server, stargate -> stargate.setKawooshTickCount(kawooshTick));
+	}
+	
+	@Override
+	public List<Entity> findWormholeCandidates(MinecraftServer server)
+	{
+	
 	}
 	
 	// Saving and loading

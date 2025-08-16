@@ -326,9 +326,9 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(Address connectedAddress, boolean doKawoosh, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
 	{
-		super.doWhileDialed(connectedAddress, doKawoosh, kawooshStartTicks, chevronLockSpeed, openTime);
+		super.doWhileDialed(connectedAddress, kawooshStartTicks, chevronLockSpeed, openTime);
 		
 		if(this.level.isClientSide())
 			return;

@@ -1393,11 +1393,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void doWhileConnecting(boolean incoming, boolean doKawoosh, int kawooshStartTicks, int openTime)
 	{
+		if(!doKawoosh)
+			return;
+		
 		if(openTime == kawooshStartTicks - getOpenSoundLead())
 			openWormholeSound(incoming);
 	}
 	
-	public void doWhileDialed(Address dialingAddress, boolean doKawoosh, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	public void doWhileDialed(Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
 	{
 		if(openTime % chevronLockSpeed.getChevronWaitTicks() == 0)
 		{
@@ -1420,6 +1423,11 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 						AbstractStargateEntity.getChevron(this, getAddress().getLength() + 1), true, 0);
 			}
 		}
+	}
+	
+	public void doWhileConnected(boolean incoming, int openTime)
+	{
+		idleWormholeSound(incoming);
 	}
 	
 	public boolean updateClient()

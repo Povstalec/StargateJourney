@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
@@ -12,6 +13,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.UUID;
 
 public interface Stargate
@@ -66,10 +68,6 @@ public interface Stargate
 	
 	void updateClient(MinecraftServer server);
 	
-	void chevronSound(MinecraftServer server, short chevron, boolean incoming, boolean open, boolean encode);
-	
-	void idleWormholeSound(MinecraftServer server, boolean incoming);
-	
 	// Communication
 	
 	void receiveStargateMessage(MinecraftServer server, String message);
@@ -105,15 +103,17 @@ public interface Stargate
 	
 	void doWhileConnecting(MinecraftServer server, boolean incoming, boolean doKawoosh, int kawooshStartTicks, int openTime);
 	
-	void doWhileDialed(MinecraftServer server, Address dialingAddress, boolean doKawoosh, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime);
+	void doWhileDialed(MinecraftServer server, Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime);
 	
 	void setKawooshTickCount(MinecraftServer server, int kawooshTick);
 	
 	void doKawoosh(MinecraftServer server, int kawooshTime);
 	
-	//TODO tickConnection()
+	void doWhileConnected(MinecraftServer server, boolean incoming, int openTime);
 	
 	int autoclose(MinecraftServer server);
+	
+	List<Entity> findWormholeCandidates(MinecraftServer server);
 	
 	// Saving and loading
 	
