@@ -673,9 +673,9 @@ All symbols options in the base mod (more can be added by datapacks) are availab
 Their textures are available in a [different folder](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/assets/sgjourney/textures/symbols).
 Note that unique symbols for solar systems can be seen only by players with `unique_symbols` config option enabled.
 By default, the rendered symbols will fall back to respective symbol set.
+See [Stargate Technology / Stargate / Symbols / Symbols and Symbol sets]({{ '/stargate-technology/stargate/#symbols-and-symbol-sets' | absolute_url }}) for explanation.
 
 [//]: # (TODO link to the config option docs)
-[//]: # (TODO link to symbols vs symbol set explanation)
 
 **Parameters**
 1. `symbols`: `string` The resource location of the symbols.

@@ -83,6 +83,15 @@ The point of origin always represents the number zero.
 To confirm dialed address, the point of origin (number zero) must be encoded at the end to initialize the connection.
 On the DHD it is automatically encoded by pressing the big button in the middle.
 
+### Symbols and Symbol sets
+"Symbols" are small collections of symbols unique for a solar system.
+Those symbols are used when the `unique_symbols` configuration option is enabled.
+
+When unique symbols are disabled, gates fall back to symbol set to which the "symbols" collection belongs.
+Symbol sets contains all the symbols (or a subset) from their respective "symbols" collections, so they share the visual style.
+Usually each galaxy has its own symbol set and each solar system has its own "symbols" collection belonging to the galaxy's symbol set.
+This results in all solar systems in a galaxy sharing the same symbols when unique symbols are disabled.
+
 ___
 
 ## Energy supply
