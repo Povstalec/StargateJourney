@@ -7,7 +7,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
@@ -35,9 +34,6 @@ public interface Stargate
 	
 	BlockPos getBlockPos(); // TODO Remove
 	
-	@Nullable
-	AbstractStargateEntity getStargateEntity(MinecraftServer server); //TODO Remove
-	
 	boolean hasDHD();
 	
 	StargateInfo.Gen getGeneration();
@@ -58,9 +54,9 @@ public interface Stargate
 	
 	boolean isPrimary(MinecraftServer server);
 	
-	void update(AbstractStargateEntity stargate); //TODO Remove
+	void update(MinecraftServer server);
 	
-	boolean checkStargateEntity(MinecraftServer server); //TODO Remove
+	boolean isValid(MinecraftServer server);
 	
 	void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration);
 	
@@ -113,7 +109,7 @@ public interface Stargate
 	
 	void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel);
 	
-	boolean tryWormholeEntity(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
+	boolean receiveTraveler(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
 	
 	
 	

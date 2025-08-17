@@ -31,6 +31,11 @@ public class CoordinateHelper
 		{
 			return r * (float) Math.sin(Math.toRadians(phi));
 		}
+		
+		public static float lookAngleY(Vec3 lookAngle)
+		{
+			return CoordinateSystems.cartesianToPolarPhi((float) lookAngle.x(), (float) lookAngle.z()) + 270;
+		}
 	}
 	
 	public static class Relative

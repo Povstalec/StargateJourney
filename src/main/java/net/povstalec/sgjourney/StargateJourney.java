@@ -172,11 +172,11 @@ public class StargateJourney
 	
 	public static boolean shouldRenderAMD()
 	{
-		if(ClientStargateConfig.render_amd.get() == RenderAMD.AUTO)
-			return SystemUtils.IS_OS_LINUX;
-		
 		if(isOculusLoaded())
 			return false;
+		
+		if(ClientStargateConfig.render_amd.get() == RenderAMD.AUTO)
+			return SystemUtils.IS_OS_LINUX;
 		
 		return ClientStargateConfig.render_amd.get() == RenderAMD.ENABLED;
 	}

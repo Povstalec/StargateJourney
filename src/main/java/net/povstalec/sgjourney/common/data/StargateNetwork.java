@@ -231,7 +231,7 @@ public final class StargateNetwork extends SavedData
 		if(stargate != null)
 		{
 			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate);
-			stargate.update(stargateEntity);
+			stargate.update(server);
 			Universe.get(server).addStargateToDimension(level.dimension(), stargate);
 		}
 	}
@@ -278,7 +278,7 @@ public final class StargateNetwork extends SavedData
 			return StargateInfo.Feedback.NONE;
 		
 		// Will reset the Stargate if something's wrong
-		if(!dialedStargate.checkStargateEntity(server))
+		if(!dialedStargate.isValid(server))
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE, true);
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&

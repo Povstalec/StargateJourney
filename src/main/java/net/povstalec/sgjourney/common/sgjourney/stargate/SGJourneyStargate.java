@@ -20,11 +20,15 @@ import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class SGJourneyStargate implements Stargate
 {
+	public static final double MIN_TRAVELER_SPEED = 0.4;
+	
 	protected Address.Immutable address;
 	
 	@Nullable
@@ -39,6 +43,7 @@ public class SGJourneyStargate implements Stargate
 	protected int network;
 	
 	protected Wormhole wormhole = new Wormhole();
+	protected Map<Integer, Vec3> entityPositions = new HashMap<>();
 	
 	public SGJourneyStargate() {}
 	
@@ -175,17 +180,20 @@ public class SGJourneyStargate implements Stargate
 		return stargateReturn(server, stargate -> stargate.isPrimary(), false);
 	}
 	
-	
-	
-	public void update(AbstractStargateEntity stargate)
+	@Override
+	public void update(MinecraftServer server)
 	{
-		this.hasDHD = stargate.dhdInfo().hasDHD();
-		this.generation = stargate.getGeneration();
-		this.timesOpened = stargate.getTimesOpened();
-		this.network = stargate.getNetwork();
+		stargateRun(server, stargate->
+		{
+			this.hasDHD = stargate.dhdInfo().hasDHD();
+			this.generation = stargate.getGeneration();
+			this.timesOpened = stargate.getTimesOpened();
+			this.network = stargate.getNetwork();
+		});
 	}
 	
-	public boolean checkStargateEntity(MinecraftServer server)
+	@Override
+	public boolean isValid(MinecraftServer server)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
@@ -358,32 +366,20 @@ public class SGJourneyStargate implements Stargate
 			Vec3 up = Orientation.getUpVector(direction, orientation);
 			Vec3 right = forward.cross(up);
 			
-			for(Entity traveler : wormholeCandidates)
-			{
-				Vec3 previousPos = this.wormhole.previousPos(traveler);
-				if(previousPos != null)
-				{
-					Vec3 momentum = new Vec3(traveler.getX() - previousPos.x(), traveler.getY() - previousPos.y(), traveler.getZ() - previousPos.z());
-					Vec3 relativePosition = CoordinateHelper.Relative.fromOrthogonalBasis(traveler.position().subtract(stargate.getCenter()), forward, up, right);
-					Vec3 relativeMomentum = CoordinateHelper.Relative.fromOrthogonalBasis(momentum, forward, up, right);
-					Vec3 relativeLookAngle = CoordinateHelper.Relative.fromOrthogonalBasis(traveler.getLookAngle(), forward, up, right);
-					
-					if(targetStargate.tryWormholeEntity(server, this, traveler, relativePosition, relativeMomentum, relativeLookAngle))
-						connection.setUsed(true);
-				}
-			}
+			if(this.wormhole.wormholeEntities(server, this, targetStargate, wormholeTravel, stargate.getCenter(), forward, up, right, wormholeCandidates))
+				connection.setUsed(true);
 		});
 	}
 	
 	@Override
 	public void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
 	{
-		stargateRun(server, initialStargate -> //TODO Rename to just stargate?
+		stargateRun(server, stargate ->
 		{
-			List<Entity> wormholeCandidates = initialStargate.findWormholeCandidates();
+			List<Entity> wormholeCandidates = stargate.findWormholeCandidates();
 			
 			// If this Stargate has its iris closed, then there's no point in trying to transport Entities
-			if(initialStargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
+			if(stargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
 				return;
 			
 			Stargate connectedStargate = incoming ? connection.getDialingStargate() : connection.getDialedStargate();
@@ -391,46 +387,40 @@ public class SGJourneyStargate implements Stargate
 			if(!wormholeCandidates.isEmpty() && connection.used())
 				connection.setTimeSinceLastTraveler(0);
 			
-			//TODO wormholeEntities(server, connection, connectedStargate, incoming, wormholeTravel, wormholeCandidates);
-			
-			//=====================================================================================================
-			
-			AbstractStargateEntity targetStargate = connectedStargate.getStargateEntity(server);
-			if(targetStargate == null)
-				return;
-			
-			if(targetStargate.dhdInfo().shouldCallForward())
-			{
-				if(wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel, wormholeCandidates))
-					connection.setUsed(true);
-			}
-			else
-			{
-				if(wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel, wormholeCandidates))
-					connection.setUsed(true);
-			}
+			//TODO Call Forwarding
+			wormholeEntities(server, connection, connectedStargate, incoming, wormholeTravel, wormholeCandidates);
 		});
 	}
 	
 	@Override
-	public boolean tryWormholeEntity(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	public boolean receiveTraveler(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
 		return stargateReturn(server, stargate ->
 		{
 			Direction direction = stargate.getDirection();
 			Orientation orientation = stargate.getOrientation();
 			
+			// Multiplied some elements by -1 to make the traveler exit the Stargate in a mirrored position
 			Vec3 forward = Orientation.getForwardVector(direction, orientation);
 			Vec3 up = Orientation.getUpVector(direction, orientation);
 			Vec3 right = forward.cross(up);
+			right = right.multiply(-1, -1, -1);
+			forward = forward.multiply(-1, -1, -1);
 			
-			Vec3 destinationPosition = CoordinateHelper.Relative.toOrthogonalBasis(relativePosition, forward.multiply(-1, -1, -1), up, right.multiply(-1, -1, -1));
-			Vec3 destinationMomentum = CoordinateHelper.Relative.toOrthogonalBasis(relativeMomentum, forward.multiply(-1, -1, -1), up, right.multiply(-1, -1, -1));
-			Vec3 destinationLookAngle = CoordinateHelper.Relative.toOrthogonalBasis(relativeLookAngle, forward.multiply(-1, -1, -1), up, right.multiply(-1, -1, -1));
+			// TODO Tie this to Advanced Protocols
+			Vec3 tempMomentum = relativeMomentum.x() > -MIN_TRAVELER_SPEED ? new Vec3(-MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 			
-			//TODO
+			Vec3 destinationPosition = CoordinateHelper.Relative.toOrthogonalBasis(relativePosition, forward, up, right).add(stargate.getCenter());
+			Vec3 destinationMomentum = CoordinateHelper.Relative.toOrthogonalBasis(tempMomentum, forward, up, right);
+			Vec3 destinationLookAngle = CoordinateHelper.Relative.toOrthogonalBasis(relativeLookAngle, forward, up, right);
 			
-			return true;
+			if(stargate instanceof IrisStargateEntity irisStargate && !this.wormhole.checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
+			{
+				this.wormhole.handleShielding(irisStargate, traveler);
+				return true;
+			}
+			
+			return this.wormhole.receiveTraveler((ServerLevel) stargate.getLevel(), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		},
 		false);
 	}
