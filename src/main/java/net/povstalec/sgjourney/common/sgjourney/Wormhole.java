@@ -55,9 +55,6 @@ public class Wormhole
 	public static final double INNER_RADIUS_SQR = INNER_RADIUS * INNER_RADIUS;
 	
 	protected Map<Integer, Vec3> entityLocations = new HashMap<>();
-	protected boolean used = false;
-	
-	public Wormhole() {}
 	
 	//============================================================================================
 	//***************************************Transport out****************************************
@@ -307,21 +304,9 @@ public class Wormhole
 		irisStargate.irisInfo().playIrisThudSound(); // Only playing one sound
 	}
 	
-	
-	
-	// ======================== Old ========================
-	
-	
-	
-	public static void recursiveExecute(Entity traveler, WormholeFunction func)
-	{
-		for(Entity passenger : traveler.getPassengers())
-		{
-			recursiveExecute(passenger, func);
-		}
-		
-		func.run(traveler);
-	}
+	//============================================================================================
+	//*******************************************Events*******************************************
+	//============================================================================================
 	
 	protected void irisThudEvent(AbstractStargateEntity targetStargate, Entity traveler)
     {
@@ -349,6 +334,16 @@ public class Wormhole
     	
     	targetStargate.updateInterfaceBlocks(server, null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
     }
+	
+	public static void recursiveExecute(Entity traveler, WormholeFunction func)
+	{
+		for(Entity passenger : traveler.getPassengers())
+		{
+			recursiveExecute(passenger, func);
+		}
+		
+		func.run(traveler);
+	}
 	
 	public static void playWormholeSound(Level level, Entity traveler)
 	{

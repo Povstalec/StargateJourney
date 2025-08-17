@@ -504,13 +504,7 @@ public final class StargateConnection
 	protected CompoundTag serializeStargate(Stargate stargate)
 	{
 		CompoundTag tag = new CompoundTag();
-		
 		tag.putIntArray(ADDRESS, stargate.get9ChevronAddress().toArray());
-		
-		//TODO Remove
-		tag.putString(DIMENSION, stargate.getDimension().toString());
-		tag.putIntArray(COORDINATES, new int[] {stargate.getBlockPos().getX(), stargate.getBlockPos().getY(), stargate.getBlockPos().getZ()});
-		
 		return tag;
 	}
 	
