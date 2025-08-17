@@ -355,7 +355,7 @@ public class SGJourneyStargate implements Stargate
 		stargateRun(server, stargate -> stargate.doWhileConnected(incoming, openTime));
 	}
 	
-	protected void wormholeEntities(MinecraftServer server, StargateConnection connection, Stargate targetStargate, boolean incoming, StargateInfo.WormholeTravel wormholeTravel, List<Entity> wormholeCandidates)
+	protected void wormholeEntities(MinecraftServer server, StargateConnection connection, Stargate destinationStargate, boolean incoming, StargateInfo.WormholeTravel wormholeTravel, List<Entity> wormholeCandidates)
 	{
 		stargateRun(server, stargate ->
 		{
@@ -366,7 +366,7 @@ public class SGJourneyStargate implements Stargate
 			Vec3 up = Orientation.getUpVector(direction, orientation);
 			Vec3 right = forward.cross(up);
 			
-			if(this.wormhole.wormholeEntities(server, this, targetStargate, wormholeTravel, stargate.getCenter(), forward, up, right, wormholeCandidates))
+			if(this.wormhole.wormholeEntities(server, this, destinationStargate, wormholeTravel, stargate.getCenter(), forward, up, right, wormholeCandidates))
 				connection.setUsed(true);
 		});
 	}

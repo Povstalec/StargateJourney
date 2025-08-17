@@ -19,6 +19,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 import javax.annotation.Nullable;
@@ -236,6 +237,8 @@ public final class StargateConnection
 	
 	public final void terminate(MinecraftServer server, StargateInfo.Feedback feedback)
 	{
+		SGJourneyEvents.onConnectionTerminated(server, this, feedback);
+		
 		if(this.dialingStargate != null)
 		{
 			this.dialingStargate.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
@@ -248,7 +251,7 @@ public final class StargateConnection
 			this.dialedStargate.resetStargate(server, feedback, true);
 		}
 		
-		StargateNetwork.get(server).removeConnection(uuid, feedback);
+		StargateNetwork.get(server).removeConnection(uuid);
 	}
 	
 	//TODO make this work

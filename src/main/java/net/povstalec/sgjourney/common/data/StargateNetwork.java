@@ -384,14 +384,10 @@ public final class StargateNetwork extends SavedData
 		if(!hasConnection(uuid))
 			return;
 		
-		StargateConnection connection = this.connections.get(uuid);
-		
-		SGJourneyEvents.onConnectionTerminated(server, connection);
-		
-		connection.terminate(server, feedback);
+		this.connections.get(uuid).terminate(server, feedback);
 	}
 	
-	public final void removeConnection(UUID uuid, StargateInfo.Feedback feedback)
+	public final void removeConnection(UUID uuid)
 	{
 		if(hasConnection(uuid))
 		{

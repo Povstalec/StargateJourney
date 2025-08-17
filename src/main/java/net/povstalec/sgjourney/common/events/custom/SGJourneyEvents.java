@@ -20,10 +20,9 @@ public class SGJourneyEvents
         return MinecraftForge.EVENT_BUS.post(new StargateEvent.Connect(server, stargate, connectedStargate, connectionType, addressType, doKawoosh));
     }
 	
-	public static boolean onWormholeTravel(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType,
-										   Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
+	public static boolean onWormholeTravel(MinecraftServer server, Stargate stargate, Stargate destinationStargate, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
     {
-        return MinecraftForge.EVENT_BUS.post(new StargateEvent.WormholeTravel(server, stargate, connectedStargate, connectionType, traveler, wormholeTravel));
+        return MinecraftForge.EVENT_BUS.post(new StargateEvent.WormholeTravel(server, stargate, destinationStargate, traveler, wormholeTravel));
     }
 	
 	
@@ -33,8 +32,8 @@ public class SGJourneyEvents
 		return MinecraftForge.EVENT_BUS.post(new ConnectionEvent.Establish(server, stargateConnection));
 	}
 	
-	public static boolean onConnectionTerminated(MinecraftServer server, StargateConnection stargateConnection)
+	public static boolean onConnectionTerminated(MinecraftServer server, StargateConnection stargateConnection, StargateInfo.Feedback feedback)
 	{
-		return MinecraftForge.EVENT_BUS.post(new ConnectionEvent.Terminate(server, stargateConnection));
+		return MinecraftForge.EVENT_BUS.post(new ConnectionEvent.Terminate(server, stargateConnection, feedback));
 	}
 }
