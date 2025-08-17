@@ -1,21 +1,22 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.Dialing;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
@@ -24,18 +25,20 @@ import java.util.UUID;
 
 public class SGJourneyStargate implements Stargate
 {
-	private Address.Immutable address;
+	protected Address.Immutable address;
 	
 	@Nullable
-	private WeakReference<AbstractStargateEntity> stargate;
-	private ResourceKey<Level> dimension;
-	private BlockPos blockPos;
+	protected WeakReference<AbstractStargateEntity> stargate;
+	protected ResourceKey<Level> dimension;
+	protected BlockPos blockPos;
 	
 	// Preferred Stargate decision
-	private boolean hasDHD;
-	private StargateInfo.Gen generation;
-	private int timesOpened;
-	private int network;
+	protected boolean hasDHD;
+	protected StargateInfo.Gen generation;
+	protected int timesOpened;
+	protected int network;
+	
+	protected Wormhole wormhole = new Wormhole();
 	
 	public SGJourneyStargate() {}
 	
@@ -249,12 +252,6 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void doKawoosh(MinecraftServer server, int kawooshTime)
-	{
-		stargateRun(server, stargate -> stargate.doKawoosh(kawooshTime));
-	}
-	
-	@Override
 	public int autoclose(MinecraftServer server)
 	{
 		return stargateReturn(server, stargate -> stargate.dhdInfo().autoclose(), 0);
@@ -333,21 +330,109 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void doWhileConnected(MinecraftServer server, boolean incoming, int openTime)
-	{
-		stargateRun(server, stargate -> stargate.doWhileConnected(incoming, openTime));
-	}
-	
-	@Override
 	public void setKawooshTickCount(MinecraftServer server, int kawooshTick)
 	{
 		stargateRun(server, stargate -> stargate.setKawooshTickCount(kawooshTick));
 	}
 	
 	@Override
-	public List<Entity> findWormholeCandidates(MinecraftServer server)
+	public void doKawoosh(MinecraftServer server, int kawooshTime)
 	{
+		stargateRun(server, stargate -> stargate.doKawoosh(kawooshTime));
+	}
 	
+	@Override
+	public void doWhileConnected(MinecraftServer server, boolean incoming, int openTime)
+	{
+		stargateRun(server, stargate -> stargate.doWhileConnected(incoming, openTime));
+	}
+	
+	protected void wormholeEntities(MinecraftServer server, StargateConnection connection, Stargate targetStargate, boolean incoming, StargateInfo.WormholeTravel wormholeTravel, List<Entity> wormholeCandidates)
+	{
+		stargateRun(server, stargate ->
+		{
+			Direction direction = stargate.getDirection();
+			Orientation orientation = stargate.getOrientation();
+			
+			Vec3 forward = Orientation.getForwardVector(direction, orientation);
+			Vec3 up = Orientation.getUpVector(direction, orientation);
+			Vec3 right = forward.cross(up);
+			
+			for(Entity traveler : wormholeCandidates)
+			{
+				Vec3 previousPos = this.wormhole.previousPos(traveler);
+				if(previousPos != null)
+				{
+					Vec3 momentum = new Vec3(traveler.getX() - previousPos.x(), traveler.getY() - previousPos.y(), traveler.getZ() - previousPos.z());
+					Vec3 relativePosition = CoordinateHelper.Relative.fromOrthogonalBasis(traveler.position().subtract(stargate.getCenter()), forward, up, right);
+					Vec3 relativeMomentum = CoordinateHelper.Relative.fromOrthogonalBasis(momentum, forward, up, right);
+					Vec3 relativeLookAngle = CoordinateHelper.Relative.fromOrthogonalBasis(traveler.getLookAngle(), forward, up, right);
+					
+					if(targetStargate.tryWormholeEntity(server, this, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+						connection.setUsed(true);
+				}
+			}
+		});
+	}
+	
+	@Override
+	public void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
+	{
+		stargateRun(server, initialStargate -> //TODO Rename to just stargate?
+		{
+			List<Entity> wormholeCandidates = initialStargate.findWormholeCandidates();
+			
+			// If this Stargate has its iris closed, then there's no point in trying to transport Entities
+			if(initialStargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
+				return;
+			
+			Stargate connectedStargate = incoming ? connection.getDialingStargate() : connection.getDialedStargate();
+			
+			if(!wormholeCandidates.isEmpty() && connection.used())
+				connection.setTimeSinceLastTraveler(0);
+			
+			//TODO wormholeEntities(server, connection, connectedStargate, incoming, wormholeTravel, wormholeCandidates);
+			
+			//=====================================================================================================
+			
+			AbstractStargateEntity targetStargate = connectedStargate.getStargateEntity(server);
+			if(targetStargate == null)
+				return;
+			
+			if(targetStargate.dhdInfo().shouldCallForward())
+			{
+				if(wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel, wormholeCandidates))
+					connection.setUsed(true);
+			}
+			else
+			{
+				if(wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel, wormholeCandidates))
+					connection.setUsed(true);
+			}
+		});
+	}
+	
+	@Override
+	public boolean tryWormholeEntity(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	{
+		return stargateReturn(server, stargate ->
+		{
+			Direction direction = stargate.getDirection();
+			Orientation orientation = stargate.getOrientation();
+			
+			Vec3 forward = Orientation.getForwardVector(direction, orientation);
+			Vec3 up = Orientation.getUpVector(direction, orientation);
+			Vec3 right = forward.cross(up);
+			
+			Vec3 destinationPosition = CoordinateHelper.Relative.toOrthogonalBasis(relativePosition, forward.multiply(-1, -1, -1), up, right.multiply(-1, -1, -1));
+			Vec3 destinationMomentum = CoordinateHelper.Relative.toOrthogonalBasis(relativeMomentum, forward.multiply(-1, -1, -1), up, right.multiply(-1, -1, -1));
+			Vec3 destinationLookAngle = CoordinateHelper.Relative.toOrthogonalBasis(relativeLookAngle, forward.multiply(-1, -1, -1), up, right.multiply(-1, -1, -1));
+			
+			//TODO
+			
+			return true;
+		},
+		false);
 	}
 	
 	// Saving and loading

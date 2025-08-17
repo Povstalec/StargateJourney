@@ -1,8 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import javax.annotation.Nullable;
 
@@ -144,7 +142,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	@Nullable
 	protected UUID connectionID = null;
 	protected StargateConnection.State connectionState = StargateConnection.State.IDLE;
-	protected Wormhole wormhole = new Wormhole();
 
 	protected int openSoundLead = 28;
 	protected float verticalCenterHeight;
@@ -623,7 +620,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			return;
 		
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
-		Direction direction = Orientation.getEffectiveDirection(getDirection(), getOrientation());
+		Direction direction = Orientation.getForwardDirection(getDirection(), getOrientation());
 		
 		double frontMultiplier = kawooshFunction(kawooshTime);
 		
@@ -668,7 +665,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		Vec3 backVector = centerVector.relative(axisDirection, -2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), -2.25);
 		
 		frontMultiplier = frontMultiplier > 7 ? 7 : frontMultiplier;
-		Vec3 facingVector = Orientation.getEffectiveVector(direction, getOrientation());
+		Vec3 facingVector = Orientation.getForwardVector(direction, getOrientation());
 		facingVector = facingVector.multiply(frontMultiplier, frontMultiplier, frontMultiplier);
 		facingVector = facingVector.add(centerVector);
 		facingVector = facingVector.relative(axisDirection, 2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), 2.25);
@@ -1298,11 +1295,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		updateAdvancedCrystalInterfaceBlocks(eventName, objects);
 	}
 	
-	public Wormhole getWormhole()
-	{
-		return this.wormhole;
-	}
-	
 	public void setOpenSoundLead(int openSoundLead)
 	{
 		this.openSoundLead = openSoundLead;
@@ -1428,6 +1420,19 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public void doWhileConnected(boolean incoming, int openTime)
 	{
 		idleWormholeSound(incoming);
+	}
+	
+	public List<Entity> findWormholeCandidates()
+	{
+		List<Entity> wormholeCandidates;
+		Vec3 centerPos = getCenter();
+		AABB localBox = new AABB(
+				centerPos.x - 2.5, centerPos.y - 2.5, centerPos.z - 2.5,
+				centerPos.x + 2.5, centerPos.y + 2.5, centerPos.z + 2.5);
+		
+		wormholeCandidates = getLevel().getEntitiesOfClass(Entity.class, localBox, entity -> entity.isAlive() && !entity.getType().is(TagInit.Entities.WORMHOLE_IGNORES));
+		
+		return wormholeCandidates;
 	}
 	
 	public boolean updateClient()

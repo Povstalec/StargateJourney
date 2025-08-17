@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -13,7 +14,6 @@ import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.UUID;
 
 public interface Stargate
@@ -111,9 +111,13 @@ public interface Stargate
 	
 	void doWhileConnected(MinecraftServer server, boolean incoming, int openTime);
 	
-	int autoclose(MinecraftServer server);
+	void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel);
 	
-	List<Entity> findWormholeCandidates(MinecraftServer server);
+	boolean tryWormholeEntity(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
+	
+	
+	
+	int autoclose(MinecraftServer server);
 	
 	// Saving and loading
 	

@@ -374,8 +374,8 @@ public final class StargateConnection
 		if(this.used)
 			this.timeSinceLastTraveler++;
 		
-		doWormhole(this.dialingStargate.getStargateEntity(server).getWormhole(), this.dialingStargate.getStargateEntity(server), this.dialedStargate.getStargateEntity(server), StargateInfo.WormholeTravel.ENABLED);
-		doWormhole(this.dialedStargate.getStargateEntity(server).getWormhole(), this.dialedStargate.getStargateEntity(server), this.dialingStargate.getStargateEntity(server), CommonStargateConfig.two_way_wormholes.get());
+		this.dialingStargate.doWormhole(server, this, false, StargateInfo.WormholeTravel.ENABLED);
+		this.dialedStargate.doWormhole(server, this, true, CommonStargateConfig.two_way_wormholes.get());
 		
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
 		if(this.dialingStargate.autoclose(server) > 0 && this.timeSinceLastTraveler >= this.dialingStargate.autoclose(server) * 20)
@@ -394,27 +394,6 @@ public final class StargateConnection
 		
 		if(this.openTime > maxKawooshTicks)
 			this.connectionTime++;
-	}
-	
-	private final void doWormhole(Wormhole wormhole, AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, StargateInfo.WormholeTravel wormholeTravel)
-	{
-		if(initialStargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
-			return;
-		
-		Vec3 stargatePos = initialStargate.getCenter();
-		
-		if(wormhole.findCandidates(initialStargate.getLevel(), stargatePos, initialStargate.getDirection()) && this.used)
-			this.timeSinceLastTraveler = 0;
-		if(targetStargate.dhdInfo().shouldCallForward())
-		{
-			if(wormhole.wormholeEntities(initialStargate, initialStargate, wormholeTravel))
-				this.used = true;
-		}
-		else
-		{
-			if(wormhole.wormholeEntities(initialStargate, targetStargate, wormholeTravel))
-				this.used = true;
-		}
 	}
 	
 	public void sendStargateMessage(MinecraftServer server, AbstractStargateEntity sendingStargate, String message)
@@ -442,7 +421,7 @@ public final class StargateConnection
 	}
 	
 	//============================================================================================
-	//******************************************Getters*******************************************
+	//************************************Getters and Setters*************************************
 	//============================================================================================
 	
 	public UUID getID()
@@ -477,9 +456,24 @@ public final class StargateConnection
 		return this.connectionTime;
 	}
 	
+	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)
+	{
+		this.timeSinceLastTraveler = timeSinceLastTraveler;
+	}
+	
 	public int getTimeSinceLastTraveler()
 	{
 		return this.timeSinceLastTraveler;
+	}
+	
+	public void setUsed(boolean used)
+	{
+		this.used = used;
+	}
+	
+	public boolean used()
+	{
+		return this.used;
 	}
 	
 	public boolean doKawoosh()

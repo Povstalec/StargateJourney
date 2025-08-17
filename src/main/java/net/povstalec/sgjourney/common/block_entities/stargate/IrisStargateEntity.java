@@ -79,7 +79,7 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 			return;
 		
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
-		Direction direction = Orientation.getEffectiveDirection(getDirection(), getOrientation());
+		Direction direction = Orientation.getForwardDirection(getDirection(), getOrientation());
 		
 		double frontMultiplier = kawooshFunction(kawooshTime);
 		

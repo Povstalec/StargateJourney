@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -43,6 +44,7 @@ import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.WormholeTravel;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.Nullable;
 
 public class Wormhole
@@ -54,34 +56,14 @@ public class Wormhole
 	public static final double MIN_SPEED = 0.4;
 	
 	protected Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
-	protected List<Entity> localEntities = new ArrayList<Entity>();
 	protected boolean used = false;
 	
 	public Wormhole() {}
 	
-	public boolean hasCandidates()
+	@Nullable
+	public Vec3 previousPos(Entity traveler)
 	{
-		return !localEntities.isEmpty();
-	}
-	
-	public boolean findCandidates(Level level, Vec3 centerPos, Direction direction)
-	{
-		AABB localBox = new AABB(
-			centerPos.x - 2.5, centerPos.y - 2.5, centerPos.z - 2.5, 
-			centerPos.x + 2.5, centerPos.y + 2.5, centerPos.z + 2.5);
-		
-		localEntities = level.getEntitiesOfClass(Entity.class, localBox, entity -> entity.isAlive());
-		
-		if(localEntities.isEmpty())
-			return false;
-		
-		for(Entity entity : localEntities)
-		{
-			if(!entity.getType().is(TagInit.Entities.WORMHOLE_IGNORES))
-				return true;
-		}
-		
-		return false;
+		return this.entityLocations.get(traveler.getId());
 	}
 	
 	public boolean wormholeEntity(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, StargateInfo.WormholeTravel twoWayWormhole,
@@ -140,14 +122,14 @@ public class Wormhole
 		return false;
 	}
 	
-	public boolean wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, StargateInfo.WormholeTravel twoWayWormhole)
+	public boolean wormholeEntities(AbstractStargateEntity initialStargate, AbstractStargateEntity targetStargate, StargateInfo.WormholeTravel twoWayWormhole, List<Entity> localEntities)
 	{
 		this.used = false;
 		Direction direction = initialStargate.getDirection();
-		Direction orientationDirection = Orientation.getEffectiveDirection(direction, initialStargate.getOrientation());
+		Direction orientationDirection = Orientation.getForwardDirection(direction, initialStargate.getOrientation());
 		Map<Integer, Vec3> entityLocations = new HashMap<Integer, Vec3>();
 		
-		for(Entity traveler : this.localEntities)
+		for(Entity traveler : localEntities)
 		{
 			if(!traveler.getType().is(TagInit.Entities.WORMHOLE_CANNOT_TELEPORT) && !traveler.isPassenger() && this.entityLocations.containsKey(traveler.getId()))
 			{
@@ -340,13 +322,11 @@ public class Wormhole
 		        Orientation initialOrientation = initialStargate.getOrientation();
 	        	Direction destinationDirection = targetStargate.getDirection();
 		        Orientation destinationOrientation = targetStargate.getOrientation();
-		        double initialYAddition = initialStargate.getGateAddition();
-		        double destinationYAddition = targetStargate.getGateAddition();
 		        
-	    		Vec3 relativePos = CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, new Vec3(traveler.getX() - (initialStargate.getCenterPos().getX() + 0.5), traveler.getY() - (initialStargate.getCenterPos().getY() + initialYAddition), traveler.getZ() - (initialStargate.getCenterPos().getZ() + 0.5)));
+	    		Vec3 relativePos = CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, traveler.position().subtract(initialStargate.getCenter()));
 	    		
-	    		Vec3 destinationPos = new Vec3(targetStargate.getCenterPos().getX() + 0.5 + relativePos.x(), targetStargate.getCenterPos().getY() + destinationYAddition + relativePos.y(), targetStargate.getCenterPos().getZ() + 0.5 + relativePos.z());
-	    		
+	    		Vec3 destinationPos = relativePos.add(targetStargate.getCenter());
+				
 	    		Vec3 motionVec = CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum);
 	    		
 	    		if(targetStargate instanceof IrisStargateEntity irisStargate && !handleShielding(irisStargate, destinationPos, motionVec, traveler))
