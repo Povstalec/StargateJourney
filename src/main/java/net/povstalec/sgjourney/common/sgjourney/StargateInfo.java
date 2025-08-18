@@ -167,7 +167,9 @@ public class StargateInfo
 		CHEVRON_ALREADY_OPENED(-33, FeedbackType.ERROR, "chevron_already_opened"),
 		CHEVRON_ALREADY_CLOSED(-34, FeedbackType.ERROR, "chevron_already_closed"),
 		CHEVRON_NOT_OPEN(-35, FeedbackType.ERROR, "chevron_not_open"),
-		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin");
+		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin"),
+		
+		TARGET_NOT_LOADED(-37, FeedbackType.ERROR, "target_not_loaded");
 		
 		private int code;
 		private final FeedbackType type;

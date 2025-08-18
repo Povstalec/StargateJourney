@@ -34,42 +34,46 @@ public class Dialing
 		};
 	}
 	
-	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
+	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		if(SGJourneyEvents.onStargateDial(server, dialingStargate, address, doKawoosh))
 			return StargateInfo.Feedback.NONE;
 		
 		return switch(address.getLength())
 		{
-			case 6 -> get7ChevronStargate(server, dialingStargate, address, doKawoosh);
-			case 7 -> get8ChevronStargate(server, dialingStargate, address, doKawoosh);
-			case 8 -> get9ChevronStargate(server, dialingStargate, address, doKawoosh);
+			case 6 -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
+			case 7 -> get8ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
+			case 8 -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 			default -> dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
 		};
 	}
 	
-	private static StargateInfo.Feedback get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable dialedAddress, boolean doKawoosh)
+	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
+	{
+		return dialStargate(server, dialingStargate, address, doKawoosh, false);
+	}
+	
+	private static StargateInfo.Feedback get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable dialedAddress, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		SolarSystem.Serializable solarSystem = Universe.get(server).getSolarSystemFromAddress(dialingStargate.getSolarSystem(server), dialedAddress);
 		
 		if(solarSystem == null)
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
 		
-		return getStargate(server, dialingStargate, solarSystem, Address.Type.ADDRESS_7_CHEVRON, doKawoosh);
+		return getStargate(server, dialingStargate, solarSystem, Address.Type.ADDRESS_7_CHEVRON, doKawoosh, mustBeLoaded);
 	}
 	
-	private static StargateInfo.Feedback get8ChevronStargate(MinecraftServer server, Stargate dialingStargate,
-															 Address.Immutable extragalacticAddress, boolean doKawoosh)
+	private static StargateInfo.Feedback get8ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable extragalacticAddress, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		SolarSystem.Serializable solarSystem = Universe.get(server).getSolarSystemFromExtragalacticAddress(extragalacticAddress);
 		
 		if(solarSystem == null)
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
 		
-		return getStargate(server, dialingStargate, solarSystem, Address.Type.ADDRESS_8_CHEVRON, doKawoosh);
+		return getStargate(server, dialingStargate, solarSystem, Address.Type.ADDRESS_8_CHEVRON, doKawoosh, mustBeLoaded);
 	}
 	
-	private static StargateInfo.Feedback getStargate(MinecraftServer server, Stargate dialingStargate, SolarSystem.Serializable dialedSystem, Address.Type addressType, boolean doKawoosh)
+	private static StargateInfo.Feedback getStargate(MinecraftServer server, Stargate dialingStargate, SolarSystem.Serializable dialedSystem, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		SolarSystem.Serializable currentSystem = dialingStargate.getSolarSystem(server);
 		
@@ -98,17 +102,25 @@ public class Dialing
 				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_DIMENSIONS, true);
 		}
 		
-		return getPreferredStargate(server, dialingStargate, dialedSystem, addressType, doKawoosh);
+		return getPreferredStargate(server, dialingStargate, dialedSystem, addressType, doKawoosh, mustBeLoaded);
 	}
 	
-	private static StargateInfo.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
+	private static StargateInfo.Feedback attemptConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
+	{
+		if(mustBeLoaded && !dialedStargate.isLoaded(server))
+			return StargateInfo.Feedback.TARGET_NOT_LOADED;
+		
+		return dialedStargate.tryConnect(server, dialingStargate, addressType, doKawoosh);
+	}
+	
+	private static StargateInfo.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		Stargate stargate = StargateNetwork.get(server).getStargate(address);
 		
 		if(stargate == null)
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
 		
-		StargateInfo.Feedback feedback = stargate.tryConnect(server, dialingStargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh);
+		StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh, mustBeLoaded);
 		
 		if(!feedback.isError())
 			return feedback;
@@ -116,13 +128,12 @@ public class Dialing
 		return dialingStargate.resetStargate(server, feedback, true);
 	}
 	
-	private static StargateInfo.Feedback get9ChevronStargate(MinecraftServer server, Stargate dialingStargate,
-															 Address.Immutable address, boolean doKawoosh)
+	private static StargateInfo.Feedback get9ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		return getStargateFromAddress(server, dialingStargate, address, doKawoosh);
+		return getStargateFromAddress(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 	}
 	
-	private static StargateInfo.Feedback getPreferredStargate(MinecraftServer server, Stargate dialingStargate, SolarSystem.Serializable solarSystem, Address.Type addressType, boolean doKawoosh)
+	private static StargateInfo.Feedback getPreferredStargate(MinecraftServer server, Stargate dialingStargate, SolarSystem.Serializable solarSystem, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		List<Stargate> stargates = solarSystem.getStargates();
 		
@@ -132,10 +143,9 @@ public class Dialing
 		// Primary Stargate
 		if(CommonStargateNetworkConfig.primary_stargate.get() && solarSystem.primaryStargate() != null)
 		{
-			StargateInfo.Feedback feedback = solarSystem.primaryStargate().tryConnect(server, dialingStargate, addressType, doKawoosh);
+			StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, solarSystem.primaryStargate(), addressType, doKawoosh, mustBeLoaded);
 			
-			if(feedback != StargateInfo.Feedback.TARGET_OBSTRUCTED && feedback != StargateInfo.Feedback.TARGET_RESTRICTED &&
-					feedback != StargateInfo.Feedback.BLACKLISTED_BY_TARGET && feedback != StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET)
+			if(!feedback.isError())
 				return feedback;
 		}
 		
@@ -145,11 +155,10 @@ public class Dialing
 			boolean isLastStargate = i == stargates.size() - 1;
 			Stargate targetStargate = stargates.get(i);
 			
-			StargateInfo.Feedback feedback = targetStargate.tryConnect(server, dialingStargate, addressType, doKawoosh);
+			StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, targetStargate, addressType, doKawoosh, mustBeLoaded);
 			
 			// If Stargate isn't obstructed and its network isn't restricted, connect
-			if(feedback != StargateInfo.Feedback.TARGET_OBSTRUCTED && feedback != StargateInfo.Feedback.TARGET_RESTRICTED &&
-					feedback != StargateInfo.Feedback.BLACKLISTED_BY_TARGET && feedback != StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET)
+			if(!feedback.isError())
 				return feedback;
 			
 			if(isLastStargate)
