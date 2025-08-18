@@ -215,6 +215,16 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
+	public boolean isLoaded(MinecraftServer server)
+	{
+		ServerLevel level  = server.getLevel(getDimension());
+		if(level == null)
+			return false;
+		
+		return level.isLoaded(getBlockPos());
+	}
+	
+	@Override
 	public void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration)
 	{
 		stargateRun(server, stargate -> stargate.setEngagedChevrons(chevronConfiguration));

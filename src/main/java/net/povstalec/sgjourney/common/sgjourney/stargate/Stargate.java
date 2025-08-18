@@ -86,6 +86,8 @@ public interface Stargate
 	
 	boolean isValid(MinecraftServer server);
 	
+	boolean isLoaded(MinecraftServer server);
+	
 	default void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration) {}
 	
 	// Client Connection

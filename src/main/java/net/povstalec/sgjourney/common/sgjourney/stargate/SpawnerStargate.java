@@ -149,6 +149,12 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
+	public boolean isLoaded(MinecraftServer server)
+	{
+		return true;
+	}
+	
+	@Override
 	public float checkStargateShieldingState(MinecraftServer server)
 	{
 		return 0;
@@ -157,7 +163,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public long getEnergyStored(MinecraftServer server)
 	{
-		return CommonStargateConfig.intergalactic_connection_energy_cost.get(); // CommonStargateConfig.interstellar_connection_energy_cost.get();
+		return CommonStargateConfig.intergalactic_connection_energy_cost.get(); // CommonStargateConfig.interstellar_connection_energy_cost.get(); //TODO Add some actual energy handling
 	}
 	
 	@Override
@@ -179,7 +185,7 @@ public class SpawnerStargate implements Stargate
 	
 	public StargateInfo.Feedback dial(MinecraftServer server)
 	{
-		return Dialing.dialStargate(server, this, getAddress(server).immutable(), true);
+		return Dialing.dialStargate(server, this, getAddress(server).immutable(), true, true);
 	}
 	
 	@Override
