@@ -122,7 +122,8 @@ public class Dialing
 		
 		StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh, mustBeLoaded);
 		
-		if(!feedback.isError())
+		// If Stargate isn't obstructed and its network isn't restricted, connect
+		if(!feedback.isSkippable())
 			return feedback;
 		
 		return dialingStargate.resetStargate(server, feedback, true);
@@ -145,7 +146,8 @@ public class Dialing
 		{
 			StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, solarSystem.primaryStargate(), addressType, doKawoosh, mustBeLoaded);
 			
-			if(!feedback.isError())
+			// If Stargate isn't obstructed and its network isn't restricted, connect
+			if(!feedback.isSkippable())
 				return feedback;
 		}
 		
@@ -158,7 +160,7 @@ public class Dialing
 			StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, targetStargate, addressType, doKawoosh, mustBeLoaded);
 			
 			// If Stargate isn't obstructed and its network isn't restricted, connect
-			if(!feedback.isError())
+			if(!feedback.isSkippable())
 				return feedback;
 			
 			if(isLastStargate)
