@@ -599,10 +599,11 @@
   "message.sgjourney.stargate.error.target_restricted": "O Stargate discado está restrito",
   "message.sgjourney.stargate.error.invalid_8_chevron_address": "Um Endereço de 8 divisas não pode ser discado dentro da mesma Galáxia",
   "message.sgjourney.stargate.error.invalid_system_wide_connection": "Não é possível conectar dentro do mesmo Sistema Solar",
-  "message.sgjourney.stargate.error.whitelisted_target": "O Stargate alvo não está na lista branca",
-  "message.sgjourney.stargate.error.whitelisted_self": "O Stargate não está na lista branca do Stargate alvo",
-  "message.sgjourney.stargate.error.blacklisted_target": "O Stargate alvo está na lista negra",
-  "message.sgjourney.stargate.error.blacklisted_self": "O Stargate está na lista negra do Stargate alvo",
+  
+  "message.sgjourney.stargate.error.target_not_whitelisted": "O Stargate alvo não está na lista branca",
+  "message.sgjourney.stargate.error.not_whitelisted_by_target": "O Stargate não está na lista branca do Stargate alvo",
+  "message.sgjourney.stargate.error.target_blacklisted": "O Stargate alvo está na lista negra",
+  "message.sgjourney.stargate.error.blacklisted_by_target": "O Stargate está na lista negra do Stargate alvo",
 
   "message.sgjourney.stargate.info.connection_ended.disconnect": "Stargate desconectado",
   "message.sgjourney.stargate.info.connection_ended.point_of_origin": "O Stargate foi desconectado ao travar o ponto de origem",

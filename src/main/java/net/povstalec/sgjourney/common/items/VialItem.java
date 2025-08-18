@@ -34,13 +34,23 @@ public class VialItem extends FluidItem
 		return CommonTechConfig.vial_capacity.get();
 	}
 	
+	public static ItemStack liquidNaquadahSetup(int amount)
+	{
+		return FluidItem.fluidSetup(ItemInit.VIAL.get(), FluidInit.LIQUID_NAQUADAH_SOURCE.get(), amount);
+	}
+	
 	public static ItemStack liquidNaquadahSetup()
 	{
-		return FluidItem.fluidSetup(ItemInit.VIAL.get(), FluidInit.LIQUID_NAQUADAH_SOURCE.get(), CommonTechConfig.vial_capacity.get());
+		return liquidNaquadahSetup(CommonTechConfig.vial_capacity.get());
+	}
+	
+	public static ItemStack heavyLiquidNaquadahSetup(int amount)
+	{
+		return FluidItem.fluidSetup(ItemInit.VIAL.get(), FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), amount);
 	}
 	
 	public static ItemStack heavyLiquidNaquadahSetup()
 	{
-		return FluidItem.fluidSetup(ItemInit.VIAL.get(), FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), CommonTechConfig.vial_capacity.get());
+		return heavyLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get());
 	}
 }

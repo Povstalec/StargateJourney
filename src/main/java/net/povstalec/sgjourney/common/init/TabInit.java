@@ -68,7 +68,7 @@ public class TabInit
 			event.accept(PowerCellItem.heavyLiquidNaquadahSetup());
 			
 			event.accept(ItemInit.PDA.get());
-
+			
 			event.accept(ItemInit.GDO.get());
 			
 			event.accept(ItemInit.NAQUADAH_SWORD.get());

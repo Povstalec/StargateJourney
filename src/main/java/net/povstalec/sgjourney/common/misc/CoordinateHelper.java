@@ -2,143 +2,129 @@ package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+
+import javax.annotation.Nullable;
 
 public class CoordinateHelper
 {
 	public static class CoordinateSystems
 	{
-		public static final float cartesianToPolarR(float x, float y)
+		public static float cartesianToPolarR(float x, float y)
 		{
 			return (float) Math.sqrt(x * x + y * y);
 		}
 		
-		public static final float cartesianToPolarPhi(float x, float y)
+		public static float cartesianToPolarPhi(float x, float y)
 		{
 			return (float) Math.toDegrees(Math.atan2(y, x));
 		}
 		
-		public static final float polarToCartesianX(float r, float phi)
+		public static float polarToCartesianX(float r, float phi)
 		{
 			return r * (float) Math.cos(Math.toRadians(phi));
 		}
 		
-		public static final float polarToCartesianY(float r, float phi)
+		public static float polarToCartesianY(float r, float phi)
 		{
 			return r * (float) Math.sin(Math.toRadians(phi));
+		}
+		
+		public static float lookAngleY(Vec3 lookAngle)
+		{
+			return CoordinateSystems.cartesianToPolarPhi((float) lookAngle.x(), (float) lookAngle.z()) + 270;
 		}
 	}
 	
 	public static class Relative
 	{
-		public static final Vec3 rotateVector(Vec3 initialVector, Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation)
+		/**
+		 * Projects vector a onto b
+		 * @param a Vector to be projected
+		 * @param b Vector to be projected onto
+		 * @return Scalar result of projecting vector a onto vector b
+		 */
+		public static double projectVectorToScalar(Vec3 a, Vec3 b)
 		{
-			Vec3 vector = initialVector;
-	    	int initialHorizontal = initialDirection.get2DDataValue();
-	    	int destinationHorizontal = destinationDirection.get2DDataValue();
-			Axis initialRotationAxis = initialDirection.getClockWise().getAxis();
-			Axis destinationRotationAxis = destinationDirection.getClockWise().getAxis();
-	    	int initialVertical = initialOrientation.get2DDataValue();
-	    	int destinationVertical = destinationOrientation.get2DDataValue();
-	    	int regular = Orientation.REGULAR.get2DDataValue();
-	    	
-	    	// Rotate to default position
-	    	if(initialVertical > regular)
-	    		regular += 4;
-	    	
-			int xzRotation1 = regular - initialVertical;
-			boolean negativeAxis1 = initialDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE;
-			
-			if(initialRotationAxis == Direction.Axis.X)
-				vector = xRotateClockwise(vector, xzRotation1, negativeAxis1);
-			else
-				vector = zRotateClockwise(vector, xzRotation1, negativeAxis1);
-	    	
-			// Rotate horizontally
-	    	if(destinationHorizontal - initialHorizontal - 2 < 0)
-	    		destinationHorizontal += 4;
-	    	
-			int yRotation = destinationHorizontal - initialHorizontal - 2;
-	    	if(yRotation < 0)
-	    		yRotation += 4;
-			
-			vector = yRotateClockwise(vector, yRotation);
-			
-			
-	    	//Rotate to Stargate position
-	    	if(destinationVertical < Orientation.REGULAR.get2DDataValue())
-	    		destinationVertical += 4;
-	    	
-			int xzRotation2 = destinationVertical - Orientation.REGULAR.get2DDataValue();
-			boolean negativeAxis2 = destinationDirection.getAxisDirection() == Direction.AxisDirection.POSITIVE;
-			
-			if(destinationRotationAxis == Direction.Axis.X)
-				vector = xRotateClockwise(vector, xzRotation2, negativeAxis2);
-			else
-				vector = zRotateClockwise(vector, xzRotation2, negativeAxis2);
-			
-			return vector;
+			return a.dot(b) / b.dot(b);
 		}
 		
-		public static final Vec3 yRotateClockwise(Vec3 vector, int numberOfRotations)
+		/**
+		 * Projects vector a onto b
+		 * @param a Vector to be projected
+		 * @param b Vector to be projected onto
+		 * @return Projection of vector a onto vector b
+		 */
+		public static Vec3 projectVector(Vec3 a, Vec3 b)
 		{
-			double x = vector.x();
-			double z = vector.z();
-			
-			for(int i = 0; i < numberOfRotations; i++)
-			{
-				double helper = x;
-				x = -z;
-				z = helper;
-			}
-			
-			return new Vec3(x, vector.y, z);
+			double scalar = projectVectorToScalar(a, b);
+			return b.multiply(scalar, scalar, scalar);
 		}
 		
-		public static final Vec3 xRotateClockwise(Vec3 vector, int numberOfRotations, boolean clockwise)
+		/**
+		 * Transforms the vector from a provided orthogonal basis to a vector in the canonical basis
+		 * @param vector Vector to be transformed
+		 * @param basisX 1st vector of the basis, must be a unit vector
+		 * @param basisY 2nd vector of the basis, must be a unit vector
+		 * @param basisZ 3rd vector of the basis, must be a unit vector
+		 * @return A new vector with the coordinates of the original vector, but transformed to the canonical basis
+		 */
+		public static Vec3 fromOrthogonalBasis(Vec3 vector, Vec3 basisX, Vec3 basisY, Vec3 basisZ)
 		{
-			double y = vector.y();
-			double z = vector.z();
+			double xProj = projectVectorToScalar(vector, basisX);
+			double yProj = projectVectorToScalar(vector, basisY);
+			double zProj = projectVectorToScalar(vector, basisZ);
 			
-			int multiplier = clockwise ? 1 : -1;
-			
-			for(int i = 0; i < numberOfRotations; i++)
-			{
-				double helper = y;
-				y = -z * multiplier;
-				z = helper * multiplier;
-			}
-			
-			return new Vec3(vector.x, y, z);
+			return new Vec3(xProj, yProj, zProj);
 		}
 		
-		public static final Vec3 zRotateClockwise(Vec3 vector, int numberOfRotations, boolean clockwise)
+		/**
+		 * Transforms the vector from the canonical basis to the provided orthogonal basis
+		 * @param vector Vector to be transformed
+		 * @param basisX 1st vector of the basis, must be a unit vector
+		 * @param basisY 2nd vector of the basis, must be a unit vector
+		 * @param basisZ 3rd vector of the basis, must be a unit vector
+		 * @return A new vector with the coordinates of the original vector, but transformed to the provided basis
+		 */
+		public static Vec3 toOrthogonalBasis(Vec3 vector, Vec3 basisX, Vec3 basisY, Vec3 basisZ)
 		{
-			double x = vector.x();
-			double y = vector.y();
-			
-			int multiplier = clockwise ? 1 : -1;
-			
-			for(int i = 0; i < numberOfRotations; i++)
-			{
-				double helper = y;
-				y = -x * multiplier;
-				x = helper * multiplier;
-			}
-			
-			return new Vec3(x, y, vector.z);
+			return new Vec3(vector.x() * basisX.x() + vector.y() * basisY.x() + vector.z() * basisZ.x(),
+							vector.x() * basisX.y() + vector.y() * basisY.y() + vector.z() * basisZ.y(),
+							vector.x() * basisX.z() + vector.y() * basisY.z() + vector.z() * basisZ.z());
 		}
 		
-		public static final Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
+		public static Vec3 rotateVector(Vec3 initialVector, Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation)
+		{
+			Vec3 initialForward = Orientation.getForwardVector(initialDirection, initialOrientation);
+			Vec3 initialUp = Orientation.getUpVector(initialDirection, initialOrientation);
+			
+			Vec3 destinationForward = Orientation.getForwardVector(destinationDirection, destinationOrientation);
+			Vec3 destinationUp = Orientation.getUpVector(destinationDirection, destinationOrientation);
+			
+			return rotateVector(initialVector, initialForward, initialUp, destinationForward, destinationUp);
+		}
+		
+		public static Vec3 rotateVector(Vec3 initialVector, Vec3 initialForward, Vec3 initialUp, Vec3 destinationForward, Vec3 destinationUp)
+		{
+			Vec3 initialRight = initialForward.cross(initialUp);
+			Vec3 inbetweenVector = fromOrthogonalBasis(initialVector, initialForward, initialUp, initialRight);
+			
+			Vec3 destinationRight = destinationForward.cross(destinationUp);
+			Vec3 destinationVector = toOrthogonalBasis(inbetweenVector, destinationForward.multiply(-1, -1, -1), destinationUp, destinationRight.multiply(-1, -1, -1));
+			
+			return destinationVector;
+		}
+		
+		public static Vec3 preserveRelative(Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation, Vec3 initial)
 	    {
 	    	return rotateVector(initial, initialDirection, initialOrientation, destinationDirection, destinationOrientation);
 	    }
 		
-		public static final float preserveYRot(Direction initialDirection, Direction destinationDirection, float yRot)
+		public static float preserveYRot(Direction initialDirection, Direction destinationDirection, float yRot)
 		{
 			float initialStargateDirection = Mth.wrapDegrees(initialDirection.toYRot());
 	    	float destinationStargateDirection = Mth.wrapDegrees(destinationDirection.toYRot());
@@ -150,9 +136,8 @@ public class CoordinateHelper
 	    	return yRot;
 		}
 		
-
 		
-		public static final Vec3i yRotateClockwise(Vec3i vector, int numberOfRotations)
+		public static Vec3i yRotateClockwise(Vec3i vector, int numberOfRotations)
 		{
 			int x = vector.getX();
 			int z = vector.getZ();
@@ -167,12 +152,24 @@ public class CoordinateHelper
 			return new Vec3i(x, vector.getY(), z);
 		}
 		
-		public static final Vec3i blockPosOffset(BlockPos initialPos, BlockPos otherPos)
+		public static long distanceSqr(Vec3i posA, Vec3i posB)
+		{
+			if(posA == null || posB == null)
+				return Long.MAX_VALUE;
+			
+			long x = posB.getX() - posA.getX();
+			long y = posB.getY() - posA.getY();
+			long z = posB.getZ() - posA.getZ();
+			
+			return x*x + y*y + z*z;
+		}
+		
+		public static Vec3i blockPosOffset(BlockPos initialPos, BlockPos otherPos)
 		{
 			return new Vec3i(otherPos.getX() - initialPos.getX(), otherPos.getY() - initialPos.getY(), otherPos.getZ() - initialPos.getZ());
 		}
 		
-		public static final Vec3i getRelativeOffset(Direction initialDirection, BlockPos initialPos, BlockPos otherPos)
+		public static Vec3i getRelativeOffset(Direction initialDirection, BlockPos initialPos, BlockPos otherPos)
 		{
 			int initialRotation = initialDirection.get2DDataValue();
 			
@@ -185,7 +182,7 @@ public class CoordinateHelper
 	    	return yRotateClockwise(absoluteOffset, rotation);
 		}
 		
-		public static final Vec3i getAbsoluteOffset(Direction initialDirection, Vec3i relativeOffset)
+		public static Vec3i getAbsoluteOffset(Direction initialDirection, Vec3i relativeOffset)
 		{
 			if(initialDirection == null)
 				return null;
@@ -199,7 +196,7 @@ public class CoordinateHelper
 	    	return yRotateClockwise(relativeOffset, rotation);
 		}
 		
-		public static final BlockPos getOffsetPos(Direction initialDirection, BlockPos initialPos, Vec3i relativeOffset)
+		public static BlockPos getOffsetPos(Direction initialDirection, BlockPos initialPos, Vec3i relativeOffset)
 		{
 			Vec3i absoluteOffset = getAbsoluteOffset(initialDirection, relativeOffset);
 			
@@ -207,6 +204,82 @@ public class CoordinateHelper
 				return null;
 			
 			return initialPos.offset(absoluteOffset);
+		}
+	}
+	
+	
+	
+	public static class StargateCoords
+	{
+		/**
+		 * Transforms the vector from a Stargate's relative corodinate system, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction, with the Y and Z vectors being a percentage of the Stargate's radius
+		 * to a vector in the absolute coordinate system
+		 * @param vector Vector to be transformed
+		 * @param forward Stargate's facing direction unit vector
+		 * @param up Stargate's relative up direction unit vector
+		 * @param right Stargate's relative right direction unit vector
+		 * @param radius Stargate's inner radius
+		 * @return A new vector with the coordinates of the original vector, but transformed to the canonical basis
+		 */
+		public static Vec3 fromStargateCoords(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right, double radius)
+		{
+			Vec3 temp = Relative.fromOrthogonalBasis(vector, forward, up, right);
+			return new Vec3(temp.x(), temp.y() / radius, temp.z() / radius);
+		}
+		
+		/**
+		 * Transforms the vector from a Stargate's relative corodinate system, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction,
+		 * to a vector in the absolute coordinate system
+		 * @param vector Vector to be transformed
+		 * @param forward Stargate's facing direction unit vector
+		 * @param up Stargate's relative up direction unit vector
+		 * @param right Stargate's relative right direction unit vector
+		 * @return A new vector with the coordinates of the original vector, but transformed to the canonical basis
+		 */
+		public static Vec3 fromStargateCoords(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right)
+		{
+			return Relative.fromOrthogonalBasis(vector, forward, up, right);
+		}
+		
+		/**
+		 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Stargate, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction,
+		 * with the Y and Z vectors being a percentage of the Stargate's radius
+		 * @param vector Vector to be transformed
+		 * @param forward Stargate's facing direction unit vector
+		 * @param up Stargate's relative up direction unit vector
+		 * @param right Stargate's relative right direction unit vector
+		 * @param radius Stargate's inner radius
+		 * @return A new vector with the coordinates of the original vector, but transformed to Stargate's relative coordinate system
+		 */
+		public static Vec3 toStargateCoords(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right, double radius)
+		{
+			return Relative.toOrthogonalBasis(new Vec3(vector.x(), vector.y() * radius, vector.z() * radius), forward, up, right);
+		}
+		
+		/**
+		 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Stargate, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction
+		 * @param vector Vector to be transformed
+		 * @param forward Stargate's facing direction unit vector
+		 * @param up Stargate's relative up direction unit vector
+		 * @param right Stargate's relative right direction unit vector
+		 * @return A new vector with the coordinates of the original vector, but transformed to Stargate's relative coordinate system
+		 */
+		public static Vec3 toStargateCoords(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right)
+		{
+			return Relative.toOrthogonalBasis(vector, forward, up, right);
+		}
+		
+		@Nullable
+		public static BlockPos stargateBlockPos(Stargate stargate)
+		{
+			if(stargate == null)
+				return null;
+			
+			Vec3 pos = stargate.getPosition();
+			if(pos == null)
+				return null;
+			
+			return BlockPos.containing(pos.x(), pos.y(), pos.z());
 		}
 	}
 }

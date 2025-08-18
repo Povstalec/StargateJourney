@@ -45,7 +45,7 @@ public final class Address
 		this(false);
 	}
 	
-	public Address(int[] addressArray)
+	public Address(int... addressArray)
 	{
 		fromArray(addressArray);
 	}
@@ -464,7 +464,7 @@ public final class Address
 			this.addressArray = new Address(addressString).toArray();
 		}
 		
-		public Immutable(int[] addressArray)
+		public Immutable(int... addressArray)
 		{
 			this.addressArray = new Address(addressArray).toArray();
 		}

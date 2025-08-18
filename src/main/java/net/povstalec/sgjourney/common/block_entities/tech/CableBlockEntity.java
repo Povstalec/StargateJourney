@@ -143,7 +143,7 @@ public abstract class CableBlockEntity extends BlockEntity
 			BlockEntity blockEntity =  level.getBlockEntity(outputPos);
 			if(blockEntity != null && !(blockEntity instanceof CableBlockEntity))
 			{
-				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).resolve().orElse(null);
+				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
 				if(energy != null)
 				{
 					if(energy.canReceive())
@@ -179,9 +179,9 @@ public abstract class CableBlockEntity extends BlockEntity
 			BlockEntity blockEntity =  level.getBlockEntity(outputPos);
 			if(blockEntity != null)
 			{
-				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).resolve().orElse(null);
+				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
 				
-				if(energy.canReceive())
+				if(energy != null && energy.canReceive())
 				{
 					if(energy instanceof SGJourneyEnergy sgjourneyEnergy && sgjourneyEnergy.getTrueEnergyStored() < sgjourneyEnergy.getTrueMaxEnergyStored())
 						outputs++;
@@ -199,7 +199,7 @@ public abstract class CableBlockEntity extends BlockEntity
 		if(blockEntity == null)
 			return 0;
 		
-		IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).resolve().orElse(null);
+		IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
 		if(energy == null || !energy.canReceive())
 			return 0;
 		

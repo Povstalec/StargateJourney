@@ -226,6 +226,9 @@ public class ItemInit
 	
 	/*public static final RegistryObject<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
 			() -> new BatteryItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));*/
+	
+	public static final RegistryObject<GoauldItem> GOAULD = ITEMS.register("goauld",
+			() -> new GoauldItem(new Item.Properties().stacksTo(1)));
 		
 	
 	public static void register(IEventBus eventBus)

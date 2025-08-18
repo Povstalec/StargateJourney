@@ -30,7 +30,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -43,11 +42,12 @@ import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
 import net.povstalec.sgjourney.common.data.*;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy.Serializable;
 import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
-import net.povstalec.sgjourney.common.sgjourney.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class CommandInit
 {
@@ -333,10 +333,11 @@ public class CommandInit
 				solarSystem.getStargates().stream().forEach(stargate ->
 				{
 					ResourceKey<Level> stargateDimension = stargate.getDimension();
-					BlockPos stargatePos = stargate.getBlockPos();
+					BlockPos stargatePos = CoordinateHelper.StargateCoords.stargateBlockPos(stargate);
 					
-					if(stargateDimension.equals(dimension))
+					if(dimension.equals(stargateDimension) && stargatePos != null)
 					{
+						
 						Style style = Style.EMPTY;
 						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
 						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.get9ChevronAddress().toString()));

@@ -5,7 +5,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.TransceiverFunctions;
 
 public class TransceiverMethods
@@ -21,8 +21,10 @@ public class TransceiverMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{
-			arguments.escapes();
-			TransceiverFunctions.setFrequency(transceiver, arguments.getInt(0));
+			double frequency = arguments.getDouble(0);
+			if(frequency > Integer.MAX_VALUE || frequency < Integer.MIN_VALUE)
+				throw new LuaException("Frequency " + frequency + " out of range for <" + Integer.MIN_VALUE + ", " + Integer.MAX_VALUE + ">");
+			TransceiverFunctions.setFrequency(transceiver, (int) frequency);
 			
 			return MethodResult.of();
 		}

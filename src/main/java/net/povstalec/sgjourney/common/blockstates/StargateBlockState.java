@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
@@ -441,5 +442,11 @@ public class StargateBlockState extends BlockState
 	public BlockState getAppearance(BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos)
 	{
 		return this.self().getBlock().getAppearance(this.self(), level, pos, side, queryState, queryPos);
+	}
+	
+	@Override
+	public boolean isPathfindable(BlockGetter blockGetter, BlockPos pos, PathComputationType pathComputationType)
+	{
+		return this.asState().isCollisionShapeFullBlock(blockGetter, pos);
 	}
 }

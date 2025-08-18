@@ -12,6 +12,11 @@ public enum Orientation implements StringRepresentable
 	UPWARD("upward", 0, 1),
 	DOWNWARD("downward", 2, -1);
 	
+	private static final Vec3[] VECTORS = new Vec3[]
+	{
+		new  Vec3(0, -1, 0), new  Vec3(0, 1, 0), new  Vec3(0, 0, -1), new  Vec3(0, 0, 1), new  Vec3(-1, 0, 0), new  Vec3(1, 0, 0)
+	};
+	
 	private String name;
 	private int data2d;
 	private int index;
@@ -72,7 +77,7 @@ public enum Orientation implements StringRepresentable
 		return Direction.UP;
 	}
 	
-	public static Direction getEffectiveDirection(Direction facingDirection, Orientation orientation)
+	public static Direction getForwardDirection(Direction facingDirection, Orientation orientation)
 	{
 		if(orientation != null)
 		{
@@ -104,30 +109,46 @@ public enum Orientation implements StringRepresentable
 			case DOWN:
 				return orientation == UPWARD ? facingDirection : facingDirection.getOpposite();
 			default:
-				return getEffectiveDirection(facingDirection, orientation);
+				return getForwardDirection(facingDirection, orientation);
 			}
 		}
 		
 		return facingDirection;
 	}
 	
-	public static Vec3 getEffectiveVector(Direction facingDirection, Orientation orientation)
+	public static Vec3 getForwardVector(Direction facingDirection, Orientation orientation)
 	{
 		if(orientation != null)
 		{
 			switch(orientation)
 			{
 			case UPWARD:
-				return new Vec3(0, 1, 0);
+				return VECTORS[1];
 			case DOWNWARD:
-				return new Vec3(0, -1, 0);
+				return VECTORS[0];
 			default:
 				break;
 			}
 		}
 		
-		Vec3i facingNormal = facingDirection.getNormal();
+		return VECTORS[facingDirection.get3DDataValue()];
+	}
+	
+	public static Vec3 getUpVector(Direction facingDirection, Orientation orientation)
+	{
+		if(orientation != null && facingDirection != null)
+		{
+			switch(orientation)
+			{
+				case UPWARD:
+					return VECTORS[facingDirection.getOpposite().get3DDataValue()];
+				case DOWNWARD:
+					return VECTORS[facingDirection.get3DDataValue()];
+				default:
+					break;
+			}
+		}
 		
-		return new Vec3(facingNormal.getX(), facingNormal.getY(), facingNormal.getZ());
+		return VECTORS[1];
 	}
 }

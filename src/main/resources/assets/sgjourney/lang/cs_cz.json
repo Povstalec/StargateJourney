@@ -225,6 +225,8 @@
 	"item.sgjourney.small_naquadah_battery": "Malá naquadahová baterie",
 	"item.sgjourney.naquadah_power_cell": "Naquadahový napájecí článek",
 	
+	"item.sgjourney.goauld": "Goa'uld",
+	
 	"entity.sgjourney.goauld": "Goa'uld",
 	"entity.sgjourney.human": "Člověk",
 	"entity.sgjourney.jaffa": "Jaffa",
@@ -630,6 +632,11 @@
 	"message.sgjourney.stargate.error.target_restricted": "Spojení s vytáčenou branou jsou omezená",
 	"message.sgjourney.stargate.error.invalid_8_chevron_address": "8-chevronová adresa nemůže vytočit stejnou galaxii",
 	"message.sgjourney.stargate.error.invalid_system_wide_connection": "Hvězdné brány se nemohou spojit ve stejném solárním systému",
+	
+	"message.sgjourney.stargate.error.target_not_whitelisted": "Cílová hvězdná brána není na whitelistu",
+	"message.sgjourney.stargate.error.not_whitelisted_by_target": "Hvězdná brána není na whitelistu cílové brány",
+	"message.sgjourney.stargate.error.target_blacklisted": "Cílová hvězdná brána je na blacklistu",
+	"message.sgjourney.stargate.error.blacklisted_by_target": "Hvězdná brána je na blacklistu cílové brány",
 	
 	"message.sgjourney.stargate.info.connection_ended.disconnect": "Hvězdná brána odpojena",
 	"message.sgjourney.stargate.info.connection_ended.point_of_origin": "Hvězdná brána odpojena skrze výchozí bod",
