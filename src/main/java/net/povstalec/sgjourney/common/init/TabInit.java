@@ -100,8 +100,6 @@ public class TabInit
 			event.accept(ItemInit.SYSTEM_LORD_LEGGINGS.get());
 			event.accept(ItemInit.SYSTEM_LORD_BOOTS.get());
 
-			event.accept(NaquadahFuelRodItem.fuelRodSetup());
-
 			event.accept(ItemInit.ZPM.get());
 			event.accept(PersonalShieldItem.personalShieldSetup());
 
@@ -148,6 +146,10 @@ public class TabInit
 			event.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_DHD.get());
 			event.accept(BlockInit.TOLLAN_STARGATE.get());
+			
+			event.accept(ItemInit.FUSION_CORE.get());
+			event.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
+			event.accept(NaquadahFuelRodItem.fuelRodSetup());
 			
 			event.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 			
