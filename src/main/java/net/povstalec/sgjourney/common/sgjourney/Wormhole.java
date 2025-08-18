@@ -225,8 +225,7 @@ public class Wormhole
 	
 	public boolean receiveTraveler(ServerLevel destinationLevel, Stargate destinationStargate, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		recursivePassengerTeleport(destinationLevel, destinationStargate, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
-		
+		traveler = recursivePassengerTeleport(destinationLevel, destinationStargate, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		playWormholeSound(destinationLevel, traveler);
 		return true;
 	}

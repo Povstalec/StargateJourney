@@ -28,7 +28,8 @@ public class SpawnerStargate implements Stargate
 	
 	protected Address.Immutable id9ChevronAddress;
 	
-	protected final int attackerCount;
+	protected final int attackerMinCount;
+	protected final int attackerMaxCount;
 	protected final int attackerMinInterval;
 	protected final int attackerMaxInverval;
 	
@@ -40,22 +41,28 @@ public class SpawnerStargate implements Stargate
 	protected int counter;
 	protected int timer;
 	
-	public SpawnerStargate(Address address, int attackerCount, int attackerMinInterval, int attackerMaxInverval)
+	public SpawnerStargate(Address address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval)
 	{
 		this.id9ChevronAddress = address.immutable();
 		
 		this.random = new Random();
-		this.attackerCount = attackerCount;
+		this.attackerMinCount = attackerMinCount;
+		this.attackerMaxCount = attackerMaxCount;
 		this.attackerMinInterval = attackerMinInterval;
 		this.attackerMaxInverval = attackerMaxInverval;
 		
 		this.timer = nextAttackerInterval();
-		this.counter = 0;
+		this.counter = nextAttackerCount();
 	}
 	
 	protected int nextAttackerInterval()
 	{
-		return random.nextInt(attackerMinInterval, attackerMaxInverval);
+		return random.nextInt(attackerMinInterval, attackerMaxInverval + 1);
+	}
+	
+	protected int nextAttackerCount()
+	{
+		return random.nextInt(attackerMinCount, attackerMaxCount + 1);
 	}
 	
 	@Override
@@ -119,7 +126,7 @@ public class SpawnerStargate implements Stargate
 		this.address.reset();
 		
 		this.timer = nextAttackerInterval();
-		this.counter = 0;
+		this.counter = nextAttackerCount();
 		return feedback;
 	}
 	
@@ -170,6 +177,11 @@ public class SpawnerStargate implements Stargate
 		this.address = address;
 	}
 	
+	public StargateInfo.Feedback dial(MinecraftServer server)
+	{
+		return Dialing.dialStargate(server, this, getAddress(server).immutable(), true);
+	}
+	
 	@Override
 	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
@@ -194,13 +206,13 @@ public class SpawnerStargate implements Stargate
 		
 		if(timer > 0)
 			timer--;
-		else if(counter < attackerCount)
+		else if(0 < counter)
 		{
 			ResourceKey<Level> dimension = Conversion.stringToDimension("sgjourney:chulak");
 			if(dimension != null)
 			{
 				timer = nextAttackerInterval();
-				counter++;
+				counter--;
 				
 				ServerLevel level = server.getLevel(dimension);
 				if(level != null)

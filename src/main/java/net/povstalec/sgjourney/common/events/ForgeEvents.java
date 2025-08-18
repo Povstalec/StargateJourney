@@ -58,6 +58,7 @@ import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
+import net.povstalec.sgjourney.common.data.Factions;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.entities.Human;
@@ -88,6 +89,8 @@ public class ForgeEvents
 		MinecraftServer server = event.getServer();
 		if(event.phase.equals(TickEvent.Phase.START) && server != null)
 		{
+			Factions.get(server).tickFactions(server.getTickCount());
+			
 			StargateNetwork.get(server).handleConnections();
 			TransporterNetwork.get(server).handleConnections();
 		}
@@ -96,11 +99,7 @@ public class ForgeEvents
 	private static AbstractStargateEntity getStargateAtPos(Level level, BlockPos pos, BlockState blockstate)
 	{
 		if(blockstate.getBlock() instanceof AbstractStargateBlock stargateBlock)
-		{
-			AbstractStargateEntity stargate = stargateBlock.getStargate(level, pos, blockstate);
-			
-			return stargate;
-		}
+			return stargateBlock.getStargate(level, pos, blockstate);
 		
 		return null;
 	}
