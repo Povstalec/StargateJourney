@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
@@ -69,7 +70,8 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	
-	
+	@Override
+	@Nullable
 	public ResourceKey<Level> getDimension()
 	{
 		return this.dimension;
@@ -78,6 +80,20 @@ public class SGJourneyStargate implements Stargate
 	public BlockPos getBlockPos()
 	{
 		return this.blockPos;
+	}
+	
+	@Override
+	@Nullable
+	public Vec3 getPosition()
+	{
+		return getBlockPos().getCenter();
+	}
+	
+	@Override
+	@Nullable
+	public SolarSystem.Serializable getSolarSystem(MinecraftServer server)
+	{
+		return Universe.get(server).getSolarSystemFromDimension(getDimension());
 	}
 	
 	

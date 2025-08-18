@@ -121,19 +121,20 @@ public final class TransporterNetwork extends SavedData
 	//****************************************Transporters****************************************
 	//============================================================================================
 	
-	public void addTransporter(AbstractTransporterEntity transporterEntity)
+	public void addTransporter(Transporter transporter)
 	{
-		Optional<Transporter> transporterOptional = BlockEntityList.get(server).addTransporter(transporterEntity);
-		
-		if(transporterOptional.isPresent())
-		{
-			Transporter transporter = transporterOptional.get();
-			
-			if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
-				addTransporterToDimension(transporter.getDimension(), transporter);
-		}
+		if(transporter != null)
+			addTransporterToDimension(transporter.getDimension(), transporter);
 		
 		this.setDirty();
+	}
+	
+	public void addTransporter(AbstractTransporterEntity transporterEntity)
+	{
+		Transporter transporter = BlockEntityList.get(server).addTransporter(transporterEntity);
+		
+		if(transporter != null && transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
+			addTransporter(transporter);
 	}
 	
 	public void removeTransporter(Level level, UUID uuid)

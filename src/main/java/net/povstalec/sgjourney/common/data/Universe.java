@@ -397,15 +397,21 @@ public class Universe extends SavedData
 		}
 	}
 	
-	public void removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
+	public void removeStargateFromSolarSystem(SolarSystem.Serializable solarSystem, Stargate stargate)
 	{
-		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
-		
 		if(solarSystem != null)
 		{
 			solarSystem.removeStargate(stargate);
 			this.setDirty();
 		}
+	}
+	
+	public void removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
+	{
+		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
+		
+		if(solarSystem != null)
+			removeStargateFromSolarSystem(solarSystem, stargate);
 	}
 	
 	//============================================================================================
@@ -455,6 +461,9 @@ public class Universe extends SavedData
 	@Nullable
 	public SolarSystem.Serializable getSolarSystemFromDimension(ResourceKey<Level> dimension)
 	{
+		if(dimension == null)
+			return null;
+		
 		return this.dimensions.get(dimension);
 	}
 	

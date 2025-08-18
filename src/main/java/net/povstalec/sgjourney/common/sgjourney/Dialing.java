@@ -12,6 +12,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public class Dialing
@@ -106,7 +107,7 @@ public class Dialing
 		if(stargate == null)
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
 		
-		BlockPos pos = stargate.getBlockPos();
+		BlockPos pos = CoordinateHelper.StargateCoords.stargateBlockPos(stargate);
 		ResourceKey<Level> dimension = stargate.getDimension();
 		
 		if(pos != null && dimension != null)

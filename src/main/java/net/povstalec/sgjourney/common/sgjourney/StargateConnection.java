@@ -179,8 +179,8 @@ public final class StargateConnection
 	
 	public static final StargateConnection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
 	{
-		SolarSystem.Serializable dialingSystem = Universe.get(server).getSolarSystemFromDimension(dialingStargate.getDimension());
-		SolarSystem.Serializable dialedSystem = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension());
+		SolarSystem.Serializable dialingSystem = dialingStargate.getSolarSystem(server);
+		SolarSystem.Serializable dialedSystem = dialedStargate.getSolarSystem(server);
 		
 		if(dialingSystem != null && dialedSystem != null)
 		{

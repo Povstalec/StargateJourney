@@ -348,7 +348,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void removeStargateFromNetwork()
 	{
-		StargateNetwork.get(level).removeStargate(level, id9ChevronAddress.immutable());
+		StargateNetwork.get(level).removeStargate(id9ChevronAddress.immutable());
 	}
 	
 	public void set9ChevronAddress(Address address)

@@ -129,26 +129,10 @@ public final class StargateNetwork extends SavedData
 		
 		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
-			Stargate mapStargate = stargateInfo.getValue();
+			Stargate stargate = stargateInfo.getValue();
 			
-			if(mapStargate != null)
-			{
-				ResourceKey<Level> dimension = mapStargate.getDimension();
-				
-				BlockPos pos = mapStargate.getBlockPos();
-				
-				ServerLevel level = server.getLevel(dimension);
-				
-				if(level != null)
-				{
-					BlockEntity blockentity = server.getLevel(dimension).getBlockEntity(pos);
-					
-					if(blockentity instanceof AbstractStargateEntity stargate)
-					{
-						addStargate(stargate);
-					}
-				}
-			}
+			if(stargate != null)
+				addStargate(stargate);
 		});
 	}
 	
@@ -159,69 +143,60 @@ public final class StargateNetwork extends SavedData
 		stargates.entrySet().stream().forEach((stargateInfo) ->
 		{
 			Address.Immutable address = stargateInfo.getKey();
-			Stargate mapStargate = stargateInfo.getValue();
+			Stargate stargate = stargateInfo.getValue();
 			
-			if(mapStargate != null)
+			if(stargate != null)
 			{
-				ResourceKey<Level> dimension = mapStargate.getDimension();
-				
-				BlockPos pos = mapStargate.getBlockPos();
-				
-				ServerLevel level = server.getLevel(dimension);
-				
-				if(level != null)
+				if(stargate.isValid(server))
 				{
-					BlockEntity blockentity = server.getLevel(dimension).getBlockEntity(pos);
+					if(!address.equals(stargate.get9ChevronAddress()))
+						removeStargate(stargate);
 					
-					if(blockentity instanceof AbstractStargateEntity stargate)
-					{
-						if(!address.equals(stargate.get9ChevronAddress().immutable()))
-							removeStargate(server.getLevel(dimension), address);
-						
-						stargate.resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
-						
-						addStargate(stargate);
-						stargate.updateStargate(updateInterfaces);//TODO Probably should look at this
-					}
-					else
-					{
-						removeStargate(server.getLevel(dimension), address);
-						BlockEntityList.get(server).removeStargate(address);
-					}
+					stargate.resetStargate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
+					
+					addStargate(stargate);
+					stargate.update(server);
+					stargate.updateInterfaceBlocks(server, null, null);
 				}
+				else
+					removeStargate(stargate);
 			}
 			else
 				BlockEntityList.get(server).removeStargate(address);
 		});
 	}
 	
-	public final void addStargate(AbstractStargateEntity stargateEntity)
+	public final void addStargate(Stargate stargate)
 	{
-		Optional<Stargate> stargateOptional = BlockEntityList.get(server).addStargate(stargateEntity);
-		
-		if(stargateOptional.isPresent())
-		{
-			Stargate stargate = stargateOptional.get();
+		if(stargate != null)
 			Universe.get(server).addStargateToDimension(stargate.getDimension(), stargate);
-		}
 		
 		this.setDirty();
 	}
 	
-	public final void removeStargate(Level level, Address.Immutable address)
+	public final void addStargate(AbstractStargateEntity stargateEntity)
+	{
+		addStargate(BlockEntityList.get(server).addStargate(stargateEntity));
+	}
+	
+	public final void removeStargate(Stargate stargate)
+	{
+		if(stargate != null)
+			Universe.get(server).removeStargateFromSolarSystem(stargate.getSolarSystem(server), stargate);
+		
+		BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
+		
+		StargateJourney.LOGGER.debug("Removed " + stargate.get9ChevronAddress().toString() + " from Stargate Network");
+		setDirty();
+	}
+	
+	public final void removeStargate(Address.Immutable address)
 	{
 		if(address == null)
 			return;
 		
 		Stargate stargate = getStargate(address);
-		
-		if(stargate != null)
-			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate);
-
-		BlockEntityList.get(level).removeStargate(address);
-		
-		StargateJourney.LOGGER.debug("Removed " + address.toString() + " from Stargate Network");
-		setDirty();
+		removeStargate(stargate);
 	}
 	
 	public final void updateStargate(ServerLevel level, AbstractStargateEntity stargateEntity)

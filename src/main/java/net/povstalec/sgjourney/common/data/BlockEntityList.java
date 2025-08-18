@@ -49,21 +49,22 @@ public class BlockEntityList extends SavedData
 	 * @param stargate
 	 * @return Optional containing Stargate that got added if successful, empty optional if unsuccessful
 	 */
-	public Optional<Stargate> addStargate(AbstractStargateEntity stargate)
+	@Nullable
+	public Stargate addStargate(AbstractStargateEntity stargate)
 	{
 		Address.Immutable address = stargate.get9ChevronAddress().immutable();
 		
 		if(address.getLength() != 8)
-			return Optional.empty();
+			return null;
 		
 		if(this.stargateMap.containsKey(address))
-			return Optional.of(this.stargateMap.get(address)); // Returns an existing Stargate
+			return this.stargateMap.get(address); // Returns an existing Stargate
 		
 		if(stargate.getLevel() == null)
-			return Optional.empty();
+			return null;
 		
 		if(stargate.getBlockPos() == null)
-			return Optional.empty();
+			return null;
 		
 		Stargate savedStargate = new SGJourneyStargate(stargate);
 		
@@ -73,10 +74,10 @@ public class BlockEntityList extends SavedData
 		
 		StargateJourney.LOGGER.debug("Added Stargate " + address.toString() + " to BlockEntityList");
 		
-		return Optional.of(savedStargate);
+		return savedStargate;
 	}
 	
-	public Optional<Transporter> addTransporter(AbstractTransporterEntity transporterEntity)
+	public Transporter addTransporter(AbstractTransporterEntity transporterEntity)
 	{
 		if(transporterEntity.getID() == null)
 			transporterEntity.setID(transporterEntity.generateID());
@@ -84,13 +85,13 @@ public class BlockEntityList extends SavedData
 		UUID id = transporterEntity.getID();
 		
 		if(this.transporterMap.containsKey(id))
-			return Optional.of(this.transporterMap.get(id)); // Returns an existing Transporter
+			return this.transporterMap.get(id); // Returns an existing Transporter
 		
 		if(transporterEntity.getLevel() == null)
-			return Optional.empty();
+			return null;
 		
 		if(transporterEntity.getBlockPos() == null)
-			return Optional.empty();
+			return null;
 		
 		SGJourneyTransporter transporter = new SGJourneyTransporter(transporterEntity);
 		
@@ -100,7 +101,7 @@ public class BlockEntityList extends SavedData
 		
 		StargateJourney.LOGGER.debug("Added Transporter " + id + " to BlockEntityList");
 		
-		return Optional.of(transporter);
+		return transporter;
 	}
 	
 	public void removeStargate(Address.Immutable id)

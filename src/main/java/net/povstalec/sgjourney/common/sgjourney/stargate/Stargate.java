@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
@@ -31,9 +32,13 @@ public interface Stargate
 	Address.Immutable get9ChevronAddress();
 	
 	@Nullable
-	ResourceKey<Level> getDimension(); // TODO Remove
+	ResourceKey<Level> getDimension();
 	
-	BlockPos getBlockPos(); // TODO Remove
+	@Nullable
+	Vec3 getPosition();
+	
+	@Nullable
+	SolarSystem.Serializable getSolarSystem(MinecraftServer server);
 	
 	boolean hasDHD();
 	

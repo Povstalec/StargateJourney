@@ -6,7 +6,10 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.joml.Matrix3d;
+
+import javax.annotation.Nullable;
 
 public class CoordinateHelper
 {
@@ -93,37 +96,6 @@ public class CoordinateHelper
 			return new Vec3(vector.x() * basisX.x() + vector.y() * basisY.x() + vector.z() * basisZ.x(),
 							vector.x() * basisX.y() + vector.y() * basisY.y() + vector.z() * basisZ.y(),
 							vector.x() * basisX.z() + vector.y() * basisY.z() + vector.z() * basisZ.z());
-		}
-		
-		/**
-		 * Transforms the vector from a Stargate's relative corodinate system, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction, with the Y and Z vectors being a percentage of the Stargate's radius
-		 * to a vector in the absolute coordinate system
-		 * @param vector Vector to be transformed
-		 * @param forward Stargate's facing direction unit vector
-		 * @param up Stargate's relative up direction unit vector
-		 * @param right Stargate's relative right direction unit vector
-		 * @param radius Stargate's inner radius, use 1 if you don't want the Stargate's radius to affect the coordinate transformation
-		 * @return A new vector with the coordinates of the original vector, but transformed to the canonical basis
-		 */
-		public static Vec3 fromStargateCoordinates(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right, double radius)
-		{
-			return fromOrthogonalBasis(new Vec3(vector.x(), vector.y() / radius, vector.z() / radius), forward, up, right);
-		}
-		
-		/**
-		 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Stargate, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction,
-		 * with the Y and Z vectors being a percentage of the Stargate's radius
-		 * @param vector Vector to be transformed
-		 * @param forward Stargate's facing direction unit vector
-		 * @param up Stargate's relative up direction unit vector
-		 * @param right Stargate's relative right direction unit vector
-		 * @param radius Stargate's inner radius, use 1 if you don't want the Stargate's radius to affect the coordinate transformation
-		 * @return A new vector with the coordinates of the original vector, but transformed to Stargate's relative coordinate system
-		 */
-		public static Vec3 toStargateCoordinates(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right, double radius)
-		{
-			Vec3 relative = toOrthogonalBasis(vector, forward, up, right);
-			return new Vec3(relative.x(), relative.y() * radius, relative.z() * radius);
 		}
 		
 		public static Vec3 rotateVector(Vec3 initialVector, Direction initialDirection, Orientation initialOrientation, Direction destinationDirection, Orientation destinationOrientation)
@@ -233,6 +205,55 @@ public class CoordinateHelper
 				return null;
 			
 			return initialPos.offset(absoluteOffset);
+		}
+	}
+	
+	
+	
+	public static class StargateCoords
+	{
+		/**
+		 * Transforms the vector from a Stargate's relative corodinate system, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction, with the Y and Z vectors being a percentage of the Stargate's radius
+		 * to a vector in the absolute coordinate system
+		 * @param vector Vector to be transformed
+		 * @param forward Stargate's facing direction unit vector
+		 * @param up Stargate's relative up direction unit vector
+		 * @param right Stargate's relative right direction unit vector
+		 * @param radius Stargate's inner radius, use 1 if you don't want the Stargate's radius to affect the coordinate transformation
+		 * @return A new vector with the coordinates of the original vector, but transformed to the canonical basis
+		 */
+		public static Vec3 fromStargateCoordinates(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right, double radius)
+		{
+			return Relative.fromOrthogonalBasis(new Vec3(vector.x(), vector.y() / radius, vector.z() / radius), forward, up, right);
+		}
+		
+		/**
+		 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Stargate, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction,
+		 * with the Y and Z vectors being a percentage of the Stargate's radius
+		 * @param vector Vector to be transformed
+		 * @param forward Stargate's facing direction unit vector
+		 * @param up Stargate's relative up direction unit vector
+		 * @param right Stargate's relative right direction unit vector
+		 * @param radius Stargate's inner radius, use 1 if you don't want the Stargate's radius to affect the coordinate transformation
+		 * @return A new vector with the coordinates of the original vector, but transformed to Stargate's relative coordinate system
+		 */
+		public static Vec3 toStargateCoordinates(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right, double radius)
+		{
+			Vec3 relative = Relative.toOrthogonalBasis(vector, forward, up, right);
+			return new Vec3(relative.x(), relative.y() * radius, relative.z() * radius);
+		}
+		
+		@Nullable
+		public static BlockPos stargateBlockPos(Stargate stargate)
+		{
+			if(stargate == null)
+				return null;
+			
+			Vec3 pos = stargate.getPosition();
+			if(pos == null)
+				return null;
+			
+			return new BlockPos(pos);
 		}
 	}
 }
