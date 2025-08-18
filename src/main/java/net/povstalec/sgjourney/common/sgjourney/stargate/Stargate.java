@@ -8,10 +8,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -50,8 +48,26 @@ public interface Stargate
 	
 	Address getAddress(MinecraftServer server);
 	
-	default Address getConnectionAddress(MinecraftServer server, int addressLength)
+	default Address getConnectionAddress(MinecraftServer server, @Nullable SolarSystem.Serializable solarSystem, int addressLength)
 	{
+		SolarSystem.Serializable localSolarSystem = getSolarSystem(server);
+		if(localSolarSystem != null)
+		{
+			if(addressLength == 6)
+			{
+				Galaxy.Serializable galaxy = localSolarSystem.findCommonGalaxy(solarSystem);
+				if(galaxy != null)
+				{
+					Address.Immutable address = localSolarSystem.getAddressFromGalaxy(galaxy);
+					if(address != null)
+						return address.mutable();
+				}
+			}
+			else if(addressLength == 7)
+				return localSolarSystem.getExtragalacticAddress().mutable();
+		}
+		
+		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
 		return get9ChevronAddress().mutable();
 	}
 	
@@ -108,7 +124,7 @@ public interface Stargate
 		return StargateInfo.ChevronLockSpeed.SLOW;
 	}
 	
-	StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, Address.Immutable dialingAddress, boolean doKawoosh);
+	StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh);
 	
 	void connectStargate(MinecraftServer server, UUID connectionID, StargateConnection.State connectionState);
 	

@@ -8,7 +8,6 @@ import java.util.function.Function;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -27,13 +26,11 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
-import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -75,7 +72,7 @@ public class Wormhole
 	
 	protected boolean wormholeEntity(MinecraftServer server, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Vec3 centerPos, Vec3 forward, Vec3 up, Vec3 right, Map<Integer, Vec3> entityLocations, Entity traveler)
 	{
-		Vec3 relativePosition = CoordinateHelper.Relative.fromOrthogonalBasis(traveler.position().subtract(centerPos), forward, up, right);
+		Vec3 relativePosition = CoordinateHelper.StargateCoords.fromStargateCoords(traveler.position().subtract(centerPos), forward, up, right, INNER_RADIUS);
 		Vec3 oldRelativePos = this.entityLocations.get(traveler.getId());
 		
 		if(oldRelativePos != null)
@@ -88,7 +85,7 @@ public class Wormhole
 				
 				if(twoWayWormhole == WormholeTravel.ENABLED || (twoWayWormhole == WormholeTravel.CREATIVE_ONLY && traveler instanceof Player player && (player.isCreative() || player.isSpectator())))
 				{
-					Vec3 relativeLookAngle = CoordinateHelper.Relative.fromOrthogonalBasis(traveler.getLookAngle(), forward, up, right);
+					Vec3 relativeLookAngle = CoordinateHelper.StargateCoords.fromStargateCoords(traveler.getLookAngle(), forward, up, right);
 					
 					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(server, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle))
 					{

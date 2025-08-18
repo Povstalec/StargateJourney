@@ -222,7 +222,13 @@ public class BlockEntityList extends SavedData
 		this.stargateMap.forEach((stargateID, stargate) -> 
 		{
 			if(stargate != null)
-				stargates.put(stargateID.toString(), stargate.serializeNBT());
+			{
+				CompoundTag stargateTag = stargate.serializeNBT();
+				if(stargateTag != null)
+					stargates.put(stargateID.toString(), stargateTag);
+				else
+					StargateJourney.LOGGER.error("Cannot serialize Stargate " + stargateID + " because the tag is null");
+			}
 			else
 				StargateJourney.LOGGER.error("Cannot serialize Stargate " + stargateID + " because it's null");
 		});

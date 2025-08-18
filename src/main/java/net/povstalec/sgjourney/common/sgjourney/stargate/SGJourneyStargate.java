@@ -29,6 +29,7 @@ import java.util.UUID;
 public class SGJourneyStargate implements Stargate
 {
 	public static final double MIN_TRAVELER_SPEED = 0.4;
+	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
 	
 	protected Address.Immutable address;
 	
@@ -44,7 +45,6 @@ public class SGJourneyStargate implements Stargate
 	protected int network;
 	
 	protected Wormhole wormhole = new Wormhole();
-	protected Map<Integer, Vec3> entityPositions = new HashMap<>();
 	
 	public SGJourneyStargate() {}
 	
@@ -71,8 +71,7 @@ public class SGJourneyStargate implements Stargate
 	
 	
 	@Override
-	@Nullable
-	public ResourceKey<Level> getDimension()
+	public @Nullable ResourceKey<Level> getDimension()
 	{
 		return this.dimension;
 	}
@@ -83,15 +82,13 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	@Nullable
-	public Vec3 getPosition()
+	public @Nullable Vec3 getPosition()
 	{
 		return getBlockPos().getCenter();
 	}
 	
 	@Override
-	@Nullable
-	public SolarSystem.Serializable getSolarSystem(MinecraftServer server)
+	public @Nullable SolarSystem.Serializable getSolarSystem(MinecraftServer server)
 	{
 		return Universe.get(server).getSolarSystemFromDimension(getDimension());
 	}
@@ -128,12 +125,6 @@ public class SGJourneyStargate implements Stargate
 		return stargateReturn(server, stargate -> stargate.getAddress(), new Address());
 	}
 	
-	@Override
-	public Address getConnectionAddress(MinecraftServer server, int addressLength)
-	{
-		return stargateReturn(server, stargate -> stargate.getConnectionAddress(addressLength), get9ChevronAddress().mutable());
-	}
-	
 	private AbstractStargateEntity cacheStargateEntity(AbstractStargateEntity stargate)
 	{
 		//this.stargate = new WeakReference(stargate); //TODO Bring caching back once Stargates are more flexible
@@ -141,8 +132,7 @@ public class SGJourneyStargate implements Stargate
 		return stargate;
 	}
 	
-	@Nullable
-	private AbstractStargateEntity tryCacheStargateEntity(MinecraftServer server)
+	private @Nullable AbstractStargateEntity tryCacheStargateEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
@@ -152,8 +142,7 @@ public class SGJourneyStargate implements Stargate
 		return null;
 	}
 	
-	@Nullable
-	public AbstractStargateEntity getStargateEntity(MinecraftServer server)
+	public @Nullable AbstractStargateEntity getStargateEntity(MinecraftServer server)
 	{
 		//if((this.stargate != null && this.stargate.get() != null) || server == null)
 		//	return this.stargate.get();
@@ -310,7 +299,7 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, Address.Immutable dialingAddress, boolean doKawoosh)
+	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		return stargateReturn(server, stargate ->
 		{
@@ -323,11 +312,11 @@ public class SGJourneyStargate implements Stargate
 				return StargateInfo.Feedback.TARGET_RESTRICTED;
 			
 			// If last Stargate has a blacklist
-			if(stargate.addressFilterInfo().getFilterType().isBlacklist() && stargate.addressFilterInfo().isAddressBlacklisted(dialingAddress))
+			if(stargate.addressFilterInfo().getFilterType().isBlacklist() && stargate.addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType.byteValue()).immutable()))
 				return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
 			
 			// If last Stargate has a whitelist
-			if(stargate.addressFilterInfo().getFilterType().isWhitelist() && !stargate.addressFilterInfo().isAddressWhitelisted(dialingAddress))
+			if(stargate.addressFilterInfo().getFilterType().isWhitelist() && !stargate.addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType.byteValue()).immutable()))
 				return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
 			
 			return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
@@ -426,9 +415,9 @@ public class SGJourneyStargate implements Stargate
 			// TODO Tie this to Advanced Protocols
 			Vec3 tempMomentum = relativeMomentum.x() > -MIN_TRAVELER_SPEED ? new Vec3(-MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 			
-			Vec3 destinationPosition = CoordinateHelper.Relative.toOrthogonalBasis(relativePosition, forward, up, right).add(stargate.getCenter());
-			Vec3 destinationMomentum = CoordinateHelper.Relative.toOrthogonalBasis(tempMomentum, forward, up, right);
-			Vec3 destinationLookAngle = CoordinateHelper.Relative.toOrthogonalBasis(relativeLookAngle, forward, up, right);
+			Vec3 destinationPosition = CoordinateHelper.StargateCoords.toStargateCoords(relativePosition, forward, up, right, INNER_RADIUS).add(stargate.getCenter());
+			Vec3 destinationMomentum = CoordinateHelper.StargateCoords.toStargateCoords(tempMomentum, forward, up, right);
+			Vec3 destinationLookAngle = CoordinateHelper.StargateCoords.toStargateCoords(relativeLookAngle, forward, up, right);
 			
 			if(stargate instanceof IrisStargateEntity irisStargate && !this.wormhole.checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
 			{

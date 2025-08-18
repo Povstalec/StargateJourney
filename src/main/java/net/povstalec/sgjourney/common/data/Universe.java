@@ -506,11 +506,15 @@ public class Universe extends SavedData
 		return this.galaxies.get(galaxyID).getSolarSystem(address);
 	}
 	
+	/**
+	 * Gets Solar System in the same Galaxy as input Solar System
+	 * @param solarSystem
+	 * @param address
+	 * @return Returns a Solar System in the same galaxy as the input Solar System based on the input Address, null if there is no such Solar System
+	 */
 	@Nullable
-	public SolarSystem.Serializable getSolarSystemFromAddress(ResourceKey<Level> dimension, Address.Immutable address)
+	public SolarSystem.Serializable getSolarSystemFromAddress(SolarSystem.Serializable solarSystem, Address.Immutable address)
 	{
-		SolarSystem.Serializable solarSystem = getSolarSystemFromDimension(dimension);
-		
 		if(solarSystem != null)
 			return solarSystem.getSolarSystemFromAddress(address);
 		

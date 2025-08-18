@@ -5,20 +5,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
-import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
@@ -292,7 +287,6 @@ public final class StargateConnection
 			this.dialedStargate.updateInterfaceBlocks(server, null, EVENT_INCOMING_CONNECTION);
 		
 		StargateInfo.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? StargateInfo.ChevronLockSpeed.FAST : this.dialedStargate.getChevronLockSpeed(server);
-		int chevronWaitTicks = chevronLockSpeed.getChevronWaitTicks();
 		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
 		int maxKawooshTicks = kawooshStartTicks + KAWOOSH_TICKS;
 		int maxOpenTicks = maxKawooshTicks + VORTEX_TICKS;
@@ -304,9 +298,9 @@ public final class StargateConnection
 		if(this.openTime <= kawooshStartTicks)
 		{
 			int addressLength = this.dialingStargate.getAddress(server).getLength();
-			Address dialingAddress = this.dialingStargate.getConnectionAddress(server, addressLength);
+			Address dialingAddress = this.dialingStargate.getConnectionAddress(server, dialedStargate.getSolarSystem(server), addressLength);
 			
-			this.dialedStargate.setChevronConfiguration(server, AbstractStargateEntity.getChevronConfiguration(addressLength));
+			this.dialedStargate.setChevronConfiguration(server, Dialing.getChevronConfiguration(dialingAddress.getLength()));
 			
 			// Used for handling what the Stargate does when it's being dialed
 			// For example: Pegasus Stargate's ring booting up

@@ -587,11 +587,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 				return this.resetStargate(StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
 		}
 		
-		Address dialingAddress = this.getConnectionAddress(address.getLength());
 		Stargate stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress().immutable());
 		
 		if(stargate != null)
-			return Dialing.dialStargate((ServerLevel) this.level, stargate, immutableAddress, dialingAddress.immutable(), doKawoosh);
+			return Dialing.dialStargate(((ServerLevel) this.level).getServer(), stargate, immutableAddress, doKawoosh);
 		
 		return resetStargate(StargateInfo.Feedback.UNKNOWN_ERROR);
 	}
@@ -792,31 +791,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		setStargateState(updateInterfaces);
 	}
 	
-	public Address getConnectionAddress(int addressLength)
-	{
-		ResourceKey<Level> dimension = this.level.dimension();
-		
-		if(addressLength == 6)
-		{
-			Galaxy.Serializable galaxy = Universe.get(this.level).getGalaxyFromDimension(dimension);
-			if(galaxy != null)
-			{
-				Address.Immutable address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
-				if(address != null)
-					return address.mutable();
-			}
-		}
-		else if(addressLength == 7)
-		{
-			Address.Immutable address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
-			if(address != null)
-				return address.mutable();
-		}
-		
-		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
-		return this.get9ChevronAddress();
-	}
-	
 	//============================================================================================
 	//********************************************Info********************************************
 	//============================================================================================
@@ -983,21 +957,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public void setEngagedChevrons(int[] engagedChevrons)
 	{
 		this.engagedChevrons = engagedChevrons;
-	}
-	
-	public static int[] getChevronConfiguration(int addressLength)
-	{
-		switch(addressLength)
-		{
-		case 6:
-			return Dialing.DIALED_7_CHEVRON_CONFIGURATION;
-		case 7:
-			return Dialing.DIALED_8_CHEVRON_CONFIGURATION;
-		case 8:
-			return Dialing.DIALED_9_CHEVRON_CONFIGURATION;
-		default:
-			return Dialing.DEFAULT_CHEVRON_CONFIGURATION;
-		}
 	}
 	
 	public int[] getEngagedChevrons()
