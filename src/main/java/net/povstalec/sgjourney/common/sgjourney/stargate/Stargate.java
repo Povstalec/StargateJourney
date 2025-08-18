@@ -30,6 +30,7 @@ public interface Stargate
 	
 	Address.Immutable get9ChevronAddress();
 	
+	@Nullable
 	ResourceKey<Level> getDimension(); // TODO Remove
 	
 	BlockPos getBlockPos(); // TODO Remove
@@ -44,7 +45,10 @@ public interface Stargate
 	
 	Address getAddress(MinecraftServer server);
 	
-	Address getConnectionAddress(MinecraftServer server, int addressLength);
+	default Address getConnectionAddress(MinecraftServer server, int addressLength)
+	{
+		return get9ChevronAddress().mutable();
+	}
 	
 	StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback, boolean updateInterfaces);
 	
@@ -52,23 +56,26 @@ public interface Stargate
 	
 	boolean isObstructed(MinecraftServer server);
 	
-	boolean isPrimary(MinecraftServer server);
+	default boolean isPrimary(MinecraftServer server)
+	{
+		return false;
+	}
 	
-	void update(MinecraftServer server);
+	default void update(MinecraftServer server) {}
 	
 	boolean isValid(MinecraftServer server);
 	
-	void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration);
+	default void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration) {}
 	
 	// Client Connection
 	
-	void updateClient(MinecraftServer server);
+	default void updateClient(MinecraftServer server) {}
 	
 	// Communication
 	
-	void receiveStargateMessage(MinecraftServer server, String message);
+	default void receiveStargateMessage(MinecraftServer server, String message) {}
 	
-	void forwardTransmission(MinecraftServer server, int transmissionJumps, int frequency, String transmission);
+	default void forwardTransmission(MinecraftServer server, int transmissionJumps, int frequency, String transmission) {}
 	
 	float checkStargateShieldingState(MinecraftServer server);
 	
@@ -79,7 +86,7 @@ public interface Stargate
 	 * @param eventName Name of the event with which to update the Interfaces, leave as null if there is none
 	 * @param objects Objects that can be sent along with the event to update Interfaces
 	 */
-	void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects);
+	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects) {}
 	
 	// Energy
 	
@@ -91,21 +98,24 @@ public interface Stargate
 	
 	// Stargate Connection
 	
-	StargateInfo.ChevronLockSpeed getChevronLockSpeed(MinecraftServer server);
+	default StargateInfo.ChevronLockSpeed getChevronLockSpeed(MinecraftServer server)
+	{
+		return StargateInfo.ChevronLockSpeed.SLOW;
+	}
 	
 	StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, Address.Immutable dialingAddress, boolean doKawoosh);
 	
 	void connectStargate(MinecraftServer server, UUID connectionID, StargateConnection.State connectionState);
 	
-	void doWhileConnecting(MinecraftServer server, boolean incoming, boolean doKawoosh, int kawooshStartTicks, int openTime);
+	default void doWhileConnecting(MinecraftServer server, boolean incoming, boolean doKawoosh, int kawooshStartTicks, int openTime) {}
 	
-	void doWhileDialed(MinecraftServer server, Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime);
+	default void doWhileDialed(MinecraftServer server, Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime) {}
 	
-	void setKawooshTickCount(MinecraftServer server, int kawooshTick);
+	default void setKawooshTickCount(MinecraftServer server, int kawooshTick) {}
 	
-	void doKawoosh(MinecraftServer server, int kawooshTime);
+	default void doKawoosh(MinecraftServer server, int kawooshTime) {}
 	
-	void doWhileConnected(MinecraftServer server, boolean incoming, int openTime);
+	default void doWhileConnected(MinecraftServer server, boolean incoming, int openTime) {}
 	
 	void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel);
 	
