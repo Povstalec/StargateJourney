@@ -210,21 +210,18 @@ public class SpawnerStargate implements Stargate
 			timer--;
 		else if(0 < counter)
 		{
-			ResourceKey<Level> dimension = Conversion.stringToDimension("sgjourney:abydos");
-			if(dimension != null)
+			ServerLevel level = connectedStargate.getLevel(server);
+			
+			if(level != null)
 			{
 				timer = nextAttackerInterval();
 				counter--;
 				
-				ServerLevel level = server.getLevel(dimension);
-				if(level != null)
+				Entity entity = spawnEntity(level, EntityInit.JAFFA.get());
+				if(entity != null && connectedStargate.receiveTraveler(server, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
 				{
-					Entity entity = spawnEntity(level, EntityInit.JAFFA.get());
-					if(entity != null && connectedStargate.receiveTraveler(server, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
-					{
-						connection.setTimeSinceLastTraveler(0);
-						connection.setUsed(true);
-					}
+					connection.setTimeSinceLastTraveler(0);
+					connection.setUsed(true);
 				}
 			}
 		}
@@ -248,12 +245,17 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public CompoundTag serializeNBT()
 	{
-		return null;
+		return null; //TODO
 	}
 	
 	@Override
 	public void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag)
 	{
+		//TODO
+	}
 	
+	public interface SpawnerConsumer
+	{
+		Entity onEntitySpawn(Entity entity); //TODO Prepare some way to control the specifics of how entities are spawned
 	}
 }
