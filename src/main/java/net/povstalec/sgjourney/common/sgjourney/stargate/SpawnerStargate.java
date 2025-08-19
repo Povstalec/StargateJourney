@@ -104,13 +104,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public int getTimesOpened()
 	{
-		return 0;
-	}
-	
-	@Override
-	public int getNetwork()
-	{
-		return 2;
+		return 0; //TODO Actually count the number of times opened
 	}
 	
 	@Override
@@ -173,9 +167,9 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public void depleteEnergy(MinecraftServer server, long energy, boolean simulate)
+	public long depleteEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
-	
+		return energy;
 	}
 	
 	public void encodeAddress(Address address)
@@ -195,9 +189,9 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public void connectStargate(MinecraftServer server, UUID connectionID, StargateConnection.State connectionState)
+	public void connectStargate(MinecraftServer server, StargateConnection connection, StargateConnection.State connectionState)
 	{
-		this.connectionID = connectionID;
+		this.connectionID = connection.getID();
 	}
 	
 	protected Entity spawnEntity(ServerLevel level, EntityType<?> entityType)
@@ -246,7 +240,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public int autoclose(MinecraftServer server)
 	{
-		return 10;
+		return 200;
 	}
 	
 	@Override

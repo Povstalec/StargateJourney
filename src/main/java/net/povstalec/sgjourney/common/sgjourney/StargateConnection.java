@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
@@ -221,11 +222,13 @@ public final class StargateConnection
 			dialingStargate.updateClient(server);
 			dialedStargate.setKawooshTickCount(server, 0);
 			dialedStargate.updateClient(server);
-
-			dialingStargate.connectStargate(server, uuid, StargateConnection.State.OUTGOING_CONNECTION);
-			dialedStargate.connectStargate(server, uuid, StargateConnection.State.INCOMING_CONNECTION);
 			
-			return new StargateConnection(uuid, connectionType, dialingStargate, dialedStargate, doKawoosh);
+			StargateConnection stargateConnection = new StargateConnection(uuid, connectionType, dialingStargate, dialedStargate, doKawoosh);
+
+			dialingStargate.connectStargate(server, stargateConnection, StargateConnection.State.OUTGOING_CONNECTION);
+			dialedStargate.connectStargate(server, stargateConnection, StargateConnection.State.INCOMING_CONNECTION);
+			
+			return stargateConnection;
 		}
 		return null;
 	}
@@ -312,7 +315,7 @@ public final class StargateConnection
 			// Updates Interfaces when a wormhole is detected
 			if(this.openTime == kawooshStartTicks)
 			{
-				List<Integer> emptyAddressList = Arrays.stream(new int[] {}).boxed().toList();
+				List<Integer> emptyAddressList = new ArrayList<>();
 				List<Integer> dialedAddressList = Arrays.stream(dialedStargate.getAddress(server).toArray()).boxed().toList();
 				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.BASIC, EVENT_INCOMING_WORMHOLE, emptyAddressList);
 				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.CRYSTAL, EVENT_INCOMING_WORMHOLE, emptyAddressList);
@@ -375,10 +378,10 @@ public final class StargateConnection
 		this.dialedStargate.doWormhole(server, this, true, CommonStargateConfig.two_way_wormholes.get());
 		
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
-		if(this.dialingStargate.autoclose(server) > 0 && this.timeSinceLastTraveler >= this.dialingStargate.autoclose(server) * 20)
+		if(this.dialingStargate.autoclose(server) > 0 && this.timeSinceLastTraveler >= this.dialingStargate.autoclose(server))
 			terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 		
-		if(this.dialedStargate.autoclose(server) > 0 && this.timeSinceLastTraveler >= this.dialedStargate.autoclose(server) * 20)
+		if(this.dialedStargate.autoclose(server) > 0 && this.timeSinceLastTraveler >= this.dialedStargate.autoclose(server))
 			terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 	}
 	

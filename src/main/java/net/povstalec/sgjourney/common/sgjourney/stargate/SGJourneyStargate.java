@@ -277,7 +277,7 @@ public class SGJourneyStargate implements Stargate
 	@Override
 	public int autoclose(MinecraftServer server)
 	{
-		return stargateReturn(server, stargate -> stargate.dhdInfo().autoclose(), 0);
+		return stargateReturn(server, stargate -> stargate.dhdInfo().autoclose() * 20, 0); //TODO Maybe move the "* 20" into DHD info?
 	}
 	
 	// Energy
@@ -295,9 +295,9 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void depleteEnergy(MinecraftServer server, long energy, boolean simulate)
+	public long depleteEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
-		stargateRun(server, stargate -> stargate.depleteEnergy(energy, simulate));
+		return stargateReturn(server, stargate -> stargate.depleteEnergy(energy, simulate), 0L);
 	}
 	
 	// Stargate Connection
@@ -335,9 +335,9 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void connectStargate(MinecraftServer server, UUID connectionID, StargateConnection.State connectionState)
+	public void connectStargate(MinecraftServer server, StargateConnection connection, StargateConnection.State connectionState)
 	{
-		stargateRun(server, stargate -> stargate.connectStargate(connectionID, connectionState));
+		stargateRun(server, stargate -> stargate.connectStargate(connection.getID(), connectionState));
 	}
 	
 	@Override
