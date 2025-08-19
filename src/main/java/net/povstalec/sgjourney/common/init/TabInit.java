@@ -83,7 +83,7 @@ public class TabInit
 				items.accept(ItemInit.MATOK.get());
 				
 				items.accept(ItemInit.JACKAL_HELMET.get());
-				//items.accept(ItemInit.HORUS_HELMET.get());
+				items.accept(ItemInit.FALCON_HELMET.get());
 				items.accept(ItemInit.JAFFA_HELMET.get());
 				items.accept(ItemInit.JAFFA_CHESTPLATE.get());
 				items.accept(ItemInit.JAFFA_LEGGINGS.get());

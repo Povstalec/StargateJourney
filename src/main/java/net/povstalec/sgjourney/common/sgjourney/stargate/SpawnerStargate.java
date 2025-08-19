@@ -86,7 +86,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public @Nullable SolarSystem.Serializable getSolarSystem(MinecraftServer server)
 	{
-		return Universe.get(server).getSolarSystemFromDimension(Conversion.stringToDimension("sgjourney:chulak")); // TODO
+		return Universe.get(server).getSolarSystemFromDimension(Conversion.stringToDimension("sgjourney:abydos")); // TODO
 	}
 	
 	@Override
@@ -208,7 +208,7 @@ public class SpawnerStargate implements Stargate
 			timer--;
 		else if(0 < counter)
 		{
-			ResourceKey<Level> dimension = Conversion.stringToDimension("sgjourney:chulak");
+			ResourceKey<Level> dimension = Conversion.stringToDimension("sgjourney:abydos");
 			if(dimension != null)
 			{
 				timer = nextAttackerInterval();

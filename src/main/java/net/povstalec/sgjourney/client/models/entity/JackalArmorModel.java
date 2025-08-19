@@ -76,6 +76,18 @@ public class JackalArmorModel extends HumanoidModel<LivingEntity>
         		.addBox(0.0F, -5.0F, 0.0F, 1.0F, 5.0F, 1.0F, 
         				new CubeDeformation(0.0F)), 
         		PartPose.offsetAndRotation(5.0F, 0.0F, 3.0F, 0.0F, 0.0F, 0.25F));
+		
+		jackalHead.addOrReplaceChild("jackal_flap_right", CubeListBuilder.create()
+						.texOffs(25, 20)
+						.addBox(-5.0F, -3.0F, 0.0F, 5.0F, 6.0F, 0.0F,
+								new CubeDeformation(0.0F)),
+				PartPose.offsetAndRotation(0.0F, 1.5F, 5.0F, 0.0F, 1.25F, 0.0F));
+		
+		jackalHead.addOrReplaceChild("jackal_flap_left", CubeListBuilder.create()
+						.texOffs(25, 26)
+						.addBox(0.0F, -3.0F, 0.0F, 5.0F, 6.0F, 0.0F,
+								new CubeDeformation(0.0F)),
+				PartPose.offsetAndRotation(6.0F, 1.5F, 5.0F, 0.0F, -1.25F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 32);
     }

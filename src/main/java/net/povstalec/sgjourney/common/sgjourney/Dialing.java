@@ -80,7 +80,8 @@ public class Dialing
 		if(dialedSystem.equals(currentSystem))
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SAME_SYSTEM_DIAL, true);
 		
-		if(dialedSystem.getStargates().isEmpty())
+		// If the Stargate Network knows of no Stargates in this Solar System, try locating any Structures with them
+		if(!mustBeLoaded && dialedSystem.getStargates().isEmpty()) // No point in loading chunks if the connection requires a loaded Stargate
 		{
 			List<ResourceKey<Level>> dimensionList = dialedSystem.getDimensions();
 			

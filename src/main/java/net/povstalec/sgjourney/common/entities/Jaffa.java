@@ -67,7 +67,7 @@ public class Jaffa extends Human
 		setItemInHand(InteractionHand.MAIN_HAND, StaffWeaponItem.filledStaffWeapon(randomSource.nextFloat() > difficulty.getDifficulty().getId() / 3F, (int) (randomSource.nextFloat() * CommonTechConfig.vial_capacity.get())));
 		
 		if(level.getLevel().dimension().location().equals(ABYDOS))
-			setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemInit.JACKAL_HELMET.get()));
+			setItemSlot(EquipmentSlot.HEAD, randomSource.nextFloat() > 0.7F ? new ItemStack(ItemInit.JACKAL_HELMET.get()) : new ItemStack(ItemInit.FALCON_HELMET.get()));
 		else
 			setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemInit.JAFFA_HELMET.get()));
 		
