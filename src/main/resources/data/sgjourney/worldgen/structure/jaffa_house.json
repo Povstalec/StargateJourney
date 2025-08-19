@@ -20,10 +20,15 @@
   "use_expansion_hack": false,
 
   "spawn_overrides": {
-    "monster": {
+    "creature": {
       "bounding_box": "piece",
       "spawns": [
-        
+        {
+          "type": "sgjourney:jaffa",
+          "maxCount": 5,
+          "minCount": 1,
+          "weight": 1
+        }
       ]
     }
   },

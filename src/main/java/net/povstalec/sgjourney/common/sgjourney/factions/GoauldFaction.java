@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class GoauldFaction
 {
-	public static final int UPDATE_INTERVAL = 400;
+	public static final int UPDATE_INTERVAL = 24000;
 	
 	public static final int ATTACKER_MIN_COUNT = 3;
 	public static final int ATTACKER_MAX_COUNT = 7;
