@@ -25,7 +25,7 @@ public final class Factions extends SavedData
 	
 	public void tickFactions(int ticks)
 	{
-		goauldFaction.tickFaction(server, ticks);
+		//goauldFaction.tickFaction(server, ticks);
 	}
 	
 	//============================================================================================

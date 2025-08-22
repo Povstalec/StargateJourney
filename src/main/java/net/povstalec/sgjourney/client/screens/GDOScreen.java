@@ -103,9 +103,9 @@ public class GDOScreen extends Screen
     }
     
     @Override
-	public boolean keyPressed(int p_96552_, int p_96553_, int p_96554_)
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
 	{
-    	switch(p_96552_)
+    	switch(keyCode)
     	{
     	case InputConstants.KEY_NUMPAD0, InputConstants.KEY_0:
     		addToCode(0);
@@ -146,8 +146,8 @@ public class GDOScreen extends Screen
     	case InputConstants.KEY_LCONTROL, InputConstants.KEY_RCONTROL:
     		toggleFrequency();
     		break;
-    		
-    	}return super.keyPressed(p_96552_, p_96553_, p_96554_);
+    	}
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
     
     private void sendTransmission()

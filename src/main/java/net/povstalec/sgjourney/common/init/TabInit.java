@@ -121,6 +121,10 @@ public class TabInit
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
 				
 				//items.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
+				
+				items.accept(ItemInit.GOAULD.get());
+				items.accept(ItemInit.GOAULD_CARCASS.get());
+				items.accept(ItemInit.COOKED_GOAULD.get());
 			});
 		});
 		

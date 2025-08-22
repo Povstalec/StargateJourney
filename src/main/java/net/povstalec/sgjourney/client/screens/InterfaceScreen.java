@@ -12,8 +12,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
-public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
+import java.util.List;
+
+public class InterfaceScreen extends SGJourneyContainerScreen<InterfaceMenu>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/interface_gui.png");
 
@@ -45,7 +48,7 @@ public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
         super.render(pPoseStack, mouseX, mouseY, delta);
         renderTooltip(pPoseStack, mouseX, mouseY);
         
-        this.energyTooltip(pPoseStack, 52, 54, mouseX, mouseY);
+        this.energyTooltip(pPoseStack, mouseX, mouseY);
     }
     
     @Override
@@ -61,11 +64,8 @@ public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
     	this.blit(matrixStack, x, y, 0, 88, actual, 16);
     }
     
-    protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
+    protected void energyTooltip(PoseStack matrixStack, int mouseX, int mouseY)
     {
-    	if(this.isHovering(x, y, 106, 16, (double) mouseX, (double) mouseY))
-	    {
-	    	renderTooltip(matrixStack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
-	    }
+		tooltip(matrixStack, mouseX, mouseY, 52, 54, 106, 16, ComponentHelper.energy(this.menu.getEnergy(), this.menu.getMaxEnergy()));
     }
 }

@@ -6,6 +6,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
+import java.util.List;
+
 public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T>
 {
 	public SGJourneyContainerScreen(T menu, Inventory playerInventory, Component title)
@@ -13,10 +15,18 @@ public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> 
 		super(menu, playerInventory, title);
 	}
 	
-	protected void tooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, Component component)
+	protected void tooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, Component... components)
 	{
 		if(this.isHovering(x, y, width, height, mouseX, mouseY))
-			renderTooltip(poseStack, component, mouseX, mouseY);
+		{
+			if(components.length == 0)
+				renderTooltip(poseStack, components[0], mouseX, mouseY);
+			else
+			{
+				List<Component> tooltips = List.of(components);
+				renderComponentTooltip(poseStack, tooltips, mouseX, mouseY);
+			}
+		}
 	}
 	
 	protected boolean hasItem(int slot)

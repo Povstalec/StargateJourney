@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 {
@@ -60,14 +61,14 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 		
 		this.energyTooltip(matrixStack, 162, 17, mouseX, mouseY);
 		this.crystalEffectTooltip(matrixStack, 14, 22, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.advanced_protocols")
-				.append(Component.literal(": " + menu.enableAdvancedProtocols())).withStyle(ChatFormatting.AQUA));
+				.append(Component.literal(": " + menu.enableAdvancedProtocols())).withStyle(ChatFormatting.AQUA), Component.translatable("test"));
 		this.crystalEffectTooltip(matrixStack, 14, 34, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_target")
-				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED));
+				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED), Component.translatable("test"));
 		this.crystalEffectTooltip(matrixStack, 14, 46, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_transfer")
-				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD));
+				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD), Component.translatable("test"));
 		this.crystalEffectTooltip(matrixStack, 14, 58, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.communication_range_1")
 				.append(Component.literal(": " + menu.getMaxDistance() + " "))
-				.append(Component.translatable("tooltip.sgjourney.dhd.communication_range_2")).withStyle(ChatFormatting.GRAY));
+				.append(Component.translatable("tooltip.sgjourney.dhd.communication_range_2")).withStyle(ChatFormatting.GRAY), Component.translatable("test"));
     }
     
     @Override
@@ -86,7 +87,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 	
 	protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
 	{
-		this.tooltip(matrixStack, mouseX, mouseY, x, y, 6, 52, Component.translatable("tooltip.sgjourney.energy_buffer").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED));
+		this.tooltip(matrixStack, mouseX, mouseY, x, y, 6, 52, ComponentHelper.energy(this.menu.getEnergy(), this.menu.getMaxEnergy()));
 	}
 	
 	@Override
@@ -95,8 +96,8 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 		return this.menu.hasItem(slot);
 	}
 	
-	protected void crystalEffectTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY, Component component)
+	protected void crystalEffectTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY, Component... components)
 	{
-		this.tooltip(matrixStack, mouseX, mouseY, x, y, 16, 6, component);
+		this.tooltip(matrixStack, mouseX, mouseY, x, y, 16, 6, components);
 	}
 }

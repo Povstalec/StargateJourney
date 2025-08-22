@@ -21,6 +21,7 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInter
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
 {
@@ -57,7 +58,7 @@ public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
     {
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 		
-		tooltipComponents.add(Component.translatable("block.sgjourney.advanced_crystal_interface.description").withStyle(ChatFormatting.DARK_GRAY));
-		tooltipComponents.add(Component.translatable("block.sgjourney.advanced_crystal_interface.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.advanced_crystal_interface.description"));
+		tooltipComponents.add(ComponentHelper.usage("block.sgjourney.advanced_crystal_interface.description.mode"));
     }
 }

@@ -165,7 +165,8 @@ public class Wormhole
 			traveler.setDeltaMovement(destinationMomentum);
 		}
 		
-		reconstructEvent(destinationLevel.getServer(), destinationStargate, traveler);
+		if(traveler != null)
+			reconstructEvent(destinationLevel.getServer(), destinationStargate, traveler);
 		
 		return traveler;
 	}
