@@ -290,6 +290,26 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		else if(currentSymbol < 0)
 			currentSymbol = 35;
 	}
+	
+	public int getLastSymbol()
+	{
+		if(isConnected() && !isDialingOut())
+			return 0;
+		
+		return addressBuffer.getSymbol(addressBuffer.getLength() - 1);
+	}
+	
+	@Override
+	public int getRedstoneSymbolOutput()
+	{
+		return getLastSymbol() % 12 + 1;
+	}
+	
+	@Override
+	public int getRedstoneSegmentOutput()
+	{
+		return (getLastSymbol() / (totalSymbols / SEGMENTS) + 1) * 5;
+	}
 
 	@Override
 	protected void resetAddress(boolean updateInterfaces)

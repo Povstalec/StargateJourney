@@ -75,7 +75,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected Direction direction;
 	
 	@Nullable
-	private AbstractStargateEntity stargate;
+	protected AbstractStargateEntity stargate;
 	@Nullable
 	protected Vec3i stargateRelativePos;
 	
@@ -246,6 +246,30 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public boolean enableAdvancedProtocols()
 	{
 		return this.enableAdvancedProtocols;
+	}
+	
+	public long getStargateEnergy()
+	{
+		if(stargate == null)
+			return -1;
+		
+		return stargate.getEnergyStored();
+	}
+	
+	public int getStargateOpenTime()
+	{
+		if(stargate == null)
+			return 0;
+		
+		return stargate.getOpenTime();
+	}
+	
+	public int getStargateTimeSinceLastTraveler()
+	{
+		if(stargate == null)
+			return 0;
+		
+		return stargate.getTimeSinceLastTraveler();
 	}
 	
 	protected void updateStargate()
@@ -421,7 +445,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		if(stargate.getEnergyStored() < getEnergyTarget())
 		{
-			long needed = getEnergyTarget() - stargate.getEnergyStored();
+			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.getEnergyStored(), maxEnergyDeplete());
 			
 			// Uses energy from a Energy Item if one is present
 			if (stackHasEnergy(energyStack))
@@ -430,18 +454,19 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				
 				if (energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
-					long energySent = sgjourneyEnergy.extractLongEnergy(Math.min(maxEnergyDeplete(), needed), false);
+					long energySent = sgjourneyEnergy.extractLongEnergy(needed, false);
 					stargate.receiveEnergy(energySent, false);
-				} else
+				}
+				else
 				{
-					int energySent = energyStorage.extractEnergy(Math.min(Integer.MAX_VALUE, (int) Math.min(maxEnergyDeplete(), needed)), false);
+					int energySent = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(needed), false);
 					stargate.receiveEnergy(energySent, false);
 				}
 			}
 			// Uses energy from the DHD energy buffer
 			else
 			{
-				long energySent = depleteEnergy(Math.min(maxEnergyDeplete(), needed), false);
+				long energySent = depleteEnergy(needed, false);
 				stargate.receiveEnergy(energySent, false);
 			}
 		}

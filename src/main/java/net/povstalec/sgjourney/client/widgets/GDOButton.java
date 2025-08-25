@@ -10,7 +10,7 @@ public class GDOButton extends SGJourneyButton
 	
     public GDOButton(int x, int y, Component component, Component tooltip, OnPress press)
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "textures/gui/gdo/gdo_widgets.png"), x, y, 16, 10, component, tooltip, press);
+		super(WIDGETS_LOCATION, x, y, 16, 10, component, tooltip, press);
 	}
 
     public GDOButton(int x, int y, Component component, OnPress press)

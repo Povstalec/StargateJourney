@@ -63,6 +63,21 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         return this.blockEntity instanceof PegasusDHDEntity;
     }
     
+    public long getStargateEnergy()
+    {
+        return this.blockEntity.getStargateEnergy();
+    }
+    
+    public int getStargateOpenTime()
+    {
+        return this.blockEntity.getStargateOpenTime();
+    }
+    
+    public int getStargateTimeSinceLastTraveler()
+    {
+        return this.blockEntity.getStargateTimeSinceLastTraveler();
+    }
+    
     public long getEnergy()
     {
         return this.blockEntity.getEnergyStored();

@@ -8,11 +8,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public interface Stargate
 {
@@ -300,11 +300,14 @@ public interface Stargate
 	default void doWhileDialed(MinecraftServer server, Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime) {}
 	
 	/**
-	 * Sets the current tick count of the kawoosh
+	 * Updates Stargate's timers with new time information
 	 * @param server Current Minecraft Server
-	 * @param kawooshTick Number of ticks since the kawoosh started
+	 * @param connectionTime Number of ticks that have passed since the connection was established (Right after dialing Stargate finished dialing)
+	 * @param kawooshTime Number of ticks that have passed since the kawoosh started
+	 * @param openTime Number of ticks that have passed since the wormhole formed (after kawoosh ended)
+	 * @param timeSinceLastTraveler Number of ticks that have passed since the last time a traveler has appeared near any of the connected Stargates
 	 */
-	default void setKawooshTickCount(MinecraftServer server, int kawooshTick) {}
+	default void updateTimers(MinecraftServer server, int connectionTime, int kawooshTime, int openTime, int timeSinceLastTraveler) {}
 	
 	/**
 	 * Progresses the kawoosh of this Stargate (Destroys blocks, kills entities)
@@ -366,4 +369,11 @@ public interface Stargate
 	 * @param tag CompoundTag containing information to be deserialized
 	 */
 	void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag);
+	
+	
+	
+	static int getMaxGateOpenTime()
+	{
+		return CommonStargateConfig.max_wormhole_open_time.get() * 20;
+	}
 }

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -185,6 +186,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
+		StargateJourney.LOGGER.error("Stargate does not permit connections");
 		return StargateInfo.Feedback.UNKNOWN_ERROR;
 	}
 	

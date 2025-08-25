@@ -486,6 +486,7 @@
 	
 	
 	"info.sgjourney.add_to_network": "Přidat do sítě",
+	"info.sgjourney.is_protected": "Je chráněno",
 	"info.sgjourney.point_of_origin": "Výchozí bod",
 	"info.sgjourney.symbol": "Symbol",
 	"info.sgjourney.symbols": "Symboly",
@@ -514,6 +515,7 @@
 	"tooltip.sgjourney.9_chevron_address": "9chevronová adresa",
 	"tooltip.sgjourney.energy": "Energie",
 	"tooltip.sgjourney.energy_buffer": "Vyrovnavač energie",
+	"tooltip.sgjourney.energy_target": "Cílené množství energie",
 	"tooltip.sgjourney.fluid": "Tekutina",
 	"tooltip.sgjourney.holding": "Uvnitř",
 	"tooltip.sgjourney.dimension": "Dimenze",
@@ -548,11 +550,21 @@
 	"tooltip.sgjourney.call_forwarding_device.in_dhd": "V DHD:",
 	"tooltip.sgjourney.call_forwarding_device.info": "Povolí přesměrování spojení",
 	
-	"tooltip.sgjourney.dhd.advanced_protocols": "Pokročilé nastavení",
-	"tooltip.sgjourney.dhd.energy_target": "Cílená energetická kapacita",
+	"tooltip.sgjourney.dhd.advanced_protocols": "Pokročilé protokoly",
+	"tooltip.sgjourney.dhd.advanced_protocols.description": "Pokročilé protokoly ukončí spojení hvězdných bran, pokud se po 10 sekund nenajde poblíž žádný potenciální cestovatel",
+	"tooltip.sgjourney.dhd.advanced_protocols.description.usage": "Pro aktivaci pokročilých protokolů umísti velký ovládací krystal do prostředního slotu na krystaly v DHD",
+	"tooltip.sgjourney.dhd.energy_target.description": "Pokud je množství energie v  bráně pod cílovým množstvím energie, DHD se pokusí dodat bráně energii dokud její množství nedosáhne cíleného množství energie",
+	"tooltip.sgjourney.dhd.energy_target.usage": "Pro zvýšení cíleného množství energie umísti energetické krystaly do krystalových slotů DHD",
+	"tooltip.sgjourney.dhd.stargate_energy": "Energie v bráně",
 	"tooltip.sgjourney.dhd.energy_transfer": "Přenost energie",
+	"tooltip.sgjourney.dhd.energy_transfer.description": "Množství energie, které zvládne DHD dodat bráně za jeden tik",
+	"tooltip.sgjourney.dhd.energy_transfer.usage": "Pro zvýšení rychlosti přenostu energie množství energie umísti přenosové krystaly do krystalových slotů DHD",
 	"tooltip.sgjourney.dhd.communication_range_1": "Komunikační vzdálenost",
 	"tooltip.sgjourney.dhd.communication_range_2": "bloků",
+	"tooltip.sgjourney.dhd.communication_range.description": "Maximální vzdálenost, ze které je DHD schopné spojit se s bránou",
+	"tooltip.sgjourney.dhd.communication_range.usage": "Pro zvýšení komunikační vzdálenosti umísti komunikační krystaly do krystalových slotů DHD",
+	
+	"tooltip.sgjourney.interface.energy_target.description": "Pokud je množství energie v  bráně pod cílovým množstvím energie, rozhraní se pokusí dodat bráně energii dokud její množství nedosáhne cíleného množství energie",
 	
 	"tooltip.sgjourney.stargate_upgrade.description": "Pravé kliknutí na klasickou hvězdnou bránu ji upgraduje",
 	"tooltip.sgjourney.stargate_variant.description": "Pravé kliknutí na hvězdnou bránu změní její variantu",

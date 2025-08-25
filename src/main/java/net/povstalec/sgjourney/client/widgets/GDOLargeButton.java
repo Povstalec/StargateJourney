@@ -10,6 +10,6 @@ public class GDOLargeButton extends SGJourneyButton
 	
     public GDOLargeButton(int x, int y, Component component, Component tooltip, OnPress press)
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "textures/gui/gdo/gdo_widgets.png"), x, y, 29, 28, 16, 0, component, tooltip, press);
+		super(WIDGETS_LOCATION, x, y, 29, 28, 16, 0, component, tooltip, press);
 	}
 }

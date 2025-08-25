@@ -7,24 +7,34 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 
 public class ComponentHelper
 {
-	public static MutableComponent energyComponent(String name, long energy, long maxEnergy)
+	public static MutableComponent energy(String name, long energy, long maxEnergy)
 	{
-		return Component.translatable(name).append(Component.literal(": " + SGJourneyEnergy.energyToString(energy, maxEnergy))).withStyle(ChatFormatting.DARK_RED);
+		return Component.translatable(name).append(": " + SGJourneyEnergy.energyToString(energy, maxEnergy)).withStyle(ChatFormatting.DARK_RED);
 	}
 	
 	public static MutableComponent energy(long energy, long maxEnergy)
 	{
-		return energyComponent("tooltip.sgjourney.energy", energy, maxEnergy);
+		return energy("tooltip.sgjourney.energy", energy, maxEnergy);
 	}
 	
-	public static MutableComponent energyComponent(String name, long energy)
+	public static MutableComponent energy(String name, long energy)
 	{
-		return Component.translatable(name).append(Component.literal(": " + SGJourneyEnergy.energyToString(energy))).withStyle(ChatFormatting.DARK_RED);
+		return Component.translatable(name).append(": " + SGJourneyEnergy.energyToString(energy)).withStyle(ChatFormatting.DARK_RED);
 	}
 	
 	public static MutableComponent energy(long energy)
 	{
-		return energyComponent("tooltip.sgjourney.energy", energy);
+		return energy("tooltip.sgjourney.energy", energy);
+	}
+	
+	public static MutableComponent tickTimer(String name, int ticks, int maxTicks, ChatFormatting formatting)
+	{
+		return Component.translatable(name).append(": " + Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
+	}
+	
+	public static MutableComponent tickTimer(int ticks, int maxTicks, ChatFormatting formatting)
+	{
+		return Component.literal(Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
 	}
 	
 	public static MutableComponent description(MutableComponent component)
