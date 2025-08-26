@@ -563,6 +563,10 @@
 	"tooltip.sgjourney.dhd.communication_range_2": "Blocks",
 	"tooltip.sgjourney.dhd.communication_range.description": "The maximum range from which the DHD will be able to connect to a Stargate",
 	"tooltip.sgjourney.dhd.communication_range.usage": "Place Communication Crystals in the crystal slots of the DHD to increase the communication range",
+	"tooltip.sgjourney.dhd.energy_slot.description": "Holds Energy Cores, ZPM and other energy providing items",
+	"tooltip.sgjourney.dhd.energy_fuel_slot.description": "Holds items for refueling Energy Cores",
+	"tooltip.sgjourney.dhd.crystal_slot.description": "Holds Crystals and Advanced Crystals",
+	"tooltip.sgjourney.dhd.large_crystal_slot.description": "Holds Large Crystals",
 	
 	"tooltip.sgjourney.interface.energy_target.description": "If the amount of energy in the Stargate is below the amount specified by the Energy Target, the Interface will attempt to transfer energy to the Stargate until the Energy Target is met",
 	"tooltip.sgjourney.interface.mode.off.usage": "This mode does nothing",

@@ -18,8 +18,9 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_crystal_gui.png");
 	
+	public static final int HINT_OFFSET_Y = 168;
 	public static final int CRYSTAL_HINT_OFFSET_X = 16;
-	public static final int CRYSTAL_HINT_OFFSET_Y = 168;
+	public static final int ENERGY_HINT_OFFSET_X = 32;
 	
 	public DHDCrystalScreen(DHDCrystalMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
@@ -41,14 +42,16 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 		
 		this.itemHint(pPoseStack, x + 80, y + 35, 0, 168, 0);
 		
-		this.itemHint(pPoseStack, x + 80, y + 17, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 1);
-		this.itemHint(pPoseStack, x + 98, y + 17, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 2);
-		this.itemHint(pPoseStack, x + 98, y + 35, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 3);
-		this.itemHint(pPoseStack, x + 98, y + 53, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 4);
-		this.itemHint(pPoseStack, x + 80, y + 53, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 5);
-		this.itemHint(pPoseStack, x + 62, y + 53, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 6);
-		this.itemHint(pPoseStack, x + 62, y + 35, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 7);
-		this.itemHint(pPoseStack, x + 62, y + 17, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 8);
+		this.itemHint(pPoseStack, x + 80, y + 17, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 1);
+		this.itemHint(pPoseStack, x + 98, y + 17, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 2);
+		this.itemHint(pPoseStack, x + 98, y + 35, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 3);
+		this.itemHint(pPoseStack, x + 98, y + 53, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 4);
+		this.itemHint(pPoseStack, x + 80, y + 53, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
+		this.itemHint(pPoseStack, x + 62, y + 53, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 6);
+		this.itemHint(pPoseStack, x + 62, y + 35, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 7);
+		this.itemHint(pPoseStack, x + 62, y + 17, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 8);
+		
+		this.itemHint(pPoseStack, x + 134, y + 27, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 9);
     }
 
     @Override
@@ -81,8 +84,19 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 				ComponentHelper.description("tooltip.sgjourney.dhd.communication_range.description"),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.communication_range.usage"));
 		
-		//this.itemTooltip(matrixStack, mouseX, mouseY, 134, 27, 9, ComponentHelper.description("tooltip.sgjourney.dhd.energy_slot_description"));
-		//this.itemTooltip(matrixStack, mouseX, mouseY, 134, 53, 10, ComponentHelper.description("tooltip.sgjourney.dhd.energy_fuel_slot_description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 80, 35, 0, ComponentHelper.description("tooltip.sgjourney.dhd.large_crystal_slot.description"));
+		
+		this.itemTooltip(matrixStack, mouseX, mouseY, 80, 17, 1, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 98, 17, 2, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 98, 35, 3, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 98, 53, 4, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 80, 53, 5, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 62, 53, 6, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 62, 35, 7, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 62, 53, 6, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		
+		this.itemTooltip(matrixStack, mouseX, mouseY, 134, 27, 9, ComponentHelper.description("tooltip.sgjourney.dhd.energy_slot.description"));
+		this.itemTooltip(matrixStack, mouseX, mouseY, 134, 53, 10, ComponentHelper.description("tooltip.sgjourney.dhd.energy_fuel_slot.description"));
     }
     
     @Override
