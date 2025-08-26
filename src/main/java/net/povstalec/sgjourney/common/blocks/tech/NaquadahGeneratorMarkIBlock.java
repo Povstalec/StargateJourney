@@ -6,9 +6,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import org.joml.Vector3d;
 
 import net.minecraft.ChatFormatting;
@@ -28,8 +25,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorMarkIEntity;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;

@@ -152,6 +152,9 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	
 	public static String energyToString(long energy)
 	{
+		if(energy < 0)
+			return "NaN";
+		
 		if(energy < 1000)
 			return energy + " FE";
 		
@@ -172,5 +175,15 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	public static String energyToString(long energy, long capacity)
 	{
 		return energyToString(energy) + "/" + energyToString(capacity);
+	}
+	
+	public static long energyToTarget(long energyTarget, long energyStored, long maxExtract)
+	{
+		long needed = energyTarget - energyStored;
+		
+		if(needed < 0)
+			return 0;
+		
+		return Math.min(needed, maxExtract);
 	}
 }

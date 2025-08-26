@@ -1,15 +1,12 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
@@ -48,14 +45,14 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
-import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech_interface.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -108,6 +105,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 	
+	public static final int SEGMENTS = 3;
+	
 	public static final int MAX_SYMBOLS = 48;
 
 	public static final float STANDARD_THICKNESS = 9.0F;
@@ -136,6 +135,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected int animationTick = 0;
 	protected int[] engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 	protected int timesOpened = 0;
+	protected int openTime = 0;
+	protected int timeSinceLastTraveler = 0;
 	
 	protected ResourceLocation variant = StargateJourney.EMPTY_LOCATION;
 	private final ResourceLocation defaultVariant;
@@ -145,7 +146,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	@Nullable
 	protected UUID connectionID = null;
 	protected StargateConnection.State connectionState = StargateConnection.State.IDLE;
-	protected Wormhole wormhole = new Wormhole();
 
 	protected int openSoundLead = 28;
 	protected float verticalCenterHeight;
@@ -352,7 +352,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void removeStargateFromNetwork()
 	{
-		StargateNetwork.get(level).removeStargate(level, id9ChevronAddress.immutable());
+		StargateNetwork.get(level).removeStargate(id9ChevronAddress.immutable());
 	}
 	
 	public void set9ChevronAddress(Address address)
@@ -529,9 +529,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		{
 			if(!isObstructed())
 			{
-				chevronSound((short) 0, false, false, false);
 				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, 0, false, 0);
-				return setRecentFeedback(engageStargate(this.getAddress(), true));
+				StargateInfo.Feedback feedback = setRecentFeedback(engageStargate(this.getAddress(), true));
+				chevronSound((short) 0, false, false, false);
+				return feedback;
 			}
 			else
 				return resetStargate(StargateInfo.Feedback.SELF_OBSTRUCTED, false);
@@ -585,18 +586,18 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(addressFilterInfo().getFilterType().shouldFilter())
 		{
 			if(addressFilterInfo().getFilterType().isBlacklist() && addressFilterInfo().isAddressBlacklisted(immutableAddress))
-				return this.resetStargate(StargateInfo.Feedback.BLACKLISTED_TARGET);
+				return this.resetStargate(StargateInfo.Feedback.TARGET_BLACKLISTED);
 			
 			else if(addressFilterInfo().getFilterType().isWhitelist() && !addressFilterInfo().isAddressWhitelisted(immutableAddress))
-				return this.resetStargate(StargateInfo.Feedback.WHITELISTED_TARGET);
+				return this.resetStargate(StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
 		}
 		
-		Address dialingAddress = this.getConnectionAddress(address.getLength());
 		Stargate stargate = StargateNetwork.get(level).getStargate(this.get9ChevronAddress().immutable());
 		
 		if(stargate != null)
-			return Dialing.dialStargate((ServerLevel) this.level, stargate, immutableAddress, dialingAddress.immutable(), doKawoosh);
+			return Dialing.dialStargate(((ServerLevel) this.level).getServer(), stargate, immutableAddress, doKawoosh);
 		
+		StargateJourney.LOGGER.error("Stargate " + this.get9ChevronAddress() + " can't be found in the Stargate Network");
 		return resetStargate(StargateInfo.Feedback.UNKNOWN_ERROR);
 	}
 	
@@ -624,7 +625,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			return;
 		
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
-		Direction direction = Orientation.getEffectiveDirection(getDirection(), getOrientation());
+		Direction direction = Orientation.getForwardDirection(getDirection(), getOrientation());
 		
 		double frontMultiplier = kawooshFunction(kawooshTime);
 		
@@ -669,7 +670,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		Vec3 backVector = centerVector.relative(axisDirection, -2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), -2.25);
 		
 		frontMultiplier = frontMultiplier > 7 ? 7 : frontMultiplier;
-		Vec3 facingVector = Orientation.getEffectiveVector(direction, getOrientation());
+		Vec3 facingVector = Orientation.getForwardVector(direction, getOrientation());
 		facingVector = facingVector.multiply(frontMultiplier, frontMultiplier, frontMultiplier);
 		facingVector = facingVector.add(centerVector);
 		facingVector = facingVector.relative(axisDirection, 2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), 2.25);
@@ -718,6 +719,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		resetAddress(updateInterfaces);
 		this.connectionID = null;
 		setKawooshTickCount(0);
+		setOpenTime(0);
+		setTimeSinceLastTraveler(0);
 		setTickCount(0);
 		//updateClient();
 		
@@ -796,31 +799,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		setStargateState(updateInterfaces);
 	}
 	
-	public Address getConnectionAddress(int addressLength)
-	{
-		ResourceKey<Level> dimension = this.level.dimension();
-		
-		if(addressLength == 6)
-		{
-			Galaxy.Serializable galaxy = Universe.get(this.level).getGalaxyFromDimension(dimension);
-			if(galaxy != null)
-			{
-				Address.Immutable address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
-				if(address != null)
-					return address.mutable();
-			}
-		}
-		else if(addressLength == 7)
-		{
-			Address.Immutable address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
-			if(address != null)
-				return address.mutable();
-		}
-		
-		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
-		return this.get9ChevronAddress();
-	}
-	
 	//============================================================================================
 	//********************************************Info********************************************
 	//============================================================================================
@@ -891,11 +869,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		return false;
 	}
-
-	public int getMaxGateOpenTime()
-	{
-		return CommonStargateConfig.max_wormhole_open_time.get() * 20;
-	}
 	
 	public StargateInfo.Gen getGeneration()
 	{
@@ -928,11 +901,17 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.animationTick;
 	}
 	
+	public void setOpenTime(int openTime)
+	{
+		if(openTime < 0)
+			this.openTime = 0;
+		else
+			this.openTime = openTime;
+	}
+	
 	public int getOpenTime()
 	{
-		if(this.level.isClientSide())
-			return 0;
-		return StargateNetwork.get(this.level).getOpenTime(this.connectionID);
+		return this.openTime;
 	}
 	
 	public boolean isWormholeOpen()
@@ -940,11 +919,17 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return getOpenTime() > 0;
 	}
 	
+	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)
+	{
+		if(timeSinceLastTraveler < 0)
+			this.timeSinceLastTraveler = 0;
+		else
+			this.timeSinceLastTraveler = timeSinceLastTraveler;
+	}
+	
 	public int getTimeSinceLastTraveler()
 	{
-		if(this.level.isClientSide())
-			return 0;
-		return StargateNetwork.get(this.level).getTimeSinceLastTraveler(this.connectionID);
+		return this.timeSinceLastTraveler;
 	}
 	
 	public int getTimesOpened()
@@ -987,21 +972,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public void setEngagedChevrons(int[] engagedChevrons)
 	{
 		this.engagedChevrons = engagedChevrons;
-	}
-	
-	public static int[] getChevronConfiguration(int addressLength)
-	{
-		switch(addressLength)
-		{
-		case 6:
-			return Dialing.DIALED_7_CHEVRON_CONFIGURATION;
-		case 7:
-			return Dialing.DIALED_8_CHEVRON_CONFIGURATION;
-		case 8:
-			return Dialing.DIALED_9_CHEVRON_CONFIGURATION;
-		default:
-			return Dialing.DEFAULT_CHEVRON_CONFIGURATION;
-		}
 	}
 	
 	public int[] getEngagedChevrons()
@@ -1299,16 +1269,15 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		updateAdvancedCrystalInterfaceBlocks(eventName, objects);
 	}
 	
-	public Wormhole getWormhole()
-	{
-		return this.wormhole;
-	}
-	
 	public void setOpenSoundLead(int openSoundLead)
 	{
 		this.openSoundLead = openSoundLead;
 	}
 	
+	/**
+	 * Stargates can make noises before the kawoosh itself starts (for example the WAH-WAH of the Milky Way Stargate)
+	 * @return The number of ticks which the Stargate opening sound will get as a head-start before the actual kawoosh
+	 */
 	public int getOpenSoundLead()
 	{
 		return this.openSoundLead;
@@ -1335,7 +1304,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
 		if(isPrimary())
 			player.sendSystemMessage(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + Stargate.getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
 		
 		super.getStatus(player);
 	}
@@ -1388,14 +1357,64 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public abstract void registerInterfaceMethods(StargatePeripheralWrapper wrapper);
 	
-	public void doWhileDialed(int openTime, StargateInfo.ChevronLockSpeed chevronLockSpeed) {}
+	public void doWhileConnecting(boolean incoming, boolean doKawoosh, int kawooshStartTicks, int openTime)
+	{
+		if(!doKawoosh)
+			return;
+		
+		if(openTime == kawooshStartTicks - getOpenSoundLead())
+			openWormholeSound(incoming);
+	}
+	
+	public void doWhileDialed(Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	{
+		if(openTime % chevronLockSpeed.getChevronWaitTicks() == 0)
+		{
+			int dialedAddressLength = getAddress().getLength();
+			int dialingAddressLength = dialingAddress.getLength();
+			
+			if(dialedAddressLength < dialingAddress.getLength())
+			{
+				if(openTime / chevronLockSpeed.getChevronWaitTicks() == 4 && dialingAddressLength < 7)
+					return;
+				else if(openTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddressLength < 8)
+					return;
+				else
+					encodeChevron(dialingAddress.getSymbol(dialedAddressLength), true, false);
+			}
+			else
+			{
+				chevronSound((short) 0, true, false, false);
+				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().getLength() + 1,
+						AbstractStargateEntity.getChevron(this, getAddress().getLength() + 1), true, 0);
+			}
+		}
+	}
+	
+	public void doWhileConnected(boolean incoming, int openTime)
+	{
+		idleWormholeSound(incoming);
+	}
+	
+	public List<Entity> findWormholeCandidates()
+	{
+		List<Entity> wormholeCandidates;
+		Vec3 centerPos = getCenter();
+		AABB localBox = new AABB(
+				centerPos.x - 2.5, centerPos.y - 2.5, centerPos.z - 2.5,
+				centerPos.x + 2.5, centerPos.y + 2.5, centerPos.z + 2.5);
+		
+		wormholeCandidates = getLevel().getEntitiesOfClass(Entity.class, localBox, entity -> entity.isAlive() && !entity.getType().is(TagInit.Entities.WORMHOLE_IGNORES));
+		
+		return wormholeCandidates;
+	}
 	
 	public boolean updateClient()
 	{
 		if(level.isClientSide())
 			return false;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.getEnergyStored(), this.openTime, this.timeSinceLastTraveler, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
 		return true;
 	}
 	

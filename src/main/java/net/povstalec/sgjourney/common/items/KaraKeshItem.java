@@ -57,8 +57,10 @@ public class KaraKeshItem extends Item implements GoauldTech
 			
 			itemTag.putBoolean("TerrorModeOn", terrorModeOn);
 			player.getItemInHand(usedHand).setTag(itemTag);
+			return InteractionResultHolder.success(player.getItemInHand(usedHand));
 		}
-        return super.use(level, player, usedHand);
+		else
+        	return super.use(level, player, usedHand);
     }
 	
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand)

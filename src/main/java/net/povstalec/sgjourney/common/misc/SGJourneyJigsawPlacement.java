@@ -3,10 +3,9 @@ package net.povstalec.sgjourney.common.misc;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
+import net.povstalec.sgjourney.StargateJourney;
 
 import com.google.common.collect.Lists;
-import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -40,60 +39,65 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class SGJourneyJigsawPlacement extends JigsawPlacement
 {
-	static final Logger LOGGER = LogUtils.getLogger();
-	
-	public static Optional<Structure.GenerationStub> addPieces(Structure.GenerationContext p_227239_, Holder<StructureTemplatePool> p_227240_, Optional<ResourceLocation> p_227241_, int p_227242_, BlockPos p_227243_, boolean p_227244_, Optional<Heightmap.Types> p_227245_, int p_227246_,
-			Rotation rotation)
+	public static Optional<Structure.GenerationStub> addPieces(Structure.GenerationContext context, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+															   int size, BlockPos blockPos, boolean flag, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Rotation rotation)
 	{
-	      RegistryAccess registryaccess = p_227239_.registryAccess();
-	      ChunkGenerator chunkgenerator = p_227239_.chunkGenerator();
-	      StructureTemplateManager structuretemplatemanager = p_227239_.structureTemplateManager();
-	      LevelHeightAccessor levelheightaccessor = p_227239_.heightAccessor();
-	      WorldgenRandom worldgenrandom = p_227239_.random();
+	      RegistryAccess registryaccess = context.registryAccess();
+	      ChunkGenerator chunkgenerator = context.chunkGenerator();
+	      StructureTemplateManager structuretemplatemanager = context.structureTemplateManager();
+	      LevelHeightAccessor levelheightaccessor = context.heightAccessor();
+	      WorldgenRandom worldgenrandom = context.random();
 	      Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registries.TEMPLATE_POOL);
-	      StructureTemplatePool structuretemplatepool = p_227240_.value();
+	      StructureTemplatePool structuretemplatepool = startPool.value();
 	      StructurePoolElement structurepoolelement = structuretemplatepool.getRandomTemplate(worldgenrandom);
-	      if (structurepoolelement == EmptyPoolElement.INSTANCE) {
+		  
+	      if(structurepoolelement == EmptyPoolElement.INSTANCE)
 	         return Optional.empty();
-	      } else {
+	      else
+		  {
 	         BlockPos blockpos;
-	         if (p_227241_.isPresent()) {
-	            ResourceLocation resourcelocation = p_227241_.get();
-	            Optional<BlockPos> optional = getRandomNamedJigsaw(structurepoolelement, resourcelocation, p_227243_, rotation, structuretemplatemanager, worldgenrandom);
-	            if (optional.isEmpty()) {
-	               LOGGER.error("No starting jigsaw {} found in start pool {}", resourcelocation, p_227240_.unwrapKey().get().location());
+	         if(startJigsawName.isPresent())
+			 {
+	            ResourceLocation resourcelocation = startJigsawName.get();
+	            Optional<BlockPos> optional = getRandomNamedJigsaw(structurepoolelement, resourcelocation, blockPos, rotation, structuretemplatemanager, worldgenrandom);
+	            if(optional.isEmpty())
+				{
+	               StargateJourney.LOGGER.error("No starting jigsaw {} found in start pool {}", resourcelocation, startPool.unwrapKey().get().location());
 	               return Optional.empty();
 	            }
 
 	            blockpos = optional.get();
-	         } else {
-	            blockpos = p_227243_;
 	         }
+			 else
+	            blockpos = blockPos;
 
-	         Vec3i vec3i = blockpos.subtract(p_227243_);
-	         BlockPos blockpos1 = p_227243_.subtract(vec3i);
+	         Vec3i vec3i = blockpos.subtract(blockPos);
+	         BlockPos blockpos1 = blockPos.subtract(vec3i);
 	         PoolElementStructurePiece poolelementstructurepiece = new PoolElementStructurePiece(structuretemplatemanager, structurepoolelement, blockpos1, structurepoolelement.getGroundLevelDelta(), rotation, structurepoolelement.getBoundingBox(structuretemplatemanager, blockpos1, rotation));
 	         BoundingBox boundingbox = poolelementstructurepiece.getBoundingBox();
 	         int i = (boundingbox.maxX() + boundingbox.minX()) / 2;
 	         int j = (boundingbox.maxZ() + boundingbox.minZ()) / 2;
 	         int k;
-	         if (p_227245_.isPresent()) {
-	            k = p_227243_.getY() + chunkgenerator.getFirstFreeHeight(i, j, p_227245_.get(), levelheightaccessor, p_227239_.randomState());
-	         } else {
+			 
+	         if(projectStartToHeightmap.isPresent())
+	            k = blockPos.getY() + chunkgenerator.getFirstFreeHeight(i, j, projectStartToHeightmap.get(), levelheightaccessor, context.randomState());
+	         else
 	            k = blockpos1.getY();
-	         }
 
 	         int l = boundingbox.minY() + poolelementstructurepiece.getGroundLevelDelta();
 	         poolelementstructurepiece.move(0, k - l, 0);
 	         int i1 = k + vec3i.getY();
-	         return Optional.of(new Structure.GenerationStub(new BlockPos(i, i1, j), (p_227237_) -> {
+			 
+	         return Optional.of(new Structure.GenerationStub(new BlockPos(i, i1, j), (builder) ->
+			 {
 	            List<PoolElementStructurePiece> list = Lists.newArrayList();
 	            list.add(poolelementstructurepiece);
-	            if (p_227242_ > 0) {
-	               AABB aabb = new AABB((double)(i - p_227246_), (double)(i1 - p_227246_), (double)(j - p_227246_), (double)(i + p_227246_ + 1), (double)(i1 + p_227246_ + 1), (double)(j + p_227246_ + 1));
+	            if(size > 0)
+				{
+	               AABB aabb = new AABB((double)(i - maxDistanceFromCenter), (double)(i1 - maxDistanceFromCenter), (double)(j - maxDistanceFromCenter), (double)(i + maxDistanceFromCenter + 1), (double)(i1 + maxDistanceFromCenter + 1), (double)(j + maxDistanceFromCenter + 1));
 	               VoxelShape voxelshape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(boundingbox)), BooleanOp.ONLY_FIRST);
-	               addPieces(p_227239_.randomState(), p_227242_, p_227244_, chunkgenerator, structuretemplatemanager, levelheightaccessor, worldgenrandom, registry, poolelementstructurepiece, list, voxelshape);
-	               list.forEach(p_227237_::addPiece);
+	               addPieces(context.randomState(), size, flag, chunkgenerator, structuretemplatemanager, levelheightaccessor, worldgenrandom, registry, poolelementstructurepiece, list, voxelshape);
+	               list.forEach(builder::addPiece);
 	            }
 	         }));
 	      }

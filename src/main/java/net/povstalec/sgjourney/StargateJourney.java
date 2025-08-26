@@ -4,8 +4,11 @@ import java.util.function.BiFunction;
 
 import net.minecraftforge.client.event.ModelEvent;
 import net.povstalec.sgjourney.client.screens.*;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
+import net.povstalec.sgjourney.common.misc.RenderAMD;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -45,7 +48,7 @@ import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer
 import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
 import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
-import net.povstalec.sgjourney.client.render.entity.HumanRenderer;
+import net.povstalec.sgjourney.client.render.entity.AnthropoidRenderer;
 import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
@@ -165,6 +168,17 @@ public class StargateJourney
     	
     	return isOculusLoaded;
     }
+	
+	public static boolean shouldRenderAMD()
+	{
+		if(isOculusLoaded())
+			return false;
+		
+		if(ClientStargateConfig.render_amd.get() == RenderAMD.AUTO)
+			return SystemUtils.IS_OS_LINUX;
+		
+		return ClientStargateConfig.render_amd.get() == RenderAMD.ENABLED;
+	}
 
     @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
@@ -205,8 +219,8 @@ public class StargateJourney
 			MenuScreens.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
         	
         	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
-			EntityRenderers.register(EntityInit.HUMAN.get(), HumanRenderer<Human>::new);
-			EntityRenderers.register(EntityInit.JAFFA.get(), HumanRenderer<Jaffa>::new);
+			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
+			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
 			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.RedSandstone::new);

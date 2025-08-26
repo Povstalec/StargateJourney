@@ -52,6 +52,7 @@ public class TabInit
 				items.accept(ItemInit.NAQUADAH_ROD.get());
 				items.accept(ItemInit.REACTION_CHAMBER.get());
 				items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
+				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 				items.accept(ItemInit.PLASMA_CONVERTER.get());
 				items.accept(ItemInit.NAQUADAH_POWER_CELL.get());
 				items.accept(PowerCellItem.liquidNaquadahSetup());
@@ -82,7 +83,7 @@ public class TabInit
 				items.accept(ItemInit.MATOK.get());
 				
 				items.accept(ItemInit.JACKAL_HELMET.get());
-				//items.accept(ItemInit.HORUS_HELMET.get());
+				items.accept(ItemInit.FALCON_HELMET.get());
 				items.accept(ItemInit.JAFFA_HELMET.get());
 				items.accept(ItemInit.JAFFA_CHESTPLATE.get());
 				items.accept(ItemInit.JAFFA_LEGGINGS.get());
@@ -92,8 +93,6 @@ public class TabInit
 				items.accept(ItemInit.SYSTEM_LORD_CHESTPLATE.get());
 				items.accept(ItemInit.SYSTEM_LORD_LEGGINGS.get());
 				items.accept(ItemInit.SYSTEM_LORD_BOOTS.get());
-
-				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 				
 				items.accept(ItemInit.ZPM.get());
 				items.accept(PersonalShieldItem.personalShieldSetup());
@@ -112,8 +111,6 @@ public class TabInit
 				items.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.MEMORY_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_MEMORY_CRYSTAL.get());
-				//output.accept(MemoryCrystalItem.atlantisAddress());
-				//output.accept(MemoryCrystalItem.abydosAddress());
 				items.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
 				items.accept(ItemInit.ENERGY_CRYSTAL.get());
@@ -124,6 +121,10 @@ public class TabInit
 				items.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
 				
 				//items.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
+				
+				items.accept(ItemInit.GOAULD.get());
+				items.accept(ItemInit.GOAULD_CARCASS.get());
+				items.accept(ItemInit.COOKED_GOAULD.get());
 			});
 		});
 		

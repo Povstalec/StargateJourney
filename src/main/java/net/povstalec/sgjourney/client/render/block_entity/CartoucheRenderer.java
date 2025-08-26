@@ -72,7 +72,7 @@ public abstract class CartoucheRenderer
 		Direction direction = blockstate.getValue(CartoucheBlock.FACING);
 		float facing = direction.toYRot();
 		Orientation orientation = blockstate.getValue(CartoucheBlock.ORIENTATION);
-		BlockPos pos = cartouche.getBlockPos().relative(Orientation.getEffectiveDirection(direction, orientation));
+		BlockPos pos = cartouche.getBlockPos().relative(Orientation.getForwardDirection(direction, orientation));
 		
 		stack.pushPose();
 		stack.translate(0.5F, 0.5F, 0.5F);

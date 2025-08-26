@@ -4,35 +4,38 @@ import net.minecraft.nbt.CompoundTag;
 
 public class BloodstreamNaquadah
 {
-	private boolean hasNaquadah;
+	public static final String BLOODSTREAM_NAQUADAH = "bloodstream_naquadah";
+	
+	private boolean naquadahInBloodstream = false;
 	
 	public boolean hasNaquadahInBloodstream()
 	{
-		return this.hasNaquadah;
+		return this.naquadahInBloodstream;
 	}
 	
 	public void addNaquadahToBloodstream()
 	{
-		this.hasNaquadah = true;
+		this.naquadahInBloodstream = true;
 	}
 	
 	public void removeNaquadahFromBloodstream()
 	{
-		this.hasNaquadah = false;
+		this.naquadahInBloodstream = false;
 	}
 	
 	public void copyFrom(BloodstreamNaquadah source)
 	{
-		this.hasNaquadah = source.hasNaquadah;
+		this.naquadahInBloodstream = source.naquadahInBloodstream;
 	}
+	
 	
 	public void saveData(CompoundTag tag)
 	{
-		tag.putBoolean("HasNaquadah", hasNaquadah);
+		tag.putBoolean(BLOODSTREAM_NAQUADAH, naquadahInBloodstream);
 	}
 	
 	public void loadData(CompoundTag tag)
 	{
-		this.hasNaquadah = tag.getBoolean("HasNaquadah");
+		this.naquadahInBloodstream = tag.getBoolean(BLOODSTREAM_NAQUADAH);
 	}
 }

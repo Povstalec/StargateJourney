@@ -13,7 +13,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethod;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.InterfaceMethods;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.InterfaceFunctions;
@@ -80,7 +80,7 @@ public class InterfacePeripheral implements IDynamicPeripheral
 	{
 		String methodName = getMethodNames()[method];
 		
-		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.interfaceEntity.energyBlockEntity, arguments);
+		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.interfaceEntity.getEnergyBlockEntity(), arguments);
 	}
 	
 	@SuppressWarnings("unchecked")

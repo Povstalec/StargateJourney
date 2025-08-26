@@ -237,6 +237,12 @@ public final class PacketHandlerInit
 		.consumerMainThread(ServerboundRingPanelUpdatePacket::handle)
 		.add();
 		
+		INSTANCE.messageBuilder(ServerboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+				.encoder(ServerboundInterfaceUpdatePacket::encode)
+				.decoder(ServerboundInterfaceUpdatePacket::new)
+				.consumerMainThread(ServerboundInterfaceUpdatePacket::handle)
+				.add();
+		
 		INSTANCE.messageBuilder(ServerboundGDOUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
 		.encoder(ServerboundGDOUpdatePacket::encode)
 		.decoder(ServerboundGDOUpdatePacket::new)

@@ -1,6 +1,6 @@
 {
 	"name": "solar_system.sgjourney.unitas",
-	"symbols": "sgjourney:rima",
+	"symbols": "sgjourney:unitas",
 	"symbol_prefix": 1,
 	"extragalactic_address": {"address": [1, 12, 34, 24, 15, 8, 17], "randomizable": true},
 	"addresses":

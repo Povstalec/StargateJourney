@@ -1,10 +1,16 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -21,7 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
@@ -74,22 +80,10 @@ public class RingRemoteItem extends Item
 		return transporters;
 	}
 	
-	private double distance(BlockPos pos, BlockPos targetPos)
-	{
-		int x = Math.abs(targetPos.getX() - pos.getX());
-		int y = Math.abs(targetPos.getY() - pos.getY());
-		int z = Math.abs(targetPos.getZ() - pos.getZ());
-		
-		return Math.sqrt(x*x + y*y + z*z);
-	}
-	
 	public Optional<TransportRingsEntity> findNearestTransportRings(Level level, BlockPos blockPos, int maxDistance)
 	{
 		List<TransportRingsEntity> transporters = getNearbyTransportRings(level, blockPos, maxDistance);
-		
-		transporters.sort((stargateA, stargateB) ->
-				Double.valueOf(distance(blockPos, stargateA.getBlockPos()))
-				.compareTo(Double.valueOf(distance(blockPos, stargateB.getBlockPos()))));
+		transporters.sort(Comparator.comparing(transporter -> Double.valueOf(blockPos.distSqr(transporter.getBlockPos()))));
 		
 		if(!transporters.isEmpty())
 			return Optional.of(transporters.get(0));
@@ -133,50 +127,50 @@ public class RingRemoteItem extends Item
 				{
 					stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
 					{
-						ItemStack crystalStack = itemHandler.getStackInSlot(0);	
+						ItemStack crystalStack = itemHandler.getStackInSlot(0);
 						
-						int[] coordinates = null;
-						
-						for(int i = 0; i < MemoryCrystalItem.getMemoryListSize(crystalStack); i++)
-				        {
-				        	coordinates = MemoryCrystalItem.getCoordinatesAt(crystalStack, i);
-				        	
-				        	if(coordinates != null)
-				        		break;
-				        }
-						
-						if(coordinates != null)
-						{
-							BlockPos targetPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
-							
-							Optional<TransportRingsEntity> transportRings = findNearestTransportRings(level, player.blockPosition(), 16);
-							if(transportRings.isPresent())
-							{
-								if(level.getBlockEntity(targetPos) instanceof TransportRingsEntity targetRings)
-								{
-									if(transportRings.get().canTransport() && targetRings.canTransport())
-									{
-										transportRings.get().activate(targetPos);
-									}
-									else
-										player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.BLUE), true);
-								}
-							}
-							else
-								player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.BLUE), true);
-						}
+						//TODO Transport based on coords, let players choose from the list of transport locations
+						if(crystalStack.getItem() instanceof MemoryCrystalItem crystal)
+							tryStartTransport(level, player, transporterFromUUID(level, crystal.getFirstUUID(crystalStack)));
 						else
 							player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_coordinates").withStyle(ChatFormatting.BLUE), true);
 					});
-					
-					
 				}
 			}
 		}
 		
-		
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
     }
+	
+	@Nullable
+	private static Transporter transporterFromUUID(Level level, UUID uuid)
+	{
+		return TransporterNetwork.get(level).getTransporter(uuid);
+	}
+	
+	@Nullable
+	private static Transporter transporterFromCoords(Level level, Vec3i coords)
+	{
+		BlockEntity blockEntity = level.getBlockEntity(new BlockPos(coords.getX(), coords.getY(), coords.getZ()));
+		if(blockEntity instanceof AbstractTransporterEntity transporter)
+			return transporter.getTransporter();
+		
+		return null;
+	}
+	
+	private void tryStartTransport(Level level, Player player, @Nullable Transporter target)
+	{
+		Optional<TransportRingsEntity> transportRings = findNearestTransportRings(level, player.blockPosition(), 16);
+		if(transportRings.isPresent())
+		{
+			if(target != null && transportRings.get().canTransport() && transportRings.get().canTransport())
+					transportRings.get().startTransport(target);
+			else
+				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.BLUE), true);
+		}
+		else
+			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.BLUE), true);
+	}
 	
 	public static boolean canActivate(ItemStack stack)
 	{
@@ -193,13 +187,13 @@ public class RingRemoteItem extends Item
 	private int[] findFirstCoords(ItemStack memoryCrystal)
 	{
 		int[] address = new int[0];
-		for(int i = 0; i < MemoryCrystalItem.getMemoryListSize(memoryCrystal); i++)
+		/*for(int i = 0; i < MemoryCrystalItem.getMemoryListSize(memoryCrystal); i++)
     	{
         	address = MemoryCrystalItem.getAddressAt(memoryCrystal, i);
         	
         	if(address.length > 0)
         		return address;
-    	}
+    	}*/
 		return address;
 	}
 	
@@ -208,57 +202,39 @@ public class RingRemoteItem extends Item
     {
         stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
         {
-        	ItemStack memoryCrystal = itemHandler.getStackInSlot(0);
-        	
-        	if(memoryCrystal.getItem() instanceof MemoryCrystalItem)
+        	ItemStack crystalStack = itemHandler.getStackInSlot(0);
+        	if(crystalStack.getItem() instanceof MemoryCrystalItem crystal)
         	{
                 tooltipComponents.add(Component.translatable("item.sgjourney.memory_crystal").withStyle(ChatFormatting.BLUE));
-
-            	int[] firstCoords = findFirstCoords(memoryCrystal);
-            	
-            	if(firstCoords.length == 3)
-            		tooltipComponents.add(Component.literal("X: " + firstCoords[0] + " Y: " + firstCoords[1] + " Z: " + firstCoords[2]).withStyle(ChatFormatting.YELLOW));
-                
-                super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+				
+				ListTag list = MemoryCrystalItem.getMemoryList(crystalStack);
+				for(int i = 0; i < list.size(); i++)
+				{
+					tooltipComponents.add(Component.literal("[" + i + "] ")
+							.append(memoryTypeAt(level, stack, list, i)));
+				}
         	}
         });
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 	
-	/*public BlockPos getNearestRings(CompoundTag nbtTag, BlockPos center, int maxDistance)
+	private Component memoryTypeAt(Level level, ItemStack stack, ListTag list, int index)
 	{
-		this.center = center;
-		int[] distance = {maxDistance, maxDistance, maxDistance};
-		this.distance = distance;
-
-		this.tag = nbtTag.copy();
-		Set<String> list = tag.getAllKeys();
+		if(list.getCompound(index).contains(MemoryCrystalItem.ADDRESS, Tag.TAG_INT_ARRAY))
+			return Component.translatable("tooltip.sgjourney.address").withStyle(ChatFormatting.AQUA);
 		
-		list.stream().forEach(this::ringsNetworking);
-		System.out.println(list);
-		System.out.println("Closest rings at X: " + target.getX() + " Y: " + target.getY() + " Z: " + target.getZ());
-		
-		return this.target;
-	}
-	
-	private void ringsNetworking(String ringsID)
-	{
-		int targetX = tag.getIntArray(ringsID)[0];
-		int targetY = tag.getIntArray(ringsID)[1];
-		int targetZ = tag.getIntArray(ringsID)[2];
-		
-		int distanceX = Math.abs(targetX - center.getX());
-		int distanceY = Math.abs(targetY - center.getY());
-		int distanceZ = Math.abs(targetZ - center.getZ());
-		
-		if(distanceX <= distance[0] && distanceY <= distance[1] && distanceZ <= distance[2])
+		Vec3i coords = MemoryCrystalItem.getCoords(list, stack, index);
+		if(coords != null)
 		{
-			this.distance[0] = distanceX;
-			this.distance[1] = distanceY;
-			this.distance[2] = distanceZ;
-			
-			this.target = new BlockPos(targetX, targetY, targetZ);
+			return Component.translatable("tooltip.sgjourney.coordinates")
+					.append(Component.literal(" " + coords.toShortString())).withStyle(ChatFormatting.BLUE);
 		}
-	}*/
+		
+		UUID id = MemoryCrystalItem.getUUID(list, stack, index);
+		if(id != null)
+			return Component.literal(id.toString()).withStyle(ChatFormatting.DARK_AQUA);
+		else
+			return Component.translatable("tooltip.sgjourney.corrupt_data").withStyle(ChatFormatting.DARK_RED);
+	}
 }
