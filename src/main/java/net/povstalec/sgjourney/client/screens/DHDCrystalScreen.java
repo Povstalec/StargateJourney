@@ -12,20 +12,18 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_crystal_gui.png");
 	
-	protected final int crystalHintOffset;
+	public static final int CRYSTAL_HINT_OFFSET_X = 16;
+	public static final int CRYSTAL_HINT_OFFSET_Y = 168;
 	
 	public DHDCrystalScreen(DHDCrystalMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
         super(pMenu, pPlayerInventory, pTitle);
-		
-		crystalHintOffset = pMenu.advancedCrystals() ? 32 : 16;
     }
 
     @Override
@@ -43,14 +41,14 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 		
 		this.itemHint(pPoseStack, x + 80, y + 35, 0, 168, 0);
 		
-		this.itemHint(pPoseStack, x + 80, y + 17, crystalHintOffset, 168, 1);
-		this.itemHint(pPoseStack, x + 98, y + 17, crystalHintOffset, 168, 2);
-		this.itemHint(pPoseStack, x + 98, y + 35, crystalHintOffset, 168, 3);
-		this.itemHint(pPoseStack, x + 98, y + 53, crystalHintOffset, 168, 4);
-		this.itemHint(pPoseStack, x + 80, y + 53, crystalHintOffset, 168, 5);
-		this.itemHint(pPoseStack, x + 62, y + 53, crystalHintOffset, 168, 6);
-		this.itemHint(pPoseStack, x + 62, y + 35, crystalHintOffset, 168, 7);
-		this.itemHint(pPoseStack, x + 62, y + 17, crystalHintOffset, 168, 8);
+		this.itemHint(pPoseStack, x + 80, y + 17, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 1);
+		this.itemHint(pPoseStack, x + 98, y + 17, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 2);
+		this.itemHint(pPoseStack, x + 98, y + 35, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 3);
+		this.itemHint(pPoseStack, x + 98, y + 53, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 4);
+		this.itemHint(pPoseStack, x + 80, y + 53, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 5);
+		this.itemHint(pPoseStack, x + 62, y + 53, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 6);
+		this.itemHint(pPoseStack, x + 62, y + 35, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 7);
+		this.itemHint(pPoseStack, x + 62, y + 17, CRYSTAL_HINT_OFFSET_X, CRYSTAL_HINT_OFFSET_Y, 8);
     }
 
     @Override
@@ -82,6 +80,9 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 				.append(Component.translatable("tooltip.sgjourney.dhd.communication_range_2")).withStyle(ChatFormatting.GRAY),
 				ComponentHelper.description("tooltip.sgjourney.dhd.communication_range.description"),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.communication_range.usage"));
+		
+		//this.itemTooltip(matrixStack, mouseX, mouseY, 134, 27, 9, ComponentHelper.description("tooltip.sgjourney.dhd.energy_slot_description"));
+		//this.itemTooltip(matrixStack, mouseX, mouseY, 134, 53, 10, ComponentHelper.description("tooltip.sgjourney.dhd.energy_fuel_slot_description"));
     }
     
     @Override
