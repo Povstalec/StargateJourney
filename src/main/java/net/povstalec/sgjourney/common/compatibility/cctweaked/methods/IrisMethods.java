@@ -6,7 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.IrisFunctions;
 
 public class IrisMethods

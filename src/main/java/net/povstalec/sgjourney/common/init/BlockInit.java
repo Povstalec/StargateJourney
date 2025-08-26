@@ -24,18 +24,14 @@ import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateRingBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateRingBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.*;
+import net.povstalec.sgjourney.common.blocks.tech_interface.AdvancedCrystalInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech_interface.BasicInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.tech_interface.CrystalInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.RingPanelBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -117,10 +113,10 @@ public class BlockInit
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
 					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
 	
-	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerTransporterBlock("transport_rings", 
+	public static final RegistryObject<TransportRingsBlock> TRANSPORT_RINGS = registerTransporterBlock("transport_rings",
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
-	public static final RegistryObject<RingPanelBlock> RING_PANEL = registerBlock("ring_panel", 
+	public static final RegistryObject<RingPanelBlock> RING_PANEL = registerBlock("ring_panel",
 			() -> new RingPanelBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE, 1);
 	

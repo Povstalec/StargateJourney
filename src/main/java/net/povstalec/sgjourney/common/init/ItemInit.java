@@ -227,6 +227,13 @@ public class ItemInit
 	
 	/*public static final RegistryObject<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
 			() -> new BatteryItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).tab(TabInit.STARGATE_ITEMS)));*/
+	
+	public static final RegistryObject<GoauldItem> GOAULD = ITEMS.register("goauld",
+			() -> new GoauldItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+	public static final RegistryObject<Item> GOAULD_CARCASS = ITEMS.register("goauld_carcass",
+			() -> new Item(new Item.Properties().food(FoodInit.RAW_GOAULD).tab(TabInit.STARGATE_ITEMS)));
+	public static final RegistryObject<Item> COOKED_GOAULD = ITEMS.register("cooked_goauld",
+			() -> new Item(new Item.Properties().food(FoodInit.COOKED_GOAULD).tab(TabInit.STARGATE_ITEMS)));
 		
 	
 	public static void register(IEventBus eventBus)

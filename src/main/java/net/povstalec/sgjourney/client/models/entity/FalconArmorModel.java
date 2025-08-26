@@ -60,22 +60,34 @@ public class FalconArmorModel extends HumanoidModel<LivingEntity>
         		PartPose.offsetAndRotation(-3.0F, -8.0F, -9.25F, 0.75F, 0.0F, 0.0F));
         
         falconHead.addOrReplaceChild("falcon_beak", CubeListBuilder.create()
-        		.texOffs(0, 27)
-        		.addBox(1.5F, 1.5F, -2.0F, 3.0F, 3.0F, 2.0F, 
+        		.texOffs(0, 26)
+        		.addBox(1.5F, 1.0F, -3.0F, 3.0F, 3.0F, 3.0F,
         				new CubeDeformation(0.0F)), 
         		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         
         falconHead.addOrReplaceChild("falcon_beak_1", CubeListBuilder.create()
-        		.texOffs(10, 29)
-        		.addBox(2.0F, 2.5F, -3.0F, 2.0F, 2.0F, 1.0F, 
+        		.texOffs(12, 29)
+        		.addBox(2.0F, 2.0F, -4.0F, 2.0F, 2.0F, 1.0F,
         				new CubeDeformation(0.0F)), 
         		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         
         falconHead.addOrReplaceChild("falcon_beak_2", CubeListBuilder.create()
-        		.texOffs(16, 30)
-        		.addBox(2.5F, 4.5F, -3.0F, 1.0F, 1.0F, 1.0F, 
+        		.texOffs(18, 30)
+        		.addBox(2.5F, 4.0F, -4.0F, 1.0F, 1.0F, 1.0F,
         				new CubeDeformation(0.0F)), 
         		PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+		
+		falconHead.addOrReplaceChild("falcon_flap_right", CubeListBuilder.create()
+						.texOffs(25, 20)
+						.addBox(-5.0F, -3.0F, 0.0F, 5.0F, 6.0F, 0.0F,
+								new CubeDeformation(0.0F)),
+				PartPose.offsetAndRotation(0.0F, 1.5F, 5.0F, 0.0F, 1.25F, 0.0F));
+		
+		falconHead.addOrReplaceChild("falcon_flap_left", CubeListBuilder.create()
+						.texOffs(25, 26)
+						.addBox(0.0F, -3.0F, 0.0F, 5.0F, 6.0F, 0.0F,
+								new CubeDeformation(0.0F)),
+				PartPose.offsetAndRotation(6.0F, 1.5F, 5.0F, 0.0F, -1.25F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 32);
     }

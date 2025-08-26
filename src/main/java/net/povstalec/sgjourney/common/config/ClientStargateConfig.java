@@ -1,9 +1,12 @@
 package net.povstalec.sgjourney.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.povstalec.sgjourney.common.misc.RenderAMD;
 
 public class ClientStargateConfig
 {
+	public static SGJourneyConfigValue.EnumValue<RenderAMD> render_amd;
+	
 	public static SGJourneyConfigValue.BooleanValue stargate_variants;
 	public static SGJourneyConfigValue.BooleanValue unique_symbols;
 	public static SGJourneyConfigValue.BooleanValue shiny_event_horizons;
@@ -22,7 +25,13 @@ public class ClientStargateConfig
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
-		stargate_variants = new SGJourneyConfigValue.BooleanValue(client, "client.stargate_variants", 
+		render_amd = new SGJourneyConfigValue.EnumValue(client, "client.render_amd",
+				RenderAMD.AUTO,
+				"If ENABLED, event horizons will render in a way that is compatible with AMD, if DISABLED they won't, AUTO detection by default");
+		
+		
+		
+		stargate_variants = new SGJourneyConfigValue.BooleanValue(client, "client.stargate_variants",
 				true, 
 				"If true you will be able to see Stargate Variants");
 		

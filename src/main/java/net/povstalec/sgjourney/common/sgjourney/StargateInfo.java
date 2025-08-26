@@ -1,26 +1,13 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.lang.ref.WeakReference;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.EitherCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.misc.Conversion;
-
-import javax.annotation.Nullable;
 
 public class StargateInfo
 {
@@ -104,23 +91,24 @@ public class StargateInfo
 	{
 		INFO,
 		ERROR,
+		SKIPPABLE_ERROR, // An error that can be skipped during dialing if there are other candidates for target Stargate
 		MAJOR_ERROR;
 		
 		public boolean isError()
 		{
-			return this == ERROR || this == MAJOR_ERROR;
+			return this != INFO;
 		}
 		
 		public boolean shouldPlaySound()
 		{
-			return this == MAJOR_ERROR;
+			return this == MAJOR_ERROR || this == SKIPPABLE_ERROR;
 		}
 	}
 	
 	public enum Feedback
 	{
 		NONE(0, FeedbackType.INFO, "none"),
-		UNKNOWN_ERROR(-1, FeedbackType.ERROR, "unknown"),
+		UNKNOWN_ERROR(-1, FeedbackType.ERROR, "unknown"), // Error usually used when Stargate isn't present for some unknown reason
 		
 		// Chevron/Symbol
 		SYMBOL_ENCODED(1, FeedbackType.INFO, "symbol_encoded"),
@@ -137,20 +125,20 @@ public class StargateInfo
 		INVALID_ADDRESS(-6, FeedbackType.MAJOR_ERROR, "invalid_address"),
 		NOT_ENOUGH_POWER(-7, FeedbackType.MAJOR_ERROR, "not_enough_power"),
 		SELF_OBSTRUCTED(-8, FeedbackType.MAJOR_ERROR, "self_obstructed"),
-		TARGET_OBSTRUCTED(-9, FeedbackType.MAJOR_ERROR, "target_obstructed"),
+		TARGET_OBSTRUCTED(-9, FeedbackType.SKIPPABLE_ERROR, "target_obstructed"),
 		SELF_DIAL(-10, FeedbackType.MAJOR_ERROR, "self_dial"),
 		SAME_SYSTEM_DIAL(-11, FeedbackType.MAJOR_ERROR, "same_system_dial"),
 		ALREADY_CONNECTED(-12, FeedbackType.MAJOR_ERROR, "already_connected"),
 		NO_GALAXY(-13, FeedbackType.MAJOR_ERROR, "no_galaxy"),
 		NO_DIMENSIONS(-14, FeedbackType.MAJOR_ERROR, "no_dimensions"),
 		NO_STARGATES(-15, FeedbackType.MAJOR_ERROR, "no_stargates"),
-		TARGET_RESTRICTED(-16, FeedbackType.MAJOR_ERROR, "target_restricted"),
+		TARGET_RESTRICTED(-16, FeedbackType.SKIPPABLE_ERROR, "target_restricted"),
 		INVALID_8_CHEVRON_ADDRESS(-17, FeedbackType.MAJOR_ERROR, "invalid_8_chevron_address"),
 		INVALID_SYSTEM_WIDE_CONNECTION(-18, FeedbackType.MAJOR_ERROR, "invalid_system_wide_connection"),
-		WHITELISTED_TARGET(-19, FeedbackType.MAJOR_ERROR, "whitelisted_target"),
-		WHITELISTED_SELF(-20, FeedbackType.MAJOR_ERROR, "whitelisted_self"),
-		BLACKLISTED_TARGET(-21, FeedbackType.MAJOR_ERROR, "blacklisted_target"),
-		BLACKLISTED_SELF(-22, FeedbackType.MAJOR_ERROR, "blacklisted_self"),
+		TARGET_NOT_WHITELISTED(-19, FeedbackType.MAJOR_ERROR, "target_not_whitelisted"),
+		NOT_WHITELISTED_BY_TARGET(-20, FeedbackType.SKIPPABLE_ERROR, "not_whitelisted_by_target"),
+		TARGET_BLACKLISTED(-21, FeedbackType.MAJOR_ERROR, "target_blacklisted"),
+		BLACKLISTED_BY_TARGET(-22, FeedbackType.SKIPPABLE_ERROR, "blacklisted_by_target"),
 
 		// Wormhole TODO
 		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),
@@ -180,7 +168,9 @@ public class StargateInfo
 		CHEVRON_ALREADY_OPENED(-33, FeedbackType.ERROR, "chevron_already_opened"),
 		CHEVRON_ALREADY_CLOSED(-34, FeedbackType.ERROR, "chevron_already_closed"),
 		CHEVRON_NOT_OPEN(-35, FeedbackType.ERROR, "chevron_not_open"),
-		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin");
+		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin"),
+		
+		TARGET_NOT_LOADED(-37, FeedbackType.ERROR, "target_not_loaded");
 		
 		private int code;
 		private final FeedbackType type;
@@ -194,7 +184,7 @@ public class StargateInfo
 			this.message = message;
 			
 			if(type.isError())
-				this.feedbackMessage = createError(message, type == FeedbackType.MAJOR_ERROR);
+				this.feedbackMessage = createError(message, type == FeedbackType.MAJOR_ERROR || type == FeedbackType.SKIPPABLE_ERROR);
 			else
 				this.feedbackMessage = createInfo(message);
 		}
@@ -222,6 +212,11 @@ public class StargateInfo
 		public boolean isError()
 		{
 			return this.type.isError();
+		}
+		
+		public boolean isSkippable()
+		{
+			return this.type == FeedbackType.SKIPPABLE_ERROR;
 		}
 	}
 	

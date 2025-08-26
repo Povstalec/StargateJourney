@@ -3,32 +3,33 @@ package net.povstalec.sgjourney.common.entities.goals;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 
 import java.util.EnumSet;
 
-public class StaffWeaponAttackGoal<T extends Mob & RangedAttackMob> extends Goal
+public class StaffWeaponAttackGoal<T extends PathfinderMob & RangedAttackMob> extends MeleeAttackGoal
 {
 	public static final int ATTACK_DELAY = 40;
 	
 	public static final UniformInt PATHFINDING_DELAY_RANGE = TimeUtil.rangeOfSeconds(1, 2);
-	private final T mob;
-	private final double speedModifier;
-	private final float meleeAttackRadiusSqr;
-	private final float maxAttackRadiusSqr;
-	private int seeTime;
-	private int attackDelay;
-	private int updatePathDelay;
+	protected final T mob;
+	protected final double speedModifier;
+	protected final float meleeAttackRadiusSqr;
+	protected final float pursueRadiusSqr; // Mob will attempt to pursue target if it's outside of this radius
+	protected int seeTime;
+	protected int attackDelay;
+	protected int updatePathDelay;
 	
-	public StaffWeaponAttackGoal(T mob, double speedModifier, float meleeRadius, float maxRadius)
+	public StaffWeaponAttackGoal(T mob, double speedModifier, float meleeRadius, float pursueRadius)
 	{
+		super(mob, speedModifier, false);
 		this.mob = mob;
 		this.speedModifier = speedModifier;
 		this.meleeAttackRadiusSqr = meleeRadius * meleeRadius;
-		this.maxAttackRadiusSqr = maxRadius * maxRadius;
+		this.pursueRadiusSqr = pursueRadius * pursueRadius;
 		this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 		
 		this.attackDelay = ATTACK_DELAY;
@@ -42,7 +43,12 @@ public class StaffWeaponAttackGoal<T extends Mob & RangedAttackMob> extends Goal
 	
 	private boolean isHoldingStaffWeapon()
 	{
-		return this.mob.isHolding((is) -> is.getItem() instanceof StaffWeaponItem);
+		return this.mob.isHolding(stack -> stack.getItem() instanceof StaffWeaponItem);
+	}
+	
+	private boolean staffWeaponCanFire()
+	{
+		return this.mob.isHolding(stack -> stack.getItem() instanceof StaffWeaponItem staffWeapon && staffWeapon.getFluidAmount(stack) > 0);
 	}
 	
 	public boolean canContinueToUse()
@@ -52,10 +58,7 @@ public class StaffWeaponAttackGoal<T extends Mob & RangedAttackMob> extends Goal
 	
 	private boolean isValidTarget()
 	{
-		if(this.mob.getTarget() != null && this.mob.getTarget().isAlive())
-			return this.mob.distanceToSqr(this.mob.getTarget()) > meleeAttackRadiusSqr;
-		
-		return false;
+		return this.mob.getTarget() != null && this.mob.getTarget().isAlive();
 	}
 	
 	@Override
@@ -77,17 +80,14 @@ public class StaffWeaponAttackGoal<T extends Mob & RangedAttackMob> extends Goal
 		return true;
 	}
 	
-	@Override
-	public void tick()
+	public void meleeTick(LivingEntity target)
 	{
-		//TODO Melee attack when enemy is in melee range
-		
-		LivingEntity livingentity = this.mob.getTarget();
-		
-		if(livingentity == null)
-			return;
-		
-		boolean hasLineOfSight = this.mob.getSensing().hasLineOfSight(livingentity);
+		super.tick();
+	}
+	
+	public void rangedTick(LivingEntity target, double distanceSqr)
+	{
+		boolean hasLineOfSight = this.mob.getSensing().hasLineOfSight(target);
 		boolean hasSeenTarget = this.seeTime > 0;
 		
 		if(hasLineOfSight != hasSeenTarget)
@@ -98,15 +98,14 @@ public class StaffWeaponAttackGoal<T extends Mob & RangedAttackMob> extends Goal
 		else
 			--this.seeTime;
 		
-		double distanceSqr = this.mob.distanceToSqr(livingentity);
-		boolean shouldMoveToTarget = (distanceSqr > (double)this.maxAttackRadiusSqr || this.seeTime < 5) && this.attackDelay == 0;
+		boolean shouldMoveToTarget = (distanceSqr > this.pursueRadiusSqr || this.seeTime < 5)/* && this.attackDelay == 0*/;
 		
 		if(shouldMoveToTarget)
 		{
 			--this.updatePathDelay;
 			if(this.updatePathDelay <= 0)
 			{
-				this.mob.getNavigation().moveTo(livingentity, this.speedModifier);
+				this.mob.getNavigation().moveTo(target, this.speedModifier);
 				this.updatePathDelay = PATHFINDING_DELAY_RANGE.sample(this.mob.getRandom());
 			}
 		}
@@ -116,14 +115,30 @@ public class StaffWeaponAttackGoal<T extends Mob & RangedAttackMob> extends Goal
 			this.mob.getNavigation().stop();
 		}
 		
-		this.mob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
+		this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
 		
 		if(this.attackDelay > 0)
 			--this.attackDelay;
 		else
 		{
-			this.mob.performRangedAttack(livingentity, 1.0F);
+			this.mob.performRangedAttack(target, 1.0F);
 			this.attackDelay = ATTACK_DELAY;
 		}
+	}
+	
+	@Override
+	public void tick()
+	{
+		LivingEntity target = this.mob.getTarget();
+		
+		if(target == null)
+			return;
+		
+		double distanceSqr = this.mob.distanceToSqr(target);
+		
+		if(distanceSqr > meleeAttackRadiusSqr && staffWeaponCanFire())
+			rangedTick(target, distanceSqr);
+		else
+			meleeTick(target);
 	}
 }

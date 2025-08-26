@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.compatibility.computer_functions;
 
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 
 public class TransceiverFunctions
 {

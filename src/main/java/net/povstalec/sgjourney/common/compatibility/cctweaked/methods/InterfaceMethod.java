@@ -6,7 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 
 public interface InterfaceMethod<ConnectedBlockEntity extends BlockEntity>
 {

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
@@ -13,6 +14,7 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 public abstract class StargateSound<T extends AbstractStargateEntity> extends AbstractTickableSoundInstance
 {
 	protected T stargate;
+	protected BlockPos stargatePos;
 	protected Minecraft minecraft = Minecraft.getInstance();
 	
 	/**
@@ -25,6 +27,7 @@ public abstract class StargateSound<T extends AbstractStargateEntity> extends Ab
 		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
 		
 		this.stargate = stargate;
+		this.stargatePos = stargate.getBlockPos();
 		this.x = stargate.getCenterPos().getX();
 		this.y = stargate.getCenterPos().getY();
 		this.z = stargate.getCenterPos().getZ();
@@ -34,7 +37,7 @@ public abstract class StargateSound<T extends AbstractStargateEntity> extends Ab
 	@Override
 	public void tick()
 	{
-		if(!(stargate instanceof AbstractStargateEntity))
+		if(!(Minecraft.getInstance().level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity))
 			this.stop();
 	}
 	

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -101,11 +102,62 @@ public class Conversion
 		return locationToSolarSystemKey(location);
 	}
 	
-	public static BlockPos intArrayToBlockPos(int[] coordinates)
+	public static Vec3i intArrayToVec(int[] coordinates)
 	{
-		if(coordinates.length >= 3)
-			return new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
+		if(coordinates.length == 3)
+			return new Vec3i(coordinates[0], coordinates[1], coordinates[2]);
 		
 		return null;
+	}
+	
+	public static BlockPos intArrayToBlockPos(int[] coordinates)
+	{
+		Vec3i vec3i = intArrayToVec(coordinates);
+		
+		if(vec3i != null)
+			return new BlockPos(vec3i);
+		
+		return null;
+	}
+	
+	public static int[] vecToIntArray(Vec3i coordinates)
+	{
+		return new int[] {coordinates.getX(), coordinates.getY(), coordinates.getZ()};
+	}
+	
+	public static int[] blockPosToIntArray(BlockPos coordinates)
+	{
+		return vecToIntArray(coordinates);
+	}
+	
+	public static int ticksToSeconds(int ticks)
+	{
+		return ticks / 20;
+	}
+	
+	public static int secondsToTicks(int seconds)
+	{
+		return seconds * 20;
+	}
+	
+	public static String secondsToString(int seconds)
+	{
+		int s = seconds % 60;
+		int m = seconds / 60;
+		int h = m / 60;
+		m %= 60;
+		
+		String result = s + "s";
+		if(m > 0)
+			result = m + "m " + result;
+		if(h > 0)
+			result = h + "h " + result;
+		
+		return result;
+	}
+	
+	public static String ticksToString(int ticks)
+	{
+		return secondsToString(ticksToSeconds(ticks));
 	}
 }

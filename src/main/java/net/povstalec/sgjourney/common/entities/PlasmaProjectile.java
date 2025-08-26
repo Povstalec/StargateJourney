@@ -20,6 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.povstalec.sgjourney.common.init.TagInit;
 
@@ -87,7 +88,7 @@ public class PlasmaProjectile extends Projectile
 				{
 					for(Direction direction : Direction.values())
 					{
-						trySetFireToBlock(blockpos, blockpos.relative(direction));
+						trySetFireToBlock(blockpos, blockpos.relative(direction), direction);
 					}
 				}
 			}
@@ -95,9 +96,9 @@ public class PlasmaProjectile extends Projectile
 		}
 	}
 	
-	private boolean trySetFireToBlock(BlockPos blockpos, BlockPos nearbyPos)
+	private boolean trySetFireToBlock(BlockPos blockpos, BlockPos nearbyPos, Direction direction)
 	{
-		if(this.level.getBlockState(nearbyPos).is(TagInit.Blocks.PLASMA_FLAMMABLE))
+		if(this.level.getBlockState(nearbyPos).is(TagInit.Blocks.PLASMA_FLAMMABLE) && !ForgeEventFactory.onBlockPlace(this.getOwner(), BlockSnapshot.create(level.dimension(), level, blockpos), direction))
 		{
 			this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
 			return true;
