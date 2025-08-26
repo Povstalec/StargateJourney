@@ -353,9 +353,14 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void setKawooshTickCount(MinecraftServer server, int kawooshTick)
+	public void updateTimers(MinecraftServer server, int connectionTime, int kawooshTime, int openTime, int timeSinceLastTraveler)
 	{
-		stargateRun(server, stargate -> stargate.setKawooshTickCount(kawooshTick));
+		stargateRun(server, stargate ->
+		{
+			stargate.setKawooshTickCount(kawooshTime);
+			stargate.setOpenTime(openTime);
+			stargate.setTimeSinceLastTraveler(timeSinceLastTraveler);
+		});
 	}
 	
 	@Override

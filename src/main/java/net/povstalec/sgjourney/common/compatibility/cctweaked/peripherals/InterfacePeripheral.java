@@ -80,7 +80,7 @@ public class InterfacePeripheral implements IDynamicPeripheral
 	{
 		String methodName = getMethodNames()[method];
 		
-		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.interfaceEntity.energyBlockEntity, arguments);
+		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.interfaceEntity.getEnergyBlockEntity(), arguments);
 	}
 	
 	@SuppressWarnings("unchecked")

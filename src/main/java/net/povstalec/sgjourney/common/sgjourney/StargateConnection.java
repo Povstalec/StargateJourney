@@ -20,7 +20,7 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 import javax.annotation.Nullable;
 
-public final class StargateConnection
+public class StargateConnection
 {
 	private static final String EVENT_CHEVRON_ENGAGED = AbstractStargateEntity.EVENT_CHEVRON_ENGAGED;
 	private static final String EVENT_INCOMING_CONNECTION = "stargate_incoming_connection";
@@ -65,24 +65,24 @@ public final class StargateConnection
 	protected final UUID uuid;
 	protected final StargateConnection.Type connectionType;
 	protected Stargate dialingStargate;
-	protected Stargate dialedStargate; // Dialed Stargates can be changed mid connection
+	protected Stargate dialedStargate; // Dialed Stargates can be changed mid-connection
 	protected boolean doKawoosh;
 	
 	protected boolean used;
-	protected int openTime;
-	protected int connectionTime;
-	protected int timeSinceLastTraveler;
+	protected int connectionTime; // Time since the connection was established (Right after dialing Stargate finished dialing)
+	protected int openTime; // Time since wormhole formed (after kawoosh ended)
+	protected int timeSinceLastTraveler; // Time since a traveler has last appeared near any of the connected Stargates
 	
 	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate,
-							   boolean used, int openTime, int connectionTime, int timeSinceLastTraveler, boolean doKawoosh)
+							   boolean used, int connectionTime, int openTime, int timeSinceLastTraveler, boolean doKawoosh)
 	{
 		this.uuid = uuid;
 		this.connectionType = connectionType;
 		this.dialingStargate = dialingStargate;
 		this.dialedStargate = dialedStargate;
 		this.used = used;
-		this.openTime = openTime;
 		this.connectionTime = connectionTime;
+		this.openTime = openTime;
 		this.timeSinceLastTraveler = timeSinceLastTraveler;
 		this.doKawoosh = doKawoosh;
 	}
@@ -169,8 +169,8 @@ public final class StargateConnection
 		System.out.println("-[" + uuid + "]");
 		System.out.println(" | From: " + dialingStargate.get9ChevronAddress().toString());
 		System.out.println(" | To: " + dialedStargate.get9ChevronAddress().toString());
-		System.out.println(" | Open Time: " + openTime);
 		System.out.println(" | Connection Time: " + connectionTime);
+		System.out.println(" | Open Time: " + openTime);
 	}
 	
 	public static final StargateConnection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
@@ -218,9 +218,9 @@ public final class StargateConnection
 		{
 			dialedStargate.resetStargate(server, StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION, true);
 			
-			dialingStargate.setKawooshTickCount(server, 0);
+			dialingStargate.updateTimers(server, 0, 0, 0, 0);
 			dialingStargate.updateClient(server);
-			dialedStargate.setKawooshTickCount(server, 0);
+			dialedStargate.updateTimers(server, 0, 0, 0, 0);
 			dialedStargate.updateClient(server);
 			
 			StargateConnection stargateConnection = new StargateConnection(uuid, connectionType, dialingStargate, dialedStargate, doKawoosh);
@@ -286,19 +286,19 @@ public final class StargateConnection
 		}
 		
 		// Updates Interfaces when incoming connection is detected
-		if(this.openTime == 0)
+		if(this.connectionTime == 0)
 			this.dialedStargate.updateInterfaceBlocks(server, null, EVENT_INCOMING_CONNECTION);
 		
 		StargateInfo.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? StargateInfo.ChevronLockSpeed.FAST : this.dialedStargate.getChevronLockSpeed(server);
 		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
 		int maxKawooshTicks = kawooshStartTicks + KAWOOSH_TICKS;
-		int maxOpenTicks = maxKawooshTicks + VORTEX_TICKS;
+		int maxOpeningTicks = maxKawooshTicks + VORTEX_TICKS;
 		
-		this.increaseTicks(kawooshStartTicks, maxKawooshTicks, maxOpenTicks);
-		int realOpenTime = this.openTime - kawooshStartTicks;
+		this.increaseTicks(kawooshStartTicks, maxKawooshTicks, maxOpeningTicks);
+		int kawooshTime = this.connectionTime - kawooshStartTicks;
 		
 		// Dialing Stargate waits here while dialed Stargate is locking Chevrons
-		if(this.openTime <= kawooshStartTicks)
+		if(this.connectionTime <= kawooshStartTicks)
 		{
 			int addressLength = this.dialingStargate.getAddress(server).getLength();
 			Address dialingAddress = this.dialingStargate.getConnectionAddress(server, dialedStargate.getSolarSystem(server), addressLength);
@@ -307,13 +307,13 @@ public final class StargateConnection
 			
 			// Used for handling what the Stargate does when it's being dialed
 			// For example: Pegasus Stargate's ring booting up
-			this.dialingStargate.doWhileConnecting(server, false, doKawoosh(), kawooshStartTicks, this.openTime);
-			this.dialedStargate.doWhileConnecting(server, true, doKawoosh(), kawooshStartTicks, this.openTime);
+			this.dialingStargate.doWhileConnecting(server, false, doKawoosh(), kawooshStartTicks, this.connectionTime);
+			this.dialedStargate.doWhileConnecting(server, true, doKawoosh(), kawooshStartTicks, this.connectionTime);
 			
-			this.dialedStargate.doWhileDialed(server, dialingAddress, kawooshStartTicks, chevronLockSpeed, this.openTime);
+			this.dialedStargate.doWhileDialed(server, dialingAddress, kawooshStartTicks, chevronLockSpeed, this.connectionTime);
 			
 			// Updates Interfaces when a wormhole is detected
-			if(this.openTime == kawooshStartTicks)
+			if(this.connectionTime == kawooshStartTicks)
 			{
 				List<Integer> emptyAddressList = new ArrayList<>();
 				List<Integer> dialedAddressList = Arrays.stream(dialedStargate.getAddress(server).toArray()).boxed().toList();
@@ -328,27 +328,27 @@ public final class StargateConnection
 		}
 		
 		// Handles kawoosh progress
-		if(this.openTime < maxOpenTicks)
+		if(this.connectionTime < maxOpeningTicks)
 		{
-			this.dialingStargate.doKawoosh(server, realOpenTime);
-			this.dialedStargate.doKawoosh(server, realOpenTime);
+			this.dialingStargate.doKawoosh(server, kawooshTime);
+			this.dialedStargate.doKawoosh(server, kawooshTime);
 		}
 		else
 		{
-			this.dialingStargate.setKawooshTickCount(server, realOpenTime);
+			this.dialingStargate.updateTimers(server, this.connectionTime, kawooshTime, this.openTime, this.timeSinceLastTraveler);
 			this.dialingStargate.updateClient(server);
-			this.dialedStargate.setKawooshTickCount(server, realOpenTime);
+			this.dialedStargate.updateTimers(server, this.connectionTime, kawooshTime, this.openTime, this.timeSinceLastTraveler);
 			this.dialedStargate.updateClient(server);
 		}
 		
 		// Prevents anything after this point from happening while the kawoosh has not yet finished
-		if(doKawoosh() && this.openTime < maxKawooshTicks)
+		if(doKawoosh() && this.connectionTime < maxKawooshTicks)
 			return;
 
-		this.dialingStargate.doWhileConnected(server, false, this.openTime);
-		this.dialedStargate.doWhileConnected(server, true, this.openTime);
+		this.dialingStargate.doWhileConnected(server, false, this.connectionTime);
+		this.dialedStargate.doWhileConnected(server, true, this.connectionTime);
 		
-		if(this.connectionTime >= maxOpenTime && !energyBypassEnabled)
+		if(this.openTime >= maxOpenTime && !energyBypassEnabled)
 		{
 			terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME);
 			return;
@@ -357,7 +357,7 @@ public final class StargateConnection
 		// Depletes energy over time
 		if(requireEnergy)
 		{
-			long energyDraw = this.connectionType.getPowerDraw(this.connectionTime >= maxOpenTime);
+			long energyDraw = this.connectionType.getPowerDraw(this.openTime >= maxOpenTime);
 			
 			if(!this.dialingStargate.canExtractEnergy(server, energyDraw) && !this.dialedStargate.canExtractEnergy(server, energyDraw))
 			{
@@ -387,13 +387,13 @@ public final class StargateConnection
 	
 	private final void increaseTicks(int kawooshStartTicks, int maxKawooshTicks, int maxOpenTicks)
 	{
-		if(!doKawoosh() && this.openTime >= kawooshStartTicks && this.openTime < maxKawooshTicks)
-			this.openTime += KAWOOSH_TICKS + VORTEX_TICKS;
-		else if(this.openTime < maxOpenTicks)
-			this.openTime++;
-		
-		if(this.openTime > maxKawooshTicks)
+		if(!doKawoosh() && this.connectionTime >= kawooshStartTicks && this.connectionTime < maxKawooshTicks)
+			this.connectionTime += KAWOOSH_TICKS + VORTEX_TICKS;
+		else if(this.connectionTime < maxOpenTicks)
 			this.connectionTime++;
+		
+		if(this.connectionTime > maxKawooshTicks)
+			this.openTime++;
 	}
 	
 	public void sendStargateMessage(MinecraftServer server, AbstractStargateEntity sendingStargate, String message)
@@ -446,14 +446,14 @@ public final class StargateConnection
 		return dialedStargate;
 	}
 	
-	public int getOpenTime()
-	{
-		return this.openTime;
-	}
-	
 	public int getConnectionTime()
 	{
 		return this.connectionTime;
+	}
+	
+	public int getOpenTime()
+	{
+		return this.openTime;
 	}
 	
 	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)
@@ -492,8 +492,8 @@ public final class StargateConnection
 		tag.put(DIALING_STARGATE, serializeStargate(this.dialingStargate));
 		tag.put(DIALED_STARGATE, serializeStargate(this.dialedStargate));
 		tag.putBoolean(USED, this.used);
-		tag.putInt(OPEN_TIME, this.openTime);
 		tag.putInt(CONNECTION_TIME, this.connectionTime);
+		tag.putInt(OPEN_TIME, this.openTime);
 		tag.putInt(TIME_SINCE_LAST_TRAVELER, this.timeSinceLastTraveler);
 		tag.putString(CONNECTION_TYPE, this.connectionType.toString().toUpperCase());
 		tag.putBoolean(DO_KAWOOSH, this.doKawoosh);
@@ -515,8 +515,8 @@ public final class StargateConnection
 		Stargate dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
 		Stargate dialedStargate = deserializeStargate(server, tag.getCompound(DIALED_STARGATE));
 		boolean used = tag.getBoolean(USED);
-		int openTime = tag.getInt(OPEN_TIME);
-		int connectionTime = tag.getInt(CONNECTION_TIME);
+		int openTime = tag.getInt(CONNECTION_TIME);
+		int connectionTime = tag.getInt(OPEN_TIME);
 		int timeSinceLastTraveler = tag.getInt(TIME_SINCE_LAST_TRAVELER);
 		boolean doKawoosh = tag.getBoolean(DO_KAWOOSH);
 		

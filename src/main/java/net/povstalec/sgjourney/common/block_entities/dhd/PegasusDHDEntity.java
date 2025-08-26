@@ -65,15 +65,6 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		return SoundInit.PEGASUS_DHD_PRESS.get();
 	}
 	
-	@Override
-	protected boolean isValidCrystal(int slot, ItemStack stack)
-	{
-		if(slot == 0)
-			return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
-		
-		return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isAdvanced() || stack.getItem() instanceof CallForwardingDevice;
-	}
-	
 
 	// TODO Temporary function for replacing old Energy Crystals with new Transfer Crystals
 	public static void addTransferCrystals(ItemStackHandler itemHandler)

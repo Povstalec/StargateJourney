@@ -74,12 +74,15 @@ public class ClientAccess
         }
     }
     
-    public static void updateInterface(BlockPos pos, long energy)
+    public static void updateInterface(BlockPos pos, long energy, long energyTarget)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final AbstractInterfaceEntity interfaceEntity)
-        	interfaceEntity.setEnergy(energy);
+		{
+			interfaceEntity.setEnergy(energy);
+			interfaceEntity.setEnergyTarget(energyTarget);
+		}
     }
     
     public static void updateTransceiver(BlockPos pos, boolean editingFrequency, int frequency, String idc)
@@ -131,13 +134,16 @@ public class ClientAccess
 		}
 	}
 	
-	public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
+	public static void updateStargate(BlockPos pos, long energy, int openTime, int timeSinceLastTraveler, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
 									  ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris)
 	{
 		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
 		
 		if(blockEntity instanceof final AbstractStargateEntity stargate)
 		{
+			stargate.setEnergy(energy);
+			stargate.setOpenTime(openTime);
+			stargate.setTimeSinceLastTraveler(timeSinceLastTraveler);
 			stargate.setAddress(new Address(address));
 			stargate.setEngagedChevrons(engagedChevrons);
 			stargate.setKawooshTickCount(kawooshTick);

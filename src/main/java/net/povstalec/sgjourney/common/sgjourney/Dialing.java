@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
@@ -80,7 +81,8 @@ public class Dialing
 		if(dialedSystem.equals(currentSystem))
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SAME_SYSTEM_DIAL, true);
 		
-		if(dialedSystem.getStargates().isEmpty())
+		// If the Stargate Network knows of no Stargates in this Solar System, try locating any Structures with them
+		if(!mustBeLoaded && dialedSystem.getStargates().isEmpty()) // No point in loading chunks if the connection requires a loaded Stargate
 		{
 			List<ResourceKey<Level>> dimensionList = dialedSystem.getDimensions();
 			
@@ -151,23 +153,21 @@ public class Dialing
 				return feedback;
 		}
 		
+		StargateInfo.Feedback feedback = StargateInfo.Feedback.UNKNOWN_ERROR;
+		
 		// Preferred Stargate
-		for(int i = 0; i < stargates.size(); i++)
+		for(Stargate targetStargate : stargates)
 		{
-			boolean isLastStargate = i == stargates.size() - 1;
-			Stargate targetStargate = stargates.get(i);
-			
-			StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, targetStargate, addressType, doKawoosh, mustBeLoaded);
+			feedback = attemptConnection(server, dialingStargate, targetStargate, addressType, doKawoosh, mustBeLoaded);
 			
 			// If Stargate isn't obstructed and its network isn't restricted, connect
-			if(!feedback.isSkippable())
+			if (!feedback.isSkippable())
 				return feedback;
-			
-			if(isLastStargate)
-				return dialingStargate.resetStargate(server, feedback, true);
 		}
 		
-		return dialingStargate.resetStargate(server, StargateInfo.Feedback.UNKNOWN_ERROR, true);
+		if(feedback == StargateInfo.Feedback.UNKNOWN_ERROR)
+			StargateJourney.LOGGER.error("Solar System has Stargates, but somehow none can be accessed");
+		return dialingStargate.resetStargate(server, feedback, true);
 	}
 	
 	public static StargateInfo.Feedback connectStargates(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)

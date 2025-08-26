@@ -129,4 +129,35 @@ public class Conversion
 	{
 		return vecToIntArray(coordinates);
 	}
+	
+	public static int ticksToSeconds(int ticks)
+	{
+		return ticks / 20;
+	}
+	
+	public static int secondsToTicks(int seconds)
+	{
+		return seconds * 20;
+	}
+	
+	public static String secondsToString(int seconds)
+	{
+		int s = seconds % 60;
+		int m = seconds / 60;
+		int h = m / 60;
+		m %= 60;
+		
+		String result = s + "s";
+		if(m > 0)
+			result = m + "m " + result;
+		if(h > 0)
+			result = h + "h " + result;
+		
+		return result;
+	}
+	
+	public static String ticksToString(int ticks)
+	{
+		return secondsToString(ticksToSeconds(ticks));
+	}
 }

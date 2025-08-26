@@ -25,8 +25,6 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 {
 	public static final String ROTATION = "Rotation"; //TODO Change to "rotation"
 	
-	public static final int SEGMENTS = 3;
-	
 	// Rotation stuff
 	protected final int maxRotation;
 	protected final int stepsPerSymbol;
@@ -415,6 +413,9 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		stargate.rotate();
 		if(stargate.isRotating() && !level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
+		
+		if(stargate.isRotating())
+			stargate.updateInterfaceBlocks(null);
 		
 		AbstractStargateEntity.tick(level, pos, state, stargate);
 	}

@@ -67,7 +67,7 @@ public class GoauldFaction
 		
 		//System.out.println("Dial attempt: " + feedback.getMessage());
 		
-		return !feedback.isError() || feedback == StargateInfo.Feedback.TARGET_NOT_LOADED;
+		return !feedback.isError();
 	}
 	
 	public void tickFaction(MinecraftServer server, int ticks)

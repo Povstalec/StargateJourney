@@ -36,7 +36,6 @@ import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
@@ -74,6 +73,20 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	      return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection());
 	}
 	
+	public void setMode(BlockState state, Level level, BlockPos pos, InterfaceMode mode)
+	{
+		BlockState newModeState = state.setValue(MODE, mode);
+		level.setBlock(pos, newModeState, 3);
+	}
+	
+	public InterfaceMode cycleModes(BlockState state, Level level, BlockPos pos, AbstractInterfaceEntity interfaceEntity)
+	{
+		InterfaceMode nextMode = state.getValue(MODE).next(interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods());
+		setMode(state, level, pos, nextMode);
+		
+		return nextMode;
+	}
+	
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
@@ -102,13 +115,10 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
         		}
         		else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
         		{
-        			InterfaceMode nextMode = state.getValue(MODE).next(interfaceEntity instanceof AdvancedCrystalInterfaceEntity);
-        			BlockState newModeState = state.setValue(MODE, nextMode);
+        			InterfaceMode nextMode = cycleModes(state, level, pos, interfaceEntity);
         			
-        			level.setBlock(pos, newModeState, 3);
-        			
-        			if(newModeState.getValue(MODE) != null)
-        				player.displayClientMessage(Component.translatable("block.sgjourney.interface.mode").append(Component.literal(": ").append(newModeState.getValue(MODE).getModeTranslation())), true);
+        			if(nextMode != null)
+        				player.displayClientMessage(Component.translatable("block.sgjourney.interface.mode").append(Component.literal(": ").append(nextMode.getName())), true);
         		}
         	}
         	else
@@ -258,7 +268,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		BlockEntity entity = level.getBlockEntity(pos);
 
 		if(entity instanceof AbstractInterfaceEntity interfaceEntity)
-			return comparatorOutput(state, interfaceEntity.energyBlockEntity);
+			return comparatorOutput(state, interfaceEntity.getEnergyBlockEntity());
 
 		return 0;
 	}

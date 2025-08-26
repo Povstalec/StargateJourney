@@ -220,18 +220,6 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 			synchronizeWithClient();
 	}
 	
-	@Override
-	public int getRedstoneSymbolOutput()
-	{
-		return (getCurrentSymbol() % SYMBOLS_PER_SEGMENT) + 1;
-	}
-
-	@Override
-	public int getRedstoneSegmentOutput()
-	{
-		return (getCurrentSymbol() / SYMBOLS_PER_SEGMENT + 1) * 5;
-	}
-	
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
 	{
 		RotatingStargateEntity.tick(level, pos, state, stargate);

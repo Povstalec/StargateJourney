@@ -12,6 +12,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -86,7 +87,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public @Nullable SolarSystem.Serializable getSolarSystem(MinecraftServer server)
 	{
-		return Universe.get(server).getSolarSystemFromDimension(Conversion.stringToDimension("sgjourney:chulak")); // TODO
+		return Universe.get(server).getSolarSystemFromDimension(Conversion.stringToDimension("sgjourney:abydos")); // TODO
 	}
 	
 	@Override
@@ -185,6 +186,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
+		StargateJourney.LOGGER.error("Stargate does not permit connections");
 		return StargateInfo.Feedback.UNKNOWN_ERROR;
 	}
 	
@@ -196,7 +198,9 @@ public class SpawnerStargate implements Stargate
 	
 	protected Entity spawnEntity(ServerLevel level, EntityType<?> entityType)
 	{
-		return entityType.spawn(level, (CompoundTag) null, null, new BlockPos(0, 1024, 0), MobSpawnType.PATROL, true, false);
+		Entity entity = entityType.spawn(level, (CompoundTag) null, null, new BlockPos(0, 1024, 0), MobSpawnType.EVENT, true, false);
+		//entity.setNoGravity(true);
+		return entity;
 	}
 	
 	@Override
@@ -208,21 +212,18 @@ public class SpawnerStargate implements Stargate
 			timer--;
 		else if(0 < counter)
 		{
-			ResourceKey<Level> dimension = Conversion.stringToDimension("sgjourney:chulak");
-			if(dimension != null)
+			ServerLevel level = connectedStargate.getLevel(server);
+			
+			if(level != null)
 			{
 				timer = nextAttackerInterval();
 				counter--;
 				
-				ServerLevel level = server.getLevel(dimension);
-				if(level != null)
+				Entity entity = spawnEntity(level, EntityInit.JAFFA.get());
+				if(entity != null && connectedStargate.receiveTraveler(server, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
 				{
-					Entity entity = spawnEntity(level, EntityInit.JAFFA.get());
-					if(entity != null && connectedStargate.receiveTraveler(server, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
-					{
-						connection.setTimeSinceLastTraveler(0);
-						connection.setUsed(true);
-					}
+					connection.setTimeSinceLastTraveler(0);
+					connection.setUsed(true);
 				}
 			}
 		}
@@ -246,12 +247,17 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public CompoundTag serializeNBT()
 	{
-		return null;
+		return null; //TODO
 	}
 	
 	@Override
 	public void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag)
 	{
+		//TODO
+	}
 	
+	public interface SpawnerConsumer
+	{
+		Entity onEntitySpawn(Entity entity); //TODO Prepare some way to control the specifics of how entities are spawned
 	}
 }

@@ -45,10 +45,10 @@ public class CommonInterfaceConfig
 		
 		advanced_crystal_interface_capacity = server
 				.comment("The amount of energy an Advanced Crystal Interface can hold")
-				.defineInRange("server.advanced_crystal_interface_capacity", 1000000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.advanced_crystal_interface_capacity", 100000000000L, 1L, Long.MAX_VALUE);
 		
 		advanced_crystal_interface_max_transfer = server
 				.comment("The maximum amount of energy an Advanced Crystal Interface can transfer at once")
-				.defineInRange("server.advanced_crystal_interface_max_transfer", 1000000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.advanced_crystal_interface_max_transfer", 100000000000L, 1L, Long.MAX_VALUE);
 	}
 }

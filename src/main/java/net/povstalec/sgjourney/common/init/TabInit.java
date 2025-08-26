@@ -89,7 +89,7 @@ public class TabInit
 			event.accept(ItemInit.MATOK.get());
 			
 			event.accept(ItemInit.JACKAL_HELMET.get());
-			//event.accept(ItemInit.HORUS_HELMET.get());
+			event.accept(ItemInit.FALCON_HELMET.get());
 			event.accept(ItemInit.JAFFA_HELMET.get());
 			event.accept(ItemInit.JAFFA_CHESTPLATE.get());
 			event.accept(ItemInit.JAFFA_LEGGINGS.get());
@@ -129,6 +129,10 @@ public class TabInit
 			event.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
 			
 			//items.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
+			
+			event.accept(ItemInit.GOAULD.get());
+			event.accept(ItemInit.GOAULD_CARCASS.get());
+			event.accept(ItemInit.COOKED_GOAULD.get());
 		}
 		else if(event.getTab() == STARGATE_STUFF.get())
 		{

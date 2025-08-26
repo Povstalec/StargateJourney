@@ -56,6 +56,26 @@ public class Jaffa extends Human
 				.add(Attributes.ATTACK_DAMAGE, 2.0D);
 	}
 	
+	protected void setupHelmet()
+	{
+		setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemInit.JAFFA_HELMET.get()));
+	}
+	
+	protected void setupDimensionHelmet(ServerLevelAccessor level, RandomSource randomSource)
+	{
+		if(level.getLevel().dimension().location().equals(ABYDOS))
+			setItemSlot(EquipmentSlot.HEAD, randomSource.nextFloat() > 0.7F ? new ItemStack(ItemInit.JACKAL_HELMET.get()) : new ItemStack(ItemInit.FALCON_HELMET.get()));
+		else
+			setupHelmet();
+	}
+	
+	protected void setupArmor()
+	{
+		setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemInit.JAFFA_CHESTPLATE.get()));
+		setItemSlot(EquipmentSlot.LEGS, new ItemStack(ItemInit.JAFFA_LEGGINGS.get()));
+		setItemSlot(EquipmentSlot.FEET, new ItemStack(ItemInit.JAFFA_BOOTS.get()));
+	}
+	
 	@Override
 	@Nullable
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag tag)
@@ -66,14 +86,14 @@ public class Jaffa extends Human
 		
 		setItemInHand(InteractionHand.MAIN_HAND, StaffWeaponItem.filledStaffWeapon(randomSource.nextFloat() > difficulty.getDifficulty().getId() / 3F, (int) (randomSource.nextFloat() * CommonTechConfig.vial_capacity.get())));
 		
-		if(level.getLevel().dimension().location().equals(ABYDOS))
-			setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemInit.JACKAL_HELMET.get()));
-		else
-			setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemInit.JAFFA_HELMET.get()));
-		
-		setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemInit.JAFFA_CHESTPLATE.get()));
-		setItemSlot(EquipmentSlot.LEGS, new ItemStack(ItemInit.JAFFA_LEGGINGS.get()));
-		setItemSlot(EquipmentSlot.FEET, new ItemStack(ItemInit.JAFFA_BOOTS.get()));
+		if(type != MobSpawnType.EVENT)
+		{
+			if(type == MobSpawnType.NATURAL)
+				setupDimensionHelmet(level, randomSource);
+			else
+				setupHelmet();
+			setupArmor();
+		}
 		
 		return spawnGroupData;
 	}

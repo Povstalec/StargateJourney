@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +23,6 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
@@ -48,7 +49,9 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	private long energyTarget = CommonInterfaceConfig.default_energy_target.get();
 	
-	public EnergyBlockEntity energyBlockEntity = null;
+	protected boolean requiresUpdate = true;
+	@Nullable
+	protected EnergyBlockEntity energyBlockEntity = null;
 	protected InterfacePeripheralWrapper peripheralWrapper;
 	
 	public enum InterfaceType
@@ -98,8 +101,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		Level level = this.getLevel();
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.getLevel().getBlockState(pos);
-		if(level.getBlockState(pos).getBlock() instanceof AbstractInterfaceBlock ccInterface)
-			ccInterface.updateInterface(state, level, pos);
+		if(level.getBlockState(pos).getBlock() instanceof AbstractInterfaceBlock interfaceBlock)
+			interfaceBlock.updateInterface(state, level, pos);
 		
 		super.onLoad();
 	}
@@ -133,6 +136,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{
+		requiresUpdate = true;
+		
 		if(peripheralWrapper != null)
 			return peripheralWrapper.resetInterface();
 		
@@ -153,6 +158,17 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		StargateJourney.LOGGER.error("Couldn't find Direction " + this.getBlockPos().toString());
 		return null;
 	}
+	
+	public InterfaceMode getMode()
+	{
+		BlockPos pos = this.getBlockPos();
+		BlockState state = this.level.getBlockState(pos);
+		
+		if(state.getBlock() instanceof AbstractInterfaceBlock)
+			return state.getValue(AbstractInterfaceBlock.MODE);
+		
+		return InterfaceMode.OFF;
+	}
 
 	@Nullable
 	public EnergyBlockEntity findEnergyBlockEntity()
@@ -164,11 +180,21 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		BlockPos realPos = getBlockPos().relative(direction);
 		BlockState state = level.getBlockState(realPos);
 
-		if(level.getBlockState(realPos).getBlock() instanceof AbstractStargateRingBlock)
-			realPos = state.getValue(AbstractStargateRingBlock.PART)
-					.getBaseBlockPos(realPos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
+		if(level.getBlockState(realPos).getBlock() instanceof AbstractStargateBlock stargateBlock)
+			return stargateBlock.getStargate(level, realPos, state);
 
-		return level.getBlockEntity(realPos) instanceof EnergyBlockEntity energyBlockEntity ? energyBlockEntity : null;
+		return null;
+	}
+	
+	public EnergyBlockEntity getEnergyBlockEntity()
+	{
+		if(energyBlockEntity == null && requiresUpdate)
+		{
+			requiresUpdate = false;
+			energyBlockEntity = findEnergyBlockEntity();
+		}
+		
+		return energyBlockEntity;
 	}
 	
 	public InterfaceType getInterfaceType()
@@ -176,9 +202,33 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		return this.interfaceType;
 	}
 	
+	public int getStargateOpenTime()
+	{
+		if(getEnergyBlockEntity() instanceof AbstractStargateEntity stargate)
+			return stargate.getOpenTime();
+		
+		return -1;
+	}
+	
+	public int getStargateTimeSinceLastTraveler()
+	{
+		if (getEnergyBlockEntity() instanceof AbstractStargateEntity stargate)
+			return stargate.getTimeSinceLastTraveler();
+		
+		return -1;
+	}
+	
 	//============================================================================================
 	//*******************************************Energy*******************************************
 	//============================================================================================
+	
+	public long getEnergyBlockEnergy()
+	{
+		if(getEnergyBlockEntity() == null)
+			return -1;
+		
+		return getEnergyBlockEntity().getEnergyStored();
+	}
 	
 	@Override
 	protected boolean canReceiveZeroPointEnergy()
@@ -209,13 +259,15 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	@Override
 	protected void outputEnergy(Direction outputDirection)
 	{
-		if(energyBlockEntity.getEnergyStored() >= energyTarget)
+		if(getEnergyBlockEntity().getEnergyStored() >= getEnergyTarget())
 			return;
 		
-		long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(this.maxExtract(), true);
-		long simulatedReceiveAmount = energyBlockEntity.ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
+		long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), getEnergyBlockEntity().getEnergyStored(), this.maxExtract());
+		
+		long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(needed, true);
+		long simulatedReceiveAmount = getEnergyBlockEntity().ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
 		ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
-		energyBlockEntity.ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
+		getEnergyBlockEntity().ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
 	}
 	
 	public long getEnergyTarget()
@@ -254,14 +306,12 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractInterfaceEntity interfaceEntity)
 	{
-		interfaceEntity.energyBlockEntity = interfaceEntity.findEnergyBlockEntity();
-		
-		if(interfaceEntity.energyBlockEntity != null)
+		if(interfaceEntity.getEnergyBlockEntity() != null)
 		{
 			int lastSymbol = interfaceEntity.currentSymbol;
 			interfaceEntity.outputEnergy(interfaceEntity.getDirection());
 			
-			if(interfaceEntity.energyBlockEntity instanceof AbstractStargateEntity stargate)
+			if(interfaceEntity.getEnergyBlockEntity() instanceof AbstractStargateEntity stargate)
 			{
 				interfaceEntity.handleShielding(state, stargate);
 				
@@ -282,7 +332,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		if(level.isClientSide())
 			return;
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(interfaceEntity.worldPosition)),
-				new ClientboundInterfaceUpdatePacket(interfaceEntity.worldPosition, interfaceEntity.getEnergyStored()));
+				new ClientboundInterfaceUpdatePacket(interfaceEntity.worldPosition, interfaceEntity.getEnergyStored(), interfaceEntity.getEnergyTarget()));
 			
 	}
 	

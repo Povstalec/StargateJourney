@@ -468,6 +468,7 @@
   "tooltip.sgjourney.address": "Addresse",
   "tooltip.sgjourney.9_chevron_address": "Addresse à 9-Chevrons",
   "tooltip.sgjourney.energy": "Énergie",
+  "tooltip.sgjourney.energy_target": "Objectif énergétique",
   "tooltip.sgjourney.dimension": "Dimension",
   "tooltip.sgjourney.mode": "Mode",
   "tooltip.sgjourney.upgraded": "Améliorer",
@@ -502,7 +503,6 @@
   "tooltip.sgjourney.call_forwarding_device.info": "Active le Transfert D'appel",
 
   "tooltip.sgjourney.dhd.advanced_protocols": "Protocles Avancées",
-  "tooltip.sgjourney.dhd.energy_target": "Objectif énergétique",
   "tooltip.sgjourney.dhd.energy_transfer": "Transfert D'énergie",
   "tooltip.sgjourney.dhd.communication_range_1": "Distance de Communication",
   "tooltip.sgjourney.dhd.communication_range_2": "Blocs",

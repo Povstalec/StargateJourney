@@ -105,6 +105,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 	
+	public static final int SEGMENTS = 3;
+	
 	public static final int MAX_SYMBOLS = 48;
 
 	public static final float STANDARD_THICKNESS = 9.0F;
@@ -133,6 +135,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	protected int animationTick = 0;
 	protected int[] engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 	protected int timesOpened = 0;
+	protected int openTime = 0;
+	protected int timeSinceLastTraveler = 0;
 	
 	protected ResourceLocation variant = StargateJourney.EMPTY_LOCATION;
 	private final ResourceLocation defaultVariant;
@@ -525,9 +529,10 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		{
 			if(!isObstructed())
 			{
-				chevronSound((short) 0, false, false, false);
 				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, this.address.getLength() + 1, 0, false, 0);
-				return setRecentFeedback(engageStargate(this.getAddress(), true));
+				StargateInfo.Feedback feedback = setRecentFeedback(engageStargate(this.getAddress(), true));
+				chevronSound((short) 0, false, false, false);
+				return feedback;
 			}
 			else
 				return resetStargate(StargateInfo.Feedback.SELF_OBSTRUCTED, false);
@@ -592,6 +597,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(stargate != null)
 			return Dialing.dialStargate(((ServerLevel) this.level).getServer(), stargate, immutableAddress, doKawoosh);
 		
+		StargateJourney.LOGGER.error("Stargate " + this.get9ChevronAddress() + " can't be found in the Stargate Network");
 		return resetStargate(StargateInfo.Feedback.UNKNOWN_ERROR);
 	}
 	
@@ -713,6 +719,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		resetAddress(updateInterfaces);
 		this.connectionID = null;
 		setKawooshTickCount(0);
+		setOpenTime(0);
+		setTimeSinceLastTraveler(0);
 		setTickCount(0);
 		//updateClient();
 		
@@ -861,11 +869,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		return false;
 	}
-
-	public int getMaxGateOpenTime()
-	{
-		return CommonStargateConfig.max_wormhole_open_time.get() * 20;
-	}
 	
 	public StargateInfo.Gen getGeneration()
 	{
@@ -898,11 +901,17 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.animationTick;
 	}
 	
+	public void setOpenTime(int openTime)
+	{
+		if(openTime < 0)
+			this.openTime = 0;
+		else
+			this.openTime = openTime;
+	}
+	
 	public int getOpenTime()
 	{
-		if(this.level.isClientSide())
-			return 0;
-		return StargateNetwork.get(this.level).getOpenTime(this.connectionID);
+		return this.openTime;
 	}
 	
 	public boolean isWormholeOpen()
@@ -910,11 +919,17 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return getOpenTime() > 0;
 	}
 	
+	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)
+	{
+		if(timeSinceLastTraveler < 0)
+			this.timeSinceLastTraveler = 0;
+		else
+			this.timeSinceLastTraveler = timeSinceLastTraveler;
+	}
+	
 	public int getTimeSinceLastTraveler()
 	{
-		if(this.level.isClientSide())
-			return 0;
-		return StargateNetwork.get(this.level).getTimeSinceLastTraveler(this.connectionID);
+		return this.timeSinceLastTraveler;
 	}
 	
 	public int getTimesOpened()
@@ -1289,7 +1304,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
 		if(isPrimary())
 			player.sendSystemMessage(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + Stargate.getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
 		
 		super.getStatus(player);
 	}
@@ -1399,7 +1414,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(level.isClientSide())
 			return false;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.getEnergyStored(), this.openTime, this.timeSinceLastTraveler, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
 		return true;
 	}
 	

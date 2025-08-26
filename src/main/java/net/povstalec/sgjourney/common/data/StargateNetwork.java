@@ -8,12 +8,10 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -39,7 +37,7 @@ public final class StargateNetwork extends SavedData
 	private static final String CONNECTIONS = "Connections";
 
 	//Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int updateVersion = 14;
+	private static final int updateVersion = 15;
 	
 	private MinecraftServer server;
 	
@@ -168,9 +166,10 @@ public final class StargateNetwork extends SavedData
 	
 	public final void addStargate(Stargate stargate)
 	{
-		if(stargate != null)
-			Universe.get(server).addStargateToDimension(stargate.getDimension(), stargate);
+		if(stargate == null)
+			return;
 		
+		Universe.get(server).addStargateToDimension(stargate.getDimension(), stargate);
 		this.setDirty();
 	}
 	
@@ -182,12 +181,15 @@ public final class StargateNetwork extends SavedData
 	public final void removeStargate(Stargate stargate)
 	{
 		if(stargate != null)
+		{
 			Universe.get(server).removeStargateFromSolarSystem(stargate.getSolarSystem(server), stargate);
-		
-		BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
-		
-		StargateJourney.LOGGER.debug("Removed " + stargate.get9ChevronAddress().toString() + " from Stargate Network");
-		setDirty();
+			BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
+			
+			StargateJourney.LOGGER.debug("Removed " + stargate.get9ChevronAddress().toString() + " from Stargate Network");
+			setDirty();
+		}
+		else
+			StargateJourney.LOGGER.error("Could not remove Stargate because it's null");
 	}
 	
 	public final void removeStargate(Address.Immutable address)
@@ -233,7 +235,7 @@ public final class StargateNetwork extends SavedData
 	public final int getOpenTime(UUID uuid)
 	{
 		if(this.connections.containsKey(uuid))
-			return connections.get(uuid).getConnectionTime();
+			return connections.get(uuid).getOpenTime();
 		return 0;
 	}
 	
