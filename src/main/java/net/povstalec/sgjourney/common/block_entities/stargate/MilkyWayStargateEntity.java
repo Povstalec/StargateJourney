@@ -172,12 +172,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 		if(!isConnected() && !this.isChevronOpen)
 		{
 			if(this.rotating)
-			{
-				if(this.rotation == this.desiredRotation)
-					endRotation(false);
-				else
-					rotate(this.rotateClockwise);
-			}
+				rotateToTarget();
 			else if(this.signalStrength > 0 && this.signalStrength < 15)
 			{
 				if(this.signalStrength > 7)
@@ -224,18 +219,6 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 		
 		if(!this.level.isClientSide())
 			synchronizeWithClient();
-	}
-	
-	@Override
-	public int getRedstoneSymbolOutput()
-	{
-		return (getCurrentSymbol() % SYMBOLS_PER_SEGMENT) + 1;
-	}
-
-	@Override
-	public int getRedstoneSegmentOutput()
-	{
-		return (getCurrentSymbol() / SYMBOLS_PER_SEGMENT + 1) * 5;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)

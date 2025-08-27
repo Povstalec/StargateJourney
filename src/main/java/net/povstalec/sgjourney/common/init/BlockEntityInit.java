@@ -16,6 +16,11 @@ import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEnt
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.*;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 
 public class BlockEntityInit
 {

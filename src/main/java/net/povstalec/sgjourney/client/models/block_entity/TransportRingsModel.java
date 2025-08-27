@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 
 public class TransportRingsModel
 {
@@ -28,7 +28,7 @@ public class TransportRingsModel
 	
 	public void setRingHeight(int ring, float height)
 	{
-		if(ring < 1 && ring > 5)
+		if(ring < 1 || ring > 5)
 			return;
 		
 		getRing(ring).setPos(0.0F, height, 0.0F);

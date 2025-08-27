@@ -56,15 +56,6 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected boolean isValidCrystal(int slot, ItemStack stack)
-	{
-		if(slot == 0)
-			return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
-		
-		return stack.getItem() instanceof AbstractCrystalItem crystal && !crystal.isAdvanced() || stack.getItem() instanceof CallForwardingDevice;
-	}
-	
-	@Override
 	protected void generateEnergyCore()
 	{
 		energyItemHandler.setStackInSlot(0, new ItemStack(ItemInit.NAQUADAH_GENERATOR_CORE.get()));

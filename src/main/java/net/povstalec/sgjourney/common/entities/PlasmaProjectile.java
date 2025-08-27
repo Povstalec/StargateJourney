@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -12,7 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
@@ -20,6 +18,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.EventHooks;
 import net.povstalec.sgjourney.common.init.TagInit;
 
@@ -87,7 +86,7 @@ public class PlasmaProjectile extends Projectile
 				{
 					for(Direction direction : Direction.values())
 					{
-						trySetFireToBlock(blockpos, blockpos.relative(direction));
+						trySetFireToBlock(blockpos, blockpos.relative(direction), direction);
 					}
 				}
 			}
@@ -95,9 +94,9 @@ public class PlasmaProjectile extends Projectile
 		}
 	}
 	
-	private boolean trySetFireToBlock(BlockPos blockpos, BlockPos nearbyPos)
+	private boolean trySetFireToBlock(BlockPos blockpos, BlockPos nearbyPos, Direction direction)
 	{
-		if(this.level().getBlockState(nearbyPos).is(TagInit.Blocks.PLASMA_FLAMMABLE))
+		if(this.level().getBlockState(nearbyPos).is(TagInit.Blocks.PLASMA_FLAMMABLE) && !EventHooks.onBlockPlace(this.getOwner(), BlockSnapshot.create(level().dimension(), level(), blockpos), direction))
 		{
 			this.level().setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level(), blockpos));
 			return true;

@@ -19,6 +19,9 @@ import net.povstalec.sgjourney.common.block_entities.*;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.tech.*;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -29,23 +32,23 @@ import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
 public class ClientAccess
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
-    
-    public static void updateDialer(BlockPos pos)
-    {
-    	minecraft.setScreen(new DialerScreen());
-    }
-    
-    public static void openGDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
-    {
-    	minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
-    }
 	
 	public static void openArcheologistNotebookScreen(UUID playerId, boolean mainHand, CompoundTag tag)
 	{
 		minecraft.setScreen(new ArcheologistNotebookScreen(playerId, mainHand, tag));
 	}
 	
-    public static void updateSymbol(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
+	public static void updateDialer(BlockPos pos)
+	{
+		minecraft.setScreen(new DialerScreen());
+	}
+	
+	public static void openGDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
+	{
+		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
+	}
+	
+	public static void updateSymbol(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -68,12 +71,15 @@ public class ClientAccess
         }
     }
     
-    public static void updateInterface(BlockPos pos, long energy)
+    public static void updateInterface(BlockPos pos, long energy, long energyTarget)
     {
     	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
         if(blockEntity instanceof final AbstractInterfaceEntity interfaceEntity)
-        	interfaceEntity.setEnergy(energy);
+		{
+			interfaceEntity.setEnergy(energy);
+			interfaceEntity.setEnergyTarget(energyTarget);
+		}
     }
     
     public static void updateTransceiver(BlockPos pos, boolean editingFrequency, int frequency, String idc)
@@ -88,7 +94,7 @@ public class ClientAccess
         }
     }
     
-    public static void updateRings(BlockPos pos, int emptySpace, int transportHeight)
+    public static void updateRings(BlockPos pos, int emptySpace, int transportHeight, int progress)
     {
         final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
         
@@ -96,6 +102,7 @@ public class ClientAccess
         {
         	rings.emptySpace = emptySpace;
         	rings.transportHeight = transportHeight;
+			rings.updateProgress(progress);
         }
     }
     
@@ -118,26 +125,29 @@ public class ClientAccess
         {
 			dhd.setEnergy(energy);
 			dhd.symbolInfo().setPointOfOrigin(pointOfOrigin);
-        	dhd.symbolInfo().setSymbols(symbols);
-        	dhd.setAddress(new Address(true).fromArray(address));
-        	dhd.setCenterButtonEngaged(isCenterButtonEngaged);
-        }
-    }
-    
-    public static void updateStargate(BlockPos pos, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
+			dhd.symbolInfo().setSymbols(symbols);
+			dhd.setAddress(new Address(true).fromArray(address));
+			dhd.setCenterButtonEngaged(isCenterButtonEngaged);
+		}
+	}
+	
+	public static void updateStargate(BlockPos pos, long energy, int openTime, int timeSinceLastTraveler, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
 									  ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractStargateEntity stargate)
-        {
-        	stargate.setAddress(new Address(address));
-        	stargate.setEngagedChevrons(engagedChevrons);
-        	stargate.setKawooshTickCount(kawooshTick);
-        	stargate.setTickCount(tick);
-        	stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
-        	stargate.symbolInfo().setSymbols(symbols);
-        	stargate.setVariant(variant);
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final AbstractStargateEntity stargate)
+		{
+			stargate.setEnergy(energy);
+			stargate.setOpenTime(openTime);
+			stargate.setTimeSinceLastTraveler(timeSinceLastTraveler);
+			stargate.setAddress(new Address(address));
+			stargate.setEngagedChevrons(engagedChevrons);
+			stargate.setKawooshTickCount(kawooshTick);
+			stargate.setTickCount(tick);
+			stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
+			stargate.symbolInfo().setSymbols(symbols);
+			stargate.setVariant(variant);
 			
 			if(blockEntity instanceof IrisInfo.Interface irisStargate)
 			{
@@ -200,23 +210,23 @@ public class ClientAccess
 			stargate.desiredRotation = desiredRotation;
 		}
 	}
-    
-    public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final UniverseStargateEntity stargate)
-        {
-        	stargate.symbolBuffer = symbolBuffer;
-        	stargate.addressBuffer.fromArray(addressBuffer);
-        }
-    }
-    
-    public static void updateMilkyWayStargate(BlockPos pos, boolean isChevronOpen)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final MilkyWayStargateEntity stargate)
+	
+	public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final UniverseStargateEntity stargate)
+		{
+			stargate.symbolBuffer = symbolBuffer;
+			stargate.addressBuffer.fromArray(addressBuffer);
+		}
+	}
+	
+	public static void updateMilkyWayStargate(BlockPos pos, boolean isChevronOpen)
+	{
+		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
+		
+		if(blockEntity instanceof final MilkyWayStargateEntity stargate)
 			stargate.isChevronOpen = isChevronOpen;
     }
     

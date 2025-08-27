@@ -65,7 +65,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 	
 	protected void shoot(Level level, Player player, ItemStack staffWeaponStack)
 	{
-		if(!player.isCreative() && !depleteLiquidNaquadah(staffWeaponStack))
+		if(!player.isCreative() && !tryDepleteLiquidNaquadah(staffWeaponStack))
 			return;
 		
 		level.playSound(player, player.blockPosition(), SoundInit.MATOK_FIRE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
@@ -105,7 +105,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 			}
 		}
 		// Shooting
-		else if(isOpen(stack) && !level.isClientSide())
+		else if(isOpen(stack))
 			shoot(level, player, stack);
 		
 		
@@ -161,7 +161,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 	 * @param staffWeaponItemStack
 	 * @return
 	 */
-	public boolean depleteLiquidNaquadah(ItemStack staffWeaponItemStack)
+	public boolean tryDepleteLiquidNaquadah(ItemStack staffWeaponItemStack)
 	{
 		IFluidHandlerItem fluidHandler = staffWeaponItemStack.getCapability(Capabilities.FluidHandler.ITEM);
 		if(fluidHandler instanceof Holder.FluidItemHandler fluidHolder)
@@ -212,6 +212,18 @@ public class StaffWeaponItem extends FluidItem.Holder
 		tooltipComponents.add(isOpen);
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.open_close").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+	}
+	
+	public static ItemStack filledStaffWeapon(boolean heavyLiquidNaquadah, int amount)
+	{
+		ItemStack staffWeapon = new ItemStack(ItemInit.MATOK.get());
+		ItemStack vial = heavyLiquidNaquadah ? VialItem.heavyLiquidNaquadahSetup(amount) : VialItem.liquidNaquadahSetup(amount);
+		
+		IItemHandler itemHandler = staffWeapon.getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
+			itemHandler.insertItem(0, vial, false);
+		
+		return staffWeapon;
 	}
 	
 	

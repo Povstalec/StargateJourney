@@ -191,6 +191,18 @@ public class Galaxy
 			return this.pointsOfOrigin.get(randomValue);
 		}
 		
+		@Override
+		public boolean equals(Object other)
+		{
+			if(other == this)
+				return true;
+			
+			if(other instanceof Galaxy.Serializable galaxy)
+				return this.galaxyKey.equals(galaxy.galaxyKey);
+			
+			return false;
+		}
+		
 		
 		
 		public CompoundTag serialize()

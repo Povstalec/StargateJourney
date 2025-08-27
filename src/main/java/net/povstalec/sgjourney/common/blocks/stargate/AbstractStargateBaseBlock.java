@@ -56,7 +56,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
-	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
+	public static final String LOCAL_POINT_OF_ORIGIN = AbstractStargateEntity.LOCAL_POINT_OF_ORIGIN;
 	
 	public AbstractStargateBaseBlock(Properties properties, double width, double horizontalOffset)
 	{

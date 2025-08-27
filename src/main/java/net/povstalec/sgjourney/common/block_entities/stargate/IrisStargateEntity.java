@@ -81,7 +81,7 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 			return;
 		
 		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
-		Direction direction = Orientation.getEffectiveDirection(getDirection(), getOrientation());
+		Direction direction = Orientation.getForwardDirection(getDirection(), getOrientation());
 		
 		double frontMultiplier = kawooshFunction(kawooshTime);
 		
@@ -117,7 +117,7 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 		if(level.isClientSide())
 			return false;
 		
-		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, irisInfo().getIrisProgress(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, irisInfo().getIris()));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundStargateUpdatePacket(this.worldPosition, this.getEnergyStored(), this.openTime, this.timeSinceLastTraveler, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, irisInfo().getIrisProgress(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, irisInfo().getIris()));
 		return true;
 	}
 }

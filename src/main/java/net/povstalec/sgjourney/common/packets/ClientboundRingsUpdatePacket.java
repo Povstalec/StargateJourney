@@ -9,7 +9,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public record ClientboundRingsUpdatePacket(BlockPos blockPos, int emptySpace, int transportHeight) implements CustomPacketPayload
+public record ClientboundRingsUpdatePacket(BlockPos blockPos, int emptySpace, int transportHeight, int progress) implements CustomPacketPayload
 {
     public static final CustomPacketPayload.Type<ClientboundRingsUpdatePacket> TYPE =
             new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_transport_rings_update"));
@@ -18,6 +18,7 @@ public record ClientboundRingsUpdatePacket(BlockPos blockPos, int emptySpace, in
             BlockPos.STREAM_CODEC, ClientboundRingsUpdatePacket::blockPos,
             ByteBufCodecs.VAR_INT, ClientboundRingsUpdatePacket::emptySpace,
             ByteBufCodecs.VAR_INT, ClientboundRingsUpdatePacket::transportHeight,
+            ByteBufCodecs.VAR_INT, ClientboundRingsUpdatePacket::progress,
             ClientboundRingsUpdatePacket::new
     );
     
@@ -30,7 +31,7 @@ public record ClientboundRingsUpdatePacket(BlockPos blockPos, int emptySpace, in
     public static void handle(ClientboundRingsUpdatePacket packet, IPayloadContext ctx)
     {
         ctx.enqueueWork(() -> {
-        	ClientAccess.updateRings(packet.blockPos, packet.emptySpace, packet.transportHeight);
+        	ClientAccess.updateRings(packet.blockPos, packet.emptySpace, packet.transportHeight, packet.progress);
         });
     }
 }

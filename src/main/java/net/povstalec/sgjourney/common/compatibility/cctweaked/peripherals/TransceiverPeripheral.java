@@ -13,7 +13,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.TransceiverMethod;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.TransceiverMethods;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.TransceiverFunctions;

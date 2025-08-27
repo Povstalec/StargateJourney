@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.capabilities;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.povstalec.sgjourney.StargateJourney;

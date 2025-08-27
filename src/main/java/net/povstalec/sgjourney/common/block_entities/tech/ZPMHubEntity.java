@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
@@ -159,7 +158,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		return side == Direction.UP;
+		return side == Direction.DOWN;
 	}
 	
 	protected boolean receivesEnergy()

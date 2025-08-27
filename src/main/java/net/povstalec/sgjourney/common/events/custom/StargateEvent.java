@@ -40,25 +40,18 @@ public class StargateEvent extends Event implements ICancellableEvent
 	public static class Dial extends StargateEvent implements ICancellableEvent
 	{
 		private final Address.Immutable dialedAddress;
-		private final Address.Immutable dialingAddress;
 		private final boolean doKawoosh;
 		
-		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, Address.Immutable dialingAddress, boolean doKawoosh)
+		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, boolean doKawoosh)
 		{
 			super(server, stargate);
 			this.dialedAddress = dialedAddress.copy();
-			this.dialingAddress = dialingAddress.copy();
 			this.doKawoosh = doKawoosh;
 		}
 		
 		public Address.Immutable getDialedAddress()
 		{
 			return dialedAddress;
-		}
-		
-		public Address.Immutable getDialingAddress()
-		{
-			return dialingAddress;
 		}
 		
 		public boolean doKawoosh()
@@ -116,36 +109,28 @@ public class StargateEvent extends Event implements ICancellableEvent
 	
 	
 	/**
-	 * Fired when a an Entity goes through the Wormhole (cancelable)
+	 * Fired when an Entity goes through the Wormhole (cancelable)
 	 * @author Povstalec
 	 *
 	 */
 	public static class WormholeTravel extends StargateEvent implements ICancellableEvent
 	{
-		private final Stargate connectedStargate;
-		private final StargateConnection.Type connectionType;
+		private final Stargate destinationStargate;
 		private final Entity traveler;
 		private final StargateInfo.WormholeTravel wormholeTravel;
 
-		public WormholeTravel(MinecraftServer server, Stargate stargate, Stargate connectedStargate,
-							  StargateConnection.Type connectionType, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
+		public WormholeTravel(MinecraftServer server, Stargate stargate, Stargate destinationStargate, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
 		{
 			super(server, stargate);
 			
-			this.connectedStargate = connectedStargate;
-			this.connectionType = connectionType;
+			this.destinationStargate = destinationStargate;
 			this.traveler = traveler;
 			this.wormholeTravel = wormholeTravel;
 		}
 		
-		public Stargate getConnectedStargate()
+		public Stargate getDestinationStargate()
 		{
-			return this.connectedStargate;
-		}
-		
-		public StargateConnection.Type getConnectionType()
-		{
-			return this.connectionType;
+			return this.destinationStargate;
 		}
 		
 		public Entity getTraveler()

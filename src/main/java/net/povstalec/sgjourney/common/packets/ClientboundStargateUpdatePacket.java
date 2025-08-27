@@ -11,7 +11,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public record ClientboundStargateUpdatePacket(BlockPos blockPos, int[] address, int[] engagedChevrons, int kawooshTick, int tick,
+public record ClientboundStargateUpdatePacket(BlockPos blockPos, long energy, int openTime, int timeSinceLastTraveler, int[] address, int[] engagedChevrons, int kawooshTick, int tick,
                                               short irisProgress, ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris) implements CustomPacketPayload
 {
     public static final CustomPacketPayload.Type<ClientboundStargateUpdatePacket> TYPE =
@@ -21,13 +21,16 @@ public record ClientboundStargateUpdatePacket(BlockPos blockPos, int[] address, 
     {
         public ClientboundStargateUpdatePacket decode(RegistryFriendlyByteBuf buf)
         {
-            return new ClientboundStargateUpdatePacket(FriendlyByteBuf.readBlockPos(buf), buf.readVarIntArray(), buf.readVarIntArray(), buf.readInt(), buf.readInt(),
+            return new ClientboundStargateUpdatePacket(FriendlyByteBuf.readBlockPos(buf), buf.readLong(), buf.readInt(), buf.readInt(), buf.readVarIntArray(), buf.readVarIntArray(), buf.readInt(), buf.readInt(),
                     buf.readShort(), buf.readResourceLocation(), buf.readResourceLocation(), buf.readResourceLocation(), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
         }
         
         public void encode(RegistryFriendlyByteBuf buf, ClientboundStargateUpdatePacket packet)
         {
             FriendlyByteBuf.writeBlockPos(buf, packet.blockPos);
+            buf.writeLong(packet.energy);
+            buf.writeInt(packet.openTime);
+            buf.writeInt(packet.timeSinceLastTraveler);
             buf.writeVarIntArray(packet.address);
             buf.writeVarIntArray(packet.engagedChevrons);
             buf.writeInt(packet.kawooshTick);
@@ -50,7 +53,7 @@ public record ClientboundStargateUpdatePacket(BlockPos blockPos, int[] address, 
     public static void handle(ClientboundStargateUpdatePacket packet, IPayloadContext ctx)
     {
         ctx.enqueueWork(() -> {
-        	ClientAccess.updateStargate(packet.blockPos, packet.address, packet.engagedChevrons, packet.kawooshTick, packet.tick,
+        	ClientAccess.updateStargate(packet.blockPos, packet.energy, packet.openTime, packet.timeSinceLastTraveler, packet.address, packet.engagedChevrons, packet.kawooshTick, packet.tick,
                     packet.irisProgress, packet.pointOfOrigin, packet.symbols, packet.variant, packet.iris);
         });
     }

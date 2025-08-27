@@ -29,9 +29,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 

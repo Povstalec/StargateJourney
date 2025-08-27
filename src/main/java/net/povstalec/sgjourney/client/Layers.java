@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.entity.FalconArmorModel;
+import net.povstalec.sgjourney.client.models.entity.GoauldModel;
 import net.povstalec.sgjourney.client.models.entity.JackalArmorModel;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingsModel;
 
@@ -17,6 +18,8 @@ public class Layers
 	public static final ModelLayerLocation FALCON_HEAD = new ModelLayerLocation(StargateJourney.sgjourneyLocation("falcon_head"), "main");
 	public static final ModelLayerLocation JACKAL_HEAD = new ModelLayerLocation(StargateJourney.sgjourneyLocation("jackal_head"), "main");
 	
+	public static final ModelLayerLocation GOAULD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "goauld"), "main");
+	
 	public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
 	{
 		// Transport Rings
@@ -25,6 +28,9 @@ public class Layers
 		// Armor
 		event.registerLayerDefinition(FALCON_HEAD, FalconArmorModel::createBodyLayer);
 		event.registerLayerDefinition(JACKAL_HEAD, JackalArmorModel::createBodyLayer);
+		
+		// Entity
+		event.registerLayerDefinition(GOAULD, GoauldModel::createBodyLayer);
 	}
 
 }

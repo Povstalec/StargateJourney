@@ -7,8 +7,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.TransceiverEntity;
 
 public record ServerboundTransceiverUpdatePacket(BlockPos blockPos, boolean remove, boolean toggleFrequency, int number, boolean transmit) implements CustomPacketPayload
 {

@@ -27,8 +27,6 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 {
 	public static final String ROTATION = "rotation";
 	
-	public static final int SEGMENTS = 3;
-	
 	// Rotation stuff
 	protected final int maxRotation;
 	protected final int stepsPerSymbol;
@@ -142,17 +140,40 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		return 1;
 	}
 	
+	/**
+	 * Calculates the absolute distance between two points on the Stargate's ring
+	 * @param rotationA Point A
+	 * @param rotationB Point B
+	 * @return Distance between point A and point B
+	 */
+	public int ringDistance(int rotationA, int rotationB)
+	{
+		int distance = Math.abs(rotationA - rotationB);
+		
+		if(distance > this.maxRotation / 2F)
+			return this.maxRotation - distance;
+		
+		return distance;
+	}
+	
+	protected void rotateToTarget()
+	{
+		int ringDistance = ringDistance(this.rotation, this.desiredRotation);
+		
+		if(ringDistance == 0)
+			endRotation(false);
+		else if(ringDistance < rotationStep())
+			rotate(this.rotateClockwise, ringDistance);
+		else
+			rotate(this.rotateClockwise);
+	}
+	
 	protected void rotate()
 	{
 		if(!isConnected())
 		{
 			if(this.rotating)
-			{
-				if(this.rotation == this.desiredRotation)
-					endRotation(false);
-				else
-					rotate(this.rotateClockwise);
-			}
+				rotateToTarget();
 			else if(this.signalStrength > 0 && this.signalStrength < 15)
 			{
 				if(this.signalStrength > 7)
@@ -164,25 +185,20 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 				syncRotation();
 		}
 		else if(!isDialingOut() && getKawooshTickCount() <= 0 && this.rotating)
-		{
-			if(this.rotation == this.desiredRotation)
-				endRotation(false);
-			else
-				rotate(this.rotateClockwise);
-		}
+			rotateToTarget();
 		else
 			syncRotation();
 		setChanged();
 	}
 	
-	public void rotate(boolean clockwise)
+	public void rotate(boolean clockwise, int rotationStep)
 	{
 		this.oldRotation = this.rotation;
 		
 		if(clockwise)
-			this.rotation -= rotationStep();
+			this.rotation -= rotationStep;
 		else
-			this.rotation += rotationStep();
+			this.rotation += rotationStep;
 		
 		if(this.rotation >= this.maxRotation)
 		{
@@ -194,9 +210,14 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 			this.rotation += this.maxRotation;
 			this.oldRotation += this.maxRotation;
 		}
-		this.rotation -= this.rotation % rotationStep();
+		this.rotation -= this.rotation % rotationStep;
 		
 		setChanged();
+	}
+	
+	public void rotate(boolean clockwise)
+	{
+		rotate(clockwise, rotationStep());
 	}
 	
 	protected StargateInfo.Feedback rotateTo(int degrees, boolean rotateClockwise)
@@ -394,6 +415,9 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		stargate.rotate();
 		if(stargate.isRotating() && !level.isClientSide())
 			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(stargate.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
+		
+		if(stargate.isRotating())
+			stargate.updateInterfaceBlocks(null);
 		
 		AbstractStargateEntity.tick(level, pos, state, stargate);
 	}

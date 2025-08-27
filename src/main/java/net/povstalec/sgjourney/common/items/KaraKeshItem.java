@@ -48,7 +48,7 @@ public class KaraKeshItem extends Item implements GoauldTech
 		{
 			ItemStack stack = player.getItemInHand(usedHand);
 
-			if(stack.get(DataComponentInit.TERROR_MODE) != null || !stack.get(DataComponentInit.TERROR_MODE))
+			if(stack.getOrDefault(DataComponentInit.TERROR_MODE, false))
 			{
 				stack.set(DataComponentInit.TERROR_MODE, true);
 				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED), true);
@@ -58,8 +58,11 @@ public class KaraKeshItem extends Item implements GoauldTech
 				stack.set(DataComponentInit.TERROR_MODE, false);
 				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD), true);
 			}
+			
+			return InteractionResultHolder.success(player.getItemInHand(usedHand));
 		}
-        return super.use(level, player, usedHand);
+		else
+        	return super.use(level, player, usedHand);
     }
 	
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand)

@@ -56,15 +56,6 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected boolean isValidCrystal(int slot, ItemStack stack)
-	{
-		if(slot == 0)
-			return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
-		
-		return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isAdvanced() || stack.getItem() instanceof CallForwardingDevice;
-	}
-	
-	@Override
 	protected void generateEnergyCore()
 	{
 		energyItemHandler.setStackInSlot(0, FusionCoreItem.randomFusionCore(CommonTechConfig.fusion_core_fuel_capacity.get() / 2, CommonTechConfig.fusion_core_fuel_capacity.get()));

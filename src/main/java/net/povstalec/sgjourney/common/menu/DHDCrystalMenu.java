@@ -65,6 +65,21 @@ public class DHDCrystalMenu extends AbstractContainerMenu
         return this.blockEntity instanceof PegasusDHDEntity;
     }
     
+    public long getStargateEnergy()
+    {
+        return this.blockEntity.getStargateEnergy();
+    }
+    
+    public int getStargateOpenTime()
+    {
+        return this.blockEntity.getStargateOpenTime();
+    }
+    
+    public int getStargateTimeSinceLastTraveler()
+    {
+        return this.blockEntity.getStargateTimeSinceLastTraveler();
+    }
+    
     public long getEnergy()
     {
         return this.blockEntity.getEnergyStored();
@@ -97,13 +112,23 @@ public class DHDCrystalMenu extends AbstractContainerMenu
     
     public boolean hasItem(int slot)
     {
-        if(slot < 0 || slot > 8)
+        if(slot < 0 || slot > 10)
             return false;
         
-        IItemHandler cap = this.blockEntity.getItemHandler();
-        
-        if(cap != null)
-            return !cap.getStackInSlot(slot).isEmpty();
+        if(slot >= 9)
+        {
+            IItemHandler cap = this.blockEntity.getEnergyItemHandler(null);
+            
+            if(cap != null)
+                return !cap.getStackInSlot(slot - 9).isEmpty();
+        }
+        else
+        {
+            IItemHandler cap = this.blockEntity.getItemHandler();
+            
+            if(cap != null)
+                return !cap.getStackInSlot(slot).isEmpty();
+        }
         
         return false;
     }

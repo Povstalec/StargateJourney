@@ -1,10 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -255,7 +251,33 @@ public class SolarSystem
 		@Nullable
 		public Address.Immutable getAddressFromGalaxy(Galaxy.Serializable galaxy)
 		{
+			if(galaxy == null)
+				return null;
+			
 			return this.galacticAddresses.get(galaxy);
+		}
+		
+		/**
+		 * Finds a common Galaxy for this Solar System and another specified Solar System
+		 * @param other Other Solar System
+		 * @return A common Galaxy in which both this and the other Solar System are located, otherwise null
+		 */
+		@Nullable
+		public Galaxy.Serializable findCommonGalaxy(SolarSystem.Serializable other)
+		{
+			if(other == null)
+				return null;
+			
+			for(Map.Entry<Galaxy.Serializable, Address.Immutable> entry : this.galacticAddresses.entrySet())
+			{
+				for(Map.Entry<Galaxy.Serializable, Address.Immutable> otherEntry : other.galacticAddresses.entrySet())
+				{
+					if(entry.getKey().equals(otherEntry.getKey()))
+						return entry.getKey();
+				}
+			}
+			
+			return null;
 		}
 		
 		/**
@@ -266,21 +288,11 @@ public class SolarSystem
 		@Nullable
 		public SolarSystem.Serializable getSolarSystemFromAddress(Address.Immutable address)
 		{
-			List<SolarSystem.Serializable> solarSystems = new ArrayList<SolarSystem.Serializable>();
-
-			this.galacticAddresses.entrySet().stream().forEach(galaxyEntry ->
+			for(Map.Entry<Galaxy.Serializable, Address.Immutable> entry : this.galacticAddresses.entrySet())
 			{
-				Galaxy.Serializable galaxy = galaxyEntry.getKey();
-
-				if(galaxy.containsSolarSystem(address))
-				{
-					SolarSystem.Serializable solarSystem = galaxy.getSolarSystem(address);
-					solarSystems.add(solarSystem);
-				}
-			});
-			
-			if(solarSystems.size() > 0)
-				return solarSystems.get(0);
+				if(entry.getKey().containsSolarSystem(address))
+					return entry.getKey().getSolarSystem(address);
+			}
 			
 			return null;
 		}

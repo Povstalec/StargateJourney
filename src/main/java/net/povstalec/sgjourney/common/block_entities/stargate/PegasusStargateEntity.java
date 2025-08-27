@@ -78,21 +78,41 @@ public class PegasusStargateEntity extends IrisStargateEntity
     }
 	
 	@Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
+	{
+		super.serializeStargateInfo(tag, registries);
+		
+		tag.putBoolean(DYNAMC_SYMBOLS, dynamicSymbols);
+		
+		if(!dynamicSymbols)
+		{
+			tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+			tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		}
+		
+		return tag;
+	}
+	
+	@Override
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
+	{
+		dynamicSymbols = tag.getBoolean(DYNAMC_SYMBOLS);
+		
+		if(!dynamicSymbols)
+		{
+			symbolInfo().setPointOfOrigin(ResourceLocation.tryParse(tag.getString(POINT_OF_ORIGIN)));
+			symbolInfo().setSymbols(ResourceLocation.tryParse(tag.getString(SYMBOLS)));
+		}
+	}
+	
+	@Override
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
         super.loadAdditional(tag, registries);
         
         addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
         currentSymbol = tag.getInt(CURRENT_SYMBOL);
-        
-        dynamicSymbols = tag.getBoolean(DYNAMC_SYMBOLS);
-
-        if(!dynamicSymbols)
-        {
-			symbolInfo().setPointOfOrigin(ResourceLocation.tryParse(tag.getString(POINT_OF_ORIGIN)));
-			symbolInfo().setSymbols(ResourceLocation.tryParse(tag.getString(SYMBOLS)));
-        }
     }
 	
 	@Override
@@ -103,14 +123,6 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.toArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 		tag.putInt(CURRENT_SYMBOL, currentSymbol);
-		
-		tag.putBoolean(DYNAMC_SYMBOLS, dynamicSymbols);
-
-        if(!dynamicSymbols)
-        {
-			tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-			tag.putString(SYMBOLS, symbolInfo().symbols().toString());
-        }
 	}
 	
 	//============================================================================================
@@ -291,6 +303,26 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		else if(currentSymbol < 0)
 			currentSymbol = 35;
 	}
+	
+	public int getLastSymbol()
+	{
+		if(isConnected() && !isDialingOut())
+			return 0;
+		
+		return addressBuffer.getSymbol(addressBuffer.getLength() - 1);
+	}
+	
+	@Override
+	public int getRedstoneSymbolOutput()
+	{
+		return getLastSymbol() % 12 + 1;
+	}
+	
+	@Override
+	public int getRedstoneSegmentOutput()
+	{
+		return (getLastSymbol() / (totalSymbols / SEGMENTS) + 1) * 5;
+	}
 
 	@Override
 	protected void resetAddress(boolean updateInterfaces)
@@ -327,8 +359,10 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(int openTime, StargateInfo.ChevronLockSpeed chevronLockSpeed)
+	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
 	{
+		super.doWhileDialed(connectedAddress, kawooshStartTicks, chevronLockSpeed, openTime);
+		
 		if(this.level.isClientSide())
 			return;
 		

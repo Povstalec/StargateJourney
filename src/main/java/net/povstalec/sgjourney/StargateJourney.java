@@ -8,13 +8,17 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.povstalec.sgjourney.client.render.entity.AnthropoidRenderer;
 import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
-import net.povstalec.sgjourney.client.render.entity.HumanRenderer;
+import net.povstalec.sgjourney.common.capabilities.GoauldHost;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.client.screens.*;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.*;
+import net.povstalec.sgjourney.common.misc.RenderAMD;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -262,6 +266,9 @@ public class StargateJourney
         
         event.registerEntity(AncientGene.ANCIENT_GENE_CAPABILITY, EntityType.VILLAGER, (entity, context) -> new AncientGene(entity));
         event.registerEntity(AncientGene.ANCIENT_GENE_CAPABILITY, EntityType.PLAYER, (entity, context) -> new AncientGene(entity));
+        
+        event.registerEntity(GoauldHost.GOAULD_HOST_CAPABILITY, EntityType.VILLAGER, (entity, context) -> new GoauldHost(entity));
+        event.registerEntity(GoauldHost.GOAULD_HOST_CAPABILITY, EntityType.PLAYER, (entity, context) -> new GoauldHost(entity));
     }
 	
 	public static boolean isStellarViewLoaded()
@@ -280,6 +287,17 @@ public class StargateJourney
         
         return isIrisLoaded;
     }
+	
+	public static boolean shouldRenderAMD()
+	{
+		if(isIrisLoaded())
+			return false;
+		
+		if(ClientStargateConfig.render_amd.get() == RenderAMD.AUTO)
+			return SystemUtils.IS_OS_LINUX;
+		
+		return ClientStargateConfig.render_amd.get() == RenderAMD.ENABLED;
+	}
     
     @EventBusSubscriber(modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
@@ -298,8 +316,8 @@ public class StargateJourney
 
             EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
             EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
-            EntityRenderers.register(EntityInit.HUMAN.get(), HumanRenderer<Human>::new);
-            EntityRenderers.register(EntityInit.JAFFA.get(), HumanRenderer<Jaffa>::new);
+            EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
+            EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
             
             BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
             BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.RedSandstone::new);
@@ -333,7 +351,7 @@ public class StargateJourney
             event.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
             
             event.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
-
+            
             event.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
             event.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
             event.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);

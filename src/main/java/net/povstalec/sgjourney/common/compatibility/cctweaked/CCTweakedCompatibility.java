@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.common.compatibility.cctweaked;
 
 import dan200.computercraft.api.peripheral.PeripheralCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.*;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;

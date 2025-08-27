@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.models.block_entity;
 
 import java.util.Random;
 
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -539,13 +540,27 @@ public class WormholeModel
 		float uHalfOffset = 0.5F * uScale;
 		float vHalfOffset = 0.5F * vScale;
 		
-		consumer.addVertex(matrix4, x1, y1, z1).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
-		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
-		
-		consumer.addVertex(matrix4, x2, y2, z2).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
-		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
-		
-		consumer.addVertex(matrix4, x3, y3, z3).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
-		.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
+		if(StargateJourney.shouldRenderAMD())
+		{
+			consumer.addVertex(matrix4, x1, y1, z1).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
+					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
+			
+			consumer.addVertex(matrix4, x2, y2, z2).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
+					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
+			
+			consumer.addVertex(matrix4, x3, y3, z3).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
+					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
+		}
+		else
+		{
+			consumer.addVertex(matrix4, x1, y1, z1).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
+					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
+			
+			consumer.addVertex(matrix4, x2, y2, z2).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
+					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
+			
+			consumer.addVertex(matrix4, x3, y3, z3).setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha()).setUv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
+					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
+		}
 	}
 }

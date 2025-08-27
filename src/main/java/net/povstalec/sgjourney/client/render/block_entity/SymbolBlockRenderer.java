@@ -74,7 +74,7 @@ public abstract class SymbolBlockRenderer
 		float facing = blockstate.getValue(SymbolBlock.FACING).toYRot();
 		Direction direction = blockstate.getValue(SymbolBlock.FACING);
 		Orientation orientation = blockstate.getValue(SymbolBlock.ORIENTATION);
-		BlockPos pos = symbolBlock.getBlockPos().relative(Orientation.getEffectiveDirection(direction, orientation));
+		BlockPos pos = symbolBlock.getBlockPos().relative(Orientation.getForwardDirection(direction, orientation));
 		
 		stack.pushPose();
 		stack.translate(0.5F, 0.5F, 0.5F);

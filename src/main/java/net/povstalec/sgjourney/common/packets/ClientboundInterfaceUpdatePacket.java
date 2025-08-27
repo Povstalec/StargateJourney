@@ -9,7 +9,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public record ClientboundInterfaceUpdatePacket(BlockPos blockPos, long energy) implements CustomPacketPayload
+public record ClientboundInterfaceUpdatePacket(BlockPos blockPos, long energy, long energyTarget) implements CustomPacketPayload
 {
     public static final CustomPacketPayload.Type<ClientboundInterfaceUpdatePacket> TYPE =
             new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_interface_update"));
@@ -17,6 +17,7 @@ public record ClientboundInterfaceUpdatePacket(BlockPos blockPos, long energy) i
     public static final StreamCodec<ByteBuf, ClientboundInterfaceUpdatePacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, ClientboundInterfaceUpdatePacket::blockPos,
             ByteBufCodecs.VAR_LONG, ClientboundInterfaceUpdatePacket::energy,
+            ByteBufCodecs.VAR_LONG, ClientboundInterfaceUpdatePacket::energyTarget,
             ClientboundInterfaceUpdatePacket::new
     );
     
@@ -29,7 +30,7 @@ public record ClientboundInterfaceUpdatePacket(BlockPos blockPos, long energy) i
     public static void handle(ClientboundInterfaceUpdatePacket packet, IPayloadContext ctx)
     {
         ctx.enqueueWork(() -> {
-        	ClientAccess.updateInterface(packet.blockPos, packet.energy);
+        	ClientAccess.updateInterface(packet.blockPos, packet.energy, packet.energyTarget);
         });
     }
 }

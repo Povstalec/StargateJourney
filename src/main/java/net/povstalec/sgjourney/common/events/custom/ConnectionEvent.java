@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.events.custom;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.Event;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class ConnectionEvent extends Event
 {
@@ -45,9 +46,18 @@ public class ConnectionEvent extends Event
 	 */
 	public static class Terminate extends ConnectionEvent
 	{
-		public Terminate(MinecraftServer server, StargateConnection connection)
+		private final StargateInfo.Feedback feedback;
+		
+		public Terminate(MinecraftServer server, StargateConnection connection, StargateInfo.Feedback feedback)
 		{
 			super(server, connection);
+			
+			this.feedback = feedback;
+		}
+		
+		public StargateInfo.Feedback getFeedback()
+		{
+			return this.feedback;
 		}
 	}
 }

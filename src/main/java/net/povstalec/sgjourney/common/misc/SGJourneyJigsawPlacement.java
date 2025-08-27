@@ -6,10 +6,9 @@ import java.util.Optional;
 import net.minecraft.world.level.levelgen.structure.pools.*;
 import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
 import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
-import org.slf4j.Logger;
+import net.povstalec.sgjourney.StargateJourney;
 
 import com.google.common.collect.Lists;
-import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -39,8 +38,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class SGJourneyJigsawPlacement extends JigsawPlacement
 {
-	static final Logger LOGGER = LogUtils.getLogger();
-	
 	public static Optional<Structure.GenerationStub> addPieces(Structure.GenerationContext context, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName, int maxDepth, BlockPos pos, boolean useExpansionHack,
 															   Optional<Heightmap.Types> projectStartToHeightmap,int maxDistanceFromCenter, Rotation rotation, PoolAliasLookup aliasLookup, DimensionPadding dimensionPadding, LiquidSettings liquidSettings)
 	{
@@ -52,22 +49,24 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 	      Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registries.TEMPLATE_POOL);
 	      StructureTemplatePool structuretemplatepool = startPool.value();
 	      StructurePoolElement structurepoolelement = structuretemplatepool.getRandomTemplate(worldgenrandom);
-	      if (structurepoolelement == EmptyPoolElement.INSTANCE) {
+		  
+	      if(structurepoolelement == EmptyPoolElement.INSTANCE)
 	         return Optional.empty();
-	      } else {
+	      else
+		  {
 	         BlockPos blockpos;
 	         if (startJigsawName.isPresent()) {
 	            ResourceLocation resourcelocation = startJigsawName.get();
 	            Optional<BlockPos> optional = getRandomNamedJigsaw(structurepoolelement, resourcelocation, pos, rotation, structuretemplatemanager, worldgenrandom);
 	            if (optional.isEmpty()) {
-	               LOGGER.error("No starting jigsaw {} found in start pool {}", resourcelocation, startPool.unwrapKey().get().location());
+					StargateJourney.LOGGER.error("No starting jigsaw {} found in start pool {}", resourcelocation, startPool.unwrapKey().get().location());
 	               return Optional.empty();
 	            }
 
 	            blockpos = optional.get();
-	         } else {
-	            blockpos = pos;
 	         }
+			 else
+	            blockpos = pos;
 
 	         Vec3i vec3i = blockpos.subtract(pos);
 	         BlockPos blockpos1 = pos.subtract(vec3i);
@@ -76,16 +75,17 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 	         int i = (boundingbox.maxX() + boundingbox.minX()) / 2;
 	         int j = (boundingbox.maxZ() + boundingbox.minZ()) / 2;
 	         int k;
-	         if (projectStartToHeightmap.isPresent()) {
+	         if (projectStartToHeightmap.isPresent())
 	            k = pos.getY() + chunkgenerator.getFirstFreeHeight(i, j, projectStartToHeightmap.get(), levelheightaccessor, context.randomState());
-	         } else {
+			 else
 	            k = blockpos1.getY();
-	         }
 
 	         int l = boundingbox.minY() + poolelementstructurepiece.getGroundLevelDelta();
 	         poolelementstructurepiece.move(0, k - l, 0);
 	         int i1 = k + vec3i.getY();
-	         return Optional.of(new Structure.GenerationStub(new BlockPos(i, i1, j), (p_227237_) -> {
+			 
+	         return Optional.of(new Structure.GenerationStub(new BlockPos(i, i1, j), (builder) ->
+			 {
 	            List<PoolElementStructurePiece> list = Lists.newArrayList();
 	            list.add(poolelementstructurepiece);
 	            if (maxDepth > 0) {
@@ -93,7 +93,7 @@ public class SGJourneyJigsawPlacement extends JigsawPlacement
 							(double)(i + maxDistanceFromCenter + 1), (double)Math.min(i1 + maxDistanceFromCenter + 1, levelheightaccessor.getMaxBuildHeight() - dimensionPadding.top()), (double)(j + maxDistanceFromCenter + 1));
 	               VoxelShape voxelshape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(boundingbox)), BooleanOp.ONLY_FIRST);
 					addPieces(context.randomState(), maxDepth, useExpansionHack, chunkgenerator, structuretemplatemanager, levelheightaccessor, worldgenrandom, registry, poolelementstructurepiece, list, voxelshape, aliasLookup, liquidSettings);
-	               list.forEach(p_227237_::addPiece);
+	               list.forEach(builder::addPiece);
 	            }
 	         }));
 	      }

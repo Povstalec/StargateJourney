@@ -5,6 +5,7 @@ import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -48,10 +49,10 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 		
 		// Only allows creating Stargate Upgrade Crystals when it's enabled in the config
 		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() &&
-				recipe.get().value().getResultItem(null).getItem() instanceof StargateUpgradeItem)
+				recipe.get().value().getResultItem(level.getServer().registryAccess()).getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return hasSpaceInOutputSlot(inventory, recipe.get().value().getResultItem(null));
+		return hasSpaceInOutputSlot(inventory, recipe.get().value().getResultItem(level.getServer().registryAccess()));
 	}
 	
 	protected void crystallize()
@@ -76,7 +77,13 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 				useUpItems(recipe.get().value(), 1);
 			if(recipe.get().value().depleteSecondary())
 				useUpItems(recipe.get().value(), 2);
-			outputHandler.setStackInSlot(0, recipe.get().value().getResultItem(null));
+			
+			ItemStack outputStack = outputHandler.getStackInSlot(0);
+			
+			if(outputStack.isEmpty())
+				outputHandler.setStackInSlot(0, recipe.get().value().getResultItem(null));
+			else if(recipe.get().value().getResultItem(null).is(outputStack.getItem()))
+				outputStack.grow(1);
 			
 			this.progress = 0;
 		}

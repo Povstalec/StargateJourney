@@ -200,6 +200,11 @@ public final class PacketHandlerInit
 				(packet, context) -> ServerboundRingPanelUpdatePacket.handle(packet, context));
 		
 		registrar.playToServer(
+				ServerboundInterfaceUpdatePacket.TYPE,
+				ServerboundInterfaceUpdatePacket.STREAM_CODEC,
+				(packet, context) -> ServerboundInterfaceUpdatePacket.handle(packet, context));
+		
+		registrar.playToServer(
 				ServerboundGDOUpdatePacket.TYPE,
 				ServerboundGDOUpdatePacket.STREAM_CODEC,
 				(packet, context) -> ServerboundGDOUpdatePacket.handle(packet, context));

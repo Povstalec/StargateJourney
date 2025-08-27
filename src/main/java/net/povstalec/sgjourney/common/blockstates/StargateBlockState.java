@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -471,5 +473,17 @@ public class StargateBlockState extends BlockState
 	public BubbleColumnDirection getBubbleColumnDirection()
 	{
 		return this.self().getBlock().getBubbleColumnDirection(this.self());
+	}
+	
+	@Override
+	public boolean isPathfindable(PathComputationType pathComputationType)
+	{
+		return switch (pathComputationType)
+		{
+			case LAND -> !this.self().isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+			case WATER -> this.self().getFluidState().is(FluidTags.WATER);
+			case AIR -> !this.self().isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+			default -> false;
+		};
 	}
 }

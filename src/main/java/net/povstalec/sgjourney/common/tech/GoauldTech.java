@@ -20,7 +20,7 @@ public interface GoauldTech
 	/**
 	 * 
 	 * @param requirementsDisabled Whether or not the requirements for having Naquadah in the bloodstream to use this have been disabled
-	 * @param player
+	 * @param user
 	 * @return
 	 */
 	default boolean canUseGoauldTech(boolean requirementsDisabled, Entity user)

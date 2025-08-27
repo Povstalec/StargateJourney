@@ -8,7 +8,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.phys.AABB;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingsModel;
-import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
+import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
 public class TransportRingsRenderer implements BlockEntityRenderer<TransportRingsEntity>
 {
@@ -19,29 +20,46 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 		transportRings = new TransportRingsModel(context.bakeLayer(Layers.TRANSPORT_RING_LAYER));
 	}
 	
+	private float getProgress(TransportRingsEntity rings, float partialTick)
+	{
+		float progress = rings.getProgress(partialTick);
+		
+		int maxProgress = rings.getTransportHeight() + 2 * TransporterConnection.TRANSPORT_TICKS;
+		if(progress > maxProgress)
+			return 2 * maxProgress - TransporterConnection.TRANSPORT_TICKS - progress;
+		
+		return progress;
+	}
+	
+	private float ringHeight(TransportRingsEntity rings, int ringNumber, float partialTick)
+	{
+		float height = getProgress(rings, partialTick) - 6 * ringNumber;
+		
+		return 4 * (rings.emptySpace >= 0 ? height : -height);
+	}
+	
+	private float stopHeight(TransportRingsEntity rings, int ringNumber)
+	{
+		float height = rings.getTransportHeight() - 2 * ringNumber;
+		
+		return 4 * (rings.emptySpace >= 0 ? height : -height);
+	}
+	
 	private float getHeight(TransportRingsEntity rings, int ringNumber, float partialTick)
 	{
-		float ringHeight = 0;
+		float progress = getProgress(rings, partialTick);
+		int startTicks = 6 * ringNumber;
 		
-		int startTicks = 6 * (ringNumber - 1);
-		float movingHeight = rings.getProgress(partialTick) - 6 * (ringNumber - 1);
-		int staticHeight = rings.getTransportHeight() - 2 * (ringNumber - 1);
+		if(progress <= startTicks)
+			return 0;
 		
-		int stopHeight = rings.getTransportHeight() + 17 - 4 * (5 - ringNumber);
+		float ringHeight = ringHeight(rings, ringNumber, partialTick);
+		float stopHeight = stopHeight(rings, ringNumber);
 		
-		if(rings.ticks == rings.progress && rings.progress > startTicks && rings.progress < stopHeight)
-			ringHeight = movingHeight * 4;
-		else if(rings.progress >= stopHeight)
-			ringHeight = staticHeight * 4;
-		else if(rings.ticks != rings.progress && rings.progress > startTicks && rings.progress < stopHeight)
-			ringHeight = movingHeight * 4;
+		if((rings.emptySpace >= 0 && ringHeight >= stopHeight) || (rings.emptySpace < 0 && ringHeight <= stopHeight))
+			return stopHeight;
 		
-		if(rings.emptySpace > 0)
-				return ringHeight;
-		else if(rings.emptySpace < 0)
-			return -ringHeight;
-		
-		return 0;
+		return ringHeight;
 	}
 	
 	@Override
@@ -52,11 +70,11 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 		stack.translate(0.5, 0.5, 0.5);
 		//BlockPos transportPos = rings.getBlockPos().above(rings.emptySpace);
 		//int transportLight = LevelRenderer.getLightColor(rings.getLevel(), transportPos);
-		this.transportRings.setRingHeight(1, getHeight(rings, 1, partialTick));
-		this.transportRings.setRingHeight(2, getHeight(rings, 2, partialTick));
-		this.transportRings.setRingHeight(3, getHeight(rings, 3, partialTick));
-		this.transportRings.setRingHeight(4, getHeight(rings, 4, partialTick));
-		this.transportRings.setRingHeight(5, getHeight(rings, 5, partialTick));
+		this.transportRings.setRingHeight(1, getHeight(rings, 0, partialTick));
+		this.transportRings.setRingHeight(2, getHeight(rings, 1, partialTick));
+		this.transportRings.setRingHeight(3, getHeight(rings, 2, partialTick));
+		this.transportRings.setRingHeight(4, getHeight(rings, 3, partialTick));
+		this.transportRings.setRingHeight(5, getHeight(rings, 4, partialTick));
 		this.transportRings.renderTransportRings(rings, partialTick, stack, source, combinedLight, combinedOverlay);
 	    stack.popPose();
 	}

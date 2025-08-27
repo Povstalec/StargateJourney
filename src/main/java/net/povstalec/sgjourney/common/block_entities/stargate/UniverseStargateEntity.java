@@ -223,7 +223,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	@Override
 	protected int rotationStep()
 	{
-		return FAST_ROTATION ? (this.rotating ? 3 : 2) : 2;
+		return FAST_ROTATION ? (this.rotating ? 3 : 2) : 2; // Only rotates fast during computer dialing or DHD dialing, not during redstone dialing
 	}
 	
 	@Override
@@ -269,8 +269,10 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(int openTime, StargateInfo.ChevronLockSpeed chevronLockSpeed)
+	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
 	{
+		super.doWhileDialed(connectedAddress, kawooshStartTicks, chevronLockSpeed, openTime);
+		
 		if(this.level.isClientSide())
 			return;
 		
