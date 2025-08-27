@@ -102,6 +102,8 @@ public class PegasusStargateEntity extends IrisStargateEntity
 			symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
 			symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
 		}
+		
+		super.deserializeStargateInfo(tag, isUpgraded);
 	}
 	
 	@Override
