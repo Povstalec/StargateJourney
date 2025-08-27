@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +16,7 @@ import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 
 public class InterfaceModeButton extends SGJourneyButton
 {
-	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/interface_widgets.png");
+	public static final ResourceLocation WIDGETS_LOCATION = StargateJourney.sgjourneyLocation("textures/gui/interface_widgets.png");
 	
 	protected InterfaceScreen screen;
 	
@@ -37,10 +38,11 @@ public class InterfaceModeButton extends SGJourneyButton
 	}
 	
 	@Override
-	public void renderButton(PoseStack stack, int mouseX, int mouseY, float partialTick)
+	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick)
 	{
+		this.isHovered = isHovered(mouseX, mouseY);
+		
 		Minecraft minecraft = Minecraft.getInstance();
-		Font font = minecraft.font;
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, texture);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
@@ -49,10 +51,9 @@ public class InterfaceModeButton extends SGJourneyButton
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.enableDepthTest();
-		this.blit(stack, this.getX(), this.getY(), xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
-		this.blit(stack, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + y * 20, this.width / 2, this.height);
-		this.renderBg(stack, minecraft, mouseX, mouseY);
+		graphics.blit(texture, this.getX(), this.getY(), xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
+		graphics.blit(texture, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, 46 + y * 20, this.width / 2, this.height);
 		int j = getFGColor();
-		drawCenteredString(stack, font, this.getMessage(), this.getX() + this.width / 2 , this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+		this.renderString(graphics, minecraft.font, j | Mth.ceil(this.alpha * 255.0F) << 24);
 	}
 }

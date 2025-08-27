@@ -279,7 +279,7 @@ public class CoordinateHelper
 			if(pos == null)
 				return null;
 			
-			return new BlockPos(pos);
+			return new BlockPos((int) Math.floor(pos.x()), (int) Math.floor(pos.y()), (int) Math.floor(pos.z()));
 		}
 	}
 }

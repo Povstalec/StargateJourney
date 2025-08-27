@@ -9,11 +9,11 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundInterfaceUpdatePacket;
 
 public class InterfaceMenu extends AbstractContainerMenu
@@ -50,7 +50,7 @@ public class InterfaceMenu extends AbstractContainerMenu
 	
 	public void setEnergyTargetAndMode(long energyTarget, InterfaceMode mode)
 	{
-		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundInterfaceUpdatePacket(this.interfaceEntity.getBlockPos(), energyTarget, mode));
+		PacketDistributor.sendToServer(new ServerboundInterfaceUpdatePacket(this.interfaceEntity.getBlockPos(), energyTarget, mode));
 	}
 	
 	public long getEnergyTarget()

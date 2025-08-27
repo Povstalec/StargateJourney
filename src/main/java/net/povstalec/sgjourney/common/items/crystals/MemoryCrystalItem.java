@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import org.jetbrains.annotations.Nullable;
 
@@ -242,7 +243,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem)
 		{
-			CompoundTag tag = stack.getTag();
+			CompoundTag tag = stack.get(DataComponentInit.CRYSTAL_MEMORY);
 			if(tag != null && tag.contains(MEMORY_LIST, Tag.TAG_LIST))
 				return tag.getList(MEMORY_LIST, Tag.TAG_COMPOUND);
 		}
@@ -256,7 +257,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		{
 			CompoundTag tag = new CompoundTag();
 			tag.put(MEMORY_LIST, list);
-			stack.setTag(tag);
+			stack.set(DataComponentInit.CRYSTAL_MEMORY, tag);
 		}
 	}
 	

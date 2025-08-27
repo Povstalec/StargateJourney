@@ -18,7 +18,7 @@ public class Layers
 	public static final ModelLayerLocation FALCON_HEAD = new ModelLayerLocation(StargateJourney.sgjourneyLocation("falcon_head"), "main");
 	public static final ModelLayerLocation JACKAL_HEAD = new ModelLayerLocation(StargateJourney.sgjourneyLocation("jackal_head"), "main");
 	
-	public static final ModelLayerLocation GOAULD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "goauld"), "main");
+	public static final ModelLayerLocation GOAULD = new ModelLayerLocation(StargateJourney.sgjourneyLocation("goauld"), "main");
 	
 	public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
 	{

@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 
 public class Unas extends Anthropoid
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/zombie/zombie.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/zombie/zombie.png");
 	
 	public Unas(EntityType<? extends Unas> type, Level level)
 	{

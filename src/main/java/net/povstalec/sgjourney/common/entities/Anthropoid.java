@@ -66,15 +66,9 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 		return null;
 	}
 	
-	@Override
-	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions)
-	{
-		return this.isBaby() ? 0.93F : 1.74F;
-	}
-	
 	public void reassessWeaponGoal()
 	{
-		if(this.level == null || this.level.isClientSide())
+		if(this.level() == null || this.level().isClientSide())
 			return;
 		
 		this.goalSelector.removeGoal(this.meleeGoal);
@@ -89,7 +83,7 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 		{
 			int i = 20;
 			
-			if(this.level.getDifficulty() != Difficulty.HARD)
+			if(this.level().getDifficulty() != Difficulty.HARD)
 				i = 40;
 			
 			this.bowGoal.setMinAttackInterval(i);
@@ -102,10 +96,10 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 	
 	@Override
 	@Nullable
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag tag)
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData)
 	{
 		this.setCanPickUpLoot(true);
-		spawnGroupData = super.finalizeSpawn(level, difficulty, type, spawnGroupData, tag);
+		spawnGroupData = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
 		
 		reassessWeaponGoal();
 		
@@ -124,7 +118,7 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 	{
 		super.setItemSlot(slot, stack);
 		
-		if(!this.level.isClientSide())
+		if(!this.level().isClientSide())
 			this.reassessWeaponGoal();
 		
 	}
@@ -140,21 +134,22 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 	
 	protected void performBowAttack(LivingEntity entity, float distanceFactor)
 	{
-		ItemStack itemstack = this.getProjectile(this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, (item) -> item instanceof BowItem)));
-		AbstractArrow abstractarrow = ProjectileUtil.getMobArrow(this, itemstack, distanceFactor);
+		ItemStack bow = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, (item) -> item instanceof BowItem));
+		ItemStack itemstack = this.getProjectile(bow);
+		AbstractArrow abstractarrow = ProjectileUtil.getMobArrow(this, itemstack, distanceFactor, bow);
 		
 		if(this.getMainHandItem().getItem() instanceof BowItem)
-			abstractarrow = ((BowItem)this.getMainHandItem().getItem()).customArrow(abstractarrow);
+			abstractarrow = ((BowItem)this.getMainHandItem().getItem()).customArrow(abstractarrow, itemstack, bow);
 		
 		double d0 = entity.getX() - this.getX();
 		double d1 = entity.getY(0.3333333333333333) - abstractarrow.getY();
 		double d2 = entity.getZ() - this.getZ();
 		double d3 = Math.sqrt(d0 * d0 + d2 * d2);
 		
-		abstractarrow.shoot(d0, d1 + d3 * 0.20000000298023224, d2, 1.6F, (float)(14 - this.level.getDifficulty().getId() * 4));
+		abstractarrow.shoot(d0, d1 + d3 * 0.20000000298023224, d2, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
 		
 		this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-		this.level.addFreshEntity(abstractarrow);
+		this.level().addFreshEntity(abstractarrow);
 	}
 	
 	protected void performStaffWeaponAttack(LivingEntity entity, float distanceFactor)
@@ -163,17 +158,17 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 		
 		if(itemstack.getItem() instanceof StaffWeaponItem staffWeapon && staffWeapon.tryDepleteLiquidNaquadah(itemstack))
 		{
-			PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), this, level, staffWeapon.getExplosionPower(itemstack));
+			PlasmaProjectile plasmaProjectile = new PlasmaProjectile(EntityInit.JAFFA_PLASMA.get(), this, level(), staffWeapon.getExplosionPower(itemstack));
 			
 			double x = entity.getX() - this.getX();
 			double y = entity.getY(0.3333333333333333) - plasmaProjectile.getY();
 			double z = entity.getZ() - this.getZ();
 			double distance = Math.sqrt(x * x + z * z);
 			
-			plasmaProjectile.shoot(x, y + distance * 0.125, z, 1.6F, (float)(14 - this.level.getDifficulty().getId() * 4));
+			plasmaProjectile.shoot(x, y + distance * 0.125, z, 1.6F, (float)(14 - this.level().getDifficulty().getId() * 4));
 			
 			this.playSound(SoundInit.MATOK_FIRE.get(), 0.25F, 1.0F);
-			level.addFreshEntity(plasmaProjectile);
+			level().addFreshEntity(plasmaProjectile);
 		}
 	}
 	

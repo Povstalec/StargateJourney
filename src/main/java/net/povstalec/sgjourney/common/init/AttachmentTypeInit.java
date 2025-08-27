@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.init;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.nbt.CompoundTag;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -16,6 +17,11 @@ public class AttachmentTypeInit
 	public static final DeferredHolder<AttachmentType<?>, AttachmentType<AncientGene.ATAGene>> ATA_GENE = ATTACHMENT_TYPES.register("ata_gene", () -> AttachmentType.builder(() -> AncientGene.ATAGene.UNDECIDED)
 			.serialize(AncientGene.CODEC, ancientGene -> ancientGene != AncientGene.ATAGene.UNDECIDED)
 			.copyHandler((ancientGene, holder, provider) -> ancientGene == AncientGene.ATAGene.UNDECIDED ? null : ancientGene)
+			.build());
+	
+	public static final DeferredHolder<AttachmentType<?>, AttachmentType<CompoundTag>> GOAULD_HOST = ATTACHMENT_TYPES.register("goauld_host", () -> AttachmentType.builder(() -> new CompoundTag())
+			.serialize(CompoundTag.CODEC, goauldHost -> goauldHost != null)
+			.copyHandler((goauldHost, holder, provider) -> goauldHost)
 			.build());
 	
 	public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> BLOODSTREAM_NAQUADAH = ATTACHMENT_TYPES.register("bloodstream_naquadah", () -> AttachmentType.builder(() -> false)

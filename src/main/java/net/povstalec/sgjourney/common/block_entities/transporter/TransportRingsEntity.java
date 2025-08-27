@@ -6,18 +6,18 @@ import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.blocks.transporter.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
@@ -35,23 +35,17 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	public int progress = -1;
 	public int progressOld = -1;
 	
-	public TransportRingsEntity(BlockPos pos, BlockState state) 
+	public TransportRingsEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state);
 	}
-
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
-    }
 	
 	@Override
 	public int getTimeOffset()
 	{
 		return getTransportHeight();
 	}
-
+	
 	//========================================================================================================
 	//**********************************************Transporting**********************************************
 	//========================================================================================================
@@ -81,7 +75,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	public void updateClient()
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)),
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(),
 					new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight, this.progress));
 	}
 	
@@ -214,10 +208,10 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		{
 			for(int i = 4; i <= 16; i++)
 			{
-				if(!level.getBlockState(pos.below(i)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.below(i - 1)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.below(i - 2)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.below(i - 3)).getMaterial().isReplaceable())
+				if(!level.getBlockState(pos.below(i)).canBeReplaced() &&
+						level.getBlockState(pos.below(i - 1)).canBeReplaced() &&
+						level.getBlockState(pos.below(i - 2)).canBeReplaced() &&
+						level.getBlockState(pos.below(i - 3)).canBeReplaced())
 				{
 					return -i + 1;
 				}
@@ -227,9 +221,9 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		{
 			for(int i = 1; i <= 16; i++)
 			{
-				if(level.getBlockState(pos.above(i)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.above(i + 1)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.above(i + 2)).getMaterial().isReplaceable())
+				if(level.getBlockState(pos.above(i)).canBeReplaced() &&
+						level.getBlockState(pos.above(i + 1)).canBeReplaced() &&
+						level.getBlockState(pos.above(i + 2)).canBeReplaced())
 				{
 					return i;
 				}
@@ -245,13 +239,13 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		return 0;
 	}
-
+	
 	@Override
 	public long maxReceive()
 	{
 		return 0;
 	}
-
+	
 	@Override
 	public long maxExtract()
 	{

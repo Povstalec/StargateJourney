@@ -198,7 +198,7 @@ public class SpawnerStargate implements Stargate
 	
 	protected Entity spawnEntity(ServerLevel level, EntityType<?> entityType)
 	{
-		Entity entity = entityType.spawn(level, (CompoundTag) null, null, new BlockPos(0, 1024, 0), MobSpawnType.EVENT, true, false);
+		Entity entity = entityType.spawn(level, null, null, new BlockPos(0, 1024, 0), MobSpawnType.EVENT, true, false);
 		//entity.setNoGravity(true);
 		return entity;
 	}

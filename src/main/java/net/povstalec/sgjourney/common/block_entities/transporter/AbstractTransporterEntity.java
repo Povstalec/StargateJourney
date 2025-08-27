@@ -6,10 +6,10 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
@@ -209,8 +209,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	protected void loadChunk(boolean load)
 	{
 		if(!level.isClientSide())
-			ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(),
-					level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+			level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), load);
 	}
 	
 	//========================================================================================================

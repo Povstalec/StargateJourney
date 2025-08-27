@@ -436,7 +436,7 @@ public class SGJourneyStargate implements Stargate
 			
 			if(stargate instanceof IrisStargateEntity irisStargate && !this.wormhole.checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
 			{
-				this.wormhole.handleShielding(irisStargate, traveler);
+				this.wormhole.handleShielding(server, irisStargate, traveler);
 				return true;
 			}
 			

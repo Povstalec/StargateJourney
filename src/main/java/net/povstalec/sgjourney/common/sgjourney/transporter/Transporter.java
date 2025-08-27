@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -45,7 +46,7 @@ public interface Transporter
 	
 	void updateTicks(MinecraftServer server, int connectionTime);
 	
-	CompoundTag serializeNBT();
+	CompoundTag serializeNBT(HolderLookup.Provider registries);
 	
-	void deserializeNBT(MinecraftServer server, UUID uuid, CompoundTag tag);
+	void deserializeNBT(MinecraftServer server, UUID uuid, CompoundTag tag, HolderLookup.Provider registries);
 }

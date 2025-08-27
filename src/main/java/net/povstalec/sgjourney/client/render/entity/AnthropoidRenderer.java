@@ -14,7 +14,7 @@ public class AnthropoidRenderer<T extends Anthropoid> extends HumanoidMobRendere
 	public AnthropoidRenderer(EntityRendererProvider.Context context, AnthropoidModel model, AnthropoidModel innerModel, AnthropoidModel outerModel)
 	{
 		super(context, model, 0.5F);
-		this.addLayer(new HumanoidArmorLayer(this, innerModel, outerModel));
+		this.addLayer(new HumanoidArmorLayer(this, innerModel, outerModel, context.getModelManager()));
 	}
 	
 	public AnthropoidRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer, ModelLayerLocation innerArmorLayer, ModelLayerLocation outerArmorLayer)

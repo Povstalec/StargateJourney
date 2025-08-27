@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -171,7 +172,7 @@ public class SGJourneyTransporter implements Transporter
 	
 	
 	@Override
-	public CompoundTag serializeNBT()
+	public CompoundTag serializeNBT(HolderLookup.Provider registries)
 	{
 		CompoundTag transporterTag = new CompoundTag();
 		ResourceKey<Level> level = this.getDimension();
@@ -181,18 +182,18 @@ public class SGJourneyTransporter implements Transporter
 		transporterTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
 		
 		if(this.name != null)
-			transporterTag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
+			transporterTag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name, registries));
 		
 		return transporterTag;
 	}
 	
-	public void deserializeNBT(MinecraftServer server, UUID uuid, CompoundTag tag)
+	public void deserializeNBT(MinecraftServer server, UUID uuid, CompoundTag tag, HolderLookup.Provider registries)
 	{
 		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		this.blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
-			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
+			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), registries);
 		
 		this.id = uuid;
 	}

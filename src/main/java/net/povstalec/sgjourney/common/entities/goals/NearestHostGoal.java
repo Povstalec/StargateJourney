@@ -4,9 +4,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.povstalec.sgjourney.common.capabilities.GoauldHost;
-import net.povstalec.sgjourney.common.capabilities.GoauldHostProvider;
-
-import java.util.Optional;
 
 public class NearestHostGoal<T extends LivingEntity> extends NearestAttackableTargetGoal<T>
 {
@@ -17,9 +14,9 @@ public class NearestHostGoal<T extends LivingEntity> extends NearestAttackableTa
 	
 	public static boolean isSuitableHost(LivingEntity target)
 	{
-		Optional<GoauldHost> cap = target.getCapability(GoauldHostProvider.GOAULD_HOST).resolve();
+		GoauldHost cap = target.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
 		
-		if(cap.isEmpty() || cap.get().isHost()) // Goa'uld won't try to take over a mob that is a host to another Goa'uld
+		if(cap == null || cap.isHost()) // Goa'uld won't try to take over a mob that is a host to another Goa'uld
 			return false;
 		
 		return target.getHealth() > target.getMaxHealth() / 3F;

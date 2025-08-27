@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -18,12 +17,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.povstalec.sgjourney.common.capabilities.GoauldHost;
-import net.povstalec.sgjourney.common.capabilities.GoauldHostProvider;
 import net.povstalec.sgjourney.common.entities.Goauld;
 import net.povstalec.sgjourney.common.init.EntityInit;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class GoauldItem extends Item
 {
@@ -71,15 +68,15 @@ public class GoauldItem extends Item
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand)
 	{
-		if(player.getLevel().isClientSide())
+		if(player.level().isClientSide())
 			return super.interactLivingEntity(stack, player, target, hand);
 		
-		Optional<GoauldHost> cap = target.getCapability(GoauldHostProvider.GOAULD_HOST).resolve();
+		GoauldHost cap = target.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
 		
-		if(!cap.isPresent() || !(target instanceof Mob mob) || !cap.get().takeOverHost(stack, mob))
+		if(cap == null || !(target instanceof Mob mob) || !cap.takeOverHost(stack, mob))
 			return InteractionResult.FAIL;
 		
-		target.hurt(DamageSource.GENERIC, 1); //TODO Add Goa'uld damage source
+		target.hurt(player.damageSources().generic(), 1); //TODO Add Goa'uld damage source
 		stack.shrink(1);
 		return InteractionResult.CONSUME;
 	}
