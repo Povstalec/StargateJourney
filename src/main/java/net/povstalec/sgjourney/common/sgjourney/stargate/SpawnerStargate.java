@@ -85,6 +85,24 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
+	public @Nullable Vec3 getForward(MinecraftServer server)
+	{
+		return null;
+	}
+	
+	@Override
+	public @Nullable Vec3 getUp(MinecraftServer server)
+	{
+		return null;
+	}
+	
+	@Override
+	public double getInnerRadius()
+	{
+		return 0;
+	}
+	
+	@Override
 	public @Nullable SolarSystem.Serializable getSolarSystem(MinecraftServer server)
 	{
 		return Universe.get(server).getSolarSystemFromDimension(Conversion.stringToDimension("sgjourney:abydos")); // TODO

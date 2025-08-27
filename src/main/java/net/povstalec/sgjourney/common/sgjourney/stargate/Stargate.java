@@ -10,6 +10,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
@@ -57,6 +58,23 @@ public interface Stargate
 	 */
 	@Nullable
 	Vec3 getPosition();
+	
+	/**
+	 * @return Unit Vector with the direction the Stargate is facing or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getForward(MinecraftServer server);
+	
+	/**
+	 * @return Unit Vector with the direction the Stargate considers up or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getUp(MinecraftServer server);
+	
+	/**
+	 * @return Inner Radius of the Stargate or 0 if the Stargate doesn't have a real form
+	 */
+	double getInnerRadius();
 	
 	/**
 	 * @return Solar System the Stargate is located in or null if it's not located in any Solar System

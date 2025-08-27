@@ -44,6 +44,10 @@ public class SGJourneyStargate implements Stargate
 	protected int timesOpened;
 	protected int network;
 	
+	protected Vec3 forward = null;
+	protected Vec3 up = null;
+	protected Vec3 right = null;
+	
 	protected Wormhole wormhole = new Wormhole();
 	
 	public SGJourneyStargate() {}
@@ -85,6 +89,57 @@ public class SGJourneyStargate implements Stargate
 	public @Nullable Vec3 getPosition()
 	{
 		return getBlockPos().getCenter();
+	}
+	
+	@Override
+	public @Nullable Vec3 getForward(MinecraftServer server)
+	{
+		if(forward == null)
+		{
+			forward = stargateReturn(server, stargate ->
+			{
+				Direction direction = stargate.getDirection();
+				Orientation orientation = stargate.getOrientation();
+				
+				return Orientation.getForwardVector(direction, orientation);
+			}, null);
+		}
+		
+		return forward;
+	}
+	
+	@Override
+	public @Nullable Vec3 getUp(MinecraftServer server)
+	{
+		if(up == null)
+		{
+			up = stargateReturn(server, stargate ->
+			{
+				Direction direction = stargate.getDirection();
+				Orientation orientation = stargate.getOrientation();
+				
+				return Orientation.getUpVector(direction, orientation);
+			}, null);
+		}
+		
+		return up;
+	}
+	
+	public Vec3 getRight(MinecraftServer server)
+	{
+		if(right == null)
+		{
+			if(getForward(server) != null && getUp(server) != null)
+				right = CoordinateHelper.StargateCoords.getStargateRight(getForward(server), getUp(server));
+		}
+		
+		return right;
+	}
+	
+	@Override
+	public double getInnerRadius()
+	{
+		return INNER_RADIUS;
 	}
 	
 	@Override
@@ -379,12 +434,9 @@ public class SGJourneyStargate implements Stargate
 	{
 		stargateRun(server, stargate ->
 		{
-			Direction direction = stargate.getDirection();
-			Orientation orientation = stargate.getOrientation();
-			
-			Vec3 forward = Orientation.getForwardVector(direction, orientation);
-			Vec3 up = Orientation.getUpVector(direction, orientation);
-			Vec3 right = forward.cross(up);
+			Vec3 forward = getForward(server);
+			Vec3 up = getUp(server);
+			Vec3 right = getRight(server);
 			
 			if(this.wormhole.wormholeEntities(server, this, destinationStargate, wormholeTravel, stargate.getCenter(), forward, up, right, wormholeCandidates))
 				connection.setUsed(true);
@@ -417,20 +469,17 @@ public class SGJourneyStargate implements Stargate
 	{
 		return stargateReturn(server, stargate ->
 		{
-			Direction direction = stargate.getDirection();
-			Orientation orientation = stargate.getOrientation();
-			
+			Vec3 forward = getForward(server);
+			Vec3 up = getUp(server);
+			Vec3 right = getRight(server);
 			// Multiplied some elements by -1 to make the traveler exit the Stargate in a mirrored position
-			Vec3 forward = Orientation.getForwardVector(direction, orientation);
-			Vec3 up = Orientation.getUpVector(direction, orientation);
-			Vec3 right = forward.cross(up);
-			right = right.multiply(-1, -1, -1);
-			forward = forward.multiply(-1, -1, -1);
+			right = CoordinateHelper.StargateCoords.mirrorStargateCoords(right);
+			forward = CoordinateHelper.StargateCoords.mirrorStargateCoords(forward);
 			
 			// TODO Tie this to Advanced Protocols
 			Vec3 tempMomentum = relativeMomentum.x() > -MIN_TRAVELER_SPEED ? new Vec3(-MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 			
-			Vec3 destinationPosition = CoordinateHelper.StargateCoords.toStargateCoords(relativePosition, forward, up, right, INNER_RADIUS).add(stargate.getCenter());
+			Vec3 destinationPosition = CoordinateHelper.StargateCoords.toStargateCoords(relativePosition, forward, up, right, getInnerRadius()).add(stargate.getCenter());
 			Vec3 destinationMomentum = CoordinateHelper.StargateCoords.toStargateCoords(tempMomentum, forward, up, right);
 			Vec3 destinationLookAngle = CoordinateHelper.StargateCoords.toStargateCoords(relativeLookAngle, forward, up, right);
 			

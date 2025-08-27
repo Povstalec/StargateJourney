@@ -212,6 +212,16 @@ public class CoordinateHelper
 	public static class StargateCoords
 	{
 		/**
+		 * @param forward Vector in the direction the Stargate is facing
+		 * @param up Vector in the direction the relative up direction of the Stargate
+		 * @return Vector facing to the right of the provided forward and up vector
+		 */
+		public static Vec3 getStargateRight(Vec3 forward, Vec3 up)
+		{
+			return forward.cross(up);
+		}
+		
+		/**
 		 * Transforms the vector from a Stargate's relative corodinate system, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction, with the Y and Z vectors being a percentage of the Stargate's radius
 		 * to a vector in the absolute coordinate system
 		 * @param vector Vector to be transformed
@@ -239,6 +249,16 @@ public class CoordinateHelper
 		public static Vec3 fromStargateCoords(Vec3 vector, Vec3 forward, Vec3 up, Vec3 right)
 		{
 			return Relative.fromOrthogonalBasis(vector, forward, up, right);
+		}
+		
+		/**
+		 * Mirrors the Vector, used in cases like exiting the Stargate, where the traveler will want to exit the Stargate in the front
+		 * @param vector Vector to mirror
+		 * @return Mirrored vector
+		 */
+		public static Vec3 mirrorStargateCoords(Vec3 vector)
+		{
+			return vector.multiply(-1, -1, -1);
 		}
 		
 		/**
