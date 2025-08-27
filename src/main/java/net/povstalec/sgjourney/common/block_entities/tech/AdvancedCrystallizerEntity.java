@@ -46,10 +46,10 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
 		
 		// Only allows creating Stargate Upgrade Crystals when it's enabled in the config
 		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() &&
-				recipe.get().getResultItem(null).getItem() instanceof StargateUpgradeItem)
+				recipe.get().getResultItem(level.getServer().registryAccess()).getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return hasSpaceInOutputSlot(inventory, recipe.get().getResultItem(null));
+		return hasSpaceInOutputSlot(inventory, recipe.get().getResultItem(level.getServer().registryAccess()));
 	}
 	
 	protected void crystallize()
