@@ -10,7 +10,6 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
@@ -248,16 +247,15 @@ public interface Stargate
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @return Energy currently Stored in the Stargate's energy buffer
+	 * @return Energy currently stored in the Stargate's energy buffer
 	 */
 	long getEnergyStored(MinecraftServer server);
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @param energy Amount of energy to be extracted
-	 * @return True if the specified amount of energy can be extracted from the Stargate (basically if it has enough energy)
+	 * @return Max amount of energy tuat can be stored in the Stargate's energy buffer
 	 */
-	boolean canExtractEnergy(MinecraftServer server, long energy);
+	long getEnergyCapacity(MinecraftServer server);
 	
 	/**
 	 * Extracts energy from the Stargate's energy buffer
@@ -266,18 +264,23 @@ public interface Stargate
 	 * @param simulate True if the depletion will only be simulated and the amount of energy in the Stargate's energy buffer will stay the same, if false, the energy is extracted from the energy buffer
 	 * @return Amount of energy that was actually depleted
 	 */
-	long depleteEnergy(MinecraftServer server, long energy, boolean simulate);
+	long extractEnergy(MinecraftServer server, long energy, boolean simulate);
 	
 	// Stargate Connection
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @return The Speed at which this Stargate's chevrons lock during an incoming connection
+	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
+	 * @return Time (in ticks) it takes the Stargate to engage its Chevrons and start establishing a wormhole (kawoosh is not included in this)
 	 */
-	default StargateInfo.ChevronLockSpeed getChevronLockSpeed(MinecraftServer server)
-	{
-		return StargateInfo.ChevronLockSpeed.SLOW;
-	}
+	int dialedEngageTime(MinecraftServer server, boolean doKawoosh);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
+	 * @return Time (in ticks) it takes the Stargate to establish wormhole (basically, how long before kawoosh is over and the Stargate can be safely used)
+	 */
+	int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh);
 	
 	/**
 	 * Checks if this Stargate can connect to the dialing Stargate and creates a Stargate Connection
@@ -298,7 +301,7 @@ public interface Stargate
 	void connectStargate(MinecraftServer server, StargateConnection connection, StargateConnection.State connectionState);
 	
 	/**
-	 * Performs whatever the Stargate needs to do while connecting (for example, playing the wormhole sound) - happens on both sides of the connection
+	 * Performs whatever the Stargate needs to do while connecting (for example, playing the kawoosh sound and handling the kawoosh itself) - happens on both sides of the connection
 	 * @param server Current Minecraft Server
 	 * @param incoming Whether the Stargate is on the incoming side or outgoing side of the connection
 	 * @param doKawoosh Whether kawoosh should form when the connection is established
@@ -312,10 +315,10 @@ public interface Stargate
 	 * @param server Current Minecraft Server
 	 * @param dialingAddress The connection Address of the dialing Stargate in relation to this connection
 	 * @param kawooshStartTicks Time of connection (in ticks) at which the kawoosh is scheduled to start
-	 * @param chevronLockSpeed The Speed at which this Stargate's chevrons lock during an incoming connection
+	 * @param doKawoosh Whether kawoosh should form when the connection is established
 	 * @param openTime Amount of time (in ticks) that has passed since the connection was established
 	 */
-	default void doWhileDialed(MinecraftServer server, Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime) {}
+	default void doWhileDialed(MinecraftServer server, Address dialingAddress, int kawooshStartTicks, boolean doKawoosh, int openTime) {}
 	
 	/**
 	 * Updates Stargate's timers with new time information
@@ -328,19 +331,12 @@ public interface Stargate
 	default void updateTimers(MinecraftServer server, int connectionTime, int kawooshTime, int openTime, int timeSinceLastTraveler) {}
 	
 	/**
-	 * Progresses the kawoosh of this Stargate (Destroys blocks, kills entities)
-	 * @param server Current Minecraft Server
-	 * @param kawooshTime Number of ticks since the kawoosh started
-	 */
-	default void doKawoosh(MinecraftServer server, int kawooshTime) {}
-	
-	/**
 	 * Performs whatever the Stargate needs to do while it's connected after the kawoosh (for example play idle wormhole sounds)
 	 * @param server Current Minecraft Server
 	 * @param incoming Whether the Stargate is on the incoming side or outgoing side of the connection
-	 * @param openTime Amount of time (in ticks) that has passed since the connection was established
+	 * @param connectionTime Amount of time (in ticks) that has passed since the connection was established
 	 */
-	default void doWhileConnected(MinecraftServer server, boolean incoming, int openTime) {}
+	default void doWhileConnected(MinecraftServer server, boolean incoming, int connectionTime) {}
 	
 	/**
 	 * Performs whatever the Stargate needs for its wormhole to try sending travelers to the connected Stargate

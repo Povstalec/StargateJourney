@@ -31,6 +31,9 @@ public class SGJourneyStargate implements Stargate
 	public static final double MIN_TRAVELER_SPEED = 0.4;
 	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
 	
+	public static final int KAWOOSH_TICKS = 40;
+	public static final int VORTEX_TICKS = 20;
+	
 	protected Address.Immutable address;
 	
 	@Nullable
@@ -344,13 +347,13 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public boolean canExtractEnergy(MinecraftServer server, long energy)
+	public long getEnergyCapacity(MinecraftServer server)
 	{
-		return stargateReturn(server, stargate -> stargate.canExtractEnergy(energy), false);
+		return stargateReturn(server, stargate -> stargate.getEnergyCapacity(), 0L);
 	}
 	
 	@Override
-	public long depleteEnergy(MinecraftServer server, long energy, boolean simulate)
+	public long extractEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
 		return stargateReturn(server, stargate -> stargate.depleteEnergy(energy, simulate), 0L);
 	}
@@ -358,9 +361,15 @@ public class SGJourneyStargate implements Stargate
 	// Stargate Connection
 	
 	@Override
-	public StargateInfo.ChevronLockSpeed getChevronLockSpeed(MinecraftServer server)
+	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)
 	{
-		return stargateReturn(server, stargate -> stargate.getChevronLockSpeed(), StargateInfo.ChevronLockSpeed.SLOW);
+		return stargateReturn(server, stargate -> stargate.getChevronLockSpeed(doKawoosh).getKawooshStartTicks(), StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks());
+	}
+	
+	@Override
+	public int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh)
+	{
+		return KAWOOSH_TICKS + VORTEX_TICKS;
 	}
 	
 	@Override
@@ -402,9 +411,9 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void doWhileDialed(MinecraftServer server, Address connectedAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	public void doWhileDialed(MinecraftServer server, Address connectedAddress, int kawooshStartTicks, boolean doKawoosh, int openTime)
 	{
-		stargateRun(server, stargate -> stargate.doWhileDialed(connectedAddress, kawooshStartTicks, chevronLockSpeed, openTime));
+		stargateRun(server, stargate -> stargate.doWhileDialed(connectedAddress, kawooshStartTicks, doKawoosh, openTime));
 	}
 	
 	@Override
@@ -416,12 +425,6 @@ public class SGJourneyStargate implements Stargate
 			stargate.setOpenTime(openTime);
 			stargate.setTimeSinceLastTraveler(timeSinceLastTraveler);
 		});
-	}
-	
-	@Override
-	public void doKawoosh(MinecraftServer server, int kawooshTime)
-	{
-		stargateRun(server, stargate -> stargate.doKawoosh(kawooshTime));
 	}
 	
 	@Override

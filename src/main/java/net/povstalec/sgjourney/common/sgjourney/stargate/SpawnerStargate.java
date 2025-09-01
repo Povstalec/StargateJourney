@@ -27,6 +27,9 @@ public class SpawnerStargate implements Stargate
 {
 	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
 	
+	public static final int KAWOOSH_TICKS = 40;
+	public static final int VORTEX_TICKS = 20;
+	
 	protected Address.Immutable id9ChevronAddress;
 	
 	protected final int attackerMinCount;
@@ -180,15 +183,27 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public boolean canExtractEnergy(MinecraftServer server, long energy)
+	public long getEnergyCapacity(MinecraftServer server)
 	{
-		return true;
+		return CommonStargateConfig.stargate_energy_capacity.get();
 	}
 	
 	@Override
-	public long depleteEnergy(MinecraftServer server, long energy, boolean simulate)
+	public long extractEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
-		return energy;
+		return Math.min(energy, getEnergyStored(server));
+	}
+	
+	@Override
+	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)
+	{
+		return StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks();
+	}
+	
+	@Override
+	public int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh)
+	{
+		return KAWOOSH_TICKS + VORTEX_TICKS;
 	}
 	
 	public void encodeAddress(Address address)

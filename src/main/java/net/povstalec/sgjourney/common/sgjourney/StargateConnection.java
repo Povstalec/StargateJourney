@@ -277,6 +277,54 @@ public class StargateConnection
 		return true;
 	}
 	
+	private void tickEstablishConnection(MinecraftServer server, int kawooshStartTicks)
+	{
+		int addressLength = this.dialingStargate.getAddress(server).getLength();
+		Address dialingAddress = this.dialingStargate.getConnectionAddress(server, dialedStargate.getSolarSystem(server), addressLength);
+		
+		this.dialedStargate.setChevronConfiguration(server, Dialing.getChevronConfiguration(dialingAddress.getLength()));
+		
+		this.dialingStargate.doWhileConnecting(server, false, doKawoosh(), kawooshStartTicks, this.connectionTime);
+		this.dialedStargate.doWhileConnecting(server, true, doKawoosh(), kawooshStartTicks, this.connectionTime);
+		
+		// Used for handling what the Stargate does when it's being dialed
+		// For example: Pegasus Stargate's ring booting up
+		this.dialedStargate.doWhileDialed(server, dialingAddress, kawooshStartTicks, doKawoosh(), this.connectionTime);
+		
+		// Updates Interfaces when a wormhole is detected
+		if(this.connectionTime == kawooshStartTicks)
+		{
+			List<Integer> emptyAddressList = new ArrayList<>();
+			List<Integer> dialedAddressList = Arrays.stream(dialedStargate.getAddress(server).toArray()).boxed().toList();
+			dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.BASIC, EVENT_INCOMING_WORMHOLE, emptyAddressList);
+			dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.CRYSTAL, EVENT_INCOMING_WORMHOLE, emptyAddressList);
+			dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.ADVANCED_CRYSTAL, EVENT_INCOMING_WORMHOLE, dialedAddressList);
+			List<Integer> dialingAddressList = Arrays.stream(dialingStargate.getAddress(server).toArray()).boxed().toList();
+			dialingStargate.updateInterfaceBlocks(server, null, EVENT_OUTGOING_WORMHOLE, dialingAddressList);
+		}
+	}
+	
+	public static boolean canExtract(MinecraftServer server, Stargate stargate, long energyExtracted)
+	{
+		return stargate.extractEnergy(server, energyExtracted, true) >= energyExtracted;
+	}
+	
+	private boolean depleteEnergy(MinecraftServer server, long energyDraw)
+	{
+		if(canExtract(server, this.dialingStargate, energyDraw))
+		{
+			this.dialingStargate.extractEnergy(server, energyDraw, false);
+			return true;
+		}
+		else if(CommonStargateConfig.can_draw_power_from_both_ends.get() && canExtract(server, this.dialedStargate, energyDraw))
+		{
+			this.dialedStargate.extractEnergy(server, energyDraw, false);
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public final void tick(MinecraftServer server)
 	{
 		if(!isStargateValid(server, this.dialingStargate) || !isStargateValid(server, this.dialedStargate))
@@ -289,50 +337,16 @@ public class StargateConnection
 		if(this.connectionTime == 0)
 			this.dialedStargate.updateInterfaceBlocks(server, null, EVENT_INCOMING_CONNECTION);
 		
-		StargateInfo.ChevronLockSpeed chevronLockSpeed = !doKawoosh() ? StargateInfo.ChevronLockSpeed.FAST : this.dialedStargate.getChevronLockSpeed(server);
-		int kawooshStartTicks = chevronLockSpeed.getKawooshStartTicks();
+		int kawooshStartTicks = this.dialedStargate.dialedEngageTime(server, doKawoosh());
 		int maxKawooshTicks = kawooshStartTicks + KAWOOSH_TICKS;
 		int maxOpeningTicks = maxKawooshTicks + VORTEX_TICKS;
 		
 		this.increaseTicks(kawooshStartTicks, maxKawooshTicks, maxOpeningTicks);
 		int kawooshTime = this.connectionTime - kawooshStartTicks;
 		
-		// Dialing Stargate waits here while dialed Stargate is locking Chevrons
-		if(this.connectionTime <= kawooshStartTicks)
-		{
-			int addressLength = this.dialingStargate.getAddress(server).getLength();
-			Address dialingAddress = this.dialingStargate.getConnectionAddress(server, dialedStargate.getSolarSystem(server), addressLength);
-			
-			this.dialedStargate.setChevronConfiguration(server, Dialing.getChevronConfiguration(dialingAddress.getLength()));
-			
-			// Used for handling what the Stargate does when it's being dialed
-			// For example: Pegasus Stargate's ring booting up
-			this.dialingStargate.doWhileConnecting(server, false, doKawoosh(), kawooshStartTicks, this.connectionTime);
-			this.dialedStargate.doWhileConnecting(server, true, doKawoosh(), kawooshStartTicks, this.connectionTime);
-			
-			this.dialedStargate.doWhileDialed(server, dialingAddress, kawooshStartTicks, chevronLockSpeed, this.connectionTime);
-			
-			// Updates Interfaces when a wormhole is detected
-			if(this.connectionTime == kawooshStartTicks)
-			{
-				List<Integer> emptyAddressList = new ArrayList<>();
-				List<Integer> dialedAddressList = Arrays.stream(dialedStargate.getAddress(server).toArray()).boxed().toList();
-				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.BASIC, EVENT_INCOMING_WORMHOLE, emptyAddressList);
-				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.CRYSTAL, EVENT_INCOMING_WORMHOLE, emptyAddressList);
-				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.ADVANCED_CRYSTAL, EVENT_INCOMING_WORMHOLE, dialedAddressList);
-				List<Integer> dialingAddressList = Arrays.stream(dialingStargate.getAddress(server).toArray()).boxed().toList();
-				dialingStargate.updateInterfaceBlocks(server, null, EVENT_OUTGOING_WORMHOLE, dialingAddressList);
-			}
-			
-			return;
-		}
-		
-		// Handles kawoosh progress
+		// Dialing Stargate waits here while dialed Stargate is locking Chevrons, then both Stargates do kawoosh
 		if(this.connectionTime < maxOpeningTicks)
-		{
-			this.dialingStargate.doKawoosh(server, kawooshTime);
-			this.dialedStargate.doKawoosh(server, kawooshTime);
-		}
+			tickEstablishConnection(server, kawooshStartTicks);
 		else
 		{
 			this.dialingStargate.updateTimers(server, this.connectionTime, kawooshTime, this.openTime, this.timeSinceLastTraveler);
@@ -355,20 +369,10 @@ public class StargateConnection
 		}
 		
 		// Depletes energy over time
-		if(requireEnergy)
+		if(requireEnergy && !depleteEnergy(server, this.connectionType.getPowerDraw(this.openTime >= maxOpenTime)))
 		{
-			long energyDraw = this.connectionType.getPowerDraw(this.openTime >= maxOpenTime);
-			
-			if(!this.dialingStargate.canExtractEnergy(server, energyDraw) && !this.dialedStargate.canExtractEnergy(server, energyDraw))
-			{
-				terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER);
-				return;
-			}
-			
-			if(CommonStargateConfig.can_draw_power_from_both_ends.get() && this.dialedStargate.getEnergyStored(server) > this.dialingStargate.getEnergyStored(server))
-				this.dialedStargate.depleteEnergy(server, energyDraw, false);
-			else
-				this.dialingStargate.depleteEnergy(server, energyDraw, false);
+			terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER);
+			return;
 		}
 		
 		if(this.used)

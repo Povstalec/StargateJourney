@@ -1283,7 +1283,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.openSoundLead;
 	}
 	
-	public abstract StargateInfo.ChevronLockSpeed getChevronLockSpeed();
+	public abstract StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh);
 	
 	@Override
 	public void getStatus(Player player)
@@ -1357,17 +1357,28 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public abstract void registerInterfaceMethods(StargatePeripheralWrapper wrapper);
 	
-	public void doWhileConnecting(boolean incoming, boolean doKawoosh, int kawooshStartTicks, int openTime)
+	public void doWhileConnecting(boolean incoming, boolean doKawoosh, int kawooshStartTicks, int connectionTime)
 	{
 		if(!doKawoosh)
 			return;
 		
-		if(openTime == kawooshStartTicks - getOpenSoundLead())
+		if(connectionTime == kawooshStartTicks - getOpenSoundLead())
 			openWormholeSound(incoming);
+		
+		if(connectionTime < kawooshStartTicks)
+			return;
+		
+		int kawooshTime = connectionTime - kawooshStartTicks;
+		doKawoosh(kawooshTime);
 	}
 	
-	public void doWhileDialed(Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	public void doWhileDialed(Address dialingAddress, int kawooshStartTicks, boolean doKawoosh, int openTime)
 	{
+		if(kawooshStartTicks > openTime)
+			return;
+		
+		StargateInfo.ChevronLockSpeed chevronLockSpeed = getChevronLockSpeed(doKawoosh);
+		
 		if(openTime % chevronLockSpeed.getChevronWaitTicks() == 0)
 		{
 			int dialedAddressLength = getAddress().getLength();

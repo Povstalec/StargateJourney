@@ -348,9 +348,9 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 
 	@Override
-	public ChevronLockSpeed getChevronLockSpeed()
+	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return CHEVRON_LOCK_SPEED;
+		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override
@@ -360,9 +360,9 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, boolean doKawoosh, int openTime)
 	{
-		super.doWhileDialed(connectedAddress, kawooshStartTicks, chevronLockSpeed, openTime);
+		super.doWhileDialed(connectedAddress, kawooshStartTicks, doKawoosh, openTime);
 		
 		if(this.level.isClientSide())
 			return;
@@ -370,6 +370,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		if(this.currentSymbol >= 36)
 			return;
 		
+		StargateInfo.ChevronLockSpeed chevronLockSpeed = getChevronLockSpeed(doKawoosh);
 		this.currentSymbol = openTime / chevronLockSpeed.getMultiplier();
 		this.updateClient();
 	}
