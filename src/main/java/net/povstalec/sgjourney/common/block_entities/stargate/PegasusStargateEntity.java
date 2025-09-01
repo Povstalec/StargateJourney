@@ -360,9 +360,9 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, boolean doKawoosh, int openTime)
+	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, boolean doKawoosh, int connectionTime)
 	{
-		super.doWhileDialed(connectedAddress, kawooshStartTicks, doKawoosh, openTime);
+		super.doWhileDialed(connectedAddress, kawooshStartTicks, doKawoosh, connectionTime);
 		
 		if(this.level.isClientSide())
 			return;
@@ -371,7 +371,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 			return;
 		
 		StargateInfo.ChevronLockSpeed chevronLockSpeed = getChevronLockSpeed(doKawoosh);
-		this.currentSymbol = openTime / chevronLockSpeed.getMultiplier();
+		this.currentSymbol = connectionTime / chevronLockSpeed.getMultiplier();
 		this.updateClient();
 	}
 	

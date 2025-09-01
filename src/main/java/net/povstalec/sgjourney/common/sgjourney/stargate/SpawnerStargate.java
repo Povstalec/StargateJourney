@@ -28,7 +28,6 @@ public class SpawnerStargate implements Stargate
 	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
 	
 	public static final int KAWOOSH_TICKS = 40;
-	public static final int VORTEX_TICKS = 20;
 	
 	protected Address.Immutable id9ChevronAddress;
 	
@@ -203,7 +202,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh)
 	{
-		return KAWOOSH_TICKS + VORTEX_TICKS;
+		return KAWOOSH_TICKS;
 	}
 	
 	public void encodeAddress(Address address)
@@ -253,7 +252,7 @@ public class SpawnerStargate implements Stargate
 				counter--;
 				
 				Entity entity = spawnEntity(level, EntityInit.JAFFA.get());
-				if(entity != null && connectedStargate.receiveTraveler(server, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
+				if(entity != null && connectedStargate.receiveTraveler(server, connection, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
 				{
 					connection.setTimeSinceLastTraveler(0);
 					connection.setUsed(true);
@@ -263,7 +262,7 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public boolean receiveTraveler(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	public boolean receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
 		if(traveler instanceof Player player)
 			player.displayClientMessage(Component.translatable("no"), true); // TODO add an actual message
@@ -272,9 +271,9 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public int autoclose(MinecraftServer server)
+	public boolean shouldAutoclose(MinecraftServer server, StargateConnection connection)
 	{
-		return 200;
+		return connection.getOpenTime() > 200;
 	}
 	
 	@Override

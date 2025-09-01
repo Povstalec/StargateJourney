@@ -70,7 +70,7 @@ public class Wormhole
 		return oldTravelerX > 0 && travelerX < 0 && momentumX < 0;
 	}
 	
-	protected boolean wormholeEntity(MinecraftServer server, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Vec3 centerPos, Vec3 forward, Vec3 up, Vec3 right, Map<Integer, Vec3> entityLocations, Entity traveler)
+	protected boolean wormholeEntity(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Vec3 centerPos, Vec3 forward, Vec3 up, Vec3 right, Map<Integer, Vec3> entityLocations, Entity traveler)
 	{
 		Vec3 relativePosition = CoordinateHelper.StargateCoords.fromStargateCoords(traveler.position().subtract(centerPos), forward, up, right, INNER_RADIUS);
 		Vec3 oldRelativePos = this.entityLocations.get(traveler.getId());
@@ -87,7 +87,7 @@ public class Wormhole
 				{
 					Vec3 relativeLookAngle = CoordinateHelper.StargateCoords.fromStargateCoords(traveler.getLookAngle(), forward, up, right);
 					
-					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(server, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle))
 					{
 						deconstructEvent(server, initialStargate, traveler, false);
 						return true;
@@ -102,14 +102,14 @@ public class Wormhole
 		return false;
 	}
 	
-	public boolean wormholeEntities(MinecraftServer server, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Vec3 centerPos, Vec3 forward, Vec3 up, Vec3 right, List<Entity> wormholeCandidates)
+	public boolean wormholeEntities(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Vec3 centerPos, Vec3 forward, Vec3 up, Vec3 right, List<Entity> wormholeCandidates)
 	{
 		boolean used = false;
 		Map<Integer, Vec3> entityLocations = new HashMap<>();
 		
 		for(Entity traveler : wormholeCandidates)
 		{
-			if(wormholeEntity(server, initialStargate, destinationStargate, twoWayWormhole, centerPos, forward, up, right, entityLocations, traveler))
+			if(wormholeEntity(server, connection, initialStargate, destinationStargate, twoWayWormhole, centerPos, forward, up, right, entityLocations, traveler))
 				used = true;
 		}
 		

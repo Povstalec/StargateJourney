@@ -113,6 +113,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
+	private static final ResourceLocation CAVUM_TENEBRAE = ResourceLocation.tryBuild(StargateJourney.MODID, "cavum_tenebrae"); // TODO Make this more configurable
+	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	// Basic Info
@@ -617,10 +619,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return 8 * Math.sin(Math.PI * (double) kawooshTime / StargateConnection.KAWOOSH_TICKS);
 	}
 	
-	public void doKawoosh(int kawooshTime)
+	public void doKawoosh()
 	{
-		setKawooshTickCount(kawooshTime);
-		
+		int kawooshTime = getKawooshTickCount();
 		if(kawooshTime > StargateConnection.KAWOOSH_TICKS)
 			return;
 		
@@ -1339,6 +1340,14 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return CommonStargateConfig.intergalactic_connection_energy_cost.get();
 	}
 	
+	public boolean pushTraveler()
+	{
+		if(this.getOrientation() == Orientation.UPWARD)
+			return true;
+		
+		return CAVUM_TENEBRAE.equals(getLevel().dimension().location());
+	}
+	
 	public float getVerticalCenterHeight()
 	{
 		return this.verticalCenterHeight;
@@ -1365,30 +1374,27 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(connectionTime == kawooshStartTicks - getOpenSoundLead())
 			openWormholeSound(incoming);
 		
-		if(connectionTime < kawooshStartTicks)
-			return;
-		
-		int kawooshTime = connectionTime - kawooshStartTicks;
-		doKawoosh(kawooshTime);
+		if(connectionTime >= kawooshStartTicks)
+			doKawoosh();
 	}
 	
-	public void doWhileDialed(Address dialingAddress, int kawooshStartTicks, boolean doKawoosh, int openTime)
+	public void doWhileDialed(Address dialingAddress, int kawooshStartTicks, boolean doKawoosh, int connectionTime)
 	{
-		if(kawooshStartTicks > openTime)
+		if(connectionTime > kawooshStartTicks)
 			return;
 		
 		StargateInfo.ChevronLockSpeed chevronLockSpeed = getChevronLockSpeed(doKawoosh);
 		
-		if(openTime % chevronLockSpeed.getChevronWaitTicks() == 0)
+		if(connectionTime % chevronLockSpeed.getChevronWaitTicks() == 0)
 		{
 			int dialedAddressLength = getAddress().getLength();
 			int dialingAddressLength = dialingAddress.getLength();
 			
 			if(dialedAddressLength < dialingAddress.getLength())
 			{
-				if(openTime / chevronLockSpeed.getChevronWaitTicks() == 4 && dialingAddressLength < 7)
+				if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 4 && dialingAddressLength < 7)
 					return;
-				else if(openTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddressLength < 8)
+				else if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddressLength < 8)
 					return;
 				else
 					encodeChevron(dialingAddress.getSymbol(dialedAddressLength), true, false);
@@ -1402,7 +1408,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		}
 	}
 	
-	public void doWhileConnected(boolean incoming, int openTime)
+	public void doWhileConnected(boolean incoming, int connectionTime)
 	{
 		idleWormholeSound(incoming);
 	}

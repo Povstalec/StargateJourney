@@ -269,21 +269,21 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, boolean doKawoosh, int openTime)
+	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, boolean doKawoosh, int connectionTime)
 	{
-		super.doWhileDialed(connectedAddress, kawooshStartTicks, doKawoosh, openTime);
+		super.doWhileDialed(connectedAddress, kawooshStartTicks, doKawoosh, connectionTime);
 		
 		if(this.level.isClientSide())
 			return;
 		
-		if(openTime == 1)
+		if(connectionTime == 1)
 		{
 			startSound();
 			startRotation(-1, true);
 		}
 		
 		StargateInfo.ChevronLockSpeed chevronLockSpeed = getChevronLockSpeed(doKawoosh);
-		if(openTime == chevronLockSpeed.getChevronWaitTicks() * 8)
+		if(connectionTime == chevronLockSpeed.getChevronWaitTicks() * 8)
 			endRotation(false);
 	}
 }
