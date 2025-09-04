@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
-public class Transporter
+public class OldTransporter
 {
 	public static final String DIMENSION = "Dimension";
 	public static final String COORDINATES = "Coordinates";
@@ -29,7 +29,7 @@ public class Transporter
 	@Nullable
 	private final Component name;
 	
-	public Transporter(UUID id, ResourceKey<Level> dimension, BlockPos blockPos, Component name)
+	public OldTransporter(UUID id, ResourceKey<Level> dimension, BlockPos blockPos, Component name)
 	{
 		this.id = id;
 		this.dimension = dimension;
@@ -38,7 +38,7 @@ public class Transporter
 		this.name = name;
 	}
 	
-	public Transporter(AbstractTransporterEntity transporterEntity)
+	public OldTransporter(AbstractTransporterEntity transporterEntity)
 	{
 		this(transporterEntity.getID(), transporterEntity.getLevel().dimension(), transporterEntity.getBlockPos(), transporterEntity.getCustomName());
 	}
@@ -110,7 +110,7 @@ public class Transporter
 		return transporterTag;
 	}
 	
-	public static Transporter deserialize(MinecraftServer server, String idString, CompoundTag tag)
+	public static OldTransporter deserialize(MinecraftServer server, String idString, CompoundTag tag)
 	{
 		UUID id;
 		ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
@@ -130,12 +130,12 @@ public class Transporter
 			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractTransporterEntity transporter)
 			{
 				transporter.setID(transporter.generateID());
-				return new Transporter(transporter);
+				return new OldTransporter(transporter);
 			}
 			else
 				return null;
 		}
 		
-		return new Transporter(id, dimension, blockPos, name);
+		return new OldTransporter(id, dimension, blockPos, name);
 	}
 }

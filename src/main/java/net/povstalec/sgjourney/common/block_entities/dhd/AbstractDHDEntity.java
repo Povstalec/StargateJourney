@@ -1,9 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +20,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
+import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +37,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
@@ -528,29 +526,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return this.direction;
 	}
 	
-	protected List<AbstractStargateEntity> getNearbyStargates(int maxDistance)
-	{
-		List<AbstractStargateEntity> stargates = new ArrayList<AbstractStargateEntity>();
-		
-		for(int x = -maxDistance / 16; x <= maxDistance / 16; x++)
-		{
-			for(int z = -maxDistance / 16; z <= maxDistance / 16; z++)
-			{
-				ChunkAccess chunk = this.level.getChunk(this.getBlockPos().east(16 * x).south(16 * z));
-				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
-				
-				positions.stream().forEach(pos ->
-				{
-					if(this.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate &&
-							distance(this.getBlockPos(), stargate.getBlockPos()) <= maxDistance)
-						stargates.add(stargate);
-				});
-			}
-		}
-		
-		return stargates;
-	}
-	
 	private double distance(BlockPos pos, BlockPos targetPos)
 	{
 		int x = Math.abs(targetPos.getX() - pos.getX());
@@ -564,7 +539,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public Vec3i findNearestStargate(int maxDistance)
 	{
-		List<AbstractStargateEntity> stargates = getNearbyStargates(maxDistance);
+		List<AbstractStargateEntity> stargates = LocatorHelper.getNearbyStargates(this.getLevel(), this.getBlockPos(), maxDistance);
 		
 		stargates.sort((stargateA, stargateB) ->
 				Double.valueOf(distance(this.getBlockPos(), stargateA.getBlockPos()))

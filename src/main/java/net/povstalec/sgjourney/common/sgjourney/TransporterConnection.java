@@ -54,6 +54,12 @@ public class TransporterConnection
 		this(server, uuid, transporterA, transporterB, 0);
 	}
 	
+	public enum Type
+	{
+		DIMENSIONAL,
+		INTERDIMENSIONAL
+	}
+	
 	@Nullable
 	public static final TransporterConnection create(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
@@ -126,19 +132,15 @@ public class TransporterConnection
 		List<Entity> entitiesA = transporterA.entitiesToTransport(server);
 		List<Entity> entitiesB = transporterB.entitiesToTransport(server);
 		
-		transportEntities(entitiesA, transportPosA, transportPosB);
-		transportEntities(entitiesB, transportPosB, transportPosA);
+		transportTravelers(server, entitiesA, transporterA, transporterB);
+		transportTravelers(server, entitiesB, transporterB, transporterA);
 	}
 	
-	private static void transportEntities(List<Entity> entities, BlockPos from, BlockPos to)
+	private static void transportTravelers(MinecraftServer server, List<Entity> travelers, Transporter from, Transporter to)
 	{
-		for(Entity entity : entities)
+		for(Entity traveler : travelers)
 		{
-			double xOffset = entity.getX() - from.getX();
-			double yOffset = entity.getY() - from.getY();
-			double zOffset = entity.getZ() - from.getZ();
-			
-			entity.teleportTo((to.getX() + xOffset), (to.getY() + yOffset), (to.getZ() + zOffset));
+			Transporting.transportTraveler(server, traveler, from, to);
 		}
 	}
 	

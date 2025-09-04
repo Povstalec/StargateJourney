@@ -355,7 +355,7 @@ public class Wormhole
 		void run(Entity entity);
 	}
 	
-	public class WormholeTeleporter implements ITeleporter
+	public static class WormholeTeleporter implements ITeleporter
 	{
 		private Vec3 pos;
 		private Vec3 momentum;

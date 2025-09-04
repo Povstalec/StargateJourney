@@ -10,6 +10,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -179,16 +180,17 @@ public final class TransporterNetwork extends SavedData
 			dimensions.get(dimensionString).removeTransporter(transporter);
 	}
 	
-	public Optional<List<Transporter>> getTransportersFromDimension(ResourceKey<Level> dimensionKey)
+	public List<Transporter> getTransportersFromDimension(ResourceKey<Level> dimensionKey)
 	{
 		if(dimensions.containsKey(dimensionKey.location().toString()))
 		{
 			Dimension dimension = dimensions.get(dimensionKey.location().toString());
 			
-			return Optional.of(dimension.getTransporters());
+			if(dimension != null)
+				return dimension.getTransporters();
 		}
 		
-		return Optional.empty();
+		return ImmutableList.of();
 	}
 	
 	public final void printDimensions()

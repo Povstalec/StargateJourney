@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -52,14 +53,14 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if (!level.isClientSide()) 
+        if(!level.isClientSide())
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if (blockEntity instanceof RingPanelEntity panel) 
+        	if(blockEntity instanceof RingPanelEntity panel)
         	{
         		panel.setTransportRings();
-        		panel.getNearest6Rings(level, pos, 32768);
+        		panel.getNearest6Rings((ServerLevel) level, pos, 32768);
 				
         		MenuProvider containerProvider = new MenuProvider() 
         		{
@@ -78,9 +79,7 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
         		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
-        	{
         		throw new IllegalStateException("Our named container provider is missing!");
-        	}
         }
         return InteractionResult.SUCCESS;
     }
@@ -106,17 +105,13 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
-		switch(state.getValue(FACING))
+		return switch (state.getValue(FACING))
 		{
-		case EAST:
-			return EAST;
-		case SOUTH:
-			return SOUTH;
-		case WEST:
-			return WEST;
-		default:
-			return NORTH;
-		}
+			case EAST -> EAST;
+			case SOUTH -> SOUTH;
+			case WEST -> WEST;
+			default -> NORTH;
+		};
 	}
 	
 }

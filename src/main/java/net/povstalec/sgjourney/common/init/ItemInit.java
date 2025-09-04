@@ -153,31 +153,31 @@ public class ItemInit
 	
 	// Armor
 	public static final RegistryObject<ArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet", 
-			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.HEAD, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> NAQUADAH_CHESTPLATE = ITEMS.register("naquadah_chestplate", 
-			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.CHEST, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.CHEST, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> NAQUADAH_LEGGINGS = ITEMS.register("naquadah_leggings", 
-			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.LEGS, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.LEGS, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> NAQUADAH_BOOTS = ITEMS.register("naquadah_boots", 
-			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.FEET, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.FEET, new Item.Properties().stacksTo(1).fireResistant()));
 	
 	public static final RegistryObject<ArmorItem> SYSTEM_LORD_HELMET = ITEMS.register("system_lord_helmet",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.HEAD, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> SYSTEM_LORD_CHESTPLATE = ITEMS.register("system_lord_chestplate",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.CHEST, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.CHEST, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> SYSTEM_LORD_LEGGINGS = ITEMS.register("system_lord_leggings",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.LEGS, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.LEGS, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> SYSTEM_LORD_BOOTS = ITEMS.register("system_lord_boots",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.FEET, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.FEET, new Item.Properties().stacksTo(1).fireResistant()));
 	
 	public static final RegistryObject<ArmorItem> JAFFA_HELMET = ITEMS.register("jaffa_helmet", 
-			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.HEAD, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> JAFFA_CHESTPLATE = ITEMS.register("jaffa_chestplate", 
-			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.CHEST, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.CHEST, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> JAFFA_LEGGINGS = ITEMS.register("jaffa_leggings", 
-			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.LEGS, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.LEGS, new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<ArmorItem> JAFFA_BOOTS = ITEMS.register("jaffa_boots", 
-			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.FEET, new Item.Properties().fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.FEET, new Item.Properties().stacksTo(1).fireResistant()));
 	
 	public static final RegistryObject<JackalArmorItem> JACKAL_HELMET = ITEMS.register("jackal_helmet", 
 			() -> new JackalArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
@@ -196,8 +196,14 @@ public class ItemInit
 	public static final RegistryObject<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device", 
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 	
+	public static final RegistryObject<CrystalConfiguratorItem> CRYSTAL_CONFIGURATOR = ITEMS.register("crystal_configurator",
+			() -> new CrystalConfiguratorItem(new Item.Properties().stacksTo(1)));
+	
 	public static final RegistryObject<GDOItem> GDO = ITEMS.register("gdo", 
 			() -> new GDOItem(new Item.Properties().stacksTo(1)));
+	
+	public static final RegistryObject<AutoDialerItem> AUTO_DIALER = ITEMS.register("auto_dialer",
+			() -> new AutoDialerItem(new Item.Properties().stacksTo(1)));
 	
 	// Shielding
 	public static final RegistryObject<Item> STARGATE_SHIELDING_RING = ITEMS.register("stargate_shielding_ring", 

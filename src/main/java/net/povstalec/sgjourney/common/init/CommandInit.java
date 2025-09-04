@@ -490,15 +490,13 @@ public class CommandInit
 				.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
 		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		
-		Optional<List<Transporter>> transportersOptional = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
+		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
 		
-		if(transportersOptional.isPresent())
+		if(transporters != null)
 		{
-			List<Transporter> transporters = transportersOptional.get();
-			
-			for(int i = 0; i < transporters.size(); i++)
+			for(Transporter transporter : transporters)
 			{
-				BlockPos coords = transporters.get(i).getBlockPos();
+				BlockPos coords = transporter.getBlockPos();
 				context.getSource().sendSuccess(Component.literal("X: " + coords.getX() + " Y: " + coords.getY() + " Z: " + coords.getZ()).withStyle(ChatFormatting.BLUE), false);
 			}
 		}

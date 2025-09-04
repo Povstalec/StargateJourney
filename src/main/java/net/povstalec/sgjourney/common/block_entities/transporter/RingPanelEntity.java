@@ -1,15 +1,15 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.server.level.ServerLevel;
+import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.misc.LocatorHelper;
+import net.povstalec.sgjourney.common.sgjourney.Transporting;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,7 +86,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	{
 		super.setRemoved();
 		handler.invalidate();
-		drops();
+		drops(); //TODO Why does it drop every time it unloads?
 	}
 	
 	private ItemStackHandler createHandler()
@@ -136,22 +136,16 @@ public class RingPanelEntity extends TransporterControllerEntity
 		return super.getCapability(capability, side);
 	}
 	
+	//============================================================================================
+	//**********************************Locating Transport Rings**********************************
+	//============================================================================================
 	
-	
-	public void getNearest6Rings(Level level, BlockPos pos, double maxDistance)
+	public void getNearest6Rings(ServerLevel level, BlockPos pos, double maxDistance)
 	{
 		if(transportRings == null)
 			return;
 
-		Optional<List<Transporter>> transporterListOptional = TransporterNetwork.get(level).getTransportersFromDimension(level.dimension());
-		
-		if(transporterListOptional.isEmpty())
-			return;
-		
-		List<Transporter> transporters = transporterListOptional.get();
-		
-		transporters.sort((transportRingsA, transportRingsB) ->
-				Long.compare(CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsA.getBlockPos()), CoordinateHelper.Relative.distanceSqr(this.getBlockPos(), transportRingsB.getBlockPos())));
+		List<Transporter> transporters = LocatorHelper.findNearestTransporters(level, pos);
 		
 		ringsPos.clear();
 		ringsName.clear();
@@ -200,32 +194,38 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	public void activateRings(int chosenNumber)
 	{
+		if(transportRings == null || !transportRings.canTransport()) //TODO Tell the player there are no rings connected
+			return;
+		
 		ItemStack stack = this.itemHandler.getStackInSlot(chosenNumber);
 		
-		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
+		if(stack.getItem() instanceof MemoryCrystalItem)
 		{
-			int[] coordinates = this.itemHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
-			targetPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
+			UUID uuid = MemoryCrystalItem.getFirstUUID(stack);
+			Transporting.startTransport(level.getServer(), transportRings.getTransporter(), uuid);
 		}
-		else if(chosenNumber < ringsPos.size())
-			targetPos = ringsPos.get(chosenNumber);
-
-		if(targetPos == null)
-			return;
-		
-		if(transportRings == null || !transportRings.canTransport())
-			return;
-		
-		BlockEntity targetRings = level.getBlockEntity(targetPos);
-		
-		if(targetRings instanceof TransportRingsEntity target)
+		else
 		{
-			if(!target.canTransport())
+			if(chosenNumber < ringsPos.size())
+				targetPos = ringsPos.get(chosenNumber);
+			
+			if(targetPos == null)
 				return;
 			
-			Transporter transporter = target.getTransporter();
-			if(transporter != null)
-				transportRings.startTransport(transporter);
+			if(transportRings == null || !transportRings.canTransport())
+				return;
+			
+			BlockEntity targetRings = level.getBlockEntity(targetPos);
+			
+			if(targetRings instanceof TransportRingsEntity target)
+			{
+				if(!target.canTransport())
+					return;
+				
+				Transporter transporter = target.getTransporter();
+				if(transporter != null)
+					transportRings.startTransport(transporter);
+			}
 		}
 	}
 	

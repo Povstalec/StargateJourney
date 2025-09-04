@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
@@ -21,16 +22,33 @@ public interface Transporter
 	
 	UUID getID();
 	
+	@Nullable
 	ResourceKey<Level> getDimension();
 	
-	BlockPos getBlockPos();
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Level the Stargate is currently located in, null if it's not located in any Level
+	 */
+	@Nullable
+	default ServerLevel getLevel(MinecraftServer server)
+	{
+		ResourceKey<Level> dimension = getDimension();
+		if(dimension == null)
+			return null;
+		
+		return server.getLevel(dimension);
+	}
 	
+	@Nullable
+	BlockPos getBlockPos(); //TODO Replace this with vector
+	
+	@Nullable
 	Component getName();
 	
 	int getTimeOffset(MinecraftServer server);
 	
 	@Nullable
-	List<Entity> entitiesToTransport(MinecraftServer server);
+	List<Entity> entitiesToTransport(MinecraftServer server); //TODO introduce a transporter send and receive functions instead
 	
 	@Nullable
 	BlockPos transportPos(MinecraftServer server);

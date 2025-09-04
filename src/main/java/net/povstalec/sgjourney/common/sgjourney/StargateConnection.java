@@ -315,6 +315,7 @@ public class StargateConnection
 			this.dialingStargate.extractEnergy(server, energyDraw, false);
 			return true;
 		}
+		//TODO Tie this to Advanced Protocols
 		else if(CommonStargateConfig.can_draw_power_from_both_ends.get() && canExtract(server, this.dialedStargate, energyDraw))
 		{
 			this.dialedStargate.extractEnergy(server, energyDraw, false);
@@ -340,7 +341,7 @@ public class StargateConnection
 		// Time after which the dangerous part of the kawoosh is finished and it's safe to go through the wormhole
 		int maxKawooshTicks = kawooshStartTicks + Math.max(this.dialedStargate.wormholeEstablishTime(server, doKawoosh()), this.dialingStargate.wormholeEstablishTime(server, doKawoosh()));
 		
-		this.increaseTicks(kawooshStartTicks, maxKawooshTicks);
+		this.increaseTicks(maxKawooshTicks);
 		
 		this.dialingStargate.connectionUpdate(server, this);
 		this.dialingStargate.updateClient(server);
@@ -385,12 +386,9 @@ public class StargateConnection
 		this.dialedStargate.doWormhole(server, this, true, CommonStargateConfig.two_way_wormholes.get());
 	}
 	
-	private final void increaseTicks(int kawooshStartTicks, int maxKawooshTicks)
+	private void increaseTicks(int maxKawooshTicks)
 	{
-		if(!doKawoosh() && this.connectionTime >= kawooshStartTicks && this.connectionTime < maxKawooshTicks)
-			this.connectionTime += KAWOOSH_TICKS;
-		else
-			this.connectionTime++;
+		this.connectionTime++;
 		
 		if(this.connectionTime > maxKawooshTicks)
 			this.openTime = this.connectionTime - maxKawooshTicks;

@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.blocks.dhd;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -91,7 +92,7 @@ public class MilkyWayDHDBlock extends CrystalDHDBlock implements SimpleWaterlogg
         	{
         		dhd.setStargate();
         		
-        		if(player.isShiftKeyDown())
+        		if(trace.getDirection() != Direction.UP)
         			this.openCrystalMenu(player, dhd);
         		else
         		{

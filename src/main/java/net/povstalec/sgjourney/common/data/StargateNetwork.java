@@ -7,12 +7,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
@@ -410,6 +412,97 @@ public final class StargateNetwork extends SavedData
 		return 0;
 	}
 	
+	
+	
+	private static boolean addStargatesFromChunk(ServerLevel level, int x, int z, List<AbstractStargateEntity> stargates)
+	{
+		ChunkAccess chunk = level.getChunk(x, z);
+		for(BlockPos pos : chunk.getBlockEntitiesPos())
+		{
+			if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+			{
+				stargates.add(stargate);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private static void searchEdges(ServerLevel level, int xCenter, int yCenter, int radius, List<AbstractStargateEntity> stargates)
+	{
+		if(radius == 0)
+			addStargatesFromChunk(level, xCenter, yCenter, stargates);
+		else
+		{
+			int xMin = xCenter - radius;
+			int xMax = xCenter + radius;
+			int yMin = yCenter - radius;
+			int yMax = yCenter + radius;
+			
+			// Top
+			for(int x = xMin; x <= xMax; x++)
+			{
+				if(addStargatesFromChunk(level, x, yMax, stargates))
+					return;
+			}
+			// Right
+			for(int y = yMax - 1; y >= yMin + 1; y--)
+			{
+				if(addStargatesFromChunk(level, xMax, y, stargates))
+					return;
+			}
+			// Bottom
+			for(int x = xMax; x >= xMin; x--)
+			{
+				if(addStargatesFromChunk(level, x, yMin, stargates))
+					return;
+			}
+			// Left
+			for(int y = yMin + 1; y <= yMax - 1; y++)
+			{
+				if(addStargatesFromChunk(level, xMin, y, stargates))
+					return;
+			}
+		}
+	}
+	
+	public static void findStargates(ServerLevel level)
+	{
+		StargateJourney.LOGGER.debug("Attempting to locate the Stargate Structure in " + level.dimension().location());
+		
+		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
+		int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
+		// Nearest Structure that potentially has a Stargate
+		BlockPos blockpos = level.findNearestMapStructure(CommonGenerationConfig.common_stargate_search.get() ? TagInit.Structures.HAS_STARGATE : TagInit.Structures.NETWORK_STARGATE,
+				new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
+		if(blockpos == null)
+		{
+			StargateJourney.LOGGER.debug("Stargate Structure not found");
+			return;
+		}
+		// Map of Block Entities that might contain a Stargate
+		List<AbstractStargateEntity> stargates = new ArrayList<AbstractStargateEntity>();
+		
+		int xCenter = SectionPos.blockToSectionCoord(blockpos.getX());
+		int zCenter = SectionPos.blockToSectionCoord(blockpos.getZ());
+		for(int radius = 0; radius <= 2; radius++)
+		{
+			searchEdges(level, xCenter, zCenter, radius, stargates);
+		}
+		
+		if(stargates.isEmpty())
+		{
+			StargateJourney.LOGGER.debug("No Stargates found in Stargate Structure");
+			return;
+		}
+		
+		for(AbstractStargateEntity stargate : stargates)
+		{
+			stargate.onLoad();
+		}
+	}
+	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
@@ -456,47 +549,6 @@ public final class StargateNetwork extends SavedData
 			}
 			catch(IllegalArgumentException e) {}
 		}
-	}
-	
-	public static final void findStargates(ServerLevel level)
-	{
-		StargateJourney.LOGGER.debug("Attempting to locate the Stargate Structure in " + level.dimension().location().toString());
-		
-		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
-        int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
-		// Nearest Structure that potentially has a Stargate
-		BlockPos blockpos = ((ServerLevel) level).findNearestMapStructure(CommonGenerationConfig.common_stargate_search.get() ? TagInit.Structures.HAS_STARGATE : TagInit.Structures.NETWORK_STARGATE,
-				new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
-		if(blockpos == null)
-		{
-			StargateJourney.LOGGER.debug("Stargate Structure not found");
-			return;
-		}
-		// Map of Block Entities that might contain a Stargate
-		List<AbstractStargateEntity> stargates = new ArrayList<AbstractStargateEntity>();
-		
-		for(int x = -2; x <= 2; x++)
-		{
-			for(int z = -2; z <= 2; z++)
-			{
-				ChunkAccess chunk = level.getChunk(blockpos.east(16 * x).south(16 * z));
-				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
-				
-				positions.stream().forEach(pos ->
-				{
-					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
-						stargates.add(stargate);
-				});
-			}
-		}
-		
-		if(stargates.isEmpty())
-		{
-			StargateJourney.LOGGER.debug("No Stargates found in Stargate Structure");
-			return;
-		}
-		
-		stargates.stream().forEach(stargate -> stargate.onLoad());
 	}
 	
 	//============================================================================================

@@ -164,6 +164,14 @@ public class CoordinateHelper
 			return x*x + y*y + z*z;
 		}
 		
+		public static double distance(Vec3i posA, Vec3i posB)
+		{
+			if(posA == null || posB == null)
+				return Double.POSITIVE_INFINITY;
+			
+			return Math.sqrt(distanceSqr(posA, posB));
+		}
+		
 		public static Vec3i blockPosOffset(BlockPos initialPos, BlockPos otherPos)
 		{
 			return new Vec3i(otherPos.getX() - initialPos.getX(), otherPos.getY() - initialPos.getY(), otherPos.getZ() - initialPos.getZ());

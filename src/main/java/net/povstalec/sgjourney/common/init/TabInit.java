@@ -58,6 +58,7 @@ public class TabInit
 				items.accept(PowerCellItem.liquidNaquadahSetup());
 				items.accept(PowerCellItem.heavyLiquidNaquadahSetup());
 				
+				items.accept(ItemInit.CRYSTAL_CONFIGURATOR.get());
 				items.accept(ItemInit.PDA.get());
 				//items.accept(ItemInit.UNIVERSE_DIALER.get());
 
