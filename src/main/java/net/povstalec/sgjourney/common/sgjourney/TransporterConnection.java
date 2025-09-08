@@ -140,7 +140,7 @@ public class TransporterConnection
 	{
 		for(Entity traveler : travelers)
 		{
-			Transporting.transportTraveler(server, traveler, from, to);
+			Transporting.transportTraveler(server, traveler, from, to); //TODO Don't forget to handle Transport positions away from the transporters
 		}
 	}
 	

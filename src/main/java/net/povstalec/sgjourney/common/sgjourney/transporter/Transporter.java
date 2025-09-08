@@ -8,6 +8,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,6 +51,10 @@ public interface Transporter
 	
 	@Nullable
 	List<Entity> entitiesToTransport(MinecraftServer server); //TODO introduce a transporter send and receive functions instead
+	
+	//void transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter);
+	
+	//boolean receiveTraveler(MinecraftServer server, TransporterConnection connection, Transporter sendingTransporter, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
 	
 	@Nullable
 	BlockPos transportPos(MinecraftServer server);
