@@ -10,6 +10,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
@@ -53,27 +54,72 @@ public interface Stargate
 	}
 	
 	/**
-	 * @return Position vector the Stargate is located at or null if it doesn't have a position
+	 * @param server Current Minecraft Server
+	 * @return Position vector of the Stargate's center or null if it doesn't have a position
 	 */
 	@Nullable
-	Vec3 getPosition();
+	Vec3 getPosition(MinecraftServer server);
 	
 	/**
+	 * @param server Current Minecraft Server
 	 * @return Unit Vector with the direction the Stargate is facing or null if it doesn't have a position
 	 */
 	@Nullable
 	Vec3 getForward(MinecraftServer server);
 	
 	/**
+	 * @param server Current Minecraft Server
 	 * @return Unit Vector with the direction the Stargate considers up or null if it doesn't have a position
 	 */
 	@Nullable
 	Vec3 getUp(MinecraftServer server);
 	
 	/**
+	 * @param server Current Minecraft Server
+	 * @return Unit Vector with the direction the Stargate considers right or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getRight(MinecraftServer server);
+	
+	/**
 	 * @return Inner Radius of the Stargate or <= 0 if the Stargate doesn't have a real form
 	 */
 	double getInnerRadius();
+	
+	/**
+	 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Stargate, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction
+	 * @param server Current Minecraft Server
+	 * @param vector Vector to be transformed
+	 * @param scaleWithStargate Whether the coordinates should scale with the Stargate (for example, relative position within the Stargate should be scaled with it, but momentum should not)
+	 * @return A new vector with the coordinates of the original vector, but transformed to Stargate's relative coordinate system
+	 */
+	default Vec3 toStargateCoords(MinecraftServer server, Vec3 vector, boolean scaleWithStargate)
+	{
+		Vec3 result = CoordinateHelper.Relative.fromOrthogonalBasis(vector, getForward(server), getUp(server), getRight(server));
+		
+		if(scaleWithStargate)
+			return new Vec3(result.x(), result.y() / getInnerRadius(), result.z() / getInnerRadius());
+		
+		return result;
+	}
+	
+	/**
+	 * Transforms the vector from a Stargate's relative coordinate system, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction,
+	 * with the Y and Z vectors being a percentage of the Stargate's radius, to a vector in the absolute coordinate system
+	 * @param server Current Minecraft Server
+	 * @param vector Vector to be transformed
+	 * @param scaleWithStargate Whether the coordinates should scale with the Stargate (for example, relative position within the Stargate should be scaled with it, but momentum should not)
+	 * @param mirror Whether the coordinates should be mirrored, for example when a traveler is exiting the Stargate
+	 * @return A new vector with the coordinates of the original vector, but transformed to absolute coordinate system
+	 */
+	default Vec3 fromStargateCoords(MinecraftServer server, Vec3 vector, boolean scaleWithStargate, boolean mirror)
+	{
+		if(scaleWithStargate)
+			vector = new Vec3(vector.x(), vector.y() * getInnerRadius(), vector.z() * getInnerRadius());
+		
+		return mirror ? CoordinateHelper.Relative.toOrthogonalBasis(vector, CoordinateHelper.Relative.mirrorVector(getForward(server)), getUp(server), CoordinateHelper.Relative.mirrorVector(getRight(server))) :
+				CoordinateHelper.Relative.toOrthogonalBasis(vector, getForward(server), getUp(server), getRight(server));
+	}
 	
 	/**
 	 * @return Solar System the Stargate is located in or null if it's not located in any Solar System

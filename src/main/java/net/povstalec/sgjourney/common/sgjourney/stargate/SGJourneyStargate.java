@@ -21,10 +21,7 @@ import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class SGJourneyStargate implements Stargate
 {
@@ -88,9 +85,9 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public @Nullable Vec3 getPosition()
+	public @Nullable Vec3 getPosition(MinecraftServer server)
 	{
-		return getBlockPos().getCenter();
+		return stargateReturn(server, stargate -> stargate.getCenter(), null);
 	}
 	
 	@Override
@@ -127,12 +124,13 @@ public class SGJourneyStargate implements Stargate
 		return up;
 	}
 	
+	@Override
 	public Vec3 getRight(MinecraftServer server)
 	{
 		if(right == null)
 		{
 			if(getForward(server) != null && getUp(server) != null)
-				right = CoordinateHelper.StargateCoords.getStargateRight(getForward(server), getUp(server));
+				right = CoordinateHelper.Relative.vecRight(getForward(server), getUp(server));
 		}
 		
 		return right;
@@ -430,11 +428,7 @@ public class SGJourneyStargate implements Stargate
 	{
 		stargateRun(server, stargate ->
 		{
-			Vec3 forward = getForward(server);
-			Vec3 up = getUp(server);
-			Vec3 right = getRight(server);
-			
-			if(this.wormhole.wormholeEntities(server, connection, this, destinationStargate, wormholeTravel, stargate.getCenter(), forward, up, right, wormholeCandidates))
+			if(this.wormhole.wormholeEntities(server, connection, this, destinationStargate, wormholeTravel, wormholeCandidates))
 				connection.setUsed(true);
 		});
 	}
@@ -465,19 +459,12 @@ public class SGJourneyStargate implements Stargate
 	{
 		return stargateReturn(server, stargate ->
 		{
-			Vec3 forward = getForward(server);
-			Vec3 up = getUp(server);
-			Vec3 right = getRight(server);
-			// Multiplied some elements by -1 to make the traveler exit the Stargate in a mirrored position
-			right = CoordinateHelper.StargateCoords.mirrorStargateCoords(right);
-			forward = CoordinateHelper.StargateCoords.mirrorStargateCoords(forward);
-			
 			// TODO Tie this to Advanced Protocols
 			Vec3 tempMomentum = stargate.pushTraveler() && relativeMomentum.x() > -MIN_TRAVELER_SPEED ? new Vec3(-MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 			
-			Vec3 destinationPosition = CoordinateHelper.StargateCoords.toStargateCoords(relativePosition, forward, up, right, getInnerRadius()).add(stargate.getCenter());
-			Vec3 destinationMomentum = CoordinateHelper.StargateCoords.toStargateCoords(tempMomentum, forward, up, right);
-			Vec3 destinationLookAngle = CoordinateHelper.StargateCoords.toStargateCoords(relativeLookAngle, forward, up, right);
+			Vec3 destinationPosition = fromStargateCoords(server, relativePosition, true, true).add(stargate.getCenter());
+			Vec3 destinationMomentum = fromStargateCoords(server, tempMomentum, false, true);
+			Vec3 destinationLookAngle = fromStargateCoords(server, relativeLookAngle, false, true);
 			
 			if(stargate instanceof IrisStargateEntity irisStargate && !this.wormhole.checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
 			{

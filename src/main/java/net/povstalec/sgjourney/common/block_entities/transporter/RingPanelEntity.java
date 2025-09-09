@@ -86,7 +86,6 @@ public class RingPanelEntity extends TransporterControllerEntity
 	{
 		super.setRemoved();
 		handler.invalidate();
-		drops(); //TODO Why does it drop every time it unloads?
 	}
 	
 	private ItemStackHandler createHandler()
@@ -139,6 +138,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 	//============================================================================================
 	//**********************************Locating Transport Rings**********************************
 	//============================================================================================
+	
+	//TODO getRingsOnButtons()
 	
 	public void getNearest6Rings(ServerLevel level, BlockPos pos, double maxDistance)
 	{

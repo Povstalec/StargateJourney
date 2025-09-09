@@ -81,7 +81,7 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public @Nullable Vec3 getPosition()
+	public @Nullable Vec3 getPosition(MinecraftServer server)
 	{
 		return null;
 	}
@@ -94,6 +94,12 @@ public class SpawnerStargate implements Stargate
 	
 	@Override
 	public @Nullable Vec3 getUp(MinecraftServer server)
+	{
+		return null;
+	}
+	
+	@Override
+	public @Nullable Vec3 getRight(MinecraftServer server)
 	{
 		return null;
 	}

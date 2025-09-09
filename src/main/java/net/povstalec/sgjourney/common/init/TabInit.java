@@ -58,7 +58,6 @@ public class TabInit
 				items.accept(PowerCellItem.liquidNaquadahSetup());
 				items.accept(PowerCellItem.heavyLiquidNaquadahSetup());
 				
-				items.accept(ItemInit.CRYSTAL_CONFIGURATOR.get());
 				items.accept(ItemInit.PDA.get());
 				//items.accept(ItemInit.UNIVERSE_DIALER.get());
 
@@ -103,6 +102,8 @@ public class TabInit
 				items.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
 				
 				items.accept(ItemInit.UNITY_SHARD.get());
+				
+				items.accept(ItemInit.CRYSTAL_CONFIGURATOR.get());
 				
 				items.accept(ItemInit.CRYSTAL_BASE.get());
 				items.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());

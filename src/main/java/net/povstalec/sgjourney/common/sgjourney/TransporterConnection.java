@@ -120,28 +120,12 @@ public class TransporterConnection
 	
 	private void transport(MinecraftServer server)
 	{
-		BlockPos transportPosA = transporterA.transportPos(server);
-		BlockPos transportPosB = transporterB.transportPos(server);
-		
-		if(transportPosA == null || transportPosB == null)
-		{
-			terminate(server);
-			return;
-		}
-		
-		List<Entity> entitiesA = transporterA.entitiesToTransport(server);
-		List<Entity> entitiesB = transporterB.entitiesToTransport(server);
-		
-		transportTravelers(server, entitiesA, transporterA, transporterB);
-		transportTravelers(server, entitiesB, transporterB, transporterA);
-	}
-	
-	private static void transportTravelers(MinecraftServer server, List<Entity> travelers, Transporter from, Transporter to)
-	{
-		for(Entity traveler : travelers)
-		{
-			Transporting.transportTraveler(server, traveler, from, to); //TODO Don't forget to handle Transport positions away from the transporters
-		}
+		// Get all potential travelers that can be transported before the transport starts, so that you don't end up transporting A -> B and then immediately B -> A
+		List<Entity> travelersA = transporterA.entitiesToTransport(server);
+		List<Entity> travelersB = transporterB.entitiesToTransport(server);
+		// Attempt transporting all potential travelers
+		transporterA.transportTravelers(server, this, transporterB, travelersA);
+		transporterB.transportTravelers(server, this, transporterA, travelersB);
 	}
 	
 	public final void terminate(MinecraftServer server)
