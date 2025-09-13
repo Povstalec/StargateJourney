@@ -19,19 +19,23 @@
 }
 
 .max-width-768 {
-  max-width: 768px;
+  width: 768px;
+  max-width: 100%;
 }
 
 .max-width-512 {
-  max-width: 512px;
+  width: 512px;
+  max-width: 100%;
 }
 
 .max-width-256 {
-  max-width: 256px;
+  width: 256px;
+  max-width: 100%;
 }
 
 .max-width-128 {
-  max-width: 128px;
+  width: 128px;
+  max-width: 100%;
 }
 
 details {
