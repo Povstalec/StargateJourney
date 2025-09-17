@@ -92,7 +92,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
         	{
         		dhd.setStargate();
         		
-        		if(trace.getDirection() != Direction.UP)
+        		if(trace.getDirection() != Direction.UP || player.isShiftKeyDown())
         			this.openCrystalMenu(player, dhd);
         		else
         		{

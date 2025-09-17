@@ -56,8 +56,10 @@ public class TransporterConnection
 	
 	public enum Type
 	{
-		DIMENSIONAL,
-		INTERDIMENSIONAL
+		DIMENSIONAL, // Within one dimension
+		SYSTEM_WIDE, // Within one system, across two dimensions
+		INTERSTELLAR, // Across two solar systems, presumably through the Stargate
+		INTERGALACTIC // Across two galaxies, presumably through the Stargate
 	}
 	
 	@Nullable

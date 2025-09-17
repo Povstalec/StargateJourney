@@ -103,7 +103,7 @@ public class TabInit
 				
 				items.accept(ItemInit.UNITY_SHARD.get());
 				
-				items.accept(ItemInit.CRYSTAL_CONFIGURATOR.get());
+				// items.accept(ItemInit.CRYSTAL_CONFIGURATOR.get());
 				
 				items.accept(ItemInit.CRYSTAL_BASE.get());
 				items.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
