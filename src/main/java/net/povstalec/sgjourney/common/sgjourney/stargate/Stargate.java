@@ -82,7 +82,7 @@ public interface Stargate
 	Vec3 getRight(MinecraftServer server);
 	
 	/**
-	 * @return Inner Radius of the Stargate or <= 0 if the Stargate doesn't have a real form
+	 * @return Inner Radius of the Stargate or {@literal <= 0} if the Stargate doesn't have a real form
 	 */
 	double getInnerRadius();
 	
