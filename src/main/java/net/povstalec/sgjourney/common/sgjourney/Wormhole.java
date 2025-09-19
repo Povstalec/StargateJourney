@@ -290,7 +290,7 @@ public class Wormhole
 					if(entity instanceof ServerPlayer player)
 						player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
 					
-					livingEntity.hurt(DamageSourceInit.REVERSE_WORMHOLE, Float.POSITIVE_INFINITY);
+					livingEntity.hurt(DamageSourceInit.IRIS, Float.POSITIVE_INFINITY);
 				}
 				else
 					entity.kill();
