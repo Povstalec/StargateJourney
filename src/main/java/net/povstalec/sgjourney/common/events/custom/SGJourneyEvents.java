@@ -10,6 +10,8 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public class SGJourneyEvents
 {
+	// Stargate
+	
 	public static boolean onStargateDial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, boolean doKawoosh)
     {
 		return NeoForge.EVENT_BUS.post(new StargateEvent.Dial(server, stargate, dialedAddress, doKawoosh)).isCanceled();
@@ -25,7 +27,7 @@ public class SGJourneyEvents
         return NeoForge.EVENT_BUS.post(new StargateEvent.WormholeTravel(server, stargate, destinationStargate, traveler, wormholeTravel)).isCanceled();
     }
 	
-	
+	// Stargate Connection
 	
 	public static void onConnectionEstablished(MinecraftServer server, StargateConnection stargateConnection)
 	{
@@ -36,4 +38,12 @@ public class SGJourneyEvents
 	{
 		NeoForge.EVENT_BUS.post(new ConnectionEvent.Terminate(server, stargateConnection, feedback));
 	}
+	
+	// Transporter
+	
+	
+	
+	// Transporter Connection
+	
+	
 }

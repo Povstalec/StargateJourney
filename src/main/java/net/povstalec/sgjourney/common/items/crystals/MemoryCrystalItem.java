@@ -51,27 +51,6 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		return /*stack.hasTag();*/ false;
 	}
-	
-	@Override
-	public InteractionResult useOn(UseOnContext context)
-	{
-		Level level = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-		Player player = context.getPlayer();
-		
-		BlockEntity blockEntity = level.getBlockEntity(pos);
-		if(blockEntity instanceof AbstractTransporterEntity transporter)
-		{
-			if(transporter.getID() != null)
-			{
-				saveUUID(player.getItemInHand(InteractionHand.MAIN_HAND), transporter.getID());
-				player.displayClientMessage(Component.translatable("message.sgjourney.memory_crystal.saved_id").withStyle(ChatFormatting.BLUE), true);
-				return InteractionResult.SUCCESS;
-			}
-		}
-		
-		return InteractionResult.PASS;
-	}
 
 	/*@Override
 	public Optional<Component> descriptionInDHD()

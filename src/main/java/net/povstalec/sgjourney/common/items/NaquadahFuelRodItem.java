@@ -12,10 +12,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 public class NaquadahFuelRodItem extends Item
 {
@@ -86,6 +88,8 @@ public class NaquadahFuelRodItem extends Item
 	{
 		if(tooltipFlag.isAdvanced())
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_fuel_rod.fuel").append(Component.literal(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.GREEN));
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.naquadah_fuel_rod.description"));
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}

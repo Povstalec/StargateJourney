@@ -67,24 +67,24 @@ public class Wormhole
 		return oldTravelerX > 0 && travelerX < 0 && momentumX < 0;
 	}
 	
-	protected boolean wormholeEntity(MinecraftServer server, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Vec3 centerPos, Vec3 forward, Vec3 up, Vec3 right, Map<Integer, Vec3> entityLocations, Entity traveler)
+	protected boolean wormholeEntity(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Map<Integer, Vec3> entityLocations, Entity traveler)
 	{
-		Vec3 relativePosition = CoordinateHelper.StargateCoords.fromStargateCoords(traveler.position().subtract(centerPos), forward, up, right, INNER_RADIUS);
+		Vec3 relativePosition = initialStargate.toStargateCoords(server,traveler.position().subtract(initialStargate.getPosition(server)), true);
 		Vec3 oldRelativePos = this.entityLocations.get(traveler.getId());
 		
 		if(oldRelativePos != null)
 		{
 			Vec3 relativeMomentum = relativePosition.subtract(oldRelativePos);
 			
-			if(shouldWormhole(centerPos, traveler, oldRelativePos.x(), relativePosition.x(), relativeMomentum.x()))
+			if(shouldWormhole(initialStargate.getPosition(server), traveler, oldRelativePos.x(), relativePosition.x(), relativeMomentum.x()))
 			{
 				playWormholeSound(traveler.level(), traveler);
 				
 				if(twoWayWormhole == WormholeTravel.ENABLED || (twoWayWormhole == WormholeTravel.CREATIVE_ONLY && traveler instanceof Player player && (player.isCreative() || player.isSpectator())))
 				{
-					Vec3 relativeLookAngle = CoordinateHelper.StargateCoords.fromStargateCoords(traveler.getLookAngle(), forward, up, right);
+					Vec3 relativeLookAngle = initialStargate.toStargateCoords(server, traveler.getLookAngle(), false);
 					
-					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(server, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle))
 					{
 						deconstructEvent(server, initialStargate, traveler, false);
 						return true;
@@ -99,14 +99,14 @@ public class Wormhole
 		return false;
 	}
 	
-	public boolean wormholeEntities(MinecraftServer server, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Vec3 centerPos, Vec3 forward, Vec3 up, Vec3 right, List<Entity> wormholeCandidates)
+	public boolean wormholeEntities(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, List<Entity> wormholeCandidates)
 	{
 		boolean used = false;
 		Map<Integer, Vec3> entityLocations = new HashMap<>();
 		
 		for(Entity traveler : wormholeCandidates)
 		{
-			if(wormholeEntity(server, initialStargate, destinationStargate, twoWayWormhole, centerPos, forward, up, right, entityLocations, traveler))
+			if(wormholeEntity(server, connection, initialStargate, destinationStargate, twoWayWormhole, entityLocations, traveler))
 				used = true;
 		}
 		
@@ -131,9 +131,10 @@ public class Wormhole
 							if(entity instanceof ServerPlayer player)
 								player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
 							
-							livingEntity.die(DamageSourceInit.damageSource(server, DamageSourceInit.REVERSE_WORMHOLE));
+							livingEntity.hurt(DamageSourceInit.damageSource(server, DamageSourceInit.REVERSE_WORMHOLE), Float.POSITIVE_INFINITY);
 						}
-						entity.kill();
+						else
+							entity.kill();
 					}
 				}
 			}
@@ -287,7 +288,7 @@ public class Wormhole
 					if(entity instanceof ServerPlayer player)
 						player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
 					
-					livingEntity.die(DamageSourceInit.damageSource(server, DamageSourceInit.IRIS));
+					livingEntity.hurt(DamageSourceInit.damageSource(server, DamageSourceInit.IRIS), Float.POSITIVE_INFINITY);
 				}
 				else
 					entity.kill();

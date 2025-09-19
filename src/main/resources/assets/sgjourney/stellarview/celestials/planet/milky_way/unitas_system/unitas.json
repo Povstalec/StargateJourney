@@ -1,5 +1,5 @@
 {
-	"parent": "sgjourney:star/milky_way/unitas_system/unitas",
+	"parent": { "location": "sgjourney:star/milky_way/unitas_system/unitas" },
 	"coords": { "x": {"ly": 0}, "y": {"ly": 0}, "z": {"ly": 0} },
 	"axis_rotation": { "x_axis": 0, "y_axis": 0, "z_axis": 0 },
 	"orbit_info":
@@ -9,7 +9,7 @@
 		"orbital_period": { "ticks": 2112000 },
 		"argument_of_periapsis": 0,
 		"inclination": 0,
-		"longtitude_of_ascending_node": 0,
+		"longitude_of_ascending_node": 0,
 		"epoch_mean_anomaly": 180
 	},
 	"texture_layers":

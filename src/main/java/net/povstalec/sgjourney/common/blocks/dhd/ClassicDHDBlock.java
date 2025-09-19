@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
@@ -54,7 +56,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 	}
 
 	@Override
-	protected void use(Level level, BlockPos pos, Player player)
+	protected void use(Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
 		if(level.isClientSide())
 			return;
@@ -65,7 +67,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 		{
 			dhd.setStargate();
 			
-			if(player.isShiftKeyDown())
+			if(hitResult.getDirection() != Direction.UP || player.isShiftKeyDown())
 				this.openCrystalMenu(player, dhd);
 			else
 			{

@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 import java.util.List;
 
@@ -72,7 +73,9 @@ public class PowerCellItem extends FluidItem.Holder
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_power_cell.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.naquadah_power_cell.description"));
+		
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.naquadah_power_cell.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
 	
 	public static ItemStack liquidNaquadahSetup()

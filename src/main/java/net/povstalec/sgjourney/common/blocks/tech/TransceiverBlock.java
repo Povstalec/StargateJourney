@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.Item;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.joml.Vector3d;
 
 import net.minecraft.ChatFormatting;
@@ -225,7 +226,7 @@ public class TransceiverBlock extends Block implements EntityBlock
 	@Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-		tooltipComponents.add(Component.translatable("block.sgjourney.transceiver.description").withStyle(ChatFormatting.GRAY));
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.transceiver.description"));
     }
 	
 	@SuppressWarnings("unchecked")

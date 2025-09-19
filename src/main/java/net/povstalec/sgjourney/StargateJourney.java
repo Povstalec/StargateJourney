@@ -171,6 +171,9 @@ public class StargateJourney
         {
             StatisticsInit.register();
             //VillagerInit.registerPOIs();
+            
+            StargateInit.register();
+            TransporterInit.register();
         });
     }
     

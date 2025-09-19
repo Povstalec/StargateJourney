@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
@@ -83,7 +85,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 	}
 	
 	@Override
-	public void use(Level level, BlockPos pos, Player player)
+	public void use(Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
         if(level.isClientSide())
 			return;
@@ -94,7 +96,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		{
 			dhd.setStargate();
 
-			if(player.isShiftKeyDown())
+			if(hitResult.getDirection() != Direction.UP || player.isShiftKeyDown())
 				this.openCrystalMenu(player, dhd);
 			else
 			{

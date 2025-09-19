@@ -38,6 +38,7 @@ import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 import java.util.List;
 
@@ -91,12 +92,12 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		super.onRemove(oldState, level, pos, newState, isMoving);
 	}
 
-	protected abstract void use(Level level, BlockPos pos, Player player);
+	protected abstract void use(Level level, BlockPos pos, Player player, BlockHitResult hitResult);
 
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
-		use(level, pos, player);
+		use(level, pos, player, hitResult);
 
 		return InteractionResult.SUCCESS;
 	}
@@ -104,7 +105,7 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 	@Override
 	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
 	{
-		use(level, pos, player);
+		use(level, pos, player, hitResult);
 
 		return ItemInteractionResult.SUCCESS;
 	}
@@ -148,6 +149,10 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 			if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.GENERATED != StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractDHDEntity.GENERATION_STEP)))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		}
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.dhd.description"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.dialing_menu"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.crystal_menu"));
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}

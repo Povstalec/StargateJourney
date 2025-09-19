@@ -27,6 +27,8 @@ public class SpawnerStargate implements Stargate
 {
 	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
 	
+	public static final int KAWOOSH_TICKS = 40;
+	
 	protected Address.Immutable id9ChevronAddress;
 	
 	protected final int attackerMinCount;
@@ -79,9 +81,33 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public @Nullable Vec3 getPosition()
+	public @Nullable Vec3 getPosition(MinecraftServer server)
 	{
 		return null;
+	}
+	
+	@Override
+	public @Nullable Vec3 getForward(MinecraftServer server)
+	{
+		return null;
+	}
+	
+	@Override
+	public @Nullable Vec3 getUp(MinecraftServer server)
+	{
+		return null;
+	}
+	
+	@Override
+	public @Nullable Vec3 getRight(MinecraftServer server)
+	{
+		return null;
+	}
+	
+	@Override
+	public double getInnerRadius()
+	{
+		return 0;
 	}
 	
 	@Override
@@ -162,15 +188,27 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public boolean canExtractEnergy(MinecraftServer server, long energy)
+	public long getEnergyCapacity(MinecraftServer server)
 	{
-		return true;
+		return CommonStargateConfig.stargate_energy_capacity.get();
 	}
 	
 	@Override
-	public long depleteEnergy(MinecraftServer server, long energy, boolean simulate)
+	public long extractEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
-		return energy;
+		return Math.min(energy, getEnergyStored(server));
+	}
+	
+	@Override
+	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)
+	{
+		return StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks();
+	}
+	
+	@Override
+	public int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh)
+	{
+		return KAWOOSH_TICKS;
 	}
 	
 	public void encodeAddress(Address address)
@@ -220,7 +258,7 @@ public class SpawnerStargate implements Stargate
 				counter--;
 				
 				Entity entity = spawnEntity(level, EntityInit.JAFFA.get());
-				if(entity != null && connectedStargate.receiveTraveler(server, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
+				if(entity != null && connectedStargate.receiveTraveler(server, connection, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
 				{
 					connection.setTimeSinceLastTraveler(0);
 					connection.setUsed(true);
@@ -230,7 +268,7 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public boolean receiveTraveler(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	public boolean receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
 		if(traveler instanceof Player player)
 			player.displayClientMessage(Component.translatable("no"), true); // TODO add an actual message
@@ -239,9 +277,9 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public int autoclose(MinecraftServer server)
+	public boolean shouldAutoclose(MinecraftServer server, StargateConnection connection)
 	{
-		return 200;
+		return connection.getOpenTime() > 200;
 	}
 	
 	@Override

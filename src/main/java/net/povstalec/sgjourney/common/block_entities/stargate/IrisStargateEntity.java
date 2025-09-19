@@ -73,22 +73,10 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 	//============================================================================================
 	
 	@Override
-	public void doKawoosh(int kawooshTime)
+	public void doKawoosh()
 	{
-		setKawooshTickCount(kawooshTime);
-		
-		if(kawooshTime > StargateConnection.KAWOOSH_TICKS || irisInfo().isIrisClosed())
-			return;
-		
-		Direction axisDirection = getDirection().getAxis() == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
-		Direction direction = Orientation.getForwardDirection(getDirection(), getOrientation());
-		
-		double frontMultiplier = kawooshFunction(kawooshTime);
-		
-		if(CommonStargateConfig.kawoosh_destroys_blocks.get())
-			destroyBlocks(frontMultiplier, axisDirection, direction);
-		if(CommonStargateConfig.kawoosh_disintegrates_entities.get())
-			disintegrateEntities(frontMultiplier, axisDirection, direction);
+		if(!irisInfo().isIrisClosed())
+			super.doKawoosh();
 	}
 	
 	@Override

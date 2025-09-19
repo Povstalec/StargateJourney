@@ -72,9 +72,9 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	}
 
 	@Override
-	public ChevronLockSpeed getChevronLockSpeed()
+	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return CHEVRON_LOCK_SPEED;
+		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override
