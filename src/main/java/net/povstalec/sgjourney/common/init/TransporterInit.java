@@ -45,7 +45,7 @@ public class TransporterInit
 	
 	public static void register()
 	{
-		register(new ResourceLocation(StargateJourney.MODID, "transport_rings"), TransportRings.class, TransportRings::new);
+		register(StargateJourney.sgjourneyLocation("transport_rings"), TransportRings.class, TransportRings::new);
 	}
 	
 	

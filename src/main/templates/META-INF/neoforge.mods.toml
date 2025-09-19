@@ -93,7 +93,7 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="stellarview"
     type="optional"
-    versionRange="[0.4.0,0.5.0)"
+    versionRange="[0.5.0,0.6.0)"
     ordering="AFTER"
     side="CLIENT"
 

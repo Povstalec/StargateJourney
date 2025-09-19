@@ -10,6 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -157,7 +158,7 @@ public class ATAGeneDetectorBlock extends Block implements AncientTech
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		tooltipComponents.add(ComponentHelper.description("block.sgjourney.ancient_gene_detector.description"));
 		tooltipComponents.add(ComponentHelper.usage("block.sgjourney.ancient_gene_detector.right_click"));

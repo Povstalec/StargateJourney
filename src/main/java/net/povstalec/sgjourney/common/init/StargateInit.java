@@ -45,11 +45,11 @@ public class StargateInit
 	
 	public static void register()
 	{
-		register(new ResourceLocation(StargateJourney.MODID, "universe_stargate"), UniverseStargate.class, UniverseStargate::new);
-		register(new ResourceLocation(StargateJourney.MODID, "milky_way_stargate"), MilkyWayStargate.class, MilkyWayStargate::new);
-		register(new ResourceLocation(StargateJourney.MODID, "pegasus_stargate"), PegasusStargate.class, PegasusStargate::new);
-		register(new ResourceLocation(StargateJourney.MODID, "tollan_stargate"), TollanStargate.class, TollanStargate::new);
-		register(new ResourceLocation(StargateJourney.MODID, "classic_stargate"), ClassicStargate.class, ClassicStargate::new);
+		register(StargateJourney.sgjourneyLocation("universe_stargate"), UniverseStargate.class, UniverseStargate::new);
+		register(StargateJourney.sgjourneyLocation("milky_way_stargate"), MilkyWayStargate.class, MilkyWayStargate::new);
+		register(StargateJourney.sgjourneyLocation("pegasus_stargate"), PegasusStargate.class, PegasusStargate::new);
+		register(StargateJourney.sgjourneyLocation("tollan_stargate"), TollanStargate.class, TollanStargate::new);
+		register(StargateJourney.sgjourneyLocation("classic_stargate"), ClassicStargate.class, ClassicStargate::new);
 	}
 	
 	

@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -68,9 +69,9 @@ public class Transporting
 	
 	public static Entity transportEntity(ServerLevel destinationLevel, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		if(traveler.getLevel() != destinationLevel)
-			traveler = traveler.changeDimension(destinationLevel, new Wormhole.WormholeTeleporter(destinationPosition, destinationMomentum,
-					CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot()));
+		if(traveler.level() != destinationLevel)
+			traveler = traveler.changeDimension(new DimensionTransition(destinationLevel, destinationPosition, destinationMomentum,
+					CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot(), false, DimensionTransition.DO_NOTHING));
 		else
 		{
 			traveler.moveTo(destinationPosition.x(), destinationPosition.y(), destinationPosition.z(), CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot());
@@ -108,7 +109,7 @@ public class Transporting
 	
 	public static Entity recursivePassengerTeleport(ServerLevel destinationLevel, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		Level initialLevel = traveler.getLevel();
+		Level initialLevel = traveler.level();
 		ArrayList<Entity> passengers = new ArrayList<>();
 		if(initialLevel != destinationLevel)
 		{
