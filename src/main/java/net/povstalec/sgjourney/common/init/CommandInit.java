@@ -31,6 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -331,7 +332,7 @@ public class CommandInit
 				solarSystem.getStargates().stream().forEach(stargate ->
 				{
 					ResourceKey<Level> stargateDimension = stargate.getDimension();
-					BlockPos stargatePos = CoordinateHelper.StargateCoords.stargateBlockPos(stargate);
+					Vec3 stargatePos = stargate.getPosition(context.getSource().getServer());
 					
 					if(dimension.equals(stargateDimension) && stargatePos != null)
 					{
@@ -340,7 +341,7 @@ public class CommandInit
 						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
 						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.get9ChevronAddress().toString()));
 						context.getSource().sendSuccess(Component.literal(stargate.get9ChevronAddress().toString()).setStyle(style.applyFormat(ChatFormatting.AQUA))
-								.append(Component.literal(" X: " + stargatePos.getX() + " Y: " + stargatePos.getY() + " Z: " + stargatePos.getZ()).withStyle(ChatFormatting.BLUE)), false);
+								.append(Component.literal(" X: " + stargatePos.x() + " Y: " + stargatePos.y() + " Z: " + stargatePos.z()).withStyle(ChatFormatting.BLUE)), false);
 					}
 				});
 				context.getSource().sendSuccess(Component.literal("-------------------------"), false);
@@ -490,15 +491,13 @@ public class CommandInit
 				.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
 		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		
-		Optional<List<Transporter>> transportersOptional = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
+		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
 		
-		if(transportersOptional.isPresent())
+		if(transporters != null)
 		{
-			List<Transporter> transporters = transportersOptional.get();
-			
-			for(int i = 0; i < transporters.size(); i++)
+			for(Transporter transporter : transporters)
 			{
-				BlockPos coords = transporters.get(i).getBlockPos();
+				BlockPos coords = transporter.getBlockPos();
 				context.getSource().sendSuccess(Component.literal("X: " + coords.getX() + " Y: " + coords.getY() + " Z: " + coords.getZ()).withStyle(ChatFormatting.BLUE), false);
 			}
 		}

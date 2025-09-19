@@ -44,6 +44,10 @@ public class BlockEntityList extends SavedData
 	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<Address.Immutable, Stargate>();
 	protected HashMap<UUID, Transporter> transporterMap = new HashMap<UUID, Transporter>();
 	
+	//============================================================================================
+	//******************************************Stargate******************************************
+	//============================================================================================
+	
 	/**
 	 * Adds Stargate to Stargate Network
 	 * @param stargate
@@ -77,33 +81,6 @@ public class BlockEntityList extends SavedData
 		return savedStargate;
 	}
 	
-	public Transporter addTransporter(AbstractTransporterEntity transporterEntity)
-	{
-		if(transporterEntity.getID() == null)
-			transporterEntity.setID(transporterEntity.generateID());
-		
-		UUID id = transporterEntity.getID();
-		
-		if(this.transporterMap.containsKey(id))
-			return this.transporterMap.get(id); // Returns an existing Transporter
-		
-		if(transporterEntity.getLevel() == null)
-			return null;
-		
-		if(transporterEntity.getBlockPos() == null)
-			return null;
-		
-		SGJourneyTransporter transporter = new SGJourneyTransporter(transporterEntity);
-		
-		this.transporterMap.put(id, transporter);
-		
-		this.setDirty();
-		
-		StargateJourney.LOGGER.debug("Added Transporter " + id + " to BlockEntityList");
-		
-		return transporter;
-	}
-	
 	public void removeStargate(Address.Immutable id)
 	{
 		if(!this.stargateMap.containsKey(id))
@@ -113,18 +90,6 @@ public class BlockEntityList extends SavedData
 		}
 		this.stargateMap.remove(id);
 		StargateJourney.LOGGER.debug("Removed Stargate " + id + " from BlockEntityList");
-		setDirty();
-	}
-	
-	public void removeTransporter(UUID id)
-	{
-		if(!this.transporterMap.containsKey(id))
-		{
-			StargateJourney.LOGGER.error(id + " not found in BlockEntityList");
-			return;
-		}
-		this.transporterMap.remove(id);
-		StargateJourney.LOGGER.debug("Removed Transporter " + id + " from BlockEntityList");
 		setDirty();
 	}
 	
@@ -176,9 +141,50 @@ public class BlockEntityList extends SavedData
 		return randomStargate;
 	}
 	
+	//============================================================================================
+	//****************************************Transporter*****************************************
+	//============================================================================================
 	
+	public Transporter addTransporter(AbstractTransporterEntity transporterEntity)
+	{
+		if(transporterEntity.getID() == null)
+			transporterEntity.setID(transporterEntity.generateID());
+		
+		UUID id = transporterEntity.getID();
+		
+		if(this.transporterMap.containsKey(id))
+			return this.transporterMap.get(id); // Returns an existing Transporter
+		
+		if(transporterEntity.getLevel() == null)
+			return null;
+		
+		if(transporterEntity.getBlockPos() == null)
+			return null;
+		
+		SGJourneyTransporter transporter = new SGJourneyTransporter(transporterEntity);
+		
+		this.transporterMap.put(id, transporter);
+		
+		this.setDirty();
+		
+		StargateJourney.LOGGER.debug("Added Transporter " + id + " to BlockEntityList");
+		
+		return transporter;
+	}
 	
-    @SuppressWarnings("unchecked")
+	public void removeTransporter(UUID id)
+	{
+		if(!this.transporterMap.containsKey(id))
+		{
+			StargateJourney.LOGGER.error(id + " not found in BlockEntityList");
+			return;
+		}
+		this.transporterMap.remove(id);
+		StargateJourney.LOGGER.debug("Removed Transporter " + id + " from BlockEntityList");
+		setDirty();
+	}
+	
+	@SuppressWarnings("unchecked")
 	public HashMap<UUID, Transporter> getTransporters()
 	{
 		return (HashMap<UUID, Transporter>) transporterMap.clone();
@@ -328,7 +334,9 @@ public class BlockEntityList extends SavedData
 		}
 	}
 	
-	//================================================================================================
+	//============================================================================================
+	//*************************************Saving and Loading*************************************
+	//============================================================================================
 	
 	public BlockEntityList(MinecraftServer server)
 	{

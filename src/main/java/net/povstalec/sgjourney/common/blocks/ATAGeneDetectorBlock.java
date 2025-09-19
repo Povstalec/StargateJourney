@@ -3,12 +3,16 @@ package net.povstalec.sgjourney.common.blocks;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,7 +21,10 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.tech.AncientTech;
+
+import javax.annotation.Nullable;
 
 public class ATAGeneDetectorBlock extends Block implements AncientTech
 {
@@ -147,5 +154,13 @@ public class ATAGeneDetectorBlock extends Block implements AncientTech
 			measured = 3;
 		
 		return measured;
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.ancient_gene_detector.description"));
+		tooltipComponents.add(ComponentHelper.usage("block.sgjourney.ancient_gene_detector.right_click"));
+		tooltipComponents.add(ComponentHelper.usage("block.sgjourney.ancient_gene_detector.redstone"));
 	}
 }

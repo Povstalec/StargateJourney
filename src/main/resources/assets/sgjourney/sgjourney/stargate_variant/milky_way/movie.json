@@ -22,7 +22,8 @@
 				"columns": 1,
 				"frames": 32,
 				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
-			},
+			}
+		},
 		"strudel":
 		{
 			"front":
@@ -41,7 +42,6 @@
 				"frames": 32,
 				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 0.75 }
 			}
-		}
 		}
 	},
 	"shiny_wormhole":

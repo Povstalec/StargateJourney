@@ -108,6 +108,9 @@
 	"block.sgjourney.heavy_naquadah_liquidizer": "Heavy Naquadah Liquidizer",
 	
 	"block.sgjourney.ancient_gene_detector": "Ancient Gene Detector",
+	"block.sgjourney.ancient_gene_detector.description": "Device that activates in the presence of Ancient Technology Activation gene",
+	"block.sgjourney.ancient_gene_detector.right_click": "Right-Click to detect ATA gene in yourself",
+	"block.sgjourney.ancient_gene_detector.redstone": "Power with redstone to detect ATA gene in nearby entities (radius increased by 2 blocks for every redstone signal level)",
 	
 	"block.sgjourney.zpm_hub": "ZPM Hub",
 	"block.sgjourney.zpm_port": "ZPM Port",
@@ -532,6 +535,9 @@
 	
 	"tooltip.sgjourney.dhd.has_control_crystal": "Has Control Crystal",
 	"tooltip.sgjourney.dhd.generates_energy_core": "Generates Energy Core",
+	"tooltip.sgjourney.dhd.description": "Dial Home Device used to control Stargates",
+	"tooltip.sgjourney.dhd.dialing_menu": "Right-Click on the top to open dialing menu",
+	"tooltip.sgjourney.dhd.crystal_menu": "Right-Click on the sides or Shift + Right-Click on the top to open crystal menu",
 	"tooltip.sgjourney.address_table": "Address Table",
 	
 	"tooltip.sgjourney.crystal.none": "None",
@@ -604,6 +610,7 @@
 	"tooltip.sgjourney.cable.zpm_transfer": "Can handle transferring Energy from a ZPM",
 	
 	"tooltip.sgjourney.energy_transfer": "Max Energy Transfer",
+	"tooltip.sgjourney.naquadah_power_cell.description": "Device that converts Liquid Naquadah and Heavy Liquid Naquadah to Energy",
 	"tooltip.sgjourney.naquadah_power_cell.reload": "Right-Click in Off-Hand to Reload with Naquadah Vial in Main Hand",
 	"tooltip.sgjourney.matok.open": "Open",
 	"tooltip.sgjourney.matok.closed": "Closed",
@@ -619,6 +626,7 @@
 	"tooltip.sgjourney.syringe.blood": "Blood",
 	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototype Ancient Gene Therapy",
 	"tooltip.sgjourney.syringe.ata_gene": "Ancient Gene Therapy",
+	"tooltip.sgjourney.zpm.description": "Device that extracts vacuum energy from an artificial region of subspace-time until it reaches maximum entropy",
 
 	"tooltip.sgjourney.gdo.idc": "IDC",
 	"tooltip.sgjourney.gdo.frequency": "Frequency",
@@ -628,6 +636,7 @@
 	"tooltip.sgjourney.iris.durability": "Durability",
 	
 	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Fuel",
+	"tooltip.sgjourney.naquadah_fuel_rod.description": "A rod with fuel used to power Naquadah Generators",
 	"tooltip.sgjourney.naquadah_generator_core.reaction_progress": "Reaction Progress",
 	"tooltip.sgjourney.naquadah_generator_core.description": "Provides energy to the DHD",
 	"tooltip.sgjourney.fusion_core.fuel": "Fuel",

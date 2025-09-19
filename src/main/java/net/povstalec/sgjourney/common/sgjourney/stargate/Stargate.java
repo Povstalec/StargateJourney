@@ -10,6 +10,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
@@ -53,10 +54,72 @@ public interface Stargate
 	}
 	
 	/**
-	 * @return Position vector the Stargate is located at or null if it doesn't have a position
+	 * @param server Current Minecraft Server
+	 * @return Position vector of the Stargate's center or null if it doesn't have a position
 	 */
 	@Nullable
-	Vec3 getPosition();
+	Vec3 getPosition(MinecraftServer server);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Unit Vector with the direction the Stargate is facing or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getForward(MinecraftServer server);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Unit Vector with the direction the Stargate considers up or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getUp(MinecraftServer server);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Unit Vector with the direction the Stargate considers right or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getRight(MinecraftServer server);
+	
+	/**
+	 * @return Inner Radius of the Stargate or <= 0 if the Stargate doesn't have a real form
+	 */
+	double getInnerRadius();
+	
+	/**
+	 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Stargate, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction
+	 * @param server Current Minecraft Server
+	 * @param vector Vector to be transformed
+	 * @param scaleWithStargate Whether the coordinates should scale with the Stargate (for example, relative position within the Stargate should be scaled with it, but momentum should not)
+	 * @return A new vector with the coordinates of the original vector, but transformed to Stargate's relative coordinate system
+	 */
+	default Vec3 toStargateCoords(MinecraftServer server, Vec3 vector, boolean scaleWithStargate)
+	{
+		Vec3 result = CoordinateHelper.Relative.fromOrthogonalBasis(vector, getForward(server), getUp(server), getRight(server));
+		
+		if(scaleWithStargate)
+			return new Vec3(result.x(), result.y() / getInnerRadius(), result.z() / getInnerRadius());
+		
+		return result;
+	}
+	
+	/**
+	 * Transforms the vector from a Stargate's relative coordinate system, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction,
+	 * with the Y and Z vectors being a percentage of the Stargate's radius, to a vector in the absolute coordinate system
+	 * @param server Current Minecraft Server
+	 * @param vector Vector to be transformed
+	 * @param scaleWithStargate Whether the coordinates should scale with the Stargate (for example, relative position within the Stargate should be scaled with it, but momentum should not)
+	 * @param mirror Whether the coordinates should be mirrored, for example when a traveler is exiting the Stargate
+	 * @return A new vector with the coordinates of the original vector, but transformed to absolute coordinate system
+	 */
+	default Vec3 fromStargateCoords(MinecraftServer server, Vec3 vector, boolean scaleWithStargate, boolean mirror)
+	{
+		if(scaleWithStargate)
+			vector = new Vec3(vector.x(), vector.y() * getInnerRadius(), vector.z() * getInnerRadius());
+		
+		return mirror ? CoordinateHelper.Relative.toOrthogonalBasis(vector, CoordinateHelper.Relative.mirrorVector(getForward(server)), getUp(server), CoordinateHelper.Relative.mirrorVector(getRight(server))) :
+				CoordinateHelper.Relative.toOrthogonalBasis(vector, getForward(server), getUp(server), getRight(server));
+	}
 	
 	/**
 	 * @return Solar System the Stargate is located in or null if it's not located in any Solar System
@@ -161,12 +224,6 @@ public interface Stargate
 	}
 	
 	/**
-	 * Updates this Stargate
-	 * @param server Current Minecraft Server
-	 */
-	default void update(MinecraftServer server) {}
-	
-	/**
 	 * @param server Current Minecraft Server
 	 * @return Returns true if this Stargate is valid (for example, in the case of BlockEntity-based Stargates, if the Block Entity can still be found in the world)
 	 */
@@ -185,13 +242,28 @@ public interface Stargate
 	 */
 	default void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration) {}
 	
-	// Client Connection
+	// Updating
+	
+	/**
+	 * Updates this Stargate
+	 * @param server Current Minecraft Server
+	 */
+	default void update(MinecraftServer server) {}
 	
 	/**
 	 * Updates this Stargate's information on the client-side
 	 * @param server Current Minecraft Server
 	 */
 	default void updateClient(MinecraftServer server) {}
+	
+	/**
+	 * Update all Tech Interfaces that are currently connected to the Stargate
+	 * @param server The Server this is happening on
+	 * @param type Type of Interfaces that should be updated, null will update all types
+	 * @param eventName Name of the event with which to update the Interfaces, leave as null if there is none
+	 * @param objects Objects that can be sent along with the event to update Interfaces
+	 */
+	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects) {}
 	
 	// Communication
 	
@@ -217,49 +289,51 @@ public interface Stargate
 	 */
 	float checkStargateShieldingState(MinecraftServer server);
 	
-	/**
-	 * Update all Tech Interfaces that are currently connected to the Stargate
-	 * @param server The Server this is happening on
-	 * @param type Type of Interfaces that should be updated, null will update all types
-	 * @param eventName Name of the event with which to update the Interfaces, leave as null if there is none
-	 * @param objects Objects that can be sent along with the event to update Interfaces
-	 */
-	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects) {}
-	
 	// Energy
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @return Energy currently Stored in the Stargate's energy buffer
+	 * @return Energy currently stored in the Stargate's energy buffer
 	 */
 	long getEnergyStored(MinecraftServer server);
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @param energy Amount of energy to be extracted
-	 * @return True if the specified amount of energy can be extracted from the Stargate (basically if it has enough energy)
+	 * @return Max amount of energy tuat can be stored in the Stargate's energy buffer
 	 */
-	boolean canExtractEnergy(MinecraftServer server, long energy);
+	long getEnergyCapacity(MinecraftServer server);
 	
 	/**
-	 * Extracts energy from the Stargate's energy buffer
+	 * Extracts energy from the Stargate's energy buffer (used mainly for drawing energy to establish and then feed a Stargate Connection)
 	 * @param server Current Minecraft Server
 	 * @param energy Amount of energy to be depleted
 	 * @param simulate True if the depletion will only be simulated and the amount of energy in the Stargate's energy buffer will stay the same, if false, the energy is extracted from the energy buffer
 	 * @return Amount of energy that was actually depleted
 	 */
-	long depleteEnergy(MinecraftServer server, long energy, boolean simulate);
+	long extractEnergy(MinecraftServer server, long energy, boolean simulate);
 	
 	// Stargate Connection
 	
 	/**
+	 * Updates Stargate with current information about the Stargate Connection
 	 * @param server Current Minecraft Server
-	 * @return The Speed at which this Stargate's chevrons lock during an incoming connection
+	 * @param connection Stargate Connection that connects the two Stargates
 	 */
-	default StargateInfo.ChevronLockSpeed getChevronLockSpeed(MinecraftServer server)
-	{
-		return StargateInfo.ChevronLockSpeed.SLOW;
-	}
+	default void connectionUpdate(MinecraftServer server, StargateConnection connection) {}
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
+	 * @return Time (in ticks) it takes the Stargate to engage its Chevrons and start establishing a wormhole (kawoosh is not included in this)
+	 */
+	int dialedEngageTime(MinecraftServer server, boolean doKawoosh);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
+	 * @return Time (in ticks) it takes the Stargate to establish wormhole (basically, how long before kawoosh is over and the Stargate can be safely used)
+	 */
+	int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh);
 	
 	/**
 	 * Checks if this Stargate can connect to the dialing Stargate and creates a Stargate Connection
@@ -280,49 +354,30 @@ public interface Stargate
 	void connectStargate(MinecraftServer server, StargateConnection connection, StargateConnection.State connectionState);
 	
 	/**
-	 * Performs whatever the Stargate needs to do while connecting (for example, playing the wormhole sound) - happens on both sides of the connection
+	 * Performs whatever the Stargate needs to do while connecting (for example, playing the kawoosh sound and handling the kawoosh itself) - happens on both sides of the connection
 	 * @param server Current Minecraft Server
+	 * @param connection Stargate Connection that connects the two Stargates
 	 * @param incoming Whether the Stargate is on the incoming side or outgoing side of the connection
-	 * @param doKawoosh Whether kawoosh should form when the connection is established
 	 * @param kawooshStartTicks Time of connection (in ticks) at which the kawoosh is scheduled to start
-	 * @param openTime Amount of time (in ticks) that has passed since the connection was established
 	 */
-	default void doWhileConnecting(MinecraftServer server, boolean incoming, boolean doKawoosh, int kawooshStartTicks, int openTime) {}
+	default void doWhileConnecting(MinecraftServer server, StargateConnection connection, boolean incoming, int kawooshStartTicks) {}
 	
 	/**
 	 * Performs whatever the Stargate needs to do while being dialed (for example, engage chevrons, display symbols or start rotating) - happens only on the receiving side of the connection
 	 * @param server Current Minecraft Server
+	 * @param connection Stargate Connection that connects the two Stargates
 	 * @param dialingAddress The connection Address of the dialing Stargate in relation to this connection
 	 * @param kawooshStartTicks Time of connection (in ticks) at which the kawoosh is scheduled to start
-	 * @param chevronLockSpeed The Speed at which this Stargate's chevrons lock during an incoming connection
-	 * @param openTime Amount of time (in ticks) that has passed since the connection was established
 	 */
-	default void doWhileDialed(MinecraftServer server, Address dialingAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime) {}
-	
-	/**
-	 * Updates Stargate's timers with new time information
-	 * @param server Current Minecraft Server
-	 * @param connectionTime Number of ticks that have passed since the connection was established (Right after dialing Stargate finished dialing)
-	 * @param kawooshTime Number of ticks that have passed since the kawoosh started
-	 * @param openTime Number of ticks that have passed since the wormhole formed (after kawoosh ended)
-	 * @param timeSinceLastTraveler Number of ticks that have passed since the last time a traveler has appeared near any of the connected Stargates
-	 */
-	default void updateTimers(MinecraftServer server, int connectionTime, int kawooshTime, int openTime, int timeSinceLastTraveler) {}
-	
-	/**
-	 * Progresses the kawoosh of this Stargate (Destroys blocks, kills entities)
-	 * @param server Current Minecraft Server
-	 * @param kawooshTime Number of ticks since the kawoosh started
-	 */
-	default void doKawoosh(MinecraftServer server, int kawooshTime) {}
+	default void doWhileDialed(MinecraftServer server, StargateConnection connection, Address dialingAddress, int kawooshStartTicks) {}
 	
 	/**
 	 * Performs whatever the Stargate needs to do while it's connected after the kawoosh (for example play idle wormhole sounds)
 	 * @param server Current Minecraft Server
+	 * @param connection Stargate Connection that connects the two Stargates
 	 * @param incoming Whether the Stargate is on the incoming side or outgoing side of the connection
-	 * @param openTime Amount of time (in ticks) that has passed since the connection was established
 	 */
-	default void doWhileConnected(MinecraftServer server, boolean incoming, int openTime) {}
+	default void doWhileConnected(MinecraftServer server, StargateConnection connection, boolean incoming) {}
 	
 	/**
 	 * Performs whatever the Stargate needs for its wormhole to try sending travelers to the connected Stargate
@@ -336,6 +391,7 @@ public interface Stargate
 	/**
 	 * Receives information about incoming traveler and teleports the traveler to the Stargate's position
 	 * @param server Current Minecraft Server
+	 * @param connection Stargate Connection that connects the two Stargates
 	 * @param initialStargate Stargate from which the traveler is being sent
 	 * @param traveler The traveler Entity which is being received
 	 * @param relativePosition Traveler's position vector relative to the initial Stargate, with X direction being the direction the initial Stargate was facing,
@@ -346,14 +402,15 @@ public interface Stargate
 	 * Y being the initial Stargate's up and Z being the initial Stargate's right direction.
 	 * @return True if traveler was accepted and transported to this Stargate, otherwise false
 	 */
-	boolean receiveTraveler(MinecraftServer server, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
+	boolean receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
 	
 	/**
+	 * Checks if the current Stargate Connection should be automatically closed (for example, if the open time exceeds the maximum time allowed for the Stargate to be open)
 	 * @param server Current Minecraft Server
-	 * @return The amount of time (in ticks) the Stargate Connection should wait for new travelers before automatically closing the wormhole (this counts from both ends of the connection),
-	 * leave as 0 if the connection shouldn't automatically close from this Stargate's side
+	 * @param connection Stargate Connection in question
+	 * @return True if the Stargate connection should be closed, otherwise false
 	 */
-	int autoclose(MinecraftServer server);
+	boolean shouldAutoclose(MinecraftServer server, StargateConnection connection);
 	
 	// Saving and loading
 	

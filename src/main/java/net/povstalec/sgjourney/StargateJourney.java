@@ -149,6 +149,9 @@ public class StargateJourney
     	{
             StatisticsInit.register();
             PacketHandlerInit.register();
+			
+			StargateInit.register();
+			TransporterInit.register();
     	});
     }
 	

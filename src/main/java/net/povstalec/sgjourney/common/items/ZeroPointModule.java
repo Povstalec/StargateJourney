@@ -5,6 +5,7 @@ import java.util.List;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -113,6 +114,8 @@ public class ZeroPointModule extends Item
 		
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.entropy").append(Component.literal(": " + currentEntropy + "%")).withStyle(ChatFormatting.GOLD));
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + ZeroPointEnergy.zeroPointEnergyToString(entropy, remainingEnergy))).withStyle(ChatFormatting.DARK_RED));
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.zpm.description"));
     	
     	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
