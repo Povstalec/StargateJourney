@@ -194,6 +194,9 @@ public class StargateJourney
             StatisticsInit.register();
             PacketHandlerInit.register();
     		VillagerInit.registerPOIs();
+			
+			StargateInit.register();
+			TransporterInit.register();
     	});
     }
 	

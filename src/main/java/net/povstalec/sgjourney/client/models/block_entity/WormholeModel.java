@@ -31,6 +31,8 @@ public class WormholeModel
 	protected static final int DEFAULT_FRAMES = 32;
 	protected static final float DEFAULT_SCALE = 1F / DEFAULT_FRAMES;
 	
+	public static final int STRUDEL_TICKS = 20;
+	
 	protected float maxDefaultDistortion;
 	
 	protected float[][] outerCircle = coordinates(DEFAULT_SIDES, 2.5F, 5, 0);
@@ -326,6 +328,8 @@ public class WormholeModel
 		if(kawooshProgress <= StargateConnection.KAWOOSH_TICKS)
 			return;
 		
+		int strudelProgress = Math.min(kawooshProgress,  StargateConnection.KAWOOSH_TICKS + STRUDEL_TICKS);
+		
 		float yOffset = ticks * DEFAULT_SCALE;
 		
 		Matrix4f matrix4 = stack.last().pose();
@@ -356,28 +360,28 @@ public class WormholeModel
 				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
-						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, strudelProgress),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, strudelProgress),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, strudelProgress), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 				
 				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0],
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1],
-						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, strudelProgress),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, strudelProgress),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, strudelProgress), frontRGBA, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 			}
 		}
 		
@@ -404,28 +408,28 @@ public class WormholeModel
 				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
-						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, strudelProgress),
 						
 						coordinates[i + 1][j % coordinates[i + 1].length][0],
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, strudelProgress),
 						
 						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
-						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, strudelProgress), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
 				
 				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
-						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, strudelProgress),
 						
 						coordinates[i][(j + 1) % coordinates[i].length][0],
 						coordinates[i][(j + 1) % coordinates[i].length][1],
-						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
+						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, strudelProgress),
 						
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], 
-						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
+						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, strudelProgress), backRGBA, uBackScale, vBackScale, uBackOffset, vBackOffset);
 			}
 		}
 	}

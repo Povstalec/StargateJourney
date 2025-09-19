@@ -29,6 +29,7 @@ import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 import java.util.List;
 
@@ -121,6 +122,10 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 			if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.GENERATED != StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractDHDEntity.GENERATION_STEP)))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		}
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.dhd.description"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.dialing_menu"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.crystal_menu"));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}

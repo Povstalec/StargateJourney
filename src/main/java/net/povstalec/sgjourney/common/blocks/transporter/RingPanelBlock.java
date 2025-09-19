@@ -5,13 +5,16 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -26,7 +29,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 
 
@@ -52,14 +57,14 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if (!level.isClientSide()) 
+        if(!level.isClientSide())
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if (blockEntity instanceof RingPanelEntity panel) 
+        	if(blockEntity instanceof RingPanelEntity panel)
         	{
         		panel.setTransportRings();
-        		panel.getNearest6Rings(level, pos, 32768);
+        		panel.getNearest6Rings((ServerLevel) level, pos, 32768);
 				
         		MenuProvider containerProvider = new MenuProvider() 
         		{
@@ -78,12 +83,31 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
         		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
-        	{
         		throw new IllegalStateException("Our named container provider is missing!");
-        	}
         }
         return InteractionResult.SUCCESS;
     }
+	
+	@Override
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	{
+		BlockEntity blockentity = level.getBlockEntity(pos);
+		if(blockentity instanceof RingPanelEntity)
+		{
+			if(!level.isClientSide() && !player.isCreative())
+			{
+				ItemStack itemstack = new ItemStack(BlockInit.RING_PANEL.get());
+				
+				blockentity.saveToItem(itemstack);
+				
+				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
+				itementity.setDefaultPickUpDelay();
+				level.addFreshEntity(itementity);
+			}
+		}
+		
+		super.playerWillDestroy(level, pos, state, player);
+	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
@@ -106,17 +130,13 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
-		switch(state.getValue(FACING))
+		return switch (state.getValue(FACING))
 		{
-		case EAST:
-			return EAST;
-		case SOUTH:
-			return SOUTH;
-		case WEST:
-			return WEST;
-		default:
-			return NORTH;
-		}
+			case EAST -> EAST;
+			case SOUTH -> SOUTH;
+			case WEST -> WEST;
+			default -> NORTH;
+		};
 	}
 	
 }

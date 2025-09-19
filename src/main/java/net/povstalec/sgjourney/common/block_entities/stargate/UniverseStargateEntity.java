@@ -257,9 +257,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 
 	@Override
-	public ChevronLockSpeed getChevronLockSpeed()
+	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return CHEVRON_LOCK_SPEED;
+		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override
@@ -269,20 +269,21 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, StargateInfo.ChevronLockSpeed chevronLockSpeed, int openTime)
+	public void doWhileDialed(Address connectedAddress, int kawooshStartTicks, boolean doKawoosh, int connectionTime)
 	{
-		super.doWhileDialed(connectedAddress, kawooshStartTicks, chevronLockSpeed, openTime);
+		super.doWhileDialed(connectedAddress, kawooshStartTicks, doKawoosh, connectionTime);
 		
 		if(this.level.isClientSide())
 			return;
 		
-		if(openTime == 1)
+		if(connectionTime == 1)
 		{
 			startSound();
 			startRotation(-1, true);
 		}
 		
-		if(openTime == chevronLockSpeed.getChevronWaitTicks() * 8)
+		StargateInfo.ChevronLockSpeed chevronLockSpeed = getChevronLockSpeed(doKawoosh);
+		if(connectionTime == chevronLockSpeed.getChevronWaitTicks() * 8)
 			endRotation(false);
 	}
 }

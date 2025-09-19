@@ -54,6 +54,14 @@ public class TransporterConnection
 		this(server, uuid, transporterA, transporterB, 0);
 	}
 	
+	public enum Type
+	{
+		DIMENSIONAL, // Within one dimension
+		SYSTEM_WIDE, // Within one system, across two dimensions
+		INTERSTELLAR, // Across two solar systems, presumably through the Stargate
+		INTERGALACTIC // Across two galaxies, presumably through the Stargate
+	}
+	
 	@Nullable
 	public static final TransporterConnection create(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
@@ -114,32 +122,12 @@ public class TransporterConnection
 	
 	private void transport(MinecraftServer server)
 	{
-		BlockPos transportPosA = transporterA.transportPos(server);
-		BlockPos transportPosB = transporterB.transportPos(server);
-		
-		if(transportPosA == null || transportPosB == null)
-		{
-			terminate(server);
-			return;
-		}
-		
-		List<Entity> entitiesA = transporterA.entitiesToTransport(server);
-		List<Entity> entitiesB = transporterB.entitiesToTransport(server);
-		
-		transportEntities(entitiesA, transportPosA, transportPosB);
-		transportEntities(entitiesB, transportPosB, transportPosA);
-	}
-	
-	private static void transportEntities(List<Entity> entities, BlockPos from, BlockPos to)
-	{
-		for(Entity entity : entities)
-		{
-			double xOffset = entity.getX() - from.getX();
-			double yOffset = entity.getY() - from.getY();
-			double zOffset = entity.getZ() - from.getZ();
-			
-			entity.teleportTo((to.getX() + xOffset), (to.getY() + yOffset), (to.getZ() + zOffset));
-		}
+		// Get all potential travelers that can be transported before the transport starts, so that you don't end up transporting A -> B and then immediately B -> A
+		List<Entity> travelersA = transporterA.entitiesToTransport(server);
+		List<Entity> travelersB = transporterB.entitiesToTransport(server);
+		// Attempt transporting all potential travelers
+		transporterA.transportTravelers(server, this, transporterB, travelersA);
+		transporterB.transportTravelers(server, this, transporterA, travelersB);
 	}
 	
 	public final void terminate(MinecraftServer server)

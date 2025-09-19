@@ -42,9 +42,9 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	public void stopRotationSound() {}
 
 	@Override
-	public ChevronLockSpeed getChevronLockSpeed()
+	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return CHEVRON_LOCK_SPEED;
+		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override

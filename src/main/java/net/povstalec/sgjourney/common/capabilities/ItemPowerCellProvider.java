@@ -55,6 +55,19 @@ public abstract class ItemPowerCellProvider extends ItemFluidHolderProvider
 		}
 		
 		@Override
+		public long getTrueEnergyStored()
+		{
+			FluidStack fluidStack = getFluidInTank(0);
+			
+			if(fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get())
+				return fluidStack.getAmount() * CommonTechConfig.energy_from_liquid_naquadah.get() + this.energy;
+			else if(fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get())
+				return fluidStack.getAmount() * CommonTechConfig.energy_from_heavy_liquid_naquadah.get() + this.energy;
+			else
+				return this.energy;
+		}
+		
+		@Override
 		public void onEnergyChanged(long difference, boolean simulate)
 		{
 			saveEnergy();

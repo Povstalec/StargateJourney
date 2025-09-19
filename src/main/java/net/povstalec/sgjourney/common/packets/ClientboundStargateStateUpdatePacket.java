@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
@@ -28,7 +29,7 @@ public class ClientboundStargateStateUpdatePacket
 
     public ClientboundStargateStateUpdatePacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos(), StargateConnection.State.fromByte(buffer.readByte()), buffer.readBoolean(), new HashMap<StargatePart, BlockState>(buffer.readMap((buf) -> buf.readEnum(StargatePart.class), buf -> buf.readWithCodec(BlockState.CODEC))));
+        this(buffer.readBlockPos(), StargateConnection.State.fromByte(buffer.readByte()), buffer.readBoolean(), new HashMap<StargatePart, BlockState>(buffer.readMap((buf) -> buf.readEnum(StargatePart.class), buf -> buf.readById(Block.BLOCK_STATE_REGISTRY))));
     }
 
     public void encode(FriendlyByteBuf buffer)
@@ -36,7 +37,7 @@ public class ClientboundStargateStateUpdatePacket
         buffer.writeBlockPos(this.pos);
         buffer.writeByte(this.connectionState.byteValue());
         buffer.writeBoolean(this.canSinkGate);
-        buffer.writeMap(this.blockStates, FriendlyByteBuf::writeEnum, (buf, state) -> buf.writeWithCodec(BlockState.CODEC, state));
+        buffer.writeMap(this.blockStates, FriendlyByteBuf::writeEnum, (buf, state) -> buf.writeId(Block.BLOCK_STATE_REGISTRY, state));
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx)

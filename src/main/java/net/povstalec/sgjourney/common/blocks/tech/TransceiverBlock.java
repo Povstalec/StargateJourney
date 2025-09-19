@@ -7,8 +7,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.mojang.math.Vector3d;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -210,7 +210,7 @@ public class TransceiverBlock extends Block implements EntityBlock
 	@Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-		tooltipComponents.add(Component.translatable("block.sgjourney.transceiver.description").withStyle(ChatFormatting.GRAY));
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.transceiver.description"));
     }
 	
 	@SuppressWarnings("unchecked")
