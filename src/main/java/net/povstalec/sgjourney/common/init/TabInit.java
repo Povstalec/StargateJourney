@@ -108,6 +108,8 @@ public class TabInit
 			event.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
 			
 			event.accept(ItemInit.UNITY_SHARD.get());
+			
+			// items.accept(ItemInit.CRYSTAL_CONFIGURATOR.get());
 
 			event.accept(ItemInit.CRYSTAL_BASE.get());
 			event.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());

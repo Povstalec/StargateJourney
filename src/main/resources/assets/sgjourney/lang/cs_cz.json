@@ -107,6 +107,9 @@
 	"block.sgjourney.heavy_naquadah_liquidizer": "Zkapalňovač těžkého naquadahu",
 	
 	"block.sgjourney.ancient_gene_detector": "Detektor antického genu",
+	"block.sgjourney.ancient_gene_detector.description": "Zařízení které se aktivuje v přitomnosti antického genu",
+	"block.sgjourney.ancient_gene_detector.right_click": "Pravé kliknutí pro detekování antického genu v sobě",
+	"block.sgjourney.ancient_gene_detector.redstone": "Napájej redstonem pro detekování antického genu v entitách poblíž (dosah se zvyšuje o 2 bloky za každou úrověn redstonového signálu)",
 	
 	"block.sgjourney.zpm_hub": "ZPM Hub",
 	"block.sgjourney.zpm_port": "ZPM Port",
@@ -533,6 +536,9 @@
 	
 	"tooltip.sgjourney.has_control_crystal": "Má ovládací krystal",
 	"tooltip.sgjourney.dhd.generates_energy_core": "Generuje energetické jádro",
+	"tooltip.sgjourney.dhd.description": "Zařízení pro ovládání hvězdných bran",
+	"tooltip.sgjourney.dhd.dialing_menu": "Pravé kliknutí na horní část otevře ovládací menu",
+	"tooltip.sgjourney.dhd.crystal_menu": "Pravé kliknutí na strany nebo shift + pravé kliknutí na horní část otevře krystalové menu",
 	"tooltip.sgjourney.address_table": "Tabulka adres",
 	
 	"tooltip.sgjourney.crystal.none": "-",
@@ -604,6 +610,7 @@
 	"tooltip.sgjourney.cable.zpm_transfer": "Dokáže vydržet přenos energie ze ZPM",
 	
 	"tooltip.sgjourney.energy_transfer": "Max. přenos energie",
+	"tooltip.sgjourney.naquadah_power_cell.description": "Zařízení které konvertuje tekutý naquadah a těžký tekutý naquadah na energii",
 	"tooltip.sgjourney.naquadah_power_cell.reload": "Pravé kliknutí ve vedlejší ruce pro doplnění naquadahovou ampulkou v hlavní ruce",
 	"tooltip.sgjourney.matok.open": "Otevřený",
 	"tooltip.sgjourney.matok.closed": "Zavřený",
@@ -619,6 +626,7 @@
 	"tooltip.sgjourney.syringe.blood": "Krev",
 	"tooltip.sgjourney.syringe.prototype_ata_gene": "Prototyp antické genové terapie",
 	"tooltip.sgjourney.syringe.ata_gene": "Antická genová terapie",
+	"tooltip.sgjourney.zpm.description": "Zařízení které extrahuje vakuovou energii z uměle vytvořené oblasti subprostoru dokud nedosáhne maximální entropie",
 
 	"tooltip.sgjourney.gdo.idc": "IDC",
 	"tooltip.sgjourney.gdo.frequency": "Frekvence",
@@ -628,6 +636,7 @@
 	"tooltip.sgjourney.iris.durability": "Výdrž",
 	
 	"tooltip.sgjourney.naquadah_fuel_rod.fuel": "Palivo",
+	"tooltip.sgjourney.naquadah_fuel_rod.description": "Tyč s palivem, které se dá použít pro pohánění naquadahových generátorů",
 	"tooltip.sgjourney.naquadah_generator_core.reaction_progress": "Průběh reakce",
 	"tooltip.sgjourney.naquadah_generator_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	"tooltip.sgjourney.fusion_core.fuel": "Palivo",
