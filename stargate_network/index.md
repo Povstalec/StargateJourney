@@ -16,8 +16,8 @@ This content was migrated from the old wiki and is awaiting an update.
 
 There are 3 kinds of Addresses:
 * `7-chevron Addresses` can be used to dial a Solar System inside the same galaxy. If a Solar System is a part of multiple Galaxies, it can have a different 7-chevron Address in each Galaxy.
-* `8-chevron Addresses` can be used to dial any Solar System. Each Solar System has only one 8-chevron Address.
-* `9-chevron Addresses` can be used to dial specific Stargates. Each Stargate has a unique 9-chevron Address, which can be used to dial it anywhere, even when it's moved to another Solar System where its 7 and 8-chevron Address changes.
+* `8-chevron Addresses` can be used to dial any Solar System outside of the galaxy. Each Solar System has only one 8-chevron Address.
+* `9-chevron Addresses` can be used to dial specific Stargates. Each Stargate has a unique 9-chevron Address, which can be used to dial it anywhere, even within the same dimension or when it's moved to another Solar System where its 7 and 8-chevron Address changes.
 
 ## Preferred Stargates
 When dialing a Solar System with 7-chevron or 8-chevron Addresses, there may be more than one Stargate in said Solar System. The Stargate Network will choose a Preferred Stargate based on the following criteria in this order of importance:
