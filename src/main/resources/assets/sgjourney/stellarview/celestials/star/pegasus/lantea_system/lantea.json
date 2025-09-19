@@ -1,5 +1,5 @@
 {
-	"parent": "stellarview:star_field/irregular_galaxy/pegasus_dwarf_irregular",
+	"parent": { "location": "stellarview:star_field/irregular_galaxy/pegasus_dwarf_irregular" },
 	"coords": { "x": {"ly": -6653}, "y": {"ly": 5567}, "z": {"ly": -6756} },
 	"axis_rotation": { "x_axis": 0, "y_axis": 0, "z_axis": 44 },
 	"texture_layers":
