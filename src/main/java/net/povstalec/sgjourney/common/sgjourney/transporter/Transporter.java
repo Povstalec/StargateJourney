@@ -80,7 +80,7 @@ public interface Transporter
 	Vec3 getRight(MinecraftServer server);
 	
 	/**
-	 * @return Inner Radius of the Transporter or <= 0 if the Transporter doesn't have a real form
+	 * @return Inner Radius of the Transporter or {@literal <= 0} if the Transporter doesn't have a real form
 	 */
 	double getInnerRadius();
 	
