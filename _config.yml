@@ -14,6 +14,8 @@ nav_external_links:
     url: https://github.com/Povstalec/StargateJourney
   - title: Discord
     url: https://discord.gg/VDSqzdBqRd
+  - title: Wiki dev GitHub
+    url: https://github.com/lukaskabc/StargateJourney/tree/documentation
 
 theme: just-the-docs
 # see https://just-the-docs.com/docs/configuration/
