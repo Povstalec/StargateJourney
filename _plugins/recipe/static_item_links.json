@@ -6,8 +6,15 @@
     "transfer_crystal": "/stargate-technology/crystals/dhd-crystals/",
     "control_crystal": "/stargate-technology/crystals/dhd-crystals/",
     "energy_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "advanced_communication_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "advanced_transfer_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "advanced_control_crystal": "/stargate-technology/crystals/dhd-crystals/",
+    "advanced_energy_crystal": "/stargate-technology/crystals/dhd-crystals/",
     "materialization_crystal": "/stargate-technology/crystals/dhd-crystals/",
     "refined_naquadah": "/items/naquadah/",
-    "naquadah_alloy": "/items/naquadah/"
+    "naquadah_alloy": "/items/naquadah/",
+    "classic_dhd": "/stargate-technology/dhd/",
+    "milky_way_dhd": "/stargate-technology/dhd/",
+    "pegasus_dhd": "/stargate-technology/dhd/"
   }
 }
