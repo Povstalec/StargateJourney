@@ -195,15 +195,17 @@ for _, symbol in pairs(address) do
     end
     
     sleep(1)
-    interface.openChevron()
+    -- wrapped in print() function to get the feedback number from the gate
+    -- you can use advanced crystal interface to get feedback also as code names
+    print(interface.openChevron())
     sleep(1)
     -- you can either explicitly call encodeChevron as follows
     -- or skip it and the encoding will take place automatically on closeChevron
     -- that's the difference between three-phase encoding and two-phase encoding
     -- it's really just aesthetics
-    interface.encodeChevron()
+    -- print(interface.encodeChevron())
     sleep(1)
-    interface.closeChevron()
+    print(interface.closeChevron())
     sleep(1)
 end
 ```
