@@ -20,14 +20,14 @@ description: "Documentation for Dial Home Device (DHD) from the Stargate Journey
 {: .no_toc }
 
 The Dial Home Device was constructed by the Ancients and can be found alongside stargates.
-It allows controlling stargates, encoding symbols, dialing an address and supplies the gate with power.
+It allows controlling stargates, encoding symbols, dialing an address, and supplying the gate with power.
 
 ## Inventory
-Each DHD has a dialing user interface with symbol buttons which can be opened by **right-clicking the DHD from the top**.
+Each DHD has a dialing user interface with symbol buttons, which can be opened by **right-clicking the DHD from the top**.
 
 {: .future }
-In the future, the numbers will be replaced with actual symbols
-with an option to still view numbers while holding shift key.
+In the future, the numbers will be replaced with actual symbols,
+with an option to still view numbers while holding the shift key.
 
 <div class="flex-row flex-wrap">
 <img alt="Milkyway DHD interface" class="max-width-512" style="margin: 1rem"
@@ -54,21 +54,21 @@ The inventory holds crystals modifying DHD capabilities and a power source.
 
 ## Power & Energy Target
 
-In order to operate, the DHD itself needs a power,
-when the internal buffer has enough power, it can be transferred to the stargate.
-Similarly to [stargate interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }}),
-the DHD has an **energy target** which defines an energy amount up to which the DHD will charge the gate.
+To operate, the DHD itself needs power.
+When the internal buffer has enough power, it can be transferred to the stargate.
+Similar to [stargate interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }}),
+the DHD has an **energy target** defining an energy amount up to which the DHD will charge the gate.
 
-The DHD can be powered either externally with Forge Energy (FE) e.g. by connecting a cable to it.
+The DHD can be powered externally with Forge Energy (FE), e.g. by connecting a cable to it.
 Or with an internal power source placed in the DHD inventory.
 
 The power source slot to the right can hold **any modded container (a battery)** with Forge Energy (FE).
-Naturally generated DHDs contains the [fusion core]({{ '/items/functional-items/fusion-core/' | absolute_url }}).
-It can be replaced with the [naquadah generator core]({{ '/items/functional-items/naquadah-generator-core/' | absolute_url }})
+Naturally generated DHDs contain the [fusion core]({{ '/items/functional-items/fusion-core/' | absolute_url }}).
+It can be replaced with the [naquadah generator core]({{ '/items/functional-items/naquadah-generator-core/' | absolute_url }}),
 which requires fuel to run. The fuel can be provided in the second slot underneath the first one.
 
-In creative, the [Zero Point Module (ZPM)]({{ '/items/functional-items/zpm/' | absolute_url }}) 
-can also be used as _the ultimate_ power source in the DHD.
+In the creative, the [Zero Point Module (ZPM)]({{ '/items/functional-items/zpm/' | absolute_url }}) 
+can also be used as a powerful power source in the DHD.
 
 ## Crafting
 
@@ -82,9 +82,9 @@ The DHD also generates by default with each stargate, except the gate in The End
 ## Crystals configuration
 
 Placing different crystals into the DHD changes its capabilities -- maximum distance from the gate,
-energy transfer rate, energy target and advanced protocols.
+energy transfer rate, energy target, and advanced protocols.
 
-When advanced protocols are enabled by the DHD, the gate will auto-close in 10 seconds after the last traveler.
+When the DHD with a large control crystal enables advanced protocols, the gate will auto-close in 10 seconds after the last traveler.
 
 See [Stargate Technology / DHD Crystals]({{ '/stargate-technology/crystals/dhd-crystals' | absolute_url }})
-for description of specific crystals.
+for a description of specific crystals.
