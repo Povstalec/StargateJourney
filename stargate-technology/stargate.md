@@ -53,22 +53,43 @@ and the others follow sequentially.
     width: 100%;
     overflow: scroll;
 }
+
+.symbol-numbers-img {
+    visibility: hidden;
+}
+.symbol-numbers-img.visible {
+    visibility: visible;
+}
 </style>
+
+<input type="checkbox" id="toggle-symbol-numbers" onchange="toggleSymbolNumbers()"/>
+<label for="toggle-symbol-numbers">Show symbol numbers</label>
+
+<script>
+function toggleSymbolNumbers() {
+    document.querySelectorAll(".symbol-numbers-img").forEach(img => {
+        img.classList.toggle("visible");
+    })
+}
+</script>
 
 <div class="symbols-container">
 
 MilkyWay
 <img alt="MilkyWay symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/milky_way/galaxy_milky_way.png">
+<img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/symbol_numbers.png' | absolute_url }}">
 
 Pegasus  
 <img alt="Pegasus symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/pegasus/galaxy_pegasus.png">
-
+<img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/symbol_numbers.png' | absolute_url }}">
 
 Universal  
 <img alt="Universal symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/universal/universal.png">
+<img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/universal_symbol_numbers.png' | absolute_url }}">
 
 Kaliem  
 <img alt="Kaliem symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/kaliem/galaxy_kaliem.png">
+<img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/symbol_numbers.png' | absolute_url }}">
 
 </div>
 
