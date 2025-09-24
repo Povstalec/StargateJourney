@@ -36,6 +36,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 
 	@Nullable
 	private ResourceLocation addressTable;
+	@Nullable
 	private ResourceLocation dimension;
 	
 	private ResourceLocation symbols;
@@ -57,7 +58,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(generationStep == StructureGenEntity.Step.READY)
 			generate();
 		
-		if(dimension != null && address.isEmpty())
+		if(dimension != null)
 			setAddressFromDimension();
 	}
 	
@@ -70,15 +71,14 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
 		if(tag.contains(ADDRESS_TABLE))
-    		addressTable = new ResourceLocation(tag.getString(ADDRESS_TABLE));
+    		addressTable = ResourceLocation.tryParse(tag.getString(ADDRESS_TABLE));
     	if(tag.contains(SYMBOLS))
-    		symbols = new ResourceLocation(tag.getString(SYMBOLS));
+    		symbols = ResourceLocation.tryParse(tag.getString(SYMBOLS));
 		
-		
-		if(tag.contains(ADDRESS))
+		if(tag.contains(DIMENSION))
+			dimension = ResourceLocation.tryParse(tag.getString(DIMENSION));
+		else if(tag.contains(ADDRESS))
 			address.fromArray(tag.getIntArray(ADDRESS));
-		else if(tag.contains(DIMENSION))
-			dimension = new ResourceLocation(tag.getString(DIMENSION));
 	}
 	
 	@Override
@@ -92,10 +92,10 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols.toString());
 		
-		if(!address.isFromDimension())
-			tag.putIntArray(ADDRESS, address.toArray());
-		else if(dimension != null)
+		if(dimension != null)
 			tag.putString(DIMENSION, dimension.toString());
+		else
+			tag.putIntArray(ADDRESS, address.toArray());
 		
 		super.saveAdditional(tag);
 	}
