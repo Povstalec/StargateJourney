@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:refined_naquadah",
-		{"id": "#forge:refined_ores/naquadah", "required": false}
+		{"id": "#c:refined_ores/naquadah", "required": false}
 	]
 }

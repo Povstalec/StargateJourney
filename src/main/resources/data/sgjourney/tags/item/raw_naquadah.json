@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:raw_naquadah",
-		{"id": "#neoforge:raw_materials/naquadah", "required": false}
+		{"id": "#c:raw_materials/naquadah", "required": false}
 	]
 }

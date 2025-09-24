@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:naquadah_alloy",
-		{"id": "#neoforge:ingots/naquadah_alloy", "required": false}
+		{"id": "#c:ingots/naquadah_alloy", "required": false}
 	]
 }
