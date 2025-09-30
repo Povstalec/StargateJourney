@@ -39,7 +39,7 @@ public class GoauldFaction
 		this.addresses.add(RIMA);
 		this.addresses.add(UNITAS);
 		
-		this.stargate = new SpawnerStargate(new Address().randomAddress(8, 36, 0), ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL);
+		this.stargate = new SpawnerStargate(Address.Immutable.randomAddress(8, 36, 0), ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL);
 		
 		this.random = new Random(0);
 	}
@@ -62,7 +62,7 @@ public class GoauldFaction
 		if(incursionTarget == null)
 			return false;
 		
-		stargate.encodeAddress(incursionTarget.mutable());
+		stargate.encodeAddress(incursionTarget);
 		StargateInfo.Feedback feedback = stargate.dial(server);
 		
 		//System.out.println("Dial attempt: " + feedback.getMessage());

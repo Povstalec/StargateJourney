@@ -117,8 +117,8 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 				{
 					Address address = cartouche.getAddress();
 					
-					if(address.isFromDimension())
-						player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(address.getDimension().location().toString()).withStyle(ChatFormatting.GREEN));
+					if(address instanceof Address.Dimension dimensionAddress)
+						player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(dimensionAddress.getDimension().location().toString()).withStyle(ChatFormatting.GREEN));
 					player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
 					
 					if(cartouche.getSymbols() != null)
@@ -207,7 +207,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     			
     			int[] addressArray = blockEntityTag.getIntArray(CartoucheEntity.ADDRESS);
     			
-    			Address address = new Address(addressArray);
+    			Address address = new Address.Immutable(addressArray);
     			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": ").append(address.toComponent(false))).withStyle(ChatFormatting.YELLOW));
     		}
     		

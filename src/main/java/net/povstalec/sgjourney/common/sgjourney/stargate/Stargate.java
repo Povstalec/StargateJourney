@@ -161,36 +161,36 @@ public interface Stargate
 	 * @param server Current Minecraft Server
 	 * @return Address currently encoded in this Stargate
 	 */
-	Address getAddress(MinecraftServer server);
+	Address.Mutable getAddress(MinecraftServer server);
 	
 	/**
 	 * @param server Current Minecraft Server
 	 * @param solarSystem Solar System requesting this Stargate's connection Address, can be null
-	 * @param addressLength Length of the requested Address type
+	 * @param addressType Type of the requested Address
 	 * @return The Address which this Stargate will provide to the Stargate Network during connections
 	 * (For example, during an interstellar connection, the Stargate will provide the 7-Chevron Address of its Solar System instead of its 9-Chevron Address)
 	 */
-	default Address getConnectionAddress(MinecraftServer server, @Nullable SolarSystem.Serializable solarSystem, int addressLength)
+	default Address.Immutable getConnectionAddress(MinecraftServer server, @Nullable SolarSystem.Serializable solarSystem, Address.Type addressType)
 	{
 		SolarSystem.Serializable localSolarSystem = getSolarSystem(server);
 		if(localSolarSystem != null)
 		{
-			if(addressLength == 6)
+			if(addressType == Address.Type.ADDRESS_7_CHEVRON)
 			{
 				Galaxy.Serializable galaxy = localSolarSystem.findCommonGalaxy(solarSystem);
 				if(galaxy != null)
 				{
 					Address.Immutable address = localSolarSystem.getAddressFromGalaxy(galaxy);
 					if(address != null)
-						return address.mutable();
+						return address;
 				}
 			}
-			else if(addressLength == 7)
-				return localSolarSystem.getExtragalacticAddress().mutable();
+			else if(addressType == Address.Type.ADDRESS_8_CHEVRON)
+				return localSolarSystem.getExtragalacticAddress();
 		}
 		
 		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
-		return get9ChevronAddress().mutable();
+		return get9ChevronAddress();
 	}
 	
 	/**

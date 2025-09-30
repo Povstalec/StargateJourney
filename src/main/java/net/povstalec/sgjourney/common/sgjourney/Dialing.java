@@ -35,26 +35,26 @@ public class Dialing
 		};
 	}
 	
-	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh, boolean mustBeLoaded)
+	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		if(SGJourneyEvents.onStargateDial(server, dialingStargate, address, doKawoosh))
 			return StargateInfo.Feedback.NONE;
 		
-		return switch(address.getLength())
+		return switch(address.getType())
 		{
-			case 6 -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
-			case 7 -> get8ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
-			case 8 -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
-			default -> dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
+			case ADDRESS_7_CHEVRON -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
+			case ADDRESS_8_CHEVRON -> get8ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
+			case ADDRESS_9_CHEVRON -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
+			case ADDRESS_INVALID -> dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
 		};
 	}
 	
-	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh)
+	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh)
 	{
 		return dialStargate(server, dialingStargate, address, doKawoosh, false);
 	}
 	
-	private static StargateInfo.Feedback get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable dialedAddress, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.Feedback get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address dialedAddress, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		SolarSystem.Serializable solarSystem = Universe.get(server).getSolarSystemFromAddress(dialingStargate.getSolarSystem(server), dialedAddress);
 		
@@ -64,7 +64,7 @@ public class Dialing
 		return getStargate(server, dialingStargate, solarSystem, Address.Type.ADDRESS_7_CHEVRON, doKawoosh, mustBeLoaded);
 	}
 	
-	private static StargateInfo.Feedback get8ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable extragalacticAddress, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.Feedback get8ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address extragalacticAddress, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		SolarSystem.Serializable solarSystem = Universe.get(server).getSolarSystemFromExtragalacticAddress(extragalacticAddress);
 		
@@ -115,7 +115,7 @@ public class Dialing
 		return dialedStargate.tryConnect(server, dialingStargate, addressType, doKawoosh);
 	}
 	
-	private static StargateInfo.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		Stargate stargate = StargateNetwork.get(server).getStargate(address);
 		
@@ -131,7 +131,7 @@ public class Dialing
 		return dialingStargate.resetStargate(server, feedback, true);
 	}
 	
-	private static StargateInfo.Feedback get9ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address.Immutable address, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.Feedback get9ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		return getStargateFromAddress(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 	}

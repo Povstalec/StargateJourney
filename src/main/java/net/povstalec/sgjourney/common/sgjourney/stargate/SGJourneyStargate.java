@@ -53,7 +53,7 @@ public class SGJourneyStargate implements Stargate
 	
 	public SGJourneyStargate(AbstractStargateEntity stargate)
 	{
-		this.address = stargate.get9ChevronAddress().immutable();
+		this.address = stargate.get9ChevronAddress();
 		
 		this.dimension = stargate.getLevel().dimension();
 		this.blockPos = stargate.getBlockPos();
@@ -175,9 +175,9 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public Address getAddress(MinecraftServer server)
+	public Address.Mutable getAddress(MinecraftServer server)
 	{
-		return stargateReturn(server, stargate -> stargate.getAddress(), new Address());
+		return stargateReturn(server, stargate -> stargate.getAddress(), new Address.Mutable());
 	}
 	
 	private AbstractStargateEntity cacheStargateEntity(AbstractStargateEntity stargate)
@@ -388,11 +388,11 @@ public class SGJourneyStargate implements Stargate
 				return StargateInfo.Feedback.TARGET_RESTRICTED;
 			
 			// If last Stargate has a blacklist
-			if(stargate.addressFilterInfo().getFilterType().isBlacklist() && stargate.addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType.byteValue()).immutable()))
+			if(stargate.addressFilterInfo().getFilterType().isBlacklist() && stargate.addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType)))
 				return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
 			
 			// If last Stargate has a whitelist
-			if(stargate.addressFilterInfo().getFilterType().isWhitelist() && !stargate.addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType.byteValue()).immutable()))
+			if(stargate.addressFilterInfo().getFilterType().isWhitelist() && !stargate.addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType)))
 				return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
 			
 			return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);

@@ -42,7 +42,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	
 	public int waitTicks = 1;
 	
-	public Address addressBuffer = new Address(true);
+	public Address.Mutable addressBuffer = new Address.Mutable();
 	public int symbolBuffer = 0;
 	
 	protected int angle;
@@ -65,7 +65,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 			{
 				if(hasDHD())
 					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
-							addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
+							addressBuffer : new Address.Mutable(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
 			}
 		};
 		
@@ -77,8 +77,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	public void load(CompoundTag tag)
 	{
         super.load(tag);
-        
-        addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+		
+		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
     }
 	
@@ -168,8 +168,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
 		{
 			if(!isRotating())
-				startRotation(addressBuffer.getSymbol(symbolBuffer), CommonStargateConfig.universe_best_direction.get() ?
-						bestSymbolDirection(addressBuffer.getSymbol(symbolBuffer)) : alternatingDirection(address.getLength()));
+				startRotation(addressBuffer.symbolAt(symbolBuffer), CommonStargateConfig.universe_best_direction.get() ?
+						bestSymbolDirection(addressBuffer.symbolAt(symbolBuffer)) : alternatingDirection(address.getLength()));
 			
 			if(rotation == desiredRotation)
 				engageSymbol(getCurrentSymbol());

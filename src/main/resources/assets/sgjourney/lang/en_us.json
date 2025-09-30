@@ -267,8 +267,9 @@
 	"death.attack.sgjourney.kawoosh": "%1$s was disintegrated by the kawoosh",
 	"death.attack.sgjourney.kawoosh.player": "%1$s was disintegrated by the kawoosh while fighting %2$s",
 	"death.attack.sgjourney.reverseWormhole": "%1$s walked through the wrong end of the wormhole",
-	"death.attack.sgjourney.reverseWormhole.player": "%1$s was squashed against the iris while fighting %2$s",
+	"death.attack.sgjourney.reverseWormhole.player": "%1$s walked through the wrong end of the wormhole while fighting %2$s",
 	"death.attack.sgjourney.iris": "%1$s was squashed against the iris",
+	"death.attack.sgjourney.iris.player": "%1$s was squashed against the iris while fighting %2$s",
 
 	"stat.sgjourney.times_smashed_against_iris": "Times smashed against Iris",
 	"stat.sgjourney.times_killed_by_kawoosh": "Times killed by Kawoosh",

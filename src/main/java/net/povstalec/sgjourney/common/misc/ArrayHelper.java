@@ -10,16 +10,12 @@ public class ArrayHelper
 {
 	public static int[] growIntArray(int[] array, int x)
 	{
-		int[] newarray = new int[array.length + 1];
+		int[] newArray = new int[array.length + 1];
 		
-		for (int i = 0; i < array.length; i++)
-		{
-			newarray[i] = array[i];
-		}
+		System.arraycopy(array, 0, newArray, 0, array.length);
+		newArray[array.length] = x;
 		
-		newarray[array.length] = x;
-		
-		return newarray;
+		return newArray;
 	}
 	
 	public static int[] tableToArray(Map<Double, Double> table)
@@ -39,17 +35,6 @@ public class ArrayHelper
 		List<Integer> arrayList = Arrays.stream(address).boxed().toList();
 		Set<Integer> arraySet = new HashSet<Integer>(arrayList);
 		return (arraySet.size() == address.length);
-	}
-	
-	public static boolean isArrayPositive(int[] array, boolean includeZero)
-	{
-		for(int i = 0; i < array.length; i++)
-		{
-			if(includeZero ? array[i] < 0 : array[i] <= 0)
-				return false;
-		}
-		
-		return true;
 	}
 	
 	public static boolean isArrayInBounds(int[] array, int lowestAllowed, int highestAllowed)

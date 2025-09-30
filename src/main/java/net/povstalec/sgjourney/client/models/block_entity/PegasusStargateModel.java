@@ -49,7 +49,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	{
 		if(!stargate.isConnected() && stargate.symbolBuffer < stargate.addressBuffer.getLength())
 	    {
-			for(int i = 0; i < stargate.getAddress().getLength(); i++)
+			for(int i = 0; i < stargate.getAddress().regularSymbolCount(); i++)
 	    	{
 	    		// This makes sure the Symbol doesn't render over other existing symbols
 	    		if(stargate.getChevronPosition(i + 1) == this.currentSymbol)
@@ -75,7 +75,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	@Override
 	protected void renderSymbols(PegasusStargateEntity stargate, PegasusStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		int currentSymbol = stargate.addressBuffer.getSymbol(stargate.symbolBuffer);
+		int currentSymbol = stargate.addressBuffer.symbolAt(stargate.symbolBuffer);
 		
 		PointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
@@ -116,11 +116,11 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 				renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, combinedLight, symbols.getTextureOffset(currentSymbol), symbols.getSize(), rotation);
 			
 			// Locked Symbols
-			for(int i = 0; i < stargate.getAddress().getLength(); i++)
+			for(int i = 0; i < stargate.getAddress().regularSymbolCount(); i++)
 			{
 				int symbolNumber = stargate.getChevronPosition(i + 1);
 				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbolNumber, 
-						symbols.getTextureOffset(stargate.getAddress().toArray()[i]), symbols.getSize(), 0, getSymbolColor(stargate, stargateVariant, true));
+						symbols.getTextureOffset(stargate.getAddress().getArray()[i]), symbols.getSize(), 0, getSymbolColor(stargate, stargateVariant, true));
 			}
 		}
 		else

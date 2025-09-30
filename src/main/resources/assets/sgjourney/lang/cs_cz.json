@@ -268,6 +268,7 @@
 	"death.attack.sgjourney.reverseWormhole": "Hráč %1$s prošel špatnou stranou červí díry",
 	"death.attack.sgjourney.reverseWormhole.player": "Hráč %1$s prošel špatnou stranou červí díry během boje s hráčem %2$s",
 	"death.attack.sgjourney.iris": "Hráč %1$s se rozplácnul o iris",
+	"death.attack.sgjourney.iris.player": "%1$s se rozplácnul o iris během boje s hráčem %2$s",
 
 	"stat.sgjourney.times_killed_by_kawoosh": "Počet úmrtí v nestabilním víru",
 	"stat.sgjourney.times_killed_by_wormhole": "Počet úmrtí v červí díře",

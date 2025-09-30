@@ -56,7 +56,7 @@ public class BlockEntityList extends SavedData
 	@Nullable
 	public Stargate addStargate(AbstractStargateEntity stargate)
 	{
-		Address.Immutable address = stargate.get9ChevronAddress().immutable();
+		Address.Immutable address = stargate.get9ChevronAddress();
 		
 		if(address.getLength() != 8)
 			return null;
@@ -65,9 +65,6 @@ public class BlockEntityList extends SavedData
 			return this.stargateMap.get(address); // Returns an existing Stargate
 		
 		if(stargate.getLevel() == null)
-			return null;
-		
-		if(stargate.getBlockPos() == null)
 			return null;
 		
 		Stargate savedStargate = new SGJourneyStargate(stargate);
@@ -81,7 +78,7 @@ public class BlockEntityList extends SavedData
 		return savedStargate;
 	}
 	
-	public void removeStargate(Address.Immutable id)
+	public void removeStargate(Address id)
 	{
 		if(!this.stargateMap.containsKey(id))
 		{
@@ -108,20 +105,15 @@ public class BlockEntityList extends SavedData
 		return (HashMap<Address.Immutable, Stargate>) stargateMap.clone();
 	}
 	
-	public boolean containsStargate(Address.Immutable address)
+	public boolean containsStargate(Address address)
 	{
 		return stargateMap.containsKey(address);
 	}
 	
 	@Nullable
-	public Stargate getStargate(Address.Immutable address)
+	public Stargate getStargate(Address address)
 	{
-		if(address.getLength() != 8)
-			return null;
-		
-		Stargate stargate = stargateMap.get(address);
-		
-		return stargate;
+		return stargateMap.get(address);
 	}
 	
 	@Nullable
@@ -269,13 +261,13 @@ public class BlockEntityList extends SavedData
 		
 		stargates.getAllKeys().stream().forEach(stargateAddress ->
 		{
-			Address.Immutable address = new Address(stargateAddress).immutable();
-			
-			Stargate stargate = new SGJourneyStargate();
-			stargate.deserializeNBT(server, address, stargates.getCompound(stargateAddress));
-			
-			if(stargate != null)
+			Address.Immutable address = new Address.Immutable(stargateAddress);
+			if(address.getType() == Address.Type.ADDRESS_9_CHEVRON)
+			{
+				Stargate stargate = new SGJourneyStargate();
+				stargate.deserializeNBT(server, address, stargates.getCompound(stargateAddress));
 				this.stargateMap.put(address, stargate);
+			}
 		});
 		
 		StargateJourney.LOGGER.debug("Finished deserializing Stargates");

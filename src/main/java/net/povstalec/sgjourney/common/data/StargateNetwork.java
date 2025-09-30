@@ -205,7 +205,7 @@ public final class StargateNetwork extends SavedData
 	
 	public final void updateStargate(ServerLevel level, AbstractStargateEntity stargateEntity)
 	{
-		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress().immutable());
+		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress());
 		
 		if(stargate != null)
 		{
@@ -216,7 +216,7 @@ public final class StargateNetwork extends SavedData
 	}
 	
 	@Nullable
-	public final Stargate getStargate(Address.Immutable address)
+	public final Stargate getStargate(Address address)
 	{
 		return BlockEntityList.get(server).getStargate(address);
 	}

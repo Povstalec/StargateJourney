@@ -90,7 +90,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 			return 0;
 		
 		// If the current symbol under the primary chevron is the same one as the last encoded in the address, we want the current chevron
-		if(getAddress().getLength() > 0 && getCurrentSymbol() == getAddress().getSymbol(getAddress().getLength() - 1))
+		if(getAddress().getLength() > 0 && getCurrentSymbol() == getAddress().symbolAt(getAddress().getLength() - 1))
 			return (short) getAddress().getLength();
 		
 		// Otherwise we want the next chevron

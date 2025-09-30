@@ -12,7 +12,7 @@ public class SGJourneyEvents
 {
 	// Stargate
 	
-	public static boolean onStargateDial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, boolean doKawoosh)
+	public static boolean onStargateDial(MinecraftServer server, Stargate stargate, Address dialedAddress, boolean doKawoosh)
     {
         return MinecraftForge.EVENT_BUS.post(new StargateEvent.Dial(server, stargate, dialedAddress, doKawoosh));
     }

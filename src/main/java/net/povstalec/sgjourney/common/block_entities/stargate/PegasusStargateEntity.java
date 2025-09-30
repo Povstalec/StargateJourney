@@ -40,7 +40,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus_back_chevron");
 	
 	public int currentSymbol = 0;
-	public Address addressBuffer = new Address(true);
+	public Address.Mutable addressBuffer = new Address.Mutable();
 	public int symbolBuffer = 0;
 	private boolean passedOver = false;
 	
@@ -59,7 +59,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 			{
 				if(hasDHD())
 					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
-							addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
+							addressBuffer : new Address.Mutable(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
 			}
 		};
 	}
@@ -110,8 +110,8 @@ public class PegasusStargateEntity extends IrisStargateEntity
     public void load(CompoundTag tag)
 	{
         super.load(tag);
-        
-        addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+		
+		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
         currentSymbol = tag.getInt(CURRENT_SYMBOL);
     }
@@ -237,7 +237,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	{
 		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
 		{
-			int symbol = addressBuffer.getSymbol(symbolBuffer);
+			int symbol = addressBuffer.symbolAt(symbolBuffer);
 			if(symbol == 0)
 			{
 				if(currentSymbol == getChevronPosition(9))
@@ -310,7 +310,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		if(isConnected() && !isDialingOut())
 			return 0;
 		
-		return addressBuffer.getSymbol(addressBuffer.getLength() - 1);
+		return addressBuffer.symbolAt(addressBuffer.getLength() - 1);
 	}
 	
 	@Override

@@ -278,8 +278,7 @@ public class StargateConnection
 	
 	private void tickEstablishConnection(MinecraftServer server, int kawooshStartTicks)
 	{
-		int addressLength = this.dialingStargate.getAddress(server).getLength();
-		Address dialingAddress = this.dialingStargate.getConnectionAddress(server, dialedStargate.getSolarSystem(server), addressLength);
+		Address dialingAddress = this.dialingStargate.getConnectionAddress(server, dialedStargate.getSolarSystem(server), this.dialingStargate.getAddress(server).getType());
 		
 		this.dialedStargate.setChevronConfiguration(server, Dialing.getChevronConfiguration(dialingAddress.getLength()));
 		

@@ -36,7 +36,7 @@ public class SpawnerStargate implements Stargate
 	protected final int attackerMinInterval;
 	protected final int attackerMaxInverval;
 	
-	protected Address address = new Address();
+	protected Address.Mutable address = new Address.Mutable();
 	@Nullable
 	protected UUID connectionID = null;
 	
@@ -44,9 +44,9 @@ public class SpawnerStargate implements Stargate
 	protected int counter;
 	protected int timer;
 	
-	public SpawnerStargate(Address address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval)
+	public SpawnerStargate(Address.Immutable address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval)
 	{
-		this.id9ChevronAddress = address.immutable();
+		this.id9ChevronAddress = address;
 		
 		this.random = new Random();
 		this.attackerMinCount = attackerMinCount;
@@ -135,7 +135,7 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public Address getAddress(MinecraftServer server)
+	public Address.Mutable getAddress(MinecraftServer server)
 	{
 		return this.address;
 	}
@@ -213,12 +213,12 @@ public class SpawnerStargate implements Stargate
 	
 	public void encodeAddress(Address address)
 	{
-		this.address = address;
+		this.address = new Address.Mutable(address);
 	}
 	
 	public StargateInfo.Feedback dial(MinecraftServer server)
 	{
-		return Dialing.dialStargate(server, this, getAddress(server).immutable(), true, true);
+		return Dialing.dialStargate(server, this, getAddress(server), true, true);
 	}
 	
 	@Override

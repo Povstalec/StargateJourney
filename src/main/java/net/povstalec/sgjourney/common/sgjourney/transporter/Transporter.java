@@ -140,7 +140,16 @@ public interface Transporter
 	
 	void updateTicks(MinecraftServer server, int connectionTime);
 	
+	/**
+	 * @return Transporter info serialized into a CompoundTag
+	 */
 	CompoundTag serializeNBT();
 	
+	/**
+	 * Deserializes the Transporter info
+	 * @param server Current Minecraft Server
+	 * @param uuid UUID of the Transporter
+	 * @param tag CompoundTag containing information to be deserialized
+	 */
 	void deserializeNBT(MinecraftServer server, UUID uuid, CompoundTag tag);
 }

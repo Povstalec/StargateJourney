@@ -17,7 +17,7 @@ public class AddressArgumentInfo implements ArgumentTypeInfo<AddressArgumentType
 	@Override
 	public Template deserializeFromNetwork(FriendlyByteBuf buf)
 	{
-		return new AddressArgumentInfo.Template(Address.Type.fromInt(buf.readByte()));
+		return new AddressArgumentInfo.Template(Address.Type.fromLength(buf.readByte()));
 	}
 	
 	@Override
