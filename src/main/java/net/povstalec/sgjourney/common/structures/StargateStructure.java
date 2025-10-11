@@ -44,7 +44,7 @@ public abstract class StargateStructure extends SGJourneyStructure
     
     private static final void checkSeed(long seed)
     {
-    	if(currentSeed.isEmpty() || (currentSeed.isPresent() && currentSeed.get() != seed))
+    	if(currentSeed.isEmpty() || currentSeed.get() != seed)
     	{
     		currentSeed = Optional.of(seed);
             x = Optional.empty();

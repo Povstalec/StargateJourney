@@ -6,9 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -234,11 +232,15 @@ public class SpawnerStargate implements Stargate
 		this.connectionID = connection.getID();
 	}
 	
-	protected Entity spawnEntity(ServerLevel level, EntityType<?> entityType)
+	protected Entity createEntity(ServerLevel level, EntityType<?> entityType)
 	{
-		Entity entity = entityType.spawn(level, (CompoundTag) null, null, new BlockPos(0, 1024, 0), MobSpawnType.EVENT, true, false);
-		//entity.setNoGravity(true);
-		return entity;
+		return entityType.create(level);
+	}
+	
+	protected void spawnEntity(ServerLevel level, Entity entity)
+	{
+		if(entity instanceof Mob mob)
+			mob.finalizeSpawn(level, level.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.EVENT, (SpawnGroupData) null, (CompoundTag) null);
 	}
 	
 	@Override
@@ -257,23 +259,31 @@ public class SpawnerStargate implements Stargate
 				timer = nextAttackerInterval();
 				counter--;
 				
-				Entity entity = spawnEntity(level, EntityInit.JAFFA.get());
-				if(entity != null && connectedStargate.receiveTraveler(server, connection, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0)))
+				Entity entity = createEntity(level, EntityInit.JAFFA.get());
+				if(entity != null)
 				{
-					connection.setTimeSinceLastTraveler(0);
-					connection.setUsed(true);
+					Entity traveler = connectedStargate.receiveTraveler(server, connection, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0));
+					if(traveler != null)
+					{
+						connection.setTimeSinceLastTraveler(0);
+						connection.setUsed(true);
+						
+						spawnEntity(level, traveler);
+					}
+					else
+						entity.discard();
 				}
 			}
 		}
 	}
 	
 	@Override
-	public boolean receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	public @Nullable Entity receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
 		if(traveler instanceof Player player)
 			player.displayClientMessage(Component.translatable("no"), true); // TODO add an actual message
 		
-		return false;
+		return null;
 	}
 	
 	@Override

@@ -302,7 +302,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public CompoundTag serializeStargateInfo(CompoundTag tag)
 	{
 		tag.putInt(TIMES_OPENED, timesOpened);
-		tag.putIntArray(ADDRESS, address.toArray());
+		tag.putIntArray(ADDRESS, address.getArray());
 		tag.putInt(NETWORK, network);
 		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 		
@@ -351,7 +351,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void addStargateToNetwork()
 	{
-		if(id9ChevronAddress.isEmpty() || BlockEntityList.get(level).containsStargate(id9ChevronAddress))
+		if(id9ChevronAddress.getType() != Address.Type.ADDRESS_9_CHEVRON || BlockEntityList.get(level).containsStargate(id9ChevronAddress))
 			set9ChevronAddress(generate9ChevronAddress());
 		
 		StargateNetwork.get(level).addStargate(this);
@@ -1051,7 +1051,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
     
     protected BlockState getState()
     {
-    	BlockPos gatePos = this.getBlockPos();
+    	BlockPos gatePos = getBlockPos();
 		return this.level.getBlockState(gatePos);
     }
 	
@@ -1064,7 +1064,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 				this.orientation = gateState.getValue(AbstractStargateBaseBlock.ORIENTATION);
 			else
-				StargateJourney.LOGGER.error("Couldn't find Stargate Orientation " + this.getBlockPos().toString());
+				StargateJourney.LOGGER.error("AbstractStargateEntity.getOrientation expected AbstractStargateBaseBlock at {} but found {} instead", getBlockPos(), gateState);
 		}
 
 		return this.orientation;
@@ -1079,7 +1079,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 				this.direction = gateState.getValue(AbstractStargateBaseBlock.FACING);
 			else
-				StargateJourney.LOGGER.error("Couldn't find Stargate Direction " + this.getBlockPos().toString());
+				StargateJourney.LOGGER.error("AbstractStargateEntity.getDirection expected AbstractStargateBaseBlock at {} but found {} instead", getBlockPos(), gateState);
 		}
 		
 		return this.direction;
@@ -1113,7 +1113,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void setStargateState(boolean updateInterfaces, boolean updateIris, ShieldingState shieldingState)
 	{
-		BlockPos gatePos = this.getBlockPos();
+		BlockPos gatePos = getBlockPos();
 		BlockState gateState = getState();
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
@@ -1127,7 +1127,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 				updateInterfaceBlocks(null);
 		}
 		else
-			StargateJourney.LOGGER.error("Couldn't find Stargate");
+			StargateJourney.LOGGER.error("AbstractStargateEntity.setStargateState expected AbstractStargateBaseBlock at {} but found {} instead", gatePos, gateState);
 		setChanged();
 		
 	}
@@ -1363,12 +1363,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return this.horizontalCenterHeight;
 	}
 	
-	public double getGateAddition()
-	{
-		return this.getOrientation() == Orientation.REGULAR
-				? getVerticalCenterHeight() : getHorizontalCenterHeight();
-	}
-	
 	public abstract void registerInterfaceMethods(StargatePeripheralWrapper wrapper);
 	
 	public void doWhileConnecting(boolean incoming, boolean doKawoosh, int kawooshStartTicks, int connectionTime)
@@ -1436,7 +1430,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(level.isClientSide())
 			return false;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.getEnergyStored(), this.openTime, this.timeSinceLastTraveler, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.getEnergyStored(), this.openTime, this.timeSinceLastTraveler, this.address.getArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
 		return true;
 	}
 	

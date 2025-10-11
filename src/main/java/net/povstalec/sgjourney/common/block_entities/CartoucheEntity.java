@@ -110,6 +110,15 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		super.saveAdditional(tag);
 	}
 	
+	/*@Override
+	public CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		saveAdditional(tag);
+		return tag;
+	}*/
+	
 	//============================================================================================
 	//************************************Getters and setters*************************************
 	//============================================================================================

@@ -171,7 +171,7 @@ public abstract class Address implements Cloneable
 	
 	public List<Integer> toList()
 	{
-		return Arrays.stream(toArray()).boxed().toList();
+		return Arrays.stream(this.addressArray).boxed().toList();
 	}
 	
 	@Override
@@ -424,12 +424,9 @@ public abstract class Address implements Cloneable
 		 */
 		public static Address.Immutable extendWithPointOfOrigin(Address.Immutable address)
 		{
-			if(!address.hasPointOfOrigin() && address.addressArray.length < 9) // The second check is here in case the last symbol is not the usual Point of Origin
-			{
-				int[] array = ArrayHelper.growIntArray(address.addressArray, 0);
-				System.out.println(Arrays.toString(array));
-				return new Immutable(array);
-			}
+			// The second check is here in case the last symbol is not the usual Point of Origin
+			if(!address.hasPointOfOrigin() && address.addressArray.length < 9)
+				return new Immutable(ArrayHelper.growIntArray(address.addressArray, 0));
 			
 			return address;
 		}

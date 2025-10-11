@@ -293,11 +293,11 @@ public class StargateConnection
 		if(this.connectionTime == kawooshStartTicks)
 		{
 			List<Integer> emptyAddressList = new ArrayList<>();
-			List<Integer> dialedAddressList = Arrays.stream(dialedStargate.getAddress(server).toArray()).boxed().toList();
+			List<Integer> dialedAddressList = Arrays.stream(dialedStargate.getAddress(server).getArray()).boxed().toList();
 			dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.BASIC, EVENT_INCOMING_WORMHOLE, emptyAddressList);
 			dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.CRYSTAL, EVENT_INCOMING_WORMHOLE, emptyAddressList);
 			dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.ADVANCED_CRYSTAL, EVENT_INCOMING_WORMHOLE, dialedAddressList);
-			List<Integer> dialingAddressList = Arrays.stream(dialingStargate.getAddress(server).toArray()).boxed().toList();
+			List<Integer> dialingAddressList = Arrays.stream(dialingStargate.getAddress(server).getArray()).boxed().toList();
 			dialingStargate.updateInterfaceBlocks(server, null, EVENT_OUTGOING_WORMHOLE, dialingAddressList);
 		}
 	}

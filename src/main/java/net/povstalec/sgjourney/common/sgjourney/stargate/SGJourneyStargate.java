@@ -84,6 +84,11 @@ public class SGJourneyStargate implements Stargate
 		return this.blockPos;
 	}
 	
+	public StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
+	{
+		return StargateInfo.ChevronLockSpeed.FAST; //TODO Make this abstract
+	}
+	
 	@Override
 	public @Nullable Vec3 getPosition(MinecraftServer server)
 	{
@@ -368,11 +373,24 @@ public class SGJourneyStargate implements Stargate
 		return stargateReturn(server, stargate -> stargate.getChevronLockSpeed(doKawoosh).getKawooshStartTicks(), StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks());
 	}
 	
+	//TODO
+	/*@Override
+	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)
+	{
+		return stargateReturn(server, stargate -> getChevronLockSpeed(doKawoosh).getKawooshStartTicks(), StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks());
+	}*/
+	
 	@Override
 	public int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh)
 	{
 		return KAWOOSH_TICKS;
 	}
+	
+	private static StargateInfo.Feedback noStargate()
+	{
+		StargateJourney.LOGGER.error("Stargate Entity could not be found");
+		return StargateInfo.Feedback.UNKNOWN_ERROR;
+	};
 	
 	@Override
 	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
@@ -397,7 +415,7 @@ public class SGJourneyStargate implements Stargate
 			
 			return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
 		},
-		StargateInfo.Feedback.UNKNOWN_ERROR);
+		noStargate());
 	}
 	
 	@Override
@@ -455,7 +473,7 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public boolean receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	public @Nullable Entity receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
 		return stargateReturn(server, stargate ->
 		{
@@ -469,12 +487,12 @@ public class SGJourneyStargate implements Stargate
 			if(stargate instanceof IrisStargateEntity irisStargate && !this.wormhole.checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
 			{
 				this.wormhole.handleShielding(irisStargate, traveler);
-				return true;
+				return traveler;
 			}
 			
 			return this.wormhole.receiveTraveler((ServerLevel) stargate.getLevel(), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		},
-		false);
+		null);
 	}
 	
 	@Override
@@ -553,17 +571,17 @@ public class SGJourneyStargate implements Stargate
 	
 	
 	
-	public interface StargateConsumer
+	public interface StargateConsumer<S extends AbstractStargateEntity>
 	{
-		void run(AbstractStargateEntity stargate);
+		void run(S stargate);
 	}
 	
-	public interface ReturnStargateConsumer<T>
+	public interface ReturnStargateConsumer<T, S extends AbstractStargateEntity>
 	{
-		T run(AbstractStargateEntity stargate);
+		T run(S stargate);
 	}
 	
-	private void stargateRun(MinecraftServer server, StargateConsumer consumer)
+	private void stargateRun(MinecraftServer server, StargateConsumer<AbstractStargateEntity> consumer)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
@@ -571,7 +589,7 @@ public class SGJourneyStargate implements Stargate
 			consumer.run(stargate);
 	}
 	
-	private <T> T stargateReturn(MinecraftServer server, ReturnStargateConsumer<T> consumer, @Nullable T defaultValue)
+	private <T> T stargateReturn(MinecraftServer server, ReturnStargateConsumer<T, AbstractStargateEntity> consumer, @Nullable T defaultValue)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		

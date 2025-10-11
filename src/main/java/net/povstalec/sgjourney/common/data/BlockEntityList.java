@@ -261,7 +261,7 @@ public class BlockEntityList extends SavedData
 		
 		stargates.getAllKeys().stream().forEach(stargateAddress ->
 		{
-			Address.Immutable address = new Address.Immutable(stargateAddress);
+			Address.Immutable address = Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(stargateAddress));
 			if(address.getType() == Address.Type.ADDRESS_9_CHEVRON)
 			{
 				Stargate stargate = new SGJourneyStargate();

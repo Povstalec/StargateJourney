@@ -161,7 +161,7 @@ public class Dialing
 			feedback = attemptConnection(server, dialingStargate, targetStargate, addressType, doKawoosh, mustBeLoaded);
 			
 			// If Stargate isn't obstructed and its network isn't restricted, connect
-			if (!feedback.isSkippable())
+			if(!feedback.isSkippable())
 				return feedback;
 		}
 		

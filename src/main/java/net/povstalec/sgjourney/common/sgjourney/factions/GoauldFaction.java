@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class GoauldFaction
 {
-	public static final int UPDATE_INTERVAL = 24000;
+	public static final int UPDATE_INTERVAL = 400;//24000;
 	
 	public static final int ATTACKER_MIN_COUNT = 3;
 	public static final int ATTACKER_MAX_COUNT = 7;
@@ -35,9 +35,9 @@ public class GoauldFaction
 	public GoauldFaction()
 	{
 		this.addresses.add(TERRA);
-		this.addresses.add(ABYDOS);
-		this.addresses.add(RIMA);
-		this.addresses.add(UNITAS);
+		//this.addresses.add(ABYDOS);
+		//this.addresses.add(RIMA);
+		//this.addresses.add(UNITAS);
 		
 		this.stargate = new SpawnerStargate(Address.Immutable.randomAddress(8, 36, 0), ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL);
 		
@@ -51,7 +51,7 @@ public class GoauldFaction
 		
 		incursionTime = random.nextInt(intervalTicks, UPDATE_INTERVAL);
 		incursionTarget = addresses.get(this.random.nextInt(addresses.size()));
-		//System.out.println("Next incursion at: " + incursionTime + " " +  incursionTarget);
+		System.out.println("Next incursion at: " + incursionTime + " " +  incursionTarget);
 	}
 	
 	public boolean launchIncursion(MinecraftServer server)
@@ -65,7 +65,7 @@ public class GoauldFaction
 		stargate.encodeAddress(incursionTarget);
 		StargateInfo.Feedback feedback = stargate.dial(server);
 		
-		//System.out.println("Dial attempt: " + feedback.getMessage());
+		System.out.println("Dial attempt: " + feedback.getMessage());
 		
 		return !feedback.isError();
 	}
