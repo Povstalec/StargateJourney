@@ -68,7 +68,17 @@ public class SGJourneyTransporter implements Transporter
 	{
 		return blockPos;
 	}
-	
+
+	@Override
+	public boolean isSamePosition(AbstractTransporterEntity transporter)
+	{
+		if (transporter.getLevel() == null || transporter.getLevel().dimension() != dimension)
+		{
+			return false;
+		}
+		return transporter.getBlockPos().equals(blockPos);
+	}
+
 	@Override
 	public @Nullable Vec3 getPosition(MinecraftServer server)
 	{

@@ -8,6 +8,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +24,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock
 {
@@ -50,6 +53,26 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onPlace(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull BlockState pOldState, boolean pMovedByPiston)
+	{
+		super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
+		// We want to run refreshPosInNetwork, but can't because the block entity might not exist yet.
+		// We don't use IForgeBlock::onBlockStateChange because we can't guarantee it's fired.
+		pLevel.scheduleTick(pPos, this, 1);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull RandomSource pRandom) {
+		super.tick(pState, pLevel, pPos, pRandom);
+		if (pLevel.getBlockEntity(pPos) instanceof AbstractTransporterEntity transporter)
+		{
+			transporter.refreshPosInNetwork();
+		}
+	}
 	
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)

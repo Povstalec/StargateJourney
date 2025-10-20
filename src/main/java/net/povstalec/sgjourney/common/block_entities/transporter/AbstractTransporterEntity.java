@@ -119,6 +119,25 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		//TODO Maybe start caching it?
 		return TransporterNetwork.get(level).getTransporter(id);
 	}
+
+	public void refreshPosInNetwork()
+	{
+		if (id != null && level != null)
+		{
+			var network = TransporterNetwork.get(level);
+			var existing = network.getTransporter(id);
+			// Handle case where other mod creates a temporary duplicate.
+			if (existing != null)
+			{
+				if (existing.isSamePosition(this))
+				{
+					return;
+				}
+				network.removeTransporter(existing.getLevel(level.getServer()), id);
+			}
+			network.addTransporter(this);
+		}
+	}
 	
 	public void addTransporterToNetwork()
 	{
@@ -131,7 +150,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	
 	public void removeTransporterFromNetwork()
 	{
-		TransporterNetwork.get(level).removeTransporter(level, this.id);
+		TransporterNetwork.get(level).removeTransporter(this);
 	}
 	
 	@Override
