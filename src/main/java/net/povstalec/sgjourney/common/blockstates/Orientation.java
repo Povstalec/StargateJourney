@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.blockstates;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.StringRepresentable;
@@ -11,6 +12,8 @@ public enum Orientation implements StringRepresentable
 	REGULAR("regular", 1, 0),
 	UPWARD("upward", 0, 1),
 	DOWNWARD("downward", 2, -1);
+
+	public static final Codec<Orientation> CODEC = StringRepresentable.fromEnum(Orientation::values);
 	
 	private static final Vec3[] VECTORS = new Vec3[]
 	{

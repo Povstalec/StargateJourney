@@ -137,6 +137,20 @@ public final class TransporterNetwork extends SavedData
 		if(transporter != null && transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
 			addTransporter(transporter);
 	}
+
+	public void removeTransporter(AbstractTransporterEntity transporterEntity)
+	{
+		var uuid = transporterEntity.getID();
+		if (uuid == null || transporterEntity.getLevel() == null)
+			return;
+
+		var transporter = getTransporter(uuid);
+		// Handle case where other mod creates a temporary duplicate.
+		if (transporter == null || transporter.isSamePosition(transporterEntity))
+		{
+			removeTransporter(transporterEntity.getLevel(), uuid);
+		}
+	}
 	
 	public void removeTransporter(Level level, UUID uuid)
 	{

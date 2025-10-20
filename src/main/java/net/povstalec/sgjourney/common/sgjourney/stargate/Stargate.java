@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -51,6 +52,11 @@ public interface Stargate
 			return null;
 		
 		return server.getLevel(dimension);
+	}
+
+	default boolean isSamePosition(AbstractStargateEntity stargate)
+	{
+		return true;
 	}
 	
 	/**

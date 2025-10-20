@@ -83,6 +83,16 @@ public class SGJourneyStargate implements Stargate
 	{
 		return this.blockPos;
 	}
+
+	public boolean isSamePosition(AbstractStargateEntity stargate)
+	{
+		if (stargate.getLevel() == null)
+		{
+			return false;
+		}
+		return stargate.getLevel().dimension() == dimension &&
+				stargate.getBlockPos().equals(blockPos);
+	}
 	
 	@Override
 	public @Nullable Vec3 getPosition(MinecraftServer server)

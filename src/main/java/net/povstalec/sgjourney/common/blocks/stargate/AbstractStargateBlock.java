@@ -51,6 +51,7 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
+import net.povstalec.sgjourney.common.scheduler.StargateDestruction;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 
@@ -203,8 +204,14 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 
 		super.playerWillDestroy(level, pos, state, player);
 	}
-	
+
+	@Deprecated // Use the one below instead.
 	public void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation, StargatePart stargatePart)
+	{
+		destroyStargate(level, pos, parts, shieldingParts, direction, orientation);
+	}
+	
+	public void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation)
 	{
 		if(direction == null)
 		{
@@ -219,22 +226,11 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		}
 		
 		AbstractShieldingBlock.destroyShielding(level, pos, shieldingParts, direction, orientation);
-		
-		for(StargatePart part : parts)
-		{
-			if(!stargatePart.equals(part))
-			{
-				BlockPos ringPos = part.getRingPos(pos, direction, orientation);
-				BlockState state = level.getBlockState(ringPos);
-				
-				if(state.getBlock() instanceof AbstractStargateBlock)
-				{
-					boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
-					
-					level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
-				}
-			}
-		}
+
+		level.getServer().getWorldData().overworldData().getScheduledEvents().schedule(
+				StargateJourney.MODID + ":stargate_destruction_" + pos.asLong(),
+				level.getServer().overworld().getGameTime() + 1,
+				new StargateDestruction(level.dimension(), pos, parts, direction, orientation));
 	}
 
 	@Override

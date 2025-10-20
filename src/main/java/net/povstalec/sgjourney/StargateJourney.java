@@ -8,6 +8,7 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.misc.RenderAMD;
+import net.povstalec.sgjourney.common.scheduler.SchedulerInit;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
@@ -106,6 +107,7 @@ public class StargateJourney
         RecipeTypeInit.register(eventBus);
         StatisticsInit.register(eventBus);
 		CommandInit.register(eventBus);
+	    SchedulerInit.register();
 
         GalaxyInit.register(eventBus);
         

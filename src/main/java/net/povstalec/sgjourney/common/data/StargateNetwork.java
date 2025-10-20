@@ -179,6 +179,20 @@ public final class StargateNetwork extends SavedData
 	{
 		addStargate(BlockEntityList.get(server).addStargate(stargateEntity));
 	}
+
+	public void removeStargate(AbstractStargateEntity stargateEntity)
+	{
+		var address = stargateEntity.get9ChevronAddress();
+		if (address == null)
+			return;
+		var sg = getStargate(address.immutable());
+		// Some mods might remove the old one after placing the new one when moving the stargate.
+		// We need to make sure we don't delete the new one.
+		if (sg != null && sg.isSamePosition(stargateEntity))
+		{
+			removeStargate(sg);
+		}
+	}
 	
 	public final void removeStargate(Stargate stargate)
 	{

@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
@@ -49,7 +50,12 @@ public interface Transporter
 	}
 	
 	BlockPos getBlockPos(); //TODO Remove this
-	
+
+	default boolean isSamePosition(AbstractTransporterEntity transporter)
+	{
+		return true;
+	}
+
 	/**
 	 * @param server Current Minecraft Server
 	 * @return Position vector of the Transporter's center or null if it doesn't have a position
