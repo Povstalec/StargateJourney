@@ -342,6 +342,27 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		return tag;
 	}
+
+	public void refreshPosInNetwork()
+	{
+		if (!id9ChevronAddress.isEmpty())
+		{
+			var network = StargateNetwork.get(level);
+			var sg = network.getStargate(id9ChevronAddress.immutable());
+			// Some mods might place the new gate before removing the old one when moving the stargate.
+			// We want to remove the duplicate now so it won't linger in the stargate list forever.
+			if (sg != null)
+			{
+				if (sg.isSamePosition(this))
+				{
+					return; // No need to replace it if it hasn't moved.
+				}
+				// We assume whichever gate was placed most recently is the "correct" one with that address.
+				network.removeStargate(sg);
+			}
+			network.addStargate(this);
+		}
+	}
 	
 	public void addStargateToNetwork()
 	{
@@ -354,7 +375,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	public void removeStargateFromNetwork()
 	{
-		StargateNetwork.get(level).removeStargate(id9ChevronAddress.immutable());
+		StargateNetwork.get(level).removeStargate(this);
 	}
 	
 	public void set9ChevronAddress(Address address)
