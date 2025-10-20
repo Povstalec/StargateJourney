@@ -361,6 +361,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 				network.removeStargate(sg);
 			}
 			network.addStargate(this);
+			resetStargate(StargateInfo.Feedback.NONE);
 		}
 	}
 	
