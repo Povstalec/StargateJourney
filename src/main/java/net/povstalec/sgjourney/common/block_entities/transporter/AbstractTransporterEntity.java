@@ -136,6 +136,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 				network.removeTransporter(existing.getLevel(level.getServer()), id);
 			}
 			network.addTransporter(this);
+			resetTransporter();
 		}
 	}
 	
