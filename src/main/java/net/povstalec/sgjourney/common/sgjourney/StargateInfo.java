@@ -51,7 +51,7 @@ public class StargateInfo
 		}
 	}
 	
-	public static enum ChevronLockSpeed
+	public enum ChevronLockSpeed
 	{
 		SLOW(3),
 		MEDIUM(2),
@@ -80,7 +80,7 @@ public class StargateInfo
 		}
 	}
 	
-	public static enum WormholeTravel
+	public enum WormholeTravel
 	{
 		ENABLED,
 		CREATIVE_ONLY,

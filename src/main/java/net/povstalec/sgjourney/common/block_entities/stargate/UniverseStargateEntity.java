@@ -4,6 +4,7 @@ import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.UniverseStargate;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -38,11 +39,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	
 	public static final int MAX_WAIT_TICKS = 20;
 	
-	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.universe_chevron_lock_speed.get();
-	
 	public int waitTicks = 1;
 	
-	public Address addressBuffer = new Address(true);
+	public Address.Mutable addressBuffer = new Address.Mutable();
 	public int symbolBuffer = 0;
 	
 	protected int angle;
@@ -65,7 +64,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 			{
 				if(hasDHD())
 					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
-							addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
+							addressBuffer : new Address.Mutable(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
 			}
 		};
 		
@@ -77,8 +76,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	public void load(CompoundTag tag)
 	{
         super.load(tag);
-        
-        addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+		
+		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
     }
 	
@@ -87,7 +86,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	{
 		super.saveAdditional(tag);
 		
-		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.toArray());
+		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 	}
 	
@@ -168,8 +167,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
 		{
 			if(!isRotating())
-				startRotation(addressBuffer.getSymbol(symbolBuffer), CommonStargateConfig.universe_best_direction.get() ?
-						bestSymbolDirection(addressBuffer.getSymbol(symbolBuffer)) : alternatingDirection(address.getLength()));
+				startRotation(addressBuffer.symbolAt(symbolBuffer), CommonStargateConfig.universe_best_direction.get() ?
+						bestSymbolDirection(addressBuffer.symbolAt(symbolBuffer)) : alternatingDirection(address.getLength()));
 			
 			if(rotation == desiredRotation)
 				engageSymbol(getCurrentSymbol());
@@ -252,14 +251,14 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 		if(!super.updateClient())
 			return false;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray()));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.getArray()));
 		return true;
 	}
 
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
+		return doKawoosh ? UniverseStargate.CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override

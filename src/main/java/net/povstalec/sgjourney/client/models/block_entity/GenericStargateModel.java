@@ -447,9 +447,9 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 			boolean symbolEngaged = false;
 			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
 			{
-				for(int i = 0; i < stargate.getAddress().getLength(); i++)
+				for(int i = 0; i < stargate.getAddress().regularSymbolCount(); i++)
 				{
-					int addressSymbol = stargate.getAddress().toArray()[i];
+					int addressSymbol = stargate.getAddress().getArray()[i];
 					if(addressSymbol == j)
 						symbolEngaged = true;
 				}

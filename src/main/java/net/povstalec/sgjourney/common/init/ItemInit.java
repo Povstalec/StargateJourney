@@ -196,8 +196,8 @@ public class ItemInit
 	public static final RegistryObject<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device", 
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant().tab(TabInit.STARGATE_STUFF)));
 	
-	public static final RegistryObject<CrystalConfiguratorItem> CRYSTAL_CONFIGURATOR = ITEMS.register("crystal_configurator",
-			() -> new CrystalConfiguratorItem(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<CrystalReaderItem> CRYSTAL_READER = ITEMS.register("crystal_reader",
+			() -> new CrystalReaderItem(new Item.Properties().stacksTo(1)));
 	
 	public static final RegistryObject<GDOItem> GDO = ITEMS.register("gdo", 
 			() -> new GDOItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));

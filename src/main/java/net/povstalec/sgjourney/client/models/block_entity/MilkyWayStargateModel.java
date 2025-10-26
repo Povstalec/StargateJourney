@@ -102,7 +102,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			else
 			{
 				Address address = stargate.getAddress();
-				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
+				if(stargate.isCurrentSymbol(address.symbolAt(address.regularSymbolCount() - 1)))
 				{
 					if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered))
 						return true;
@@ -145,7 +145,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			else
 			{
 				Address address = stargate.getAddress();
-				if(stargate.isCurrentSymbol(address.getSymbol(address.getLength() - 1)))
+				if(stargate.isCurrentSymbol(address.symbolAt(address.regularSymbolCount() - 1)))
 				{
 					if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered))
 						return true;

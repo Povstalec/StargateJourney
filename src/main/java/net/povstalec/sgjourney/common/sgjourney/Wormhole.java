@@ -87,7 +87,7 @@ public class Wormhole
 				{
 					Vec3 relativeLookAngle = initialStargate.toStargateCoords(server, traveler.getLookAngle(), false);
 					
-					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle) != null)
 					{
 						deconstructEvent(server, initialStargate, traveler, false);
 						return true;
@@ -134,7 +134,7 @@ public class Wormhole
 							if(entity instanceof ServerPlayer player)
 								player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
 							
-							livingEntity.hurt(DamageSourceInit.REVERSE_WORMHOLE, Float.POSITIVE_INFINITY);
+							livingEntity.hurt(DamageSourceInit.REVERSE_WORMHOLE, Float.MAX_VALUE);
 						}
 						else
 							entity.kill();
@@ -167,7 +167,12 @@ public class Wormhole
 		}
 		
 		if(traveler != null)
+		{
+			if(!traveler.isAddedToWorld())
+				destinationLevel.addFreshEntityWithPassengers(traveler);
+			
 			reconstructEvent(destinationLevel.getServer(), destinationStargate, traveler);
+		}
 		
 		return traveler;
 	}
@@ -225,11 +230,11 @@ public class Wormhole
 		return traveler;
 	}
 	
-	public boolean receiveTraveler(ServerLevel destinationLevel, Stargate destinationStargate, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	public Entity receiveTraveler(ServerLevel destinationLevel, Stargate destinationStargate, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
 		traveler = recursivePassengerTeleport(destinationLevel, destinationStargate, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		playWormholeSound(destinationLevel, traveler);
-		return true;
+		return traveler;
 	}
 	
 	/**
@@ -290,7 +295,7 @@ public class Wormhole
 					if(entity instanceof ServerPlayer player)
 						player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
 					
-					livingEntity.hurt(DamageSourceInit.IRIS, Float.POSITIVE_INFINITY);
+					livingEntity.hurt(DamageSourceInit.IRIS, Float.MAX_VALUE);
 				}
 				else
 					entity.kill();
