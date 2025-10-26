@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:naquadah",
-		{"id": "#neoforge:ingots/naquadah", "required": false}
+		{"id": "#c:ingots/naquadah", "required": false}
 	]
 }
