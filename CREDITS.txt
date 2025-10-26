@@ -16,5 +16,7 @@ the_destiny - Pure Naquadah Block texture
 kluas005 - Portugese translations
 cookta2012 - Many fixes, especially ones related to CC:Tweaked
 Peperehobbits01 - French translations
+lukasbc - Many fixes and help, but most importantly doing the wiki
+elinka47 - Japanese translations
 
 I guess I could thank the Stargate franchize for... existing... as inspiration. Yeah, let's go with that.
