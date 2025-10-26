@@ -78,7 +78,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected Vec3i stargateRelativePos;
 	
 	protected boolean isCenterButtonEngaged;
-	protected Address address;
+	protected Address.Mutable address;
 	
 	protected boolean enableAdvancedProtocols;
 	protected boolean enableCallForwarding;
@@ -98,7 +98,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		super(blockEntity, pos, state);
 		
 		this.isCenterButtonEngaged = false;
-		this.address = new Address(true);
+		this.address = new Address.Mutable();
 		
 		this.enableAdvancedProtocols = false;
 		this.enableCallForwarding = false;
@@ -340,18 +340,18 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		stargateRelativePos = null;
 		
-		updateDHD(new Address(), false);
+		updateDHD(new Address.Mutable(), false);
 		
 		this.setChanged();
 	}
 	
-	public void updateDHD(Address address, boolean isStargateConnected)
+	public void updateDHD(Address.Mutable address, boolean isStargateConnected)
 	{
 		this.setAddress(address);
 		this.setCenterButtonEngaged(isStargateConnected);
 	}
 	
-	public void setAddress(Address address)
+	public void setAddress(Address.Mutable address)
 	{
 		this.address = address;
 	}
@@ -626,7 +626,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		if(level.isClientSide())
 			return;
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.toArray(), this.isCenterButtonEngaged));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.getArray(), this.isCenterButtonEngaged));
 	}
 	
 	//============================================================================================

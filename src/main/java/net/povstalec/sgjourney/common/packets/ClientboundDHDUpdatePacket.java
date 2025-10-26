@@ -36,7 +36,7 @@ public class ClientboundDHDUpdatePacket
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeLong(this.energy);
-        buffer.writeResourceLocation(this.symbols);
+        buffer.writeResourceLocation(this.pointOfOrigin);
         buffer.writeResourceLocation(this.symbols);
         buffer.writeVarIntArray(this.address);
         buffer.writeBoolean(this.isCenterButtonEngaged);

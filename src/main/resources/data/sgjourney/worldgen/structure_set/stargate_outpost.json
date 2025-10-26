@@ -7,11 +7,6 @@
   ],
   "placement": {
      "salt": 1443732816,
-
-    "spacing": 1,
-
-    "separation": 0,
-
-    "type": "minecraft:random_spread"
+    "type": "sgjourney:stargate_placement"
   }
 }

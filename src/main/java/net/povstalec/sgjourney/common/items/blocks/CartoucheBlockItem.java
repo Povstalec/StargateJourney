@@ -113,7 +113,7 @@ public class CartoucheBlockItem extends BlockItem
 				else
 					cartouche.setDimensionFromLevel(level);
 				
-				cartouche.setAddressFromDimension();
+				cartouche.generateAddress();
 				
 				if(info.contains(CartoucheEntity.SYMBOLS, CompoundTag.TAG_STRING))
 					cartouche.setSymbols(ResourceLocation.tryParse(info.getString(CartoucheEntity.SYMBOLS)));

@@ -34,6 +34,13 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		}
 	}
 	
+	/*public enum Instruction
+	{
+		IF, //TODO () -> function(), (dhd) -> dhd.function(), (stargate)-> stargate.function(), ...
+		ELSE_IF,
+		ELSE
+	}*/
+	
 	public static class Large extends ControlCrystalItem
 	{
 		public Large(Properties properties)
