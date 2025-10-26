@@ -22,6 +22,7 @@ import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.stargate.MilkyWayStargate;
 
 public class MilkyWayStargateEntity extends RotatingStargateEntity
 {
@@ -30,8 +31,6 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	public static final int TOTAL_SYMBOLS = 39;
 	public static final int RING_SEGMENTS = 3;
 	public static final int SYMBOLS_PER_SEGMENT = TOTAL_SYMBOLS / RING_SEGMENTS;
-	
-	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.milky_way_chevron_lock_speed.get();
 
 	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way_back_chevron");
 	
@@ -90,7 +89,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 			return 0;
 		
 		// If the current symbol under the primary chevron is the same one as the last encoded in the address, we want the current chevron
-		if(getAddress().getLength() > 0 && getCurrentSymbol() == getAddress().getSymbol(getAddress().getLength() - 1))
+		if(getAddress().getLength() > 0 && getCurrentSymbol() == getAddress().symbolAt(getAddress().getLength() - 1))
 			return (short) getAddress().getLength();
 		
 		// Otherwise we want the next chevron
@@ -238,7 +237,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
+		return doKawoosh ? MilkyWayStargate.CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override

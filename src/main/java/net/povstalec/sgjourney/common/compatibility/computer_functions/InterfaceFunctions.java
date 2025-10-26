@@ -36,6 +36,6 @@ public class InterfaceFunctions
 	
 	public static String addressToString(Map<Double, Double> addressTable)
 	{
-		return new Address(addressTable).toString();
+		return new Address.Immutable(addressTable).toString();
 	}
 }

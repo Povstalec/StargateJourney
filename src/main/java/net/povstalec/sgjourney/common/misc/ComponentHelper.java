@@ -29,6 +29,9 @@ public class ComponentHelper
 	
 	public static MutableComponent tickTimer(String name, int ticks, int maxTicks, ChatFormatting formatting)
 	{
+		if(maxTicks <= 0)
+			return Component.translatable(name).append(": " + Conversion.ticksToString(ticks)).withStyle(formatting);
+		
 		return Component.translatable(name).append(": " + Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
 	}
 	

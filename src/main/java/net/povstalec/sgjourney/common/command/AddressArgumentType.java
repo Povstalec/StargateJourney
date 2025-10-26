@@ -37,7 +37,7 @@ public class AddressArgumentType implements ArgumentType<Address.Immutable>
 	@Override
 	public Address.Immutable parse(StringReader reader) throws CommandSyntaxException
 	{
-		Address.Immutable address = Address.read(reader);
+		Address.Immutable address = Address.Immutable.read(reader);
 		
 		if(address.getType() == addressType)
 			return address;

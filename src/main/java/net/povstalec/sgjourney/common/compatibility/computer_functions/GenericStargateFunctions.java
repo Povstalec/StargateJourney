@@ -101,10 +101,10 @@ public class GenericStargateFunctions
 		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.engageSymbol(desiredSymbol) : stargate.dhdEngageSymbol(desiredSymbol);
 	}
 	
-	public static Address.Immutable getDialedAddress(AbstractStargateEntity stargate)
+	public static Address.Mutable getDialedAddress(AbstractStargateEntity stargate)
 	{
 		// Will only display the dialed Address
-		return !stargate.isConnected() || stargate.isDialingOut() ? stargate.getAddress().immutable() : new Address().immutable();
+		return !stargate.isConnected() || stargate.isDialingOut() ? stargate.getAddress() : new Address.Mutable();
 	}
 	
 	public static void setChevronConfiguration(AbstractStargateEntity stargate, int[] configurationArray)
@@ -143,14 +143,14 @@ public class GenericStargateFunctions
 	//*********************************Advanced Crystal Interface*********************************
 	//============================================================================================
 	
-	public static Address.Immutable getConnectedAddress(AbstractStargateEntity stargate)
+	public static Address getConnectedAddress(AbstractStargateEntity stargate)
 	{
-		return stargate.getAddress().immutable();
+		return stargate.getAddress();
 	}
 	
 	public static Address.Immutable getLocalAddress(AbstractStargateEntity stargate)
 	{
-		return stargate.get9ChevronAddress().immutable();
+		return stargate.get9ChevronAddress();
 	}
 	
 	public static int getNetwork(AbstractStargateEntity stargate)

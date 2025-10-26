@@ -66,20 +66,18 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 		if(!level.isClientSide())
 		{
 			ItemStack stack = player.getItemInHand(hand);
-			Address address = new Address();
+			Address.Mutable address = new Address.Mutable();
 			
 			if(CommonStargateConfig.enable_address_choice.get() && stack.is(ItemInit.CONTROL_CRYSTAL.get()))
 			{
 				String name = stack.getHoverName().getString();
-				address = new Address(name);
-				
-				if(address.getLength() != 8)
+				if(address.fromString(name).getType() != Address.Type.ADDRESS_9_CHEVRON)
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.invalid_address"), true);
 					return InteractionResult.FAIL;
 				}
 				
-				if(BlockEntityList.get(level).containsStargate(address.immutable()))
+				if(BlockEntityList.get(level).containsStargate(address))
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.address_exists"), true);
 					return InteractionResult.FAIL;
@@ -118,7 +116,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 			{
 				if(address.getLength() == 8)
 				{
-					stargate.set9ChevronAddress(address);
+					stargate.set9ChevronAddress(new Address.Immutable(address));
 					
 					if(!player.isCreative())
 						stack.shrink(1);

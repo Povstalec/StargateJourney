@@ -82,41 +82,38 @@ public abstract class CartoucheRenderer
             stack.mulPose(Axis.XP.rotationDegrees(-90));
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Axis.XP.rotationDegrees(90));
-
-        if(cartouche != null)
-        {
-    		Matrix4f matrix4 = stack.last().pose();
-    		Matrix3f matrix3 = stack.last().normal();
-        	Symbols symbols = getSymbols(cartouche);
-            light = LevelRenderer.getLightColor(cartouche.getLevel(), pos);
-        	
-        	Address address = cartouche.getAddress();
-            
-            if(address != null)
-            {
-            	float symbolSize = MAX_HEIGHT / address.getLength();
-                if(symbolSize > MAX_WIDTH)
-                	symbolSize = MAX_WIDTH;
-                
-            	if(symbols != null)
-            	{
-                	ResourceLocation texture = symbols.getSymbolTexture();
-            		
-            		for(int i = 0; i < address.getLength(); i++)
-                    {
-                    	VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
-                    	
-                    	float yStart = 0.5F + symbolSize * address.getLength() / 2;
-                    	if(yStart > 0.5F + MAX_HEIGHT / 2)
-                    		yStart = 0.5F + MAX_HEIGHT / 2;
-                    	
-                    	float yPos = yStart - symbolSize / 2 - symbolSize * i;
-                    	
-                        renderSymbol(consumer, matrix4, matrix3, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.getSymbol(i)));
-                    }
-            	}
-            }
-        }
+		
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
+		Symbols symbols = getSymbols(cartouche);
+		light = LevelRenderer.getLightColor(cartouche.getLevel(), pos);
+		
+		Address address = cartouche.getAddress();
+		
+		if(address != null)
+		{
+			float symbolSize = MAX_HEIGHT / address.regularSymbolCount();
+			if(symbolSize > MAX_WIDTH)
+				symbolSize = MAX_WIDTH;
+			
+			if(symbols != null)
+			{
+				ResourceLocation texture = symbols.getSymbolTexture();
+				
+				for(int i = 0; i < address.regularSymbolCount(); i++)
+				{
+					VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
+					
+					float yStart = 0.5F + symbolSize * address.regularSymbolCount() / 2;
+					if(yStart > 0.5F + MAX_HEIGHT / 2)
+						yStart = 0.5F + MAX_HEIGHT / 2;
+					
+					float yPos = yStart - symbolSize / 2 - symbolSize * i;
+					
+					renderSymbol(consumer, matrix4, matrix3, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.symbolAt(i)));
+				}
+			}
+		}
         
 		stack.popPose();
 	}

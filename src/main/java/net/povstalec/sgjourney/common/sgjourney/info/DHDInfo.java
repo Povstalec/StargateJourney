@@ -102,7 +102,7 @@ public class DHDInfo
 	{
 		if(hasDHD())
 			this.dhd.updateDHD(!this.stargate.isConnected() || (this.stargate.isConnected() && this.stargate.isDialingOut()) ?
-					this.stargate.getAddress() : new Address(), this.stargate.isConnected());
+					this.stargate.getAddress() : new Address.Mutable(), this.stargate.isConnected());
 	}
 	
 	public void sendDHDFeedback(StargateInfo.Feedback feedback)

@@ -161,36 +161,36 @@ public interface Stargate
 	 * @param server Current Minecraft Server
 	 * @return Address currently encoded in this Stargate
 	 */
-	Address getAddress(MinecraftServer server);
+	Address.Mutable getAddress(MinecraftServer server);
 	
 	/**
 	 * @param server Current Minecraft Server
 	 * @param solarSystem Solar System requesting this Stargate's connection Address, can be null
-	 * @param addressLength Length of the requested Address type
+	 * @param addressType Type of the requested Address
 	 * @return The Address which this Stargate will provide to the Stargate Network during connections
 	 * (For example, during an interstellar connection, the Stargate will provide the 7-Chevron Address of its Solar System instead of its 9-Chevron Address)
 	 */
-	default Address getConnectionAddress(MinecraftServer server, @Nullable SolarSystem.Serializable solarSystem, int addressLength)
+	default Address.Immutable getConnectionAddress(MinecraftServer server, @Nullable SolarSystem.Serializable solarSystem, Address.Type addressType)
 	{
 		SolarSystem.Serializable localSolarSystem = getSolarSystem(server);
 		if(localSolarSystem != null)
 		{
-			if(addressLength == 6)
+			if(addressType == Address.Type.ADDRESS_7_CHEVRON)
 			{
 				Galaxy.Serializable galaxy = localSolarSystem.findCommonGalaxy(solarSystem);
 				if(galaxy != null)
 				{
 					Address.Immutable address = localSolarSystem.getAddressFromGalaxy(galaxy);
 					if(address != null)
-						return address.mutable();
+						return address;
 				}
 			}
-			else if(addressLength == 7)
-				return localSolarSystem.getExtragalacticAddress().mutable();
+			else if(addressType == Address.Type.ADDRESS_8_CHEVRON)
+				return localSolarSystem.getExtragalacticAddress();
 		}
 		
 		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
-		return get9ChevronAddress().mutable();
+		return get9ChevronAddress();
 	}
 	
 	/**
@@ -400,9 +400,9 @@ public interface Stargate
 	 * Y being the initial Stargate's up and Z being the initial Stargate's right direction.
 	 * @param relativeLookAngle Traveler's look angle turned into a vector relative to the initial Stargate, with X direction being the direction the initial Stargate was facing,
 	 * Y being the initial Stargate's up and Z being the initial Stargate's right direction.
-	 * @return True if traveler was accepted and transported to this Stargate, otherwise false
+	 * @return Traveler entity (that may have been created on the other side) if the traveler was accepted and transported to this Stargate, otherwise null
 	 */
-	boolean receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
+	@Nullable Entity receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
 	
 	/**
 	 * Checks if the current Stargate Connection should be automatically closed (for example, if the open time exceeds the maximum time allowed for the Stargate to be open)
