@@ -26,7 +26,7 @@ public record ClientboundDHDUpdatePacket(BlockPos blockPos, long energy, Resourc
         {
             FriendlyByteBuf.writeBlockPos(buf, packet.blockPos);
             buf.writeLong(packet.energy);
-            buf.writeResourceLocation(packet.symbols);
+            buf.writeResourceLocation(packet.pointOfOrigin);
             buf.writeResourceLocation(packet.symbols);
             buf.writeVarIntArray(packet.address);
             buf.writeBoolean(packet.isCenterButtonEngaged);

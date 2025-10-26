@@ -23,21 +23,25 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.AddressTable;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public abstract class CartoucheEntity extends BlockEntity implements StructureGenEntity
 {
 	public static final String ADDRESS_TABLE = "address_table";
 	public static final String DIMENSION = "dimension";
+	public static final String GALAXY = "galaxy";
 	public static final String SYMBOLS = "symbols";
 	public static final String ADDRESS = "address";
 	
 	protected StructureGenEntity.Step generationStep = StructureGenEntity.Step.GENERATED;
 
 	private ResourceLocation addressTable;
-	private ResourceLocation dimension;
 	
 	private ResourceLocation symbols;
-	private Address address = new Address();
+	@Nullable
+	private Address address;
 	
 	public CartoucheEntity(BlockEntityType<?> cartouche, BlockPos pos, BlockState state) 
 	{
@@ -55,8 +59,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(generationStep == StructureGenEntity.Step.READY)
 			generate();
 		
-		if(dimension != null && address.isEmpty())
-			setAddressFromDimension();
+		generateAddress();
 	}
 	
 	@Override
@@ -72,11 +75,15 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
     	if(tag.contains(SYMBOLS))
     		symbols = ResourceLocation.tryParse(tag.getString(SYMBOLS));
 		
-		
-		if(tag.contains(ADDRESS))
-			address.fromArray(tag.getIntArray(ADDRESS));
-		else if(tag.contains(DIMENSION))
-			dimension = ResourceLocation.tryParse(tag.getString(DIMENSION));
+		if(tag.contains(DIMENSION))
+		{
+			if(tag.contains(GALAXY))
+				address = new Address.Dimension(Conversion.stringToDimension(tag.getString(DIMENSION)), Optional.of(Conversion.stringToGalaxyKey(tag.getString(GALAXY))));
+			else
+				address = new Address.Dimension(Conversion.stringToDimension(tag.getString(DIMENSION)), Optional.empty());
+		}
+		else if(tag.contains(ADDRESS))
+			address = new Address.Immutable(tag.getIntArray(ADDRESS));
 	}
 	
 	@Override
@@ -90,13 +97,26 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols.toString());
 		
-		if(!address.isFromDimension())
+		if(address instanceof Address.Dimension dimensionAddress)
+		{
+			tag.putString(DIMENSION, dimensionAddress.getDimension().location().toString());
+			if(dimensionAddress.getGalaxy() != null)
+				tag.putString(GALAXY,  dimensionAddress.getGalaxy().location().toString());
+		}
+		else if(address != null)
 			tag.putIntArray(ADDRESS, address.toArray());
-		else if(dimension != null)
-			tag.putString(DIMENSION, dimension.toString());
 		
 		super.saveAdditional(tag, registries);
 	}
+	
+	/*@Override
+	public CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		saveAdditional(tag);
+		return tag;
+	}*/
 	
 	//============================================================================================
 	//************************************Getters and setters*************************************
@@ -104,7 +124,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	
 	public void setDimension(ResourceLocation dimension)
 	{
-		this.dimension = dimension;
+		this.address = new Address.Dimension(Conversion.locationToDimension(dimension), Optional.empty());
 	}
 	
 	public void setSymbols(ResourceLocation symbols)
@@ -124,6 +144,9 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	
 	public Address getAddress()
 	{
+		if(this.address == null)
+			return new Address.Immutable();
+		
 		return this.address;
 	}
 	
@@ -142,20 +165,17 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		Address address = AddressTable.randomAddress(level.getServer(), addressTable);
 		
 		if(address != null)
-		{
-			this.address = address;
-			if(address.isFromDimension())
-				this.dimension = address.getDimension().location();
-		}
+			setAddress(address);
 		
 		this.addressTable = null;
 		
 		this.setChanged();
 	}
 	
-	public void setAddressFromDimension()
+	public void generateAddress()
 	{
-		this.address.fromDimension(level.getServer(), Conversion.locationToDimension(this.dimension));
+		if(address instanceof Address.Dimension dimensionAddress)
+			dimensionAddress.generate(level.getServer());
 	}
 	
 	public void setSymbolsFromLevel(Level level)
@@ -179,7 +199,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(level.isClientSide())
 			return;
 		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(),
-				new ClientboundCartoucheUpdatePacket(worldPosition, symbols == null ? StargateJourney.EMPTY_LOCATION : symbols, addressTable == null ? this.address.toArray() : new int[0]));
+				new ClientboundCartoucheUpdatePacket(worldPosition, symbols == null ? StargateJourney.EMPTY_LOCATION : symbols, address != null ? this.address.toArray() : new int[0]));
 	}
 	
 	public void tick(Level level, BlockPos pos, BlockState state)
@@ -218,7 +238,6 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		{
 			super(BlockEntityInit.STONE_CARTOUCHE.get(), pos, state);
 		}
-		
 	}
 	
 	public static class Sandstone extends CartoucheEntity
@@ -227,7 +246,6 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		{
 			super(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), pos, state);
 		}
-		
 	}
 	
 	public static class RedSandstone extends CartoucheEntity
@@ -236,7 +254,6 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		{
 			super(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), pos, state);
 		}
-		
 	}
 
 }

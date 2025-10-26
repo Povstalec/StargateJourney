@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.stargate.ClassicStargate;
 
 import java.util.Random;
 
@@ -31,8 +32,6 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	
 	private static final short ROTATION_TICK_DURATION = 40;
 	private static final short CHEVRON_LOCK_TICK_DURATION = 20;
-	
-	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.classic_chevron_lock_speed.get();
 	
 	public int[] addressBuffer = new int[0];
 	public int symbolBuffer = 0;
@@ -74,7 +73,7 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
+		return doKawoosh ? ClassicStargate.CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override

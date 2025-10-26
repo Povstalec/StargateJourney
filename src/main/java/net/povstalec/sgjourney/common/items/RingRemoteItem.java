@@ -213,14 +213,14 @@ public class RingRemoteItem extends Item
 		if(list.getCompound(index).contains(MemoryCrystalItem.ADDRESS, Tag.TAG_INT_ARRAY))
 			return Component.translatable("tooltip.sgjourney.address").withStyle(ChatFormatting.AQUA);
 		
-		Vec3i coords = MemoryCrystalItem.getCoords(list, stack, index);
+		Vec3i coords = MemoryCrystalItem.getCoords(list, index);
 		if(coords != null)
 		{
 			return Component.translatable("tooltip.sgjourney.coordinates")
 					.append(Component.literal(" " + coords.toShortString())).withStyle(ChatFormatting.BLUE);
 		}
 		
-		UUID id = MemoryCrystalItem.getUUID(list, stack, index);
+		UUID id = MemoryCrystalItem.getUUID(list, index);
 		if(id != null)
 			return Component.literal(id.toString()).withStyle(ChatFormatting.DARK_AQUA);
 		else

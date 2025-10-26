@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.info;
 
 import net.minecraft.nbt.CompoundTag;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class AddressFilterInfo
 		return this.filterType;
 	}
 	
-	public boolean isAddressWhitelisted(Address.Immutable address)
+	public boolean isAddressWhitelisted(Address address)
 	{
 		return this.whitelist.contains(address);
 	}
@@ -107,7 +108,7 @@ public class AddressFilterInfo
 		return true;
 	}
 	
-	public boolean removeFromWhitelist(Address.Immutable address)
+	public boolean removeFromWhitelist(Address address)
 	{
 		if(!this.whitelist.contains(address))
 			return false;
@@ -127,12 +128,12 @@ public class AddressFilterInfo
 		this.whitelist.clear();
 	}
 	
-	public boolean isAddressBlacklisted(Address.Immutable address)
+	public boolean isAddressBlacklisted(Address address)
 	{
 		return this.blacklist.contains(address);
 	}
 	
-	public boolean addToBlacklist(Address.Immutable address, boolean isVisible)
+	public boolean addToBlacklist(Address address, boolean isVisible)
 	{
 		if(this.blacklist.contains(address))
 		{
@@ -226,9 +227,9 @@ public class AddressFilterInfo
 		private Address.Immutable address;
 		private boolean isVisible;
 		
-		public HiddenAddress(Address.Immutable address, boolean isVisible)
+		public HiddenAddress(Address address, boolean isVisible)
 		{
-			this.address = address;
+			this.address = new Address.Immutable(address);
 			this.isVisible = isVisible;
 		}
 		

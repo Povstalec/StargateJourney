@@ -185,8 +185,8 @@ public class ItemInit
 	public static final DeferredItem<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device",
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 	
-	public static final DeferredItem<CrystalConfiguratorItem> CRYSTAL_CONFIGURATOR = ITEMS.register("crystal_configurator",
-			() -> new CrystalConfiguratorItem(new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<CrystalReaderItem> CRYSTAL_READER = ITEMS.register("crystal_reader",
+			() -> new CrystalReaderItem(new Item.Properties().stacksTo(1)));
 	
 	public static final DeferredItem<GDOItem> GDO = ITEMS.register("gdo",
 			() -> new GDOItem(new Item.Properties().stacksTo(1)));

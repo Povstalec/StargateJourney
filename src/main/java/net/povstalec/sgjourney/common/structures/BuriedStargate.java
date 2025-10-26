@@ -44,9 +44,9 @@ public class BuriedStargate extends StargateStructure
     	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates, stargateModifiers, dhdModifiers);
     }
     
-    private static final void checkSeed(long seed)
+    /*private static final void checkSeed(long seed)
     {
-    	if(currentSeed.isEmpty() || (currentSeed.isPresent() && currentSeed.get() != seed))
+    	if(currentSeed.isEmpty() || currentSeed.get() != seed)
     	{
     		currentSeed = Optional.of(seed);
             x = Optional.empty();
@@ -109,7 +109,7 @@ public class BuriedStargate extends StargateStructure
 		//TODO See if there's a way to check for dimension
 		//context.chunkGenerator().getBiomeSource().findBiomeHorizontal(maxDistanceFromCenter, maxDistanceFromCenter, size, maxDistanceFromCenter, null, null, null);
 		return super.findValidGenerationPoint(context);
-	}
+	}*/
 
     @Override
     public StructureType<?> type()

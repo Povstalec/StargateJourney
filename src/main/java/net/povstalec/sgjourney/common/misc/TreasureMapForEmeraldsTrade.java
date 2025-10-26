@@ -89,12 +89,6 @@ public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
 				StargateJourney.LOGGER.info("Attempting to locate Buried Stargate for map");
 				BlockPos blockpos = level.findNearestMapStructure(this.destination, new BlockPos(xOffset, 0, zOffset), 150, true);
 				
-				if(blockpos == null && level.dimension().equals(Level.OVERWORLD))
-				{
-					StargateJourney.LOGGER.info("Couldn't locate Buried Stargate, falling back to BlockPos saved in BuriedStargate");
-					blockpos = new BlockPos(16 * BuriedStargate.getX(level.getSeed()), 0, 16 * BuriedStargate.getZ(level.getSeed()));
-				}
-				
 				if(blockpos != null)
 				{
 					ItemStack itemstack = MapItem.create(level, blockpos.getX(), blockpos.getZ(), (byte)2, true, true);
@@ -104,6 +98,8 @@ public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
 					
 					return new MerchantOffer(new ItemCost(Items.EMERALD, this.emeraldCost), Optional.of(new ItemCost(Items.COMPASS)), itemstack, this.maxUses, this.villagerXp, 0.2F);
 				}
+				else
+					StargateJourney.LOGGER.error("Couldn't locate Buried Stargate");
 			}
 			
 			return null;

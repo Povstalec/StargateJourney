@@ -62,7 +62,7 @@ public class Universe extends SavedData
 
 	private MinecraftServer server;
 
-	private HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems = new HashMap<Address.Immutable, SolarSystem.Serializable>();
+	private HashMap<Address, SolarSystem.Serializable> solarSystems = new HashMap<Address, SolarSystem.Serializable>();
 	private HashMap<ResourceLocation, SolarSystem.Serializable> solarSystemLocations = new HashMap<ResourceLocation, SolarSystem.Serializable>();
 	private HashMap<ResourceKey<Level>, SolarSystem.Serializable> dimensions = new HashMap<ResourceKey<Level>, SolarSystem.Serializable>();
 	private HashMap<ResourceLocation, Galaxy.Serializable> galaxies = new HashMap<ResourceLocation, Galaxy.Serializable>();
@@ -210,7 +210,7 @@ public class Universe extends SavedData
 		Address.Immutable extragalacticAddress;
 		
 		if(useDatapackAddresses(server))
-			extragalacticAddress = new Address(solarSystem.getAddressArray()).immutable();
+			extragalacticAddress = new Address.Immutable(solarSystem.getAddressArray());
 		else
 		{
 			int prefix = solarSystem.getSymbolPrefix();
@@ -243,7 +243,7 @@ public class Universe extends SavedData
 							address = generateAddress(galaxyKey.location(), galaxy.getSize(), systemValue);
 						}
 						else
-							address = new Address(Address.integerListToArray(randomizableAddress.getFirst())).immutable();
+							address = new Address.Immutable(Address.integerListToArray(randomizableAddress.getFirst()));
 						
 						galaxy.addSolarSystem(address, networkSolarSystem);
 			    		networkSolarSystem.addToGalaxy(galaxy, address);
@@ -340,7 +340,7 @@ public class Universe extends SavedData
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			extragalacticAddress = new Address().randomAddress(prefix, 7, 36, seed).immutable();
+			extragalacticAddress = Address.Immutable.randomAddress(prefix, 7, 36, seed);
 			
 			if(!this.solarSystems.containsKey(extragalacticAddress))
 				break;
@@ -378,7 +378,7 @@ public class Universe extends SavedData
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			address = new Address().randomAddress(6, galaxySize, seed).immutable();
+			address = Address.Immutable.randomAddress(6, galaxySize, seed);
 			
 			if(!this.galaxies.get(galaxyID).containsSolarSystem(address))
 				break;
@@ -469,7 +469,7 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
-	public SolarSystem.Serializable getSolarSystemFromExtragalacticAddress(Address.Immutable extragalacticAddress)
+	public SolarSystem.Serializable getSolarSystemFromExtragalacticAddress(Address extragalacticAddress)
 	{
 		return this.solarSystems.get(extragalacticAddress);
 	}
@@ -514,7 +514,7 @@ public class Universe extends SavedData
 	 * @return Returns a Solar System in the same galaxy as the input Solar System based on the input Address, null if there is no such Solar System
 	 */
 	@Nullable
-	public SolarSystem.Serializable getSolarSystemFromAddress(SolarSystem.Serializable solarSystem, Address.Immutable address)
+	public SolarSystem.Serializable getSolarSystemFromAddress(SolarSystem.Serializable solarSystem, Address address)
 	{
 		if(solarSystem != null)
 			return solarSystem.getSolarSystemFromAddress(address);
@@ -607,7 +607,7 @@ public class Universe extends SavedData
 	public HashMap<ResourceLocation, Address.Immutable> getPrimaryStargateAddresses()
 	{
 		HashMap<ResourceLocation, Address.Immutable> primaryStargates = new HashMap<>();
-		for(HashMap.Entry<Address.Immutable, SolarSystem.Serializable> entry : solarSystems.entrySet())
+		for(HashMap.Entry<Address, SolarSystem.Serializable> entry : solarSystems.entrySet())
 		{
 			Address.Immutable address = entry.getValue().primaryAddress();
 			if(address != null)
@@ -703,7 +703,7 @@ public class Universe extends SavedData
 	{
 		tag.getAllKeys().forEach(dimensionString ->
 		{
-			Address.Immutable extragalacticAddress = new Address(tag.getIntArray(dimensionString)).immutable();
+			Address.Immutable extragalacticAddress = new Address.Immutable(tag.getIntArray(dimensionString));
 			
 			if(this.solarSystems.containsKey(extragalacticAddress))
 			{

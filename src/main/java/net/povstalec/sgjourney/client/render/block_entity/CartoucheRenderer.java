@@ -95,7 +95,7 @@ public abstract class CartoucheRenderer
             
             if(address != null)
             {
-            	float symbolSize = MAX_HEIGHT / address.getLength();
+            	float symbolSize = MAX_HEIGHT / address.regularSymbolCount();
                 if(symbolSize > MAX_WIDTH)
                 	symbolSize = MAX_WIDTH;
                 
@@ -103,17 +103,17 @@ public abstract class CartoucheRenderer
             	{
                 	ResourceLocation texture = symbols.getSymbolTexture();
             		
-            		for(int i = 0; i < address.getLength(); i++)
+            		for(int i = 0; i < address.regularSymbolCount(); i++)
                     {
                     	VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
                     	
-                    	float yStart = 0.5F + symbolSize * address.getLength() / 2;
+                    	float yStart = 0.5F + symbolSize * address.regularSymbolCount() / 2;
                     	if(yStart > 0.5F + MAX_HEIGHT / 2)
                     		yStart = 0.5F + MAX_HEIGHT / 2;
                     	
                     	float yPos = yStart - symbolSize / 2 - symbolSize * i;
                     	
-                        renderSymbol(consumer, matrix4, pose, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.getSymbol(i)));
+                        renderSymbol(consumer, matrix4, pose, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.symbolAt(i)));
                     }
             	}
             }

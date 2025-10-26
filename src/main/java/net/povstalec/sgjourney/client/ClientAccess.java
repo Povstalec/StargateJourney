@@ -67,7 +67,7 @@ public class ClientAccess
         if(blockEntity instanceof final CartoucheEntity cartouche)
         {
     		cartouche.setSymbols(symbols);
-    		cartouche.setAddress(new Address(address));
+			cartouche.setAddress(new Address.Mutable(address));
         }
     }
     
@@ -126,7 +126,7 @@ public class ClientAccess
 			dhd.setEnergy(energy);
 			dhd.symbolInfo().setPointOfOrigin(pointOfOrigin);
 			dhd.symbolInfo().setSymbols(symbols);
-			dhd.setAddress(new Address(true).fromArray(address));
+			dhd.setAddress(new Address.Mutable(address));
 			dhd.setCenterButtonEngaged(isCenterButtonEngaged);
 		}
 	}
@@ -141,7 +141,7 @@ public class ClientAccess
 			stargate.setEnergy(energy);
 			stargate.setOpenTime(openTime);
 			stargate.setTimeSinceLastTraveler(timeSinceLastTraveler);
-			stargate.setAddress(new Address(address));
+			stargate.setAddress(new Address.Mutable(address));
 			stargate.setEngagedChevrons(engagedChevrons);
 			stargate.setKawooshTickCount(kawooshTick);
 			stargate.setTickCount(tick);
@@ -237,7 +237,7 @@ public class ClientAccess
         if(blockEntity instanceof final PegasusStargateEntity stargate)
         {
         	stargate.symbolBuffer = symbolBuffer;
-        	stargate.addressBuffer.fromArray(addressBuffer);
+			stargate.addressBuffer.fromArray(addressBuffer);
         	stargate.currentSymbol = currentSymbol;
         }
     }

@@ -10,6 +10,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.stargate.TollanStargate;
 
 public class TollanStargateEntity extends AbstractStargateEntity
 {
@@ -18,8 +19,6 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	public static final float TOLLAN_THICKNESS = 5.0F;
 	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0F;
 	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
-	
-	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.tollan_chevron_lock_speed.get();
 	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
@@ -42,7 +41,7 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
+		return doKawoosh ? TollanStargate.CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override

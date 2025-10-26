@@ -37,7 +37,7 @@ public class StargateFilterFunctions
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");*/
 		
-		if(stargate.addressFilterInfo().addToWhitelist(new Address(addressArray).immutable(), isVisible))
+		if(stargate.addressFilterInfo().addToWhitelist(new Address.Immutable(addressArray), isVisible))
 			return "Address whitelisted successfully";
 		else
 			return "Address visibility changed successfully";
@@ -58,7 +58,7 @@ public class StargateFilterFunctions
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");*/
 		
-		if(stargate.addressFilterInfo().addToBlacklist(new Address(addressArray).immutable(), isVisible))
+		if(stargate.addressFilterInfo().addToBlacklist(new Address.Immutable(addressArray), isVisible))
 			return "Address blacklisted successfully";
 		else
 			return "Address visibility changed successfully";
@@ -79,7 +79,7 @@ public class StargateFilterFunctions
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");*/
 		
-		if(stargate.addressFilterInfo().removeFromWhitelist(new Address(addressArray).immutable()))
+		if(stargate.addressFilterInfo().removeFromWhitelist(new Address.Immutable(addressArray)))
 			return "Address removed from whitelist successfully";
 		else
 			return "Address is not whitelisted";
@@ -100,7 +100,7 @@ public class StargateFilterFunctions
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");*/
 		
-		if(stargate.addressFilterInfo().removeFromBlacklist(new Address(addressArray).immutable()))
+		if(stargate.addressFilterInfo().removeFromBlacklist(new Address.Immutable(addressArray)))
 			return "Address removed from blacklist successfully";
 		else
 			return "Address is not blacklisted";

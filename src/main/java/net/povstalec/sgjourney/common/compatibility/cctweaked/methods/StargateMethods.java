@@ -140,7 +140,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
 		{
-			return context.executeMainThreadTask(() -> new Object[] {Arrays.stream(GenericStargateFunctions.getDialedAddress(stargate).toArray()).boxed().toList()});
+			return context.executeMainThreadTask(() -> new Object[] {Arrays.stream(GenericStargateFunctions.getDialedAddress(stargate).getArray()).boxed().toList()});
 		}
 	}
 	

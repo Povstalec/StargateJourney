@@ -11,12 +11,13 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.FeatureInit;
 import net.povstalec.sgjourney.common.init.PlacedFeatureInit;
+import net.povstalec.sgjourney.common.init.StructurePlacementInit;
 
 public class WorldGenProvider extends DatapackBuiltinEntriesProvider
 {
 	public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-			.add(Registries.CONFIGURED_FEATURE, (context) -> FeatureInit.bootstrap(context))
-			.add(Registries.PLACED_FEATURE, (context) -> PlacedFeatureInit.bootstrap(context));
+			.add(Registries.CONFIGURED_FEATURE, FeatureInit::bootstrap)
+			.add(Registries.PLACED_FEATURE, PlacedFeatureInit::bootstrap);
 	
 	public WorldGenProvider(PackOutput output, CompletableFuture<Provider> registries)
 	{

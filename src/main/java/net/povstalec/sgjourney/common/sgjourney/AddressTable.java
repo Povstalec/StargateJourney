@@ -109,25 +109,25 @@ public class AddressTable
 		if(weightedAddress.addressDimension().right().isPresent())
 			return weightedAddress.addressDimension().right().get();
 		
-		return new Address(server, weightedAddress.addressDimension().left().get());
+		return new Address.Dimension(weightedAddress.addressDimension().left().get(), Optional.ofNullable(weightedAddress.galaxy()));
 	}
 	
 	
 	
 	public static class WeightedAddress
 	{
-		private final Either<ResourceKey<Level>, Address> addressDimension;
+		private final Either<ResourceKey<Level>, Address.Immutable> addressDimension;
 		private final int weight;
 		@Nullable
 		private ResourceKey<Galaxy> galaxy;
 		
 		public static final Codec<WeightedAddress> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.either(Level.RESOURCE_KEY_CODEC, Address.CODEC).fieldOf("address").forGetter(weightedAddress -> weightedAddress.addressDimension),
+				Codec.either(Level.RESOURCE_KEY_CODEC, Address.Immutable.CODEC).fieldOf("address").forGetter(weightedAddress -> weightedAddress.addressDimension),
 				Codec.INT.fieldOf("weight").forGetter(weightedAddress -> weightedAddress.weight),
 				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(weightedAddress -> Optional.ofNullable(weightedAddress.galaxy))
 		).apply(instance, WeightedAddress::new));
 		
-		public WeightedAddress(Either<ResourceKey<Level>, Address> addressDimension, int weight, Optional<ResourceKey<Galaxy>> galaxy)
+		public WeightedAddress(Either<ResourceKey<Level>, Address.Immutable> addressDimension, int weight, Optional<ResourceKey<Galaxy>> galaxy)
 		{
 			this.addressDimension = addressDimension;
 			this.weight = weight;
@@ -140,12 +140,12 @@ public class AddressTable
 			this(Either.left(dimension), weight, Optional.empty());
 		}
 		
-		public WeightedAddress(Address address, int weight)
+		public WeightedAddress(Address.Immutable address, int weight)
 		{
 			this(Either.right(address), weight, Optional.empty());
 		}
 		
-		public Either<ResourceKey<Level>, Address> addressDimension()
+		public Either<ResourceKey<Level>, Address.Immutable> addressDimension()
 		{
 			return addressDimension;
 		}
@@ -153,6 +153,12 @@ public class AddressTable
 		public int weight()
 		{
 			return weight;
+		}
+		
+		@Nullable
+		public ResourceKey<Galaxy> galaxy()
+		{
+			return galaxy;
 		}
 	}
 }

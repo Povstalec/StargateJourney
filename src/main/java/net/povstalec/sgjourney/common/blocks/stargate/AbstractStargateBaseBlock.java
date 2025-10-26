@@ -292,7 +292,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         	{
         		if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
         		{
-        			id = new Address(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS)).toString();
+					id = Address.addressIntArrayToString(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS));
                 	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
         		}
             	

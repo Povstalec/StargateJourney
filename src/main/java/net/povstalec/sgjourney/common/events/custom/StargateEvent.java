@@ -39,17 +39,17 @@ public class StargateEvent extends Event implements ICancellableEvent
 	 */
 	public static class Dial extends StargateEvent implements ICancellableEvent
 	{
-		private final Address.Immutable dialedAddress;
+		private final Address dialedAddress;
 		private final boolean doKawoosh;
 		
-		public Dial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, boolean doKawoosh)
+		public Dial(MinecraftServer server, Stargate stargate, Address dialedAddress, boolean doKawoosh)
 		{
 			super(server, stargate);
-			this.dialedAddress = dialedAddress.copy();
+			this.dialedAddress = dialedAddress.clone();
 			this.doKawoosh = doKawoosh;
 		}
 		
-		public Address.Immutable getDialedAddress()
+		public Address getDialedAddress()
 		{
 			return dialedAddress;
 		}
