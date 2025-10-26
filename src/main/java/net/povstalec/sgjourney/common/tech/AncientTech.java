@@ -20,7 +20,7 @@ public interface AncientTech
 	/**
 	 * 
 	 * @param requirementsDisabled Whether or not the requirements for having Ancient Gene to use this have been disabled
-	 * @param player
+	 * @param user
 	 * @return
 	 */
 	default boolean canUseAncientTech(boolean requirementsDisabled, Entity user)
