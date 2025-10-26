@@ -12,6 +12,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
@@ -1310,7 +1311,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
 		if(isPrimary())
 			player.sendSystemMessage(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(Component.literal(": " + getOpenTime() + "/" + Stargate.getMaxGateOpenTime())).withStyle(ChatFormatting.DARK_AQUA));
+		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(ComponentHelper.tickTimer(getOpenTime(), Stargate.getMaxGateOpenTime(), ChatFormatting.DARK_AQUA)));
 		
 		super.getStatus(player);
 	}

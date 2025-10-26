@@ -352,7 +352,7 @@ public abstract class Address implements Cloneable
 	//*************************************Immutable Address**************************************
 	//============================================================================================
 	
-	public static class Immutable extends Address
+	public static final class Immutable extends Address
 	{
 		public static final Codec<Immutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.listOf().fieldOf("symbols").forGetter(address -> Arrays.stream(address.addressArray).boxed().collect(Collectors.toList()))
@@ -436,7 +436,7 @@ public abstract class Address implements Cloneable
 	//**************************************Mutable Address***************************************
 	//============================================================================================
 	
-	public static class Mutable extends Address
+	public static final class Mutable extends Address
 	{
 		public static final Codec<Mutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.listOf().fieldOf("symbols").forGetter(address -> Arrays.stream(address.addressArray).boxed().collect(Collectors.toList()))
@@ -584,7 +584,7 @@ public abstract class Address implements Cloneable
 	//*************************************Dimension Address**************************************
 	//============================================================================================
 	
-	public static class Dimension extends Address
+	public static final class Dimension extends Address
 	{
 		public static final Codec<Dimension> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Level.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(address -> address.getDimension()),

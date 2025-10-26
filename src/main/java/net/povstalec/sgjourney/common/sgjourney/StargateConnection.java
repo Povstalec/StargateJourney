@@ -45,21 +45,21 @@ public class StargateConnection
 	
 	public static final int KAWOOSH_TICKS = 40;
 	
-	protected static final int maxOpenTime = CommonStargateConfig.max_wormhole_open_time.get() * 20;
-	protected static final boolean energyBypassEnabled = CommonStargateConfig.enable_energy_bypass.get();
-	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
+	protected static final int MAX_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
+	protected static final boolean ENERGY_BYPASS_ENABLED = CommonStargateConfig.enable_energy_bypass.get();
+	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
-	protected static final long systemWideConnectionCost = CommonStargateConfig.system_wide_connection_energy_cost.get();
-	protected static final long systemWideConnectionDraw = CommonStargateConfig.system_wide_connection_energy_draw.get();
-	protected static final long systemWideConnectionBypassDraw = CommonStargateConfig.system_wide_connection_bypass_energy_draw.get();
+	protected static final long SYSTEM_WIDE_CONNECTION_COST = CommonStargateConfig.system_wide_connection_energy_cost.get();
+	protected static final long SYSTEM_WIDE_CONNECTION_DRAW = CommonStargateConfig.system_wide_connection_energy_draw.get();
+	protected static final long SYSTEM_WIDE_CONNECTION_BYPASS_DRAW = CommonStargateConfig.system_wide_connection_bypass_energy_draw.get();
 	
-	protected static final long interstellarConnectionCost = CommonStargateConfig.interstellar_connection_energy_cost.get();
-	protected static final long interstellarConnectionDraw = CommonStargateConfig.interstellar_connection_energy_draw.get();
-	protected static final long interstellarConnectionBypassDraw = CommonStargateConfig.interstellar_connection_bypass_energy_draw.get();
+	protected static final long INTERSTELLAR_CONNECTION_COST = CommonStargateConfig.interstellar_connection_energy_cost.get();
+	protected static final long INTERSTELLAR_CONNECTION_DRAW = CommonStargateConfig.interstellar_connection_energy_draw.get();
+	protected static final long INTERSTELLAR_CONNECTION_BYPASS_DRAW = CommonStargateConfig.interstellar_connection_bypass_energy_draw.get();
 	
-	protected static final long intergalacticConnectionCost = CommonStargateConfig.intergalactic_connection_energy_cost.get();
-	protected static final long intergalacticConnectionDraw = CommonStargateConfig.intergalactic_connection_energy_draw.get();
-	protected static final long intergalacticConnectionBypassDraw = CommonStargateConfig.intergalactic_connection_bypass_energy_draw.get();
+	protected static final long INTERGALACTIC_CONNECTION_COST = CommonStargateConfig.intergalactic_connection_energy_cost.get();
+	protected static final long INTERGALACTIC_CONNECTION_DRAW = CommonStargateConfig.intergalactic_connection_energy_draw.get();
+	protected static final long INTERGALACTIC_CONNECTION_BYPASS_DRAW = CommonStargateConfig.intergalactic_connection_bypass_energy_draw.get();
 	
 	protected final UUID uuid;
 	protected final StargateConnection.Type connectionType;
@@ -71,6 +71,9 @@ public class StargateConnection
 	protected int connectionTime; // Time since the connection was established (Right after dialing Stargate finished dialing)
 	protected int openTime; // Time since wormhole formed (after kawoosh ended)
 	protected int timeSinceLastTraveler; // Time since a traveler has last appeared near any of the connected Stargates
+	
+	@Nullable
+	private Address.Immutable dialingAddress = null;
 	
 	private StargateConnection(UUID uuid, StargateConnection.Type connectionType, Stargate dialingStargate, Stargate dialedStargate,
 							   boolean used, int connectionTime, int openTime, int timeSinceLastTraveler, boolean doKawoosh)
@@ -88,9 +91,9 @@ public class StargateConnection
 	
 	public enum Type
 	{
-		SYSTEM_WIDE(systemWideConnectionCost, systemWideConnectionDraw, systemWideConnectionBypassDraw),
-		INTERSTELLAR(interstellarConnectionCost, interstellarConnectionDraw, interstellarConnectionBypassDraw),
-		INTERGALACTIC(intergalacticConnectionCost, intergalacticConnectionDraw, intergalacticConnectionBypassDraw);
+		SYSTEM_WIDE(SYSTEM_WIDE_CONNECTION_COST, SYSTEM_WIDE_CONNECTION_DRAW, SYSTEM_WIDE_CONNECTION_BYPASS_DRAW),
+		INTERSTELLAR(INTERSTELLAR_CONNECTION_COST, INTERSTELLAR_CONNECTION_DRAW, INTERSTELLAR_CONNECTION_BYPASS_DRAW),
+		INTERGALACTIC(INTERGALACTIC_CONNECTION_COST, INTERGALACTIC_CONNECTION_DRAW, INTERGALACTIC_CONNECTION_BYPASS_DRAW);
 		
 		private long establishingPowerCost;
 		private long powerDraw;
@@ -276,11 +279,20 @@ public class StargateConnection
 		return true;
 	}
 	
+	private Address.Immutable getDialingAddress(MinecraftServer server)
+	{
+		// Get dialing address and cache it for later use
+		if(this.dialingAddress == null)
+			this.dialingAddress = Address.Immutable.extendWithPointOfOrigin(this.dialingStargate.getConnectionAddress(server, dialedStargate.getSolarSystem(server), this.dialingStargate.getAddress(server).getType()));
+		
+		return this.dialingAddress;
+	}
+	
 	private void tickEstablishConnection(MinecraftServer server, int kawooshStartTicks)
 	{
-		Address dialingAddress = this.dialingStargate.getConnectionAddress(server, dialedStargate.getSolarSystem(server), this.dialingStargate.getAddress(server).getType());
+		Address.Immutable dialingAddress = getDialingAddress(server);
 		
-		this.dialedStargate.setChevronConfiguration(server, Dialing.getChevronConfiguration(dialingAddress.getLength()));
+		this.dialedStargate.setChevronConfiguration(server, Dialing.getChevronConfiguration(dialingAddress.getType()));
 		
 		this.dialingStargate.doWhileConnecting(server, this, false, kawooshStartTicks);
 		this.dialedStargate.doWhileConnecting(server, this, true, kawooshStartTicks);
@@ -358,14 +370,14 @@ public class StargateConnection
 		this.dialingStargate.doWhileConnected(server, this, false);
 		this.dialedStargate.doWhileConnected(server, this, true);
 		
-		if(this.openTime >= maxOpenTime && !energyBypassEnabled)
+		if(this.openTime >= MAX_OPEN_TIME && !ENERGY_BYPASS_ENABLED)
 		{
 			terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME);
 			return;
 		}
 		
 		// Depletes energy over time
-		if(requireEnergy && !depleteEnergy(server, getPowerDraw()))
+		if(REQUIRE_ENERGY && !depleteEnergy(server, getPowerDraw()))
 		{
 			terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER);
 			return;
@@ -506,7 +518,7 @@ public class StargateConnection
 	
 	public long getPowerDraw()
 	{
-		return this.connectionType.getPowerDraw(this.openTime >= maxOpenTime);
+		return this.connectionType.getPowerDraw(this.openTime >= MAX_OPEN_TIME);
 	}
 	
 	//============================================================================================

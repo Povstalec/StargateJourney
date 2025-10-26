@@ -24,13 +24,13 @@ public class Dialing
 	
 	public static final int[] DEFAULT_CHEVRON_CONFIGURATION = DIALED_7_CHEVRON_CONFIGURATION;
 	
-	public static int[] getChevronConfiguration(int addressLength)
+	public static int[] getChevronConfiguration(Address.Type addressType)
 	{
-		return switch(addressLength)
+		return switch(addressType)
 		{
-			case 6 -> Dialing.DIALED_7_CHEVRON_CONFIGURATION;
-			case 7 -> Dialing.DIALED_8_CHEVRON_CONFIGURATION;
-			case 8 -> Dialing.DIALED_9_CHEVRON_CONFIGURATION;
+			case ADDRESS_7_CHEVRON -> Dialing.DIALED_7_CHEVRON_CONFIGURATION;
+			case ADDRESS_8_CHEVRON -> Dialing.DIALED_8_CHEVRON_CONFIGURATION;
+			case ADDRESS_9_CHEVRON -> Dialing.DIALED_9_CHEVRON_CONFIGURATION;
 			default -> Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 		};
 	}

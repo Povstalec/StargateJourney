@@ -42,7 +42,7 @@ public abstract class StargateStructure extends SGJourneyStructure
 		this.dhdModifiers = dhdModifiers.orElse(null);
     }
     
-    private static final void checkSeed(long seed)
+    /*private static final void checkSeed(long seed)
     {
     	if(currentSeed.isEmpty() || currentSeed.get() != seed)
     	{
@@ -86,9 +86,9 @@ public abstract class StargateStructure extends SGJourneyStructure
     	}
 
     	return z.get();
-    }
+    }*/
     
-	@Override
+	/*@Override
 	protected boolean extraSpawningChecks(Structure.GenerationContext context)
 	{
 		// Grabs the chunk position we are at
@@ -99,7 +99,7 @@ public abstract class StargateStructure extends SGJourneyStructure
 			return true;
 		else
 			return false;
-	}
+	}*/
 	
 	@Override
 	protected void generateBlockEntity(WorldGenLevel level, BlockPos startPos, RandomSource randomSource, StructureGenEntity generatedEntity)

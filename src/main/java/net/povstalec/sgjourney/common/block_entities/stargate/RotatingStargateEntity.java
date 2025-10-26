@@ -156,14 +156,19 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	
 	protected void rotateToTarget()
 	{
-		int ringDistance = ringDistance(this.rotation, this.desiredRotation);
-		
-		if(ringDistance == 0)
-			endRotation(false);
-		else if(ringDistance < rotationStep())
-			rotate(this.rotateClockwise, ringDistance);
-		else
+		if(this.desiredRotation < 0)
 			rotate(this.rotateClockwise);
+		else
+		{
+			int ringDistance = ringDistance(this.rotation, this.desiredRotation);
+			
+			if(ringDistance == 0)
+				endRotation(false);
+			else if(ringDistance < rotationStep())
+				rotate(this.rotateClockwise, ringDistance);
+			else
+				rotate(this.rotateClockwise);
+		}
 	}
 	
 	protected void rotate()
