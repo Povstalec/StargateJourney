@@ -39,7 +39,7 @@ public final class StargateNetwork extends SavedData
 	private static final String CONNECTIONS = "Connections";
 
 	// Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int updateVersion = 16;
+	private static final int updateVersion = 17;
 	
 	private MinecraftServer server;
 	
