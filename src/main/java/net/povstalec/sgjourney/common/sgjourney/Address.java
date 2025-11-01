@@ -26,6 +26,9 @@ public abstract class Address implements Cloneable
 	public static final String ADDRESS_DIVIDER = "-";
 	public static final int MIN_DIALED_ADDRESS_LENGTH = 6;
 	public static final int MAX_ADDRESS_LENGTH = 9;
+	public static final int POINT_OF_ORIGIN = 0;
+	public static final int MIN_SYMBOL = POINT_OF_ORIGIN;
+	public static final int MAX_SYMBOL = 47;
 	
 	protected int[] addressArray = new int[0];
 	
@@ -74,9 +77,9 @@ public abstract class Address implements Cloneable
 		
 		for(int i = 0; i < addressArray.length; i++)
 		{
-			if(addressArray[i] < 0 || addressArray[i] > 47)
+			if(addressArray[i] < MIN_SYMBOL || addressArray[i] > MAX_SYMBOL)
 				throw new IllegalArgumentException("Address symbol " + addressArray[i] + " out of bounds <0, 47>");
-			else if(addressArray[i] == 0 && i != addressArray.length - 1)
+			else if(addressArray[i] == POINT_OF_ORIGIN && i != addressArray.length - 1)
 				throw new IllegalArgumentException("No symbols allowed in Address after Point of Origin");
 		}
 	}
@@ -98,6 +101,11 @@ public abstract class Address implements Cloneable
 		return addressArray[index];
 	}
 	
+	public int lastSymbol()
+	{
+		return addressArray[addressArray.length - 1];
+	}
+	
 	public boolean isEmpty()
 	{
 		return addressArray.length == 0;
@@ -105,10 +113,7 @@ public abstract class Address implements Cloneable
 	
 	public boolean hasPointOfOrigin()
 	{
-		if(addressArray.length != 0)
-			return addressArray[addressArray.length - 1] == 0; // Point of Origin is guaranteed to be the last
-		
-		return false;
+		return addressArray.length > 0 && lastSymbol() == POINT_OF_ORIGIN; // Point of Origin is guaranteed to be the last
 	}
 	
 	/**
@@ -336,6 +341,11 @@ public abstract class Address implements Cloneable
 			return value;
 		}
 		
+		public boolean below(Address.Type type)
+		{
+			return this.byteValue() < type.byteValue();
+		}
+		
 		public static Address.Type fromLength(int addressLength)
 		{
 			return switch(addressLength)
@@ -425,8 +435,8 @@ public abstract class Address implements Cloneable
 		public static Address.Immutable extendWithPointOfOrigin(Address.Immutable address)
 		{
 			// The second check is here in case the last symbol is not the usual Point of Origin
-			if(!address.hasPointOfOrigin() && address.addressArray.length < 9)
-				return new Immutable(ArrayHelper.growIntArray(address.addressArray, 0));
+			if(!address.hasPointOfOrigin() && address.addressArray.length < MAX_ADDRESS_LENGTH)
+				return new Immutable(ArrayHelper.growIntArray(address.addressArray, POINT_OF_ORIGIN));
 			
 			return address;
 		}

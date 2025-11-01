@@ -1,12 +1,18 @@
 {
-  "structures": [
+  "structures":
+  [
     {
       "structure": "sgjourney:stargate/universe/destiny",
       "weight": 1
     }
   ],
-  "placement": {
-     "salt": 8615654,
-    "type": "sgjourney:unique_placement"
+  "placement":
+  {
+    "salt": 8615654,
+    "type": "sgjourney:unique_placement",
+    "x_chunk_offset": 0,
+    "z_chunk_offset": 0,
+    "x": 0,
+    "y": 0
   }
 }

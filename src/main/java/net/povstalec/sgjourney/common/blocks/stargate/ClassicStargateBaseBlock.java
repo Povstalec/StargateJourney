@@ -114,7 +114,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 			
 			if(baseEntity instanceof ClassicStargateEntity stargate)
 			{
-				if(address.getLength() == 8)
+				if(address.getType() == Address.Type.ADDRESS_9_CHEVRON)
 				{
 					stargate.set9ChevronAddress(new Address.Immutable(address));
 					
