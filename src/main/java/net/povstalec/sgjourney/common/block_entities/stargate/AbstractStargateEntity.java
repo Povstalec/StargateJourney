@@ -354,7 +354,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public void addStargateToNetwork()
 	{
 		if(id9ChevronAddress.getType() != Address.Type.ADDRESS_9_CHEVRON || BlockEntityList.get(level).containsStargate(id9ChevronAddress))
-			set9ChevronAddress(generate9ChevronAddress());
+			set9ChevronAddress(Address.Immutable.extendWithPointOfOrigin(generate9ChevronAddress()));
 		
 		StargateNetwork.get(level).addStargate(this);
 		this.setChanged();
@@ -369,7 +369,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		this.id9ChevronAddress = address;
 		setChanged();
-		StargateJourney.LOGGER.info("Set 9-Chevron Address to " + this.id9ChevronAddress);
+		StargateJourney.LOGGER.debug("Set 9-Chevron Address to " + this.id9ChevronAddress);
 	}
 	
 	public Address.Immutable get9ChevronAddress()
@@ -1305,7 +1305,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
 		if(isPrimary())
 			player.sendSystemMessage(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.open_time").append(ComponentHelper.tickTimer(getOpenTime(), Stargate.getMaxGateOpenTime(), ChatFormatting.DARK_AQUA)));
+		player.sendSystemMessage(ComponentHelper.tickTimer("info.sgjourney.open_time", getOpenTime(), Stargate.getMaxGateOpenTime(), ChatFormatting.DARK_AQUA));
 		
 		super.getStatus(player);
 	}
@@ -1382,22 +1382,20 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(connectionTime % chevronLockSpeed.getChevronWaitTicks() == 0)
 		{
 			int dialedAddressLength = getAddress().getLength();
-			int dialingAddressLength = dialingAddress.getLength();
 			
 			if(dialedAddressLength < dialingAddress.getLength())
 			{
-				if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 4 && dialingAddressLength < 7)
+				if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 4 && dialingAddress.getType().below(Address.Type.ADDRESS_8_CHEVRON))
 					return;
-				else if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddressLength < 8)
+				else if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddress.getType().below(Address.Type.ADDRESS_9_CHEVRON))
 					return;
 				else
-					encodeChevron(dialingAddress.symbolAt(dialedAddressLength), true, false);
-			}
-			else
-			{
-				chevronSound((short) 0, true, false, false);
-				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().getLength() + 1,
-						AbstractStargateEntity.getChevron(this, getAddress().getLength() + 1), true, 0);
+				{
+					int symbol = dialingAddress.symbolAt(dialedAddressLength);
+					encodeChevron(symbol, true, false);
+					if(symbol == 0)
+						updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().getLength(), AbstractStargateEntity.getChevron(this, getAddress().getLength()), true, 0);
+				}
 			}
 		}
 	}

@@ -388,7 +388,7 @@ public class SGJourneyStargate implements Stargate
 	
 	private static StargateInfo.Feedback noStargate()
 	{
-		StargateJourney.LOGGER.error("Stargate Entity could not be found");
+		StargateJourney.LOGGER.error("SGJourneyStargate.noStargate: Stargate Entity could not be found");
 		return StargateInfo.Feedback.UNKNOWN_ERROR;
 	};
 	
