@@ -37,6 +37,9 @@ public class ComponentHelper
 	
 	public static MutableComponent tickTimer(int ticks, int maxTicks, ChatFormatting formatting)
 	{
+		if(maxTicks <= 0)
+			return Component.literal(Conversion.ticksToString(ticks)).withStyle(formatting);
+		
 		return Component.literal(Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
 	}
 	
