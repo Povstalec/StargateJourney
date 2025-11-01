@@ -309,7 +309,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		if(isConnected() && !isDialingOut())
 			return 0;
 		
-		return addressBuffer.symbolAt(addressBuffer.getLength() - 1);
+		return addressBuffer.lastSymbol();
 	}
 	
 	@Override

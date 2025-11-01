@@ -58,7 +58,7 @@ public class BlockEntityList extends SavedData
 	{
 		Address.Immutable address = stargate.get9ChevronAddress();
 		
-		if(address.getLength() != 8)
+		if(address.getType() != Address.Type.ADDRESS_9_CHEVRON)
 			return null;
 		
 		if(this.stargateMap.containsKey(address))
