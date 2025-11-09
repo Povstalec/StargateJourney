@@ -178,7 +178,7 @@ public abstract class CableBlockEntity extends BlockEntity
 			if(blockEntity != null)
 			{
 				IEnergyStorage energy = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, direction.getOpposite());
-				if(energy.canReceive())
+				if(energy != null && energy.canReceive())
 				{
 					if(energy instanceof SGJourneyEnergy sgjourneyEnergy && sgjourneyEnergy.getTrueEnergyStored() < sgjourneyEnergy.getTrueMaxEnergyStored())
 						outputs++;
