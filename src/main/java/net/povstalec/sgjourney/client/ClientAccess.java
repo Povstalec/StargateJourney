@@ -68,20 +68,6 @@ public class ClientAccess
 			panel.ringsName = ringsName;
 		}
 	}
-    
-    public static void updateDHD(BlockPos pos, long energy, ResourceLocation pointOfOrigin, ResourceLocation symbols, int[] address, boolean isCenterButtonEngaged)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractDHDEntity dhd)
-        {
-			dhd.setEnergy(energy);
-			dhd.symbolInfo().setPointOfOrigin(pointOfOrigin);
-			dhd.symbolInfo().setSymbols(symbols);
-			dhd.setAddress(new Address.Mutable(address));
-			dhd.setCenterButtonEngaged(isCenterButtonEngaged);
-		}
-	}
 	
 	public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
 	{

@@ -56,12 +56,6 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundRingPanelUpdatePacket::handle)
 		.add();
 		
-		INSTANCE.messageBuilder(ClientboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundDHDUpdatePacket::encode)
-		.decoder(ClientboundDHDUpdatePacket::new)
-		.consumerMainThread(ClientboundDHDUpdatePacket::handle)
-		.add();
-		
 		// Stargates
 		INSTANCE.messageBuilder(ClientboundStargateParticleSpawnPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundStargateParticleSpawnPacket::encode)

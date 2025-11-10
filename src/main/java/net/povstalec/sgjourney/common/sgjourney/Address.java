@@ -24,6 +24,8 @@ import javax.annotation.Nullable;
 
 public abstract class Address implements Cloneable
 {
+	public static final String ADDRESS = "address";
+	
 	public static final String ADDRESS_DIVIDER = "-";
 	public static final int MIN_DIALED_ADDRESS_LENGTH = 6;
 	public static final int MAX_ADDRESS_LENGTH = 9;

@@ -3,6 +3,10 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.WorldGenLevel;
@@ -38,14 +42,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import javax.annotation.Nonnull;
@@ -57,6 +58,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public static final String SYMBOLS = "symbols";
 	
 	public static final String ENERGY_INVENTORY = "energy_inventory";
+	
+	public static final String IS_CENTER_BUTTON_ENGAGED = "is_center_button_engaged";
+	public static final String ADDRESS = Address.ADDRESS;
 	
 	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
 	public static final String CRYSTAL_MODE = "CrystalMode";
@@ -166,6 +170,46 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		if(isProtected)
 			tag.putBoolean(PROTECTED, true);
+	}
+	
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		tag.putLong(ENERGY, ENERGY_STORAGE.getTrueEnergyStored());
+		
+		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		
+		address.saveToCompoundTag(tag, ADDRESS);
+		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			ENERGY_STORAGE.setEnergy(tag.getLong(ENERGY));
+			
+			if(tag.contains(POINT_OF_ORIGIN))
+				symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
+			if(tag.contains(SYMBOLS))
+				symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
+			
+			address.fromArray(tag.getIntArray(ADDRESS));
+			isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
+		}
 	}
 	
 	public SymbolInfo symbolInfo()
@@ -623,10 +667,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public void updateClient()
 	{
-		if(level.isClientSide())
-			return;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.getArray(), this.isCenterButtonEngaged));
+		if(!level.isClientSide())
+			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
 	}
 	
 	//============================================================================================
