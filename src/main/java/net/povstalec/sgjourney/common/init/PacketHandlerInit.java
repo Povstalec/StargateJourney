@@ -43,19 +43,7 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundArcheologistNotebookOpenScreenPacket::handle)
 		.add();
 		
-		INSTANCE.messageBuilder(ClientboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundTransceiverUpdatePacket::encode)
-		.decoder(ClientboundTransceiverUpdatePacket::new)
-		.consumerMainThread(ClientboundTransceiverUpdatePacket::handle)
-		.add();
-		
 		// Alien Tech
-		INSTANCE.messageBuilder(ClientboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundInterfaceUpdatePacket::encode)
-		.decoder(ClientboundInterfaceUpdatePacket::new)
-		.consumerMainThread(ClientboundInterfaceUpdatePacket::handle)
-		.add();
-		
 		INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundRingsUpdatePacket::encode)
 		.decoder(ClientboundRingsUpdatePacket::new)

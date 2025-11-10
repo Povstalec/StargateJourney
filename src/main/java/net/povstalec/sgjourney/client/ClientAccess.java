@@ -36,7 +36,7 @@ public class ClientAccess
 		minecraft.setScreen(new ArcheologistNotebookScreen(playerId, mainHand, tag));
 	}
 	
-	public static void updateDialer(BlockPos pos)
+	public static void updateDialer(UUID playerId)
 	{
 		minecraft.setScreen(new DialerScreen());
 	}
@@ -45,29 +45,6 @@ public class ClientAccess
 	{
 		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
 	}
-    
-    public static void updateInterface(BlockPos pos, long energy, long energyTarget)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractInterfaceEntity interfaceEntity)
-		{
-			interfaceEntity.setEnergy(energy);
-			interfaceEntity.setEnergyTarget(energyTarget);
-		}
-    }
-    
-    public static void updateTransceiver(BlockPos pos, boolean editingFrequency, int frequency, String idc)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final TransceiverEntity transceiver)
-        {
-        	transceiver.setEditingFrequency(editingFrequency);
-        	transceiver.setFrequency(frequency);
-        	transceiver.setCurrentCode(idc);
-        }
-    }
 	
 	public static void updateRings(BlockPos pos, int emptySpace, int transportHeight, int progress)
 	{

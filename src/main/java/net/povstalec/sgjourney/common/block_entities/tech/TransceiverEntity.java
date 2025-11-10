@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import org.jetbrains.annotations.NotNull;
@@ -20,15 +22,12 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.TransceiverBlock;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransceiverPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientboundTransceiverUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.ITransmissionReceiver;
 
 public class TransceiverEntity extends BlockEntity implements ITransmissionReceiver
@@ -81,6 +80,18 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		tag.putBoolean(EDIT_FREQUENCY, editingFrequency);
 		tag.putInt(FREQUENCY, frequency);
 		tag.putString(IDC, idc);
+	}
+	
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	@Override
+	public CompoundTag getUpdateTag()
+	{
+		return this.saveWithoutMetadata();
 	}
 	
 	public float transmissionRadius()
@@ -258,10 +269,8 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	
 	public void updateClient()
 	{
-		if(level.isClientSide())
-			return;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundTransceiverUpdatePacket(this.worldPosition, this.editingFrequency, this.frequency, this.idc));
+		if(!level.isClientSide())
+			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
 	}
 	
 	//============================================================================================
