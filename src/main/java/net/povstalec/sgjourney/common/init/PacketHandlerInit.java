@@ -44,12 +44,6 @@ public final class PacketHandlerInit
 		.add();
 		
 		// Alien Tech
-		INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRingsUpdatePacket::encode)
-		.decoder(ClientboundRingsUpdatePacket::new)
-		.consumerMainThread(ClientboundRingsUpdatePacket::handle)
-		.add();
-		
 		INSTANCE.messageBuilder(ClientboundRingPanelUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundRingPanelUpdatePacket::encode)
 		.decoder(ClientboundRingPanelUpdatePacket::new)

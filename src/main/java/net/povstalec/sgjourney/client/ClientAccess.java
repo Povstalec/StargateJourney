@@ -46,18 +46,6 @@ public class ClientAccess
 		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
 	}
 	
-	public static void updateRings(BlockPos pos, int emptySpace, int transportHeight, int progress)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final TransportRingsEntity rings)
-		{
-			rings.emptySpace = emptySpace;
-			rings.transportHeight = transportHeight;
-			rings.updateProgress(progress);
-		}
-	}
-	
 	public static void updateRingPanel(BlockPos pos, ArrayList<BlockPos> ringsPos, ArrayList<Component> ringsName)
 	{
 		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);

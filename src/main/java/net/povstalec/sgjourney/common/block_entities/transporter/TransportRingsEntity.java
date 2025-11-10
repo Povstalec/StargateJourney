@@ -5,26 +5,32 @@ import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.blocks.transporter.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientboundRingsUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class TransportRingsEntity extends AbstractTransporterEntity
 {
+	public static final String EMPTY_SPACE = "empty_space";
+	public static final String TRANSPORT_HEIGHT = "transport_height";
+	public static final String PROGRESS = "progress";
+	
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
 	
 	@Nullable
@@ -38,6 +44,42 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state);
+	}
+	
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		tag.putInt(EMPTY_SPACE, emptySpace);
+		tag.putInt(TRANSPORT_HEIGHT, transportHeight);
+		tag.putInt(PROGRESS, progress);
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			emptySpace = tag.getInt(EMPTY_SPACE);
+			transportHeight = tag.getInt(TRANSPORT_HEIGHT);
+			updateProgress(tag.getInt(PROGRESS));
+		}
+	}
+	
+	public void updateClient()
+	{
+		if(!level.isClientSide())
+			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
 	}
 
 	@Override
@@ -76,13 +118,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		}
 		
 		return this.transportPos;
-	}
-	
-	public void updateClient()
-	{
-		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)),
-					new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight, this.progress));
 	}
 	
 	public void startTransport(Transporter target)

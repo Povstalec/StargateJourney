@@ -106,6 +106,9 @@ public abstract class Address implements Cloneable
 	
 	public int lastSymbol()
 	{
+		if(addressArray.length == 0)
+			return 0;
+		
 		return addressArray[addressArray.length - 1];
 	}
 	
