@@ -118,11 +118,13 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		super.saveAdditional(tag);
 	}
 	
+	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	
+	@Override
 	public CompoundTag getUpdateTag()
 	{
 		return this.saveWithoutMetadata();

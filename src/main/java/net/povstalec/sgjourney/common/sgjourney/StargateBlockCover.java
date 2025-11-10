@@ -26,12 +26,24 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 {
 	private ArrayList<StargatePart> parts;
 	
+	private boolean isDirty = true; // Used to tell if there is a need to sync (like when a block is added or removed)
+	
 	public boolean canSinkGate = false;
 	public HashMap<StargatePart, BlockState> blockStates = new HashMap<StargatePart, BlockState>();
 	
 	public StargateBlockCover(ArrayList<StargatePart> parts)
 	{
 		this.parts = parts;
+	}
+	
+	public boolean isDirty()
+	{
+		return isDirty;
+	}
+	
+	public void setDirty(boolean isDirty)
+	{
+		this.isDirty = isDirty;
 	}
 	
 	public boolean setBlockAt(StargatePart part, BlockState state)
@@ -41,6 +53,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		
 		blockStates.put(part, state);
 		
+		setDirty(true);
 		return true;
 	}
 	
@@ -58,6 +71,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		
 		blockStates.remove(part);
 		
+		setDirty(true);
 		return Optional.ofNullable(oldState);
 	}
 	
@@ -73,6 +87,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 				if(!player.isCreative() && player.hasCorrectToolForDrops(removed.get()))
 					Block.dropResources(state, level, pos);
 				
+				setDirty(true);
 				level.levelEvent((Player) null, 2001, pos, Block.getId(state)); // Spawns breaking particles and makes a breaking sound
 			}
 			

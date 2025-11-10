@@ -74,11 +74,13 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		super.saveAdditional(tag);
 	}
 	
+	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	
+	@Override
 	public CompoundTag getUpdateTag()
 	{
 		return this.saveWithoutMetadata();

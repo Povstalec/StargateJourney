@@ -70,8 +70,6 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
-		if(level.isClientSide())
-			return null;
 		return createTickerHelper(type, BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateEntity::tick);
     }
 	

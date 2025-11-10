@@ -217,7 +217,7 @@ public class WormholeModel
 	
 	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int ticks, int kawooshProgress, short irisProgress)
 	{
-		if(kawooshProgress <= 0 || kawooshProgress >= StargateConnection.KAWOOSH_TICKS)
+		if(kawooshProgress <= 0 || kawooshProgress >= StargateConnection.KAWOOSH_DURATION)
 			return;
 		
 		float yOffset = ticks * DEFAULT_SCALE;
@@ -326,10 +326,10 @@ public class WormholeModel
 	
 	protected void renderStrudel(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int ticks, int kawooshProgress, short irisProgress)
 	{
-		if(kawooshProgress <= StargateConnection.KAWOOSH_TICKS)
+		if(kawooshProgress <= StargateConnection.KAWOOSH_DURATION)
 			return;
 		
-		int strudelProgress = Math.min(kawooshProgress,  StargateConnection.KAWOOSH_TICKS + STRUDEL_TICKS);
+		int strudelProgress = Math.min(kawooshProgress,  StargateConnection.KAWOOSH_DURATION + STRUDEL_TICKS);
 		
 		float yOffset = ticks * DEFAULT_SCALE;
 		

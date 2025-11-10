@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -15,8 +17,8 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.packets.ClientboundRotatingStargateUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -24,6 +26,11 @@ import java.util.Map;
 public abstract class RotatingStargateEntity extends IrisStargateEntity
 {
 	public static final String ROTATION = "Rotation"; //TODO Change to "rotation"
+	public static final String OLD_ROTATION = "old_rotation";
+	public static final String SIGNAL_STRENGTH = "signal_strength";
+	public static final String COMPUTER_ROTATION = "computer_rotation";
+	public static final String ROTATE_CLOCKWISE = "rotate_clockwise";
+	public static final String DESIRED_ROTATION = "desired_rotation";
 	
 	// Rotation stuff
 	protected final int maxRotation;
@@ -90,6 +97,44 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		this.oldRotation = this.rotation;
 		
 		super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = super.getUpdateTag();
+		
+		tag.putInt(ROTATION, this.rotation);
+		tag.putInt(OLD_ROTATION, this.oldRotation);
+		tag.putInt(SIGNAL_STRENGTH, this.signalStrength);
+		tag.putBoolean(COMPUTER_ROTATION, this.rotating);
+		tag.putBoolean(ROTATE_CLOCKWISE, this.rotateClockwise);
+		tag.putInt(DESIRED_ROTATION, this.desiredRotation);
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		super.onDataPacket(net, packet);
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			int rotation = tag.getInt(ROTATION);
+			int oldRotation = tag.getInt(OLD_ROTATION);
+			
+			if(rotation == oldRotation && rotation != this.rotation)
+			{
+				this.rotation = rotation;
+				this.oldRotation = oldRotation;
+			}
+			
+			this.signalStrength = tag.getInt(SIGNAL_STRENGTH);
+			this.rotating = tag.getBoolean(COMPUTER_ROTATION);
+			this.rotateClockwise = tag.getBoolean(ROTATE_CLOCKWISE);
+			this.desiredRotation = tag.getInt(DESIRED_ROTATION);
+		}
 	}
 	
 	//============================================================================================
@@ -232,7 +277,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		if(!this.level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStartup(worldPosition));
 		
-		synchronizeWithClient();
+		updateClient();
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, rotateClockwise);
 		
@@ -254,7 +299,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		
 		this.rotating = false;
 		
-		synchronizeWithClient();
+		syncRotation();
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 		
@@ -266,7 +311,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		this.oldRotation = this.rotation;
 		
 		if(!this.level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 	}
 	
 	public void playBuildupSound()
@@ -354,7 +399,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	public StargateInfo.Feedback encodeChevron()
 	{
 		if(!level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 		
 		return setRecentFeedback(engageSymbol(getCurrentSymbol()));
 	}
@@ -389,7 +434,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		}
 		
 		if(!this.level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 	}
 	
 	@Override
@@ -402,15 +447,6 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	public int getRedstoneSegmentOutput()
 	{
 		return (getCurrentSymbol() / (totalSymbols / SEGMENTS) + 1) * 5;
-	}
-	
-	protected boolean synchronizeWithClient()
-	{
-		if(this.level.isClientSide())
-			return false;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunkAt(this.worldPosition)), new ClientboundRotatingStargateUpdatePacket(this.worldPosition, this.rotation, this.oldRotation, this.signalStrength, this.rotating, this.rotateClockwise, this.desiredRotation));
-		return true;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, RotatingStargateEntity stargate)

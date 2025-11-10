@@ -62,12 +62,6 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundRingsUpdatePacket::handle)
 		.add();
 		
-		INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRingsUpdatePacket::encode)
-		.decoder(ClientboundRingsUpdatePacket::new)
-		.consumerMainThread(ClientboundRingsUpdatePacket::handle)
-		.add();
-		
 		INSTANCE.messageBuilder(ClientboundRingPanelUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundRingPanelUpdatePacket::encode)
 		.decoder(ClientboundRingPanelUpdatePacket::new)
@@ -85,39 +79,6 @@ public final class PacketHandlerInit
 		.encoder(ClientboundStargateParticleSpawnPacket::encode)
 		.decoder(ClientboundStargateParticleSpawnPacket::new)
 		.consumerMainThread(ClientboundStargateParticleSpawnPacket::handle)
-		.add();
-		INSTANCE.messageBuilder(ClientboundStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundStargateUpdatePacket::encode)
-		.decoder(ClientboundStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundStargateUpdatePacket::handle)
-		.add();
-		INSTANCE.messageBuilder(ClientboundRotatingStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRotatingStargateUpdatePacket::encode)
-		.decoder(ClientboundRotatingStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundRotatingStargateUpdatePacket::handle)
-		.add();
-		INSTANCE.messageBuilder(ClientboundStargateStateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundStargateStateUpdatePacket::encode)
-		.decoder(ClientboundStargateStateUpdatePacket::new)
-		.consumerMainThread(ClientboundStargateStateUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundUniverseStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundUniverseStargateUpdatePacket::encode)
-		.decoder(ClientboundUniverseStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundUniverseStargateUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundMilkyWayStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundMilkyWayStargateUpdatePacket::encode)
-		.decoder(ClientboundMilkyWayStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundMilkyWayStargateUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundPegasusStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundPegasusStargateUpdatePacket::encode)
-		.decoder(ClientboundPegasusStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundPegasusStargateUpdatePacket::handle)
 		.add();
 		
 		//============================================================================================

@@ -106,36 +106,6 @@ public class ClientAccess
 		}
 	}
 	
-	public static void updateStargate(BlockPos pos, long energy, int openTime, int timeSinceLastTraveler, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
-									  ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final AbstractStargateEntity stargate)
-		{
-			stargate.setEnergy(energy);
-			stargate.setOpenTime(openTime);
-			stargate.setTimeSinceLastTraveler(timeSinceLastTraveler);
-			stargate.setAddress(new Address.Mutable(address));
-			stargate.setEngagedChevrons(engagedChevrons);
-			stargate.setKawooshTickCount(kawooshTick);
-			stargate.setTickCount(tick);
-			stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
-			stargate.symbolInfo().setSymbols(symbols);
-			stargate.setVariant(variant);
-			
-			if(blockEntity instanceof IrisInfo.Interface irisStargate)
-			{
-				irisStargate.irisInfo().setIrisProgress(irisProgress);
-				
-				if(!iris.isEmpty())
-					irisStargate.irisInfo().setIris(iris);
-				else
-					irisStargate.irisInfo().unsetIris();
-			}
-		}
-	}
-	
 	public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
 	{
 		final BlockState state = minecraft.level.getBlockState(pos);
@@ -145,9 +115,6 @@ public class ClientAccess
 			StargatePart part = state.getValue(AbstractStargateBlock.PART);
 			Direction direction = state.getValue(AbstractStargateBlock.FACING);
 			Orientation orientation = state.getValue(AbstractStargateBlock.ORIENTATION);
-			
-			if(part == null || direction == null || orientation == null)
-				return;
 			
 			BlockPos basePos = part.getBaseBlockPos(pos, direction, orientation);
 			
@@ -159,61 +126,4 @@ public class ClientAccess
 			}
 		}
 	}
-	
-	public static void updateStargateState(BlockPos pos, StargateConnection.State connectionState, boolean canSinkGate, HashMap<StargatePart, BlockState> blockStates)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final AbstractStargateEntity stargate)
-		{
-			stargate.setConnectionState(connectionState);
-			stargate.blockCover.blockStates = blockStates;
-			stargate.blockCover.canSinkGate = canSinkGate;
-		}
-	}
-	
-	public static void updateRotatingStargate(BlockPos pos, int rotation, int oldRotation, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredRotation)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final RotatingStargateEntity stargate)
-		{
-			stargate.setRotation(oldRotation, rotation);
-			stargate.signalStrength = signalStrength;
-			stargate.rotating = computerRotation;
-			stargate.rotateClockwise = rotateClockwise;
-			stargate.desiredRotation = desiredRotation;
-		}
-	}
-	
-	public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final UniverseStargateEntity stargate)
-		{
-			stargate.symbolBuffer = symbolBuffer;
-			stargate.addressBuffer.fromArray(addressBuffer);
-		}
-	}
-	
-	public static void updateMilkyWayStargate(BlockPos pos, boolean isChevronOpen)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final MilkyWayStargateEntity stargate)
-			stargate.isChevronOpen = isChevronOpen;
-    }
-    
-    public static void updatePegasusStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int currentSymbol)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final PegasusStargateEntity stargate)
-        {
-        	stargate.symbolBuffer = symbolBuffer;
-			stargate.addressBuffer.fromArray(addressBuffer);
-        	stargate.currentSymbol = currentSymbol;
-        }
-    }
 }

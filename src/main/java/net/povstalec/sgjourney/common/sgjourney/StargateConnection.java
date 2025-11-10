@@ -22,28 +22,27 @@ import javax.annotation.Nullable;
 
 public class StargateConnection
 {
-	private static final String EVENT_CHEVRON_ENGAGED = AbstractStargateEntity.EVENT_CHEVRON_ENGAGED;
-	private static final String EVENT_INCOMING_CONNECTION = "stargate_incoming_connection";
-	private static final String EVENT_INCOMING_WORMHOLE = "stargate_incoming_wormhole";
-	private static final String EVENT_OUTGOING_WORMHOLE = "stargate_outgoing_wormhole";
-	private static final String EVENT_DISCONNECTED = "stargate_disconnected";
+	public static final String EVENT_INCOMING_CONNECTION = "stargate_incoming_connection";
+	public static final String EVENT_INCOMING_WORMHOLE = "stargate_incoming_wormhole";
+	public static final String EVENT_OUTGOING_WORMHOLE = "stargate_outgoing_wormhole";
+	public static final String EVENT_DISCONNECTED = "stargate_disconnected";
 	
-	//TODO Use snake_case
-	private static final String ADDRESS = "address";
-	private static final String DIMENSION = "Dimension";
-	private static final String COORDINATES = "Coordinates";
+	public static final String ADDRESS = "address";
+	public static final String DIMENSION = "Dimension";
+	public static final String COORDINATES = "Coordinates";
 	
-	private static final String DIALING_STARGATE = "DialingStargate";
-	private static final String DIALED_STARGATE = "DialedStargate";
-
-	private static final String USED = "Used";
-	private static final String TIME_SINCE_LAST_TRAVELER = "TimeSinceLastTraveler";
-	private static final String OPEN_TIME = "OpenTime";
-	private static final String CONNECTION_TIME = "ConnectionTime";
-	private static final String CONNECTION_TYPE = "ConnectionType";
-	private static final String DO_KAWOOSH = "DoKawoosh";
+	public static final String DIALING_STARGATE = "DialingStargate";
+	public static final String DIALED_STARGATE = "DialedStargate";
 	
-	public static final int KAWOOSH_TICKS = 40;
+	public static final String USED = "Used";
+	public static final String TIME_SINCE_LAST_TRAVELER = "TimeSinceLastTraveler";
+	public static final String OPEN_TIME = "OpenTime";
+	public static final String CONNECTION_TIME = "ConnectionTime";
+	public static final String CONNECTION_TYPE = "ConnectionType";
+	public static final String DO_KAWOOSH = "DoKawoosh";
+	public static final String KAWOOSH_TICKS = "kawoosh_ticks";
+	
+	public static final int KAWOOSH_DURATION = 40;
 	
 	protected static final int MAX_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
 	protected static final boolean ENERGY_BYPASS_ENABLED = CommonStargateConfig.enable_energy_bypass.get();

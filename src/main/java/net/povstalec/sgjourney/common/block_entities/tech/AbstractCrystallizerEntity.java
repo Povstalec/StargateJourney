@@ -126,11 +126,13 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 		super.saveAdditional(nbt);
 	}
 	
+	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	
+	@Override
 	public CompoundTag getUpdateTag()
 	{
 		return this.saveWithoutMetadata();

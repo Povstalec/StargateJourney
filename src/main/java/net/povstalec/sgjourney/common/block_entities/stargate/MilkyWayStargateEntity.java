@@ -4,6 +4,8 @@ import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,19 +15,20 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.MilkyWayStargate;
+import org.jetbrains.annotations.NotNull;
 
 public class MilkyWayStargateEntity extends RotatingStargateEntity
 {
+	public static final String IS_CHEVRON_OPEN = "is_chevron_open";
+	
 	public static final int MAX_ROTATION = 156;
 	
 	public static final int TOTAL_SYMBOLS = 39;
@@ -63,6 +66,36 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 			symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
     	
     	super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = super.getUpdateTag();
+		
+		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		
+		tag.putBoolean(IS_CHEVRON_OPEN, isChevronOpen);
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		super.onDataPacket(net, packet);
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			if(tag.contains(POINT_OF_ORIGIN))
+				symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
+			
+			if(tag.contains(SYMBOLS))
+				symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
+			
+			isChevronOpen = tag.getBoolean(IS_CHEVRON_OPEN);
+		}
 	}
 	
 	@Override
@@ -108,7 +141,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 			return setRecentFeedback(StargateInfo.Feedback.CHEVRON_NOT_OPEN);
 		
 		if(!level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 		
 		int symbol = getCurrentSymbol();
 		
@@ -129,7 +162,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 				this.isChevronOpen = true;
 				
 				if(!level.isClientSide())
-					synchronizeWithClient();
+					updateClient();
 				
 				return setRecentFeedback(StargateInfo.Feedback.CHEVRON_RAISED);
 			}
@@ -155,7 +188,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 		}
 		
 		if(!level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 		
 		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_CLOSED);
 	}
@@ -216,22 +249,12 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 			closeChevron();
 		
 		if(!this.level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
 	{
 		RotatingStargateEntity.tick(level, pos, state, stargate);
-	}
-	
-	@Override
-	public boolean synchronizeWithClient()
-	{
-		if(!super.synchronizeWithClient())
-			return false;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundMilkyWayStargateUpdatePacket(this.worldPosition, this.isChevronOpen));
-		return true;
 	}
 
 	@Override

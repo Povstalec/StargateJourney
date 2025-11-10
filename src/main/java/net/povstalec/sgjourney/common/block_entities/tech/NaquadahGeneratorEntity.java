@@ -58,11 +58,13 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		nbt.put("Inventory", itemHandler.serializeNBT());
 	}
 	
+	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	
+	@Override
 	public CompoundTag getUpdateTag()
 	{
 		return this.saveWithoutMetadata();
