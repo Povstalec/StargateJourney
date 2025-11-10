@@ -51,7 +51,7 @@ public class BlockEntityList extends SavedData
 	/**
 	 * Adds Stargate to Stargate Network
 	 * @param stargate
-	 * @return Optional containing Stargate that got added if successful, empty optional if unsuccessful
+	 * @return Stargate that got added if successful, null if unsuccessful
 	 */
 	@Nullable
 	public Stargate addStargate(AbstractStargateEntity stargate)
@@ -59,13 +59,19 @@ public class BlockEntityList extends SavedData
 		Address.Immutable address = stargate.get9ChevronAddress();
 		
 		if(address.getType() != Address.Type.ADDRESS_9_CHEVRON)
+		{
+			StargateJourney.LOGGER.error("Could not add Stargate to network because address " + address.toString() + " is not a 9-chevron address");
 			return null;
+		}
 		
 		if(this.stargateMap.containsKey(address))
 			return this.stargateMap.get(address); // Returns an existing Stargate
 		
 		if(stargate.getLevel() == null)
+		{
+			StargateJourney.LOGGER.error("Could not add Stargate to network because level is null");
 			return null;
+		}
 		
 		Stargate savedStargate = new SGJourneyStargate(stargate);
 		

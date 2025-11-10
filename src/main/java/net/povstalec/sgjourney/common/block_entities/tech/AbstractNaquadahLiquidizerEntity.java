@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -21,9 +23,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientboundNaquadahLiquidizerUpdatePacket;
 
 public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 {
@@ -119,6 +118,16 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		
 		nbt.putInt(PROGRESS, progress);
 		super.saveAdditional(nbt);
+	}
+	
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	public CompoundTag getUpdateTag()
+	{
+		return this.saveWithoutMetadata();
 	}
 	
 	//============================================================================================
@@ -336,6 +345,12 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		});
 	}
 	
+	public void updateClient()
+	{
+		if(!level.isClientSide())
+			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractNaquadahLiquidizerEntity naquadahLiquidizer)
 	{
 		if(level.isClientSide())
@@ -364,7 +379,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		
 		naquadahLiquidizer.outputLiquid();
 	    
-	    PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(naquadahLiquidizer.worldPosition)), new ClientboundNaquadahLiquidizerUpdatePacket(naquadahLiquidizer.worldPosition, naquadahLiquidizer.getFluid1(), naquadahLiquidizer.getFluid2(), naquadahLiquidizer.progress));
+	    naquadahLiquidizer.updateClient();
 	}
 	
 }

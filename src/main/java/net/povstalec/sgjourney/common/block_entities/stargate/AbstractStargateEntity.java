@@ -4,6 +4,8 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
@@ -343,12 +345,20 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		return tag;
 	}
 	
-	//TODO
-	/*@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
 	public CompoundTag getUpdateTag()
 	{
-		return new CompoundTag();
-	}*/
+		return this.saveWithoutMetadata();
+	}
+	
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		super.onDataPacket(net, packet); //TODO Can I use this for something interesting?
+	}
 	
 	public void addStargateToNetwork()
 	{
@@ -1428,6 +1438,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		if(level.isClientSide())
 			return false;
+		
+		//TODO ((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
 		
 		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.getEnergyStored(), this.openTime, this.timeSinceLastTraveler, this.address.getArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, (short) 0, symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.variant, ItemStack.EMPTY));
 		return true;

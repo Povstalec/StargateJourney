@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -18,13 +20,10 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
-import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
 
 public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 {
@@ -57,6 +56,16 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	{
 		super.saveAdditional(nbt);
 		nbt.put("Inventory", itemHandler.serializeNBT());
+	}
+	
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	public CompoundTag getUpdateTag()
+	{
+		return this.saveWithoutMetadata();
 	}
 	
 	//============================================================================================
@@ -245,6 +254,12 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		this.reactionProgress++;
 	}
 	
+	public void updateClient()
+	{
+		if(!level.isClientSide())
+			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, NaquadahGeneratorEntity generator)
 	{
 		if(level.isClientSide())
@@ -260,7 +275,6 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 			generator.outputEnergy(direction.getCounterClockWise());
 		}
 		
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(generator.worldPosition)), new ClientboundNaquadahGeneratorUpdatePacket(generator.worldPosition, generator.getReactionProgress(), generator.getEnergyStored()));
+		generator.updateClient();
 	}
 }

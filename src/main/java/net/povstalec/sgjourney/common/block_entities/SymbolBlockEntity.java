@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,12 +10,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
 
 public abstract class SymbolBlockEntity extends BlockEntity
 {
@@ -76,6 +74,20 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		super.saveAdditional(tag);
 	}
 	
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	public CompoundTag getUpdateTag()
+	{
+		return this.saveWithoutMetadata();
+	}
+	
+	//============================================================================================
+	//************************************Getters and setters*************************************
+	//============================================================================================
+	
 	public int getSymbolNumber()
 	{
 		return this.symbolNumber;
@@ -105,13 +117,6 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public ResourceLocation getSymbols()
 	{
 		return this.symbols;
-	}
-	
-	public void tick(Level level, BlockPos pos, BlockState state)
-	{
-		if(level.isClientSide())
-			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundSymbolUpdatePacket(worldPosition, symbolNumber, pointOfOrigin, symbols));
 	}
 	
 	

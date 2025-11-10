@@ -7,6 +7,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -164,6 +165,11 @@ public abstract class Address implements Cloneable
 		}
 		
 		return false;
+	}
+	
+	public void saveToCompoundTag(CompoundTag tag, String name)
+	{
+		tag.putIntArray(name, addressArray);
 	}
 	
 	/**
@@ -601,7 +607,7 @@ public abstract class Address implements Cloneable
 				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(weightedAddress -> Optional.ofNullable(weightedAddress.galaxyKey))
 		).apply(instance, Dimension::new));
 		
-		protected ResourceKey<Level> dimension;
+		private ResourceKey<Level> dimension;
 		@Nullable
 		private ResourceKey<Galaxy> galaxyKey;
 		
@@ -609,6 +615,14 @@ public abstract class Address implements Cloneable
 		
 		public Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey)
 		{
+			this.dimension = dimension;
+			this.galaxyKey = galaxyKey.orElse(null);
+		}
+		
+		public Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey, int... addressArray)
+		{
+			super(addressArray);
+			
 			this.dimension = dimension;
 			this.galaxyKey = galaxyKey.orElse(null);
 		}

@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,9 +25,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
 
 public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 {
@@ -125,6 +124,16 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 		
 		nbt.putInt(PROGRESS, progress);
 		super.saveAdditional(nbt);
+	}
+	
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	public CompoundTag getUpdateTag()
+	{
+		return this.saveWithoutMetadata();
 	}
 	
 	public abstract Fluid getDesiredFluid();
@@ -373,6 +382,12 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 
 	protected abstract void crystallize();
 	
+	public void updateClient()
+	{
+		if(!level.isClientSide())
+			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractCrystallizerEntity crystallizer)
 	{
 		if(level.isClientSide())
@@ -396,7 +411,7 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 	    	setChanged(level, pos, state);
 	    }
 	    
-	    PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(crystallizer.worldPosition)), new ClientboundCrystallizerUpdatePacket(crystallizer.worldPosition, crystallizer.getFluid(), crystallizer.progress));
+	    crystallizer.updateClient();
 	}
 	
 }

@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -14,12 +11,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.client.screens.GDOScreen;
-import net.povstalec.sgjourney.common.block_entities.*;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.tech.*;
@@ -51,29 +45,6 @@ public class ClientAccess
 	{
 		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
 	}
-	
-	public static void updateSymbol(BlockPos pos, int symbolNumber, ResourceLocation pointOfOrigin, ResourceLocation symbols)
-    {
-        final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final SymbolBlockEntity symbolEntity)
-        {
-        	symbolEntity.symbolNumber = symbolNumber;
-        	symbolEntity.pointOfOrigin = pointOfOrigin;
-        	symbolEntity.symbols = symbols;
-        }
-    }
-    
-    public static void updateCartouche(BlockPos pos, ResourceLocation symbols, int[] address)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final CartoucheEntity cartouche)
-        {
-    		cartouche.setSymbols(symbols);
-			cartouche.setAddress(new Address.Mutable(address));
-        }
-    }
     
     public static void updateInterface(BlockPos pos, long energy, long energyTarget)
     {
@@ -245,46 +216,4 @@ public class ClientAccess
         	stargate.currentSymbol = currentSymbol;
         }
     }
-
-    public static void updateNaquadahGenerator(BlockPos pos, int reactionProgress, long energy)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final NaquadahGeneratorEntity generator)
-        {
-        	generator.setReactionProgress(reactionProgress);
-        	generator.setEnergy(energy);
-        }
-    }
-
-    public static void updateCrystallizer(BlockPos pos, FluidStack fluidStack, int progress)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractCrystallizerEntity crystallizer)
-        {
-        	crystallizer.setFluid(fluidStack);
-        	crystallizer.progress = progress;
-        }
-    }
-
-    public static void updateNaquadahLiquidizer(BlockPos pos, FluidStack fluidStack1, FluidStack fluidStack2, int progress)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractNaquadahLiquidizerEntity naquadahLiquidizer)
-        {
-        	naquadahLiquidizer.setFluid1(fluidStack1);
-        	naquadahLiquidizer.setFluid2(fluidStack2);
-        	naquadahLiquidizer.progress = progress;
-        }
-    }
-	
-	public static void updateBatteryBlock(BlockPos pos, long energy)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final BatteryBlockEntity battery)
-			battery.setEnergy(energy);
-	}
 }
