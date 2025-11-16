@@ -40,10 +40,10 @@
 
   "block.sgjourney.cartouche.not_enough_space": "O cartucho não tem espaço suficiente",
 
-  "block.sgjourney.universe_stargate": "Stargate de Universo",
-  "block.sgjourney.universe_ring": "Anel de Stargate de Universo",
+  "block.sgjourney.universe_stargate": "Stargate Universal",
+  "block.sgjourney.universe_ring": "Anel de Stargate Universal",
   "block.sgjourney.universe_shielding": "Blindagem de Stargate",
-  "block.sgjourney.universe_stargate_chevron": "Divisa de Stargate de Universo",
+  "block.sgjourney.universe_stargate_chevron": "Divisa de Stargate Universal",
   "block.sgjourney.milky_way_stargate": "Stargate da Via Láctea",
   "block.sgjourney.milky_way_ring": "Anel de Stargate da Via Láctea",
   "block.sgjourney.milky_way_shielding": "Blindagem de Stargate",
@@ -71,6 +71,8 @@
   "block.sgjourney.stargate.classic.invalid_address": "Endereço inválido",
   "block.sgjourney.stargate.classic.address_exists": "O Endereço já existe",
   "block.sgjourney.stargate.incorrect_stargate_type": "Tipo de Stargate incorreto",
+
+  "block.sgjourney.protected_permissions": "Protegido: Você não tem permissões para fazer isso",
 
   "block.sgjourney.transport_rings": "Anéis de Transporte",
   "block.sgjourney.ring_panel": "Painel de Anéis",
@@ -105,13 +107,23 @@
   "block.sgjourney.heavy_naquadah_liquidizer": "Liquidificador de Naquadah Pesado",
 
   "block.sgjourney.ancient_gene_detector": "Detector de Gene Antigo",
+  "block.sgjourney.ancient_gene_detector.description": "Dispositivo que ativa na presença do gene de Ativação de Tecnologia Antiga",
+  "block.sgjourney.ancient_gene_detector.right_click": "Clique com o botão direito para detectar o gene ATA em você",
+  "block.sgjourney.ancient_gene_detector.redstone": "Alimente com redstone para detectar o gene ATA em entidades próximas (raio aumenta em 2 blocos para cada nível de sinal redstone)",
 
-  "block.sgjourney.zpm_hub": "Hub de MPZ",
+  "block.sgjourney.zpm_hub": "Central de MPZ",
   "block.sgjourney.zpm_port": "Porta de MPZ",
   "block.sgjourney.zpm_plug": "Plugue de MPZ",
 
   "block.sgjourney.transceiver": "Transceptor",
   "block.sgjourney.transceiver.description": "Dispositivo usado para transmitir e receber sinais de outros Transceptores e GDOs",
+
+  "block.sgjourney.naquadah_wire": "Fio de Naquadah",
+  "block.sgjourney.small_naquadah_cable": "Cabo Pequeno de Naquadah",
+  "block.sgjourney.medium_naquadah_cable": "Cabo Médio de Naquadah",
+  "block.sgjourney.large_naquadah_cable": "Cabo Grande de Naquadah",
+
+  "block.sgjourney.large_naquadah_battery": "Bateria Grande de Naquadah",
 
   "fluid_type.sgjourney.liquid_naquadah": "Naquadah Líquido",
   "fluid_type.sgjourney.heavy_liquid_naquadah": "Naquadah Líquido Pesado",
@@ -164,6 +176,7 @@
   "item.sgjourney.kara_kesh": "Dispositivo de Mão",
   "item.sgjourney.ring_remote": "Controle Remoto de Anéis",
 
+  "item.sgjourney.jaffa_staff_head": "Cabeça da Arma de Bastão Jaffa",
   "item.sgjourney.matok": "Cajado Ma'Tok",
 
   "item.sgjourney.pda": "DAP",
@@ -176,6 +189,8 @@
   "item.sgjourney.naquadah_fuel_rod": "Barra de Combustível de Naquadah",
 
   "item.sgjourney.syringe": "Seringa",
+
+  "item.sgjourney.archeologist_notebook": "Caderno do Arqueólogo",
 
   "item.sgjourney.naquadah_helmet": "Capacete de Naquadah",
   "item.sgjourney.naquadah_chestplate": "Peitoral de Naquadah",
@@ -210,45 +225,65 @@
   "item.sgjourney.bronze_iris": "Íris de Bronze",
   "item.sgjourney.steel_iris": "Íris de Aço",
 
+  "item.sgjourney.small_naquadah_battery": "Bateria Pequena de Naquadah",
+  "item.sgjourney.naquadah_power_cell": "Célula de Energia de Naquadah",
+
+  "item.sgjourney.goauld": "Goa'uld",
+  "item.sgjourney.goauld_carcass": "Carcaça de Goa'uld",
+  "item.sgjourney.cooked_goauld": "Goa'uld Cozido",
+
   "entity.sgjourney.goauld": "Goa'uld",
   "entity.sgjourney.human": "Humano",
   "entity.sgjourney.jaffa": "Jaffa",
 
-  "sounds.sgjourney.dial_start": "O Stargate começa a discar",
-  "sounds.sgjourney.ring_spin_start": "O Stargate começa a girar",
-  "sounds.sgjourney.ring_spin": "Anel do Stargate gira",
-  "sounds.sgjourney.ring_spin_stop": "Rotação do anel do Stargate parou",
+  "sounds.sgjourney.dial_start": "Stargate inicia a discagem",
+  "sounds.sgjourney.ring_spin_start": "Stargate inicia a rotação",
+  "sounds.sgjourney.ring_spin": "O anel do Stargate gira",
+  "sounds.sgjourney.ring_spin_stop": "A rotação do anel do Stargate parou",
+
   "sounds.sgjourney.chevron_open": "Divisa aberta",
+
   "sounds.sgjourney.chevron_encode": "Divisa codificada",
-  "sounds.sgjourney.chevron_engage": "Divisa engajada",
-  "sounds.sgjourney.dial_fail": "Discagem do Stargate falha",
+
+  "sounds.sgjourney.chevron_engage": "Divisa ativada",
+
+  "sounds.sgjourney.dial_fail": "A discagem do Stargate falhou",
+
   "sounds.sgjourney.empty": "ERRO, contate os desenvolvedores",
 
-  "sounds.sgjourney.wormhole_open": "Buraco de minhoca abre",
-  "sounds.sgjourney.wormhole_close": "Buraco de minhoca fecha",
-  "sounds.sgjourney.wormhole_enter": "Buraco de minhoca entrado",
-  "sounds.sgjourney.wormhole_idle": "Buraco de minhoca inativo",
+  "sounds.sgjourney.wormhole_open": "Buraco de minhoca abriu",
+  "sounds.sgjourney.wormhole_close": "Buraco de minhoca fechou",
 
-  "sounds.sgjourney.iris_thud": "Batida na íris",
+  "sounds.sgjourney.wormhole_enter": "entrou em Buraco de minhoca",
 
-  "sounds.sgjourney.dhd_enter": "DHD entrar",
+  "sounds.sgjourney.wormhole_idle": "Buraco de minhoca ocioso",
+
+  "sounds.sgjourney.iris_thud": "Som de íris",
+
+  "sounds.sgjourney.dhd_enter": "DHD discado",
+
   "sounds.sgjourney.dhd_press": "DHD pressionado",
 
-  "sounds.sgjourney.matok_fire": "O Cajado dispara",
-  "sounds.sgjourney.matok_attack": "Ataque de Cajado",
-  "sounds.sgjourney.matok_open": "O Cajado abre",
-  "sounds.sgjourney.matok_close": "O Cajado fecha",
+  "sounds.sgjourney.matok_fire": "Arma de cajado dispara",
+
+  "sounds.sgjourney.matok_attack": "Ataque com arma de cajado",
+  "sounds.sgjourney.matok_open": "Arma de bastão abriu",
+
+  "sounds.sgjourney.matok_close": "Arma de bastão fechou",
 
   "sounds.sgjourney.nothing": "Nada",
 
   "death.attack.sgjourney.kawoosh": "%1$s foi desintegrado pelo kawoosh",
+  "death.attack.sgjourney.kawoosh.player": "%1$s foi desintegrado pelo kawoosh enquanto lutava com %2$s",
   "death.attack.sgjourney.reverseWormhole": "%1$s atravessou o lado errado do buraco de minhoca",
+  "death.attack.sgjourney.reverseWormhole.player": "%1$s atravessou o lado errado do buraco de minhoca enquanto lutava com %2$s",
   "death.attack.sgjourney.iris": "%1$s foi esmagado contra a íris",
+  "death.attack.sgjourney.iris.player": "%1$s foi esmagado contra a íris enquanto lutava com %2$s",
 
   "stat.sgjourney.times_smashed_against_iris": "Vezes esmagado contra a Íris",
   "stat.sgjourney.times_killed_by_kawoosh": "Vezes morto pelo Kawoosh",
   "stat.sgjourney.times_killed_by_wormhole": "Vezes morto pelo Buraco de Minhoca",
-  "stat.sgjourney.times_used_wormhole": "Vezes viajou pelo Buraco de Minhoca",
+  "stat.sgjourney.times_used_wormhole": "Vezes que viajou pelo Buraco de Minhoca",
   "stat.sgjourney.distance_traveled_by_stargate": "Distância pelo Stargate",
 
   "entity.minecraft.villager.sgjourney.archeologist": "Mapa de Arqueólogo",
@@ -269,7 +304,7 @@
   "screen.sgjourney.naquadah_generator": "Gerador de Naquadah",
   "screen.sgjourney.dhd": "Dispositivo de Discagem",
 
-  "screen.sgjourney.zpm_hub": "Hub de MPZ",
+  "screen.sgjourney.zpm_hub": "Central de MPZ",
   "screen.sgjourney.zpm_port": "Porta de MPZ",
   "screen.sgjourney.zpm_plug": "Plugue de MPZ",
 
@@ -277,6 +312,8 @@
   "screen.sgjourney.advanced_crystallizer": "Cristalizador Avançado",
   "screen.sgjourney.naquadah_liquidizer": "Liquidificador de Naquadah",
   "screen.sgjourney.heavy_naquadah_liquidizer": "Liquidificador de Naquadah Pesado",
+
+  "screen.sgjourney.naquadah_battery": "Bateria de Naquadah",
 
   "screen.sgjourney.transceiver": "Transceptor",
   "screen.sgjourney.transceiver.symbol.toggle_frequency": "f",
@@ -306,7 +343,7 @@
   "biome.sgjourney.milky_way_plains": "Planícies da Via Láctea",
 
   "advancements.sgjourney.adventure.root.title": "Stargate Journey",
-  "advancements.sgjourney.adventure.root.description": "Comece sua jornada no universo Stargate encontrando um Ídolo Dourado",
+  "advancements.sgjourney.adventure.root.description": "Comece sua jornada no universo de Stargate encontrando um Ídolo Dourado",
   "advancements.sgjourney.adventure.archeology_table.title": "Arqueologia!",
   "advancements.sgjourney.adventure.archeology_table.description": "Crie uma Mesa de Arqueologia",
   "advancements.sgjourney.adventure.use_stargate.title": "Quem precisa de naves espaciais?",
@@ -369,7 +406,7 @@
   "galaxy.sgjourney.othala": "Othala",
   "galaxy.sgjourney.kaliem": "Kaliem",
   "galaxy.sgjourney.triangulum": "Triangulum",
-  "galaxy.sgjourney.andromeda": "Andromeda",
+  "galaxy.sgjourney.andromeda": "Andrômeda",
 
   "solar_system.sgjourney.milky_way": "Terra",
   "solar_system.sgjourney.abydos": "Abydos",
@@ -456,6 +493,7 @@
   "point_of_origin.sgjourney.ursa": "Ursa",
 
   "info.sgjourney.add_to_network": "Adicionar à Rede",
+  "info.sgjourney.is_protected": "Está Protegido",
   "info.sgjourney.point_of_origin": "Ponto de Origem",
   "info.sgjourney.symbol": "Símbolo",
   "info.sgjourney.symbols": "Símbolos",
@@ -475,6 +513,7 @@
   "info.sgjourney.iris_texture": "Textura da Íris",
   "info.sgjourney.iris_durability": "Durabilidade da Íris",
   "info.sgjourney.address_table": "Tabela de Endereços",
+  "info.sgjourney.energy": "Energia",
 
   "tooltip.sgjourney.symbol": "Símbolo",
   "tooltip.sgjourney.symbols": "Símbolos",
@@ -482,7 +521,10 @@
   "tooltip.sgjourney.address": "Endereço",
   "tooltip.sgjourney.9_chevron_address": "Endereço de 9 Divisas",
   "tooltip.sgjourney.energy": "Energia",
+  "tooltip.sgjourney.energy_buffer": "Buffer de Energia",
   "tooltip.sgjourney.energy_target": "Energia Alvo",
+  "tooltip.sgjourney.fluid": "Fluido",
+  "tooltip.sgjourney.holding": "Segurando",
   "tooltip.sgjourney.dimension": "Dimensão",
   "tooltip.sgjourney.mode": "Modo",
   "tooltip.sgjourney.upgraded": "Atualizado",
@@ -490,6 +532,7 @@
   "tooltip.sgjourney.requires": "Requer",
   "tooltip.sgjourney.stargate_type": "Tipo de Stargate",
   "tooltip.sgjourney.generates_inside_structure": "Gera dentro de uma Estrutura",
+  "tooltip.sgjourney.is_primary": "É Primário",
 
   "tooltip.sgjourney.not_added_to_network": "Não será adicionado à rede",
   "tooltip.sgjourney.local_point_of_origin": "Ponto de Origem Local",
@@ -497,6 +540,9 @@
 
   "tooltip.sgjourney.dhd.has_control_crystal": "Possui Cristal de Controle",
   "tooltip.sgjourney.dhd.generates_energy_core": "Gera Núcleo de Energia",
+  "tooltip.sgjourney.dhd.description": "Dispositivo de Discagem usado para controlar Stargates",
+  "tooltip.sgjourney.dhd.dialing_menu": "Clique com o botão direito no topo para abrir menu de discagem",
+  "tooltip.sgjourney.dhd.crystal_menu": "Clique com o botão direito nas laterais ou Shift + Botão direito no topo para abrir menu de cristais",
   "tooltip.sgjourney.address_table": "Tabela de Endereços",
 
   "tooltip.sgjourney.crystal.none": "Nenhum",
@@ -505,9 +551,7 @@
   "tooltip.sgjourney.crystal.in_dhd.control.large": "Habilita protocolos avançados no Stargate",
   "tooltip.sgjourney.crystal.in_dhd.control.advanced": "Habilita protocolos avançados no Stargate",
   "tooltip.sgjourney.crystal.in_dhd.energy": "Aumenta a capacidade de Energia no Stargate alvo em 50000 FE",
-  "tooltip.sgjourney.crystal.in_dhd.energy.advanced": "Aumenta a capacidade de Energia no Stargate alvo em 100000 FE",
   "tooltip.sgjourney.crystal.in_dhd.transfer": "Aumenta a quantidade de Energia transferida para o Stargate em 2500 FE",
-  "tooltip.sgjourney.crystal.in_dhd.transfer.advanced": "Aumenta a quantidade de Energia transferida para o Stargate em 5000 FE",
   "tooltip.sgjourney.crystal.in_dhd.communication": "Aumenta o alcance no qual o DHD pode se comunicar com um Stargate em 16 blocos",
   "tooltip.sgjourney.crystal.in_dhd.communication.advanced": "Aumenta o alcance no qual o DHD pode se comunicar com um Stargate em 32 blocos",
   "tooltip.sgjourney.communication_crystal.frequency": "Frequência",
@@ -518,9 +562,49 @@
   "tooltip.sgjourney.call_forwarding_device.info": "Habilita o Encaminhamento de Chamadas",
 
   "tooltip.sgjourney.dhd.advanced_protocols": "Protocolos Avançados",
+  "tooltip.sgjourney.dhd.advanced_protocols.description": "Protocolos Avançados fecharão a conexão do Stargate se não houver viajante em potencial por 10 segundos",
+  "tooltip.sgjourney.dhd.advanced_protocols.usage": "Coloque um Cristal de Controle Grande no slot do cristal do meio do DHD para ativar Protocolos Avançados",
+  "tooltip.sgjourney.dhd.energy_target.description": "Se a quantidade de energia no Stargate estiver abaixo da quantidade especificada pelo Alvo de Energia, o DHD tentará transferir energia para o Stargate até atingir o Alvo de Energia",
+  "tooltip.sgjourney.dhd.energy_target.usage": "Coloque Cristais de Energia nos espaços de cristal do DHD para aumentar o Alvo de Energia",
+  "tooltip.sgjourney.dhd.stargate_energy": "Energia do Stargate",
   "tooltip.sgjourney.dhd.energy_transfer": "Transferência de Energia",
+  "tooltip.sgjourney.dhd.energy_transfer.description": "A quantidade de energia que o DHD pode transferir para o Stargate por tick",
+  "tooltip.sgjourney.dhd.energy_transfer.usage": "Coloque Cristais de Transferência nos espaços de cristal do DHD para aumentar a velocidade de transferência de energia",
   "tooltip.sgjourney.dhd.communication_range_1": "Alcance de Comunicação",
   "tooltip.sgjourney.dhd.communication_range_2": "Blocos",
+  "tooltip.sgjourney.dhd.communication_range.description": "O alcance máximo do qual o DHD poderá se conectar a um Stargate",
+  "tooltip.sgjourney.dhd.communication_range.usage": "Coloque Cristais de Comunicação nos espaços de cristal do DHD para aumentar o alcance de comunicação",
+  "tooltip.sgjourney.dhd.energy_slot.description": "Guarda Núcleos de Energia, MPZ e outros itens fornecedores de energia",
+  "tooltip.sgjourney.dhd.energy_fuel_slot.description": "Guarda itens para reabastecer Núcleos de Energia",
+  "tooltip.sgjourney.dhd.crystal_slot.description": "Guarda Cristais e Cristais Avançados",
+  "tooltip.sgjourney.dhd.large_crystal_slot.description": "Guarda Cristais Grandes",
+
+  "tooltip.sgjourney.interface.energy_target.description": "Se a quantidade de energia no Stargate estiver abaixo da quantidade especificada pelo Alvo de Energia, a Interface tentará transferir energia para o Stargate até atingir o Alvo de Energia",
+  "tooltip.sgjourney.interface.mode.off.usage": "Este modo não faz nada",
+  "tooltip.sgjourney.interface.mode.ring_segment.usage": "Fornece saída de Comparador baseada em qual terço do anel de símbolos do Stargate o símbolo atualmente selecionado está localizado",
+  "tooltip.sgjourney.interface.mode.ring_segment.usage_1": "- 1/3 -> Força de saída do Comparador 5",
+  "tooltip.sgjourney.interface.mode.ring_segment.usage_2": "- 2/3 -> Força de saída do Comparador 10",
+  "tooltip.sgjourney.interface.mode.ring_segment.usage_3": "- 3/3 -> Força de saída do Comparador 15",
+  "tooltip.sgjourney.interface.mode.ring_rotation.usage": "Fornece saída de Comparador baseada na posição do símbolo atualmente selecionado dentro do 1/3 do anel de símbolos",
+  "tooltip.sgjourney.interface.mode.ring_rotation.usage_1": "- 1º símbolo -> Força de saída do Comparador 1",
+  "tooltip.sgjourney.interface.mode.ring_rotation.usage_2": "- 2º símbolo -> Força de saída do Comparador 2",
+  "tooltip.sgjourney.interface.mode.ring_rotation.usage_3": "- ...",
+  "tooltip.sgjourney.interface.mode.chevrons_active.usage": "Fornece saída de Comparador baseada no número atual de divisas travadas",
+  "tooltip.sgjourney.interface.mode.chevrons_active.usage_1": "- 1 divisa -> Força de saída do Comparador 1",
+  "tooltip.sgjourney.interface.mode.chevrons_active.usage_2": "- 2 divisas -> Força de saída do Comparador 2",
+  "tooltip.sgjourney.interface.mode.chevrons_active.usage_3": "- ...",
+  "tooltip.sgjourney.interface.mode.wormhole_active.usage": "Fornece saída de Comparador baseada no estado atual do buraco de minhoca",
+  "tooltip.sgjourney.interface.mode.wormhole_active.usage_1": "- Sem buraco de minhoca -> Sem saída do Comparador",
+  "tooltip.sgjourney.interface.mode.wormhole_active.usage_2": "- Buraco de minhoca entrante -> Força de saída do Comparador 7",
+  "tooltip.sgjourney.interface.mode.wormhole_active.usage_3": "- Buraco de minhoca sainte -> Força de saída do Comparador 15",
+  "tooltip.sgjourney.interface.mode.iris.usage.output": "Fornece saída de Comparador baseada em quanto a Íris está fechada",
+  "tooltip.sgjourney.interface.mode.iris.usage.output_1": "- Íris aberta -> Sem saída do Comparador",
+  "tooltip.sgjourney.interface.mode.iris.usage.output_2": "- ...",
+  "tooltip.sgjourney.interface.mode.iris.usage.output_3": "- Íris fechada -> Força de saída do Comparador 15",
+  "tooltip.sgjourney.interface.mode.iris.usage.input": "Abre/fecha a Íris baseado na força do sinal redstone fornecido à Interface",
+  "tooltip.sgjourney.interface.mode.iris.usage.input_1": "- Força do sinal redstone 1-7 -> Fecha Íris",
+  "tooltip.sgjourney.interface.mode.iris.usage.input_2": "- Força do sinal redstone 8-15 -> Abre Íris",
+  "tooltip.sgjourney.interface.mode.shielding.usage": "Em Desenvolvimento",
 
   "tooltip.sgjourney.stargate_upgrade.description": "Clique com o botão direito em um Stargate Clássico para atualizá-lo",
   "tooltip.sgjourney.stargate_variant.description": "Clique com o botão direito em um Stargate para mudar sua variante",
@@ -528,7 +612,11 @@
   "tooltip.sgjourney.zpm.entropy": "Entropia",
   "tooltip.sgjourney.zpm.energy_in_level": "Energia no Nível",
 
+  "tooltip.sgjourney.cable.zpm_transfer": "Pode lidar com transferência de Energia de um MPZ",
+
   "tooltip.sgjourney.energy_transfer": "Transferência Máxima de Energia",
+  "tooltip.sgjourney.naquadah_power_cell.description": "Dispositivo que converte Naquadah Líquido e Naquadah Líquido Pesado em Energia",
+  "tooltip.sgjourney.naquadah_power_cell.reload": "Clique com o botão direito na mão secundária para Recarregar com Frasco de Naquadah na mão principal",
   "tooltip.sgjourney.matok.open": "Aberto",
   "tooltip.sgjourney.matok.closed": "Fechado",
   "tooltip.sgjourney.matok.open_close": "Shift + Clique Direito na Mão Principal para Abrir/Fechar",
@@ -543,6 +631,7 @@
   "tooltip.sgjourney.syringe.blood": "Sangue",
   "tooltip.sgjourney.syringe.prototype_ata_gene": "Protótipo de Terapia Genética Antiga",
   "tooltip.sgjourney.syringe.ata_gene": "Terapia Genética Antiga",
+  "tooltip.sgjourney.zpm.description": "Dispositivo que extrai energia do vácuo de uma região artificial de espaço-tempo subspacial até atingir a entropia máxima",
 
   "tooltip.sgjourney.gdo.idc": "CDI",
   "tooltip.sgjourney.gdo.frequency": "Frequência",
@@ -552,6 +641,7 @@
   "tooltip.sgjourney.iris.durability": "Durabilidade",
 
   "tooltip.sgjourney.naquadah_fuel_rod.fuel": "Combustível",
+  "tooltip.sgjourney.naquadah_fuel_rod.description": "Uma haste com combustível usado para alimentar Geradores de Naquadah",
   "tooltip.sgjourney.naquadah_generator_core.reaction_progress": "Progresso da Reação",
   "tooltip.sgjourney.naquadah_generator_core.description": "Fornece energia para o DHD",
   "tooltip.sgjourney.fusion_core.fuel": "Combustível",
@@ -599,7 +689,7 @@
   "message.sgjourney.stargate.error.target_restricted": "O Stargate discado está restrito",
   "message.sgjourney.stargate.error.invalid_8_chevron_address": "Um Endereço de 8 divisas não pode ser discado dentro da mesma Galáxia",
   "message.sgjourney.stargate.error.invalid_system_wide_connection": "Não é possível conectar dentro do mesmo Sistema Solar",
-  
+
   "message.sgjourney.stargate.error.target_not_whitelisted": "O Stargate alvo não está na lista branca",
   "message.sgjourney.stargate.error.not_whitelisted_by_target": "O Stargate não está na lista branca do Stargate alvo",
   "message.sgjourney.stargate.error.target_blacklisted": "O Stargate alvo está na lista negra",
@@ -643,6 +733,13 @@
   "message.sgjourney.command.get_transporters": "Transportadores na dimensão",
   "message.sgjourney.command.transporter_network_reload": "Rede de Transportadores recarregada",
   "message.sgjourney.command.click_to_copy.address": "Clique para copiar o Endereço",
+  "message.sgjourney.command.primary_stargate_set": "Stargate Primário definido",
+  "message.sgjourney.command.primary_stargate_unset": "Stargate Primário removido",
+  "message.sgjourney.command.primary_stargate": "Stargate Primário",
+  "message.sgjourney.command.primary_stargate_none": "Nenhum Stargate Primário",
+  "message.sgjourney.command.protected_block_set": "Bloco Protegido definido",
+  "message.sgjourney.command.protected_block_unset": "Bloco Protegido removido",
+  "message.sgjourney.command.not_protected_block": "O alvo não é um Bloco protegível",
 
   "message.sgjourney.gdo.shielded": "Protegido",
   "message.sgjourney.gdo.error.no_nearby_stargate": "Nenhum Stargate próximo",
@@ -664,7 +761,7 @@
   "gui.sgjourney.unique_symbols": "Símbolos Únicos",
   "gui.sgjourney.use_movie_stargate_model": "Usar Modelo de Stargate do Filme",
   "gui.sgjourney.movie_primary_chevron_opens": "Divisa Primária do Filme abre",
-  "gui.sgjourney.universe_front_rotates": "Frente do Stargate de Universo gira",
+  "gui.sgjourney.universe_front_rotates": "Frente do Stargate Universal gira",
   "gui.sgjourney.alternate_movie_chevron_locking": "Travamento Alternativo de Divisa do Filme",
   "gui.sgjourney.milky_way_stargate_back_lights_up": "Parte Traseira do Stargate da Via Láctea",
   "gui.sgjourney.pegasus_stargate_back_lights_up": "Parte Traseira do Stargate de Pegasus",
