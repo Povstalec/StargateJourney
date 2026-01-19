@@ -202,6 +202,8 @@ Remember that you need to dig.
 You are looking for a cave with the beta stargate.
 Also, don't forget the DHD that is in the cave with the gate.
 
+Note that this trick will change in the future and the gate will be at different locations in different dimensions.
+
 ![Stargate buried in a cave]({{ '/assets/img/structures/terra_gate.png' | absolute_url }})
 {: .max-width-768 }
 

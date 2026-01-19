@@ -245,7 +245,9 @@ source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352ac
 %}
 
 Encodes the current symbol under the top chevron.
-Requires the chevron to be **open**, otherwise returns `-35` (`chevron_not_raised`).
+
+[Milky Way]({{ '/stargate-technology/stargate/#milky-way-stargate' | absolute_url }})
+stargate requires the chevron to be **open**, otherwise returns `-35` (`chevron_not_raised`).
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`

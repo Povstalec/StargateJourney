@@ -51,12 +51,13 @@ The interface in the segment mode provides rough information about a Stargate ro
 For the Milky Way Stargate, it gives details about the inner ring rotation.
 For the Pegasus and Universe Stargates, it provides information about the last encoded symbol.
 
-The Milky Way Stargate ring is divided into **three segments**, each with **13 symbols**.
+The Milky Way and Classic Stargate rings are divided into **three segments**, each with **13 symbols**.
 The interface provides a redstone signal based on the **segment** to which a symbol **under the top chevron** belongs.
 
-The Universe Stargate has only 36 symbols
-and is also divided into **three segments**, each with **12 symbols**.
-The interface provides a redstone signal based on the **segment** to which the last encoded symbol belongs.
+The Universe and Pegasus Stargates have only 36 symbols
+and are also divided into **three segments**, each with **12 symbols**.
+The interface with the Universe Stargate provides a redstone signal based on the **segment** to which a symbol **at the top of the gate** belongs.
+The interface with the Pegasus Stargate provides a redstone signal based on the **segment** to which **the last encoded symbol** belongs.
 
 **Redstone output:**
 
@@ -80,19 +81,18 @@ ___
 
 The interface in the rotation mode provides more precise information about a rotation/symbol in the current segment.
 
-Each segment of the Milky Way Stargate ring has 13 symbols.
+Each segment of the Milky Way and Classic Stargate ring has 13 symbols.
 Based on the symbol under the top chevron, the interface provides the redstone signal.
 
 Each segment of the Universe Stargate has 12 symbols,
-Based on the last encoded symbol, the interface provides a redstone signal
-with strength from **0** to **12** always skipping the strength **1** (0, 2, 3...12).
+Based on the symbol at the top of the gate, the interface provides the redstone signal.
+When there is no valid symbol at the top, the signal is `0`.
 
 {: .future }
 The different signal strength is considered a bug and will be fixed in some future release.  
 Segment and rotation modes are also planned for other gate types.
 
-<!-- TODO: fix based on the response from Wold -->
-<!-- TODO: describe pegasus once it works in game -->
+[//]: # (TODO: describe pegasus once it works in game)
 
 **Redstone output:**
 

@@ -160,7 +160,7 @@ Then you can dial the Terra system back from any other Solar system (using 7 or 
 
 If you are able to locate specific structures using other mods or the `/locate` command, you can search for `sgjourney:stargate/milky_way/terra_stargate` structure.
 
-`/execute in minecraft:overworld positioned 0 0 0 run locate structure sgjourney:stargate/milky_way/terra_stargate`
+`/locate structure sgjourney:stargate/milky_way/terra_stargate`
 
 
 ## How can I find an obstructed Stargate?
@@ -169,15 +169,3 @@ By default, obstructed Stargates are generated in the Nether, the End and Glacio
 You can find them in the same way as the buried Stargates in the Overworld.
 Take an archeologist villager to the dimension and level him up to the master level to unlock the map trade.
 **You can't use already leveled up villager since he will always offer the same map.**
-
-Second way (which may be a little bit cheaty) is to go to specific coordinates in the dimension.
-<details markdown="block">
-<summary>Stargate pedestal coordinates</summary>
-
-All Stargate pedestals are generated at the same coordinates in every dimension.
-You can go to any dimension with generated Stargate (e.g. Chulak) and note down the coordinates of the generated Stargate pedestal.
-Then you can go to the Nether, the End or Glacio and use the same coordinates to find the obstructed Stargate.
-
-In the Overworld, the Beta Stargate matches the coordinates of other pedestals.
-The buried Stargate with the seal is generated on unique coordinates.
-</details>

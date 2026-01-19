@@ -36,31 +36,14 @@ ___
 ## I created a new world, but the Stargate isn't generating.
 Villager is not giving me the **map to Chappa'ai**, or the **locate command** results in an error.
 
-If you are trying to locate the buried Stargate with the locate command, which results in an error,
-try executing the command positioned at the Stargate generation center.
+Leveling up the villager for the map trade and using the locate command should have the same effect.
 
-Leveling up the villager for the map trade should have the same effect.
-If the villager is not giving you the map, the positioned command will probably not work either.
-
-The stargate generation center is by default at `X = 0` `Z = 0` coordinates,
-though you may have changed it in the config file
-(`stargate_generation_center_x_chunk_offset`, `stargate_generation_center_z_chunk_offset`).
-If that is the case, multiply the values from the config by `16`
-and use them in the command.
-
-By default, this command should work:
 ```
-/execute in minecraft:overworld positioned 0 0 0 run locate structure #sgjourney:has_stargate
+/locate structure #sgjourney:has_stargate
 ```
 {: .width-fit-content }
 
-Or use this one and replace `X` and `Z` with the actual values from the config:
-```
-/execute in minecraft:overworld positioned X 0 Z run locate structure #sgjourney:has_stargate
-```
-{: .width-fit-content }
-
-**If the locating still fails, it's most likely that the stargate structure is not generating.**
+**If the locating fails, it's most likely that the stargate structure is not generating.**
 
 In this case, there are some possible reasons:
 1. Stargate Journey was added to an existing world. [See the next section.](#i-added-the-mod-to-an-existing-world-but-stargate-isnt-generating)
@@ -105,3 +88,20 @@ Setting following values in the `sgjourney-common.toml` config file:
 will move the generation area to `X = 3200` `Z = 3200` coordinates (chunk is an area of `16x16` blocks).
 With the default radius bonds (`64` chunks) it will generate the structure somewhere between `X = 2176` `Z = 2176` and `X = 4224` `Z = 4224`.
 
+You can also lower the radius in which the gate can generate:  
+Setting the bounds to `0` forces the gate to generate in the single chunk defined by the offset (assuming the chunk was not generated yet).
+
+```toml
+#X chunk bounds within which a Structure containing a Stargate may generate
+#Range: 0 ~ 64
+stargate_generation_x_bound = 64
+#Z chunk bounds within which a Structure containing a Stargate may generate
+#Range: 0 ~ 64
+stargate_generation_z_bound = 64
+#X chunk bounds within which a Buried Stargate may generate
+#Range: 0 ~ 64
+buried_stargate_generation_x_bound = 64
+#Z chunk bounds within which a Buried Stargate may generate
+#Range: 0 ~ 64
+buried_stargate_generation_z_bound = 64
+```

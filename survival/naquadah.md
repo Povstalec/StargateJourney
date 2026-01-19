@@ -21,7 +21,7 @@ In Stargate Journey, Naquadah is the **primary resource** for further progressio
 
 ## Obtaining Naquadah
 
-[Naquadah ore]({{ '/blocks/ores/#naquadah-ore' | absolute_url }}) can generate in the Nether, Abydos and Rima.
+[Naquadah ore]({{ '/blocks/ores/#naquadah-ore' | absolute_url }}) can generate at Abydos and Rima.
 On Abydos, it can be found underground or in the **Abydos spires biome**.
 
 Mining the ore drops **raw Naquadah** and rarely **pure Naquadah**.

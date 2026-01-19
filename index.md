@@ -83,10 +83,15 @@ Stargate Journey is compatible with multiple other mods:
  - [Ad Astra](https://ad-astra.terrarium.wiki/ad-astra)'s two default Solar Systems are also considered Solar Systems within Stargate Journey
 
 ## Known incompatibilities
-Some mods have been found to break stargates or their generation: 
+Mods that have been found to break stargates or their generation: 
 
 - [Dimensional Threading](https://www.curseforge.com/minecraft/mc-mods/dimensional-threads) and similar mods, 
 when installed, Stargates won't be able to dial.
+
+
+<details markdown="block">
+<summary>Some mods caused stargate world generation issues, but the incompatibility was already fixed.</summary>
+
 - [Sparse Structures](https://modrinth.com/mod/sparsestructures) and similar mods that modifies the structures spacing/position, 
 Stargates might not generate, 
 you might not be able to find a Stargate and to reach other dimensions (Stargate will be missing there).
@@ -95,6 +100,8 @@ it is possible to disable spreading for specific structures with config ([exampl
 - [Structure Essentials](https://www.curseforge.com/minecraft/mc-mods/structure-essentials-forge-fabric)
 Stargates might not generate, you might not be able to find a Stargate and to reach other dimension (Stargate will be missing there).
 ([Possible fix with config example]({{ site.baseurl }}/others/structure_essentials))
+
+</details>
 
 ___
 

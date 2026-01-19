@@ -29,6 +29,9 @@ The 9-chevron address of the gate can be obtained by right-clicking the stargate
 **The first address** you found on a cartouche buried along with the stargate is an address to the **Abydos** solar system in the Milky Way galaxy.
 The address consists of **6&nbsp;symbols**.
 The 7th symbol is the **Point of Origin** (PoO).
+The point of origin is **not physically present** on the DHD as a standalone symbol,
+and it is **automatically encoded by pressing the big button in the middle of the DHD**. 
+With other dialing mechanics, the point of origin is always represented by the symbol number `0`.
 
 [//]: # (TODO: add link to further addressing system explanation)
 
