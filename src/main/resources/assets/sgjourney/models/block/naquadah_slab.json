@@ -1,9 +1,0 @@
-{
-	"parent": "minecraft:block/slab",
-	"textures":
-	{
-		"bottom": "sgjourney:block/naquadah_block",
-		"side": "sgjourney:block/naquadah_slab_side",
-		"top": "sgjourney:block/naquadah_block"
-	}
-}

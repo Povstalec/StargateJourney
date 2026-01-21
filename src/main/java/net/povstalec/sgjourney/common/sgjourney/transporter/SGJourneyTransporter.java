@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,10 +15,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.Transporting;
 
 public class SGJourneyTransporter implements Transporter
@@ -29,7 +28,7 @@ public class SGJourneyTransporter implements Transporter
 	public static final Vec3 RIGHT = new Vec3(0, 0, 1);
 	public static final double INNER_RADIUS = 2;
 	
-	private UUID id;
+	private TransporterID transporterID;
 	private ResourceKey<Level> dimension;
 	private BlockPos blockPos;
 	
@@ -38,9 +37,9 @@ public class SGJourneyTransporter implements Transporter
 	
 	public SGJourneyTransporter() {}
 	
-	public SGJourneyTransporter(UUID id, ResourceKey<Level> dimension, BlockPos blockPos, Component name)
+	public SGJourneyTransporter(TransporterID transporterID, ResourceKey<Level> dimension, BlockPos blockPos, Component name)
 	{
-		this.id = id;
+		this.transporterID = transporterID;
 		this.dimension = dimension;
 		this.blockPos = blockPos;
 		
@@ -53,9 +52,9 @@ public class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
-	public UUID getID()
+	public TransporterID getID()
 	{
-		return id;
+		return transporterID;
 	}
 	
 	@Override
@@ -97,6 +96,11 @@ public class SGJourneyTransporter implements Transporter
 	public double getInnerRadius()
 	{
 		return INNER_RADIUS;
+	}
+	
+	public boolean acceptsFrequency(int frequency)
+	{
+		return true; // TODO Add frequency logic
 	}
 	
 	@Override
@@ -222,7 +226,7 @@ public class SGJourneyTransporter implements Transporter
 	@Override
 	public String toString()
 	{
-		String nameString = name != null ? name.getString() : id.toString();
+		String nameString = name != null ? name.getString() : transporterID.toString();
 		
 		return "[ " + nameString + " | Pos: " + blockPos.toString() + " ]";
 	}
@@ -244,7 +248,7 @@ public class SGJourneyTransporter implements Transporter
 		return transporterTag;
 	}
 	
-	public void deserializeNBT(MinecraftServer server, UUID uuid, CompoundTag tag)
+	public void deserializeNBT(MinecraftServer server, TransporterID transporterID, CompoundTag tag)
 	{
 		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		this.blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
@@ -252,7 +256,7 @@ public class SGJourneyTransporter implements Transporter
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
-		this.id = uuid;
+		this.transporterID = transporterID;
 	}
 	
 	

@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -10,6 +12,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.misc.PDAStatus;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,16 +31,16 @@ import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
-public abstract class AbstractTransporterEntity extends EnergyBlockEntity implements StructureGenEntity, Nameable
+public abstract class AbstractTransporterEntity extends EnergyBlockEntity implements StructureGenEntity, Nameable, PDAStatus
 {
-	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
+	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
-	public static final String ID = "ID";
+	public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;
 	public static final String CUSTOM_NAME = "CustomName";
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
-	protected UUID id;
+	protected TransporterID.Immutable transporterID;
 	@Nullable
 	protected UUID connectionID = null;
 
@@ -52,10 +57,10 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	{
 		super.onLoad();
 		
-        if(level.isClientSide())
+        if(this.level.isClientSide())
 	        return;
 		
-		if(generationStep == StructureGenEntity.Step.READY)
+		if(this.generationStep == StructureGenEntity.Step.READY)
 			generate();
 	}
 	
@@ -65,17 +70,11 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		super.load(tag);
 		
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
-			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
+			this.generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
-		try
-		{
-    		if(tag.contains(ID))
-        		id = UUID.fromString(tag.getString(ID));
-		}
-		catch(IllegalArgumentException e)
-		{
-			this.setID(this.generateID());
-		}
+		if(tag.contains(TRANSPORTER_ID))
+			this.transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
+		//TODO What about Transporters with old UUIDs?
     	
     	if(tag.contains(CUSTOM_NAME, 8))
 	         this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
@@ -84,11 +83,11 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		if(generationStep != Step.GENERATED)
-			tag.putByte(GENERATION_STEP, generationStep.byteValue());
+		if(this.generationStep != Step.GENERATED)
+			tag.putByte(GENERATION_STEP, this.generationStep.byteValue());
 		
-		if(id != null)
-			tag.putString(ID, id.toString());
+		if(transporterID != null)
+			tag.putIntArray(TRANSPORTER_ID, this.transporterID.toArray());
 		
 		super.saveAdditional(tag);
 		
@@ -96,34 +95,29 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
 	}
 	
-	public UUID generateID()
+	public void setID(TransporterID.Immutable transporterID)
 	{
-		return UUID.randomUUID();
-	}
-	
-	public void setID(UUID id)
-	{
-    	this.id = id;
+    	this.transporterID = transporterID;
 		setChanged();
-		StargateJourney.LOGGER.info("Set ID to " + id);
+		StargateJourney.LOGGER.info("Set ID to " + transporterID);
 	}
 	
-	public UUID getID()
+	public TransporterID.Immutable getID()
 	{
-		return id;
+		return this.transporterID;
 	}
 	
 	@Nullable
 	public Transporter getTransporter()
 	{
 		//TODO Maybe start caching it?
-		return TransporterNetwork.get(level).getTransporter(id);
+		return TransporterNetwork.get(level).getTransporter(this.transporterID);
 	}
 	
 	public void addTransporterToNetwork()
 	{
-		if(this.id == null)
-			setID(generateID());
+		if(this.transporterID == null)
+			setID(BlockEntityList.get(level).generateTransporterID());
 		
 		TransporterNetwork.get(level).addTransporter(this);
 		this.setChanged();
@@ -131,19 +125,18 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	
 	public void removeTransporterFromNetwork()
 	{
-		TransporterNetwork.get(level).removeTransporter(level, this.id);
+		TransporterNetwork.get(level).removeTransporter(level, this.transporterID);
 	}
 	
 	@Override
-	public void getStatus(Player player)
+	public List<Component> getStatus()
 	{
-		super.getStatus(player);
+		List<Component> status = new ArrayList<>();
 		
-		if(level.isClientSide())
-			return;
+		status.add(Component.literal("ID: " + this.transporterID).withStyle(ChatFormatting.AQUA));
+		status.add(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
 		
-		player.sendSystemMessage(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
+		return status;
 	}
 	
 	public void setCustomName(Component name)

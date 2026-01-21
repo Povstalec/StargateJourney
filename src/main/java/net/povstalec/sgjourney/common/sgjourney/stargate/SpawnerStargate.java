@@ -192,6 +192,12 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
+	public boolean canPowerFromOtherSide(MinecraftServer server)
+	{
+		return false;
+	}
+	
+	@Override
 	public long extractEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
 		return Math.min(energy, getEnergyStored(server));
@@ -290,6 +296,12 @@ public class SpawnerStargate implements Stargate
 	public boolean shouldAutoclose(MinecraftServer server, StargateConnection connection)
 	{
 		return connection.getOpenTime() > 200;
+	}
+	
+	@Override
+	public boolean requiresEnergyBypass(MinecraftServer server, int openTime)
+	{
+		return openTime > SGJourneyStargate.MAX_OPEN_TIME;
 	}
 	
 	@Override

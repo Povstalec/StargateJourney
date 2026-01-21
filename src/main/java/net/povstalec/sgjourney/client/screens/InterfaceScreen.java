@@ -17,6 +17,7 @@ import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 import java.util.ArrayList;
@@ -137,7 +138,7 @@ public class InterfaceScreen extends SGJourneyContainerScreen<InterfaceMenu>
         
         graphics.drawString(this.font, ComponentHelper.energy(menu.getEnergyBlockEnergy()), 20, 56, 0xffffff, false);
         graphics.drawString(this.font, Component.translatable("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 20, 66, 0xffffff, false);
-        graphics.drawString(this.font, ComponentHelper.tickTimer(menu.getStargateOpenTime(), Stargate.getMaxGateOpenTime(), ChatFormatting.DARK_AQUA), 20, 76, 0xffffff, false);
+        graphics.drawString(this.font, ComponentHelper.tickTimer(menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA), 20, 76, 0xffffff, false);
         graphics.drawString(this.font, Component.translatable("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 20, 86, 0xffffff, false);
         graphics.drawString(this.font, Component.literal(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 20, 96, 0xffffff, false);
     }

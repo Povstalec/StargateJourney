@@ -10,7 +10,7 @@
 	"key":
 	{
 		"P": {"item": "sgjourney:plasma_converter"},
-		"N": {"tag": "sgjourney:naquadah_alloy"},
+		"N": {"tag": "sgjourney:naquadah_iron_alloy"},
 		"C": {"item": "sgjourney:naquadah_power_cell"}
 	},
 	"result":

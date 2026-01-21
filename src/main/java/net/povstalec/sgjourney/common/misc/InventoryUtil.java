@@ -5,6 +5,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 
@@ -72,4 +74,16 @@ public class InventoryUtil
         
         return stack;
     }
+	
+	public static boolean stackHasEnergy(ItemStack stack)
+	{
+		if(stack.getCapability(ForgeCapabilities.ENERGY).isPresent())
+		{
+			IEnergyStorage energyStorage = stack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
+			
+			return energyStorage.canExtract() && energyStorage.getEnergyStored() > 0;
+		}
+		
+		return false;
+	}
 }

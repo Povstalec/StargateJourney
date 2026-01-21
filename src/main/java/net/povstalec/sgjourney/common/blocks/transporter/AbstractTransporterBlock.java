@@ -59,7 +59,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
-				ItemStack itemstack = new ItemStack(BlockInit.TRANSPORT_RINGS.get());
+				ItemStack itemstack = new ItemStack(BlockInit.GOAULD_TRANSPORT_RINGS.get());
 				
 				blockentity.saveToItem(itemstack);
 				if(transporter.hasCustomName())
@@ -79,7 +79,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
-		String id = blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.ID) ? blockEntityTag.getString(AbstractTransporterEntity.ID) : "-";
+		String id = blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.TRANSPORTER_ID) ? blockEntityTag.getString(AbstractTransporterEntity.TRANSPORTER_ID) : "-";
 		
 		tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
 

@@ -3,10 +3,12 @@ package net.povstalec.sgjourney;
 import java.util.function.BiFunction;
 
 import net.minecraftforge.client.event.ModelEvent;
+import net.povstalec.sgjourney.client.render.entity.TriniumArrowRenderer;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
+import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.RenderAMD;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -89,6 +91,8 @@ public class StargateJourney
     public StargateJourney()
     {
     	IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		
+		RemappingHelper.setupRemapping();
     	
     	ItemInit.register(eventBus);
         BlockInit.register(eventBus);
@@ -218,6 +222,7 @@ public class StargateJourney
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
+        	EntityRenderers.register(EntityInit.TRINIUM_ARROW.get(), TriniumArrowRenderer::new);
 
         	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
 			
@@ -235,7 +240,7 @@ public class StargateJourney
 			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.RedSandstone::new);
         	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), SymbolBlockRenderer.Stone::new);
         	
-        	BlockEntityRenderers.register(BlockEntityInit.TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
+        	BlockEntityRenderers.register(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
 
         	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
@@ -262,4 +267,9 @@ public class StargateJourney
 			CableModelLoader.register(event);
 		}
     }
+	
+	public static ResourceLocation sgjourneyLocation(String path)
+	{
+		return new ResourceLocation(StargateJourney.MODID, path);
+	}
 }

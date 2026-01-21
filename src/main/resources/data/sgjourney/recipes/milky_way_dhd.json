@@ -10,7 +10,7 @@
 	"key":
 	{
 		"R": {"item": "minecraft:redstone"},
-		"I": {"tag": "sgjourney:naquadah_alloy"},
+		"I": {"tag": "sgjourney:naquadah_iron_alloy"},
 		"B": {"item": "minecraft:stone_button"},
 		"C": {"item": "sgjourney:communication_crystal"},
 		"X": {"item": "sgjourney:control_crystal"},

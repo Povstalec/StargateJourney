@@ -2,7 +2,7 @@
 	"type": "sgjourney:crystallizing",
 	"crystal_base": {"item": "sgjourney:stargate_variant_crystal", "amount": 1},
 	"primary_ingredient": {"item": "sgjourney:naquadah", "amount": 1},
-	"secondary_ingredient": {"item": "sgjourney:naquadah_alloy", "amount": 1},
+	"secondary_ingredient": {"item": "sgjourney:naquadah_iron_alloy", "amount": 1},
 	"deplete_primary": true,
 	"deplete_secondary": true,
 	"output":

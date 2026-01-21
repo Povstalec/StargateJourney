@@ -8,10 +8,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.entities.Goauld;
-import net.povstalec.sgjourney.common.entities.Human;
-import net.povstalec.sgjourney.common.entities.Jaffa;
-import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
+import net.povstalec.sgjourney.common.entities.*;
 
 public class EntityInit 
 {
@@ -23,6 +20,12 @@ public class EntityInit
 						.sized(0.25F, 0.25F)
 						.setUpdateInterval(20)
 						.build(new ResourceLocation(StargateJourney.MODID, "jaffa_plasma").toString()));
+	
+	public static final RegistryObject<EntityType<TriniumArrow>> TRINIUM_ARROW = ENTITIES.register("trinium_arrow",
+			() -> EntityType.Builder.<TriniumArrow>of(TriniumArrow::new, MobCategory.MISC)
+					.sized(0.25F, 0.25F)
+					.setUpdateInterval(20)
+					.build(new ResourceLocation(StargateJourney.MODID, "trinium_arrow").toString()));
 
 	
 	// Creatures

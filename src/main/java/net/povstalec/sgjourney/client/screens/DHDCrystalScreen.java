@@ -12,6 +12,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
@@ -19,6 +20,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_crystal_gui.png");
 	
 	public static final int HINT_OFFSET_Y = 168;
+	public static final int LARGE_CRYSTAL_HINT_OFFSET_X = 0;
 	public static final int CRYSTAL_HINT_OFFSET_X = 16;
 	public static final int ENERGY_HINT_OFFSET_X = 32;
 	
@@ -40,7 +42,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 		
 		this.renderEnergyVertical(graphics, TEXTURE, x + 162, y + 17, 6, 52, 176, 0, this.menu.getEnergy(), this.menu.getMaxEnergy());
 		
-		this.itemHint(graphics, TEXTURE, x + 80, y + 35, 0, 168, 0);
+		this.itemHint(graphics, TEXTURE, x + 80, y + 35, LARGE_CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 0);
 		
 		this.itemHint(graphics, TEXTURE, x + 80, y + 17, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 1);
 		this.itemHint(graphics, TEXTURE, x + 98, y + 17, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 2);
@@ -67,7 +69,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 				.append(Component.literal(": " + menu.enableAdvancedProtocols())).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.description("tooltip.sgjourney.dhd.advanced_protocols.description"),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.advanced_protocols.usage"),
-				ComponentHelper.tickTimer("info.sgjourney.open_time", menu.getStargateOpenTime(), Stargate.getMaxGateOpenTime(), ChatFormatting.DARK_AQUA),
+				ComponentHelper.tickTimer("info.sgjourney.open_time", menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA),
 				ComponentHelper.tickTimer("info.sgjourney.last_traveler_time", menu.getStargateTimeSinceLastTraveler(), 200, ChatFormatting.DARK_PURPLE));
 		this.crystalEffectTooltip(graphics, 14, 34, mouseX, mouseY, Component.translatable("tooltip.sgjourney.energy_target")
 				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED),

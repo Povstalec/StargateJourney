@@ -10,7 +10,7 @@
 	"key":
 	{
 		"L": {"item": "minecraft:lapis_lazuli"},
-		"I": {"tag": "sgjourney:naquadah_alloy"},
+		"I": {"tag": "sgjourney:naquadah_iron_alloy"},
 		"B": {"item": "minecraft:stone_button"},
 		"C": {"item": "sgjourney:advanced_communication_crystal"},
 		"X": {"item": "sgjourney:advanced_control_crystal"},

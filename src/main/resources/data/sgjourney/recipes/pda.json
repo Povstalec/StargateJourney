@@ -11,7 +11,7 @@
 	"key": 
 	{
 		"A": { "item": "sgjourney:advanced_control_crystal" },
-		"N": {"tag": "sgjourney:naquadah_alloy"},
+		"N": {"tag": "sgjourney:naquadah_iron_alloy"},
 		"C": { "item": "sgjourney:advanced_communication_crystal" },
 		"G": { "item": "minecraft:glass_pane" }
 		

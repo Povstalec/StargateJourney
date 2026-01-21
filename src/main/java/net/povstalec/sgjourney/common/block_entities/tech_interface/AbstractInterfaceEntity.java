@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.block_entities.tech_interface;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
@@ -19,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -30,8 +31,6 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
@@ -119,6 +118,18 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	{
 		tag.putLong(ENERGY_TARGET, energyTarget);
 		super.saveAdditional(tag);
+	}
+	
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	@Override
+	public CompoundTag getUpdateTag()
+	{
+		return this.saveWithoutMetadata();
 	}
 	
 	//============================================================================================
@@ -264,10 +275,10 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		
 		long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), getEnergyBlockEntity().getEnergyStored(), this.maxExtract());
 		
-		long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(needed, true);
-		long simulatedReceiveAmount = getEnergyBlockEntity().ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
-		ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
-		getEnergyBlockEntity().ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
+		long simulatedOutputAmount = energyStorage.extractLongEnergy(needed, true);
+		long simulatedReceiveAmount = getEnergyBlockEntity().energyStorage.receiveLongEnergy(simulatedOutputAmount, true);
+		energyStorage.extractLongEnergy(simulatedReceiveAmount, false);
+		getEnergyBlockEntity().energyStorage.receiveLongEnergy(simulatedReceiveAmount, false);
 	}
 	
 	public long getEnergyTarget()
@@ -329,11 +340,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			}
 		}
 		
-		if(level.isClientSide())
-			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(interfaceEntity.worldPosition)),
-				new ClientboundInterfaceUpdatePacket(interfaceEntity.worldPosition, interfaceEntity.getEnergyStored(), interfaceEntity.getEnergyTarget()));
-			
+		interfaceEntity.updateClient();
 	}
 	
 	private void rotateStargate(RotatingStargateEntity stargate)

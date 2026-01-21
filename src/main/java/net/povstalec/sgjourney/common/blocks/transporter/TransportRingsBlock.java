@@ -50,6 +50,6 @@ public class TransportRingsBlock extends AbstractTransporterBlock
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
-		return createTickerHelper(type, BlockEntityInit.TRANSPORT_RINGS.get(), TransportRingsEntity::tick);
+		return createTickerHelper(type, BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsEntity::tick);
 	}
 }

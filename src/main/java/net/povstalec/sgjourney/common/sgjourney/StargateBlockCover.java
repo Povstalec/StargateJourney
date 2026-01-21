@@ -11,6 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -19,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
@@ -93,6 +96,15 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		}
 		
 		return ItemStack.EMPTY;
+	}
+	
+	public void doWeatheringAt(StargatePart part, BlockPos pos, ServerLevel level, RandomSource randomSource)
+	{
+		getBlockAt(part).ifPresent(coverBlockState ->
+		{
+			if(coverBlockState.getBlock() instanceof SGJourneyWeatheringBlock weatheringBlock && weatheringBlock.passesProbability(randomSource))
+				weatheringBlock.changeOverTime(coverBlockState, level, pos, randomSource).ifPresent(newBlockState -> blockStates.put(part, newBlockState));
+		});
 	}
 	
 	@Override

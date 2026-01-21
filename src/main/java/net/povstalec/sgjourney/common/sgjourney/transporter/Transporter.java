@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -24,9 +25,9 @@ public interface Transporter
 	String CUSTOM_NAME = "CustomName";
 	
 	/**
-	 * @return UUID of the Transporter
+	 * @return ID of the Transporter
 	 */
-	UUID getID();
+	TransporterID getID();
 	
 	/**
 	 * @return Dimension the Transporter is located in or null if it's not located in any Dimension
@@ -47,8 +48,6 @@ public interface Transporter
 		
 		return server.getLevel(dimension);
 	}
-	
-	BlockPos getBlockPos(); //TODO Remove this
 	
 	/**
 	 * @param server Current Minecraft Server
@@ -82,6 +81,12 @@ public interface Transporter
 	 * @return Inner Radius of the Transporter or {@literal <= 0} if the Transporter doesn't have a real form
 	 */
 	double getInnerRadius();
+	
+	/**
+	 * @param frequency Frequency to be tested
+	 * @return True if the specified frequency is accepted by the Transporter, otherwise false
+	 */
+	boolean acceptsFrequency(int frequency);
 	
 	/**
 	 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Transporter, where X is the direction which the Transporter is facing, Y is Transporter's up direction and Z is Transporter's right direction
@@ -148,8 +153,8 @@ public interface Transporter
 	/**
 	 * Deserializes the Transporter info
 	 * @param server Current Minecraft Server
-	 * @param uuid UUID of the Transporter
+	 * @param transporterID ID of the Transporter
 	 * @param tag CompoundTag containing information to be deserialized
 	 */
-	void deserializeNBT(MinecraftServer server, UUID uuid, CompoundTag tag);
+	void deserializeNBT(MinecraftServer server, TransporterID transporterID, CompoundTag tag);
 }

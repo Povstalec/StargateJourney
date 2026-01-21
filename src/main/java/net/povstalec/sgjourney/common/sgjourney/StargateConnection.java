@@ -19,33 +19,32 @@ import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 import javax.annotation.Nullable;
+import javax.xml.transform.Result;
 
 public class StargateConnection
 {
-	private static final String EVENT_CHEVRON_ENGAGED = AbstractStargateEntity.EVENT_CHEVRON_ENGAGED;
-	private static final String EVENT_INCOMING_CONNECTION = "stargate_incoming_connection";
-	private static final String EVENT_INCOMING_WORMHOLE = "stargate_incoming_wormhole";
-	private static final String EVENT_OUTGOING_WORMHOLE = "stargate_outgoing_wormhole";
-	private static final String EVENT_DISCONNECTED = "stargate_disconnected";
+	public static final String EVENT_INCOMING_CONNECTION = "stargate_incoming_connection";
+	public static final String EVENT_INCOMING_WORMHOLE = "stargate_incoming_wormhole";
+	public static final String EVENT_OUTGOING_WORMHOLE = "stargate_outgoing_wormhole";
+	public static final String EVENT_DISCONNECTED = "stargate_disconnected";
 	
-	//TODO Use snake_case
-	private static final String ADDRESS = "address";
-	private static final String DIMENSION = "Dimension";
-	private static final String COORDINATES = "Coordinates";
+	public static final String ADDRESS = Address.ADDRESS;
+	public static final String DIMENSION = "Dimension";
+	public static final String COORDINATES = "Coordinates";
 	
-	private static final String DIALING_STARGATE = "DialingStargate";
-	private static final String DIALED_STARGATE = "DialedStargate";
-
-	private static final String USED = "Used";
-	private static final String TIME_SINCE_LAST_TRAVELER = "TimeSinceLastTraveler";
-	private static final String OPEN_TIME = "OpenTime";
-	private static final String CONNECTION_TIME = "ConnectionTime";
-	private static final String CONNECTION_TYPE = "ConnectionType";
-	private static final String DO_KAWOOSH = "DoKawoosh";
+	public static final String DIALING_STARGATE = "DialingStargate";
+	public static final String DIALED_STARGATE = "DialedStargate";
 	
-	public static final int KAWOOSH_TICKS = 40;
+	public static final String USED = "Used";
+	public static final String TIME_SINCE_LAST_TRAVELER = "TimeSinceLastTraveler";
+	public static final String OPEN_TIME = "OpenTime";
+	public static final String CONNECTION_TIME = "ConnectionTime";
+	public static final String CONNECTION_TYPE = "ConnectionType";
+	public static final String DO_KAWOOSH = "DoKawoosh";
+	public static final String KAWOOSH_TICKS = "kawoosh_ticks";
 	
-	protected static final int MAX_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
+	public static final int KAWOOSH_DURATION = 40;
+	
 	protected static final boolean ENERGY_BYPASS_ENABLED = CommonStargateConfig.enable_energy_bypass.get();
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -69,7 +68,7 @@ public class StargateConnection
 	
 	protected boolean used;
 	protected int connectionTime; // Time since the connection was established (Right after dialing Stargate finished dialing)
-	protected int openTime; // Time since wormhole formed (after kawoosh ended)
+	protected int openTime; // Time since the wormhole formed (after kawoosh ended)
 	protected int timeSinceLastTraveler; // Time since a traveler has last appeared near any of the connected Stargates
 	
 	@Nullable
@@ -327,13 +326,18 @@ public class StargateConnection
 			return true;
 		}
 		//TODO Tie this to Advanced Protocols
-		else if(CommonStargateConfig.can_draw_power_from_both_ends.get() && canExtract(server, this.dialedStargate, energyDraw))
+		else if(this.dialedStargate.canPowerFromOtherSide(server) && canExtract(server, this.dialedStargate, energyDraw))
 		{
 			this.dialedStargate.extractEnergy(server, energyDraw, false);
 			return true;
 		}
 		
 		return false;
+	}
+	
+	private boolean requiresEnergyBypass(MinecraftServer server, int openTime)
+	{
+		return this.dialingStargate.requiresEnergyBypass(server, openTime) || this.dialedStargate.requiresEnergyBypass(server, openTime);
 	}
 	
 	public final void tick(MinecraftServer server)
@@ -370,14 +374,14 @@ public class StargateConnection
 		this.dialingStargate.doWhileConnected(server, this, false);
 		this.dialedStargate.doWhileConnected(server, this, true);
 		
-		if(this.openTime >= MAX_OPEN_TIME && !ENERGY_BYPASS_ENABLED)
+		if(requiresEnergyBypass(server, this.openTime) && !ENERGY_BYPASS_ENABLED)
 		{
 			terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME);
 			return;
 		}
 		
 		// Depletes energy over time
-		if(REQUIRE_ENERGY && !depleteEnergy(server, getPowerDraw()))
+		if(REQUIRE_ENERGY && !depleteEnergy(server, getPowerDraw(server)))
 		{
 			terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER);
 			return;
@@ -516,9 +520,9 @@ public class StargateConnection
 		return this.doKawoosh;
 	}
 	
-	public long getPowerDraw()
+	public long getPowerDraw(MinecraftServer server)
 	{
-		return this.connectionType.getPowerDraw(this.openTime >= MAX_OPEN_TIME);
+		return this.connectionType.getPowerDraw(requiresEnergyBypass(server, this.openTime));
 	}
 	
 	//============================================================================================
@@ -566,5 +570,49 @@ public class StargateConnection
 	private static Stargate deserializeStargate(MinecraftServer server, CompoundTag stargateInfo)
 	{
 		return BlockEntityList.get(server).getStargate(new Address.Immutable(stargateInfo.getIntArray(ADDRESS)));
+	}
+	
+	
+	
+	public static class Result
+	{
+		public static final String FEEDBACK = "feedback";
+		
+		protected Address address;
+		protected StargateInfo.Feedback feedback;
+		
+		public Result() {}
+		
+		public Result(Address address, StargateInfo.Feedback feedback)
+		{
+			this.address = address;
+			this.feedback = feedback;
+		}
+		
+		public Address address()
+		{
+			return address;
+		}
+		
+		public StargateInfo.Feedback feedback()
+		{
+			return feedback;
+		}
+		
+		public CompoundTag save()
+		{
+			CompoundTag tag = new CompoundTag();
+			
+			address.saveToCompoundTag(tag, ADDRESS);
+			tag.putInt(FEEDBACK, feedback.ordinal());
+			
+			return tag;
+		}
+		
+		public void load(CompoundTag tag)
+		{
+			address = new Address.Immutable(tag.getIntArray(ADDRESS));
+			feedback = StargateInfo.Feedback.fromOrdinal(tag.getInt(FEEDBACK));
+		}
 	}
 }

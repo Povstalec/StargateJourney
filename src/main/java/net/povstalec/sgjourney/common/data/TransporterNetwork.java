@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
@@ -22,6 +21,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 /**
@@ -38,7 +38,7 @@ public final class TransporterNetwork extends SavedData
 
 	private static final String VERSION = "version";
 
-	private static final int UPDATE_VERSION = 2;
+	private static final int UPDATE_VERSION = 3;
 	
 	private MinecraftServer server;
 
@@ -96,25 +96,14 @@ public final class TransporterNetwork extends SavedData
 	
 	private void addTransporters()
 	{
-		HashMap<UUID, Transporter> transporters = BlockEntityList.get(server).getTransporters();
+		HashMap<TransporterID, Transporter> transporters = BlockEntityList.get(server).getTransporters();
 		
 		transporters.entrySet().stream().forEach((transporterInfo) ->
 		{
 			Transporter transporter = transporterInfo.getValue();
-			BlockEntity blockentity = server.getLevel(transporter.getDimension()).getBlockEntity(transporter.getBlockPos());
 			
-			if(blockentity instanceof AbstractTransporterEntity transporterEntity)
-			{
-				if(transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
-					addTransporterToDimension(transporter.getDimension(), transporter);
-				else
-				{
-					BlockEntityList.get(server).removeTransporter(transporter.getID());
-					addTransporter(transporterEntity);
-				}
-			}
-			else
-				BlockEntityList.get(server).removeTransporter(transporter.getID());
+			if(transporter != null)
+				addTransporter(transporter);
 		});
 	}
 	
@@ -138,26 +127,26 @@ public final class TransporterNetwork extends SavedData
 			addTransporter(transporter);
 	}
 	
-	public void removeTransporter(Level level, UUID uuid)
+	public void removeTransporter(Level level, TransporterID transporterID)
 	{
-		if(uuid == null)
+		if(transporterID == null)
 			return;
 		
-		Transporter transporter = getTransporter(uuid);
+		Transporter transporter = getTransporter(transporterID);
 		
 		if(transporter != null)
 			removeTransporterFromDimension(level.dimension(), transporter);
 
-		BlockEntityList.get(level).removeTransporter(uuid);
+		BlockEntityList.get(level).removeTransporter(transporterID);
 		
-		StargateJourney.LOGGER.info("Removed " + uuid.toString() + " from Transporter Network");
+		StargateJourney.LOGGER.info("Removed " + transporterID.toString() + " from Transporter Network");
 		setDirty();
 	}
 	
 	@Nullable
-	public Transporter getTransporter(UUID uuid)
+	public Transporter getTransporter(TransporterID transporterID)
 	{
-		return BlockEntityList.get(server).getTransporter(uuid);
+		return BlockEntityList.get(server).getTransporter(transporterID);
 	}
 	
 	
@@ -459,7 +448,7 @@ public final class TransporterNetwork extends SavedData
 	    	List<Transporter> transporters = new ArrayList<Transporter>();
 			dimensionTag.getCompound(TRANSPORTERS).getAllKeys().forEach(transporterID ->
 			{
-				Transporter transporter = BlockEntityList.get(server).getTransporter(UUID.fromString(transporterID));
+				Transporter transporter = BlockEntityList.get(server).getTransporter(new TransporterID.Immutable(transporterID));
 				
 				if(transporter != null)
 					transporters.add(transporter);

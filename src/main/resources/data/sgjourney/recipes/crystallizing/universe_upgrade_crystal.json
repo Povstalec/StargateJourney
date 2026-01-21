@@ -1,7 +1,7 @@
 {
 	"type": "sgjourney:crystallizing",
 	"crystal_base": {"item": "sgjourney:crystal_base", "amount": 1},
-	"primary_ingredient": {"item": "sgjourney:naquadah_alloy", "amount": 16},
+	"primary_ingredient": {"item": "sgjourney:naquadah_iron_alloy", "amount": 16},
 	"secondary_ingredient": {"item": "minecraft:quartz", "amount": 9},
 	"deplete_primary": true,
 	"deplete_secondary": true,

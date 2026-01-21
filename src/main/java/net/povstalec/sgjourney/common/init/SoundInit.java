@@ -28,6 +28,8 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_ENTER = registerSoundEvent("classic_dhd_enter");
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
 	
+	public static final RegistryObject<SoundEvent> RING_PANEL_PRESS = registerSoundEvent("ring_panel_press");
+	
 	public static final RegistryObject<SoundEvent> MATOK_FIRE = registerSoundEvent("matok_fire");
 	public static final RegistryObject<SoundEvent> MATOK_ATTACK = registerSoundEvent("matok_attack");
 	public static final RegistryObject<SoundEvent> MATOK_OPEN = registerSoundEvent("matok_open");

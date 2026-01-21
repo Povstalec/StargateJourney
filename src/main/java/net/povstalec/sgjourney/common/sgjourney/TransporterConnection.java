@@ -196,6 +196,6 @@ public class TransporterConnection
 	
 	private static Transporter deserializeTransporter(MinecraftServer server, CompoundTag transporterInfo)
 	{
-		return BlockEntityList.get(server).getTransporter(UUID.fromString(transporterInfo.getString(ID)));
+		return BlockEntityList.get(server).getTransporter(new TransporterID.Immutable(transporterInfo.getString(ID)));
 	}
 }

@@ -1,0 +1,12 @@
+{
+	"variants":
+	{
+		"":
+		[
+			{ "model": "sgjourney:block/naquadah_iron_block", "weight": 55},
+			{ "model": "sgjourney:block/naquadah_iron_block_a", "weight": 15},
+			{ "model": "sgjourney:block/naquadah_iron_block_b", "weight": 15},
+			{ "model": "sgjourney:block/naquadah_iron_block_c", "weight": 15}
+		]
+	}
+}

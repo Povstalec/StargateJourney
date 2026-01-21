@@ -31,7 +31,7 @@ public class ClientUtil
 		if(pointOfOrigin != null)
 			return registry.get(pointOfOrigin);
 		
-		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
+		return registry.get(new ResourceLocation(StargateJourney.MODID, "universal"));
 	}
 	
 	public static Symbols getSymbols(ResourceLocation symbols)
@@ -44,7 +44,7 @@ public class ClientUtil
 		if(symbols != null)
 			return registry.get(symbols);
 		
-		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
+		return registry.get(new ResourceLocation(StargateJourney.MODID, "universal"));
 	}
 	
 	//============================================================================================

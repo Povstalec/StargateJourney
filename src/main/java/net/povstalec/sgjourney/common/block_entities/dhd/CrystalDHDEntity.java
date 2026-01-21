@@ -3,6 +3,10 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 import javax.annotation.Nonnull;
 
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -88,7 +92,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
 	{
 		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
-			return handler.cast();
+			return lazyEnergyItemHandler.cast();
 		
 		return super.getCapability(capability, side);
 	}
@@ -199,6 +203,18 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		int advancedDistance = this.communicationCrystals.getAdvancedCrystals().length * ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get().getMaxDistance();
 		
 		return DEFAULT_CONNECTION_DISTANCE + regularDistance + advancedDistance;
+	}
+	
+	@Override
+	public void onDialAttempt(StargateInfo.Feedback feedback, Address address)
+	{
+		//TODO Save the address to more than one crystal
+		if(memoryCrystals.getCrystals().length > 0)
+		{
+			ItemStack stack = itemHandler.getStackInSlot(memoryCrystals.getCrystals()[0]);
+			if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
+				memoryCrystal.saveMemoryEntry(stack, new MemoryEntry.StargateConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.ADDRESS, new StargateConnection.Result(address, feedback)), true);
+		}
 	}
 	
 	//============================================================================================

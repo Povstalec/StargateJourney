@@ -1,0 +1,13 @@
+{
+	"parent": "minecraft:block/cube",
+	"textures":
+	{
+		"down": "sgjourney:block/exposed_smooth_naquadah_copper_block",
+		"up": "sgjourney:block/exposed_smooth_naquadah_copper_block",
+		"north": "sgjourney:block/exposed_naquadah_copper_lamp_horizontal_on",
+		"south": "sgjourney:block/exposed_naquadah_copper_lamp_horizontal_on",
+		"west": "sgjourney:block/exposed_naquadah_copper_lamp_horizontal_on",
+		"east": "sgjourney:block/exposed_naquadah_copper_lamp_horizontal_on",
+		"particle": "sgjourney:block/exposed_smooth_naquadah_copper_block"
+	}
+}

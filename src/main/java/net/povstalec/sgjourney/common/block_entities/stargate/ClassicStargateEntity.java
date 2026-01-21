@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,6 +18,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.ClassicStargate;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -60,6 +63,32 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 			symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
     	
     	super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = super.getUpdateTag();
+		
+		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		super.onDataPacket(net, packet);
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			if(tag.contains(POINT_OF_ORIGIN))
+				symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
+			
+			if(tag.contains(SYMBOLS))
+				symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
+		}
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, ClassicStargateEntity stargate)

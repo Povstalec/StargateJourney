@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/inner_stairs",
+	"textures":
+	{
+		"bottom": "sgjourney:block/naquadah_iron_stairs",
+		"side": "sgjourney:block/naquadah_iron_stairs",
+		"top": "sgjourney:block/naquadah_iron_stairs"
+	}
+}

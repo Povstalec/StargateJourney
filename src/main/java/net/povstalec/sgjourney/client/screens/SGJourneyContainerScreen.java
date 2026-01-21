@@ -19,7 +19,7 @@ public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> 
 	
 	protected boolean hasItem(int slot)
 	{
-		return true;
+		return false;
 	}
 	
 	protected void itemHint(GuiGraphics graphics, ResourceLocation texture, int x, int y, int hintTexturePosX, int hintTexturePosY, int slot)

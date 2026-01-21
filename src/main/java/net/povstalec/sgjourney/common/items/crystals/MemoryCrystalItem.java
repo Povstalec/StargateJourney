@@ -1,10 +1,11 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.core.Vec3i;
-import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -19,49 +20,36 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 
 public class MemoryCrystalItem extends AbstractCrystalItem
 {
-	public static final int DEFAULT_MEMORY_CAPACITY = 5;
-	public static final int ADVANCED_MEMORY_CAPACITY = 2 * DEFAULT_MEMORY_CAPACITY;
+	public static final int BAR_COLOR_RGB = 0x0095ff;
 	
 	public static final String MEMORY_LIST = "memory_list";
-
-	public static final String ID = "id";
-	public static final String COORDINATES = "coords";
-	public static final String ADDRESS = "address";
-	
-	enum MemoryType
-	{
-		UNKNOWN(Component.translatable("tooltip.sgjourney.unknown").withStyle(ChatFormatting.DARK_RED)),
-		ADDRESS(Component.translatable("tooltip.sgjourney.address").withStyle(ChatFormatting.AQUA)),
-		ID(Component.translatable("tooltip.sgjourney.id").withStyle(ChatFormatting.DARK_AQUA)),
-		COORDINATES(Component.translatable("tooltip.sgjourney.coordinates").withStyle(ChatFormatting.BLUE));
-		
-		private final Component component;
-		
-		MemoryType(Component component)
-		{
-			this.component = component;
-		}
-		
-		public Component getComponent()
-		{
-			return this.component;
-		}
-	}
 
 	public MemoryCrystalItem(Properties properties)
 	{
 		super(properties);
 	}
+	
+	@Override
+	public boolean isBarVisible(ItemStack stack)
+	{
+		return getMemoryListSize(stack) > 0;
+	}
+	
+	@Override
+	public int getBarWidth(ItemStack stack)
+	{
+		return (int) Math.floor(13.0F * (float) getMemoryListSize(stack) / getMemoryCapacity());
+	}
+	
+	@Override
+	public int getBarColor(ItemStack stack)
+	{
+		return BAR_COLOR_RGB;
+	}
 
 	public int getMemoryCapacity()
 	{
-		return DEFAULT_MEMORY_CAPACITY;
-	}
-
-	@Override
-	public boolean isFoil(ItemStack stack)
-	{
-		return stack.hasTag();
+		return CommonCrystalConfig.memory_crystal_capacity.get();
 	}
 
 	/*@Override
@@ -81,171 +69,42 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		ListTag list = getMemoryList(stack);
 		
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.memory_capacity").append(Component.literal(": " + list.size() + '/' + getMemoryCapacity())).withStyle(ChatFormatting.BLUE));
+		
 		for(int i = 0; i < list.size(); i++)
 		{
-			tooltipComponents.add(Component.literal("[" + i + "] ")
-					.append(memoryTypeComponentAt(list, i)));
+			tooltipComponents.add(Component.literal("[" + i + "] ").withStyle(ChatFormatting.BLUE).append(memoryTypeComponentAt(list, i)));
 		}
 
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 	
-	public MemoryType memoryTypeAt(ListTag list, int index)
+	public static MemoryEntry.Type memoryTypeAt(ListTag list, int index)
 	{
-		if(list.getCompound(index).contains(ADDRESS, Tag.TAG_INT_ARRAY))
-			return MemoryType.ADDRESS;
-		else if(list.getCompound(index).contains(COORDINATES, Tag.TAG_INT_ARRAY))
-			return MemoryType.COORDINATES;
-		else if(list.getCompound(index).contains(ID, Tag.TAG_STRING))
-			return MemoryType.ID;
-		else
-			return MemoryType.UNKNOWN;
+		CompoundTag tag = list.getCompound(index);
+		int ordinal = tag.contains(MemoryEntry.ENTRY_TYPE, Tag.TAG_INT) ? tag.getInt(MemoryEntry.ENTRY_TYPE) : 0;
+		return MemoryEntry.Type.fromOrdinal(ordinal);
 	}
 	
-	public Component memoryTypeComponentAt(ListTag list, int index)
+	public static Component memoryTypeComponentAt(ListTag list, int index)
 	{
 		return memoryTypeAt(list, index).getComponent();
-	}
-	
-	public String memoryStringAt(ListTag list, int index)
-	{
-		MemoryType memoryType = memoryTypeAt(list, index);
-		
-		return switch(memoryType)
-		{
-			case ADDRESS -> getAddress(list, index).toString();
-			case COORDINATES -> getCoords(list, index).toString();
-			case ID -> getUUID(list, index).toString();
-			default -> "-";
-		};
 	}
 	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
-	private boolean saveMemory(ItemStack stack, CompoundTag memory)
+	public static int getMemoryListSize(ItemStack stack)
 	{
-		ListTag list = getMemoryList(stack);
-		
-		if(list.size() >= getMemoryCapacity()) //TODO Move old entries forward if needed
-			return false;
-		
-		list.add(memory);
-		setMemoryList(stack, list);
-		
-		return true;
-	}
-	
-	public boolean saveAddress(ItemStack stack, Address.Immutable address)
-	{
-		CompoundTag addressTag = new CompoundTag();
-		addressTag.putIntArray(ADDRESS, address.toArray());
-		
-		return saveMemory(stack, addressTag);
-	}
-	
-	public boolean saveCoords(ItemStack stack, Vec3i coords)
-	{
-		CompoundTag coordsTag = new CompoundTag();
-		coordsTag.putIntArray(COORDINATES, Conversion.vecToIntArray(coords));
-		
-		return saveMemory(stack, coordsTag);
-	}
-	
-	public boolean saveUUID(ItemStack stack, UUID uuid)
-	{
-		CompoundTag uuidTag = new CompoundTag();
-		uuidTag.putString(ID, uuid.toString());
-		
-		return saveMemory(stack, uuidTag);
-	}
-	
-	@Nullable
-	public static Address.Immutable getAddress(ListTag list, int index)
-	{
-		if(list.getCompound(index).contains(ADDRESS, Tag.TAG_INT_ARRAY))
-			return new Address.Immutable(list.getCompound(index).getIntArray(ADDRESS));
-		
-		return null;
-	}
-	
-	@Nullable
-	public static Address.Immutable getFirstAddress(ListTag list)
-	{
-		for(int i = 0; i < list.size(); i++)
+		if(stack.getItem() instanceof MemoryCrystalItem)
 		{
-			Address.Immutable address = getAddress(list, i);
-			if(address != null)
-				return address;
+			CompoundTag tag = stack.getTag();
+			if(tag != null && tag.contains(MEMORY_LIST, Tag.TAG_LIST))
+				return tag.getList(MEMORY_LIST, Tag.TAG_COMPOUND).size();
 		}
 		
-		return null;
-	}
-	
-	@Nullable
-	public static Address.Immutable getFirstAddress(ItemStack stack)
-	{
-		return getFirstAddress(getMemoryList(stack));
-	}
-	
-	@Nullable
-	public static Vec3i getCoords(ListTag list, int index)
-	{
-		if(list.getCompound(index).contains(COORDINATES, Tag.TAG_INT_ARRAY))
-			return Conversion.intArrayToVec(list.getCompound(index).getIntArray(COORDINATES));
-		
-		return null;
-	}
-	
-	@Nullable
-	public static Vec3i getFirstCoords(ListTag list)
-	{
-		for(int i = 0; i < list.size(); i++)
-		{
-			Vec3i coords = getCoords(list, i);
-			if(coords != null)
-				return coords;
-		}
-		
-		return null;
-	}
-	
-	@Nullable
-	public static Vec3i getFirstCoords(ItemStack stack)
-	{
-		return getFirstCoords(getMemoryList(stack));
-	}
-	
-	@Nullable
-	public static UUID getUUID(ListTag list, int index)
-	{
-		if(list.getCompound(index).contains(ID, Tag.TAG_STRING))
-		{
-			try { return UUID.fromString(list.getCompound(index).getString(ID)); }
-			catch(IllegalArgumentException e) { return null; }
-		}
-		
-		return null;
-	}
-	
-	@Nullable
-	public static UUID getFirstUUID(ListTag list)
-	{
-		for(int i = 0; i < list.size(); i++)
-		{
-			UUID uuid = getUUID(list, i);
-			if(uuid != null)
-				return uuid;
-		}
-		
-		return null;
-	}
-	
-	@Nullable
-	public static UUID getFirstUUID(ItemStack stack)
-	{
-		return getFirstUUID(getMemoryList(stack));
+		return 0;
 	}
 	
 	public static ListTag getMemoryList(ItemStack stack)
@@ -270,6 +129,126 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		}
 	}
 	
+	public boolean saveMemoryEntry(ItemStack stack, MemoryEntry<?> memoryEntry, boolean overrideOldMemory)
+	{
+		ListTag list = getMemoryList(stack);
+		
+		if(list.size() < getMemoryCapacity())
+		{
+			ListTag newList = new ListTag();
+			newList.add(memoryEntry.save());
+			newList.addAll(list);
+			setMemoryList(stack, newList);
+			return true;
+		}
+		
+		if(!overrideOldMemory)
+			return false;
+		
+		ListTag newList = new ListTag();
+		newList.add(memoryEntry.save());
+		newList.addAll(list);
+		newList.remove(newList.size() - 1);
+		setMemoryList(stack, newList);
+		
+		return true;
+	}
+	
+	@Nullable
+	public static <T extends MemoryEntry<?>> T loadMemoryEntry(ListTag list, MemoryEntry.Type entryType, int index)
+	{
+		CompoundTag tag = list.getCompound(index);
+		if(tag.contains(MemoryEntry.ENTRY_TYPE, Tag.TAG_INT) && tag.getInt(MemoryEntry.ENTRY_TYPE) == entryType.ordinal())
+			return (T) entryType.loadFromTag(tag);
+		
+		return null;
+	}
+	
+	@Nullable
+	public static <T extends MemoryEntry<?>> T loadMemoryEntry(ItemStack stack, MemoryEntry.Type entryType, int index)
+	{
+		return loadMemoryEntry(getMemoryList(stack), entryType, index);
+	}
+	
+	@Nullable
+	public static <T extends MemoryEntry<?>> T loadFirstMemoryEntry(ListTag list, MemoryEntry.Type entryType)
+	{
+		for(int i = 0; i < list.size(); i++)
+		{
+			T memoryEntry = loadMemoryEntry(list, entryType, i);
+			if(memoryEntry != null)
+				return memoryEntry;
+		}
+		
+		return null;
+	}
+	
+	@Nullable
+	public static <T extends MemoryEntry<?>> T loadFirstMemoryEntry(ItemStack stack, MemoryEntry.Type entryType)
+	{
+		return loadFirstMemoryEntry(getMemoryList(stack), entryType);
+	}
+	
+	//============================================================================================
+	//************************************Specific Entry Types************************************
+	//============================================================================================
+	
+	@Nullable
+	public static String loadText(ListTag list, int index)
+	{
+		MemoryEntry.Text text = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TEXT, index);
+		return text != null ? text.entry() : null;
+	}
+	
+	@Nullable
+	public String loadText(ItemStack stack, int index)
+	{
+		MemoryEntry.Text text = MemoryCrystalItem.loadMemoryEntry(stack, MemoryEntry.Type.TEXT, index);
+		return text != null ? text.entry() : null;
+	}
+	
+	@Nullable
+	public static Address loadAddress(ListTag list, int index)
+	{
+		MemoryEntry.Address address = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.ADDRESS, index);
+		return address != null ? address.entry() : null;
+	}
+	
+	@Nullable
+	public Address loadAddress(ItemStack stack, int index)
+	{
+		MemoryEntry.Address address = MemoryCrystalItem.loadMemoryEntry(stack, MemoryEntry.Type.ADDRESS, index);
+		return address != null ? address.entry() : null;
+	}
+	
+	@Nullable
+	public static TransporterID loadTransporterID(ListTag list, int index)
+	{
+		MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
+		return transporterID != null ? transporterID.entry() : null;
+	}
+	
+	@Nullable
+	public TransporterID loadTransporterID(ItemStack stack, int index)
+	{
+		MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(stack, MemoryEntry.Type.TRANSPORTER_ID, index);
+		return transporterID != null ? transporterID.entry() : null;
+	}
+	
+	@Nullable
+	public static Vec3i loadCoordinates(ListTag list, int index)
+	{
+		MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
+		return coords != null ? coords.entry() : null;
+	}
+	
+	@Nullable
+	public Vec3i loadCoordinates(ItemStack stack, int index)
+	{
+		MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(stack, MemoryEntry.Type.COORDINATES, index);
+		return coords != null ? coords.entry() : null;
+	}
+	
 	
 
 	public static class Advanced extends MemoryCrystalItem
@@ -282,7 +261,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		@Override
 		public int getMemoryCapacity()
 		{
-			return ADVANCED_MEMORY_CAPACITY;
+			return CommonCrystalConfig.advanced_memory_crystal_capacity.get();
 		}
 		
 		/*@Override

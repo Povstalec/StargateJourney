@@ -1,15 +1,12 @@
 package net.povstalec.sgjourney.common.menu;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -37,7 +34,7 @@ public class RingPanelMenu extends InventoryMenu
         addPlayerInventory(inventory, 8, 140);
         addPlayerHotbar(inventory, 8, 198);
         
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler ->
+        this.blockEntity.getCrystalItemHandler().ifPresent(handler ->
         {
             this.addSlot(new SlotItemHandler(handler, 0, 5, 36));
             this.addSlot(new SlotItemHandler(handler, 1, 23, 36));
@@ -46,38 +43,61 @@ public class RingPanelMenu extends InventoryMenu
             this.addSlot(new SlotItemHandler(handler, 4, 5, 72));
             this.addSlot(new SlotItemHandler(handler, 5, 23, 72));
         });
+		
+		this.blockEntity.getEnergyItemHandler().ifPresent(handler ->
+		{
+			this.addSlot(new SlotItemHandler(handler, 0, 137, 36));
+		});
     }
+	
+	public long getEnergy()
+	{
+		return this.blockEntity.getEnergyStored();
+	}
+	
+	public long getMaxEnergy()
+	{
+		return this.blockEntity.getEnergyCapacity();
+	}
+	
+	public RingPanelEntity.Button getButtonAt(int index)
+	{
+		return this.blockEntity.getButtonAt(index);
+	}
     
-    public Component getRingsPos(int i)
+    public void pressButton(int index)
     {
-    	if(i < blockEntity.ringsPos.size())
-    	{
-    		BlockPos coords = blockEntity.ringsPos.get(i);
-    		
-    		Component name = blockEntity.ringsName.get(i);
-    		if(name.getString().length() == 0)
-    			return Component.literal("[" + coords.getX() + " " + coords.getY() + " " + coords.getZ() + "]").withStyle(ChatFormatting.DARK_GREEN);
-    		else
-    			return Component.empty().append(name).withStyle(ChatFormatting.AQUA).append(Component.literal(" [" + coords.getX() + " " + coords.getY() + " " + coords.getZ() + "] ").withStyle(ChatFormatting.DARK_GREEN));
-    	}
-    	else
-    		return Component.literal("-");
+    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundRingPanelUpdatePacket(this.blockEntity.getBlockPos(), index));
     }
-    
-    public void activateRings(int number)
-    {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundRingPanelUpdatePacket(this.blockEntity.getBlockPos(), number));
-    }
-    
-    public int[] getTargetCoords(int chosenNumber)
-    {
-    	return blockEntity.getTargetCoords(chosenNumber);
-    }
+	
+	public boolean hasItem(int slot)
+	{
+		if(slot < 0 || slot > 6)
+			return false;
+		
+		if(slot == 6)
+		{
+			IItemHandler cap = this.blockEntity.getEnergyItemHandler().resolve().orElse(null);
+			
+			if(cap != null)
+				return !cap.getStackInSlot(0).isEmpty();
+		}
+		else
+		{
+			IItemHandler cap = this.blockEntity.getCrystalItemHandler().resolve().orElse(null);
+			
+			if(cap != null)
+				return !cap.getStackInSlot(slot).isEmpty();
+			
+		}
+		
+		return false;
+	}
 	
     @Override
     public boolean stillValid(Player player) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-                player, BlockInit.RING_PANEL.get());
+                player, BlockInit.GOAULD_RING_PANEL.get());
     }
 	
 	@Override

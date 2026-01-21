@@ -8,7 +8,7 @@
 	
 	"key": 
 	{
-		"N": { "tag": "sgjourney:naquadah_alloy_nugget" }
+		"N": { "tag": "sgjourney:naquadah_iron_nugget" }
 	},
 	
 	"result": { "item": "sgjourney:naquadah_wire", "count": 1 }

@@ -28,7 +28,7 @@ public class CommonInterfaceConfig
 				.defineInRange("server.basic_interface_capacity", 10000000L, 1L, Long.MAX_VALUE);
 		
 		basic_interface_max_transfer = server
-				.comment("The maximum amount of energy a Basic Interface can transfer at once")
+				.comment("The maximum amount of energy a Basic Interface can transfer (in and out) at once")
 				.defineInRange("server.basic_interface_max_transfer", 100000L, 1L, Long.MAX_VALUE);
 		
 		
@@ -38,7 +38,7 @@ public class CommonInterfaceConfig
 				.defineInRange("server.crystal_interface_capacity", 100000000L, 1L, Long.MAX_VALUE);
 		
 		crystal_interface_max_transfer = server
-				.comment("The maximum amount of energy a Crystal Interface can transfer at once")
+				.comment("The maximum amount of energy a Crystal Interface can transfer (in and out) at once")
 				.defineInRange("server.crystal_interface_max_transfer", 10000000L, 1L, Long.MAX_VALUE);
 		
 		
@@ -48,7 +48,7 @@ public class CommonInterfaceConfig
 				.defineInRange("server.advanced_crystal_interface_capacity", 100000000000L, 1L, Long.MAX_VALUE);
 		
 		advanced_crystal_interface_max_transfer = server
-				.comment("The maximum amount of energy an Advanced Crystal Interface can transfer at once")
+				.comment("The maximum amount of energy an Advanced Crystal Interface can transfer (in and out) at once")
 				.defineInRange("server.advanced_crystal_interface_max_transfer", 100000000000L, 1L, Long.MAX_VALUE);
 	}
 }

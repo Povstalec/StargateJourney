@@ -14,6 +14,13 @@ public class PegasusStargate extends SGJourneyStargate
 	
 	
 	
+	@Override
+	public StargateInfo.Gen getGeneration()
+	{
+		return StargateInfo.Gen.GEN_3;
+	}
+	
+	@Override
 	public StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
 		return doKawoosh ? CHEVRON_LOCK_SPEED : StargateInfo.ChevronLockSpeed.FAST;

@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
@@ -22,6 +23,8 @@ import net.povstalec.sgjourney.common.sgjourney.*;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class SGJourneyStargate implements Stargate
 {
@@ -29,6 +32,8 @@ public class SGJourneyStargate implements Stargate
 	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
 	
 	public static final int KAWOOSH_TICKS = 40;
+	
+	public static final int MAX_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
 	
 	protected Address.Immutable address;
 	
@@ -43,8 +48,11 @@ public class SGJourneyStargate implements Stargate
 	protected int timesOpened;
 	protected int network;
 	
+	@Nullable
 	protected Vec3 forward = null;
+	@Nullable
 	protected Vec3 up = null;
+	@Nullable
 	protected Vec3 right = null;
 	
 	protected Wormhole wormhole = new Wormhole();
@@ -349,6 +357,12 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
+	public boolean canPowerFromOtherSide(MinecraftServer server)
+	{
+		return CommonStargateConfig.can_draw_power_from_both_ends.get();
+	}
+	
+	@Override
 	public long extractEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
 		return stargateReturn(server, stargate -> stargate.depleteEnergy(energy, simulate), 0L);
@@ -508,6 +522,12 @@ public class SGJourneyStargate implements Stargate
 				}, false); //TODO Maybe move the "* 20" into DHD info?
 	}
 	
+	@Override
+	public boolean requiresEnergyBypass(MinecraftServer server, int openTime)
+	{
+		return openTime > MAX_OPEN_TIME;
+	}
+	
 	// Saving and loading
 	
 	@Override
@@ -571,30 +591,31 @@ public class SGJourneyStargate implements Stargate
 	
 	
 	
-	public interface StargateConsumer<S extends AbstractStargateEntity>
+	private void stargateRun(MinecraftServer server, Consumer<AbstractStargateEntity> consumer)
 	{
-		void run(S stargate);
+		server.executeIfPossible(() ->
+		{
+			AbstractStargateEntity stargate = getStargateEntity(server);
+			
+			if(stargate != null)
+				consumer.accept(stargate);
+		});
 	}
 	
-	public interface ReturnStargateConsumer<T, S extends AbstractStargateEntity>
+	private <T> T stargateReturn(MinecraftServer server, Function<AbstractStargateEntity, T> function, @Nullable T defaultValue)
 	{
-		T run(S stargate);
-	}
-	
-	private void stargateRun(MinecraftServer server, StargateConsumer<AbstractStargateEntity> consumer)
-	{
-		AbstractStargateEntity stargate = getStargateEntity(server);
+		Object[] arr = { null };
 		
-		if(stargate != null)
-			consumer.run(stargate);
-	}
-	
-	private <T> T stargateReturn(MinecraftServer server, ReturnStargateConsumer<T, AbstractStargateEntity> consumer, @Nullable T defaultValue)
-	{
-		AbstractStargateEntity stargate = getStargateEntity(server);
+		server.executeIfPossible(() ->
+		{
+			AbstractStargateEntity stargate = getStargateEntity(server);
+			
+			if(stargate != null)
+				arr[0] = function.apply(stargate);
+		});
 		
-		if(stargate != null)
-			return consumer.run(stargate);
+		if(arr[0] != null)
+			return (T) arr[0];
 		
 		return defaultValue;
 	}

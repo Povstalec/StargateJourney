@@ -90,28 +90,25 @@ public abstract class CartoucheRenderer
 		
 		Address address = cartouche.getAddress();
 		
-		if(address != null)
+		if(address != null && symbols != null && !address.isEmpty())
 		{
 			float symbolSize = MAX_HEIGHT / address.regularSymbolCount();
 			if(symbolSize > MAX_WIDTH)
 				symbolSize = MAX_WIDTH;
 			
-			if(symbols != null)
+			ResourceLocation texture = symbols.getSymbolTexture();
+			
+			for(int i = 0; i < address.regularSymbolCount(); i++)
 			{
-				ResourceLocation texture = symbols.getSymbolTexture();
+				VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
 				
-				for(int i = 0; i < address.regularSymbolCount(); i++)
-				{
-					VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
-					
-					float yStart = 0.5F + symbolSize * address.regularSymbolCount() / 2;
-					if(yStart > 0.5F + MAX_HEIGHT / 2)
-						yStart = 0.5F + MAX_HEIGHT / 2;
-					
-					float yPos = yStart - symbolSize / 2 - symbolSize * i;
-					
-					renderSymbol(consumer, matrix4, matrix3, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.symbolAt(i)));
-				}
+				float yStart = 0.5F + symbolSize * address.regularSymbolCount() / 2;
+				if(yStart > 0.5F + MAX_HEIGHT / 2)
+					yStart = 0.5F + MAX_HEIGHT / 2;
+				
+				float yPos = yStart - symbolSize / 2 - symbolSize * i;
+				
+				renderSymbol(consumer, matrix4, matrix3, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.symbolAt(i)));
 			}
 		}
         

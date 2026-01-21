@@ -10,7 +10,7 @@
 	
 	"key": 
 	{
-		"A": { "tag": "sgjourney:naquadah_alloy" },
+		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
 		"C": { "item": "sgjourney:reaction_chamber" },
 		"R": { "item": "minecraft:redstone" },
 		"D": { "item": "minecraft:diamond" }

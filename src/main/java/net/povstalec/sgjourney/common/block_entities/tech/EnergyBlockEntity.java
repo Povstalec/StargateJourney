@@ -1,15 +1,13 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,6 +22,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public static final String ENERGY = "Energy"; // TODO Change this to "energy"
 	
 	private boolean canGenerateEnergy;
+	public final SGJourneyEnergy energyStorage = createEnergyStorage();
 	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
 	
 	public EnergyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, boolean canGenerateEnergy)
@@ -41,7 +40,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public void onLoad()
 	{
 		super.onLoad();
-		lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
+		lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
 	}
 	
 	@Override
@@ -55,14 +54,20 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		ENERGY_STORAGE.setEnergy(nbt.getLong(ENERGY));
+		energyStorage.setEnergy(nbt.getLong(ENERGY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
 		super.saveAdditional(nbt);
-		nbt.putLong(ENERGY, ENERGY_STORAGE.getTrueEnergyStored());
+		nbt.putLong(ENERGY, energyStorage.getTrueEnergyStored());
+	}
+	
+	public void updateClient()
+	{
+		if(!level.isClientSide())
+			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
 	}
 	
 	//============================================================================================
@@ -108,36 +113,40 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	protected abstract long maxExtract();
 	
-	public final SGJourneyEnergy ENERGY_STORAGE = new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
+	protected SGJourneyEnergy createEnergyStorage()
 	{
-		@Override
-		public long receiveZeroPointEnergy(long maxReceive, boolean simulate)
+		return new SGJourneyEnergy(this.capacity(), this.maxReceive(), this.maxExtract())
 		{
-			return canReceiveZeroPointEnergy() ? receiveLongEnergy(maxReceive, simulate) : 0;
-		}
-		
-		@Override
-		public boolean canExtract()
-		{
-			return outputsEnergy();
-		}
-		
-		@Override
-		public boolean canReceive()
-		{
-			return receivesEnergy();
-		}
-		
-		@Override
-		public void onEnergyChanged(long difference, boolean simulate)
-		{
-			changeEnergy(difference, simulate);
-		}
-	};
+			@Override
+			public long receiveZeroPointEnergy(long maxReceive, boolean simulate)
+			{
+				return canReceiveZeroPointEnergy() ? receiveLongEnergy(maxReceive, simulate) : 0;
+			}
+			
+			@Override
+			public boolean canExtract()
+			{
+				return outputsEnergy();
+			}
+			
+			@Override
+			public boolean canReceive()
+			{
+				return receivesEnergy();
+			}
+			
+			@Override
+			public void onEnergyChanged(long difference, boolean simulate)
+			{
+				changeEnergy(difference, simulate);
+			}
+		};
+	}
 	
 	protected void changeEnergy(long difference, boolean simulate)
 	{
 		this.setChanged();
+		updateClient();
 	}
 	
 	public long depleteEnergy(long amount, boolean simulate)
@@ -150,48 +159,48 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			this.setEnergy(storedEnergy - energyDepleted);
 		
 		if(energyDepleted != 0)
-			ENERGY_STORAGE.onEnergyChanged(energyDepleted, simulate);
+			energyStorage.onEnergyChanged(energyDepleted, simulate);
 		
 		return energyDepleted;
 	}
 	
 	public long getEnergyStored()
 	{
-		return ENERGY_STORAGE.getTrueEnergyStored();
+		return energyStorage.getTrueEnergyStored();
 	}
 	
 	public long extractEnergy(long maxExtract, boolean simulate)
 	{
-		return ENERGY_STORAGE.extractLongEnergy(maxExtract, simulate);
+		return energyStorage.extractLongEnergy(maxExtract, simulate);
 	}
 	
 	public long receiveEnergy(long maxReceive, boolean simulate)
 	{
-		return ENERGY_STORAGE.receiveLongEnergy(maxReceive, simulate);
+		return energyStorage.receiveLongEnergy(maxReceive, simulate);
 	}
 	
 	public long setEnergy(long energy)
 	{
-		return ENERGY_STORAGE.setEnergy(energy);
+		return energyStorage.setEnergy(energy);
 	}
 	
 	public boolean canExtract()
 	{
-		return ENERGY_STORAGE.canExtract();
+		return energyStorage.canExtract();
 	}
 	
 	public boolean canExtractEnergy(long energy)
 	{
 		// Max amount of energy that can be stored
-		if(ENERGY_STORAGE.getTrueMaxEnergyStored() < energy)
+		if(energyStorage.getTrueMaxEnergyStored() < energy)
 			return false;
 
 		// Max amount of energy that can be extracted
-		if(ENERGY_STORAGE.maxExtract() < energy)
+		if(energyStorage.maxExtract() < energy)
 			return false;
 		
 		// Amount of energy that is stored
-		if(ENERGY_STORAGE.getTrueEnergyStored() < energy)
+		if(energyStorage.getTrueEnergyStored() < energy)
 			return false;
 		
 		return true;
@@ -199,22 +208,22 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	public boolean canReceive()
 	{
-		return ENERGY_STORAGE.canReceive();
+		return energyStorage.canReceive();
 	}
 	
 	public long getEnergyCapacity()
 	{
-		return ENERGY_STORAGE.getTrueMaxEnergyStored();
+		return energyStorage.getTrueMaxEnergyStored();
 	}
 	
 	public long getMaxExtract()
 	{
-		return ENERGY_STORAGE.maxExtract();
+		return energyStorage.maxExtract();
 	}
 	
 	public long getMaxReceive()
 	{
-		return ENERGY_STORAGE.maxReceive();
+		return energyStorage.maxReceive();
 	}
 	
 	protected void generateEnergy(long energyGenerated)
@@ -225,12 +234,12 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		long moreEnergy = getEnergyStored() + energyGenerated;
 		
 		if(this.capacity() >= moreEnergy)
-			this.ENERGY_STORAGE.setEnergy(moreEnergy);
+			this.energyStorage.setEnergy(moreEnergy);
 	}
 	
 	public boolean canReceive(long receivedEnergy)
 	{
-		return ENERGY_STORAGE.canReceive(receivedEnergy);
+		return energyStorage.canReceive(receivedEnergy);
 	}
 	
 	protected void drainEnergyStorage(IEnergyStorage energyStorage)
@@ -240,19 +249,19 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		
 		if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 		{
-			long simulatedOutputAmount = sgjourneyEnergy.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
-			long simulatedReceiveAmount = ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
+			long simulatedOutputAmount = sgjourneyEnergy.extractLongEnergy(this.energyStorage.maxExtract(), true);
+			long simulatedReceiveAmount = this.energyStorage.receiveLongEnergy(simulatedOutputAmount, true);
 			
 			sgjourneyEnergy.extractLongEnergy(simulatedReceiveAmount, false);
-			ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
+			this.energyStorage.receiveLongEnergy(simulatedReceiveAmount, false);
 		}
 		else
 		{
-			int simulatedOutputAmount = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
-			int simulatedReceiveAmount = ENERGY_STORAGE.receiveEnergy(simulatedOutputAmount, true);
+			int simulatedOutputAmount = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(this.energyStorage.maxExtract()), true);
+			int simulatedReceiveAmount = this.energyStorage.receiveEnergy(simulatedOutputAmount, true);
 			
 			energyStorage.extractEnergy(simulatedReceiveAmount, false);
-			ENERGY_STORAGE.receiveEnergy(simulatedReceiveAmount, false);
+			this.energyStorage.receiveEnergy(simulatedReceiveAmount, false);
 		}
 	}
 	
@@ -263,18 +272,18 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		
 		if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 		{
-			long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(ENERGY_STORAGE.maxExtract(), true);
+			long simulatedOutputAmount = this.energyStorage.extractLongEnergy(this.energyStorage.maxExtract(), true);
 			long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
 			
-			ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
+			this.energyStorage.extractLongEnergy(simulatedReceiveAmount, false);
 			sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
 		}
 		else
 		{
-			int simulatedOutputAmount = ENERGY_STORAGE.extractEnergy(SGJourneyEnergy.regularEnergy(ENERGY_STORAGE.maxExtract()), true);
+			int simulatedOutputAmount = this.energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(this.energyStorage.maxExtract()), true);
 			int simulatedReceiveAmount = energyStorage.receiveEnergy(simulatedOutputAmount, true);
 			
-			ENERGY_STORAGE.extractEnergy(simulatedReceiveAmount, false);
+			this.energyStorage.extractEnergy(simulatedReceiveAmount, false);
 			energyStorage.receiveEnergy(simulatedReceiveAmount, false);
 		}
 	}
@@ -284,7 +293,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		if(outputDirection == null)
 			return;
 		
-		if(ENERGY_STORAGE.canExtract())
+		if(energyStorage.canExtract())
 		{
 			BlockEntity blockentity = level.getBlockEntity(worldPosition.relative(outputDirection));
 			
@@ -303,12 +312,5 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public void fillItemEnergy(ItemStack stack)
 	{
 		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy -> fillEnergyStorage(itemEnergy));
-	}
-	
-	public void getStatus(Player player)
-	{
-		if(level.isClientSide())
-			return;
-		player.sendSystemMessage(Component.translatable("info.sgjourney.energy").append(Component.literal(": " + this.getEnergyStored() + " FE")).withStyle(ChatFormatting.DARK_RED));
 	}
 }

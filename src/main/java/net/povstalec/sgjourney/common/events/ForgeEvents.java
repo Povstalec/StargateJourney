@@ -46,6 +46,7 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.MissingMappingsEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
@@ -67,11 +68,18 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
+import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
 {
+	@SubscribeEvent
+	public static void onMissingMapping(MissingMappingsEvent event)
+	{
+		RemappingHelper.startRemapping(event);
+	}
+	
 	@SubscribeEvent
 	public static void onServerStarting(ServerStartingEvent event)
 	{

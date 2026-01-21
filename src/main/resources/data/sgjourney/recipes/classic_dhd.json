@@ -9,7 +9,7 @@
 	],
 	"key":
 	{
-		"I": {"tag": "sgjourney:naquadah_alloy"},
+		"I": {"tag": "sgjourney:naquadah_iron_alloy"},
 		"B": {"item": "minecraft:stone_button"},
 		"R": {"item": "minecraft:redstone"},
 		"C": {"item": "sgjourney:communication_crystal"}

@@ -138,6 +138,14 @@ public class DHDInfo
 			
 	}
 	
+	public void onDialAttempt(StargateInfo.Feedback feedback, Address address)
+	{
+		if(this.dhd == null)
+			return;
+		
+		this.dhd.onDialAttempt(feedback, address);
+	}
+	
 	public boolean hasDHD()
 	{
 		return this.dhd != null;

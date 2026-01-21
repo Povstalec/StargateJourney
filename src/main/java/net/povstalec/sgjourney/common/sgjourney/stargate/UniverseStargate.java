@@ -14,6 +14,13 @@ public class UniverseStargate extends SGJourneyStargate
 	
 	
 	
+	@Override
+	public StargateInfo.Gen getGeneration()
+	{
+		return StargateInfo.Gen.GEN_1;
+	}
+	
+	@Override
 	public StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
 		return doKawoosh ? CHEVRON_LOCK_SPEED : StargateInfo.ChevronLockSpeed.FAST;

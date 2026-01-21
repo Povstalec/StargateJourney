@@ -35,20 +35,45 @@ public class ItemInit
 	// Materials
 	public static final RegistryObject<Item> RAW_NAQUADAH = ITEMS.register("raw_naquadah", 
 			() -> new Item(new Item.Properties().fireResistant()));
-	public static final RegistryObject<Item> NAQUADAH_ALLOY = ITEMS.register("naquadah_alloy", 
+	public static final RegistryObject<Item> NAQUADAH_COPPER_MIXTURE = ITEMS.register("naquadah_copper_mixture",
 			() -> new Item(new Item.Properties().fireResistant()));
-	public static final RegistryObject<Item> NAQUADAH_ALLOY_NUGGET = ITEMS.register("naquadah_alloy_nugget", 
+	public static final RegistryObject<Item> NAQUADAH_COPPER_ALLOY = ITEMS.register("naquadah_copper_alloy",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> NAQUADAH_COPPER_NUGGET = ITEMS.register("naquadah_copper_nugget",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> NAQUADAH_IRON_MIXTURE = ITEMS.register("naquadah_iron_mixture",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> NAQUADAH_IRON_ALLOY = ITEMS.register("naquadah_iron_alloy",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> NAQUADAH_IRON_NUGGET = ITEMS.register("naquadah_iron_nugget",
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> REFINED_NAQUADAH = ITEMS.register("refined_naquadah", 
 			() -> new Item(new Item.Properties().fireResistant()));
+	//TODO Enriched Naquadah
 	public static final RegistryObject<Item> PURE_NAQUADAH = ITEMS.register("pure_naquadah", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant()));
 	public static final RegistryObject<Item> NAQUADAH = ITEMS.register("naquadah", 
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant()));
 	
-	// Crafting Items
-	public static final RegistryObject<Item> NAQUADAH_ROD = ITEMS.register("naquadah_rod", 
+	
+	public static final RegistryObject<Item> RAW_NAQUADRIA = ITEMS.register("raw_naquadria",
 			() -> new Item(new Item.Properties().fireResistant()));
+	
+	public static final RegistryObject<Item> RAW_TRINIUM = ITEMS.register("raw_trinium",
+			() -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> TRINIUM_INGOT = ITEMS.register("trinium_ingot",
+			() -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> TRINIUM_NUGGET = ITEMS.register("trinium_nugget",
+			() -> new Item(new Item.Properties()));
+	//TODO Refined Trinium
+	
+	// Crafting Items
+	public static final RegistryObject<Item> NAQUADAH_IRON_ROD = ITEMS.register("naquadah_iron_rod",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> NAQUADAH_COPPER_ROD = ITEMS.register("naquadah_copper_rod",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> TRINIUM_ROD = ITEMS.register("trinium_rod",
+			() -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> REACTION_CHAMBER = ITEMS.register("reaction_chamber", 
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> PLASMA_CONVERTER = ITEMS.register("plasma_converter", 
@@ -150,6 +175,9 @@ public class ItemInit
 	public static final RegistryObject<HoeItem> NAQUADAH_HOE = ITEMS.register("naquadah_hoe", 
 			() -> new HoeItem(ToolMaterialInit.NAQUADAH, -2, 0.0f, new Item.Properties().fireResistant()));
 	
+	public static final RegistryObject<Item> TRINIUM_ARROW = ITEMS.register("trinium_arrow",
+			() -> new TriniumArrowItem(new Item.Properties()));
+	
 	// Armor
 	public static final RegistryObject<ArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet",
 			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
@@ -196,7 +224,7 @@ public class ItemInit
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 	
 	public static final RegistryObject<CrystalReaderItem> CRYSTAL_READER = ITEMS.register("crystal_reader",
-			() -> new CrystalReaderItem(new Item.Properties().stacksTo(1)));
+			() -> new CrystalReaderItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	
 	public static final RegistryObject<GDOItem> GDO = ITEMS.register("gdo", 
 			() -> new GDOItem(new Item.Properties().stacksTo(1)));
@@ -220,7 +248,7 @@ public class ItemInit
 	public static final RegistryObject<StargateIrisItem.Netherite> NETHERITE_IRIS = ITEMS.register("netherite_iris", 
 			() -> new StargateIrisItem.Netherite(new Item.Properties().stacksTo(1).fireResistant()));
 
-	public static final RegistryObject<StargateIrisItem.NaquadahAlloy> NAQUADAH_ALLOY_IRIS = ITEMS.register("naquadah_alloy_iris", 
+	public static final RegistryObject<StargateIrisItem.NaquadahAlloy> NAQUADAH_IRON_IRIS = ITEMS.register("naquadah_iron_iris",
 			() -> new StargateIrisItem.NaquadahAlloy(new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<StargateIrisItem.Trinium> TRINIUM_IRIS = ITEMS.register("trinium_iris", 
 			() -> new StargateIrisItem.Trinium(new Item.Properties().stacksTo(1)));

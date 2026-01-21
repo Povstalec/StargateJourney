@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
+import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
 
 public class CrystalReaderItem extends Item
 {
@@ -40,8 +41,8 @@ public class CrystalReaderItem extends Item
 			{
 				if(transporter.getID() != null)
 				{
-					memoryCrystal.saveUUID(mainHandItem, transporter.getID());
-					player.displayClientMessage(Component.translatable("message.sgjourney.memory_crystal.saved_id").withStyle(ChatFormatting.BLUE), true);
+					memoryCrystal.saveMemoryEntry(mainHandItem, new MemoryEntry.TransporterID("", level.getGameTime(), MemoryEntry.Type.TRANSPORTER_ID, transporter.getID()), false);
+					player.displayClientMessage(Component.translatable("message.sgjourney.memory_crystal.saved.transporter_id").withStyle(ChatFormatting.BLUE), true);
 					return InteractionResult.SUCCESS;
 				}
 			}
@@ -65,7 +66,7 @@ public class CrystalReaderItem extends Item
 			
 			for(int i = 0; i < list.size(); i++)
 			{
-				player.sendSystemMessage(Component.literal(memoryCrystal.memoryStringAt(list, i)));
+				//TODO player.sendSystemMessage(Component.literal(memoryCrystal.memoryStringAt(list, i)));
 			}
 		}
 		

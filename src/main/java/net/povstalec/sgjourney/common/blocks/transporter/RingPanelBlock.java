@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,14 +22,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 
@@ -63,15 +64,14 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 			
         	if(blockEntity instanceof RingPanelEntity panel)
         	{
-        		panel.setTransportRings();
-        		panel.getNearest6Rings((ServerLevel) level, pos, 32768);
+				panel.tryUpdateButtons();
 				
         		MenuProvider containerProvider = new MenuProvider() 
         		{
         			@Override
         			public Component getDisplayName() 
         			{
-        				return Component.translatable("screen.sgjourney.transport_rings");
+        				return Component.translatable("screen.sgjourney.ring_panel");
         			}
         			
         			@Override
@@ -96,7 +96,7 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
-				ItemStack itemstack = new ItemStack(BlockInit.RING_PANEL.get());
+				ItemStack itemstack = new ItemStack(BlockInit.GOAULD_RING_PANEL.get());
 				
 				blockentity.saveToItem(itemstack);
 				
@@ -139,4 +139,17 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 		};
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Nullable
+	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typeA, BlockEntityType<E> typeB, BlockEntityTicker<? super E> ticker)
+	{
+		return typeB == typeA ? (BlockEntityTicker<A>) ticker : null;
+	}
+	
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
+	{
+		return createTickerHelper(type, BlockEntityInit.GOAULD_RING_PANEL.get(), RingPanelEntity::tick);
+	}
 }

@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.client.widgets;
 
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 
 public class DHDButton extends Button
@@ -28,4 +29,7 @@ public class DHDButton extends Button
 		else
 			return false;
 	}
+	
+	@Override
+	public void playDownSound(SoundManager soundManager) {}
 }

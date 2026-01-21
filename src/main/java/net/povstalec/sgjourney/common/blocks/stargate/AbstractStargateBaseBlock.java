@@ -41,6 +41,7 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
@@ -309,7 +310,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			if(blockEntityTag.contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.getTag().getCompound("BlockEntityTag").getByte(AbstractStargateEntity.GENERATION_STEP)))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 			
-			if(blockEntityTag.getBoolean(AbstractStargateEntity.PRIMARY))
+			if(blockEntityTag.getBoolean(AbstractStargateEntity.PRIMARY) && CommonStargateNetworkConfig.primary_stargate.get())
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
 		}
         

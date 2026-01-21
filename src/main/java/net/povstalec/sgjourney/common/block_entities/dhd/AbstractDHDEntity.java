@@ -3,6 +3,10 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.WorldGenLevel;
@@ -20,7 +24,9 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,14 +44,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import javax.annotation.Nonnull;
@@ -53,10 +56,15 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity
 {
+	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
+	
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
 	
 	public static final String ENERGY_INVENTORY = "energy_inventory";
+	
+	public static final String IS_CENTER_BUTTON_ENGAGED = "is_center_button_engaged";
+	public static final String ADDRESS = Address.ADDRESS;
 	
 	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
 	public static final String CRYSTAL_MODE = "CrystalMode";
@@ -166,6 +174,46 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		if(isProtected)
 			tag.putBoolean(PROTECTED, true);
+	}
+	
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		tag.putLong(ENERGY, energyStorage.getTrueEnergyStored());
+		
+		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		
+		address.saveToCompoundTag(tag, ADDRESS);
+		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			energyStorage.setEnergy(tag.getLong(ENERGY));
+			
+			if(tag.contains(POINT_OF_ORIGIN))
+				symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
+			if(tag.contains(SYMBOLS))
+				symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
+			
+			address.fromArray(tag.getIntArray(ADDRESS));
+			isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
+		}
 	}
 	
 	public SymbolInfo symbolInfo()
@@ -396,18 +444,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return CommonDHDConfig.milky_way_dhd_max_energy_extract.get();
 	}
 	
-	private boolean stackHasEnergy(ItemStack stack)
-	{
-		if(stack.getCapability(ForgeCapabilities.ENERGY).isPresent())
-		{
-			IEnergyStorage energyStorage = stack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
-			
-			return energyStorage.canExtract() && energyStorage.getEnergyStored() > 0;
-		}
-		
-		return false;
-	}
-	
 	private void tryStoreEnergy(ItemStack energyStack)
 	{
 		ItemStack inputStack = energyItemHandler.getStackInSlot(1);
@@ -446,7 +482,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.getEnergyStored(), maxEnergyDeplete());
 			
 			// Uses energy from a Energy Item if one is present
-			if (stackHasEnergy(energyStack))
+			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
 				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
 				
@@ -581,6 +617,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	protected abstract SoundEvent getPressSound();
 	
+	public abstract void onDialAttempt(StargateInfo.Feedback feedback, Address address);
+	
 	/**
 	 * Engages the next Stargate chevron
 	 * @param symbol
@@ -589,7 +627,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		if(this.stargate != null)
 		{
-			if(!StargateJourneyConfig.disable_energy_use.get() && getEnergyStored() < buttonPressEnergyCost())
+			if(REQUIRE_ENERGY && getEnergyStored() < buttonPressEnergyCost())
 			{
 				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), 5);
 				return;
@@ -598,10 +636,12 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			if(symbol == 0)
 				level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
 			else
-				level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.25F, 1F);
+				level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.5F, 1F);
 			
 			stargate.dhdEngageSymbol(symbol);
-			depleteEnergy(buttonPressEnergyCost(), false);
+			
+			if(REQUIRE_ENERGY)
+				depleteEnergy(buttonPressEnergyCost(), false);
 		}
 		else
 			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), 5);
@@ -620,14 +660,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		dhd.outputEnergy(null);
 		dhd.updateClient();
     }
-	
-	public void updateClient()
-	{
-		if(level.isClientSide())
-			return;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, getEnergyStored(), symbolInfo().pointOfOrigin(), symbolInfo().symbols(), this.address.getArray(), this.isCenterButtonEngaged));
-	}
 	
 	//============================================================================================
 	//*****************************************Generation*****************************************

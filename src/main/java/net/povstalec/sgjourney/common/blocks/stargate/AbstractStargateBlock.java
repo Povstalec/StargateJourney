@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 
@@ -43,6 +45,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
@@ -53,6 +56,7 @@ import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock, ProtectedBlock
 {
@@ -145,15 +149,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		
 		return Optional.empty();
 	}
-	
-	/*public Optional<StargateBlockCover> getBlockCover(Level level, BlockState state, BlockPos position)
-	{
-		AbstractStargateEntity stargate = getStargate(level, position, state);
-		if(stargate != null)
-			return Optional.of(stargate.blockCover);
-		
-		return Optional.empty();
-	}*/
 	
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context)
@@ -372,4 +367,34 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		
         return super.getCloneItemStack(state, target, level, pos, player);
 	}
+	
+	@Nullable
+	public SGJourneyWeatheringBlock.WeatherState getWeatherState(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		Optional<StargateBlockCover> blockCover = getBlockCover(reader, state, pos);
+		
+		if(blockCover.isPresent() && !blockCover.get().blockStates.isEmpty())
+		{
+			Optional<BlockState> blockState = blockCover.get().getBlockAt(state.getValue(PART));
+			if(blockState.isPresent() && blockState.get().getBlock() instanceof SGJourneyWeatheringBlock weatheringBlock)
+				return weatheringBlock.getAge();
+			
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	{
+		getBlockCover(level, state, pos).ifPresent(blockCover -> blockCover.doWeatheringAt(state.getValue(PART), pos, level, randomSource));
+	}
+	
+	@Override
+	public boolean isRandomlyTicking(BlockState state)
+	{
+		return true;
+	}
+	
+	// TODO Axe scraping, wax
 }

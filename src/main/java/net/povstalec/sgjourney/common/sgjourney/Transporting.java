@@ -19,9 +19,9 @@ import java.util.*;
 
 public class Transporting
 {
-	public static void startTransport(MinecraftServer server, Transporter initialTransporter, UUID targetUUID)
+	public static void startTransport(MinecraftServer server, Transporter initialTransporter, TransporterID targetID)
 	{
-		Transporter targetTransporter = TransporterNetwork.get(server).getTransporter(targetUUID);
+		Transporter targetTransporter = TransporterNetwork.get(server).getTransporter(targetID);
 		
 		TransporterNetwork.get(server).createConnection(server, initialTransporter, targetTransporter);
 	}

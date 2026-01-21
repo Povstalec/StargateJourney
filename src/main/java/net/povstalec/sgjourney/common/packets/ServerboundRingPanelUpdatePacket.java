@@ -35,9 +35,7 @@ public class ServerboundRingPanelUpdatePacket
     	ctx.get().enqueueWork(() -> {
     		final BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(blockPos);
     		if(blockEntity instanceof RingPanelEntity ringPanel)
-    		{
-    			ringPanel.activateRings(number);
-    		}
+    			ringPanel.pressButton(number);
     	});
         return true;
     }

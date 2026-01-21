@@ -5,11 +5,12 @@ import java.util.*;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
-import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,8 +131,8 @@ public class RingRemoteItem extends Item
 						ItemStack crystalStack = itemHandler.getStackInSlot(0);
 						
 						//TODO Transport based on coords, let players choose from the list of transport locations
-						if(crystalStack.getItem() instanceof MemoryCrystalItem crystal)
-							tryStartTransport(level, player, transporterFromUUID(level, crystal.getFirstUUID(crystalStack)));
+						if(crystalStack.getItem() instanceof MemoryCrystalItem)
+							tryStartTransport(level, player, transporterFromIDEntry(level, MemoryCrystalItem.loadFirstMemoryEntry(crystalStack, MemoryEntry.Type.TRANSPORTER_ID)));
 						else
 							player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_coordinates").withStyle(ChatFormatting.BLUE), true);
 					});
@@ -143,9 +144,12 @@ public class RingRemoteItem extends Item
     }
 	
 	@Nullable
-	private static Transporter transporterFromUUID(Level level, UUID uuid)
+	private static Transporter transporterFromIDEntry(Level level, MemoryEntry.TransporterID transporterID)
 	{
-		return TransporterNetwork.get(level).getTransporter(uuid);
+		if(transporterID == null)
+			return null;
+		
+		return TransporterNetwork.get(level).getTransporter(transporterID.entry());
 	}
 	
 	@Nullable
@@ -178,63 +182,62 @@ public class RingRemoteItem extends Item
 		{
 			Optional<Boolean> canActivate = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> !itemHandler.getStackInSlot(0).isEmpty());
 			
-			return canActivate.isPresent() ? canActivate.get() : false;
+			return canActivate.orElse(false);
 		}
 		
 		return false;
 	}
 	
-	private int[] findFirstCoords(ItemStack memoryCrystal)
+	public ItemStack getHeldItem(ItemStack holderStack)
 	{
-		int[] address = new int[0];
-		/*for(int i = 0; i < MemoryCrystalItem.getMemoryListSize(memoryCrystal); i++)
-    	{
-        	address = MemoryCrystalItem.getAddressAt(memoryCrystal, i);
-        	
-        	if(address.length > 0)
-        		return address;
-    	}*/
-		return address;
+		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+		if(itemHandler == null)
+			return ItemStack.EMPTY;
+		
+		return itemHandler.getStackInSlot(0);
 	}
 	
 	@Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-        stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-        {
-        	ItemStack crystalStack = itemHandler.getStackInSlot(0);
-        	if(crystalStack.getItem() instanceof MemoryCrystalItem crystal)
-        	{
-                tooltipComponents.add(Component.translatable("item.sgjourney.memory_crystal").withStyle(ChatFormatting.BLUE));
-				
-				ListTag list = MemoryCrystalItem.getMemoryList(crystalStack);
-				for(int i = 0; i < list.size(); i++)
-				{
-					tooltipComponents.add(Component.literal("[" + i + "] ")
-							.append(memoryTypeAt(level, stack, list, i)));
-				}
-        	}
-        });
+		ItemStack heldItem = getHeldItem(stack);
+		
+		MutableComponent itemComponent = Component.translatable("tooltip.sgjourney.holding").append(Component.literal(": "));
+		if(heldItem.isEmpty())
+			itemComponent.append("[-]");
+		else
+			itemComponent.append(heldItem.getDisplayName());
+		tooltipComponents.add(itemComponent);
+		
+		if(!heldItem.isEmpty())
+		{
+			ListTag list = MemoryCrystalItem.getMemoryList(heldItem);
+			for(int i = 0; i < list.size(); i++)
+			{
+				MemoryEntry.Type type = MemoryCrystalItem.memoryTypeAt(list, i);
+				if(type == MemoryEntry.Type.TRANSPORTER_ID || type == MemoryEntry.Type.COORDINATES)
+					tooltipComponents.add(Component.literal("[" + i + "] ").withStyle(ChatFormatting.BLUE).append(memoryTypeAt(list, type, i)));
+			}
+		}
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 	
-	private Component memoryTypeAt(Level level, ItemStack stack, ListTag list, int index)
+	private Component memoryTypeAt(ListTag list, MemoryEntry.Type type, int index)
 	{
-		if(list.getCompound(index).contains(MemoryCrystalItem.ADDRESS, Tag.TAG_INT_ARRAY))
-			return Component.translatable("tooltip.sgjourney.address").withStyle(ChatFormatting.AQUA);
-		
-		Vec3i coords = MemoryCrystalItem.getCoords(list, index);
-		if(coords != null)
+		if(type == MemoryEntry.Type.TRANSPORTER_ID)
 		{
-			return Component.translatable("tooltip.sgjourney.coordinates")
-					.append(Component.literal(" " + coords.toShortString())).withStyle(ChatFormatting.BLUE);
+			MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
+			if(transporterID != null)
+				return Component.literal(transporterID.toString()).withStyle(ChatFormatting.DARK_AQUA);
+		}
+		else
+		{
+			MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
+			if(coords != null)
+				return Component.literal(" " + coords.entry().toShortString()).withStyle(ChatFormatting.BLUE);
 		}
 		
-		UUID id = MemoryCrystalItem.getUUID(list, index);
-		if(id != null)
-			return Component.literal(id.toString()).withStyle(ChatFormatting.DARK_AQUA);
-		else
-			return Component.translatable("tooltip.sgjourney.corrupt_data").withStyle(ChatFormatting.DARK_RED);
+		return Component.empty();
 	}
 }

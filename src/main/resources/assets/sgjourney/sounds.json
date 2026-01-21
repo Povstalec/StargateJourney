@@ -520,6 +520,15 @@
 		]
 	},
 	
+	"ring_panel_press":
+	{
+		"subtitle": "sounds.sgjourney.ring_panel_press",
+		"sounds":
+		[
+			"sgjourney:ring_panel_button_press"
+		]
+	},
+	
 	"matok_fire":
 	{
 		"subtitle": "sounds.sgjourney.matok_fire",

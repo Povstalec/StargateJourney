@@ -43,42 +43,7 @@ public final class PacketHandlerInit
 		.consumerMainThread(ClientboundArcheologistNotebookOpenScreenPacket::handle)
 		.add();
 		
-		INSTANCE.messageBuilder(ClientboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundTransceiverUpdatePacket::encode)
-		.decoder(ClientboundTransceiverUpdatePacket::new)
-		.consumerMainThread(ClientboundTransceiverUpdatePacket::handle)
-		.add();
-		
 		// Alien Tech
-		INSTANCE.messageBuilder(ClientboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundInterfaceUpdatePacket::encode)
-		.decoder(ClientboundInterfaceUpdatePacket::new)
-		.consumerMainThread(ClientboundInterfaceUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRingsUpdatePacket::encode)
-		.decoder(ClientboundRingsUpdatePacket::new)
-		.consumerMainThread(ClientboundRingsUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundRingsUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRingsUpdatePacket::encode)
-		.decoder(ClientboundRingsUpdatePacket::new)
-		.consumerMainThread(ClientboundRingsUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundRingPanelUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRingPanelUpdatePacket::encode)
-		.decoder(ClientboundRingPanelUpdatePacket::new)
-		.consumerMainThread(ClientboundRingPanelUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundDHDUpdatePacket::encode)
-		.decoder(ClientboundDHDUpdatePacket::new)
-		.consumerMainThread(ClientboundDHDUpdatePacket::handle)
-		.add();
 		
 		// Stargates
 		INSTANCE.messageBuilder(ClientboundStargateParticleSpawnPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
@@ -86,76 +51,6 @@ public final class PacketHandlerInit
 		.decoder(ClientboundStargateParticleSpawnPacket::new)
 		.consumerMainThread(ClientboundStargateParticleSpawnPacket::handle)
 		.add();
-		INSTANCE.messageBuilder(ClientboundStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundStargateUpdatePacket::encode)
-		.decoder(ClientboundStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundStargateUpdatePacket::handle)
-		.add();
-		INSTANCE.messageBuilder(ClientboundRotatingStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundRotatingStargateUpdatePacket::encode)
-		.decoder(ClientboundRotatingStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundRotatingStargateUpdatePacket::handle)
-		.add();
-		INSTANCE.messageBuilder(ClientboundStargateStateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundStargateStateUpdatePacket::encode)
-		.decoder(ClientboundStargateStateUpdatePacket::new)
-		.consumerMainThread(ClientboundStargateStateUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundUniverseStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundUniverseStargateUpdatePacket::encode)
-		.decoder(ClientboundUniverseStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundUniverseStargateUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundMilkyWayStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundMilkyWayStargateUpdatePacket::encode)
-		.decoder(ClientboundMilkyWayStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundMilkyWayStargateUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundPegasusStargateUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundPegasusStargateUpdatePacket::encode)
-		.decoder(ClientboundPegasusStargateUpdatePacket::new)
-		.consumerMainThread(ClientboundPegasusStargateUpdatePacket::handle)
-		.add();
-		
-		// Misc
-		INSTANCE.messageBuilder(ClientboundNaquadahGeneratorUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundNaquadahGeneratorUpdatePacket::encode)
-		.decoder(ClientboundNaquadahGeneratorUpdatePacket::new)
-		.consumerMainThread(ClientboundNaquadahGeneratorUpdatePacket::handle)
-		.add();
-
-		INSTANCE.messageBuilder(ClientboundNaquadahLiquidizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundNaquadahLiquidizerUpdatePacket::encode)
-		.decoder(ClientboundNaquadahLiquidizerUpdatePacket::new)
-		.consumerMainThread(ClientboundNaquadahLiquidizerUpdatePacket::handle)
-		.add();
-
-		INSTANCE.messageBuilder(ClientboundCrystallizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundCrystallizerUpdatePacket::encode)
-		.decoder(ClientboundCrystallizerUpdatePacket::new)
-		.consumerMainThread(ClientboundCrystallizerUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundSymbolUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundSymbolUpdatePacket::encode)
-		.decoder(ClientboundSymbolUpdatePacket::new)
-		.consumerMainThread(ClientboundSymbolUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundCartoucheUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-		.encoder(ClientboundCartoucheUpdatePacket::encode)
-		.decoder(ClientboundCartoucheUpdatePacket::new)
-		.consumerMainThread(ClientboundCartoucheUpdatePacket::handle)
-		.add();
-		
-		INSTANCE.messageBuilder(ClientboundBatteryBlockUpdatePacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientboundBatteryBlockUpdatePacket::encode)
-				.decoder(ClientboundBatteryBlockUpdatePacket::new)
-				.consumerMainThread(ClientboundBatteryBlockUpdatePacket::handle)
-				.add();
 		
 		//============================================================================================
 		//*******************************************Sounds*******************************************
@@ -238,10 +133,10 @@ public final class PacketHandlerInit
 		.add();
 		
 		INSTANCE.messageBuilder(ServerboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundInterfaceUpdatePacket::encode)
-				.decoder(ServerboundInterfaceUpdatePacket::new)
-				.consumerMainThread(ServerboundInterfaceUpdatePacket::handle)
-				.add();
+		.encoder(ServerboundInterfaceUpdatePacket::encode)
+		.decoder(ServerboundInterfaceUpdatePacket::new)
+		.consumerMainThread(ServerboundInterfaceUpdatePacket::handle)
+		.add();
 		
 		INSTANCE.messageBuilder(ServerboundGDOUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
 		.encoder(ServerboundGDOUpdatePacket::encode)

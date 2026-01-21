@@ -1,0 +1,7 @@
+{
+	"type": "minecraft:blasting",
+	"ingredient": { "item": "sgjourney:raw_trinium" },
+	"result": { "item": "sgjourney:trinium_ingot" },
+	"experience": 1.0,
+	"cookingtime": 200
+}

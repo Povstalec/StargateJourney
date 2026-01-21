@@ -501,8 +501,8 @@ public class CommandInit
 		{
 			for(Transporter transporter : transporters)
 			{
-				BlockPos coords = transporter.getBlockPos();
-				context.getSource().sendSuccess(() -> Component.literal("X: " + coords.getX() + " Y: " + coords.getY() + " Z: " + coords.getZ()).withStyle(ChatFormatting.BLUE), false);
+				Vec3 coords = transporter.getPosition(level.getServer());
+				context.getSource().sendSuccess(() -> Component.literal("X: " + (int) Math.floor(coords.x()) + " Y: " + (int) Math.floor(coords.y()) + " Z: " + (int) Math.floor(coords.z())).withStyle(ChatFormatting.BLUE), false);
 			}
 		}
 		context.getSource().sendSuccess(() -> Component.literal("-------------------------"), false);

@@ -242,7 +242,7 @@ public class Universe extends SavedData
 							address = generateAddress(galaxyKey.location(), galaxy.getSize(), systemValue);
 						}
 						else
-							address = new Address.Immutable(Address.integerListToArray(randomizableAddress.getFirst()));
+							address = new Address.Immutable(randomizableAddress.getFirst());
 						
 						galaxy.addSolarSystem(address, networkSolarSystem);
 			    		networkSolarSystem.addToGalaxy(galaxy, address);

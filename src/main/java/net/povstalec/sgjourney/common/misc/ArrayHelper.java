@@ -30,6 +30,11 @@ public class ArrayHelper
 		return addressArray;
 	}
 	
+	public static int[] integerListToArray(List<Integer> integerList)
+	{
+		return integerList.stream().mapToInt((integer) -> integer).toArray();
+	}
+	
 	public static boolean differentNumbers(int[] address)
 	{
 		List<Integer> arrayList = Arrays.stream(address).boxed().toList();

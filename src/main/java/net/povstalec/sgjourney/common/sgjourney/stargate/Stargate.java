@@ -8,7 +8,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
@@ -299,9 +298,15 @@ public interface Stargate
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @return Max amount of energy tuat can be stored in the Stargate's energy buffer
+	 * @return Max amount of energy that can be stored in the Stargate's energy buffer
 	 */
 	long getEnergyCapacity(MinecraftServer server);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return True if this Stargate can supply energy to the connection even if it did not initiate the connection
+	 */
+	boolean canPowerFromOtherSide(MinecraftServer server);
 	
 	/**
 	 * Extracts energy from the Stargate's energy buffer (used mainly for drawing energy to establish and then feed a Stargate Connection)
@@ -326,14 +331,14 @@ public interface Stargate
 	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
 	 * @return Time (in ticks) it takes the Stargate to engage its Chevrons and start establishing a wormhole (kawoosh is not included in this)
 	 */
-	int dialedEngageTime(MinecraftServer server, boolean doKawoosh);
+	int dialedEngageTime(MinecraftServer server, boolean doKawoosh); //TODO Make the network wait
 	
 	/**
 	 * @param server Current Minecraft Server
 	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
 	 * @return Time (in ticks) it takes the Stargate to establish wormhole (basically, how long before kawoosh is over and the Stargate can be safely used)
 	 */
-	int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh);
+	int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh); //TODO Make the network wait
 	
 	/**
 	 * Checks if this Stargate can connect to the dialing Stargate and creates a Stargate Connection
@@ -412,6 +417,14 @@ public interface Stargate
 	 */
 	boolean shouldAutoclose(MinecraftServer server, StargateConnection connection);
 	
+	/**
+	 * Checks if the current Stargate Connection has reached the point of energy bypass (like going past the canonical 38 minute mark)
+	 * @param server Current Minecraft Server
+	 * @param openTime Time since the wormhole formed (after kawoosh ended)
+	 * @return True if the Stargate has reached a point where it requires extra energy to bypass the max wormhole open time, otherwise false
+	 */
+	boolean requiresEnergyBypass(MinecraftServer server, int openTime);
+	
 	// Saving and loading
 	
 	/**
@@ -426,11 +439,4 @@ public interface Stargate
 	 * @param tag CompoundTag containing information to be deserialized
 	 */
 	void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag);
-	
-	
-	
-	static int getMaxGateOpenTime()
-	{
-		return CommonStargateConfig.max_wormhole_open_time.get() * 20;
-	}
 }

@@ -5,6 +5,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
@@ -13,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class LocatorHelper
 {
@@ -67,22 +69,18 @@ public class LocatorHelper
 	//****************************************Transporter*****************************************
 	//============================================================================================
 	
-	public static List<Transporter> findNearestTransporters(ServerLevel level, BlockPos centerPos)
+	public static List<Transporter> findNearestTransporters(ServerLevel level, Vec3 centerPos, float maxDistance, int frequency)
 	{
 		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersFromDimension(level.dimension());
-		transporters.sort(Comparator.comparing(transporter -> CoordinateHelper.Relative.distance(centerPos, transporter.getBlockPos())));
+		transporters.sort(Comparator.comparing(transporter -> centerPos.distanceToSqr(Objects.requireNonNull(transporter.getPosition(level.getServer())))));
 		
-		transporters.removeIf(transporter ->
-		{
-			if(transporter.getBlockPos() == null || transporter.getDimension() == null)
-				return true;
-			
-			//TODO Remove stuff like Transporters on other frequencies, so that they remain invisible
-			return false;
-		});
+		transporters.removeIf(transporter -> transporter.getPosition(level.getServer()) == null || transporter.getDimension() == null || !transporter.acceptsFrequency(frequency)); //TODO Max distance
 		
 		return transporters;
 	}
 	
-	
+	public static List<Transporter> findNearestTransporters(ServerLevel level, BlockPos centerPos, float maxDistance, int frequency)
+	{
+		return findNearestTransporters(level, centerPos.getCenter(), maxDistance, frequency);
+	}
 }

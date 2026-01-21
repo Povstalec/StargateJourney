@@ -8,6 +8,7 @@ import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.placement.*;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.StructurePlacementInit;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -65,10 +66,10 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 		this.chunkBoundMaxZ = chunkBoundMaxZ.orElse(null);
 		
 		if(this.chunkBoundMinX != null && this.chunkBoundMaxX != null && this.chunkBoundMinX > this.chunkBoundMaxX)
-			throw new IllegalArgumentException("x_bound_min must be greater than x_bound_max");
+			throw new IllegalArgumentException("x_bound_min must be less than x_bound_max");
 		
 		if(this.chunkBoundMinZ != null && this.chunkBoundMaxZ != null && this.chunkBoundMinZ > this.chunkBoundMaxZ)
-			throw new IllegalArgumentException("z_bound_min must be greater than z_bound_max");
+			throw new IllegalArgumentException("z_bound_min must be less than z_bound_max");
 	}
 	
 	public int getChunkOffsetX()
@@ -105,10 +106,14 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	{
 		if(this.chunkX == null)
 		{
-			Random random = new Random(levelSeed + 2 + salt());
 			int xOffset = getChunkOffsetX();
-			int xBoundMin = getChunkBoundMinX();
 			int xBoundMax = getChunkBoundMaxX();
+			
+			if(xBoundMax == 0)
+				return xOffset;
+			
+			Random random = new Random(levelSeed + 2 + salt());
+			int xBoundMin = getChunkBoundMinX();
 			int xBound = random.nextBoolean() ? random.nextInt(-xBoundMax, -xBoundMin + 1) : random.nextInt(xBoundMin, xBoundMax + 1);
 			
 			this.chunkX = xBoundMax <= 0 ? xOffset : xOffset + xBound;
@@ -121,10 +126,14 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	{
 		if(this.chunkZ == null)
 		{
-			Random random = new Random(levelSeed + 3 + salt());
 			int zOffset = getChunkOffsetZ();
-			int zBoundMin = getChunkBoundMinZ();
 			int zBoundMax = getChunkBoundMaxZ();
+			
+			if(zBoundMax == 0)
+				return zOffset;
+			
+			Random random = new Random(levelSeed + 3 + salt());
+			int zBoundMin = getChunkBoundMinZ();
 			int zBound = random.nextBoolean() ? random.nextInt(-zBoundMax, -zBoundMin + 1) : random.nextInt(zBoundMin, zBoundMax + 1);
 			
 			this.chunkZ = zBoundMax <= 0 ? zOffset : zOffset + zBound;
@@ -134,7 +143,7 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	}
 	
 	@Override
-	public ChunkPos getPotentialStructureChunk(long levelSeed, int chunkX, int chunkZ)
+	public @NotNull ChunkPos getPotentialStructureChunk(long levelSeed, int chunkX, int chunkZ)
 	{
 		return new ChunkPos(getChunkX(levelSeed), getChunkZ(levelSeed));
 	}
@@ -146,7 +155,7 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	}
 	
 	@Override
-	public StructurePlacementType<?> type()
+	public @NotNull StructurePlacementType<?> type()
 	{
 		return StructurePlacementInit.UNIQUE_PLACEMENT.get();
 	}
@@ -202,7 +211,7 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 		}
 		
 		@Override
-		public StructurePlacementType<?> type()
+		public @NotNull StructurePlacementType<?> type()
 		{
 			return StructurePlacementInit.STARGATE_PLACEMENT.get();
 		}
@@ -235,7 +244,7 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 		}
 		
 		@Override
-		public StructurePlacementType<?> type()
+		public @NotNull StructurePlacementType<?> type()
 		{
 			return StructurePlacementInit.BURIED_STARGATE_PLACEMENT.get();
 		}

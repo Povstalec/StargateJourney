@@ -11,7 +11,7 @@
 	"key": 
 	{
 		"C": { "item": "sgjourney:communication_crystal" },
-		"N": { "tag": "sgjourney:naquadah_alloy" },
+		"N": { "tag": "sgjourney:naquadah_iron_alloy" },
 		"I": { "item": "sgjourney:basic_interface" },
 		"E": { "item": "sgjourney:energy_crystal" },
 		"R": { "item": "sgjourney:control_crystal" }

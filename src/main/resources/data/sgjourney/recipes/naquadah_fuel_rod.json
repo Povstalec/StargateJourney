@@ -12,7 +12,7 @@
 	{
 		"N": { "tag": "sgjourney:refined_naquadah" },
 		"B": { "item": "sgjourney:liquid_naquadah_bucket" },
-		"R": { "item": "sgjourney:naquadah_rod" }
+		"R": { "item": "sgjourney:naquadah_iron_rod" }
 	},
 	
 	"result": { "item": "sgjourney:naquadah_fuel_rod" }

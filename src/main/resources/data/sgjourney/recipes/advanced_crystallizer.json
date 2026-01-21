@@ -12,7 +12,7 @@
 	{
 		"O": { "item": "sgjourney:control_crystal" },
 		"N": { "tag": "sgjourney:naquadah" },
-		"A": { "tag": "sgjourney:naquadah_alloy" },
+		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
 		"C": { "item": "sgjourney:naquadah_power_cell" },
 		"M": { "item": "sgjourney:materialization_crystal" }
 		

@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/slab_top",
+	"textures":
+	{
+		"bottom": "sgjourney:block/naquadah_iron_block",
+		"side": "sgjourney:block/naquadah_iron_slab_side",
+		"top": "sgjourney:block/naquadah_iron_block"
+	}
+}
