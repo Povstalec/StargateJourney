@@ -108,6 +108,10 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    //maven {
+    //    name = "jsg-api"
+    //    url = "https://maven.justsgmod.eu/api/"
+    //}
 }
 
 dependencies {
@@ -122,6 +126,8 @@ dependencies {
 	compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cct_version}")
 	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}"))
     runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}"))
+
+    //compileOnly("dev.tauri:jsg:[version]")
 }
 
 tasks.named('processResources', ProcessResources).configure {
