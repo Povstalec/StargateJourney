@@ -159,8 +159,8 @@ public class BlockInit
 			() -> new ExplosiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 20.0F), Rarity.UNCOMMON, 64);
 	public static final RegistryObject<ExplosiveBlock> RAW_NAQUADRIA_BLOCK = registerBlock("raw_naquadria_block",
 			() -> new ExplosiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 10.0F));
-	public static final RegistryObject<ExplosiveBlock> RAW_TRINIUM_BLOCK = registerBlock("raw_trinium_block",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 10.0F));
+	public static final RegistryObject<Block> RAW_TRINIUM_BLOCK = registerBlock("raw_trinium_block",
+			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<LiquidBlock> LIQUID_NAQUADAH_BLOCK = registerBlock("liquid_naquadah", 
 			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable()));

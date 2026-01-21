@@ -7,6 +7,8 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MilkyWayStargate extends SGJourneyStargate
 {
@@ -28,20 +30,20 @@ public class MilkyWayStargate extends SGJourneyStargate
 	
 	//TODO
 	
-	private void stargateRun(MinecraftServer server, StargateConsumer<MilkyWayStargateEntity> consumer)
+	private void stargateRun(MinecraftServer server, Consumer<MilkyWayStargateEntity> consumer)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
 		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-			consumer.run(milkyWayStargate);
+			consumer.accept(milkyWayStargate);
 	}
 	
-	private <T> T stargateReturn(MinecraftServer server, ReturnStargateConsumer<T, MilkyWayStargateEntity> consumer, @Nullable T defaultValue)
+	private <T> T stargateReturn(MinecraftServer server, Function<MilkyWayStargateEntity, T> consumer, @Nullable T defaultValue)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
 		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-			return consumer.run(milkyWayStargate);
+			return consumer.apply(milkyWayStargate);
 		
 		return defaultValue;
 	}

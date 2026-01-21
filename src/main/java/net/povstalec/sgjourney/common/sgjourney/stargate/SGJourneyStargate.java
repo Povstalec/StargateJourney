@@ -100,7 +100,11 @@ public class SGJourneyStargate implements Stargate
 	@Override
 	public @Nullable Vec3 getPosition(MinecraftServer server)
 	{
-		return stargateReturn(server, stargate -> stargate.getCenter(), null);
+		return stargateReturn(server, stargate -> {
+			Vec3 center = stargate.getCenter();
+			System.out.println("getPosition " + center);
+			return center;
+		}, null);
 	}
 	
 	@Override
@@ -593,29 +597,18 @@ public class SGJourneyStargate implements Stargate
 	
 	private void stargateRun(MinecraftServer server, Consumer<AbstractStargateEntity> consumer)
 	{
-		server.executeIfPossible(() ->
-		{
-			AbstractStargateEntity stargate = getStargateEntity(server);
-			
-			if(stargate != null)
-				consumer.accept(stargate);
-		});
+		AbstractStargateEntity stargate = getStargateEntity(server);
+		
+		if(stargate != null)
+			consumer.accept(stargate);
 	}
 	
 	private <T> T stargateReturn(MinecraftServer server, Function<AbstractStargateEntity, T> function, @Nullable T defaultValue)
 	{
-		Object[] arr = { null };
+		AbstractStargateEntity stargate = getStargateEntity(server);
 		
-		server.executeIfPossible(() ->
-		{
-			AbstractStargateEntity stargate = getStargateEntity(server);
-			
-			if(stargate != null)
-				arr[0] = function.apply(stargate);
-		});
-		
-		if(arr[0] != null)
-			return (T) arr[0];
+		if(stargate != null)
+			return function.apply(stargate);
 		
 		return defaultValue;
 	}

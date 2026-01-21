@@ -7,6 +7,8 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class PegasusStargate extends SGJourneyStargate
 {
@@ -28,20 +30,20 @@ public class PegasusStargate extends SGJourneyStargate
 	
 	//TODO
 	
-	private void stargateRun(MinecraftServer server, StargateConsumer<PegasusStargateEntity> consumer)
+	private void stargateRun(MinecraftServer server, Consumer<PegasusStargateEntity> consumer)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
 		if(stargate instanceof PegasusStargateEntity pegasusStargate)
-			consumer.run(pegasusStargate);
+			consumer.accept(pegasusStargate);
 	}
 	
-	private <T> T stargateReturn(MinecraftServer server, ReturnStargateConsumer<T, PegasusStargateEntity> consumer, @Nullable T defaultValue)
+	private <T> T stargateReturn(MinecraftServer server, Function<PegasusStargateEntity, T> consumer, @Nullable T defaultValue)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
 		if(stargate instanceof PegasusStargateEntity pegasusStargate)
-			return consumer.run(pegasusStargate);
+			return consumer.apply(pegasusStargate);
 		
 		return defaultValue;
 	}

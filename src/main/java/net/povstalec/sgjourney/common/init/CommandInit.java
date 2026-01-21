@@ -338,7 +338,6 @@ public class CommandInit
 					
 					if(dimension.equals(stargateDimension) && stargatePos != null)
 					{
-						
 						Style style = Style.EMPTY;
 						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
 						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.get9ChevronAddress().toString()));

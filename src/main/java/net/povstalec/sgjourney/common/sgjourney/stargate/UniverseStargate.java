@@ -7,6 +7,8 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class UniverseStargate extends SGJourneyStargate
 {
@@ -28,20 +30,20 @@ public class UniverseStargate extends SGJourneyStargate
 	
 	//TODO
 	
-	private void stargateRun(MinecraftServer server, StargateConsumer<UniverseStargateEntity> consumer)
+	private void stargateRun(MinecraftServer server, Consumer<UniverseStargateEntity> consumer)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
 		if(stargate instanceof UniverseStargateEntity universeStargate)
-			consumer.run(universeStargate);
+			consumer.accept(universeStargate);
 	}
 	
-	private <T> T stargateReturn(MinecraftServer server, ReturnStargateConsumer<T, UniverseStargateEntity> consumer, @Nullable T defaultValue)
+	private <T> T stargateReturn(MinecraftServer server, Function<UniverseStargateEntity, T> consumer, @Nullable T defaultValue)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
 		if(stargate instanceof UniverseStargateEntity universeStargate)
-			return consumer.run(universeStargate);
+			return consumer.apply(universeStargate);
 		
 		return defaultValue;
 	}
