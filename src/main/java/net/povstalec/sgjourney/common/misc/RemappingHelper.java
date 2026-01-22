@@ -119,8 +119,8 @@ public class RemappingHelper
 		remapBlock("cut_naquadah_stairs", BlockInit.CUT_NAQUADAH_IRON_STAIRS);
 		remapBlock("cut_naquadah_slab", BlockInit.CUT_NAQUADAH_IRON_SLAB);
 		
-		// Naquadah-Iron Block -> Smooth Naquadah-Iron Block
-		// Cut Naquadah-Iron Block -> Naquadah-Iron Block
+		//TODO Naquadah-Iron Block -> Smooth Naquadah-Iron Block
+		//TODO Cut Naquadah-Iron Block -> Naquadah-Iron Block
 		
 		// Items
 		remapItem("naquadah_alloy", ItemInit.NAQUADAH_IRON_ALLOY);
