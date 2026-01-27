@@ -2,6 +2,6 @@
 	"parent": "minecraft:block/cube_all",
 	"textures":
 	{
-		"all": "sgjourney:block/cut_naquadah_iron_block"
+		"all": "sgjourney:block/smooth_naquadah_iron_block_b"
 	}
 }

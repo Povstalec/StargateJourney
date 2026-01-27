@@ -11,7 +11,7 @@
 	"key": 
 	{
 		"C": { "item": "sgjourney:naquadah_generator_core" },
-		"S": { "item": "sgjourney:naquadah_iron_slab" },
+		"S": { "item": "sgjourney:smooth_naquadah_iron_slab" },
 		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
 		"P": { "item": "sgjourney:plasma_converter" }
 		

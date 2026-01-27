@@ -266,6 +266,8 @@ public class TabInit
 				items.accept(BlockInit.NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.NAQUADAH_IRON_STAIRS.get());
 				items.accept(BlockInit.NAQUADAH_IRON_SLAB.get());
+				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_BLOCK.get());
+				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_SLAB.get());
 				items.accept(BlockInit.CUT_NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.CUT_NAQUADAH_IRON_STAIRS.get());
 				items.accept(BlockInit.CUT_NAQUADAH_IRON_SLAB.get());

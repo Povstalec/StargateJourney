@@ -22,13 +22,16 @@
 	"block.sgjourney.weathered_smooth_naquadah_copper_block": "Weathered Smooth Naquadah-Copper Block",
 	"block.sgjourney.oxidized_smooth_naquadah_copper_block": "Oxidized Smooth Naquadah-Copper Block",
 	
-	"block.sgjourney.naquadah_iron_block": "Block of Naquadah-Iron Alloy",
-	"block.sgjourney.trinium_block": "Block of Trinium",
+	"block.sgjourney.naquadah_iron_block": "Naquadah-Iron Block",
 	"block.sgjourney.naquadah_iron_stairs": "Naquadah-Iron Stairs",
 	"block.sgjourney.naquadah_iron_slab": "Naquadah-Iron Slab",
+	"block.sgjourney.smooth_naquadah_iron_block": "Smooth Naquadah-Iron Alloy Block",
+	"block.sgjourney.smooth_naquadah_iron_slab": "Smooth Naquadah-Iron Slab",
 	"block.sgjourney.cut_naquadah_iron_block": "Cut Block of Naquadah-Iron Alloy",
 	"block.sgjourney.cut_naquadah_iron_stairs": "Cut Naquadah-Iron Stairs",
 	"block.sgjourney.cut_naquadah_iron_slab": "Cut Naquadah-Iron Slab",
+	
+	"block.sgjourney.trinium_block": "Block of Trinium",
 	
 	"block.sgjourney.fire_pit": "Fire Pit",
 	"block.sgjourney.archeology_table": "Archeology Table",
@@ -253,7 +256,7 @@
 	"item.sgjourney.golden_iris": "Golden Iris",
 	"item.sgjourney.diamond_iris": "Diamond Iris",
 	"item.sgjourney.netherite_iris": "Netherite Iris",
-	"item.sgjourney.naquadah_iron_alloy_iris": "Naquadah-Iron Iris",
+	"item.sgjourney.naquadah_iron_iris": "Naquadah-Iron Iris",
 	"item.sgjourney.trinium_iris": "Trinium Iris",
 	"item.sgjourney.bronze_iris": "Bronze Iris",
 	"item.sgjourney.steel_iris": "Steel Iris",
