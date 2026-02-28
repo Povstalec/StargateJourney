@@ -60,9 +60,9 @@ public class CrystalReaderItem extends Item
 		ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
 		ItemStack mainHandStack = player.getItemInHand(InteractionHand.MAIN_HAND);
 		
-		if(offHandStack.getItem() instanceof CrystalReaderItem && mainHandStack.getItem() instanceof MemoryCrystalItem memoryCrystal)
+		if(offHandStack.getItem() instanceof CrystalReaderItem && mainHandStack.getItem() instanceof MemoryCrystalItem)
 		{
-			ListTag list = memoryCrystal.getMemoryList(mainHandStack);
+			ListTag list = MemoryCrystalItem.getMemoryList(mainHandStack);
 			
 			for(int i = 0; i < list.size(); i++)
 			{

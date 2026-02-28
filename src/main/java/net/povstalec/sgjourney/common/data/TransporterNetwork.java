@@ -14,14 +14,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
-import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 /**
@@ -78,8 +77,8 @@ public final class TransporterNetwork extends SavedData
 		eraseNetwork();
 		StargateJourney.LOGGER.info("Transporter Network erased");
 		
-		addTransporters();
-		StargateJourney.LOGGER.info("Transporters added");
+		resetTransporters();
+		StargateJourney.LOGGER.info("Transporters reset");
 		
 		updateVersion();
 		StargateJourney.LOGGER.info("Version updated");
@@ -94,16 +93,29 @@ public final class TransporterNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	private void addTransporters()
+	private void resetTransporters()
 	{
 		HashMap<TransporterID, Transporter> transporters = BlockEntityList.get(server).getTransporters();
 		
-		transporters.entrySet().stream().forEach((transporterInfo) ->
+		transporters.entrySet().forEach((transporterInfo) ->
 		{
+			TransporterID transporterID = transporterInfo.getKey();
 			Transporter transporter = transporterInfo.getValue();
 			
 			if(transporter != null)
-				addTransporter(transporter);
+			{
+				if(transporter.checkValidity(server))
+				{
+					if(!transporterID.equals(transporter.getID()))
+						removeTransporter(transporter);
+					
+					transporter.resetTransporter(server, TransporterInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
+					
+					addTransporter(transporter);
+				}
+				else
+					removeTransporter(transporter);
+			}
 		});
 	}
 	
@@ -127,20 +139,33 @@ public final class TransporterNetwork extends SavedData
 			addTransporter(transporter);
 	}
 	
-	public void removeTransporter(Level level, TransporterID transporterID)
+	public void removeTransporter(Transporter transporter)
+	{
+		if(transporter != null)
+		{
+			//TODO Universe.get(server).removeStargateFromSolarSystem(stargate.getSolarSystem(server), stargate); <-- just like in the Stargate Network
+			removeTransporterFromDimension(transporter.getDimension(), transporter);
+			BlockEntityList.get(server).removeTransporter(transporter.getID());
+			
+			StargateJourney.LOGGER.debug("Removed " + transporter.getID().toString() + " from Transporter Network");
+			setDirty();
+		}
+		else
+			StargateJourney.LOGGER.error("Could not remove Transporter because it's null");
+	}
+	
+	public void removeTransporter(TransporterID transporterID)
 	{
 		if(transporterID == null)
 			return;
 		
 		Transporter transporter = getTransporter(transporterID);
-		
-		if(transporter != null)
-			removeTransporterFromDimension(level.dimension(), transporter);
-
-		BlockEntityList.get(level).removeTransporter(transporterID);
-		
-		StargateJourney.LOGGER.info("Removed " + transporterID.toString() + " from Transporter Network");
-		setDirty();
+		removeTransporter(transporter);
+	}
+	
+	public int getTransporterCount()
+	{
+		return BlockEntityList.get(server).getTransporterCount();
 	}
 	
 	@Nullable
@@ -197,49 +222,69 @@ public final class TransporterNetwork extends SavedData
 	
 	public void handleConnections()
 	{
-		Map<UUID, TransporterConnection> connections = new HashMap<>();
-		connections.putAll(this.connections);
+		Map<UUID, TransporterConnection> connections = new HashMap<>(this.connections);
 		
 		connections.forEach((uuid, connection) -> connection.tick(server));
 		this.setDirty();
 	}
 	
-	//TODO Maybe replace booleans with Transporter Feedback
-	public boolean createConnection(MinecraftServer server, Transporter transporterA, Transporter transporterB)
+	//TODO Send feedback
+	public TransporterInfo.Feedback createConnection(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
+		TransporterConnection.Type connectionType = TransporterConnection.getType(server, transporterA, transporterB);
+		
+		// Event for Transporter connecting, can be canceled - !!!NOTE That it does NOT reset the Transporter or actually change its feedback when canceled!!!
+		if(SGJourneyEvents.onTransporterConnect(server, transporterA, transporterB, connectionType))
+			return TransporterInfo.Feedback.NONE;
+		
 		TransporterConnection connection = TransporterConnection.create(server, transporterA, transporterB);
 		
-		if(connection == null)
-			return false;
+		//TODO New errors relating to the problems with relaying the connection through Stargates
+		//if(connection.getRelayID() == null && connectionType.isRelayed)
+		//	return TransporterInfo.Feedback.
 		
-		return addConnection(connection);
+		if(connection != null)
+		{
+			addConnection(connection);
+			
+			return switch(connectionType)
+			{
+				case DIMENSIONAL -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_DIMENSIONAL;
+				case SYSTEM_WIDE -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
+				case RELAYED_DIMENSIONAL -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_DIMENSIONAL;
+				case RELAYED_SYSTEM_WIDE -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_SYSTEM_WIDE;
+				case RELAYED_INTERSTELLAR -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_INTERSTELLAR;
+				default -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_INTERGALACTIC;
+			};
+		}
+		
+		return TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER;
 	}
 	
 	public boolean addConnection(TransporterConnection connection)
 	{
-		if(hasConnection(connection.getID()))
-			return false;
-		
-		this.connections.put(connection.getID(), connection);
-		return true;
-	}
-	
-	public boolean hasConnection(UUID uuid)
-	{
-		if(this.connections.containsKey(uuid))
+		if(!hasConnection(connection.getID()))
+		{
+			this.connections.put(connection.getID(), connection);
+			SGJourneyEvents.onTransporterConnectionEstablished(server, connection);
+			
 			return true;
+		}
 		
 		return false;
 	}
 	
-	public void terminateConnection(UUID uuid)
+	public boolean hasConnection(UUID uuid)
+	{
+		return this.connections.containsKey(uuid);
+	}
+	
+	public void terminateConnection(UUID uuid, TransporterInfo.Feedback feedback)
 	{
 		TransporterConnection connection = this.connections.get(uuid);
 		
-		if(connection == null)
-			return;
-		
-		connection.terminate(server);
+		if(connection != null)
+			connection.terminate(server, feedback);
 	}
 	
 	public void removeConnection(UUID uuid)

@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/slab_top",
+	"textures":
+	{
+		"bottom": "sgjourney:block/exposed_smooth_naquadah_copper_block",
+		"side": "sgjourney:block/exposed_smooth_naquadah_copper_slab_side",
+		"top": "sgjourney:block/exposed_smooth_naquadah_copper_block"
+	}
+}

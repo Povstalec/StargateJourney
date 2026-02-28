@@ -59,7 +59,9 @@ public class NaquadahGeneratorMenu extends InventoryMenu
 	public boolean stillValid(Player player)
     {
 		return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-				player, BlockInit.NAQUADAH_GENERATOR_MARK_I.get()) || 
+				player, BlockInit.NAQUADAH_REACTOR.get()) ||
+				stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
+				player, BlockInit.NAQUADAH_GENERATOR_MARK_I.get()) ||
 				stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
 				player, BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
 	}

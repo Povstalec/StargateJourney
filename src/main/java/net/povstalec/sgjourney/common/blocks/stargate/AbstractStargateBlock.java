@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.HoneycombItem;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 
@@ -330,6 +336,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			return InteractionResult.SUCCESS;
 		else if(setIris(state, level, pos, player, hand, result))
 			return InteractionResult.SUCCESS;
+		else if(applyWax(state, level, pos, player, hand, result))
+			return InteractionResult.SUCCESS;
 		
 		return super.use(state, level, pos, player, hand, result);
 	}
@@ -396,5 +404,46 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return true;
 	}
 	
-	// TODO Axe scraping, wax
+	public boolean applyWax(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	{
+		ItemStack stack = player.getItemInHand(hand);
+		if(stack.getItem() instanceof HoneycombItem)
+		{
+			Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
+			if(blockCover.isPresent() && blockCover.get().applyWaxAt(state.getValue(PART)))
+			{
+				if(!player.isCreative())
+					stack.shrink(1);
+				level.gameEvent(GameEvent.BLOCK_CHANGE, result.getBlockPos(), GameEvent.Context.of(player, state));
+				level.levelEvent(player, 3003, result.getBlockPos(), 0);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Nullable
+	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate)
+	{
+		ItemStack itemStack = context.getItemInHand();
+		if(ToolActions.AXE_SCRAPE == toolAction && itemStack.canPerformAction(toolAction))
+		{
+			Level level = context.getLevel();
+			BlockPos pos = context.getClickedPos();
+			Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
+			if(blockCover.isPresent() && blockCover.get().undoWeatheringAt(state.getValue(PART)))
+				return state;
+		}
+		else if(ToolActions.AXE_WAX_OFF == toolAction && itemStack.canPerformAction(toolAction))
+		{
+			Level level = context.getLevel();
+			BlockPos pos = context.getClickedPos();
+			Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
+			if(blockCover.isPresent() && blockCover.get().removeWaxAt(state.getValue(PART)))
+				return state;
+		}
+		
+		return super.getToolModifiedState(state, context, toolAction, simulate);
+	}
 }

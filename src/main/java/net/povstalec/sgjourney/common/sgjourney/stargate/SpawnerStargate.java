@@ -1,11 +1,11 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -20,6 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class SpawnerStargate implements Stargate
 {
@@ -42,7 +45,10 @@ public class SpawnerStargate implements Stargate
 	protected int counter;
 	protected int timer;
 	
-	public SpawnerStargate(Address.Immutable address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval)
+	protected Function<RandomSource, EntityType<?>> randomizedEntityType;
+	protected BiConsumer<Entity, RandomSource> onEntitySpawn;
+	
+	public SpawnerStargate(Address.Immutable address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval, Function<RandomSource, EntityType<?>> randomizedEntityType, BiConsumer<Entity, RandomSource> onEntitySpawn)
 	{
 		this.id9ChevronAddress = address;
 		
@@ -54,6 +60,9 @@ public class SpawnerStargate implements Stargate
 		
 		this.timer = nextAttackerInterval();
 		this.counter = nextAttackerCount();
+		
+		this.randomizedEntityType = randomizedEntityType;
+		this.onEntitySpawn = onEntitySpawn;
 	}
 	
 	protected int nextAttackerInterval()
@@ -162,7 +171,7 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public boolean isValid(MinecraftServer server)
+	public boolean checkValidity(MinecraftServer server)
 	{
 		return true;
 	}
@@ -238,8 +247,17 @@ public class SpawnerStargate implements Stargate
 		this.connectionID = connection.getID();
 	}
 	
-	protected Entity createEntity(ServerLevel level, EntityType<?> entityType)
+	@Nullable
+	protected Entity createEntity(ServerLevel level)
 	{
+		if(randomizedEntityType == null)
+			return null;
+		
+		EntityType<?> entityType = randomizedEntityType.apply(level.getRandom());
+		
+		if(entityType == null)
+			return null;
+		
 		return entityType.create(level);
 	}
 	
@@ -247,6 +265,8 @@ public class SpawnerStargate implements Stargate
 	{
 		if(entity instanceof Mob mob)
 			mob.finalizeSpawn(level, level.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.EVENT, (SpawnGroupData) null, (CompoundTag) null);
+		
+		onEntitySpawn.accept(entity, level.getRandom());
 	}
 	
 	@Override
@@ -265,7 +285,7 @@ public class SpawnerStargate implements Stargate
 				timer = nextAttackerInterval();
 				counter--;
 				
-				Entity entity = createEntity(level, EntityInit.JAFFA.get());
+				Entity entity = createEntity(level);
 				if(entity != null)
 				{
 					Entity traveler = connectedStargate.receiveTraveler(server, connection, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0));
@@ -314,10 +334,5 @@ public class SpawnerStargate implements Stargate
 	public void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag)
 	{
 		//TODO
-	}
-	
-	public interface SpawnerConsumer
-	{
-		Entity onEntitySpawn(Entity entity); //TODO Prepare some way to control the specifics of how entities are spawned
 	}
 }

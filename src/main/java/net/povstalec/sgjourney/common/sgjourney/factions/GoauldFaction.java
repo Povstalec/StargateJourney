@@ -1,6 +1,9 @@
 package net.povstalec.sgjourney.common.sgjourney.factions;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.povstalec.sgjourney.common.entities.FactionMember;
+import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SpawnerStargate;
@@ -10,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GoauldFaction
+public class GoauldFaction extends AbstractFaction
 {
 	public static final int UPDATE_INTERVAL = 400;//24000;
 	
@@ -39,7 +42,13 @@ public class GoauldFaction
 		//this.addresses.add(RIMA);
 		//this.addresses.add(UNITAS);
 		
-		this.stargate = new SpawnerStargate(Address.Immutable.randomAddress(8, 36, 0), ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL);
+		this.stargate = new SpawnerStargate(Address.Immutable.randomAddress(8, 36, 0),
+				ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL,
+				randomSource -> EntityInit.JAFFA.get(), (entity, randomSource) ->
+		{
+			if(entity instanceof FactionMember factionMember)
+				factionMember.setFaction(this);
+		});
 		
 		this.random = new Random(0);
 	}
@@ -56,10 +65,10 @@ public class GoauldFaction
 	
 	public boolean launchIncursion(MinecraftServer server)
 	{
-		if(stargate.isConnected(server))
+		if(incursionTarget == null)
 			return false;
 		
-		if(incursionTarget == null)
+		if(stargate.isConnected(server))
 			return false;
 		
 		stargate.encodeAddress(incursionTarget);
@@ -70,6 +79,7 @@ public class GoauldFaction
 		return !feedback.isError();
 	}
 	
+	@Override
 	public void tickFaction(MinecraftServer server, int ticks)
 	{
 		int intervalTicks = ticks % UPDATE_INTERVAL;
@@ -83,5 +93,20 @@ public class GoauldFaction
 			else
 				incursionTarget = null;
 		}
+	}
+	
+	@Override
+	public CompoundTag serializeNBT()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		//TODO
+		
+		return tag;
+	}
+	
+	public void deserializeNBT(CompoundTag tag)
+	{
+		//TODO
 	}
 }

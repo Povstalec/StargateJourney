@@ -1,8 +1,5 @@
 package net.povstalec.sgjourney.common.capabilities;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -11,18 +8,20 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class BloodstreamNaquadahProvider implements ICapabilityProvider, INBTSerializable<CompoundTag>
+public class JaffaPouchProvider implements ICapabilityProvider, INBTSerializable<CompoundTag>
 {
-	public static Capability<BloodstreamNaquadah> BLOODSTREAM_NAQUADAH = CapabilityManager.get(new CapabilityToken<BloodstreamNaquadah>() {});
-	private BloodstreamNaquadah hasNaquadah = null;
-	private final LazyOptional<BloodstreamNaquadah> optional = LazyOptional.of(this::getOrCreateNaquadahBloodstream);
+	public static final Capability<JaffaPouch> JAFFA_POUCH = CapabilityManager.get(new CapabilityToken<JaffaPouch>() {});
+	private JaffaPouch jaffaPouch = null;
+	private final LazyOptional<JaffaPouch> optional = LazyOptional.of(this::getOrCreateJaffaPouch);
 	
 	@Override
 	public CompoundTag serializeNBT()
 	{
 		CompoundTag tag = new CompoundTag();
-		getOrCreateNaquadahBloodstream().saveData(tag);
+		getOrCreateJaffaPouch().saveData(tag);
 		
 		return tag;
 	}
@@ -30,22 +29,21 @@ public class BloodstreamNaquadahProvider implements ICapabilityProvider, INBTSer
 	@Override
 	public void deserializeNBT(CompoundTag tag)
 	{
-		getOrCreateNaquadahBloodstream().loadData(tag);
+		getOrCreateJaffaPouch().loadData(tag);
 	}
 
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap == BLOODSTREAM_NAQUADAH)
+		if(cap == JAFFA_POUCH)
 			return optional.cast();
 		return LazyOptional.empty();
 	}
 	
-	private BloodstreamNaquadah getOrCreateNaquadahBloodstream()
+	private JaffaPouch getOrCreateJaffaPouch()
 	{
-		if(this.hasNaquadah == null)
-			this.hasNaquadah = new BloodstreamNaquadah();
-		return this.hasNaquadah;
+		if(this.jaffaPouch == null)
+			this.jaffaPouch = new JaffaPouch();
+		return this.jaffaPouch;
 	}
-	
 }

@@ -2,12 +2,12 @@
 	"parent": "minecraft:block/cube",
 	"textures":
 	{
-		"down": "sgjourney:block/weathered_smooth_naquadah_copper_block",
-		"up": "sgjourney:block/weathered_smooth_naquadah_copper_block",
+		"down": "sgjourney:block/weathered_naquadah_copper_lamp_top",
+		"up": "sgjourney:block/weathered_naquadah_copper_lamp_top",
 		"north": "sgjourney:block/weathered_naquadah_copper_lamp_horizontal",
 		"south": "sgjourney:block/weathered_naquadah_copper_lamp_horizontal",
 		"west": "sgjourney:block/weathered_naquadah_copper_lamp_horizontal",
 		"east": "sgjourney:block/weathered_naquadah_copper_lamp_horizontal",
-		"particle": "sgjourney:block/weathered_smooth_naquadah_copper_block"
+		"particle": "sgjourney:block/weathered_naquadah_copper_lamp_top"
 	}
 }

@@ -164,7 +164,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 				if(!level.isClientSide())
 					updateClient();
 				
-				return setRecentFeedback(StargateInfo.Feedback.CHEVRON_RAISED);
+				return setRecentFeedback(StargateInfo.Feedback.CHEVRON_OPENED);
 			}
 			else
 				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);

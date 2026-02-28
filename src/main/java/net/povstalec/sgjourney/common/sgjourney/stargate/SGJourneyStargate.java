@@ -100,11 +100,7 @@ public class SGJourneyStargate implements Stargate
 	@Override
 	public @Nullable Vec3 getPosition(MinecraftServer server)
 	{
-		return stargateReturn(server, stargate -> {
-			Vec3 center = stargate.getCenter();
-			System.out.println("getPosition " + center);
-			return center;
-		}, null);
+		return stargateReturn(server, stargate -> stargate.getCenter(), null);
 	}
 	
 	@Override
@@ -258,20 +254,27 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public boolean isValid(MinecraftServer server)
+	public boolean checkValidity(MinecraftServer server)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
-		if(stargate != null)
-		{
-			stargate.checkStargate();
-			return true;
-		}
-		else
+		if(stargate == null)
 		{
 			StargateJourney.LOGGER.error("Stargate not found");
 			return false;
+			
 		}
+		else if(!get9ChevronAddress().equals(stargate.get9ChevronAddress()))
+		{
+			StargateJourney.LOGGER.error("Block Entity Address wasn't equal to Stargate Address");
+			if(stargate.get9ChevronAddress() == null) // In case Address becomes null for some reason during updating, it should get updated from this Stargate's Address
+				stargate.set9ChevronAddress(new Address.Immutable(get9ChevronAddress()));
+			else
+				return false;
+		}
+		
+		stargate.checkStargate();
+		return true;
 	}
 	
 	@Override

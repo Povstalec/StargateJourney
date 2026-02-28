@@ -39,6 +39,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
@@ -497,7 +498,7 @@ public class CommandInit
 			for(Transporter transporter : transporters)
 			{
 				Vec3 coords = transporter.getPosition(level.getServer());
-				context.getSource().sendSuccess(Component.literal("X: " + (int) Math.floor(coords.x()) + " Y: " + (int) Math.floor(coords.y()) + " Z: " + (int) Math.floor(coords.z())).withStyle(ChatFormatting.BLUE), false);
+				context.getSource().sendSuccess(Component.literal(transporter.getID().toString()).withStyle(ChatFormatting.AQUA).append(Component.literal(" X: " + (int) Math.floor(coords.x()) + " Y: " + (int) Math.floor(coords.y()) + " Z: " + (int) Math.floor(coords.z())).withStyle(ChatFormatting.BLUE)), false);
 			}
 		}
 		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
@@ -519,7 +520,7 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.ANCIENT));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -528,7 +529,7 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.inheritGene());
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.INHERITED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -537,7 +538,7 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.implantGene());
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.ARTIFICIAL));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -546,7 +547,7 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.removeGene());
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.NONE));
 		
 		return Command.SINGLE_SUCCESS;
 	}

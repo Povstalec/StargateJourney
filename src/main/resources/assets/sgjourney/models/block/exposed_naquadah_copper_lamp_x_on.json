@@ -6,8 +6,8 @@
 		"up": "sgjourney:block/exposed_naquadah_copper_lamp_vertical_on",
 		"north": "sgjourney:block/exposed_naquadah_copper_lamp_vertical_on",
 		"south": "sgjourney:block/exposed_naquadah_copper_lamp_vertical_on",
-		"west": "sgjourney:block/exposed_smooth_naquadah_copper_block",
-		"east": "sgjourney:block/exposed_smooth_naquadah_copper_block",
-		"particle": "sgjourney:block/exposed_smooth_naquadah_copper_block"
+		"west": "sgjourney:block/exposed_naquadah_copper_lamp_top_on",
+		"east": "sgjourney:block/exposed_naquadah_copper_lamp_top_on",
+		"particle": "sgjourney:block/exposed_naquadah_copper_lamp_top_on"
 	}
 }

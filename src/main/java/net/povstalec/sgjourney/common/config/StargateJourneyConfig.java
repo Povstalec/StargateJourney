@@ -91,7 +91,7 @@ public class StargateJourneyConfig
 		COMMON_CONFIG = COMMON_BUILDER.build();
 		
 		
-
+		
 		CLIENT_BUILDER.push("Stargate Journey Client Config");
 		
 		generalClientConfig(CLIENT_BUILDER);

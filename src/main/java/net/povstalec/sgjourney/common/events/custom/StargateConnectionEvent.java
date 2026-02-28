@@ -5,12 +5,12 @@ import net.minecraftforge.eventbus.api.Event;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
-public class ConnectionEvent extends Event
+public class StargateConnectionEvent extends Event
 {
 	private final MinecraftServer server;
 	private final StargateConnection connection;
 	
-	public ConnectionEvent(MinecraftServer server, StargateConnection connection)
+	public StargateConnectionEvent(MinecraftServer server, StargateConnection connection)
 	{
 		this.server = server;
 		this.connection = connection;
@@ -27,11 +27,11 @@ public class ConnectionEvent extends Event
 	}
 	
 	/**
-	 * Fired right after a Connection is successfully established (not cancelable)
+	 * Fired right after a Stargate Connection is successfully established (not cancelable)
 	 * @author Povstalec
 	 *
 	 */
-	public static class Establish extends ConnectionEvent
+	public static class Establish extends StargateConnectionEvent
 	{
 		public Establish(MinecraftServer server, StargateConnection connection)
 		{
@@ -40,11 +40,11 @@ public class ConnectionEvent extends Event
 	}
 	
 	/**
-	 * Fired right before a Connection is successfully terminated (not cancelable)
+	 * Fired right before a Stargate Connection is successfully terminated (not cancelable)
 	 * @author Povstalec
 	 *
 	 */
-	public static class Terminate extends ConnectionEvent
+	public static class Terminate extends StargateConnectionEvent
 	{
 		private final StargateInfo.Feedback feedback;
 		

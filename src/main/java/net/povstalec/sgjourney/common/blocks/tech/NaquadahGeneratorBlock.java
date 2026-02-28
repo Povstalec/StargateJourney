@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -132,6 +133,27 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
         }
         return InteractionResult.SUCCESS;
     }
+	
+	@Override
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	{
+		BlockEntity blockentity = level.getBlockEntity(pos);
+		if(blockentity instanceof NaquadahGeneratorEntity)
+		{
+			if(!level.isClientSide() && !player.isCreative())
+			{
+				ItemStack itemstack = new ItemStack(asItem());
+				
+				blockentity.saveToItem(itemstack);
+				
+				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
+				itementity.setDefaultPickUpDelay();
+				level.addFreshEntity(itementity);
+			}
+		}
+		
+		super.playerWillDestroy(level, pos, state, player);
+	}
 	
 	public abstract long energyPerTick();
 	

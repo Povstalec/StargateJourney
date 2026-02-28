@@ -4,9 +4,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.models.entity.FalconArmorModel;
-import net.povstalec.sgjourney.client.models.entity.GoauldModel;
-import net.povstalec.sgjourney.client.models.entity.JackalArmorModel;
+import net.povstalec.sgjourney.client.models.entity.*;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingsModel;
 
 public class Layers
@@ -18,6 +16,8 @@ public class Layers
 	public static final ModelLayerLocation FALCON_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "falcon_head"), "main");
 	public static final ModelLayerLocation JACKAL_HEAD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "jackal_head"), "main");
 	
+	public static final ModelLayerLocation ABYDOS_LIZARD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "abydos_lizard"), "main");
+	public static final ModelLayerLocation MASTADGE = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "mastadge"), "main");
 	public static final ModelLayerLocation GOAULD = new ModelLayerLocation(new ResourceLocation(StargateJourney.MODID, "goauld"), "main");
 	
 	public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
@@ -30,6 +30,8 @@ public class Layers
 		event.registerLayerDefinition(JACKAL_HEAD, JackalArmorModel::createBodyLayer);
 		
 		// Entity
+		event.registerLayerDefinition(ABYDOS_LIZARD, AbydosLizardModel::createBodyLayer);
+		event.registerLayerDefinition(MASTADGE, MastadgeModel::createBodyLayer);
 		event.registerLayerDefinition(GOAULD, GoauldModel::createBodyLayer);
 	}
 

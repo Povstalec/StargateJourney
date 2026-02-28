@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.sgjourney.transporter;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -15,11 +17,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
-import net.povstalec.sgjourney.common.sgjourney.TransporterID;
-import net.povstalec.sgjourney.common.sgjourney.Transporting;
+import net.povstalec.sgjourney.common.sgjourney.*;
 
 public class SGJourneyTransporter implements Transporter
 {
@@ -107,12 +108,40 @@ public class SGJourneyTransporter implements Transporter
 	@Nullable
 	public Vec3 transportPos(MinecraftServer server)
 	{
+		return transporterReturn(server, transporter -> transporter.transportPos().getCenter(), null);
+	}
+	
+	@Override
+	public boolean checkValidity(MinecraftServer server)
+	{
 		AbstractTransporterEntity transporter = getTransporterEntity(server);
 		
-		if(transporter != null)
-			return transporter.transportPos().getCenter();
+		if(transporter == null)
+		{
+			StargateJourney.LOGGER.error("Transporter not found");
+			return false;
+			
+		}
+		else if(!getID().equals(transporter.getID()))
+		{
+			StargateJourney.LOGGER.error("Block Entity ID wasn't equal to Transporter ID");
+			if(transporter.getID() == null) // In case Transporter ID becomes null for some reason during updating, it should get updated from this Transporter's ID
+				transporter.setID(new TransporterID.Immutable(getID()));
+			else
+				return false;
+		}
 		
-		return null;
+		return true;
+	}
+	
+	@Override
+	public boolean isLoaded(MinecraftServer server)
+	{
+		ServerLevel level  = server.getLevel(getDimension());
+		if(level == null)
+			return false;
+		
+		return level.isLoaded(getBlockPos());
 	}
 	
 	@Override
@@ -132,26 +161,31 @@ public class SGJourneyTransporter implements Transporter
 		return null;
 	}
 	
+	
+	
+	@Override
+	public TransporterInfo.Feedback resetTransporter(MinecraftServer server, TransporterInfo.Feedback feedback)
+	{
+		AbstractTransporterEntity transporterEntity = getTransporterEntity(server);
+		
+		if(transporterEntity != null)
+			return transporterEntity.resetTransporter(feedback);
+		else
+			StargateJourney.LOGGER.error("Failed to reset Stargate as it does not exist");
+		
+		return feedback;
+	}
+	
 	@Override
 	public int getTimeOffset(MinecraftServer server)
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return transporter.getTimeOffset();
-		
-		return 0;
+		return transporterReturn(server, transporter -> transporter.getTimeOffset(), 0);
 	}
 	
 	@Override
 	public List<Entity> entitiesToTransport(MinecraftServer server)
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return transporter.entitiesToTransport();
-		
-		return ImmutableList.of();
+		return transporterReturn(server, transporter -> transporter.entitiesToTransport(), ImmutableList.of());
 	}
 	
 	@Override
@@ -177,48 +211,25 @@ public class SGJourneyTransporter implements Transporter
 	@Override
 	public void connect(MinecraftServer server, UUID connectionID)
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			transporter.connectTransporter(connectionID);
+		transporterRun(server, transporter -> transporter.connectTransporter(connectionID));
 	}
 	
 	@Override
 	public void disconnect(MinecraftServer server)
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			transporter.disconnectTransporter();
-	}
-	
-	@Override
-	public void reset(MinecraftServer server)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			transporter.resetTransporter();
+		transporterRun(server, transporter -> transporter.disconnectTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT));
 	}
 	
 	@Override
 	public boolean isConnected(MinecraftServer server)
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return transporter.isConnected();
-		
-		return false;
+		return transporterReturn(server, transporter -> transporter.isConnected(), false);
 	}
 	
 	@Override
 	public void updateTicks(MinecraftServer server, int connectionTime)
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			transporter.updateTicks(connectionTime);
+		transporterRun(server, transporter -> transporter.updateTicks(connectionTime));
 	}
 	
 	
@@ -261,30 +272,20 @@ public class SGJourneyTransporter implements Transporter
 	
 	
 	
-	public interface TransporterConsumer
-	{
-		void run(AbstractTransporterEntity transporter);
-	}
-	
-	public interface ReturnTransporterConsumer<T>
-	{
-		T run(AbstractTransporterEntity transporter);
-	}
-	
-	private void transporterRun(MinecraftServer server, TransporterConsumer consumer)
+	private void transporterRun(MinecraftServer server, Consumer<AbstractTransporterEntity> consumer)
 	{
 		AbstractTransporterEntity transporter = getTransporterEntity(server);
 		
 		if(transporter != null)
-			consumer.run(transporter);
+			consumer.accept(transporter);
 	}
 	
-	private <T> T transporterReturn(MinecraftServer server, ReturnTransporterConsumer<T> consumer, @Nullable T defaultValue)
+	private <T> T transporterReturn(MinecraftServer server, Function<AbstractTransporterEntity, T> consumer, @Nullable T defaultValue)
 	{
 		AbstractTransporterEntity transporter = getTransporterEntity(server);
 		
 		if(transporter != null)
-			return consumer.run(transporter);
+			return consumer.apply(transporter);
 		
 		return defaultValue;
 	}

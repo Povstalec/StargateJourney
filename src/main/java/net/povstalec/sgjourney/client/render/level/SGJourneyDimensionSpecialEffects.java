@@ -29,6 +29,8 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	public static final ResourceLocation LANTEA_EFFECTS = new ResourceLocation(StargateJourney.MODID, "lantea");
 	public static final ResourceLocation ATHOS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "athos");
 	
+	public static final ResourceLocation DESTINY_EFFECTS = new ResourceLocation(StargateJourney.MODID, "destiny");
+	
 	@Nullable
 	protected SGJourneySkyRenderer skyRenderer;
 	
@@ -201,6 +203,24 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		}
 	}
 	
+	//============================================================================================
+	//******************************************Destiny*******************************************
+	//============================================================================================
+	
+	public static class Destiny extends SGJourneyDimensionSpecialEffects
+	{
+		public Destiny()
+		{
+			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new PlanetSkyRenderers.DestinySkyRenderer();
+		}
+		
+		public boolean customSky()
+		{
+			return ClientSkyConfig.custom_destiny_sky.get();
+		}
+	}
+	
 	
 	
 	public static void registerStargateJourneyEffects(RegisterDimensionSpecialEffectsEvent event)
@@ -214,5 +234,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		// Pegasus
     	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());
     	event.register(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Athos());
+		// Destiny
+		event.register(SGJourneyDimensionSpecialEffects.DESTINY_EFFECTS, new SGJourneyDimensionSpecialEffects.Destiny());
 	}
 }

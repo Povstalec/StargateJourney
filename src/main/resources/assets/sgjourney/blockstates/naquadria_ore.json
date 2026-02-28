@@ -1,5 +1,21 @@
 {
-    "variants": {
-        "": { "model": "sgjourney:block/naquadria_ore" }
-    }
+	"variants":
+	{
+		"excitement=0": { "model": "sgjourney:block/naquadria_ore" },
+		"excitement=1": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=2": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=3": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=4": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=5": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=6": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=7": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=8": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=9": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=10": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=11": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=12": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=13": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=14": { "model": "sgjourney:block/naquadria_ore_excited"},
+		"excitement=15": { "model": "sgjourney:block/naquadria_ore_excited"}
+	}
 }

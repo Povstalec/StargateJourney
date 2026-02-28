@@ -5,21 +5,27 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class TransporterConnection
 {
+	public static final String EVENT_DISCONNECTED = "stargate_disconnected";
+	
 	public static final String ID = "id";
 	public static final String TRANSPORTER_A = "transporter_a";
 	public static final String TRANSPORTER_B = "transporter_b";
 	public static final String CONNECTION_TIME = "connection_time";
+	public static final String RELAY_ID = "relay_id";
 	
 	public static final int RING_TICKS = 16; // Number of ticks it takes the rings to get into position
 	public static final int TRANSPORT_TICKS = 30; // Number of ticks it takes to start transporting
@@ -35,7 +41,10 @@ public class TransporterConnection
 	
 	protected int connectionTime;
 	
-	private TransporterConnection(MinecraftServer server, UUID uuid, Transporter transporterA, Transporter transporterB, int connectionTime)
+	@Nullable
+	protected UUID relayID; // UUID of the Stargate connection that is used to relay this connection
+	
+	private TransporterConnection(MinecraftServer server, UUID uuid, Transporter transporterA, Transporter transporterB, int connectionTime, @Nullable UUID relayID)
 	{
 		this.uuid = uuid;
 		this.transporterA = transporterA;
@@ -46,24 +55,61 @@ public class TransporterConnection
 		this.timeOffsetA = transporterA.getTimeOffset(server);
 		this.timeOffsetB = transporterB.getTimeOffset(server);
 		
-		this.transportStartTicks = timeOffsetA > timeOffsetB ? timeOffsetA : timeOffsetB;
+		this.transportStartTicks = Math.max(timeOffsetA, timeOffsetB);
+		
+		this.relayID = relayID; //TODO
 	}
 	
 	private TransporterConnection(MinecraftServer server, UUID uuid, Transporter transporterA, Transporter transporterB)
 	{
-		this(server, uuid, transporterA, transporterB, 0);
+		this(server, uuid, transporterA, transporterB, 0, null);
 	}
 	
 	public enum Type
 	{
-		DIMENSIONAL, // Within one dimension
-		SYSTEM_WIDE, // Within one system, across two dimensions
-		INTERSTELLAR, // Across two solar systems, presumably through the Stargate
-		INTERGALACTIC // Across two galaxies, presumably through the Stargate
+		DIMENSIONAL(false), // Within one dimension
+		SYSTEM_WIDE(false), // Within one system, across two dimensions
+		
+		RELAYED_DIMENSIONAL(true), // Within one dimension, relayed through a Stargate
+		RELAYED_SYSTEM_WIDE(true), // Within one system, relayed through a Stargate
+		RELAYED_INTERSTELLAR(true), // Across two solar systems, relayed through a Stargate
+		RELAYED_INTERGALACTIC(true); // Across two galaxies, relayed through a Stargate
+		
+		public final boolean isRelayed;
+		
+		Type(boolean isRelayed)
+		{
+			this.isRelayed = isRelayed;
+		}
+	}
+	
+	public static TransporterConnection.Type getType(MinecraftServer server, Transporter transporterA, Transporter transporterB)
+	{
+		SolarSystem.Serializable systemA = transporterA.getSolarSystem(server);
+		SolarSystem.Serializable systemB = transporterB.getSolarSystem(server);
+		
+		if(systemA != null && systemB != null)
+		{
+			if(systemA.equals(systemB))
+			{
+				ResourceKey<Level> dimensionA = transporterA.getDimension();
+				ResourceKey<Level> dimensionB = transporterB.getDimension();
+				
+				if(dimensionA != null && dimensionA.equals(dimensionB))
+					return Type.DIMENSIONAL;
+				else
+					return Type.SYSTEM_WIDE;
+			}
+			
+			if(systemA.findCommonGalaxy(systemB) != null)
+				return Type.RELAYED_INTERSTELLAR;
+		}
+		
+		return Type.RELAYED_INTERGALACTIC;
 	}
 	
 	@Nullable
-	public static final TransporterConnection create(MinecraftServer server, Transporter transporterA, Transporter transporterB)
+	public static TransporterConnection create(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
 		if(transporterA != null && transporterB != null)
 		{
@@ -85,12 +131,12 @@ public class TransporterConnection
 		return Math.abs(timeOffsetA - timeOffsetB);
 	}
 	
-	public final void tick(MinecraftServer server)
+	public void tick(MinecraftServer server)
 	{
 		int halfTransportTicks = transportStartTicks + RING_TICKS + TRANSPORT_TICKS;
 		if(connectionTime >= 2 * halfTransportTicks || !isTransporterValid(server, transporterA) || !isTransporterValid(server, transporterB))
 		{
-			terminate(server);
+			terminate(server, TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER);
 			return;
 		}
 		
@@ -130,18 +176,26 @@ public class TransporterConnection
 		transporterB.transportTravelers(server, this, transporterA, travelersB);
 	}
 	
-	public final void terminate(MinecraftServer server)
+	public void terminate(MinecraftServer server, TransporterInfo.Feedback feedback)
 	{
+		SGJourneyEvents.onTransporterConnectionTerminated(server, this, feedback);
+		
 		if(this.transporterA != null)
-			this.transporterA.reset(server);
+		{
+			this.transporterA.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Initiated the Transport
+			this.transporterA.resetTransporter(server, feedback);
+		}
 		
 		if(this.transporterB != null)
-			this.transporterB.reset(server);
+		{
+			this.transporterB.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), false); // false: Did not initiate the Transport
+			this.transporterB.resetTransporter(server, feedback);
+		}
 		
 		TransporterNetwork.get(server).removeConnection(this.uuid);
 	}
 	
-	public final boolean isTransporterValid(MinecraftServer server, Transporter transporter)
+	public boolean isTransporterValid(MinecraftServer server, Transporter transporter)
 	{
 		if(transporter == null)
 		{
@@ -157,6 +211,11 @@ public class TransporterConnection
 	public UUID getID()
 	{
 		return this.uuid;
+	}
+	
+	public UUID getRelayID()
+	{
+		return this.relayID;
 	}
 	
 	//============================================================================================
@@ -191,7 +250,17 @@ public class TransporterConnection
 		Transporter transporterB = deserializeTransporter(server, tag.getCompound(TRANSPORTER_B));
 		int connectionTime = tag.getInt(CONNECTION_TIME);
 		
-		return new TransporterConnection(server, uuid, transporterA, transporterB, connectionTime);
+		try
+		{
+			if(tag.contains(RELAY_ID, Tag.TAG_STRING))
+				return new TransporterConnection(server, uuid, transporterA, transporterB, connectionTime, UUID.fromString(tag.getString(RELAY_ID)));
+		}
+		catch(IllegalArgumentException e)
+		{
+			StargateJourney.LOGGER.error(e.toString());
+		}
+		
+		return new TransporterConnection(server, uuid, transporterA, transporterB, connectionTime, null);
 	}
 	
 	private static Transporter deserializeTransporter(MinecraftServer server, CompoundTag transporterInfo)

@@ -22,6 +22,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock
 {
@@ -44,7 +45,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
             
             if(entity instanceof AbstractTransporterEntity transporterEntity)
 			{
-				transporterEntity.disconnectTransporter();
+				transporterEntity.bypassDisconnectTransporter(TransporterInfo.Feedback.TRANSPORTER_DESTROYED);
 				transporterEntity.removeTransporterFromNetwork();
 			}
         }

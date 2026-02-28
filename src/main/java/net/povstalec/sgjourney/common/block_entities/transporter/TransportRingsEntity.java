@@ -19,6 +19,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
@@ -113,27 +114,21 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		return this.transportPos;
 	}
 	
-	public void startTransport(Transporter target)
-	{
-		Transporter transporter = getTransporter();
-		
-		if(transporter != null) //TODO Maybe some kind of feedback when it goes wrong?
-			TransporterNetwork.get(level).createConnection(level.getServer(), transporter, target);
-	}
-	
+	@Override
 	public boolean connectTransporter(UUID connectionID)
 	{
 		transportPos();
 		return super.connectTransporter(connectionID);
 	}
 	
-	public void resetTransporter()
+	@Override
+	public TransporterInfo.Feedback resetTransporter(TransporterInfo.Feedback feedback)
 	{
 		this.emptySpace = 0;
 		this.transportHeight = 0;
 		this.transportPos = null;
 		
-		super.resetTransporter();
+		return super.resetTransporter(feedback);
 	}
 	
 	
@@ -210,9 +205,8 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
 		if(state.is(BlockInit.GOAULD_TRANSPORT_RINGS.get()))
-		{
 			return this.level.getBlockState(pos).getValue(TransportRingsBlock.ACTIVATED);
-		}
+		
 		return false;
 	}
 	

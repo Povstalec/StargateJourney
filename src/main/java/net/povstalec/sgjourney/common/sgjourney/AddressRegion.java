@@ -37,6 +37,7 @@ public class AddressRegion
 	private List<Pair<ResourceKey<Galaxy>, Pair<List<Integer>, Boolean>>> galacticAddresses; // Galaxies this Address Region is a part of
 	
 	//TODO List of Stargates, Primary Address/Stargate
+	//TODO List of Transporters
 	
 	public AddressRegion(String name, int symbolPrefix,  Pair<List<Integer>, Boolean> extragalacticAddress, Optional<List<Pair<ResourceKey<Galaxy>, Pair<List<Integer>, Boolean>>>> addresses)
 	{

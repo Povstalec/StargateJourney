@@ -53,6 +53,19 @@ public interface Stargate
 	}
 	
 	/**
+	 * @return Solar System the Stargate is located in or null if it's not located in any Solar System
+	 */
+	@Nullable
+	default SolarSystem.Serializable getSolarSystem(MinecraftServer server)
+	{
+		ResourceKey<Level> dimension = getDimension();
+		if(dimension == null)
+			return null;
+		
+		return Universe.get(server).getSolarSystemFromDimension(dimension);
+	}
+	
+	/**
 	 * @param server Current Minecraft Server
 	 * @return Position vector of the Stargate's center or null if it doesn't have a position
 	 */
@@ -118,19 +131,6 @@ public interface Stargate
 		
 		return mirror ? CoordinateHelper.Relative.toOrthogonalBasis(vector, CoordinateHelper.Relative.mirrorVector(getForward(server)), getUp(server), CoordinateHelper.Relative.mirrorVector(getRight(server))) :
 				CoordinateHelper.Relative.toOrthogonalBasis(vector, getForward(server), getUp(server), getRight(server));
-	}
-	
-	/**
-	 * @return Solar System the Stargate is located in or null if it's not located in any Solar System
-	 */
-	@Nullable
-	default SolarSystem.Serializable getSolarSystem(MinecraftServer server)
-	{
-		ResourceKey<Level> dimension = getDimension();
-		if(dimension == null)
-			return null;
-		
-		return Universe.get(server).getSolarSystemFromDimension(dimension);
 	}
 	
 	/**
@@ -224,9 +224,9 @@ public interface Stargate
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @return Returns true if this Stargate is valid (for example, in the case of BlockEntity-based Stargates, if the Block Entity can still be found in the world)
+	 * @return Returns true if this Stargate is valid (for example, in the case of BlockEntity-based Stargates, if the Block Entity can still be found in the world and if its address is the same as the Stargate object's)
 	 */
-	boolean isValid(MinecraftServer server);
+	boolean checkValidity(MinecraftServer server);
 	
 	/**
 	 * @param server Current Minecraft Server

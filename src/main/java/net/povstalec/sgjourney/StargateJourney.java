@@ -1,9 +1,10 @@
 package net.povstalec.sgjourney;
 
+import java.util.Calendar;
 import java.util.function.BiFunction;
 
 import net.minecraftforge.client.event.ModelEvent;
-import net.povstalec.sgjourney.client.render.entity.TriniumArrowRenderer;
+import net.povstalec.sgjourney.client.render.entity.*;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.entities.Jaffa;
@@ -49,9 +50,6 @@ import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
-import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
-import net.povstalec.sgjourney.client.render.entity.AnthropoidRenderer;
-import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
@@ -220,15 +218,19 @@ public class StargateJourney
         	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
         	MenuScreens.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
-        	
-        	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
-        	EntityRenderers.register(EntityInit.TRINIUM_ARROW.get(), TriniumArrowRenderer::new);
-
-        	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
+			
+			MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
 			
 			MenuScreens.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
         	
+        	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
+        	EntityRenderers.register(EntityInit.TRINIUM_ARROW.get(), TriniumArrowRenderer::new);
+			
+			EntityRenderers.register(EntityInit.ABYDOS_LIZARD.get(), AbydosLizardRenderer::new);
+			EntityRenderers.register(EntityInit.MASTADGE.get(), MastadgeRenderer::new);
+        	
         	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+			
 			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
 			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
         	
@@ -271,5 +273,11 @@ public class StargateJourney
 	public static ResourceLocation sgjourneyLocation(String path)
 	{
 		return new ResourceLocation(StargateJourney.MODID, path);
+	}
+	
+	public static boolean isAprilFools()
+	{
+		Calendar calendar = Calendar.getInstance();
+		return calendar.get(Calendar.MONTH) + 1 == 4 && calendar.get(Calendar.DAY_OF_MONTH) == 1;
 	}
 }

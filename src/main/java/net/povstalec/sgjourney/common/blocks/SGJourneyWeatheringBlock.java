@@ -7,11 +7,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.HoneycombItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChangeOverTimeBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -26,21 +34,93 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WEATHERED_NAQUADAH_COPPER_BLOCK.get())
 				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.OXIDIZED_NAQUADAH_COPPER_BLOCK.get())
 				
+				.put(BlockInit.NAQUADAH_COPPER_STAIRS.get(), BlockInit.EXPOSED_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WEATHERED_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_STAIRS.get(), BlockInit.OXIDIZED_NAQUADAH_COPPER_STAIRS.get())
+				
+				.put(BlockInit.NAQUADAH_COPPER_SLAB.get(), BlockInit.EXPOSED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WEATHERED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_SLAB.get(), BlockInit.OXIDIZED_NAQUADAH_COPPER_SLAB.get())
+				
 				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
 				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
 				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
 				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				
 				.put(BlockInit.NAQUADAH_COPPER_LAMP.get(), BlockInit.EXPOSED_NAQUADAH_COPPER_LAMP.get())
 				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_LAMP.get(), BlockInit.WEATHERED_NAQUADAH_COPPER_LAMP.get())
 				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_LAMP.get(), BlockInit.OXIDIZED_NAQUADAH_COPPER_LAMP.get())
+				
+				.put(BlockInit.CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get())
+				
+				.put(BlockInit.CUT_NAQUADAH_COPPER_STAIRS.get(), BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_STAIRS.get(), BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS.get())
+				
+				.put(BlockInit.CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get())
 				.build();
 	});
 	Supplier<BiMap<Block, Block>> PREVIOUS_BY_BLOCK = Suppliers.memoize(() -> NEXT_BY_BLOCK.get().inverse());
 	
-	static Optional<Block> getPrevious(Block block)
+	Supplier<BiMap<Block, Block>> WAXABLES = Suppliers.memoize(() ->
 	{
-		return Optional.ofNullable(PREVIOUS_BY_BLOCK.get().get(block));
-	}
+		return ImmutableBiMap.<Block, Block>builder()
+				.put(BlockInit.NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.OXIDIZED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_BLOCK.get())
+				
+				.put(BlockInit.NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.OXIDIZED_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_STAIRS.get())
+				
+				.put(BlockInit.NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.OXIDIZED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_SLAB.get())
+				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				
+				.put(BlockInit.NAQUADAH_COPPER_LAMP.get(), BlockInit.WAXED_NAQUADAH_COPPER_LAMP.get())
+				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_LAMP.get(), BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_LAMP.get())
+				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_LAMP.get(), BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_LAMP.get())
+				.put(BlockInit.OXIDIZED_NAQUADAH_COPPER_LAMP.get(), BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_LAMP.get())
+				
+				.put(BlockInit.CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_CUT_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_WEATHERED_CUT_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get())
+				
+				.put(BlockInit.CUT_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_CUT_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_EXPOSED_CUT_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_WEATHERED_CUT_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS.get())
+				
+				.put(BlockInit.CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_CUT_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_EXPOSED_CUT_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_WEATHERED_CUT_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get())
+				.build();
+	});
+	Supplier<BiMap<Block, Block>> WAX_OFF_BY_BLOCK = Suppliers.memoize(() -> WAXABLES.get().inverse());
+	
+	// Block
 	
 	static Block getFirst(Block startBlock)
 	{
@@ -54,9 +134,9 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 		return block;
 	}
 	
-	static Optional<BlockState> getPrevious(BlockState state)
+	static Optional<Block> getPrevious(Block block)
 	{
-		return getPrevious(state.getBlock()).map(block -> block.withPropertiesOf(state));
+		return Optional.ofNullable(PREVIOUS_BY_BLOCK.get().get(block));
 	}
 	
 	static Optional<Block> getNext(Block block)
@@ -64,15 +144,62 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 		return Optional.ofNullable(NEXT_BY_BLOCK.get().get(block));
 	}
 	
+	static Optional<Block> getWaxed(Block block)
+	{
+		return Optional.ofNullable(WAXABLES.get().get(block));
+	}
+	
+	static Optional<Block> getUnwaxed(Block block)
+	{
+		return Optional.ofNullable(WAX_OFF_BY_BLOCK.get().get(block));
+	}
+	
+	// BlockState
+	
 	static BlockState getFirst(BlockState state)
 	{
 		return getFirst(state.getBlock()).withPropertiesOf(state);
+	}
+	
+	static Optional<BlockState> getPrevious(BlockState state)
+	{
+		return getPrevious(state.getBlock()).map(block -> block.withPropertiesOf(state));
 	}
 	
 	@Override
 	default Optional<BlockState> getNext(BlockState state)
 	{
 		return getNext(state.getBlock()).map(block -> block.withPropertiesOf(state));
+	}
+	
+	static Optional<BlockState> getWaxed(BlockState state)
+	{
+		return getWaxed(state.getBlock()).map(block -> block.withPropertiesOf(state));
+	}
+	
+	static Optional<BlockState> getUnwaxed(BlockState state)
+	{
+		return getUnwaxed(state.getBlock()).map(block -> block.withPropertiesOf(state));
+	}
+	
+	default boolean tryApplyWax(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand)
+	{
+		ItemStack stack = player.getItemInHand(hand);
+		if(stack.getItem() instanceof HoneycombItem)
+		{
+			Optional<BlockState> waxedState = SGJourneyWeatheringBlock.getWaxed(state);
+			if(waxedState.isPresent())
+			{
+				if(!player.isCreative())
+					stack.shrink(1);
+				level.setBlock(pos, waxedState.get(), 11);
+				level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, waxedState.get()));
+				level.levelEvent(player, 3003, pos, 0);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -101,9 +228,8 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 		int age = this.getAge().ordinal();
 		int sameAge = 0;
 		int older = 0;
-		for(Direction direction : Direction.values())
+		for(BlockPos otherPos : BlockPos.withinManhattan(pos, 1, 1, 1))
 		{
-			BlockPos otherPos = pos.relative(direction);
 			if(!otherPos.equals(pos))
 			{
 				BlockState otherState = level.getBlockState(otherPos);
@@ -141,9 +267,8 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 		int sameAge = 0;
 		int older = 0;
 		
-		for(Direction direction : Direction.values())
+		for(BlockPos otherPos : BlockPos.withinManhattan(pos, 1, 1, 1))
 		{
-			BlockPos otherPos = pos.relative(direction);
 			if(!otherPos.equals(pos))
 			{
 				BlockState otherState = level.getBlockState(otherPos);

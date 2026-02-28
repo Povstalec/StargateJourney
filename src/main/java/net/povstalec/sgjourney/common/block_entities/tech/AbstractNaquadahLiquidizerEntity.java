@@ -324,6 +324,8 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	protected abstract boolean hasMaterial();
 	
+	protected abstract int producedAmount();
+	
 	protected abstract void makeLiquidNaquadah();
 	
 	protected void useUpItems(int amount)
@@ -361,7 +363,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	    if(naquadahLiquidizer.hasFluidItem1())
 	    	naquadahLiquidizer.drainFluidFromItem();
 	    
-	    if(naquadahLiquidizer.hasMaterial() && naquadahLiquidizer.fluidTank1.getFluidAmount() > 0 && naquadahLiquidizer.fluidTank2.getFluidAmount() + 100 <= naquadahLiquidizer.fluidTank2.getCapacity())
+	    if(naquadahLiquidizer.hasMaterial() && naquadahLiquidizer.fluidTank1.getFluidAmount() > 0 && naquadahLiquidizer.fluidTank2.getFluidAmount() + naquadahLiquidizer.producedAmount() <= naquadahLiquidizer.fluidTank2.getCapacity())
 	    {
 	    	naquadahLiquidizer.progress++;
 	    	naquadahLiquidizer.fluidTank1.drain(1, IFluidHandler.FluidAction.EXECUTE);

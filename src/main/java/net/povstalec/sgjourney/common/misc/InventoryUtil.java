@@ -1,19 +1,21 @@
 package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 
 import javax.annotation.Nullable;
 
 public class InventoryUtil
 {
+	public static final String NAME = "Name";
+	
 	public static boolean hasPlayerStackInInventory(Player player, Item item)
 	{
         for(int i = 0; i < player.getInventory().getContainerSize(); i++)
@@ -85,5 +87,43 @@ public class InventoryUtil
 		}
 		
 		return false;
+	}
+	
+	public static boolean isWeapon(Item item)
+	{
+		if(item instanceof SwordItem)
+			return true;
+		
+		if(item instanceof StaffWeaponItem)
+			return true;
+		
+		if(item instanceof BowItem)
+			return true;
+		
+		if(item instanceof CrossbowItem)
+			return true;
+		
+		//TODO Add a tag for more items
+		
+		return false;
+	}
+	
+	@Nullable
+	public static String getPlayerNameFromHead(ItemStack stack)
+	{
+		if(stack.is(Items.PLAYER_HEAD) && stack.hasTag())
+		{
+			CompoundTag tag = stack.getTag();
+			if(tag.contains(PlayerHeadItem.TAG_SKULL_OWNER, Tag.TAG_STRING))
+				return tag.getString(PlayerHeadItem.TAG_SKULL_OWNER);
+			else if(tag.contains(PlayerHeadItem.TAG_SKULL_OWNER, Tag.TAG_COMPOUND))
+			{
+				CompoundTag ownerTag = tag.getCompound(PlayerHeadItem.TAG_SKULL_OWNER);
+				if(ownerTag.contains(NAME, Tag.TAG_STRING))
+					return ownerTag.getString(NAME);
+			}
+		}
+		
+		return null;
 	}
 }

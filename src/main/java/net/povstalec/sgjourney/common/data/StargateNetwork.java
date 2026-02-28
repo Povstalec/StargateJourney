@@ -12,9 +12,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
@@ -39,7 +39,7 @@ public final class StargateNetwork extends SavedData
 	private static final String CONNECTIONS = "Connections";
 
 	// Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int updateVersion = 17;
+	private static final int updateVersion = 17; //TODO Change to 18
 	
 	private MinecraftServer server;
 	
@@ -140,14 +140,14 @@ public final class StargateNetwork extends SavedData
 	{
 		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
-		stargates.entrySet().stream().forEach((stargateInfo) ->
+		stargates.entrySet().forEach((stargateInfo) ->
 		{
 			Address.Immutable address = stargateInfo.getKey();
 			Stargate stargate = stargateInfo.getValue();
 			
 			if(stargate != null)
 			{
-				if(stargate.isValid(server))
+				if(stargate.checkValidity(server))
 				{
 					if(!address.equals(stargate.get9ChevronAddress()))
 						removeStargate(stargate);
@@ -215,10 +215,21 @@ public final class StargateNetwork extends SavedData
 		}
 	}
 	
+	public int getStargateCount()
+	{
+		return BlockEntityList.get(server).getStargateCount();
+	}
+	
 	@Nullable
 	public final Stargate getStargate(Address address)
 	{
 		return BlockEntityList.get(server).getStargate(address);
+	}
+	
+	@Nullable
+	public Stargate getRandomStargate(RandomSource randomSource)
+	{
+		return BlockEntityList.get(server).getRandomStargate(randomSource);
 	}
 	
 	//============================================================================================
@@ -227,8 +238,7 @@ public final class StargateNetwork extends SavedData
 	
 	public final void handleConnections()
 	{
-		Map<UUID, StargateConnection> connections = new HashMap<>();
-		connections.putAll(this.connections);
+		Map<UUID, StargateConnection> connections = new HashMap<>(this.connections);
 		
 		connections.forEach((uuid, connection) -> connection.tick(server));
 		this.setDirty();
@@ -252,12 +262,12 @@ public final class StargateNetwork extends SavedData
 	{
 		StargateConnection.Type connectionType = StargateConnection.getType(server, dialingStargate, dialedStargate);
 		
-		// Event for Stargate connecting, can be cancelled - !!!NOTE That it does NOT reset the Stargate or actually change its feedback when cancelled!!!
+		// Event for Stargate connecting, can be canceled - !!!NOTE That it does NOT reset the Stargate or actually change its feedback when canceled!!!
 		if(SGJourneyEvents.onStargateConnect(server, dialingStargate, dialedStargate, connectionType, addressType, doKawoosh))
 			return StargateInfo.Feedback.NONE;
 		
 		// Will reset the Stargate if something's wrong
-		if(!dialedStargate.isValid(server))
+		if(!dialedStargate.checkValidity(server))
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE, true);
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
@@ -322,15 +332,12 @@ public final class StargateNetwork extends SavedData
 		{
 			addConnection(connection);
 			
-			switch(connectionType)
+			return switch(connectionType)
 			{
-				case SYSTEM_WIDE:
-					return StargateInfo.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
-				case INTERSTELLAR:
-					return StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR;
-				default:
-					return StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC;
-			}
+				case SYSTEM_WIDE -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
+				case INTERSTELLAR -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR;
+				default -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC;
+			};
 		}
 		
 		return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
@@ -338,11 +345,10 @@ public final class StargateNetwork extends SavedData
 	
 	public final boolean addConnection(StargateConnection connection)
 	{
-		if(!this.connections.containsKey(connection.getID()))
+		if(!hasConnection(connection.getID()))
 		{
 			this.connections.put(connection.getID(), connection);
-			
-			SGJourneyEvents.onConnectionEstablished(server, connection);
+			SGJourneyEvents.onStargateConnectionEstablished(server, connection);
 			
 			return true;
 		}
@@ -352,18 +358,15 @@ public final class StargateNetwork extends SavedData
 	
 	public final boolean hasConnection(UUID uuid)
 	{
-		if(this.connections.containsKey(uuid))
-			return true;
-		
-		return false;
+		return this.connections.containsKey(uuid);
 	}
 	
 	public final void terminateConnection(UUID uuid, StargateInfo.Feedback feedback)
 	{
-		if(!hasConnection(uuid))
-			return;
+		StargateConnection connection = this.connections.get(uuid);
 		
-		this.connections.get(uuid).terminate(server, feedback);
+		if(connection != null)
+			connection.terminate(server, feedback);
 	}
 	
 	public final void removeConnection(UUID uuid)

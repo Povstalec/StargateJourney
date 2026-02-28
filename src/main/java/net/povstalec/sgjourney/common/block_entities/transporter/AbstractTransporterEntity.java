@@ -15,6 +15,8 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+import net.povstalec.sgjourney.common.sgjourney.Transporting;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +41,8 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	public static final String CUSTOM_NAME = "CustomName";
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
+	
+	protected TransporterInfo.Feedback recentFeedback = TransporterInfo.Feedback.NONE;
 	
 	protected TransporterID.Immutable transporterID;
 	@Nullable
@@ -125,7 +129,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	
 	public void removeTransporterFromNetwork()
 	{
-		TransporterNetwork.get(level).removeTransporter(level, this.transporterID);
+		TransporterNetwork.get(level).removeTransporter(this.transporterID);
 	}
 	
 	@Override
@@ -176,6 +180,14 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		return 0;
 	}
 	
+	public void startTransport(Transporter target)
+	{
+		Transporter transporter = getTransporter();
+		
+		if(transporter != null)
+			this.recentFeedback = Transporting.dialTransporter(level.getServer(), transporter, target, false);
+	}
+	
 	public boolean connectTransporter(UUID connectionID)
 	{
 		this.connectionID = connectionID;
@@ -184,17 +196,27 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		return true;
 	}
 	
-	public void disconnectTransporter()
+	public TransporterInfo.Feedback disconnectTransporter(TransporterInfo.Feedback feedback)
 	{
-		if(connectionID != null)
-			TransporterNetwork.get(level).terminateConnection(this.connectionID);
-		resetTransporter();
+		//TODO Extra checks for disconnect?
+		
+		return bypassDisconnectTransporter(feedback);
 	}
 	
-	public void resetTransporter()
+	public TransporterInfo.Feedback bypassDisconnectTransporter(TransporterInfo.Feedback feedback)
 	{
+		if(connectionID != null)
+			TransporterNetwork.get(level).terminateConnection(this.connectionID, feedback);
+		return resetTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+	}
+	
+	public TransporterInfo.Feedback resetTransporter(TransporterInfo.Feedback feedback)
+	{
+		this.recentFeedback = feedback;
 		this.connectionID = null;
 		setConnected(false);
+		
+		return this.recentFeedback;
 	}
 	
 	protected void loadChunk(boolean load)

@@ -107,70 +107,75 @@ public class StargateInfo
 	
 	public enum Feedback
 	{
-		NONE(0, FeedbackType.INFO, "none"),
+		NONE(0, FeedbackType.INFO, "none"), // Default state
 		UNKNOWN_ERROR(-1, FeedbackType.ERROR, "unknown"), // Error usually used when Stargate isn't present for some unknown reason
 		
 		// Chevron/Symbol
-		SYMBOL_ENCODED(1, FeedbackType.INFO, "symbol_encoded"),
-		SYMBOL_IN_ADDRESS(-2, FeedbackType.ERROR, "symbol_in_address"),
-		SYMBOL_OUT_OF_BOUNDS(-3, FeedbackType.ERROR, "symbol_out_of_bounds"),
-		ENCODE_WHEN_CONNECTED(-4, FeedbackType.ERROR, "encode_when_connected"),
+		SYMBOL_ENCODED(1, FeedbackType.INFO, "symbol_encoded"), // Symbol was encoded successfully
+		SYMBOL_IN_ADDRESS(-2, FeedbackType.ERROR, "symbol_in_address"), // Symbol is already in the address
+		SYMBOL_OUT_OF_BOUNDS(-3, FeedbackType.ERROR, "symbol_out_of_bounds"), // Symbol is out of bounds
+		ENCODE_WHEN_CONNECTED(-4, FeedbackType.ERROR, "encode_when_connected"), // Trying to encode symbols while the Stargate is already connected
 		
 		// Establishing Connection
-		CONNECTION_ESTABLISHED_SYSTEM_WIDE(2, FeedbackType.INFO, "connection_established.system_wide"),
-		CONNECTION_ESTABLISHED_INTERSTELLAR(3, FeedbackType.INFO, "connection_established.interstellar"),
-		CONNECTION_ESTABLISHED_INTERGALACTIC(4, FeedbackType.INFO, "connection_established.intergalactic"),
+		CONNECTION_ESTABLISHED_SYSTEM_WIDE(2, FeedbackType.INFO, "connection_established.system_wide"), // System-wide connection was established successfully
+		CONNECTION_ESTABLISHED_INTERSTELLAR(3, FeedbackType.INFO, "connection_established.interstellar"), // Interstellar connection was established successfully
+		CONNECTION_ESTABLISHED_INTERGALACTIC(4, FeedbackType.INFO, "connection_established.intergalactic"),// Intergalactic connection was established successfully
 		
-		INCOMPLETE_ADDRESS(-5, FeedbackType.MAJOR_ERROR, "incomplete_address"),
-		INVALID_ADDRESS(-6, FeedbackType.MAJOR_ERROR, "invalid_address"),
-		NOT_ENOUGH_POWER(-7, FeedbackType.MAJOR_ERROR, "not_enough_power"),
-		SELF_OBSTRUCTED(-8, FeedbackType.MAJOR_ERROR, "self_obstructed"),
-		TARGET_OBSTRUCTED(-9, FeedbackType.SKIPPABLE_ERROR, "target_obstructed"),
-		SELF_DIAL(-10, FeedbackType.MAJOR_ERROR, "self_dial"),
-		SAME_SYSTEM_DIAL(-11, FeedbackType.MAJOR_ERROR, "same_system_dial"),
-		ALREADY_CONNECTED(-12, FeedbackType.MAJOR_ERROR, "already_connected"),
-		NO_GALAXY(-13, FeedbackType.MAJOR_ERROR, "no_galaxy"),
-		NO_DIMENSIONS(-14, FeedbackType.MAJOR_ERROR, "no_dimensions"),
-		NO_STARGATES(-15, FeedbackType.MAJOR_ERROR, "no_stargates"),
-		TARGET_RESTRICTED(-16, FeedbackType.SKIPPABLE_ERROR, "target_restricted"),
-		INVALID_8_CHEVRON_ADDRESS(-17, FeedbackType.MAJOR_ERROR, "invalid_8_chevron_address"),
-		INVALID_SYSTEM_WIDE_CONNECTION(-18, FeedbackType.MAJOR_ERROR, "invalid_system_wide_connection"),
-		TARGET_NOT_WHITELISTED(-19, FeedbackType.MAJOR_ERROR, "target_not_whitelisted"),
-		NOT_WHITELISTED_BY_TARGET(-20, FeedbackType.SKIPPABLE_ERROR, "not_whitelisted_by_target"),
-		TARGET_BLACKLISTED(-21, FeedbackType.MAJOR_ERROR, "target_blacklisted"),
-		BLACKLISTED_BY_TARGET(-22, FeedbackType.SKIPPABLE_ERROR, "blacklisted_by_target"),
+		INCOMPLETE_ADDRESS(-5, FeedbackType.MAJOR_ERROR, "incomplete_address"), // Trying to dial an incomplete address (only encoded less than 6 symbols)
+		INVALID_ADDRESS(-6, FeedbackType.MAJOR_ERROR, "invalid_address"), // Dialed address is invalid because there is no dimension or Stargate with that address
+		NOT_ENOUGH_POWER(-7, FeedbackType.MAJOR_ERROR, "not_enough_power"), // Dialing when the Stargate doesn't have enough power
+		SELF_OBSTRUCTED(-8, FeedbackType.MAJOR_ERROR, "self_obstructed"), // The dialing Stargate is obstructed
+		TARGET_OBSTRUCTED(-9, FeedbackType.SKIPPABLE_ERROR, "target_obstructed"), // The target Stargate is obstructed
+		SELF_DIAL(-10, FeedbackType.MAJOR_ERROR, "self_dial"), // The Stargate is attempting to dial itself
+		SAME_SYSTEM_DIAL(-11, FeedbackType.MAJOR_ERROR, "same_system_dial"), // The Stargate is attempting to dial the system it's located in
+		ALREADY_CONNECTED(-12, FeedbackType.MAJOR_ERROR, "already_connected"), // The dialing Stargate is attempting to connect to an already connected Stargate
+		NO_GALAXY(-13, FeedbackType.MAJOR_ERROR, "no_galaxy"), // The Stargate isn't located in any galaxy //TODO currently unused, maybe remove?
+		NO_DIMENSIONS(-14, FeedbackType.MAJOR_ERROR, "no_dimensions"), // There are no Dimensions in the dialed Solar System
+		NO_STARGATES(-15, FeedbackType.MAJOR_ERROR, "no_stargates"), // There are no Stargates in the dialed Dimension (and by extension, the dialed Solar System)
+		TARGET_RESTRICTED(-16, FeedbackType.SKIPPABLE_ERROR, "target_restricted"), // Target Stargate is in a restricted network and denied the connection attempt
+		INVALID_8_CHEVRON_ADDRESS(-17, FeedbackType.MAJOR_ERROR, "invalid_8_chevron_address"), // Stargate attempted to dial an 8-chevron address of a Solar System in the same Galaxy, but the config enabling that is disabled
+		INVALID_SYSTEM_WIDE_CONNECTION(-18, FeedbackType.MAJOR_ERROR, "invalid_system_wide_connection"), // Stargate attempted to dial a Stargate in the same Solar System, but the config enabling that is disabled
+		TARGET_NOT_WHITELISTED(-19, FeedbackType.MAJOR_ERROR, "target_not_whitelisted"), // Dialing Stargate attempted to dial a Stargate that is not whitelisted by the dialing Stargate
+		NOT_WHITELISTED_BY_TARGET(-20, FeedbackType.SKIPPABLE_ERROR, "not_whitelisted_by_target"), // Dialing Stargate attempted to dial a Stargate that doesn't have the dialing Stargate on its whitelist
+		TARGET_BLACKLISTED(-21, FeedbackType.MAJOR_ERROR, "target_blacklisted"), // Dialing Stargate attempted to dial a Stargate that is blacklisted by the dialing Stargate
+		BLACKLISTED_BY_TARGET(-22, FeedbackType.SKIPPABLE_ERROR, "blacklisted_by_target"), // Dialing Stargate attempted to dial a Stargate that has the dialing Stargate on its blacklist
 
 		// Wormhole TODO
 		//TRANSPORT_SUCCESSFUL(5, FeedbackType.INFO, createInfo("wormhole.transport_successful")),
 		//ENTITY_DESTROYED(6, FeedbackType.INFO, createInfo("wormhole.entity_destroyed")),
 		
 		// End Connection
-		CONNECTION_ENDED_BY_DISCONNECT(7, FeedbackType.INFO, "connection_ended.disconnect"),
-		CONNECTION_ENDED_BY_POINT_OF_ORIGIN(8, FeedbackType.INFO, "connection_ended.point_of_origin"),
-		CONNECTION_ENDED_BY_NETWORK(9, FeedbackType.INFO, "connection_ended.stargate_network"),
-		CONNECTION_ENDED_BY_AUTOCLOSE(10, FeedbackType.INFO, "connection_ended.autoclose"),
-		EXCEEDED_CONNECTION_TIME(-23, FeedbackType.ERROR, "exceeded_connection_time"),
-		RAN_OUT_OF_POWER(-24, FeedbackType.ERROR, "ran_out_of_power"),
-		CONNECTION_REROUTED(-25, FeedbackType.ERROR, "connection_rerouted"),
-		WRONG_DISCONNECT_SIDE(-26, FeedbackType.ERROR, "wrong_disconnect_side"),
-		CONNECTION_FORMING(-27, FeedbackType.ERROR, "connection_forming"),
+		CONNECTION_ENDED_BY_DISCONNECT(7, FeedbackType.INFO, "connection_ended.disconnect"), // Connection ended because the Stargate was disconnected (by DHD or computer)
+		CONNECTION_ENDED_BY_POINT_OF_ORIGIN(8, FeedbackType.INFO, "connection_ended.point_of_origin"), // Connection ended because the Point of Origin was encoded again
+		CONNECTION_ENDED_BY_NETWORK(9, FeedbackType.INFO, "connection_ended.stargate_network"), // Connection ended by the Stargate Network, either because it was undergoing a Stellar Update, or because the gate was thinking it's conected when it wasn't
+		CONNECTION_ENDED_BY_AUTOCLOSE(10, FeedbackType.INFO, "connection_ended.autoclose"), // Connection ended because of the DHD's autoclose function
+		EXCEEDED_CONNECTION_TIME(-23, FeedbackType.ERROR, "exceeded_connection_time"), // Connection ended because it exceeded maximum connection time and the energy bypass config is not enabled
+		RAN_OUT_OF_POWER(-24, FeedbackType.ERROR, "ran_out_of_power"), // Connection ended because the Stargate ran out of power
+		CONNECTION_REROUTED(-25, FeedbackType.ERROR, "connection_rerouted"), // Connection was rerouted //TODO unused
+		WRONG_DISCONNECT_SIDE(-26, FeedbackType.ERROR, "wrong_disconnect_side"), // Cannot disconnect the Stargate because it did not initiate the connection and the config doesn't allow it
+		CONNECTION_FORMING(-27, FeedbackType.ERROR, "connection_forming"), // Cannot end the connection while it is still forming
 
-		STARGATE_DESTROYED(-28, FeedbackType.ERROR, "stargate_destroyed"),
-		COULD_NOT_REACH_TARGET_STARGATE(-29, FeedbackType.MAJOR_ERROR, "could_not_reach_target_stargate"),
-		INTERRUPTED_BY_INCOMING_CONNECTION(-30, FeedbackType.ERROR, "interrupted_by_incoming_connection"),
+		STARGATE_DESTROYED(-28, FeedbackType.ERROR, "stargate_destroyed"), // The Stargate at the other end of the connection was destroyed
+		COULD_NOT_REACH_TARGET_STARGATE(-29, FeedbackType.MAJOR_ERROR, "could_not_reach_target_stargate"), // Connection ended because target Stargate became unreachable
+		INTERRUPTED_BY_INCOMING_CONNECTION(-30, FeedbackType.ERROR, "interrupted_by_incoming_connection"), // Stargate was interrupted by an incoming connection
 		
 		// Milky Way
-		CHEVRON_RAISED(11, FeedbackType.INFO, "chevron_opened"),
-		ROTATING(12, FeedbackType.INFO, "rotating"),
-		ROTATION_BLOCKED(-31, FeedbackType.INFO, "rotation_blocked"),
-		NOT_ROTATING(-32, FeedbackType.INFO, "not_rotating"),
-		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"),
-		CHEVRON_ALREADY_OPENED(-33, FeedbackType.ERROR, "chevron_already_opened"),
-		CHEVRON_ALREADY_CLOSED(-34, FeedbackType.ERROR, "chevron_already_closed"),
-		CHEVRON_NOT_OPEN(-35, FeedbackType.ERROR, "chevron_not_open"),
-		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin"),
+		CHEVRON_OPENED(11, FeedbackType.INFO, "chevron_opened"), // Chevron was opened successfully
 		
-		TARGET_NOT_LOADED(-37, FeedbackType.ERROR, "target_not_loaded");
+		// Rotating
+		ROTATING(12, FeedbackType.INFO, "rotating"), // Stargate started rotating successfully
+		ROTATION_BLOCKED(-31, FeedbackType.INFO, "rotation_blocked"), // Rotation is blocked by an open chevron
+		NOT_ROTATING(-32, FeedbackType.INFO, "not_rotating"), // Attempted to end rotation even though the Stargate isn't rotating
+		ROTATION_STOPPED(13, FeedbackType.INFO, "rotation_stopped"), // Rotation was stopped successfully
+		
+		// Milky Way
+		CHEVRON_ALREADY_OPENED(-33, FeedbackType.ERROR, "chevron_already_opened"), // Attempted to open a chevron that is already open
+		CHEVRON_ALREADY_CLOSED(-34, FeedbackType.ERROR, "chevron_already_closed"), // Attempted to close a chevron that is already closed
+		CHEVRON_NOT_OPEN(-35, FeedbackType.ERROR, "chevron_not_open"), // Attempted to encode a chevron that is not open
+		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin"), // Attempted to encode the point of origin, even though it's currently not allowed
+		
+		// Other
+		TARGET_NOT_LOADED(-37, FeedbackType.ERROR, "target_not_loaded"); // Target Stargate wasn't being loaded by any players or chunkloaders
 		
 		private int code;
 		private final FeedbackType type;

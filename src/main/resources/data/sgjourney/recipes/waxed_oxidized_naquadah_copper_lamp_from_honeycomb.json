@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "building",
+	"group": "waxed_copper_block",
+	"ingredients":
+	[
+		{ "item": "sgjourney:oxidized_naquadah_copper_lamp" },
+		{ "item": "minecraft:honeycomb" }
+	],
+	"result": { "count": 1, "item": "sgjourney:waxed_oxidized_naquadah_copper_lamp" }
+}

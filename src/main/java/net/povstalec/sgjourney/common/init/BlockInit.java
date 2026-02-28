@@ -41,7 +41,7 @@ public class BlockInit
 {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, StargateJourney.MODID);
 	
-	//Block Tab
+	// Stargates
 	public static final RegistryObject<UniverseStargateBlock> UNIVERSE_STARGATE = registerStargateBlock("universe_stargate", 
 			() -> new UniverseStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
@@ -94,7 +94,7 @@ public class BlockInit
 	public static final RegistryObject<TollanStargateRingBlock> TOLLAN_RING = BLOCKS.register("tollan_ring",
 			() -> new TollanStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
-	
+	// DHDs
 	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd", 
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
@@ -111,14 +111,15 @@ public class BlockInit
 			() -> new ChevronBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F)
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
 					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
-	
+	// Transporters
 	public static final RegistryObject<TransportRingsBlock> GOAULD_TRANSPORT_RINGS = registerTransporterBlock("goauld_transport_rings",
 			() -> new TransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
+	// Transporter Controllers
 	public static final RegistryObject<RingPanelBlock> GOAULD_RING_PANEL = registerBlock("goauld_ring_panel",
 			() -> new RingPanelBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE, 1);
-	
+	// Natural Blocks
 	public static final RegistryObject<FallingBlock> SULFUR_SAND = registerBlock("sulfur_sand",
 			() -> new FallingBlock(BlockBehaviour.Properties.of(Material.SAND, MaterialColor.SAND).strength(0.5F).sound(SoundType.SAND)));
 	
@@ -135,39 +136,39 @@ public class BlockInit
 			() -> new UnityClusterBlock(7, 3, BlockBehaviour.Properties.of(Material.AMETHYST, MaterialColor.DIAMOND).strength(1.5F).sound(SoundType.GLASS).requiresCorrectToolForDrops()));
 	
 	// Ores
-	public static final RegistryObject<ExplosiveBlock> NAQUADAH_ORE = registerBlock("naquadah_ore", 
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), 4.0F));
-	public static final RegistryObject<ExplosiveBlock> NETHER_NAQUADAH_ORE = registerBlock("nether_naquadah_ore", 
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), 4.0F));
-	public static final RegistryObject<ExplosiveBlock> DEEPSLATE_NAQUADAH_ORE = registerBlock("deepslate_naquadah_ore", 
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops(), 4.0F));
-	public static final RegistryObject<ExplosiveBlock> NAQUADRIA_ORE = registerBlock("naquadria_ore",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), 4.0F));
-	public static final RegistryObject<ExplosiveBlock> NETHER_NAQUADRIA_ORE = registerBlock("nether_naquadria_ore",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), 4.0F));
-	public static final RegistryObject<ExplosiveBlock> DEEPSLATE_NAQUADRIA_ORE = registerBlock("deepslate_naquadria_ore",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops(), 4.0F));
-	public static final RegistryObject<ExplosiveBlock> TRINIUM_ORE = registerBlock("trinium_ore",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops(), 4.0F));
-	public static final RegistryObject<ExplosiveBlock> NETHER_TRINIUM_ORE = registerBlock("nether_trinium_ore",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), 4.0F));
-	public static final RegistryObject<ExplosiveBlock> DEEPSLATE_TRINIUM_ORE = registerBlock("deepslate_trinium_ore",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops(), 4.0F));
-	
-	public static final RegistryObject<ExplosiveBlock> RAW_NAQUADAH_BLOCK = registerBlock("raw_naquadah_block", 
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 10.0F));
+	public static final RegistryObject<NaquadriaOreBlock> NAQUADRIA_ORE = registerBlock("naquadria_ore",
+			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), 16.0F));
+	public static final RegistryObject<NaquadriaOreBlock> NETHER_NAQUADRIA_ORE = registerBlock("nether_naquadria_ore",
+			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), 16.0F));
+	public static final RegistryObject<NaquadriaOreBlock> DEEPSLATE_NAQUADRIA_ORE = registerBlock("deepslate_naquadria_ore",
+			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops(), 16.0F));
+	public static final RegistryObject<NaquadahOreBlock> NAQUADAH_ORE = registerBlock("naquadah_ore",
+			() -> new NaquadahOreBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), NAQUADRIA_ORE::get, 4.0F));
+	public static final RegistryObject<NaquadahOreBlock> NETHER_NAQUADAH_ORE = registerBlock("nether_naquadah_ore",
+			() -> new NaquadahOreBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops(), NETHER_NAQUADRIA_ORE::get, 4.0F));
+	public static final RegistryObject<NaquadahOreBlock> DEEPSLATE_NAQUADAH_ORE = registerBlock("deepslate_naquadah_ore",
+			() -> new NaquadahOreBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops(), DEEPSLATE_NAQUADRIA_ORE::get, 4.0F));
+	public static final RegistryObject<Block> TRINIUM_ORE = registerBlock("trinium_ore",
+			() -> new Block(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> NETHER_TRINIUM_ORE = registerBlock("nether_trinium_ore",
+			() -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(3.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> DEEPSLATE_TRINIUM_ORE = registerBlock("deepslate_trinium_ore",
+			() -> new Block(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops()));
+	// Raw Blocks
+	public static final RegistryObject<NaquadriaOreBlock> RAW_NAQUADRIA_BLOCK = registerBlock("raw_naquadria_block",
+			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of(Material.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 40.0F));
+	public static final RegistryObject<NaquadahOreBlock> RAW_NAQUADAH_BLOCK = registerBlock("raw_naquadah_block",
+			() -> new NaquadahOreBlock(BlockBehaviour.Properties.of(Material.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), RAW_NAQUADRIA_BLOCK::get, 10.0F));
 	public static final RegistryObject<ExplosiveBlock> PURE_NAQUADAH_BLOCK = registerBlock("pure_naquadah_block",
 			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 20.0F), Rarity.UNCOMMON, 64);
-	public static final RegistryObject<ExplosiveBlock> RAW_NAQUADRIA_BLOCK = registerBlock("raw_naquadria_block",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of(Material.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 10.0F));
 	public static final RegistryObject<Block> RAW_TRINIUM_BLOCK = registerBlock("raw_trinium_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops()));
-	
+	// Liquids
 	public static final RegistryObject<LiquidBlock> LIQUID_NAQUADAH_BLOCK = registerBlock("liquid_naquadah", 
 			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
 	public static final RegistryObject<LiquidBlock> HEAVY_LIQUID_NAQUADAH_BLOCK = registerBlock("heavy_liquid_naquadah", 
 			() -> new LiquidBlock(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
-	
+	// Naquadah-Copper Blocks
 	public static final RegistryObject<WeatheringRotatedPillarBlock> NAQUADAH_COPPER_BLOCK = registerBlock("naquadah_copper_block",
 			() -> new WeatheringRotatedPillarBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<WeatheringRotatedPillarBlock> EXPOSED_NAQUADAH_COPPER_BLOCK = registerBlock("exposed_naquadah_copper_block",
@@ -176,7 +177,49 @@ public class BlockInit
 			() -> new WeatheringRotatedPillarBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<WeatheringRotatedPillarBlock> OXIDIZED_NAQUADAH_COPPER_BLOCK = registerBlock("oxidized_naquadah_copper_block",
 			() -> new WeatheringRotatedPillarBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
-	// Waxed variants
+	public static final RegistryObject<WaxedRotatedPillarBlock> WAXED_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_naquadah_copper_block",
+			() -> new WaxedRotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedRotatedPillarBlock> WAXED_EXPOSED_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_exposed_naquadah_copper_block",
+			() -> new WaxedRotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedRotatedPillarBlock> WAXED_WEATHERED_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_weathered_naquadah_copper_block",
+			() -> new WaxedRotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedRotatedPillarBlock> WAXED_OXIDIZED_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_oxidized_naquadah_copper_block",
+			() -> new WaxedRotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<WeatheringStairBlock> NAQUADAH_COPPER_STAIRS = registerBlock("naquadah_copper_stairs",
+			() -> new WeatheringStairBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, () -> NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringStairBlock> EXPOSED_NAQUADAH_COPPER_STAIRS = registerBlock("exposed_naquadah_copper_stairs",
+			() -> new WeatheringStairBlock(SGJourneyWeatheringBlock.WeatherState.EXPOSED, () -> EXPOSED_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringStairBlock> WEATHERED_NAQUADAH_COPPER_STAIRS = registerBlock("weathered_naquadah_copper_stairs",
+			() -> new WeatheringStairBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, () -> WEATHERED_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringStairBlock> OXIDIZED_NAQUADAH_COPPER_STAIRS = registerBlock("oxidized_naquadah_copper_stairs",
+			() -> new WeatheringStairBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, () -> OXIDIZED_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedStairBlock> WAXED_NAQUADAH_COPPER_STAIRS = registerBlock("waxed_naquadah_copper_stairs",
+			() -> new WaxedStairBlock(() -> WAXED_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedStairBlock> WAXED_EXPOSED_NAQUADAH_COPPER_STAIRS = registerBlock("waxed_exposed_naquadah_copper_stairs",
+			() -> new WaxedStairBlock(() -> WAXED_EXPOSED_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedStairBlock> WAXED_WEATHERED_NAQUADAH_COPPER_STAIRS = registerBlock("waxed_weathered_naquadah_copper_stairs",
+			() -> new WaxedStairBlock(() -> WAXED_WEATHERED_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedStairBlock> WAXED_OXIDIZED_NAQUADAH_COPPER_STAIRS = registerBlock("waxed_oxidized_naquadah_copper_stairs",
+			() -> new WaxedStairBlock(() -> WAXED_OXIDIZED_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<WeatheringSlabBlock> NAQUADAH_COPPER_SLAB = registerBlock("naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> EXPOSED_NAQUADAH_COPPER_SLAB = registerBlock("exposed_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.EXPOSED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> WEATHERED_NAQUADAH_COPPER_SLAB = registerBlock("weathered_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> OXIDIZED_NAQUADAH_COPPER_SLAB = registerBlock("oxidized_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_NAQUADAH_COPPER_SLAB = registerBlock("waxed_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_EXPOSED_NAQUADAH_COPPER_SLAB = registerBlock("waxed_exposed_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_WEATHERED_NAQUADAH_COPPER_SLAB = registerBlock("waxed_weathered_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_OXIDIZED_NAQUADAH_COPPER_SLAB = registerBlock("waxed_oxidized_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
 	public static final RegistryObject<WeatheringFullBlock> SMOOTH_NAQUADAH_COPPER_BLOCK = registerBlock("smooth_naquadah_copper_block",
 			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<WeatheringFullBlock> EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK = registerBlock("exposed_smooth_naquadah_copper_block",
@@ -185,6 +228,31 @@ public class BlockInit
 			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<WeatheringFullBlock> OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK = registerBlock("oxidized_smooth_naquadah_copper_block",
 			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedFullBlock> WAXED_SMOOTH_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_smooth_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedFullBlock> WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_exposed_smooth_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedFullBlock> WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_weathered_smooth_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedFullBlock> WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_oxidized_smooth_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<WeatheringSlabBlock> SMOOTH_NAQUADAH_COPPER_SLAB = registerBlock("smooth_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB = registerBlock("exposed_smooth_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.EXPOSED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB = registerBlock("weathered_smooth_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB = registerBlock("oxidized_smooth_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_SMOOTH_NAQUADAH_COPPER_SLAB = registerBlock("waxed_smooth_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB = registerBlock("waxed_exposed_smooth_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB = registerBlock("waxed_weathered_smooth_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB = registerBlock("waxed_oxidized_smooth_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<WeatheringPillarLampBlock> NAQUADAH_COPPER_LAMP = registerBlock("naquadah_copper_lamp",
 			() -> new WeatheringPillarLampBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops(), 15));
@@ -194,7 +262,66 @@ public class BlockInit
 			() -> new WeatheringPillarLampBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops(), 9));
 	public static final RegistryObject<WeatheringPillarLampBlock> OXIDIZED_NAQUADAH_COPPER_LAMP = registerBlock("oxidized_naquadah_copper_lamp",
 			() -> new WeatheringPillarLampBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops(), 6));
+	public static final RegistryObject<WaxedPillarLampBlock> WAXED_NAQUADAH_COPPER_LAMP = registerBlock("waxed_naquadah_copper_lamp",
+			() -> new WaxedPillarLampBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops(), 15));
+	public static final RegistryObject<WaxedPillarLampBlock> WAXED_EXPOSED_NAQUADAH_COPPER_LAMP = registerBlock("waxed_exposed_naquadah_copper_lamp",
+			() -> new WaxedPillarLampBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops(), 12));
+	public static final RegistryObject<WaxedPillarLampBlock> WAXED_WEATHERED_NAQUADAH_COPPER_LAMP = registerBlock("waxed_weathered_naquadah_copper_lamp",
+			() -> new WaxedPillarLampBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops(), 9));
+	public static final RegistryObject<WaxedPillarLampBlock> WAXED_OXIDIZED_NAQUADAH_COPPER_LAMP = registerBlock("waxed_oxidized_naquadah_copper_lamp",
+			() -> new WaxedPillarLampBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops(), 6));
 	
+	public static final RegistryObject<WeatheringFullBlock> CUT_NAQUADAH_COPPER_BLOCK = registerBlock("cut_naquadah_copper_block",
+			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringFullBlock> EXPOSED_CUT_NAQUADAH_COPPER_BLOCK = registerBlock("exposed_cut_naquadah_copper_block",
+			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.EXPOSED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringFullBlock> WEATHERED_CUT_NAQUADAH_COPPER_BLOCK = registerBlock("weathered_cut_naquadah_copper_block",
+			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringFullBlock> OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK = registerBlock("oxidized_cut_naquadah_copper_block",
+			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedFullBlock> WAXED_CUT_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_cut_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedFullBlock> WAXED_EXPOSED_CUT_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_exposed_cut_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedFullBlock> WAXED_WEATHERED_CUT_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_weathered_cut_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedFullBlock> WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_oxidized_cut_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<WeatheringStairBlock> CUT_NAQUADAH_COPPER_STAIRS = registerBlock("cut_naquadah_copper_stairs",
+			() -> new WeatheringStairBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, () -> CUT_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringStairBlock> EXPOSED_CUT_NAQUADAH_COPPER_STAIRS = registerBlock("exposed_cut_naquadah_copper_stairs",
+			() -> new WeatheringStairBlock(SGJourneyWeatheringBlock.WeatherState.EXPOSED, () -> EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringStairBlock> WEATHERED_CUT_NAQUADAH_COPPER_STAIRS = registerBlock("weathered_cut_naquadah_copper_stairs",
+			() -> new WeatheringStairBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, () -> WEATHERED_CUT_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringStairBlock> OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS = registerBlock("oxidized_cut_naquadah_copper_stairs",
+			() -> new WeatheringStairBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, () -> OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedStairBlock> WAXED_CUT_NAQUADAH_COPPER_STAIRS = registerBlock("waxed_cut_naquadah_copper_stairs",
+			() -> new WaxedStairBlock(() -> WAXED_CUT_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedStairBlock> WAXED_EXPOSED_CUT_NAQUADAH_COPPER_STAIRS = registerBlock("waxed_exposed_cut_naquadah_copper_stairs",
+			() -> new WaxedStairBlock(() -> WAXED_EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedStairBlock> WAXED_WEATHERED_CUT_NAQUADAH_COPPER_STAIRS = registerBlock("waxed_weathered_cut_naquadah_copper_stairs",
+			() -> new WaxedStairBlock(() -> WAXED_WEATHERED_CUT_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedStairBlock> WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS = registerBlock("waxed_oxidized_cut_naquadah_copper_stairs",
+			() -> new WaxedStairBlock(() -> WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<WeatheringSlabBlock> CUT_NAQUADAH_COPPER_SLAB = registerBlock("cut_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> EXPOSED_CUT_NAQUADAH_COPPER_SLAB = registerBlock("exposed_cut_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.EXPOSED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> WEATHERED_CUT_NAQUADAH_COPPER_SLAB = registerBlock("weathered_cut_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WeatheringSlabBlock> OXIDIZED_CUT_NAQUADAH_COPPER_SLAB = registerBlock("oxidized_cut_naquadah_copper_slab",
+			() -> new WeatheringSlabBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_CUT_NAQUADAH_COPPER_SLAB = registerBlock("waxed_cut_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_EXPOSED_CUT_NAQUADAH_COPPER_SLAB = registerBlock("waxed_exposed_cut_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_WEATHERED_CUT_NAQUADAH_COPPER_SLAB = registerBlock("waxed_weathered_cut_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<WaxedSlabBlock> WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_SLAB = registerBlock("waxed_oxidized_cut_naquadah_copper_slab",
+			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	// Naquadah-Iron Blocks
 	public static final RegistryObject<Block> NAQUADAH_IRON_BLOCK = registerBlock("naquadah_iron_block",
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> NAQUADAH_IRON_STAIRS = registerBlock("naquadah_iron_stairs",
@@ -213,10 +340,10 @@ public class BlockInit
 			() -> new StairBlock(() -> NAQUADAH_IRON_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> CUT_NAQUADAH_IRON_SLAB = registerBlock("cut_naquadah_iron_slab",
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
-	
+	// Trinium Blocks
 	public static final RegistryObject<Block> TRINIUM_BLOCK = registerBlock("trinium_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
-	
+	// Archeology Blocks
 	public static final RegistryObject<GoldenIdolBlock> GOLDEN_IDOL = registerBlock("golden_idol", 
 			() -> new GoldenIdolBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.GOLD).strength(3.0F, 6.0F)
 					.sound(SoundType.METAL).requiresCorrectToolForDrops()), Rarity.UNCOMMON, 16);
@@ -225,7 +352,7 @@ public class BlockInit
 			() -> new ArcheologyTableBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F)
 					.sound(SoundType.WOOD)
 					.noOcclusion()));
-	
+	// Decoration Blocks
 	public static final RegistryObject<FirePitBlock> FIRE_PIT = registerBlock("fire_pit", 
 			() -> new FirePitBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.TERRACOTTA_ORANGE).instabreak()
 			.sound(SoundType.STONE), 15, ParticleTypes.FLAME));
@@ -245,23 +372,23 @@ public class BlockInit
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> RED_SANDSTONE_GLYPHS = registerBlock("red_sandstone_glyphs",
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
-
+	// Cartouches
 	public static final RegistryObject<CartoucheBlock> SANDSTONE_CARTOUCHE = registerCartoucheBlock("sandstone_cartouche", 
 			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<CartoucheBlock> RED_SANDSTONE_CARTOUCHE = registerCartoucheBlock("red_sandstone_cartouche",
 			() -> new CartoucheBlock.RedSandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<CartoucheBlock> STONE_CARTOUCHE = registerCartoucheBlock("stone_cartouche", 
 			() -> new CartoucheBlock.Stone(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
-	
+	// Symbols
 	public static final RegistryObject<SymbolBlock> SANDSTONE_SYMBOL = registerBlock("sandstone_symbol",
 			() -> new SymbolBlock.Sandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<SymbolBlock> RED_SANDSTONE_SYMBOL = registerBlock("red_sandstone_symbol",
 			() -> new SymbolBlock.RedSandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<SymbolBlock> STONE_SYMBOL = registerBlock("stone_symbol", 
 			() -> new SymbolBlock.Stone(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
-	
-	public static final RegistryObject<NaquadahGeneratorMarkIBlock> NAQUADAH_REACTOR = registerEnergyBlock("naquadah_reactor",
-			() -> new NaquadahGeneratorMarkIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)),
+	// Tech
+	public static final RegistryObject<NaquadahReactorBlock> NAQUADAH_REACTOR = registerEnergyBlock("naquadah_reactor",
+			() -> new NaquadahReactorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)),
 			() -> CommonNaquadahGeneratorConfig.naquadah_reactor_capacity.get(), Rarity.COMMON);
 	public static final RegistryObject<NaquadahGeneratorMarkIBlock> NAQUADAH_GENERATOR_MARK_I = registerEnergyBlock("naquadah_generator_mark_i",
 			() -> new NaquadahGeneratorMarkIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)),
@@ -301,6 +428,10 @@ public class BlockInit
 	public static final RegistryObject<TransceiverBlock> TRANSCEIVER = registerBlock("transceiver", 
 			() -> new TransceiverBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F)), 1);
 	
+	public static final RegistryObject<BatteryBlock> LARGE_NAQUADAH_BATTERY = registerEnergyBlock("large_naquadah_battery",
+			() -> new BatteryBlock.Naquadah(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F)),
+			() -> CommonTechConfig.large_naquadah_battery_capacity.get(), Rarity.RARE);
+	// Cables
 	public static final RegistryObject<CableBlock> NAQUADAH_WIRE = registerBlock("naquadah_wire",
 			() -> new CableBlock.NaquadahWire(BlockBehaviour.Properties.of(Material.METAL).strength(1.0F, 6.0F).noOcclusion()), 64);
 	public static final RegistryObject<CableBlock> SMALL_NAQUADAH_CABLE = registerBlock("small_naquadah_cable",
@@ -309,10 +440,6 @@ public class BlockInit
 			() -> new CableBlock.MediumNaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(2.0F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), Rarity.UNCOMMON, 64);
 	public static final RegistryObject<CableBlock> LARGE_NAQUADAH_CABLE = registerBlock("large_naquadah_cable",
 			() -> new CableBlock.LargeNaquadahCable(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F).noOcclusion().requiresCorrectToolForDrops()), Rarity.RARE, 64);
-	
-	public static final RegistryObject<BatteryBlock> LARGE_NAQUADAH_BATTERY = registerEnergyBlock("large_naquadah_battery",
-			() -> new BatteryBlock.Naquadah(BlockBehaviour.Properties.of(Material.METAL).strength(3.0F, 6.0F)),
-			() -> CommonTechConfig.large_naquadah_battery_capacity.get(), Rarity.RARE);
 	
 	
 	private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block)

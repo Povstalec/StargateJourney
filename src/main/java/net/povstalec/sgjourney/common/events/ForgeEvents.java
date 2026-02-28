@@ -55,14 +55,13 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.*;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
-import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
-import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadahProvider;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.Factions;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.entities.Human;
+import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
@@ -122,9 +121,9 @@ public class ForgeEvents
 			return;
 		
 		if(event.getEntity() instanceof AbstractVillager villager)
-			AncientGene.inheritGene(villager, CommonGeneticConfig.villager_ata_gene_inheritance_chance.get());
+			AncientGene.spawnInheritedGene(villager, CommonGeneticConfig.villager_ata_gene_inheritance_chance.get());
 		else if(event.getEntity() instanceof Human human)
-			AncientGene.inheritGene(human, CommonGeneticConfig.human_ata_gene_inheritance_chance.get());
+			AncientGene.spawnInheritedGene(human, CommonGeneticConfig.human_ata_gene_inheritance_chance.get());
 		
 		// Lightning recharging the Stargate
 		if(entity instanceof LightningBolt lightning)
@@ -159,17 +158,31 @@ public class ForgeEvents
 	{
 		Player player = event.getEntity();
 		
-		long seed = ((ServerLevel) player.getLevel()).getSeed();
-		seed += player.getUUID().hashCode();
-		
-		AncientGene.inheritGene(seed, player, CommonGeneticConfig.player_ata_gene_inheritance_chance.get());
+		if(CommonGeneticConfig.ancient_players.get().contains(player.getName().getString()) || CommonGeneticConfig.ancient_players.get().contains(player.getStringUUID()))
+			AncientGene.spawnAncientGene(player);
+		else if(CommonGeneticConfig.inherited_ancient_gene_players.get().contains(player.getName().getString()) || CommonGeneticConfig.inherited_ancient_gene_players.get().contains(player.getStringUUID()))
+			AncientGene.spawnInheritedGene(player);
+		else if(CommonGeneticConfig.artificial_ancient_gene_players.get().contains(player.getName().getString()) || CommonGeneticConfig.artificial_ancient_gene_players.get().contains(player.getStringUUID()))
+			AncientGene.spawnArtificialGene(player);
+		else if(CommonGeneticConfig.no_ancient_gene_players.get().contains(player.getName().getString()) || CommonGeneticConfig.no_ancient_gene_players.get().contains(player.getStringUUID()))
+			AncientGene.spawnNoGene(player);
+		else
+		{
+			long seed = ((ServerLevel) player.getLevel()).getSeed();
+			seed += player.getUUID().hashCode();
+			
+			AncientGene.spawnInheritedGene(seed, player, CommonGeneticConfig.player_ata_gene_inheritance_chance.get());
+		}
 	}
 	
 	@SubscribeEvent
 	public static void onLivingTick(LivingEvent.LivingTickEvent event)
 	{
-		Entity entity = event.getEntity();
+		LivingEntity entity = event.getEntity();
 		Level level = entity.getLevel();
+		
+		entity.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(jaffaPouch -> jaffaPouch.tick(entity));
+		entity.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(goauldHost -> goauldHost.tick(entity));
 		
 		//TODO Make this into something you can edit with Datapacks
 		if(!level.dimension().location().equals(new ResourceLocation(StargateJourney.MODID, "cavum_tenebrae")))
@@ -177,9 +190,7 @@ public class ForgeEvents
 		
 		if(entity instanceof Player player)
 		{
-			if(player.isCreative() && player.getAbilities().flying)
-				return;
-			else if(player.isSpectator() && player.getAbilities().flying)
+			if(player.isCreative() && player.getAbilities().flying || player.isSpectator() || player.isFallFlying())
 				return;
 		}
 		
@@ -200,7 +211,7 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onLivingAttack(LivingAttackEvent event)
 	{
-		Entity entity = event.getEntity();
+		LivingEntity entity = event.getEntity();
 		Entity attacker = event.getSource().getDirectEntity();
 		float damage = event.getAmount();
 		
@@ -210,39 +221,35 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onLivingHurt(LivingHurtEvent event)
 	{
-		Entity entity = event.getEntity();
+		LivingEntity entity = event.getEntity();
 		Entity attacker = event.getSource().getDirectEntity();
 		float damage = event.getAmount();
 		
 		event.setCanceled(onAttackOrHurt(entity, attacker, damage));
 	}
 	
-	private static boolean onAttackOrHurt(Entity entity, Entity attacker, float damage)
+	private static boolean onAttackOrHurt(LivingEntity entity, Entity attacker, float damage)
 	{
-		if(entity instanceof Player player)
+		ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
+		if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getFluidAmount(stack) > 0)
 		{
-			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
-			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getFluidAmount(stack) > 0)
-			{
-				int naquadahDepleted = (int) damage;
-
-				PersonalShieldItem.drainNaquadah(stack, naquadahDepleted);
-				
-				if(attacker instanceof LivingEntity livingAttacker)
-					livingAttacker.knockback(0.5D, player.getX() - attacker.getX(), player.getZ() - attacker.getZ());
-				
-				return true;
-			}
+			PersonalShieldItem.drainNaquadah(stack, Math.round(damage));
+			
+			if(attacker instanceof LivingEntity livingAttacker)
+				livingAttacker.knockback(0.5D, entity.getX() - attacker.getX(), entity.getZ() - attacker.getZ());
+			
+			return true;
 		}
+		
 		return false;
 	}
 	
 	@SubscribeEvent
 	public static void onProjectileHit(ProjectileImpactEvent event)
 	{
-		if(event.getRayTraceResult() instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof Player player)
+		if(event.getRayTraceResult() instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof LivingEntity entity)
 		{
-			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
+			ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
 			if(stack.is(ItemInit.PERSONAL_SHIELD_EMITTER.get()) && PersonalShieldItem.getFluidAmount(stack) > 0)
 			{
 				Projectile projectile = event.getProjectile();
@@ -355,7 +362,7 @@ public class ForgeEvents
 				{
 					StargatePart part = event.getState().getValue(AbstractStargateBlock.PART);
 					
-					if (stargate.blockCover.mineBlockAt(level, player, part, pos))
+					if(stargate.blockCover.mineBlockAt(level, player, part, pos))
 						event.setCanceled(true);
 				}
 			}
@@ -382,11 +389,14 @@ public class ForgeEvents
 			if(!event.getObject().getCapability(GoauldHostProvider.GOAULD_HOST).isPresent())
 				event.addCapability(new ResourceLocation(StargateJourney.MODID, "goauld_host"), new GoauldHostProvider());
 			
-			if(!event.getObject().getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).isPresent())
-				event.addCapability(new ResourceLocation(StargateJourney.MODID, "bloodstream_naquadah"), new BloodstreamNaquadahProvider());
-			
 			if(!event.getObject().getCapability(AncientGeneProvider.ANCIENT_GENE).isPresent())
 				event.addCapability(new ResourceLocation(StargateJourney.MODID, "ancient_gene"), new AncientGeneProvider());
+		}
+		
+		if(event.getObject() instanceof Player || event.getObject() instanceof Jaffa)
+		{
+			if(!event.getObject().getCapability(JaffaPouchProvider.JAFFA_POUCH).isPresent())
+				event.addCapability(new ResourceLocation(StargateJourney.MODID, "jaffa_pouch"), new JaffaPouchProvider());
 		}
 	}
 	
@@ -397,11 +407,11 @@ public class ForgeEvents
 		Player clone = event.getEntity();
 		original.reviveCaps();
 		
+		original.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(oldCap ->
+				clone.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(newCap -> newCap.copyFrom(oldCap)));
+		
 		original.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(oldCap ->
 				clone.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(newCap -> newCap.copyFrom(oldCap)));
-		
-		original.getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).ifPresent(oldCap ->
-			clone.getCapability(BloodstreamNaquadahProvider.BLOODSTREAM_NAQUADAH).ifPresent(newCap -> newCap.copyFrom(oldCap)));
 		
 		original.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(oldCap -> 
 			clone.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(newCap -> newCap.copyFrom(oldCap)));
@@ -412,8 +422,8 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onRegisterCapabilities(RegisterCapabilitiesEvent event)
 	{
+		event.register(JaffaPouch.class);
 		event.register(GoauldHost.class);
-		event.register(BloodstreamNaquadah.class);
 		event.register(AncientGene.class);
 	}
 	

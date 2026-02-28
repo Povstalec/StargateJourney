@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -110,6 +111,11 @@ public class BlockEntityList extends SavedData
 		return (HashMap<Address.Immutable, Stargate>) stargateMap.clone();
 	}
 	
+	public int getStargateCount()
+	{
+		return stargateMap.size();
+	}
+	
 	public boolean containsStargate(Address address)
 	{
 		return stargateMap.containsKey(address);
@@ -125,32 +131,23 @@ public class BlockEntityList extends SavedData
 	{
 		Random random = new Random();
 		Address.Immutable address;
-		while(true)
+		do
 		{
 			address = Address.Immutable.randomAddress(8, 36, random.nextLong());
-			
-			if(!containsStargate(address))
-				break;
-		}
+		} while(containsStargate(address));
 		
 		return address;
 	}
 	
 	@Nullable
-	public Stargate getRandomStargate(long seed)
+	public Stargate getRandomStargate(RandomSource randomSource)
 	{
 		int size = this.stargateMap.size();
 		
-		if(size < 1)
+		if(size == 0)
 			return null;
 		
-		Random random = new Random(seed);
-		
-		int randomValue = random.nextInt(0, size);
-		
-		Stargate randomStargate = (Stargate) this.stargateMap.entrySet().stream().toArray()[randomValue];
-		
-		return randomStargate;
+		return (Stargate) this.stargateMap.values().toArray()[randomSource.nextInt(0, size)];
 	}
 	
 	//============================================================================================
@@ -168,9 +165,6 @@ public class BlockEntityList extends SavedData
 			return this.transporterMap.get(transporterID); // Returns an existing Transporter
 		
 		if(transporterEntity.getLevel() == null)
-			return null;
-		
-		if(transporterEntity.getBlockPos() == null)
 			return null;
 		
 		SGJourneyTransporter transporter = new SGJourneyTransporter(transporterEntity);
@@ -211,6 +205,11 @@ public class BlockEntityList extends SavedData
 		return (HashMap<TransporterID, Transporter>) transporterMap.clone();
 	}
 	
+	public int getTransporterCount()
+	{
+		return transporterMap.size();
+	}
+	
 	public boolean containsTransporter(TransporterID transporterID)
 	{
 		return transporterMap.containsKey(transporterID);
@@ -226,12 +225,10 @@ public class BlockEntityList extends SavedData
 	{
 		Random random = new Random();
 		TransporterID.Immutable transporterID;
-		while(true)
+		do
 		{
 			transporterID = TransporterID.Immutable.randomID(random.nextLong());
-			if(!containsTransporter(transporterID))
-				break;
-		}
+		} while(containsTransporter(transporterID));
 		
 		return transporterID;
 	}

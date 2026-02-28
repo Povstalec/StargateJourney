@@ -145,6 +145,22 @@ public abstract class TransporterID
 	}
 	
 	@Override
+	public TransporterID clone()
+	{
+		try
+		{
+			TransporterID transporterID = (TransporterID) super.clone();
+			transporterID.idArray = this.idArray.clone();
+			return transporterID;
+		}
+		catch(CloneNotSupportedException e)
+		{
+			StargateJourney.LOGGER.error("Could not clone TransporterID {}", String.valueOf(e));
+			return null;
+		}
+	}
+	
+	@Override
 	public boolean equals(Object object)
 	{
 		if(object instanceof TransporterID otherID)
@@ -209,9 +225,15 @@ public abstract class TransporterID
 			super(idList);
 		}
 		
+		@Override
+		public Immutable clone()
+		{
+			return (TransporterID.Immutable) super.clone();
+		}
+		
 		// Static functions
 		
-		public static TransporterID.Immutable randomID(long seed)
+		public static Immutable randomID(long seed)
 		{
 			return new Immutable(randomTransporterIDArray(seed));
 		}
@@ -220,4 +242,78 @@ public abstract class TransporterID
 	//============================================================================================
 	//***********************************Mutable Transporter ID***********************************
 	//============================================================================================
+	
+	public static class Mutable extends TransporterID
+	{
+		
+		public Mutable(int... idArray)
+		{
+			super(idArray);
+		}
+		
+		public Mutable(TransporterID other)
+		{
+			super(other);
+		}
+		
+		public Mutable(String idString)
+		{
+			super(idString);
+		}
+		
+		public Mutable(Map<Double, Double> idTable)
+		{
+			super(idTable);
+		}
+		
+		public Mutable(List<Integer> idList)
+		{
+			super(idList);
+		}
+		
+		@Override
+		public Mutable clone()
+		{
+			return (TransporterID.Mutable) super.clone();
+		}
+		
+		// Static functions
+		
+		public static Mutable randomID(long seed)
+		{
+			return new Mutable(randomTransporterIDArray(seed));
+		}
+		
+		public Mutable reset()
+		{
+			idArray = new int[0];
+			return this;
+		}
+		
+		/**
+		 * @return Raw address array
+		 */
+		public int[] getArray()
+		{
+			return idArray;
+		}
+		
+		public boolean addSymbol(int symbol)
+		{
+			// Can't grow if it contains 0
+			if(!canGrow())
+				return false;
+			
+			if(symbol < 0)
+				return false;
+			
+			this.idArray = ArrayHelper.growIntArray(this.idArray, symbol);
+			return true;
+		}
+		
+		public boolean canGrow()
+		{
+			return idArray.length < FULL_ID_LENGTH;
+		}
+	}
 }

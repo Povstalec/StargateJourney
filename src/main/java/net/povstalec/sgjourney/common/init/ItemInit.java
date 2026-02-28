@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
+import net.povstalec.sgjourney.common.items.energy_cores.LiquidNaquadahReactorCoreItem;
 import net.povstalec.sgjourney.common.items.energy_cores.NaquadahGeneratorCoreItem;
 
 public class ItemInit
@@ -80,6 +81,10 @@ public class ItemInit
 			() -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 	
 	// Food
+	public static final RegistryObject<Item> JAFFA_BURGER = ITEMS.register("jaffa_burger",
+			() -> new Item(new Item.Properties().food(FoodInit.JAFFA_BURGER)));
+	public static final RegistryObject<Item> JAFFA_CAKE = ITEMS.register("jaffa_cake",
+			() -> new Item(new Item.Properties().food(FoodInit.JAFFA_CAKE)));
 	
 	// Useful Items
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
@@ -107,6 +112,8 @@ public class ItemInit
 	/*public static final RegistryObject<Item> UNIVERSE_DIALER = ITEMS.register("universe_dialer", 
 			() -> new DialerItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));*/
 	
+	public static final RegistryObject<Item> LIQUID_NAQUADAH_REACTOR_CORE = ITEMS.register("liquid_naquadah_reactor_core",
+			() -> new LiquidNaquadahReactorCoreItem(new LiquidNaquadahReactorCoreItem.Properties().stacksTo(1)));
 	public static final RegistryObject<Item> NAQUADAH_GENERATOR_CORE = ITEMS.register("naquadah_generator_core",
 			() -> new NaquadahGeneratorCoreItem(new NaquadahGeneratorCoreItem.Properties().stacksTo(1)));
 	public static final RegistryObject<Item> FUSION_CORE = ITEMS.register("fusion_core",
@@ -239,9 +246,11 @@ public class ItemInit
 			() -> new StargateIrisItem.Diamond(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<StargateIrisItem.Netherite> NETHERITE_IRIS = ITEMS.register("netherite_iris", 
 			() -> new StargateIrisItem.Netherite(new Item.Properties().stacksTo(1).fireResistant()));
-
-	public static final RegistryObject<StargateIrisItem.NaquadahAlloy> NAQUADAH_IRON_IRIS = ITEMS.register("naquadah_iron_iris",
-			() -> new StargateIrisItem.NaquadahAlloy(new Item.Properties().stacksTo(1).fireResistant()));
+	
+	public static final RegistryObject<StargateIrisItem.NaquadahCopperAlloy> NAQUADAH_COPPER_IRIS = ITEMS.register("naquadah_copper_iris",
+			() -> new StargateIrisItem.NaquadahCopperAlloy(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<StargateIrisItem.NaquadahIronAlloy> NAQUADAH_IRON_IRIS = ITEMS.register("naquadah_iron_iris",
+			() -> new StargateIrisItem.NaquadahIronAlloy(new Item.Properties().stacksTo(1).fireResistant()));
 	public static final RegistryObject<StargateIrisItem.Trinium> TRINIUM_IRIS = ITEMS.register("trinium_iris", 
 			() -> new StargateIrisItem.Trinium(new Item.Properties().stacksTo(1)));
 
@@ -259,6 +268,8 @@ public class ItemInit
 			() -> new Item(new Item.Properties().food(FoodInit.RAW_GOAULD)));
 	public static final RegistryObject<Item> COOKED_GOAULD = ITEMS.register("cooked_goauld",
 			() -> new Item(new Item.Properties().food(FoodInit.COOKED_GOAULD)));
+	public static final RegistryObject<Item> GOAULD_FOSSIL = ITEMS.register("goauld_fossil",
+			() -> new Item(new Item.Properties()));
 		
 	
 	public static void register(IEventBus eventBus)

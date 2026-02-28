@@ -35,13 +35,19 @@ public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity
 	{
 		return itemInputHandler.getStackInSlot(0).is(TagInit.Items.RAW_NAQUADAH);
 	}
+	
+	@Override
+	protected int producedAmount()
+	{
+		return 100;
+	}
 
 	@Override
 	protected void makeLiquidNaquadah()
 	{
 		useUpItems(1);
 		
-		this.fluidTank2.fill(new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), 100), IFluidHandler.FluidAction.EXECUTE);
+		this.fluidTank2.fill(new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), producedAmount()), IFluidHandler.FluidAction.EXECUTE);
 		
 		this.progress = 0;
 	}

@@ -7,6 +7,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+
 /**
  * Class that is intended to represent a single Minecraft Dimension's attributes that Stargate Journey can work with
  */
@@ -21,31 +24,36 @@ public class SpaceLocation
 			Codec.BOOL.optionalFieldOf("generated_address", false).forGetter(spaceLocation -> spaceLocation.appearAmongGeneratedAddresses),
 			Codec.BOOL.optionalFieldOf("unity_crystals_grow", false).forGetter(spaceLocation -> spaceLocation.unityCrystalsGrow),
 			
-			PointOfOrigin.RESOURCE_KEY_CODEC.fieldOf("point_of_origin").forGetter(spaceLocation -> spaceLocation.pointOfOrigin),
-			Symbols.RESOURCE_KEY_CODEC.fieldOf("symbols").forGetter(spaceLocation -> spaceLocation.symbols),
+			PointOfOrigin.RESOURCE_KEY_CODEC.optionalFieldOf("point_of_origin").forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.pointOfOrigin)),
+			Symbols.RESOURCE_KEY_CODEC.optionalFieldOf("symbols").forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.symbols)),
 			//TODO Coordinates
-			AddressRegion.RESOURCE_KEY_CODEC.fieldOf("address_region").forGetter(spaceLocation -> spaceLocation.addressRegion)
+			AddressRegion.RESOURCE_KEY_CODEC.optionalFieldOf("address_region").forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.addressRegion))
 	).apply(instance, SpaceLocation::new));
+	
+	//TODO Something to control whether Stargates work there or not
 	
 	private double parentGravity; // Gravity of the parent body this location might be orbiting - 0.07 for Cavum Tenebrae
 	private boolean allowFactionPresence; // If true, factions will be able to appear in this Dimension
 	private boolean appearAmongGeneratedAddresses; // If true, dimension address will appear in Address Tables with generated addresses
 	private boolean unityCrystalsGrow; // If true, Unity Crystals can grow in this location
 	
+	@Nullable
 	private ResourceKey<PointOfOrigin> pointOfOrigin; // Point of Origin any Stargates generated in this Space Location will use
+	@Nullable
 	private ResourceKey<Symbols> symbols; // Symbols any Stargates generated in this Space Location will use
+	@Nullable
 	private ResourceKey<AddressRegion> addressRegion; // Address Region this Space Location is a part of
 	
 	public SpaceLocation(double parentGravity, boolean allowFactionPresence, boolean appearAmongGeneratedAddresses, boolean unityCrystlasGrow,
-						 ResourceKey<PointOfOrigin> pointOfOrigin, ResourceKey<Symbols> symbols, ResourceKey<AddressRegion> addressRegion)
+						 Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols, Optional<ResourceKey<AddressRegion>> addressRegion)
 	{
 		this.parentGravity = parentGravity;
 		this.allowFactionPresence = allowFactionPresence;
 		this.appearAmongGeneratedAddresses = appearAmongGeneratedAddresses;
 		this.unityCrystalsGrow = unityCrystlasGrow;
 		
-		this.pointOfOrigin = pointOfOrigin;
-		this.symbols = symbols;
-		this.addressRegion = addressRegion;
+		this.pointOfOrigin = pointOfOrigin.orElse(null);
+		this.symbols = symbols.orElse(null);
+		this.addressRegion = addressRegion.orElse(null);
 	}
 }

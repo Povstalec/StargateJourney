@@ -1,17 +1,14 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
-import net.povstalec.sgjourney.common.init.StatisticsInit;
+import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
@@ -19,11 +16,28 @@ import java.util.*;
 
 public class Transporting
 {
-	public static void startTransport(MinecraftServer server, Transporter initialTransporter, TransporterID targetID)
+	//TODO Alternate versions (position connect, direct connect) each with their own version of event
+	
+	public static TransporterInfo.Feedback dialTransporter(MinecraftServer server, Transporter initialTransporter, TransporterID targetID, boolean mustBeLoaded)
 	{
-		Transporter targetTransporter = TransporterNetwork.get(server).getTransporter(targetID);
+		if(SGJourneyEvents.onTransporterDial(server, initialTransporter, targetID))
+			return TransporterInfo.Feedback.NONE;
 		
-		TransporterNetwork.get(server).createConnection(server, initialTransporter, targetTransporter);
+		return connectTransporters(server, initialTransporter, TransporterNetwork.get(server).getTransporter(targetID), mustBeLoaded);
+	}
+	
+	public static TransporterInfo.Feedback dialTransporter(MinecraftServer server, Transporter transporterA, Transporter transporterB, boolean mustBeLoaded)
+	{
+		//TODO Direct connection attempt event
+		
+		return connectTransporters(server, transporterA, transporterB, mustBeLoaded);
+	}
+	
+	private static TransporterInfo.Feedback connectTransporters(MinecraftServer server, Transporter transporterA, Transporter transporterB, boolean mustBeLoaded)
+	{
+		//TODO Extra checks
+		
+		return TransporterNetwork.get(server).createConnection(server, transporterA, transporterB);
 	}
 	
 	//============================================================================================

@@ -30,7 +30,7 @@ public class TollanStargate extends SGJourneyStargate
 	
 	//TODO
 	
-	private void stargateRun(MinecraftServer server, Consumer<TollanStargateEntity> consumer)
+	protected void stargateRun(MinecraftServer server, Consumer<TollanStargateEntity> consumer)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		
@@ -38,7 +38,7 @@ public class TollanStargate extends SGJourneyStargate
 			consumer.accept(tollanStargate);
 	}
 	
-	private <T> T stargateReturn(MinecraftServer server, Function<TollanStargateEntity, T> consumer, @Nullable T defaultValue)
+	protected <T> T stargateReturn(MinecraftServer server, Function<TollanStargateEntity, T> consumer, @Nullable T defaultValue)
 	{
 		AbstractStargateEntity stargate = getStargateEntity(server);
 		

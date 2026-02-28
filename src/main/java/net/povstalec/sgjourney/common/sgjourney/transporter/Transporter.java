@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -9,9 +8,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -34,6 +37,19 @@ public interface Transporter
 	 */
 	@Nullable
 	ResourceKey<Level> getDimension();
+	
+	/**
+	 * @return Solar System the Stargate is located in or null if it's not located in any Solar System
+	 */
+	@Nullable
+	default SolarSystem.Serializable getSolarSystem(MinecraftServer server)
+	{
+		ResourceKey<Level> dimension = getDimension();
+		if(dimension == null)
+			return null;
+		
+		return Universe.get(server).getSolarSystemFromDimension(dimension);
+	}
 	
 	/**
 	 * @param server Current Minecraft Server
@@ -124,8 +140,31 @@ public interface Transporter
 	@Nullable
 	Vec3 transportPos(MinecraftServer server);
 	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Returns true if this Transporter is valid (for example, in the case of BlockEntity-based Transporters, if the Block Entity can still be found in the world and if its ID is the same as the Transporter object's)
+	 */
+	boolean checkValidity(MinecraftServer server);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Returns true if this Transporter is loaded (for example, in the case of Transporters placed in the world, if the Chunk the Transporter is located in is loaded)
+	 */
+	boolean isLoaded(MinecraftServer server);
+	
+	/**
+	 * Update all Tech Interfaces that are currently connected to the Transporter
+	 * @param server The Server this is happening on
+	 * @param type Type of Interfaces that should be updated, null will update all types
+	 * @param eventName Name of the event with which to update the Interfaces, leave as null if there is none
+	 * @param objects Objects that can be sent along with the event to update Interfaces
+	 */
+	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects) {}
+	
 	@Nullable
 	Component getName();
+	
+	TransporterInfo.Feedback resetTransporter(MinecraftServer server, TransporterInfo.Feedback feedback);
 	
 	int getTimeOffset(MinecraftServer server);
 	
@@ -138,8 +177,6 @@ public interface Transporter
 	void connect(MinecraftServer server, UUID connectionID);
 	
 	void disconnect(MinecraftServer server);
-	
-	void reset(MinecraftServer server);
 	
 	boolean isConnected(MinecraftServer server);
 	
