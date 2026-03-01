@@ -364,6 +364,7 @@ public interface Stargate
 	 * Checks which Stargates actually get dialed when this Stargate is dialed (mainly matters in case of Call Forwarding)
 	 * @param server Current Minecraft Server
 	 * @param dialingStargate The Stargate that is attempting to dial this Stargate
+	 * @param connectionType The type of the connection to be created between the dialingStargate and this Stargate
 	 * @return List of Stargates the dialingStargate will be connected to, first Stargate on this list will be considered the "main" Stargate of the connection (because Stargate connections are still primarily 1:1)
 	 */
 	default List<Stargate> getDialedStargates(MinecraftServer server, Stargate dialingStargate, StargateConnection.Type connectionType)

@@ -385,7 +385,7 @@ public class StargateConnection
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			if(!isStargateValid(server, dialedStargate))
+			if(!isStargateValid(server, dialedStargate)) //TODO Handle singular Stargates being destroyed during the connection, only end the connection once there are no dialed Stargates
 				return true;
 		}
 		
