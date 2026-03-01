@@ -294,40 +294,8 @@ public final class StargateNetwork extends SavedData
 				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NOT_ENOUGH_POWER, true);
 		}
 		
-		//TODO Make better call forwarding
-		/*AbstractStargateEntity outgoingStargate = dialingStargate.getStargateEntity(server);
-		AbstractStargateEntity incomingStargate = dialedStargate.getStargateEntity(server);
-		
-		if(outgoingStargate != null && incomingStargate != null)
-		{
-			// Call Forwarding
-			if(incomingStargate.dhdInfo().shouldCallForward())
-			{
-				// Chooses a random Stargate to connect to
-				Random random = new Random();
-				
-				Optional<SolarSystem.Serializable> solarSystemOptional = Universe.get(server).getSolarSystemFromDimension(dialedStargate.getDimension());
-				
-				if(solarSystemOptional.isPresent())
-				{
-					SolarSystem.Serializable solarSystem = solarSystemOptional.get();
-					
-					Optional<Stargate> reroutedStargate = solarSystem.getRandomStargate(random.nextLong());
-					
-					if(reroutedStargate.isPresent())
-					{
-						while(reroutedStargate.get().getStargateEntity(server).dhdInfo().shouldCallForward())
-						{
-							reroutedStargate = solarSystem.getRandomStargate(random.nextLong());
-						}
-						
-						incomingStargate = reroutedStargate.get().getStargateEntity(server);
-					}
-				}
-			}
-		}*/
-		
-		StargateConnection connection = StargateConnection.create(server, connectionType, dialingStargate, dialedStargate, doKawoosh);
+		List<Stargate> dialedStargates = dialedStargate.getDialedStargates(server, dialingStargate, connectionType);
+		StargateConnection connection = StargateConnection.create(server, connectionType, dialingStargate, dialedStargates, doKawoosh);
 		if(connection != null)
 		{
 			addConnection(connection);

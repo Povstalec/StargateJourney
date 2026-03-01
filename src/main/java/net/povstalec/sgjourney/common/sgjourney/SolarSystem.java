@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
@@ -405,6 +407,11 @@ public class SolarSystem
 		public Stargate primaryStargate()
 		{
 			return this.primaryStargate;
+		}
+		
+		public List<Stargate> getShuffledStargates(RandomSource randomSource)
+		{
+			return Util.toShuffledList(this.stargates.stream(), randomSource);
 		}
 		
 		@Nullable

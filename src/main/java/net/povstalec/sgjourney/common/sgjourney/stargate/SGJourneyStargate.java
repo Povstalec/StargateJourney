@@ -6,8 +6,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -22,7 +26,7 @@ import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -440,6 +444,68 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
+	public boolean callForward(MinecraftServer server)
+	{
+		return stargateReturn(server, stargate -> stargate.dhdInfo().shouldCallForward(), false);
+	}
+	
+	@Override
+	public List<Stargate> getDialedStargates(MinecraftServer server, Stargate dialingStargate, StargateConnection.Type connectionType)
+	{
+		return stargateReturn(server, stargate ->
+		{
+			if(!stargate.dhdInfo().shouldCallForward())
+				return List.of(this);
+			
+			// Chooses a random Stargate to connect to
+			RandomSource randomSource = new SingleThreadedRandomSource(server.getTickCount());
+			
+			SolarSystem.Serializable solarSystem = this.getSolarSystem(server);
+			
+			if(solarSystem != null)
+			{
+				if(connectionType == StargateConnection.Type.SYSTEM_WIDE) // Picks a random Stargate from the same Solar System
+				{
+					// Code that dials every Stargate in the Solar System
+					/*List<Stargate> stargates = new ArrayList<Stargate>();
+					stargates.add(this);
+					for(Stargate reroutedStargate : solarSystem.getStargates())
+					{
+						if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
+						{
+							stargates.add(reroutedStargate);
+						}
+					}
+					return stargates;*/
+					
+					for(Stargate reroutedStargate : solarSystem.getShuffledStargates(randomSource))
+					{
+						if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
+							return List.of(this, reroutedStargate);
+					}
+				}
+				else // Picks a random Stargate from the same Galaxy
+				{
+					for(Map.Entry<Galaxy.Serializable, Address.Immutable> entry : solarSystem.getGalacticAddresses().entrySet())
+					{
+						for(SolarSystem.Serializable randomSolarSystem : entry.getKey().getShuffledSolarSystems(randomSource))
+						{
+							for(Stargate reroutedStargate : randomSolarSystem.getShuffledStargates(randomSource))
+							{
+								if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
+									return List.of(this, reroutedStargate);
+							}
+						}
+					}
+				}
+			}
+			
+			return List.of(this);
+			
+		}, List.of(this));
+	}
+	
+	@Override
 	public void connectStargate(MinecraftServer server, StargateConnection connection, StargateConnection.State connectionState)
 	{
 		stargateRun(server, stargate -> stargate.connectStargate(connection.getID(), connectionState));
@@ -498,6 +564,10 @@ public class SGJourneyStargate implements Stargate
 	{
 		return stargateReturn(server, stargate ->
 		{
+			// Call Forwarding
+			if(stargate.dhdInfo().shouldCallForward() && connection.getDialedStargates().size() > 1 && traveler instanceof LivingEntity && !(traveler instanceof Player player && player.isSpectator()))
+				return connection.getDialedStargates().get(1).receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle);
+			
 			// TODO Tie this to Advanced Protocols
 			Vec3 tempMomentum = stargate.pushTraveler() && relativeMomentum.x() > -MIN_TRAVELER_SPEED ? new Vec3(-MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 			

@@ -13,6 +13,7 @@ import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public interface Stargate
 {
@@ -349,6 +350,26 @@ public interface Stargate
 	 * @return Stargate Feedback describing how successful the formation of the connection was (for example, throw an error when this Stargate is already connected)
 	 */
 	StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return True if the Stargate can call forward, otherwise false
+	 */
+	default boolean callForward(MinecraftServer server)
+	{
+		return false;
+	}
+	
+	/**
+	 * Checks which Stargates actually get dialed when this Stargate is dialed (mainly matters in case of Call Forwarding)
+	 * @param server Current Minecraft Server
+	 * @param dialingStargate The Stargate that is attempting to dial this Stargate
+	 * @return List of Stargates the dialingStargate will be connected to, first Stargate on this list will be considered the "main" Stargate of the connection (because Stargate connections are still primarily 1:1)
+	 */
+	default List<Stargate> getDialedStargates(MinecraftServer server, Stargate dialingStargate, StargateConnection.Type connectionType)
+	{
+		return List.of(this);
+	}
 	
 	/**
 	 * Sets the Stargate to a connected state and updates it accordingly

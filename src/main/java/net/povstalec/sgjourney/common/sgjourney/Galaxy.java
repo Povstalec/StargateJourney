@@ -8,6 +8,7 @@ import java.util.Random;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.GalaxyInit;
@@ -152,6 +154,11 @@ public class Galaxy
 		{
 			if(containsSolarSystem(address))
 				this.solarSystems.remove(address);
+		}
+		
+		public List<SolarSystem.Serializable> getShuffledSolarSystems(RandomSource randomSource)
+		{
+			return Util.toShuffledList(this.solarSystems.values().stream(), randomSource);
 		}
 		
 		@Nullable
