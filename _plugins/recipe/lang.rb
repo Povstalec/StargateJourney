@@ -18,25 +18,27 @@ module Recipe
         resource = TAG_CACHE[resource]
       end
 
+      static_name = static_translation_name(resource)
       translation = choose_namespace(resource)
-      if translation.nil?
-        return nil
+      unless translation.nil?
+        key = "#{resource.namespace}.#{resource.name}"
+
+        item_key = "item." + key
+        unless translation[item_key].nil?
+          return translation[item_key]
+        end
+
+        block_key = "block." + key
+        unless translation[block_key].nil?
+          return translation[block_key]
+        end
       end
 
-      key = "#{resource.namespace}.#{resource.name}"
-
-      item_key = "item." + key
-      unless translation[item_key].nil?
-        return translation[item_key]
+      if static_name
+        return static_name
       end
-
-      block_key = "block." + key
-      unless translation[block_key].nil?
-        return translation[block_key]
-      end
-
-      LOG.error("Translation not found for item/block '#{resource}'")
-      nil
+      LOG.error("Missing translations in namespace '#{resource.namespace}' for item '#{resource.namespace}:#{resource.name}'")
+      return nil
     end
 
     private
@@ -50,12 +52,17 @@ module Recipe
       # @param resource [McResource]
       # @return [Hash, nil]
       def choose_namespace(resource)
-        if NAMESPACE_MAP[resource.namespace].nil?
-          LOG.error("Missing translations for namespace '#{resource.namespace}' for item '#{resource.namespace}:#{resource.name}'")
-          nil
-        else
-          NAMESPACE_MAP[resource.namespace]
+        NAMESPACE_MAP[resource.namespace]
+      end
+
+      # @param resource [McResource]
+      # @return [String, nil]
+      def static_translation_name(resource)
+        static_entry = Recipe.static_item_entry(resource)
+        if static_entry && static_entry["name"]
+          return static_entry["name"]
         end
+        return nil
       end
   end
 end

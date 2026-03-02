@@ -23,6 +23,12 @@ module Recipe
         return
       end
 
+      static_entry = Recipe.static_item_entry(resource)
+      if static_entry && static_entry["texture"]
+        resource.asset_url = static_entry["texture"]
+        return
+      end
+
       unless @namespace_handlers.has_key?(resource.namespace)
         LOG.error("Unable to load resource, unknown namespace: #{resource.namespace} for #{resource}")
         return
