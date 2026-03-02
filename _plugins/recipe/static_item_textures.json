@@ -1,6 +1,6 @@
 {
   "#c": {
-    "ingots/bronze": {"name": "Bronze ingot", "texture": "https://raw.githubusercontent.com/mekanism/Mekanism/refs/heads/1.21.x/src/main/resources/assets/mekanism/textures/item/ingot_bronze.png"},
-    "ingots/steel": {"name": "Steel ingot", "texture": "https://raw.githubusercontent.com/mekanism/Mekanism/refs/heads/1.21.x/src/main/resources/assets/mekanism/textures/item/ingot_steel.png"}
+    "ingots/bronze": {"name": "Bronze ingot\n&7e.g.: from Mekanism", "texture": "https://raw.githubusercontent.com/mekanism/Mekanism/refs/heads/1.21.x/src/main/resources/assets/mekanism/textures/item/ingot_bronze.png"},
+    "ingots/steel": {"name": "Steel ingot\n&7e.g.: from Mekanism", "texture": "https://raw.githubusercontent.com/mekanism/Mekanism/refs/heads/1.21.x/src/main/resources/assets/mekanism/textures/item/ingot_steel.png"}
   }
 }

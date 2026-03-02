@@ -163,6 +163,12 @@ module Recipe
         else
           description = "missing translation"
         end
+      else
+        if title.include?("\n")
+          lines = title.split("\n", 2)
+          title = lines[0]
+          description = lines[1]
+        end
       end
       title_safe = CGI.escapeHTML(title.to_s)
       description_safe = CGI.escapeHTML(description.to_s)
