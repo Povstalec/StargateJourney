@@ -1,6 +1,7 @@
 # Functions for getting translation strings
 #
 require 'open-uri'
+require 'json'
 require 'jekyll/filters/url_filters'
 
 module Recipe
@@ -37,7 +38,7 @@ module Recipe
       if static_name
         return static_name
       end
-      LOG.error("Missing translations in namespace '#{resource.namespace}' for item '#{resource.namespace}:#{resource.name}'")
+      Jekyll.logger.error("Missing translations in namespace '#{resource.namespace}' for item '#{resource.namespace}:#{resource.name}'")
       return nil
     end
 
@@ -45,8 +46,8 @@ module Recipe
       include Jekyll::Filters::URLFilters
 
       NAMESPACE_MAP = {
-        "minecraft" => JSON.load(URI.open("https://assets.mcasset.cloud/#{RECIPE_GAME_VERSION}/assets/minecraft/lang/en_us.json")).freeze,
-        "sgjourney" => JSON.load(open(File.join(PROJECT_DIRECTORY, "implementation_branch", "src/main/resources/assets/sgjourney/lang/en_us.json")).read).freeze,
+        "minecraft" => JSON.parse(URI.open("https://assets.mcasset.cloud/#{RECIPE_GAME_VERSION}/assets/minecraft/lang/en_us.json", open_timeout: 5, read_timeout: 10).read).freeze,
+        "sgjourney" => JSON.parse(File.read(File.join(PROJECT_DIRECTORY, "implementation_branch", "src/main/resources/assets/sgjourney/lang/en_us.json"))).freeze,
       }
 
       # @param resource [McResource]

@@ -1,10 +1,12 @@
 require 'open-uri'
+require 'json'
+require 'cgi'
 
 module Recipe
   class CraftingRecipe < Liquid::Tag
     include Jekyll::Filters::URLFilters
     RECIPES = {}
-    STATIC_ITEM_LINKS = JSON.load(URI.open(STATIC_ITEM_LINKS_FILE)).freeze
+    STATIC_ITEM_LINKS = JSON.parse(File.read(STATIC_ITEM_LINKS_FILE)).freeze
 
     # flattens sgjourney recipes folder for easy lookups
     def self.load_recipes
@@ -29,7 +31,7 @@ module Recipe
           end
         end
       end
-      puts "Loaded #{RECIPES.count} recipes for sgjourney"
+      Jekyll.logger.info("Loaded #{RECIPES.count} recipes for sgjourney")
     end
     load_recipes # loads SGJ recipes on class init
 
@@ -108,12 +110,6 @@ module Recipe
       render_crafting_table
     end
 
-    # @param str [String] Text to strip single and double quotes from
-    # @return [String]
-    def strip_quotes(str)
-      str.gsub(/(^")|("$)/,'').gsub(/(^')|('$)/, "")
-    end
-
     # @param resource [McResource]
     def load_item_recipe(resource)
       if resource.namespace != "sgjourney"
@@ -122,11 +118,11 @@ module Recipe
 
       recipe_file = RECIPES[resource.name]
       unless recipe_file
-        puts RECIPES.inspect
+        Jekyll.logger.error("Crafting recipe for #{resource} was not found")
         raise "Crafting recipe for #{resource} was not found"
       end
 
-      recipe = JSON.parse(open(recipe_file).read)
+      recipe = JSON.parse(File.read(recipe_file))
 
       process_recipe(recipe)
     end
@@ -168,6 +164,8 @@ module Recipe
           description = "missing translation"
         end
       end
+      title_safe = CGI.escapeHTML(title.to_s)
+      description_safe = CGI.escapeHTML(description.to_s)
       file = resource.asset_url
       link = item_web_link(resource)
       img = "<img src=\"#{absolute_url(file)}\">"
@@ -176,7 +174,7 @@ module Recipe
       end
 
       <<~HTML
-        <span class="invslot-item invslot-item-image" data-minetip-title="#{title}" data-minetip-text="#{description}">
+        <span class="invslot-item invslot-item-image" data-minetip-title="#{title_safe}" data-minetip-text="#{description_safe}">
           #{img}
         </span>
       HTML
@@ -205,7 +203,7 @@ module Recipe
             @resource_loader.load(item)
             set_ingredient(row, col, render_item(item))
           elsif key != ' '
-            LOG.error("Unknown recipe pattern key '#{key}' in #{recipe}")
+            Jekyll.logger.error("Unknown recipe pattern key '#{key}' in #{recipe}")
           end
           col += 1
         end

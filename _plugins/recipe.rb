@@ -45,8 +45,4 @@
 # Note: this was my first interaction with Jekyll plugins and with Ruby in general,
 # I strongly encourage everyone reading this code to keep holy water next to the monitor to wash their eyes regularly.
 
-module Recipe
-  LOG = Jekyll.logger
-end
-
 Liquid::Template.register_tag('minecraft_recipe_crafting', Recipe::CraftingRecipe)

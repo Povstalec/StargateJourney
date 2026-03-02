@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'json'
 
 module Recipe
   TAG_CACHE = {}
@@ -30,7 +31,7 @@ module Recipe
       end
 
       unless @namespace_handlers.has_key?(resource.namespace)
-        LOG.error("Unable to load resource, unknown namespace: #{resource.namespace} for #{resource}")
+        Jekyll.logger.error("Unable to load resource, unknown namespace: #{resource.namespace} for #{resource}")
         return
       end
 
@@ -47,7 +48,9 @@ module Recipe
 
     # @param resource [McResource]
     def load_minecraft_tag(resource)
-      tag = McResource.from(JSON.load(URI.open("https://assets.mcasset.cloud/#{RECIPE_GAME_VERSION}/data/minecraft/tags/item/#{resource.name}.json")).freeze["values"][0])
+      url = "https://assets.mcasset.cloud/#{RECIPE_GAME_VERSION}/data/minecraft/tags/item/#{resource.name}.json"
+      tag_data = JSON.parse(URI.open(url, open_timeout: 5, read_timeout: 10).read)
+      tag = McResource.from(tag_data.fetch("values")[0])
       process_tag(tag, resource)
     end
 
@@ -61,12 +64,12 @@ module Recipe
       elsif File.exist?(destination_file)
         resource.asset_url = resource.asset_file(false) # dynamic asset already exists
       elsif File.exist?(source_file)
-        LOG.debug("Copying #{source_file} to #{destination_file}")
-        FileUtils.mkdir_p(File.dirname(source_file))
+        Jekyll.logger.debug("Copying #{source_file} to #{destination_file}")
+        FileUtils.mkdir_p(File.dirname(destination_file))
         FileUtils.cp(source_file, destination_file)
         resource.asset_url = resource.asset_file(false) # dynamic asset
       elsif File.exist?(exported_source_file)
-        LOG.info("Copying exported asset to static assets: #{resource.name}.png")
+        Jekyll.logger.info("Copying exported asset to static assets: #{resource.name}.png")
         FileUtils.mkdir_p(File.dirname(resource.resource_file(true))) # static asset directory
         FileUtils.cp(exported_source_file, resource.resource_file(true))
         resource.asset_url = resource.asset_file(true) # static asset
@@ -98,14 +101,13 @@ module Recipe
       load(tag)
 
       if tag.nil? or tag.is_tag
-        puts resource.inspect
-        puts tag.inspect
+        Jekyll.logger.error("Failed to resolve tag to an item: resource=#{resource.inspect} tag=#{tag.inspect}")
         raise "Failed to resolve tag to an item"
       end
 
       TAG_CACHE[resource] = tag
       resource.asset_url = tag.asset_url
-      LOG.debug("#{resource} resolved to #{tag}")
+      Jekyll.logger.debug("#{resource} resolved to #{tag}")
     end
   end
   class ResourceLoaderHandler
