@@ -51,7 +51,7 @@ module Recipe
       # @return [Hash, nil]
       def choose_namespace(resource)
         if NAMESPACE_MAP[resource.namespace].nil?
-          LOG.error("Missing translations for namespace '#{resource.namespace}'")
+          LOG.error("Missing translations for namespace '#{resource.namespace}' for item '#{resource.namespace}:#{resource.name}'")
           nil
         else
           NAMESPACE_MAP[resource.namespace]

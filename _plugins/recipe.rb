@@ -34,6 +34,13 @@
 # You can use `scripts/update_exported.sh` script to automatically update git tracked files in the static directory with files from the exported directory
 # Or you can manually just add files to the `assets/img/items/crafting/sgjourney/static` directory
 
+# Other items and tags
+# If a tag that is not from vanilla or SGJ is present in a recipe
+# there should be defined texture in /_plugins/recipe/static_item_textures.json
+
+# Links
+# All vanilla items are linked to the minecraft.wiki
+# Links for other items can be defined in /_plugins/recipe/static_item_links.json
 
 # Note: this was my first interaction with Jekyll plugins and with Ruby in general,
 # I strongly encourage everyone reading this code to keep holy water next to the monitor to wash their eyes regularly.
