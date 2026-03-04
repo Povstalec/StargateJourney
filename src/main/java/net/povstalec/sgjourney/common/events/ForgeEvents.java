@@ -60,6 +60,7 @@ import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.Factions;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -69,6 +70,7 @@ import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
+import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
@@ -84,7 +86,10 @@ public class ForgeEvents
 	{
 		MinecraftServer server = event.getServer();
 		
+		SpaceLocation.registerSpaceLocations(server);
+		
 		StargateNetwork.get(server).updateNetwork(server);
+		Universe.get(server).assignSpaceLocationsToAddressRegions();
 		StargateNetwork.get(server).addStargates(server);
 
 		TransporterNetwork.get(server).updateNetwork(server);
@@ -184,9 +189,9 @@ public class ForgeEvents
 		entity.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(jaffaPouch -> jaffaPouch.tick(entity));
 		entity.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(goauldHost -> goauldHost.tick(entity));
 		
-		//TODO Make this into something you can edit with Datapacks
-		if(!level.dimension().location().equals(new ResourceLocation(StargateJourney.MODID, "cavum_tenebrae")))
-			return;
+		double parentGravity = SpaceLocation.fromDimension(level.dimension()).getParentGravity();
+		if(parentGravity == 0.0)
+			return; // This planet's parent doesn't affect it with its gravity in any noticable way
 		
 		if(entity instanceof Player player)
 		{
@@ -199,7 +204,7 @@ public class ForgeEvents
 		
 		double sin = Math.sin(percentage * Math.PI - Math.PI / 2);
 		double cos = Math.cos(percentage * Math.PI - Math.PI / 2);
-		Vec3 gravityVector = new Vec3(Math.abs(cos) > 0.2 ? 0.07 * cos : 0, sin < 0 ? 0 : 0.07 * sin, 0);
+		Vec3 gravityVector = new Vec3(Math.abs(cos) > 0.2 ? parentGravity * cos : 0, sin < 0 ? 0 : parentGravity * sin, 0);
 		
 		Vec3 movementVector = entity.getDeltaMovement();
 		movementVector = movementVector.add(gravityVector);

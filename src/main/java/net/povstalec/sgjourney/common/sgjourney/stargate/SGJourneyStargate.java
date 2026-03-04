@@ -19,7 +19,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
@@ -157,12 +156,6 @@ public class SGJourneyStargate implements Stargate
 	public double getInnerRadius()
 	{
 		return INNER_RADIUS;
-	}
-	
-	@Override
-	public @Nullable SolarSystem.Serializable getSolarSystem(MinecraftServer server)
-	{
-		return Universe.get(server).getSolarSystemFromDimension(getDimension());
 	}
 	
 	
@@ -431,11 +424,11 @@ public class SGJourneyStargate implements Stargate
 				return StargateInfo.Feedback.TARGET_RESTRICTED;
 			
 			// If last Stargate has a blacklist
-			if(stargate.addressFilterInfo().getFilterType().isBlacklist() && stargate.addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType)))
+			if(stargate.addressFilterInfo().getFilterType().isBlacklist() && stargate.addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(server, getAddressRegion(server), addressType)))
 				return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
 			
 			// If last Stargate has a whitelist
-			if(stargate.addressFilterInfo().getFilterType().isWhitelist() && !stargate.addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType)))
+			if(stargate.addressFilterInfo().getFilterType().isWhitelist() && !stargate.addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(server, getAddressRegion(server), addressType)))
 				return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
 			
 			return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
@@ -458,13 +451,13 @@ public class SGJourneyStargate implements Stargate
 		// Chooses a random Stargate to connect to
 		RandomSource randomSource = new SingleThreadedRandomSource(server.getTickCount());
 		
-		SolarSystem.Serializable solarSystem = this.getSolarSystem(server);
+		AddressRegion.Serializable addressRegion = this.getAddressRegion(server);
 		
-		if(solarSystem != null)
+		if(addressRegion != null)
 		{
-			if(connectionType == StargateConnection.Type.SYSTEM_WIDE) // Picks a random Stargate from the same Solar System
+			if(connectionType == StargateConnection.Type.SYSTEM_WIDE) // Picks a random Stargate from the same Address Region
 			{
-				for(Stargate reroutedStargate : solarSystem.getShuffledStargates(randomSource))
+				for(Stargate reroutedStargate : addressRegion.getShuffledStargates(randomSource))
 				{
 					if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
 						return List.of(this, reroutedStargate);
@@ -472,11 +465,11 @@ public class SGJourneyStargate implements Stargate
 			}
 			else // Picks a random Stargate from the same Galaxy
 			{
-				for(Map.Entry<Galaxy.Serializable, Address.Immutable> entry : solarSystem.getGalacticAddresses().entrySet())
+				for(Map.Entry<Galaxy.Serializable, Address.Immutable> entry : addressRegion.getGalacticAddresses().entrySet())
 				{
-					for(SolarSystem.Serializable randomSolarSystem : entry.getKey().getShuffledSolarSystems(randomSource))
+					for(AddressRegion.Serializable randomAddressRegion : entry.getKey().getShuffledAddressRegions(randomSource))
 					{
-						for(Stargate reroutedStargate : randomSolarSystem.getShuffledStargates(randomSource))
+						for(Stargate reroutedStargate : randomAddressRegion.getShuffledStargates(randomSource))
 						{
 							if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
 								return List.of(this, reroutedStargate);

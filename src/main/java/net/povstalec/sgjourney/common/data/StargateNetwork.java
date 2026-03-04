@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -25,6 +25,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.AddressRegion;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
@@ -39,7 +40,7 @@ public final class StargateNetwork extends SavedData
 	private static final String CONNECTIONS = "Connections";
 
 	// Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int updateVersion = 17; //TODO Change to 18
+	private static final int updateVersion = 18;
 	
 	private MinecraftServer server;
 	
@@ -80,9 +81,9 @@ public final class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public final boolean shouldUseDatapackAddresses()
+	public final boolean randomizeAddresses()
 	{
-		return StargateNetworkSettings.get(server).useDatapackAddresses();
+		return StargateNetworkSettings.get(server).randomizeAddresses();
 	}
 	
 	public final void stellarUpdate(MinecraftServer server, boolean updateInterfaces)
@@ -99,7 +100,7 @@ public final class StargateNetwork extends SavedData
 		
 		StargateNetworkSettings.get(server).updateSettings();
 		
-		HashMap<ResourceLocation, Address.Immutable> primaryStargates = Universe.get(server).getPrimaryStargateAddresses();
+		HashMap<ResourceKey<AddressRegion>, Address.Immutable> primaryStargates = Universe.get(server).getPrimaryStargateAddresses();
 		Universe.get(server).eraseUniverseInfo();
 		StargateJourney.LOGGER.debug("Universe erased");
 		
@@ -125,12 +126,8 @@ public final class StargateNetwork extends SavedData
 	
 	public final void addStargates(MinecraftServer server)
 	{
-		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
-		
-		stargates.entrySet().stream().forEach((stargateInfo) ->
+		BlockEntityList.get(server).getStargates().forEach((address, stargate) ->
 		{
-			Stargate stargate = stargateInfo.getValue();
-			
 			if(stargate != null)
 				addStargate(stargate);
 		});
@@ -154,8 +151,8 @@ public final class StargateNetwork extends SavedData
 					
 					stargate.resetStargate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
 					
-					addStargate(stargate);
 					stargate.update(server);
+					addStargate(stargate);
 					stargate.updateInterfaceBlocks(server, null, null);
 				}
 				else
@@ -184,7 +181,7 @@ public final class StargateNetwork extends SavedData
 	{
 		if(stargate != null)
 		{
-			Universe.get(server).removeStargateFromSolarSystem(stargate.getSolarSystem(server), stargate);
+			Universe.get(server).removeStargateFromAddressRegion(stargate.getAddressRegion(server), stargate);
 			BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
 			
 			StargateJourney.LOGGER.debug("Removed " + stargate.get9ChevronAddress().toString() + " from Stargate Network");
@@ -295,6 +292,9 @@ public final class StargateNetwork extends SavedData
 		}
 		
 		List<Stargate> dialedStargates = dialedStargate.getDialedStargates(server, dialingStargate, connectionType);
+		if(dialedStargates.isEmpty())
+			return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
+		
 		StargateConnection connection = StargateConnection.create(server, connectionType, dialingStargate, dialedStargates, doKawoosh);
 		if(connection != null)
 		{

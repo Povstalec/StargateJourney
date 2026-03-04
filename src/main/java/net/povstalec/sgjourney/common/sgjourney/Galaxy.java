@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -81,28 +78,25 @@ public class Galaxy
 	 */
 	public static final class Serializable
 	{
-		public static final String SOLAR_SYSTEMS = "solar_systems";
+		public static final String ADDRESS_REGIONS = "address_region";
 		public static final String POINTS_OF_ORIGIN = "points_of_origin";
 		
 		private final ResourceKey<Galaxy> galaxyKey;
 		private final Galaxy galaxy;
 		
-		private HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems;
+		private Map<Address.Immutable, AddressRegion.Serializable> addressRegions;
 		private List<ResourceKey<PointOfOrigin>> pointsOfOrigin;
 		
 		public Serializable(ResourceKey<Galaxy> galaxyKey, Galaxy galaxy, 
-				HashMap<Address.Immutable, SolarSystem.Serializable> solarSystems, List<ResourceKey<PointOfOrigin>> pointsOfOrigin)
+				Map<Address.Immutable, AddressRegion.Serializable> addressRegions, List<ResourceKey<PointOfOrigin>> pointsOfOrigin)
 		{
 			this.galaxyKey = galaxyKey;
 			this.galaxy = galaxy;
 			
-			this.solarSystems = solarSystems;
+			this.addressRegions = addressRegions;
 			this.pointsOfOrigin = pointsOfOrigin;
 			
-			this.solarSystems.entrySet().stream().forEach(solarSystemEntry ->
-			{
-				solarSystemEntry.getValue().addToGalaxy(this, solarSystemEntry.getKey());
-			});
+			this.addressRegions.forEach((address, addressRegion) -> addressRegion.addToGalaxy(this, address));
 		}
 		
 		public ResourceKey<Galaxy> getKey()
@@ -125,46 +119,37 @@ public class Galaxy
 			return galaxy.getType().getSize();
 		}
 		
-		public void printSolarSystems()
+		public boolean containsAddressRegion(Address address)
 		{
-			this.solarSystems.entrySet().stream().forEach(solarSystemEntry ->
-			{
-				System.out.println("--- " + solarSystemEntry.getKey().toString() + " " + solarSystemEntry.getValue().getName());
-			});
-		}
-		
-		public boolean containsSolarSystem(Address address)
-		{
-			return this.solarSystems.containsKey(address);
+			return this.addressRegions.containsKey(address);
 		}
 		
 		@Nullable
-		public SolarSystem.Serializable getSolarSystem(Address address)
+		public AddressRegion.Serializable getAddressRegion(Address address)
 		{
-			return this.solarSystems.get(address);
+			return this.addressRegions.get(address);
 		}
 		
-		public void addSolarSystem(Address.Immutable address, SolarSystem.Serializable solarSystem)
+		public void addAddressRegion(Address.Immutable address, AddressRegion.Serializable addressRegion)
 		{
-			this.solarSystems.put(address, solarSystem);
-			//System.out.println("Added " + solarSystem.getName() + " to " + this.getKey().location().toString() + " as " + address.toString());
+			this.addressRegions.put(address, addressRegion);
 		}
 		
-		public void removeSolarSystem(Address address)
+		public void removeAddressRegion(Address address)
 		{
-			if(containsSolarSystem(address))
-				this.solarSystems.remove(address);
+			if(containsAddressRegion(address))
+				this.addressRegions.remove(address);
 		}
 		
-		public List<SolarSystem.Serializable> getShuffledSolarSystems(RandomSource randomSource)
+		public List<AddressRegion.Serializable> getShuffledAddressRegions(RandomSource randomSource)
 		{
-			return Util.toShuffledList(this.solarSystems.values().stream(), randomSource);
+			return Util.toShuffledList(this.addressRegions.values().stream(), randomSource);
 		}
 		
 		@Nullable
-		public SolarSystem.Serializable getRandomSolarSystem(long seed)
+		public AddressRegion.Serializable getRandomAddressRegion(long seed)
 		{
-			int size = this.solarSystems.size();
+			int size = this.addressRegions.size();
 			
 			if(size < 1)
 				return null;
@@ -173,9 +158,17 @@ public class Galaxy
 			
 			int randomValue = random.nextInt(0, size);
 			
-			SolarSystem.Serializable randomSolarSystem = (SolarSystem.Serializable) this.solarSystems.entrySet().stream().toArray()[randomValue];
+			AddressRegion.Serializable randomSolarSystem = (AddressRegion.Serializable) this.addressRegions.entrySet().stream().toArray()[randomValue];
 			
 			return randomSolarSystem;
+		}
+		
+		public void printAddressRegions()
+		{
+			for(Map.Entry<Address.Immutable, AddressRegion.Serializable> addressRegionEntry : this.addressRegions.entrySet())
+			{
+				System.out.println("--- " + addressRegionEntry.getKey().toString() + " " + addressRegionEntry.getValue().getName());
+			}
 		}
 		
 		public void addPointOfOrigin(ResourceKey<PointOfOrigin> pointOfOrigin)
@@ -204,8 +197,8 @@ public class Galaxy
 			if(other == this)
 				return true;
 			
-			if(other instanceof Galaxy.Serializable galaxy)
-				return this.galaxyKey.equals(galaxy.galaxyKey);
+			if(other instanceof Galaxy.Serializable otherGalaxy)
+				return this.galaxyKey.equals(otherGalaxy.galaxyKey);
 			
 			return false;
 		}
@@ -215,62 +208,54 @@ public class Galaxy
 		public CompoundTag serialize()
 		{
 			CompoundTag galaxyTag = new CompoundTag();
-			//galaxyTag.putString(GALAXY_KEY, galaxyKey.location().toString());
 
-			//System.out.println("Galaxy: " + galaxyKey.location().toString());
-			CompoundTag solarSystemsTag = new CompoundTag();
-			solarSystems.entrySet().forEach(solarSystem ->
-			{
-				solarSystemsTag.putIntArray(solarSystem.getKey().toString(), solarSystem.getValue().getExtragalacticAddress().toArray());
-				//System.out.println("Serializing: " + solarSystem.getValue().getName() + " " + solarSystem.getKey().toString());
-			});
+			CompoundTag addressRegionsTag = new CompoundTag();
+			this.addressRegions.forEach((address, addressRegion) ->
+				addressRegionsTag.putIntArray(address.toString(), addressRegion.getExtragalacticAddress().toArray()));
 			
-			galaxyTag.put(SOLAR_SYSTEMS, solarSystemsTag);
+			galaxyTag.put(ADDRESS_REGIONS, addressRegionsTag);
 
 			CompoundTag pointOfOriginTag = new CompoundTag();
-			pointsOfOrigin.stream().forEach(pointOfOrigin ->
+			for(ResourceKey<PointOfOrigin> pointOfOrigin : this.pointsOfOrigin)
 			{
 				String pointOfOriginString = pointOfOrigin.location().toString();
 				pointOfOriginTag.putString(pointOfOriginString, pointOfOriginString);
-			});
+			}
 			
 			galaxyTag.put(POINTS_OF_ORIGIN, pointOfOriginTag);
 			
 			return galaxyTag;
 		}
 		
-		public static Galaxy.Serializable deserialize(MinecraftServer server, HashMap<Address, SolarSystem.Serializable> solarSystems,
+		public static Galaxy.Serializable deserialize(Map<Address, AddressRegion.Serializable> addressRegions,
 				Registry<Galaxy> galaxyRegistry, ResourceKey<Galaxy> galaxyKey, CompoundTag galaxyTag)
 		{
 			Galaxy galaxy = galaxyRegistry.get(galaxyKey);
 			
-			HashMap<Address.Immutable, SolarSystem.Serializable> galaxySolarSystems = new HashMap<Address.Immutable, SolarSystem.Serializable>();
+			Map<Address.Immutable, AddressRegion.Serializable> galaxyAddressRegions = new HashMap<>();
 			
-			CompoundTag solarSystemsTag = galaxyTag.getCompound(SOLAR_SYSTEMS);
+			CompoundTag addressRegionsTag = galaxyTag.getCompound(ADDRESS_REGIONS);
 
-			//System.out.println("Galaxy: " + galaxyKey.location().toString());
-			solarSystemsTag.getAllKeys().forEach(addressString ->
+			for(String addressString : addressRegionsTag.getAllKeys())
 			{
-				Address.Immutable extragalacticAddress = new Address.Immutable(solarSystemsTag.getIntArray(addressString)); // 8-chevron address
+				Address.Immutable extragalacticAddress = new Address.Immutable(addressRegionsTag.getIntArray(addressString)); // 8-chevron address
 				Address.Immutable address = new Address.Immutable(addressString); // 7-chevron address
 				
-				if(solarSystems.containsKey(extragalacticAddress))
+				if(addressRegions.containsKey(extragalacticAddress))
 				{
-					SolarSystem.Serializable solarSystem = solarSystems.get(extragalacticAddress);
-					galaxySolarSystems.put(address, solarSystem);
-					//System.out.println("Deserializing: " + solarSystems.get(extragalacticAddress).getName() + " " + address.toString());
+					AddressRegion.Serializable addressRegion = addressRegions.get(extragalacticAddress);
+					galaxyAddressRegions.put(address, addressRegion);
 				}
-			});
+			}
 			
 			CompoundTag pointOfOriginTag = galaxyTag.getCompound(POINTS_OF_ORIGIN);
 			List<ResourceKey<PointOfOrigin>> pointsOfOrigin = new ArrayList<ResourceKey<PointOfOrigin>>();
-			
-			pointOfOriginTag.getAllKeys().forEach(pointOfOriginString ->
+			for(String pointOfOriginString : pointOfOriginTag.getAllKeys())
 			{
 				pointsOfOrigin.add(Conversion.stringToPointOfOrigin(pointOfOriginString));
-			});
+			}
 			
-			return new Galaxy.Serializable(galaxyKey, galaxy, galaxySolarSystems, pointsOfOrigin);
+			return new Galaxy.Serializable(galaxyKey, galaxy, galaxyAddressRegions, pointsOfOrigin);
 		}
 	}
 }

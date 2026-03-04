@@ -60,14 +60,26 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 		if(!canExtract())
             return 0;
 		
+		return depleteEnergy(maxExtract, simulate);
+	}
+	
+	/**
+	 * Alternative to {@link #extractLongEnergy(long maxExtract, boolean simulate)} meant to be used in places where it is unacceptable for pull-based energy systems to extract energy.
+	 * Unlike the aforementioned method, this one ignores {@link #canExtract()}
+	 * @param maxExtract Maximum amount of energy to be extracted
+	 * @param simulate Whether to simlate the extraction or not
+	 * @return Energy that was actually extracted
+	 */
+	public long depleteEnergy(long maxExtract, boolean simulate)
+	{
 		long energyExtracted = Math.min(energy, Math.min(maxExtract(), maxExtract));
-        if(!simulate)
-        	energy -= energyExtracted;
-        
-        if(energyExtracted != 0)
+		if(!simulate)
+			energy -= energyExtracted;
+		
+		if(energyExtracted != 0)
 			onEnergyChanged(energyExtracted, simulate);
-        
-        return energyExtracted;
+		
+		return energyExtracted;
 	}
 	
 	@Override

@@ -1,0 +1,11 @@
+{
+	"name": "ship.sgjourney.destiny",
+	"point_of_origin": "sgjourney:universal",
+	"symbols": "sgjourney:universal",
+	"symbol_prefix": 26,
+	"extragalactic_address": {"symbols": [26, 30, 15, 27, 18, 3, 25], "randomizable": true},
+	"galactic_addresses":
+	[
+		{"galaxy": "sgjourney:kaliem", "address": {"symbols": [31, 13, 6, 24, 17, 5], "randomizable": true}}
+	]
+}

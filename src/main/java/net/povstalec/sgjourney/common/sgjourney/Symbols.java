@@ -147,7 +147,7 @@ public class Symbols
 	
 	public static ResourceKey<Symbols> defaultSymbols()
 	{
-		return Conversion.stringToSymbols(StargateJourney.MODID + ":universal");
+		return Conversion.locationToSymbols(UNIVERSAL_LOCATION);
 	}
 	
 	public static boolean validLocation(MinecraftServer server, ResourceLocation symbols)

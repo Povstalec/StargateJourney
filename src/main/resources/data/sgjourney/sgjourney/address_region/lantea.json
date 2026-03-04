@@ -1,0 +1,11 @@
+{
+	"name": "solar_system.sgjourney.lantea",
+	"point_of_origin": "sgjourney:subido",
+	"symbols": "sgjourney:lantea",
+	"symbol_prefix": 18,
+	"extragalactic_address": {"symbols": [18, 20, 1, 15, 14, 7, 19], "randomizable": true},
+	"galactic_addresses":
+	[
+		{"galaxy": "sgjourney:pegasus", "address": {"symbols": [29, 5, 17, 34, 6, 12], "randomizable": true}}
+	]
+}

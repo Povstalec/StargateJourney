@@ -8,14 +8,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public interface Stargate
+public interface Stargate extends Comparable<Stargate>
 {
 	String DIMENSION = "Dimension";
 	String COORDINATES = "Coordinates";
@@ -54,16 +56,12 @@ public interface Stargate
 	}
 	
 	/**
-	 * @return Solar System the Stargate is located in or null if it's not located in any Solar System
+	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region
 	 */
 	@Nullable
-	default SolarSystem.Serializable getSolarSystem(MinecraftServer server)
+	default AddressRegion.Serializable getAddressRegion(MinecraftServer server)
 	{
-		ResourceKey<Level> dimension = getDimension();
-		if(dimension == null)
-			return null;
-		
-		return Universe.get(server).getSolarSystemFromDimension(dimension);
+		return Universe.get(server).getAddressRegionFromDimension(getDimension());
 	}
 	
 	/**
@@ -165,28 +163,28 @@ public interface Stargate
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @param solarSystem Solar System requesting this Stargate's connection Address, can be null
+	 * @param addressRegion Address Region requesting this Stargate's connection Address, can be null
 	 * @param addressType Type of the requested Address
 	 * @return The Address which this Stargate will provide to the Stargate Network during connections
 	 * (For example, during an interstellar connection, the Stargate will provide the 7-Chevron Address of its Solar System instead of its 9-Chevron Address)
 	 */
-	default Address.Immutable getConnectionAddress(MinecraftServer server, @Nullable SolarSystem.Serializable solarSystem, Address.Type addressType)
+	default Address.Immutable getConnectionAddress(MinecraftServer server, @Nullable AddressRegion.Serializable addressRegion, Address.Type addressType)
 	{
-		SolarSystem.Serializable localSolarSystem = getSolarSystem(server);
-		if(localSolarSystem != null)
+		AddressRegion.Serializable localAddressRegion = getAddressRegion(server);
+		if(localAddressRegion != null)
 		{
 			if(addressType == Address.Type.ADDRESS_7_CHEVRON)
 			{
-				Galaxy.Serializable galaxy = localSolarSystem.findCommonGalaxy(solarSystem);
+				Galaxy.Serializable galaxy = localAddressRegion.findCommonGalaxy(addressRegion);
 				if(galaxy != null)
 				{
-					Address.Immutable address = localSolarSystem.getAddressFromGalaxy(galaxy);
+					Address.Immutable address = localAddressRegion.getAddressInGalaxy(galaxy);
 					if(address != null)
 						return address;
 				}
 			}
 			else if(addressType == Address.Type.ADDRESS_8_CHEVRON)
-				return localSolarSystem.getExtragalacticAddress();
+				return localAddressRegion.getExtragalacticAddress();
 		}
 		
 		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
@@ -446,6 +444,26 @@ public interface Stargate
 	 * @return True if the Stargate has reached a point where it requires extra energy to bypass the max wormhole open time, otherwise false
 	 */
 	boolean requiresEnergyBypass(MinecraftServer server, int openTime);
+	
+	@Override
+	default int compareTo(@NotNull Stargate other)
+	{
+		// Stargates with a DHD take precedence
+		if(!CommonStargateNetworkConfig.disable_dhd_preference.get())
+		{
+			int dhdRes = Boolean.compare(other.hasDHD(), this.hasDHD());
+			if(dhdRes != 0)
+				return dhdRes;
+		}
+		
+		// Stargates with higher generation take precedence
+		int genRes = other.getGeneration().compareTo(this.getGeneration());
+		if(genRes != 0)
+			return genRes;
+		
+		// Stargates with more uses take precedence
+		return Integer.compare(other.getTimesOpened(), this.getTimesOpened());
+	}
 	
 	// Saving and loading
 	

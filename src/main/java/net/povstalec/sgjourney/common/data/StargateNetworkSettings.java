@@ -14,9 +14,9 @@ public class StargateNetworkSettings extends SavedData
 {
 	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network_settings";
 	
-	private static final String USE_DATAPACK_ADDRESSES = "UseDatapackAddresses";
-	private static final String GENERATE_RANDOM_SOLAR_SYSTEMS = "GenerateRandomSolarSystems";
-	private static final String RANDOM_ADDRESS_FROM_SEED = "RandomAddressFromSeed";
+	private static final String RANDOMIZE_ADDRESSES = "randomize_addresses";
+	private static final String GENERATE_RANDOM_SOLAR_SYSTEMS = "generate_random_solar_systems";
+	private static final String RANDOM_ADDRESS_FROM_SEED = "random_address_from_seed";
 	
 	private CompoundTag stargateNetworkSettings = new CompoundTag();
 	
@@ -31,11 +31,11 @@ public class StargateNetworkSettings extends SavedData
 
 		StargateJourney.LOGGER.info("Attempting to update settings");
 		
-		if(!network.contains(USE_DATAPACK_ADDRESSES))
+		if(!network.contains(RANDOMIZE_ADDRESSES))
 		{
-			boolean useDatapackAddresses = CommonStargateNetworkConfig.use_datapack_addresses.get();
-			StargateJourney.LOGGER.info("Use Datapack Addresses updated to " + useDatapackAddresses);
-			stargateNetworkSettings.putBoolean(USE_DATAPACK_ADDRESSES, useDatapackAddresses);
+			boolean randomizeAddresses = CommonStargateNetworkConfig.randomize_addresses.get();
+			StargateJourney.LOGGER.info("Randomize Addresses updated to " + randomizeAddresses);
+			stargateNetworkSettings.putBoolean(RANDOMIZE_ADDRESSES, randomizeAddresses);
 		}
 		
 		if(!network.contains(GENERATE_RANDOM_SOLAR_SYSTEMS))
@@ -55,12 +55,12 @@ public class StargateNetworkSettings extends SavedData
 		this.setDirty();
 	}
 	
-	public boolean useDatapackAddresses()
+	public boolean randomizeAddresses()
 	{
-		if(this.stargateNetworkSettings.contains(USE_DATAPACK_ADDRESSES))
-			return this.stargateNetworkSettings.getBoolean(USE_DATAPACK_ADDRESSES);
+		if(this.stargateNetworkSettings.contains(RANDOMIZE_ADDRESSES))
+			return this.stargateNetworkSettings.getBoolean(RANDOMIZE_ADDRESSES);
 		
-		return CommonStargateNetworkConfig.use_datapack_addresses.get();
+		return CommonStargateNetworkConfig.randomize_addresses.get();
 	}
 	
 	public boolean generateRandomSolarSystems()
@@ -83,7 +83,7 @@ public class StargateNetworkSettings extends SavedData
 	
 	public void setUseDatapackAddresses(boolean useDatapackAddresses)
 	{
-		this.stargateNetworkSettings.putBoolean(USE_DATAPACK_ADDRESSES, useDatapackAddresses);
+		this.stargateNetworkSettings.putBoolean(RANDOMIZE_ADDRESSES, useDatapackAddresses);
 		this.setDirty();
 	}
 	

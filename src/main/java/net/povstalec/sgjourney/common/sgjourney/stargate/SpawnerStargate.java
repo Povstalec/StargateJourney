@@ -82,7 +82,7 @@ public class SpawnerStargate implements Stargate
 	@Override
 	public @Nullable ResourceKey<Level> getDimension()
 	{
-		return null;
+		return Conversion.stringToDimension("sgjourney:abydos"); // TODO Don't have it in Abydos
 	}
 	
 	@Override
@@ -113,12 +113,6 @@ public class SpawnerStargate implements Stargate
 	public double getInnerRadius()
 	{
 		return 0;
-	}
-	
-	@Override
-	public @Nullable SolarSystem.Serializable getSolarSystem(MinecraftServer server)
-	{
-		return Universe.get(server).getSolarSystemFromDimension(Conversion.stringToDimension("sgjourney:abydos")); // TODO
 	}
 	
 	@Override

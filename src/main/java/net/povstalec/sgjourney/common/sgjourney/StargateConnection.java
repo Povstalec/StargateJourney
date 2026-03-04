@@ -178,15 +178,15 @@ public class StargateConnection
 	
 	public static StargateConnection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
 	{
-		SolarSystem.Serializable dialingSystem = dialingStargate.getSolarSystem(server);
-		SolarSystem.Serializable dialedSystem = dialedStargate.getSolarSystem(server);
+		AddressRegion.Serializable dialingRegion = dialingStargate.getAddressRegion(server);
+		AddressRegion.Serializable dialedRegion = dialedStargate.getAddressRegion(server);
 		
-		if(dialingSystem != null && dialedSystem != null)
+		if(dialingRegion != null && dialedRegion != null)
 		{
-			if(dialingSystem.equals(dialedSystem))
+			if(dialingRegion.equals(dialedRegion))
 				return StargateConnection.Type.SYSTEM_WIDE;
 			
-			if(dialingSystem.findCommonGalaxy(dialedSystem) != null)
+			if(dialingRegion.findCommonGalaxy(dialedRegion) != null)
 				return Type.INTERSTELLAR;
 		}
 		
@@ -257,6 +257,31 @@ public class StargateConnection
 		newDialedStargate.connectStargate(this.uuid, false);
 	}*/
 	
+	private void removeDialedStargate(MinecraftServer server, Stargate removedStargate, StargateInfo.Feedback feedback)
+	{
+		if(this.dialedStargates.size() == 1)
+			terminate(server, feedback);
+		else
+			this.dialedStargates = this.dialedStargates.stream().filter(dialedStargate -> dialedStargate != removedStargate).toList();
+	}
+	
+	public void removeStargate(MinecraftServer server, Address address, StargateInfo.Feedback feedback)
+	{
+		if(address.equals(this.dialingStargate.get9ChevronAddress()))
+			terminate(server, feedback);
+		else
+		{
+			for(Stargate dialedStargate : this.dialedStargates)
+			{
+				if(address.equals(dialedStargate.get9ChevronAddress()))
+				{
+					removeDialedStargate(server, dialedStargate, feedback);
+					return;
+				}
+			}
+		}
+	}
+	
 	public boolean isStargateValid(MinecraftServer server, Stargate stargate) //TODO Remove
 	{
 		if(stargate == null)
@@ -278,7 +303,7 @@ public class StargateConnection
 	{
 		// Get dialing address and cache it for later use
 		if(this.dialingAddress == null)
-			this.dialingAddress = Address.Immutable.extendWithPointOfOrigin(this.dialingStargate.getConnectionAddress(server, getDialedStargate().getSolarSystem(server), this.dialingStargate.getAddress(server).getType()));
+			this.dialingAddress = Address.Immutable.extendWithPointOfOrigin(this.dialingStargate.getConnectionAddress(server, getDialedStargate().getAddressRegion(server), this.dialingStargate.getAddress(server).getType()));
 		
 		return this.dialingAddress;
 	}

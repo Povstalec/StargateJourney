@@ -85,12 +85,12 @@ public class TransporterConnection
 	
 	public static TransporterConnection.Type getType(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
-		SolarSystem.Serializable systemA = transporterA.getSolarSystem(server);
-		SolarSystem.Serializable systemB = transporterB.getSolarSystem(server);
+		AddressRegion.Serializable regionA = transporterA.getAddressRegion(server);
+		AddressRegion.Serializable regionB = transporterB.getAddressRegion(server);
 		
-		if(systemA != null && systemB != null)
+		if(regionA != null && regionB != null)
 		{
-			if(systemA.equals(systemB))
+			if(regionA.equals(regionB))
 			{
 				ResourceKey<Level> dimensionA = transporterA.getDimension();
 				ResourceKey<Level> dimensionB = transporterB.getDimension();
@@ -101,7 +101,7 @@ public class TransporterConnection
 					return Type.SYSTEM_WIDE;
 			}
 			
-			if(systemA.findCommonGalaxy(systemB) != null)
+			if(regionA.findCommonGalaxy(regionB) != null)
 				return Type.RELAYED_INTERSTELLAR;
 		}
 		

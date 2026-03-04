@@ -81,7 +81,7 @@ public class PointOfOrigin
 	
 	public static ResourceKey<PointOfOrigin> defaultPointOfOrigin()
 	{
-		return Conversion.stringToPointOfOrigin(StargateJourney.MODID + ":universal");
+		return Conversion.locationToPointOfOrigin(UNIVERSAL_LOCATION);
 	}
 	
 	public static boolean validLocation(MinecraftServer server, ResourceLocation pointOfOrigin)

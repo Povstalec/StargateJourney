@@ -1,0 +1,12 @@
+{
+	"name": "solar_system.sgjourney.end",
+	"point_of_origin": "sgjourney:pontem",
+	"symbols": "sgjourney:end",
+	"symbol_prefix": 1,
+	"extragalactic_address": {"symbols": [18, 24, 8, 16, 7, 35, 30], "randomizable": true},
+	"galactic_addresses":
+	[
+		{"galaxy": "sgjourney:milky_way", "address": {"symbols": [13, 24, 2, 19, 3, 30], "randomizable": true}},
+		{"galaxy": "sgjourney:pegasus", "address": {"symbols": [14, 30, 6, 13, 17, 23], "randomizable": true}}
+	]
+}

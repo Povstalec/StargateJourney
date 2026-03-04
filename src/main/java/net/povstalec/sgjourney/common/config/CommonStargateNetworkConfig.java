@@ -4,7 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonStargateNetworkConfig
 {
-	public static SGJourneyConfigValue.BooleanValue use_datapack_addresses;
+	public static SGJourneyConfigValue.BooleanValue randomize_addresses;
 	public static SGJourneyConfigValue.BooleanValue generate_random_solar_systems;
 	public static SGJourneyConfigValue.BooleanValue random_addresses_from_seed;
 	
@@ -13,9 +13,9 @@ public class CommonStargateNetworkConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
-		use_datapack_addresses = new SGJourneyConfigValue.BooleanValue(server, "server.use_datapack_addresses", 
-				true, //TODO Change to false
-				"Stargate Network will use addresses from datapacks");
+		randomize_addresses = new SGJourneyConfigValue.BooleanValue(server, "server.randomize_addresses",
+				false, //TODO Change to true once there is are more ways to obtain all addresses
+				"Stargate Network will randomize addresses, rather than using the addresses from datapacks");
 		
 		generate_random_solar_systems = new SGJourneyConfigValue.BooleanValue(server, "server.generate_random_solar_systems", 
 				true, 

@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.RenderAMD;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
@@ -57,13 +58,6 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
-import net.povstalec.sgjourney.common.sgjourney.AddressTable;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
-import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
-import net.povstalec.sgjourney.common.sgjourney.SymbolSet;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 
 import javax.annotation.Nullable;
@@ -119,7 +113,8 @@ public class StargateJourney
             event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
             event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
             event.dataPackRegistry(PointOfOrigin.REGISTRY_KEY, PointOfOrigin.CODEC, PointOfOrigin.CODEC);
-            event.dataPackRegistry(SolarSystem.REGISTRY_KEY, SolarSystem.CODEC, SolarSystem.CODEC);
+            event.dataPackRegistry(AddressRegion.REGISTRY_KEY, AddressRegion.CODEC, AddressRegion.CODEC);
+            event.dataPackRegistry(SpaceLocation.REGISTRY_KEY, SpaceLocation.CODEC, SpaceLocation.CODEC);
             event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
             event.dataPackRegistry(StargateVariant.REGISTRY_KEY, StargateVariant.CODEC, StargateVariant.CODEC);
         });

@@ -11,10 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
-import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
-import net.povstalec.sgjourney.common.sgjourney.TransporterID;
-import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -39,16 +36,12 @@ public interface Transporter
 	ResourceKey<Level> getDimension();
 	
 	/**
-	 * @return Solar System the Stargate is located in or null if it's not located in any Solar System
+	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region
 	 */
 	@Nullable
-	default SolarSystem.Serializable getSolarSystem(MinecraftServer server)
+	default AddressRegion.Serializable getAddressRegion(MinecraftServer server)
 	{
-		ResourceKey<Level> dimension = getDimension();
-		if(dimension == null)
-			return null;
-		
-		return Universe.get(server).getSolarSystemFromDimension(dimension);
+		return Universe.get(server).getAddressRegionFromDimension(getDimension());
 	}
 	
 	/**

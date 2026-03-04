@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
@@ -19,12 +18,14 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public abstract class Address implements Cloneable
+public abstract class Address implements Cloneable, Comparable<Address>
 {
 	public static final String ADDRESS = "address";
+	public static final String SYMBOLS = "symbols";
 	
 	public static final String ADDRESS_DIVIDER = "-";
 	public static final int MIN_DIALED_ADDRESS_LENGTH = 6;
@@ -254,6 +255,12 @@ public abstract class Address implements Cloneable
 		return Objects.hash(symbolAt(0), symbolAt(1), symbolAt(2), symbolAt(3), symbolAt(4), symbolAt(5), symbolAt(6), symbolAt(7), symbolAt(8));
 	}
 	
+	@Override
+	public int compareTo(@NotNull Address other)
+	{
+		return Arrays.compare(this.addressArray, other.addressArray);
+	}
+	
 	// Static functions
 	
 	private static boolean isAllowedInAddress(char character)
@@ -373,9 +380,9 @@ public abstract class Address implements Cloneable
 	
 	public static final class Immutable extends Address
 	{
-		public static final Codec<Immutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.INT.listOf().fieldOf("symbols").forGetter(address -> Arrays.stream(address.addressArray).boxed().collect(Collectors.toList()))
-		).apply(instance, Immutable::new));
+		public static final Codec<Address.Immutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
+		).apply(instance, Address.Immutable::new));
 		
 		public Immutable() {}
 		
@@ -458,7 +465,7 @@ public abstract class Address implements Cloneable
 	public static final class Mutable extends Address
 	{
 		public static final Codec<Mutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.INT.listOf().fieldOf("symbols").forGetter(address -> Arrays.stream(address.addressArray).boxed().collect(Collectors.toList()))
+				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
 		).apply(instance, Mutable::new));
 		
 		public Mutable() {}
@@ -606,7 +613,7 @@ public abstract class Address implements Cloneable
 	public static final class Dimension extends Address
 	{
 		public static final Codec<Dimension> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Level.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(address -> address.getDimension()),
+				Level.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(address -> address.dimension),
 				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(weightedAddress -> Optional.ofNullable(weightedAddress.galaxyKey))
 		).apply(instance, Dimension::new));
 		
@@ -615,6 +622,11 @@ public abstract class Address implements Cloneable
 		private ResourceKey<Galaxy> galaxyKey;
 		
 		public Dimension() {}
+		
+		public Dimension(ResourceKey<Level> dimension)
+		{
+			this(dimension, Optional.empty());
+		}
 		
 		public Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey)
 		{

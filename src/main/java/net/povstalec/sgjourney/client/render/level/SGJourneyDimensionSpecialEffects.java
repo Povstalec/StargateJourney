@@ -109,6 +109,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.AbydosSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_abydos_sky.get();
@@ -123,6 +124,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.ChulakSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_chulak_sky.get();
@@ -137,6 +139,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.CavumTenebraeSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_cavum_tenebrae_sky.get();
@@ -151,6 +154,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.UnitasSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_unitas_sky.get();
@@ -165,6 +169,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.RimaSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_rima_sky.get();
@@ -183,6 +188,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.LanteaSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_lantea_sky.get();
@@ -197,6 +203,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.AthosSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_athos_sky.get();
@@ -215,6 +222,14 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.DestinySkyRenderer();
 		}
 		
+		@Override
+		@Nullable
+		public float[] getSunriseColor(float timeOfDay, float partialTicks)
+		{
+			return null;
+		}
+		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_destiny_sky.get();

@@ -6,10 +6,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
 
@@ -87,19 +84,19 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<SolarSystem> locationToSolarSystemKey(ResourceLocation location)
+	public static ResourceKey<AddressRegion> locationToAddressRegionKey(ResourceLocation location)
 	{
 		if(location != null)
-			return ResourceKey.create(SolarSystem.REGISTRY_KEY, location);
+			return ResourceKey.create(AddressRegion.REGISTRY_KEY, location);
 		
 		return null;
 	}
 	
 	@Nullable
-	public static ResourceKey<SolarSystem> stringToSolarSystemKey(String solarSystemString)
+	public static ResourceKey<AddressRegion> stringToAddressRegionKey(String addressRegionString)
 	{
-		ResourceLocation location = ResourceLocation.tryParse(solarSystemString);
-		return locationToSolarSystemKey(location);
+		ResourceLocation location = ResourceLocation.tryParse(addressRegionString);
+		return locationToAddressRegionKey(location);
 	}
 	
 	public static Vec3i intArrayToVec(int[] coordinates)

@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.init;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -44,11 +43,8 @@ import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
 import net.povstalec.sgjourney.common.data.*;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy.Serializable;
-import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class CommandInit
@@ -320,17 +316,17 @@ public class CommandInit
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getPlayer().getLevel();
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
+		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
-		if(solarSystem != null)
+		if(addressRegion != null)
 		{
-			if(!solarSystem.getStargates().isEmpty())
+			if(!addressRegion.getStargates().isEmpty())
 			{
 				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_stargates")
 						.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
 				context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 				
-				solarSystem.getStargates().stream().forEach(stargate ->
+				addressRegion.getStargates().stream().forEach(stargate ->
 				{
 					ResourceKey<Level> stargateDimension = stargate.getDimension();
 					Vec3 stargatePos = stargate.getPosition(context.getSource().getServer());
@@ -361,11 +357,11 @@ public class CommandInit
 		Address.Immutable address = AddressArgumentType.getAddress(context, "address");
 		
 		Level level = context.getSource().getPlayer().getLevel();
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
+		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
-		if(solarSystem != null)
+		if(addressRegion != null)
 		{
-			solarSystem.setPrimaryStargate(address);
+			addressRegion.setPrimaryStargate(address);
 			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_set").withStyle(ChatFormatting.DARK_GREEN), true);
 			return Command.SINGLE_SUCCESS;
 		}
@@ -378,11 +374,11 @@ public class CommandInit
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
 		Level level = context.getSource().getPlayer().getLevel();
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
+		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
-		if(solarSystem != null)
+		if(addressRegion != null)
 		{
-			solarSystem.setPrimaryStargate(null);
+			addressRegion.setPrimaryStargate(null);
 			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_unset").withStyle(ChatFormatting.GREEN), true);
 			return Command.SINGLE_SUCCESS;
 		}
@@ -395,11 +391,11 @@ public class CommandInit
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
 		Level level = context.getSource().getPlayer().getLevel();
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
+		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
-		if(solarSystem != null)
+		if(addressRegion != null)
 		{
-			Address.Immutable address = solarSystem.primaryAddress();
+			Address.Immutable address = addressRegion.primaryAddress();
 			
 			if(address != null)
 				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.AQUA), true);
@@ -437,7 +433,7 @@ public class CommandInit
 	{
 		Level level = context.getSource().getPlayer().level;
 		
-		boolean useDatapackAddresses = StargateNetworkSettings.get(level).useDatapackAddresses();
+		boolean useDatapackAddresses = StargateNetworkSettings.get(level).randomizeAddresses();
 		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomSolarSystems();
 		boolean randomAddressFromSeed = StargateNetworkSettings.get(level).randomAddressFromSeed();
 		
@@ -604,8 +600,8 @@ public class CommandInit
 		MinecraftServer server = context.getSource().getServer();
 
 		System.out.println("===============Universe===============");
-		Universe.get(server).printDimensions();
-		Universe.get(server).printSolarSystems();
+		SpaceLocation.printSpaceLocations();
+		Universe.get(server).printAddressRegions();
 		Universe.get(server).printGalaxies();
 		
 		System.out.println("===============Stargate Network===============");

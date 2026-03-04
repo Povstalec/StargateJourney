@@ -117,8 +117,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
-	private static final ResourceLocation CAVUM_TENEBRAE = ResourceLocation.tryBuild(StargateJourney.MODID, "cavum_tenebrae"); // TODO Make this more configurable
-	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	// Basic Info
@@ -1394,7 +1392,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(this.getOrientation() == Orientation.UPWARD)
 			return true;
 		
-		return CAVUM_TENEBRAE.equals(getLevel().dimension().location());
+		return SpaceLocation.fromDimension(level.dimension()).getParentGravity() > 0.0;
 	}
 	
 	public float getVerticalCenterHeight()
@@ -1569,12 +1567,12 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	
 	private void trySetPrimary()
 	{
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(level.dimension());
+		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(level.dimension());
 		
-		if(solarSystem == null || solarSystem.primaryAddress() != null)
+		if(addressRegion == null || addressRegion.primaryAddress() != null)
 			return;
 		
-		solarSystem.setPrimaryStargate(this.get9ChevronAddress());
+		addressRegion.setPrimaryStargate(this.get9ChevronAddress());
 	}
 	
 	public void generate()

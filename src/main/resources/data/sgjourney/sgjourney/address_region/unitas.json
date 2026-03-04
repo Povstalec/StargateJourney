@@ -1,0 +1,11 @@
+{
+	"name": "solar_system.sgjourney.unitas",
+	"point_of_origin": "sgjourney:unitas",
+	"symbols": "sgjourney:unitas",
+	"symbol_prefix": 1,
+	"extragalactic_address": {"symbols": [1, 12, 34, 24, 15, 8, 17], "randomizable": true},
+	"galactic_addresses":
+	[
+		{"galaxy": "sgjourney:milky_way", "address": {"symbols": [2, 27, 8, 34, 24, 15], "randomizable": true}}
+	]
+}
