@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.items;
 
 import java.util.List;
+import java.util.function.IntSupplier;
 
 import javax.annotation.Nullable;
 
@@ -15,7 +16,7 @@ import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 
-public abstract class StargateIrisItem extends Item
+public class StargateIrisItem extends Item
 {
 	// Vanilla Materials
 	public static final ResourceLocation COPPER_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/copper_iris.png");
@@ -34,13 +35,15 @@ public abstract class StargateIrisItem extends Item
 	public static final String DURABILITY = "durability";
 	public static final String TEXTURE = "texture";
 	
-	private ResourceLocation irisTexture;
+	private final ResourceLocation irisTexture;
+	private final IntSupplier maxDurability;
 	
-	public StargateIrisItem(Properties properties, ResourceLocation irisTexture)
+	public StargateIrisItem(Properties properties, ResourceLocation irisTexture, IntSupplier maxDurability)
 	{
 		super(properties);
 		
 		this.irisTexture = irisTexture;
+		this.maxDurability = maxDurability;
 	}
 	
 	public ResourceLocation getIrisTexture()
@@ -48,7 +51,10 @@ public abstract class StargateIrisItem extends Item
 		return irisTexture;
 	}
 	
-	public abstract int getMaxDurability();
+	public int getMaxDurability()
+	{
+		return maxDurability.getAsInt();
+	}
 	
 	
 	
@@ -154,137 +160,5 @@ public abstract class StargateIrisItem extends Item
 		}
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-	}
-	
-	
-	
-	public static class Copper extends StargateIrisItem
-	{
-		public Copper(Properties properties)
-		{
-			super(properties, COPPER_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.copper_iris_durability.get();
-		}
-	}
-	
-	public static class Iron extends StargateIrisItem
-	{
-		public Iron(Properties properties)
-		{
-			super(properties, IRON_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.iron_iris_durability.get();
-		}
-	}
-
-	public static class Gold extends StargateIrisItem
-	{
-		public Gold(Properties properties)
-		{
-			super(properties, GOLD_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.gold_iris_durability.get();
-		}
-	}
-
-	public static class Diamond extends StargateIrisItem
-	{
-		public Diamond(Properties properties)
-		{
-			super(properties, DIAMOND_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.diamond_iris_durability.get();
-		}
-	}
-
-	public static class Netherite extends StargateIrisItem
-	{
-		public Netherite(Properties properties)
-		{
-			super(properties, NETHERITE_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.netherite_iris_durability.get();
-		}
-	}
-	
-	public static class NaquadahCopperAlloy extends StargateIrisItem
-	{
-		public NaquadahCopperAlloy(Properties properties)
-		{
-			super(properties, NAQUADAH_COPPER_ALLOY_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.naquadah_copper_alloy_iris_durability.get();
-		}
-	}
-
-	public static class NaquadahIronAlloy extends StargateIrisItem
-	{
-		public NaquadahIronAlloy(Properties properties)
-		{
-			super(properties, NAQUADAH_IRON_ALLOY_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.naquadah_iron_alloy_iris_durability.get();
-		}
-	}
-
-	public static class Trinium extends StargateIrisItem
-	{
-		public Trinium(Properties properties)
-		{
-			super(properties, TRINIUM_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.trinium_iris_durability.get();
-		}
-	}
-
-	public static class Bronze extends StargateIrisItem
-	{
-		public Bronze(Properties properties)
-		{
-			super(properties, BRONZE_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.bronze_iris_durability.get();
-		}
-	}
-
-	public static class Steel extends StargateIrisItem
-	{
-		public Steel(Properties properties)
-		{
-			super(properties, STEEL_IRIS);
-		}
-		
-		public int getMaxDurability()
-		{
-			return CommonIrisConfig.steel_iris_durability.get();
-		}
 	}
 }

@@ -42,9 +42,9 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 			level.explode(null, pos.getX(), pos.getY(), pos.getZ(), radius, Level.ExplosionInteraction.BLOCK);
 	}
 	
-	public void exciteNearbyBlocks(ServerLevel level, BlockPos pos, RandomSource randomSource, int radius)
+	public void exciteNearbyBlocks(ServerLevel level, BlockPos pos, RandomSource randomSource, int excitement)
 	{
-		AABB aabb = new AABB(pos).inflate(radius);
+		AABB aabb = new AABB(pos).inflate(excitement);
 		BlockPos.betweenClosedStream(aabb).forEach(otherPos ->
 		{
 			if(randomSource.nextFloat() < SPREAD_CHANCE && !otherPos.equals(pos))
@@ -53,7 +53,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 				if(otherState.getBlock() instanceof NaquadriaOreBlock naquadriaOre)
 					naquadriaOre.excite(otherState, level, pos);
 				else if(otherState.getBlock() instanceof NaquadahOreBlock naquadahOre)
-					naquadahOre.transform(level, otherPos, randomSource.nextInt(MIN_EXCITEMENT, radius));
+					naquadahOre.transform(level, otherPos, randomSource.nextInt(3 * excitement / 4, excitement));
 			}
 		});
 	}

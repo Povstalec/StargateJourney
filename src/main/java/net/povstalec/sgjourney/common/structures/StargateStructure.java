@@ -41,65 +41,6 @@ public abstract class StargateStructure extends SGJourneyStructure
 		this.stargateModifiers = stargateModifiers.orElse(null);
 		this.dhdModifiers = dhdModifiers.orElse(null);
     }
-    
-    /*private static final void checkSeed(long seed)
-    {
-    	if(currentSeed.isEmpty() || currentSeed.get() != seed)
-    	{
-    		currentSeed = Optional.of(seed);
-            x = Optional.empty();
-            z = Optional.empty();
-    	}
-    }
-    
-    public static int getX(long seed)
-    {
-    	checkSeed(seed);
-    	if(x.isEmpty())
-    	{
-            Random random = new Random(seed + 2);
-            int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
-            int xBound = CommonGenerationConfig.stargate_generation_x_bound.get();
-            
-
-            int chunkX = xBound <= 0 ? xOffset : xOffset + random.nextInt(-xBound, xBound + 1);
-            
-            x = Optional.of(chunkX);
-    	}
-
-    	return x.get();
-    }
-    
-    public static int getZ(long seed)
-    {
-    	checkSeed(seed);
-    	if(z.isEmpty())
-    	{
-            Random random = new Random(seed + 3);
-            int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
-            int zBound = CommonGenerationConfig.stargate_generation_z_bound.get();
-            
-
-            int chunkZ = zBound <= 0 ? zOffset : zOffset + random.nextInt(-zBound, zBound + 1);
-            
-            z = Optional.of(chunkZ);
-    	}
-
-    	return z.get();
-    }*/
-    
-	/*@Override
-	protected boolean extraSpawningChecks(Structure.GenerationContext context)
-	{
-		// Grabs the chunk position we are at
-		ChunkPos chunkpos = context.chunkPos();
-		long seed = context.seed();
-		
-		if(chunkpos.x == getX(seed) && chunkpos.z == getZ(seed))
-			return true;
-		else
-			return false;
-	}*/
 	
 	@Override
 	protected void generateBlockEntity(WorldGenLevel level, BlockPos startPos, RandomSource randomSource, StructureGenEntity generatedEntity)

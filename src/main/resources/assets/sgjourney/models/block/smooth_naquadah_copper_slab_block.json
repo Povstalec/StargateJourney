@@ -1,8 +1,0 @@
-{
-	"parent": "minecraft:block/cube_column",
-	"textures":
-	{
-		"end": "sgjourney:block/smooth_naquadah_copper_block",
-		"side": "sgjourney:block/smooth_naquadah_copper_slab_side"
-	}
-}

@@ -538,6 +538,11 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return addressArray.length == MAX_ADDRESS_LENGTH;
 		}
 		
+		public boolean canBeInterrupted()
+		{
+			return hasPointOfOrigin() || addressArray.length == MAX_ADDRESS_LENGTH;
+		}
+		
 		public Mutable fromArray(int... addressArray)
 		{
 			try

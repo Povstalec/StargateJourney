@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/outer_stairs",
+	"textures":
+	{
+		"bottom": "sgjourney:block/smooth_naquadah_iron_block",
+		"side": "sgjourney:block/smooth_naquadah_iron_block",
+		"top": "sgjourney:block/smooth_naquadah_iron_block"
+	}
+}

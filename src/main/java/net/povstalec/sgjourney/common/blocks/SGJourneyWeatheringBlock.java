@@ -4,7 +4,6 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -13,13 +12,11 @@ import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChangeOverTimeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -42,17 +39,29 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WEATHERED_NAQUADAH_COPPER_SLAB.get())
 				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_SLAB.get(), BlockInit.OXIDIZED_NAQUADAH_COPPER_SLAB.get())
 				
-				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
-				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
-				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.POLISHED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.EXPOSED_POLISHED_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.EXPOSED_POLISHED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WEATHERED_POLISHED_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.WEATHERED_POLISHED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.OXIDIZED_POLISHED_NAQUADAH_COPPER_BLOCK.get())
 				
-				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
-				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
-				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.POLISHED_NAQUADAH_COPPER_SLAB.get(), BlockInit.EXPOSED_POLISHED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_POLISHED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WEATHERED_POLISHED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_POLISHED_NAQUADAH_COPPER_SLAB.get(), BlockInit.OXIDIZED_POLISHED_NAQUADAH_COPPER_SLAB.get())
 				
 				.put(BlockInit.NAQUADAH_COPPER_LAMP.get(), BlockInit.EXPOSED_NAQUADAH_COPPER_LAMP.get())
 				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_LAMP.get(), BlockInit.WEATHERED_NAQUADAH_COPPER_LAMP.get())
 				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_LAMP.get(), BlockInit.OXIDIZED_NAQUADAH_COPPER_LAMP.get())
+				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_STAIRS.get(), BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_STAIRS.get(), BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_STAIRS.get())
+				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
 				
 				.put(BlockInit.CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get())
 				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_BLOCK.get())
@@ -87,20 +96,35 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_SLAB.get())
 				.put(BlockInit.OXIDIZED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_SLAB.get())
 				
-				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
-				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
-				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
-				.put(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.POLISHED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_POLISHED_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.EXPOSED_POLISHED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_EXPOSED_POLISHED_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.WEATHERED_POLISHED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_WEATHERED_POLISHED_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.OXIDIZED_POLISHED_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_OXIDIZED_POLISHED_NAQUADAH_COPPER_BLOCK.get())
 				
-				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
-				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
-				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
-				.put(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.POLISHED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_POLISHED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_POLISHED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_EXPOSED_POLISHED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_POLISHED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_WEATHERED_POLISHED_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.OXIDIZED_POLISHED_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_OXIDIZED_POLISHED_NAQUADAH_COPPER_SLAB.get())
 				
 				.put(BlockInit.NAQUADAH_COPPER_LAMP.get(), BlockInit.WAXED_NAQUADAH_COPPER_LAMP.get())
 				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_LAMP.get(), BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_LAMP.get())
 				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_LAMP.get(), BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_LAMP.get())
 				.put(BlockInit.OXIDIZED_NAQUADAH_COPPER_LAMP.get(), BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_LAMP.get())
+				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				.put(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get())
+				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_STAIRS.get())
+				.put(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_STAIRS.get(), BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_STAIRS.get())
+				
+				.put(BlockInit.SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
+				.put(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get())
 				
 				.put(BlockInit.CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_CUT_NAQUADAH_COPPER_BLOCK.get())
 				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get(), BlockInit.WAXED_EXPOSED_CUT_NAQUADAH_COPPER_BLOCK.get())

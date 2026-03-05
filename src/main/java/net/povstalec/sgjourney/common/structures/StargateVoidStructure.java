@@ -40,50 +40,6 @@ public class StargateVoidStructure extends StargateStructure
     {
         super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates, stargateModifiers, dhdModifiers);
     }
-    
-    @Override
-    public boolean extraSpawningChecks(Structure.GenerationContext context)
-    {
-        // Grabs the chunk position we are at
-    	 ChunkPos chunkpos = context.chunkPos();
-         
-         int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
-         int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
-         
-         int chunkX = xOffset;
-         int chunkZ = zOffset;
-         
-         if(chunkpos.x == chunkX && chunkpos.z == chunkZ)
-         	return true;
-         else
-         	return false;
-    }
-
-    @Override
-    public Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context)
-    {
-        if(!extraSpawningChecks(context))
-            return Optional.empty();
-        
-        int startY = 70;
-
-        // Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
-        ChunkPos chunkPos = context.chunkPos();
-        BlockPos blockPos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
-
-        Optional<Structure.GenerationStub> structurePiecesGenerator =
-        		SGJourneyJigsawPlacement.addPieces(
-                        context,
-                        this.startPool,
-                        this.startJigsawName,
-                        this.size,
-                        blockPos,
-                        false,
-                        this.projectStartToHeightmap,
-                        this.maxDistanceFromCenter);
-        
-        return structurePiecesGenerator;
-    }
 
     @Override
     public StructureType<?> type()

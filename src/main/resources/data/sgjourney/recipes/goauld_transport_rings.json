@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ICI",
+    "MOM",
+    "IEI"
+  ],
+  "key": {
+	"I": { "tag": "sgjourney:naquadah_iron_alloy" },
+	"O": { "item": "sgjourney:control_crystal" },
+	"C": { "item": "sgjourney:communication_crystal" },
+	"M": { "item": "sgjourney:materialization_crystal" },
+	"E": { "item": "sgjourney:energy_crystal" }
+  },
+  "result": {
+    "item": "sgjourney:goauld_transport_rings"
+  }
+}

@@ -137,13 +137,11 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
 			return setRecentFeedback(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
 		
+		if(addressBuffer.canBeInterrupted() && symbol == 0) // Interrupt Stargate rotation
+			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+		
 		if(addressBuffer.containsSymbol(symbol))
-		{
-			if(symbol == 0)
-				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
-			else
-				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
-		}
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() == 0)
 			startSound();

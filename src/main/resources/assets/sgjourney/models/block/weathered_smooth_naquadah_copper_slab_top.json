@@ -3,7 +3,7 @@
 	"textures":
 	{
 		"bottom": "sgjourney:block/weathered_smooth_naquadah_copper_block",
-		"side": "sgjourney:block/weathered_smooth_naquadah_copper_slab_side",
+		"side": "sgjourney:block/weathered_smooth_naquadah_copper_block",
 		"top": "sgjourney:block/weathered_smooth_naquadah_copper_block"
 	}
 }

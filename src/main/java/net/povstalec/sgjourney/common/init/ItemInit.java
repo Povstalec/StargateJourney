@@ -7,6 +7,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.FalconArmorItem;
 import net.povstalec.sgjourney.common.items.armor.JackalArmorItem;
@@ -236,28 +237,28 @@ public class ItemInit
 			() -> new Item(new Item.Properties().stacksTo(1)));
 	
 	// Irises
-	public static final RegistryObject<StargateIrisItem.Copper> COPPER_IRIS = ITEMS.register("copper_iris", 
-			() -> new StargateIrisItem.Copper(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<StargateIrisItem.Iron> IRON_IRIS = ITEMS.register("iron_iris", 
-			() -> new StargateIrisItem.Iron(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<StargateIrisItem.Gold> GOLDEN_IRIS = ITEMS.register("golden_iris", 
-			() -> new StargateIrisItem.Gold(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<StargateIrisItem.Diamond> DIAMOND_IRIS = ITEMS.register("diamond_iris", 
-			() -> new StargateIrisItem.Diamond(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<StargateIrisItem.Netherite> NETHERITE_IRIS = ITEMS.register("netherite_iris", 
-			() -> new StargateIrisItem.Netherite(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<StargateIrisItem> COPPER_IRIS = ITEMS.register("copper_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.COPPER_IRIS, () -> CommonIrisConfig.copper_iris_durability.get()));
+	public static final RegistryObject<StargateIrisItem> IRON_IRIS = ITEMS.register("iron_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.IRON_IRIS, () -> CommonIrisConfig.iron_iris_durability.get()));
+	public static final RegistryObject<StargateIrisItem> GOLDEN_IRIS = ITEMS.register("golden_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.GOLD_IRIS, () -> CommonIrisConfig.gold_iris_durability.get()));
+	public static final RegistryObject<StargateIrisItem> DIAMOND_IRIS = ITEMS.register("diamond_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.DIAMOND_IRIS, () -> CommonIrisConfig.diamond_iris_durability.get()));
+	public static final RegistryObject<StargateIrisItem> NETHERITE_IRIS = ITEMS.register("netherite_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1).fireResistant(), StargateIrisItem.NETHERITE_IRIS, () -> CommonIrisConfig.netherite_iris_durability.get()));
 	
-	public static final RegistryObject<StargateIrisItem.NaquadahCopperAlloy> NAQUADAH_COPPER_IRIS = ITEMS.register("naquadah_copper_iris",
-			() -> new StargateIrisItem.NaquadahCopperAlloy(new Item.Properties().stacksTo(1).fireResistant()));
-	public static final RegistryObject<StargateIrisItem.NaquadahIronAlloy> NAQUADAH_IRON_IRIS = ITEMS.register("naquadah_iron_iris",
-			() -> new StargateIrisItem.NaquadahIronAlloy(new Item.Properties().stacksTo(1).fireResistant()));
-	public static final RegistryObject<StargateIrisItem.Trinium> TRINIUM_IRIS = ITEMS.register("trinium_iris", 
-			() -> new StargateIrisItem.Trinium(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem> NAQUADAH_COPPER_IRIS = ITEMS.register("naquadah_copper_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1).fireResistant(), StargateIrisItem.NAQUADAH_COPPER_ALLOY_IRIS, () -> CommonIrisConfig.naquadah_copper_alloy_iris_durability.get()));
+	public static final RegistryObject<StargateIrisItem> NAQUADAH_IRON_IRIS = ITEMS.register("naquadah_iron_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1).fireResistant(), StargateIrisItem.NAQUADAH_IRON_ALLOY_IRIS, () -> CommonIrisConfig.naquadah_iron_alloy_iris_durability.get()));
+	public static final RegistryObject<StargateIrisItem> TRINIUM_IRIS = ITEMS.register("trinium_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.TRINIUM_IRIS, () -> CommonIrisConfig.trinium_iris_durability.get()));
 
-	public static final RegistryObject<StargateIrisItem.Bronze> BRONZE_IRIS = ITEMS.register("bronze_iris", 
-			() -> new StargateIrisItem.Bronze(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<StargateIrisItem.Steel> STEEL_IRIS = ITEMS.register("steel_iris", 
-			() -> new StargateIrisItem.Steel(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<StargateIrisItem> BRONZE_IRIS = ITEMS.register("bronze_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.BRONZE_IRIS, () -> CommonIrisConfig.bronze_iris_durability.get()));
+	public static final RegistryObject<StargateIrisItem> STEEL_IRIS = ITEMS.register("steel_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.STEEL_IRIS, () -> CommonIrisConfig.steel_iris_durability.get()));
 	
 	/*public static final RegistryObject<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
 			() -> new BatteryItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));*/

@@ -267,18 +267,31 @@ public class TabInit
 				items.accept(BlockInit.OXIDIZED_NAQUADAH_COPPER_STAIRS.get());
 				items.accept(BlockInit.OXIDIZED_NAQUADAH_COPPER_SLAB.get());
 				
-				items.accept(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get());
-				items.accept(BlockInit.SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.POLISHED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.NAQUADAH_COPPER_LAMP.get());
-				items.accept(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
-				items.accept(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.EXPOSED_POLISHED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.EXPOSED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.EXPOSED_NAQUADAH_COPPER_LAMP.get());
-				items.accept(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
-				items.accept(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WEATHERED_POLISHED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WEATHERED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.WEATHERED_NAQUADAH_COPPER_LAMP.get());
-				items.accept(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
-				items.accept(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.OXIDIZED_POLISHED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.OXIDIZED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.OXIDIZED_NAQUADAH_COPPER_LAMP.get());
+				
+				items.accept(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.SMOOTH_NAQUADAH_COPPER_STAIRS.get());
+				items.accept(BlockInit.SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_STAIRS.get());
+				items.accept(BlockInit.EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_STAIRS.get());
+				items.accept(BlockInit.WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_STAIRS.get());
+				items.accept(BlockInit.OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
 				
 				items.accept(BlockInit.CUT_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.CUT_NAQUADAH_COPPER_STAIRS.get());
@@ -306,18 +319,31 @@ public class TabInit
 				items.accept(BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_STAIRS.get());
 				items.accept(BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_SLAB.get());
 				
-				items.accept(BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
-				items.accept(BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WAXED_POLISHED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.WAXED_NAQUADAH_COPPER_LAMP.get());
-				items.accept(BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
-				items.accept(BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WAXED_EXPOSED_POLISHED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_EXPOSED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_LAMP.get());
-				items.accept(BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
-				items.accept(BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WAXED_WEATHERED_POLISHED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_WEATHERED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_LAMP.get());
-				items.accept(BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
-				items.accept(BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WAXED_OXIDIZED_POLISHED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_OXIDIZED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_LAMP.get());
+				
+				items.accept(BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_STAIRS.get());
+				items.accept(BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_STAIRS.get());
+				items.accept(BlockInit.WAXED_EXPOSED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_STAIRS.get());
+				items.accept(BlockInit.WAXED_WEATHERED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_STAIRS.get());
+				items.accept(BlockInit.WAXED_OXIDIZED_SMOOTH_NAQUADAH_COPPER_SLAB.get());
 				
 				items.accept(BlockInit.WAXED_CUT_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.WAXED_CUT_NAQUADAH_COPPER_STAIRS.get());
@@ -336,7 +362,10 @@ public class TabInit
 				items.accept(BlockInit.NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.NAQUADAH_IRON_STAIRS.get());
 				items.accept(BlockInit.NAQUADAH_IRON_SLAB.get());
+				items.accept(BlockInit.POLISHED_NAQUADAH_IRON_BLOCK.get());
+				items.accept(BlockInit.POLISHED_NAQUADAH_IRON_SLAB.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_BLOCK.get());
+				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_STAIRS.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_SLAB.get());
 				items.accept(BlockInit.CUT_NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.CUT_NAQUADAH_IRON_STAIRS.get());

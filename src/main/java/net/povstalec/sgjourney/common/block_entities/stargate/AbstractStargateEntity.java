@@ -528,21 +528,22 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(address.containsSymbol(symbol))
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
 		
+		growAddress(symbol);
+		
 		if(!address.canGrow())
 			return resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
 		
-		growAddress(symbol);
 		chevronSound((short) getAddress().getLength(), incoming, false, encodeSound);
 		
 		if(!incoming)
 		{
-			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming, symbol);
-			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming, symbol);
+			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), false, symbol);
+			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), false, symbol);
 		}
 		else
 		{
-			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming);
-			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming);
+			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), true);
+			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), true);
 		}
 		updateAdvancedCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), getChevron(this, address.getLength()), incoming, symbol);
 		this.setChanged();

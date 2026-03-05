@@ -103,6 +103,12 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 			BlockEntity oldEntity = level.getBlockEntity(pos);
 			if(oldEntity instanceof AbstractStargateEntity stargate)
 			{
+				if(stargate.isConnected())
+				{
+					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.connected_during_upgrade"), true);
+					return true;
+				}
+				
 				if(!level.isClientSide())
 					tag = stargate.serializeStargateInfo(new CompoundTag());
 			}
