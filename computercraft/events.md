@@ -92,7 +92,8 @@ ___
 </h3>
 
 Fired whenever an **incoming** wormhole forms.
-The event is fired right **after** the kawoosh end.
+The event is fired right **before** the kawoosh starts.
+To check when the kawoosh ends and the wormhole is fully formed, see [`isWormholeOpen()`]({{ '/computercraft/stargate-interface/#isWormholeOpen' | absolute_url }}) method.
 
 **Return values**
 1. `string` The event name (`stargate_incoming_wormhole`)
@@ -106,7 +107,8 @@ ___
 </h3>
 
 Fired whenever an outgoing Wormhole forms.
-The event is fired right **before** the kawoosh start.
+The event is fired right **before** the kawoosh starts.
+To check when the kawoosh ends and the wormhole is fully formed, see [`isWormholeOpen()`]({{ '/computercraft/stargate-interface/#isWormholeOpen' | absolute_url }}) method.
 
 **Return values**
 1. `string` The event name (`stargate_outgoing_wormhole`)
