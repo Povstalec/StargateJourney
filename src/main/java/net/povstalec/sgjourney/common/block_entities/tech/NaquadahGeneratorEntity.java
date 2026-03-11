@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +35,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	
 	public NaquadahGeneratorEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state, true);
+		super(type, pos, state);
 	}
 	
 	@Override
@@ -223,11 +222,6 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		return false;
 	}
 	
-	protected boolean receivesEnergy()
-	{
-		return false;
-	}
-	
 	//============================================================================================
 	//******************************************Ticking*******************************************
 	//============================================================================================
@@ -247,7 +241,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 			//TODO Add Enriched Naquadah
 		}
 		
-		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && getEnergyStored() < capacity() && canReceive(getEnergyPerTick()))
+		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && energyStorage.getTrueEnergyStored() < getCapacity() && energyStorage.canReceive(getEnergyPerTick()))
 			this.progressReaction();
 		
 		else if(reactionProgress >= getReactionTime())
@@ -300,19 +294,19 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		public long capacity()
+		public long getCapacity()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_reactor_capacity.get();
 		}
 		
 		@Override
-		public long maxReceive()
+		public long getMaxReceive()
 		{
-			return CommonNaquadahGeneratorConfig.naquadah_reactor_max_transfer.get();
+			return 0;
 		}
 		
 		@Override
-		public long maxExtract()
+		public long getMaxExtract()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_reactor_max_transfer.get();
 		}
@@ -340,19 +334,19 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		public long capacity()
+		public long getCapacity()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get();
 		}
 		
 		@Override
-		public long maxReceive()
+		public long getMaxReceive()
 		{
-			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_max_transfer.get();
+			return 0;
 		}
 		
 		@Override
-		public long maxExtract()
+		public long getMaxExtract()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_max_transfer.get();
 		}
@@ -380,19 +374,19 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		public long capacity()
+		public long getCapacity()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
 		}
 		
 		@Override
-		public long maxReceive()
+		public long getMaxReceive()
 		{
-			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_max_transfer.get();
+			return 0;
 		}
 		
 		@Override
-		public long maxExtract()
+		public long getMaxExtract()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_max_transfer.get();
 		}

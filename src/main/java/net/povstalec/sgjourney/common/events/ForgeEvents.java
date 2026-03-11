@@ -71,6 +71,7 @@ import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
@@ -154,7 +155,7 @@ public class ForgeEvents
 			}
 
 			Set<AbstractStargateEntity> set = new HashSet<AbstractStargateEntity>(list);
-			set.stream().forEach(stargate -> stargate.receiveEnergy(CommonCableConfig.lightning_strike_energy.get(), false));
+			set.stream().forEach(stargate -> stargate.energyStorage.receiveLongEnergy(CommonCableConfig.lightning_strike_energy.get(), false));
 		}
 	}
 	
@@ -430,6 +431,7 @@ public class ForgeEvents
 		event.register(JaffaPouch.class);
 		event.register(GoauldHost.class);
 		event.register(AncientGene.class);
+		event.register(Stargate.class);
 	}
 	
 	@SubscribeEvent

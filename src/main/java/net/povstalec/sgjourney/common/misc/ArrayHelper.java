@@ -57,4 +57,12 @@ public class ArrayHelper
 		
 		return true;
 	}
+	
+	public static int zeroNumAt(int[] array, int index)
+	{
+		if(index < 0 || index >= array.length)
+			return 0;
+		
+		return array[index];
+	}
 }

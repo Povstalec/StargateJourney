@@ -1,34 +1,19 @@
 package net.povstalec.sgjourney.common.menu;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
 
-public abstract class AbstractDHDMenu extends AbstractContainerMenu
+public abstract class AbstractDHDMenu<T extends AbstractDHDEntity> extends SGJourneyMenu<T>
 {
-    protected final AbstractDHDEntity blockEntity;
-    protected final Level level;
-    public String symbolsType = "sgjourney:milky_way";
-    
-    public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, FriendlyByteBuf extraData)
+    public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inventory, T blockEntity)
     {
-        this(menu, containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
-    }
-
-    public AbstractDHDMenu(MenuType<?> menu, int containerId, Inventory inv, BlockEntity entity)
-    {
-        super(menu, containerId);
-        checkContainerSize(inv, 9);
-        blockEntity = ((AbstractDHDEntity) entity);
-        this.level = inv.player.level;
+        super(menu, containerId, inventory, blockEntity);
+        checkContainerSize(inventory, 9);
     }
     
     public void engageChevron(int symbol)
@@ -38,24 +23,17 @@ public abstract class AbstractDHDMenu extends AbstractContainerMenu
     
     public boolean isSymbolEngaged(int symbol)
     {
-    	if(blockEntity != null)
-    		return blockEntity.isSymbolEngaged(symbol);
-    	
-    	return false;
+    	return blockEntity.isSymbolEngaged(symbol);
     }
     
     public boolean isCenterButtonEngaged()
     {
-    	if(blockEntity != null)
-    		return blockEntity.isCenterButtonEngaged();
-    	
-    	return false;
+    	return blockEntity.isCenterButtonEngaged();
     }
     
     @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) 
+    public ItemStack quickMoveStack(Player player, int index)
     {
-    	return null;
+    	return ItemStack.EMPTY;
     }
-	
 }

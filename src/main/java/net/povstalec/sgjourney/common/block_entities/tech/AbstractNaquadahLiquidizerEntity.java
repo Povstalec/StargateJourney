@@ -24,7 +24,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
+public abstract class AbstractNaquadahLiquidizerEntity extends EnergySlotBlockEntity
 {
 	private static final String INVENTORY = "Inventory"; //TODO For legacy reasons
 	
@@ -36,11 +36,11 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	public static final int TANK_CAPACITY = 4000;
 	public static final int MAX_PROGRESS = 100;
 	
-	protected final ItemStackHandler itemInputHandler = createItemInputHandler();
+	public final ItemStackHandler itemInputHandler = createItemInputHandler();
 	protected final LazyOptional<IItemHandler> lazyInputHandler = LazyOptional.of(() -> itemInputHandler);
-	protected final ItemStackHandler fluidItemInputHandler = createFluidItemHandler();
+	public final ItemStackHandler fluidItemInputHandler = createFluidItemHandler();
 	protected final LazyOptional<IItemHandler> lazyFluidInputHandler = LazyOptional.of(() -> fluidItemInputHandler);
-	protected final ItemStackHandler fluidItemOutputHandler = createFluidItemHandler();
+	public final ItemStackHandler fluidItemOutputHandler = createFluidItemHandler();
 	protected final LazyOptional<IItemHandler> lazyFluidOutputHandler = LazyOptional.of(() -> fluidItemOutputHandler);
 	
 	protected LazyOptional<IFluidHandler> lazyFluidHandler1 = LazyOptional.empty();
@@ -92,7 +92,19 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		{
 			itemInputHandler.deserializeNBT(nbt.getCompound(INPUT_INVENTORY));
 			fluidItemInputHandler.deserializeNBT(nbt.getCompound(FLUID_INPUT_INVENTORY));
+			if(fluidItemInputHandler.getSlots() == 1)
+			{
+				ItemStack stack = fluidItemInputHandler.getStackInSlot(0);
+				fluidItemInputHandler.setSize(2);
+				fluidItemInputHandler.setStackInSlot(0, stack);
+			}
 			fluidItemOutputHandler.deserializeNBT(nbt.getCompound(FLUID_OUTPUT_INVENTORY));
+			if(fluidItemOutputHandler.getSlots() == 1)
+			{
+				ItemStack stack = fluidItemOutputHandler.getStackInSlot(0);
+				fluidItemOutputHandler.setSize(2);
+				fluidItemOutputHandler.setStackInSlot(0, stack);
+			}
 		}
 		
 		fluidTank1.readFromNBT(nbt.getCompound("FluidTank1"));
@@ -234,7 +246,7 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	private ItemStackHandler createFluidItemHandler()
 	{
-		return new ItemStackHandler(1)
+		return new ItemStackHandler(2)
 			{
 				@Override
 				protected void onContentsChanged(int slot)
@@ -322,7 +334,11 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 		});
 	}
 	
-	protected abstract boolean hasMaterial();
+	public abstract long liquidizationEnergyPerTick(); //TODO Use this
+	
+	protected abstract boolean hasIngredients();
+	
+	protected abstract void liquidize();
 	
 	protected abstract int producedAmount();
 	
@@ -357,13 +373,15 @@ public abstract class AbstractNaquadahLiquidizerEntity extends BlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractNaquadahLiquidizerEntity naquadahLiquidizer)
 	{
+		EnergySlotBlockEntity.tick(level, pos, state, naquadahLiquidizer);
+		
 		if(level.isClientSide())
 			return;
 		
 	    if(naquadahLiquidizer.hasFluidItem1())
 	    	naquadahLiquidizer.drainFluidFromItem();
 	    
-	    if(naquadahLiquidizer.hasMaterial() && naquadahLiquidizer.fluidTank1.getFluidAmount() > 0 && naquadahLiquidizer.fluidTank2.getFluidAmount() + naquadahLiquidizer.producedAmount() <= naquadahLiquidizer.fluidTank2.getCapacity())
+	    if(naquadahLiquidizer.hasIngredients() && naquadahLiquidizer.fluidTank1.getFluidAmount() > 0 && naquadahLiquidizer.fluidTank2.getFluidAmount() + naquadahLiquidizer.producedAmount() <= naquadahLiquidizer.fluidTank2.getCapacity())
 	    {
 	    	naquadahLiquidizer.progress++;
 	    	naquadahLiquidizer.fluidTank1.drain(1, IFluidHandler.FluidAction.EXECUTE);

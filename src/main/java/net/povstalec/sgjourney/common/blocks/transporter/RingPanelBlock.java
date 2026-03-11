@@ -62,9 +62,9 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof RingPanelEntity panel)
+        	if(blockEntity instanceof RingPanelEntity ringPanel)
         	{
-				panel.tryUpdateButtons();
+				ringPanel.tryUpdateButtons();
 				
         		MenuProvider containerProvider = new MenuProvider() 
         		{
@@ -77,7 +77,7 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
         			@Override
         			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
         			{
-        				return new RingPanelMenu(windowId, playerInventory, blockEntity);
+        				return new RingPanelMenu(windowId, playerInventory, ringPanel);
         			}
         		};
         		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

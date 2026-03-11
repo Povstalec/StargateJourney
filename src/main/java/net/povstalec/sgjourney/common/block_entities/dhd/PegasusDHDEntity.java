@@ -36,13 +36,13 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected long capacity()
+	protected long getCapacity()
 	{
 		return CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get();
 	}
 	
 	@Override
-	protected long maxReceive()
+	protected long getMaxReceive()
 	{
 		return CommonDHDConfig.pegasus_dhd_max_energy_receive.get();
 	}

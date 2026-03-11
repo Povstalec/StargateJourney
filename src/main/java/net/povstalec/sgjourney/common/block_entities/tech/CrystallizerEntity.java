@@ -12,10 +12,15 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 
 public class CrystallizerEntity extends AbstractCrystallizerEntity
 {
+	public static final long ENERGY_CAPACITY = 1000000; // TODO Make this configurable
+	public static final long MAX_ENERGY_RECEIVE = 100000; // TODO Make this configurable
+	public static final long CRYSTALLIZATION_ENERGY_PER_TICK = 1000; // TODO Make this configurable
+	
 	public CrystallizerEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.CRYSTALLIZER.get(), pos, state);
@@ -49,7 +54,7 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 				recipe.get().getResultItem().getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return hasSpaceInOutputSlot(inventory, recipe.get().getResultItem());
+		return InventoryUtil.canInsertStackInto(inventory.getItem(3), recipe.get().getResultItem());
 	}
 	
 	protected void crystallize()
@@ -98,5 +103,33 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity
 			default:
 				crystalBaseHandler.extractItem(0, recipe.getAmountInSlot(0), false);
 		}
+	}
+	
+	//============================================================================================
+	//*******************************************Energy*******************************************
+	//============================================================================================
+	
+	@Override
+	protected long getCapacity()
+	{
+		return ENERGY_CAPACITY;
+	}
+	
+	@Override
+	protected long getMaxReceive()
+	{
+		return MAX_ENERGY_RECEIVE;
+	}
+	
+	@Override
+	protected long getMaxExtract()
+	{
+		return 0;
+	}
+	
+	@Override
+	public long crystallizationEnergyPerTick()
+	{
+		return CRYSTALLIZATION_ENERGY_PER_TICK;
 	}
 }

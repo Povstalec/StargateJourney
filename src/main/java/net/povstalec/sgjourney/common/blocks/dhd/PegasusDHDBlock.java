@@ -107,7 +107,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
             			@Override
             			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
             			{
-            				return new PegasusDHDMenu(windowId, playerInventory, blockEntity);
+            				return new PegasusDHDMenu(windowId, playerInventory, dhd);
             			}
             		};
             		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

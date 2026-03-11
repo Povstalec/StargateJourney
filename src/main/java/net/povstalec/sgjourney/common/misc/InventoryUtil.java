@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -39,6 +40,17 @@ public class InventoryUtil
 
         return -1;
     }
+	
+	public static boolean canInsertStackInto(ItemStack slotStack, ItemStack toInsert)
+	{
+		if(slotStack.isEmpty())
+			return true;
+		
+		if(slotStack.getMaxStackSize() <= slotStack.getCount())
+			return false;
+		
+		return slotStack.getItem() == toInsert.getItem();
+	}
     
     public static String itemName(Item item)
     {

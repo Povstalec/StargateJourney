@@ -171,8 +171,8 @@ public class FluidTankRenderer
      float uMax = textureSprite.getU1();
      float vMin = textureSprite.getV0();
      float vMax = textureSprite.getV1();
-     uMax = uMax - (maskRight / 16F * (uMax - uMin));
-     vMax = vMax - (maskTop / 16F * (vMax - vMin));
+	 uMin += ((maskRight / 16F) * (uMax - uMin));	// Improved math to make the process of a tank filling up feel more seamless
+	 vMin += ((maskTop / 16F) * (vMax - vMin));		//
 
      RenderSystem.setShader(GameRenderer::getPositionTexShader);
 

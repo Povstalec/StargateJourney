@@ -39,13 +39,16 @@ public class MenuInit
 	public static final RegistryObject<MenuType<ZPMHubMenu>> ZPM_HUB =
             registerMenuType(ZPMHubMenu::new, "zpm_hub");
 	
-	public static final RegistryObject<MenuType<CrystallizerMenu>> CRYSTALLIZER =
-            registerMenuType(CrystallizerMenu::new, "crystallizer");
+	public static final RegistryObject<MenuType<CrystallizerMenu.Crystallizer>> CRYSTALLIZER =
+            registerMenuType(CrystallizerMenu.Crystallizer::new, "crystallizer");
 	
-	public static final RegistryObject<MenuType<LiquidizerMenu>> NAQUADAH_LIQUIDIZER =
+	public static final RegistryObject<MenuType<CrystallizerMenu.AdvancedCrystallizer>> ADVANCED_CRYSTALLIZER =
+			registerMenuType(CrystallizerMenu.AdvancedCrystallizer::new, "advanced_crystallizer");
+	
+	public static final RegistryObject<MenuType<LiquidizerMenu.LiquidNaquadah>> NAQUADAH_LIQUIDIZER =
             registerMenuType(LiquidizerMenu.LiquidNaquadah::new, "naquadah_liquidizer");
 	
-	public static final RegistryObject<MenuType<LiquidizerMenu>> HEAVY_NAQUADAH_LIQUIDIZER =
+	public static final RegistryObject<MenuType<LiquidizerMenu.HeavyLiquidNaquadah>> HEAVY_NAQUADAH_LIQUIDIZER =
             registerMenuType(LiquidizerMenu.HeavyLiquidNaquadah::new, "heavy_naquadah_liquidizer");
 	
 	public static final RegistryObject<MenuType<TransceiverMenu>> TRANSCEIVER =

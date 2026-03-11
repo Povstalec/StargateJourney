@@ -3,6 +3,6 @@
 	"textures":
 	{
 		"end": "sgjourney:block/polished_naquadah_iron_block",
-		"side": "sgjourney:block/polishedh_naquadah_iron_slab_side"
+		"side": "sgjourney:block/polished_naquadah_iron_slab_side"
 	}
 }

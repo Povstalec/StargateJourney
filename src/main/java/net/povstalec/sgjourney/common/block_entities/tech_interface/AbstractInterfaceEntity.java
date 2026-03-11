@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.block_entities.tech_interface;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
@@ -41,8 +40,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	private int desiredSymbol = 0;
 	private int currentSymbol = 0;
-	private boolean rotate = false;
-	private boolean rotateClockwise = true;
+	private boolean rotate = false; //TODO
+	private boolean rotateClockwise = true; //TODO Change these two to an enum with values -1, 0, +1
 	
 	private StargateInfo.IrisMotion irisMotion = StargateInfo.IrisMotion.IDLE;
 	
@@ -238,7 +237,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		if(getEnergyBlockEntity() == null)
 			return -1;
 		
-		return getEnergyBlockEntity().getEnergyStored();
+		return getEnergyBlockEntity().energyStorage.getTrueEnergyStored();
 	}
 	
 	@Override
@@ -250,34 +249,20 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		if(side == getDirection())
-			return false;
-		return true;
-	}
-
-	@Override
-	protected boolean outputsEnergy()
-	{
-		return true;
-	}
-	
-	@Override
-	protected boolean receivesEnergy()
-	{
-		return true;
+		return side != getDirection();
 	}
 	
 	@Override
 	protected void outputEnergy(Direction outputDirection)
 	{
-		if(getEnergyBlockEntity().getEnergyStored() >= getEnergyTarget())
+		if(getEnergyBlockEntity().energyStorage.getTrueEnergyStored() >= getEnergyTarget())
 			return;
 		
-		long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), getEnergyBlockEntity().getEnergyStored(), this.maxExtract());
+		long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), getEnergyBlockEntity().energyStorage.getTrueEnergyStored(), this.getMaxDeplete());
 		
-		long simulatedOutputAmount = energyStorage.extractLongEnergy(needed, true);
+		long simulatedOutputAmount = this.energyStorage.depleteEnergy(needed, true);
 		long simulatedReceiveAmount = getEnergyBlockEntity().energyStorage.receiveLongEnergy(simulatedOutputAmount, true);
-		energyStorage.extractLongEnergy(simulatedReceiveAmount, false);
+		this.energyStorage.extractLongEnergy(simulatedReceiveAmount, false);
 		getEnergyBlockEntity().energyStorage.receiveLongEnergy(simulatedReceiveAmount, false);
 	}
 	

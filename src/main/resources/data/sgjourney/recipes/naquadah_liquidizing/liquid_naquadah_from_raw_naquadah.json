@@ -1,0 +1,6 @@
+{
+	"type": "sgjourney:naquadah_liquidizing",
+	"ingredient": { "item": "sgjourney:raw_naquadah" },
+	"lava_input_amount": 100,
+	"liquid_naquadah_output_amount": 100
+}

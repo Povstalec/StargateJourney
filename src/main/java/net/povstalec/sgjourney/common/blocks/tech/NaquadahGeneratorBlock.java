@@ -109,7 +109,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
         	{
         		BlockEntity blockEntity = level.getBlockEntity(pos);
     			
-            	if(blockEntity instanceof NaquadahGeneratorEntity) 
+            	if(blockEntity instanceof NaquadahGeneratorEntity naquadahGenerator)
             	{
             		MenuProvider containerProvider = new MenuProvider() 
             		{
@@ -122,7 +122,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
             			@Override
             			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
             			{
-            				return new NaquadahGeneratorMenu(windowId, playerInventory, blockEntity);
+            				return new NaquadahGeneratorMenu(windowId, playerInventory, naquadahGenerator);
             			}
             		};
             		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

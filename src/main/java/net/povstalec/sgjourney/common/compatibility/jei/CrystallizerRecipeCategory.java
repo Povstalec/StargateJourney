@@ -67,20 +67,20 @@ public class CrystallizerRecipeCategory implements IRecipeCategory<CrystallizerR
 		stack1.setCount(recipe.getAmountInSlot(0));
 		stack2.setCount(recipe.getAmountInSlot(1));
 		stack3.setCount(recipe.getAmountInSlot(2));
+		
+		// Liquid Naquadah Tank
+		builder.addSlot(RecipeIngredientRole.INPUT, 12, 20)
+				.addFluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY)
+				.setFluidRenderer(AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY, false, 16, 54);
 
-		// liquid naquadah tank
-		builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 12, 20)
-				.addFluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), AbstractCrystallizerEntity.MAX_PROGRESS)
-				.setFluidRenderer(AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY, true, 16, 54);
-
-		// upper slot
+		// Upper Slot
 		builder.addSlot(RecipeIngredientRole.INPUT, 80, 20).addItemStack(stack1);
-		// lower left slot
+		// Lower Left Slot
 		builder.addSlot(RecipeIngredientRole.INPUT, 67, 50).addItemStack(stack2);
-		// lower right slot
+		// Lower Right Slot
 		builder.addSlot(RecipeIngredientRole.INPUT, 93, 50).addItemStack(stack3);
 
-		// result slot
+		// Result Slot
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 130, 36).addItemStack(recipe.getResultItem());
 	}
 }

@@ -26,13 +26,13 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected long capacity()
+	protected long getCapacity()
 	{
 		return CommonDHDConfig.classic_dhd_energy_buffer_capacity.get();
 	}
 	
 	@Override
-	protected long maxReceive()
+	protected long getMaxReceive()
 	{
 		return CommonDHDConfig.classic_dhd_max_energy_receive.get();
 	}

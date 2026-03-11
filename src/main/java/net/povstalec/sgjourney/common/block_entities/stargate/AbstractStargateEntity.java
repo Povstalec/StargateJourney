@@ -9,6 +9,9 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
@@ -307,7 +310,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 
-		tag.putLong(ENERGY, this.getEnergyStored());
+		tag.putLong(ENERGY, this.energyStorage.getTrueEnergyStored());
 		
 		if(displayID)
 			tag.putBoolean(DISPLAY_ID, true);
@@ -352,7 +355,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	{
 		CompoundTag tag = new CompoundTag();
 		
-		tag.putLong(ENERGY, this.getEnergyStored());
+		tag.putLong(ENERGY, this.energyStorage.getTrueEnergyStored());
 		
 		tag.putIntArray(ADDRESS, address.getArray());
 		tag.putIntArray(ENGAGED_CHEVRONS, engagedChevrons);
@@ -423,6 +426,35 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
     {
         return new AABB(getCenterPos().getX() - 3, getCenterPos().getY() - 3, getCenterPos().getZ() - 3, getCenterPos().getX() + 4, getCenterPos().getY() + 4, getCenterPos().getZ() + 4);
     }
+	
+	@Nullable
+	public Stargate getStargate()
+	{
+		return BlockEntityList.get(level).getStargate(this.id9ChevronAddress);
+	}
+	
+	//============================================================================================
+	//****************************************Capabilities****************************************
+	//============================================================================================
+	
+	protected LazyOptional<Stargate> getStargateCapability()
+	{
+		Stargate stargate = getStargate();
+		
+		if(stargate == null)
+			return LazyOptional.empty();
+		
+		return LazyOptional.of(() -> stargate);
+	}
+	
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
+	{
+		if(capability == Stargate.STARGATE_CAPABILITY)
+			return getStargateCapability().cast();
+		
+		return super.getCapability(capability, side);
+	}
 	
 	//============================================================================================
 	//******************************************Dialing*******************************************
@@ -1353,7 +1385,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(isPrimary())
 			status.add(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
 		status.add(ComponentHelper.tickTimer("info.sgjourney.open_time", getOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA));
-		status.add(ComponentHelper.energy("info.sgjourney.energy", getEnergyStored()));
+		status.add(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getTrueEnergyStored()));
 		
 		return status;
 	}
@@ -1371,19 +1403,25 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	}
 
 	@Override
-	public long capacity()
+	public long getCapacity()
 	{
 		return CommonStargateConfig.stargate_energy_capacity.get();
 	}
 
 	@Override
-	public long maxReceive()
+	public long getMaxReceive()
 	{
 		return CommonStargateConfig.stargate_energy_max_receive.get();
 	}
 
 	@Override
-	public long maxExtract()
+	public long getMaxExtract()
+	{
+		return 0;
+	}
+	
+	@Override
+	public long getMaxDeplete()
 	{
 		return CommonStargateConfig.intergalactic_connection_energy_cost.get();
 	}

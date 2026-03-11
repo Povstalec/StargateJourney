@@ -261,21 +261,27 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	
 	
 	@Override
-	public long capacity()
+	public long getCapacity()
 	{
-		return 0;
+		return 0; //TODO Change
 	}
 
 	@Override
-	public long maxReceive()
+	public long getMaxReceive()
 	{
-		return 0;
+		return 0; //TODO Change
 	}
 
 	@Override
-	public long maxExtract()
+	public long getMaxExtract()
 	{
 		return 0;
+	}
+	
+	@Override
+	public long getMaxDeplete()
+	{
+		return 0; //TODO Change
 	}
 	
 	@Override

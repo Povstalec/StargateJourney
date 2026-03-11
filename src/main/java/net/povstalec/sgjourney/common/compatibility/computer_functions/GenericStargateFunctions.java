@@ -39,7 +39,7 @@ public class GenericStargateFunctions
 	
 	public static long getStargateEnergy(AbstractStargateEntity stargate)
 	{
-		return stargate.getEnergyStored();
+		return stargate.energyStorage.getTrueEnergyStored();
 	}
 	
 	public static int getChevronsEngaged(AbstractStargateEntity stargate)

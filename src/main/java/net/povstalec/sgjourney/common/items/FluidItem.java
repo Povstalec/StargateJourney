@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.items;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,7 +19,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.capabilities.ItemFluidHolderProvider;
-import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,31 +100,12 @@ public abstract class FluidItem extends Item
 		};
 	}
 	
-	protected ChatFormatting fluidComponentColor(FluidStack fluidStack)
-	{
-		if(fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get())
-			return ChatFormatting.GREEN;
-		else if(fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get())
-			return ChatFormatting.DARK_GREEN;
-		
-		return ChatFormatting.WHITE;
-	}
-	
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		FluidStack fluidStack = getFluidStack(stack);
 		
-		MutableComponent fluidComponent = Component.translatable("tooltip.sgjourney.fluid").append(Component.literal(": "));
-		if(fluidStack.isEmpty())
-			fluidComponent.append("0 mB");
-		else
-		{
-			fluidComponent.append(Component.translatable(fluidStack.getTranslationKey()));
-			fluidComponent.append(Component.literal(" " + fluidStack.getAmount() + "mB"));
-		}
-		fluidComponent.withStyle(fluidComponentColor(fluidStack));
-		tooltipComponents.add(fluidComponent);
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.fluid").append(Component.literal(": ")).append(ComponentHelper.fluidAmountComponent(fluidStack.getTranslationKey(), fluidStack.getAmount(), ComponentHelper.fluidComponentColor(fluidStack.getFluid()))));
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}

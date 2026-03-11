@@ -237,19 +237,25 @@ public class RingPanelEntity extends TransporterControllerEntity
 	//============================================================================================
 	
 	@Override
-	protected long capacity()
+	protected long getCapacity()
 	{
 		return CommonTransporterConfig.ring_panel_energy_capacity.get();
 	}
 	
 	@Override
-	protected long maxReceive()
+	protected long getMaxReceive()
 	{
 		return CommonTransporterConfig.ring_panel_max_energy_receive.get();
 	}
 	
 	@Override
-	protected long maxExtract()
+	protected long getMaxExtract()
+	{
+		return 0;
+	}
+	
+	@Override
+	protected long getMaxDeplete()
 	{
 		return CommonTransporterConfig.ring_panel_max_energy_extract.get();
 	}

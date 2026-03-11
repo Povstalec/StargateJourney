@@ -212,7 +212,8 @@ public class StargateJourney
 
         	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
         	MenuScreens.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
-        	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
+        	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen.Crystallizer::new);
+        	MenuScreens.register(MenuInit.ADVANCED_CRYSTALLIZER.get(), CrystallizerScreen.AdvancedCrystallizer::new);
 			
 			MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
 			

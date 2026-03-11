@@ -13,6 +13,10 @@ import net.povstalec.sgjourney.common.init.TagInit;
 
 public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity
 {
+	public static final long ENERGY_CAPACITY = 1000000; // TODO Make this configurable
+	public static final long MAX_ENERGY_RECEIVE = 100000; // TODO Make this configurable
+	public static final long LIQUIDIZATION_ENERGY_PER_TICK = 1000; // TODO Make this configurable
+	
 	public NaquadahLiquidizerEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), pos, state);
@@ -31,7 +35,7 @@ public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity
 	}
 
 	@Override
-	protected boolean hasMaterial()
+	protected boolean hasIngredients()
 	{
 		return itemInputHandler.getStackInSlot(0).is(TagInit.Items.RAW_NAQUADAH);
 	}
@@ -50,5 +54,33 @@ public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity
 		this.fluidTank2.fill(new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), producedAmount()), IFluidHandler.FluidAction.EXECUTE);
 		
 		this.progress = 0;
+	}
+	
+	//============================================================================================
+	//*******************************************Energy*******************************************
+	//============================================================================================
+	
+	@Override
+	protected long getCapacity()
+	{
+		return ENERGY_CAPACITY;
+	}
+	
+	@Override
+	protected long getMaxReceive()
+	{
+		return MAX_ENERGY_RECEIVE;
+	}
+	
+	@Override
+	protected long getMaxExtract()
+	{
+		return 0;
+	}
+	
+	@Override
+	public long liquidizationEnergyPerTick()
+	{
+		return LIQUIDIZATION_ENERGY_PER_TICK;
 	}
 }

@@ -121,13 +121,11 @@ public class AdvancedCrystallizerRecipe implements Recipe<SimpleContainer>
 	{
 		private Type(){}
 		public static final Type INSTANCE = new Type();
-		public static final String ID = "advanced_crystallizing";
 	}
 	
 	public static class Serializer implements RecipeSerializer<AdvancedCrystallizerRecipe>
 	{
 		public static final Serializer INSTANCE = new Serializer();
-		public static final ResourceLocation ID = new ResourceLocation(StargateJourney.MODID, "advanced_crystallizing");
 		
 		public static Pair<Ingredient, Integer> getIngredient(Map<String, JsonElement> pair)
 		{

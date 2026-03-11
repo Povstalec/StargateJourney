@@ -121,13 +121,11 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 	{
 		private Type(){}
 		public static final Type INSTANCE = new Type();
-		public static final String ID = "crystallizing";
 	}
 	
 	public static class Serializer implements RecipeSerializer<CrystallizerRecipe>
 	{
 		public static final Serializer INSTANCE = new Serializer();
-		public static final ResourceLocation ID = new ResourceLocation(StargateJourney.MODID, "crystallizing");
 		
 		public static Pair<Ingredient, Integer> getIngredient(Map<String, JsonElement> pair)
 		{
@@ -205,6 +203,5 @@ public class CrystallizerRecipe implements Recipe<SimpleContainer>
 			friendlyByteBuf.writeBoolean(recipe.depletePrimary);
 			friendlyByteBuf.writeBoolean(recipe.depleteSecondary);
 		}
-		
 	}
 }

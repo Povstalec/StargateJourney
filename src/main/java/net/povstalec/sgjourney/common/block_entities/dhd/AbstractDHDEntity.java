@@ -94,7 +94,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected long energyTarget;
 	protected int maxEnergyTransfer;
 	
-	protected final ItemStackHandler energyItemHandler;
+	public final ItemStackHandler energyItemHandler;
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler;
 	
 	protected SymbolInfo symbolInfo;
@@ -299,7 +299,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		if(stargate == null)
 			return -1;
 		
-		return stargate.getEnergyStored();
+		return stargate.energyStorage.getTrueEnergyStored();
 	}
 	
 	public int getStargateOpenTime()
@@ -427,7 +427,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public long minStoredEnergy()
 	{
-		return getEnergyCapacity() * 2 / 3;
+		return energyStorage.getTrueMaxEnergyStored() * 2 / 3;
 	}
 	
 	public abstract long maxEnergyDeplete();
@@ -439,7 +439,13 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	}
 	
 	@Override
-	public long maxExtract()
+	public long getMaxExtract()
+	{
+		return 0;
+	}
+	
+	@Override
+	public long getMaxDeplete()
 	{
 		return CommonDHDConfig.milky_way_dhd_max_energy_extract.get();
 	}
@@ -448,12 +454,12 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		ItemStack inputStack = energyItemHandler.getStackInSlot(1);
 		// Generates energy if needed
-		if(energyStack.getItem() instanceof IEnergyCore energyCore && energyCore.maxGeneratedEnergy(energyStack, energyItemHandler.getStackInSlot(1)) <= (getEnergyCapacity() - getEnergyStored()))
+		if(energyStack.getItem() instanceof IEnergyCore energyCore && energyCore.maxGeneratedEnergy(energyStack, energyItemHandler.getStackInSlot(1)) <= (energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored()))
 		{
 			long generatedEnergy = energyCore.generateEnergy(energyStack, inputStack);
 			
 			if(generatedEnergy > 0)
-				receiveEnergy(generatedEnergy, false);
+				energyStorage.receiveLongEnergy(generatedEnergy, false);
 		}
 		else if(energyStack.getCapability(ForgeCapabilities.ENERGY).isPresent())
 		{
@@ -461,15 +467,15 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			{
 				if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
-					long energyNeeded = getEnergyCapacity() - getEnergyStored();
+					long energyNeeded = energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored();
 					long energyExtracted = sgjourneyEnergy.extractLongEnergy(energyNeeded, false);
-					receiveEnergy(energyExtracted, false);
+					energyStorage.receiveLongEnergy(energyExtracted, false);
 				}
 				else
 				{
-					int energyNeeded = (int) Math.min(getEnergyCapacity() - getEnergyStored(), Integer.MAX_VALUE);
+					int energyNeeded = (int) Math.min(energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored(), Integer.MAX_VALUE);
 					int energyExtracted = energy.extractEnergy(energyNeeded, false);
-					receiveEnergy(energyExtracted, false);
+					energyStorage.receiveLongEnergy(energyExtracted, false);
 				}
 			});
 		}
@@ -477,9 +483,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	private void tryPowerStargate(ItemStack energyStack)
 	{
-		if(stargate.getEnergyStored() < getEnergyTarget())
+		if(stargate.energyStorage.getTrueEnergyStored() < getEnergyTarget())
 		{
-			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.getEnergyStored(), maxEnergyDeplete());
+			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.energyStorage.getTrueEnergyStored(), maxEnergyDeplete());
 			
 			// Uses energy from a Energy Item if one is present
 			if(InventoryUtil.stackHasEnergy(energyStack))
@@ -489,19 +495,19 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				if (energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
 					long energySent = sgjourneyEnergy.extractLongEnergy(needed, false);
-					stargate.receiveEnergy(energySent, false);
+					stargate.energyStorage.receiveLongEnergy(energySent, false);
 				}
 				else
 				{
 					int energySent = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(needed), false);
-					stargate.receiveEnergy(energySent, false);
+					stargate.energyStorage.receiveLongEnergy(energySent, false);
 				}
 			}
 			// Uses energy from the DHD energy buffer
 			else
 			{
-				long energySent = depleteEnergy(needed, false);
-				stargate.receiveEnergy(energySent, false);
+				long energySent = energyStorage.depleteEnergy(needed, false);
+				stargate.energyStorage.receiveLongEnergy(energySent, false);
 			}
 		}
 	}
@@ -515,7 +521,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
 		
 		// Stores energy in the DHD buffer
-		if(getEnergyStored() < minStoredEnergy())
+		if(energyStorage.getTrueEnergyStored() < minStoredEnergy())
 		{
 			try
 			{
@@ -627,7 +633,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		if(this.stargate != null)
 		{
-			if(REQUIRE_ENERGY && getEnergyStored() < buttonPressEnergyCost())
+			if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
 			{
 				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), 5);
 				return;
@@ -641,7 +647,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			stargate.dhdEngageSymbol(symbol);
 			
 			if(REQUIRE_ENERGY)
-				depleteEnergy(buttonPressEnergyCost(), false);
+				energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
 		}
 		else
 			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), 5);

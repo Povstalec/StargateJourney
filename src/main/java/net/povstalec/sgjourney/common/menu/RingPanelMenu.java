@@ -14,50 +14,45 @@ import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
 
-public class RingPanelMenu extends InventoryMenu
+public class RingPanelMenu extends InventoryMenu<RingPanelEntity>
 {
-    private final RingPanelEntity blockEntity;
-    private final Level level;
-    
     public RingPanelMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
     {
-        this(containerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inventory, (RingPanelEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
     }
 
-    public RingPanelMenu(int containerId, Inventory inventory, BlockEntity entity)
+    public RingPanelMenu(int containerId, Inventory inventory, RingPanelEntity entity)
     {
-        super(MenuInit.RING_PANEL.get(), containerId);
+        super(MenuInit.RING_PANEL.get(), containerId, inventory, entity);
+		
         checkContainerSize(inventory, 6);
-        blockEntity = ((RingPanelEntity) entity);
-        this.level = inventory.player.level;
-        
         addPlayerInventory(inventory, 8, 140);
         addPlayerHotbar(inventory, 8, 198);
         
         this.blockEntity.getCrystalItemHandler().ifPresent(handler ->
         {
-            this.addSlot(new SlotItemHandler(handler, 0, 5, 36));
-            this.addSlot(new SlotItemHandler(handler, 1, 23, 36));
-            this.addSlot(new SlotItemHandler(handler, 2, 5, 54));
-            this.addSlot(new SlotItemHandler(handler, 3, 23, 54));
-            this.addSlot(new SlotItemHandler(handler, 4, 5, 72));
-            this.addSlot(new SlotItemHandler(handler, 5, 23, 72));
+            this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 5, 36));
+            this.addBlockEntitySlot(new SlotItemHandler(handler, 1, 23, 36));
+            this.addBlockEntitySlot(new SlotItemHandler(handler, 2, 5, 54));
+            this.addBlockEntitySlot(new SlotItemHandler(handler, 3, 23, 54));
+            this.addBlockEntitySlot(new SlotItemHandler(handler, 4, 5, 72));
+            this.addBlockEntitySlot(new SlotItemHandler(handler, 5, 23, 72));
         });
 		
 		this.blockEntity.getEnergyItemHandler().ifPresent(handler ->
 		{
-			this.addSlot(new SlotItemHandler(handler, 0, 137, 36));
+			this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 137, 36));
 		});
     }
 	
 	public long getEnergy()
 	{
-		return this.blockEntity.getEnergyStored();
+		return this.blockEntity.energyStorage.getTrueEnergyStored();
 	}
 	
 	public long getMaxEnergy()
 	{
-		return this.blockEntity.getEnergyCapacity();
+		return this.blockEntity.energyStorage.getTrueMaxEnergyStored();
 	}
 	
 	public RingPanelEntity.Button getButtonAt(int index)
@@ -99,10 +94,4 @@ public class RingPanelMenu extends InventoryMenu
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
                 player, BlockInit.GOAULD_RING_PANEL.get());
     }
-	
-	@Override
-	protected int blockEntitySlotCount()
-	{
-		return 6;
-	}
 }

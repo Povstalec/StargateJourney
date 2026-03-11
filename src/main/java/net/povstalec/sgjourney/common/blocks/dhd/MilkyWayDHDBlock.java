@@ -107,7 +107,7 @@ public class MilkyWayDHDBlock extends CrystalDHDBlock implements SimpleWaterlogg
             			@Override
             			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
             			{
-            				return new MilkyWayDHDMenu(windowId, playerInventory, blockEntity);
+            				return new MilkyWayDHDMenu(windowId, playerInventory, dhd);
             			}
             		};
             		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

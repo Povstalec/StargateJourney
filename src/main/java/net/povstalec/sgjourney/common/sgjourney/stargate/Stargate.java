@@ -7,6 +7,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -19,6 +22,8 @@ import java.util.List;
 
 public interface Stargate extends Comparable<Stargate>
 {
+	Capability<Stargate> STARGATE_CAPABILITY = CapabilityManager.get(new CapabilityToken<Stargate>() {});
+	
 	String DIMENSION = "Dimension";
 	String COORDINATES = "Coordinates";
 	

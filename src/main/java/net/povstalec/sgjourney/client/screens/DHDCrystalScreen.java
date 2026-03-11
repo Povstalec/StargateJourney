@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
@@ -19,7 +20,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_crystal_gui.png");
 	
-	public static final int HINT_OFFSET_Y = 168;
+	public static final int HINT_OFFSET_Y = 166;
 	public static final int LARGE_CRYSTAL_HINT_OFFSET_X = 0;
 	public static final int CRYSTAL_HINT_OFFSET_X = 16;
 	public static final int ENERGY_HINT_OFFSET_X = 32;
@@ -38,7 +39,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight + 1);
+        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
 		
 		this.renderEnergyVertical(poseStack, x + 162, y + 17, 6, 52, 176, 0, this.menu.getEnergy(), this.menu.getMaxEnergy());
 		
@@ -111,7 +112,13 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 	@Override
 	protected boolean hasItem(int slot)
 	{
-		return this.menu.hasItem(slot);
+		if(slot < 0 || slot > 10)
+			return false;
+		
+		if(slot >= 9)
+			return !menu.blockEntity.energyItemHandler.getStackInSlot(slot - 9).isEmpty();
+		else
+			return !menu.blockEntity.itemHandler.getStackInSlot(slot).isEmpty();
 	}
 	
 	protected void crystalEffectTooltip(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Component... components)

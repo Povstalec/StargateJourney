@@ -23,7 +23,7 @@ public abstract class DHDSymbolButton extends DHDButton
 	
     public DHDSymbolButton(int x, int y, int xSize, int ySize, AbstractDHDMenu menu, int symbol, ResourceLocation widgets)
 	{
-		super(x, y, xSize, ySize, symbol(menu.symbolsType, symbol), (button) -> {menu.engageChevron(symbol);});
+		super(x, y, xSize, ySize, symbol(symbol), (button) -> menu.engageChevron(symbol));
 		
 		this.menu = menu;
 		this.widgets = widgets;
@@ -61,7 +61,7 @@ public abstract class DHDSymbolButton extends DHDButton
         drawCenteredString(poseStack, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
      }
 	
-    private static Component symbol(String symbolsType, int i)
+    private static Component symbol(int i)
     {
     	MutableComponent symbols = Component.literal(String.valueOf(i));
     	

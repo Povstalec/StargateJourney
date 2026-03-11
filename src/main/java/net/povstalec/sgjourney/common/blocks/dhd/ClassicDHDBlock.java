@@ -78,7 +78,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 						@Override
 						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
 						{
-							return new ClassicDHDMenu(windowId, playerInventory, blockEntity);
+							return new ClassicDHDMenu(windowId, playerInventory, dhd);
 						}
 					};
 					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

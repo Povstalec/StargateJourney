@@ -63,7 +63,7 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     
     protected void renderEnergy(PoseStack matrixStack, int x, int y)
     {
-    	float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();
+    	float percentage = (float) this.menu.getEnergy() / this.menu.getEnergyCapacity();
     	int actual = Math.round(160 * percentage);
     	this.blit(matrixStack, x, y, 0, 168, actual, 6);
     }
@@ -71,6 +71,6 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
     {
     	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
-	    	renderTooltip(matrixStack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+	    	renderTooltip(matrixStack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getEnergyCapacity()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
     }
 }

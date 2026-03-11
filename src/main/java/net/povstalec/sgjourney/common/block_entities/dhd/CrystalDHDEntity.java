@@ -40,7 +40,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	protected AbstractCrystalItem.Storage transferCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage communicationCrystals = new AbstractCrystalItem.Storage();
 	
-	protected final ItemStackHandler itemHandler = createHandler();
+	public final ItemStackHandler itemHandler = createHandler();
 	protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
 	
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)

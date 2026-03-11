@@ -104,10 +104,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	 */
 	public int symbolAt(int index)
 	{
-		if(index < 0 || index >= addressArray.length)
-			return 0;
-		
-		return addressArray[index];
+		return ArrayHelper.zeroNumAt(addressArray, index);
 	}
 	
 	public int lastSymbol()
@@ -225,7 +222,8 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return true;
 		else if(object instanceof Address address)
 		{
-			for(int i = 0; i < this.getLength(); i++)
+			int length = Math.max(this.getLength(), address.getLength());
+			for(int i = 0; i < length; i++)
 			{
 				if(this.symbolAt(i) != address.symbolAt(i))
 					return false;
@@ -237,9 +235,10 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return equals(hiddenAddress.address());
 		else if(object instanceof int[] array)
 		{
-			for(int i = 0; i < array.length; i++)
+			int length = Math.max(this.getLength(), array.length);
+			for(int i = 0; i < length; i++)
 			{
-				if(array[i] != this.symbolAt(i))
+				if(this.symbolAt(i) != ArrayHelper.zeroNumAt(array, i))
 					return false;
 			}
 			

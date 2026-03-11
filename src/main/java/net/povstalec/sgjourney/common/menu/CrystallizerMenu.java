@@ -4,59 +4,55 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
-public class CrystallizerMenu extends InventoryMenu
+public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity> extends EnergyBlockMenu<T>
 {
-    protected final AbstractCrystallizerEntity blockEntity;
-    protected final Level level;
-    protected FluidStack fluidStack;
-    
-    public CrystallizerMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
-    {
-        this(containerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
-    }
-
-    public CrystallizerMenu(int containerId, Inventory inventory, BlockEntity blockEntity)
-    {
-        super(MenuInit.CRYSTALLIZER.get(), containerId);
-        checkContainerSize(inventory, 5);
-        this.blockEntity = ((AbstractCrystallizerEntity) blockEntity);
-        this.level = inventory.player.level;
-        this.fluidStack = this.blockEntity.getFluid();
-
-        addPlayerInventory(inventory, 8, 84);
-        addPlayerHotbar(inventory, 8, 142);
-        
-        this.blockEntity.getItemHandler(0).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 80, 20));
-        });
-        this.blockEntity.getItemHandler(1).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 67, 50));
-        });
-        this.blockEntity.getItemHandler(2).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 93, 50));
-        });
-        this.blockEntity.getItemHandler(3).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 130, 36));
-        });
-        this.blockEntity.getItemHandler(4).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 34, 20));
-        });
-    }
-    
-    public void setFluid(FluidStack fluidStack)
+	protected FluidStack fluidStack;
+	
+	protected int crystalBaseSlotIndex;
+	protected int leftIngredientSlotIndex;
+	protected int rightIngredientSlotIndex;
+	protected int outputSlotIndex;
+	protected int liquidContainerDumpSlotIndex;
+	protected int liquidContainerInputSlotIndex;
+	protected int energySlotIndex;
+	
+	public CrystallizerMenu(MenuType<?> type, int containerId, Inventory inventory, T blockEntity)
+	{
+		super(type, containerId, inventory, blockEntity);
+		checkContainerSize(inventory, 7);
+		this.fluidStack = this.blockEntity.getFluid();
+	
+		addPlayerInventory(inventory, 8, 84);
+		addPlayerHotbar(inventory, 8, 142);
+		
+		this.crystalBaseSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalBaseHandler, 0, 71, 17)).index;
+		
+		this.leftIngredientSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.primaryIngredientHandler, 0, 55, 53)).index;
+		
+		this.rightIngredientSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.secondaryIngredientHandler, 0, 87, 53)).index;
+		
+		this.outputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.outputHandler, 0, 112, 36)).index;
+		this.liquidContainerDumpSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.outputHandler, 1, 8, 53)).index;
+		
+		this.liquidContainerInputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidInputHandler, 0, 8, 17)).index;
+		
+		this.energySlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.energyItemHandler, 0, 142, 17)).index;
+	}
+	
+	public void setFluid(FluidStack fluidStack)
 	{
 		this.fluidStack = fluidStack;
 	}
@@ -75,91 +71,67 @@ public class CrystallizerMenu extends InventoryMenu
 	{
 		return this.blockEntity.progress;
 	}
-    
-    @Override
-    public boolean stillValid(Player player)
-    {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CRYSTALLIZER.get()) ||
-        		stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ADVANCED_CRYSTALLIZER.get());
-    }
-    
-    @Override
-    protected int blockEntitySlotCount()
-    {
-        return 5;
-    }
-
-    /**
-     * Checks if the ItemStack has the required liquid for the liquidizer.
-     * @return true if the ItemStack has the required liquid, false otherwise.
-     */
-    private boolean hasRequiredLiquid(ItemStack itemStack)
-    {
-        IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
-        if(fluidHandler != null)
-            return fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid());
-        
-        return false;
-    }
-
-    private static boolean countEquals(ItemStack first, ItemStack second)
-    {
-        return first.getCount() == second.getCount();
-    }
-    
-    @Override
-    public ItemStack quickMoveStack(Player playerIn, int index)
-    {
-        Slot sourceSlot = slots.get(index);
-        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
-        ItemStack sourceStack = sourceSlot.getItem();
-        ItemStack copyOfSourceStack = sourceStack.copy();
-        boolean stopQuickMove = false;
-
-        // Check if the slot clicked is one of the vanilla container slots
-        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT)
-        {
-            // This is a vanilla container slot so merge the stack into the tile inventory
-            stopQuickMove = true;
-
-            // try to move it to the bucket slot first if it has the required liquid
-            if(hasRequiredLiquid(sourceStack))
-            {
-                moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX + 4, TE_INVENTORY_FIRST_SLOT_INDEX + 5, false);
-                // we are trying a single slot which might fail
-            }
-
-            if (countEquals(sourceStack, copyOfSourceStack) && !moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
-                    TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false))
-            {
-                return ItemStack.EMPTY;  // EMPTY_ITEM
-            }
-        }
-        else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT)
-        {
-            // This is a TE slot so merge the stack into the players inventory
-            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false))
-            {
-                return ItemStack.EMPTY;
-            }
-        } else
-        {
-            System.out.println("Invalid slotIndex:" + index);
-            return ItemStack.EMPTY;
-        }
-        // If stack size == 0 (the entire stack was moved) set slot contents to null
-        if (sourceStack.getCount() == 0)
-        {
-            sourceSlot.set(ItemStack.EMPTY);
-        } else
-        {
-            sourceSlot.setChanged();
-        }
-        sourceSlot.onTake(playerIn, sourceStack);
-        if (stopQuickMove) {
-            return ItemStack.EMPTY;
-        }
-        return copyOfSourceStack;
-    }
 	
+	/**
+	 * Checks if the ItemStack has the required liquid for the liquidizer.
+	 * @return true if the ItemStack has the required liquid, false otherwise.
+	 */
+	private boolean hasRequiredLiquid(ItemStack itemStack)
+	{
+		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		if(fluidHandler != null)
+			return fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid());
+		
+		return false;
+	}
+	
+	@Override
+	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
+	{
+		// Try moving it to Liquid input slot
+		if(hasRequiredLiquid(sourceStack) && moveItemStackTo(sourceStack, liquidContainerInputSlotIndex, liquidContainerInputSlotIndex + 1, false))
+			return true;
+		
+		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
+	}
+	
+	
+	
+	public static class Crystallizer extends CrystallizerMenu<CrystallizerEntity>
+	{
+		public Crystallizer(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (CrystallizerEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		}
+		
+		public Crystallizer(int containerId, Inventory inventory, CrystallizerEntity blockEntity)
+		{
+			super(MenuInit.CRYSTALLIZER.get(), containerId, inventory, blockEntity);
+		}
+		
+		@Override
+		public boolean stillValid(Player player)
+		{
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CRYSTALLIZER.get());
+		}
+	}
+	
+	public static class AdvancedCrystallizer extends CrystallizerMenu<AdvancedCrystallizerEntity>
+	{
+		public AdvancedCrystallizer(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (AdvancedCrystallizerEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		}
+		
+		public AdvancedCrystallizer(int containerId, Inventory inventory, AdvancedCrystallizerEntity blockEntity)
+		{
+			super(MenuInit.ADVANCED_CRYSTALLIZER.get(), containerId, inventory, blockEntity);
+		}
+		
+		@Override
+		public boolean stillValid(Player player)
+		{
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ADVANCED_CRYSTALLIZER.get());
+		}
+	}
 }

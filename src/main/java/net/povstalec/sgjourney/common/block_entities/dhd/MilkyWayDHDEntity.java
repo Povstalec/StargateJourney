@@ -48,13 +48,13 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected long capacity()
+	protected long getCapacity()
 	{
 		return CommonDHDConfig.milky_way_dhd_energy_buffer_capacity.get();
 	}
 	
 	@Override
-	protected long maxReceive()
+	protected long getMaxReceive()
 	{
 		return CommonDHDConfig.milky_way_dhd_max_energy_receive.get();
 	}

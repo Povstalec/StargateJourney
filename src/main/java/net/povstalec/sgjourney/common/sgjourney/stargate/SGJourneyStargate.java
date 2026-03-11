@@ -351,13 +351,13 @@ public class SGJourneyStargate implements Stargate
 	@Override
 	public long getEnergyStored(MinecraftServer server)
 	{
-		return stargateReturn(server, stargate -> stargate.getEnergyStored(), 0L);
+		return stargateReturn(server, stargate -> stargate.energyStorage.getTrueEnergyStored(), 0L);
 	}
 	
 	@Override
 	public long getEnergyCapacity(MinecraftServer server)
 	{
-		return stargateReturn(server, stargate -> stargate.getEnergyCapacity(), 0L);
+		return stargateReturn(server, stargate -> stargate.energyStorage.getTrueMaxEnergyStored(), 0L);
 	}
 	
 	@Override
@@ -369,7 +369,7 @@ public class SGJourneyStargate implements Stargate
 	@Override
 	public long extractEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
-		return stargateReturn(server, stargate -> stargate.depleteEnergy(energy, simulate), 0L);
+		return stargateReturn(server, stargate -> stargate.energyStorage.depleteEnergy(energy, simulate), 0L);
 	}
 	
 	// Stargate Connection
