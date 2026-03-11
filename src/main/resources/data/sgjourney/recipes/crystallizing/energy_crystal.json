@@ -8,5 +8,6 @@
 	"output":
 	{
 		"item": "sgjourney:energy_crystal"
-	}
+	},
+	"progress": 100
 }

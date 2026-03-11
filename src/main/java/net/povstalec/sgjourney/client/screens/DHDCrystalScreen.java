@@ -8,13 +8,11 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 {
@@ -118,7 +116,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 		if(slot >= 9)
 			return !menu.blockEntity.energyItemHandler.getStackInSlot(slot - 9).isEmpty();
 		else
-			return !menu.blockEntity.itemHandler.getStackInSlot(slot).isEmpty();
+			return !menu.blockEntity.crystalHandler.getStackInSlot(slot).isEmpty();
 	}
 	
 	protected void crystalEffectTooltip(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Component... components)

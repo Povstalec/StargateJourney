@@ -9,9 +9,7 @@ import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
-import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 
 public class ClassicDHDEntity extends CrystalDHDEntity
 {
@@ -65,11 +63,11 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	@Override
 	protected void generateCrystals()
 	{
-		itemHandler.setStackInSlot(0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get()));
-		itemHandler.setStackInSlot(1, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
-		itemHandler.setStackInSlot(2, new ItemStack(ItemInit.COMMUNICATION_CRYSTAL.get()));
-		itemHandler.setStackInSlot(3, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
-		itemHandler.setStackInSlot(5, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
-		itemHandler.setStackInSlot(7, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(1, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(2, new ItemStack(ItemInit.COMMUNICATION_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(3, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(5, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(7, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
 	}
 }

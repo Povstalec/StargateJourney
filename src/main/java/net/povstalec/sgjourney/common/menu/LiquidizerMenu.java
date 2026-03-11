@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEnti
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
-public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity> extends EnergyBlockMenu<T>
+public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<?>> extends EnergyBlockMenu<T>
 {
     protected FluidStack fluidStack1;
     protected FluidStack fluidStack2;
@@ -34,8 +34,8 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity>
         super(type, containerId, inventory, blockEntity);
 		
         checkContainerSize(inventory, 6);
-        this.fluidStack1 = this.blockEntity.getFluid1();
-        this.fluidStack2 = this.blockEntity.getFluid2();
+        this.fluidStack1 = this.blockEntity.getInputFluidStack();
+        this.fluidStack2 = this.blockEntity.getOutputFluidStack();
 
         addPlayerInventory(inventory, 8, 84);
         addPlayerHotbar(inventory, 8, 142);
@@ -43,10 +43,10 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity>
 		this.itemInputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.itemInputHandler, 0, 62, 17)).index;
 		
 		this.fluidItemInputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemInputHandler, 0, 8, 17)).index;
-		this.fluidItemInputDumpSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemInputHandler, 1, 8, 53)).index;
+		this.fluidItemOutputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemInputHandler, 1, 116, 17)).index;
 		
-		this.fluidItemOutputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemOutputHandler, 0, 116, 17)).index;
-		this.fluidItemOutputDumpSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemOutputHandler, 1, 116, 53)).index;
+		this.fluidItemOutputDumpSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemOutputHandler, 0, 116, 53)).index;
+		this.fluidItemInputDumpSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemOutputHandler, 1, 8, 53)).index;
 		
 		this.energySlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.energyItemHandler, 0, 142, 17)).index;
 		
@@ -54,27 +54,32 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity>
 	
 	public FluidStack getFluid1()
 	{
-		return this.blockEntity.getFluid1();
+		return this.blockEntity.getInputFluidStack();
 	}
 	
 	public FluidStack getFluid2()
 	{
-		return this.blockEntity.getFluid2();
+		return this.blockEntity.getOutputFluidStack();
 	}
 	
 	public Fluid getDesiredFluid1()
 	{
-		return this.blockEntity.getDesiredFluid1();
+		return this.blockEntity.getInputFluid();
 	}
 	
 	public Fluid getDesiredFluid2()
 	{
-		return this.blockEntity.getDesiredFluid2();
+		return this.blockEntity.getOutputFluid();
+	}
+	
+	public int getMaxProgress()
+	{
+		return this.blockEntity.getMaxProgress();
 	}
 	
 	public int getProgress()
 	{
-		return this.blockEntity.progress;
+		return this.blockEntity.getProgress();
 	}
     
 	/**
@@ -85,7 +90,7 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity>
 	{
 		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
 		if(fluidHandler != null)
-			return fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid1());
+			return fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getInputFluid());
 		
 		return false;
     }
@@ -98,7 +103,7 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity>
     {
 		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
 		if(fluidHandler != null)
-			return fluidHandler.getFluidInTank(0).isEmpty() || fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid2());
+			return fluidHandler.getFluidInTank(0).isEmpty() || fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getOutputFluid());
 		
 		return false;
     }
@@ -111,6 +116,10 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity>
 	@Override
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
+		// Try moving energy stack to the energy slot
+		if(sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+			return true;
+		
 		// Try moving it to Liquid input slot
 		if(hasRequiredLiquid(sourceStack) && moveItemStackTo(sourceStack, fluidItemInputSlotIndex, fluidItemInputSlotIndex + 1, false))
 			return true;

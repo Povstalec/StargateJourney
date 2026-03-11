@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEnti
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
-public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntity> extends SGJourneyContainerScreen<LiquidizerMenu<T>>
+public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntity<?>> extends SGJourneyContainerScreen<LiquidizerMenu<T>>
 {
 	public static final int HINT_OFFSET_Y = 174;
 	public static final int BUCKET_HINT_OFFSET_X = 0;
@@ -56,7 +56,7 @@ public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntit
         this.blit(stack, x, y, 0, 0, imageWidth, imageHeight);
 		
 		this.itemHint(stack, x + 8, y + 17, BUCKET_HINT_OFFSET_X, HINT_OFFSET_Y, 1);
-		this.itemHint(stack, x + 116, y + 17, BUCKET_HINT_OFFSET_X, HINT_OFFSET_Y, 3);
+		this.itemHint(stack, x + 116, y + 17, BUCKET_HINT_OFFSET_X, HINT_OFFSET_Y, 2);
 		this.itemHint(stack, x + 142, y + 17, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
 		this.itemHint(stack, x + 62, y + 17, ITEM_INPUT_HINT_OFFSET_X, HINT_OFFSET_Y, 0);
 		
@@ -88,7 +88,7 @@ public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntit
     
     protected void renderProgress(PoseStack stack, int x, int y)
     {
-    	float percentage = (float) this.menu.getProgress() / AbstractNaquadahLiquidizerEntity.MAX_PROGRESS;
+    	float percentage = (float) this.menu.getProgress() / this.menu.getMaxProgress();
     	int actual = Math.round(36 * percentage);
     	this.blit(stack, x, y, 0, 166, actual, 8);
     }

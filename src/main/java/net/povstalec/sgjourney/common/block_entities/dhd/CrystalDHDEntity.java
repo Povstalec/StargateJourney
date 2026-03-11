@@ -40,8 +40,8 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	protected AbstractCrystalItem.Storage transferCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage communicationCrystals = new AbstractCrystalItem.Storage();
 	
-	public final ItemStackHandler itemHandler = createHandler();
-	protected final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+	public final ItemStackHandler crystalHandler = createHandler();
+	protected final LazyOptional<IItemHandler> lazyCrystalHandler = LazyOptional.of(() -> crystalHandler);
 	
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
@@ -52,7 +52,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	public void load(CompoundTag tag)
 	{
 		super.load(tag);
-		itemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
+		crystalHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
 		
 		//TODO Remove this later
 		if(!tag.contains(ENERGY_INVENTORY) && tag.contains(CRYSTAL_INVENTORY))
@@ -62,7 +62,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		tag.put(CRYSTAL_INVENTORY, itemHandler.serializeNBT());
+		tag.put(CRYSTAL_INVENTORY, crystalHandler.serializeNBT());
 		super.saveAdditional(tag);
 	}
 	
@@ -78,13 +78,13 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	public void invalidateCaps()
 	{
-		handler.invalidate();
+		lazyCrystalHandler.invalidate();
 		super.invalidateCaps();
 	}
 	
-	public LazyOptional<IItemHandler> getItemHandler()
+	public LazyOptional<IItemHandler> getCrystalHandler()
 	{
-		return handler.cast();
+		return lazyCrystalHandler.cast();
 	}
 	
 	@Nonnull
@@ -147,7 +147,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	{
 		// Check if the DHD has a Control Crystal
 		this.enableCallForwarding = false;
-		this.enableAdvancedProtocols = !itemHandler.getStackInSlot(0).isEmpty();
+		this.enableAdvancedProtocols = !crystalHandler.getStackInSlot(0).isEmpty();
 		this.memoryCrystals.reset();
 		this.controlCrystals.reset();
 		this.energyCrystals.reset();
@@ -159,7 +159,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		// Check where the Crystals are and save their positions
 		for(int i = 1; i < 9; i++)
 		{
-			ItemStack stack = itemHandler.getStackInSlot(i);
+			ItemStack stack = crystalHandler.getStackInSlot(i);
 			Item item = stack.getItem();
 			
 			if(item instanceof ControlCrystalItem controlCrystal)
@@ -211,7 +211,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		//TODO Save the address to more than one crystal
 		if(memoryCrystals.getCrystals().length > 0)
 		{
-			ItemStack stack = itemHandler.getStackInSlot(memoryCrystals.getCrystals()[0]);
+			ItemStack stack = crystalHandler.getStackInSlot(memoryCrystals.getCrystals()[0]);
 			if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
 				memoryCrystal.saveMemoryEntry(stack, new MemoryEntry.StargateConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.ADDRESS, new StargateConnection.Result(address, feedback)), true);
 		}

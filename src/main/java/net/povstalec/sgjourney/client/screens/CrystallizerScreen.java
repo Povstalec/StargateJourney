@@ -16,18 +16,17 @@ import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
-public class CrystallizerScreen<T extends AbstractCrystallizerEntity> extends SGJourneyContainerScreen<CrystallizerMenu<T>>
+public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends SGJourneyContainerScreen<CrystallizerMenu<T>>
 {
 	public static final int HINT_OFFSET_Y = 174;
 	public static final int BUCKET_HINT_OFFSET_X = 0;
 	public static final int ENERGY_HINT_OFFSET_X = 16;
 	public static final int CRYSTAL_BASE_HINT_OFFSET_X = 32;
 	
+	private ResourceLocation texture;
 	private FluidTankRenderer fluidTankRenderer;
 	
-	ResourceLocation texture;
-	
-    public CrystallizerScreen(CrystallizerMenu menu, ResourceLocation texture, Inventory inventory, Component component)
+    public CrystallizerScreen(CrystallizerMenu<T> menu, ResourceLocation texture, Inventory inventory, Component component)
     {
         super(menu, inventory, component);
 		this.texture = texture;
@@ -86,7 +85,7 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity> extends SG
     
     protected void renderProgress(PoseStack stack, int x, int y)
     {
-    	float percentage = (float) this.menu.getProgress() / AbstractCrystallizerEntity.MAX_PROGRESS;
+    	float percentage = (float) this.menu.getProgress() / this.menu.getMaxProgress();
     	int actual = Math.round(54 * percentage);
     	this.blit(stack, x, y, 0, 166, actual, 8);
     }

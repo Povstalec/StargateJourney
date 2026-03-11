@@ -9,5 +9,6 @@
 	{
 		"item": "sgjourney:stargate_upgrade_crystal",
 		"nbt": {"Type":"sgjourney:universe_stargate"}
-	}
+	},
+	"progress": 100
 }

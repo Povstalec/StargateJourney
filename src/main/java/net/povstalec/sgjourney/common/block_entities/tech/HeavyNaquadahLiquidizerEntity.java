@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -8,8 +10,11 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
 
-public class HeavyNaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity
+import java.util.Optional;
+
+public class HeavyNaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity<LiquidizingRecipe.HeavyNaquadahLiquidizer>
 {
 	public static final long ENERGY_CAPACITY = 1000000; // TODO Make this configurable
 	public static final long MAX_ENERGY_RECEIVE = 100000; // TODO Make this configurable
@@ -21,37 +26,21 @@ public class HeavyNaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEnt
 	}
 	
 	@Override
-	public Fluid getDesiredFluid1()
+	public Fluid getInputFluid()
 	{
 		return FluidInit.LIQUID_NAQUADAH_SOURCE.get();
 	}
 
 	@Override
-	public Fluid getDesiredFluid2()
+	public Fluid getOutputFluid()
 	{
 		return FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
 	}
-
-	@Override
-	protected boolean hasIngredients()
-	{
-		return itemInputHandler.getStackInSlot(0).is(ItemInit.PURE_NAQUADAH.get());
-	}
 	
 	@Override
-	protected int producedAmount()
+	protected RecipeType<LiquidizingRecipe.HeavyNaquadahLiquidizer> getRecipeType()
 	{
-		return 200;
-	}
-
-	@Override
-	protected void makeLiquidNaquadah()
-	{
-		useUpItems(1);
-		
-		this.fluidTank2.fill(new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), producedAmount()), IFluidHandler.FluidAction.EXECUTE);
-		
-		this.progress = 0;
+		return LiquidizingRecipe.HeavyNaquadahLiquidizer.TYPE;
 	}
 	
 	//============================================================================================
@@ -77,7 +66,7 @@ public class HeavyNaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEnt
 	}
 	
 	@Override
-	public long liquidizationEnergyPerTick()
+	public long energyPerProgressTick()
 	{
 		return LIQUIDIZATION_ENERGY_PER_TICK;
 	}

@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
@@ -40,6 +41,16 @@ public class InventoryUtil
 
         return -1;
     }
+	
+	public static void dumpIfPossible(IItemHandler from, int fromSlot, IItemHandler to, int toSlot)
+	{
+		ItemStack stack = from.extractItem(fromSlot, 1, true);
+		if(to.insertItem(toSlot, stack, true).isEmpty())
+		{
+			from.extractItem(fromSlot, 1, false);
+			to.insertItem(toSlot, stack, false);
+		}
+	}
 	
 	public static boolean canInsertStackInto(ItemStack slotStack, ItemStack toInsert)
 	{

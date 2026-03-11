@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
-public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity> extends EnergyBlockMenu<T>
+public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> extends EnergyBlockMenu<T>
 {
 	protected FluidStack fluidStack;
 	
@@ -67,9 +67,14 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity> ext
 		return this.blockEntity.getDesiredFluid();
 	}
 	
+	public int getMaxProgress()
+	{
+		return this.blockEntity.getMaxProgress();
+	}
+	
 	public int getProgress()
 	{
-		return this.blockEntity.progress;
+		return this.blockEntity.getProgress();
 	}
 	
 	/**
@@ -88,6 +93,10 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity> ext
 	@Override
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
+		// Try moving energy stack to the energy slot
+		if(sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+			return true;
+		
 		// Try moving it to Liquid input slot
 		if(hasRequiredLiquid(sourceStack) && moveItemStackTo(sourceStack, liquidContainerInputSlotIndex, liquidContainerInputSlotIndex + 1, false))
 			return true;

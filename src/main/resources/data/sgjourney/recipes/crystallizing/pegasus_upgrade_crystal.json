@@ -12,5 +12,6 @@
 		{
 			"Type":"sgjourney:pegasus_stargate"
 		}
-	}
+	},
+	"progress": 100
 }

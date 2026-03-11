@@ -8,5 +8,6 @@
 	"output":
 	{
 		"item": "sgjourney:transfer_crystal"
-	}
+	},
+	"progress": 100
 }
