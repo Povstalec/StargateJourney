@@ -7,14 +7,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class LocatorHelper
 {
@@ -69,14 +67,36 @@ public class LocatorHelper
 	//****************************************Transporter*****************************************
 	//============================================================================================
 	
-	public static List<Transporter> findNearestTransporters(ServerLevel level, Vec3 centerPos, float maxDistance, int frequency)
+	public static List<TransportRingsEntity> getNearbyTransportRings(Level level, BlockPos blockPos, int maxDistance)
 	{
-		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersFromDimension(level.dimension());
-		transporters.sort(Comparator.comparing(transporter -> centerPos.distanceToSqr(Objects.requireNonNull(transporter.getPosition(level.getServer())))));
+		List<TransportRingsEntity> transporters = new ArrayList<TransportRingsEntity>();
 		
-		transporters.removeIf(transporter -> transporter.getPosition(level.getServer()) == null || transporter.getDimension() == null || !transporter.acceptsFrequency(frequency)); //TODO Max distance
+		for(int x = -maxDistance / 16; x <= maxDistance / 16; x++)
+		{
+			for(int z = -maxDistance / 16; z <= maxDistance / 16; z++)
+			{
+				ChunkAccess chunk = level.getChunk(blockPos.east(16 * x).south(16 * z));
+				chunk.getBlockEntitiesPos().forEach(pos ->
+				{
+					if(level.getBlockEntity(pos) instanceof TransportRingsEntity transportRings)
+						transporters.add(transportRings);
+				});
+			}
+		}
 		
 		return transporters;
+	}
+	
+	public static List<Transporter> findNearestTransporters(ServerLevel level, Vec3 centerPos, float maxDistance, int frequency)
+	{
+		float maxDistSqr = maxDistance * maxDistance;
+		
+		return TransporterNetwork.get(level).getTransportersFromDimension(level.dimension()).stream()
+				.filter(transporter -> transporter.getPosition(level.getServer()) != null &&
+						transporter.getPosition(level.getServer()).distanceTo(centerPos) <= maxDistSqr &&
+						transporter.getDimension() != null &&
+						transporter.acceptsFrequency(frequency))
+				.sorted(Comparator.comparing(transporter -> centerPos.distanceToSqr(transporter.getPosition(level.getServer())))).toList();
 	}
 	
 	public static List<Transporter> findNearestTransporters(ServerLevel level, BlockPos centerPos, float maxDistance, int frequency)

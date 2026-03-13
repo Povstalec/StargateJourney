@@ -4,12 +4,13 @@ import java.util.*;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
@@ -44,52 +44,33 @@ public class RingRemoteItem extends Item
     public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
 	{
 		return new ItemInventoryProvider(stack)
-				{
-					@Override
-					public int getNumberOfSlots()
-					{
-						return 1;
-					}
-
-					@Override
-					public boolean isValid(int slot, ItemStack stack)
-					{
-						return stack.is(ItemInit.MEMORY_CRYSTAL.get());
-					}
-				};
-	}
-	
-	protected List<TransportRingsEntity> getNearbyTransportRings(Level level, BlockPos blockPos, int maxDistance)
-	{
-		List<TransportRingsEntity> transporters = new ArrayList<TransportRingsEntity>();
-		
-		for(int x = -maxDistance / 16; x <= maxDistance / 16; x++)
 		{
-			for(int z = -maxDistance / 16; z <= maxDistance / 16; z++)
+			@Override
+			public int getNumberOfSlots()
 			{
-				ChunkAccess chunk = level.getChunk(blockPos.east(16 * x).south(16 * z));
-				Set<BlockPos> positions = chunk.getBlockEntitiesPos();
-				
-				positions.stream().forEach(pos ->
-				{
-					if(level.getBlockEntity(pos) instanceof TransportRingsEntity transportRings)
-						transporters.add(transportRings);
-				});
+				return 1;
 			}
-		}
-		
-		return transporters;
+
+			@Override
+			public boolean isValid(int slot, ItemStack stack)
+			{
+				return stack.is(ItemInit.MEMORY_CRYSTAL.get());
+			}
+		};
 	}
 	
-	public Optional<TransportRingsEntity> findNearestTransportRings(Level level, BlockPos blockPos, int maxDistance)
+	public ItemStack getHeldItem(ItemStack holderStack)
 	{
-		List<TransportRingsEntity> transporters = getNearbyTransportRings(level, blockPos, maxDistance);
-		transporters.sort(Comparator.comparing(transporter -> Double.valueOf(blockPos.distSqr(transporter.getBlockPos()))));
+		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+		if(itemHandler == null)
+			return ItemStack.EMPTY;
 		
-		if(!transporters.isEmpty())
-			return Optional.of(transporters.get(0));
-		
-		return Optional.empty();
+		return itemHandler.getStackInSlot(0);
+	}
+	
+	public boolean hasMemoryCrystal(ItemStack stack)
+	{
+		return !getHeldItem(stack).isEmpty();
 	}
 	
 	@Override
@@ -120,7 +101,7 @@ public class RingRemoteItem extends Item
 		else if(!player.isShiftKeyDown())
 		{
 			ItemStack stack = player.getItemInHand(hand);
-			if(!canActivate(stack))
+			if(!hasMemoryCrystal(stack))
 				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_memory_crystal").withStyle(ChatFormatting.BLUE), true);
 			else
 			{
@@ -162,9 +143,19 @@ public class RingRemoteItem extends Item
 		return null;
 	}
 	
+	public Optional<Transporter> findNearestTransportRings(Level level, BlockPos blockPos, int maxDistance)
+	{
+		List<Transporter> transporters = LocatorHelper.findNearestTransporters((ServerLevel) level, blockPos, maxDistance, 0); //TODO Specify frequency
+		
+		if(!transporters.isEmpty())
+			return Optional.of(transporters.get(0));
+		
+		return Optional.empty();
+	}
+	
 	private void tryStartTransport(Level level, Player player, @Nullable Transporter target)
 	{
-		Optional<TransportRingsEntity> transportRings = findNearestTransportRings(level, player.blockPosition(), 16);
+		/*Optional<TransportRingsEntity> transportRings = findNearestTransportRings(level, player.blockPosition(), 16);
 		if(transportRings.isPresent())
 		{
 			if(target != null && transportRings.get().canTransport() && transportRings.get().canTransport())
@@ -173,28 +164,7 @@ public class RingRemoteItem extends Item
 				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.BLUE), true);
 		}
 		else
-			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.BLUE), true);
-	}
-	
-	public static boolean canActivate(ItemStack stack)
-	{
-		if(stack.is(ItemInit.RING_REMOTE.get()))
-		{
-			Optional<Boolean> canActivate = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler -> !itemHandler.getStackInSlot(0).isEmpty());
-			
-			return canActivate.orElse(false);
-		}
-		
-		return false;
-	}
-	
-	public ItemStack getHeldItem(ItemStack holderStack)
-	{
-		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-		if(itemHandler == null)
-			return ItemStack.EMPTY;
-		
-		return itemHandler.getStackInSlot(0);
+			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.BLUE), true);*/
 	}
 	
 	@Override

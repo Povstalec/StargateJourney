@@ -78,6 +78,12 @@ public class AddressRegion
 		this.galacticAddresses = galacticAddresses;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return extragalacticAddress + " " + name;
+	}
+	
 	
 	
 	public static class Serializable
@@ -205,6 +211,12 @@ public class AddressRegion
 		public void addToGalaxy(Galaxy.Serializable galaxy, Address.Immutable address)
 		{
 			this.galacticAddresses.put(galaxy, address);
+		}
+		
+		@Nullable
+		public Address.Immutable removeFromGalaxy(Galaxy.Serializable galaxy)
+		{
+			return this.galacticAddresses.remove(galaxy);
 		}
 		
 		/**
@@ -456,6 +468,12 @@ public class AddressRegion
 				addressRegion.setPrimaryStargate(new Address.Immutable(addressRegionTag.getIntArray(PRIMARY_STARGATE)));
 			
 			return addressRegion;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return extragalacticAddress + " " + name;
 		}
 	}
 }

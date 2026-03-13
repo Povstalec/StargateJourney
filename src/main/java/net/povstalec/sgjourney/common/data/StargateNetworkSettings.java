@@ -81,9 +81,9 @@ public class StargateNetworkSettings extends SavedData
 	
 	
 	
-	public void setUseDatapackAddresses(boolean useDatapackAddresses)
+	public void randomizeAddresses(boolean randomizeAddresses)
 	{
-		this.stargateNetworkSettings.putBoolean(RANDOMIZE_ADDRESSES, useDatapackAddresses);
+		this.stargateNetworkSettings.putBoolean(RANDOMIZE_ADDRESSES, randomizeAddresses);
 		this.setDirty();
 	}
 	

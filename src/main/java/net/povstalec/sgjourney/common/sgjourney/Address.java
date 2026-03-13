@@ -660,12 +660,12 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		{
 			Address.Immutable address;
 			if(this.galaxyKey != null)
-				address = Universe.get(server).getAddressInGalaxyFromDimension(this.galaxyKey.location(), this.dimension);
+				address = Universe.get(server).getAddressInGalaxyFromDimension(this.galaxyKey, this.dimension);
 			else
 			{
-				Galaxy.Serializable galaxy = Universe.get(server).getGalaxyFromDimension(dimension);
+				Galaxy.Serializable galaxy = Universe.get(server).getGalaxyFromDimension(this.dimension);
 				if(galaxy != null)
-					address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getKey().location(), this.dimension);
+					address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getKey(), this.dimension);
 				else
 					address = new Address.Immutable();
 			}

@@ -113,8 +113,8 @@ public class ItemInit
 	/*public static final RegistryObject<Item> UNIVERSE_DIALER = ITEMS.register("universe_dialer", 
 			() -> new DialerItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));*/
 	
-	public static final RegistryObject<Item> LIQUID_NAQUADAH_REACTOR_CORE = ITEMS.register("liquid_naquadah_reactor_core",
-			() -> new LiquidNaquadahReactorCoreItem(new LiquidNaquadahReactorCoreItem.Properties().stacksTo(1)));
+	/*public static final RegistryObject<Item> LIQUID_NAQUADAH_REACTOR_CORE = ITEMS.register("liquid_naquadah_reactor_core",
+			() -> new LiquidNaquadahReactorCoreItem(new LiquidNaquadahReactorCoreItem.Properties().stacksTo(1)));*/
 	public static final RegistryObject<Item> NAQUADAH_GENERATOR_CORE = ITEMS.register("naquadah_generator_core",
 			() -> new NaquadahGeneratorCoreItem(new NaquadahGeneratorCoreItem.Properties().stacksTo(1)));
 	public static final RegistryObject<Item> FUSION_CORE = ITEMS.register("fusion_core",

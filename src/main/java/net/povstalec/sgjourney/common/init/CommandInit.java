@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -135,9 +134,9 @@ public class CommandInit
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("settings")
 								.then(Commands.literal("set")
-										.then(Commands.literal("useDatapackAddresses")
-												.then(Commands.argument("useDatapackAddresses", BoolArgumentType.bool())
-														.executes(CommandInit::useDatapackAddresses))))))
+										.then(Commands.literal("randomizeAddresses")
+												.then(Commands.argument("randomizeAddresses", BoolArgumentType.bool())
+														.executes(CommandInit::randomizeAddresses))))))
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
@@ -233,17 +232,7 @@ public class CommandInit
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
-		ServerPlayer player = context.getSource().getPlayer();
-		
-		if(player == null || dimension == null)
-		{
-			//TODO For each galaxy
-			
-			return Command.SINGLE_SUCCESS;
-		}
-		
-		Level level = player.getLevel();
-		
+		Level level = context.getSource().getLevel();
 		ResourceKey<Level> currentDimension = level.dimension();
 		
 		// List of Galaxies the dialing Dimension is located in
@@ -261,15 +250,15 @@ public class CommandInit
 					Entry<Serializable, Address.Immutable> galaxyEntry = galaxies.get(i);
 					Galaxy.Serializable galaxy = galaxyEntry.getKey();
 					
-					Address.Immutable address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
+					Address.Immutable address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey(), dimension);
 					
 					if(address == null)
-						context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)
+						context.getSource().sendSystemMessage(Component.literal(dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)
 								.append(Component.translatable("message.sgjourney.command.get_address.located").withStyle(ChatFormatting.WHITE))
 								.append(Component.literal(" ").append(galaxy.getTranslationName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
 					else
 					{
-						context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address")
+						context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address")
 								.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
 								.append(Component.literal(" ").append(galaxy.getTranslationName()).append(Component.literal(" ")).withStyle(ChatFormatting.LIGHT_PURPLE))
 								.append(Component.translatable("message.sgjourney.command.get_address.is")));
@@ -277,14 +266,14 @@ public class CommandInit
 						Style style = Style.EMPTY;
 						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
 						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
-						context.getSource().getPlayer().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.GOLD)));
+						context.getSource().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.GOLD)));
 					}
 				}
 				return Command.SINGLE_SUCCESS;
 			}
 		}
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
+		context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -292,7 +281,7 @@ public class CommandInit
 	private static int getExtragalacticAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		
 		Address.Immutable address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
 		
@@ -315,7 +304,7 @@ public class CommandInit
 	private static int getStargates(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
 		if(addressRegion != null)
@@ -346,7 +335,7 @@ public class CommandInit
 			}
 		}
 		
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("No Stargates could be located in " + dimension.location().toString()).withStyle(ChatFormatting.RED));
+		context.getSource().sendSystemMessage(Component.literal("No Stargates could be located in " + dimension.location().toString()).withStyle(ChatFormatting.RED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -356,7 +345,7 @@ public class CommandInit
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Address.Immutable address = AddressArgumentType.getAddress(context, "address");
 		
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
 		if(addressRegion != null)
@@ -373,7 +362,7 @@ public class CommandInit
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
 		if(addressRegion != null)
@@ -390,7 +379,7 @@ public class CommandInit
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
 		if(addressRegion != null)
@@ -409,7 +398,7 @@ public class CommandInit
 	
 	private static int getVersion(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		
 		int version = StargateNetwork.get(level).getVersion();
 		
@@ -419,7 +408,7 @@ public class CommandInit
 	
 	private static int forceStellarUpdate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		
 		StargateNetwork.get(level).stellarUpdate(level.getServer(), true);
 		
@@ -431,24 +420,24 @@ public class CommandInit
 	
 	private static int getSettings(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getLevel();
 		
-		boolean useDatapackAddresses = StargateNetworkSettings.get(level).randomizeAddresses();
+		boolean randomizeAddresses = StargateNetworkSettings.get(level).randomizeAddresses();
 		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomSolarSystems();
 		boolean randomAddressFromSeed = StargateNetworkSettings.get(level).randomAddressFromSeed();
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.use_datapack_addresses").append(Component.literal(": " + useDatapackAddresses)).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.randomize_addresses").append(Component.literal(": " + randomizeAddresses)).withStyle(ChatFormatting.GOLD), false);
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.generate_random_solar_systems").append(Component.literal(": " + generateRandomSolarSystems)).withStyle(ChatFormatting.GOLD), false);
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.random_addresses_from_seed").append(Component.literal(": " + randomAddressFromSeed)).withStyle(ChatFormatting.GOLD), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
-	private static int useDatapackAddresses(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	private static int randomizeAddresses(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
-		boolean setting = BoolArgumentType.getBool(context, "useDatapackAddresses");
+		Level level = context.getSource().getLevel();
+		boolean setting = BoolArgumentType.getBool(context, "randomizeAddresses");
 		
-		StargateNetworkSettings.get(level).setUseDatapackAddresses(setting);
+		StargateNetworkSettings.get(level).randomizeAddresses(setting);
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
@@ -456,7 +445,7 @@ public class CommandInit
 	
 	private static int generateRandomSolarSystems(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getLevel();
 		boolean setting = BoolArgumentType.getBool(context, "generateRandomSolarSystems");
 		
 		StargateNetworkSettings.get(level).setGenerateRandomSolarSystems(setting);
@@ -467,7 +456,7 @@ public class CommandInit
 	
 	private static int randomAddressFromSeed(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getLevel();
 		boolean setting = BoolArgumentType.getBool(context, "randomAddressFromSeed");
 		
 		StargateNetworkSettings.get(level).setRandomAddressFromSeed(setting);
@@ -481,7 +470,7 @@ public class CommandInit
 	private static int getTransporters(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_transporters")
 				.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
@@ -504,7 +493,7 @@ public class CommandInit
 	
 	private static int reloadTransporterNetwork(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		
 		TransporterNetwork.get(level).reloadNetwork(level.getServer(), true);
 		

@@ -56,10 +56,10 @@ public class Universe extends SavedData
 
 	private MinecraftServer server;
 	
-	private Map<ResourceLocation, Galaxy.Serializable> galaxies = new HashMap<>();
+	private final Map<ResourceKey<Galaxy>, Galaxy.Serializable> galaxies = new HashMap<>();
 
-	private Map<Address, AddressRegion.Serializable> addressRegions = new HashMap<>();
-	private Map<ResourceKey<AddressRegion>, AddressRegion.Serializable> addressRegionKeys = new HashMap<>();
+	private final Map<Address, AddressRegion.Serializable> addressRegions = new HashMap<>();
+	private final Map<ResourceKey<AddressRegion>, AddressRegion.Serializable> addressRegionKeys = new HashMap<>();
 	
 	//============================================================================================
 	//*****************************************Generation*****************************************
@@ -107,8 +107,13 @@ public class Universe extends SavedData
 	}
 	
 	//============================================================================================
-	//************************************Registering Galaxies************************************
+	//*******************************************Galaxy*******************************************
 	//============================================================================================
+	
+	public void addGalaxy(ResourceKey<Galaxy> galaxyKey, Galaxy.Serializable galaxy)
+	{
+		this.galaxies.put(galaxyKey, galaxy);
+	}
 	
 	private void registerGalaxies(MinecraftServer server)
 	{
@@ -116,20 +121,26 @@ public class Universe extends SavedData
 		final Registry<Galaxy> galaxyRegistry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
 		
 		Set<Entry<ResourceKey<Galaxy>, Galaxy>> galaxySet = galaxyRegistry.entrySet();
-		galaxySet.forEach((galaxyEntry) -> 
+		galaxySet.forEach((galaxyEntry) ->
         {
         	ResourceKey<Galaxy> galaxyKey = galaxyEntry.getKey();
         	
         	Galaxy.Serializable galaxy = new Galaxy.Serializable(galaxyKey, galaxyEntry.getValue(), new HashMap<>(), new ArrayList<>());
-        	
-        	this.galaxies.put(galaxyEntry.getKey().location(), galaxy);
+			
+			addGalaxy(galaxyEntry.getKey(), galaxy);
         });
 		StargateJourney.LOGGER.info("Galaxies registered");
 	}
 	
 	//============================================================================================
-	//********************************Registering Points of Origin********************************
+	//**************************************Point of Origin***************************************
 	//============================================================================================
+	
+	public void addPointOfOrigin(Galaxy.Serializable galaxy, ResourceKey<PointOfOrigin> pointOfOrigin)
+	{
+		if(galaxy != null)
+			galaxy.addPointOfOrigin(pointOfOrigin);
+	}
 	
 	private void registerPointsOfOrigin(MinecraftServer server)
 	{
@@ -146,10 +157,7 @@ public class Universe extends SavedData
 			
 			galaxiesOptional.ifPresent(resourceKeys -> resourceKeys.forEach(galaxyKey ->
 			{
-				Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey.location());
-				
-				if(galaxy != null)
-					galaxy.addPointOfOrigin(pointOfOriginKey);
+				addPointOfOrigin(this.galaxies.get(galaxyKey), pointOfOriginKey);
 			}));
 		});
 	}
@@ -165,10 +173,61 @@ public class Universe extends SavedData
 	}
 	
 	//============================================================================================
-	//********************************Registering Address Regions*********************************
+	//***************************************Space Location***************************************
 	//============================================================================================
 	
-	public void registerAddressRegionsFromDataPacks(MinecraftServer server)
+	public void assignSpaceLocationsToAddressRegions()
+	{
+		SpaceLocation.getDimensionSpaceLocations().forEach((dimension, spaceLocation) ->
+		{
+			AddressRegion.Serializable addressRegion = this.addressRegionKeys.get(spaceLocation.getAddressRegionKey());
+			if(addressRegion != null)
+				spaceLocation.setAddressRegion(addressRegion);
+		});
+		
+		this.setDirty();
+	}
+	
+	//============================================================================================
+	//***************************************Address Region***************************************
+	//============================================================================================
+	
+	public boolean addAddressRegion(Address.Immutable extragalacticAddress, AddressRegion.Serializable addressRegion)
+	{
+		if(this.addressRegions.containsKey(extragalacticAddress))
+		{
+			StargateJourney.LOGGER.error("Failed to add Address Region " + addressRegion.getName() + " as it is already contained in the Stargate Network");
+			return false;
+		}
+		
+		this.addressRegions.put(extragalacticAddress, addressRegion);
+		this.addressRegionKeys.put(addressRegion.getResourceKey(), addressRegion);
+		
+		StargateJourney.LOGGER.debug("Added Address Region " + addressRegion);
+		return true;
+	}
+	
+	public void removeAddressRegion(AddressRegion.Serializable addressRegion)
+	{
+		if(addressRegion == null)
+			return;
+		
+		this.addressRegions.remove(addressRegion.getExtragalacticAddress());
+		this.addressRegionKeys.remove(addressRegion.getResourceKey());
+	}
+	
+	public void addAddressRegionToGalaxy(Galaxy.Serializable galaxy, Address.Immutable galacticAddress, AddressRegion.Serializable addressRegion)
+	{
+		galaxy.addAddressRegion(galacticAddress, addressRegion);
+		addressRegion.addToGalaxy(galaxy, galacticAddress);
+	}
+	
+	public void removeAddressRegionFromGalaxy(Galaxy.Serializable galaxy, AddressRegion.Serializable addressRegion)
+	{
+		galaxy.removeAddressRegion(addressRegion.removeFromGalaxy(galaxy));
+	}
+	
+	private void registerAddressRegionsFromDataPacks(MinecraftServer server)
 	{
 		final RegistryAccess registries = server.registryAccess();
 		final Registry<AddressRegion> addressRegionRegistry = registries.registryOrThrow(AddressRegion.REGISTRY_KEY);
@@ -191,18 +250,6 @@ public class Universe extends SavedData
 		StargateJourney.LOGGER.info("Address Regions generated");
 	}
 	
-	public void assignSpaceLocationsToAddressRegions()
-	{
-		SpaceLocation.getDimensionSpaceLocations().forEach((dimension, spaceLocation) ->
-		{
-			AddressRegion.Serializable addressRegion = this.addressRegionKeys.get(spaceLocation.getAddressRegionKey());
-			if(addressRegion != null)
-				spaceLocation.setAddressRegion(addressRegion);
-		});
-		
-		this.setDirty();
-	}
-	
 	private void addAddressRegionFromDataPack(MinecraftServer server, ResourceKey<AddressRegion> addressRegionKey, AddressRegion addressRegion)
 	{
 		Address.Immutable extragalacticAddress;
@@ -213,13 +260,13 @@ public class Universe extends SavedData
 			extragalacticAddress = addressRegion.extragalacticAddress.getFirst();
 		
 		AddressRegion.Serializable networkAddressRegion = new AddressRegion.Serializable(Conversion.locationToAddressRegionKey(addressRegionKey.location()), extragalacticAddress, addressRegion);
-		if(saveAddressRegion(extragalacticAddress, networkAddressRegion))
+		if(addAddressRegion(extragalacticAddress, networkAddressRegion))
 		{
 			// Cycle through all Galaxies this Address Region should be in and add it to each one
 			for(Pair<ResourceKey<Galaxy>, Pair<Address.Immutable, Boolean>> galaxyAndAddress : addressRegion.galacticAddresses)
 			{
 				ResourceKey<Galaxy> galaxyKey = galaxyAndAddress.getFirst();
-				Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey.location());
+				Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey);
 				
 				if(galaxy != null)
 				{
@@ -231,13 +278,12 @@ public class Universe extends SavedData
 					if(randomizeAddresses(server) && randomizableAddress.getSecond())
 					{
 						long systemValue = generateRandomAddressSeed(server, addressRegionKey.location().toString());
-						address = generateAddress(galaxyKey.location(), galaxy.getSize(), systemValue);
+						address = generateAddressInGalaxy(galaxyKey, galaxy.getSize(), systemValue);
 					}
 					else
 						address = randomizableAddress.getFirst();
 					
-					galaxy.addAddressRegion(address, networkAddressRegion);
-					networkAddressRegion.addToGalaxy(galaxy, address);
+					addAddressRegionToGalaxy(galaxy, address, networkAddressRegion);
 				}
 			}
 		}
@@ -255,7 +301,8 @@ public class Universe extends SavedData
 		Address.Immutable extragalacticAddress = generateExtragalacticAddress(MILKY_WAY_SYMBOL_PREFIX, seed);
 		
 		Galaxy milkyWayGalaxy = galaxyRegistry.get(MILKY_WAY); // Milky Way is the default galaxy
-		Galaxy.Serializable galaxy = this.galaxies.get(MILKY_WAY);
+		ResourceKey<Galaxy> milkyWayKey = Conversion.locationToGalaxyKey(MILKY_WAY);
+		Galaxy.Serializable galaxy = this.galaxies.get(milkyWayKey);
 		
 		ResourceKey<PointOfOrigin> pointOfOrigin;
 		if(galaxy != null)
@@ -264,39 +311,18 @@ public class Universe extends SavedData
 			pointOfOrigin = PointOfOrigin.defaultPointOfOrigin();
 		
 		AddressRegion.Serializable addressRegion = new AddressRegion.Serializable(designationToResourceKey(systemName), systemName, pointOfOrigin, milkyWayGalaxy.getDefaultSymbols(), MILKY_WAY_SYMBOL_PREFIX, extragalacticAddress);
-		//TODO Dimensions
 		
-		if(saveAddressRegion(extragalacticAddress, addressRegion) && galaxy != null)
+		if(addAddressRegion(extragalacticAddress, addressRegion) && galaxy != null)
 		{
 			// Generates a random address for the Address Region and adds it to Milky Way under that address
 			long systemValue = generateRandomAddressSeed(server, addressRegion.getName());
-			Address.Immutable address = generateAddress(MILKY_WAY, milkyWayGalaxy.getType().getSize(), systemValue);
+			Address.Immutable address = generateAddressInGalaxy(milkyWayKey, milkyWayGalaxy.getType().getSize(), systemValue);
 			
-			galaxy.addAddressRegion(address, addressRegion);
-			addressRegion.addToGalaxy(galaxy, address);
+			addAddressRegionToGalaxy(galaxy, address, addressRegion);
 		}
 	}
 	
-	private boolean saveAddressRegion(Address.Immutable extragalacticAddress, AddressRegion.Serializable addressRegion)
-	{
-		if(this.addressRegions.containsKey(extragalacticAddress))
-		{
-			StargateJourney.LOGGER.error("Failed to save Address Region " + addressRegion.getName() + " as it is already saved in the Stargate Network");
-			return false;
-		}
-		
-		this.addressRegions.put(extragalacticAddress, addressRegion);
-		this.addressRegionKeys.put(addressRegion.getResourceKey(), addressRegion);
-		
-		StargateJourney.LOGGER.debug("Saved Address Region " + addressRegion.getName());
-		return true;
-	}
-	
-	//============================================================================================
-	//***************************************Address Region***************************************
-	//============================================================================================
-	
-	private String generateDesignation(long seed)
+	public static String generateDesignation(long seed)
 	{
 		int maxRandom = NUMBERS_AND_LETTERS.length();
 		
@@ -309,24 +335,22 @@ public class Universe extends SavedData
 		
 		int suffixValue = random.nextInt(1, 10000);
 		
-		String systemName = "P" + prefixA + prefixB + "-" + suffixValue;
-		
-		return systemName;
+		return "P" + prefixA + prefixB + "-" + suffixValue;
 	}
 	
-	private ResourceKey<AddressRegion> designationToResourceKey(String designation)
+	public static ResourceKey<AddressRegion> designationToResourceKey(String designation)
 	{
 		return Conversion.locationToAddressRegionKey(new ResourceLocation(StargateJourney.MODID, designation.toLowerCase()));
 	}
 	
-	private long generateRandomAddressSeed(MinecraftServer server, String name)
+	public long generateRandomAddressSeed(MinecraftServer server, String name)
 	{
 		// Creates a number from the dimension name that works as a seed for the Address Region
 		long seed = randomAddressFromSeed(server) ? server.getWorldData().worldGenOptions().seed() : 0;
 		return seed + name.hashCode();
 	}
 	
-	private Address.Immutable generateExtragalacticAddress(int prefix, long seed)
+	public Address.Immutable generateExtragalacticAddress(int prefix, long seed)
 	{
 		Address.Immutable extragalacticAddress;
 		
@@ -342,7 +366,7 @@ public class Universe extends SavedData
 		return extragalacticAddress;
 	}
 	
-	private Address.Immutable generateAddress(ResourceLocation galaxyID, int galaxySize, long seed)
+	public Address.Immutable generateAddressInGalaxy(ResourceKey<Galaxy> galaxyKey, int galaxySize, long seed)
 	{
 		Address.Immutable address;
 		
@@ -351,7 +375,7 @@ public class Universe extends SavedData
 			seed += i;
 			address = Address.Immutable.randomAddress(6, galaxySize, seed);
 			
-			if(!this.galaxies.get(galaxyID).containsAddressRegion(address))
+			if(!this.galaxies.get(galaxyKey).containsAddressRegion(address))
 				break;
 		}
 		
@@ -408,11 +432,11 @@ public class Universe extends SavedData
 	public void printGalaxies()
 	{
 		System.out.println("[Galaxies]");
-		this.galaxies.entrySet().stream().forEach(galaxyEntry ->
+		this.galaxies.entrySet().forEach(galaxyEntry ->
 		{
 			Galaxy.Serializable galaxy = galaxyEntry.getValue();
 			
-			System.out.println("- " + galaxyEntry.getKey().toString());
+			System.out.println("- " + galaxyEntry.getKey().location().toString());
 			galaxy.printAddressRegions();
 		});
 	}
@@ -449,19 +473,19 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
-	public AddressRegion.Serializable getAddressRegionInGalaxy(ResourceLocation galaxyID, Address.Immutable address)
+	public AddressRegion.Serializable getAddressRegionInGalaxy(ResourceKey<Galaxy> galaxyKey, Address.Immutable address)
 	{
-		if(!this.galaxies.containsKey(galaxyID))
+		if(!this.galaxies.containsKey(galaxyKey))
 			return null;
 		
-		return this.galaxies.get(galaxyID).getAddressRegion(address);
+		return this.galaxies.get(galaxyKey).getAddressRegion(address);
 	}
 	
 	/**
 	 * Gets Address Region in the same Galaxy as input Address Region
 	 * @param addressRegion
 	 * @param address
-	 * @return Returns a Address Region in the same galaxy as the input Address Region based on the input Address, null if there is no such Address Region
+	 * @return Returns an Address Region in the same galaxy as the input Address Region based on the input Address, null if there is no such Address Region
 	 */
 	@Nullable
 	public AddressRegion.Serializable getAddressRegionFromAddress(AddressRegion.Serializable addressRegion, Address address)
@@ -484,9 +508,9 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
-	public Galaxy.Serializable getGalaxy(ResourceLocation galaxyID)
+	public Galaxy.Serializable getGalaxy(ResourceKey<Galaxy> galaxyKey)
 	{
-		return this.galaxies.get(galaxyID);
+		return this.galaxies.get(galaxyKey);
 	}
 	
 	@Nullable
@@ -501,11 +525,11 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
-	public Address.Immutable getAddressInGalaxyFromAddressRegion(ResourceLocation galaxyID, AddressRegion.Serializable addressRegion)
+	public Address.Immutable getAddressInGalaxyFromAddressRegion(ResourceKey<Galaxy> galaxyKey, AddressRegion.Serializable addressRegion)
 	{
-		if(this.galaxies.containsKey(galaxyID) && addressRegion != null)
+		if(this.galaxies.containsKey(galaxyKey) && addressRegion != null)
 		{
-			Galaxy.Serializable galaxy = this.galaxies.get(galaxyID);
+			Galaxy.Serializable galaxy = this.galaxies.get(galaxyKey);
 			
 			return addressRegion.getAddressInGalaxy(galaxy);
 		}
@@ -514,9 +538,9 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
-	public Address.Immutable getAddressInGalaxyFromDimension(ResourceLocation galaxyID, ResourceKey<Level> dimension)
+	public Address.Immutable getAddressInGalaxyFromDimension(ResourceKey<Galaxy> galaxyKey, ResourceKey<Level> dimension)
 	{
-		return getAddressInGalaxyFromAddressRegion(galaxyID, getAddressRegionFromDimension(dimension));
+		return getAddressInGalaxyFromAddressRegion(galaxyKey, getAddressRegionFromDimension(dimension));
 	}
 	
 	@Nullable
@@ -604,8 +628,8 @@ public class Universe extends SavedData
 	{
 		CompoundTag galaxiesTag = new CompoundTag();
 		
-		this.galaxies.forEach((galaxyID, galaxy) ->
-			galaxiesTag.put(galaxyID.toString(), galaxy.serialize()));
+		this.galaxies.forEach((galaxyKey, galaxy) ->
+			galaxiesTag.put(galaxyKey.location().toString(), galaxy.serialize()));
 		
 		return galaxiesTag;
 	}
@@ -640,7 +664,7 @@ public class Universe extends SavedData
 			ResourceKey<Galaxy> galaxyKey = Conversion.stringToGalaxyKey(galaxyString);
 			Galaxy.Serializable galaxy = Galaxy.Serializable.deserialize(this.addressRegions, galaxyRegistry, galaxyKey, tag.getCompound(galaxyString));
 			
-			this.galaxies.put(galaxy.getKey().location(), galaxy);
+			this.galaxies.put(galaxy.getKey(), galaxy);
 		});
 	}
 	

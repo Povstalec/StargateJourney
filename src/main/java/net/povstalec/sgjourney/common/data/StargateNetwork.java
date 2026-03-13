@@ -32,7 +32,7 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public final class StargateNetwork extends SavedData
 {
-	private static boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
+	private static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
 	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network";
 	private static final String VERSION = "Version";
@@ -44,7 +44,7 @@ public final class StargateNetwork extends SavedData
 	
 	private MinecraftServer server;
 	
-	private HashMap<UUID, StargateConnection> connections = new HashMap<UUID, StargateConnection>();
+	private final HashMap<UUID, StargateConnection> connections = new HashMap<UUID, StargateConnection>();
 	private int version = 0;
 	
 	//============================================================================================
@@ -283,7 +283,7 @@ public final class StargateNetwork extends SavedData
 		else if(dialedStargate.isObstructed(server))
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_OBSTRUCTED, true);
 		
-		if(requireEnergy)
+		if(REQUIRE_ENERGY)
 		{
 			if(StargateConnection.canExtract(server, dialingStargate, connectionType.getEstablishingPowerCost()))
 				dialingStargate.extractEnergy(server, connectionType.getEstablishingPowerCost(), false);

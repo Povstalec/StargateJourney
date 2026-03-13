@@ -226,9 +226,27 @@ public class SpaceLocation
 		return GENERATED_ADDRESS_DIMENSIONS;
 	}
 	
+	@Override
+	public String toString()
+	{
+		if(dimension != null)
+			return dimension.location().toString();
+		
+		return super.toString();
+	}
+	
 	//============================================================================================
 	//********************************Registering Space Locations*********************************
 	//============================================================================================
+	
+	public static void addSpaceLocation(ResourceKey<SpaceLocation> key, SpaceLocation spaceLocation)
+	{
+		ResourceKey<Level> dimension = Conversion.locationToDimension(key.location());
+		spaceLocation.dimension = dimension;
+		DIMENSION_SPACE_LOCATIONS.put(dimension, spaceLocation);
+		if(spaceLocation.appearAmongGeneratedAddresses())
+			GENERATED_ADDRESS_DIMENSIONS.add(spaceLocation);
+	}
 	
 	public static void registerSpaceLocations(MinecraftServer server)
 	{
@@ -237,13 +255,7 @@ public class SpaceLocation
 		
 		Set<Map.Entry<ResourceKey<SpaceLocation>, SpaceLocation>> spaceLocationSet = spaceLocationRegistry.entrySet();
 		spaceLocationSet.forEach((spaceLocationEntry) ->
-		{
-			ResourceKey<Level> dimension = Conversion.locationToDimension(spaceLocationEntry.getKey().location());
-			spaceLocationEntry.getValue().dimension = dimension;
-			DIMENSION_SPACE_LOCATIONS.put(dimension, spaceLocationEntry.getValue());
-			if(spaceLocationEntry.getValue().appearAmongGeneratedAddresses())
-				GENERATED_ADDRESS_DIMENSIONS.add(spaceLocationEntry.getValue());
-		});
+				addSpaceLocation(spaceLocationEntry.getKey(), spaceLocationEntry.getValue()));
 		StargateJourney.LOGGER.info("Space Locations registered");
 	}
 }

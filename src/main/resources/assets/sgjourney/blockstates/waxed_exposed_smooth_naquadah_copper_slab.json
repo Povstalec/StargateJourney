@@ -4,7 +4,7 @@
       "model": "sgjourney:block/exposed_smooth_naquadah_copper_slab"
     },
     "type=double": {
-      "model": "sgjourney:block/exposed_smooth_naquadah_copper_slab_block"
+      "model": "sgjourney:block/exposed_smooth_naquadah_copper_block"
     },
     "type=top": {
       "model": "sgjourney:block/exposed_smooth_naquadah_copper_slab_top"
