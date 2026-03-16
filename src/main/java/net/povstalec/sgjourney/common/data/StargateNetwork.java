@@ -277,7 +277,7 @@ public final class StargateNetwork extends SavedData
 		
 		if(dialingStargate.equals(dialedStargate))
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SELF_DIAL, true);
-
+		
 		if(dialedStargate.isConnected(server))
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.ALREADY_CONNECTED, true);
 		else if(dialedStargate.isObstructed(server))
@@ -358,27 +358,27 @@ public final class StargateNetwork extends SavedData
 		});
 	}
 	
-	public final boolean sendStargateMessage(AbstractStargateEntity sendingStargate, UUID uuid, String messsage)
+	public final boolean sendStargateMessage(AbstractStargateEntity<?> sendingStargate, UUID uuid, String messsage)
 	{
 		if(hasConnection(uuid))
 		{
-			this.connections.get(uuid).sendStargateMessage(server, sendingStargate, messsage);
+			this.connections.get(uuid).sendStargateMessage(server, sendingStargate.get9ChevronAddress(), messsage);
 			return true;
 		}
 		else
 			return false;
 	}
 	
-	public final void sendStargateTransmission(AbstractStargateEntity sendingStargate, UUID uuid, int transmissionJumps, int frequency, String transmission)
+	public final void sendStargateTransmission(AbstractStargateEntity<?> sendingStargate, UUID uuid, int transmissionJumps, int frequency, String transmission)
 	{
 		if(hasConnection(uuid))
-			this.connections.get(uuid).sendStargateTransmission(server, sendingStargate, transmissionJumps, frequency, transmission);
+			this.connections.get(uuid).sendStargateTransmission(server, sendingStargate.get9ChevronAddress(), transmissionJumps, frequency, transmission);
 	}
 	
-	public final float checkStargateShieldingState(AbstractStargateEntity sendingStargate, UUID uuid)
+	public final float checkStargateShieldingState(AbstractStargateEntity<?> sendingStargate, UUID uuid)
 	{
 		if(hasConnection(uuid))
-			return this.connections.get(uuid).checkStargateShieldingState(server, sendingStargate);
+			return this.connections.get(uuid).checkStargateShieldingState(server, sendingStargate.get9ChevronAddress());
 		
 		return 0;
 	}

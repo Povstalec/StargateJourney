@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
@@ -192,6 +193,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 
 		if(level.getBlockState(realPos).getBlock() instanceof AbstractStargateBlock stargateBlock)
 			return stargateBlock.getStargate(level, realPos, state);
+		else if(level.getBlockEntity(realPos) instanceof AbstractTransporterEntity<?> transporter)
+			return transporter;
 
 		return null;
 	}
@@ -214,7 +217,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public int getStargateOpenTime()
 	{
-		if(getEnergyBlockEntity() instanceof AbstractStargateEntity stargate)
+		if(getEnergyBlockEntity() instanceof AbstractStargateEntity<?> stargate)
 			return stargate.getOpenTime();
 		
 		return -1;
@@ -222,7 +225,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public int getStargateTimeSinceLastTraveler()
 	{
-		if (getEnergyBlockEntity() instanceof AbstractStargateEntity stargate)
+		if (getEnergyBlockEntity() instanceof AbstractStargateEntity<?> stargate)
 			return stargate.getTimeSinceLastTraveler();
 		
 		return -1;
@@ -307,11 +310,11 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			int lastSymbol = interfaceEntity.currentSymbol;
 			interfaceEntity.outputEnergy(interfaceEntity.getDirection());
 			
-			if(interfaceEntity.getEnergyBlockEntity() instanceof AbstractStargateEntity stargate)
+			if(interfaceEntity.getEnergyBlockEntity() instanceof AbstractStargateEntity<?> stargate)
 			{
 				interfaceEntity.handleShielding(state, stargate);
 				
-				if(stargate instanceof RotatingStargateEntity rotatingStargate)
+				if(stargate instanceof RotatingStargateEntity<?> rotatingStargate)
 					interfaceEntity.rotateStargate(rotatingStargate);
 			}
 
@@ -328,7 +331,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		interfaceEntity.updateClient();
 	}
 	
-	private void rotateStargate(RotatingStargateEntity stargate)
+	private void rotateStargate(RotatingStargateEntity<?> stargate)
 	{
 		if(this.rotate)
 		{
@@ -341,32 +344,32 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		this.currentSymbol = stargate.getCurrentSymbol();
 	}
 	
-	protected void handleShielding(BlockState state, AbstractStargateEntity stargate)
+	protected void handleShielding(BlockState state, AbstractStargateEntity<?> stargate)
 	{
 		handleRedstone(state, stargate);
 		
-		if(stargate instanceof IrisStargateEntity irisStargate)
+		if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			handleIris(irisStargate);
 	}
 	
-	private boolean belowMaxProgress(IrisStargateEntity stargate)
+	private boolean belowMaxProgress(IrisStargateEntity<?> stargate)
 	{
 		return stargate.irisInfo().getIrisProgress() < ShieldingState.MAX_PROGRESS;
 	}
 	
-	private boolean aboveMinProgress(IrisStargateEntity stargate)
+	private boolean aboveMinProgress(IrisStargateEntity<?> stargate)
 	{
 		return stargate.irisInfo().getIrisProgress() > 0;
 	}
 	
-	protected void handleRedstone(BlockState state, AbstractStargateEntity stargate)
+	protected void handleRedstone(BlockState state, AbstractStargateEntity<?> stargate)
 	{
 		InterfaceMode mode = state.getValue(BasicInterfaceBlock.MODE);
 		
 		if(mode != InterfaceMode.IRIS || !irisMotion.isRedstone())
 			return;
 		
-		if(stargate instanceof IrisStargateEntity irisStargate)
+		if(stargate instanceof IrisStargateEntity<?> irisStargate)
 		{
 			if(signalStrength == 0 && irisMotion != StargateInfo.IrisMotion.IDLE)
 				setIrisMotion(StargateInfo.IrisMotion.IDLE);
@@ -377,7 +380,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		}
 	}
 	
-	protected void handleIris(IrisStargateEntity stargate)
+	protected void handleIris(IrisStargateEntity<?> stargate)
 	{
 		if(irisMotion.isClosing())
 		{

@@ -19,13 +19,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
@@ -299,7 +299,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		
 		if(state == ButtonState.MEMORY)
 			return Button.memoryCrystalButton(this, index, true); //TODO Display number of entries, make uninteractable if there are 0 entries
-		if(state == ButtonState.FREQUENCY)
+		if(state == ButtonState.NETWORK)
 			return Button.communicationCrystalButton(this, index, true);
 		if(state == ButtonState.MANUAL)
 			return Button.controlCrystalButton(this, index, true);
@@ -316,7 +316,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		encodedID = null;
 		
 		ServerLevel serverLevel = (ServerLevel) getLevel();
-		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), 32768F, 0).iterator(); //TODO Specify frequency
+		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), 32768F).iterator();
 		
 		if(transporterIterator.hasNext()) //TODO Limit connection distance to this Transporter
 			connectToTransporter(transporterIterator.next());
@@ -431,14 +431,14 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	public void startCoordTransport(Vec3 coords)
 	{
-		if(level.getBlockEntity(new BlockPos(coords)) instanceof AbstractTransporterEntity transporterEntity)
-			startTransport(transporterEntity.getTransporter());
+		connectedTransporter.dialTransporter(level.getServer(), Conversion.vec3ToVec3i(coords));
+		updateButtons();
 	}
 	
-	public void startTransport(Transporter target)
+	public void startIDTransport(TransporterID transporterID)
 	{
-		TransporterNetwork.get(level).createConnection(level.getServer(), connectedTransporter, target);
-		page = -1;
+		connectedTransporter.dialTransporter(level.getServer(), transporterID);
+		updateButtons();
 	}
 	
 	
@@ -447,7 +447,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	{
 		DEFAULT, // Transporter Select
 		MEMORY,
-		FREQUENCY,
+		NETWORK,
 		MANUAL,
 		
 		PAGE_FORWARD,
@@ -461,7 +461,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 			if(item instanceof ControlCrystalItem)
 				return ButtonState.MANUAL;
 			if(item instanceof CommunicationCrystalItem)
-				return ButtonState.FREQUENCY;
+				return ButtonState.NETWORK;
 			
 			return ButtonState.DEFAULT;
 		}
@@ -481,7 +481,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		protected boolean enabled;
 		
 		@Nullable
-		protected Transporter transporter = null;
+		protected TransporterID transporterID = null;
 		@Nullable
 		protected Component tooltip = null;
 		@Nullable
@@ -500,9 +500,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 			this.enabled = enabled;
 		}
 		
-		public Button setTransporter(Transporter transporter, Component tooltip, Vec3 coords)
+		public Button setTransporter(TransporterID transporterID, Component tooltip, Vec3 coords)
 		{
-			this.transporter = transporter;
+			this.transporterID = transporterID;
 			this.tooltip = tooltip;
 			this.coords = coords;
 			
@@ -511,7 +511,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		
 		public Button setTransporter(MinecraftServer server, Transporter transporter)
 		{
-			return setTransporter(transporter, transporter.getName(), transporter.getPosition(server));
+			return setTransporter(transporter.getID(), transporter.getName(), transporter.getPosition(server));
 		}
 		
 		public ButtonState state()
@@ -532,9 +532,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 		}
 		
 		@Nullable
-		public Transporter transporter()
+		public TransporterID transporterID()
 		{
-			return transporter;
+			return transporterID;
 		}
 		
 		public Button setTooltip(Component tooltip)
@@ -618,8 +618,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			return new Button(parent, index, ButtonState.DEFAULT, false).setOnPress(button ->
 			{
-				if(button.transporter() != null)
-					button.parent.startTransport(button.transporter());
+				if(button.transporterID() != null)
+					button.parent.startIDTransport(button.transporterID());
 				
 				//TODO return some feedback
 			});
@@ -629,8 +629,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			return new Button(parent, index, ButtonState.DEFAULT, true).setTransporter(server, transporter).setOnPress(button ->
 			{
-				if(button.transporter() != null)
-					button.parent.startTransport(button.transporter());
+				if(button.transporterID() != null)
+					button.parent.startIDTransport(button.transporterID());
 				
 				//TODO return some feedback
 			});
@@ -642,8 +642,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 			{
 				if(button.parent.page < 0)
 					button.parent.setBaseCrystalPage(button.parent.level.getServer(), index);
-				else if(button.transporter() != null)
-					button.parent.startTransport(button.transporter());
+				else if(button.transporterID() != null)
+					button.parent.startIDTransport(button.transporterID());
 				else if(button.coords() != null)
 					button.parent.startCoordTransport(button.coords());
 				
@@ -655,8 +655,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			return new Button(parent, index, ButtonState.MEMORY, enabled).setOnPress(button ->
 			{
-				if(button.transporter() != null)
-					button.parent.startTransport(button.transporter());
+				if(button.transporterID() != null)
+					button.parent.startIDTransport(button.transporterID());
 				
 				//TODO return some feedback
 			});
@@ -685,7 +685,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		
 		public static Button communicationCrystalButton(RingPanelEntity parent, int index, boolean enabled)
 		{
-			return new Button(parent, index, ButtonState.FREQUENCY, enabled).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.frequency").withStyle(ChatFormatting.GRAY));
+			return new Button(parent, index, ButtonState.NETWORK, enabled).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.frequency").withStyle(ChatFormatting.GRAY));
 		}
 		
 		public static Button returnButton(RingPanelEntity parent, int index)

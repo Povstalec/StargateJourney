@@ -250,7 +250,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return RenderShape.MODEL;
 	}
 	
-	public abstract AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state);
+	public abstract AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state);
 	
 	@Override
 	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
@@ -261,7 +261,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
 	{
-		AbstractStargateEntity stargate = getStargate(reader, pos, state);
+		AbstractStargateEntity<?> stargate = getStargate(reader, pos, state);
 		if(stargate != null)
 			return stargate.hasPermissions(player, sendMessage);
 		

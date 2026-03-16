@@ -38,6 +38,7 @@ import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
+import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.WormholeTravel;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
@@ -60,7 +61,7 @@ public class Wormhole
 	
 	protected boolean shouldWormhole(Vec3 center, Entity traveler, double oldTravelerX, double travelerX, double momentumX)
 	{
-		if(traveler.isPassenger())
+		if(traveler.isPassenger() || traveler.getType().is(TagInit.Entities.WORMHOLE_CANNOT_TELEPORT))
 			return false;
 		
 		Vec3 travelerPos = traveler.getBoundingBox().getCenter();
@@ -301,7 +302,8 @@ public class Wormhole
 					entity.kill();
 				
 				irisThudEvent(irisStargate, entity);
-				irisStargate.irisInfo().decreaseIrisDurability();
+				if(!entity.getType().is(TagInit.Entities.NO_IRIS_DAMAGE))
+					irisStargate.irisInfo().decreaseIrisDurability();
 			}
 		});
 		

@@ -10,19 +10,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.stargate.ClassicBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.ClassicStargate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-public class ClassicStargateEntity extends RotatingStargateEntity
+public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEntityStargate>
 {
 	public static final float CLASSIC_THICKNESS = 8.0F;
 	public static final float HORIZONTAL_CENTER_CLASSIC_HEIGHT = (CLASSIC_THICKNESS / 2) / 16;
@@ -38,8 +40,8 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.CLASSIC_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "classic/classic"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.NONE, 0, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, MAX_ROTATION);
+		super(BlockEntityInit.CLASSIC_STARGATE.get(), StargateInit.CLASSIC.get(), new ResourceLocation(StargateJourney.MODID, "classic/classic"), pos, state,
+				TOTAL_SYMBOLS, 0, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, MAX_ROTATION);
 	}
 
 	@Override
@@ -103,7 +105,7 @@ public class ClassicStargateEntity extends RotatingStargateEntity
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		CCTweakedCompatibility.registerClassicStargateMethods(wrapper);
 	}

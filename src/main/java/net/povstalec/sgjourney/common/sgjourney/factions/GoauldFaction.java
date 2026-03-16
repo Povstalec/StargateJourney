@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.common.entities.FactionMember;
 import net.povstalec.sgjourney.common.init.EntityInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SpawnerStargate;
@@ -28,7 +29,7 @@ public class GoauldFaction extends AbstractFaction
 	private static final Address.Immutable UNITAS = new Address.Immutable(2, 27, 8, 34, 24, 15);
 	
 	protected List<Address.Immutable> addresses = new ArrayList<>(); // Addresses this faction knows about and can attack
-	protected final SpawnerStargate stargate;
+	protected final SpawnerStargate spawnerStargate;
 	
 	protected final Random random;
 	@Nullable
@@ -42,7 +43,8 @@ public class GoauldFaction extends AbstractFaction
 		//this.addresses.add(RIMA);
 		//this.addresses.add(UNITAS);
 		
-		this.stargate = new SpawnerStargate(Address.Immutable.randomAddress(8, 36, 0),
+		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate();
+		this.spawnerStargate.loadStargate(Address.Immutable.randomAddress(8, 36, 0),
 				ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL,
 				randomSource -> EntityInit.JAFFA.get(), (entity, randomSource) ->
 		{
@@ -68,11 +70,11 @@ public class GoauldFaction extends AbstractFaction
 		if(incursionTarget == null)
 			return false;
 		
-		if(stargate.isConnected(server))
+		if(spawnerStargate.isConnected(server))
 			return false;
 		
-		stargate.encodeAddress(incursionTarget);
-		StargateInfo.Feedback feedback = stargate.dial(server);
+		spawnerStargate.encodeAddress(incursionTarget);
+		StargateInfo.Feedback feedback = spawnerStargate.dial(server);
 		
 		System.out.println("Dial attempt: " + feedback.getMessage());
 		

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.events.custom;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,9 +41,14 @@ public class SGJourneyEvents
 	
 	// Transporter
 	
-	public static boolean onTransporterDial(MinecraftServer server, Transporter transporter, TransporterID transporterID)
+	public static boolean onTransporterDialID(MinecraftServer server, Transporter transporter, TransporterID transporterID)
 	{
-		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.Dial(server, transporter, transporterID));
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.DialID(server, transporter, transporterID));
+	}
+	
+	public static boolean onTransporterDialCoords(MinecraftServer server, Transporter transporter, Vec3i coords)
+	{
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.DialCoords(server, transporter, coords));
 	}
 	
 	public static boolean onTransporterConnect(MinecraftServer server, Transporter transporter, Transporter connectedTransporter, TransporterConnection.Type connectionType)

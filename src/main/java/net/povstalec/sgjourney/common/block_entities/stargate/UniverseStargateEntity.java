@@ -2,10 +2,13 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.UniverseBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.UniverseStargate;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -25,7 +28,7 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 
-public class UniverseStargateEntity extends RotatingStargateEntity
+public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlockEntityStargate>
 {
 	public static final String ADDRESS_BUFFER = "AddressBuffer"; //TODO Rename to "address_buffer"
 	public static final String SYMBOL_BUFFER = "SymbolBuffer"; //TODO Rename to "symbol_buffer"
@@ -49,8 +52,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.UNIVERSE_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_1, 1, MAX_ROTATION);
+		super(BlockEntityInit.UNIVERSE_STARGATE.get(), StargateInit.UNIVERSE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state,
+				TOTAL_SYMBOLS, 1, MAX_ROTATION);
 		this.setOpenSoundLead(8);
 		
 		this.angle = this.maxRotation / 54;
@@ -278,7 +281,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		CCTweakedCompatibility.registerUniverseStargateMethods(wrapper);
 	}

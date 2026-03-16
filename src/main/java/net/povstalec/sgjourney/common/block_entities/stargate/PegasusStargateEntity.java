@@ -3,10 +3,13 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusStargate;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -26,7 +29,7 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 
-public class PegasusStargateEntity extends IrisStargateEntity
+public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntityStargate>
 {
 	public static final String ADDRESS_BUFFER = "AddressBuffer";
 	public static final String SYMBOL_BUFFER = "SymbolBuffer";
@@ -47,8 +50,8 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_3, 3);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateInit.PEGASUS.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state,
+				TOTAL_SYMBOLS, 3);
 		this.setOpenSoundLead(13);
 		
 		this.dhdInfo = new DHDInfo(this)
@@ -375,7 +378,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		CCTweakedCompatibility.registerPegasusStargateMethods(wrapper);
 	}

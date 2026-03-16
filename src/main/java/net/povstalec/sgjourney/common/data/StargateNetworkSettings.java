@@ -14,6 +14,7 @@ public class StargateNetworkSettings extends SavedData
 {
 	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network_settings";
 	
+	private static final String USE_DATAPACK_ADDRESSES = "use_datapack_addresses"; //TODO For legacy reasons
 	private static final String RANDOMIZE_ADDRESSES = "randomize_addresses";
 	private static final String GENERATE_RANDOM_SOLAR_SYSTEMS = "generate_random_solar_systems";
 	private static final String RANDOM_ADDRESS_FROM_SEED = "random_address_from_seed";
@@ -59,6 +60,8 @@ public class StargateNetworkSettings extends SavedData
 	{
 		if(this.stargateNetworkSettings.contains(RANDOMIZE_ADDRESSES))
 			return this.stargateNetworkSettings.getBoolean(RANDOMIZE_ADDRESSES);
+		else if(this.stargateNetworkSettings.contains(USE_DATAPACK_ADDRESSES))
+			return !this.stargateNetworkSettings.getBoolean(USE_DATAPACK_ADDRESSES);
 		
 		return CommonStargateNetworkConfig.randomize_addresses.get();
 	}

@@ -4,17 +4,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.stargate.TollanBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.TollanStargate;
 
-public class TollanStargateEntity extends AbstractStargateEntity
+public class TollanStargateEntity extends AbstractStargateEntity<TollanBlockEntityStargate>
 {
 	public static final int TOTAL_SYMBOLS = 48;
 	
@@ -24,8 +26,8 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_2, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), StargateInit.TOLLAN.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state,
+				TOTAL_SYMBOLS, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		CCTweakedCompatibility.registerTollanStargateMethods(wrapper);
 	}

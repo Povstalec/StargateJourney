@@ -15,17 +15,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.povstalec.sgjourney.common.blocks.transporter.TransportRingsBlock;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.init.TransporterInit;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransportRings;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class TransportRingsEntity extends AbstractTransporterEntity
+public class TransportRingsEntity extends AbstractTransporterEntity<TransportRings>
 {
 	public static final String EMPTY_SPACE = "empty_space";
 	public static final String TRANSPORT_HEIGHT = "transport_height";
@@ -43,7 +46,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), pos, state);
+		super(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransporterInit.GOAULD_TRANSPORT_RINGS.get(), pos, state);
 	}
 	
 	@Override
@@ -131,6 +134,11 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 		return super.resetTransporter(feedback);
 	}
 	
+	@Override
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<TransporterPeripheral> wrapper)
+	{
+		CCTweakedCompatibility.registerTransportRingsMethods(wrapper);
+	}
 	
 	
 	public int getTransportHeight()
@@ -208,6 +216,12 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 			return this.level.getBlockState(pos).getValue(TransportRingsBlock.ACTIVATED);
 		
 		return false;
+	}
+	
+	@Override
+	public boolean isObstructed()
+	{
+		return getEmptySpace() == 0;
 	}
 	
 	@Override

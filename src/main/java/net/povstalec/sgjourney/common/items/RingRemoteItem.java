@@ -5,13 +5,15 @@ import java.util.*;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+import net.povstalec.sgjourney.common.sgjourney.Transporting;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,13 +30,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 
-public class RingRemoteItem extends Item
+public class RingRemoteItem extends HolderItem
 {
+	public static final String INDEX = "index";
+	
 	public RingRemoteItem(Properties properties)
 	{
 		super(properties);
@@ -59,13 +62,51 @@ public class RingRemoteItem extends Item
 		};
 	}
 	
-	public ItemStack getHeldItem(ItemStack holderStack)
+	protected int getIndex(ItemStack holderStack)
 	{
-		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-		if(itemHandler == null)
-			return ItemStack.EMPTY;
+		if(!holderStack.hasTag())
+			return 0;
 		
-		return itemHandler.getStackInSlot(0);
+		int index;
+		
+		CompoundTag tag = holderStack.getTag();
+		
+		index = tag.getInt(INDEX);
+		
+		return index;
+	}
+	
+	protected void setIndex(ItemStack holderStack, int index)
+	{
+		CompoundTag tag = holderStack.getOrCreateTag();
+		tag.putInt(INDEX, index);
+	}
+	
+	protected int incrementIndex(ItemStack holderStack)
+	{
+		int index = getIndex(holderStack);
+		index++;
+		setIndex(holderStack, index);
+		
+		return index;
+	}
+	
+	protected int getCrystalMemoryAmount(ItemStack holderStack)
+	{
+		return MemoryCrystalItem.getMemoryListSize(getHeldItem(holderStack));
+	}
+	
+	protected void handleDestinationSelect(ItemStack holderStack, Player player)
+	{
+		int index = incrementIndex(holderStack);
+		
+		if(index >= getCrystalMemoryAmount(holderStack))
+		{
+			index = 0;
+			setIndex(holderStack, index);
+		}
+		
+		player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.index").append(Component.literal(" " + index)).withStyle(ChatFormatting.BLUE), true);
 	}
 	
 	public boolean hasMemoryCrystal(ItemStack stack)
@@ -73,65 +114,65 @@ public class RingRemoteItem extends Item
 		return !getHeldItem(stack).isEmpty();
 	}
 	
+	protected void handleTransport(Level level, Player player, InteractionHand hand)
+	{
+		ItemStack stack = player.getItemInHand(hand);
+		if(!hasMemoryCrystal(stack))
+		{
+			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_memory_crystal").withStyle(ChatFormatting.BLUE), true); //TODO Transport to nearest Transport Rings
+			return;
+		}
+		
+		if(level.isClientSide())
+			return;
+		
+		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		{
+			ItemStack crystalStack = itemHandler.getStackInSlot(0);
+			MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(crystalStack, MemoryEntry.Type.TRANSPORTER_ID, getIndex(stack));
+			if(transporterID == null)
+			{
+				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_coordinates").withStyle(ChatFormatting.BLUE), true);
+				return;
+			}
+			
+			memoryTransport(level, player, transporterID.entry());
+		});
+	}
+	
+	private void memoryTransport(Level level, Player player, TransporterID transporterID)
+	{
+		AbstractTransporterEntity transporter = LocatorHelper.getNearestTransporter(level, player.blockPosition(), 16);
+		if(transporter != null)
+		{
+			if(!transporter.canTransport())
+				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.BLUE), true);
+			else
+			{
+				TransporterInfo.Feedback feedback = transporter.dialTransporter(transporterID);
+				if(feedback.isError())
+					player.displayClientMessage(feedback.getFeedbackMessage(), true);
+			}
+		}
+		else
+			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.BLUE), true);
+	}
+	
 	@Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
 	{
-		ItemStack itemstack = player.getItemInHand(hand);
+		ItemStack stack = player.getItemInHand(hand);
 		
-		if(player.isShiftKeyDown() && !level.isClientSide())
+		if(!level.isClientSide())
 		{
-			ItemStack mainHandStack = player.getItemInHand(InteractionHand.MAIN_HAND);
-			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
-			
-			if(offHandStack.is(ItemInit.RING_REMOTE.get()))
-			{
-				offHandStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-				{
-					ItemStack returnStack;
-					if(!mainHandStack.isEmpty())
-						returnStack = itemHandler.insertItem(0, mainHandStack, false);
-					else
-						returnStack = itemHandler.extractItem(0, 1, false);
-					
-					player.setItemInHand(InteractionHand.MAIN_HAND, returnStack);
-				});
-				
-			}
-		}
-		else if(!player.isShiftKeyDown())
-		{
-			ItemStack stack = player.getItemInHand(hand);
-			if(!hasMemoryCrystal(stack))
-				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_memory_crystal").withStyle(ChatFormatting.BLUE), true);
-			else
-			{
-				if(!level.isClientSide())
-				{
-					stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-					{
-						ItemStack crystalStack = itemHandler.getStackInSlot(0);
-						
-						//TODO Transport based on coords, let players choose from the list of transport locations
-						if(crystalStack.getItem() instanceof MemoryCrystalItem)
-							tryStartTransport(level, player, transporterFromIDEntry(level, MemoryCrystalItem.loadFirstMemoryEntry(crystalStack, MemoryEntry.Type.TRANSPORTER_ID)));
-						else
-							player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_coordinates").withStyle(ChatFormatting.BLUE), true);
-					});
-				}
-			}
+			if(player.isShiftKeyDown())
+				handleDestinationSelect(stack, player);
+			else if(!player.isShiftKeyDown())
+				handleTransport(level, player, hand);
 		}
 		
-		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
-	
-	@Nullable
-	private static Transporter transporterFromIDEntry(Level level, MemoryEntry.TransporterID transporterID)
-	{
-		if(transporterID == null)
-			return null;
-		
-		return TransporterNetwork.get(level).getTransporter(transporterID.entry());
-	}
 	
 	@Nullable
 	private static Transporter transporterFromCoords(Level level, Vec3i coords)
@@ -143,34 +184,19 @@ public class RingRemoteItem extends Item
 		return null;
 	}
 	
-	public Optional<Transporter> findNearestTransportRings(Level level, BlockPos blockPos, int maxDistance)
+	protected String indexPrefix(int index, boolean isSelected)
 	{
-		List<Transporter> transporters = LocatorHelper.findNearestTransporters((ServerLevel) level, blockPos, maxDistance, 0); //TODO Specify frequency
+		if(isSelected)
+			return "-> [" + index + "] ";
 		
-		if(!transporters.isEmpty())
-			return Optional.of(transporters.get(0));
-		
-		return Optional.empty();
-	}
-	
-	private void tryStartTransport(Level level, Player player, @Nullable Transporter target)
-	{
-		/*Optional<TransportRingsEntity> transportRings = findNearestTransportRings(level, player.blockPosition(), 16);
-		if(transportRings.isPresent())
-		{
-			if(target != null && transportRings.get().canTransport() && transportRings.get().canTransport())
-					transportRings.get().startTransport(target);
-			else
-				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.BLUE), true);
-		}
-		else
-			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.BLUE), true);*/
+		return "[" + index + "] ";
 	}
 	
 	@Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
 		ItemStack heldItem = getHeldItem(stack);
+		int indexAt = getIndex(stack);
 		
 		MutableComponent itemComponent = Component.translatable("tooltip.sgjourney.holding").append(Component.literal(": "));
 		if(heldItem.isEmpty())
@@ -186,7 +212,7 @@ public class RingRemoteItem extends Item
 			{
 				MemoryEntry.Type type = MemoryCrystalItem.memoryTypeAt(list, i);
 				if(type == MemoryEntry.Type.TRANSPORTER_ID || type == MemoryEntry.Type.COORDINATES)
-					tooltipComponents.add(Component.literal("[" + i + "] ").withStyle(ChatFormatting.BLUE).append(memoryTypeAt(list, type, i)));
+					tooltipComponents.add(Component.literal(indexPrefix(i, i == indexAt)).withStyle(ChatFormatting.BLUE).append(memoryTypeAt(list, type, i)));
 			}
 		}
 

@@ -1,27 +1,26 @@
 package net.povstalec.sgjourney.common.sgjourney.info;
 
 import net.minecraft.nbt.CompoundTag;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddressFilterInfo
+public class TransporterIDFilterInfo
 {
-	public static final String FILTER_TYPE = "FilterType";
-	public static final String WHITELIST = "Whitelist";
-	public static final String BLACKLIST = "Blacklist";
+	public static final String FILTER_TYPE = "filter_type";
+	public static final String WHITELIST = "whitelist";
+	public static final String BLACKLIST = "blacklist";
 	
 	private FilterType filterType;
-	private final ArrayList<HiddenAddress> whitelist;
-	private final ArrayList<HiddenAddress> blacklist;
+	private final ArrayList<HiddenID> whitelist;
+	private final ArrayList<HiddenID> blacklist;
 	
-	public AddressFilterInfo()
+	public TransporterIDFilterInfo()
 	{
 		filterType = FilterType.NONE;
-		whitelist = new ArrayList<HiddenAddress>();
-		blacklist = new ArrayList<HiddenAddress>();
+		whitelist = new ArrayList<HiddenID>();
+		blacklist = new ArrayList<HiddenID>();
 	}
 	
 	public void deserializeFilters(CompoundTag tag)
@@ -35,7 +34,7 @@ public class AddressFilterInfo
 			
 			for(String addressString : whitelistTag.getAllKeys())
 			{
-				this.whitelist.add(new HiddenAddress(new Address.Immutable(addressString), whitelistTag.getBoolean(addressString)));
+				this.whitelist.add(new HiddenID(new TransporterID.Immutable(addressString), whitelistTag.getBoolean(addressString)));
 			}
 		}
 		
@@ -45,7 +44,7 @@ public class AddressFilterInfo
 			
 			for(String addressString : blacklistTag.getAllKeys())
 			{
-				this.blacklist.add(new HiddenAddress(new Address.Immutable(addressString), blacklistTag.getBoolean(addressString)));
+				this.blacklist.add(new HiddenID(new TransporterID.Immutable(addressString), blacklistTag.getBoolean(addressString)));
 			}
 		}
 	}
@@ -57,14 +56,14 @@ public class AddressFilterInfo
 		CompoundTag whitelistTag = new CompoundTag();
 		CompoundTag blacklistTag = new CompoundTag();
 		
-		for(HiddenAddress hiddenAddress : this.whitelist)
+		for(HiddenID hiddenID : this.whitelist)
 		{
-			whitelistTag.putBoolean(hiddenAddress.address().toString(), hiddenAddress.isVisible());
+			whitelistTag.putBoolean(hiddenID.transporterID().toString(), hiddenID.isVisible());
 		}
 		
-		for(HiddenAddress hiddenAddress : this.blacklist)
+		for(HiddenID hiddenID : this.blacklist)
 		{
-			blacklistTag.putBoolean(hiddenAddress.address().toString(), hiddenAddress.isVisible());
+			blacklistTag.putBoolean(hiddenID.transporterID().toString(), hiddenID.isVisible());
 		}
 		
 		tag.put(WHITELIST, whitelistTag);
@@ -83,42 +82,42 @@ public class AddressFilterInfo
 		return this.filterType;
 	}
 	
-	public boolean isAddressWhitelisted(Address address)
+	public boolean isIDWhitelisted(TransporterID transporterID)
 	{
-		return this.whitelist.contains(address);
+		return this.whitelist.contains(transporterID);
 	}
 	
-	public boolean addToWhitelist(Address.Immutable address, boolean isVisible)
+	public boolean addToWhitelist(TransporterID.Immutable transporterID, boolean isVisible)
 	{
-		if(this.whitelist.contains(address))
+		if(this.whitelist.contains(transporterID))
 		{
-			for(HiddenAddress hiddenAddress : this.whitelist)
+			for(HiddenID hiddenID : this.whitelist)
 			{
-				if(hiddenAddress.address().equals(address))
+				if(hiddenID.transporterID().equals(transporterID))
 				{
-					hiddenAddress.isVisible = isVisible;
+					hiddenID.isVisible = isVisible;
 					break;
 				}
 			}
 			return false;
 		}
 		
-		this.whitelist.add(new HiddenAddress(address, isVisible));
+		this.whitelist.add(new HiddenID(transporterID, isVisible));
 		
 		return true;
 	}
 	
-	public boolean removeFromWhitelist(Address address)
+	public boolean removeFromWhitelist(TransporterID transporterID)
 	{
-		if(!this.whitelist.contains(address))
+		if(!this.whitelist.contains(transporterID))
 			return false;
 		
-		this.whitelist.remove(address);
+		this.whitelist.remove(transporterID);
 		
 		return true;
 	}
 	
-	public List<HiddenAddress> getWhitelist()
+	public List<HiddenID> getWhitelist()
 	{
 		return this.whitelist;
 	}
@@ -128,42 +127,42 @@ public class AddressFilterInfo
 		this.whitelist.clear();
 	}
 	
-	public boolean isAddressBlacklisted(Address address)
+	public boolean isIDBlacklisted(TransporterID transporterID)
 	{
-		return this.blacklist.contains(address);
+		return this.blacklist.contains(transporterID);
 	}
 	
-	public boolean addToBlacklist(Address address, boolean isVisible)
+	public boolean addToBlacklist(TransporterID transporterID, boolean isVisible)
 	{
-		if(this.blacklist.contains(address))
+		if(this.blacklist.contains(transporterID))
 		{
-			for(HiddenAddress hiddenAddress : this.blacklist)
+			for(HiddenID hiddenID : this.blacklist)
 			{
-				if(hiddenAddress.address().equals(address))
+				if(hiddenID.transporterID().equals(transporterID))
 				{
-					hiddenAddress.isVisible = isVisible;
+					hiddenID.isVisible = isVisible;
 					break;
 				}
 			}
 			return false;
 		}
 		
-		this.blacklist.add(new HiddenAddress(address, isVisible));
+		this.blacklist.add(new HiddenID(transporterID, isVisible));
 		
 		return true;
 	}
 	
-	public boolean removeFromBlacklist(Address.Immutable address)
+	public boolean removeFromBlacklist(TransporterID.Immutable transporterID)
 	{
-		if(!this.blacklist.contains(address))
+		if(!this.blacklist.contains(transporterID))
 			return false;
 		
-		this.blacklist.remove(address);
+		this.blacklist.remove(transporterID);
 		
 		return true;
 	}
 	
-	public List<HiddenAddress> getBlacklist()
+	public List<HiddenID> getBlacklist()
 	{
 		return this.blacklist;
 	}
@@ -219,20 +218,20 @@ public class AddressFilterInfo
 		}
 	}
 	
-	public static class HiddenAddress
+	public static class HiddenID
 	{
-		private final Address.Immutable address;
+		private final TransporterID.Immutable transporterID;
 		private boolean isVisible;
 		
-		public HiddenAddress(Address address, boolean isVisible)
+		public HiddenID(TransporterID transporterID, boolean isVisible)
 		{
-			this.address = new Address.Immutable(address);
+			this.transporterID = new TransporterID.Immutable(transporterID);
 			this.isVisible = isVisible;
 		}
 		
-		public Address.Immutable address()
+		public TransporterID.Immutable transporterID()
 		{
-			return this.address;
+			return this.transporterID;
 		}
 		
 		public boolean isVisible()
@@ -243,7 +242,7 @@ public class AddressFilterInfo
 		@Override
 		public boolean equals(Object object)
 		{
-			return address.equals(object);
+			return transporterID.equals(object);
 		}
 	}
 	
@@ -251,6 +250,6 @@ public class AddressFilterInfo
 	
 	public interface Interface
 	{
-		AddressFilterInfo addressFilterInfo();
+		TransporterIDFilterInfo transporterIDFilterInfo();
 	}
 }

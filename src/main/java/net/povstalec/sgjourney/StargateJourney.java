@@ -104,6 +104,8 @@ public class StargateJourney
 		StructurePlacementInit.register(eventBus);
 
         GalaxyInit.register(eventBus);
+		StargateInit.register(eventBus);
+		TransporterInit.register(eventBus);
         
         AdvancementInit.register();
         
@@ -148,9 +150,6 @@ public class StargateJourney
             StatisticsInit.register();
             PacketHandlerInit.register();
     		VillagerInit.registerPOIs();
-			
-			StargateInit.register();
-			TransporterInit.register();
     	});
     }
 	

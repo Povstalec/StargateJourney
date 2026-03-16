@@ -14,27 +14,29 @@ import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class IrisStargateEntity extends AbstractStargateEntity implements IrisInfo.Interface
+public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> extends AbstractStargateEntity<SG> implements IrisInfo.Interface
 {
 	protected IrisInfo irisInfo;
 	
-	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-							  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
+	public IrisStargateEntity(BlockEntityType<?> blockEntityType, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+							  int totalSymbols, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
 	{
-		super(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
+		super(blockEntityType, stargateType, defaultVariant, pos, state, totalSymbols, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
 		
 		this.irisInfo = new IrisInfo(this);
 	}
 	
-	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-							  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork)
+	public IrisStargateEntity(BlockEntityType<?> blockEntityType, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+							  int totalSymbols, int defaultNetwork)
 	{
-		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
+		this(blockEntityType, stargateType, defaultVariant, pos, state, totalSymbols, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -12,6 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInte
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -20,9 +22,10 @@ import java.util.UUID;
 public interface Transporter
 {
 	String DIMENSION = "Dimension";
-	String COORDINATES = "Coordinates";
 	
 	String CUSTOM_NAME = "CustomName";
+	
+	TransporterType<?> getTransporterType();
 	
 	/**
 	 * @return ID of the Transporter
@@ -92,10 +95,22 @@ public interface Transporter
 	double getInnerRadius();
 	
 	/**
-	 * @param frequency Frequency to be tested
-	 * @return True if the specified frequency is accepted by the Transporter, otherwise false
+	 * @return The network this Transporter is a part of
 	 */
-	boolean acceptsFrequency(int frequency);
+	default int getNetwork()
+	{
+		return 0;
+	}
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @param network Network ID to test
+	 * @return False if the provided network passes the restriction check successfully, otherwise true
+	 */
+	default boolean isRestricted(MinecraftServer server, int network)
+	{
+		return false;
+	}
 	
 	/**
 	 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Transporter, where X is the direction which the Transporter is facing, Y is Transporter's up direction and Z is Transporter's right direction
@@ -173,12 +188,35 @@ public interface Transporter
 	
 	boolean isConnected(MinecraftServer server);
 	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return True if this Stargate is currently obstructed, otherwise false
+	 */
+	boolean isObstructed(MinecraftServer server);
+	
 	void updateTicks(MinecraftServer server, int connectionTime);
 	
+	TransporterInfo.Feedback tryConnect(MinecraftServer server, Transporter initiatingTransporter);
+	
+	//============================================================================================
+	//**********************************Additional functionality**********************************
+	//============================================================================================
+	
+	TransporterIDFilterInfo transporterIDFilterInfo(MinecraftServer server);
+	
+	TransporterInfo.Feedback dialTransporter(MinecraftServer server, TransporterID otherID);
+	
+	TransporterInfo.Feedback dialTransporter(MinecraftServer server, Vec3i coords);
+	
+	//============================================================================================
+	//*************************************Saving and Loading*************************************
+	//============================================================================================
+	
 	/**
-	 * @return Transporter info serialized into a CompoundTag
+	 * Serializes Transporter info into a tag
+	 * @param tag CompoundTag that will store the serialized information
 	 */
-	CompoundTag serializeNBT();
+	void serializeNBT(CompoundTag tag);
 	
 	/**
 	 * Deserializes the Transporter info

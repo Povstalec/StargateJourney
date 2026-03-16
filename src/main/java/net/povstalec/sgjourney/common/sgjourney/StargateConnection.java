@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +9,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -292,7 +290,7 @@ public class StargateConnection
 		
 		if(!stargate.isConnected(server))
 		{
-			StargateJourney.LOGGER.info("Stargate is not connected");
+			StargateJourney.LOGGER.info("Stargate {} is not connected", stargate.get9ChevronAddress());
 			return false;
 		}
 		
@@ -338,13 +336,13 @@ public class StargateConnection
 			List<Integer> emptyAddressList = new ArrayList<>();
 			for(Stargate dialedStargate : this.dialedStargates)
 			{
-				List<Integer> dialedAddressList = Arrays.stream(dialedStargate.getAddress(server).getArray()).boxed().toList();
+				List<Integer> dialedAddressList = dialedStargate.getAddress(server).toList();
 				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.BASIC, EVENT_INCOMING_WORMHOLE, emptyAddressList);
 				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.CRYSTAL, EVENT_INCOMING_WORMHOLE, emptyAddressList);
 				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.ADVANCED_CRYSTAL, EVENT_INCOMING_WORMHOLE, dialedAddressList);
 			}
 			
-			List<Integer> dialingAddressList = Arrays.stream(dialingStargate.getAddress(server).getArray()).boxed().toList();
+			List<Integer> dialingAddressList = dialingStargate.getAddress(server).toList();
 			dialingStargate.updateInterfaceBlocks(server, null, EVENT_OUTGOING_WORMHOLE, dialingAddressList);
 		}
 	}
@@ -500,9 +498,9 @@ public class StargateConnection
 			this.openTime = this.connectionTime - maxKawooshTicks;
 	}
 	
-	public void sendStargateMessage(MinecraftServer server, AbstractStargateEntity sendingStargate, String message)
+	public void sendStargateMessage(MinecraftServer server, Address address, String message)
 	{
-		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
+		if(address.equals(this.dialingStargate.get9ChevronAddress()))
 		{
 			for(Stargate dialedStargate : this.dialedStargates)
 			{
@@ -513,9 +511,9 @@ public class StargateConnection
 			this.dialingStargate.receiveStargateMessage(server, message);
 	}
 	
-	public void sendStargateTransmission(MinecraftServer server, AbstractStargateEntity sendingStargate, int transmissionJumps, int frequency, String transmission)
+	public void sendStargateTransmission(MinecraftServer server, Address address, int transmissionJumps, int frequency, String transmission)
 	{
-		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
+		if(address.equals(this.dialingStargate.get9ChevronAddress()))
 		{
 			for(Stargate dialedStargate : this.dialedStargates)
 			{
@@ -526,9 +524,9 @@ public class StargateConnection
 			this.dialingStargate.forwardTransmission(server, transmissionJumps, frequency, transmission);
 	}
 	
-	public float checkStargateShieldingState(MinecraftServer server, AbstractStargateEntity sendingStargate)
+	public float checkStargateShieldingState(MinecraftServer server, Address address)
 	{
-		if(sendingStargate.get9ChevronAddress().equals(this.dialingStargate.get9ChevronAddress()))
+		if(address.equals(this.dialingStargate.get9ChevronAddress()))
 			return getDialedStargate().checkStargateShieldingState(server);
 		else
 			return this.dialingStargate.checkStargateShieldingState(server);

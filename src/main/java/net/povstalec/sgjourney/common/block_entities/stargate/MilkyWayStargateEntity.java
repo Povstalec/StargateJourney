@@ -13,19 +13,22 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.stargate.MilkyWayBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.MilkyWayStargate;
 import org.jetbrains.annotations.NotNull;
 
-public class MilkyWayStargateEntity extends RotatingStargateEntity
+public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlockEntityStargate>
 {
 	public static final String IS_CHEVRON_OPEN = "is_chevron_open";
 	
@@ -41,8 +44,8 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_2, 2, MAX_ROTATION);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), StargateInit.MILKY_WAY.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state,
+				TOTAL_SYMBOLS, 2, MAX_ROTATION);
 	}
 
 	@Override
@@ -264,7 +267,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		CCTweakedCompatibility.registerMilkyWayStargateMethods(wrapper);
 	}

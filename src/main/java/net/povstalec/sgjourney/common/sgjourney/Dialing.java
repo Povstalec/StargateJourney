@@ -2,16 +2,22 @@ package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class Dialing
 {
@@ -20,6 +26,10 @@ public class Dialing
 	public static final int[] DIALED_9_CHEVRON_CONFIGURATION = new int [] {1, 2, 3, 4, 5, 6, 7, 8};
 	
 	public static final int[] DEFAULT_CHEVRON_CONFIGURATION = DIALED_7_CHEVRON_CONFIGURATION;
+	
+	//============================================================================================
+	//******************************************Stargate******************************************
+	//============================================================================================
 	
 	public static int[] getChevronConfiguration(Address.Type addressType)
 	{
@@ -48,6 +58,15 @@ public class Dialing
 	
 	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh)
 	{
+		if(dialingStargate.addressFilterInfo(server).getFilterType().shouldFilter())
+		{
+			if(dialingStargate.addressFilterInfo(server).getFilterType().isBlacklist() && dialingStargate.addressFilterInfo(server).isAddressBlacklisted(address))
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_BLACKLISTED, true);
+			
+			else if(dialingStargate.addressFilterInfo(server).getFilterType().isWhitelist() && !dialingStargate.addressFilterInfo(server).isAddressWhitelisted(address))
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_NOT_WHITELISTED, true);
+		}
+		
 		return dialStargate(server, dialingStargate, address, doKawoosh, false);
 	}
 	
@@ -169,4 +188,69 @@ public class Dialing
 	{
 		return StargateNetwork.get(server).createConnection(server, dialingStargate, dialedStargate, addressType, doKawoosh);
 	}
+	
+	//============================================================================================
+	//****************************************Transporter*****************************************
+	//============================================================================================
+	
+	public static TransporterInfo.Feedback dialTransporterID(MinecraftServer server, Transporter dialingTransporter, TransporterID targetID, boolean mustBeLoaded)
+	{
+		if(SGJourneyEvents.onTransporterDialID(server, dialingTransporter, targetID))
+			return TransporterInfo.Feedback.NONE;
+		
+		Transporter target = TransporterNetwork.get(server).getTransporter(targetID);
+		if(target == null)
+			return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.INVALID_TRANSPORTER_ID);
+		
+		return connectionAttempt(server, dialingTransporter, target, mustBeLoaded);
+	}
+	
+	public static TransporterInfo.Feedback dialTransporterCoords(MinecraftServer server, Transporter dialingTransporter, Vec3i coords, boolean mustBeLoaded)
+	{
+		if(SGJourneyEvents.onTransporterDialCoords(server, dialingTransporter, coords))
+			return TransporterInfo.Feedback.NONE;
+		
+		ServerLevel level = dialingTransporter.getLevel(server);
+		if(level == null)
+		{
+			StargateJourney.LOGGER.error("Dialing Transporter is not located in any dimension");
+			return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.UNKNOWN_ERROR);
+		}
+		
+		BlockEntity blockEntity = dialingTransporter.getLevel(server).getBlockEntity(new BlockPos(coords));
+		if(blockEntity instanceof AbstractTransporterEntity transporterEntity)
+		{
+			Transporter target = transporterEntity.getTransporter();
+			if(target == null)
+				return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.INVALID_TRANSPORTER_ID); //TODO no transporter at coords
+			
+			return connectionAttempt(server, dialingTransporter, target, mustBeLoaded);
+		}
+		else
+			return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.INVALID_TRANSPORTER_ID); //TODO no transporter at coords
+	}
+	
+	private static TransporterInfo.Feedback connectionAttempt(MinecraftServer server, Transporter initiatingTransporter, Transporter targetTransporter, boolean mustBeLoaded)
+	{
+		if(mustBeLoaded && !targetTransporter.isLoaded(server))
+			return TransporterInfo.Feedback.TARGET_NOT_LOADED;
+		
+		if(initiatingTransporter.transporterIDFilterInfo(server).getFilterType().shouldFilter())
+		{
+			if(initiatingTransporter.transporterIDFilterInfo(server).getFilterType().isBlacklist() && initiatingTransporter.transporterIDFilterInfo(server).isIDBlacklisted(targetTransporter.getID()))
+				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_BLACKLISTED);
+			
+			else if(initiatingTransporter.transporterIDFilterInfo(server).getFilterType().isWhitelist() && !initiatingTransporter.transporterIDFilterInfo(server).isIDWhitelisted(targetTransporter.getID()))
+				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_NOT_WHITELISTED);
+		}
+		
+		return targetTransporter.tryConnect(server, initiatingTransporter);
+	}
+	
+	public static TransporterInfo.Feedback connectTransporters(MinecraftServer server, Transporter transporterA, Transporter transporterB)
+	{
+		return TransporterNetwork.get(server).createConnection(server, transporterA, transporterB);
+	}
+	
+	
 }

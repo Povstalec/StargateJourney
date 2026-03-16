@@ -6,6 +6,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
@@ -156,5 +157,10 @@ public class Conversion
 	public static String ticksToString(int ticks)
 	{
 		return secondsToString(ticksToSeconds(ticks));
+	}
+	
+	public static Vec3i vec3ToVec3i(Vec3 vec3)
+	{
+		return new Vec3i((int) Math.floor(vec3.x), (int) Math.floor(vec3.y), (int) Math.floor(vec3.z));
 	}
 }

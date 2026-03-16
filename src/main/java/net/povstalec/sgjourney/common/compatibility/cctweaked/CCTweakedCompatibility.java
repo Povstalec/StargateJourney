@@ -3,9 +3,14 @@ package net.povstalec.sgjourney.common.compatibility.cctweaked;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.*;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 
 public class CCTweakedCompatibility
 {
+	//============================================================================================
+	//******************************************Stargate******************************************
+	//============================================================================================
+	
 	private static void irisMethods(StargatePeripheral peripheral)
 	{
 		peripheral.registerMethod(new IrisMethods.GetIris());
@@ -82,7 +87,7 @@ public class CCTweakedCompatibility
 	
 	
 	
-	public static void registerUniverseStargateMethods(StargatePeripheralWrapper wrapper)
+	public static void registerUniverseStargateMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
@@ -108,7 +113,7 @@ public class CCTweakedCompatibility
 		}
 	}
 	
-	public static void registerMilkyWayStargateMethods(StargatePeripheralWrapper wrapper)
+	public static void registerMilkyWayStargateMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 
@@ -147,7 +152,7 @@ public class CCTweakedCompatibility
 		}
 	}
 	
-	public static void registerPegasusStargateMethods(StargatePeripheralWrapper wrapper)
+	public static void registerPegasusStargateMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
@@ -177,7 +182,7 @@ public class CCTweakedCompatibility
 		}
 	}
 	
-	public static void registerTollanStargateMethods(StargatePeripheralWrapper wrapper)
+	public static void registerTollanStargateMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
@@ -199,7 +204,7 @@ public class CCTweakedCompatibility
 		}
 	}
 	
-	public static void registerClassicStargateMethods(StargatePeripheralWrapper wrapper)
+	public static void registerClassicStargateMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
 		StargatePeripheral peripheral = wrapper.getPeripheral();
 		
@@ -223,6 +228,26 @@ public class CCTweakedCompatibility
 			genericAdvancedCrystalMethods(peripheral);
 			
 			filterMethods(peripheral);
+		}
+	}
+	
+	//============================================================================================
+	//****************************************Transporter*****************************************
+	//============================================================================================
+	
+	public static void registerTransportRingsMethods(SGJourneyPeripheralWrapper<TransporterPeripheral> wrapper)
+	{
+		TransporterPeripheral peripheral = wrapper.getPeripheral();
+		
+		AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
+		
+		peripheral.registerMethod(new TransporterMethods.GetRecentFeedback());
+		peripheral.registerMethod(new TransporterMethods.LocalTransporterID());
+		peripheral.registerMethod(new TransporterMethods.DialCoords());
+		
+		if(type.hasCrystalMethods())
+		{
+			peripheral.registerMethod(new TransporterMethods.DialTransporterID());
 		}
 	}
 }

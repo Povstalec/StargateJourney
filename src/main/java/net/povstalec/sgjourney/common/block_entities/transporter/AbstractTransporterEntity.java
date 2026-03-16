@@ -2,22 +2,28 @@ package net.povstalec.sgjourney.common.block_entities.transporter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
-import net.povstalec.sgjourney.common.sgjourney.Transporting;
+import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -25,7 +31,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
@@ -33,12 +38,14 @@ import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
-public abstract class AbstractTransporterEntity extends EnergyBlockEntity implements StructureGenEntity, Nameable, PDAStatus
+public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergyBlockEntity implements StructureGenEntity, Nameable, TransporterIDFilterInfo.Interface, /*ProtectedBlockEntity,*/ PDAStatus //TODO ProtectedBlockEntity
 {
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
 	public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;
 	public static final String CUSTOM_NAME = "CustomName";
+	
+	private TransporterType<T> transporterType;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
@@ -51,9 +58,14 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	@Nullable
 	private Component name;
 	
-	public AbstractTransporterEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
+	protected TransporterIDFilterInfo transporterIDFilterInfo;
+	
+	public AbstractTransporterEntity(BlockEntityType<?> blockEntityType, TransporterType<T> transporterType, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state);
+		super(blockEntityType, pos, state);
+		this.transporterType = transporterType;
+		
+		this.transporterIDFilterInfo = new TransporterIDFilterInfo();
 	}
 	
 	@Override
@@ -99,6 +111,11 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
 	}
 	
+	public final TransporterType<T> getTransporterType()
+	{
+		return transporterType;
+	}
+	
 	public void setID(TransporterID.Immutable transporterID)
 	{
     	this.transporterID = transporterID;
@@ -109,13 +126,6 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	public TransporterID.Immutable getID()
 	{
 		return this.transporterID;
-	}
-	
-	@Nullable
-	public Transporter getTransporter()
-	{
-		//TODO Maybe start caching it?
-		return TransporterNetwork.get(level).getTransporter(this.transporterID);
 	}
 	
 	public void addTransporterToNetwork()
@@ -167,8 +177,24 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	protected abstract Component getDefaultName();
 	
 	
+	public TransporterInfo.Feedback setRecentFeedback(TransporterInfo.Feedback feedback)
+	{
+		if(feedback != TransporterInfo.Feedback.NONE)
+			this.recentFeedback = feedback;
+		
+		return feedback;
+	}
+	
+	public TransporterInfo.Feedback getRecentFeedback()
+	{
+		return this.recentFeedback;
+	}
+	
+	
 	
 	public abstract boolean isConnected();
+	
+	public abstract boolean isObstructed();
 	
 	public boolean canTransport()
 	{
@@ -180,12 +206,18 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		return 0;
 	}
 	
-	public void startTransport(Transporter target)
+	public TransporterInfo.Feedback dialTransporter(TransporterID otherID)
 	{
-		Transporter transporter = getTransporter();
-		
-		if(transporter != null)
-			this.recentFeedback = Transporting.dialTransporter(level.getServer(), transporter, target, false);
+		if(!level.isClientSide())
+			return setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), otherID), TransporterInfo.Feedback.UNKNOWN_ERROR));
+		return this.recentFeedback;
+	}
+	
+	public TransporterInfo.Feedback dialTransporter(Vec3i coords)
+	{
+		if(!level.isClientSide())
+			return setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), coords), TransporterInfo.Feedback.UNKNOWN_ERROR));
+		return this.recentFeedback;
 	}
 	
 	public boolean connectTransporter(UUID connectionID)
@@ -212,7 +244,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	
 	public TransporterInfo.Feedback resetTransporter(TransporterInfo.Feedback feedback)
 	{
-		this.recentFeedback = feedback;
+		setRecentFeedback(feedback);
 		this.connectionID = null;
 		setConnected(false);
 		
@@ -224,6 +256,18 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		if(!level.isClientSide())
 			ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(),
 					level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+	}
+	
+	public abstract void registerInterfaceMethods(SGJourneyPeripheralWrapper<TransporterPeripheral> wrapper);
+	
+	//============================================================================================
+	//********************************************Info********************************************
+	//============================================================================================
+	
+	@Override
+	public TransporterIDFilterInfo transporterIDFilterInfo()
+	{
+		return this.transporterIDFilterInfo;
 	}
 	
 	//========================================================================================================
@@ -255,5 +299,34 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		addTransporterToNetwork();
 		
 		generationStep = Step.GENERATED;
+	}
+	
+	//========================================================================================================
+	//**********************************************Transporter***********************************************
+	//========================================================================================================
+	
+	@Nullable
+	public Transporter getTransporter()
+	{
+		//TODO Maybe start caching it?
+		return TransporterNetwork.get(level).getTransporter(this.transporterID);
+	}
+	
+	private void transporterRun(Consumer<Transporter> consumer)
+	{
+		Transporter transporter = getTransporter();
+		
+		if(transporter != null)
+			consumer.accept(transporter);
+	}
+	
+	private <T> T transporterReturn(Function<Transporter, T> consumer, @Nullable T defaultValue)
+	{
+		Transporter transporter = getTransporter();
+		
+		if(transporter != null)
+			return consumer.apply(transporter);
+		
+		return defaultValue;
 	}
 }

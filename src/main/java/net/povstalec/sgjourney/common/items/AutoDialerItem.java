@@ -26,7 +26,7 @@ public class AutoDialerItem extends Item
 
 		ItemStack stack = player.getItemInHand(usedHand);
 		
-		AbstractStargateEntity stargate = LocatorHelper.findNearestStargate(level, player.getOnPos().above(), 16);
+		AbstractStargateEntity stargate = LocatorHelper.getNearestStargate(level, player.getOnPos().above(), 16);
 		if(stargate != null)
 		{
 			if(stargate.isConnected())

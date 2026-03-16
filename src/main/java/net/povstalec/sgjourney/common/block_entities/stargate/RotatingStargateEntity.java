@@ -18,13 +18,29 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public abstract class RotatingStargateEntity extends IrisStargateEntity
+public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> extends IrisStargateEntity<SG>
 {
+	public enum RotationDirection //TODO Use this
+	{
+		NONE(0),
+		CLOCKWISE(1),
+		ANTICLOCKWISE(-1);
+		
+		public final int value;
+		
+		RotationDirection(int value)
+		{
+			this.value = value;
+		}
+	}
+	
 	public static final String ROTATION = "Rotation"; //TODO Change to "rotation"
 	public static final String OLD_ROTATION = "old_rotation";
 	public static final String SIGNAL_STRENGTH = "signal_strength";
@@ -52,10 +68,10 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	public int desiredRotation;
 	public boolean rotateClockwise;
 	
-	public RotatingStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-								  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight, int maxRotation)
+	public RotatingStargateEntity(BlockEntityType<?> blockEntity, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+								  int totalSymbols, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight, int maxRotation)
 	{
-		super(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
+		super(blockEntity, stargateType, defaultVariant, pos, state, totalSymbols, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
 		
 		this.maxRotation = maxRotation;
 		this.stepsPerSymbol = this.maxRotation / this.totalSymbols;
@@ -73,10 +89,10 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		this.rotateClockwise = true;
 	}
 	
-	public RotatingStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-								  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork, int maxRotation)
+	public RotatingStargateEntity(BlockEntityType<?> blockEntity, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+								  int totalSymbols, int defaultNetwork, int maxRotation)
 	{
-		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT, maxRotation);
+		this(blockEntity, stargateType, defaultVariant, pos, state, totalSymbols, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT, maxRotation);
 	}
 	
 	@Override

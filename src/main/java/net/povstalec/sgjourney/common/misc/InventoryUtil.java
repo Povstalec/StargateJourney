@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -41,6 +42,11 @@ public class InventoryUtil
 
         return -1;
     }
+	
+	public static InteractionHand otherHand(InteractionHand hand)
+	{
+		return hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+	}
 	
 	public static void dumpIfPossible(IItemHandler from, int fromSlot, IItemHandler to, int toSlot)
 	{

@@ -151,7 +151,7 @@ public class StargateInfo
 		CONNECTION_ENDED_BY_AUTOCLOSE(10, FeedbackType.INFO, "connection_ended.autoclose"), // Connection ended because of the DHD's autoclose function
 		EXCEEDED_CONNECTION_TIME(-23, FeedbackType.ERROR, "exceeded_connection_time"), // Connection ended because it exceeded maximum connection time and the energy bypass config is not enabled
 		RAN_OUT_OF_POWER(-24, FeedbackType.ERROR, "ran_out_of_power"), // Connection ended because the Stargate ran out of power
-		CONNECTION_REROUTED(-25, FeedbackType.ERROR, "connection_rerouted"), // Connection was rerouted //TODO unused
+		CONNECTION_REROUTED(-25, FeedbackType.ERROR, "connection_rerouted"), // Connection was rerouted //TODO unused for now
 		WRONG_DISCONNECT_SIDE(-26, FeedbackType.ERROR, "wrong_disconnect_side"), // Cannot disconnect the Stargate because it did not initiate the connection and the config doesn't allow it
 		CONNECTION_FORMING(-27, FeedbackType.ERROR, "connection_forming"), // Cannot end the connection while it is still forming
 
@@ -177,7 +177,7 @@ public class StargateInfo
 		// Other
 		TARGET_NOT_LOADED(-37, FeedbackType.ERROR, "target_not_loaded"); // Target Stargate wasn't being loaded by any players or chunkloaders
 		
-		private int code;
+		private final int code;
 		private final FeedbackType type;
 		private final String message;
 		private final Component feedbackMessage;

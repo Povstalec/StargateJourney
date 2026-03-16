@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
@@ -28,12 +29,14 @@ public class SpawnerStargate implements Stargate
 	
 	public static final int KAWOOSH_TICKS = 40;
 	
+	private final StargateType<?> type;
+	
 	protected Address.Immutable id9ChevronAddress;
 	
-	protected final int attackerMinCount;
-	protected final int attackerMaxCount;
-	protected final int attackerMinInterval;
-	protected final int attackerMaxInverval;
+	protected int attackerMinCount;
+	protected int attackerMaxCount;
+	protected int attackerMinInterval;
+	protected int attackerMaxInverval;
 	
 	protected Address.Mutable address = new Address.Mutable();
 	@Nullable
@@ -46,7 +49,12 @@ public class SpawnerStargate implements Stargate
 	protected Function<RandomSource, EntityType<?>> randomizedEntityType;
 	protected BiConsumer<Entity, RandomSource> onEntitySpawn;
 	
-	public SpawnerStargate(Address.Immutable address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval, Function<RandomSource, EntityType<?>> randomizedEntityType, BiConsumer<Entity, RandomSource> onEntitySpawn)
+	public SpawnerStargate(StargateType<?> type)
+	{
+		this.type = type;
+	}
+	
+	public void loadStargate(Address.Immutable address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval, Function<RandomSource, EntityType<?>> randomizedEntityType, BiConsumer<Entity, RandomSource> onEntitySpawn)
 	{
 		this.id9ChevronAddress = address;
 		
@@ -71,6 +79,12 @@ public class SpawnerStargate implements Stargate
 	protected int nextAttackerCount()
 	{
 		return random.nextInt(attackerMinCount, attackerMaxCount + 1);
+	}
+	
+	@Override
+	public StargateType<?> getStargateType()
+	{
+		return type;
 	}
 	
 	@Override
@@ -317,14 +331,20 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public CompoundTag serializeNBT()
+	public void serializeNBT(CompoundTag tag)
 	{
-		return null; //TODO
+		//TODO
 	}
 	
 	@Override
-	public void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag)
+	public void deserializeNBT(MinecraftServer server, Address.Immutable id9ChevronAddress, CompoundTag tag)
 	{
 		//TODO
+	}
+	
+	@Override
+	public AddressFilterInfo addressFilterInfo(MinecraftServer server)
+	{
+		return new AddressFilterInfo();
 	}
 }

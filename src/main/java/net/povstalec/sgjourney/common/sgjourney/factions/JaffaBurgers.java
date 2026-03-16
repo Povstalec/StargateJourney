@@ -7,9 +7,11 @@ import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.entities.FactionMember;
 import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SpawnerStargate;
@@ -41,16 +43,13 @@ public class JaffaBurgers extends AbstractFaction
 	
 	public JaffaBurgers()
 	{
-		
-		this.spawnerStargate = new SpawnerStargate(new Address.Immutable(1, 2, 3, 4, 5, 6, 7, 8, 0),
+		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate();
+		this.spawnerStargate.loadStargate(Address.Immutable.randomAddress(8, 36, 0),
 				ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL,
-				randomSource -> EntityInit.JAFFA.get(),(entity, randomSource) ->
+				randomSource -> EntityInit.JAFFA.get(), (entity, randomSource) ->
 				{
-					if(entity instanceof Jaffa jaffa)
-					{
-						jaffa.setFaction(this);
-						jaffa.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(randomSource.nextFloat() <= 0.5 ? ItemInit.JAFFA_BURGER.get() : ItemInit.JAFFA_CAKE.get()));
-					}
+					if(entity instanceof FactionMember factionMember)
+						factionMember.setFaction(this);
 				});
 	}
 	

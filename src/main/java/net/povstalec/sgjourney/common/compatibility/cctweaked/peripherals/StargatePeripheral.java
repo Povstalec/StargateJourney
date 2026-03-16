@@ -8,19 +8,19 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericStargateFunctions;
 
 public class StargatePeripheral extends InterfacePeripheral
 {
-	protected AbstractStargateEntity stargate;
+	protected AbstractStargateEntity<?> stargate;
 	
-	public StargatePeripheral(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate)
+	public StargatePeripheral(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate)
 	{
 		super(interfaceEntity);
 		this.stargate = stargate;
 		
-		stargate.registerInterfaceMethods(new StargatePeripheralWrapper(this, interfaceEntity.getInterfaceType()));
+		stargate.registerInterfaceMethods(new SGJourneyPeripheralWrapper<>(this, interfaceEntity.getInterfaceType()));
 	}
 
 	@Override
@@ -30,28 +30,6 @@ public class StargatePeripheral extends InterfacePeripheral
 		String methodName = getMethodNames()[method];
 		
 		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.stargate, arguments);
-	}
-	
-	//============================================================================================
-	//*************************************CC: Tweaked Events*************************************
-	//============================================================================================
-	
-	public void queueEvent(String eventName, Object... objects)
-	{
-		for(IComputerAccess computer : interfaceEntity.getPeripheralWrapper().computerList)
-		{
-			int length = objects.length + 1;
-			Object[] attachmentObjects = new Object[length];
-			
-			attachmentObjects[0] = computer.getAttachmentName();
-			
-			for(int i = 1; i < length; i++)
-			{
-				attachmentObjects[i] = objects[i - 1];
-			}
-			
-			computer.queueEvent(eventName, attachmentObjects);
-		}
 	}
 	
 	//============================================================================================

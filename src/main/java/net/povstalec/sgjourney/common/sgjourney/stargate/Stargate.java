@@ -5,6 +5,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,6 +17,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -25,7 +28,6 @@ public interface Stargate extends Comparable<Stargate>
 	Capability<Stargate> STARGATE_CAPABILITY = CapabilityManager.get(new CapabilityToken<Stargate>() {});
 	
 	String DIMENSION = "Dimension";
-	String COORDINATES = "Coordinates";
 	
 	String HAS_DHD = "HasDHD";
 	String GENERATION = "Generation";
@@ -34,6 +36,8 @@ public interface Stargate extends Comparable<Stargate>
 	String NETWORK = "Network";
 	
 	// Basic Info
+	
+	StargateType<?> getStargateType();
 	
 	/**
 	 * @return 9-Chevron Address of the Stargate
@@ -158,6 +162,16 @@ public interface Stargate extends Comparable<Stargate>
 	default int getNetwork()
 	{
 		return 0;
+	}
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @param network Network ID to test
+	 * @return False if the provided network passes the restriction check successfully, otherwise true
+	 */
+	default boolean isRestricted(MinecraftServer server, int network)
+	{
+		return false;
 	}
 	
 	/**
@@ -419,6 +433,19 @@ public interface Stargate extends Comparable<Stargate>
 	void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel);
 	
 	/**
+	 * Redirects incoming travelers using Call Forwarding
+	 * @param traveler Incoming traveler
+	 * @return True if the incoming traveler should be denied entry and sent elsewhere through Call Forwarding, otherwise false
+	 */
+	default boolean callForwardDeny(Entity traveler)
+	{
+		if(traveler instanceof Player player && player.isSpectator())
+			return false; // Spectators can pass through Call Forwarding just fine
+		
+		return traveler instanceof LivingEntity; //TODO Let players specify what can pass through
+	}
+	
+	/**
 	 * Receives information about incoming traveler and teleports the traveler to the Stargate's position
 	 * @param server Current Minecraft Server
 	 * @param connection Stargate Connection that connects the two Stargates
@@ -470,18 +497,27 @@ public interface Stargate extends Comparable<Stargate>
 		return Integer.compare(other.getTimesOpened(), this.getTimesOpened());
 	}
 	
-	// Saving and loading
+	//============================================================================================
+	//**********************************Additional functionality**********************************
+	//============================================================================================
+	
+	AddressFilterInfo addressFilterInfo(MinecraftServer server);
+	
+	//============================================================================================
+	//*************************************Saving and Loading*************************************
+	//============================================================================================
 	
 	/**
-	 * @return Stargate info serialized into a CompoundTag
+	 * Serializes Stargate info into a tag
+	 * @param tag CompoundTag that will store the serialized information
 	 */
-	CompoundTag serializeNBT();
+	void serializeNBT(CompoundTag tag);
 	
 	/**
 	 * Deserializes the Stargate info
 	 * @param server Current Minecraft Server
-	 * @param address Address of the Stargate
+	 * @param id9ChevronAddress 9-Chevron Address of the Stargate
 	 * @param tag CompoundTag containing information to be deserialized
 	 */
-	void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag);
+	void deserializeNBT(MinecraftServer server, Address.Immutable id9ChevronAddress, CompoundTag tag);
 }

@@ -229,15 +229,27 @@ public final class TransporterNetwork extends SavedData
 	}
 	
 	//TODO Send feedback
-	public TransporterInfo.Feedback createConnection(MinecraftServer server, Transporter transporterA, Transporter transporterB)
+	public TransporterInfo.Feedback createConnection(MinecraftServer server, Transporter initiatingTransporter, Transporter targetTransporter)
 	{
-		TransporterConnection.Type connectionType = TransporterConnection.getType(server, transporterA, transporterB);
+		TransporterConnection.Type connectionType = TransporterConnection.getType(server, initiatingTransporter, targetTransporter);
 		
 		// Event for Transporter connecting, can be canceled - !!!NOTE That it does NOT reset the Transporter or actually change its feedback when canceled!!!
-		if(SGJourneyEvents.onTransporterConnect(server, transporterA, transporterB, connectionType))
+		if(SGJourneyEvents.onTransporterConnect(server, initiatingTransporter, targetTransporter, connectionType))
 			return TransporterInfo.Feedback.NONE;
 		
-		TransporterConnection connection = TransporterConnection.create(server, transporterA, transporterB);
+		// Will reset the Transporter if something's wrong
+		if(!targetTransporter.checkValidity(server))
+			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER);
+		
+		if(initiatingTransporter.equals(targetTransporter))
+			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.SELF_CONNECT);
+		
+		if(targetTransporter.isConnected(server))
+			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.ALREADY_CONNECTED);
+		else if(targetTransporter.isObstructed(server))
+			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_OBSTRUCTED);
+		
+		TransporterConnection connection = TransporterConnection.create(server, initiatingTransporter, targetTransporter);
 		
 		//TODO New errors relating to the problems with relaying the connection through Stargates
 		//if(connection.getRelayID() == null && connectionType.isRelayed)

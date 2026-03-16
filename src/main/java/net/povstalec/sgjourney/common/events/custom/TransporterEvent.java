@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.events.custom;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -37,11 +38,11 @@ public class TransporterEvent extends Event
 	 *
 	 */
 	@Cancelable
-	public static class Dial extends TransporterEvent
+	public static class DialID extends TransporterEvent
 	{
 		private final TransporterID transporterID;
 		
-		public Dial(MinecraftServer server, Transporter transporter, TransporterID transporterID)
+		public DialID(MinecraftServer server, Transporter transporter, TransporterID transporterID)
 		{
 			super(server, transporter);
 			this.transporterID = transporterID.clone();
@@ -50,6 +51,30 @@ public class TransporterEvent extends Event
 		public TransporterID getTransporterID()
 		{
 			return transporterID;
+		}
+	}
+	
+	
+	
+	/**
+	 * Fired when a Transporter attempts to connect using coordinates (cancelable)
+	 * @author Povstalec
+	 *
+	 */
+	@Cancelable
+	public static class DialCoords extends TransporterEvent
+	{
+		private final Vec3i coords;
+		
+		public DialCoords(MinecraftServer server, Transporter transporter, Vec3i coords)
+		{
+			super(server, transporter);
+			this.coords = coords;
+		}
+		
+		public Vec3i getCoords()
+		{
+			return coords;
 		}
 	}
 	

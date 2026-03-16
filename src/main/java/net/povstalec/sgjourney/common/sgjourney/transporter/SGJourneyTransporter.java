@@ -1,14 +1,9 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -22,34 +17,30 @@ import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTranspo
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
-public class SGJourneyTransporter implements Transporter
+public abstract class SGJourneyTransporter implements Transporter
 {
 	public static final Vec3 FORWARD = new Vec3(1, 0, 0);
 	public static final Vec3 UP = new Vec3(0, 1, 0);
 	public static final Vec3 RIGHT = new Vec3(0, 0, 1);
 	public static final double INNER_RADIUS = 2;
 	
-	private TransporterID transporterID;
-	private ResourceKey<Level> dimension;
-	private BlockPos blockPos;
+	private final TransporterType<?> type;
+	
+	protected TransporterID transporterID;
+	protected ResourceKey<Level> dimension;
 	
 	@Nullable
-	private Component name;
+	protected Component name;
 	
-	public SGJourneyTransporter() {}
-	
-	public SGJourneyTransporter(TransporterID transporterID, ResourceKey<Level> dimension, BlockPos blockPos, Component name)
+	public SGJourneyTransporter(TransporterType<?> type)
 	{
-		this.transporterID = transporterID;
-		this.dimension = dimension;
-		this.blockPos = blockPos;
-		
-		this.name = name;
+		this.type = type;
 	}
 	
-	public SGJourneyTransporter(AbstractTransporterEntity transporterEntity)
+	@Override
+	public final TransporterType<?> getTransporterType()
 	{
-		this(transporterEntity.getID(), transporterEntity.getLevel().dimension(), transporterEntity.getBlockPos(), transporterEntity.getCustomName());
+		return this.type;
 	}
 	
 	@Override
@@ -62,17 +53,6 @@ public class SGJourneyTransporter implements Transporter
 	public ResourceKey<Level> getDimension()
 	{
 		return dimension;
-	}
-	
-	public BlockPos getBlockPos()
-	{
-		return blockPos;
-	}
-	
-	@Override
-	public @Nullable Vec3 getPosition(MinecraftServer server)
-	{
-		return getBlockPos().getCenter();
 	}
 	
 	@Override
@@ -99,103 +79,10 @@ public class SGJourneyTransporter implements Transporter
 		return INNER_RADIUS;
 	}
 	
-	public boolean acceptsFrequency(int frequency)
-	{
-		return true; // TODO Add frequency logic
-	}
-	
-	@Override
-	@Nullable
-	public Vec3 transportPos(MinecraftServer server)
-	{
-		return transporterReturn(server, transporter -> transporter.transportPos().getCenter(), null);
-	}
-	
-	@Override
-	public boolean checkValidity(MinecraftServer server)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter == null)
-		{
-			StargateJourney.LOGGER.error("Transporter not found");
-			return false;
-			
-		}
-		else if(!getID().equals(transporter.getID()))
-		{
-			StargateJourney.LOGGER.error("Block Entity ID wasn't equal to Transporter ID");
-			if(transporter.getID() == null) // In case Transporter ID becomes null for some reason during updating, it should get updated from this Transporter's ID
-				transporter.setID(new TransporterID.Immutable(getID()));
-			else
-				return false;
-		}
-		
-		return true;
-	}
-	
-	@Override
-	public boolean isLoaded(MinecraftServer server)
-	{
-		ServerLevel level  = server.getLevel(getDimension());
-		if(level == null)
-			return false;
-		
-		return level.isLoaded(getBlockPos());
-	}
-	
 	@Override
 	public Component getName()
 	{
 		return name != null ? name : Component.empty();
-	}
-	
-	@Nullable
-	public AbstractTransporterEntity getTransporterEntity(MinecraftServer server)
-	{
-		ServerLevel level = server.getLevel(dimension);
-		
-		if(level != null && level.getBlockEntity(blockPos) instanceof AbstractTransporterEntity transporter)
-			return transporter;
-		
-		return null;
-	}
-	
-	
-	
-	@Override
-	public TransporterInfo.Feedback resetTransporter(MinecraftServer server, TransporterInfo.Feedback feedback)
-	{
-		AbstractTransporterEntity transporterEntity = getTransporterEntity(server);
-		
-		if(transporterEntity != null)
-			return transporterEntity.resetTransporter(feedback);
-		else
-			StargateJourney.LOGGER.error("Failed to reset Stargate as it does not exist");
-		
-		return feedback;
-	}
-	
-	@Override
-	public int getTimeOffset(MinecraftServer server)
-	{
-		return transporterReturn(server, transporter -> transporter.getTimeOffset(), 0);
-	}
-	
-	@Override
-	public List<Entity> entitiesToTransport(MinecraftServer server)
-	{
-		return transporterReturn(server, transporter -> transporter.entitiesToTransport(), ImmutableList.of());
-	}
-	
-	@Override
-	public void transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers)
-	{
-		transporterRun(server, transporter ->
-		{
-			Transporting.transportTravelers(server, connection, this, receivingTransporter, travelers);
-		});
-		
 	}
 	
 	@Override
@@ -209,84 +96,84 @@ public class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
-	public void connect(MinecraftServer server, UUID connectionID)
+	public TransporterInfo.Feedback tryConnect(MinecraftServer server, Transporter initiatingTransporter)
 	{
-		transporterRun(server, transporter -> transporter.connectTransporter(connectionID));
-	}
-	
-	@Override
-	public void disconnect(MinecraftServer server)
-	{
-		transporterRun(server, transporter -> transporter.disconnectTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT));
-	}
-	
-	@Override
-	public boolean isConnected(MinecraftServer server)
-	{
-		return transporterReturn(server, transporter -> transporter.isConnected(), false);
-	}
-	
-	@Override
-	public void updateTicks(MinecraftServer server, int connectionTime)
-	{
-		transporterRun(server, transporter -> transporter.updateTicks(connectionTime));
-	}
-	
-	
-	
-	@Override
-	public String toString()
-	{
-		String nameString = name != null ? name.getString() : transporterID.toString();
+		// If Transporter is obstructed
+		if(isObstructed(server))
+			return TransporterInfo.Feedback.TARGET_OBSTRUCTED;
 		
-		return "[ " + nameString + " | Pos: " + blockPos.toString() + " ]";
+		// If Transporter is restricted
+		if(isRestricted(server, initiatingTransporter.getNetwork()))
+			return TransporterInfo.Feedback.TARGET_RESTRICTED;
+		
+		if(transporterIDFilterInfo(server).getFilterType().isBlacklist() && transporterIDFilterInfo(server).isIDBlacklisted(initiatingTransporter.getID()))
+			return TransporterInfo.Feedback.BLACKLISTED_BY_TARGET;
+		
+		// If Transporter has a whitelist
+		if(transporterIDFilterInfo(server).getFilterType().isWhitelist() && !transporterIDFilterInfo(server).isIDWhitelisted(initiatingTransporter.getID()))
+			return TransporterInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
+		
+		return Dialing.connectTransporters(server, initiatingTransporter, this);
 	}
 	
+	//============================================================================================
+	//**********************************Additional functionality**********************************
+	//============================================================================================
 	
 	@Override
-	public CompoundTag serializeNBT()
+	public TransporterInfo.Feedback dialTransporter(MinecraftServer server, TransporterID otherID)
 	{
-		CompoundTag transporterTag = new CompoundTag();
-		ResourceKey<Level> level = this.getDimension();
-		BlockPos pos = this.getBlockPos();
+		if(isObstructed(server))
+			return resetTransporter(server, TransporterInfo.Feedback.SELF_OBSTRUCTED);
 		
-		transporterTag.putString(DIMENSION, level.location().toString());
-		transporterTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+		if(transporterIDFilterInfo(server).getFilterType().isBlacklist() && transporterIDFilterInfo(server).isIDBlacklisted(otherID))
+			return TransporterInfo.Feedback.TARGET_BLACKLISTED;
+		
+		if(transporterIDFilterInfo(server).getFilterType().isWhitelist() && !transporterIDFilterInfo(server).isIDWhitelisted(otherID))
+			return TransporterInfo.Feedback.TARGET_NOT_WHITELISTED;
+		
+		return Dialing.dialTransporterID(server, this, otherID, false);
+	}
+	
+	@Override
+	public TransporterInfo.Feedback dialTransporter(MinecraftServer server, Vec3i coords)
+	{
+		if(isObstructed(server))
+			return resetTransporter(server, TransporterInfo.Feedback.SELF_OBSTRUCTED);
+		
+		return Dialing.dialTransporterCoords(server, this, coords, false);
+	}
+	
+	//============================================================================================
+	//*************************************Saving and Loading*************************************
+	//============================================================================================
+	
+	@Override
+	public void serializeNBT(CompoundTag tag)
+	{
+		tag.putString(DIMENSION, getDimension().location().toString());
 		
 		if(this.name != null)
-			transporterTag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
-		
-		return transporterTag;
+			tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
 	}
 	
 	public void deserializeNBT(MinecraftServer server, TransporterID transporterID, CompoundTag tag)
 	{
+		this.transporterID = transporterID;
+		
 		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
-		this.blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
-		
-		this.transporterID = transporterID;
 	}
 	
+	//============================================================================================
+	//*******************************************Other********************************************
+	//============================================================================================
 	
-	
-	private void transporterRun(MinecraftServer server, Consumer<AbstractTransporterEntity> consumer)
+	@Override
+	public String toString()
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			consumer.accept(transporter);
-	}
-	
-	private <T> T transporterReturn(MinecraftServer server, Function<AbstractTransporterEntity, T> consumer, @Nullable T defaultValue)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return consumer.apply(transporter);
-		
-		return defaultValue;
+		return "[ " + getName().toString() + " | ID: " + getID() + " ]";
 	}
 }

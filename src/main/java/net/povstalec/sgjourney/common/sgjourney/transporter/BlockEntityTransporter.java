@@ -1,0 +1,179 @@
+package net.povstalec.sgjourney.common.sgjourney.transporter;
+
+import com.google.common.collect.ImmutableList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+import net.povstalec.sgjourney.common.sgjourney.Transporting;
+import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+public interface BlockEntityTransporter<TransporterEntity extends AbstractTransporterEntity<?>> extends Transporter
+{
+	String COORDINATES = "Coordinates";
+	
+	BlockPos getBlockPos();
+	
+	@Nullable
+	TransporterEntity getTransporterEntity(MinecraftServer server);
+	
+	default void transporterRun(MinecraftServer server, Consumer<TransporterEntity> consumer)
+	{
+		TransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			consumer.accept(transporter);
+	}
+	
+	default <T> T transporterReturn(MinecraftServer server, Function<TransporterEntity, T> consumer, @Nullable T defaultValue)
+	{
+		TransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			return consumer.apply(transporter);
+		
+		return defaultValue;
+	}
+	
+	static TransporterInfo.Feedback noTransporterEntity()
+	{
+		StargateJourney.LOGGER.error("SGJourneyTransporter.noTransporterEntity: Transporter Entity could not be found");
+		return TransporterInfo.Feedback.UNKNOWN_ERROR;
+	}
+	
+	void loadFromBlockEntity(AbstractTransporterEntity<?> transporterEntity);
+	
+	
+	
+	@Override
+	default boolean isLoaded(MinecraftServer server)
+	{
+		ServerLevel level  = server.getLevel(getDimension());
+		if(level == null)
+			return false;
+		
+		return level.isLoaded(getBlockPos());
+	}
+	
+	@Override
+	default @Nullable Vec3 getPosition(MinecraftServer server)
+	{
+		return getBlockPos().getCenter();
+	}
+	
+	
+	
+	@Override
+	@Nullable
+	default Vec3 transportPos(MinecraftServer server)
+	{
+		return transporterReturn(server, transporter -> transporter.transportPos().getCenter(), null);
+	}
+	
+	@Override
+	default TransporterInfo.Feedback resetTransporter(MinecraftServer server, TransporterInfo.Feedback feedback)
+	{
+		TransporterEntity transporterEntity = getTransporterEntity(server);
+		
+		if(transporterEntity != null)
+			return transporterEntity.resetTransporter(feedback);
+		else
+			StargateJourney.LOGGER.error("Failed to reset Transporter as it does not exist");
+		
+		return feedback;
+	}
+	
+	@Override
+	default int getTimeOffset(MinecraftServer server)
+	{
+		return transporterReturn(server, transporter -> transporter.getTimeOffset(), 0);
+	}
+	
+	@Override
+	default List<Entity> entitiesToTransport(MinecraftServer server)
+	{
+		return transporterReturn(server, transporter -> transporter.entitiesToTransport(), ImmutableList.of());
+	}
+	
+	@Override
+	default boolean checkValidity(MinecraftServer server)
+	{
+		TransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter == null)
+		{
+			StargateJourney.LOGGER.error("Transporter not found");
+			return false;
+			
+		}
+		else if(!getID().equals(transporter.getID()))
+		{
+			StargateJourney.LOGGER.error("Block Entity ID wasn't equal to Transporter ID");
+			if(transporter.getID() == null) // In case Transporter ID becomes null for some reason during updating, it should get updated from this Transporter's ID
+				transporter.setID(new TransporterID.Immutable(getID()));
+			else
+				return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	default void transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers)
+	{
+		transporterRun(server, transporter -> Transporting.transportTravelers(server, connection, this, receivingTransporter, travelers));
+		
+	}
+	
+	@Override
+	default void connect(MinecraftServer server, UUID connectionID)
+	{
+		transporterRun(server, transporter -> transporter.connectTransporter(connectionID));
+	}
+	
+	@Override
+	default void disconnect(MinecraftServer server)
+	{
+		transporterRun(server, transporter -> transporter.disconnectTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT));
+	}
+	
+	@Override
+	default boolean isConnected(MinecraftServer server)
+	{
+		return transporterReturn(server, transporter -> transporter.isConnected(), false);
+	}
+	
+	@Override
+	default boolean isObstructed(MinecraftServer server)
+	{
+		return transporterReturn(server, transporter -> transporter.isObstructed(), false);
+	}
+	
+	@Override
+	default void updateTicks(MinecraftServer server, int connectionTime)
+	{
+		transporterRun(server, transporter -> transporter.updateTicks(connectionTime));
+	}
+	
+	//============================================================================================
+	//**********************************Additional functionality**********************************
+	//============================================================================================
+	
+	@Override
+	default TransporterIDFilterInfo transporterIDFilterInfo(MinecraftServer server)
+	{
+		return transporterReturn(server, transporter -> transporter.transporterIDFilterInfo(), new TransporterIDFilterInfo());
+	}
+}

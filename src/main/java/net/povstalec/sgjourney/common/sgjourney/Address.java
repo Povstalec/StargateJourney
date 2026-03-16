@@ -523,10 +523,10 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		
 		public boolean canGrow()
 		{
-			if(addressArray.length < MAX_ADDRESS_LENGTH)
-				return true;
-			else
-				return hasPointOfOrigin();
+			if(hasPointOfOrigin())
+				return false;
+			
+			return addressArray.length < MAX_ADDRESS_LENGTH;
 		}
 		
 		public boolean canBeDialed()
