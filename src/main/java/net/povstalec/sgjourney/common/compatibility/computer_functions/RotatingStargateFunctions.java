@@ -40,7 +40,7 @@ public class RotatingStargateFunctions
 		/*if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 			throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");*/
 		
-		return stargate.startRotation(desiredSymbol, true);
+		return stargate.startRotation(desiredSymbol, RotatingStargateEntity.RotationDirection.CLOCKWISE);
 	}
 	
 	public static StargateInfo.Feedback rotateAntiClockwise(RotatingStargateEntity stargate, int desiredSymbol)
@@ -49,7 +49,7 @@ public class RotatingStargateFunctions
 		/*if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 			throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");*/
 		
-		return stargate.startRotation(desiredSymbol, false);
+		return stargate.startRotation(desiredSymbol, RotatingStargateEntity.RotationDirection.ANTICLOCKWISE);
 	}
 	
 	public static StargateInfo.Feedback endRotation(RotatingStargateEntity stargate)

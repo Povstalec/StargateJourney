@@ -251,7 +251,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	@Override
 	protected int rotationStep()
 	{
-		return FAST_ROTATION ? (this.rotating ? 3 : 2) : 2; // Only rotates fast during computer dialing or DHD dialing, not during redstone dialing
+		return FAST_ROTATION ? (this.rotationDirection.isRotating ? 3 : 2) : 2; // Only rotates fast during computer dialing or DHD dialing, not during redstone dialing
 	}
 	
 	@Override
@@ -297,7 +297,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		if(connectionTime == 1)
 		{
 			startSound();
-			startRotation(-1, true);
+			startRotation(-1, RotationDirection.CLOCKWISE);
 		}
 		
 		StargateInfo.ChevronLockSpeed chevronLockSpeed = getChevronLockSpeed(doKawoosh);

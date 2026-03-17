@@ -19,14 +19,20 @@ public class StargateInit
 	
 	
 	// Block Entity Stargates
-	public static final RegistryObject<StargateType<UniverseBlockEntityStargate>> UNIVERSE = STARGATE_TYPES.register("universe", () -> new StargateType<>(StargateInfo.Gen.GEN_1, UniverseBlockEntityStargate::new));
-	public static final RegistryObject<StargateType<MilkyWayBlockEntityStargate>> MILKY_WAY = STARGATE_TYPES.register("milky_way", () -> new StargateType<>(StargateInfo.Gen.GEN_2, MilkyWayBlockEntityStargate::new));
-	public static final RegistryObject<StargateType<PegasusBlockEntityStargate>> PEGASUS = STARGATE_TYPES.register("pegasus", () -> new StargateType<>(StargateInfo.Gen.GEN_3, PegasusBlockEntityStargate::new));
-	public static final RegistryObject<StargateType<TollanBlockEntityStargate>> TOLLAN = STARGATE_TYPES.register("tollan", () -> new StargateType<>(StargateInfo.Gen.GEN_2, TollanBlockEntityStargate::new));
-	public static final RegistryObject<StargateType<ClassicBlockEntityStargate>> CLASSIC = STARGATE_TYPES.register("classic", () -> new StargateType<>(StargateInfo.Gen.NONE, ClassicBlockEntityStargate::new));
+	public static final RegistryObject<StargateType<UniverseBlockEntityStargate>> UNIVERSE = STARGATE_TYPES.register("universe", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_1, UniverseBlockEntityStargate::new));
+	public static final RegistryObject<StargateType<MilkyWayBlockEntityStargate>> MILKY_WAY = STARGATE_TYPES.register("milky_way", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_2, MilkyWayBlockEntityStargate::new));
+	public static final RegistryObject<StargateType<PegasusBlockEntityStargate>> PEGASUS = STARGATE_TYPES.register("pegasus", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_3, PegasusBlockEntityStargate::new));
+	public static final RegistryObject<StargateType<TollanBlockEntityStargate>> TOLLAN = STARGATE_TYPES.register("tollan", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_2, TollanBlockEntityStargate::new));
+	public static final RegistryObject<StargateType<ClassicBlockEntityStargate>> CLASSIC = STARGATE_TYPES.register("classic", () ->
+			new StargateType<>(StargateInfo.Gen.NONE, ClassicBlockEntityStargate::new));
 	
 	// Spawner Stargates
-	public static final RegistryObject<StargateType<SpawnerStargate>> MILKY_WAY_SPAWNER = STARGATE_TYPES.register("milky_way_spawner", () -> new StargateType<>(StargateInfo.Gen.GEN_2, SpawnerStargate::new));
+	public static final RegistryObject<StargateType<SpawnerStargate>> MILKY_WAY_SPAWNER = STARGATE_TYPES.register("milky_way_spawner", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_2, SpawnerStargate::new));
 	
 	
 	

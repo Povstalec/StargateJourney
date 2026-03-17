@@ -205,14 +205,14 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	{
 		if(!isConnected() && !this.isChevronOpen)
 		{
-			if(this.rotating)
+			if(this.rotationDirection.isRotating)
 				rotateToTarget();
 			else if(this.signalStrength > 0 && this.signalStrength < 15)
 			{
 				if(this.signalStrength > 7)
-					rotate(false);
+					rotate(RotationDirection.ANTICLOCKWISE);
 				else
-					rotate(true);
+					rotate(RotationDirection.CLOCKWISE);
 			}
 			else
 				syncRotation();
@@ -223,7 +223,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback startRotation(int desiredSymbol, boolean rotateClockwise)
+	public StargateInfo.Feedback startRotation(int desiredSymbol, RotationDirection rotateClockwise)
 	{
 		if(this.isChevronOpen)
 			return StargateInfo.Feedback.ROTATION_BLOCKED;

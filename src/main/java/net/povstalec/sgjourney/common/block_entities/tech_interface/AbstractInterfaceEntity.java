@@ -41,8 +41,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	private int desiredSymbol = 0;
 	private int currentSymbol = 0;
-	private boolean rotate = false; //TODO
-	private boolean rotateClockwise = true; //TODO Change these two to an enum with values -1, 0, +1
+	private RotatingStargateEntity.RotationDirection rotationDirection = RotatingStargateEntity.RotationDirection.NONE;
 	
 	private StargateInfo.IrisMotion irisMotion = StargateInfo.IrisMotion.IDLE;
 	
@@ -333,12 +332,12 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	private void rotateStargate(RotatingStargateEntity<?> stargate)
 	{
-		if(this.rotate)
+		if(this.rotationDirection.isRotating)
 		{
 			if(stargate.isCurrentSymbol(this.desiredSymbol))
-				this.rotate = false;
+				this.rotationDirection = RotatingStargateEntity.RotationDirection.NONE;
 			else
-				stargate.rotate(rotateClockwise);
+				stargate.rotate(rotationDirection);
 		}
 
 		this.currentSymbol = stargate.getCurrentSymbol();

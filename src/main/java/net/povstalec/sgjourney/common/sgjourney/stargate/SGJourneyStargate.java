@@ -58,8 +58,6 @@ public abstract class SGJourneyStargate implements Stargate
 		return this.dimension;
 	}
 	
-	public abstract StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh);
-	
 	@Override
 	public double getInnerRadius()
 	{
@@ -106,6 +104,8 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	// Stargate Connection
+	
+	public abstract StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh);
 	
 	@Override
 	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)

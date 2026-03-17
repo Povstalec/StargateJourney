@@ -27,26 +27,37 @@ import java.util.Map;
 
 public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> extends IrisStargateEntity<SG>
 {
-	public enum RotationDirection //TODO Use this
+	public enum RotationDirection
 	{
-		NONE(0),
-		CLOCKWISE(1),
-		ANTICLOCKWISE(-1);
+		NONE(false, (byte) 0),
+		CLOCKWISE(true, (byte) -1),
+		ANTICLOCKWISE(true, (byte) 1);
 		
-		public final int value;
+		public final boolean isRotating;
+		public final byte value;
 		
-		RotationDirection(int value)
+		RotationDirection(boolean isRotating, byte value)
 		{
+			this.isRotating = isRotating;
 			this.value = value;
+		}
+		
+		public static RotationDirection fromByte(byte value)
+		{
+			return switch(value)
+			{
+				case -1 -> CLOCKWISE;
+				case 1 -> ANTICLOCKWISE;
+				default -> NONE;
+			};
 		}
 	}
 	
-	public static final String ROTATION = "Rotation"; //TODO Change to "rotation"
+	public static final String ROTATION = "rotation";
 	public static final String OLD_ROTATION = "old_rotation";
 	public static final String SIGNAL_STRENGTH = "signal_strength";
-	public static final String COMPUTER_ROTATION = "computer_rotation";
-	public static final String ROTATE_CLOCKWISE = "rotate_clockwise";
 	public static final String DESIRED_ROTATION = "desired_rotation";
+	public static final String ROTATION_DIRECTION = "rotation_direction";
 	
 	// Rotation stuff
 	protected final int maxRotation;
@@ -64,9 +75,9 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	public int previousSignalStrength;
 	public int signalStrength;
 	
-	public boolean rotating;
+	//public boolean rotating;
+	public RotationDirection rotationDirection;
 	public int desiredRotation;
-	public boolean rotateClockwise;
 	
 	public RotatingStargateEntity(BlockEntityType<?> blockEntity, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
 								  int totalSymbols, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight, int maxRotation)
@@ -84,9 +95,8 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		this.previousSignalStrength = 0;
 		this.signalStrength = 0;
 		
-		this.rotating = false;
 		this.desiredRotation = 0;
-		this.rotateClockwise = true;
+		this.rotationDirection = RotationDirection.NONE;
 	}
 	
 	public RotatingStargateEntity(BlockEntityType<?> blockEntity, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
@@ -110,6 +120,8 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		if(tag.contains(ROTATION))
 			this.rotation = tag.getInt(ROTATION);
+		else if(tag.contains("Rotation")) //TODO For legacy reasons
+			this.rotation = tag.getInt("Rotation");
 		this.oldRotation = this.rotation;
 		
 		super.deserializeStargateInfo(tag, isUpgraded);
@@ -123,8 +135,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		tag.putInt(ROTATION, this.rotation);
 		tag.putInt(OLD_ROTATION, this.oldRotation);
 		tag.putInt(SIGNAL_STRENGTH, this.signalStrength);
-		tag.putBoolean(COMPUTER_ROTATION, this.rotating);
-		tag.putBoolean(ROTATE_CLOCKWISE, this.rotateClockwise);
+		tag.putByte(ROTATION_DIRECTION, this.rotationDirection.value);
 		tag.putInt(DESIRED_ROTATION, this.desiredRotation);
 		
 		return tag;
@@ -147,8 +158,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 			}
 			
 			this.signalStrength = tag.getInt(SIGNAL_STRENGTH);
-			this.rotating = tag.getBoolean(COMPUTER_ROTATION);
-			this.rotateClockwise = tag.getBoolean(ROTATE_CLOCKWISE);
+			this.rotationDirection = RotationDirection.fromByte(tag.getByte(ROTATION_DIRECTION));
 			this.desiredRotation = tag.getInt(DESIRED_ROTATION);
 		}
 	}
@@ -218,7 +228,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	protected void rotateToTarget()
 	{
 		if(this.desiredRotation < 0)
-			rotate(this.rotateClockwise);
+			rotate(this.rotationDirection);
 		else
 		{
 			int ringDistance = ringDistance(this.rotation, this.desiredRotation);
@@ -226,9 +236,9 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 			if(ringDistance == 0)
 				endRotation(false);
 			else if(ringDistance < rotationStep())
-				rotate(this.rotateClockwise, ringDistance);
+				rotate(this.rotationDirection, ringDistance);
 			else
-				rotate(this.rotateClockwise);
+				rotate(this.rotationDirection);
 		}
 	}
 	
@@ -236,33 +246,30 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		if(!isConnected())
 		{
-			if(this.rotating)
+			if(this.rotationDirection.isRotating)
 				rotateToTarget();
 			else if(this.signalStrength > 0 && this.signalStrength < 15)
 			{
 				if(this.signalStrength > 7)
-					rotate(false);
+					rotate(RotationDirection.ANTICLOCKWISE);
 				else
-					rotate(true);
+					rotate(RotationDirection.CLOCKWISE);
 			}
 			else
 				syncRotation();
 		}
-		else if(!isDialingOut() && getKawooshTickCount() <= 0 && this.rotating)
+		else if(!isDialingOut() && getKawooshTickCount() <= 0 && this.rotationDirection.isRotating)
 			rotateToTarget();
 		else
 			syncRotation();
 		setChanged();
 	}
 	
-	public void rotate(boolean clockwise, int rotationStep)
+	public void rotate(RotationDirection rotationDirection, int rotationStep)
 	{
 		this.oldRotation = this.rotation;
 		
-		if(clockwise)
-			this.rotation -= rotationStep;
-		else
-			this.rotation += rotationStep;
+		this.rotation += rotationStep * rotationDirection.value;
 		
 		if(this.rotation >= this.maxRotation)
 		{
@@ -279,16 +286,15 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		setChanged();
 	}
 	
-	public void rotate(boolean clockwise)
+	public void rotate(RotationDirection rotationDirection)
 	{
-		rotate(clockwise, rotationStep());
+		rotate(rotationDirection, rotationStep());
 	}
 	
-	protected StargateInfo.Feedback rotateTo(int degrees, boolean rotateClockwise)
+	protected StargateInfo.Feedback rotateTo(int degrees, RotationDirection rotateClockwise)
 	{
-		this.rotating = true;
 		this.desiredRotation = degrees;
-		this.rotateClockwise = rotateClockwise;
+		this.rotationDirection = rotateClockwise;
 		
 		if(!this.level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStartup(worldPosition));
@@ -300,7 +306,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		return setRecentFeedback(StargateInfo.Feedback.ROTATING);
 	}
 	
-	public StargateInfo.Feedback startRotation(int desiredSymbol, boolean rotateClockwise)
+	public StargateInfo.Feedback startRotation(int desiredSymbol, RotationDirection rotateClockwise)
 	{
 		return rotateTo(desiredSymbol < 0 ? -1 : getDesiredRotation(desiredSymbol), rotateClockwise);
 	}
@@ -310,10 +316,10 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(!this.level.isClientSide() && playSound)
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStop(worldPosition));
 		
-		if(!this.rotating)
+		if(!this.rotationDirection.isRotating)
 			return setRecentFeedback(StargateInfo.Feedback.NOT_ROTATING);
 		
-		this.rotating = false;
+		this.rotationDirection = RotationDirection.NONE;
 		
 		syncRotation();
 		
@@ -350,17 +356,17 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	@Override
 	public void stopRotationSound(){}
 	
-	public static boolean alternatingDirection(int addressLength)
+	public static RotationDirection alternatingDirection(int addressLength)
 	{
-		return addressLength % 2 == 1;
+		return addressLength % 2 == 1 ? RotationDirection.CLOCKWISE : RotationDirection.ANTICLOCKWISE;
 	}
 	
-	public boolean bestSymbolDirection(int desiredSymbol)
+	public RotationDirection bestSymbolDirection(int desiredSymbol)
 	{
 		return bestRotationDirection(getDesiredRotation(desiredSymbol));
 	}
 	
-	public boolean bestRotationDirection(int desiredRotation)
+	public RotationDirection bestRotationDirection(int desiredRotation)
 	{
 		int rotation = this.rotation;
 		double difference = desiredRotation - rotation;
@@ -373,9 +379,9 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		double lowerBound = desiredRotation - 1;
 		
 		if(rotation > lowerBound)
-			return true;
+			return RotationDirection.CLOCKWISE;
 		else
-			return false;
+			return RotationDirection.ANTICLOCKWISE;
 	}
 	
 	//============================================================================================
