@@ -8,6 +8,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -32,22 +33,16 @@ public class DHDInfo
 		this.autoclose = 0;
 	}
 	
-	public void setDHD(AbstractDHDEntity dhd, int autoclose)
+	public void setDHD(@NotNull AbstractDHDEntity dhd)
 	{
 		Direction direction = this.stargate.getDirection();
 		
-		if(dhd != null && direction != null)
+		if(direction != null)
 		{
-			if(!hasDHD() || this.dhd == dhd)
-			{
-				Vec3i relativeOffset = CoordinateHelper.Relative.getRelativeOffset(direction, this.stargate.getBlockPos(), dhd.getBlockPos());
-				
-				this.dhdRelativePos = relativeOffset;
-				this.dhd = dhd;
-				updateDHD();
-			}
-			
-			this.autoclose = autoclose;
+			this.dhdRelativePos = CoordinateHelper.Relative.getRelativeOffset(direction, this.stargate.getBlockPos(), dhd.getBlockPos());
+			this.dhd = dhd;
+			this.autoclose = dhd.autoclose();
+			updateDHD();
 		}
 		
 		this.stargate.updateStargate(this.stargate.getLevel(), false);
@@ -91,9 +86,7 @@ public class DHDInfo
 			return;
 		
 		if(this.stargate.getLevel().getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd)
-			this.dhd = dhd;
-		
-		updateDHD();
+			setDHD(dhd);
 		
 		this.stargate.setChanged();
 	}
@@ -123,17 +116,15 @@ public class DHDInfo
 		if(dhdPos == null)
 			return;
 		
-		if(this.stargate.getLevel().getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd)
+		if(this.stargate.getLevel().getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd) // Found a DHD at specified coords
 		{
-			if(this.dhd != dhd)
+			if(this.dhd != dhd) // Found DHD is different from cached DHD
 			{
-				if(this.dhd != null)
-					unsetDHD(true);
-				
-				this.dhd = dhd;
+				unsetDHD(true);
+				setDHD(dhd);
 			}
 		}
-		else if(this.dhd != null)
+		else if(this.dhd != null) // No DHD found at the specified coords
 			unsetDHD(true);
 			
 	}

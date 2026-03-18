@@ -46,7 +46,26 @@ public class SymbolMap
 		return symbol >= totalSymbols;
 	}
 	
-	public boolean isSymbolRemapped(int symbol)
+	/**
+	 * @param symbol Symbol to check
+	 * @return True if another symbol replaced this symbol, otherwise false
+	 */
+	public boolean isSymbolReplaced(int symbol)
+	{
+		if(!isRemapped()) // No symbols are remapped
+			return false;
+		
+		if(symbol < 0 || symbol >= totalSymbols)
+			return false;
+		
+		return symbolMap[symbol] != symbol;
+	}
+	
+	/**
+	 * @param symbol Symbol to check
+	 * @return True if this symbol replaced another symbol, otherwise false
+	 */
+	public boolean isReplacingSymbol(int symbol)
 	{
 		if(!isRemapped()) // No symbols are remapped
 			return false;
@@ -54,7 +73,7 @@ public class SymbolMap
 		if(symbol < 0 || symbol >= MAX_SYMBOLS)
 			return false;
 		
-		return reverseSymbolMap[symbol] != symbol;
+		return symbol < totalSymbols ? reverseSymbolMap[symbol] != symbol : reverseSymbolMap[symbol] != -1;
 	}
 	
 	public boolean isSymbolMapped(int symbol)
@@ -112,11 +131,11 @@ public class SymbolMap
 		return true;
 	}
 	
-	private boolean shouldAvoidSymbol(int[] avoidedSymbols, int symbol)
+	private boolean shouldAvoidSymbol(int symbol, int... avoidedSymbols)
 	{
 		for(int avoidedSymbol : avoidedSymbols)
 		{
-			if(avoidedSymbol == symbol)
+			if(getOriginalSymbol(avoidedSymbol) == symbol)
 				return true;
 		}
 		
@@ -133,13 +152,17 @@ public class SymbolMap
 		{
 			remapCandidate = random.nextInt(1, totalSymbols);
 		}
-		while(isSymbolRemapped(remapCandidate) && !shouldAvoidSymbol(avoidedSymbols, symbol));
+		while(isSymbolReplaced(remapCandidate) || shouldAvoidSymbol(remapCandidate, avoidedSymbols));
 		
 		remapSymbol(remapCandidate, symbol);
 		
 		return remapCandidate;
 	}
 	
+	/**
+	 * @param symbol Symbol to check
+	 * @return The symbol that replaced the provided symbol
+	 */
 	public int getMappedSymbol(int symbol)
 	{
 		if(symbol < 0 || symbol >= totalSymbols)
@@ -148,6 +171,10 @@ public class SymbolMap
 		return isRemapped() ? symbolMap[symbol] : symbol;
 	}
 	
+	/**
+	 * @param symbol Symbol to check
+	 * @return The symbol that got replaced by the provided symbol
+	 */
 	public int getOriginalSymbol(int symbol)
 	{
 		if(symbol < 0 || symbol >= MAX_SYMBOLS)
@@ -175,6 +202,8 @@ public class SymbolMap
 					reverseSymbolMap[symbolMap[i]] = i;
 			}
 		}
+		else
+			reset();
 	}
 	
 	public Address.Mutable remapAddress(Address original)

@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.network.Connection;
@@ -92,7 +91,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected boolean enableCallForwarding;
 	
 	protected long energyTarget;
-	protected int maxEnergyTransfer;
+	protected long maxEnergyTransfer;
 	
 	public final ItemStackHandler energyItemHandler;
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler;
@@ -303,6 +302,11 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return this.enableAdvancedProtocols;
 	}
 	
+	public int autoclose()
+	{
+		return enableAdvancedProtocols() ? 10 : 0;
+	}
+	
 	public long getStargateEnergy()
 	{
 		if(stargate == null)
@@ -332,7 +336,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		if(stargate == null)
 			return;
 		
-		stargate.dhdInfo().setDHD(this, this.enableAdvancedProtocols ? 10 : 0);
+		stargate.dhdInfo().setDHD(this);
 	}
 	
 	protected boolean setStargateFromRelativePos(@NotNull Vec3i relative)
@@ -373,14 +377,15 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		if(this.getLevel() == null)
 			return;
 		
-		updateStargate();
-		
 		if(stargate != null)
 		{
 			if(distance(this.getBlockPos(), stargate.getBlockPos()) > getMaxDistance())
 				unsetStargate();
-			
-			return;
+			else
+			{
+				updateStargate();
+				return;
+			}
 		}
 
 		if(stargateRelativePos == null)
@@ -391,6 +396,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			if(!setStargateFromRelativePos(stargateRelativePos))
 				stargateRelativePos = null;
 		}
+		
+		updateStargate();
 		
 		this.setChanged();
 	}
@@ -501,7 +508,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 	}
 	
-	private void tryPowerStargate(ItemStack energyStack)
+	private void tryPowerStargate(AbstractStargateEntity<?> stargate, ItemStack energyStack)
 	{
 		if(stargate.energyStorage.getTrueEnergyStored() < getEnergyTarget())
 		{
@@ -535,9 +542,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	@Override
 	protected void outputEnergy(Direction outputDirection)
 	{
-		if(this.stargate == null)
-			return;
-		
 		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
 		
 		// Stores energy in the DHD buffer
@@ -553,8 +557,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			}
 		}
 		// Sends energy to the Stargate
-		else
-			tryPowerStargate(energyStack);
+		else if(this.stargate != null)
+			tryPowerStargate(this.stargate, energyStack);
 	}
 
 	public void setCallForwardingState(boolean enableCallForwarding)
@@ -604,17 +608,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		List<AbstractStargateEntity<?>> stargates = LocatorHelper.getNearbyStargates(this.getLevel(), this.getBlockPos(), maxDistance);
 		
 		stargates.sort((stargateA, stargateB) ->
-				Double.valueOf(distance(this.getBlockPos(), stargateA.getBlockPos()))
-				.compareTo(Double.valueOf(distance(this.getBlockPos(), stargateB.getBlockPos()))));
+				Double.compare(distance(this.getBlockPos(), stargateA.getBlockPos()), distance(this.getBlockPos(), stargateB.getBlockPos())));
 		
 		if(!stargates.isEmpty())
 		{
-			Iterator<AbstractStargateEntity<?>> iterator = stargates.iterator();
 			
-			while(iterator.hasNext())
+			for(AbstractStargateEntity<?> stargate : stargates)
 			{
-				AbstractStargateEntity<?> stargate = iterator.next();
-				
+				stargate.dhdInfo().revalidateDHD();
 				if(!stargate.dhdInfo().hasDHD())
 				{
 					Direction direction = getDirection();
@@ -666,7 +667,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			
 			// Remap symbol if needed while Advanced Protocols are enabled
 			if(enableAdvancedProtocols() && !stargate.symbolMap.isSymbolMapped(symbol))
-				symbol = stargate.symbolMap.remapToRandomSymbol(symbol, address.getArray());
+				symbol = stargate.symbolMap.remapToRandomSymbol(symbol, this.address.getArray());
 			
 			stargate.dhdEngageSymbol(symbol);
 			
@@ -687,7 +688,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		if(this.stargate == null)
 			return false;
 		
-		return this.stargate.symbolMap.isSymbolRemapped(symbol);
+		return this.stargate.symbolMap.isReplacingSymbol(symbol);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractDHDEntity dhd)
