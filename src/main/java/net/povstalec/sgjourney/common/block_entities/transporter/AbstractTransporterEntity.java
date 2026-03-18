@@ -11,11 +11,14 @@ import javax.annotation.Nullable;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
@@ -38,7 +41,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
-public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergyBlockEntity implements StructureGenEntity, Nameable, TransporterIDFilterInfo.Interface, /*ProtectedBlockEntity,*/ PDAStatus //TODO ProtectedBlockEntity
+public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergyBlockEntity implements StructureGenEntity, Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus
 {
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -59,6 +62,8 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	private Component name;
 	
 	protected TransporterIDFilterInfo transporterIDFilterInfo;
+	
+	protected boolean isProtected = false;
 	
 	public AbstractTransporterEntity(BlockEntityType<?> blockEntityType, TransporterType<T> transporterType, BlockPos pos, BlockState state)
 	{
@@ -328,5 +333,31 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 			return consumer.apply(transporter);
 		
 		return defaultValue;
+	}
+	
+	@Override
+	public void setProtected(boolean isProtected)
+	{
+		this.isProtected = isProtected;
+	}
+	
+	@Override
+	public boolean isProtected()
+	{
+		return isProtected;
+	}
+	
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_transporter_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+			
+			return false;
+		}
+		
+		return true;
 	}
 }

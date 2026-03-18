@@ -30,13 +30,16 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 
 
-public class RingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock
+public class RingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock
 {
 	protected static final VoxelShape NORTH = Block.box(2.0D, 0.0D, 13.0D, 14.0D, 16.0D, 16.0D);
 	protected static final VoxelShape SOUTH = Block.box(2.0D, 0.0D, 0.0D, 14.0D, 16.0D, 3.0D);
@@ -151,5 +154,27 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
 		return createTickerHelper(type, BlockEntityInit.GOAULD_RING_PANEL.get(), RingPanelEntity::tick);
+	}
+	
+	@Nullable
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		
+		if(blockEntity instanceof RingPanelEntity ringPanel)
+			return ringPanel;
+		
+		return null;
+	}
+	
+	@Override
+	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
+	{
+		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		
+		if(blockEntity instanceof RingPanelEntity ringPanel)
+			return ringPanel.hasPermissions(player, sendMessage);
+		
+		return true;
 	}
 }

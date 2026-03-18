@@ -144,7 +144,7 @@ public class SymbolMap
 	
 	public int remapToRandomSymbol(int symbol, int... avoidedSymbols)
 	{
-		Random random = new Random(0);
+		Random random = new Random(symbol);
 		int remapCandidate;
 		
 		// Try and remap the symbol to some symbol that isn't remapped

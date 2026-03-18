@@ -18,13 +18,15 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 
-public abstract class AbstractTransporterBlock extends BaseEntityBlock
+public abstract class AbstractTransporterBlock extends BaseEntityBlock implements ProtectedBlock
 {
 	protected AbstractTransporterBlock(Properties properties)
 	{
@@ -43,7 +45,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
         {
             BlockEntity entity = level.getBlockEntity(pos);
             
-            if(entity instanceof AbstractTransporterEntity transporterEntity)
+            if(entity instanceof AbstractTransporterEntity<?> transporterEntity)
 			{
 				transporterEntity.bypassDisconnectTransporter(TransporterInfo.Feedback.TRANSPORTER_DESTROYED);
 				transporterEntity.removeTransporterFromNetwork();
@@ -56,7 +58,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if(blockentity instanceof AbstractTransporterEntity transporter)
+		if(blockentity instanceof AbstractTransporterEntity<?> transporter)
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
@@ -90,4 +92,26 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
+	
+	@Nullable
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		
+		if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
+			return transporter;
+		
+		return null;
+	}
+	
+	@Override
+	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
+	{
+		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		
+		if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
+			return transporter.hasPermissions(player, sendMessage);
+		
+		return true;
+	}
 }

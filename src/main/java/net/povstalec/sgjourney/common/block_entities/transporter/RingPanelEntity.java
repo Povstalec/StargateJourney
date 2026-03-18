@@ -14,9 +14,12 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.SoundInit;
@@ -46,7 +49,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
-public class RingPanelEntity extends TransporterControllerEntity
+public class RingPanelEntity extends TransporterControllerEntity implements ProtectedBlockEntity
 {
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
@@ -67,6 +70,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	@Nullable
 	private Transporter connectedTransporter;
+	
+	protected boolean isProtected = false;
 	
 	public RingPanelEntity(BlockPos pos, BlockState state)
 	{
@@ -439,6 +444,32 @@ public class RingPanelEntity extends TransporterControllerEntity
 	{
 		connectedTransporter.dialTransporter(level.getServer(), transporterID);
 		updateButtons();
+	}
+	
+	@Override
+	public void setProtected(boolean isProtected)
+	{
+		this.isProtected = isProtected;
+	}
+	
+	@Override
+	public boolean isProtected()
+	{
+		return isProtected;
+	}
+	
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_transporter_controller_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+			
+			return false;
+		}
+		
+		return true;
 	}
 	
 	

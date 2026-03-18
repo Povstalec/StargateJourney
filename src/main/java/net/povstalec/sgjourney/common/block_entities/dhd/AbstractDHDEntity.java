@@ -648,7 +648,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	/**
 	 * Engages the next Stargate chevron
-	 * @param symbol
+	 * @param symbol Symbol to engage
 	 */
 	public void engageChevron(int symbol)
 	{
