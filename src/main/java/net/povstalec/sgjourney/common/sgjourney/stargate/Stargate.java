@@ -30,7 +30,6 @@ public interface Stargate extends Comparable<Stargate>
 	String DIMENSION = "Dimension";
 	
 	String HAS_DHD = "HasDHD";
-	String GENERATION = "Generation";
 	String TIMES_OPENED = "TimesOpened";
 	
 	String NETWORK = "Network";

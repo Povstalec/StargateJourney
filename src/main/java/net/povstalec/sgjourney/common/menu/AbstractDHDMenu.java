@@ -25,6 +25,11 @@ public abstract class AbstractDHDMenu<T extends AbstractDHDEntity> extends SGJou
     {
     	return blockEntity.isSymbolEngaged(symbol);
     }
+	
+	public boolean isSymbolRemapped(int symbol)
+	{
+		return blockEntity.isSymbolRemapped(symbol);
+	}
     
     public boolean isCenterButtonEngaged()
     {

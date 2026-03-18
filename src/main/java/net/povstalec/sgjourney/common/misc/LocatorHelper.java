@@ -20,9 +20,9 @@ public class LocatorHelper
 	//******************************************Stargate******************************************
 	//============================================================================================
 	
-	public static List<AbstractStargateEntity> getNearbyStargates(Level level, BlockPos centerPos, long maxDistance)
+	public static List<AbstractStargateEntity<?>> getNearbyStargates(Level level, BlockPos centerPos, long maxDistance)
 	{
-		List<AbstractStargateEntity> stargates = new ArrayList<>();
+		List<AbstractStargateEntity<?>> stargates = new ArrayList<>();
 		
 		int chunkX = SectionPos.blockToSectionCoord(centerPos.getX());
 		int chunkZ = SectionPos.blockToSectionCoord(centerPos.getZ());
@@ -35,7 +35,7 @@ public class LocatorHelper
 				ChunkAccess chunk = level.getChunk(x, z);
 				for(BlockPos pos : chunk.getBlockEntitiesPos())
 				{
-					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && CoordinateHelper.Relative.distanceSqr(centerPos, stargate.getBlockPos()) <= maxDistance * maxDistance)
+					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate && CoordinateHelper.Relative.distanceSqr(centerPos, stargate.getBlockPos()) <= maxDistance * maxDistance)
 						stargates.add(stargate);
 				}
 			}
@@ -44,18 +44,18 @@ public class LocatorHelper
 		return stargates;
 	}
 	
-	public static List<AbstractStargateEntity> getNearbyStargatesByDistance(Level level, BlockPos centerPos, long maxDistance)
+	public static List<AbstractStargateEntity<?>> getNearbyStargatesByDistance(Level level, BlockPos centerPos, long maxDistance)
 	{
-		List<AbstractStargateEntity> stargates = getNearbyStargates(level, centerPos, maxDistance);
+		List<AbstractStargateEntity<?>> stargates = getNearbyStargates(level, centerPos, maxDistance);
 		stargates.sort(Comparator.comparing(stargate -> CoordinateHelper.Relative.distance(centerPos, stargate.getBlockPos())));
 		
 		return stargates;
 	}
 	
 	@Nullable
-	public static AbstractStargateEntity getNearestStargate(Level level, BlockPos centerPos, long maxDistance)
+	public static AbstractStargateEntity<?> getNearestStargate(Level level, BlockPos centerPos, long maxDistance)
 	{
-		List<AbstractStargateEntity> stargates = getNearbyStargatesByDistance(level, centerPos, maxDistance);
+		List<AbstractStargateEntity<?>> stargates = getNearbyStargatesByDistance(level, centerPos, maxDistance);
 		
 		if(stargates.isEmpty())
 			return null;
@@ -67,9 +67,9 @@ public class LocatorHelper
 	//****************************************Transporter*****************************************
 	//============================================================================================
 	
-	public static List<AbstractTransporterEntity> getNearbyTransporters(Level level, BlockPos centerPos, long maxDistance)
+	public static List<AbstractTransporterEntity<?>> getNearbyTransporters(Level level, BlockPos centerPos, long maxDistance)
 	{
-		List<AbstractTransporterEntity> transporters = new ArrayList<AbstractTransporterEntity>();
+		List<AbstractTransporterEntity<?>> transporters = new ArrayList<>();
 		
 		int chunkX = SectionPos.blockToSectionCoord(centerPos.getX());
 		int chunkZ = SectionPos.blockToSectionCoord(centerPos.getZ());
@@ -82,7 +82,7 @@ public class LocatorHelper
 				ChunkAccess chunk = level.getChunk(x, z);
 				for(BlockPos pos : chunk.getBlockEntitiesPos())
 				{
-					if(level.getBlockEntity(pos) instanceof AbstractTransporterEntity transporter)
+					if(level.getBlockEntity(pos) instanceof AbstractTransporterEntity<?> transporter)
 						transporters.add(transporter);
 				}
 			}
@@ -91,18 +91,18 @@ public class LocatorHelper
 		return transporters;
 	}
 	
-	public static List<AbstractTransporterEntity> getNearbyTransportersByDistance(Level level, BlockPos centerPos, long maxDistance)
+	public static List<AbstractTransporterEntity<?>> getNearbyTransportersByDistance(Level level, BlockPos centerPos, long maxDistance)
 	{
-		List<AbstractTransporterEntity> transportRings = getNearbyTransporters(level, centerPos, maxDistance);
+		List<AbstractTransporterEntity<?>> transportRings = getNearbyTransporters(level, centerPos, maxDistance);
 		transportRings.sort(Comparator.comparing(transporter -> CoordinateHelper.Relative.distance(centerPos, transporter.getBlockPos())));
 		
 		return transportRings;
 	}
 	
 	@Nullable
-	public static AbstractTransporterEntity getNearestTransporter(Level level, BlockPos centerPos, long maxDistance)
+	public static AbstractTransporterEntity<?> getNearestTransporter(Level level, BlockPos centerPos, long maxDistance)
 	{
-		List<AbstractTransporterEntity> transportRings = getNearbyTransportersByDistance(level, centerPos, maxDistance);
+		List<AbstractTransporterEntity<?>> transportRings = getNearbyTransportersByDistance(level, centerPos, maxDistance);
 		
 		if(transportRings.isEmpty())
 			return null;

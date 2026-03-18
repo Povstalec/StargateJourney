@@ -35,7 +35,7 @@ public abstract class DHDSymbolButton extends DHDButton
     protected int getYImage(boolean isHovering)
     {
     	if(this.menu.isSymbolEngaged(this.symbol))
-    		return 2;
+    		return this.menu.isSymbolRemapped(symbol) ? 1 : 2;
     	
     	if(isHovering)
     		return 1;

@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
@@ -115,8 +116,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 	
 	public static final int SEGMENTS = 3;
-	
-	public static final int MAX_SYMBOLS = 48;
 
 	public static final float STANDARD_THICKNESS = 9.0F;
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
@@ -130,7 +129,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	protected Address.Immutable id9ChevronAddress = new Address.Immutable();
 	
 	protected int totalSymbols;
-	protected int[] symbolMap;
+	public final SymbolMap symbolMap;
 	protected int network;
 	protected boolean restrictNetwork = false;
 	
@@ -190,7 +189,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		this.defaultVariant = defaultVariant;
 		
 		this.totalSymbols = totalSymbols;
-		this.symbolMap = newSymbolMap();
+		this.symbolMap = new SymbolMap(totalSymbols);
 		
 		this.network = defaultNetwork;
 		
@@ -214,11 +213,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		super.onLoad();
 		
         if(level.isClientSide())
-	        return;
-        
-        if(generationStep == StructureGenEntity.Step.READY)
-    		generate();
-        
+			return;
+		
+		if(generationStep == StructureGenEntity.Step.READY)
+			generate();
+		
         dhdInfo.loadDHD();
 	}
 	
@@ -274,15 +273,16 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		variant = new ResourceLocation(tag.getString(VARIANT));
 		
 		if(tag.contains(DHD_POS))
-		{
-			int[] pos = tag.getIntArray(DHD_POS);
-			dhdInfo().setRelativePos(new Vec3i(pos[0], pos[1], pos[2]));
-		}
+			dhdInfo().setRelativePos(Conversion.intArrayToVec(tag.getIntArray(DHD_POS)));
+		else
+			dhdInfo().setRelativePos(null);
 		dhdInfo().setAutoclose(tag.getInt(AUTOCLOSE));
 		
 		addressFilterInfo().deserializeFilters(tag);
 		
 		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
+		
+		symbolMap.loadFromCompoundTag(tag);
 		
 		/*shieldProgress = tag.getShort(SHIELD_PROGRESS);
 		oldShieldProgress = shieldProgress;
@@ -329,15 +329,14 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		tag.putString(VARIANT, variant.toString());
 		
 		if(dhdInfo().relativePos() != null)
-		{
-			Vec3i pos = dhdInfo().relativePos();
-			tag.putIntArray(DHD_POS, new int[] {pos.getX(), pos.getY(), pos.getZ()});
-		}
+			tag.putIntArray(DHD_POS, Conversion.vecToIntArray(dhdInfo().relativePos()));
 		tag.putInt(AUTOCLOSE, dhdInfo().autoclose());
 		
 		addressFilterInfo().serializeFilters(tag);
 		
 		tag.put(COVER_BLOCKS, blockCover.serializeNBT());
+		
+		symbolMap.saveToCompoundTag(tag);
 		
 		/*tag.putShort(SHIELD_PROGRESS, shieldProgress);
 		tag.put(SHIELD_INVENTORY, shieldItemHandler.serializeNBT());*/
@@ -372,6 +371,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		tag.putByte(CONNECTION_STATE, connectionState.byteValue());
 		tag.put(COVER_BLOCKS, blockCover.serializeNBT());
 		
+		symbolMap.saveToCompoundTag(tag);
+		
 		return tag;
 	}
 	
@@ -394,6 +395,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			
 			connectionState = StargateConnection.State.fromByte(tag.getByte(CONNECTION_STATE));
 			blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
+			
+			symbolMap.loadFromCompoundTag(tag);
 		}
 	}
 	
@@ -468,61 +471,17 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	//******************************************Dialing*******************************************
 	//============================================================================================
 	
-	private int[] newSymbolMap()
-	{
-		int[] symbolMap = new int[this.totalSymbols];
-		
-		for(int i = 0; i < this.totalSymbols; i++)
-		{
-			symbolMap[i] = i;
-		}
-		
-		return symbolMap;
-	}
-	
-	public boolean remapSymbol(int originalSymbol, int newSymbol)
-	{
-		if(isSymbolOutOfBounds(originalSymbol))
-			return false;
-		
-		if(newSymbol < 0 || newSymbol > MAX_SYMBOLS)
-			return false;
-		
-		this.symbolMap[originalSymbol] = newSymbol;
-		
-		return true;
-	}
-	
-	public int getMappedSymbol(int symbol)
-	{
-		if(symbol < 0 || symbol >= this.symbolMap.length)
-			return -1;
-		
-		return this.symbolMap[symbol];
-	}
-	
 	public int totalSymbols()
 	{
 		return this.totalSymbols;
 	}
 	
-	public int getSymbolBounds()
-	{
-		return this.totalSymbols - 1;
-	}
-	
 	public boolean isSymbolOutOfBounds(int symbol)
 	{
-		if(symbol < 0)
-			return true;
-		
-		if(symbol > getSymbolBounds())
-			return true;
-		
-		return false;
+		return symbolMap.isSymbolOutOfBounds(symbol);
 	}
 	
-	public static int getChevron(AbstractStargateEntity stargate, int chevronNumber)
+	public static int getChevron(AbstractStargateEntity<?> stargate, int chevronNumber)
 	{
 		chevronNumber--;
 		if(chevronNumber < 0 || chevronNumber >= 8)
@@ -544,7 +503,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(isSymbolOutOfBounds(symbol))
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS);
 		
-		return encodeSymbol(getMappedSymbol(symbol));
+		return encodeSymbol(symbolMap.getMappedSymbol(symbol));
 	}
 	
 	public StargateInfo.Feedback encodeSymbol(int symbol)
@@ -872,7 +831,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		this.address.reset();
 		this.engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
-		this.symbolMap = newSymbolMap();
+		this.symbolMap.reset();
 		setConnectionState(StargateConnection.State.IDLE);
 		setStargateState(updateInterfaces);
 	}
@@ -1039,6 +998,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public Address.Mutable getAddress()
 	{
 		return this.address;
+	}
+	
+	public boolean isSymbolInAddress(int symbol)
+	{
+		return getAddress().containsRegularSymbol(this.symbolMap.getMappedSymbol(symbol));
 	}
 	
 	public int getChevronsEngaged()

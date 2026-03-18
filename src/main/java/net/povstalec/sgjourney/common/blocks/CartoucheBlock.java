@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
@@ -231,6 +232,12 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
+	
+	@Override
+	public PushReaction getPistonPushReaction(BlockState state)
+	{
+		return PushReaction.BLOCK;
+	}
     
     public static class Stone extends CartoucheBlock
     {

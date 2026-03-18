@@ -164,15 +164,23 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
 	}
 	
-	public boolean containsSymbol(int symbol)
+	public boolean containsRegularSymbol(int symbol)
 	{
-		for(int i = 0; i < getLength(); i++)
+		for(int i = 0; i < regularSymbolCount(); i++)
 		{
 			if(symbolAt(i) == symbol)
 				return true;
 		}
 		
 		return false;
+	}
+	
+	public boolean containsSymbol(int symbol)
+	{
+		if(symbol == 0)
+			return hasPointOfOrigin();
+		
+		return containsRegularSymbol(symbol);
 	}
 	
 	public void saveToCompoundTag(CompoundTag tag, String name)

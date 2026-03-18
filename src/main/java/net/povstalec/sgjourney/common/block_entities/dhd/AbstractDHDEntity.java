@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.WorldGenLevel;
@@ -24,6 +23,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
@@ -81,7 +81,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected Direction direction;
 	
 	@Nullable
-	protected AbstractStargateEntity stargate;
+	protected AbstractStargateEntity<?> stargate;
 	@Nullable
 	protected Vec3i stargateRelativePos;
 	
@@ -117,7 +117,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		this.energyItemHandler = createEnergyItemHandler();
 		this.lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
 		
-		this.symbolInfo = new SymbolInfo();;
+		this.symbolInfo = new SymbolInfo();
 		
 		symbolInfo.setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
 		symbolInfo.setSymbols(StargateJourney.EMPTY_LOCATION);
@@ -128,23 +128,20 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		super.onLoad();
 		
-		if(this.getLevel().isClientSide())
+		if(getLevel().isClientSide())
 			return;
 		
 		if(generationStep == StructureGenEntity.Step.READY)
 			generate();
 		
-		this.setStargate();
+		setStargate();
 	}
 	
 	@Override
 	public void load(CompoundTag tag)
 	{
 		if(tag.contains(STARGATE_POS))
-		{
-			int[] pos = tag.getIntArray(STARGATE_POS);
-			stargateRelativePos = new Vec3i(pos[0], pos[1], pos[2]);
-		}
+			stargateRelativePos = Conversion.intArrayToVec(tag.getIntArray(STARGATE_POS));
 		else
 			stargateRelativePos = null;
 			
@@ -165,7 +162,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		super.saveAdditional(tag);
 		
 		if(stargateRelativePos != null)
-			tag.putIntArray(STARGATE_POS, new int[] {stargateRelativePos.getX(), stargateRelativePos.getY(), stargateRelativePos.getZ()});
+			tag.putIntArray(STARGATE_POS, Conversion.vecToIntArray(stargateRelativePos));
 		
 		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
 		
@@ -187,12 +184,16 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		CompoundTag tag = new CompoundTag();
 		
+		if(stargateRelativePos != null)
+			tag.putIntArray(STARGATE_POS, Conversion.vecToIntArray(stargateRelativePos));
+		
 		tag.putLong(ENERGY, energyStorage.getTrueEnergyStored());
 		
 		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
 		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
 		
 		address.saveToCompoundTag(tag, ADDRESS);
+		
 		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
 		
 		return tag;
@@ -204,6 +205,11 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
+			if(tag.contains(STARGATE_POS))
+				stargateRelativePos = Conversion.intArrayToVec(tag.getIntArray(STARGATE_POS));
+			else
+				stargateRelativePos = null;
+			
 			energyStorage.setEnergy(tag.getLong(ENERGY));
 			
 			if(tag.contains(POINT_OF_ORIGIN))
@@ -213,6 +219,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			
 			address.fromArray(tag.getIntArray(ADDRESS));
 			isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
+			
+			if(stargateRelativePos != null)
+				setStargateFromRelativePos(stargateRelativePos);
 		}
 	}
 	
@@ -326,10 +335,26 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		stargate.dhdInfo().setDHD(this, this.enableAdvancedProtocols ? 10 : 0);
 	}
 	
-	protected boolean setStargateFromPos(BlockPos pos)
+	protected boolean setStargateFromRelativePos(@NotNull Vec3i relative)
+	{
+		Direction direction = getDirection();
+		
+		if(direction != null)
+		{
+			BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(direction, this.getBlockPos(), relative);
+			if(stargatePos == null)
+				return false;
+			
+			return setStargateFromPos(stargatePos);
+		}
+		
+		return false;
+	}
+	
+	protected boolean setStargateFromPos(@NotNull BlockPos pos)
 	{
 		BlockEntity blockEntity = this.getLevel().getBlockEntity(pos);
-		if(blockEntity instanceof AbstractStargateEntity stargate)
+		if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 		{
 			this.stargate = stargate;
 			return true;
@@ -347,7 +372,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		if(this.getLevel() == null)
 			return;
-			
+		
 		updateStargate();
 		
 		if(stargate != null)
@@ -363,16 +388,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 
 		if(stargateRelativePos != null)
 		{
-			Vec3i pos = stargateRelativePos;
-			Direction direction = getDirection();
-			
-			if(direction != null)
-			{
-				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(direction, this.getBlockPos(), pos);
-				
-				if(stargatePos != null && !setStargateFromPos(stargatePos))
-					stargateRelativePos = null;
-			}
+			if(!setStargateFromRelativePos(stargateRelativePos))
+				stargateRelativePos = null;
 		}
 		
 		this.setChanged();
@@ -395,7 +412,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public void updateDHD(Address.Mutable address, boolean isStargateConnected)
 	{
-		this.setAddress(address);
+		if(stargate != null)
+			this.setAddress(stargate.symbolMap.remapAddress(address));
+		else
+			this.setAddress(address);
 		this.setCenterButtonEngaged(isStargateConnected);
 	}
 	
@@ -581,7 +601,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public Vec3i findNearestStargate(int maxDistance)
 	{
-		List<AbstractStargateEntity> stargates = LocatorHelper.getNearbyStargates(this.getLevel(), this.getBlockPos(), maxDistance);
+		List<AbstractStargateEntity<?>> stargates = LocatorHelper.getNearbyStargates(this.getLevel(), this.getBlockPos(), maxDistance);
 		
 		stargates.sort((stargateA, stargateB) ->
 				Double.valueOf(distance(this.getBlockPos(), stargateA.getBlockPos()))
@@ -589,11 +609,11 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		if(!stargates.isEmpty())
 		{
-			Iterator<AbstractStargateEntity> iterator = stargates.iterator();
+			Iterator<AbstractStargateEntity<?>> iterator = stargates.iterator();
 			
 			while(iterator.hasNext())
 			{
-				AbstractStargateEntity stargate = iterator.next();
+				AbstractStargateEntity<?> stargate = iterator.next();
 				
 				if(!stargate.dhdInfo().hasDHD())
 				{
@@ -644,6 +664,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			else
 				level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.5F, 1F);
 			
+			// Remap symbol if needed while Advanced Protocols are enabled
+			if(enableAdvancedProtocols() && !stargate.symbolMap.isSymbolMapped(symbol))
+				symbol = stargate.symbolMap.remapToRandomSymbol(symbol, address.getArray());
+			
 			stargate.dhdEngageSymbol(symbol);
 			
 			if(REQUIRE_ENERGY)
@@ -656,6 +680,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public boolean isSymbolEngaged(int symbol)
 	{
 		return this.address.containsSymbol(symbol);
+	}
+	
+	public boolean isSymbolRemapped(int symbol)
+	{
+		if(this.stargate == null)
+			return false;
+		
+		return this.stargate.symbolMap.isSymbolRemapped(symbol);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractDHDEntity dhd)

@@ -15,7 +15,7 @@ import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
-public abstract class GenericStargateModel<StargateEntity extends AbstractStargateEntity, Variant extends GenericStargateVariant> extends AbstractStargateModel<StargateEntity, Variant>
+public abstract class GenericStargateModel<StargateEntity extends AbstractStargateEntity<?>, Variant extends GenericStargateVariant> extends AbstractStargateModel<StargateEntity, Variant>
 {
 	// Ring
 	protected static final float STARGATE_RING_THICKNESS = 7F;
@@ -443,23 +443,19 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 			return;
 		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
-		for(int j = 1; j < this.numberOfSymbols; j++)
+		for(int symbol = 1; symbol < this.numberOfSymbols; symbol++)
 		{
 			boolean symbolEngaged = false;
 			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
 			{
-				for(int i = 0; i < stargate.getAddress().regularSymbolCount(); i++)
-				{
-					int addressSymbol = stargate.getAddress().getArray()[i];
-					if(addressSymbol == j)
-						symbolEngaged = true;
-				}
+				if(stargate.isSymbolInAddress(symbol))
+					symbolEngaged = true;
 			}
 			else if(stargate.isConnected())
 				symbolEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
 			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
-					MAX_LIGHT : combinedLight, j, symbols.getTextureOffset(j), symbols.getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+					MAX_LIGHT : combinedLight, symbol, symbols.getTextureOffset(symbol), symbols.getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
 		}
 	}
 	

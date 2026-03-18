@@ -140,7 +140,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		if(slot == 0)
 			return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
 		
-		return stack.getItem() instanceof AbstractCrystalItem || stack.getItem() instanceof CallForwardingDevice;
+		return (stack.getItem() instanceof AbstractCrystalItem crystal && !crystal.isLarge()) || stack.getItem() instanceof CallForwardingDevice;
 	}
 	
 	public void recalculateCrystals()
