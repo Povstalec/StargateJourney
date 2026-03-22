@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.client.sound.sounds;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvent;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 
 public class PegasusStargateRingSound extends StargateSound<PegasusStargateEntity>
@@ -16,5 +18,14 @@ public class PegasusStargateRingSound extends StargateSound<PegasusStargateEntit
 	public boolean isLooping()
 	{
 		return false;
+	}
+	
+	@Override
+	public void tick()
+	{
+		if(!stargate.isSymbolSpinning())
+			this.stop();
+		
+		super.tick();
 	}
 }

@@ -267,9 +267,14 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		return this.currentSymbol;
 	}
 	
+	public boolean isSymbolSpinning()
+	{
+		return !isConnected() && addressBuffer.getLength() > symbolBuffer;
+	}
+	
 	private void animateSpin()
 	{
-		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
+		if(isSymbolSpinning())
 		{
 			int symbol = addressBuffer.symbolAt(symbolBuffer);
 			if(symbol == 0)

@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
  */
 public abstract class EnergySlotBlockEntity extends EnergyBlockEntity
 {
-	
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	
 	public final ItemStackHandler energyItemHandler;

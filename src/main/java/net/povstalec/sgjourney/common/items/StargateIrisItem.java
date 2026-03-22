@@ -25,6 +25,7 @@ public class StargateIrisItem extends Item
 	public static final ResourceLocation DIAMOND_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/diamond_iris.png");
 	public static final ResourceLocation NETHERITE_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/netherite_iris.png");
 	// Stargate Journey Materials
+	public static final ResourceLocation NAQUADAH_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/naquadah_iris.png");
 	public static final ResourceLocation NAQUADAH_COPPER_ALLOY_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/naquadah_copper_alloy_iris.png");
 	public static final ResourceLocation NAQUADAH_IRON_ALLOY_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/naquadah_iron_alloy_iris.png");
 	public static final ResourceLocation TRINIUM_IRIS = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/iris/trinium_iris.png");

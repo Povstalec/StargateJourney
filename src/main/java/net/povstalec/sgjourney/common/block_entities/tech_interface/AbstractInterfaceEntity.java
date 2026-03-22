@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
@@ -33,7 +34,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Interf
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
-public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
+public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 {
 	public static final String ENERGY_TARGET = "EnergyTarget";
 
@@ -200,7 +201,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public EnergyBlockEntity getEnergyBlockEntity()
 	{
-		if(energyBlockEntity == null && requiresUpdate)
+		if(energyBlockEntity == null || requiresUpdate)
 		{
 			requiresUpdate = false;
 			energyBlockEntity = findEnergyBlockEntity();
@@ -264,7 +265,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		
 		long simulatedOutputAmount = this.energyStorage.depleteEnergy(needed, true);
 		long simulatedReceiveAmount = getEnergyBlockEntity().energyStorage.receiveLongEnergy(simulatedOutputAmount, true);
-		this.energyStorage.extractLongEnergy(simulatedReceiveAmount, false);
+		this.energyStorage.depleteEnergy(simulatedReceiveAmount, false);
 		getEnergyBlockEntity().energyStorage.receiveLongEnergy(simulatedReceiveAmount, false);
 	}
 	
@@ -304,6 +305,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractInterfaceEntity interfaceEntity)
 	{
+		EnergySlotBlockEntity.tick(level, pos, state, interfaceEntity);
+		
 		if(interfaceEntity.getEnergyBlockEntity() != null)
 		{
 			int lastSymbol = interfaceEntity.currentSymbol;

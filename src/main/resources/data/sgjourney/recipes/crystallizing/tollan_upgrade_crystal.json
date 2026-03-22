@@ -1,7 +1,7 @@
 {
 	"type": "sgjourney:crystallizing",
 	"crystal_base": {"item": "sgjourney:crystal_base", "amount": 1},
-	"primary_ingredient": {"item": "minecraft:iron_ingot", "amount": 12},
+	"primary_ingredient": {"item": "sgjourney:trinium_ingot", "amount": 16},
 	"secondary_ingredient": {"item": "minecraft:quartz", "amount": 9},
 	"deplete_primary": true,
 	"deplete_secondary": true,

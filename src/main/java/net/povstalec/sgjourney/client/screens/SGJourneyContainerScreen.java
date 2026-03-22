@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.client.screens;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,6 +16,12 @@ public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> 
 	public SGJourneyContainerScreen(T menu, Inventory playerInventory, Component title)
 	{
 		super(menu, playerInventory, title);
+	}
+	
+	public static boolean isShiftDown()
+	{
+		return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_LSHIFT) ||
+				InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_RSHIFT);
 	}
 	
 	protected boolean hasItem(int slot)

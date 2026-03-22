@@ -4,13 +4,13 @@
 	"pattern":
 	[
 		" R ",
-		"ADA",
-		"ACA"
+		"IDI",
+		"ICI"
 	],
 	
 	"key": 
 	{
-		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"I": { "tag": "sgjourney:naquadah_ingot" },
 		"C": { "item": "sgjourney:reaction_chamber" },
 		"R": { "item": "minecraft:redstone" },
 		"D": { "item": "minecraft:diamond" }

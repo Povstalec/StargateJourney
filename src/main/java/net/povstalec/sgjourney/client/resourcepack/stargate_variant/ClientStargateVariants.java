@@ -158,7 +158,7 @@ public class ClientStargateVariants
 	
 	
 	
-	public static ClientStargateVariant getClientStargateVariant(ResourceLocation location, AbstractStargateEntity stargate)
+	public static ClientStargateVariant getClientStargateVariant(ResourceLocation location, AbstractStargateEntity<?> stargate)
 	{
 		if(stargate instanceof UniverseStargateEntity)
 			return getUniverseStargateVariant(location);
@@ -179,7 +179,7 @@ public class ClientStargateVariants
 	
 	
 	
-	public static RotatingStargateVariant getRotatingStargateVariant(ResourceLocation location, AbstractStargateEntity stargate)
+	public static RotatingStargateVariant getRotatingStargateVariant(ResourceLocation location, AbstractStargateEntity<?> stargate)
 	{
 		if(stargate instanceof UniverseStargateEntity)
 			return getUniverseStargateVariant(location);
@@ -199,7 +199,7 @@ public class ClientStargateVariants
 	 * @param stargate
 	 * @return
 	 */
-	public static Optional<StargateVariant> getVariant(AbstractStargateEntity stargate)
+	public static Optional<StargateVariant> getVariant(AbstractStargateEntity<?> stargate)
 	{
 		Optional<StargateVariant> optional = Optional.empty();
 		

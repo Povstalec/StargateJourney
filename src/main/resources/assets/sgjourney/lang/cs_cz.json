@@ -13,6 +13,19 @@
 	"block.sgjourney.raw_trinium_block": "Blok vytěženého trinia",
 	"block.sgjourney.pure_naquadah_block": "Blok čistého naquadahu",
 	
+	"block.sgjourney.naquadah_block": "Blok naquadahu",
+	"block.sgjourney.naquadah_stairs": "Naquadahové schody",
+	"block.sgjourney.naquadah_slab": "Naquadahový půlblok",
+	"block.sgjourney.cut_naquadah_block": "Tepaný blok naquadahu",
+	"block.sgjourney.cut_naquadah_stairs": "Tepané naquadahové schody",
+	"block.sgjourney.cut_naquadah_slab": "Tepaný naquadahový půlblok",
+	"block.sgjourney.polished_naquadah_block": "Leštěný blok naquadahu",
+	"block.sgjourney.polished_naquadah_stairs": "Leštěné naquadahové schody",
+	"block.sgjourney.polished_naquadah_slab": "Leštěný naquadahový půblok",
+	"block.sgjourney.smooth_naquadah_block": "Hladký blok naquadahu",
+	"block.sgjourney.smooth_naquadah_stairs": "Hladké naquadahové schody",
+	"block.sgjourney.smooth_naquadah_slab": "Hladký naquadahový půblok",
+	
 	"block.sgjourney.naquadah_copper_block": "Měďo-naquadahový blok",
 	"block.sgjourney.exposed_naquadah_copper_block": "Vystavený měďo-naquadahový blok",
 	"block.sgjourney.weathered_naquadah_copper_block": "Zvětralý měďo-naquadahový blok",
@@ -269,11 +282,13 @@
 	"item.sgjourney.raw_naquadah": "Vytěžený naquadah",
 	"item.sgjourney.raw_naquadria": "Vytěžená naquadrie",
 	"item.sgjourney.raw_trinium": "Vytěžené trinium",
+	"item.sgjourney.naquadah_ingot": "Naquadahový ingot",
 	"item.sgjourney.naquadah_copper_mixture": "Směs mědi a naquadahu",
 	"item.sgjourney.naquadah_copper_alloy": "Měďo-naquadahová slitina",
 	"item.sgjourney.naquadah_iron_mixture": "Směs železa a naquadahu",
 	"item.sgjourney.naquadah_iron_alloy": "Železo-naquadahová slitina",
 	"item.sgjourney.trinium_ingot": "Triniový ingot",
+	"item.sgjourney.naquadah_nugget": "Naquadahový nuget",
 	"item.sgjourney.naquadah_copper_nugget": "Měďo-naquadahový nuget",
 	"item.sgjourney.naquadah_iron_nugget": "Železo-naquadahový nuget",
 	"item.sgjourney.trinium_nugget": "Triniový nuget",
@@ -286,6 +301,7 @@
 	"item.sgjourney.vial": "Ampulka",
 	"item.sgjourney.trinium_arrow": "Triniový šíp",
 	
+	"item.sgjourney.naquadah_rod": "Naquadahová tyč",
 	"item.sgjourney.naquadah_copper_rod": "Měďo-naquadahová tyč",
 	"item.sgjourney.naquadah_iron_rod": "Železo-naquadahová tyč",
 	"item.sgjourney.trinium_rod": "Triniová tyč",
@@ -296,7 +312,8 @@
 
 	"item.sgjourney.crystal_base": "Základní krystal",
 	"item.sgjourney.advanced_crystal_base": "Pokročilý základní krystal",
-
+	
+	"item.sgjourney.crystal_adapter": "Krystalový adaptér",
 	"item.sgjourney.control_crystal": "Ovládací krystal",
 	"item.sgjourney.large_control_crystal": "Velký ovládací krystal",
 	"item.sgjourney.materialization_crystal": "Materializační krystal",
@@ -304,7 +321,8 @@
 	"item.sgjourney.transfer_crystal": "Přenosový krystal",
 	"item.sgjourney.communication_crystal": "Komunikační krystal",
 	"item.sgjourney.memory_crystal": "Paměťový krystal",
-
+	
+	"item.sgjourney.advanced_crystal_adapter": "Pokročilý krystalový adaptér",
 	"item.sgjourney.advanced_control_crystal": "Pokročilý ovládací krystal",
 	"item.sgjourney.advanced_materialization_crystal": "Pokročilý materializační krystal",
 	"item.sgjourney.advanced_energy_crystal": "Pokročilý energetický krystal",
@@ -371,6 +389,7 @@
 	"item.sgjourney.golden_iris": "Zlatá iris",
 	"item.sgjourney.diamond_iris": "Diamantová iris",
 	"item.sgjourney.netherite_iris": "Netherititová iris",
+	"item.sgjourney.naquadah_iris": "Naquadahová iris",
 	"item.sgjourney.naquadah_copper_iris": "Iris z měďo-naquadahové slitiny",
 	"item.sgjourney.naquadah_iron_iris": "Iris z železo-naquadahové slitiny",
 	"item.sgjourney.trinium_iris": "Triniová iris",
@@ -385,7 +404,7 @@
 	"item.sgjourney.cooked_goauld": "Pečený goa'uld",
 	"item.sgjourney.goauld_fossil": "Goa'uldí fosílie",
 	
-	"item.sgjourney.jaffa_burger": "Jaffa Burger",
+	"item.sgjourney.goauld_burger": "Goa'uldí burger",
 	"item.sgjourney.jaffa_cake": "Čokopiškot",
 	
 	"entity.sgjourney.goauld": "Goa'uld",
@@ -709,7 +728,6 @@
 	"tooltip.sgjourney.crystal.none": "-",
 	"tooltip.sgjourney.crystal.in_dhd": "V DHD:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Povolí bráně používat pokročilé nastavení",
-	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Povolí bráně používat pokročilé nastavení",
 	"tooltip.sgjourney.crystal.in_dhd.energy": "Zvýší cílenou energetickou kapacitu v bráně o",
 	"tooltip.sgjourney.crystal.in_dhd.transfer": "Zvýší energii přenášenou do hvězdné brány o",
 	"tooltip.sgjourney.crystal.in_dhd.communication": "Zvýší vzdálenost ze které zvládne DHD komunikovat s hvězdnou bránou o 16 bloků",
@@ -822,7 +840,7 @@
 	"tooltip.sgjourney.naquadah_fuel_rod.description": "Tyč s palivem, které se dá použít pro pohánění naquadahových generátorů",
 	"tooltip.sgjourney.naquadah_generator_core.reaction_progress": "Průběh reakce",
 	"tooltip.sgjourney.naquadah_generator_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
-	"tooltip.sgjourney.fusion_core.fuel": "Palivo",
+	"tooltip.sgjourney.fusion_core.fuel": "Fúzní palivo",
 	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Chyba: Transportní kruhy již v provozu",

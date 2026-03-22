@@ -37,10 +37,7 @@ public class InterfacePeripheralWrapper
 	{
 		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
 		if(interfacePeripheral != null && interfacePeripheral.equals(newPeripheral))
-		{
-			// Peripheral is same as before, no changes needed.
-			return false;
-		}
+			return false; // Peripheral is same as before, no changes needed.
 
 		// Peripheral has changed, invalidate the capability and trigger a block update.
 		interfacePeripheral = newPeripheral;

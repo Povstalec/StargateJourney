@@ -124,6 +124,10 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<
 		if(hasRequiredLiquid(sourceStack) && moveItemStackTo(sourceStack, fluidItemInputSlotIndex, fluidItemInputSlotIndex + 1, false))
 			return true;
 		
+		// Try moving it to Liquid output slot
+		if(canAcceptResultingLiquid(sourceStack) && moveItemStackTo(sourceStack, fluidItemOutputSlotIndex, fluidItemOutputSlotIndex + 1, false))
+			return true;
+		
 		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
 	}
 	

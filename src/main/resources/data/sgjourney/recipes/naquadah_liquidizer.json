@@ -3,14 +3,15 @@
 	"category": "misc",
 	"pattern":
 	[
-		"ANA",
+		"INI",
 		"ABA",
-		"ARA"
+		"IRI"
 	],
 	
 	"key": 
 	{
 		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"I": { "tag": "sgjourney:naquadah_ingot" },
 		"N": { "tag": "sgjourney:refined_naquadah" },
 		"B": { "item": "minecraft:bucket" },
 		"R": { "item": "sgjourney:reaction_chamber" }

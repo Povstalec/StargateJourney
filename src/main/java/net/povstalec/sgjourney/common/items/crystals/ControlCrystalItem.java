@@ -73,11 +73,5 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		{
 			return true;
 		}
-
-		@Override
-		public Optional<Component> descriptionInDHD(ItemStack stack)
-		{
-			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.control.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		}
 	}
 }

@@ -58,17 +58,13 @@ public abstract class ClientStargateVariant
 	{
 		this.texture = texture;
 		
-		if(encodedTexture.isPresent())
-			this.encodedTexture = encodedTexture.get();
-		else
-			this.encodedTexture = engagedTexture;
+		this.encodedTexture = encodedTexture.orElse(engagedTexture);
 
 		this.engagedTexture = engagedTexture;
 		
 		this.wormhole = wormhole;
 		
-		if(shinyWormhole.isPresent())
-			this.shinyWormhole = shinyWormhole.get();
+		shinyWormhole.ifPresent(shiny -> this.shinyWormhole = shiny);
 		
 		this.symbols = symbols;
 		

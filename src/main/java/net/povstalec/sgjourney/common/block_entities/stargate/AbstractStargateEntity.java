@@ -33,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -141,11 +140,14 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	// Used during gameplay
 	protected StargateInfo.Feedback recentFeedback = StargateInfo.Feedback.NONE;
 	protected int kawooshTick = 0;
-	protected int animationTick = 0;
 	protected int[] engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 	protected int timesOpened = 0;
 	protected int openTime = 0;
 	protected int timeSinceLastTraveler = 0;
+	// Stuff mainly for client
+	protected Random random = new Random();
+	protected int animationTick = 0;
+	protected int unstableTicks = 0;
 	
 	protected ResourceLocation variant = StargateJourney.EMPTY_LOCATION;
 	private final ResourceLocation defaultVariant;
@@ -748,7 +750,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		setKawooshTickCount(0);
 		setOpenTime(0);
 		setTimeSinceLastTraveler(0);
-		setTickCount(0);
+		resetAnimationTicks();
 		//updateClient();
 		
 		if(feedback.playFailSound() && !level.isClientSide())
@@ -922,9 +924,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return this.kawooshTick;
 	}
 	
-	public void setTickCount(int animationTick)
+	public void resetAnimationTicks()
 	{
-		this.animationTick = animationTick;
+		this.animationTick = 0;
 	}
 	
 	public int getTickCount()
@@ -932,10 +934,23 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return this.animationTick;
 	}
 	
-	public int increaseTickCount()
+	public int increaseAnimationTicks()
 	{
 		this.animationTick++;
 		return this.animationTick;
+	}
+	
+	public void animateUnstableWormhole()
+	{
+		if(unstableTicks > 0)
+			unstableTicks--;
+		else if(isWormholeUnstable() && random.nextFloat() <= 0.025)
+			unstableTicks = random.nextInt(5, 20);
+	}
+	
+	public boolean showUnstableWormhole()
+	{
+		return unstableTicks > 0;
 	}
 	
 	public void setOpenTime(int openTime)
@@ -954,6 +969,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public boolean isWormholeOpen()
 	{
 		return getOpenTime() > 0;
+	}
+	
+	public boolean isWormholeUnstable()
+	{
+		return !energyStorage.hasEnergy(200 * CommonStargateConfig.interstellar_connection_energy_draw.get()); // Stargate does not have enough energy to maintain a stable wormhole
 	}
 	
 	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)
@@ -1542,13 +1562,16 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)
     {
-		if(stargate.isConnected())
-			stargate.increaseTickCount();
-		
 		if(level.isClientSide())
-			return;
-
-		stargate.updateClient();
+		{
+			if(stargate.isConnected())
+			{
+				stargate.increaseAnimationTicks();
+				stargate.animateUnstableWormhole();
+			}
+		}
+		else
+			stargate.updateClient();
 
 		//stargate.blockCover.canSinkGate = true; //TODO Implement a check for whether or not the Stargate can sink into the ground
     }

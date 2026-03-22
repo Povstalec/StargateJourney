@@ -47,6 +47,22 @@
 		"sgjourney:raw_naquadria_block",
 		"sgjourney:raw_trinium_block",
 		
+		"sgjourney:naquadah_block",
+		"sgjourney:naquadah_stairs",
+		"sgjourney:naquadah_slab",
+		
+		"sgjourney:cut_naquadah_block",
+		"sgjourney:cut_naquadah_stairs",
+		"sgjourney:cut_naquadah_slab",
+		
+		"sgjourney:polished_naquadah_block",
+		"sgjourney:polished_naquadah_stairs",
+		"sgjourney:polished_naquadah_slab",
+		
+		"sgjourney:smooth_naquadah_block",
+		"sgjourney:smooth_naquadah_stairs",
+		"sgjourney:smooth_naquadah_slab",
+		
 		"sgjourney:naquadah_copper_block",
 		"sgjourney:exposed_naquadah_copper_block",
 		"sgjourney:weathered_naquadah_copper_block",

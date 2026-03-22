@@ -39,19 +39,24 @@ public class TabInit
 			.displayItems((flag, items, hasPermisions) ->
 			{
 				items.accept(ItemInit.RAW_NAQUADAH.get());
-				items.accept(ItemInit.RAW_NAQUADRIA.get());
-				items.accept(ItemInit.RAW_TRINIUM.get());
+				items.accept(ItemInit.REFINED_NAQUADAH.get());
+				items.accept(ItemInit.NAQUADAH_INGOT.get());
+				items.accept(ItemInit.NAQUADAH_NUGGET.get());
 				
 				items.accept(ItemInit.NAQUADAH_COPPER_MIXTURE.get());
 				items.accept(ItemInit.NAQUADAH_COPPER_ALLOY.get());
 				items.accept(ItemInit.NAQUADAH_COPPER_NUGGET.get());
+				
 				items.accept(ItemInit.NAQUADAH_IRON_MIXTURE.get());
 				items.accept(ItemInit.NAQUADAH_IRON_ALLOY.get());
 				items.accept(ItemInit.NAQUADAH_IRON_NUGGET.get());
-				items.accept(ItemInit.REFINED_NAQUADAH.get());
+				
 				items.accept(ItemInit.PURE_NAQUADAH.get());
 				items.accept(ItemInit.NAQUADAH.get());
 				
+				items.accept(ItemInit.RAW_NAQUADRIA.get());
+				
+				items.accept(ItemInit.RAW_TRINIUM.get());
 				items.accept(ItemInit.TRINIUM_INGOT.get());
 				items.accept(ItemInit.TRINIUM_NUGGET.get());
 				
@@ -61,6 +66,7 @@ public class TabInit
 				items.accept(VialItem.liquidNaquadahSetup());
 				items.accept(VialItem.heavyLiquidNaquadahSetup());
 
+				items.accept(ItemInit.NAQUADAH_ROD.get());
 				items.accept(ItemInit.NAQUADAH_IRON_ROD.get());
 				items.accept(ItemInit.NAQUADAH_COPPER_ROD.get());
 				items.accept(ItemInit.TRINIUM_ROD.get());
@@ -125,6 +131,8 @@ public class TabInit
 				items.accept(ItemInit.CRYSTAL_BASE.get());
 				items.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
 				
+				items.accept(ItemInit.CRYSTAL_ADAPTER.get());
+				items.accept(ItemInit.ADVANCED_CRYSTAL_ADAPTER.get());
 				items.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.CONTROL_CRYSTAL.get());
 				items.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
@@ -189,6 +197,7 @@ public class TabInit
 				items.accept(ItemInit.DIAMOND_IRIS.get());
 				items.accept(ItemInit.NETHERITE_IRIS.get());
 
+				items.accept(ItemInit.NAQUADAH_IRIS.get());
 				items.accept(ItemInit.NAQUADAH_COPPER_IRIS.get());
 				items.accept(ItemInit.NAQUADAH_IRON_IRIS.get());
 				items.accept(ItemInit.TRINIUM_IRIS.get());
@@ -252,6 +261,20 @@ public class TabInit
 				items.accept(BlockInit.PURE_NAQUADAH_BLOCK.get());
 				items.accept(BlockInit.RAW_NAQUADRIA_BLOCK.get());
 				items.accept(BlockInit.RAW_TRINIUM_BLOCK.get());
+				
+				// Naquadah-Iron Blocks
+				items.accept(BlockInit.NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.NAQUADAH_SLAB.get());
+				items.accept(BlockInit.CUT_NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.CUT_NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.CUT_NAQUADAH_SLAB.get());
+				items.accept(BlockInit.POLISHED_NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.POLISHED_NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.POLISHED_NAQUADAH_SLAB.get());
+				items.accept(BlockInit.SMOOTH_NAQUADAH_BLOCK.get());
+				items.accept(BlockInit.SMOOTH_NAQUADAH_STAIRS.get());
+				items.accept(BlockInit.SMOOTH_NAQUADAH_SLAB.get());
 				
 				// Naquadah-Copper Blocks
 				items.accept(BlockInit.NAQUADAH_COPPER_BLOCK.get());

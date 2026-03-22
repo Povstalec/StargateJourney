@@ -144,18 +144,20 @@ public class ResourcepackModel
 	
 	public static class Wormhole
 	{
-		
 		public static final String DISTORTION = "distortion";
 		public static final String HAS_STRUDEL = "has_strudel";
 		public static final String EVENT_HORIZON = "event_horizon";
 		public static final String KAWOOSH = "kawoosh";
 		public static final String STRUDEL = "strudel";
+		public static final String UNSTABLE = "event_horizon_unstable";
 		
 		@Nullable
 		private final Integer distortion;
 		@Nullable
 		private final Boolean hasStrudel;
 		private final Either<FrontBack, WormholeTexture> eventHorizon;
+		@Nullable
+		private final Either<FrontBack, WormholeTexture> unstableEventHorizon;
 		@Nullable
 		private final Either<FrontBack, WormholeTexture> kawoosh;
 		@Nullable
@@ -165,41 +167,23 @@ public class ResourcepackModel
 				Codec.intRange(0, 25).optionalFieldOf(DISTORTION).forGetter(wormhole -> Optional.ofNullable(wormhole.distortion)),
 				Codec.BOOL.optionalFieldOf(HAS_STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.hasStrudel)),
 				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).fieldOf(EVENT_HORIZON).forGetter(Wormhole::eventHorizon),
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(UNSTABLE).forGetter(wormhole -> Optional.ofNullable(wormhole.unstableEventHorizon)),
 				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(KAWOOSH).forGetter(wormhole -> Optional.ofNullable(wormhole.kawoosh)),
 				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.strudel))
 				).apply(instance, Wormhole::new));
 		
 		public Wormhole(Optional<Integer> distortion, Optional<Boolean> hasStrudel,
-				Either<FrontBack, WormholeTexture> eventHorizon,
-				Optional<Either<FrontBack, WormholeTexture>> kawoosh,
+				Either<FrontBack, WormholeTexture> eventHorizon, Optional<Either<FrontBack, WormholeTexture>> unstableEventHorizon, Optional<Either<FrontBack, WormholeTexture>> kawoosh,
 				Optional<Either<FrontBack, WormholeTexture>> strudel)
 		{
-			if(distortion.isPresent())
-				this.distortion = distortion.get();
-			else
-				this.distortion = null;
+			this.distortion = distortion.orElse(null);
 			
-			if(hasStrudel.isPresent())
-				this.hasStrudel = hasStrudel.get();
-			else
-				this.hasStrudel = null;
+			this.hasStrudel = hasStrudel.orElse(null);
 			
 			this.eventHorizon = eventHorizon;
-
-			if(kawoosh.isPresent())
-				this.kawoosh = kawoosh.get();
-			else
-				this.kawoosh = null;
-
-			if(strudel.isPresent())
-				this.strudel = strudel.get();
-			else
-				this.strudel = null;
-		}
-		
-		public Wormhole(Either<FrontBack, WormholeTexture> eventHorizon)
-		{
-			this(Optional.empty(), Optional.empty(), eventHorizon, Optional.empty(), Optional.empty());
+			this.unstableEventHorizon = unstableEventHorizon.orElse(null);
+			this.kawoosh = kawoosh.orElse(null);
+			this.strudel = strudel.orElse(null);
 		}
 		
 		public int distortion()
@@ -221,6 +205,11 @@ public class ResourcepackModel
 		public Either<FrontBack, WormholeTexture> eventHorizon()
 		{
 			return eventHorizon;
+		}
+		
+		public Either<FrontBack, WormholeTexture> unstableEventHorizon()
+		{
+			return unstableEventHorizon != null ? unstableEventHorizon : eventHorizon;
 		}
 		
 		public Either<FrontBack, WormholeTexture> kawoosh()
@@ -246,6 +235,11 @@ public class ResourcepackModel
 			return getWormholeTexture(eventHorizon(), front);
 		}
 		
+		public WormholeTexture unstableEventHorizonTexture(boolean front)
+		{
+			return getWormholeTexture(unstableEventHorizon(), front);
+		}
+		
 		public WormholeTexture kawooshTexture(boolean front)
 		{
 			return getWormholeTexture(kawoosh(), front);
@@ -254,6 +248,18 @@ public class ResourcepackModel
 		public WormholeTexture strudelTexture(boolean front)
 		{
 			return getWormholeTexture(strudel(), front);
+		}
+		
+		public static Either<FrontBack, WormholeTexture> simpleWormholeEither(ResourceLocation texture, int rows, int columns, int frames, RGBA frontRGBA, RGBA backRGBA)
+		{
+			return Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, frontRGBA),
+					new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, backRGBA)));
+		}
+		
+		public static Wormhole simpleWormhole(ResourceLocation eventHorizonTexture, ResourceLocation unstableEventHorizonTexture, int rows, int columns, int frames, RGBA frontRGBA, RGBA backRGBA)
+		{
+			return new Wormhole(Optional.empty(), Optional.empty(), simpleWormholeEither(eventHorizonTexture, rows, columns, frames, frontRGBA, backRGBA),
+					Optional.of(simpleWormholeEither(unstableEventHorizonTexture, rows, columns, frames, backRGBA, backRGBA)), Optional.empty(), Optional.empty());
 		}
 	}
 	

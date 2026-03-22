@@ -122,7 +122,6 @@ public class RemappingHelper
 		// Items
 		remapItem("naquadah_alloy", ItemInit.NAQUADAH_IRON_ALLOY);
 		remapItem("naquadah_alloy_nugget", ItemInit.NAQUADAH_IRON_NUGGET);
-		remapItem("naquadah_rod", ItemInit.NAQUADAH_IRON_ROD);
 		remapItem("naquadah_alloy_iris", ItemInit.NAQUADAH_IRON_IRIS);
 	}
 }

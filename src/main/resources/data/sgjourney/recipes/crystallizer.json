@@ -3,14 +3,15 @@
 	"category": "misc",
 	"pattern":
 	[
-		"ANA",
+		"INI",
 		"BRB",
-		"AAA"
+		"IAI"
 	],
 	
 	"key": 
 	{
 		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"I": { "tag": "sgjourney:naquadah_ingot" },
 		"N": { "tag": "sgjourney:refined_naquadah" },
 		"B": { "item": "sgjourney:liquid_naquadah_bucket" },
 		"R": { "item": "sgjourney:reaction_chamber" }

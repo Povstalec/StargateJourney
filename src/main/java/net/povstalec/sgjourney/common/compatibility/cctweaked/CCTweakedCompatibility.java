@@ -176,7 +176,6 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new PegasusStargateMethods.DynamicSymbols());
 			peripheral.registerMethod(new PegasusStargateMethods.OverrideSymbols());
 			peripheral.registerMethod(new PegasusStargateMethods.OverridePointOfOrigin());
-			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 			
 			filterMethods(peripheral);
 		}

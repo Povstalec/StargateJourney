@@ -14,6 +14,7 @@ public class CommonIrisConfig
 	public static ForgeConfigSpec.IntValue diamond_iris_durability;
 	public static ForgeConfigSpec.IntValue netherite_iris_durability;
 	
+	public static ForgeConfigSpec.IntValue naquadah_iris_durability;
 	public static ForgeConfigSpec.IntValue naquadah_copper_alloy_iris_durability;
 	public static ForgeConfigSpec.IntValue naquadah_iron_alloy_iris_durability;
 	public static ForgeConfigSpec.IntValue trinium_iris_durability;
@@ -56,6 +57,10 @@ public class CommonIrisConfig
 				.defineInRange("server.netherite_iris_durability", 16384, 1, Integer.MAX_VALUE);
 		
 		
+		
+		naquadah_iris_durability = server
+				.comment("Durability of the Naquadah Iris")
+				.defineInRange("server.naquadah_iris_durability", 4096, 1, Integer.MAX_VALUE);
 		
 		naquadah_copper_alloy_iris_durability = server
 				.comment("Durability of the Naquadah-Copper Alloy Iris")

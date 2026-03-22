@@ -12,27 +12,27 @@ public class GenericTransporterFunctions
 	//**************************************Basic Interface***************************************
 	//============================================================================================
 	
-	public static String getTransporterType(AbstractTransporterEntity transporter)
+	public static String getTransporterType(AbstractTransporterEntity<?> transporter)
 	{
 		return BlockEntityType.getKey(transporter.getType()).toString();
 	}
 	
-	public static boolean isTransporterConnected(AbstractTransporterEntity transporter)
+	public static boolean isTransporterConnected(AbstractTransporterEntity<?> transporter)
 	{
 		return transporter.isConnected();
 	}
 	
-	public static long getTransporterEnergy(AbstractTransporterEntity transporter)
+	public static long getTransporterEnergy(AbstractTransporterEntity<?> transporter)
 	{
 		return transporter.energyStorage.getTrueEnergyStored();
 	}
 	
-	public static TransporterInfo.Feedback getRecentFeedback(AbstractTransporterEntity transporter)
+	public static TransporterInfo.Feedback getRecentFeedback(AbstractTransporterEntity<?> transporter)
 	{
 		return transporter.getRecentFeedback();
 	}
 	
-	public static TransporterInfo.Feedback dialCoords(AbstractTransporterEntity transporter, Vec3i coords)
+	public static TransporterInfo.Feedback dialCoords(AbstractTransporterEntity<?> transporter, Vec3i coords)
 	{
 		return transporter.dialTransporter(coords);
 	}
@@ -41,12 +41,12 @@ public class GenericTransporterFunctions
 	//*************************************Crystal Interface**************************************
 	//============================================================================================
 	
-	public static TransporterInfo.Feedback dialTransporterID(AbstractTransporterEntity transporter, TransporterID transporterID)
+	public static TransporterInfo.Feedback dialTransporterID(AbstractTransporterEntity<?> transporter, TransporterID transporterID)
 	{
 		return transporter.dialTransporter(transporterID);
 	}
 	
-	public static TransporterID.Immutable getLocalTransporterID(AbstractTransporterEntity transporter)
+	public static TransporterID.Immutable getLocalTransporterID(AbstractTransporterEntity<?> transporter)
 	{
 		return transporter.getID();
 	}

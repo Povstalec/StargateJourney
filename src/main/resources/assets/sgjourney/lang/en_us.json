@@ -13,6 +13,19 @@
 	"block.sgjourney.raw_trinium_block": "Block of Raw Trinium",
 	"block.sgjourney.pure_naquadah_block": "Block of Pure Naquadah",
 	
+	"block.sgjourney.naquadah_block": "Block of Naquadah",
+	"block.sgjourney.naquadah_stairs": "Naquadah Stairs",
+	"block.sgjourney.naquadah_slab": "Naquadah Slab",
+	"block.sgjourney.cut_naquadah_block": "Cut Naquadah Block",
+	"block.sgjourney.cut_naquadah_stairs": "Cut Naquadah Stairs",
+	"block.sgjourney.cut_naquadah_slab": "Cut Naquadah Slab",
+	"block.sgjourney.polished_naquadah_block": "Polished Naquadah Block",
+	"block.sgjourney.polished_naquadah_stairs": "Polished Naquadah Stairs",
+	"block.sgjourney.polished_naquadah_slab": "Polished Naquadah Slab",
+	"block.sgjourney.smooth_naquadah_block": "Smooth Naquadah Block",
+	"block.sgjourney.smooth_naquadah_stairs": "Smooth Naquadah Stairs",
+	"block.sgjourney.smooth_naquadah_slab": "Smooth Naquadah Slab",
+	
 	"block.sgjourney.naquadah_copper_block": "Naquadah-Copper Block",
 	"block.sgjourney.exposed_naquadah_copper_block": "Exposed Naquadah-Copper Block",
 	"block.sgjourney.weathered_naquadah_copper_block": "Weathered Naquadah-Copper Block",
@@ -270,11 +283,13 @@
 	"item.sgjourney.raw_naquadah": "Raw Naquadah",
 	"item.sgjourney.raw_naquadria": "Raw Naquadria",
 	"item.sgjourney.raw_trinium": "Raw Trinium",
+	"item.sgjourney.naquadah_ingot": "Naquadah Ingot",
 	"item.sgjourney.naquadah_copper_mixture": "Naquadah-Copper Mixture",
 	"item.sgjourney.naquadah_copper_alloy": "Naquadah-Copper Alloy",
 	"item.sgjourney.naquadah_iron_mixture": "Naquadah-Iron Mixture",
 	"item.sgjourney.naquadah_iron_alloy": "Naquadah-Iron Alloy",
 	"item.sgjourney.trinium_ingot": "Trinium Ingot",
+	"item.sgjourney.naquadah_nugget": "Naquadah Nugget",
 	"item.sgjourney.naquadah_copper_nugget": "Naquadah-Copper Nugget",
 	"item.sgjourney.naquadah_iron_nugget": "Naquadah-Iron Nugget",
 	"item.sgjourney.trinium_nugget": "Trinium Nugget",
@@ -287,6 +302,7 @@
 	"item.sgjourney.vial": "Vial",
 	"item.sgjourney.trinium_arrow": "Trinium Arrow",
 	
+	"item.sgjourney.naquadah_rod": "Naquadah Rod",
 	"item.sgjourney.naquadah_copper_rod": "Naquadah-Copper Rod",
 	"item.sgjourney.naquadah_iron_rod": "Naquadah-Iron Rod",
 	"item.sgjourney.trinium_rod": "Trinium Rod",
@@ -297,7 +313,8 @@
 
 	"item.sgjourney.crystal_base": "Crystal Base",
 	"item.sgjourney.advanced_crystal_base": "Advanced Crystal Base",
-
+	
+	"item.sgjourney.crystal_adapter": "Crystal Adapter",
 	"item.sgjourney.control_crystal": "Control Crystal",
 	"item.sgjourney.large_control_crystal": "Large Control Crystal",
 	"item.sgjourney.materialization_crystal": "Materialization Crystal",
@@ -305,7 +322,8 @@
 	"item.sgjourney.transfer_crystal": "Transfer Crystal",
 	"item.sgjourney.communication_crystal": "Communication Crystal",
 	"item.sgjourney.memory_crystal": "Memory Crystal",
-
+	
+	"item.sgjourney.advanced_crystal_adapter": "Advanced Crystal Adapter",
 	"item.sgjourney.advanced_control_crystal": "Advanced Control Crystal",
 	"item.sgjourney.advanced_materialization_crystal": "Advanced Materialization Crystal",
 	"item.sgjourney.advanced_energy_crystal": "Advanced Energy Crystal",
@@ -372,6 +390,7 @@
 	"item.sgjourney.golden_iris": "Golden Iris",
 	"item.sgjourney.diamond_iris": "Diamond Iris",
 	"item.sgjourney.netherite_iris": "Netherite Iris",
+	"item.sgjourney.naquadah_iris": "Naquadah Iris",
 	"item.sgjourney.naquadah_copper_iris": "Naquadah-Copper Iris",
 	"item.sgjourney.naquadah_iron_iris": "Naquadah-Iron Iris",
 	"item.sgjourney.trinium_iris": "Trinium Iris",
@@ -386,7 +405,7 @@
 	"item.sgjourney.cooked_goauld": "Cooked Goa'uld",
 	"item.sgjourney.goauld_fossil": "Goa'uld Fossil",
 	
-	"item.sgjourney.jaffa_burger": "Jaffa Burger",
+	"item.sgjourney.goauld_burger": "Goa'uld Burger",
 	"item.sgjourney.jaffa_cake": "Jaffa Cake",
 	
 	"entity.sgjourney.goauld": "Goa'uld",
@@ -710,7 +729,6 @@
 	"tooltip.sgjourney.crystal.in_dhd": "In DHD:",
 	"tooltip.sgjourney.crystal.in_ring_panel": "In Ring Panel:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Enables advanced protocols in Stargate",
-	"tooltip.sgjourney.crystal.in_dhd.control.advanced": "Enables advanced protocols in Stargate",
 	"tooltip.sgjourney.crystal.in_dhd.energy": "Increases targeted Energy capacity in Stargate by",
 	"tooltip.sgjourney.crystal.in_dhd.transfer": "Increases the amount of Energy transferred to the Stargate by",
 	"tooltip.sgjourney.crystal.in_dhd.communication": "Increases the range at which the DHD can communicate with a Stargate by 16 blocks",
@@ -823,7 +841,7 @@
 	"tooltip.sgjourney.naquadah_fuel_rod.description": "A rod with fuel used to power Naquadah Generators",
 	"tooltip.sgjourney.naquadah_generator_core.reaction_progress": "Reaction Progress",
 	"tooltip.sgjourney.naquadah_generator_core.description": "Provides energy to the DHD",
-	"tooltip.sgjourney.fusion_core.fuel": "Fuel",
+	"tooltip.sgjourney.fusion_core.fuel": "Fusion Fuel",
 	"tooltip.sgjourney.fusion_core.description": "Provides energy to the DHD",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Error: Transport Rings Busy",

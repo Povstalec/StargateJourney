@@ -360,9 +360,9 @@ public class StargateConnection
 			return true;
 		}
 		
-		//TODO Tie this to Advanced Protocols
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
+			//TODO Tie this to Advanced Protocols
 			if(dialedStargate.canPowerFromOtherSide(server) && canExtract(server, dialedStargate, energyDraw))
 			{
 				dialedStargate.extractEnergy(server, energyDraw, false);

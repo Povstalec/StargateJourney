@@ -196,8 +196,10 @@ public class StargateJourney
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
 
-        	MenuScreens.register(MenuInit.INTERFACE.get(), InterfaceScreen::new);
-            
+        	MenuScreens.register(MenuInit.BASIC_INTERFACE.get(), InterfaceScreen.Basic::new);
+        	MenuScreens.register(MenuInit.CRYSTAL_INTERFACE.get(), InterfaceScreen.Crystal::new);
+        	MenuScreens.register(MenuInit.ADVANCED_CRYSTAL_INTERFACE.get(), InterfaceScreen.AdvancedCrystal::new);
+         
         	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
 
         	MenuScreens.register(MenuInit.DHD_CRYSTAL.get(), DHDCrystalScreen::new);

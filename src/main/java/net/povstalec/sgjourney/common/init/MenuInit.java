@@ -9,14 +9,21 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.menu.*;
 
 public class MenuInit 
 {
 	public static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, StargateJourney.MODID);
 
-	public static final RegistryObject<MenuType<InterfaceMenu>> INTERFACE =
-            registerMenuType(InterfaceMenu::new, "interface");
+	public static final RegistryObject<MenuType<InterfaceMenu<BasicInterfaceEntity>>> BASIC_INTERFACE =
+            registerMenuType(InterfaceMenu.Basic::new, "basic_interface");
+	public static final RegistryObject<MenuType<InterfaceMenu<CrystalInterfaceEntity>>> CRYSTAL_INTERFACE =
+		registerMenuType(InterfaceMenu.Crystal::new, "crystal_interface");
+	public static final RegistryObject<MenuType<InterfaceMenu<AdvancedCrystalInterfaceEntity>>> ADVANCED_CRYSTAL_INTERFACE =
+			registerMenuType(InterfaceMenu.AdvancedCrystal::new, "advnaced_crystal_interface");
 	
 	public static final RegistryObject<MenuType<RingPanelMenu>> RING_PANEL =
             registerMenuType(RingPanelMenu::new, "ring_panel");

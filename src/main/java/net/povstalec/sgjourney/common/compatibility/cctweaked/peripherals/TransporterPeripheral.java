@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 
 import dan200.computercraft.api.lua.*;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
@@ -9,9 +10,9 @@ import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericTr
 
 public class TransporterPeripheral extends InterfacePeripheral
 {
-	protected AbstractTransporterEntity transporter;
+	protected AbstractTransporterEntity<?> transporter;
 	
-	public TransporterPeripheral(AbstractInterfaceEntity interfaceEntity, AbstractTransporterEntity transporter)
+	public TransporterPeripheral(AbstractInterfaceEntity interfaceEntity, AbstractTransporterEntity<?> transporter)
 	{
 		super(interfaceEntity);
 		this.transporter = transporter;
@@ -26,6 +27,15 @@ public class TransporterPeripheral extends InterfacePeripheral
 		String methodName = getMethodNames()[method];
 		
 		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.transporter, arguments);
+	}
+	
+	@Override
+	public boolean equals(IPeripheral other)
+	{
+		if(!super.equals(other))
+			return false;
+		
+		return this.transporter == ((TransporterPeripheral) other).transporter;
 	}
 	
 	//============================================================================================

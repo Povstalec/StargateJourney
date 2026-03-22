@@ -112,6 +112,6 @@ public class DHDCrystalMenu extends InventoryMenu<CrystalDHDEntity>
 		if(sourceStack.getItem() instanceof NaquadahFuelRodItem && moveItemStackTo(sourceStack, energyFeederSlotIndex, energyFeederSlotIndex + 1, false))
 			return true;
 		
-		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), true);
+		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
 	}
 }
