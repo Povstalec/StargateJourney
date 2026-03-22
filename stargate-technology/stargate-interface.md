@@ -167,7 +167,9 @@ You can also provide the interface with a redstone signal controlling the iris.
 
 Example setup with iris and GDO is described on the iris page [Stargate Network / Stargate iris]({{ site.baseurl }}/stargate-network/stargate_iris/).
 
-<h2>Shielding mode <p class="label label-purple">Advanced Crystal Interface</p></h2>
+## Shielding mode
+<p class="label label-purple">Advanced Crystal Interface</p>
+
 ![Interface shielding mode]({{ site.baseurl }}/assets/img/mechanics/stargate_network/interface/interface_mode_shielding.png)
 
 Shielding mode is available only for the **advanced crystal interface**.
