@@ -30,5 +30,5 @@ With the mentioned blocks, you need to build this structure:
 Then, you can right-click the Classic Stargate Base Block with an empty hand, which will transform the structure into a Classic Stargate.
 
 ## Upgrading a Classic Stargate
-### [Stargate Upgrade Crystals]({{ site.baseurl }}/items/crystals/#stargate-upgrade-crystals)
-### [Stargate Variant Crystals]({{ site.baseurl }}/items/crystals/#stargate-variant-crystals)
+### [Stargate Upgrade Crystals]({{ '/stargate-technology/crystals/stargate-upgrade-crystals' | absolute_url }})
+### [Stargate Variant Crystals]({{ '/stargate-technology/crystals/stargate-variant-crystals' | absolute_url }})

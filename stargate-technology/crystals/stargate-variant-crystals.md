@@ -7,6 +7,13 @@ nav_order: 10
 # Stargate variant crystals
 {: .no_toc }
 
+First, you must craft a _general_ Stargate Variant Crystal, which can be later crafted into a _specific_ variant crystal.
+The _general_ variant crystal can be used to change the gate variant to default.
+Check [Stargate variants]({{ site.baseurl }}/blocks/stargate_variants/) for _specific_ variant crystals.
+
+![General Stargate Variant Crystal]({{ site.baseurl }}/assets/img/items/crystals/stargate_variant_crystal.png)
+
+
 {: .future }
 It is planned to distinguish the variant crystals for different Stargates.
 E.g. with a different texture or just a color.
