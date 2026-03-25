@@ -16,7 +16,7 @@ This is achieved through the use of Interfaces,
 which, as the name suggests, 
 interface with alien technology and enable you to control it.
 
-They can read information from a Stargate and provide a [redstone signal with a comparator]({{ site.baseurl }}/stargate-network/interface/).
+They can read information from a Stargate and provide a [redstone signal with a comparator]({{ '/stargate-technology/stargate-interface/' | absolute_url }}).
 And they can also act as computercraft peripherals.
 
 There are three available Stargate Interfaces -

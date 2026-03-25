@@ -113,7 +113,7 @@ ___
 ___
 
 ## Stargate Interface
-See the [Stargate Network / Stargate Interface]({{ site.baseurl }}/stargate-network/interface/) section for further details.
+See the [Stargate Network / Stargate Interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }}) section for further details.
 
 ### Basic Interface
 
