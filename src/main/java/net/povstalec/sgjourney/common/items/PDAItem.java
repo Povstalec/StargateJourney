@@ -80,7 +80,6 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		capability.ifPresent(energyStorage ->
 		{
 			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
-				
 				player.sendSystemMessage(ComponentHelper.energy("info.sgjourney.energy", sgjourneyEnergy.getTrueEnergyStored()));
 			else
 				player.sendSystemMessage(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getEnergyStored()));

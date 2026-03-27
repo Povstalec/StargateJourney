@@ -104,12 +104,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 			primaryIngredientHandler.deserializeNBT(nbt.getCompound(PRIMARY_INGREDIENT_INVENTORY));
 			secondaryIngredientHandler.deserializeNBT(nbt.getCompound(SECONDARY_INGREDIENT_INVENTORY));
 			outputHandler.deserializeNBT(nbt.getCompound(OUTPUT_INVENTORY));
-			if(outputHandler.getSlots() == 1) // Increasing the size of the old output inventory
-			{
-				ItemStack stack = outputHandler.getStackInSlot(0);
-				outputHandler.setSize(2);
-				outputHandler.setStackInSlot(0, stack);
-			}
+			InventoryUtil.expandSlotsIfNeeded(outputHandler, 2);
 			fluidInputHandler.deserializeNBT(nbt.getCompound(FLUID_INPUT_INVENTORY));
 		}
 		

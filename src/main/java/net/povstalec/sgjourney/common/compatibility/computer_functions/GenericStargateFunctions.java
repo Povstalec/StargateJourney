@@ -52,6 +52,11 @@ public class GenericStargateFunctions
 		return stargate.getOpenTime();
 	}
 	
+	public static StargateInfo.Feedback engageStargate(AbstractStargateEntity<?> stargate)
+	{
+		return stargate.engageStargate();
+	}
+	
 	// Returns true if Stargate was connected and then got disconnected, otherwise returns false
 	public static boolean disconnectStargate(AbstractStargateEntity<?> stargate)
 	{
@@ -96,9 +101,9 @@ public class GenericStargateFunctions
 	//*************************************Crystal Interface**************************************
 	//============================================================================================
 	
-	public static StargateInfo.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, int desiredSymbol, boolean engageDirectly)
+	public static StargateInfo.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, int desiredSymbol, boolean engageDirectly, boolean canEngageStargate)
 	{
-		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.engageSymbol(desiredSymbol) : stargate.dhdEngageSymbol(desiredSymbol);
+		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.directEngageSymbol(desiredSymbol, canEngageStargate) : stargate.indirectEngageSymbol(desiredSymbol, canEngageStargate);
 	}
 	
 	public static Address.Mutable getDialedAddress(AbstractStargateEntity<?> stargate)

@@ -82,19 +82,19 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 		if(pointOfOrigin != null)
 		{
 			// Point of Origin
-			if(stargate.isDialingOut() && stargate.isConnected() || stargate.isConnected() && stargate.getKawooshTickCount() > 0)
+			if(stargate.getAddress().hasPointOfOrigin()) // Point of Origin is encoded
 			{
 				consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
 				
 				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, true));
 			}
-			else if(stargate.addressBuffer.getLength() > 0 && !stargate.isConnected() && currentSymbol == 0)
+			else if(stargate.addressBuffer.getLength() > 0 && !stargate.isConnected() && currentSymbol == 0) // Point of Origin is spinning around the ring
 			{
 				consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
 
 				renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0.5F, 1, rotation);
 			}
-			else if(!stargate.isConnected() && stargate.addressBuffer.getLength() == 0)
+			else if(!stargate.isConnected() && stargate.addressBuffer.getLength() == 0) // Stargate is in its idle state
 			{
 				consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
 				
@@ -124,6 +124,6 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			}
 		}
 		else
-			renderIdleSymbols(stargate, stargateVariant, stack, consumer, source, symbols, getSymbolColor(stargate, stargateVariant, stargate.isConnected()), stargate.isConnected() ? stargate.currentSymbol : 36);
+			renderIdleSymbols(stargate, stargateVariant, stack, consumer, source, symbols, getSymbolColor(stargate, stargateVariant, stargate.isConnected()), stargate.isConnected() ? stargate.getCurrentSymbol() : 36);
 	}
 }

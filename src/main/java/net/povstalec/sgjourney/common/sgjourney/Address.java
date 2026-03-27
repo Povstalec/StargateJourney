@@ -140,6 +140,8 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	{
 		if(hasPointOfOrigin())
 			return Address.Type.fromLength(addressArray.length);
+		else if(addressArray.length == MAX_ADDRESS_LENGTH)
+			return Address.Type.fromLength(MAX_ADDRESS_LENGTH);
 		else
 			return Address.Type.fromLength(addressArray.length + 1);
 	}
@@ -181,6 +183,19 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return hasPointOfOrigin();
 		
 		return containsRegularSymbol(symbol);
+	}
+	
+	public boolean canBeDialed()
+	{
+		if(hasPointOfOrigin())
+			return addressArray.length >= MIN_DIALED_ADDRESS_LENGTH;
+		
+		return addressArray.length == MAX_ADDRESS_LENGTH;
+	}
+	
+	public boolean hasPointOfOriginOrMaxLength()
+	{
+		return hasPointOfOrigin() || addressArray.length == MAX_ADDRESS_LENGTH;
 	}
 	
 	public void saveToCompoundTag(CompoundTag tag, String name)
@@ -535,19 +550,6 @@ public abstract class Address implements Cloneable, Comparable<Address>
 				return false;
 			
 			return addressArray.length < MAX_ADDRESS_LENGTH;
-		}
-		
-		public boolean canBeDialed()
-		{
-			if(hasPointOfOrigin())
-				return addressArray.length >= MIN_DIALED_ADDRESS_LENGTH;
-			
-			return addressArray.length == MAX_ADDRESS_LENGTH;
-		}
-		
-		public boolean canBeInterrupted()
-		{
-			return hasPointOfOrigin() || addressArray.length == MAX_ADDRESS_LENGTH;
 		}
 		
 		public Mutable fromArray(int... addressArray)

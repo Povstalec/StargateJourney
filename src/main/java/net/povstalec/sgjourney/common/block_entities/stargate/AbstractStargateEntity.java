@@ -87,6 +87,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public static final String EVENT_STARGATE_ROTATION_STARTED = "stargate_rotation_started";
 	public static final String EVENT_STARGATE_ROTATION_STOPPED = "stargate_rotation_stopped";
 	public static final String EVENT_CHEVRON_ENGAGED = "stargate_chevron_engaged";
+	public static final String EVENT_STARGATE_ENGAGED = "stargate_stargate_engaged";
 	public static final String EVENT_RESET = "stargate_reset";
 	public static final String EVENT_MESSAGE_RECEIVED = "stargate_message_received";
 
@@ -123,6 +124,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	private final StargateType<SG> stargateType;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
+	
+	// Stargate destruction
+	protected boolean isItemDropped = false;
 	
 	// Basic Info
 	protected Address.Immutable id9ChevronAddress = new Address.Immutable();
@@ -492,23 +496,38 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			return stargate.getEngagedChevrons()[chevronNumber];
 	}
 	
-	public StargateInfo.Feedback dhdEngageSymbol(int symbol)
+	/**
+	 * Method to engage symbols that also allows the Stargate to do extra stuff, like rotate before encoding the symbols fully
+	 * @param symbol Symbol to be encoded
+	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @return Feedback from encoding the symbol
+	 */
+	public StargateInfo.Feedback indirectEngageSymbol(int symbol, boolean canEngageStargate)
 	{
-		return engageSymbol(symbol);
+		return directEngageSymbol(symbol, canEngageStargate);
 	}
 	
-	public StargateInfo.Feedback engageSymbol(int symbol)
+	/**
+	 * Method to engage symbols that doesn't allow the Stargate to do any extra stuff
+	 * @param symbol Symbol to be encoded
+	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @return Feedback from encoding the symbol
+	 */
+	public StargateInfo.Feedback directEngageSymbol(int symbol, boolean canEngageStargate)
 	{
-		if(level.isClientSide())
-			return StargateInfo.Feedback.NONE;
-		
 		if(isSymbolOutOfBounds(symbol))
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS);
 		
-		return encodeSymbol(symbolMap.getMappedSymbol(symbol));
+		return encodeSymbol(symbolMap.getMappedSymbol(symbol), canEngageStargate);
 	}
 	
-	public StargateInfo.Feedback encodeSymbol(int symbol)
+	/**
+	 * Method to encode symbols and handle edge cases involving Point of Origin
+	 * @param symbol Symbol to be encoded
+	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @return Feedback from encoding the symbol
+	 */
+	protected StargateInfo.Feedback encodeSymbol(int symbol, boolean canEngageStargate)
 	{
 		if(isConnected())
 		{
@@ -518,18 +537,20 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
 		}
 		
-		if(symbol == 0)
-			return setRecentFeedback(lockPrimaryChevron());
-		else
-			return setRecentFeedback(encodeChevron(symbol, false, false));
+		StargateInfo.Feedback feedback = encodeChevron(symbol, false, false);
+		
+		if(canEngageStargate && getAddress().hasPointOfOriginOrMaxLength() && !feedback.isError())
+			return engageStargate();
+		
+		return setRecentFeedback(feedback);
 	}
 	
-	public StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encodeSound)
+	protected StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encodeSound)
 	{
-		if(address.containsSymbol(symbol))
+		if(address.containsSymbol(symbol)) // Address already contains the encoded symbol
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
 		
-		if(!growAddress(symbol))
+		if(!growAddress(symbol)) // Trying to encode 10th symbol (impossible)
 			return resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
 		
 		chevronSound((short) getAddress().getLength(), incoming, false, encodeSound);
@@ -550,31 +571,27 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
 	}
 	
-	protected StargateInfo.Feedback lockPrimaryChevron()
+	public StargateInfo.Feedback dhdEngageStargate() //TODO Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
 	{
-		if(level.isClientSide())
-			return StargateInfo.Feedback.NONE;
-		
-		if(!growAddress(0))
-		{
-			chevronSound((short) 0, false, false, false);
+		return engageStargate();
+	}
+	
+	public StargateInfo.Feedback engageStargate()
+	{
+		if(!getAddress().canBeDialed()) // Address is too short or does not contain a Point of Origin
 			return resetStargate(makeDialAttempt(StargateInfo.Feedback.INCOMPLETE_ADDRESS));
-		}
 		else if(!isConnected())
 		{
 			if(!isObstructed())
 			{
-				updateInterfaceBlocks(EVENT_CHEVRON_ENGAGED, getAddress().getLength(), 0, false, 0);
-				StargateInfo.Feedback feedback = setRecentFeedback(makeDialAttempt(engageStargate(getAddress(), true)));
-				chevronSound((short) 0, false, false, false);
-				return feedback;
+				updateInterfaceBlocks(EVENT_STARGATE_ENGAGED, getAddress().toList());
+				return setRecentFeedback(makeDialAttempt(engageStargate(getAddress(), true)));
 			}
 			else
 				return resetStargate(makeDialAttempt(StargateInfo.Feedback.SELF_OBSTRUCTED), false);
 		}
 		else
 			return disconnectStargate(makeDialAttempt(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT), true);
-		
 	}
 	
 	public StargateInfo.Feedback makeDialAttempt(StargateInfo.Feedback feedback)
@@ -1227,6 +1244,16 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return obstructingBlocks >= getMaxObstructiveBlocks();
 	}
 	
+	public void markItemAsDropped()
+	{
+		this.isItemDropped = true;
+	}
+	
+	public boolean isItemDropped()
+	{
+		return this.isItemDropped;
+	}
+	
 	@Override
 	public void saveToItem(ItemStack stack)
 	{
@@ -1584,7 +1611,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
 		if(generationStep == Step.SETUP)
-			generationStep = Step.READY;
+			generationStep = Step.READY; // Marks the Stargate as ready for generation
 	}
 	
 	private void trySetPrimary()

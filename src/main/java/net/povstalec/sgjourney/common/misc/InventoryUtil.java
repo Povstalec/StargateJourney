@@ -9,6 +9,7 @@ import net.minecraft.world.item.*;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
@@ -154,5 +155,22 @@ public class InventoryUtil
 		}
 		
 		return null;
+	}
+	
+	public static void expandSlotsIfNeeded(ItemStackHandler handler, int minSlots)
+	{
+		if(handler.getSlots() >= minSlots)
+			return;
+		
+		ItemStack[] stacks = new ItemStack[handler.getSlots()];
+		for(int i = 0; i < stacks.length; i++)
+		{
+			stacks[i] = handler.getStackInSlot(i);
+		}
+		handler.setSize(minSlots);
+		for(ItemStack stack : stacks)
+		{
+			handler.setStackInSlot(0, stack);
+		}
 	}
 }

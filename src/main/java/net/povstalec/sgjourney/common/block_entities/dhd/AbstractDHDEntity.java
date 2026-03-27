@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.Connection;
@@ -22,10 +23,10 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
-import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.misc.InventoryUtil;
-import net.povstalec.sgjourney.common.misc.LocatorHelper;
+import net.povstalec.sgjourney.common.misc.*;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,13 +48,12 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity
+public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity, PDAStatus
 {
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -130,10 +130,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		if(getLevel().isClientSide())
 			return;
 		
+		setStargate();
+		
 		if(generationStep == StructureGenEntity.Step.READY)
 			generate();
-		
-		setStargate();
 	}
 	
 	@Override
@@ -145,6 +145,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			stargateRelativePos = null;
 			
 		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
+		InventoryUtil.expandSlotsIfNeeded(energyItemHandler, 2);
 		
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
@@ -646,13 +647,17 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public abstract void onDialAttempt(StargateInfo.Feedback feedback, Address address);
 	
-	/**
-	 * Engages the next Stargate chevron
-	 * @param symbol Symbol to engage
-	 */
-	public void engageChevron(int symbol)
+	public void pressButton(int index)
 	{
-		if(this.stargate != null)
+		if(index < 0)
+			engageStargate();
+		else
+			encodeSymbol(index);
+	}
+	
+	public void engageStargate()
+	{
+		if(stargate != null)
 		{
 			if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
 			{
@@ -660,16 +665,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				return;
 			}
 			
-			if(symbol == 0)
-				level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
-			else
-				level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.5F, 1F);
+			level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
 			
-			// Remap symbol if needed while Advanced Protocols are enabled
-			if(enableAdvancedProtocols() && !stargate.symbolMap.isSymbolMapped(symbol))
-				symbol = stargate.symbolMap.remapToRandomSymbol(symbol, this.address.getArray());
-			
-			stargate.dhdEngageSymbol(symbol);
+			stargate.dhdEngageStargate();
 			
 			if(REQUIRE_ENERGY)
 				energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
@@ -678,7 +676,38 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), 5);
 	}
 	
-	public boolean isSymbolEngaged(int symbol)
+	public void encodeSymbol(int symbol)
+	{
+		if(stargate != null)
+		{
+			if(stargate.isConnected())
+			{
+				sendMessageToNearbyPlayers(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.getFeedbackMessage(), 5);
+				return;
+			}
+			
+			if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
+			{
+				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), 5);
+				return;
+			}
+			
+			level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.5F, 1F);
+			
+			// Remap symbol if needed while Advanced Protocols are enabled
+			if(enableAdvancedProtocols() && !stargate.symbolMap.isSymbolMapped(symbol))
+				symbol = stargate.symbolMap.remapToRandomSymbol(symbol, this.address.getArray());
+			
+			stargate.indirectEngageSymbol(symbol, false);
+			
+			if(REQUIRE_ENERGY)
+				energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
+		}
+		else
+			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), 5);
+	}
+	
+	public boolean isSymbolEncoded(int symbol)
 	{
 		return this.address.containsSymbol(symbol);
 	}
@@ -700,6 +729,41 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		dhd.updateClient();
     }
 	
+	@Override
+	public List<Component> getStatus()
+	{
+		List<Component> status = new ArrayList<>();
+		
+		status.add(Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": " + symbolInfo().pointOfOrigin())).withStyle(ChatFormatting.DARK_PURPLE));
+		status.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbolInfo().symbols())).withStyle(ChatFormatting.LIGHT_PURPLE));
+		
+		if(this.stargate != null)
+			status.add(Component.translatable("info.sgjourney.stargate_connected").append(Component.literal(": " + this.stargate.get9ChevronAddress())).withStyle(ChatFormatting.AQUA));
+		else
+			status.add(Component.translatable("info.sgjourney.no_stargate_connected").withStyle(ChatFormatting.RED));
+			
+		
+		return status;
+	}
+	
+	public void setLocalSymbols()
+	{
+		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+		
+		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+	}
+	
+	public void setSymbolsFromStargate()
+	{
+		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+			symbolInfo().setPointOfOrigin(this.stargate.symbolInfo().pointOfOrigin());
+		
+		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+			symbolInfo().setSymbols(this.stargate.symbolInfo().symbols());
+	}
+	
 	//============================================================================================
 	//*****************************************Generation*****************************************
 	//============================================================================================
@@ -708,19 +772,22 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
 		if(generationStep == Step.SETUP)
-			generationStep = Step.READY;
+			generationStep = Step.READY; // Marks the DHD as ready for generation
 	}
 	
 	public void generate()
 	{
 		generateEnergyCore();
+		generateAdditional(Step.READY);
 		
 		generationStep = Step.GENERATED;
 	}
 	
+	public void generateAdditional(StructureGenEntity.Step generationStep) {}
+	
 	public void setToGenerate()
 	{
-		generationStep = Step.SETUP;
+		generationStep = Step.SETUP; //TODO What does this do?
 	}
 	
 	protected abstract void generateEnergyCore();

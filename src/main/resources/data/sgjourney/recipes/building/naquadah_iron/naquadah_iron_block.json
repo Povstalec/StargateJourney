@@ -3,16 +3,14 @@
 	"category": "building",
 	"pattern":
 	[
-		"III",
-		"III",
-		"III"
+		"TTT",
+		"TIT",
+		"TTT"
 	],
 	"key":
 	{
-		"I":
-		{
-			"item": "sgjourney:naquadah_iron_alloy"
-		}
+		"I": { "item": "sgjourney:naquadah_iron_alloy" },
+		"T": { "tag": "sgjourney:naquadah_iron_alloy" }
 	},
 	"result":
 	{

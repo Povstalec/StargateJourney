@@ -26,21 +26,29 @@ public class Galaxy
 	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "galaxy"));
 	public static final Codec<ResourceKey<Galaxy>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
+	public static final String NAME = "name";
+	public static final String TYPE = "type";
+	public static final String DEFAULT_SYMBOLS = "default_symbols";
+	public static final String SYMBOL_PREFIX = "symbol_prefix";
+	
     public static final Codec<Galaxy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    		Codec.STRING.fieldOf("name").forGetter(Galaxy::getName),
-    		GalaxyInit.CODEC.fieldOf("type").forGetter(Galaxy::getType),
-			Symbols.RESOURCE_KEY_CODEC.fieldOf("default_symbols").forGetter(Galaxy::getDefaultSymbols)
+    		Codec.STRING.fieldOf(NAME).forGetter(Galaxy::getName),
+    		GalaxyInit.CODEC.fieldOf(TYPE).forGetter(Galaxy::getType),
+			Symbols.RESOURCE_KEY_CODEC.fieldOf(DEFAULT_SYMBOLS).forGetter(Galaxy::getDefaultSymbols),
+			Codec.intRange(1, Address.MAX_SYMBOL).optionalFieldOf(SYMBOL_PREFIX, 3).forGetter(addressRegion -> addressRegion.symbolPrefix) // Symbol 3 (Virgo) as a reference to the Virgo cluster of galaxies
 			).apply(instance, Galaxy::new));
 
 	private final String name;
 	private final GalaxyType type;
 	private final ResourceKey<Symbols> defaultSymbols;
+	private final int symbolPrefix;
 	
-	public Galaxy(String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols)
+	public Galaxy(String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols, int symbolPrefix)
 	{
 		this.name = name;
 		this.type = type;
 		this.defaultSymbols = defaultSymbols;
+		this.symbolPrefix = symbolPrefix;
 	}
 	
 	public String getName()
@@ -58,9 +66,9 @@ public class Galaxy
 		return defaultSymbols;
 	}
 	
-	public static Galaxy getGalaxy(Level level, String part1, String part2)
+	public int getSymbolPrefix()
 	{
-        return getGalaxy(level, new ResourceLocation(part1, part2));
+		return symbolPrefix;
 	}
 	
 	public static Galaxy getGalaxy(Level level, ResourceLocation galaxy)
@@ -112,6 +120,11 @@ public class Galaxy
 		public ResourceKey<Symbols> getDefaultSymbols()
 		{
 			return galaxy.getDefaultSymbols();
+		}
+		
+		public int getSymbolPrefix()
+		{
+			return galaxy.getSymbolPrefix();
 		}
 		
 		public int getSize()

@@ -720,6 +720,8 @@
 	"tooltip.sgjourney.stargate_type": "Typ brány",
 	"tooltip.sgjourney.generates_inside_structure": "Generováno uvnitř struktury",
 	"tooltip.sgjourney.is_primary": "Je primární",
+	"tooltip.sgjourney.engage_stargate": "Spustit hvězdnou bránu",
+	"tooltip.sgjourney.disconnect_stargate": "Odpojit hvězdnou bránu",
 
 	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
 	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
@@ -751,6 +753,8 @@
 	"tooltip.sgjourney.ring_panel.memory_crystal.invalid_id": "Nesprávné ID transportéru",
 	"tooltip.sgjourney.ring_panel.memory_crystal.invalid_location": "Žádný transportér na dané pozici",
 	
+	"tooltip.sgjourney.dhd.symbols_to_numbers": "Drž Shift pro zobrazení čísel",
+	"tooltip.sgjourney.dhd.numbers_to_symbols": "Drž Shift pro zobrazení symbolů",
 	"tooltip.sgjourney.has_control_crystal": "Má ovládací krystal",
 	"tooltip.sgjourney.dhd.generates_energy_core": "Generuje energetické jádro",
 	"tooltip.sgjourney.dhd.description": "Zařízení pro ovládání hvězdných bran",

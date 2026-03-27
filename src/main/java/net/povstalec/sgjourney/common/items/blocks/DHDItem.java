@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 
 public class DHDItem extends BlockItem
 {
@@ -58,16 +59,38 @@ public class DHDItem extends BlockItem
             	}
             }
 		}
-		
-		return false;
+		else
+		{
+			BlockEntity baseEntity = level.getBlockEntity(pos);
+			if(baseEntity instanceof AbstractDHDEntity dhd)
+			{
+				dhd.setStargate();
+				dhd.generateAdditional(StructureGenEntity.Step.READY);
+			}
+		}
+			
+			return false;
 	}
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
 		if(baseEntity instanceof AbstractDHDEntity dhd)
 		{
+			StructureGenEntity.Step generationStep;
+			
+			if(info.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(AbstractDHDEntity.GENERATION_STEP));
+			else
+				generationStep = StructureGenEntity.Step.GENERATED;
+			
 			if(info.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(info.getByte(AbstractDHDEntity.GENERATION_STEP)))
 				dhd.setToGenerate();
+			
+			dhd.setStargate();
+			if(generationStep == StructureGenEntity.Step.GENERATED)
+				dhd.generateAdditional(StructureGenEntity.Step.GENERATED);
+			else
+				dhd.generateAdditional(StructureGenEntity.Step.SETUP);
 			
 			if(baseEntity instanceof CrystalDHDEntity crystalDHD)
 			{

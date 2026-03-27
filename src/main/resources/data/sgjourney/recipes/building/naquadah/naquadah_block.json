@@ -3,16 +3,14 @@
 	"category": "building",
 	"pattern":
 	[
-		"III",
-		"III",
-		"III"
+		"TTT",
+		"TIT",
+		"TTT"
 	],
 	"key":
 	{
-		"I":
-		{
-			"item": "sgjourney:naquadah_ingot"
-		}
+		"I": { "item": "sgjourney:naquadah_ingot" },
+		"T": { "tag": "sgjourney:naquadah_ingot" }
 	},
 	"result":
 	{

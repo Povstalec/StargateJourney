@@ -74,7 +74,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			if(!stack.hasTag())
 			{
 				BlockEntity blockEntity = level.getBlockEntity(pos);
-				if(blockEntity instanceof AbstractStargateEntity stargate)
+				if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 				{
 					if(!stargate.hasPermissions(player, true))
 						return false;
@@ -102,7 +102,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				
-				if(blockEntity instanceof AbstractStargateEntity stargate)
+				if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 				{
 					if(!stargate.hasPermissions(player, true))
 						return false;
@@ -187,9 +187,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			}
 		}
 		
-		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
 		
-		if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+		if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			updateIris(level, pos, state, irisStargate.irisInfo().getShieldingState());
 	}
 	
@@ -198,14 +198,15 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		if(oldState.getBlock() != newState.getBlock())
         {
-    		BlockEntity blockentity = level.getBlockEntity(pos);
-    		if(blockentity instanceof AbstractStargateEntity stargate)
+			AbstractStargateEntity<?> stargate = getStargate(level, pos, oldState);
+    		if(stargate != null)
     		{
     			stargate.bypassDisconnectStargate(StargateInfo.Feedback.STARGATE_DESTROYED, false);
     			stargate.dhdInfo().unsetDHD(true);
     			stargate.removeStargateFromNetwork();
     		}
     		
+			dropStargateItem(level, pos, oldState, null);
     		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
     		
             super.onRemove(oldState, level, pos, newState, isMoving);
@@ -240,9 +241,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	
 	public void unsetIris(BlockState state, Level level, BlockPos pos)
 	{
-		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
 		
-		if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+		if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			irisStargate.irisInfo().removeIris();
 		
 		updateStargate(level, pos, state, ShieldingState.OPEN);
@@ -327,11 +328,11 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
 	@Override
-	public AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
 	{
 		BlockEntity blockentity = reader.getBlockEntity(pos);
 		
-		if(blockentity instanceof AbstractStargateEntity stargate)
+		if(blockentity instanceof AbstractStargateEntity<?> stargate)
 			return stargate;
 		
 		return null;

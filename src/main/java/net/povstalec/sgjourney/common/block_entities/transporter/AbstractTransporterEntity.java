@@ -296,7 +296,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
 		if(generationStep == Step.SETUP)
-			generationStep = Step.READY;
+			generationStep = Step.READY; // Marks the Transporter as ready for generation
 	}
 	
 	public void generate()

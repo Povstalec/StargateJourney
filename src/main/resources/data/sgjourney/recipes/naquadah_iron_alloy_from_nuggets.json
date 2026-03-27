@@ -1,18 +1,20 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "misc",
-  "key": {
-    "#": {
-      "item": "sgjourney:naquadah_iron_nugget"
-    }
-  },
-  "pattern": [
-    "###",
-    "###",
-    "###"
-  ],
-  "result": {
-    "item": "sgjourney:naquadah_iron_alloy"
-  },
-  "show_notification": true
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"key":
+	{
+		"#": { "item": "sgjourney:naquadah_iron_nugget" },
+		"T": { "tag": "sgjourney:naquadah_iron_nugget" }
+	},
+	"pattern":
+	[
+		"TTT",
+		"T#T",
+		"TTT"
+	],
+	"result":
+	{
+		"item": "sgjourney:naquadah_iron_alloy"
+	},
+	"show_notification": true
 }

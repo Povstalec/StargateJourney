@@ -3,16 +3,14 @@
 	"category": "building",
 	"pattern":
 	[
-		"III",
-		"III",
-		"III"
+		"TTT",
+		"TIT",
+		"TTT"
 	],
 	"key":
 	{
-		"I":
-		{
-			"item": "sgjourney:trinium_ingot"
-		}
+		"I": { "item": "sgjourney:trinium_ingot" },
+		"T": { "tag": "sgjourney:trinium_ingot" }
 	},
 	"result":
 	{

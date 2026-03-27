@@ -8,12 +8,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 public class MilkyWayDHDEntity extends CrystalDHDEntity
@@ -24,13 +27,27 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		
+		if(level.isClientSide())
+			return;
+		
+		if(this.stargate != null) // Copy from connected Stargate
+			setSymbolsFromStargate();
+		else // Generate from Dimension
+			setLocalSymbols();
+	}
+		
+		@Override
 	public void load(CompoundTag tag)
 	{
 		super.load(tag);
 		addTransferCrystals(crystalHandler);
 		
-		symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
-		symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
+		symbolInfo().setPointOfOrigin(ResourceLocation.tryParse(tag.getString(POINT_OF_ORIGIN)));
+		symbolInfo().setSymbols(ResourceLocation.tryParse(tag.getString(SYMBOLS)));
 	}
 	
 	@Override
@@ -97,10 +114,31 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 		}
 	}
 	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
 	@Override
 	protected void generateEnergyCore()
 	{
 		energyItemHandler.setStackInSlot(0, FusionCoreItem.randomFusionCore(CommonTechConfig.fusion_core_fuel_capacity.get() / 3, CommonTechConfig.fusion_core_fuel_capacity.get()));
+	}
+	
+	@Override
+	public void generateAdditional(StructureGenEntity.Step generationStep)
+	{
+		if(generationStep == StructureGenEntity.Step.SETUP)
+		{
+			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+			
+			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(StargateJourney.EMPTY_LOCATION);
+		}
+		else if(this.stargate != null) // Copy from connected Stargate
+			setSymbolsFromStargate();
+		else // Generate from Dimension
+			setLocalSymbols();
 	}
 	
 	@Override

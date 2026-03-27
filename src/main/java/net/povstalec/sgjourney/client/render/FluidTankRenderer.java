@@ -43,7 +43,7 @@ public class FluidTankRenderer
 	private static final int TEXTURE_SIZE = 16;
 	private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of fluid are still visible
 	
-	 private final long capacity;
+	private final long capacity;
 	private final TooltipMode tooltipMode;
 	private final int width;
 	private final int height;

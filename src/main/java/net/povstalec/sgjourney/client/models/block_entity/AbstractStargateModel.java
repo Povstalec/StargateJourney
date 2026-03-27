@@ -20,7 +20,7 @@ import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity, Variant extends ClientStargateVariant>
+public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant>
 {
 	protected static final float DEFAULT_RADIUS = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
@@ -70,7 +70,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	}
 	
 	@Nullable
-	protected Symbols getSymbols(AbstractStargateEntity stargate, Variant stargateVariant)
+	protected Symbols getSymbols(StargateEntity stargate, Variant stargateVariant)
 	{
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
@@ -131,10 +131,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected boolean isPrimaryChevronEngaged(StargateEntity stargate, Variant stargateVariant)
 	{
-		if(stargate.isConnected())
-			return stargate.isDialingOut() || stargate.getKawooshTickCount() > 0;
-		
-		return false;
+		return stargate.getAddress().hasPointOfOriginOrMaxLength();
 	}
 	
 	protected boolean isChevronRaised(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
@@ -162,13 +159,11 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			int combinedLight, int combinedOverlay)
 	{
 		VertexConsumer consumer;
-
-		//TODO Encoded texture
 		
 		if(StargateJourney.isOculusLoaded())
 		{
 			// Renders lit up parts of Chevrons
-			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.engagedTexture()));
+			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.getOverlayTexture(stargate.isConnected())));
 			
 			if(isPrimaryChevronEngaged(stargate, stargateVariant))
 				renderPrimaryChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, true);
@@ -190,7 +185,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		if(!StargateJourney.isOculusLoaded())
 		{
 			// Renders lit up parts of Chevrons
-			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.engagedTexture()));
+			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.getOverlayTexture(stargate.isConnected())));
 			
 			if(isPrimaryChevronEngaged(stargate, stargateVariant))
 				renderPrimaryChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, true);

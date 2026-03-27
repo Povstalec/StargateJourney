@@ -138,7 +138,7 @@ public class StargateBlockItem extends BlockItem
 		{
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			
-			if(baseEntity instanceof AbstractStargateEntity stargate)
+			if(baseEntity instanceof AbstractStargateEntity<?> stargate)
 			{
 				stargate.addStargateToNetwork();
 				stargate.generateAdditional(StructureGenEntity.Step.READY);
@@ -158,7 +158,7 @@ public class StargateBlockItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof AbstractStargateEntity stargate)
+		if(baseEntity instanceof AbstractStargateEntity<?> stargate)
 		{
 			StructureGenEntity.Step generationStep;
 			

@@ -16,7 +16,7 @@ public class DHDInfo
 {
 	public static final int DHD_INFO_DISTANCE = 5;
 	
-	protected AbstractStargateEntity stargate;
+	protected AbstractStargateEntity<?> stargate;
 	
 	@Nullable
 	protected AbstractDHDEntity dhd;
@@ -24,7 +24,7 @@ public class DHDInfo
 	protected Vec3i dhdRelativePos;
 	protected int autoclose;
 	
-	public DHDInfo(AbstractStargateEntity stargate)
+	public DHDInfo(AbstractStargateEntity<?> stargate)
 	{
 		this.stargate = stargate;
 		
@@ -46,7 +46,6 @@ public class DHDInfo
 		}
 		
 		this.stargate.updateStargate(this.stargate.getLevel(), false);
-		this.stargate.setChanged();
 	}
 	
 	public void unsetDHD(boolean notifyDHD)
@@ -60,7 +59,6 @@ public class DHDInfo
 		
 		this.stargate.updateStargate(this.stargate.getLevel(), false);
 		updateDHD();
-		
 		this.stargate.setChanged();
 	}
 	
@@ -70,12 +68,7 @@ public class DHDInfo
 		if(this.dhdRelativePos == null)
 			return null;
 		
-		BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(this.stargate.getDirection(), this.stargate.getBlockPos(), this.dhdRelativePos);
-		
-		if(dhdPos != null)
-			return dhdPos;
-		
-		return null;
+		return CoordinateHelper.Relative.getOffsetPos(this.stargate.getDirection(), this.stargate.getBlockPos(), this.dhdRelativePos);
 	}
 	
 	public void loadDHD()
@@ -114,7 +107,11 @@ public class DHDInfo
 		BlockPos dhdPos = getDHDPos();
 		
 		if(dhdPos == null)
+		{
+			if(this.dhd != null)
+				unsetDHD(true);
 			return;
+		}
 		
 		if(this.stargate.getLevel().getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd) // Found a DHD at specified coords
 		{

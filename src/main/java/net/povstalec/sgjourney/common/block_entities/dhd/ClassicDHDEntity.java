@@ -1,21 +1,60 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
 
 public class ClassicDHDEntity extends CrystalDHDEntity
 {
 	public ClassicDHDEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.CLASSIC_DHD.get(), pos, state);
+	}
+	
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		
+		if(level.isClientSide())
+			return;
+		
+		if(this.stargate != null) // Copy from connected Stargate
+			setSymbolsFromStargate();
+		else // Generate from Dimension
+			setLocalSymbols();
+	}
+	
+	@Override
+	public void load(CompoundTag tag)
+	{
+		super.load(tag);
+		
+		symbolInfo().setPointOfOrigin(ResourceLocation.tryParse(tag.getString(POINT_OF_ORIGIN)));
+		symbolInfo().setSymbols(ResourceLocation.tryParse(tag.getString(SYMBOLS)));
+	}
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag)
+	{
+		super.saveAdditional(tag);
+		
+		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
+		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
 	}
 	
 	protected long buttonPressEnergyCost()
@@ -58,6 +97,27 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	{
 		energyItemHandler.setStackInSlot(0, new ItemStack(ItemInit.NAQUADAH_GENERATOR_CORE.get()));
 		energyItemHandler.setStackInSlot(1, NaquadahFuelRodItem.randomFuelRod(CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get() / 2, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get()));
+	}
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void generateAdditional(StructureGenEntity.Step generationStep)
+	{
+		if(generationStep == StructureGenEntity.Step.SETUP)
+		{
+			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+			
+			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(StargateJourney.EMPTY_LOCATION);
+		}
+		else if(this.stargate != null) // Copy from connected Stargate
+			setSymbolsFromStargate();
+		else // Generate from Dimension
+			setLocalSymbols();
 	}
 	
 	@Override

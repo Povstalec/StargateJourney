@@ -57,6 +57,7 @@ public class Universe extends SavedData
 	private MinecraftServer server;
 	
 	private final Map<ResourceKey<Galaxy>, Galaxy.Serializable> galaxies = new HashMap<>();
+	private final Map<Integer, List<Galaxy.Serializable>> galacticPrefixes = new HashMap<>();
 
 	private final Map<Address, AddressRegion.Serializable> addressRegions = new HashMap<>();
 	private final Map<ResourceKey<AddressRegion>, AddressRegion.Serializable> addressRegionKeys = new HashMap<>();
@@ -110,9 +111,22 @@ public class Universe extends SavedData
 	//*******************************************Galaxy*******************************************
 	//============================================================================================
 	
+	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
 	public void addGalaxy(ResourceKey<Galaxy> galaxyKey, Galaxy.Serializable galaxy)
 	{
 		this.galaxies.put(galaxyKey, galaxy);
+		List<Galaxy.Serializable> prefixedGalaxies = this.galacticPrefixes.getOrDefault(galaxy.getSymbolPrefix(), new ArrayList<>());
+		prefixedGalaxies.add(galaxy);
+	}
+	
+	public List<Galaxy.Serializable> getGalaxiesWithPrefix(int symbolPrefix)
+	{
+		List<Galaxy.Serializable> prefixedGalaxies = this.galacticPrefixes.get(symbolPrefix);
+		
+		if(prefixedGalaxies != null)
+			return prefixedGalaxies;
+		
+		return List.of();
 	}
 	
 	private void registerGalaxies(MinecraftServer server)

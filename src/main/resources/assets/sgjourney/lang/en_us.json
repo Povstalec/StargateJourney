@@ -720,6 +720,8 @@
 	"tooltip.sgjourney.stargate_type": "Stargate Type",
 	"tooltip.sgjourney.generates_inside_structure": "Generates inside a Structure",
 	"tooltip.sgjourney.is_primary": "Is Primary",
+	"tooltip.sgjourney.engage_stargate": "Engage Stargate",
+	"tooltip.sgjourney.disconnect_stargate": "Disconnect Stargate",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
@@ -752,6 +754,8 @@
 	"tooltip.sgjourney.ring_panel.memory_crystal.invalid_id": "Invalid Transporter ID",
 	"tooltip.sgjourney.ring_panel.memory_crystal.invalid_location": "No Transporter at location",
 	
+	"tooltip.sgjourney.dhd.symbols_to_numbers": "Hold Shift to show numbers",
+	"tooltip.sgjourney.dhd.numbers_to_symbols": "Hold Shift to show symbols",
 	"tooltip.sgjourney.dhd.has_control_crystal": "Has Control Crystal",
 	"tooltip.sgjourney.dhd.generates_energy_core": "Generates Energy Core",
 	"tooltip.sgjourney.dhd.description": "Dial Home Device used to control Stargates",
@@ -967,6 +971,16 @@
 	"gui.sgjourney.shiny_event_horizons": "Shiny Event Horizons",
 	"gui.sgjourney.stargate_full_sound_distance": "Full Sound Distance",
 	"gui.sgjourney.stargate_max_sound_distance": "Max Sound Distance",
+	
+	"gui.sgjourney.dhd": "DHD",
+	"gui.sgjourney.dhd_symbols_numbers": "DHD Buttons",
+	"gui.sgjourney.symbols": "Symbols",
+	"gui.sgjourney.numbers": "Numbers",
+	"gui.sgjourney.milky_way_dhd_button_layout": "Milky Way DHD Layout",
+	"gui.sgjourney.pegasus_dhd_button_layout": "Pegasus DHD Layout",
+	"gui.sgjourney.classic_dhd_button_layout": "Classic DHD Layout",
+	"gui.sgjourney.ascending": "Ascending",
+	"gui.sgjourney.canon": "Canon",
 	
 	"gui.sgjourney.config_sky": "Sky",
 	

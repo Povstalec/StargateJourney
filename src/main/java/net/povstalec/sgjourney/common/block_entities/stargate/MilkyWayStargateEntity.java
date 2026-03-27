@@ -44,8 +44,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), StargateInit.MILKY_WAY.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state,
-				TOTAL_SYMBOLS, 2, MAX_ROTATION);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), StargateInit.MILKY_WAY.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state, TOTAL_SYMBOLS, 2, MAX_ROTATION);
 	}
 
 	@Override
@@ -146,12 +145,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		if(!level.isClientSide())
 			updateClient();
 		
-		int symbol = getCurrentSymbol();
-		
-		if(symbol == 0)
-			return setRecentFeedback(StargateInfo.Feedback.CANNOT_ENCODE_POINT_OF_ORIGIN);
-		
-		return setRecentFeedback(encodeChevron(symbol, false, true));
+		return setRecentFeedback(encodeChevron(getCurrentSymbol(), false, true));
 	}
 	
 	public StargateInfo.Feedback openChevron()
@@ -181,7 +175,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		{
 			this.isChevronOpen = false;
 			
-			StargateInfo.Feedback feedback = engageSymbol(getCurrentSymbol());
+			StargateInfo.Feedback feedback = directEngageSymbol(getCurrentSymbol(), true);
 			
 			// This is a dumb way to make sure the sound plays even after the chevron is engaged 
 			if(feedback == StargateInfo.Feedback.SYMBOL_IN_ADDRESS)

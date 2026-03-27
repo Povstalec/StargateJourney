@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.context.UseOnContext;
@@ -60,7 +59,6 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 import org.jetbrains.annotations.Nullable;
 
@@ -147,7 +145,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	
 	public Optional<StargateBlockCover> getBlockCover(BlockGetter reader, BlockState state, BlockPos position)
 	{
-		AbstractStargateEntity stargate = getStargate(reader, position, state);
+		AbstractStargateEntity<?> stargate = getStargate(reader, position, state);
 		if(stargate != null)
 		{
 			return Optional.of(stargate.blockCover);
@@ -185,24 +183,34 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
-		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		dropStargateItem(level, pos, state, player);
+		super.playerWillDestroy(level, pos, state, player);
+	}
+	
+	public void dropStargateItem(Level level, BlockPos pos, BlockState state, @Nullable Player player)
+	{
+		if(level.isClientSide())
+			return;
+		
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
 		if(stargate != null)
 		{
-			stargate.resetStargate(StargateInfo.Feedback.STARGATE_DESTROYED, true);
-			if(!level.isClientSide() && !player.isCreative())
+			if(!stargate.isItemDropped() && (player == null || !player.isCreative()))
 			{
+				stargate.markItemAsDropped(); // Mark item as dropped because it did drop
+				
 				ItemStack itemstack = new ItemStack(asItem());
-
+				
 				stargate.saveToItem(itemstack);
-
+				
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
 				itementity.setUnlimitedLifetime();
 				level.addFreshEntity(itementity);
 			}
+			else
+				stargate.markItemAsDropped(); // Mark item as dropped because it could have dropped, but something stopped it (like player being in Creative)
 		}
-
-		super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	public void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation, StargatePart stargatePart)
@@ -226,11 +234,11 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			if(!stargatePart.equals(part))
 			{
 				BlockPos ringPos = part.getRingPos(pos, direction, orientation);
-				BlockState state = level.getBlockState(ringPos);
+				BlockState ringState = level.getBlockState(ringPos);
 				
-				if(state.getBlock() instanceof AbstractStargateBlock)
+				if(ringState.getBlock() instanceof AbstractStargateBlock)
 				{
-					boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
+					boolean waterlogged = ringState.getBlock() instanceof AbstractStargateRingBlock ? ringState.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
 					
 					level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
 				}
@@ -310,8 +318,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		ItemStack stack = player.getItemInHand(hand);
 		if(stack.getItem() instanceof StargateIrisItem && !level.isClientSide())
 		{
-			AbstractStargateEntity stargate = getStargate(level, pos, state);
-			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+			AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+			if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			{
 				if(!hasPermissions(level, pos, state, player, true))
 					player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions"), true);
@@ -373,7 +381,11 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				return stack;
 		}
 		
-        return super.getCloneItemStack(state, target, level, pos, player);
+		ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+			stargate.saveToItem(stack);
+		
+        return stack;
 	}
 	
 	@Nullable

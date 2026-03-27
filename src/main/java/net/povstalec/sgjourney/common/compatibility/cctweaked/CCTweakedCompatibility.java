@@ -43,7 +43,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new StargateMethods.GetStargateVariant());
 		peripheral.registerMethod(new StargateMethods.GetPointOfOrigin());
 		peripheral.registerMethod(new StargateMethods.GetSymbols());
-		peripheral.registerMethod(new StargateMethods.HasDHD());
+		peripheral.registerMethod(new StargateMethods.EngageStargate());
 	}
 	
 	private static void genericCrystalMethods(StargatePeripheral peripheral)
@@ -52,6 +52,7 @@ public class CCTweakedCompatibility
 		peripheral.registerMethod(new StargateMethods.DialedAddress());
 		peripheral.registerMethod(new StargateMethods.RemapSymbol());
 		peripheral.registerMethod(new StargateMethods.GetMappedSymbol());
+		peripheral.registerMethod(new StargateMethods.HasDHD());
 	}
 	
 	private static void genericAdvancedCrystalMethods(StargatePeripheral peripheral)

@@ -101,6 +101,20 @@ public class StargateMethods
 			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.getSymbols(stargate)});
 		}
 	}
+	public static class EngageStargate implements InterfaceMethod<AbstractStargateEntity<?>>
+	{
+		@Override
+		public String getName()
+		{
+			return "engageStargate";
+		}
+		
+		@Override
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
+		{
+			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageStargate(stargate)));
+		}
+	}
 	
 	// Crystal Interface
 	public static class EngageSymbol implements InterfaceMethod<AbstractStargateEntity<?>>
@@ -115,17 +129,19 @@ public class StargateMethods
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
+			boolean engageDirectly = false;
+			boolean canEngageStargate = true;
 			
 			try
 			{
-				boolean engageDirectly = arguments.getBoolean(1);
-				return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, engageDirectly)));
+				engageDirectly = arguments.getBoolean(1);
+				canEngageStargate = arguments.getBoolean(2);
 			}
-			catch(LuaException e)
-			{
-				return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, false)));
-			}
+			catch(LuaException ignored) {}
 			
+			boolean finalEngageDirectly = engageDirectly;
+			boolean finalCanEngageStargate = canEngageStargate;
+			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, finalEngageDirectly, finalCanEngageStargate)));
 		}
 	}
 	

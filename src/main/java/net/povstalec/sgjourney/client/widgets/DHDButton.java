@@ -6,9 +6,9 @@ import net.minecraft.network.chat.Component;
 
 public class DHDButton extends Button
 {
-	public DHDButton(int x, int y, int xSize, int ySize, Component component, Button.OnPress onPress)
+	public DHDButton(int x, int y, int width, int height, Component component, Button.OnPress onPress)
 	{
-		super(x, y, xSize, ySize, component, onPress, Button.DEFAULT_NARRATION);
+		super(x, y, width, height, component, onPress, Button.DEFAULT_NARRATION);
 	}
 	
 	@Override

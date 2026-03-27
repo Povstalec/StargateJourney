@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,19 +16,36 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 public class DHDBigButton extends DHDButton
 {
 	public ResourceLocation widgetsLocation;
-	public AbstractDHDMenu menu;
+	public AbstractDHDMenu<?> menu;
 
 	private static final int RADIUS = 27;
 	private static final int DIAMETER = RADIUS * 2;
 	private static final int RADIUS_2 = RADIUS * RADIUS;
 	
-    public DHDBigButton(int x, int y, AbstractDHDMenu menu, OnPress press, ResourceLocation widgets)
+	protected boolean isEngaged = false;
+	
+    public DHDBigButton(int x, int y, AbstractDHDMenu<?> menu, OnPress press, ResourceLocation widgets)
 	{
 		super(x, y, DIAMETER, DIAMETER, Component.empty(), press);
 		
 		this.menu = menu;
 		
 		widgetsLocation = widgets;
+		
+		setTooltip(Tooltip.create(Component.translatable("tooltip.sgjourney.engage_stargate")));
+	}
+	
+	protected void updateEngaged()
+	{
+		if(this.menu.isCenterButtonEngaged() != isEngaged)
+		{
+			isEngaged = this.menu.isCenterButtonEngaged();
+			
+			if(isEngaged)
+				setTooltip(Tooltip.create(Component.translatable("tooltip.sgjourney.disconnect_stargate")));
+			else
+				setTooltip(Tooltip.create(Component.translatable("tooltip.sgjourney.disconnect_stargate")));
+		}
 	}
     
     @Override
@@ -35,13 +53,13 @@ public class DHDBigButton extends DHDButton
     {
     	if(isHovering)
     	{
-    		if(this.menu.isCenterButtonEngaged())
+    		if(isEngaged)
     			return 3;
     		else
     			return 1;
     	}
     	
-    	if(this.menu.isCenterButtonEngaged())
+    	if(isEngaged)
 			return 2;
 		else
 			return 0;
@@ -70,10 +88,11 @@ public class DHDBigButton extends DHDButton
 	{
 		if(this.visible)
 		{
+			updateEngaged();
 			this.isHovered = ((Math.pow(mouseX - (this.getX() + RADIUS), 2) + Math.pow(mouseY - (this.getY() + RADIUS), 2)) <= RADIUS_2);
 			
 			this.renderButton(poseStack, mouseX, mouseY, partialTick);
-			//this.updateTooltip();
+			this.updateTooltip();
 		}
 	}
 	
@@ -93,7 +112,7 @@ public class DHDBigButton extends DHDButton
 	
 	public static final class MilkyWay extends DHDBigButton
 	{
-		public MilkyWay(int x, int y, AbstractDHDMenu menu, OnPress press)
+		public MilkyWay(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
 		{
 			super(x, y, menu, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way/milky_way_dhd_big_red_button.png"));
 		}
@@ -101,7 +120,7 @@ public class DHDBigButton extends DHDButton
 	
 	public static final class Pegasus extends DHDBigButton
 	{
-		public Pegasus(int x, int y, AbstractDHDMenu menu, OnPress press)
+		public Pegasus(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
 		{
 			super(x, y, menu, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/pegasus/pegasus_dhd_big_blue_button.png"));
 		}
@@ -109,7 +128,7 @@ public class DHDBigButton extends DHDButton
 	
 	public static final class Classic extends DHDBigButton
 	{
-		public Classic(int x, int y, AbstractDHDMenu menu, OnPress press)
+		public Classic(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
 		{
 			super(x, y, menu, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/classic/classic_dhd_big_red_button.png"));
 		}

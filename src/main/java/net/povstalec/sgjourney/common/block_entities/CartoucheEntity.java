@@ -222,7 +222,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
 		if(generationStep == Step.SETUP)
-			generationStep = Step.READY;
+			generationStep = Step.READY; // Marks the Cartouche as ready for generation
 	}
 	
 	public void generate()

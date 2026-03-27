@@ -89,6 +89,11 @@ public abstract class ClientStargateVariant
 		return engagedTexture;
 	}
 	
+	public ResourceLocation getOverlayTexture(boolean isConnected)
+	{
+		return isConnected ? engagedTexture() : encodedTexture();
+	}
+	
 	public ResourcepackModel.Wormhole wormhole()
 	{
 		return wormhole;

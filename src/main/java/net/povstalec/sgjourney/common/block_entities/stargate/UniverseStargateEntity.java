@@ -30,6 +30,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 
 public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlockEntityStargate>
 {
+	public static final String CAN_ENGAGE = "can_engage";
 	public static final String ADDRESS_BUFFER = "AddressBuffer"; //TODO Rename to "address_buffer"
 	public static final String SYMBOL_BUFFER = "SymbolBuffer"; //TODO Rename to "symbol_buffer"
 	
@@ -46,14 +47,14 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	public int waitTicks = 1;
 	
 	public Address.Mutable addressBuffer = new Address.Mutable();
+	protected boolean canEngage = false;
 	public int symbolBuffer = 0;
 	
 	protected int angle;
 	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.UNIVERSE_STARGATE.get(), StargateInit.UNIVERSE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state,
-				TOTAL_SYMBOLS, 1, MAX_ROTATION);
+		super(BlockEntityInit.UNIVERSE_STARGATE.get(), StargateInit.UNIVERSE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state, TOTAL_SYMBOLS, 1, MAX_ROTATION);
 		this.setOpenSoundLead(8);
 		
 		this.angle = this.maxRotation / 54;
@@ -68,7 +69,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			{
 				if(hasDHD())
 					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
-							addressBuffer : new Address.Mutable(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
+							addressBuffer : new Address.Mutable(), canEngage || isConnected());
 			}
 		};
 		
@@ -81,6 +82,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	{
         super.load(tag);
 		
+		canEngage = tag.getBoolean(CAN_ENGAGE);
 		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
     }
@@ -90,6 +92,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	{
 		super.saveAdditional(tag);
 		
+		tag.putBoolean(CAN_ENGAGE, canEngage);
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 	}
@@ -99,6 +102,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	{
 		CompoundTag tag = super.getUpdateTag();
 		
+		tag.putBoolean(CAN_ENGAGE, canEngage);
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		
@@ -112,6 +116,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
+			canEngage = tag.getBoolean(CAN_ENGAGE);
 			symbolBuffer = tag.getInt(ADDRESS_BUFFER);
 			addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
 		}
@@ -122,8 +127,10 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	//============================================================================================
 	
 	@Override
-	public StargateInfo.Feedback dhdEngageSymbol(int symbol)
+	public StargateInfo.Feedback indirectEngageSymbol(int symbol, boolean canEngageStargate)
 	{
+		canEngage = canEngageStargate;
+		
 		if(isSymbolOutOfBounds(symbol))
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS);
 		
@@ -140,9 +147,6 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
 			return setRecentFeedback(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
 		
-		if(addressBuffer.canBeInterrupted() && symbol == 0) // Interrupt Stargate rotation
-			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
-		
 		if(addressBuffer.containsSymbol(symbol))
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
 		
@@ -154,21 +158,39 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback engageSymbol(int symbol)
+	public StargateInfo.Feedback directEngageSymbol(int symbol, boolean canEngageStargate)
 	{
 		if(!addressBuffer.containsSymbol(symbol))
 			addressBuffer.addSymbol(symbol);
 		
-		return super.engageSymbol(symbol);
+		return super.directEngageSymbol(symbol, canEngageStargate);
 	}
 	
 	@Override
-	public StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
+	protected StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;
 		waitTicks++;
 		
 		return super.encodeChevron(symbol, incoming, encode);
+	}
+	
+	@Override
+	public StargateInfo.Feedback dhdEngageStargate()
+	{
+		// Engages the Stargate if all chevrons are encoded, or informs it that it can engage automatically once the last chevron is encoded
+		if(address.getLength() < addressBuffer.getLength())
+		{
+			if(canEngage) // Interrupt Stargate rotation
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+			else
+			{
+				canEngage = true;
+				return StargateInfo.Feedback.NONE;
+			}
+		}
+		else
+			return super.dhdEngageStargate();
 	}
 	
 	public void startSound()
@@ -200,7 +222,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 						bestSymbolDirection(addressBuffer.symbolAt(symbolBuffer)) : alternatingDirection(address.getLength()));
 			
 			if(rotation == desiredRotation)
-				engageSymbol(getCurrentSymbol());
+				directEngageSymbol(getCurrentSymbol(), canEngage);
 		}
 	}
 	
@@ -271,6 +293,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		waitTicks = 1;
 		symbolBuffer = 0;
 		addressBuffer.reset();
+		canEngage = false;
 		super.resetAddress(updateInterfaces);
 	}
 

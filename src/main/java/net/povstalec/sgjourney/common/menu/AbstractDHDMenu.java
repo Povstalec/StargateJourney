@@ -15,15 +15,20 @@ public abstract class AbstractDHDMenu<T extends AbstractDHDEntity> extends SGJou
         super(menu, containerId, inventory, blockEntity);
         checkContainerSize(inventory, 9);
     }
+	
+	public void engageStargate()
+	{
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(this.blockEntity.getBlockPos(), -1));
+	}
     
-    public void engageChevron(int symbol)
+    public void encodeSymbol(int symbol)
     {
     	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(this.blockEntity.getBlockPos(), symbol));
     }
     
     public boolean isSymbolEngaged(int symbol)
     {
-    	return blockEntity.isSymbolEngaged(symbol);
+    	return blockEntity.isSymbolEncoded(symbol);
     }
 	
 	public boolean isSymbolRemapped(int symbol)

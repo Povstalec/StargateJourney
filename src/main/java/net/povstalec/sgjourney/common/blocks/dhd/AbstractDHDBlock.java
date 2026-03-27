@@ -76,8 +76,8 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof AbstractDHDEntity dhd)
-        		dhd.unsetStargate();
+			if(blockEntity instanceof AbstractDHDEntity dhd)
+				dhd.unsetStargate();
 		}
 		
 		super.onRemove(oldState, level, pos, newState, isMoving);

@@ -172,7 +172,7 @@ public class StargateInfo
 		CHEVRON_ALREADY_OPENED(-33, FeedbackType.ERROR, "chevron_already_opened"), // Attempted to open a chevron that is already open
 		CHEVRON_ALREADY_CLOSED(-34, FeedbackType.ERROR, "chevron_already_closed"), // Attempted to close a chevron that is already closed
 		CHEVRON_NOT_OPEN(-35, FeedbackType.ERROR, "chevron_not_open"), // Attempted to encode a chevron that is not open
-		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin"), // Attempted to encode the point of origin, even though it's currently not allowed
+		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin"), // Attempted to encode the point of origin, even though it's currently not allowed //TODO Not a problem anymore
 		
 		// Other
 		TARGET_NOT_LOADED(-37, FeedbackType.ERROR, "target_not_loaded"); // Target Stargate wasn't being loaded by any players or chunkloaders

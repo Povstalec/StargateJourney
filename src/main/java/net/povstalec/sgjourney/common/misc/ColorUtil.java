@@ -43,6 +43,11 @@ public class ColorUtil
 			this.alpha = alpha;
 		}
 		
+		public RGBA(float red, float green, float blue)
+		{
+			this(red, green, blue, 1F);
+		}
+		
 		public RGBA(int red, int green, int blue, int alpha)
 		{
 			if(red > MAX_INT_VALUE || green > MAX_INT_VALUE || blue > MAX_INT_VALUE || alpha > MAX_INT_VALUE)
@@ -54,6 +59,11 @@ public class ColorUtil
 			this.green = green / 255F;
 			this.blue = blue / 255F;
 			this.alpha = alpha / 255F;
+		}
+		
+		public RGBA(int red, int green, int blue)
+		{
+			this(red, green, blue, 255);
 		}
 		
 		public float red()
