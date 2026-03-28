@@ -52,7 +52,7 @@ public class Dialing
 			case ADDRESS_7_CHEVRON -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 			case ADDRESS_8_CHEVRON -> get8ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 			case ADDRESS_9_CHEVRON -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
-			case ADDRESS_INVALID -> dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
+			case ADDRESS_INVALID -> dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
 		};
 	}
 	
@@ -61,10 +61,10 @@ public class Dialing
 		if(dialingStargate.addressFilterInfo(server).getFilterType().shouldFilter())
 		{
 			if(dialingStargate.addressFilterInfo(server).getFilterType().isBlacklist() && dialingStargate.addressFilterInfo(server).isAddressBlacklisted(address))
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_BLACKLISTED, true);
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_BLACKLISTED);
 			
 			else if(dialingStargate.addressFilterInfo(server).getFilterType().isWhitelist() && !dialingStargate.addressFilterInfo(server).isAddressWhitelisted(address))
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_NOT_WHITELISTED, true);
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
 		}
 		
 		return dialStargate(server, dialingStargate, address, doKawoosh, false);
@@ -75,7 +75,7 @@ public class Dialing
 		AddressRegion.Serializable addressRegion = Universe.get(server).getAddressRegionFromAddress(dialingStargate.getAddressRegion(server), dialedAddress);
 		
 		if(addressRegion == null)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
 		
 		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_7_CHEVRON, doKawoosh, mustBeLoaded);
 	}
@@ -85,7 +85,7 @@ public class Dialing
 		AddressRegion.Serializable addressRegion = Universe.get(server).getAddressRegionFromExtragalacticAddress(extragalacticAddress);
 		
 		if(addressRegion == null)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
 		
 		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_8_CHEVRON, doKawoosh, mustBeLoaded);
 	}
@@ -95,7 +95,7 @@ public class Dialing
 		AddressRegion.Serializable currentRegion = dialingStargate.getAddressRegion(server);
 		
 		if(dialedRegion.equals(currentRegion))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SAME_SYSTEM_DIAL, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SAME_SYSTEM_DIAL);
 		
 		// If the Stargate Network knows of no Stargates in this Address Region, try locating any Structures with them
 		if(!mustBeLoaded && dialedRegion.getStargates().isEmpty()) // No point in loading chunks if the connection requires a loaded Stargate
@@ -115,7 +115,7 @@ public class Dialing
 			}
 			
 			if(dimensions == 0)
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_DIMENSIONS, true);
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_DIMENSIONS);
 		}
 		
 		return getPreferredStargate(server, dialingStargate, dialedRegion, addressType, doKawoosh, mustBeLoaded);
@@ -134,7 +134,7 @@ public class Dialing
 		Stargate stargate = StargateNetwork.get(server).getStargate(address);
 		
 		if(stargate == null)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
 		
 		StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh, mustBeLoaded);
 		
@@ -142,7 +142,7 @@ public class Dialing
 		if(!feedback.isSkippable())
 			return feedback;
 		
-		return dialingStargate.resetStargate(server, feedback, true);
+		return dialingStargate.resetStargate(server, feedback);
 	}
 	
 	private static StargateInfo.Feedback get9ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
@@ -155,7 +155,7 @@ public class Dialing
 		List<Stargate> stargates = addressRegion.getStargates();
 		
 		if(stargates.isEmpty())
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_STARGATES, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_STARGATES);
 		
 		// Primary Stargate
 		if(CommonStargateNetworkConfig.primary_stargate.get() && addressRegion.primaryStargate() != null)
@@ -181,7 +181,7 @@ public class Dialing
 		
 		if(feedback == StargateInfo.Feedback.UNKNOWN_ERROR)
 			StargateJourney.LOGGER.error("Address Region has Stargates, but somehow none can be accessed");
-		return dialingStargate.resetStargate(server, feedback, true);
+		return dialingStargate.resetStargate(server, feedback);
 	}
 	
 	public static StargateInfo.Feedback connectStargates(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
@@ -218,7 +218,7 @@ public class Dialing
 		}
 		
 		BlockEntity blockEntity = dialingTransporter.getLevel(server).getBlockEntity(new BlockPos(coords));
-		if(blockEntity instanceof AbstractTransporterEntity transporterEntity)
+		if(blockEntity instanceof AbstractTransporterEntity<?> transporterEntity)
 		{
 			Transporter target = transporterEntity.getTransporter();
 			if(target == null)

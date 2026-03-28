@@ -125,13 +125,13 @@ public final class TransporterNetwork extends SavedData
 	
 	public void addTransporter(Transporter transporter)
 	{
-		if(transporter != null)
+		if(transporter != null && transporter.getDimension() != null)
 			addTransporterToDimension(transporter.getDimension(), transporter);
 		
 		this.setDirty();
 	}
 	
-	public void addTransporter(AbstractTransporterEntity transporterEntity)
+	public void addTransporter(AbstractTransporterEntity<?> transporterEntity)
 	{
 		Transporter transporter = BlockEntityList.get(server).addTransporter(transporterEntity);
 		
@@ -144,7 +144,8 @@ public final class TransporterNetwork extends SavedData
 		if(transporter != null)
 		{
 			//TODO Universe.get(server).removeStargateFromSolarSystem(stargate.getSolarSystem(server), stargate); <-- just like in the Stargate Network
-			removeTransporterFromDimension(transporter.getDimension(), transporter);
+			if(transporter.getDimension() != null)
+				removeTransporterFromDimension(transporter.getDimension(), transporter);
 			BlockEntityList.get(server).removeTransporter(transporter.getID());
 			
 			StargateJourney.LOGGER.debug("Removed " + transporter.getID().toString() + " from Transporter Network");

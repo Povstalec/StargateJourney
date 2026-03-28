@@ -107,7 +107,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
 	{
 		if(this.isChevronOpen)
 		{
@@ -115,7 +115,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 			chevronSound(getCurrentChevron(), false, false, false);
 		}
 		
-		return super.resetStargate(feedback, updateInterfaces);
+		return super.resetStargate(feedback);
 	}
 	
 	private short getCurrentChevron()
@@ -239,7 +239,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 				if(!isConnected())
 					openChevron();
 				else
-					disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN, true);
+					disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN);
 			}
 		}
 		else if(this.signalStrength == 0 && this.previousSignalStrength == 15)

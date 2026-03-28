@@ -135,12 +135,12 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS);
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() > 0)
-			resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+			resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 		
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 			else
 				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
 		}
@@ -277,9 +277,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
 	{
-		super.resetStargate(feedback, updateInterfaces);
+		super.resetStargate(feedback);
 		
 		if(this.rotation != RESET_DEGREES)
 			rotateTo(RESET_DEGREES, bestRotationDirection(RESET_DEGREES));
@@ -288,13 +288,13 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 
 	@Override
-	protected void resetAddress(boolean updateInterfaces)
+	protected void resetAddress()
 	{
 		waitTicks = 1;
 		symbolBuffer = 0;
 		addressBuffer.reset();
 		canEngage = false;
-		super.resetAddress(updateInterfaces);
+		super.resetAddress();
 	}
 
 	@Override

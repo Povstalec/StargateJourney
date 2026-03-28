@@ -720,6 +720,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return this.stargate.symbolMap.isReplacingSymbol(symbol);
 	}
 	
+	public int getRemappedOriginalSymbol(int symbol)
+	{
+		if(this.stargate == null)
+			return symbol;
+		
+		return this.stargate.symbolMap.getOriginalSymbol(symbol);
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractDHDEntity dhd)
     {
 		if(level.isClientSide())

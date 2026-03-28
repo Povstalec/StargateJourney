@@ -71,7 +71,7 @@ public final class StargateNetwork extends SavedData
 		
 		StargateJourney.LOGGER.debug("Detected an incompatible Stargate Network version (Version: " + getVersion() + ") - updating to version " + updateVersion);
 		
-		stellarUpdate(server, false);
+		stellarUpdate(server);
 	}
 	
 	public final void eraseNetwork()
@@ -86,16 +86,13 @@ public final class StargateNetwork extends SavedData
 		return StargateNetworkSettings.get(server).randomizeAddresses();
 	}
 	
-	public final void stellarUpdate(MinecraftServer server, boolean updateInterfaces)
+	public final void stellarUpdate(MinecraftServer server)
 	{
-		Iterator<Entry<UUID, StargateConnection>> iterator = this.connections.entrySet().iterator();
-		
-		while(iterator.hasNext())
+		for(Entry<UUID, StargateConnection> connectionEntry : getConnections().entrySet())
 		{
-			Entry<UUID, StargateConnection> nextConnection = iterator.next();
-			StargateConnection connection = nextConnection.getValue();
-			connection.terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
+			connectionEntry.getValue().terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
 		}
+		
 		StargateJourney.LOGGER.debug("Connections terminated");
 		
 		StargateNetworkSettings.get(server).updateSettings();
@@ -111,7 +108,7 @@ public final class StargateNetwork extends SavedData
 		eraseNetwork();
 		StargateJourney.LOGGER.debug("Stargate Network erased");
 		
-		resetStargates(server, updateInterfaces);
+		resetStargates(server);
 		StargateJourney.LOGGER.debug("Stargates reset");
 		
 		updateVersion();
@@ -133,7 +130,7 @@ public final class StargateNetwork extends SavedData
 		});
 	}
 	
-	private final void resetStargates(MinecraftServer server, boolean updateInterfaces)
+	private final void resetStargates(MinecraftServer server)
 	{
 		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
@@ -149,7 +146,7 @@ public final class StargateNetwork extends SavedData
 					if(!address.equals(stargate.get9ChevronAddress()))
 						removeStargate(stargate);
 					
-					stargate.resetStargate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK, updateInterfaces);
+					stargate.resetStargate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
 					
 					stargate.update(server);
 					addStargate(stargate);
@@ -172,7 +169,7 @@ public final class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public final void addStargate(AbstractStargateEntity stargateEntity)
+	public final void addStargate(AbstractStargateEntity<?> stargateEntity)
 	{
 		addStargate(BlockEntityList.get(server).addStargate(stargateEntity));
 	}
@@ -200,7 +197,7 @@ public final class StargateNetwork extends SavedData
 		removeStargate(stargate);
 	}
 	
-	public final void updateStargate(ServerLevel level, AbstractStargateEntity stargateEntity)
+	public final void updateStargate(ServerLevel level, AbstractStargateEntity<?> stargateEntity)
 	{
 		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress());
 		
@@ -232,6 +229,11 @@ public final class StargateNetwork extends SavedData
 	//============================================================================================
 	//****************************************Connections*****************************************
 	//============================================================================================
+	
+	public Map<UUID, StargateConnection> getConnections()
+	{
+		return new HashMap<>(this.connections);
+	}
 	
 	public final void handleConnections()
 	{
@@ -265,30 +267,30 @@ public final class StargateNetwork extends SavedData
 		
 		// Will reset the Stargate if something's wrong
 		if(!dialedStargate.checkValidity(server))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
 				addressType == Address.Type.ADDRESS_8_CHEVRON &&
 				connectionType == StargateConnection.Type.INTERSTELLAR)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_8_CHEVRON_ADDRESS, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_8_CHEVRON_ADDRESS);
 		
 		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == StargateConnection.Type.SYSTEM_WIDE)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_SYSTEM_WIDE_CONNECTION, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_SYSTEM_WIDE_CONNECTION);
 		
 		if(dialingStargate.equals(dialedStargate))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SELF_DIAL, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SELF_DIAL);
 		
 		if(dialedStargate.isConnected(server))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.ALREADY_CONNECTED, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.ALREADY_CONNECTED);
 		else if(dialedStargate.isObstructed(server))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_OBSTRUCTED, true);
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_OBSTRUCTED);
 		
 		if(REQUIRE_ENERGY)
 		{
 			if(StargateConnection.canExtract(server, dialingStargate, connectionType.getEstablishingPowerCost()))
 				dialingStargate.extractEnergy(server, connectionType.getEstablishingPowerCost(), false);
 			else
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NOT_ENOUGH_POWER, true);
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NOT_ENOUGH_POWER);
 		}
 		
 		List<Stargate> dialedStargates = dialedStargate.getDialedStargates(server, dialingStargate, connectionType);
@@ -385,12 +387,12 @@ public final class StargateNetwork extends SavedData
 	
 	
 	
-	private static boolean addStargatesFromChunk(ServerLevel level, int x, int z, List<AbstractStargateEntity> stargates)
+	private static boolean addStargatesFromChunk(ServerLevel level, int x, int z, List<AbstractStargateEntity<?>> stargates)
 	{
 		ChunkAccess chunk = level.getChunk(x, z);
 		for(BlockPos pos : chunk.getBlockEntitiesPos())
 		{
-			if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+			if(level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
 			{
 				stargates.add(stargate);
 				return true;
@@ -400,7 +402,7 @@ public final class StargateNetwork extends SavedData
 		return false;
 	}
 	
-	private static void searchEdges(ServerLevel level, int xCenter, int yCenter, int radius, List<AbstractStargateEntity> stargates)
+	private static void searchEdges(ServerLevel level, int xCenter, int yCenter, int radius, List<AbstractStargateEntity<?>> stargates)
 	{
 		if(radius == 0)
 			addStargatesFromChunk(level, xCenter, yCenter, stargates);
@@ -453,7 +455,7 @@ public final class StargateNetwork extends SavedData
 			return;
 		}
 		// Map of Block Entities that might contain a Stargate
-		List<AbstractStargateEntity> stargates = new ArrayList<AbstractStargateEntity>();
+		List<AbstractStargateEntity<?>> stargates = new ArrayList<>();
 		
 		int xCenter = SectionPos.blockToSectionCoord(blockpos.getX());
 		int zCenter = SectionPos.blockToSectionCoord(blockpos.getZ());
@@ -468,7 +470,7 @@ public final class StargateNetwork extends SavedData
 			return;
 		}
 		
-		for(AbstractStargateEntity stargate : stargates)
+		for(AbstractStargateEntity<?> stargate : stargates)
 		{
 			stargate.onLoad();
 		}
@@ -518,7 +520,7 @@ public final class StargateNetwork extends SavedData
 				if(connection != null)
 					this.connections.put(uuid, connection);
 			}
-			catch(IllegalArgumentException e) {}
+			catch(IllegalArgumentException ignored) {}
 		}
 	}
 	

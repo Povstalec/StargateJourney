@@ -53,7 +53,7 @@ public class ClientUtil
 	
 	public static void addVertex(VertexConsumer consumer, TextureAtlasSprite sprite, Vec3 pos, Vec3 normal, float u, float v)
 	{
-		consumer.vertex(pos.x(), pos.y(), pos.z()) .uv(sprite.getU(u), sprite.getV(v)).uv2(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
+		consumer.vertex(pos.x(), pos.y(), pos.z()).uv(sprite.getU(u), sprite.getV(v)).uv2(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
 	}
 	
 	public static BakedQuad bakeQuad(TextureAtlasSprite sprite, Vec3 vec1, Vec3 vec2, Vec3 vec3, Vec3 vec4)

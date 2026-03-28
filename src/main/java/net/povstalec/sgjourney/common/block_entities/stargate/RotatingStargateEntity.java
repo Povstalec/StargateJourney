@@ -452,7 +452,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 			if(!isConnected())
 				directEngageSymbol(getCurrentSymbol(), true);
 			else
-				disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN, true);
+				disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN);
 		}
 		
 		if(!this.level.isClientSide())
@@ -471,7 +471,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		return (getCurrentSymbol() / (totalSymbols / SEGMENTS) + 1) * 5;
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, RotatingStargateEntity stargate)
+	public static void tick(Level level, BlockPos pos, BlockState state, RotatingStargateEntity<?> stargate)
 	{
 		stargate.rotate();
 		if(stargate.isRotating() && !level.isClientSide())

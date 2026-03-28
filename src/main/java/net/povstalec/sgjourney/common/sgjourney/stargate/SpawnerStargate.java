@@ -154,7 +154,7 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback)
 	{
 		this.connectionID = null;
 		this.address.reset();

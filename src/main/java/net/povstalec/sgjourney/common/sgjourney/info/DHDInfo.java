@@ -45,7 +45,7 @@ public class DHDInfo
 			updateDHD();
 		}
 		
-		this.stargate.updateStargate(this.stargate.getLevel(), false);
+		this.stargate.updateStargate(this.stargate.getLevel());
 	}
 	
 	public void unsetDHD(boolean notifyDHD)
@@ -57,7 +57,7 @@ public class DHDInfo
 		this.dhdRelativePos = null;
 		this.autoclose = 0;
 		
-		this.stargate.updateStargate(this.stargate.getLevel(), false);
+		this.stargate.updateStargate(this.stargate.getLevel());
 		updateDHD();
 		this.stargate.setChanged();
 	}

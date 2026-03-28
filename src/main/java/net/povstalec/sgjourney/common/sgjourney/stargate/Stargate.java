@@ -213,10 +213,9 @@ public interface Stargate extends Comparable<Stargate>
 	 * Resets this Stargate (Disconnects it, wipes the currently encoded Address, revalidates, ...)
 	 * @param server Current Minecraft Server
 	 * @param feedback Feedback with information regarding why this Stargate was reset
-	 * @param updateInterfaces Whether or not to update any interfaces connected to this Stargate
 	 * @return Feedback with information regarding how this Stargate's reset attempt went
 	 */
-	StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback, boolean updateInterfaces);
+	StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback);
 	
 	/**
 	 * @param server Current Minecraft Server

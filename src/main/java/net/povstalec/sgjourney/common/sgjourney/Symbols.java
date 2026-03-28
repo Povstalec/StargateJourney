@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
@@ -29,21 +30,18 @@ public class Symbols
 	public static final Codec<Symbols> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(Symbols::getName),
 			SymbolSet.RESOURCE_KEY_CODEC.optionalFieldOf("symbol_set").forGetter(Symbols::getSymbolSet),
-			ResourceLocation.CODEC.fieldOf("texture").forGetter(Symbols::getTexture),
-			Codec.INT.optionalFieldOf("size", 38).forGetter(Symbols::getSize)
+			ResourceLocation.CODEC.fieldOf("textures").forGetter(Symbols::getTextures)
 			).apply(instance, Symbols::new));
 	
 	private final String name;
 	private final Optional<ResourceKey<SymbolSet>> symbolSet;
-	private final ResourceLocation texture;
-	private final int size;
+	private final List<ResourceLocation> textures;
 	
-	public Symbols(String name, Optional<ResourceKey<SymbolSet>> symbolSet, ResourceLocation texture, int size)
+	public Symbols(String name, Optional<ResourceKey<SymbolSet>> symbolSet, ResourceLocation textures)
 	{
 		this.name = name;
 		this.symbolSet = symbolSet;
-		this.texture = texture;
-		this.size = size;
+		this.textures = textures;
 	}
 	
 	public String getName()
@@ -81,17 +79,17 @@ public class Symbols
 		return this.symbolSet;
 	}
 	
-	public ResourceLocation getTexture()
+	public ResourceLocation getTextures()
 	{
-		return this.texture;
+		return this.textures;
 	}
 	
 	public int getSize()
 	{
-		return this.size;
+		return this.textures.size();
 	}
 	
-	public ResourceLocation getSymbolTexture()
+	public ResourceLocation getSymbolTexture(int symbol)
 	{
 		if(useSymbolSet())
 		{
@@ -101,7 +99,7 @@ public class Symbols
 				return symbolSet.getSymbolTexture();
 		}
 		
-		ResourceLocation texture = new ResourceLocation(this.texture.getNamespace(), "textures/symbols/" + this.texture.getPath());
+		ResourceLocation texture = new ResourceLocation(this.textures.getNamespace(), "textures/symbols/" + this.textures.getPath());
 		return texture;
 	}
 	

@@ -410,7 +410,7 @@ public class CommandInit
 	{
 		Level level = context.getSource().getLevel();
 		
-		StargateNetwork.get(level).stellarUpdate(level.getServer(), true);
+		StargateNetwork.get(level).stellarUpdate(level.getServer());
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stellar_update").withStyle(ChatFormatting.RED), true);
 		return Command.SINGLE_SUCCESS;

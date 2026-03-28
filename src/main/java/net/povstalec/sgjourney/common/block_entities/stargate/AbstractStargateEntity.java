@@ -532,7 +532,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 			else
 				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
 		}
@@ -588,10 +588,10 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 				return setRecentFeedback(makeDialAttempt(engageStargate(getAddress(), true)));
 			}
 			else
-				return resetStargate(makeDialAttempt(StargateInfo.Feedback.SELF_OBSTRUCTED), false);
+				return resetStargate(makeDialAttempt(StargateInfo.Feedback.SELF_OBSTRUCTED));
 		}
 		else
-			return disconnectStargate(makeDialAttempt(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT), true);
+			return disconnectStargate(makeDialAttempt(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT));
 	}
 	
 	public StargateInfo.Feedback makeDialAttempt(StargateInfo.Feedback feedback)
@@ -656,7 +656,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		this.animationTick = 0;
 		this.setChanged();
 		
-		this.updateStargate(false);
+		this.updateStargate();
 	}
 	
 	public static double kawooshFunction(int kawooshTime)
@@ -751,7 +751,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return true;
 	}
 	
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
 	{
 		if(level.isClientSide())
 			return StargateInfo.Feedback.NONE;
@@ -762,7 +762,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			setConnected(StargateConnection.State.IDLE);
 		}
 
-		resetAddress(updateInterfaces);
+		resetAddress();
 		this.connectionID = null;
 		setKawooshTickCount(0);
 		setOpenTime(0);
@@ -773,12 +773,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(feedback.playFailSound() && !level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
 		
-		if(updateInterfaces)
-		{
-			updateBasicInterfaceBlocks(EVENT_RESET, feedback.getCode());
-			updateCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
-			updateAdvancedCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
-		}
+		updateBasicInterfaceBlocks(EVENT_RESET, feedback.getCode());
+		updateCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
+		updateAdvancedCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
 		
 		dhdInfo().revalidateDHD();
 		
@@ -799,12 +796,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return setRecentFeedback(feedback);
 	}
 	
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
-	{
-		return resetStargate(feedback, true);
-	}
-	
-	public StargateInfo.Feedback disconnectStargate(StargateInfo.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.Feedback disconnectStargate(StargateInfo.Feedback feedback)
 	{
 		if(this.isConnected())
 		{
@@ -814,45 +806,45 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 				return setRecentFeedback(StargateInfo.Feedback.CONNECTION_FORMING);
 		}
 		
-		return bypassDisconnectStargate(feedback, updateInterfaces);
+		return bypassDisconnectStargate(feedback);
 	}
 	
-	public StargateInfo.Feedback bypassDisconnectStargate(StargateInfo.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.Feedback bypassDisconnectStargate(StargateInfo.Feedback feedback)
 	{
 		if(connectionID != null)
 			StargateNetwork.get(level).terminateConnection(connectionID, feedback);
-		return resetStargate(feedback, updateInterfaces);
+		return resetStargate(feedback);
 	}
 	
-	public void updateStargate(boolean updateInterfaces)
+	public void updateStargate()
 	{
-		updateStargate(this.level, updateInterfaces);
+		updateStargate(this.level);
 	}
 	
-	public void updateStargate(Level level, boolean updateInterfaces)
+	public void updateStargate(Level level)
 	{
 		if(level.isClientSide())
 			return;
 			
 		StargateNetwork.get(level).updateStargate((ServerLevel) level, this);
-		setStargateState(updateInterfaces);
+		setStargateState();
 	}
 	
 	protected boolean growAddress(int symbol)
 	{
 		boolean result = this.address.addSymbol(symbol);
-		setStargateState(true);
+		setStargateState();
 		//updateClient();
 		return result;
 	}
 	
-	protected void resetAddress(boolean updateInterfaces)
+	protected void resetAddress()
 	{
 		this.address.reset();
 		this.engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 		this.symbolMap.reset();
 		setConnectionState(StargateConnection.State.IDLE);
-		setStargateState(updateInterfaces);
+		setStargateState();
 	}
 	
 	//============================================================================================
@@ -905,7 +897,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public void setNetwork(int network)
 	{
 		this.network = network;
-		this.updateStargate(false);
+		this.updateStargate();
 	}
 	
 	public boolean getRestrictNetwork()
@@ -1165,7 +1157,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public void setConnected(StargateConnection.State connectionState)
 	{
 		setConnectionState(connectionState);
-		setStargateState(true);
+		setStargateState();
 		
 		if(FORCE_LOAD_CHUNK)
 		{
@@ -1176,14 +1168,14 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		}
 	}
 	
-	public void setStargateState(boolean updateInterfaces)
+	public void setStargateState()
 	{
-		setStargateState(updateInterfaces, false, ShieldingState.OPEN);
+		setStargateState(false, ShieldingState.OPEN);
 		updateClient();
 		
 	}
 	
-	public void setStargateState(boolean updateInterfaces, boolean updateIris, ShieldingState shieldingState)
+	public void setStargateState(boolean updateIris, ShieldingState shieldingState)
 	{
 		BlockPos gatePos = getBlockPos();
 		BlockState gateState = getState();
@@ -1195,8 +1187,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			if(updateIris)
 				stargate.updateIris(level, gatePos, gateState, shieldingState);
 			
-			if(updateInterfaces)
-				updateInterfaceBlocks(null);
+			updateInterfaceBlocks(null);
 		}
 		else
 			StargateJourney.LOGGER.error("AbstractStargateEntity.setStargateState expected AbstractStargateBaseBlock at {} but found {} instead", gatePos, gateState);

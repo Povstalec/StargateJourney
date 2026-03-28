@@ -49,27 +49,27 @@ public class ClassicDHDScreen extends AbstractDHDScreen<ClassicDHDMenu>
 		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 18, y + 125, menu, width, height, 18, 4, GenericDHDSymbolButton.DefaultButton.BUTTON_18));
 		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 10, y + 107, menu, width, height, 19, 31, GenericDHDSymbolButton.DefaultButton.BUTTON_19));
 		// Inner Buttons
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 35, y + 77, menu, width, height, 20, 14, GenericDHDSymbolButton.DefaultButton.BUTTON_20));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 39, y + 59, menu, width, height, 21, 34, GenericDHDSymbolButton.DefaultButton.BUTTON_21));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 49, y + 46, menu, width, height, 22, 29, GenericDHDSymbolButton.DefaultButton.BUTTON_22));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 64, y + 38, menu, width, height, 23, 15, GenericDHDSymbolButton.DefaultButton.BUTTON_23));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 82, y + 35, menu, width, height, 24, 27, GenericDHDSymbolButton.DefaultButton.BUTTON_24));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 99, y + 35, menu, width, height, 25, 9, GenericDHDSymbolButton.DefaultButton.BUTTON_25));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 110, y + 41, menu, width, height, 26, 32, GenericDHDSymbolButton.DefaultButton.BUTTON_26));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 119, y + 52, menu, width, height, 27, 38, GenericDHDSymbolButton.DefaultButton.BUTTON_27));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 126, y + 68, menu, width, height, 28, 25, GenericDHDSymbolButton.DefaultButton.BUTTON_28));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 35, y + 73, menu, width, height, 20, 14, GenericDHDSymbolButton.DefaultButton.BUTTON_20));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 41, y + 55, menu, width, height, 21, 34, GenericDHDSymbolButton.DefaultButton.BUTTON_21));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 52, y + 43, menu, width, height, 22, 29, GenericDHDSymbolButton.DefaultButton.BUTTON_22));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 68, y + 36, menu, width, height, 23, 15, GenericDHDSymbolButton.DefaultButton.BUTTON_23));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 87, y + 35, menu, width, height, 24, 27, GenericDHDSymbolButton.DefaultButton.BUTTON_24));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 102, y + 36, menu, width, height, 25, 9, GenericDHDSymbolButton.DefaultButton.BUTTON_25));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 113, y + 43, menu, width, height, 26, 32, GenericDHDSymbolButton.DefaultButton.BUTTON_26));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 121, y + 55, menu, width, height, 27, 38, GenericDHDSymbolButton.DefaultButton.BUTTON_27));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 127, y + 73, menu, width, height, 28, 25, GenericDHDSymbolButton.DefaultButton.BUTTON_28));
 		
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 129, y + 87, menu, width, height, 29, 22, GenericDHDSymbolButton.DefaultButton.BUTTON_29));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 126, y + 102, menu, width, height, 30, 17, GenericDHDSymbolButton.DefaultButton.BUTTON_30));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 119, y + 113, menu, width, height, 31, 13, GenericDHDSymbolButton.DefaultButton.BUTTON_31));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 110, y + 121, menu, width, height, 32, 16, GenericDHDSymbolButton.DefaultButton.BUTTON_32));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 99, y + 127, menu, width, height, 33, 1, GenericDHDSymbolButton.DefaultButton.BUTTON_33));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 82, y + 128, menu, width, height, 34, 24, GenericDHDSymbolButton.DefaultButton.BUTTON_34));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 64, y + 124, menu, width, height, 35, 35, GenericDHDSymbolButton.DefaultButton.BUTTON_35));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 49, y + 117, menu, width, height, 36, 7, GenericDHDSymbolButton.DefaultButton.BUTTON_36));
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 39, y + 108, menu, width, height, 37, 26, GenericDHDSymbolButton.DefaultButton.BUTTON_37));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 128, y + 92, menu, width, height, 29, 22, GenericDHDSymbolButton.DefaultButton.BUTTON_29));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 124, y + 106, menu, width, height, 30, 17, GenericDHDSymbolButton.DefaultButton.BUTTON_30));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 117, y + 115, menu, width, height, 31, 13, GenericDHDSymbolButton.DefaultButton.BUTTON_31));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 108, y + 123, menu, width, height, 32, 16, GenericDHDSymbolButton.DefaultButton.BUTTON_32));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 97, y + 128, menu, width, height, 33, 1, GenericDHDSymbolButton.DefaultButton.BUTTON_33));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 77, y + 128, menu, width, height, 34, 24, GenericDHDSymbolButton.DefaultButton.BUTTON_34));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 59, y + 123, menu, width, height, 35, 35, GenericDHDSymbolButton.DefaultButton.BUTTON_35));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 46, y + 115, menu, width, height, 36, 7, GenericDHDSymbolButton.DefaultButton.BUTTON_36));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 38, y + 106, menu, width, height, 37, 26, GenericDHDSymbolButton.DefaultButton.BUTTON_37));
 		
-		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 35, y + 97, menu, width, height, 38, 30, GenericDHDSymbolButton.DefaultButton.BUTTON_38));
+		this.addRenderableWidget(new ClassicDHDSymbolButton(x + 35, y + 92, menu, width, height, 38, 30, GenericDHDSymbolButton.DefaultButton.BUTTON_38));
 	}
 	
 }

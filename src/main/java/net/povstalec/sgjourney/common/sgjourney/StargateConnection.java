@@ -204,7 +204,7 @@ public class StargateConnection
 		{
 			for(Stargate dialedStargate : dialedStargates)
 			{
-				dialedStargate.resetStargate(server, StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION, true);
+				dialedStargate.resetStargate(server, StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION);
 			}
 			
 			StargateConnection stargateConnection = new StargateConnection(uuid, connectionType, dialingStargate, dialedStargates, doKawoosh);
@@ -235,13 +235,13 @@ public class StargateConnection
 		if(this.dialingStargate != null)
 		{
 			this.dialingStargate.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
-			this.dialingStargate.resetStargate(server, feedback, true);
+			this.dialingStargate.resetStargate(server, feedback);
 		}
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
 			dialedStargate.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
-			dialedStargate.resetStargate(server, feedback, true);
+			dialedStargate.resetStargate(server, feedback);
 		}
 		
 		StargateNetwork.get(server).removeConnection(uuid);

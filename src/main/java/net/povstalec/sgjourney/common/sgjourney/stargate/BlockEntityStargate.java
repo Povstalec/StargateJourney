@@ -88,14 +88,14 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
-	default StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback, boolean updateInterfaces)
+	default StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback)
 	{
 		StargateEntity stargateEntity = getStargateEntity(server);
 		
 		//this.stargate = null; //TODO bring back once Stargates get cached
 		
 		if(stargateEntity != null)
-			return stargateEntity.resetStargate(feedback, updateInterfaces);
+			return stargateEntity.resetStargate(feedback);
 		else
 			StargateJourney.LOGGER.error("Failed to reset Stargate as it does not exist");
 		

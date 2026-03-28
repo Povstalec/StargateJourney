@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -26,12 +27,8 @@ import java.util.List;
 
 public class CableBakedModel implements IDynamicBakedModel
 {
-	public static final ResourceLocation MISSING = new ResourceLocation("missingno");
-	
 	private static final byte DEFAULT_OFFSET = 15;
 	private static final byte CONNECTED_OFFSET = 16;
-	
-	private static Minecraft minecraft = Minecraft.getInstance();
 	
 	private final IGeometryBakingContext context;
 	private final double thickness; // Thickness of the cable
@@ -70,7 +67,7 @@ public class CableBakedModel implements IDynamicBakedModel
 	
 	private static TextureAtlasSprite getTexture(ResourceLocation texture)
 	{
-		return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
 	}
 	
 	private void initTexture()
@@ -252,7 +249,7 @@ public class CableBakedModel implements IDynamicBakedModel
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
-		return particleSprite == null ? minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply((MISSING)) : particleSprite;
+		return particleSprite == null ? Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation()) : particleSprite;
 	}
 	
 	@Override

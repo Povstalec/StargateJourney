@@ -3,8 +3,10 @@ package net.povstalec.sgjourney.client.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -32,6 +34,8 @@ public abstract class DHDSymbolButton extends DHDButton
 	protected final ColorUtil.RGBA disengagedColor;
 	protected final ColorUtil.RGBA engagedColor;
 	
+	protected boolean isRemapped = false;
+	
     public DHDSymbolButton(int x, int y, int width, int height, AbstractDHDMenu<?> menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
 						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor)
 	{
@@ -46,6 +50,21 @@ public abstract class DHDSymbolButton extends DHDButton
 		this.hoverColor = hoverColor;
 		this.disengagedColor = disengagedColor;
 		this.engagedColor = engagedColor;
+		
+		setTooltip(Tooltip.create(symbolComponent()));
+	}
+	
+	protected void updateRemapping()
+	{
+		if(this.menu.isSymbolRemapped(getSymbol()) != isRemapped)
+		{
+			isRemapped = this.menu.isSymbolRemapped(getSymbol());
+			
+			if(isRemapped)
+				setTooltip(Tooltip.create(remappedSymbolComponent()));
+			else
+				setTooltip(Tooltip.create(symbolComponent()));
+		}
 	}
 	
 	@Override
@@ -58,6 +77,16 @@ public abstract class DHDSymbolButton extends DHDButton
 	public int getSymbol()
 	{
 		return this.symbol;
+	}
+	
+	public Component symbolComponent()
+	{
+		return Component.literal(Integer.toString(getSymbol())).withStyle(ChatFormatting.WHITE);
+	}
+	
+	public Component remappedSymbolComponent()
+	{
+		return Component.literal(menu.getRemappedOriginalSymbol(getSymbol()) + " -> ").withStyle(ChatFormatting.DARK_GRAY).append(symbolComponent());
 	}
 	
 	public boolean isEngaged()

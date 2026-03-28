@@ -24,7 +24,7 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	
 	public enum Position
 	{
-		INNER(19, 8, 33, 61),
+		INNER(19, 12, 33, 61),
 		OUTER(20, 16, 63, 88);
 		
 		public final int totalButtons;
@@ -45,7 +45,7 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 		public double symbolAngle(int symbol)
 		{
 			if(this == INNER)
-				return ((symbol - 1) % totalButtons) * angle + angle / 2;
+				return ((symbol - 5) % totalButtons) * angle + 90; // "It just works" (Take the old DHD screen, go back 5 symbols and rotate them all 90 degrees, you get the new one)
 			
 			return (symbol % totalButtons) * angle;
 		}
@@ -54,63 +54,67 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	public enum DefaultButton
 	{
 		// Outer Buttons
-		BUTTON_0(0, OUTER_BUTTON_Y_OFFSET_1, 25, 26, Position.OUTER),
-		BUTTON_1(BUTTON_0.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 29, 27, Position.OUTER),
-		BUTTON_2(BUTTON_1.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 32, Position.OUTER),
-		BUTTON_3(BUTTON_2.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 33, Position.OUTER),
-		BUTTON_4(BUTTON_3.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 28, 29, Position.OUTER),
-		BUTTON_5(BUTTON_4.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 26, 25, Position.OUTER),
-		BUTTON_6(BUTTON_5.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 28, 29, Position.OUTER),
-		BUTTON_7(BUTTON_6.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 33, Position.OUTER),
+		BUTTON_0(0, OUTER_BUTTON_Y_OFFSET_1, 25, 26, 0F, 0F, Position.OUTER),
+		BUTTON_1(BUTTON_0.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 29, 27, 0F, 2F, Position.OUTER),
+		BUTTON_2(BUTTON_1.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 32, 1F, 1F, Position.OUTER),
+		BUTTON_3(BUTTON_2.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 33, 1F, 1F, Position.OUTER),
+		BUTTON_4(BUTTON_3.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 28, 29, 2F, 0F, Position.OUTER),
+		BUTTON_5(BUTTON_4.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 26, 25, 0F, 0F, Position.OUTER),
+		BUTTON_6(BUTTON_5.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 28, 29, -2F, 0F, Position.OUTER),
+		BUTTON_7(BUTTON_6.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 33, -1F, 1F, Position.OUTER),
 		
-		BUTTON_8(0, OUTER_BUTTON_Y_OFFSET_2, 32, 32, Position.OUTER),
-		BUTTON_9(BUTTON_8.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 29, 27, Position.OUTER),
-		BUTTON_10(BUTTON_9.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 25, 26, Position.OUTER),
-		BUTTON_11(BUTTON_10.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 29, 27, Position.OUTER),
-		BUTTON_12(BUTTON_11.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 32, 32, Position.OUTER),
-		BUTTON_13(BUTTON_12.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 32, 33, Position.OUTER),
-		BUTTON_14(BUTTON_13.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 28, 29, Position.OUTER),
-		BUTTON_15(BUTTON_14.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 26, 25, Position.OUTER),
+		BUTTON_8(0, OUTER_BUTTON_Y_OFFSET_2, 32, 32, -1F, 1F, Position.OUTER),
+		BUTTON_9(BUTTON_8.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 29, 27, 0F, 2F, Position.OUTER),
+		BUTTON_10(BUTTON_9.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 25, 26, 0F, 0F, Position.OUTER),
+		BUTTON_11(BUTTON_10.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 29, 27, 0F, -1F, Position.OUTER),
+		BUTTON_12(BUTTON_11.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 32, 32, -1F, -1F, Position.OUTER),
+		BUTTON_13(BUTTON_12.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 32, 33, -1F, 0F, Position.OUTER),
+		BUTTON_14(BUTTON_13.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 28, 29, -2F, 1F, Position.OUTER),
+		BUTTON_15(BUTTON_14.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 26, 25, 0F, 0F, Position.OUTER),
 		
-		BUTTON_16(0, OUTER_BUTTON_Y_OFFSET_3, 28, 29, Position.OUTER),
-		BUTTON_17(BUTTON_16.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 32, 33, Position.OUTER),
-		BUTTON_18(BUTTON_17.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 32, 32, Position.OUTER),
-		BUTTON_19(BUTTON_18.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 29, 27, Position.OUTER),
+		BUTTON_16(0, OUTER_BUTTON_Y_OFFSET_3, 28, 29, 2F, 1F, Position.OUTER),
+		BUTTON_17(BUTTON_16.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 32, 33, 1F, 0F, Position.OUTER),
+		BUTTON_18(BUTTON_17.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 32, 32, 1F, -1F, Position.OUTER),
+		BUTTON_19(BUTTON_18.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 29, 27, 0F, -1F, Position.OUTER),
 		// Inner Buttons
-		BUTTON_20(0, INNER_BUTTON_Y_OFFSET_1, 29, 18, Position.INNER),
-		BUTTON_21(BUTTON_20.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 25, Position.INNER),
-		BUTTON_22(BUTTON_21.xEnd(), INNER_BUTTON_Y_OFFSET_1, 28, 29, Position.INNER),
-		BUTTON_23(BUTTON_22.xEnd(), INNER_BUTTON_Y_OFFSET_1, 22, 30, Position.INNER),
-		BUTTON_24(BUTTON_23.xEnd(), INNER_BUTTON_Y_OFFSET_1, 18, 29, Position.INNER),
-		BUTTON_25(BUTTON_24.xEnd(), INNER_BUTTON_Y_OFFSET_1, 20, 30, Position.INNER),
-		BUTTON_26(BUTTON_25.xEnd(), INNER_BUTTON_Y_OFFSET_1, 27, 30, Position.INNER),
-		BUTTON_27(BUTTON_26.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 27, Position.INNER),
-		BUTTON_28(BUTTON_27.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 22, Position.INNER),
+		BUTTON_20(0, INNER_BUTTON_Y_OFFSET_1, 30, 20, 0F, 2F, Position.INNER),
+		BUTTON_21(BUTTON_20.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 27, 0F, 1F, Position.INNER),
+		BUTTON_22(BUTTON_21.xEnd(), INNER_BUTTON_Y_OFFSET_1, 27, 30, 1F, 0F, Position.INNER),
+		BUTTON_23(BUTTON_22.xEnd(), INNER_BUTTON_Y_OFFSET_1, 22, 30, 2F, 0F, Position.INNER),
+		BUTTON_24(BUTTON_23.xEnd(), INNER_BUTTON_Y_OFFSET_1, 18, 28, 0F, 0F, Position.INNER),
+		BUTTON_25(BUTTON_24.xEnd(), INNER_BUTTON_Y_OFFSET_1, 22, 30, -2F, 0F, Position.INNER),
+		BUTTON_26(BUTTON_25.xEnd(), INNER_BUTTON_Y_OFFSET_1, 27, 30, -1F, 0F, Position.INNER),
+		BUTTON_27(BUTTON_26.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 27, 0F, 1F, Position.INNER),
+		BUTTON_28(BUTTON_27.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 20, 0F, 2F, Position.INNER),
 		
-		BUTTON_29(0, INNER_BUTTON_Y_OFFSET_2, 28, 18, Position.INNER),
-		BUTTON_30(BUTTON_29.xEnd(), INNER_BUTTON_Y_OFFSET_2, 30, 22, Position.INNER),
-		BUTTON_31(BUTTON_30.xEnd(), INNER_BUTTON_Y_OFFSET_2, 30, 27, Position.INNER),
-		BUTTON_32(BUTTON_31.xEnd(), INNER_BUTTON_Y_OFFSET_2, 27, 30, Position.INNER),
-		BUTTON_33(BUTTON_32.xEnd(), INNER_BUTTON_Y_OFFSET_2, 20, 30, Position.INNER),
-		BUTTON_34(BUTTON_33.xEnd(), INNER_BUTTON_Y_OFFSET_2, 18, 29, Position.INNER),
-		BUTTON_35(BUTTON_34.xEnd(), INNER_BUTTON_Y_OFFSET_2, 22, 30, Position.INNER),
-		BUTTON_36(BUTTON_35.xEnd(), INNER_BUTTON_Y_OFFSET_2, 28, 29, Position.INNER),
-		BUTTON_37(BUTTON_36.xEnd(), INNER_BUTTON_Y_OFFSET_2, 30, 25, Position.INNER),
+		BUTTON_29(0, INNER_BUTTON_Y_OFFSET_2, 29, 18, 0F, -1F, Position.INNER),
+		BUTTON_30(BUTTON_29.xEnd(), INNER_BUTTON_Y_OFFSET_2, 30, 22, 0F, -2F, Position.INNER),
+		BUTTON_31(BUTTON_30.xEnd(), INNER_BUTTON_Y_OFFSET_2, 29, 29, 1F, 0F, Position.INNER),
+		BUTTON_32(BUTTON_31.xEnd(), INNER_BUTTON_Y_OFFSET_2, 25, 31, -1F, 0F, Position.INNER),
+		BUTTON_33(BUTTON_32.xEnd(), INNER_BUTTON_Y_OFFSET_2, 18, 29, -2F, 0F, Position.INNER),
+		BUTTON_34(BUTTON_33.xEnd(), INNER_BUTTON_Y_OFFSET_2, 18, 29, 2F, 0F, Position.INNER),
+		BUTTON_35(BUTTON_34.xEnd(), INNER_BUTTON_Y_OFFSET_2, 25, 31, 1F, 0F, Position.INNER),
+		BUTTON_36(BUTTON_35.xEnd(), INNER_BUTTON_Y_OFFSET_2, 29, 29, -1F, 0F, Position.INNER),
+		BUTTON_37(BUTTON_36.xEnd(), INNER_BUTTON_Y_OFFSET_2, 30, 23, 0F, -2F, Position.INNER),
 		
-		BUTTON_38(0, INNER_BUTTON_Y_OFFSET_3, 29, 18, Position.INNER);
+		BUTTON_38(0, INNER_BUTTON_Y_OFFSET_3, 29, 18, 0F, -1F, Position.INNER);
 		
 		public final int textureX;
 		public final int textureY;
 		public final int width;
 		public final int height;
+		public final float xOffset;
+		public final float yOffset;
 		public final Position position;
 		
-		DefaultButton(int textureX, int textureY, int width, int height, Position position)
+		DefaultButton(int textureX, int textureY, int width, int height, float xOffset, float yOffset, Position position)
 		{
 			this.textureX = textureX;
 			this.textureY = textureY;
 			this.width = width;
 			this.height = height;
+			this.xOffset = xOffset;
+			this.yOffset = yOffset;
 			this.position = position;
 		}
 		
@@ -123,14 +127,14 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	protected final int screenCenterX;
 	protected final int screenCenterY;
 	
-	protected final int xCenter;
-	protected final int yCenter;
+	protected final float xCenter;
+	protected final float yCenter;
 	protected final double buttonAngle;
 	
 	public final Position position;
 
 	public GenericDHDSymbolButton(int x, int y, int width, int height, AbstractDHDMenu<?> menu, int symbol, int screenWidth, int screenHeight,
-								  ResourceLocation widgets, ResourceLocation overlay, int xCenter, int yCenter, int textureX, int textureY, Position position,
+								  ResourceLocation widgets, ResourceLocation overlay, float xCenter, float yCenter, int textureX, int textureY, Position position,
 								  ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor)
 	{
 		super(x, y, width, height, menu, symbol, widgets, overlay, hoverColor, disengagedColor, engagedColor);
@@ -146,8 +150,6 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
     	this.textureY = textureY;
 		
 		this.position = position;
-		
-		setTooltip(Tooltip.create(Component.literal(Integer.toString(getSymbol()))));
 	}
 	
 	private static boolean isAngleInBounds(double lowerAngleBound, double angle, double upperAngleBound)
@@ -197,6 +199,7 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 		super.render(poseStack, mouseX, mouseY, partialTick);
 		if(this.visible)
 		{
+			updateRemapping();
 			this.isHovered = isOverButton(mouseX, mouseY);
 			this.renderButton(poseStack, mouseX, mouseY, partialTick);
 			updateTooltip();

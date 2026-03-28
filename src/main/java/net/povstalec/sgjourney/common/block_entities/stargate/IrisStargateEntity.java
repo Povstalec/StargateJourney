@@ -103,9 +103,9 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 	}
 	
 	@Override
-	public void setStargateState(boolean updateInterfaces)
+	public void setStargateState()
 	{
-		setStargateState(updateInterfaces, false, irisInfo().getShieldingState());
+		setStargateState(false, irisInfo().getShieldingState());
 		updateClient();
 	}
 	

@@ -62,7 +62,7 @@ public class GenericStargateFunctions
 	{
 		boolean wasConnected = stargate.isConnected();
 		
-		stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+		stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 		
 		boolean isConnected = stargate.isConnected();
 		

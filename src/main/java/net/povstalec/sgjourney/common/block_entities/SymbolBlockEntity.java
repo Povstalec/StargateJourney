@@ -1,7 +1,10 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.data.ModelData;
+import net.povstalec.sgjourney.client.ModelProperties;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -84,6 +87,38 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public CompoundTag getUpdateTag()
 	{
 		return this.saveWithoutMetadata();
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		ResourceLocation oldPointOfOrigin = pointOfOrigin;
+		ResourceLocation oldSymbols = symbols;
+		int oldSymbolNumber = symbolNumber;
+		
+		super.onDataPacket(net, packet);
+		
+		if(pointOfOrigin != null && !pointOfOrigin.equals(oldPointOfOrigin))
+			requestModelDataUpdate();
+		else if(symbols != null && !symbols.equals(oldSymbols))
+			requestModelDataUpdate();
+		else if(symbolNumber != oldSymbolNumber)
+			requestModelDataUpdate();
+	}
+	
+	@Override
+	@NotNull
+	public ModelData getModelData()
+	{
+		ModelData.Builder builder = ModelData.builder()
+				.with(ModelProperties.SYMBOL_INDEX_PROPERTY, symbolNumber);
+		
+		if(symbols != null)
+			builder.with(ModelProperties.SYMBOL_TEXTURE_PROPERTY, symbols);
+		else if(pointOfOrigin != null)
+			builder.with(ModelProperties.POINT_OF_ORIGIN_TEXTURE_PROPERTY, pointOfOrigin);
+		
+		return builder.build();
 	}
 	
 	//============================================================================================

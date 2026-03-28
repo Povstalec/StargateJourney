@@ -202,7 +202,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 			else
 				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
 		}
@@ -369,13 +369,13 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 
 	@Override
-	protected void resetAddress(boolean updateInterfaces)
+	protected void resetAddress()
 	{
 		currentSymbol = 0;
 		symbolBuffer = 0;
 		addressBuffer.reset();
 		canEngage = false;
-		super.resetAddress(updateInterfaces);
+		super.resetAddress();
 	}
 
 	@Override

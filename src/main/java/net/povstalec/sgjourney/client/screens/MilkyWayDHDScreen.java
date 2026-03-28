@@ -49,27 +49,27 @@ public class MilkyWayDHDScreen extends AbstractDHDScreen<MilkyWayDHDMenu>
 		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 18, y + 125, menu, width, height, 18, 4, DefaultButton.BUTTON_18));
 		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 10, y + 107, menu, width, height, 19, 31, DefaultButton.BUTTON_19));
 		// Inner Buttons
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 35, y + 77, menu, width, height, 20, 14, DefaultButton.BUTTON_20));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 39, y + 59, menu, width, height, 21, 34, DefaultButton.BUTTON_21));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 49, y + 46, menu, width, height, 22, 29, DefaultButton.BUTTON_22));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 64, y + 38, menu, width, height, 23, 15, DefaultButton.BUTTON_23));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 82, y + 35, menu, width, height, 24, 27, DefaultButton.BUTTON_24));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 99, y + 35, menu, width, height, 25, 9, DefaultButton.BUTTON_25));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 110, y + 41, menu, width, height, 26, 32, DefaultButton.BUTTON_26));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 119, y + 52, menu, width, height, 27, 38, DefaultButton.BUTTON_27));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 126, y + 68, menu, width, height, 28, 25, DefaultButton.BUTTON_28));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 35, y + 73, menu, width, height, 20, 14, DefaultButton.BUTTON_20));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 41, y + 55, menu, width, height, 21, 34, DefaultButton.BUTTON_21));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 52, y + 43, menu, width, height, 22, 29, DefaultButton.BUTTON_22));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 68, y + 36, menu, width, height, 23, 15, DefaultButton.BUTTON_23));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 87, y + 35, menu, width, height, 24, 27, DefaultButton.BUTTON_24));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 102, y + 36, menu, width, height, 25, 9, DefaultButton.BUTTON_25));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 113, y + 43, menu, width, height, 26, 32, DefaultButton.BUTTON_26));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 121, y + 55, menu, width, height, 27, 38, DefaultButton.BUTTON_27));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 127, y + 73, menu, width, height, 28, 25, DefaultButton.BUTTON_28));
 		
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 129, y + 87, menu, width, height, 29, 22, DefaultButton.BUTTON_29));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 126, y + 102, menu, width, height, 30, 17, DefaultButton.BUTTON_30));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 119, y + 113, menu, width, height, 31, 13, DefaultButton.BUTTON_31));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 110, y + 121, menu, width, height, 32, 16, DefaultButton.BUTTON_32));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 99, y + 127, menu, width, height, 33, 1, DefaultButton.BUTTON_33));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 82, y + 128, menu, width, height, 34, 24, DefaultButton.BUTTON_34));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 64, y + 124, menu, width, height, 35, 35, DefaultButton.BUTTON_35));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 49, y + 117, menu, width, height, 36, 7, DefaultButton.BUTTON_36));
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 39, y + 108, menu, width, height, 37, 26, DefaultButton.BUTTON_37));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 128, y + 92, menu, width, height, 29, 22, DefaultButton.BUTTON_29));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 124, y + 106, menu, width, height, 30, 17, DefaultButton.BUTTON_30));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 117, y + 115, menu, width, height, 31, 13, DefaultButton.BUTTON_31));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 108, y + 123, menu, width, height, 32, 16, DefaultButton.BUTTON_32));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 97, y + 128, menu, width, height, 33, 1, DefaultButton.BUTTON_33));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 77, y + 128, menu, width, height, 34, 24, DefaultButton.BUTTON_34));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 59, y + 123, menu, width, height, 35, 35, DefaultButton.BUTTON_35));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 46, y + 115, menu, width, height, 36, 7, DefaultButton.BUTTON_36));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 38, y + 106, menu, width, height, 37, 26, DefaultButton.BUTTON_37));
 		
-		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 35, y + 97, menu, width, height, 38, 30, DefaultButton.BUTTON_38));
+		this.addRenderableWidget(new MilkyWayDHDSymbolButton(x + 35, y + 92, menu, width, height, 38, 30, DefaultButton.BUTTON_38));
 	}
 	
 }

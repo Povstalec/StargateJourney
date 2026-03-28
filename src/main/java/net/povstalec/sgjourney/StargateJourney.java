@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.function.BiFunction;
 
 import net.minecraftforge.client.event.ModelEvent;
+import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
 import net.povstalec.sgjourney.client.render.entity.*;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
@@ -264,6 +265,7 @@ public class StargateJourney
 		public static void modelLoaderInit(ModelEvent.RegisterGeometryLoaders event)
 		{
 			CableModelLoader.register(event);
+			SymbolBlockModelLoader.register(event);
 		}
     }
 	
