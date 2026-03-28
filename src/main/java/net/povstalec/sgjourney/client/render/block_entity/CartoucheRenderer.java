@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -43,22 +44,23 @@ public abstract class CartoucheRenderer
 		return ClientUtil.getSymbols(cartouche.getSymbols());
 	}
 	
-	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light,
-			float size, float x, float y, float z, float textureSize, float textureOffset)
+	protected void renderSymbol(MultiBufferSource source, Matrix4f matrix4, Matrix3f matrix3, int light,
+			float size, float x, float y, float z, TextureAtlasSprite sprite)
 	{
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(sprite.atlasLocation()));
+		
 		float halfsize = size / 2;
-		float textureHalf = 1F / textureSize / 2;
 		//TOP LEFT
-		consumer.vertex(matrix4, x - halfsize, y + halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 0)
+		consumer.vertex(matrix4, x - halfsize, y + halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(sprite.getU(0F), sprite.getV(0F))
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 		//BOTTOM LEFT
-		consumer.vertex(matrix4, x - halfsize, y - halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 1)
+		consumer.vertex(matrix4, x - halfsize, y - halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(sprite.getU(0F), sprite.getV(16F))
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 		//BOTTOM RIGHT
-		consumer.vertex(matrix4, x + halfsize, y - halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 1)
+		consumer.vertex(matrix4, x + halfsize, y - halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(sprite.getU(16F), sprite.getV(16F))
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 		//TOP RIGHT
-		consumer.vertex(matrix4, x + halfsize, y + halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 0)
+		consumer.vertex(matrix4, x + halfsize, y + halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(sprite.getU(16F), sprite.getV(0F))
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 	}
 	
@@ -96,19 +98,15 @@ public abstract class CartoucheRenderer
 			if(symbolSize > MAX_WIDTH)
 				symbolSize = MAX_WIDTH;
 			
-			ResourceLocation texture = symbols.getSymbolTexture();
-			
 			for(int i = 0; i < address.regularSymbolCount(); i++)
 			{
-				VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
-				
 				float yStart = 0.5F + symbolSize * address.regularSymbolCount() / 2;
 				if(yStart > 0.5F + MAX_HEIGHT / 2)
 					yStart = 0.5F + MAX_HEIGHT / 2;
 				
 				float yPos = yStart - symbolSize / 2 - symbolSize * i;
 				
-				renderSymbol(consumer, matrix4, matrix3, light, symbolSize, 0, yPos, SYMBOL_OFFSET, symbols.getSize(), symbols.getTextureOffset(address.symbolAt(i)));
+				renderSymbol(source, matrix4, matrix3, light, symbolSize, 0, yPos, SYMBOL_OFFSET, ClientUtil.getSymbolSprite(symbols, address.symbolAt(i)));
 			}
 		}
         

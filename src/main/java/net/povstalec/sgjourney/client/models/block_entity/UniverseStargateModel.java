@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.client.models.block_entity;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.povstalec.sgjourney.client.ClientUtil;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -320,16 +322,13 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			else if(stargate.isConnected())
 				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
-			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
-			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, ClientUtil.getPointOfOriginSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
 		}
 		
 		Symbols symbols = getSymbols(stargate, stargateVariant);
 		
 		if(symbols == null)
 			return;
-		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
 		for(int symbol = 1; symbol < this.numberOfSymbols; symbol++)
 		{
@@ -343,12 +342,12 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				symbolEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
 			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
-					MAX_LIGHT : combinedLight, symbol, symbols.getTextureOffset(symbol), symbols.getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+					MAX_LIGHT : combinedLight, symbol, ClientUtil.getSymbolSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
 		}
 	}
 	
-	protected void renderSymbol(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
-			int symbolNumber, float symbolOffset, int textureXSize, float rotation, ColorUtil.RGBA symbolColor)
+	protected void renderSymbol(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight,
+								int symbolNumber, TextureAtlasSprite sprite, float rotation, ColorUtil.RGBA symbolColor)
 	{
 		stack.pushPose();
 		int symbolRow = symbolNumber / 4;
@@ -357,27 +356,28 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(sprite.atlasLocation()));
+		SGJourneyModel.createSpriteQuad(consumer, matrix4, matrix3, combinedLight, sprite, 0, 0, 1,
 				symbolColor.red(), symbolColor.green(), symbolColor.blue(), symbolColor.alpha(), 
 				-STARGATE_SYMBOL_RING_OUTER_CENTER,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 				SYMBOL_OFFSET,
-				symbolOffset - (STARGATE_SYMBOL_RING_OUTER_CENTER * 32 / 16 / textureXSize), 0,
+				8F - (STARGATE_SYMBOL_RING_OUTER_CENTER * 32 ), 0,
 				
 				-STARGATE_SYMBOL_RING_INNER_CENTER, 
 				STARGATE_SYMBOL_RING_INNER_HEIGHT,
 				SYMBOL_OFFSET,
-				symbolOffset - (STARGATE_SYMBOL_RING_INNER_CENTER * 32 / 16 / textureXSize), 1,
+				8F - (STARGATE_SYMBOL_RING_INNER_CENTER * 32), 16,
 				
 				STARGATE_SYMBOL_RING_INNER_CENTER,
 				STARGATE_SYMBOL_RING_INNER_HEIGHT,
 				SYMBOL_OFFSET,
-				symbolOffset + (STARGATE_SYMBOL_RING_INNER_CENTER * 32 / 16 / textureXSize), 1,
+				8F + (STARGATE_SYMBOL_RING_INNER_CENTER * 32), 16,
 				
 				STARGATE_SYMBOL_RING_OUTER_CENTER,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 				SYMBOL_OFFSET,
-				symbolOffset + (STARGATE_SYMBOL_RING_OUTER_CENTER * 32 / 16 / textureXSize), 0);
+				8F + (STARGATE_SYMBOL_RING_OUTER_CENTER * 32), 0);
 		
 		stack.popPose();
 	}

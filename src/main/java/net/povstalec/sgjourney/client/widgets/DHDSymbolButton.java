@@ -8,9 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
@@ -101,17 +103,19 @@ public abstract class DHDSymbolButton extends DHDButton
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
+		TextureAtlasSprite sprite = ClientUtil.getPointOfOriginSprite(pointOfOrigin);
+		
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		RenderSystem.setShaderTexture(0, pointOfOrigin.texture());
+		RenderSystem.setShaderTexture(0, sprite.atlasLocation());
 		
 		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
-		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(sprite.getU(0F), sprite.getV(0F)).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(sprite.getU(0F), sprite.getV(16F)).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(sprite.getU(16F), sprite.getV(16F)).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(sprite.getU(16F), sprite.getV(0F)).endVertex();
 		BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	
@@ -122,21 +126,19 @@ public abstract class DHDSymbolButton extends DHDButton
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		float symbolOffset = symbols.getTextureOffset(symbol);
-		float symbolsSize = symbols.getSize();
-		float symbolHalfSpace = 1 / (2 * symbolsSize);
+		TextureAtlasSprite sprite = ClientUtil.getSymbolSprite(symbols, symbol);
 		
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		RenderSystem.setShaderTexture(0, symbols.getSymbolTexture());
+		RenderSystem.setShaderTexture(0, sprite.atlasLocation());
 		
 		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(symbolOffset - symbolHalfSpace, 0F).endVertex();
-		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(symbolOffset - symbolHalfSpace, 1F).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(symbolOffset + symbolHalfSpace, 1F).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(symbolOffset + symbolHalfSpace, 0F).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(sprite.getU(0F), sprite.getV(0F)).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(sprite.getU(0F), sprite.getV(16F)).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(sprite.getU(16F), sprite.getV(16F)).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(sprite.getU(16F), sprite.getV(0F)).endVertex();
 		BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	

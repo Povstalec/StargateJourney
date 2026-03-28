@@ -34,7 +34,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEnt
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -205,7 +204,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 				if(location.toString().equals("sgjourney:empty"))
 					pointOfOrigin = "Empty";
 				else if(pointOfOriginRegistry.containsKey(location))
-					pointOfOrigin = pointOfOriginRegistry.get(location).getName();
+					pointOfOrigin = pointOfOriginRegistry.get(location).name();
 				else
 					pointOfOrigin = "Error";
 			}
@@ -216,7 +215,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 				if(location.toString().equals("sgjourney:empty"))
 					symbols = "Empty";
 				else if(symbolsRegistry.containsKey(location))
-					symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
+					symbols = symbolsRegistry.get(location).getTranslationName();
 				else
 					symbols = "Error";
 			}

@@ -1,6 +1,8 @@
 {
 	"name": "symbols.sgjourney.othala",
 	"symbol_set": "sgjourney:galaxy_ida",
-	"texture": "sgjourney:ida/othala.png",
-	"size": 35
+	"textures":
+	[
+		
+	]
 }

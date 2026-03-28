@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Symbols
 {
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbol/error");
 	
 	public static final ResourceLocation UNIVERSAL_LOCATION = new ResourceLocation(StargateJourney.MODID, "universal");
 	
@@ -30,18 +31,18 @@ public class Symbols
 	public static final Codec<Symbols> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(Symbols::getName),
 			SymbolSet.RESOURCE_KEY_CODEC.optionalFieldOf("symbol_set").forGetter(Symbols::getSymbolSet),
-			ResourceLocation.CODEC.fieldOf("textures").forGetter(Symbols::getTextures)
+			ResourceLocation.CODEC.listOf().fieldOf("textures").forGetter(symbols -> symbols.textures)
 			).apply(instance, Symbols::new));
 	
 	private final String name;
 	private final Optional<ResourceKey<SymbolSet>> symbolSet;
-	private final List<ResourceLocation> textures;
+	private final ArrayList<ResourceLocation> textures;
 	
-	public Symbols(String name, Optional<ResourceKey<SymbolSet>> symbolSet, ResourceLocation textures)
+	public Symbols(String name, Optional<ResourceKey<SymbolSet>> symbolSet, List<ResourceLocation> textures)
 	{
 		this.name = name;
 		this.symbolSet = symbolSet;
-		this.textures = textures;
+		this.textures = new ArrayList<>(textures);
 	}
 	
 	public String getName()
@@ -49,7 +50,7 @@ public class Symbols
 		return this.name;
 	}
 	
-	public String getTranslationName(boolean uniqueSymbols)
+	public String getTranslationName()
 	{
 		if(useSymbolSet())
 		{
@@ -63,10 +64,7 @@ public class Symbols
 	
 	public boolean useSymbolSet()
 	{
-		if(!ClientStargateConfig.unique_symbols.get() && this.symbolSet.isPresent())
-			return true;
-		
-		return false;
+		return !ClientStargateConfig.unique_symbols.get() && this.symbolSet.isPresent();
 	}
 	
 	public static String symbolsOrSet()
@@ -77,11 +75,6 @@ public class Symbols
 	public Optional<ResourceKey<SymbolSet>> getSymbolSet()
 	{
 		return this.symbolSet;
-	}
-	
-	public ResourceLocation getTextures()
-	{
-		return this.textures;
 	}
 	
 	public int getSize()
@@ -96,11 +89,14 @@ public class Symbols
 			SymbolSet symbolSet = SymbolSet.getClientSymbolSet(this.symbolSet.get());
 			
 			if(symbolSet != null)
-				return symbolSet.getSymbolTexture();
+				return symbolSet.getSymbolTexture(symbol);
 		}
 		
-		ResourceLocation texture = new ResourceLocation(this.textures.getNamespace(), "textures/symbols/" + this.textures.getPath());
-		return texture;
+		symbol--;
+		if(symbol < 0 || symbol >= textures.size())
+			return ERROR_LOCATION;
+		
+		return textures.get(symbol);
 	}
 	
 	public boolean shouldRenderSymbol(int symbol)
@@ -113,34 +109,10 @@ public class Symbols
 				return symbolSet.shouldRenderSymbol(symbol);
 		}
 		
-		if(symbol >= 0 && symbol < size)
+		if(symbol >= 0 && symbol < textures.size())
 			return true;
 		
 		return false;
-	}
-	
-	public float getTextureOffset(int symbol)
-	{
-		symbol -= 1;
-		float symbolSize = 1F / (float) size;
-		return symbolSize * symbol + symbolSize / 2F;
-	}
-	
-	public static Symbols getSymbols(Level level, ResourceKey<Symbols> symbols)
-	{
-		RegistryAccess registries = level.getServer().registryAccess();
-		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		
-		return registry.get(symbols);
-	}
-	
-	public static Symbols getSymbols(Level level, String name)
-	{
-		String[] split = name.split(":");
-		RegistryAccess registries = level.getServer().registryAccess();
-		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		
-		return registry.get(new ResourceLocation(split[0], split[1]));
 	}
 	
 	public static ResourceKey<Symbols> defaultSymbols()

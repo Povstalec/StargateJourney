@@ -42,7 +42,6 @@ import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -213,7 +212,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     			if(location.toString().equals("sgjourney:empty"))
     				symbols = "Empty";
     			else if(symbolsRegistry.containsKey(location))
-    				symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
+    				symbols = symbolsRegistry.get(location).getTranslationName();
     			else
     				symbols = "Error";
     		}

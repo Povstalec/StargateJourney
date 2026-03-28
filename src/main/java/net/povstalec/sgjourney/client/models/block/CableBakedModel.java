@@ -65,17 +65,12 @@ public class CableBakedModel implements IDynamicBakedModel
 		this.zSpace = new Vec3(0, 0, sideSpace);
 	}
 	
-	private static TextureAtlasSprite getTexture(ResourceLocation texture)
-	{
-		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
-	}
-	
 	private void initTexture()
 	{
 		if(sprite == null)
-			sprite = getTexture(texture);
+			sprite = ClientUtil.getTexture(texture);
 		if(particleSprite == null)
-			particleSprite = getTexture(particleTexture);
+			particleSprite = ClientUtil.getTexture(particleTexture);
 	}
 	
 	private static byte getOffset(CableBlock.ConnectorType top, CableBlock.ConnectorType left, CableBlock.ConnectorType bottom, CableBlock.ConnectorType right)

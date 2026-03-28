@@ -113,10 +113,10 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		ModelData.Builder builder = ModelData.builder()
 				.with(ModelProperties.SYMBOL_INDEX_PROPERTY, symbolNumber);
 		
-		if(symbols != null)
-			builder.with(ModelProperties.SYMBOL_TEXTURE_PROPERTY, symbols);
-		else if(pointOfOrigin != null)
+		if(symbolNumber == 0 && pointOfOrigin != null)
 			builder.with(ModelProperties.POINT_OF_ORIGIN_TEXTURE_PROPERTY, pointOfOrigin);
+		else if(symbols != null)
+			builder.with(ModelProperties.SYMBOL_TEXTURE_PROPERTY, symbols);
 		
 		return builder.build();
 	}

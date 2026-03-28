@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -51,20 +52,21 @@ public abstract class SymbolBlockRenderer
 		return ClientUtil.getSymbols(symbolBlock.symbols);
 	}
 	
-	protected void renderSymbol(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light, float textureSize, float textureOffset)
+	protected void renderSymbol(MultiBufferSource source, Matrix4f matrix4, Matrix3f matrix3, int light, TextureAtlasSprite sprite)
 	{
-		float textureHalf = 1F / textureSize / 2;
+		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.symbol(sprite.atlasLocation()));
+		
 		//TOP LEFT
-		consumer.vertex(matrix4, SYMBOL_START, SYMBOL_END, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 0)
+		consumer.vertex(matrix4, SYMBOL_START, SYMBOL_END, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(sprite.getU(0F), sprite.getV(0F))
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 		//BOTTOM LEFT
-		consumer.vertex(matrix4, SYMBOL_START, SYMBOL_START, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 1)
+		consumer.vertex(matrix4, SYMBOL_START, SYMBOL_START, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(sprite.getU(0F), sprite.getV(16F))
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 		//BOTTOM RIGHT
-		consumer.vertex(matrix4, SYMBOL_END, SYMBOL_START, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 1)
+		consumer.vertex(matrix4, SYMBOL_END, SYMBOL_START, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(sprite.getU(16F), sprite.getV(16F))
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 		//TOP RIGHT
-		consumer.vertex(matrix4, SYMBOL_END, SYMBOL_END, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 0)
+		consumer.vertex(matrix4, SYMBOL_END, SYMBOL_END, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(sprite.getU(16F), sprite.getV(0F))
 		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
 	}
 	
@@ -84,37 +86,27 @@ public abstract class SymbolBlockRenderer
             stack.mulPose(Axis.XP.rotationDegrees(-90));
         else if(orientation == Orientation.DOWNWARD)
             stack.mulPose(Axis.XP.rotationDegrees(90));
-
-        if(symbolBlock != null)
-        {
-        	VertexConsumer consumer;
-    		Matrix4f matrix4 = stack.last().pose();
-    		Matrix3f matrix3 = stack.last().normal();
-            light = LevelRenderer.getLightColor(symbolBlock.getLevel(), pos);
-    		
-        	if(symbolBlock.symbolNumber == 0)
-        	{
-            	PointOfOrigin pointOfOrigin = getPointOfOrigin(symbolBlock);
-            	ResourceLocation texture = pointOfOrigin != null ? pointOfOrigin.texture() : ERROR;
-            	
-                consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
-                renderSymbol(consumer, matrix4, matrix3, light, 1, 0.5F);
-        	}
-        	else
-        	{
-        		Symbols symbols = getSymbols(symbolBlock);
-        		
-        		if(symbols != null)
-            	{
-        			ResourceLocation texture = symbols.getSymbolTexture();
-                	
-                    consumer = source.getBuffer(SGJourneyRenderTypes.symbol(texture));
-                    renderSymbol(consumer, matrix4, matrix3, light, symbols.getSize(), symbols.getTextureOffset(symbolBlock.symbolNumber));
-                    
-            	}
-        	}
-        }
-        
+		
+		VertexConsumer consumer;
+		Matrix4f matrix4 = stack.last().pose();
+		Matrix3f matrix3 = stack.last().normal();
+		light = LevelRenderer.getLightColor(symbolBlock.getLevel(), pos);
+		
+		if(symbolBlock.symbolNumber == 0)
+		{
+			PointOfOrigin pointOfOrigin = getPointOfOrigin(symbolBlock);
+			
+			if(pointOfOrigin != null)
+				renderSymbol(source, matrix4, matrix3, light, ClientUtil.getPointOfOriginSprite(pointOfOrigin));
+		}
+		else
+		{
+			Symbols symbols = getSymbols(symbolBlock);
+			
+			if(symbols != null)
+				renderSymbol(source, matrix4, matrix3, light, ClientUtil.getSymbolSprite(symbols, symbolBlock.symbolNumber));
+		}
+		
 		stack.popPose();
 	}
 	

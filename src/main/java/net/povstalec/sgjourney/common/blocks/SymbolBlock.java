@@ -31,8 +31,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -162,7 +160,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
             		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
             		
             		if(pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)) != null)
-                		symbol = pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).getName();
+                		symbol = pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).name();
                 	else
                 		symbol = "Error";
             	}

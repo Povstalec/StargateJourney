@@ -8,7 +8,6 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
@@ -35,8 +34,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected static final int DEFAULT_TEXTURE_SIZE = 64;
 	
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
-	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
 	public static final String EMPTY = StargateJourney.EMPTY;
 	
 	private static Minecraft minecraft = Minecraft.getInstance();
@@ -61,14 +58,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			return pointOfOriginRegistry.get(stargate.symbolInfo().pointOfOrigin());
 	}
 	
-	protected ResourceLocation getPointOfOriginTexture(@Nullable PointOfOrigin pointOfOrigin)
-	{
-		if(pointOfOrigin != null)
-			return pointOfOrigin.texture();
-		
-		return EMPTY_LOCATION;
-	}
-	
 	@Nullable
 	protected Symbols getSymbols(StargateEntity stargate, Variant stargateVariant)
 	{
@@ -80,14 +69,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			return symbolRegistry.get(stargateVariant.symbols().permanentSymbols().get());
 		else
 			return symbolRegistry.get(stargate.symbolInfo().symbols());
-	}
-	
-	protected ResourceLocation getSymbolTexture(@Nullable Symbols symbols)
-	{
-		if(symbols != null)
-			return symbols.getSymbolTexture();
-		
-		return EMPTY_LOCATION;
 	}
 	
 	//============================================================================================

@@ -16,6 +16,16 @@ public class ColorUtil
 	public static final String BLUE = "blue";
 	public static final String ALPHA = "alpha";
 	
+	public static int getTint(int red, int green, int blue, int alpha)
+	{
+		int tint = (alpha & 255) << 24;
+		tint += (red & 255) << 16;
+		tint += (green & 255) << 8;
+		tint += blue & 255;
+		
+		return tint;
+	}
+	
 	public static class RGBA
 	{
 		protected final float red;

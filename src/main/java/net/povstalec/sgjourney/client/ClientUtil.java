@@ -4,16 +4,20 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+
+import javax.annotation.Nullable;
 
 public class ClientUtil
 {
@@ -45,6 +49,27 @@ public class ClientUtil
 			return registry.get(symbols);
 		
 		return registry.get(new ResourceLocation(StargateJourney.MODID, "universal"));
+	}
+	
+	public static TextureAtlasSprite getTexture(ResourceLocation texture)
+	{
+		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+	}
+	
+	public static TextureAtlasSprite getPointOfOriginSprite(@Nullable PointOfOrigin pointOfOrigin)
+	{
+		if(pointOfOrigin == null)
+			return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
+		
+		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(pointOfOrigin.texture());
+	}
+	
+	public static TextureAtlasSprite getSymbolSprite(@Nullable Symbols symbols, int symbol)
+	{
+		if(symbols == null)
+			return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
+		
+		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(symbols.getSymbolTexture(symbol));
 	}
 	
 	//============================================================================================

@@ -25,7 +25,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
@@ -100,7 +99,7 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 					if(location.equals(StargateJourney.EMPTY_LOCATION))
 						pointOfOrigin = "Empty";
 					else if(pointOfOriginRegistry.containsKey(location))
-						pointOfOrigin = pointOfOriginRegistry.get(location).getName();
+						pointOfOrigin = pointOfOriginRegistry.get(location).name();
 					else
 						pointOfOrigin = "Error";
 				}
@@ -111,7 +110,7 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 					if(location.equals(StargateJourney.EMPTY_LOCATION))
 						symbols = "Empty";
 					else if(symbolsRegistry.containsKey(location))
-						symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
+						symbols = symbolsRegistry.get(location).getTranslationName();
 					else
 						symbols = "Error";
 				}

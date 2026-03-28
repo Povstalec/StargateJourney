@@ -1,6 +1,6 @@
 {
 	"name": "point_of_origin.sgjourney.creeper",
-	"texture": "sgjourney:milky_way/minecraft/creeper.png",
+	"texture": "sgjourney:symbol/minecraft/creeper",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"
