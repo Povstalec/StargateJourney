@@ -1795,9 +1795,6 @@ When the network restriction is enabled,
 only Stargates with matching Stargate network will be able to establish a connection to this Stargate.
 Outgoing connections are not affected.
 
-{: .warning }
-9-chevron address connections bypasses the network restrictions.
-
 **Parameters**
 1. `enable`: `boolean` Whether the network restriction should be enabled.
 
