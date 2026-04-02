@@ -1,10 +1,16 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.core.Direction;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraftforge.client.model.data.ModelData;
+import net.povstalec.sgjourney.client.ModelProperties;
+import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -14,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -49,15 +54,22 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	@Override
 	public void onLoad()
 	{
+		if(!level.isClientSide())
+		{
+			if(getHalf() == DoubleBlockHalf.LOWER)
+			{
+				if(generationStep == StructureGenEntity.Step.READY)
+					generate();
+				
+				tryGenerateAddress();
+				
+				updateUpperHalf();
+			}
+			else
+				updateFromLowerHalf();
+		}
+		
 		super.onLoad();
-		
-		if(level.isClientSide())
-			return;
-		
-		if(generationStep == StructureGenEntity.Step.READY)
-			generate();
-		
-		tryGenerateAddress();
 	}
 	
 	@Override
@@ -130,6 +142,38 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		return this.saveWithoutMetadata();
 	}
 	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		Address oldAddress = address;
+		ResourceLocation oldSymbols = symbols;
+		
+		super.onDataPacket(net, packet);
+		
+		boolean needsUpdate = address != null && !address.equals(oldAddress);
+		needsUpdate |= symbols != null && !symbols.equals(oldSymbols);
+		
+		if(needsUpdate)
+		{
+			requestModelDataUpdate();
+			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+		}
+	}
+	
+	@Override
+	@NotNull
+	public ModelData getModelData()
+	{
+		ModelData.Builder builder = ModelData.builder();
+		
+		if(address != null)
+			builder.with(ModelProperties.ADDRESS_PROPERTY, address);
+		if(symbols != null)
+			builder.with(ModelProperties.SYMBOLS_PROPERTY, symbols);
+		
+		return builder.build();
+	}
+	
 	//============================================================================================
 	//************************************Getters and setters*************************************
 	//============================================================================================
@@ -149,7 +193,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		return this.symbols;
 	}
 	
-	public void setAddress(Address address)
+	public void setAddress(@Nullable Address address)
 	{
 		this.address = address;
 	}
@@ -168,9 +212,52 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		return this.addressTable;
 	}
 	
+	public DoubleBlockHalf getHalf()
+	{
+		return getBlockState().getValue(CartoucheBlock.HALF);
+	}
+	
 	//============================================================================================
 	//****************************************Functionality***************************************
 	//============================================================================================
+	
+	@Override
+	public void setChanged()
+	{
+		if(getHalf() == DoubleBlockHalf.UPPER)
+			updateFromLowerHalf();
+		else
+			updateUpperHalf();
+		
+		super.setChanged();
+	}
+	
+	public void updateUpperHalf()
+	{
+		if(getHalf() == DoubleBlockHalf.UPPER)
+			return;
+		
+		Direction direction = getBlockState().getValue(CartoucheBlock.FACING);
+		Orientation orientation = getBlockState().getValue(CartoucheBlock.ORIENTATION);
+		
+		if(level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.UP, orientation))) instanceof CartoucheEntity upperCartouche)
+			upperCartouche.setChanged();
+	}
+	
+	public void updateFromLowerHalf()
+	{
+		if(getHalf() == DoubleBlockHalf.LOWER)
+			return;
+		
+		Direction direction = getBlockState().getValue(CartoucheBlock.FACING);
+		Orientation orientation = getBlockState().getValue(CartoucheBlock.ORIENTATION);
+		
+		if(level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation))) instanceof CartoucheEntity lowerCartouche)
+		{
+			setAddress(lowerCartouche.address);
+			setSymbols(lowerCartouche.symbols);
+		}
+	}
 	
 	public void setAddressFromAddressTable()
 	{
@@ -205,13 +292,6 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 			return;
 		
 		setDimension(level.dimension().location());
-	}
-	
-	@Override
-	public AABB getRenderBoundingBox()
-	{
-		return new AABB(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ() - 1,
-				getBlockPos().getX() + 2, getBlockPos().getY() + 2, getBlockPos().getZ() + 2);
 	}
 	
 	//============================================================================================

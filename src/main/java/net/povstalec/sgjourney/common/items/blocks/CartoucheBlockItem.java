@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 
 public class CartoucheBlockItem extends BlockItem
@@ -101,8 +100,8 @@ public class CartoucheBlockItem extends BlockItem
 		{
 			StructureGenEntity.Step generationStep;
 			
-			if(info.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
-				generationStep = StructureGenEntity.Step.fromByte(info.getByte(AbstractTransporterEntity.GENERATION_STEP));
+			if(info.contains(CartoucheEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(CartoucheEntity.GENERATION_STEP));
 			else
 				generationStep = StructureGenEntity.Step.GENERATED;
 			

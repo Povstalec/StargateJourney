@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.client.ModelProperties;
 import org.jetbrains.annotations.NotNull;
@@ -36,16 +37,16 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	@Override
 	public void onLoad()
 	{
+		if(!level.isClientSide())
+		{
+			if(pointOfOrigin.equals(EMPTY))
+				setPointOfOriginFromLevel(level);
+			
+			if(symbols.equals(EMPTY))
+				setSymbolsFromLevel(level);
+		}
+		
 		super.onLoad();
-		
-		if(level.isClientSide())
-			return;
-		
-		if(pointOfOrigin.equals(EMPTY))
-			setPointOfOrigin(level);
-		
-		if(symbols.equals(EMPTY))
-			setSymbols(level);
 	}
 	
 	@Override
@@ -57,10 +58,10 @@ public abstract class SymbolBlockEntity extends BlockEntity
     		symbolNumber = tag.getInt(SYMBOL_NUMBER);
     	
     	if(tag.contains(SYMBOL))
-    		pointOfOrigin = new ResourceLocation(tag.getString(SYMBOL));
+    		pointOfOrigin = ResourceLocation.tryParse(tag.getString(SYMBOL));
     	
     	if(tag.contains(SYMBOLS))
-    		symbols = new ResourceLocation(tag.getString(SYMBOLS));
+    		symbols = ResourceLocation.tryParse(tag.getString(SYMBOLS));
 	}
 	
 	@Override
@@ -98,12 +99,15 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		
 		super.onDataPacket(net, packet);
 		
-		if(pointOfOrigin != null && !pointOfOrigin.equals(oldPointOfOrigin))
+		boolean needsUpdate = pointOfOrigin != null && !pointOfOrigin.equals(oldPointOfOrigin);
+		needsUpdate |= symbols != null && !symbols.equals(oldSymbols);
+		needsUpdate |= symbolNumber != oldSymbolNumber;
+		
+		if(needsUpdate)
+		{
 			requestModelDataUpdate();
-		else if(symbols != null && !symbols.equals(oldSymbols))
-			requestModelDataUpdate();
-		else if(symbolNumber != oldSymbolNumber)
-			requestModelDataUpdate();
+			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+		}
 	}
 	
 	@Override
@@ -114,9 +118,9 @@ public abstract class SymbolBlockEntity extends BlockEntity
 				.with(ModelProperties.SYMBOL_INDEX_PROPERTY, symbolNumber);
 		
 		if(symbolNumber == 0 && pointOfOrigin != null)
-			builder.with(ModelProperties.POINT_OF_ORIGIN_TEXTURE_PROPERTY, pointOfOrigin);
+			builder.with(ModelProperties.POINT_OF_ORIGIN_PROPERTY, pointOfOrigin);
 		else if(symbols != null)
-			builder.with(ModelProperties.SYMBOL_TEXTURE_PROPERTY, symbols);
+			builder.with(ModelProperties.SYMBOLS_PROPERTY, symbols);
 		
 		return builder.build();
 	}
@@ -125,17 +129,27 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	//************************************Getters and setters*************************************
 	//============================================================================================
 	
+	public void setSymbolNumber(int symbolNumber)
+	{
+		this.symbolNumber = symbolNumber;
+	}
+	
 	public int getSymbolNumber()
 	{
 		return this.symbolNumber;
 	}
 	
-	public void setPointOfOrigin(Level level)
+	public void setPointOfOrigin(ResourceLocation pointOfOrigin)
+	{
+		this.pointOfOrigin = pointOfOrigin;
+	}
+	
+	public void setPointOfOriginFromLevel(Level level)
 	{
 		if(level.isClientSide())
 			return;
 		
-		pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension()).location();
+		setPointOfOrigin(Universe.get(level).getPointOfOrigin(level.dimension()).location());
 	}
 	
 	public ResourceLocation getPointOfOrigin()
@@ -143,12 +157,17 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		return this.pointOfOrigin;
 	}
 	
-	public void setSymbols(Level level)
+	public void setSymbols(ResourceLocation symbols)
+	{
+		this.symbols = symbols;
+	}
+	
+	public void setSymbolsFromLevel(Level level)
 	{
 		if(level.isClientSide())
 			return;
 		
-		symbols = Universe.get(level).getSymbols(level.dimension()).location();
+		setSymbols(Universe.get(level).getSymbols(level.dimension()).location());
 	}
 	
 	public ResourceLocation getSymbols()

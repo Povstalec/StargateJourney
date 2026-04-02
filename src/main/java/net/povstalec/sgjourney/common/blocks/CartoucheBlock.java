@@ -91,7 +91,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
         {
     		BlockPos destroyPos = pos.relative(Orientation.getMultiDirection(direction, relativeDirection, orientation));
         	if(level.getBlockState(destroyPos).getBlock() instanceof CartoucheBlock)
-        		level.setBlock(destroyPos, Blocks.AIR.defaultBlockState(), 3);
+        		level.setBlock(destroyPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         	
             super.onRemove(oldState, level, pos, newState, isMoving);
         }
@@ -148,7 +148,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	Direction direction = state.getValue(FACING);
     	BlockPos blockpos = pos.relative(Orientation.getCenterDirection(direction, orientation));
     	
-    	level.setBlock(blockpos, getBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(ORIENTATION, orientation).setValue(HALF, DoubleBlockHalf.UPPER), 3);
+    	level.setBlock(blockpos, getBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(ORIENTATION, orientation).setValue(HALF, DoubleBlockHalf.UPPER), Block.UPDATE_ALL);
 	}
     
     @Override
@@ -248,9 +248,6 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			if(state.getValue(HALF) == DoubleBlockHalf.UPPER)
-				return null;
-			
 			return new CartoucheEntity.Stone(pos, state);
 		}
 
@@ -277,9 +274,6 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			if(state.getValue(HALF) == DoubleBlockHalf.UPPER)
-				return null;
-			
 			return new CartoucheEntity.Sandstone(pos, state);
 		}
 
@@ -306,9 +300,6 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			if(state.getValue(HALF) == DoubleBlockHalf.UPPER)
-				return null;
-			
 			return new CartoucheEntity.RedSandstone(pos, state);
 		}
 		

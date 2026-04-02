@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.function.BiFunction;
 
 import net.minecraftforge.client.event.ModelEvent;
+import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
 import net.povstalec.sgjourney.client.render.entity.*;
 import net.povstalec.sgjourney.client.screens.*;
@@ -44,11 +45,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.block.CableModelLoader;
-import net.povstalec.sgjourney.client.render.block_entity.CartoucheRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.PegasusStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
@@ -232,14 +231,6 @@ public class StargateJourney
 			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
 			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
         	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
-			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.RedSandstone::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_CARTOUCHE.get(), CartoucheRenderer.Stone::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.Sandstone::new);
-			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.RedSandstone::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), SymbolBlockRenderer.Stone::new);
-        	
         	BlockEntityRenderers.register(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
 
         	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
@@ -266,6 +257,7 @@ public class StargateJourney
 		{
 			CableModelLoader.register(event);
 			SymbolBlockModelLoader.register(event);
+			CartoucheModelLoader.register(event);
 		}
     }
 	

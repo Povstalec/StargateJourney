@@ -101,7 +101,7 @@ public class CableBakedModel implements IDynamicBakedModel
 		List<BakedQuad> quads = new ArrayList<>();
 		byte offset;
 		
-		if(side == null && (layer == null || layer.equals(RenderType.solid())))
+		if(side == null && (layer == null || RenderType.solid().equals(layer)))
 		{
 			CableBlock.ConnectorType north, south, west, east, up, down;
 			if(state != null)

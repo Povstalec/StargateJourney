@@ -82,7 +82,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		this.stargateStateDefinition = stateDefinitionBuilder.create(Block::defaultBlockState, StargateBlockState::new);
 		
 		this.registerDefaultState(this.stargateStateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR)
-				.setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE));
+				.setValue(WATERLOGGED, false).setValue(PART, StargatePart.BASE));
 		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
 	}
 
