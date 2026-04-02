@@ -22,6 +22,7 @@ public class BuriedStargate extends StargateStructure
     public static final Codec<BuriedStargate> CODEC = RecordCodecBuilder.<BuriedStargate>mapCodec(instance ->
             instance.group(BuriedStargate.settingsCodec(instance),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
+					StructureTemplatePool.CODEC.optionalFieldOf("obstructed_start_pool").forGetter(structure -> Optional.ofNullable(structure.obstructedStartPool)),
                     ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
                     Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
@@ -31,84 +32,13 @@ public class BuriedStargate extends StargateStructure
 					StargateStructure.StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers)),
 					DHDModifiers.CODEC.optionalFieldOf("dhd_modifiers").forGetter(structure -> Optional.ofNullable(structure.dhdModifiers))
             ).apply(instance, BuriedStargate::new)).codec();
-
-    private static Optional<Long> currentSeed = Optional.empty();
-    private static Optional<Integer> x = Optional.empty();
-    private static Optional<Integer> z = Optional.empty();
     
-    public BuriedStargate(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+    public BuriedStargate(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
 						  int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
 						  Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
     {
-    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates, stargateModifiers, dhdModifiers);
+    	super(config, startPool, obstructedStartPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates, stargateModifiers, dhdModifiers);
     }
-    
-    /*private static final void checkSeed(long seed)
-    {
-    	if(currentSeed.isEmpty() || currentSeed.get() != seed)
-    	{
-    		currentSeed = Optional.of(seed);
-            x = Optional.empty();
-            z = Optional.empty();
-    	}
-    }
-    
-    public static int getX(long seed)
-    {
-    	checkSeed(seed);
-    	if(x.isEmpty())
-    	{
-            Random random = new Random(seed);
-            int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
-            int xBound = CommonGenerationConfig.buried_stargate_generation_x_bound.get();
-            
-
-            int chunkX = xBound <= 0 ? xOffset : xOffset + random.nextInt(-xBound, xBound + 1);
-            
-            x = Optional.of(chunkX);
-    	}
-
-    	return x.get();
-    }
-    
-    public static int getZ(long seed)
-    {
-    	checkSeed(seed);
-    	if(z.isEmpty())
-    	{
-            Random random = new Random(seed + 1);
-            int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
-            int zBound = CommonGenerationConfig.buried_stargate_generation_z_bound.get();
-            
-
-            int chunkZ = zBound <= 0 ? zOffset : zOffset + random.nextInt(-zBound, zBound + 1);
-            
-            z = Optional.of(chunkZ);
-    	}
-
-    	return z.get();
-    }
-    
-	@Override
-	protected boolean extraSpawningChecks(Structure.GenerationContext context)
-	{
-		// Grabs the chunk position we are at
-		ChunkPos chunkpos = context.chunkPos();
-		long seed = context.seed();
-		
-		if(chunkpos.x == getX(seed) && chunkpos.z == getZ(seed))
-			return true;
-		else
-			return false;
-	}
-	
-	@Override
-	public Optional<Structure.GenerationStub> findValidGenerationPoint(Structure.GenerationContext context)
-	{
-		//TODO See if there's a way to check for dimension
-		//context.chunkGenerator().getBiomeSource().findBiomeHorizontal(maxDistanceFromCenter, maxDistanceFromCenter, size, maxDistanceFromCenter, null, null, null);
-		return super.findValidGenerationPoint(context);
-	}*/
 
     @Override
     public StructureType<?> type()

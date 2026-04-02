@@ -26,6 +26,7 @@ public class StargatePedestal extends StargateStructure
 	public static final Codec<StargatePedestal> CODEC = RecordCodecBuilder.<StargatePedestal>mapCodec(instance ->
     instance.group(StargatePedestal.settingsCodec(instance),
             StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
+			StructureTemplatePool.CODEC.optionalFieldOf("obstructed_start_pool").forGetter(structure -> Optional.ofNullable(structure.obstructedStartPool)),
             ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
             Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
             HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
@@ -36,11 +37,11 @@ public class StargatePedestal extends StargateStructure
 			DHDModifiers.CODEC.optionalFieldOf("dhd_modifiers").forGetter(structure -> Optional.ofNullable(structure.dhdModifiers))
     ).apply(instance, StargatePedestal::new)).codec();
 
-	public StargatePedestal(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+	public StargatePedestal(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
 							int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
 							Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
 	{
-		super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates, stargateModifiers, dhdModifiers);
+		super(config, startPool, obstructedStartPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates, stargateModifiers, dhdModifiers);
 	}
 
     @Override
@@ -58,7 +59,7 @@ public class StargatePedestal extends StargateStructure
         Optional<Structure.GenerationStub> structurePiecesGenerator =
                 SGJourneyJigsawPlacement.addPieces(
                         context,
-                        this.startPool,
+                        getStartPool(),
                         this.startJigsawName,
                         this.size,
                         blockPos,

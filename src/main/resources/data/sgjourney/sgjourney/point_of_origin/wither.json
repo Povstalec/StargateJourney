@@ -1,6 +1,6 @@
 {
 	"name": "point_of_origin.sgjourney.wither",
-	"texture": "sgjourney:symbol/minecraft/point_of_origin/wither",
+	"texture": "sgjourney:symbol/minecraft/wither",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

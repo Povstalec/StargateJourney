@@ -1,46 +1,53 @@
-package net.povstalec.sgjourney.common.structures;
-
-import java.util.Optional;
-import java.util.Random;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
-import org.jetbrains.annotations.Nullable;
-
-public abstract class StargateStructure extends SGJourneyStructure
-{
-    private static Optional<Long> currentSeed = Optional.empty();
-    private static Optional<Integer> x = Optional.empty();
-    private static Optional<Integer> z = Optional.empty();
+	package net.povstalec.sgjourney.common.structures;
+	
+	import java.util.Optional;
+	import java.util.Random;
+	
+	import com.mojang.serialization.Codec;
+	import com.mojang.serialization.codecs.RecordCodecBuilder;
+	import net.minecraft.core.BlockPos;
+	import net.minecraft.core.Holder;
+	import net.minecraft.resources.ResourceLocation;
+	import net.minecraft.util.RandomSource;
+	import net.minecraft.world.level.ChunkPos;
+	import net.minecraft.world.level.WorldGenLevel;
+	import net.minecraft.world.level.levelgen.Heightmap;
+	import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
+	import net.minecraft.world.level.levelgen.structure.Structure;
+	import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+	import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+	import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+	import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+	import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
+	import org.jetbrains.annotations.Nullable;
+	
+	public abstract class StargateStructure extends SGJourneyStructure
+	{
+	@Nullable
+	protected final Holder<StructureTemplatePool> obstructedStartPool;
 	
 	@Nullable
 	protected StargateModifiers stargateModifiers;
 	@Nullable
 	protected DHDModifiers dhdModifiers;
-    
-    public StargateStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
+	
+	public StargateStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
 							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
 							 Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
-    {
-    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates);
+	{
+		super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates);
+		
+		this.obstructedStartPool = obstructedStartPool.orElse(null);
 		
 		this.stargateModifiers = stargateModifiers.orElse(null);
 		this.dhdModifiers = dhdModifiers.orElse(null);
-    }
+	}
+	
+	@Override
+	public Holder<StructureTemplatePool> getStartPool()
+	{
+		return obstructedStartPool != null && CommonGenerationConfig.generate_obstructed_stargates.get() ? obstructedStartPool : startPool;
+	}
 	
 	@Override
 	protected void generateBlockEntity(WorldGenLevel level, BlockPos startPos, RandomSource randomSource, StructureGenEntity generatedEntity)
@@ -126,4 +133,4 @@ public abstract class StargateStructure extends SGJourneyStructure
 				dhd.setProtected(true);
 		}
 	}
-}
+	}

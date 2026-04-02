@@ -6,6 +6,8 @@ public class CommonGenerationConfig
 {
 	public static SGJourneyConfigValue.BooleanValue common_stargate_generation;
 	public static SGJourneyConfigValue.BooleanValue common_stargate_search;
+	
+	public static SGJourneyConfigValue.BooleanValue generate_obstructed_stargates;
 
 	public static ForgeConfigSpec.IntValue stargate_generation_center_x_chunk_offset;
 	public static ForgeConfigSpec.IntValue stargate_generation_center_z_chunk_offset;
@@ -23,6 +25,12 @@ public class CommonGenerationConfig
 		common_stargate_search = new SGJourneyConfigValue.BooleanValue(server, "server.common_stargate_search",
 				false,
 				"When false, Stargate Network won't include Common Stargates in the search for ungenerated Stargate Structures");
+		
+		
+		
+		generate_obstructed_stargates = new SGJourneyConfigValue.BooleanValue(server, "server.generate_obstructed_stargates",
+				true,
+				"If true, Stargate structures with an obstructed variant will generate as obstructed (in order to prevent cheesing progression for Vanilla/other mods)");
 		
 		
 		

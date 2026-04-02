@@ -479,7 +479,7 @@ public class Universe extends SavedData
 		List<ResourceKey<Level>> dimensions = new ArrayList<ResourceKey<Level>>();
 		for(SpaceLocation spaceLocation : SpaceLocation.getGeneratedAddressSpaceLocations())
 		{
-			if(spaceLocation.appearAmongGeneratedAddresses() && spaceLocation.getAddressRegion() != null)
+			if(spaceLocation.generateInAddressTables() && spaceLocation.getAddressRegion() != null)
 				dimensions.add(spaceLocation.getDimension());
 		}
 		

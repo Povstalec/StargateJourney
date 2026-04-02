@@ -240,7 +240,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		Direction direction = getBlockState().getValue(CartoucheBlock.FACING);
 		Orientation orientation = getBlockState().getValue(CartoucheBlock.ORIENTATION);
 		
-		if(level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.UP, orientation))) instanceof CartoucheEntity upperCartouche)
+		if(level != null && level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.UP, orientation))) instanceof CartoucheEntity upperCartouche)
 			upperCartouche.setChanged();
 	}
 	
@@ -252,7 +252,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		Direction direction = getBlockState().getValue(CartoucheBlock.FACING);
 		Orientation orientation = getBlockState().getValue(CartoucheBlock.ORIENTATION);
 		
-		if(level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation))) instanceof CartoucheEntity lowerCartouche)
+		if(level != null && level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation))) instanceof CartoucheEntity lowerCartouche)
 		{
 			setAddress(lowerCartouche.address);
 			setSymbols(lowerCartouche.symbols);

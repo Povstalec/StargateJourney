@@ -2,6 +2,7 @@
 	"type": "sgjourney:stargate_temple",
 
 	"start_pool": "sgjourney:stargate/milky_way/temple/stargate_temple_nether",
+	"obstructed_start_pool": "sgjourney:stargate/milky_way/temple/stargate_temple_nether_obstructed",
 
 	"size": 1,
 
