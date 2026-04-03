@@ -93,7 +93,20 @@ public final class TransporterNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	private void resetTransporters()
+	//============================================================================================
+	//****************************************Transporters****************************************
+	//============================================================================================
+	
+	public void addTransporters(MinecraftServer server)
+	{
+		BlockEntityList.get(server).getTransporters().forEach((address, transporter) ->
+		{
+			if(transporter != null)
+				addTransporter(transporter);
+		});
+	}
+	
+	public void resetTransporters()
 	{
 		HashMap<TransporterID, Transporter> transporters = BlockEntityList.get(server).getTransporters();
 		
@@ -118,10 +131,6 @@ public final class TransporterNetwork extends SavedData
 			}
 		});
 	}
-	
-	//============================================================================================
-	//****************************************Transporters****************************************
-	//============================================================================================
 	
 	public void addTransporter(Transporter transporter)
 	{
@@ -321,7 +330,7 @@ public final class TransporterNetwork extends SavedData
 		CompoundTag tag = new CompoundTag();
 		
 		tag.putInt(VERSION, this.version);
-		tag.put(DIMENSIONS, serializeDimensions());
+		//tag.put(DIMENSIONS, serializeDimensions());
 		tag.put(CONNECTIONS, serializeConnections());
 		
 		return tag;
@@ -355,7 +364,7 @@ public final class TransporterNetwork extends SavedData
 	{
 		this.version = tag.getInt(VERSION);
 
-		deserializeDimensions(tag.getCompound(DIMENSIONS));
+		//deserializeDimensions(tag.getCompound(DIMENSIONS));
 		deserializeConnections(tag.getCompound(CONNECTIONS));
 	}
 	
@@ -463,8 +472,7 @@ public final class TransporterNetwork extends SavedData
     	
     	public void removeTransporter(Transporter transporter)
     	{
-    		if(transporters.contains(transporter))
-    			transporters.remove(transporter);
+			transporters.remove(transporter);
     	}
     	
     	public List<Transporter> getTransporters()
@@ -475,7 +483,7 @@ public final class TransporterNetwork extends SavedData
     	public void printDimension()
     	{
 			System.out.println("- [" + this.dimension.location().toString() + "]");
-			transporters.stream().forEach(transporter ->
+			transporters.forEach(transporter ->
 			{
 				System.out.println("--- " + transporter.toString());;
 			});
@@ -490,10 +498,7 @@ public final class TransporterNetwork extends SavedData
 			dimensionTag.putString(DIMENSION, this.dimension.location().toString());
 			
 			CompoundTag transportersTag = new CompoundTag();
-			transporters.stream().forEach(transporter ->
-			{
-				transportersTag.putString(transporter.getID().toString(), transporter.getID().toString());
-			});
+			transporters.forEach(transporter -> transportersTag.putString(transporter.getID().toString(), transporter.getID().toString()));
 			dimensionTag.put(TRANSPORTERS, transportersTag);
 			
 			return dimensionTag;

@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -63,10 +64,7 @@ import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.Jaffa;
-import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.TagInit;
-import net.povstalec.sgjourney.common.init.VillagerInit;
+import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
@@ -94,6 +92,7 @@ public class ForgeEvents
 		StargateNetwork.get(server).addStargates(server);
 
 		TransporterNetwork.get(server).updateNetwork(server);
+		TransporterNetwork.get(server).addTransporters(server);
 	}
 	
 	@SubscribeEvent
@@ -109,7 +108,14 @@ public class ForgeEvents
 		}
 	}
 	
-	private static AbstractStargateEntity getStargateAtPos(Level level, BlockPos pos, BlockState blockstate)
+	@SubscribeEvent
+	public static void onChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
+	{
+		if(!event.getEntity().getLevel().isClientSide())
+			SpaceLocation.updatePlayerClientGravity((ServerPlayer) event.getEntity());
+	}
+	
+	private static AbstractStargateEntity<?> getStargateAtPos(Level level, BlockPos pos, BlockState blockstate)
 	{
 		if(blockstate.getBlock() instanceof AbstractStargateBlock stargateBlock)
 			return stargateBlock.getStargate(level, pos, blockstate);
@@ -137,10 +143,10 @@ public class ForgeEvents
 			Vec3 vec3 = lightning.position();
 			BlockPos strikePosition = new BlockPos(vec3.x, vec3.y - 1.0E-6D, vec3.z);
 
-			List<AbstractStargateEntity> list = new ArrayList<AbstractStargateEntity>();
+			List<AbstractStargateEntity<?>> list = new ArrayList<>();
 			BlockState blockstate = level.getBlockState(strikePosition);
 			
-			AbstractStargateEntity stargateCandidate = getStargateAtPos(level, strikePosition, blockstate);
+			AbstractStargateEntity<?> stargateCandidate = getStargateAtPos(level, strikePosition, blockstate);
 			if(stargateCandidate != null)
 				list.add(stargateCandidate);
 			
@@ -149,13 +155,13 @@ public class ForgeEvents
 				BlockPos pos = strikePosition.relative(direction);
 				BlockState state = level.getBlockState(pos);
 				
-				AbstractStargateEntity stargate = getStargateAtPos(level, pos, state);
+				AbstractStargateEntity<?> stargate = getStargateAtPos(level, pos, state);
 				if(stargate != null)
 					list.add(stargate);
 			}
 
-			Set<AbstractStargateEntity> set = new HashSet<AbstractStargateEntity>(list);
-			set.stream().forEach(stargate -> stargate.energyStorage.receiveLongEnergy(CommonCableConfig.lightning_strike_energy.get(), false));
+			Set<AbstractStargateEntity<?>> set = new HashSet<>(list);
+			set.forEach(stargate -> stargate.energyStorage.receiveLongEnergy(CommonCableConfig.lightning_strike_energy.get(), false));
 		}
 	}
 	
@@ -179,6 +185,9 @@ public class ForgeEvents
 			
 			AncientGene.spawnInheritedGene(seed, player, CommonGeneticConfig.player_ata_gene_inheritance_chance.get());
 		}
+		
+		if(!player.getLevel().isClientSide())
+			SpaceLocation.updatePlayerClientGravity((ServerPlayer) player);
 	}
 	
 	@SubscribeEvent
@@ -190,7 +199,7 @@ public class ForgeEvents
 		entity.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(jaffaPouch -> jaffaPouch.tick(entity));
 		entity.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(goauldHost -> goauldHost.tick(entity));
 		
-		double parentGravity = SpaceLocation.fromDimension(level.dimension()).getParentGravity();
+		double parentGravity = level.isClientSide() ? SpaceLocation.currentGravity : SpaceLocation.fromDimension(level.getServer(), level.dimension()).getParentGravity();
 		if(parentGravity == 0.0)
 			return; // This planet's parent doesn't affect it with its gravity in any noticable way
 		
@@ -315,7 +324,7 @@ public class ForgeEvents
 		
 		if(state.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
-			AbstractStargateEntity stargate = stargateBlock.getStargate(level, pos, state);
+			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(level, pos, state);
 			
 			if(stargate != null && !stargate.blockCover.blockStates.isEmpty())
 			{
@@ -357,7 +366,7 @@ public class ForgeEvents
 			Player player = event.getPlayer();
 			Level level = player.getLevel();
 			BlockPos pos = event.getPos();
-			AbstractStargateEntity stargate = stargateBlock.getStargate(level, pos, state);
+			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(level, pos, state);
 			
 			if(stargate != null)
 			{

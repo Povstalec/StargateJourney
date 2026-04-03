@@ -914,7 +914,10 @@
 	"message.sgjourney.stargate.info.chevron_not_open": "Chevron není otevřen",
 	"message.sgjourney.stargate.error.chevron_already_opened": "Chevron je již otevřen",
 	"message.sgjourney.stargate.error.chevron_already_closed": "Chevron je již zavřen",
-	"message.sgjourney.stargate.error.cannot_encode_point_of_origin": "Nelze zakódovat výhozí bod",
+	"message.sgjourney.stargate.error.cannot_encode_point_of_origin": "Nelze zakódovat výchozí bod",
+	"message.sgjourney.stargate.error.target_not_loaded": "Cílová brána není načtená",
+	"message.sgjourney.stargate.error.self_outside_stargate_network": "Hvězdná brána je mimo síť hvězdných bran",
+	"message.sgjourney.stargate.error.target_outside_stargate_network": "Cílová hvězdná brána je mimo síť hvězdných bran",
 	
 	"message.sgjourney.command.get_address.no_galaxy": "Nenacházíte se v žádné galaxii",
 	"message.sgjourney.command.get_address.located": "se nenachází v",

@@ -26,7 +26,7 @@ public class PegasusDHDScreen extends AbstractDHDScreen<PegasusDHDMenu>
 		super.init();
 		this.addRenderableWidget(new DHDBigButton.Pegasus(x + 69, y + 69, menu, (n) -> {menu.engageStargate(); this.onClose();}));
 		// Outer Buttons
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 8, y + 83, menu, width, height, 0, 0, GenericDHDSymbolButton.DefaultButton.BUTTON_0));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 8, y + 83, menu, width, height, 0, 8, GenericDHDSymbolButton.DefaultButton.BUTTON_0));
 		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 10, y + 58, menu, width, height, 1, 34, GenericDHDSymbolButton.DefaultButton.BUTTON_1));
 		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 18, y + 35, menu, width, height, 2, 13, GenericDHDSymbolButton.DefaultButton.BUTTON_2));
 		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 34, y + 18, menu, width, height, 3, 1, GenericDHDSymbolButton.DefaultButton.BUTTON_3));
@@ -39,15 +39,15 @@ public class PegasusDHDScreen extends AbstractDHDScreen<PegasusDHDMenu>
 		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 153, y + 58, menu, width, height, 9, 17, GenericDHDSymbolButton.DefaultButton.BUTTON_9));
 		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 159, y + 83, menu, width, height, 10, 10, GenericDHDSymbolButton.DefaultButton.BUTTON_10));
 		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 153, y + 107, menu, width, height, 11, 31, GenericDHDSymbolButton.DefaultButton.BUTTON_11));
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 142, y + 125, menu, width, height, 12, 6, GenericDHDSymbolButton.DefaultButton.BUTTON_12));
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 126, y + 141, menu, width, height, 13, 20, GenericDHDSymbolButton.DefaultButton.BUTTON_13));
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 107, y + 153, menu, width, height, 14, 33, GenericDHDSymbolButton.DefaultButton.BUTTON_14));
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 83, y + 159, menu, width, height, 15, 2, GenericDHDSymbolButton.DefaultButton.BUTTON_15));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 142, y + 125, menu, width, height, 12, 0, GenericDHDSymbolButton.DefaultButton.BUTTON_12));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 126, y + 141, menu, width, height, 13, 6, GenericDHDSymbolButton.DefaultButton.BUTTON_13));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 107, y + 153, menu, width, height, 14, 20, GenericDHDSymbolButton.DefaultButton.BUTTON_14));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 83, y + 159, menu, width, height, 15, 33, GenericDHDSymbolButton.DefaultButton.BUTTON_15));
 		
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 57, y + 153, menu, width, height, 16, 38, GenericDHDSymbolButton.DefaultButton.BUTTON_16));
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 34, y + 141, menu, width, height, 17, 21, GenericDHDSymbolButton.DefaultButton.BUTTON_17));
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 18, y + 125, menu, width, height, 18, 12, GenericDHDSymbolButton.DefaultButton.BUTTON_18));
-		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 10, y + 107, menu, width, height, 19, 8, GenericDHDSymbolButton.DefaultButton.BUTTON_19));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 57, y + 153, menu, width, height, 16, 2, GenericDHDSymbolButton.DefaultButton.BUTTON_16));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 34, y + 141, menu, width, height, 17, 38, GenericDHDSymbolButton.DefaultButton.BUTTON_17));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 18, y + 125, menu, width, height, 18, 21, GenericDHDSymbolButton.DefaultButton.BUTTON_18));
+		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 10, y + 107, menu, width, height, 19, 12, GenericDHDSymbolButton.DefaultButton.BUTTON_19));
 		// Inner Buttons
 		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 35, y + 73, menu, width, height, 20, 14, GenericDHDSymbolButton.DefaultButton.BUTTON_20));
 		this.addRenderableWidget(new PegasusDHDSymbolButton(x + 41, y + 55, menu, width, height, 21, 29, GenericDHDSymbolButton.DefaultButton.BUTTON_21));

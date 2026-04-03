@@ -121,7 +121,7 @@ public final class StargateNetwork extends SavedData
 	//*****************************************Stargates******************************************
 	//============================================================================================
 	
-	public final void addStargates(MinecraftServer server)
+	public void addStargates(MinecraftServer server)
 	{
 		BlockEntityList.get(server).getStargates().forEach((address, stargate) ->
 		{
@@ -130,7 +130,7 @@ public final class StargateNetwork extends SavedData
 		});
 	}
 	
-	private final void resetStargates(MinecraftServer server)
+	public void resetStargates(MinecraftServer server)
 	{
 		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
@@ -480,7 +480,7 @@ public final class StargateNetwork extends SavedData
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
-	private final CompoundTag serialize()
+	private CompoundTag serialize()
 	{
 		CompoundTag tag = new CompoundTag();
 		
@@ -490,7 +490,7 @@ public final class StargateNetwork extends SavedData
 		return tag;
 	}
 	
-	private final CompoundTag serializeConnections()
+	private CompoundTag serializeConnections()
 	{
 		CompoundTag connectionsTag = new CompoundTag();
 		
@@ -502,13 +502,13 @@ public final class StargateNetwork extends SavedData
 		return connectionsTag;
 	}
 	
-	private final void deserialize(CompoundTag tag)
+	private void deserialize(CompoundTag tag)
 	{
 		this.version = tag.getInt(VERSION);
 		deserializeConnections(tag.getCompound(CONNECTIONS));
 	}
 	
-	private final void deserializeConnections(CompoundTag tag)
+	private void deserializeConnections(CompoundTag tag)
 	{
 		for(String connectionID : tag.getAllKeys())
 		{

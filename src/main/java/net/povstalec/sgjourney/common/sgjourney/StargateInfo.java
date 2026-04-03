@@ -175,7 +175,9 @@ public class StargateInfo
 		CANNOT_ENCODE_POINT_OF_ORIGIN(-36, FeedbackType.ERROR, "cannot_encode_point_of_origin"), // Attempted to encode the point of origin, even though it's currently not allowed //TODO Not a problem anymore
 		
 		// Other
-		TARGET_NOT_LOADED(-37, FeedbackType.ERROR, "target_not_loaded"); // Target Stargate wasn't being loaded by any players or chunkloaders
+		TARGET_NOT_LOADED(-37, FeedbackType.ERROR, "target_not_loaded"), // Target Stargate wasn't being loaded by any players or chunkloaders
+		SELF_OUTSIDE_STARGATE_NETWORK(-38, FeedbackType.MAJOR_ERROR, "self_outside_stargate_network"), // Stargate is outside the Stargate Network and can't connect as a result
+		TARGET_OUTSIDE_STARGATE_NETWORK(-39, FeedbackType.MAJOR_ERROR, "target_outside_stargate_network"); // Target Stargate is outside the Stargate Network and can't connect as a result
 		
 		private final int code;
 		private final FeedbackType type;

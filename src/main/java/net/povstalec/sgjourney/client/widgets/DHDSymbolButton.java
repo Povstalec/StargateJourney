@@ -52,8 +52,6 @@ public abstract class DHDSymbolButton extends DHDButton
 		this.hoverColor = hoverColor;
 		this.disengagedColor = disengagedColor;
 		this.engagedColor = engagedColor;
-		
-		setTooltip(Tooltip.create(symbolComponent()));
 	}
 	
 	protected void updateRemapping()

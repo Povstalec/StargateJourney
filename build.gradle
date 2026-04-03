@@ -199,6 +199,10 @@ dependencies {
 	runtimeOnly fg.deobf("curse.maven:ad-astra-635042:4390126")
 
     implementation fg.deobf("curse.maven:patchouli-306770:4391051")
+
+    runtimeOnly fg.deobf("curse.maven:mcjtylib-233105:4501792")
+    runtimeOnly fg.deobf("curse.maven:rftools-base-326041:5613271")
+    runtimeOnly fg.deobf("curse.maven:rftools-dimensions-240950:4500203")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

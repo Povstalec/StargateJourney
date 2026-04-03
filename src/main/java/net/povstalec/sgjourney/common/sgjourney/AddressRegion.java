@@ -431,7 +431,7 @@ public class AddressRegion
 			return addressRegionTag;
 		}
 		
-		public static AddressRegion.Serializable deserialize(Registry<AddressRegion> addressRegionRegistry, CompoundTag addressRegionTag)
+		public static AddressRegion.Serializable deserialize(MinecraftServer server, Registry<AddressRegion> addressRegionRegistry, CompoundTag addressRegionTag)
 		{
 			AddressRegion.Serializable addressRegion;
 			
@@ -459,7 +459,7 @@ public class AddressRegion
 				ListTag spaceLocationsTag = addressRegionTag.getList(SPACE_LOCATIONS, StringTag.TAG_END);
 				for(int i = 0; i < spaceLocationsTag.size(); i++)
 				{
-					SpaceLocation.fromDimension(Conversion.stringToDimension(spaceLocationsTag.get(i).toString())).setAddressRegion(addressRegion);
+					SpaceLocation.fromDimension(server, Conversion.stringToDimension(spaceLocationsTag.get(i).toString())).setAddressRegion(addressRegion);
 				}
 				
 			}

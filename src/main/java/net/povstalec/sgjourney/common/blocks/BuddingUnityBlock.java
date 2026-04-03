@@ -26,7 +26,7 @@ public class BuddingUnityBlock extends Block
 	@Override
 	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
 	{
-		if(!SpaceLocation.fromDimension(level.dimension()).unityCrystalsGrow())
+		if(!SpaceLocation.fromDimension(level.getServer(), level.dimension()).unityCrystalsGrow())
 			return;
 		
 		if(randomSource.nextInt(GROWTH_CHANCE) == 0)

@@ -13,10 +13,16 @@ import net.povstalec.sgjourney.client.screens.GDOScreen;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
 
 public class ClientAccess
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
+	
+	public static void updatePlayerGravity(double gravity)
+	{
+		SpaceLocation.currentGravity = gravity;
+	}
 	
 	public static void openArcheologistNotebookScreen(UUID playerId, boolean mainHand, CompoundTag tag)
 	{

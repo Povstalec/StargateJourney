@@ -1429,7 +1429,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(this.getOrientation() == Orientation.UPWARD)
 			return true;
 		
-		return SpaceLocation.fromDimension(level.dimension()).getParentGravity() > 0.0;
+		return SpaceLocation.fromDimension(level.getServer(), level.dimension()).getParentGravity() > 0.0;
 	}
 	
 	public float getVerticalCenterHeight()

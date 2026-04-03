@@ -916,6 +916,9 @@
 	"message.sgjourney.stargate.error.chevron_already_opened": "Chevron is already opened",
 	"message.sgjourney.stargate.error.chevron_already_closed": "Chevron is already closed",
 	"message.sgjourney.stargate.error.cannot_encode_point_of_origin": "Cannot encode Point of Origin",
+	"message.sgjourney.stargate.error.target_not_loaded": "Target Stargate is not loaded",
+	"message.sgjourney.stargate.error.self_outside_stargate_network": "Stargate is outside the Stargate Network",
+	"message.sgjourney.stargate.error.target_outside_stargate_network": "Target Stargate is outside the Stargate Network",
 	
 	"message.sgjourney.command.get_address.no_galaxy": "You are not located in any Galaxy",
 	"message.sgjourney.command.get_address.located": "is not located in",

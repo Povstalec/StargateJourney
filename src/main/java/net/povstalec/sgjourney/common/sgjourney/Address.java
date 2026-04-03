@@ -33,6 +33,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public static final int POINT_OF_ORIGIN = 0;
 	public static final int MIN_SYMBOL = POINT_OF_ORIGIN;
 	public static final int MAX_SYMBOL = 47;
+	public static final int ADDRESS_GENERATION_SYMBOLS = 36;
 	
 	protected int[] addressArray = new int[0];
 	

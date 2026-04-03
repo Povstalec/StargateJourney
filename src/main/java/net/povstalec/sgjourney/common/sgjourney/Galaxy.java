@@ -30,25 +30,29 @@ public class Galaxy
 	public static final String TYPE = "type";
 	public static final String DEFAULT_SYMBOLS = "default_symbols";
 	public static final String SYMBOL_PREFIX = "symbol_prefix";
+	public static final String CAN_GENERATE_ADDRESS_REGIONS = "can_generate_address_regions";
 	
     public static final Codec<Galaxy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf(NAME).forGetter(Galaxy::getName),
     		GalaxyInit.CODEC.fieldOf(TYPE).forGetter(Galaxy::getType),
 			Symbols.RESOURCE_KEY_CODEC.fieldOf(DEFAULT_SYMBOLS).forGetter(Galaxy::getDefaultSymbols),
-			Codec.intRange(1, Address.MAX_SYMBOL).optionalFieldOf(SYMBOL_PREFIX, 3).forGetter(addressRegion -> addressRegion.symbolPrefix) // Symbol 3 (Virgo) as a reference to the Virgo cluster of galaxies
+			Codec.intRange(1, Address.MAX_SYMBOL).optionalFieldOf(SYMBOL_PREFIX, 3).forGetter(galaxy -> galaxy.symbolPrefix), // Symbol 3 (Virgo) as a reference to the Virgo cluster of galaxies
+			Codec.BOOL.optionalFieldOf(CAN_GENERATE_ADDRESS_REGIONS, false).forGetter(galaxy -> galaxy.canGenerateAddressRegions)
 			).apply(instance, Galaxy::new));
 
 	private final String name;
 	private final GalaxyType type;
 	private final ResourceKey<Symbols> defaultSymbols;
 	private final int symbolPrefix;
+	private final boolean canGenerateAddressRegions;
 	
-	public Galaxy(String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols, int symbolPrefix)
+	public Galaxy(String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols, int symbolPrefix, boolean canGenerateAddressRegions)
 	{
 		this.name = name;
 		this.type = type;
 		this.defaultSymbols = defaultSymbols;
 		this.symbolPrefix = symbolPrefix;
+		this.canGenerateAddressRegions = canGenerateAddressRegions;
 	}
 	
 	public String getName()
@@ -71,12 +75,35 @@ public class Galaxy
 		return symbolPrefix;
 	}
 	
+	public boolean canGenerateAddressRegions()
+	{
+		return canGenerateAddressRegions;
+	}
+	
 	public static Galaxy getGalaxy(Level level, ResourceLocation galaxy)
 	{
 		final RegistryAccess registries = level.getServer().registryAccess();
         final Registry<Galaxy> registry = registries.registryOrThrow(Galaxy.REGISTRY_KEY);
         
         return registry.get(galaxy);
+	}
+	
+	public static ResourceKey<Symbols> getOrDefaultSymbols(@Nullable Galaxy.Serializable galaxy)
+	{
+		return galaxy != null ? galaxy.getDefaultSymbols() : Symbols.defaultSymbols();
+	}
+	
+	public static ResourceKey<PointOfOrigin> randomOrDefaultPointOfOrigin(@Nullable Galaxy.Serializable galaxy, long seed)
+	{
+		return galaxy != null ? galaxy.getRandomPointOfOrigin(seed) : PointOfOrigin.defaultPointOfOrigin();
+	}
+	
+	public static int getOrGenerateSymbolPrefix(@Nullable Galaxy.Serializable galaxy, long seed)
+	{
+		if(galaxy != null)
+			return galaxy.getSize();
+		
+		return new Random(seed).nextInt(1, Address.ADDRESS_GENERATION_SYMBOLS);
 	}
 	
 	/**
@@ -130,6 +157,11 @@ public class Galaxy
 		public int getSize()
 		{
 			return galaxy.getType().getSize();
+		}
+		
+		public boolean canGenerateAddressRegions()
+		{
+			return galaxy.canGenerateAddressRegions();
 		}
 		
 		public boolean containsAddressRegion(Address address)

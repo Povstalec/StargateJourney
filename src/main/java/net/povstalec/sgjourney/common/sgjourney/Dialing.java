@@ -47,6 +47,9 @@ public class Dialing
 		if(SGJourneyEvents.onStargateDial(server, dialingStargate, address, doKawoosh))
 			return StargateInfo.Feedback.NONE;
 		
+		if(!SpaceLocation.fromDimension(server, dialingStargate.getDimension()).isInStargateNetwork())
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SELF_OUTSIDE_STARGATE_NETWORK);
+		
 		return switch(address.getType())
 		{
 			case ADDRESS_7_CHEVRON -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
@@ -125,6 +128,9 @@ public class Dialing
 	{
 		if(mustBeLoaded && !dialedStargate.isLoaded(server))
 			return StargateInfo.Feedback.TARGET_NOT_LOADED;
+		
+		if(!SpaceLocation.fromDimension(server, dialedStargate.getDimension()).isInStargateNetwork())
+			return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_OUTSIDE_STARGATE_NETWORK);
 		
 		return dialedStargate.tryConnect(server, dialingStargate, addressType, doKawoosh);
 	}

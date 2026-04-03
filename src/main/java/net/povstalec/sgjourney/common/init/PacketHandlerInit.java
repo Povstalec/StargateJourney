@@ -24,6 +24,13 @@ public final class PacketHandlerInit
 		//****************************************Client-bound****************************************
 		//============================================================================================
 		
+		// Player
+		INSTANCE.messageBuilder(ClientboundUpdatePlayerGravityPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+		.encoder(ClientboundUpdatePlayerGravityPacket::encode)
+		.decoder(ClientboundUpdatePlayerGravityPacket::new)
+		.consumerMainThread(ClientboundUpdatePlayerGravityPacket::handle)
+		.add();
+		
 		// Screen opening
 		INSTANCE.messageBuilder(ClientboundDialerOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 		.encoder(ClientboundDialerOpenScreenPacket::encode)
