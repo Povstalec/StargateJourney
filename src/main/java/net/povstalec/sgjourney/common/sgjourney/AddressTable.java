@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -14,6 +11,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -56,9 +54,9 @@ public class AddressTable
         return registry.get(addressTable);
 	}
 	
-	public static Address randomAddress(MinecraftServer server, AddressTable addressTable)
+	public static Address randomAddress(ServerLevel level, AddressTable addressTable)
 	{
-		if(server == null || addressTable == null)
+		if(level == null || addressTable == null)
 			return null;
 		
 		List<WeightedAddress> addresses = new ArrayList<WeightedAddress>();
@@ -67,7 +65,27 @@ public class AddressTable
 		// Dimensions that are not in Datapack Solar Systems
 		if(addressTable.includeGeneratedAddresses())
 		{
-			List<ResourceKey<Level>> generatedDimensions =  Universe.get(server).getDimensionsWithGeneratedAddressRegions();
+			Map<Galaxy.Serializable, Address.Immutable> galaxyMap = Universe.get(level).getGalaxiesFromDimension(level.dimension());
+			
+			if(galaxyMap != null)
+			{
+				for(Map.Entry<Galaxy.Serializable, Address.Immutable> galaxyEntry : galaxyMap.entrySet())
+				{
+					// Get Addresses from all generated Address Regions in the Galaxies that this Dimension is located in
+					for(Map.Entry<Address.Immutable, AddressRegion.Serializable> addressRegionEntry : galaxyEntry.getKey().getAddressRegions(entry -> entry.getValue().isGenerated()))
+					{
+						for(SpaceLocation spaceLocation : addressRegionEntry.getValue().getSpaceLocations())
+						{
+							WeightedAddress address = new WeightedAddress(new Address.Dimension(spaceLocation.getDimension()), 1);
+							addresses.add(address);
+							totalWeight += address.weight();
+						}
+					}
+				}
+			}
+			
+			
+			List<ResourceKey<Level>> generatedDimensions =  Universe.get(level).getDimensionsWithGeneratedAddressRegions();
 			for(ResourceKey<Level> dimensionKey : generatedDimensions)
 			{
 				WeightedAddress address = new WeightedAddress(new Address.Dimension(dimensionKey), 1);
@@ -81,7 +99,7 @@ public class AddressTable
 		for(WeightedAddress address : datapackDimensions)
 		{
 			// Only add the address when the dimension exists
-			if(address.addressDimension().right().isPresent() || server.getLevel(address.addressDimension().left().get().getDimension()) != null)
+			if(address.addressDimension().right().isPresent() || level.getServer().getLevel(address.addressDimension().left().get().getDimension()) != null)
 			{
 				addresses.add(address);
 				totalWeight += address.weight();

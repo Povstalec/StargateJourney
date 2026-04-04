@@ -14,12 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Class that represents a region of space with one Extragalactic Address, which may consist of multiple Space Locations, intended as a replacement for the SolarSystem class
@@ -150,12 +150,12 @@ public class AddressRegion
 		
 		public ResourceKey<AddressRegion> getResourceKey()
 		{
-			return this.resourceKey;
+			return resourceKey;
 		}
 		
 		public String getName()
 		{
-			return this.name;
+			return name;
 		}
 		
 		@Nullable
@@ -173,9 +173,9 @@ public class AddressRegion
 		public Component getTranslatedName()
 		{
 			if(!this.isGenerated)
-				return Component.translatable(this.name);
+				return Component.translatable(name);
 			
-			return Component.literal(this.name);
+			return Component.literal(name);
 		}
 		
 		public int getSymbolPrefix()
@@ -279,6 +279,11 @@ public class AddressRegion
 		public List<Stargate> getStargates()
 		{
 			return this.stargates;
+		}
+		
+		public List<Stargate> getStargates(Predicate<Stargate> predicate)
+		{
+			return this.stargates.stream().filter(predicate).toList();
 		}
 		
 		/** Adds Stargate to an ordered list based on the following preferences:

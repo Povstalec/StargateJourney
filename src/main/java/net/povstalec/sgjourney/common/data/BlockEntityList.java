@@ -138,7 +138,7 @@ public class BlockEntityList extends SavedData
 		Address.Immutable address;
 		do
 		{
-			address = Address.Immutable.randomAddress(8, 36, random.nextLong());
+			address = Address.Immutable.randomAddress(8, Address.ADDRESS_GENERATION_SYMBOLS, random.nextLong());
 		} while(containsStargate(address));
 		
 		return address;

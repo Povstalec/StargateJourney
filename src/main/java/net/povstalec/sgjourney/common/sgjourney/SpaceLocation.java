@@ -25,9 +25,6 @@ import java.util.*;
  */
 public class SpaceLocation
 {
-	//TODO Only add space locations if corresponding dimension exists
-	//TODO Add generated addresses
-	
 	public static final ResourceKey<Registry<SpaceLocation>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "space_location"));
 	public static final Codec<ResourceKey<SpaceLocation>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
@@ -58,7 +55,7 @@ public class SpaceLocation
 	
 	private static final TreeMap<String, SpaceLocation> TEMPLATES = new TreeMap<>(); // Templates for how to create a Space Location for a Dimension based on its prefix
 	private static final Map<ResourceKey<Level>, SpaceLocation> DIMENSION_SPACE_LOCATIONS = new HashMap<>(); // Map of Dimensions with Space Locations assigned to them
-	private static final List<SpaceLocation> GENERATED_ADDRESS_DIMENSIONS = new ArrayList<>(); // List of Dimensions that allow their Addresses to be found on Cartouches //TODO Make this Galaxy dependant
+	private static final List<SpaceLocation> GENERATED_ADDRESS_DIMENSIONS = new ArrayList<>(); // List of Dimensions that allow their Addresses to be found on Cartouches
 	
 	public static double currentGravity = 0; // For controlling gravity on the Client side
 	
@@ -246,7 +243,7 @@ public class SpaceLocation
 	 */
 	public static SpaceLocation fromDimension(MinecraftServer server, ResourceKey<Level> dimension)
 	{
-		return DIMENSION_SPACE_LOCATIONS.computeIfAbsent(dimension, dimensionKey -> addSpaceLocation(dimensionKey, createNewSpaceLocation(server, dimensionKey)));
+		return DIMENSION_SPACE_LOCATIONS.computeIfAbsent(dimension, dimensionKey -> prepareSpaceLocation(dimensionKey, createNewSpaceLocation(server, dimensionKey)));
 	}
 	
 	public static SpaceLocation createNewSpaceLocation(MinecraftServer server, ResourceKey<Level> dimension)
@@ -265,7 +262,7 @@ public class SpaceLocation
 			// Create a new Space Location based on an existing template
 			spaceLocation = template.createCopy();
 			// Generate a new Address Region for the Space Location
-			if(template.templateInfo.generateAddressRegion)
+			if(template.templateInfo.generateAddressRegion && Universe.get(server).generateRandomAddressRegions())
 			{
 				// Assign Space Location to a Galaxy if possible (The only case in which it doesn't get assigned to at least one Galaxy is when the provided list of galaxies is empty)
 				if(template.templateInfo.galaxies != null)
@@ -312,12 +309,11 @@ public class SpaceLocation
 		return spaceLocation;
 	}
 	
-	public static void clearAddressRegions()
+	public static void clear()
 	{
-		for(Map.Entry<ResourceKey<Level>, SpaceLocation> spaceLocationEntry : DIMENSION_SPACE_LOCATIONS.entrySet())
-		{
-			spaceLocationEntry.getValue().setAddressRegion(null);
-		}
+		TEMPLATES.clear();
+		DIMENSION_SPACE_LOCATIONS.clear();
+		GENERATED_ADDRESS_DIMENSIONS.clear();
 	}
 	
 	public static void printSpaceLocations()
@@ -350,14 +346,20 @@ public class SpaceLocation
 	//********************************Registering Space Locations*********************************
 	//============================================================================================
 	
-	public static SpaceLocation addSpaceLocation(ResourceKey<Level> dimension, SpaceLocation spaceLocation)
+	private static SpaceLocation prepareSpaceLocation(ResourceKey<Level> dimension, SpaceLocation spaceLocation)
 	{
 		// Assign Space Location to Dimension
 		spaceLocation.dimension = dimension;
-		DIMENSION_SPACE_LOCATIONS.put(dimension, spaceLocation);
 		
 		if(spaceLocation.generateInAddressTables())
 			GENERATED_ADDRESS_DIMENSIONS.add(spaceLocation);
+		
+		return spaceLocation;
+	}
+	
+	public static SpaceLocation addSpaceLocation(ResourceKey<Level> dimension, SpaceLocation spaceLocation)
+	{
+		DIMENSION_SPACE_LOCATIONS.put(dimension, prepareSpaceLocation(dimension, spaceLocation));
 		
 		return spaceLocation;
 	}
@@ -367,7 +369,7 @@ public class SpaceLocation
 		ResourceKey<Level> dimension = Conversion.locationToDimension(key.location());
 		
 		if(spaceLocation.templateInfo != null)
-			TEMPLATES.put(spaceLocation.templateInfo.prefix, spaceLocation); // Separately because we don't want a generated Space Location to be a template
+			TEMPLATES.put(spaceLocation.templateInfo.prefix, spaceLocation); // Separated from addSpaceLocation() because we don't want a generated Space Location to be a template
 		
 		addSpaceLocation(dimension, spaceLocation);
 	}

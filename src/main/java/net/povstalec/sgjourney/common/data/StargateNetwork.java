@@ -442,6 +442,9 @@ public final class StargateNetwork extends SavedData
 	
 	public static void findStargates(ServerLevel level)
 	{
+		if(level == null)
+			return;
+		
 		StargateJourney.LOGGER.debug("Attempting to locate the Stargate Structure in " + level.dimension().location());
 		
 		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();

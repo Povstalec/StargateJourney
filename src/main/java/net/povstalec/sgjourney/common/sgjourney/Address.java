@@ -7,10 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -33,7 +30,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public static final int POINT_OF_ORIGIN = 0;
 	public static final int MIN_SYMBOL = POINT_OF_ORIGIN;
 	public static final int MAX_SYMBOL = 47;
-	public static final int ADDRESS_GENERATION_SYMBOLS = 36;
+	public static final int ADDRESS_GENERATION_SYMBOLS = 36; // Max symbol (exclusive) allowed for normal generation purposes
 	
 	protected int[] addressArray = new int[0];
 	
@@ -147,7 +144,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return Address.Type.fromLength(addressArray.length + 1);
 	}
 	
-	public Component toComponent(boolean copyToClipboard)
+	public MutableComponent toComponent(boolean copyToClipboard)
 	{
 		ChatFormatting chatFormatting = switch(this.getType())
 		{

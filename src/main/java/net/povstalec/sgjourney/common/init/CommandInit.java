@@ -19,10 +19,7 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -228,6 +225,11 @@ public class CommandInit
 				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
 	}
 	
+	private static Component dimensionComponent(ResourceKey<Level> dimension)
+	{
+		return Component.literal(dimension.location().toString()).withStyle(ChatFormatting.GREEN);
+	}
+	
 	private static int getAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
@@ -235,45 +237,23 @@ public class CommandInit
 		Level level = context.getSource().getLevel();
 		ResourceKey<Level> currentDimension = level.dimension();
 		
-		// List of Galaxies the dialing Dimension is located in
 		HashMap<Serializable, Address.Immutable> galaxyMap = Universe.get(level).getGalaxiesFromDimension(currentDimension);
-		
-		if(galaxyMap != null)
+		if(galaxyMap == null || galaxyMap.isEmpty())
 		{
-			List<Entry<Serializable, Address.Immutable>> galaxies = galaxyMap.entrySet().stream().toList();
-
-			if(!galaxies.isEmpty())
-			{
-				// Creates a chat message for each galaxy the Dimension is located in
-				for(int i = 0; i < galaxies.size(); i++)
-				{
-					Entry<Serializable, Address.Immutable> galaxyEntry = galaxies.get(i);
-					Galaxy.Serializable galaxy = galaxyEntry.getKey();
-					
-					Address.Immutable address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey(), dimension);
-					
-					if(address == null)
-						context.getSource().sendSystemMessage(Component.literal(dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)
-								.append(Component.translatable("message.sgjourney.command.get_address.located").withStyle(ChatFormatting.WHITE))
-								.append(Component.literal(" ").append(galaxy.getTranslationName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
-					else
-					{
-						context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address")
-								.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
-								.append(Component.literal(" ").append(galaxy.getTranslationName()).append(Component.literal(" ")).withStyle(ChatFormatting.LIGHT_PURPLE))
-								.append(Component.translatable("message.sgjourney.command.get_address.is")));
-						
-						Style style = Style.EMPTY;
-						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
-						context.getSource().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.GOLD)));
-					}
-				}
-				return Command.SINGLE_SUCCESS;
-			}
+			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
+			return Command.SINGLE_SUCCESS;
 		}
 		
-		context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
+		for(Entry<Serializable, Address.Immutable> galaxyEntry : galaxyMap.entrySet())
+		{
+			Galaxy.Serializable galaxy = galaxyEntry.getKey();
+			Address.Immutable address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey(), dimension);
+			
+			if(address == null)
+				context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_address", dimensionComponent(dimension), galaxy.toComponent()));
+			else
+				context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address", dimensionComponent(dimension), galaxy.toComponent(), address.toComponent(true)));
+		}
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -285,18 +265,10 @@ public class CommandInit
 		
 		Address.Immutable address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
 		
-		if(address != null)
-		{
-			Style style = Style.EMPTY;
-			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.address")
-					.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN))
-					.append(Component.translatable("message.sgjourney.command.get_extragalactic_address.is")), false);
-			context.getSource().sendSuccess(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.LIGHT_PURPLE)), false);
-		}
+		if(address == null)
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.none", dimensionComponent(dimension)), false);
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.none").withStyle(ChatFormatting.DARK_RED), false);
+			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.address", dimensionComponent(dimension), address.toComponent(true)));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -307,35 +279,23 @@ public class CommandInit
 		Level level = context.getSource().getLevel();
 		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
-		if(addressRegion != null)
+		if(addressRegion != null && !addressRegion.getStargates(stargate -> dimension.equals(stargate.getDimension())).isEmpty())
 		{
-			if(!addressRegion.getStargates().isEmpty())
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_stargates.stargates", dimensionComponent(dimension)), false);
+			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+			
+			addressRegion.getStargates().forEach(stargate ->
 			{
-				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_stargates")
-						.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
-				context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+				ResourceKey<Level> stargateDimension = stargate.getDimension();
+				Vec3 stargatePos = stargate.getPosition(context.getSource().getServer());
 				
-				addressRegion.getStargates().stream().forEach(stargate ->
-				{
-					ResourceKey<Level> stargateDimension = stargate.getDimension();
-					Vec3 stargatePos = stargate.getPosition(context.getSource().getServer());
-					
-					if(dimension.equals(stargateDimension) && stargatePos != null)
-					{
-						Style style = Style.EMPTY;
-						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.get9ChevronAddress().toString()));
-						context.getSource().sendSuccess(Component.literal(stargate.get9ChevronAddress().toString()).setStyle(style.applyFormat(ChatFormatting.AQUA))
-								.append(Component.literal(" X: " + stargatePos.x() + " Y: " + stargatePos.y() + " Z: " + stargatePos.z()).withStyle(ChatFormatting.BLUE)), false);
-					}
-				});
-				context.getSource().sendSuccess(Component.literal("-------------------------"), false);
-				
-				return Command.SINGLE_SUCCESS;
-			}
+				if(dimension.equals(stargateDimension) && stargatePos != null)
+					context.getSource().sendSuccess(stargate.get9ChevronAddress().toComponent(true).append(Component.literal(" X: " + stargatePos.x() + " Y: " + stargatePos.y() + " Z: " + stargatePos.z()).withStyle(ChatFormatting.BLUE)), false);
+			});
+			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		}
-		
-		context.getSource().sendSystemMessage(Component.literal("No Stargates could be located in " + dimension.location().toString()).withStyle(ChatFormatting.RED));
+		else
+			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_stargates.no_stargates", dimensionComponent(dimension)));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -423,7 +383,7 @@ public class CommandInit
 		Level level = context.getSource().getLevel();
 		
 		boolean randomizeAddresses = StargateNetworkSettings.get(level).randomizeAddresses();
-		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomSolarSystems();
+		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomAddressRegions();
 		boolean randomAddressFromSeed = StargateNetworkSettings.get(level).randomAddressFromSeed();
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.randomize_addresses").append(Component.literal(": " + randomizeAddresses)).withStyle(ChatFormatting.GOLD), false);
@@ -471,22 +431,23 @@ public class CommandInit
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getLevel();
-
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_transporters")
-				.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
-		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		
 		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
 		
-		if(transporters != null)
+		if(transporters != null && !transporters.isEmpty())
 		{
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_transporters.transporters", dimensionComponent(dimension)), false);
+			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+			
 			for(Transporter transporter : transporters)
 			{
 				Vec3 coords = transporter.getPosition(level.getServer());
-				context.getSource().sendSuccess(Component.literal(transporter.getID().toString()).withStyle(ChatFormatting.AQUA).append(Component.literal(" X: " + (int) Math.floor(coords.x()) + " Y: " + (int) Math.floor(coords.y()) + " Z: " + (int) Math.floor(coords.z())).withStyle(ChatFormatting.BLUE)), false);
+				context.getSource().sendSuccess(transporter.getID().toComponent(true).append(Component.literal(" X: " + (int) Math.floor(coords.x()) + " Y: " + (int) Math.floor(coords.y()) + " Z: " + (int) Math.floor(coords.z())).withStyle(ChatFormatting.BLUE)), false);
 			}
+			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		}
-		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+		else
+			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_transporters.no_transporters", dimensionComponent(dimension)));
 		
 		return Command.SINGLE_SUCCESS;
 	}

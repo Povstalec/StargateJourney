@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.*;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 
@@ -73,6 +75,18 @@ public abstract class TransporterID
 			return 0;
 		
 		return idArray[number];
+	}
+	
+	public MutableComponent toComponent(boolean copyToClipboard)
+	{
+		Style style = Style.EMPTY;
+		if(copyToClipboard)
+		{
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
+		}
+		
+		return Component.literal(idIntArrayToString(this.idArray)).setStyle(style.applyFormat(ChatFormatting.AQUA));
 	}
 	
 	public void saveToCompoundTag(CompoundTag tag, String name)

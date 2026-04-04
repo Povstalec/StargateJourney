@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -111,8 +112,7 @@ public class Dialing
 				
 				if(server.levelKeys().contains(levelKey))
 				{
-					Level targetLevel = server.getLevel(levelKey);
-					StargateNetwork.findStargates((ServerLevel) targetLevel);
+					StargateNetwork.findStargates(Objects.requireNonNull(server.getLevel(levelKey)));
 					dimensions++;
 				}
 			}

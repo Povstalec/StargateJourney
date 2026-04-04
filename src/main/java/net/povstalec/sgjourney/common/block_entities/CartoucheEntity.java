@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities;
 import net.minecraft.core.Direction;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -262,7 +263,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	public void setAddressFromAddressTable()
 	{
 		AddressTable addressTable = AddressTable.getAddressTable(level, this.addressTable);
-		Address address = AddressTable.randomAddress(level.getServer(), addressTable);
+		Address address = AddressTable.randomAddress((ServerLevel) level, addressTable);
 		
 		if(address != null)
 			setAddress(address);

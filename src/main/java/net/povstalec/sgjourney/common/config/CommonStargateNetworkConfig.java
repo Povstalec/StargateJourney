@@ -5,7 +5,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class CommonStargateNetworkConfig
 {
 	public static SGJourneyConfigValue.BooleanValue randomize_addresses;
-	public static SGJourneyConfigValue.BooleanValue generate_random_solar_systems;
+	public static SGJourneyConfigValue.BooleanValue generate_random_address_regions;
 	public static SGJourneyConfigValue.BooleanValue random_addresses_from_seed;
 	
 	public static SGJourneyConfigValue.BooleanValue disable_dhd_preference;
@@ -17,7 +17,7 @@ public class CommonStargateNetworkConfig
 				false, //TODO Change to true once there is are more ways to obtain all addresses
 				"Stargate Network will randomize addresses, rather than using the addresses from datapacks");
 		
-		generate_random_solar_systems = new SGJourneyConfigValue.BooleanValue(server, "server.generate_random_solar_systems", 
+		generate_random_address_regions = new SGJourneyConfigValue.BooleanValue(server, "server.generate_random_solar_systems",
 				true, 
 				"Stargate Network will generate random Solar System for each dimension not registered through a datapack");
 		

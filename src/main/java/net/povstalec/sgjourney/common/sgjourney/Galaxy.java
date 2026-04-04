@@ -1,18 +1,21 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
@@ -139,9 +142,9 @@ public class Galaxy
 			return this.galaxyKey;
 		}
 		
-		public Component getTranslationName()
+		public MutableComponent toComponent()
 		{
-			return Component.translatable(galaxy.getName());
+			return Component.translatable(galaxy.getName()).withStyle(ChatFormatting.LIGHT_PURPLE);
 		}
 		
 		public ResourceKey<Symbols> getDefaultSymbols()
@@ -169,21 +172,31 @@ public class Galaxy
 			return this.addressRegions.containsKey(address);
 		}
 		
+		public List<Map.Entry<Address.Immutable, AddressRegion.Serializable>> getAddressRegions(Predicate<Map.Entry<Address.Immutable, AddressRegion.Serializable>> predicate)
+		{
+			return this.addressRegions.entrySet().stream().filter(predicate).toList();
+		}
+		
 		@Nullable
 		public AddressRegion.Serializable getAddressRegion(Address address)
 		{
 			return this.addressRegions.get(address);
 		}
 		
-		public void addAddressRegion(Address.Immutable address, AddressRegion.Serializable addressRegion)
+		public void addAddressRegion(Address.Immutable galacticAddress, AddressRegion.Serializable addressRegion)
 		{
-			this.addressRegions.put(address, addressRegion);
+			this.addressRegions.put(galacticAddress, addressRegion);
+			addressRegion.addToGalaxy(this, galacticAddress);
 		}
 		
 		public void removeAddressRegion(Address address)
 		{
 			if(containsAddressRegion(address))
-				this.addressRegions.remove(address);
+			{
+				AddressRegion.Serializable removedRegion = this.addressRegions.remove(address);
+				if(removedRegion != null)
+					removedRegion.removeFromGalaxy(this);
+			}
 		}
 		
 		public List<AddressRegion.Serializable> getShuffledAddressRegions(RandomSource randomSource)
